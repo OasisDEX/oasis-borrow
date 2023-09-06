@@ -21,13 +21,14 @@ export function getChainlinkOraclePrice(
 ): Promise<BigNumber> {
   if (
     !contractName ||
-    !mainnetContracts['chainlinkPriceOracle'][contractName] ||
+    !mainnetContracts.chainlinkPriceOracle[contractName] ||
     !getNetworkContracts(networkId)?.chainlinkPriceOracle[contractName]
   ) {
     throw new Error(`ChainlinkPriceOracle ${contractName} not found`)
   }
 
-  const address = getNetworkContracts(networkId).chainlinkPriceOracle[contractName].address
+  const { address } = getNetworkContracts(networkId).chainlinkPriceOracle[contractName]
+
   warnIfAddressIsZero(address, networkId, 'chainlinkPriceOracle', contractName)
   const contract = factory.connect(address, getRpcProvider(networkId))
 

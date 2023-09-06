@@ -1,7 +1,7 @@
+import React, { useEffect, useState } from 'react'
 import { networkSetById } from 'blockchain/networks'
 import { useWeb3OnBoardConnectorContext } from 'features/web3OnBoard'
 import { AppSpinner } from 'helpers/AppSpinner'
-import React, { useEffect, useState } from 'react'
 import { Image } from 'theme-ui'
 
 export function NavigationNetworkSwitcherIcon() {
@@ -14,6 +14,7 @@ export function NavigationNetworkSwitcherIcon() {
   useEffect(() => {
     if (networkConnectorNetworkId) {
       const networkConfig = networkSetById[networkConnectorNetworkId]
+
       if (networkConfig && networkConfig.icon !== icon) {
         setIcon(networkConfig.icon)
       }

@@ -14,7 +14,7 @@ export async function followVaultUsingApi(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      authorization: 'Bearer ' + token,
+      authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       vault_id: parseInt(vaultId.toFixed(0)),
@@ -29,6 +29,7 @@ export async function followVaultUsingApi(
       if (err.status === 404) {
         return [] as UsersWhoFollowVaults[]
       }
+
       throw err
     })
 }
@@ -50,6 +51,7 @@ export function getFollowFromApi(address: string): Promise<UsersWhoFollowVaults[
       if (err.status === 422 || err.status === 418) {
         return err.json()
       }
+
       throw err
     })
 }
@@ -59,12 +61,12 @@ export async function unfollowVaultUsingApi(
   chainId: number,
   protocol: Protocol,
   token: string,
-): Promise<{ message: String }> {
+): Promise<{ message: string }> {
   return fetch(`${basePath}/api/follow`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      authorization: 'Bearer ' + token,
+      authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       vault_id: parseInt(vaultId.toFixed(0)),
@@ -79,6 +81,7 @@ export async function unfollowVaultUsingApi(
       if (err.status === 404) {
         return []
       }
+
       throw err
     })
 }

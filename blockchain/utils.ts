@@ -1,9 +1,8 @@
 import { BigNumber } from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { RAD, RAD_PRECISION, RAY, RAY_PRECISION, WAD } from 'components/constants'
 import padEnd from 'lodash/padEnd'
 import ethAbi, { AbiCoder } from 'web3-eth-abi'
-
-import { getToken } from './tokensMetadata'
 
 // Set global decimals places to the minimum unit we operate on
 BigNumber.set({ DECIMAL_PLACES: 45 })
@@ -37,11 +36,13 @@ export function amountToWei(amount: BigNumber, tokenOrPrecision: TokenOrPrecisio
     typeof tokenOrPrecision === 'string'
       ? getToken(tokenOrPrecision)
       : { precision: tokenOrPrecision }
+
   return amount.times(new BigNumber(10).pow(precision))
 }
 
 export function amountFromWei(amount: BigNumber, token: TokenOrPrecision): BigNumber {
   const { precision } = typeof token === 'string' ? getToken(token) : { precision: token }
+
   return amount.div(new BigNumber(10).pow(precision))
 }
 
@@ -55,6 +56,7 @@ export function amountFromPrecision(amount: BigNumber, precision: BigNumber): Bi
 
 export function amountToWeiRoundDown(amount: BigNumber, token: string): BigNumber {
   const { precision } = getToken(token)
+
   return amount.times(new BigNumber(10).pow(precision)).decimalPlaces(0, BigNumber.ROUND_DOWN)
 }
 

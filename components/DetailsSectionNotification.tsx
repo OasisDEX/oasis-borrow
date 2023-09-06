@@ -1,8 +1,8 @@
+import React, { Fragment, ReactNode, useEffect, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { Fragment, ReactNode, useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
 type DetailsSectionNotificationType = 'error' | 'warning' | 'notice'
@@ -55,6 +55,7 @@ export function DetailsSectionNotification({
 }: DetailsSectionNotificationProps) {
   const [closedNotifications, setClosedNotifications] = useState<number[]>([])
   const { t } = useTranslation()
+
   notifications.forEach(({ title }, i) => {
     if (
       sessionStorage.getItem(getSessionStorageKey(title.translationKey)) === 'true' &&

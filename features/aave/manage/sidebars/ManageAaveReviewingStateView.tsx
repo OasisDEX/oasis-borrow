@@ -1,16 +1,15 @@
+import React from 'react'
 import { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { ConnectedSidebarSection } from 'features/aave/components'
-import { isAllowanceNeeded } from 'features/aave/types'
-import { useTranslation } from 'next-i18next'
-import React from 'react'
-
-import { GetReviewingSidebarProps } from './GetReviewingSidebarProps'
+import { GetReviewingSidebarProps } from 'features/aave/manage/sidebars/GetReviewingSidebarProps'
 import {
   isLocked,
   ManageAaveStateProps,
   textButtonReturningToAdjust,
   WithDropdownConfig,
-} from './SidebarManageAaveVault'
+} from 'features/aave/manage/sidebars/SidebarManageAaveVault'
+import { isAllowanceNeeded } from 'features/aave/types'
+import { useTranslation } from 'next-i18next'
 
 export function ManageAaveReviewingStateView({
   state,
@@ -35,7 +34,7 @@ export function ManageAaveReviewingStateView({
     primaryButton: {
       isLoading: false,
       disabled: !state.can('NEXT_STEP') || isLocked(state) || stopLossError,
-      label: label,
+      label,
       action: () => send('NEXT_STEP'),
     },
     textButton: state.matches('frontend.reviewingAdjusting')

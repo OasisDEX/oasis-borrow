@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -11,7 +12,6 @@ import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { one } from 'helpers/zero'
-import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
 
 interface AjnaDataProps {

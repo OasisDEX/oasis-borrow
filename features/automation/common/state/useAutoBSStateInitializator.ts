@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import {
@@ -12,7 +13,6 @@ import {
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { uiChanges } from 'helpers/uiChanges'
-import { useEffect } from 'react'
 
 export function useAutoBSstateInitialization({
   autoTriggersData,

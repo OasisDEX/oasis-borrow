@@ -1,6 +1,6 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TranslateStringType } from 'helpers/translateStringType'
-import React from 'react'
 import { Box, Button, SxStyleProp, Text } from 'theme-ui'
 
 type HomePageHeadlineProps = {

@@ -3,16 +3,15 @@ import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { Context, EveryBlockFunction$ } from 'blockchain/network'
 import { SECONDS_PER_YEAR } from 'components/constants'
+import { DsrEvent, DsrEventKind } from 'features/dsr/helpers/dsrHistory'
+import { pie } from 'features/dsr/helpers/potCalls'
+import { vatDai } from 'features/dsr/helpers/vatCalls'
 import { RAY, WAD } from 'features/dsr/utils/constants'
 import { createProxyAddress$ } from 'features/dsr/utils/proxy'
 import { zero } from 'helpers/zero'
 import { equals } from 'ramda'
 import { combineLatest, defer, Observable, zip } from 'rxjs'
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
-
-import { DsrEvent, DsrEventKind } from './dsrHistory'
-import { pie } from './potCalls'
-import { vatDai } from './vatCalls'
 
 export type DsrPotKind = 'dsr'
 
@@ -30,6 +29,7 @@ export type DsrPot =
 
 // TODO: global setting!
 BigNumber.config({ POW_PRECISION: 100 })
+
 /**
  * Calculates the yearly rate (APY) based on the Dai Savings Rate (DSR).
  * @param dsr The Dai Savings Rate as a BigNumber.
@@ -77,6 +77,7 @@ function createEarningsToDate$(
           event: DsrEvent,
         ) => {
           const { kind, amount } = event
+
           return {
             ...acc,
             [kind]: acc[kind].plus(amount),
@@ -87,6 +88,7 @@ function createEarningsToDate$(
           [DsrEventKind.dsrWithdrawal]: zero,
         },
       )
+
       return totals[DsrEventKind.dsrWithdrawal].minus(totals[DsrEventKind.dsrDeposit]).div(WAD)
     }),
     distinctUntilChanged((prev, curr) => prev.eq(curr)),
@@ -134,6 +136,7 @@ export function dsrPot$(
         equals,
       )
       const etd$ = createEarningsToDate$(history$, pie$, chi$)
+
       return combineLatest(pie$, dsr$, chi$, history$, adapterDebtAmount$, etd$).pipe(
         map(([pie, dsr, chi, history, adapterDebtAmount, earnings]) => {
           const dai = calculateDsrBalance({ pie, chi })

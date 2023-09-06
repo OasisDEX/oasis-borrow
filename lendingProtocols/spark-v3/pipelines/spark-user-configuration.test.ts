@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
-
 import {
   createSparkUserConfiguration,
   SparkUserConfigurationResult,
-} from './spark-user-configuration'
+} from 'lendingProtocols/spark-v3/pipelines/spark-user-configuration'
 
 describe('SparkUserConfiguration', () => {
   function generateUserConfig(input: string): string {
@@ -41,6 +40,7 @@ describe('SparkUserConfiguration', () => {
     }
 
     const results = createSparkUserConfiguration([userConfig], reservesList, dictionary)
+
     // console.log(results)
     assert('0x reserve that is used as collateral', 'A', true, false, results)
     assert('0x reserve that is used as debt', 'B', false, true, results)
@@ -66,6 +66,7 @@ describe('SparkUserConfiguration', () => {
     }
 
     const results = createSparkUserConfiguration([userConfig], reservesList, dictionary)
+
     // console.log(results)
     assert('0x reserve that is used as collateral', 'A', true, false, results)
     assert('0x reserve that is used as debt', 'B', false, true, results)

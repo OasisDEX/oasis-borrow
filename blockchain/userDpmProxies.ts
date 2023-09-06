@@ -1,10 +1,9 @@
+import { ensureContractsExist, extendContract, getNetworkContracts } from 'blockchain/contracts'
+import { Context } from 'blockchain/network'
+import { getRpcProvidersForLogs, NetworkIds } from 'blockchain/networks'
 import { Observable, of } from 'rxjs'
 import { catchError, first, shareReplay, switchMap } from 'rxjs/operators'
 import { AccountFactory__factory, AccountGuard__factory } from 'types/ethers-contracts'
-
-import { ensureContractsExist, extendContract, getNetworkContracts } from './contracts'
-import { Context } from './network'
-import { getRpcProvidersForLogs, NetworkIds } from './networks'
 
 export interface UserDpmAccount {
   proxy: string
@@ -23,6 +22,7 @@ export function getUserDpmProxies$(
   return context$.pipe(
     switchMap(async ({ chainId }) => {
       const contracts = getNetworkContracts(chainId)
+
       ensureContractsExist(chainId, contracts, ['accountFactory', 'accountGuard'])
       const { accountFactory, accountGuard } = contracts
       const { mainProvider, forkProvider } = getRpcProvidersForLogs(chainId)
@@ -96,6 +96,7 @@ export function getUserDpmProxies$(
     }),
     catchError((error) => {
       console.error(`Error getting user DPM proxies`, walletAddress, error)
+
       return of([])
     }),
     shareReplay(1),
@@ -118,6 +119,7 @@ export async function getUserDpmProxy(
   chainId: NetworkIds,
 ): Promise<UserDpmAccount | undefined> {
   const contracts = getNetworkContracts(chainId)
+
   ensureContractsExist(chainId, contracts, ['accountFactory', 'accountGuard'])
   const { accountFactory, accountGuard } = contracts
 
@@ -177,6 +179,7 @@ export function getPositionIdFromDpmProxy$(
   return context$.pipe(
     switchMap(async ({ chainId }) => {
       const contracts = getNetworkContracts(chainId)
+
       ensureContractsExist(chainId, contracts, ['accountFactory'])
       const { accountFactory } = contracts
       const { mainProvider, forkProvider } = getRpcProvidersForLogs(chainId)
@@ -189,15 +192,18 @@ export function getPositionIdFromDpmProxy$(
 
       const filter = accountFactoryContract.filters.AccountCreated(dpmProxy, null, null)
       let events = []
+
       try {
         events = await accountFactoryContract.getLogs(filter)
       } catch (e) {
         console.error('Error getting events for proxy', dpmProxy, e)
+
         return undefined
       }
 
       if (!events.length) {
         console.warn('No event found for proxy', dpmProxy)
+
         return undefined
       }
 

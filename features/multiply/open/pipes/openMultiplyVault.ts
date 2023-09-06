@@ -25,6 +25,47 @@ import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVault
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import {
+  applyExchange,
+  createExchangeChange$,
+  createInitialQuoteChange,
+  ExchangeQuoteChanges,
+} from 'features/multiply/open/pipes/openMultiplyQuote'
+import {
+  applyOpenMultiplyVaultCalculations,
+  defaultOpenMultiplyVaultStateCalculations,
+  OpenMultiplyVaultCalculations,
+} from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
+import {
+  applyOpenVaultConditions,
+  applyOpenVaultStageCategorisation,
+  defaultOpenMultiplyVaultConditions,
+  OpenMultiplyVaultConditions,
+} from 'features/multiply/open/pipes/openMultiplyVaultConditions'
+import {
+  applyOpenVaultEnvironment,
+  OpenVaultEnvironmentChange,
+} from 'features/multiply/open/pipes/openMultiplyVaultEnvironment'
+import {
+  applyOpenVaultInput,
+  OpenVaultInputChange,
+} from 'features/multiply/open/pipes/openMultiplyVaultInput'
+import {
+  applyOpenVaultSummary,
+  defaultOpenVaultSummary,
+  OpenVaultSummary,
+} from 'features/multiply/open/pipes/openMultiplyVaultSummary'
+import {
+  applyEstimateGas,
+  applyOpenMultiplyVaultTransaction,
+  multiplyVault,
+  setAllowance,
+} from 'features/multiply/open/pipes/openMultiplyVaultTransactions'
+import {
+  finalValidation,
+  validateErrors,
+  validateWarnings,
+} from 'features/multiply/open/pipes/openMultiplyVaultValidations'
 import { createProxy } from 'features/proxy/createProxy'
 import { applyProxyChanges, ProxyChanges } from 'features/proxy/proxy'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
@@ -49,41 +90,6 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
-import {
-  applyExchange,
-  createExchangeChange$,
-  createInitialQuoteChange,
-  ExchangeQuoteChanges,
-} from './openMultiplyQuote'
-import {
-  applyOpenMultiplyVaultCalculations,
-  defaultOpenMultiplyVaultStateCalculations,
-  OpenMultiplyVaultCalculations,
-} from './openMultiplyVaultCalculations'
-import {
-  applyOpenVaultConditions,
-  applyOpenVaultStageCategorisation,
-  defaultOpenMultiplyVaultConditions,
-  OpenMultiplyVaultConditions,
-} from './openMultiplyVaultConditions'
-import {
-  applyOpenVaultEnvironment,
-  OpenVaultEnvironmentChange,
-} from './openMultiplyVaultEnvironment'
-import { applyOpenVaultInput, OpenVaultInputChange } from './openMultiplyVaultInput'
-import {
-  applyOpenVaultSummary,
-  defaultOpenVaultSummary,
-  OpenVaultSummary,
-} from './openMultiplyVaultSummary'
-import {
-  applyEstimateGas,
-  applyOpenMultiplyVaultTransaction,
-  multiplyVault,
-  setAllowance,
-} from './openMultiplyVaultTransactions'
-import { finalValidation, validateErrors, validateWarnings } from './openMultiplyVaultValidations'
-
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
   stateToOverride: Partial<OpenMultiplyVaultState>
@@ -99,6 +105,7 @@ function applyOpenVaultInjectedOverride(
       ...change.stateToOverride,
     }
   }
+
   return state
 }
 
@@ -361,7 +368,8 @@ export function createOpenMultiplyVault$(
           first(),
           switchMap(([context, txHelpers, ilkData, { slippage }]) => {
             const { token } = ilkData
-            const account = context.account
+            const { account } = context
+
             return combineLatest(
               priceInfo$(token),
               balanceInfo$(token, account),

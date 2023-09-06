@@ -12,6 +12,7 @@ function respond(
   switch (req.method) {
     case 'POST':
       res.setHeader('Cache-Control', 'public, s-maxage=90, stale-while-revalidate=119')
+
       return res.status(200).json(response)
     default:
       return res.status(405).end()
@@ -23,8 +24,8 @@ const cache = new NodeCache({ stdTTL: 60 })
 async function infuraCallsCacheHandler(req: NextApiRequest, res: NextApiResponse) {
   const encodedBatchCallData = req.body.encoded
 
-  const rpcUrl = networksById[req.body.network.chainId].rpcUrl
-  const batchCallData: Array<Request> = JSON.parse(encodedBatchCallData)
+  const { rpcUrl } = networksById[req.body.network.chainId]
+  const batchCallData: Request[] = JSON.parse(encodedBatchCallData)
 
   const batchManager = new BatchManager(rpcUrl, cache, { debug: true })
   const batchResults = await batchManager.batchCall(batchCallData)

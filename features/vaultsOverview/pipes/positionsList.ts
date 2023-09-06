@@ -26,6 +26,7 @@ export function createMakerPositionsList$(
             )
             const isOwner =
               context.status === 'connected' && context.account === vaultWithHistory.controller
+
             return {
               ...vaultWithHistory,
               ...balance,

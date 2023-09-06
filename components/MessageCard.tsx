@@ -1,5 +1,5 @@
-import { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
+import { TranslateStringType } from 'helpers/translateStringType'
 import { Card, Flex, Grid, Text } from 'theme-ui'
 
 interface NoticeCardProps {
@@ -32,6 +32,7 @@ export function MessageCard({ messages, type, withBullet = true, handleClick }: 
   const cardStyle = cardStyles[type]
 
   if (!messages.length) return null
+
   return (
     <Card
       variant={cardStyle.cardVariant}

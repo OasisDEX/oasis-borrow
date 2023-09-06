@@ -3,6 +3,7 @@
 import { TxMeta, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { newCDPTxReceipt } from 'features/multiply/open/tests/fixtures/newCDPtxReceipt'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { mockOpenMultiplyVault } from 'helpers/mocks/openMultiplyVault.mock'
 import { mockTxState } from 'helpers/mocks/txHelpers.mock'
@@ -13,8 +14,6 @@ import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
-
 // TODO: [Mocha -> Jest] Rewrite in Jest compatible format.
 describe.skip('open multiply vault', () => {
   beforeEach(() => {})
@@ -22,10 +21,12 @@ describe.skip('open multiply vault', () => {
   describe('parseVaultIdFromReceiptLogs', () => {
     it('should return vaultId', () => {
       const vaultId = parseVaultIdFromReceiptLogs(newCDPTxReceipt)
+
       expect(vaultId!).toEqual(new BigNumber('3281'))
     })
     it('should return undefined if NewCdp log is not found', () => {
       const vaultId = parseVaultIdFromReceiptLogs({ logs: [] })
+
       expect(vaultId).toBeUndefined()
     })
   })
@@ -39,6 +40,7 @@ describe.skip('open multiply vault', () => {
           ilk: 'WBTC-A',
         }),
       )
+
       expect(state()).toBeUndefined()
       _ilks$.next(['WBTC-A'])
       expect(state().ilk).toEqual('WBTC-A')
@@ -52,11 +54,13 @@ describe.skip('open multiply vault', () => {
           ilk: 'ETH-Z',
         }),
       )
+
       expect(state).toThrow('Ilk ETH-Z does not exist')
     })
 
     it('should start by default at the editing stage', () => {
       const state = getStateUnpacker(mockOpenMultiplyVault())
+
       expect(state().stage).toEqual('editing')
       expect(state().totalSteps).toEqual(3)
     })
@@ -64,6 +68,7 @@ describe.skip('open multiply vault', () => {
     it('should update depositAmount', () => {
       const depositAmount = new BigNumber('5')
       const state = getStateUnpacker(mockOpenMultiplyVault())
+
       state().updateDeposit!(depositAmount)
       expect(state().depositAmount).toEqual(depositAmount)
     })
@@ -72,6 +77,7 @@ describe.skip('open multiply vault', () => {
       const depositAmount = new BigNumber('5')
       const collateralPrice = new BigNumber('100')
       const state = getStateUnpacker(mockOpenMultiplyVault({ priceInfo: { collateralPrice } }))
+
       state().updateDeposit!(depositAmount)
       expect(state().depositAmount!).toEqual(depositAmount)
       expect(state().depositAmountUSD!).toEqual(depositAmount.times(collateralPrice))
@@ -86,6 +92,7 @@ describe.skip('open multiply vault', () => {
           },
         }),
       )
+
       state().updateDepositMax!()
 
       expect(state().depositAmount!).toEqual(collateralBalance)
@@ -94,6 +101,7 @@ describe.skip('open multiply vault', () => {
     it('should update depositAmountUSD', () => {
       const depositAmountUSD = new BigNumber('5')
       const state = getStateUnpacker(mockOpenMultiplyVault())
+
       state().updateDepositUSD!(depositAmountUSD)
       expect(state().depositAmountUSD!).toEqual(depositAmountUSD)
     })
@@ -102,6 +110,7 @@ describe.skip('open multiply vault', () => {
       const depositAmountUSD = new BigNumber('5')
       const collateralPrice = new BigNumber('100')
       const state = getStateUnpacker(mockOpenMultiplyVault({ priceInfo: { collateralPrice } }))
+
       state().updateDepositUSD!(depositAmountUSD)
       expect(state().depositAmount!).toEqual(depositAmountUSD.div(collateralPrice))
       expect(state().depositAmountUSD!).toEqual(depositAmountUSD)
@@ -111,6 +120,7 @@ describe.skip('open multiply vault', () => {
       const closeVaultType = 'collateral'
       const defaultCloseVaultType = 'dai'
       const state = getStateUnpacker(mockOpenMultiplyVault())
+
       expect(state().stopLossCloseType!).toBe(defaultCloseVaultType)
       state().setStopLossCloseType(closeVaultType)
       expect(state().stopLossCloseType).toBe(closeVaultType)
@@ -120,6 +130,7 @@ describe.skip('open multiply vault', () => {
       const stopLossLevel = new BigNumber(200)
       const defaultStopLossLevel = new BigNumber(160)
       const state = getStateUnpacker(mockOpenMultiplyVault())
+
       expect(state().stopLossLevel!).toEqual(defaultStopLossLevel)
       state().setStopLossLevel(stopLossLevel)
       expect(state().stopLossLevel).toEqual(stopLossLevel)
@@ -129,6 +140,7 @@ describe.skip('open multiply vault', () => {
       const depositAmount = new BigNumber('100')
 
       const state = getStateUnpacker(mockOpenMultiplyVault())
+
       state().updateDeposit!(depositAmount)
 
       state().progress!()
@@ -177,6 +189,7 @@ describe.skip('open multiply vault', () => {
           }),
         }),
       )
+
       _proxyAddress$.next()
       state().progress!()
       state().progress!()
@@ -196,6 +209,7 @@ describe.skip('open multiply vault', () => {
           ilk: 'ETH-A',
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).not.toEqual('allowanceWaitingForConfirmation')
@@ -212,6 +226,7 @@ describe.skip('open multiply vault', () => {
           ilk: 'WBTC-A',
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).toEqual('allowanceWaitingForConfirmation')
@@ -338,6 +353,7 @@ describe.skip('open multiply vault', () => {
           ilk: 'WBTC-A',
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().progress!()
       state().skipStopLoss!()
@@ -362,6 +378,7 @@ describe.skip('open multiply vault', () => {
           ilk: 'WBTC-A',
         }),
       )
+
       state().progress!()
       state().progress!()
       expect(state().stage).toEqual('txFailure')
@@ -745,6 +762,7 @@ describe.skip('open multiply vault', () => {
           ilk: 'WBTC-A',
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().progress!()
       state().setStopLossLevel(stopLossLevel)
@@ -768,6 +786,7 @@ describe.skip('open multiply vault', () => {
               if (meta.kind === 'multiply') {
                 return mockTxState(meta, TxStatus.Success, newCDPTxReceipt)
               }
+
               return mockTxState(meta, TxStatus.Failure)
             },
           }),

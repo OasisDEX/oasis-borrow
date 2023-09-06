@@ -1,13 +1,12 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { Banner } from 'components/Banner'
 import { useProductContext } from 'components/context'
 import { AppLink } from 'components/Links'
+import { ClaimTxnState } from 'features/bonus/bonusPipe'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Text } from 'theme-ui'
-
-import { ClaimTxnState } from './bonusPipe'
 
 type BonusContainerProps = {
   cdpId: BigNumber
@@ -22,6 +21,7 @@ export function BonusContainer(props: BonusContainerProps) {
     const { bonus, claimAll, claimTxnState } = bonusViewModel
 
     let bonusInstructionSnippet: string
+
     if (bonus.amountToClaim.eq(0)) {
       bonusInstructionSnippet = 'claim-rewards.instructions.nothing-to-claim'
     } else if (claimTxnState === ClaimTxnState.SUCCEEDED) {
@@ -63,5 +63,6 @@ export function BonusContainer(props: BonusContainerProps) {
       />
     )
   }
+
   return null
 }

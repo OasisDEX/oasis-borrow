@@ -15,6 +15,32 @@ import {
   applyIsAllowanceStage,
   defaultAllowanceState,
 } from 'features/allowance/allowance'
+import {
+  applyEnvironment,
+  EnvironmentChange,
+  EnvironmentState,
+} from 'features/earn/guni/open/pipes/enviroment'
+import {
+  addFormTransitions,
+  applyFormChange,
+  applyIsEditingStage,
+  defaultFormState,
+  EditingStage,
+  FormChanges,
+  FormFunctions,
+  FormState,
+} from 'features/earn/guni/open/pipes/guniForm'
+import {
+  validateGuniErrors,
+  validateGuniWarnings,
+} from 'features/earn/guni/open/pipes/guniOpenMultiplyVaultValidations'
+import { applyGuniEstimateGas } from 'features/earn/guni/open/pipes/openGuniMultiplyVaultTransactions'
+import {
+  applyGuniOpenVaultConditions,
+  applyGuniOpenVaultStageCategorisation,
+  defaultGuniOpenMultiplyVaultConditions,
+  GuniOpenMultiplyVaultConditions,
+} from 'features/earn/guni/open/pipes/openGuniVaultConditions'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
@@ -43,6 +69,7 @@ import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { combineTransitions } from 'helpers/pipelines/combineTransitions'
 import { TxError } from 'helpers/types'
 import { one, zero } from 'helpers/zero'
+import curry from 'ramda/src/curry'
 import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import {
   distinctUntilChanged,
@@ -55,27 +82,6 @@ import {
   tap,
 } from 'rxjs/internal/operators'
 import { withLatestFrom } from 'rxjs/operators'
-
-import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
-import {
-  addFormTransitions,
-  applyFormChange,
-  applyIsEditingStage,
-  defaultFormState,
-  EditingStage,
-  FormChanges,
-  FormFunctions,
-  FormState,
-} from './guniForm'
-import { validateGuniErrors, validateGuniWarnings } from './guniOpenMultiplyVaultValidations'
-import { applyGuniEstimateGas } from './openGuniMultiplyVaultTransactions'
-import {
-  applyGuniOpenVaultConditions,
-  applyGuniOpenVaultStageCategorisation,
-  defaultGuniOpenMultiplyVaultConditions,
-  GuniOpenMultiplyVaultConditions,
-} from './openGuniVaultConditions'
-import curry from 'ramda/src/curry'
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: Partial<OpenGuniVaultState> }
 
@@ -90,6 +96,7 @@ function applyOpenGuniVaultInjectedOverride(state: OpenGuniVaultState, change: O
       ...change.stateToOverride,
     }
   }
+
   return state
 }
 
@@ -301,7 +308,8 @@ export function createOpenGuniVault$(
               throw new Error('Missing tokens in configuration')
             }
 
-            const account = context.account
+            const { account } = context
+
             return combineLatest(
               priceInfo$(token),
               balanceInfo$(tokenInfo.token0, account),
@@ -441,6 +449,7 @@ export function createOpenGuniVault$(
                                 }
 
                                 const token1Amount = swap.collateralAmount
+
                                 return getGuniMintAmount$({
                                   token,
                                   amountOMax: token0Amount,
@@ -510,6 +519,7 @@ export function createOpenGuniVault$(
                           ...data,
                         }
                       }
+
                       return state
                     }
 

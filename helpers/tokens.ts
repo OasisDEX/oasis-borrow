@@ -23,5 +23,6 @@ export function calculateTokenPrecisionByValue({
   const tokenPricePerCent = tokenPricePerDollar.times(new Decimal(10).pow(-2))
 
   const magnitude = tokenPricePerCent.logarithm(ten).times(-1).floor()
+
   return magnitude.gt(tokenPrecision) ? tokenPrecision : magnitude.gt(0) ? magnitude.toNumber() : 0
 }

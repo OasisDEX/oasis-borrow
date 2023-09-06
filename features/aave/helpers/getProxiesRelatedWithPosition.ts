@@ -17,9 +17,7 @@ export function getProxiesRelatedWithPosition$(
 ): Observable<ProxiesRelatedWithPosition> {
   return iif(
     () => positionId.vaultId !== undefined,
-    dpmProxy$(positionId.vaultId!).pipe(
-      map((dpmProxy) => ({ dpmProxy: dpmProxy, dsProxy: undefined })),
-    ),
+    dpmProxy$(positionId.vaultId!).pipe(map((dpmProxy) => ({ dpmProxy, dsProxy: undefined }))),
     proxyAddress$(positionId.walletAddress!).pipe(
       map((proxyAddress) => ({
         dsProxy: proxyAddress,

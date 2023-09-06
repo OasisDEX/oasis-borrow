@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import {
   ChangeVariantType,
@@ -7,7 +8,6 @@ import {
 import { maxUint256 } from 'features/automation/common/consts'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface ContentCardTargetColRatioAfterBuyProps {
   targetColRatio?: BigNumber

@@ -1,10 +1,10 @@
+import React, { ReactNode } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { useConnection } from 'features/web3OnBoard'
 import { scrollTo } from 'helpers/scrollTo'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
 import { Button, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 
 export function Hero({

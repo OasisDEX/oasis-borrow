@@ -1,9 +1,11 @@
+import React from 'react'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { BenefitCard, BenefitCardsWrapper } from 'components/BenefitCard'
 import { useMainContext } from 'components/context'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
 import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveSomeQuestions'
+import { Hero } from 'features/homepage/common/Hero'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { useConnection } from 'features/web3OnBoard'
@@ -13,10 +15,7 @@ import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
-
-import { Hero } from './common/Hero'
 
 export const benefitCardsAnja = [
   {

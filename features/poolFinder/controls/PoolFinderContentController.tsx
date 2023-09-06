@@ -1,3 +1,5 @@
+import React, { FC, useMemo } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { NetworkIds } from 'blockchain/networks'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
@@ -8,8 +10,6 @@ import { parseRows } from 'features/poolFinder/helpers'
 import { OraclessPoolResult, PoolFinderFormState } from 'features/poolFinder/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import React, { FC, useMemo } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
 
 interface PoolFinderContentControllerProps {
   addresses: PoolFinderFormState

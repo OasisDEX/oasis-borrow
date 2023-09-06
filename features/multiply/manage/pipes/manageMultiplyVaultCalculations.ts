@@ -8,6 +8,7 @@ import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { ExchangeAction } from 'features/exchange/exchange'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { getMaxPossibleCollRatioOrMax } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
@@ -19,8 +20,6 @@ import {
 } from 'helpers/multiply/calculations'
 import { roundRatioToBeDivisibleByFive } from 'helpers/roundRatioToBeDivisibleByFive'
 import { one, zero } from 'helpers/zero'
-
-import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
 // This value ought to be coupled in relation to how much we round the raw debt
 // value in the vault (vault.debt)
@@ -292,6 +291,7 @@ function calculateAfterFreeCollateral({
   backingCollateral: BigNumber
 }) {
   const amount = lockedCollateral.minus(backingCollateral)
+
   return amount.gte(zero) ? amount : zero
 }
 
@@ -336,6 +336,7 @@ function calculateAfterIlkDebtAvailable({ ilkDebtAvailable }: Pick<IlkData, 'ilk
   if (ilkDebtAvailable.gt(zero)) {
     return ilkDebtAvailable.gte(zero) ? ilkDebtAvailable : zero
   }
+
   return zero
 }
 
@@ -412,6 +413,7 @@ export function calculateMultiply({
   if (lockedCollateralUSD.eq(zero)) {
     return zero
   }
+
   return lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
 }
 
@@ -464,7 +466,7 @@ export function getVaultChange({
       },
       // desired cdp state
       {
-        requiredCollRatio: requiredCollRatio,
+        requiredCollRatio,
         providedCollateral: depositAmount,
         providedDai: paybackAmount,
         withdrawDai: generateAmount,
@@ -824,7 +826,7 @@ export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState
       })
 
   const maxGenerateAmountAtCurrentPrice = calculateMaxGenerateAmount({
-    debt: debt,
+    debt,
     debtOffset,
     ilkDebtAvailable,
     liquidationRatio,
@@ -836,7 +838,7 @@ export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState
   })
 
   const maxGenerateAmountAtNextPrice = calculateMaxGenerateAmount({
-    debt: debt,
+    debt,
     debtOffset,
     ilkDebtAvailable,
     liquidationRatio,

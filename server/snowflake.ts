@@ -1,6 +1,5 @@
+import { config } from 'server/config'
 import snowflake from 'snowflake-sdk'
-
-import { config } from './config'
 
 export function getSnowflakeConnection(): snowflake.Connection {
   return snowflake.createConnection({

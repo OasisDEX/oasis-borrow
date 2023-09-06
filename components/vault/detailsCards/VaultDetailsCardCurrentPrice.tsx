@@ -1,3 +1,4 @@
+import React, { ReactNode } from 'react'
 import { AppLink } from 'components/Links'
 import {
   getPriceChangeColor,
@@ -9,7 +10,6 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
 import { Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export function VaultDetailsCardCurrentPriceModal({
@@ -18,6 +18,7 @@ export function VaultDetailsCardCurrentPriceModal({
   nextPriceWithChange,
 }: ModalProps<{ currentPrice: ReactNode; nextPriceWithChange: ReactNode }>) {
   const { t } = useTranslation()
+
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
@@ -86,7 +87,7 @@ export function VaultDetailsCardCurrentPrice({
 
   return (
     <VaultDetailsCard
-      title={`Current Price`}
+      title="Current Price"
       value={currentPrice}
       valueBottom={
         isStaticCollateralPrice ? null : (

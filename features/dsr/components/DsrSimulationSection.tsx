@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { DAY_BI } from 'components/constants'
 import { DetailsSection } from 'components/DetailsSection'
@@ -13,10 +14,10 @@ import { getRate } from 'features/dsr/helpers/dsrPot'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 function mapSimulation(simulation?: Simulation): string[] {
   if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]
+
   return [
     `${formatCryptoBalance(simulation.earningAfterFees)} DAI`,
     `${formatCryptoBalance(simulation.netValue)} DAI`,
@@ -61,20 +62,18 @@ export function DsrSimulationSection({
       <DetailsSection
         title={<SimulateTitle token="DAI" depositAmount={amount} />}
         content={
-          <>
-            <DetailsSectionContentTable
-              headers={[
-                t('dsr.simulation.header1'),
-                t('dsr.simulation.header2'),
-                t('dsr.simulation.header3'),
-              ]}
-              rows={[
-                [t('dsr.simulation.rowlabel1'), ...mapSimulation(simulation?.next30Days)],
-                [t('dsr.simulation.rowlabel2'), ...mapSimulation(simulation?.next90Days)],
-                [t('dsr.simulation.rowlabel3'), ...mapSimulation(simulation?.next1Year)],
-              ]}
-            />
-          </>
+          <DetailsSectionContentTable
+            headers={[
+              t('dsr.simulation.header1'),
+              t('dsr.simulation.header2'),
+              t('dsr.simulation.header3'),
+            ]}
+            rows={[
+              [t('dsr.simulation.rowlabel1'), ...mapSimulation(simulation?.next30Days)],
+              [t('dsr.simulation.rowlabel2'), ...mapSimulation(simulation?.next90Days)],
+              [t('dsr.simulation.rowlabel3'), ...mapSimulation(simulation?.next1Year)],
+            ]}
+          />
         }
         footer={
           <DetailsSectionFooterItemWrapper>

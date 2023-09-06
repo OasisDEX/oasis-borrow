@@ -15,6 +15,7 @@ export const useAsyncEffect = (
 
   useEffect(() => {
     isMounted.current = true
+
     return () => {
       isMounted.current = false
     }
@@ -32,6 +33,7 @@ export const useAsyncEffect = (
       setIsLoading(true)
       try {
         const result = await mountCallback()
+
         mountSucceeded = true
         if (isMounted.current && !ignore) {
           setError(undefined)

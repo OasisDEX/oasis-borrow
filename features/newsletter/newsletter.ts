@@ -1,10 +1,9 @@
+import { newsletterApi$, NewsletterResponseMessage } from 'features/newsletter/newsletterApi'
 import { EMAIL_REGEX } from 'helpers/constants'
 import { applyChange, Change, Changes } from 'helpers/form'
 import { curry } from 'lodash'
 import { merge, Observable, Subject } from 'rxjs'
 import { map, scan, shareReplay, startWith } from 'rxjs/operators'
-
-import { newsletterApi$, NewsletterResponseMessage } from './newsletterApi'
 
 export type NewsletterStage = 'editing' | 'inProgress' | 'success' | 'error'
 
@@ -83,6 +82,7 @@ function validate(state: NewsletterState): NewsletterState {
 
 export function createNewsletter$(): Observable<NewsletterState> {
   const change$ = new Subject<NewsletterChange>()
+
   function change(ch: NewsletterChange) {
     change$.next(ch)
   }

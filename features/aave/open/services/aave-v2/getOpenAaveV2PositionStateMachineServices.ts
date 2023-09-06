@@ -55,10 +55,12 @@ export function getOpenAaveV2PositionStateMachineServices(
   ) => Observable<AaveLikeReserveConfigurationData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
+
   return {
     runEthersTransaction: (context) => async (sendBack, _onReceive) => {
-      const networkId = context.strategyConfig.networkId
+      const { networkId } = context.strategyConfig
       const contracts = getNetworkContracts(networkId)
+
       ensureEtherscanExist(networkId, contracts)
 
       const { etherscan } = contracts
@@ -104,6 +106,7 @@ export function getOpenAaveV2PositionStateMachineServices(
             debt: balances[context.tokens.debt],
             deposit: balances[context.tokens.deposit],
           }
+
           return strategyBalance
         }),
         map((balances) => ({
@@ -189,7 +192,7 @@ export function getOpenAaveV2PositionStateMachineServices(
         ),
         map((allowance) => ({
           type: 'UPDATE_ALLOWANCE',
-          allowance: allowance,
+          allowance,
         })),
         distinctUntilChanged(isEqual),
       )

@@ -1,11 +1,10 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import React, { ReactNode } from 'react'
-import { Flex, Heading } from 'theme-ui'
-
+import { Icon } from '@makerdao/dai-ui-icons'
 import {
   SidebarSectionHeaderSelect,
   SidebarSectionHeaderSelectItem,
-} from './SidebarSectionHeaderSelect'
+} from 'components/sidebar/SidebarSectionHeaderSelect'
+import { Flex, Heading } from 'theme-ui'
 
 export interface SidebarSectionHeaderButton {
   label: string

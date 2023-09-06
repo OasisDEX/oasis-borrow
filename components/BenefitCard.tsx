@@ -1,8 +1,8 @@
+import React, { PropsWithChildren } from 'react'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
-import React, { PropsWithChildren } from 'react'
-import { Box, Card, Flex, Grid, Image, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
+import { Box, Card, Flex, Grid, Image, Text } from 'theme-ui'
 
 export function BenefitCardsWrapper({ children }: PropsWithChildren<{}>) {
   return (

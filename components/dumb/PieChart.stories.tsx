@@ -1,8 +1,7 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { tokens } from 'blockchain/tokensMetadata'
-import React from 'react'
-
-import { PieChart } from './PieChart'
+import { PieChart } from 'components/dumb/PieChart'
 
 // eslint-disable-next-line import/no-default-export
 export default {

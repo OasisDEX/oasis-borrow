@@ -3,7 +3,7 @@ import {
   FT_LOCAL_STORAGE_KEY,
   loadFeatureToggles,
   useFeatureToggle,
-} from './useFeatureToggle'
+} from 'helpers/useFeatureToggle'
 
 describe('useFeatureEnabled', () => {
   describe('loading feature toggles', () => {

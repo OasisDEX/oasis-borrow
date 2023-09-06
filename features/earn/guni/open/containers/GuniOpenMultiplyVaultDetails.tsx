@@ -1,3 +1,4 @@
+import React from 'react'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { GasPriceParams } from 'blockchain/prices'
@@ -6,6 +7,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
+import { GuniVaultDetailsTitle } from 'features/earn/guni/open/containers/GuniVaultDetailsTitle'
 import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
 import {
   calculateBreakeven,
@@ -18,10 +20,7 @@ import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box } from 'theme-ui'
-
-import { GuniVaultDetailsTitle } from './GuniVaultDetailsTitle'
 
 const examplePosition = {
   usdcSwapAmount: new BigNumber(3_750_000),
@@ -55,7 +54,7 @@ function calculateEntryFees(
 export function GuniOpenMultiplyVaultDetails(
   props: OpenGuniVaultState & GasPriceParams & { ETH: BigNumber; DAI: BigNumber } & Yield,
 ) {
-  const setHash = useHash()[1]
+  const [, setHash] = useHash()
   const { t } = useTranslation()
   const { token, yields } = props
 
@@ -77,10 +76,11 @@ export function GuniOpenMultiplyVaultDetails(
   )
 
   const useApy30ForBreakeven = apy30?.gt(zero)
+
   if (depositAmount.gt(zero) && (apy30.gt(zero) || apy7.gt(zero))) {
     breakeven = calculateBreakeven({
       depositAmount,
-      entryFees: entryFees,
+      entryFees,
       apy: useApy30ForBreakeven ? apy30 : apy7,
     })
   }
@@ -125,30 +125,28 @@ export function GuniOpenMultiplyVaultDetails(
       <DetailsSection
         title={<GuniVaultDetailsTitle token={token} depositAmount={depositAmount} />}
         content={
-          <>
-            <DetailsSectionContentTable
-              headers={[
-                t('earn-vault.simulate.header1'),
-                t('earn-vault.simulate.header2'),
-                t('earn-vault.simulate.header3'),
-              ]}
-              rows={contentRowData}
-              footnote={
-                <>
-                  {t('earn-vault.simulate.footnote1')}
-                  <br />
-                  {t('earn-vault.simulate.footnote2')}
-                </>
-              }
-            />
-          </>
+          <DetailsSectionContentTable
+            headers={[
+              t('earn-vault.simulate.header1'),
+              t('earn-vault.simulate.header2'),
+              t('earn-vault.simulate.header3'),
+            ]}
+            rows={contentRowData}
+            footnote={
+              <>
+                {t('earn-vault.simulate.footnote1')}
+                <br />
+                {t('earn-vault.simulate.footnote2')}
+              </>
+            }
+          />
         }
         footer={
           <DetailsSectionFooterItemWrapper>
             <ContentFooterItemsEarnSimulate
-              token={`DAI`}
+              token="DAI"
               breakeven={breakeven}
-              breakevenAnnotation={`**`}
+              breakevenAnnotation="**"
               entryFees={entryFees}
               apy={apy7.times(100)}
             />

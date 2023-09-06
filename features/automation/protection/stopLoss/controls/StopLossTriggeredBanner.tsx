@@ -1,9 +1,9 @@
+import React from 'react'
 import { bannerGradientPresets } from 'components/Banner'
 import { AppLink } from 'components/Links'
 import { AutomationTriggeredBannerControl } from 'features/automation/common/controls/AutomationTriggeredBannerControl'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface StopLossTriggeredBannerProps {
   descriptionKey?: string

@@ -4,6 +4,7 @@ interface ReductoPartialUpdateAction<S> {
   type: 'partial-update'
   state: Partial<S>
 }
+
 export type ReductoActions<S, A> = ReductoPartialUpdateAction<S> | A
 
 interface ReductoProps<S, R> {

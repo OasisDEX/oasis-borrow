@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -34,7 +35,6 @@ import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
 interface SetDownsideProtectionInformationProps {
@@ -120,7 +120,7 @@ export function SidebarAdjustStopLossEditingStage({
         CommonAnalyticsSections.Form,
         {
           vaultId: !id.isZero() ? id.toString() : 'n/a',
-          ilk: ilk,
+          ilk,
           collateralRatio: positionRatio.times(100).decimalPlaces(2).toString(),
           triggerValue: value,
         },
@@ -174,7 +174,7 @@ export function SidebarAdjustStopLossEditingStage({
                   CommonAnalyticsSections.Form,
                   {
                     vaultId: !id.isZero() ? id.toString() : 'n/a',
-                    ilk: ilk,
+                    ilk,
                     closeTo: optionName as CloseVaultTo,
                   },
                 )
@@ -195,7 +195,7 @@ export function SidebarAdjustStopLossEditingStage({
             step={sliderStep}
             leftBoundryFormatter={(x: BigNumber) => (x.isZero() ? '-' : formatPercent(x))}
             rightBoundryFormatter={(x: BigNumber) =>
-              x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD')
+              x.isZero() ? '-' : `$ ${formatAmount(x, 'USD')}`
             }
             sliderPercentageFill={sliderPercentageFill}
             lastValue={stopLossState.stopLossLevel}

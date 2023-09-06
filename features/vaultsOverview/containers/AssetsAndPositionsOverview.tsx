@@ -1,3 +1,5 @@
+import React, { useState } from 'react'
+import ReactDOM from 'react-dom'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
 import BigNumber from 'bignumber.js'
@@ -21,10 +23,8 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
-import { Box, Card, Flex, Grid, Heading, Image, Link, SxStyleProp, Text } from 'theme-ui'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
+import { Box, Card, Flex, Grid, Heading, Image, Link, SxStyleProp, Text } from 'theme-ui'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'
@@ -69,7 +69,7 @@ function AssetRow(props: PositionView) {
             ml: '8px',
           }}
         >
-          {`No price data`}
+          No price data
         </Text>
       </Flex>
     )
@@ -156,6 +156,7 @@ function LinkedRow(props: PositionView) {
       <Box
         onClick={(event) => {
           const rect = event.currentTarget.getBoundingClientRect()
+
           setMenuPosition({
             right: `${window.innerWidth - rect.right - 20}px`,
             top: `${window.scrollY + rect.top}px`,
@@ -214,12 +215,9 @@ function MenuRow(props: AssetAction & { close: () => void }) {
   }
 }
 
-function Menu(props: {
-  close: () => void
-  sx?: SystemStyleObject
-  assetActions: Array<AssetAction>
-}) {
+function Menu(props: { close: () => void; sx?: SystemStyleObject; assetActions: AssetAction[] }) {
   const componentRef = useOutsideElementClickHandler(props.close)
+
   return (
     <Card
       ref={componentRef}
@@ -245,6 +243,7 @@ function Menu(props: {
 
 function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
   const { t } = useTranslation()
+
   return (
     <Box sx={{ mr: [0, '96px'] }}>
       <Text
@@ -261,7 +260,7 @@ function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
           components={[
             <AppLink
               href={EXTERNAL_LINKS.KB.CURATED_TOKEN_LIST}
-              internalInNewTab={true}
+              internalInNewTab
               sx={{ fontWeight: 'regular', fontSize: 3 }}
             />,
           ]}

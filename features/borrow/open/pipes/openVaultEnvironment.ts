@@ -1,8 +1,7 @@
 import { IlkDataChange } from 'blockchain/ilks'
+import { OpenVaultChange, OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { BalanceInfoChange } from 'features/shared/balanceInfo'
 import { PriceInfoChange } from 'features/shared/priceInfo'
-
-import { OpenVaultChange, OpenVaultState } from './openVault'
 
 export type OpenVaultEnvironmentChange = PriceInfoChange | BalanceInfoChange | IlkDataChange
 

@@ -3,8 +3,7 @@ import BigNumber from 'bignumber.js'
 import { AaveV2UserReserveData } from 'blockchain/aave'
 import { AaveV3UserReserveData } from 'blockchain/aave-v3'
 import { SparkV3UserReserveData } from 'blockchain/spark-v3'
-
-import { AaveLikeUserAccountData } from './aave-like-user-account-data'
+import { AaveLikeUserAccountData } from 'lendingProtocols/aave-like-common/aave-like-user-account-data'
 
 type ConfigurationData = string[]
 

@@ -1,3 +1,4 @@
+import React from 'react'
 import { NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { DeferedContextProvider, ProductContextHandler } from 'components/context'
@@ -10,9 +11,8 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
-import React from 'react'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -22,14 +22,15 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const protocol = `spark${version.toLowerCase()}`
 
   const [supported] = isSupportedStrategy(networkOrProduct, protocol, product, strategy)
+
   if (supported) {
     return {
       props: {
         ...(await serverSideTranslations(ctx.locale!, ['common'])),
         network: networkOrProduct,
-        protocol: protocol,
-        product: product,
-        strategy: strategy,
+        protocol,
+        product,
+        strategy,
       },
     }
   }
@@ -56,6 +57,7 @@ function OpenPosition({
   const { replace } = useRouter()
 
   const [supported, definedStrategy] = isSupportedStrategy(network, protocol, product, strategy)
+
   if (!supported) {
     return void replace(INTERNAL_LINKS.notFound)
   }
@@ -78,4 +80,5 @@ function OpenPosition({
 }
 
 OpenPosition.layout = AppLayout
+
 export default OpenPosition

@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { AppLink } from 'components/Links'
@@ -8,7 +9,6 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
 const KbLink = (
@@ -31,10 +31,12 @@ export function VaultErrors({
   autoType,
 }: VaultErrorsProps) {
   const { t } = useTranslation()
+
   if (!errorMessages.length) return null
 
   function applyErrorMessageTranslation(message: VaultErrorMessage) {
     const translate = (key: string, args?: Dictionary<any>) => t(`vault-errors.${key}`, args || {})
+
     switch (message) {
       case 'depositAmountExceedsCollateralBalance':
         return translate('deposit-amount-exceeds-collateral-balance')
@@ -77,12 +79,12 @@ export function VaultErrors({
       case 'withdrawAmountExceedsFreeCollateral':
         return translate('withdraw-amount-exceeds-free-collateral', {
           maxWithdrawAmount: formatCryptoBalance(maxWithdrawAmount),
-          token: token,
+          token,
         })
       case 'withdrawAmountExceedsFreeCollateralAtNextPrice':
         return translate('withdraw-amount-exceeds-free-collateral-at-next-price', {
           maxWithdrawAmount: formatCryptoBalance(maxWithdrawAmount),
-          token: token,
+          token,
         })
       case 'generateAmountExceedsDaiYieldFromTotalCollateral':
         return translate('generate-amount-exceeds-dai-yield-from-total-collateral')
@@ -185,9 +187,9 @@ export function VaultErrors({
     }
   }
 
-  const messages = errorMessages.reduce(
+  const messages = errorMessages.reduce<(string | JSX.Element)[]>(
     (acc, message) => [...acc, applyErrorMessageTranslation(message)],
-    [] as (string | JSX.Element)[],
+    [],
   )
 
   return <MessageCard {...{ messages, type: 'error', withBullet: messages.length > 1 }} />

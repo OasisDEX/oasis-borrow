@@ -1,12 +1,11 @@
 import { NetworkNames } from 'blockchain/networks'
+import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
+import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { PositionCreated } from 'features/aave/services'
 import { PositionId } from 'features/aave/types/position-id'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
 import { Observable, of } from 'rxjs'
-
-import { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
-import { getStrategyConfig$ } from './getStrategyConfig'
 
 describe('getStrategyConfig', () => {
   const proxiesForPosition$ = jest.fn<Observable<ProxiesRelatedWithPosition>, [PositionId]>()

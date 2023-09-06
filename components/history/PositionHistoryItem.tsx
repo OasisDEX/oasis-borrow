@@ -1,3 +1,4 @@
+import React, { FC, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { NetworkIds } from 'blockchain/networks'
 import { DefinitionListItem } from 'components/DefinitionList'
@@ -7,7 +8,6 @@ import { WithArrow } from 'components/WithArrow'
 import { AaveHistoryEvent, AjnaBorrowerEvent, AjnaHistoryEvent } from 'features/ajna/history/types'
 import { getHistoryEventLabel } from 'features/positionHistory/getHistoryEventLabel'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
 interface PositionHistoryItemProps {

@@ -1,14 +1,18 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import {
+  maxUint256,
+  tokenAllowance,
+  tokenBalance,
+  tokenBalanceFromAddress,
+} from 'blockchain/calls/erc20'
+import { CallObservable } from 'blockchain/calls/observe'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networks'
+import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
 import { bindNodeCallback, combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
-
-import { maxUint256, tokenAllowance, tokenBalance, tokenBalanceFromAddress } from './calls/erc20'
-import { CallObservable } from './calls/observe'
-import { Context } from './network'
-import { NetworkIds } from './networks'
-import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 export function createBalance$(
   updateInterval$: Observable<any>,
@@ -27,6 +31,7 @@ export function createBalance$(
           shareReplay(1),
         )
       }
+
       return tokenBalance$({ token, account: address })
     }),
   )
@@ -52,6 +57,7 @@ export function createBalanceFromAddress$(
           shareReplay(1),
         )
       }
+
       return tokenBalanceFromAddress$({ ...token, account: address })
     }),
   )
@@ -75,7 +81,7 @@ export function createAaveCollateralTokens$(context$: Observable<Context>): Obse
   )
 }
 
-export type TokenBalances = Record<string, { balance: BigNumber; price: BigNumber }>
+export type TokenBalances = { [key: string]: { balance: BigNumber; price: BigNumber } }
 
 export function createAccountBalance$(
   tokenBalance$: (token: string, address: string) => Observable<BigNumber>,
@@ -117,6 +123,7 @@ export function createAllowance$(
   return context$.pipe(
     switchMap(() => {
       if (token === 'ETH') return of(maxUint256)
+
       return tokenAllowance$({ token, owner, spender })
     }),
   )

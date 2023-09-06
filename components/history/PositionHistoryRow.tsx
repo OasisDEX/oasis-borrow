@@ -1,5 +1,5 @@
-import { DefinitionListItem } from 'components/DefinitionList'
 import React, { FC } from 'react'
+import { DefinitionListItem } from 'components/DefinitionList'
 import { Text } from 'theme-ui'
 
 interface PositionHistoryRowProps {

@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNotificationSocket } from 'components/context'
 import { NotificationPreferenceCard } from 'components/notifications/NotificationPreferenceCard'
 import { NotificationsChangeEmailButton } from 'components/notifications/NotificationsChangeEmailButton'
@@ -9,7 +10,6 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import { validateEmail } from 'helpers/formValidation'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box, Button, Flex, Input, Text } from 'theme-ui'
 
 interface NotificationsEmailPreferencesProps {

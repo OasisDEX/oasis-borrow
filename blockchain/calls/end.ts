@@ -1,8 +1,7 @@
+import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { McdEnd } from 'types/web3-v1-contracts'
-
-import { CallDef } from './callsHelpers'
 
 export const endLive: CallDef<void, boolean> = {
   call: (_, { contract, chainId }) =>

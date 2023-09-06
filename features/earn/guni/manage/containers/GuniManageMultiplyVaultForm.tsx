@@ -1,3 +1,4 @@
+import React from 'react'
 import { ManageMultiplyVaultButton } from 'components/vault/commonMultiply/ManageMultiplyVaultButton'
 import {
   ManageMultiplyVaultConfirmation,
@@ -11,13 +12,11 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { GuniManageMultiplyVaultChangesInformation } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultChangesInformation'
+import { GuniManageMultiplyVaultEditing } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultEditing'
+import { GuniManageMultiplyVaultFormHeader } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultFormHeader'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
-import React from 'react'
-
-import { GuniManageMultiplyVaultChangesInformation } from './GuniManageMultiplyVaultChangesInformation'
-import { GuniManageMultiplyVaultEditing } from './GuniManageMultiplyVaultEditing'
-import { GuniManageMultiplyVaultFormHeader } from './GuniManageMultiplyVaultFormHeader'
 
 export function GuniManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   const {
@@ -43,6 +42,7 @@ export function GuniManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
       (!accountIsController &&
         stage !== 'adjustPosition' &&
         (otherAction === 'depositCollateral' || otherAction === 'paybackDai')))
+
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
       <GuniManageMultiplyVaultFormHeader {...props} />
@@ -72,7 +72,7 @@ export function GuniManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
         />
       )}
       {isDaiAllowanceStage && (
-        <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token={'DAI'} />
+        <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token="DAI" />
       )}
       {isManageStage && <ManageMultiplyVaultConfirmationStatus {...props} />}
     </VaultFormContainer>

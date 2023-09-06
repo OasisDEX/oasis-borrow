@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import * as accountImplementation from 'blockchain/abi/account-implementation.json'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
@@ -12,8 +13,6 @@ import {
   AutomationBotV2,
   DsProxy,
 } from 'types/web3-v1-contracts'
-
-import { TxMetaKind } from './txMeta'
 
 export type AutomationBaseTriggerData = {
   cdpId: BigNumber
@@ -51,6 +50,7 @@ function getAddAutomationTriggerCallData(
   context: ContextConnected,
 ) {
   const { contract, chainId } = context
+
   return contract<AutomationBot>(
     getNetworkContracts(NetworkIds.MAINNET, chainId).automationBot,
   ).methods.addTrigger(
@@ -103,7 +103,7 @@ export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData
 export const addAutomationBotTriggerV2: TransactionDef<AutomationBotV2AddTriggerData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, proxyAddress))
-      .methods['execute']
+      .methods.execute
   },
   prepareArgs: (data, context) => [
     getNetworkContracts(NetworkIds.MAINNET, context.chainId).automationBotV2.address,
@@ -114,7 +114,7 @@ export const addAutomationBotTriggerV2: TransactionDef<AutomationBotV2AddTrigger
 export const removeAutomationBotTriggerV2: TransactionDef<AutomationBotV2RemoveTriggerData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, proxyAddress))
-      .methods['execute']
+      .methods.execute
   },
   prepareArgs: (data, context) => [
     getNetworkContracts(NetworkIds.MAINNET, context.chainId).automationBotV2.address,

@@ -60,6 +60,7 @@ export function applyManageVaultAllowance<VaultState extends ManageStandardBorro
 ): VaultState {
   if (change.kind === 'collateralAllowance') {
     const { collateralAllowanceAmount } = change
+
     return {
       ...state,
       collateralAllowanceAmount,
@@ -68,6 +69,7 @@ export function applyManageVaultAllowance<VaultState extends ManageStandardBorro
 
   if (change.kind === 'collateralAllowanceAsDepositAmount') {
     const { depositAmount } = state
+
     return {
       ...state,
       selectedCollateralAllowanceRadio: 'depositAmount',
@@ -93,6 +95,7 @@ export function applyManageVaultAllowance<VaultState extends ManageStandardBorro
 
   if (change.kind === 'daiAllowance') {
     const { daiAllowanceAmount } = change
+
     return {
       ...state,
       daiAllowanceAmount,
@@ -104,6 +107,7 @@ export function applyManageVaultAllowance<VaultState extends ManageStandardBorro
       paybackAmount,
       vault: { debtOffset },
     } = state
+
     return {
       ...state,
       selectedDaiAllowanceRadio: 'actionAmount',

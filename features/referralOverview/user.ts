@@ -34,9 +34,11 @@ export interface UserReferralState {
   performClaimMultiple?: () => void
 }
 const trigger$ = new Subject<void>()
+
 function trigger() {
   trigger$.next()
 }
+
 export function createUserReferral$(
   web3Context$: Observable<Web3Context>,
   txHelpers$: Observable<TxHelpers>,
@@ -67,13 +69,14 @@ export function createUserReferral$(
           // newUser gets referrer address from local storage, currentUser from the db
           if (!user && referrer) {
             const referrerAddress = referrer.slice(1, -1)
+
             // Check if referrer exists in the database
             return getUserFromApi$(referrerAddress, trigger$).pipe(
               switchMap((referrerEntity) => {
                 return of({
                   state: 'newUser',
                   referrer: referrerEntity ? referrerAddress : null,
-                  trigger: trigger,
+                  trigger,
                 })
               }),
             )
@@ -81,7 +84,7 @@ export function createUserReferral$(
             return of({
               state: 'newUser',
               referrer: null,
-              trigger: trigger,
+              trigger,
             })
           }
 
@@ -161,7 +164,7 @@ export function createUserReferral$(
               user,
               referrer: user.user_that_referred_address,
               referrals: referralsOut,
-              trigger: trigger,
+              trigger,
               invitePending: user.user_that_referred_address && !user.accepted,
               claims: claimsOut.amounts && claimsOut.amounts.length > 0,
               performClaimMultiple: claimAllFunction,

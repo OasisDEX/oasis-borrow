@@ -15,6 +15,14 @@ import {
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
+import { allActionsAvailableBorrow } from 'features/aave/strategies/all-actions-available-borrow'
+import { allActionsAvailableInMultiply } from 'features/aave/strategies/all-actions-available-in-multiply'
+import {
+  hasBorrowProductType,
+  hasEarnProductType,
+  hasMultiplyProductType,
+  TokenPairConfig,
+} from 'features/aave/strategies/common'
 import {
   IStrategyConfig,
   ManagePositionAvailableActions,
@@ -27,15 +35,6 @@ import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
-
-import { allActionsAvailableBorrow } from './all-actions-available-borrow'
-import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
-import {
-  hasBorrowProductType,
-  hasEarnProductType,
-  hasMultiplyProductType,
-  TokenPairConfig,
-} from './common'
 
 const availableTokenPairs: TokenPairConfig[] = [
   {
@@ -578,9 +577,11 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
                 featureToggle === undefined || getFeatureToggle(featureToggle)
+
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
+
         return [...allActionsAvailableBorrow, ...additionalAction]
       },
       executeTransactionWith: 'ethers' as const,
@@ -625,9 +626,11 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
                 featureToggle === undefined || getFeatureToggle(featureToggle)
+
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
+
         return [...allActionsAvailableInMultiply, ...additionalAction]
       },
       executeTransactionWith: 'ethers',
@@ -674,9 +677,11 @@ const sdaiEarnStrategies: IStrategyConfig[] = availableTokenPairs
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
                 featureToggle === undefined || getFeatureToggle(featureToggle)
+
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
+
         return [...allActionsAvailableInMultiply, ...additionalAction]
       },
       executeTransactionWith: 'ethers',
@@ -722,6 +727,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
       const additionalActions: ManagePositionAvailableActions[] = isBorrowEnabled
         ? ['switch-to-borrow']
         : []
+
       return [...allActionsAvailableInMultiply, ...additionalActions]
     },
     defaultSlippage: new BigNumber(0.001),
@@ -762,6 +768,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
       const additionalActions: ManagePositionAvailableActions[] = isBorrowEnabled
         ? ['switch-to-borrow']
         : []
+
       return [...allActionsAvailableInMultiply, ...additionalActions]
     },
     defaultSlippage: new BigNumber(0.001),
@@ -802,6 +809,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
       const additionalActions: ManagePositionAvailableActions[] = isBorrowEnabled
         ? ['switch-to-borrow']
         : []
+
       return [...allActionsAvailableInMultiply, ...additionalActions]
     },
     defaultSlippage: new BigNumber(0.001),

@@ -1,3 +1,4 @@
+import React from 'react'
 import { AutomationEventIds, Pages } from 'analytics/analytics'
 import { useAutomationContext } from 'components/context'
 import { CloseVaultToEnum } from 'features/automation/common/consts'
@@ -13,7 +14,6 @@ import { getAutoTakeProfitStatus } from 'features/automation/optimization/autoTa
 import { getAutoTakeProfitTxHandlers } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTxHandlers'
 import { TxHelpers } from 'helpers/context/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React from 'react'
 
 interface AutoTakeProfitFormControlProps {
   isAutoTakeProfitActive: boolean

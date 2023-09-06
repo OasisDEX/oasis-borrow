@@ -1,3 +1,4 @@
+import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
@@ -29,6 +30,7 @@ import {
   Vault,
   VaultWithType,
 } from 'blockchain/vaults'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers'
 import {
   createProxyConsumed$,
@@ -53,12 +55,9 @@ import { DepreciatedServices } from 'helpers/context/types'
 import { ilkUrnAddressToString } from 'helpers/ilkUrnAddressToString'
 import { WithChildren } from 'helpers/types'
 import { memoize } from 'lodash'
-import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
+import curry from 'ramda/src/curry'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
-
-import { useMainContext } from './MainContextProvider'
-import curry from 'ramda/src/curry'
 
 export const accountContext = React.createContext<AccountContext | undefined>(undefined)
 
@@ -68,9 +67,11 @@ export function isAccountContextAvailable(): boolean {
 
 export function useAccountContext(): AccountContext {
   const ac = useContext(accountContext)
+
   if (!ac) {
     throw new Error("AccountContext not available! useAccountContext can't be used serverside")
   }
+
   return ac
 }
 

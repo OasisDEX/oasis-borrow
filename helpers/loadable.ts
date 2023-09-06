@@ -18,6 +18,7 @@ export function loadablifyLight<T>(
     startWith({ status: 'loading' } as Loadable<T>),
     catchError((error, source) => {
       console.log(error)
+
       return concat(of({ error, status: 'error' }), onEveryBlock$.pipe(skip(1), first()), source)
     }),
   )

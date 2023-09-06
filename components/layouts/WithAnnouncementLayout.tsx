@@ -1,11 +1,10 @@
+import React, { Ref } from 'react'
 import { Announcement } from 'components/Announcement'
+import { BasicLayoutProps } from 'components/layouts/BasicLayout'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useCoolMode } from 'helpers/sweet/useCoolMode'
-import React, { Ref } from 'react'
-import { Container, Flex } from 'theme-ui'
 import { Background } from 'theme/Background'
-
-import { BasicLayoutProps } from './BasicLayout'
+import { Container, Flex } from 'theme-ui'
 
 interface WithAnnouncementLayoutProps extends BasicLayoutProps {
   showAnnouncement: boolean

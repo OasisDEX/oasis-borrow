@@ -15,6 +15,7 @@ import {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
 } from 'handlers/product-hub/types'
+import { makerProductHubProducts } from 'handlers/product-hub/update-handlers/maker/makerProducts'
 import { one, zero } from 'helpers/zero'
 import {
   McdJug__factory,
@@ -23,8 +24,6 @@ import {
   Vat__factory,
 } from 'types/ethers-contracts'
 import Web3 from 'web3'
-
-import { makerProductHubProducts } from './makerProducts'
 
 const VatFactory = Vat__factory
 const JugFactory = McdJug__factory
@@ -52,16 +51,21 @@ async function getMakerData(
   const PotContract = PotFactory.connect(PotContractAddress, rpcProvider)
   const daiPrice = new BigNumber(getTokenPrice('DAI', tickers))
 
-  const ilksListWithHexValues = makerProductHubProducts.reduce((acc, product) => {
-    const ilk = getIlk(product.label)
-    return {
-      ...acc,
-      [ilk]: Web3.utils.padRight(Web3.utils.stringToHex(ilk), 64),
-    }
-  }, {} as { [key: string]: string })
+  const ilksListWithHexValues = makerProductHubProducts.reduce<{ [key: string]: string }>(
+    (acc, product) => {
+      const ilk = getIlk(product.label)
+
+      return {
+        ...acc,
+        [ilk]: Web3.utils.padRight(Web3.utils.stringToHex(ilk), 64),
+      }
+    },
+    {},
+  )
 
   const vatIlkPromises = Object.keys(ilksListWithHexValues).map(async (ilk) => {
     const vatIlkData = await VatContract.ilks(ilksListWithHexValues[ilk])
+
     return {
       [ilk]: {
         liquidityAvailable: BigNumber.max(
@@ -81,8 +85,10 @@ async function getMakerData(
   const jugIlkPromises = Object.keys(ilksListWithHexValues).map(async (ilk) => {
     const jugIlkData = await JugContract.ilks(ilksListWithHexValues[ilk])
     const fee = new BigNumber(bigNumberify(jugIlkData[0])).dividedBy(RAY)
+
     BigNumber.config({ POW_PRECISION: 100 })
     const stabilityFee = fee.pow(SECONDS_PER_YEAR).minus(1)
+
     return {
       [ilk]: {
         fee: stabilityFee,
@@ -93,6 +99,7 @@ async function getMakerData(
   const spotIlkPromises = Object.keys(ilksListWithHexValues).map(async (ilk) => {
     const spotIlkData = await SpotContract.ilks(ilksListWithHexValues[ilk])
     const maxMultiple = one.plus(one.div(amountFromRay(bigNumberify(spotIlkData.mat)).minus(one)))
+
     return {
       [ilk]: {
         maxMultiple,

@@ -1,6 +1,6 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Icon } from '@makerdao/dai-ui-icons'
 import { Text } from 'theme-ui'
 
 export function AjnaBorrowFormContentTransition() {

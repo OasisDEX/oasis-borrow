@@ -24,6 +24,7 @@ export function pluginDevModeHelpers(
               if (!proxyAddress) {
                 return of()
               }
+
               return txHelpers$.pipe(
                 switchMap(({ sendWithGasEstimation }) => {
                   return sendWithGasEstimation(setProxyOwner, {
@@ -47,6 +48,7 @@ export function pluginDevModeHelpers(
               if (!proxyAddress) {
                 return of()
               }
+
               return txHelpers$.pipe(
                 switchMap(({ sendWithGasEstimation }) => {
                   return sendWithGasEstimation(disapprove, {
@@ -79,6 +81,7 @@ export function pluginDevModeHelpers(
           if (quote.status !== 'SUCCESS') {
             return of()
           }
+
           return txHelpers$.pipe(
             switchMap(({ send }) => {
               return send(

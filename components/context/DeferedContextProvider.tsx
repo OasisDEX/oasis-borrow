@@ -1,6 +1,6 @@
+import React, { useContext } from 'react'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { WithChildren } from 'helpers/types'
-import React, { useContext } from 'react'
 
 // usable in situations where ProductContext and other context is rendered simultanously:
 //  <AaveContextProvider>

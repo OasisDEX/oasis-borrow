@@ -1,12 +1,11 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { AutoSellInfoSectionControl } from 'features/automation/protection/autoSell/sidebars/AutoSellInfoSectionControl'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Text } from 'theme-ui'
-
-import { AutoSellInfoSectionControl } from './AutoSellInfoSectionControl'
 
 interface SidebarAutoSellAwaitingConfirmationProps {
   vault: Vault

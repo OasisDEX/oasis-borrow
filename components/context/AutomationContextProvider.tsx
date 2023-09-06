@@ -1,3 +1,4 @@
+import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -42,7 +43,6 @@ import { useStopLossStateInitialization } from 'features/automation/protection/s
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
-import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 
 export interface AutomationEnvironmentData {
   canInteract: boolean
@@ -122,11 +122,13 @@ export const automationContext = React.createContext<AutomationContext | undefin
 
 export function useAutomationContext(): AutomationContext {
   const ac = useContext(automationContext)
+
   if (!ac) {
     throw new Error(
       "AutomationContext not available! useAutomationContext can't be used serverside",
     )
   }
+
   return ac
 }
 
@@ -159,7 +161,7 @@ export function AutomationContextProvider({
       canInteract: context.status === 'connected' && context.account === controller,
       ethBalance,
       etherscanUrl: getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan.url,
-      ethMarketPrice: ethAndTokenPricesData['ETH'],
+      ethMarketPrice: ethAndTokenPricesData.ETH,
       nextCollateralPrice,
       tokenMarketPrice: tokenPriceResolved,
       chainId:
@@ -170,7 +172,7 @@ export function AutomationContextProvider({
     [
       context.status,
       context.chainId,
-      ethAndTokenPricesData['ETH'].toString(),
+      ethAndTokenPricesData.ETH.toString(),
       tokenPriceResolved.toString(),
       ethBalance.toString(),
       controller,
@@ -284,6 +286,7 @@ export function AutomationContextProvider({
         ),
       },
     }
+
     setAutoContext((prev) => ({
       ...prev,
       ...update,

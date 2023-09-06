@@ -1,7 +1,7 @@
+/* eslint-disable camelcase */
 import { FTPolar } from 'helpers/fonts'
-
-import { fadeInAnimation } from './animations'
-import { icons } from './icons'
+import { fadeInAnimation } from 'theme/animations'
+import { icons } from 'theme/icons'
 
 // Duplication from theme as exporting const from package library is breaking dai-ui website and theme-ui doesn't support yet transitions tokens :(
 // To refactor if they will include this support
@@ -962,7 +962,7 @@ export const oasisBaseTheme = {
       border: '1px solid #D1DEE6',
       p: 0,
       ':focus-within': {
-        //indicate that input is focused
+        // indicate that input is focused
       },
     },
     plain: {

@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
+import { getTotalValueLocked$ } from 'blockchain/collateral'
+import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of, throwError } from 'rxjs'
-
-import { getTotalValueLocked$ } from './collateral'
-import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 describe('getTotalValueLocked$', () => {
   it('should return collateral times current price from oracle', () => {
@@ -15,6 +14,7 @@ describe('getTotalValueLocked$', () => {
           collateral: new BigNumber(3),
         })
       }
+
       return throwError(new Error('Not found'))
     }
     function mockOraclePriceData$({ token }: OraclePriceDataArgs): Observable<OraclePriceData> {
@@ -23,6 +23,7 @@ describe('getTotalValueLocked$', () => {
           currentPrice: new BigNumber(2),
         } as OraclePriceData)
       }
+
       return throwError(new Error('Not found'))
     }
 

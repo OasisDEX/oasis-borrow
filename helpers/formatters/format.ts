@@ -17,21 +17,24 @@ BigNumber.config({
   EXPONENTIAL_AT: 100000,
 })
 
-export function toShorthandNumber(amount: BigNumber, suffix: string = '', precision?: number) {
+export function toShorthandNumber(amount: BigNumber, suffix = '', precision?: number) {
   const sh = new BigNumber(
     amount
       .toString()
       .split('.')
       .map((part, index) => {
         if (index === 0) return part
+
         return part.substr(0, precision)
       })
       .filter((el) => el)
       .join('.'),
   )
+
   if (precision) {
     return sh.toFixed(precision).concat(suffix)
   }
+
   return sh.toFixed().concat(suffix)
 }
 
@@ -45,6 +48,7 @@ export function formatAsShorthandNumbers(amount: BigNumber, precision?: number):
   if (amount.absoluteValue().gte(thousand)) {
     return toShorthandNumber(amount.dividedBy(thousand), 'K', precision)
   }
+
   return toShorthandNumber(amount, '', precision)
 }
 
@@ -81,6 +85,7 @@ export function formatFiatBalance(amount: BigNumber): string {
 
 export function formatAmount(amount: BigNumber, token: string): string {
   const digits = token === 'USD' ? 2 : getTokenGuarded(token)?.digits || DEFAULT_TOKEN_DIGITS
+
   return amount.toFormat(digits, BigNumber.ROUND_DOWN)
 }
 
@@ -130,7 +135,7 @@ export function formatDateTime(time: Date, showMs?: boolean): string {
   return dayjs(time).format(showMs ? 'DD.MM HH:mm:ss' : 'DD.MM HH:mm')
 }
 
-export function formatAddress(address: string, first: number = 4, last: number = 5) {
+export function formatAddress(address: string, first = 4, last = 5) {
   return `${address.slice(0, first)}...${address.slice(-last)}`
 }
 

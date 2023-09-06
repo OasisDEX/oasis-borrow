@@ -1,10 +1,10 @@
+import React, { useCallback } from 'react'
 import { NetworkHexIds } from 'blockchain/networks'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { useConnection } from 'features/web3OnBoard'
 import { useModalContext } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
 import { Button, Flex, Grid, Image, Text } from 'theme-ui'
 
 export function ReferralClaimSwitchNetworkModal() {

@@ -1,4 +1,3 @@
-import { throttle } from 'lodash'
 import React, {
   ChangeEvent,
   MouseEvent,
@@ -10,10 +9,11 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import { throttle } from 'lodash'
 import { OasisTheme } from 'theme'
-import { Box, Flex, Grid, Slider, Text } from 'theme-ui'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 import { useTheme } from 'theme/useThemeUI'
+import { Box, Flex, Grid, Slider, Text } from 'theme-ui'
 
 function getSliderBoxBoundaries(boxRef: RefObject<HTMLDivElement>) {
   const box = boxRef.current?.getBoundingClientRect()
@@ -53,6 +53,7 @@ function getSliderBackgroundGradient({
   value1InPercent: number
 }) {
   const { colors } = theme
+
   return `linear-gradient(to right, ${colors.neutral60}  0%, ${colors.neutral60} ${value0InPercent}%,
     ${colors.interactive50} ${value0InPercent}%,  ${colors.interactive50} ${value1InPercent}%,
     ${colors.neutral60} ${value1InPercent}%, ${colors.neutral60} 100%)`
@@ -116,8 +117,10 @@ export function MultipleRangeSlider({
   useEffect(() => {
     const handleBoundariesUpdate = () => {
       const { sliderBoxLeftBoundary, sliderBoxRightBoundary } = getSliderBoxBoundaries(sliderBoxRef)
+
       setSliderBoxBoundaries({ sliderBoxLeftBoundary, sliderBoxRightBoundary })
     }
+
     handleBoundariesUpdate()
 
     window.addEventListener('resize', handleBoundariesUpdate)
@@ -133,6 +136,7 @@ export function MultipleRangeSlider({
         value0: Math.max(middleMark.value - middleMarkOffset, min),
         value1: Math.min(middleMark.value + middleMarkOffset, max),
       }
+
       if (value0 !== newValue.value0 || value1 !== newValue.value1) onChange(newValue)
     } else middleMarkDidMount.current = true
   }, [middleMark?.value])

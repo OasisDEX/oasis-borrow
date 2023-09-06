@@ -1,6 +1,6 @@
+import React from 'react'
 import { MobileSidePanel } from 'components/Modal'
 import { WithChildren } from 'helpers/types'
-import React from 'react'
 import { Card, Grid } from 'theme-ui'
 
 export function VaultFormContainer({

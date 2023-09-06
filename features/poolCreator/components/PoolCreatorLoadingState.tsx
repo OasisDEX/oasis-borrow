@@ -1,6 +1,6 @@
+import React from 'react'
 import { DetailsSection, DetailsSectionTitle } from 'components/DetailsSection'
 import { Skeleton } from 'components/Skeleton'
-import React from 'react'
 import { Flex, Grid } from 'theme-ui'
 
 function InputLoadingState() {
@@ -16,13 +16,13 @@ export function PoolCreatorLoadingState() {
   return (
     <DetailsSection
       title={
-        <DetailsSectionTitle loose={true}>
+        <DetailsSectionTitle loose>
           <Skeleton width="240px" height="28px" />
         </DetailsSectionTitle>
       }
       loose
       content={
-        <Grid gap={'24px'}>
+        <Grid gap="24px">
           <InputLoadingState />
           <InputLoadingState />
         </Grid>

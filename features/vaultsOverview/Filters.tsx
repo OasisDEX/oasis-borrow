@@ -1,9 +1,9 @@
+import React, { memo, useCallback } from 'react'
+import ReactSelect from 'react-select'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Pages, trackingEvents } from 'analytics/analytics'
 import { COIN_TAGS, CoinTag } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
-import React, { memo, useCallback } from 'react'
-import ReactSelect from 'react-select'
 import { Box, Button, Flex, Input, SxStyleProp } from 'theme-ui'
 
 interface FiltersProps {

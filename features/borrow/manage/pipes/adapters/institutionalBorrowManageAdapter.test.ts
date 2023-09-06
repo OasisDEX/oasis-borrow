@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { increasingRisk } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { zero } from 'helpers/zero'
-
-import { increasingRisk } from './institutionalBorrowManageAdapter'
 
 describe('InstitutionalBorrowManageAdapter', () => {
   describe('increasingRisk', () => {

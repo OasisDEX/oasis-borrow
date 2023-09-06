@@ -1,5 +1,5 @@
-import Avatar from 'boring-avatars'
 import React from 'react'
+import Avatar from 'boring-avatars'
 import { Flex, SxStyleProp, Text } from 'theme-ui'
 
 interface GenericTokenIconProps {

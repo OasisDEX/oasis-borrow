@@ -1,5 +1,5 @@
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Flex, Image, Text } from 'theme-ui'
 
 interface SummaryComponentProps {

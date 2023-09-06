@@ -1,6 +1,6 @@
+import React from 'react'
 import { Box } from '@theme-ui/components'
 import { AppSpinner } from 'helpers/AppSpinner'
-import React from 'react'
 
 interface VaultTabTagProps {
   isEnabled?: boolean

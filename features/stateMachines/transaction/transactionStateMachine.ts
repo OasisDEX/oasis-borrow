@@ -218,10 +218,10 @@ type MissingTransactionServices = Exclude<
   import('./transactionStateMachine.typegen').Typegen0['missingImplementations']['services'],
   'startTransaction'
 >
-export type CommonTransactionServices = Record<
-  MissingTransactionServices,
-  (
+
+export type CommonTransactionServices = {
+  [key: MissingTransactionServices]: (
     context: BaseTransactionStateMachineContext,
     event: AnyEventObject,
   ) => Observable<TransactionStateMachineCommonEvents>
->
+}

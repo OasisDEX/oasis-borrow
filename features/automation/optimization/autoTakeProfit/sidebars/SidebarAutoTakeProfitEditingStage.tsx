@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -27,7 +28,6 @@ import { uiChanges } from 'helpers/uiChanges'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Text } from 'theme-ui'
 
 interface SidebarAutoTakeProfitEditingStageProps {
@@ -63,7 +63,7 @@ export function SidebarAutoTakeProfitEditingStage({
         CommonAnalyticsSections.Form,
         {
           vaultId: id.toString(),
-          ilk: ilk,
+          ilk,
           collateralRatio: positionRatio.times(100).decimalPlaces(2).toString(),
           triggerValue: value,
         },

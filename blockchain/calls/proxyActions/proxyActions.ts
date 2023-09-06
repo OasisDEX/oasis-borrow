@@ -1,6 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { StandardDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
+import { getWithdrawAndPaybackCallData } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
@@ -17,9 +19,6 @@ import {
   DssProxyActions,
   MultiplyProxyActions,
 } from 'types/web3-v1-contracts'
-
-import { StandardDssProxyActionsContractAdapter } from './adapters/standardDssProxyActionsContractAdapter'
-import { getWithdrawAndPaybackCallData } from './vaultActionsLogic'
 
 export type OpenMultiplyData = {
   kind: TxMetaKind.multiply
@@ -44,7 +43,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     getNetworkContracts(NetworkIds.MAINNET, context.chainId)
   const { contract } = context
   const exchangeData = {
-    fromTokenAddress: tokens['DAI'].address,
+    fromTokenAddress: tokens.DAI.address,
     toTokenAddress: tokens[data.token].address,
     fromTokenAmount: amountToWei(data.fromTokenAmount, 'DAI').toFixed(0),
     toTokenAmount: amountToWei(data.toTokenAmount, data.token).toFixed(0),
@@ -74,7 +73,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     exchange: defaultExchange.address,
   }
 
-  //TODO: figure out why Typechain is generating arguments as arrays
+  // TODO: figure out why Typechain is generating arguments as arrays
   return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(
     exchangeData as any,
     cdpData as any,
@@ -148,7 +147,7 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
       minToTokenAmount: amountToWei(data.minToTokenAmount, token1Symbol).toFixed(0),
       exchangeAddress: data.exchangeAddress,
       _exchangeCalldata: data.exchangeData,
-    } as any, //TODO: figure out why Typechain is generating arguments as arrays
+    } as any, // TODO: figure out why Typechain is generating arguments as arrays
     {
       gemJoin: joins[data.ilk],
       fundsReceiver: data.userAddress,
@@ -246,7 +245,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
 
   if (data.action === 'BUY_COLLATERAL') {
     const exchangeData = {
-      fromTokenAddress: tokens['DAI'].address,
+      fromTokenAddress: tokens.DAI.address,
       toTokenAddress: tokens[data.token].address,
       fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
       toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
@@ -298,7 +297,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
   } else {
     const exchangeData = {
       fromTokenAddress: tokens[data.token].address,
-      toTokenAddress: tokens['DAI'].address,
+      toTokenAddress: tokens.DAI.address,
       toTokenAmount: amountToWei(
         data.requiredDebt
           .div(one.minus(OAZO_FEE)) // add oazo fee
@@ -409,7 +408,7 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
 
   const exchangeCallData = {
     fromTokenAddress: tokens[token].address,
-    toTokenAddress: tokens['DAI'].address,
+    toTokenAddress: tokens.DAI.address,
     fromTokenAmount: amountToWei(fromTokenAmount, token).toFixed(0),
     toTokenAmount: amountToWei(toTokenAmount, 'DAI').toFixed(0),
     minToTokenAmount: amountToWei(minToTokenAmount, 'DAI').toFixed(0),
@@ -467,6 +466,7 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
       NetworkIds.MAINNET,
       context.chainId,
     )
+
     if (data.exchangeData) {
       return [dssMultiplyProxyActions.address, getCloseVaultCallData(data, context).encodeABI()]
     } else {

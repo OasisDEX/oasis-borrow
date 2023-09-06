@@ -1,3 +1,4 @@
+import React from 'react'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -7,7 +8,6 @@ import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/A
 import { ContentFooterItemsEarnOpen } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnOpen'
 import { getAjnaSimulationRows } from 'features/ajna/positions/earn/helpers/getAjnaSimulationRows'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function AjnaEarnOverviewOpenController() {
   const { t } = useTranslation()
@@ -46,17 +46,15 @@ export function AjnaEarnOverviewOpenController() {
       }
       notifications={notifications}
       content={
-        <>
-          <DetailsSectionContentTable
-            headers={[
-              t('ajna.position-page.earn.open.simulation.duration'),
-              t('ajna.position-page.earn.open.simulation.estimated-earnings'),
-              t('ajna.position-page.earn.open.simulation.net-value'),
-            ]}
-            rows={getAjnaSimulationRows({ rowsInput, quoteToken, depositAmount })}
-            footnote={<>{t('ajna.position-page.earn.open.simulation.disclaimer')}</>}
-          />
-        </>
+        <DetailsSectionContentTable
+          headers={[
+            t('ajna.position-page.earn.open.simulation.duration'),
+            t('ajna.position-page.earn.open.simulation.estimated-earnings'),
+            t('ajna.position-page.earn.open.simulation.net-value'),
+          ]}
+          rows={getAjnaSimulationRows({ rowsInput, quoteToken, depositAmount })}
+          footnote={<>{t('ajna.position-page.earn.open.simulation.disclaimer')}</>}
+        />
       }
       footer={
         <DetailsSectionFooterItemWrapper>

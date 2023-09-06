@@ -1,7 +1,7 @@
+import React from 'react'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function DsrBanner() {
   const { t } = useTranslation()

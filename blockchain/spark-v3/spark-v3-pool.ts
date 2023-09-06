@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
+import { BaseParameters, getNetworkMapping } from 'blockchain/spark-v3/utils'
 import { SparkV3Pool__factory } from 'types/ethers-contracts'
-
-import { BaseParameters, getNetworkMapping } from './utils'
 
 export interface SparkV3UserAccountData {
   totalCollateralBase: BigNumber
@@ -42,6 +41,7 @@ export function getSparkV3UserAccountData({
   address,
 }: SparkV3UserAccountDataParameters): Promise<SparkV3UserAccountData> {
   const { contract, baseCurrencyUnit } = networkMappings[networkId]()
+
   return contract.getUserAccountData(address).then((result) => {
     return {
       totalCollateralBase: new BigNumber(result.totalCollateralBase.toString()).div(
@@ -63,6 +63,7 @@ export function getSparkV3UserConfigurations({
   address,
 }: SparkV3UserConfigurationsParameters): Promise<SparkV3ConfigurationData> {
   const { contract } = networkMappings[networkId]()
+
   return contract.getUserConfiguration(address).then((result) => {
     return result.map((value) => value.toString())
   })
@@ -72,6 +73,7 @@ export function getSparkV3ReservesList({
   networkId,
 }: BaseParameters): Promise<SparkV3ConfigurationData> {
   const { contract } = networkMappings[networkId]()
+
   return contract.getReservesList().then((result) => {
     return result.map((value) => value.toString())
   })
@@ -82,6 +84,7 @@ export function getEModeCategoryData({
   categoryId,
 }: GetEModeCategoryDataParameters): Promise<GetEModeCategoryDataResult> {
   const { contract } = networkMappings[networkId]()
+
   return contract.getEModeCategoryData(categoryId.toString(16)).then((result) => {
     return {
       ltv: new BigNumber(result.ltv.toString()).div(10000),

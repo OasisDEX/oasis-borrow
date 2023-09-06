@@ -1,8 +1,7 @@
-import { NetworkConfigHexId } from 'blockchain/networks'
-import { WithChildren } from 'helpers/types'
 import React from 'react'
-
-import { Connection } from './Connection'
+import { NetworkConfigHexId } from 'blockchain/networks'
+import { Connection } from 'components/connectWallet/Connection'
+import { WithChildren } from 'helpers/types'
 
 export const WithConnection = ({
   children,
@@ -18,12 +17,7 @@ export const WithWalletConnection = ({
   chainId,
   includeTestNet,
 }: WithChildren & { chainId: NetworkConfigHexId; includeTestNet?: boolean }) => (
-  <Connection
-    walletConnect={true}
-    chainId={chainId}
-    pageChainId={chainId}
-    includeTestNet={includeTestNet}
-  >
+  <Connection walletConnect chainId={chainId} pageChainId={chainId} includeTestNet={includeTestNet}>
     {children}
   </Connection>
 )

@@ -1,14 +1,17 @@
+import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import ReactDOM from 'react-dom'
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
+import { AppLink } from 'components/Links'
 import { useSharedUI } from 'components/SharedUIProvider'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { ModalProps } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { ReactNode, useCallback, useEffect, useState } from 'react'
-import ReactDOM from 'react-dom'
+import curry from 'ramda/src/curry'
 import { TRANSITIONS } from 'theme'
+import { useOnMobile } from 'theme/useBreakpointIndex'
 import {
   Box,
   Button,
@@ -22,10 +25,6 @@ import {
   SxStyleProp,
   Text,
 } from 'theme-ui'
-import { useOnMobile } from 'theme/useBreakpointIndex'
-
-import { AppLink } from './Links'
-import curry from 'ramda/src/curry'
 
 interface ModalCloseIconProps extends ModalProps<WithChildren> {
   sx?: SxStyleProp
@@ -36,6 +35,7 @@ interface ModalCloseIconProps extends ModalProps<WithChildren> {
 export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: ModalCloseIconProps) {
   const handleEscClose = useCallback((event) => {
     const { keyCode } = event
+
     if (keyCode === 27) {
       close && close()
     }
@@ -43,6 +43,7 @@ export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: Mod
 
   useEffect(() => {
     window.addEventListener('keydown', handleEscClose)
+
     return () => {
       window.removeEventListener('keydown', handleEscClose)
     }
@@ -76,6 +77,7 @@ export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: Mod
 // This will recursively look down to every single child of the target element.
 function iterateAllNodes(target: Node, container: Node[] = [], id = 0) {
   let nodes = [...container, target]
+
   target.childNodes.forEach((node) => {
     if (node.childNodes.length) {
       nodes = [...iterateAllNodes(node, nodes, ++id)]
@@ -97,6 +99,7 @@ function overflowClickHandler(onClick: () => void, event: MouseEvent) {
     const hasClickedOnOverlay = iterateAllNodes(event.target as Node).find(
       (node: any) => node.id === 'modalContainer',
     )
+
     if (hasClickedOnOverlay) {
       if (onClick) {
         onClick()

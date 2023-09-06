@@ -21,6 +21,7 @@ const createJestConfig = nextJest({
 
 const finalConfig = async (): Promise<Config.InitialOptions> => {
   const nextConfig: Config.InitialOptions = await createJestConfig(config)()
+
   return {
     ...nextConfig,
     transformIgnorePatterns: ['/node_modules/(?!(@web3-onboard|nanoid)/)'],

@@ -1,7 +1,9 @@
+import React, { ReactNode } from 'react'
 import { Heading } from '@theme-ui/components'
 import { ProtocolLabel, ProtocolLabelProps } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
+import { HeadlineDetailsProp, VaultHeadlineDetails } from 'components/vault/VaultHeadlineDetails'
 import {
   ShareButton,
   twitterSharePositionText,
@@ -11,10 +13,7 @@ import {
   FollowButtonControl,
   FollowButtonControlProps,
 } from 'features/follow/controllers/FollowButtonControl'
-import React, { ReactNode } from 'react'
 import { Flex } from 'theme-ui'
-
-import { HeadlineDetailsProp, VaultHeadlineDetails } from './VaultHeadlineDetails'
 
 export type VaultHeadlineProps = {
   details: HeadlineDetailsProp[]

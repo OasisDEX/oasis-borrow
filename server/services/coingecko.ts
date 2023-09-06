@@ -13,7 +13,7 @@ const requiredTickers = tokens
   .map((token) => token.coinGeckoTicker)
 
 async function fetchTicker(ticker: string): Promise<{ data: CoingeckoApiResponse }> {
-  return axios({
+  return await axios({
     method: 'get',
     timeout: 1000,
     url: `https://api.coingecko.com/api/v3/simple/price?ids=${ticker}&vs_currencies=usd`,
@@ -38,6 +38,7 @@ export async function getCoingeckoTickers(): Promise<PriceServiceResponse> {
       if (!res.usd) {
         return acc
       }
+
       return {
         ...acc,
         [res.ticker]: res.usd,

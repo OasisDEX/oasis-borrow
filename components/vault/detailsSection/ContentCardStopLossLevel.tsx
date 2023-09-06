@@ -1,8 +1,8 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardStopLossCollateralRatioModalProps {
@@ -71,7 +71,7 @@ export function ContentCardStopLossLevel({
   }
 
   const contentCardModalSettings: ContentCardStopLossCollateralRatioModalProps = {
-    isStopLossEnabled: isStopLossEnabled,
+    isStopLossEnabled,
     stopLossLevelFormatted: formatted.stopLossLevel,
     ratioParamTranslationKey,
     modalDescription,

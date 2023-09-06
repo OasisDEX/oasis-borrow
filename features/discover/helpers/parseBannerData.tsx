@@ -1,5 +1,5 @@
-import { AssetsTableBannerProps } from 'components/assetsTable/types'
 import { useTranslation } from 'react-i18next'
+import { AssetsTableBannerProps } from 'components/assetsTable/types'
 
 interface ParseBannerDataParams {
   banner: AssetsTableBannerProps

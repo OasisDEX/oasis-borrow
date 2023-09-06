@@ -92,6 +92,7 @@ export function getYields$(
         const price = prices.find((price) =>
           price.requestedTimestamp.isSame(timestampWithPeriod.date, 'day'),
         )
+
         return {
           ...timestampWithPeriod,
           price: price!.price,
@@ -108,6 +109,7 @@ export function getYields$(
             days,
             multiple,
           )
+
           return { period, days, value }
         })
         .reduce(
@@ -117,16 +119,16 @@ export function getYields$(
               yields: {
                 ...acc.yields,
                 [period]: {
-                  days: days,
-                  value: value,
+                  days,
+                  value,
                 },
               },
             }
           },
-          { ilk: ilk, yields: {} },
+          { ilk, yields: {} },
         )
     }),
-    catchError(() => of({ ilk: ilk, yields: {} })),
+    catchError(() => of({ ilk, yields: {} })),
     distinctUntilChanged(isEqual),
   )
 }
@@ -137,7 +139,8 @@ function calculateChange(current?: YieldValue, previous?: YieldValue): YieldChan
   }
   const yieldValue = current.value
   const change = yieldValue.minus(previous.value)
-  const days = current.days
+  const { days } = current
+
   return { change, yieldValue, days }
 }
 
@@ -167,6 +170,7 @@ export function getYieldChange$(
           previousYields.yields[YieldPeriod.Yield90Days],
         ),
       }
+
       return {
         ilk,
         currentDate,
@@ -217,5 +221,6 @@ interface CalculateBreakeven {
 
 export function calculateBreakeven({ depositAmount, entryFees, apy }: CalculateBreakeven) {
   const earningsPerDay = depositAmount.times(apy.plus(one)).minus(depositAmount).div(365)
+
   return entryFees.div(earningsPerDay)
 }

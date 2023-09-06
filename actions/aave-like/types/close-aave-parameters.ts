@@ -1,8 +1,8 @@
 import { IPosition, PositionType } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { ProxyType } from 'features/aave/types'
 import { AaveLendingProtocol, AaveLikeLendingProtocol } from 'lendingProtocols'
-import { NetworkIds } from '../../../blockchain/networks'
 
 export interface CloseAaveParameters {
   currentPosition: IPosition

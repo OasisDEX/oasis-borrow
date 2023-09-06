@@ -20,6 +20,7 @@ export function getTxTokenAndAmount(context: BaseAaveContext) {
     amount: context.userInput.amount || context.manageTokenInput?.manageTokenActionValue || zero,
     token: context.userInput.amount ? context.tokens.deposit : context.tokens.collateral,
   }
+
   if (isBorrowingDebt || isWithdrawingCollateral) {
     amountAndToken.amount = zero
   }

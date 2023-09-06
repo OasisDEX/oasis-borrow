@@ -3,12 +3,11 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { networkSetById } from 'blockchain/networks'
 import { AccountDetails } from 'features/account/AccountData'
+import { MutableOpenVaultState, OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
-
-import { MutableOpenVaultState, OpenVaultState } from './openVault'
 
 type GenerateAmountChange = {
   kind: 'generateAmountChange'
@@ -114,7 +113,7 @@ export function createOpenVaultAnalytics$(
     map(({ ilk, depositAmount, generateAmount }) => ({
       kind: 'openVaultConfirm',
       value: {
-        ilk: ilk,
+        ilk,
         collateralAmount: depositAmount,
         daiAmount: generateAmount || zero,
       },
@@ -127,7 +126,7 @@ export function createOpenVaultAnalytics$(
     map(({ ilk, depositAmount, generateAmount, openTxHash }) => ({
       kind: 'openVaultConfirmTransaction',
       value: {
-        ilk: ilk,
+        ilk,
         collateralAmount: depositAmount,
         daiAmount: generateAmount || zero,
         txHash: openTxHash,
@@ -149,9 +148,11 @@ export function createOpenVaultAnalytics$(
           switch (event.kind) {
             case 'depositAmountChange':
               tracker.createVaultDeposit(firstCDP, event.value.toString())
+
               break
             case 'generateAmountChange':
               tracker.createVaultGenerate(firstCDP, event.value.toString())
+
               break
             case 'allowanceChange':
               tracker.pickAllowance(
@@ -159,6 +160,7 @@ export function createOpenVaultAnalytics$(
                 event.value.type.toString(),
                 event.value.amount.toString(),
               )
+
               break
             case 'openVaultConfirm':
               tracker.confirmVaultConfirm(
@@ -167,6 +169,7 @@ export function createOpenVaultAnalytics$(
                 event.value.daiAmount.toString(),
                 firstCDP,
               )
+
               break
             case 'openVaultConfirmTransaction':
               const network = networkSetById[context.id].name
@@ -181,6 +184,7 @@ export function createOpenVaultAnalytics$(
                 network,
                 walletType,
               )
+
               break
             default:
               throw new Error('Unhandled Scenario')

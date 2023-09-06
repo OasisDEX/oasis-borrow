@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-export function recursiveLog(thing: any, name: string, depth: number = 0, tag: string = '') {
+export function recursiveLog(thing: any, name: string, depth = 0, tag = '') {
   if (BigNumber.isBigNumber(thing)) {
     log(thing.toString(), name, depth, tag)
   } else if (typeof thing === 'object' && thing !== null) {
@@ -17,9 +17,11 @@ export function recursiveLog(thing: any, name: string, depth: number = 0, tag: s
 
 function spaces(depth: number) {
   let ret = ''
+
   for (let i = 0; i < depth; i++) {
     ret += ' '
   }
+
   return ret
 }
 

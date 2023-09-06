@@ -17,6 +17,7 @@ export function jwtAuthGetToken(address: string): JWToken | undefined | 'invalid
   const token = Object.entries(localStorage).find(
     ([key]) => key.toLowerCase() === `token-b/${address}`.toLowerCase(),
   )?.[1]
+
   if (token && token !== 'xxx') {
     const parsedToken = JSON.parse(atob(token.split('.')[1]))
 
@@ -25,6 +26,7 @@ export function jwtAuthGetToken(address: string): JWToken | undefined | 'invalid
       return 'invalid'
     }
   }
+
   return token === null ? undefined : token
 }
 
@@ -35,12 +37,14 @@ export function jwtAuthSetupToken$(
   isGnosisSafe: boolean,
 ): Observable<JWToken> {
   const token = jwtAuthGetToken(account)
+
   if (token === 'invalid') {
     return of('invalid')
   }
   if (token === undefined) {
     return fromPromise(requestJWT(web3, chainId, account, isGnosisSafe))
   }
+
   return of(token)
 }
 
@@ -64,6 +68,7 @@ async function getGnosisSafeDetails(
 
   if (pendingSignature) {
     const exp = (decode(pendingSignature.challenge) as any)?.exp
+
     if (exp && exp * 1000 >= Date.now()) {
       return {
         ...pendingSignature,
@@ -74,6 +79,7 @@ async function getGnosisSafeDetails(
 
   const dataToSign = getDataToSignFromChallenge(newChallenge)
   const { safeTxHash } = await sdk.txs.signMessage(dataToSign)
+
   localStorage.setItem(
     key,
     JSON.stringify({
@@ -81,6 +87,7 @@ async function getGnosisSafeDetails(
       challenge: newChallenge,
     } as GnosisSafeSignInDetails),
   )
+
   return { challenge: newChallenge, safeTxHash, dataToSign }
 }
 
@@ -110,6 +117,7 @@ async function requestJWT(
       const interval = setInterval(async () => {
         try {
           const { detailedExecutionInfo } = await sdk.txs.getBySafeTxHash(safeTxHash)
+
           if (
             !(
               detailedExecutionInfo?.type === 'MULTISIG' &&
@@ -120,6 +128,7 @@ async function requestJWT(
           }
 
           const isSigned = await sdk.safe.isMessageSigned(dataToSign)
+
           if (!isSigned) {
             throw new Error('Not signed yet')
           }
@@ -149,6 +158,7 @@ async function requestJWT(
     }
 
     localStorage.setItem(`token-b/${account}`, token)
+
     return token
   }
 
@@ -205,5 +215,6 @@ function requestSignin({
 
 function getDataToSignFromChallenge(challenge: string): string {
   const decodedChallenge = decode(challenge) as any
+
   return `Sign to verify your wallet ${decodedChallenge.address} (${decodedChallenge.randomChallenge})`
 }

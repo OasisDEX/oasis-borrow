@@ -11,8 +11,7 @@ import {
   pickTriggerWithLowestExecutionPrice,
   prepareAutoTakeProfitResetData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-
-import { generateRandomBigNumber } from './utils'
+import { generateRandomBigNumber } from 'features/automation/optimization/autoTakeProfit/tests/utils'
 
 describe('autoTakeProfit Form Change tests', () => {
   describe('Given extractAutoTakeProfitData is called', () => {
@@ -130,6 +129,7 @@ describe('autoTakeProfit Form Change tests', () => {
       } as AutoTakeProfitResetData
 
       const result = prepareAutoTakeProfitResetData(autoTakeProfitState, triggerData)
+
       expect(result).toEqual(expectedResult)
 
       done()

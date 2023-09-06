@@ -1,10 +1,9 @@
+import aaveV2Handler from 'handlers/product-hub/update-handlers/aaveV2/aaveV2Handler'
+import aaveV3Handler from 'handlers/product-hub/update-handlers/aaveV3/aaveV3Handler'
+import ajnaHandler from 'handlers/product-hub/update-handlers/ajna/ajnaHandler'
+import makerHandler from 'handlers/product-hub/update-handlers/maker/makerHandler'
+import sparkV3Handler from 'handlers/product-hub/update-handlers/sparkV3/sparkV3Handler'
 import { LendingProtocol } from 'lendingProtocols'
-
-import aaveV2Handler from './aaveV2/aaveV2Handler'
-import aaveV3Handler from './aaveV3/aaveV3Handler'
-import ajnaHandler from './ajna/ajnaHandler'
-import makerHandler from './maker/makerHandler'
-import sparkV3Handler from './sparkV3/sparkV3Handler'
 
 export const emptyHandler = async () => {
   return {

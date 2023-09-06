@@ -1,3 +1,4 @@
+import React, { ReactNode } from 'react'
 import { Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
@@ -10,7 +11,6 @@ import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/man
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
 
 export function ManageVaultChangesInformation(
   props: ManageStandardBorrowVaultState & { txnCostDisplay?: ReactNode },

@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
@@ -11,6 +12,7 @@ import { calculateMultipleFromTargetCollRatio } from 'features/automation/common
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import {
   formatAddress,
@@ -23,11 +25,8 @@ import { interpolate } from 'helpers/interpolate'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 import { TranslationType } from 'ts_modules/i18next'
-
-import { VaultHistoryEvent } from './vaultHistory'
 
 function resolveTranslationForEventsWithTriggers(event: AutomationEvent) {
   const isGroup = 'groupId' in event && event.groupId
@@ -109,13 +108,13 @@ function VaultHistoryEntryDetailsItem({ label, children }: { label: string } & W
 function resolveMaxBuyOrSellPrice(maxBuyOrMinSellPrice: BigNumber, unlimited: string) {
   return maxBuyOrMinSellPrice.isEqualTo(maxUint256) || maxBuyOrMinSellPrice.isZero()
     ? unlimited
-    : '$' + formatFiatBalance(maxBuyOrMinSellPrice)
+    : `$${formatFiatBalance(maxBuyOrMinSellPrice)}`
 }
 
 function resolveMaxGweiAmount(maxBaseFeeInGwei: BigNumber, unlimited: string) {
   return maxBaseFeeInGwei.isEqualTo(maxUint32)
     ? unlimited
-    : formatCryptoBalance(maxBaseFeeInGwei) + ' Gwei'
+    : `${formatCryptoBalance(maxBaseFeeInGwei)} Gwei`
 }
 
 interface AutomationEntryProps {
@@ -460,11 +459,9 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
         </>
       )}
       {event.kind === 'OPEN_MULTIPLY_GUNI_VAULT' && (
-        <>
-          <VaultHistoryEntryDetailsItem label={t('history.deposited')}>
-            {'depositDai' in event && formatCryptoBalance(event.depositDai)} DAI
-          </VaultHistoryEntryDetailsItem>
-        </>
+        <VaultHistoryEntryDetailsItem label={t('history.deposited')}>
+          {'depositDai' in event && formatCryptoBalance(event.depositDai)} DAI
+        </VaultHistoryEntryDetailsItem>
       )}
       {event.kind === 'INCREASE_MULTIPLE' && (
         <VaultHistoryEntryDetailsItem label={t('history.bought')}>
@@ -485,12 +482,12 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
       )}
       {!(closeEvent && guniVaultEvent) && (
         <VaultHistoryEntryDetailsItem label={t('system.oracle-price')}>
-          {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice!)}
+          {'oraclePrice' in event && `$${formatFiatBalance(event.oraclePrice!)}`}
         </VaultHistoryEntryDetailsItem>
       )}
       {event.kind !== 'OPEN_MULTIPLY_GUNI_VAULT' && (
         <VaultHistoryEntryDetailsItem label={t('system.market-price')}>
-          {'marketPrice' in event && '$' + formatFiatBalance(event.marketPrice)}
+          {'marketPrice' in event && `$${formatFiatBalance(event.marketPrice)}`}
         </VaultHistoryEntryDetailsItem>
       )}
 
@@ -508,7 +505,7 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
           <VaultHistoryEntryDetailsItem label={t('multiple')}>
             {'beforeMultiple' in event && event.beforeMultiple.gt(0) && (
               <>
-                {formatCryptoBalance(event.beforeMultiple) + `x`}
+                {`${formatCryptoBalance(event.beforeMultiple)}x`}
                 <VaultChangesInformationArrow />
               </>
             )}
@@ -529,7 +526,7 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
       <VaultHistoryEntryDetailsItem label={t('outstanding-debt')}>
         {'beforeDebt' in event && event.beforeDebt.gt(0) && (
           <>
-            {formatCryptoBalance(event.beforeDebt.times(event.rate)) + `DAI`}
+            {`${formatCryptoBalance(event.beforeDebt.times(event.rate))}DAI`}
             <VaultChangesInformationArrow />
           </>
         )}
@@ -539,16 +536,15 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
         <>
           {event.kind !== 'OPEN_MULTIPLY_GUNI_VAULT' && (
             <VaultHistoryEntryDetailsItem label={t('system.coll-ratio')}>
-              {'beforeCollateralizationRatio' in event &&
-                event.beforeCollateralizationRatio.gt(0) && (
-                  <>
-                    {formatPercent(event.beforeCollateralizationRatio.times(100), {
-                      precision: 2,
-                      roundMode: BigNumber.ROUND_DOWN,
-                    })}
-                    <VaultChangesInformationArrow />
-                  </>
-                )}
+              {'beforeCollateralizationRatio' in event && event.beforeCollateralizationRatio.gt(0) && (
+                <>
+                  {formatPercent(event.beforeCollateralizationRatio.times(100), {
+                    precision: 2,
+                    roundMode: BigNumber.ROUND_DOWN,
+                  })}
+                  <VaultChangesInformationArrow />
+                </>
+              )}
               {'collateralizationRatio' in event &&
                 formatPercent(event.collateralizationRatio.times(100), {
                   precision: 2,
@@ -557,17 +553,17 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
             </VaultHistoryEntryDetailsItem>
           )}
           <VaultHistoryEntryDetailsItem label={t('net-value')}>
-            {'netValue' in event && '$' + formatFiatBalance(event.netValue)}
+            {'netValue' in event && `$${formatFiatBalance(event.netValue)}`}
           </VaultHistoryEntryDetailsItem>
           {event.kind !== 'OPEN_MULTIPLY_GUNI_VAULT' && (
             <VaultHistoryEntryDetailsItem label={t('system.liquidation-price')}>
               {'beforeLiquidationPrice' in event && event.beforeLiquidationPrice.gt(0) && (
                 <>
-                  {`$` + formatFiatBalance(event.beforeLiquidationPrice)}
+                  {`$${formatFiatBalance(event.beforeLiquidationPrice)}`}
                   <VaultChangesInformationArrow />
                 </>
               )}
-              {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
+              {'liquidationPrice' in event && `$${formatFiatBalance(event.liquidationPrice)}`}
             </VaultHistoryEntryDetailsItem>
           )}
         </>
@@ -576,13 +572,12 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
         {'totalFee' in event &&
         'gasFee' in event &&
         (event.totalFee.gt(zero) || event.gasFee.gt(zero))
-          ? '$' +
-            formatFiatBalance(
+          ? `$${formatFiatBalance(
               BigNumber.sum(
                 event.totalFee,
                 amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice),
               ),
-            )
+            )}`
           : '-'}
       </VaultHistoryEntryDetailsItem>
     </DefinitionList>

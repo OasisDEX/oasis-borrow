@@ -1,22 +1,21 @@
+import React from 'react'
 import { useActor } from '@xstate/react'
 import { getTokenGuarded } from 'blockchain/tokensMetadata'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { Radio } from 'components/forms/Radio'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import {
+  AllowanceStateMachine,
+  AllowanceStateMachineEvent,
+} from 'features/stateMachines/allowance/state/createAllowanceStateMachine'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 import { ActorRefFrom, Sender, StateFrom } from 'xstate'
-
-import {
-  AllowanceStateMachine,
-  AllowanceStateMachineEvent,
-} from './state/createAllowanceStateMachine'
 
 interface AllowanceViewProps {
   allowanceMachine: ActorRefFrom<AllowanceStateMachine>
@@ -121,7 +120,7 @@ function AllowanceInfoStateView({
     title: t('vault-form.header.allowance', { token: state.context.token }),
     content: <AllowanceInfoStateViewContent state={state} send={send} />,
     primaryButton: {
-      steps: steps,
+      steps,
       isLoading,
       disabled: isLoading || !state.can('NEXT_STEP'),
       label: t('approve-allowance'),
@@ -170,7 +169,7 @@ function AllowanceInProgressStateView({ state, steps }: AllowanceViewStateProps)
     title: t('vault-form.header.allowance', { token: state.context.token }),
     content: <AllowanceInProgressStateViewContent state={state} />,
     primaryButton: {
-      steps: steps,
+      steps,
       isLoading: true,
       disabled: true,
       label: t('approving-allowance'),
@@ -211,7 +210,7 @@ function AllowanceSuccessStateView({ state, send, steps }: AllowanceViewStatePro
       </Grid>
     ),
     primaryButton: {
-      steps: steps,
+      steps,
       isLoading: false,
       disabled: false,
       label: t('continue'),
@@ -299,6 +298,6 @@ export function AllowanceView({
     case state.matches('txSuccess'):
       return <AllowanceSuccessStateView state={state} send={send} steps={steps} />
     default:
-      return <></>
+      return <>{null}</>
   }
 }

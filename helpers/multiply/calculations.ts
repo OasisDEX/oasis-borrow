@@ -135,6 +135,7 @@ function getCumulativeConstantMultipleFeeUSD(
           .plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice))
           .plus(event.oazoFee)
       }
+
       return total
     case 'basic-buy':
     case 'basic-sell':

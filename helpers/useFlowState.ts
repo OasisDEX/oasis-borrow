@@ -1,18 +1,18 @@
+import { useEffect, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { useMainContext, useProductContext } from 'components/context'
 import { getPositionCreatedEventForProxyAddress } from 'features/aave/services'
-import { useEffect, useState } from 'react'
+import { allDefined } from 'helpers/allDefined'
+import { callBackIfDefined } from 'helpers/callBackIfDefined'
+import { setupAllowanceContext, setupDpmContext } from 'helpers/dummyStateMachine'
+import { zero } from 'helpers/zero'
 import { combineLatest } from 'rxjs'
 import { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
-import { allDefined } from './allDefined'
-import { callBackIfDefined } from './callBackIfDefined'
-import { setupAllowanceContext, setupDpmContext } from './dummyStateMachine'
-import { zero } from './zero'
-
 type UseFlowStateReturnType = ReturnType<typeof useFlowState>
+
 export type UseFlowStateCBParamsType = {
   availableProxies: UseFlowStateReturnType['availableProxies']
   walletAddress: UseFlowStateReturnType['walletAddress']
@@ -79,7 +79,7 @@ export function useFlowState({
     error: undefined,
   }
 
-  const spender = availableProxies[0] // probably needs further thoguht
+  const [spender] = availableProxies // probably needs further thoguht
 
   // wallet connection + DPM proxy machine
   useEffect(() => {
@@ -88,6 +88,7 @@ export function useFlowState({
       setWalletAddress(status === 'connected' && account ? account : undefined)
       setChainId(chainId)
     })
+
     if (existingProxy) {
       return () => {
         walletConnectionSubscription.unsubscribe()
@@ -109,6 +110,7 @@ export function useFlowState({
         setAvailableProxies([...(availableProxies || []), context.result.proxy])
       }
     })
+
     return () => {
       walletConnectionSubscription.unsubscribe()
       proxyMachineSubscription.unsubscribe()
@@ -121,6 +123,7 @@ export function useFlowState({
     const userDpmProxies = userDpmProxies$(walletAddress).subscribe((userProxyList) => {
       setUserProxyList(userProxyList)
     })
+
     return () => {
       userDpmProxies.unsubscribe()
     }
@@ -149,6 +152,7 @@ export function useFlowState({
           .map(({ proxyAddress }) => proxyAddress),
       )
     })
+
     return () => {
       proxyListAvailabilityMap.unsubscribe()
     }
@@ -169,6 +173,7 @@ export function useFlowState({
     if (token === 'ETH') {
       setLoading(false)
       setAllowanceReady(true)
+
       return
     }
     const allowanceSubscription = allowanceForAccount$(token!, spender).subscribe(
@@ -220,6 +225,7 @@ export function useFlowState({
         })
       }
     })
+
     return () => {
       allowanceMachineSubscription.unsubscribe()
       allowanceSubscription.unsubscribe()

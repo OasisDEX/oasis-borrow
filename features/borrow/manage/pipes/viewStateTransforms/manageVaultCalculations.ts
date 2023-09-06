@@ -165,6 +165,7 @@ function calculateAfterFreeCollateral({
   backingCollateral: BigNumber
 }) {
   const amount = lockedCollateral.minus(backingCollateral)
+
   return amount.gte(zero) ? amount : zero
 }
 
@@ -220,10 +221,13 @@ function calculateAfterIlkDebtAvailable({
     originationFee: BigNumber
   }) {
   const generateAmountWithOriginationFee = generateAmount.div(originationFee.plus(one))
+
   if (ilkDebtAvailable.gt(zero)) {
     const amount = ilkDebtAvailable.plus(paybackAmount).minus(generateAmountWithOriginationFee)
+
     return amount.gte(zero) ? amount : zero
   }
+
   return zero
 }
 

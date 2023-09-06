@@ -13,7 +13,7 @@ export type TokenPairConfig = {
   collateral: string
   debt: string
   strategyType: StrategyType
-  productTypes: Partial<Record<ProductType, ProductTypeConfig>>
+  productTypes: Partial<{ [key: ProductType]: ProductTypeConfig }>
 }
 
 export function hasMultiplyProductType(

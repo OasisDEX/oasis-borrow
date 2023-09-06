@@ -1,3 +1,4 @@
+import React from 'react'
 import { useActor } from '@xstate/react'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
@@ -8,17 +9,15 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
-import { Grid, Image, Text } from 'theme-ui'
-import { ActorRefFrom, Sender, StateFrom } from 'xstate'
-
 import {
   DPMAccountStateMachine,
   DPMAccountStateMachineEvents,
-} from './state/createDPMAccountStateMachine'
+} from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { Trans, useTranslation } from 'next-i18next'
+import { Grid, Image, Text } from 'theme-ui'
+import { ActorRefFrom, Sender, StateFrom } from 'xstate'
 
 export interface CreateDPMAccountViewProps {
   machine: ActorRefFrom<DPMAccountStateMachine>
@@ -56,7 +55,7 @@ function InfoStateView({ state, send, backButtonOnFirstStep }: InternalViewsProp
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'dpm.create-flow.welcome-screen.paragraph'}
+              i18nKey="dpm.create-flow.welcome-screen.paragraph"
               components={{
                 1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_DPM} sx={{ fontSize: 2 }} />,
               }}
@@ -114,7 +113,7 @@ function InProgressView({ state }: InternalViewsProps) {
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'dpm.create-flow.proxy-creating-screen.paragraph'}
+              i18nKey="dpm.create-flow.proxy-creating-screen.paragraph"
               components={{
                 1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_DPM} sx={{ fontSize: 2 }} />,
               }}
@@ -141,6 +140,7 @@ function InProgressView({ state }: InternalViewsProps) {
       },
     ],
   }
+
   return <SidebarSection {...sidebarSectionProps} />
 }
 
@@ -156,7 +156,7 @@ function SuccessStateView({ send, state }: InternalViewsProps) {
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'dpm.create-flow.proxy-created-screen.paragraph'}
+              i18nKey="dpm.create-flow.proxy-created-screen.paragraph"
               components={{
                 1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_DPM} sx={{ fontSize: 2 }} />,
               }}
@@ -184,6 +184,7 @@ function SuccessStateView({ send, state }: InternalViewsProps) {
       },
     ],
   }
+
   return <SidebarSection {...sidebarSectionProps} />
 }
 
@@ -211,6 +212,6 @@ export function CreateDPMAccountViewConsumed({
     case state.matches('txSuccess'):
       return <SuccessStateView state={state} send={send} />
     default:
-      return <></>
+      return <>{null}</>
   }
 }

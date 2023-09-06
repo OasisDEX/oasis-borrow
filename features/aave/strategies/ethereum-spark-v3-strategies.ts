@@ -8,20 +8,19 @@ import {
   DebtInput,
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
-import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
-import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
-import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
-import { LendingProtocol } from 'lendingProtocols'
-
-import { allActionsAvailableBorrow } from './all-actions-available-borrow'
-import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
+import { allActionsAvailableBorrow } from 'features/aave/strategies/all-actions-available-borrow'
+import { allActionsAvailableInMultiply } from 'features/aave/strategies/all-actions-available-in-multiply'
 import {
   hasBorrowProductType,
   hasEarnProductType,
   hasMultiplyProductType,
   TokenPairConfig,
-} from './common'
+} from 'features/aave/strategies/common'
+import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
+import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
+import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
+import { LendingProtocol } from 'lendingProtocols'
 
 const availableTokenPairs: TokenPairConfig[] = [
   {
@@ -186,9 +185,11 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
                 featureToggle === undefined || getFeatureToggle(featureToggle)
+
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
+
         return [...allActionsAvailableBorrow, ...additionalAction]
       },
       executeTransactionWith: 'ethers' as const,
@@ -233,9 +234,11 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
                 featureToggle === undefined || getFeatureToggle(featureToggle)
+
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
+
         return [...allActionsAvailableInMultiply, ...additionalAction]
       },
       executeTransactionWith: 'ethers',
@@ -281,9 +284,11 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
                 featureToggle === undefined || getFeatureToggle(featureToggle)
+
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
+
         return [...allActionsAvailableInMultiply, ...additionalAction]
       },
       executeTransactionWith: 'ethers',

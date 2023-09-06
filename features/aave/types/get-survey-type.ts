@@ -1,4 +1,4 @@
-import { ProductType } from './is-supported-product-type'
+import { ProductType } from 'features/aave/types/is-supported-product-type'
 
 export function getSurveyType(value: ProductType): 'earn' | 'multiply' | 'borrow' {
   switch (value) {

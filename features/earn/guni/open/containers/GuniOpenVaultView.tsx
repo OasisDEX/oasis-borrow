@@ -1,18 +1,17 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { useMainContext, useProductContext } from 'components/context'
 import { OpenMultiplyVaultContainer } from 'components/vault/commonMultiply/OpenMultiplyVaultContainer'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
+import { GuniOpenMultiplyVaultDetails } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultDetails'
+import { GuniOpenMultiplyVaultForm } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultForm'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import React from 'react'
 import { Observable } from 'rxjs'
 import { Container } from 'theme-ui'
-
-import { GuniOpenMultiplyVaultDetails } from './GuniOpenMultiplyVaultDetails'
-import { GuniOpenMultiplyVaultForm } from './GuniOpenMultiplyVaultForm'
 
 export function GuniOpenVaultView({ ilk }: { ilk: string }) {
   const { gasPrice$ } = useMainContext()

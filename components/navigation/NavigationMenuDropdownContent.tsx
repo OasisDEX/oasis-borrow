@@ -1,3 +1,4 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AssetPill } from 'components/AssetPill'
@@ -6,7 +7,6 @@ import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPan
 import { WithArrow } from 'components/WithArrow'
 import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers/getAjnaWithArrowColorScheme'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export type NavigationMenuDropdownContentProps = NavigationMenuPanelType

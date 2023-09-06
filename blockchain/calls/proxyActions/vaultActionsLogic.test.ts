@@ -1,10 +1,9 @@
 import { BigNumber } from 'bignumber.js'
+import { MockProxyActionsSmartContractAdapter } from 'blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
+import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { one } from 'helpers/zero'
-
-import { MockProxyActionsSmartContractAdapter } from './adapters/mockProxyActionsSmartContractAdapter'
-import { vaultActionsLogic } from './vaultActionsLogic'
 
 describe('vaultActionsLogic', () => {
   describe('withdrawAndPayback', () => {
@@ -44,7 +43,7 @@ describe('vaultActionsLogic', () => {
         mockContextConnected,
       )
 
-      const proxyActionAddress = proxyActionCall[0]
+      const [proxyActionAddress] = proxyActionCall
 
       const methodCalled = proxyActionCall[1] as string
       const actualMethodName = JSON.parse(methodCalled).method
@@ -55,7 +54,7 @@ describe('vaultActionsLogic', () => {
       })
     }
 
-    const tests: Array<TestData> = [
+    const tests: TestData[] = [
       {
         testName:
           'should call wipeAllAndFreeETH() when withdrawAmount & paybackAmount is greater than zero, token is ETH and the shouldPaybackAll flag is true',
@@ -193,7 +192,7 @@ describe('vaultActionsLogic', () => {
         mockContextConnected,
       )
 
-      const proxyActionAddress = proxyActionCall[0]
+      const [proxyActionAddress] = proxyActionCall
 
       const methodCalled = proxyActionCall[1] as string
       const actualMethodName = JSON.parse(methodCalled).method
@@ -290,7 +289,7 @@ describe('vaultActionsLogic', () => {
         mockContextConnected,
       )
 
-      const proxyActionAddress = proxyActionCall[0]
+      const [proxyActionAddress] = proxyActionCall
 
       const methodCalled = proxyActionCall[1] as string
       const actualMethodName = JSON.parse(methodCalled).method
@@ -301,7 +300,7 @@ describe('vaultActionsLogic', () => {
       })
     }
 
-    const tests: Array<TestData> = [
+    const tests: TestData[] = [
       {
         testName:
           'should call openLockETHAndDraw() when depositAmount > zero, generateAmount > zero and token is ETH',

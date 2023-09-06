@@ -8,14 +8,13 @@ import {
 import { VaultResolve } from 'blockchain/calls/vaultResolver'
 import { createMockVaultResolver$ } from 'blockchain/calls/vaultResolver.mock'
 import { ContextConnected } from 'blockchain/network'
+import { ClaimTxnState } from 'features/bonus/bonusPipe'
+import { createMakerProtocolBonusAdapter } from 'features/bonus/makerProtocolBonusAdapter'
 import { TxHelpers } from 'helpers/context/types'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { protoTxHelpers } from 'helpers/protoTxHelpers'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { NEVER, Observable, of } from 'rxjs'
-
-import { ClaimTxnState } from './bonusPipe'
-import { createMakerProtocolBonusAdapter } from './makerProtocolBonusAdapter'
 
 function constructMakerProtocolBonusAdapterForTests({
   customVaultActionsLogicImp,
@@ -33,6 +32,7 @@ function constructMakerProtocolBonusAdapterForTests({
   const _txHelpers = customTxHelpersImp || of(protoTxHelpers)
   const _contextConnected = customContextConnectedImp || of(mockContextConnected)
   const _vaultResolver = customVaultResolverImp || createMockVaultResolver$
+
   return createMakerProtocolBonusAdapter(
     () => _vaultResolver(),
     () => of(new BigNumber('213546478530833333208')),
@@ -92,6 +92,7 @@ describe('makerProtocolBonusAdapter', () => {
       })
 
       const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
+
       getStateUnpacker(claimAllCbState!())
 
       expect(txHelpersMock.sendWithGasEstimation).toHaveBeenCalledWith(
@@ -166,6 +167,7 @@ describe('makerProtocolBonusAdapter', () => {
       })
 
       const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
+
       expect(claimAllCbState).toBeUndefined()
     })
 
@@ -176,6 +178,7 @@ describe('makerProtocolBonusAdapter', () => {
       })
 
       const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
+
       expect(claimAllCbState).toBeUndefined()
     })
   })

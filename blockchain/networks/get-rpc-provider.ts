@@ -1,8 +1,7 @@
+import { networkSetById } from 'blockchain/networks/network-helpers'
+import { NetworkIds } from 'blockchain/networks/network-ids'
+import { networksById } from 'blockchain/networks/networks-config'
 import { ethers } from 'ethers'
-
-import { networkSetById } from './network-helpers'
-import { NetworkIds } from './network-ids'
-import { networksById } from './networks-config'
 
 export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider {
   const provider = networkSetById[networkId]?.getReadProvider()
@@ -39,12 +38,16 @@ export function getRpcProvidersForLogs(networkId: NetworkIds): {
   const givenNetworkProvider = network?.getReadProvider()
 
   const parentNetwork = network.getParentNetwork()
+
   if (!parentNetwork) {
     ensureRpcProvider(givenNetworkProvider, networkId)
+
     return { mainProvider: givenNetworkProvider }
   }
 
   const parentNetworkProvider = parentNetwork?.getReadProvider()
+
   ensureRpcProvider(parentNetworkProvider, parentNetwork.id)
+
   return { mainProvider: parentNetworkProvider, forkProvider: givenNetworkProvider }
 }

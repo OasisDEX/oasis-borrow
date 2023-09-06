@@ -1,3 +1,4 @@
+import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
@@ -8,8 +9,6 @@ import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
-
-import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
 const PROXY_API_ENDPOINT_SWAP = `/api/exchange/v4.0/1/swap`
 
@@ -65,6 +64,7 @@ export function getTokenMetaData(
   tokens: Dictionary<ContractDesc, string>,
 ): TokenMetadata {
   const details = getToken(symbol)
+
   return {
     address: tokens[symbol].address,
     decimals: details.precision,
@@ -131,9 +131,9 @@ export const ETHEREUM_MAINNET_DEFAULT_PROTOCOLS = [
   'CURVE_V2_ETH_CVX',
   'CONVERGENCE_X',
   /* Disbled becuase wrong token price */
-  //'ONE_INCH_LIMIT_ORDER',
-  //'ONE_INCH_LIMIT_ORDER_V2',
-  //'ONE_INCH_LIMIT_ORDER_V3',
+  // 'ONE_INCH_LIMIT_ORDER',
+  // 'ONE_INCH_LIMIT_ORDER_V2',
+  // 'ONE_INCH_LIMIT_ORDER_V3',
   'DFX_FINANCE',
   'FIXED_FEE_SWAP',
   'DXSWAP',
@@ -222,7 +222,7 @@ export function getQuote$(
     action === 'BUY_COLLATERAL' ? quote.decimals : collateral.decimals,
   ).toFixed(0)
 
-  //TODO: set proper precision depending on token
+  // TODO: set proper precision depending on token
   const searchParams = new URLSearchParams({
     fromTokenAddress,
     toTokenAddress,
@@ -241,7 +241,7 @@ export function getQuote$(
   }
 
   if (amount.isZero() || amount.isNaN() || !amount.isFinite() || _1inchAmount === '0') {
-    //this is not valid 1inch call
+    // this is not valid 1inch call
 
     return of({
       ...responseBase,
@@ -250,7 +250,7 @@ export function getQuote$(
       quoteAmount: amountFromWei(new BigNumber(0)),
       tokenPrice: new BigNumber(0),
       tx: {
-        //empty payload
+        // empty payload
         data: '',
         from: '',
         gas: 0,
@@ -314,7 +314,7 @@ export function createExchangeQuote$(
   return context$.pipe(
     switchMap((context) => {
       const contracts = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
-      const tokensMainnet = contracts.tokensMainnet
+      const { tokensMainnet } = contracts
       const exchange = contracts[exchangeType]
 
       const quote = getTokenMetaData(quoteToken || 'DAI', tokensMainnet)

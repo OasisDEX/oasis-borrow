@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
@@ -5,21 +6,19 @@ import { MessageCard } from 'components/MessageCard'
 import { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { StopLossAaveErrorMessage, StrategyInformationContainer } from 'features/aave/components'
+import {
+  BalanceAfterClose,
+  calculateMaxCollateralAmount,
+  calculateMaxDebtAmount,
+  ManageAaveStateProps,
+} from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import { curry } from 'ramda'
-import React from 'react'
 import { Grid, Text } from 'theme-ui'
-
-import {
-  BalanceAfterClose,
-  calculateMaxCollateralAmount,
-  calculateMaxDebtAmount,
-  ManageAaveStateProps,
-} from './SidebarManageAaveVault'
 
 export function GetReviewingSidebarProps({
   state,
@@ -83,6 +82,7 @@ export function GetReviewingSidebarProps({
       const amountCollateralTooHigh = maxCollateralAmount.lt(
         state.context.manageTokenInput?.manageTokenActionValue || zero,
       )
+
       return {
         title: t('system.manage-collateral'),
         content: (
@@ -104,7 +104,7 @@ export function GetReviewingSidebarProps({
               currencyDigits={getToken(collateral).digits}
               maxAmountLabel={t('balance')}
               maxAmount={maxCollateralAmount}
-              showMax={true}
+              showMax
               onSetMax={() => {
                 updateTokenActionValue(maxCollateralAmount)
               }}
@@ -143,6 +143,7 @@ export function GetReviewingSidebarProps({
       const amountDebtTooHigh = maxDebtAmount.lt(
         state.context.manageTokenInput?.manageTokenActionValue || zero,
       )
+
       return {
         title: t('system.manage-debt'),
         content: (
@@ -164,7 +165,7 @@ export function GetReviewingSidebarProps({
               currencyDigits={getToken(debt).digits}
               maxAmountLabel={t('balance')}
               maxAmount={maxDebtAmount}
-              showMax={true}
+              showMax
               onSetMax={() => {
                 updateTokenActionValue(maxDebtAmount)
               }}

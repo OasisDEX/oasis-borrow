@@ -1,3 +1,4 @@
+import React from 'react'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
@@ -9,7 +10,6 @@ import { AjnaEarnFormContentOpen } from 'features/ajna/positions/earn/sidebars/A
 import { AjnaEarnFormOrder } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormOrder'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function AjnaEarnFormController() {
   const { t } = useTranslation()

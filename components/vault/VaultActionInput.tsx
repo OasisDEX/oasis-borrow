@@ -1,3 +1,4 @@
+import React, { ChangeEvent, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { FIAT_PRECISION } from 'components/constants'
@@ -6,7 +7,6 @@ import { formatAmount, formatBigNumber, formatCryptoBalance } from 'helpers/form
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { TranslateStringType } from 'helpers/translateStringType'
 import { one, zero } from 'helpers/zero'
-import React, { ChangeEvent, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Grid, Text } from 'theme-ui'
 

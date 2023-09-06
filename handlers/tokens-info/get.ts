@@ -23,6 +23,7 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
 
   // Load tokens from db if possible
   let tokensFromDb: Tokens[] = []
+
   try {
     tokensFromDb = await readTokensFromDb(lowerCasedAddresses, chainId)
 
@@ -36,6 +37,7 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
   // Load tokens from api
   let tokensFromApi: Tokens[] = []
   const addressesFromDb = tokensFromDb.map((token) => token.address)
+
   try {
     tokensFromApi = await readTokensFromApi(
       lowerCasedAddresses.filter((address) => !addressesFromDb.includes(address)),
@@ -53,6 +55,7 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
   // Load tokens from blockchain
   let tokensFromBlockchain: Tokens[] = []
   const addressesFromApi = tokensFromApi.map((token) => token.address)
+
   try {
     tokensFromBlockchain = await readTokensFromBlockchain({
       addresses: lowerCasedAddresses.filter(
@@ -66,6 +69,7 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json([...tokensFromDb, ...tokensFromApi, ...tokensFromBlockchain])
   } catch (e) {
     console.error(`Error while loading tokens from blockchain: ${e}`)
+
     return res.status(200).json([...tokensFromDb, ...tokensFromApi, ...tokensFromBlockchain])
   }
 }

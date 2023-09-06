@@ -1,11 +1,11 @@
-import { debounce } from 'lodash'
 import { useCallback, useEffect } from 'react'
+import { debounce } from 'lodash'
 
 // Hook which listen for given value changes and after specified delay when change does not occur calls callback
 export function useDebouncedCallback<T>(
   callback: (value: T) => void,
   value: T,
-  delay: number = 1000, // milliseconds
+  delay = 1000, // milliseconds
 ) {
   const debouncedCallback = useCallback(debounce(callback, delay), [])
 

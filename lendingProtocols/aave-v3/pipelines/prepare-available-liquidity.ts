@@ -18,6 +18,7 @@ export function prepareaaveAvailableLiquidityInUSDC$(
   return combineLatest(getAaveLikeReserveData$(reserveDataToken), getWETHPrice$).pipe(
     map(([reserveData, USD_in_WETH_price]: PrepareAaveAvailableLiquidityProps) => {
       const availableLiquidityInETH = reserveData.availableLiquidity
+
       return availableLiquidityInETH.times(USD_in_WETH_price)
     }),
     catchError((error) => {
@@ -25,6 +26,7 @@ export function prepareaaveAvailableLiquidityInUSDC$(
         `Can't get Aave V3 available liquidity for ${JSON.stringify(reserveDataToken, null, 2)}`,
         error,
       )
+
       return of(zero)
     }),
   )

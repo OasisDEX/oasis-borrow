@@ -1,8 +1,8 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Button, Flex, Spinner, Text } from 'theme-ui'
 
 type ReclaimCollateralButtonProps = {

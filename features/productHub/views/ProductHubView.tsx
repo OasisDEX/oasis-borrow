@@ -1,3 +1,4 @@
+import React, { FC, Fragment, ReactNode, useMemo, useState } from 'react'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { ProductHubLoadingState } from 'features/productHub/components'
@@ -18,7 +19,6 @@ import { PromoCardsCollection } from 'handlers/product-hub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { FC, Fragment, ReactNode, useMemo, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 interface ProductHubViewProps {

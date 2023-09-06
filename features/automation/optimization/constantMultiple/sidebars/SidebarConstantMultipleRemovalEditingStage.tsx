@@ -1,3 +1,4 @@
+import React from 'react'
 import { useAutomationContext } from 'components/context'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -7,7 +8,6 @@ import { CancelConstantMultipleInfoSection } from 'features/automation/optimizat
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Text } from 'theme-ui'
 
 interface SidebarConstantMultipleRemovalEditingStageProps {

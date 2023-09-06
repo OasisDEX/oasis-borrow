@@ -15,11 +15,10 @@ import { ProductHubProductType } from 'features/productHub/types'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
+import { sparkV3ProductHubProducts } from 'handlers/product-hub/update-handlers/sparkV3/sparkV3Products'
 import { ensureFind } from 'helpers/ensure-find'
 import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { memoize } from 'lodash'
-
-import { sparkV3ProductHubProducts } from './sparkV3Products'
 
 type SparkV3Networks = NetworkNames.ethereumMainnet
 
@@ -50,6 +49,7 @@ const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Ticke
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
     const reserveData = await getSparkV3ReserveData({ token, networkId })
     const debtTokenPrice = new BigNumber(getTokenPrice(token, tickers))
+
     return {
       [token]: {
         liquidity: reserveData.totalSpToken
@@ -64,6 +64,7 @@ const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Ticke
   // reserveData -> max multiple
   const tokensReserveConfigurationDataPromises = primaryTokensList.map(async (token) => {
     const reserveConfigurationData = await getSparkV3ReserveConfigurationData({ token, networkId })
+
     return {
       [token]: {
         maxLtv: reserveConfigurationData.ltv,
@@ -75,6 +76,7 @@ const getSparkV3TokensData = async (networkName: SparkV3Networks, tickers: Ticke
     Promise.all(tokensReserveDataPromises),
     Promise.all(tokensReserveConfigurationDataPromises),
   ])
+
   return {
     [networkName]: {
       tokensReserveData,
@@ -94,10 +96,12 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     memoizedTokensData(networkName as SparkV3Networks, tickers),
   )
 
-  const yieldsPromisesMap: Record<
-    string,
-    (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveLikeYieldsResponse>
-  > = {
+  const yieldsPromisesMap: {
+    [key: string]: (
+      risk: RiskRatio,
+      fields: FilterYieldFieldsType[],
+    ) => Promise<AaveLikeYieldsResponse>
+  } = {
     'WSTETH/ETH': emptyYields,
     'RETH/ETH': emptyYields,
   }
@@ -130,15 +134,18 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           ),
         )[product.primaryToken].riskRatio
     const response = await yieldsPromisesMap[product.label](riskRatio, ['7Days'])
+
     return {
       [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
     }
   })
+
   return Promise.all([
     Promise.all(getSparkV3TokensDataPromises),
     Promise.all(earnProductsPromises),
   ]).then(([sparkV3TokensDataList, earnProductsYields]) => {
-    const sparkV3TokensData = sparkV3TokensDataList[0] // only one (ethereum) now
+    const [sparkV3TokensData] = sparkV3TokensDataList // only one (ethereum) now
+
     return {
       table: sparkV3ProductHubProducts.map((product) => {
         const { tokensReserveData, tokensReserveConfigurationData } =

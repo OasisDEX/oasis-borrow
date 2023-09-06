@@ -30,6 +30,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
   describe('editing collateral', () => {
     it('should start by default in an collateral editing stage', () => {
       const state = getStateUnpacker(mockManageVault$())
+
       expect(state().stage).toBe('collateralEditing')
       expect(state().vault.lockedCollateral).toEqual(defaultCollateral)
       expect(state().vault.debt).toEqual(defaultDebt)
@@ -181,6 +182,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
   describe('editing dai', () => {
     it('should toggle to daiEditing stage', () => {
       const state = getStateUnpacker(mockManageVault$())
+
       expect(state().stage).toEqual('collateralEditing')
       state().toggle!('daiEditing')
       expect(state().stage).toEqual('daiEditing')
@@ -196,6 +198,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           },
         }),
       )
+
       state().toggle!('daiEditing')
       state().updateGenerate!(generateAmount)
       expect(state().generateAmount!).toEqual(generateAmount)
@@ -213,6 +216,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           },
         }),
       )
+
       state().toggle!('daiEditing')
       state().updateDeposit!(depositAmount)
       expect(state().depositAmount!).toBeUndefined()
@@ -255,6 +259,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           },
         }),
       )
+
       state().toggle!('daiEditing')
       state().updateWithdraw!(withdrawAmount)
       expect(state().withdrawAmount!).toBeUndefined()
@@ -311,6 +316,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           collateralAllowance: maxUint256,
         }),
       )
+
       state().toggle!('daiEditing')
       state().updateGenerate!(generateAmount)
       state().toggleDepositAndGenerateOption!()
@@ -331,6 +337,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           },
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().toggleDepositAndGenerateOption!()
       state().updateGenerate!(generateAmount)
@@ -491,6 +498,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           },
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).toEqual('proxyWaitingForConfirmation')
@@ -513,6 +521,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           },
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).toEqual('proxyWaitingForConfirmation')
@@ -535,6 +544,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           },
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).toEqual('proxyWaitingForConfirmation')
@@ -561,6 +571,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           },
         }),
       )
+
       _proxyAddress$.next()
       expect(state().proxyAddress).toBeUndefined()
       state().updateDeposit!(depositAmount)
@@ -625,6 +636,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           proxyAddress: DEFAULT_PROXY_ADDRESS,
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).toEqual('manageWaitingForConfirmation')
@@ -648,6 +660,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           proxyAddress: DEFAULT_PROXY_ADDRESS,
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).toEqual('manageWaitingForConfirmation')
@@ -671,6 +684,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           proxyAddress: DEFAULT_PROXY_ADDRESS,
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).toEqual('manageWaitingForConfirmation')
@@ -696,6 +710,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
           proxyAddress: DEFAULT_PROXY_ADDRESS,
         }),
       )
+
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).toEqual('manageWaitingForConfirmation')
@@ -794,6 +809,7 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
 
     it('should handle previously selected editing stage when going back and forth from multiply transition stages', () => {
       const state = getStateUnpacker(mockManageVault$())
+
       expect(state().stage).toBe('collateralEditing')
 
       state().toggle!('multiplyTransitionEditing')

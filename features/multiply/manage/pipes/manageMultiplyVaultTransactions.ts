@@ -18,6 +18,10 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
+import {
+  ManageMultiplyVaultChange,
+  ManageMultiplyVaultState,
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { checkIfGnosisSafe } from 'helpers/checkIfGnosisSafe'
 import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
@@ -26,8 +30,6 @@ import { TxError } from 'helpers/types'
 import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
-
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type ProxyChange =
   | {
@@ -113,6 +115,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'proxyInProgress') {
     const { proxyTxHash } = change
+
     return {
       ...state,
       stage: 'proxyInProgress',
@@ -122,11 +125,13 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'proxyFailure') {
     const { txError } = change
+
     return { ...state, stage: 'proxyFailure', txError }
   }
 
   if (change.kind === 'proxyConfirming') {
     const { proxyConfirmations } = change
+
     return {
       ...state,
       proxyConfirmations,
@@ -135,6 +140,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'proxySuccess') {
     const { proxyAddress } = change
+
     return {
       ...state,
       proxyAddress,
@@ -151,6 +157,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'collateralAllowanceInProgress') {
     const { collateralAllowanceTxHash } = change
+
     return {
       ...state,
       collateralAllowanceTxHash,
@@ -160,6 +167,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'collateralAllowanceFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'collateralAllowanceFailure',
@@ -169,6 +177,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'collateralAllowanceSuccess') {
     const { collateralAllowance } = change
+
     return { ...state, stage: 'collateralAllowanceSuccess', collateralAllowance }
   }
 
@@ -181,6 +190,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'daiAllowanceInProgress') {
     const { daiAllowanceTxHash } = change
+
     return {
       ...state,
       daiAllowanceTxHash,
@@ -190,6 +200,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'daiAllowanceFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'daiAllowanceFailure',
@@ -199,6 +210,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'daiAllowanceSuccess') {
     const { daiAllowance } = change
+
     return { ...state, stage: 'daiAllowanceSuccess', daiAllowance }
   }
 
@@ -211,6 +223,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'manageInProgress') {
     const { manageTxHash } = change
+
     return {
       ...state,
       manageTxHash,
@@ -220,6 +233,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
   if (change.kind === 'manageFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'manageFailure',
@@ -254,6 +268,7 @@ export function adjustPosition(
   }: ManageMultiplyVaultState,
 ) {
   const { tokensMainnet, defaultExchange } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+
   txHelpers$
     .pipe(
       first(),
@@ -681,6 +696,7 @@ export function applyEstimateGas(
     */
     const isGnosisSafeWallet = checkIfGnosisSafe(context)
     const GNOSIS_GAS_ESTIMATE = undefined
+
     if (isGnosisSafeWallet) return GNOSIS_GAS_ESTIMATE
 
     if (proxyAddress) {
@@ -713,8 +729,8 @@ export function applyEstimateGas(
           depositDai: depositDaiAmount || zero,
           withdrawCollateral: withdrawAmount || zero,
           withdrawDai: generateAmount || zero,
-          requiredDebt: requiredDebt,
-          borrowedCollateral: borrowedCollateral,
+          requiredDebt,
+          borrowedCollateral,
           userAddress: account!,
           proxyAddress: proxyAddress!,
           exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
@@ -725,58 +741,56 @@ export function applyEstimateGas(
           id,
           ilk,
         })
+      } else if (state.otherAction === 'closeVault' && !debt.isZero()) {
+        const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
+          closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
+
+        return estimateGas(closeVaultCall, {
+          kind: TxMetaKind.closeVault,
+          closeTo: closeVaultTo!,
+          token,
+          ilk,
+          id,
+          exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
+          exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
+          userAddress: account!,
+          totalCollateral: lockedCollateral,
+          totalDebt: debt.plus(debtOffset),
+          proxyAddress: proxyAddress!,
+          fromTokenAmount,
+          toTokenAmount,
+          minToTokenAmount,
+        })
       } else {
-        if (state.otherAction === 'closeVault' && !debt.isZero()) {
-          const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
-            closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
+        const isDepositAndGenerate = depositAmount || generateAmount
 
-          return estimateGas(closeVaultCall, {
-            kind: TxMetaKind.closeVault,
-            closeTo: closeVaultTo!,
-            token,
-            ilk,
-            id,
-            exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
-            exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
-            userAddress: account!,
-            totalCollateral: lockedCollateral,
-            totalDebt: debt.plus(debtOffset),
-            proxyAddress: proxyAddress!,
-            fromTokenAmount,
-            toTokenAmount,
-            minToTokenAmount,
-          })
+        if (isDepositAndGenerate) {
+          return estimateGas(
+            vaultActionsLogic(StandardDssProxyActionsContractAdapter).depositAndGenerate,
+            {
+              kind: TxMetaKind.depositAndGenerate,
+              generateAmount: generateAmount || zero,
+              depositAmount: depositAmount || zero,
+              proxyAddress: proxyAddress!,
+              ilk,
+              token,
+              id,
+            },
+          )
         } else {
-          const isDepositAndGenerate = depositAmount || generateAmount
-
-          if (isDepositAndGenerate) {
-            return estimateGas(
-              vaultActionsLogic(StandardDssProxyActionsContractAdapter).depositAndGenerate,
-              {
-                kind: TxMetaKind.depositAndGenerate,
-                generateAmount: generateAmount || zero,
-                depositAmount: depositAmount || zero,
-                proxyAddress: proxyAddress!,
-                ilk,
-                token,
-                id,
-              },
-            )
-          } else {
-            return estimateGas(
-              vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
-              {
-                kind: TxMetaKind.withdrawAndPayback,
-                withdrawAmount: withdrawAmount || zero,
-                paybackAmount: paybackAmount || zero,
-                proxyAddress: proxyAddress!,
-                ilk,
-                token,
-                id,
-                shouldPaybackAll,
-              },
-            )
-          }
+          return estimateGas(
+            vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
+            {
+              kind: TxMetaKind.withdrawAndPayback,
+              withdrawAmount: withdrawAmount || zero,
+              paybackAmount: paybackAmount || zero,
+              proxyAddress: proxyAddress!,
+              ilk,
+              token,
+              id,
+              shouldPaybackAll,
+            },
+          )
         }
       }
     }

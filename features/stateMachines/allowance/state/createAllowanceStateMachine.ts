@@ -46,6 +46,7 @@ function getEffectiveAllowanceAmount(context: AllowanceStateMachineContext) {
   if (context.allowanceType === 'minimum') {
     return context.minimumAmount
   }
+
   return context.amount!
 }
 
@@ -53,6 +54,7 @@ function isAllowanceValid(context: AllowanceStateMachineContext) {
   if (context.allowanceType === 'custom') {
     return context.amount?.gte(context.minimumAmount) ?? false
   }
+
   return true
 }
 
@@ -205,6 +207,7 @@ export function createAllowanceStateMachine(
           if (context.refTransactionMachine && context.refTransactionMachine.stop) {
             context.refTransactionMachine.stop()
           }
+
           return undefined
         }),
         sendAllowanceSetEvent: sendParent((context) => ({
@@ -217,6 +220,7 @@ export function createAllowanceStateMachine(
       services: {
         runTransaction: (context) => async (sendBack, _onReceive) => {
           const contracts = getNetworkContracts(context.networkId!)
+
           ensureEtherscanExist(context.networkId!, contracts)
 
           const { etherscan } = contracts

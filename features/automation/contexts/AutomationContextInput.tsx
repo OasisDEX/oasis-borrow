@@ -1,3 +1,4 @@
+import React, { PropsWithChildren, useMemo } from 'react'
 import {
   AutomationCommonData,
   AutomationContextProvider,
@@ -13,7 +14,6 @@ import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
-import React, { PropsWithChildren, useMemo } from 'react'
 
 interface GeneralManageControlProps {
   positionData: AutomationPositionData

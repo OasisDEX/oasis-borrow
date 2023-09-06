@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
+import { buildPosition, collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { zero } from 'helpers/zero'
 
-import { buildPosition, collateralPriceAtRatio } from './vault.maths'
-
-//TODO: [Mocha -> Jest] Rewrite in Jest compatible format.
+// TODO: [Mocha -> Jest] Rewrite in Jest compatible format.
 describe.skip('vault maths', () => {
   describe('collateralPriceAtRatioThreshold', () => {
     it('converts', () => {

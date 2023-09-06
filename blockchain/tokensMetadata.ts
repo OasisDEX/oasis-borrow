@@ -42,12 +42,13 @@ export const tokens: TokenConfig[] = [...tokenConfigs]
 export const tokensBySymbol = keyBy(tokens, 'symbol')
 
 export type TokenSymbolType = ElementOf<typeof tokens>['symbol']
-export type TokenMetadataType = (typeof tokens)[number]
+export type TokenMetadataType = typeof tokens[number]
 
 export function getToken(tokenSymbol: TokenSymbolType): TokenMetadataType {
   if (!tokensBySymbol[tokenSymbol]) {
     throw new Error(`No meta information for token: ${tokenSymbol}`)
   }
+
   return tokensBySymbol[tokenSymbol]
 }
 
@@ -61,6 +62,7 @@ export function getTokens(tokenSymbol: TokenSymbolType[]): typeof tokens {
   if (tokenSymbol instanceof Array) {
     return tokenSymbol.map(getToken)
   }
+
   throw new Error(`tokenSymbol should be an array, got ${tokenSymbol}`)
 }
 
@@ -70,6 +72,7 @@ export function getTokenSymbolFromAddress(chainId: NetworkIds, tokenAddress: str
     getNetworkContracts(NetworkIds.MAINNET, chainId).tokens,
     (contractDesc) => contractDesc.address.toLowerCase() === tokenAddress.toLowerCase(),
   )
+
   if (!token) {
     throw new Error(`could not find token for address ${tokenAddress}`)
   }
@@ -79,6 +82,7 @@ export function getTokenSymbolFromAddress(chainId: NetworkIds, tokenAddress: str
 
 export function getTokenSymbolBasedOnAddress(chainId: NetworkIds, tokenAddress: string) {
   const contracts = getNetworkContracts(chainId)
+
   ensureTokensExist(chainId, contracts)
   const { tokens } = contracts
 
@@ -86,6 +90,7 @@ export function getTokenSymbolBasedOnAddress(chainId: NetworkIds, tokenAddress: 
     tokens,
     (contractDesc) => contractDesc.address.toLowerCase() === tokenAddress.toLowerCase(),
   )
+
   if (!token) {
     throw new Error(`could not find token for address ${tokenAddress} for chain ${chainId}`)
   }
@@ -113,7 +118,7 @@ export const ETH_TOKENS = tokens
 
 export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']
 
-const ALLOWED_AUTOMATION_ILKS: Partial<Record<NetworkIds, string[]>> = {
+const ALLOWED_AUTOMATION_ILKS: Partial<{ [key: NetworkIds]: string[] }> = {
   [NetworkIds.MAINNET]: [
     'ETH-A',
     'ETH-B',

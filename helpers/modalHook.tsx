@@ -48,6 +48,7 @@ export function ModalProvider(props: { children?: React.ReactNode }) {
       modalComponentProps: modalProps,
     })
   }
+
   // Adding this to the context so that we can close the modal from anywhere
   // without having to pass the close function down the component tree
   openModal.close = close

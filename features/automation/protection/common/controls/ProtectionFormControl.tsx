@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { useAutomationContext } from 'components/context'
 import {
   getAvailableAutomation,
@@ -14,7 +15,6 @@ import { StopLossFormControl } from 'features/automation/protection/stopLoss/con
 import { TxHelpers } from 'helpers/context/types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React, { useEffect } from 'react'
 
 interface ProtectionFormControlProps {
   txHelpers?: TxHelpers

@@ -1,3 +1,4 @@
+import React from 'react'
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { ProductContextHandler } from 'components/context'
@@ -12,7 +13,6 @@ import { LendingProtocolLabel } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -26,10 +26,11 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
 function Dsr({ walletAddress }: { walletAddress: string }) {
   const { t } = useTranslation()
+
   return (
     <ProductContextHandler>
       <WithFeatureToggleRedirect feature="DaiSavingsRate">
-        <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
+        <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet>
           <WithTermsOfService>
             <WithWalletAssociatedRisk>
               <PageSEOTags

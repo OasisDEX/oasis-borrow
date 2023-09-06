@@ -1,7 +1,6 @@
 import React from 'react'
+import { AppLink } from 'components/Links'
 import { Flex, Heading, Text } from 'theme-ui'
-
-import { AppLink } from './Links'
 
 interface ProductHeaderProps {
   title: string

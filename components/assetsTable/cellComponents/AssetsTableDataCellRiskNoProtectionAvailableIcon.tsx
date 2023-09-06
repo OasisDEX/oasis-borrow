@@ -4,6 +4,7 @@ import { Button } from 'theme-ui'
 
 export function AssetsTableDataCellRiskNoProtectionAvailableIcon() {
   const { t } = useTranslation()
+
   return (
     <Button
       variant="action"

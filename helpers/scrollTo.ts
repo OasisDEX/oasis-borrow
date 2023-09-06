@@ -6,6 +6,7 @@ export function scrollTo(elementId: string) {
         void 0
       }
     }
+
     return document.querySelectorAll(`#${elementId}`)[0]?.scrollIntoView({ behavior: 'smooth' })
   }
 }

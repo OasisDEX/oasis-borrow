@@ -1,7 +1,6 @@
-import { render } from '@testing-library/react'
 import React from 'react'
-
-import { interpolate } from './interpolate'
+import { render } from '@testing-library/react'
+import { interpolate } from 'helpers/interpolate'
 
 describe('Interpolate', () => {
   it('should parse string without any components', () => {
@@ -64,6 +63,7 @@ describe('Interpolate', () => {
   it('should handle undefined components', () => {
     const result = interpolate('<0> in </0>', {})
     const { container } = render(<div>{result}</div>)
+
     expect(container).toHaveTextContent('in')
   })
 })

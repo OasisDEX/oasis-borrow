@@ -19,5 +19,6 @@ import {
 export function legacyToggle(state: ManageMultiplyVaultState) {
   const stages: ManageMultiplyVaultEditingStage[] = ['adjustPosition', 'otherActions']
   const targetStage = stages.find((stage) => stage !== state.stage)
+
   state.toggle!(targetStage!)
 }

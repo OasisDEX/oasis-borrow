@@ -1,3 +1,4 @@
+import React from 'react'
 import { useAutomationContext } from 'components/context'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -7,7 +8,6 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Text } from 'theme-ui'
 
 function AutoSellInfoSectionControl() {

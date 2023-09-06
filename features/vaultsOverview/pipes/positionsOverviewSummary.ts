@@ -1,12 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { Tickers } from 'blockchain/prices'
 import { tokenList } from 'components/swapWidget/tokenList'
+import { AssetAction } from 'features/vaultsOverview/pipes/assetActions'
 import { zero } from 'helpers/zero'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { debounceTime, distinctUntilChanged, map, shareReplay } from 'rxjs/operators'
-
-import { AssetAction } from './assetActions'
 
 export type PositionView = {
   token: string
@@ -15,7 +14,7 @@ export type PositionView = {
   url?: string
   proportion?: BigNumber
   missingPriceData: boolean
-  actions?: Array<AssetAction>
+  actions?: AssetAction[]
 }
 
 function isPosition(thing: Position | WalletAssets): thing is Position {
@@ -37,26 +36,27 @@ type WalletAssets = {
   balanceUsd: BigNumber
   missingPriceData: boolean
   token: string
-  assetActions: Array<AssetAction>
+  assetActions: AssetAction[]
 }
 
 export type TopAssetsAndPositionsViewModal = {
-  assetsAndPositions: Array<PositionView>
+  assetsAndPositions: PositionView[]
   percentageOther: BigNumber
   totalValueUsd: BigNumber
 }
 
-const tokensWeCareAbout: Array<string> = uniq(tokenList.tokens.map((t) => t.symbol.toUpperCase()))
+const tokensWeCareAbout: string[] = uniq(tokenList.tokens.map((t) => t.symbol.toUpperCase()))
+
 tokensWeCareAbout.push('ETH')
 
 export function createPositionsOverviewSummary$(
   walletBalance$: (token: string, address: string) => Observable<BigNumber>,
-  createTokenPriceInUSD$: (tokens: Array<string>) => Observable<Tickers>,
+  createTokenPriceInUSD$: (tokens: string[]) => Observable<Tickers>,
   createPositions$: (address: string) => Observable<Position[]>,
-  createAssetActions$: (token: string) => Observable<Array<AssetAction>>,
+  createAssetActions$: (token: string) => Observable<AssetAction[]>,
   address: string,
 ): Observable<TopAssetsAndPositionsViewModal> {
-  const tokenBalances$: Observable<Array<WalletAssets>> = combineLatest(
+  const tokenBalances$: Observable<WalletAssets[]> = combineLatest(
     tokensWeCareAbout.map((t) =>
       combineLatest(
         walletBalance$(t, address),
@@ -90,16 +90,19 @@ export function createPositionsOverviewSummary$(
         .sort((tokenA, tokenB) => {
           const tokenAUsdAmount = getPositionOrAssetValue(tokenA)
           const tokenBUsdAmount = getPositionOrAssetValue(tokenB)
+
           if (!tokenAUsdAmount) {
             return 1 // push a to bottom
           }
           if (!tokenBUsdAmount) {
             return -1 // push b to bottom
           }
+
           return tokenBUsdAmount.minus(tokenAUsdAmount).toNumber()
         })
         .filter((token) => {
           const valueUsd = getPositionOrAssetValue(token)
+
           return (
             valueUsd.decimalPlaces(2).gt(zero) ||
             ((token as WalletAssets)?.missingPriceData && valueUsd.decimalPlaces(2).gt(zero))
@@ -109,7 +112,7 @@ export function createPositionsOverviewSummary$(
   )
 
   // consolidate to view model
-  const assetsAndPositions$: Observable<Array<PositionView>> = flattenedTokensAndPositions$.pipe(
+  const assetsAndPositions$: Observable<PositionView[]> = flattenedTokensAndPositions$.pipe(
     map((flattenedTokenBalances) =>
       flattenedTokenBalances.map((assetOrPosition) => {
         if (isPosition(assetOrPosition)) {
@@ -161,6 +164,7 @@ export function createPositionsOverviewSummary$(
           .slice(0, 5)
           .reduce((acc, { contentsUsd }) => acc.plus(contentsUsd || zero), zero)
         const percentageOther = totalAssetsUsd.minus(top5Sum).div(totalAssetsUsd).times(100)
+
         return [assetsAndPositions, percentageOther, totalAssetsUsd] as [
           PositionView[],
           BigNumber,

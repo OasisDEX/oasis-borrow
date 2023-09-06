@@ -1,8 +1,8 @@
+import React, { ReactElement, useState } from 'react'
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithChildren } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { ReactElement, useState } from 'react'
 import { Box, Grid, Link, SxStyleProp, Text } from 'theme-ui'
 
 function getHeadingId(text: string) {
@@ -27,11 +27,14 @@ export function FaqLayout({
   const [sectionId, setSectionId] = useState<string>(anchors[0].id)
 
   // Divide markdown into sections delimited by headings
-  const sections: Record<string, React.ReactNode[]> = {}
+  const sections: { [key: string]: React.ReactNode[] } = {}
+
   for (let i = 0; i < childrenArray.length; i++) {
     const comp = childrenArray[i]
+
     if (isHeading(comp)) {
       const id = getHeadingId((comp as ReactElement).props.children)
+
       sections[id] = []
       do {
         sections[id].push(childrenArray[i])
@@ -42,10 +45,11 @@ export function FaqLayout({
   }
 
   const quoteColors = ['success100', 'interactive100', 'primary60']
-  const quoteColorsSx = quoteColors.reduce((obj: Record<string, SxStyleProp>, color, index) => {
+  const quoteColorsSx = quoteColors.reduce((obj: { [key: string]: SxStyleProp }, color, index) => {
     obj[`:nth-of-type(${quoteColors.length}n-${quoteColors.length - index - 1})`] = {
       borderColor: color,
     }
+
     return obj
   }, {})
 

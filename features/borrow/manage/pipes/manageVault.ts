@@ -18,6 +18,30 @@ import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTrigge
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { BorrowManageAdapterInterface } from 'features/borrow/manage/pipes/adapters/borrowManageAdapterInterface'
+import {
+  finalValidation,
+  validateErrors,
+  validateWarnings,
+} from 'features/borrow/manage/pipes/manageVaultValidations'
+import { ManageVaultAllowanceChange } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultAllowances'
+import { ManageVaultCalculations } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultCalculations'
+import { ManageVaultConditions } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultConditions'
+import { ManageVaultEnvironmentChange } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultEnvironment'
+import { ManageVaultFormChange } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultForm'
+import { ManageVaultInputChange } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultInput'
+import { ManageVaultSummary } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultSummary'
+import {
+  applyEstimateGas,
+  createProxy,
+  ManageVaultTransactionChange,
+  setCollateralAllowance,
+  setDaiAllowance,
+} from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
+import {
+  ManageVaultTransitionChange,
+  progressManage,
+} from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransitions'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
@@ -36,27 +60,6 @@ import { LendingProtocol } from 'lendingProtocols'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
-
-import { BorrowManageAdapterInterface } from './adapters/borrowManageAdapterInterface'
-import { finalValidation, validateErrors, validateWarnings } from './manageVaultValidations'
-import { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
-import { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations'
-import { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions'
-import { ManageVaultEnvironmentChange } from './viewStateTransforms/manageVaultEnvironment'
-import { ManageVaultFormChange } from './viewStateTransforms/manageVaultForm'
-import { ManageVaultInputChange } from './viewStateTransforms/manageVaultInput'
-import { ManageVaultSummary } from './viewStateTransforms/manageVaultSummary'
-import {
-  applyEstimateGas,
-  createProxy,
-  ManageVaultTransactionChange,
-  setCollateralAllowance,
-  setDaiAllowance,
-} from './viewStateTransforms/manageVaultTransactions'
-import {
-  ManageVaultTransitionChange,
-  progressManage,
-} from './viewStateTransforms/manageVaultTransitions'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -360,8 +363,8 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   showPaybackAndWithdrawOption: false,
   collateralAllowanceAmount: maxUint256,
   daiAllowanceAmount: maxUint256,
-  selectedCollateralAllowanceRadio: 'unlimited' as 'unlimited',
-  selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
+  selectedCollateralAllowanceRadio: 'unlimited' as const,
+  selectedDaiAllowanceRadio: 'unlimited' as const,
 }
 
 export function createManageVault$<V extends Vault, VS extends ManageStandardBorrowVaultState>(
@@ -388,6 +391,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
   return context$.pipe(
     switchMap((context) => {
       const account = context.status === 'connected' ? context.account : undefined
+
       return vault$(id, context.chainId).pipe(
         first(),
         switchMap((vault) => {
@@ -401,6 +405,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
             first(),
             switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress, proxyActionsAdapter]) => {
               const vaultActions = vaultActionsLogic(proxyActionsAdapter)
+
               vault.chainId = context.chainId
               const collateralAllowance$ =
                 account && proxyAddress

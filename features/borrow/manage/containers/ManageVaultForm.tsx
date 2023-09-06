@@ -1,3 +1,4 @@
+import React, { ReactNode } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TextWithCheckmark } from 'components/TextWithCheckmark'
 import { ManageVaultCollateralAllowance } from 'components/vault/commonMultiply/ManageVaultCollateralAllowance'
@@ -8,19 +9,21 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { ManageVaultButton } from 'features/borrow/manage/containers/ManageVaultButton'
+import {
+  ManageVaultConfirmation,
+  ManageVaultConfirmationStatus,
+} from 'features/borrow/manage/containers/ManageVaultConfirmation'
+import { ManageVaultEditing } from 'features/borrow/manage/containers/ManageVaultEditing'
 import { ManageVaultFormHeader } from 'features/borrow/manage/containers/ManageVaultFormHeader'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
 import { Box, Divider, Grid, Text } from 'theme-ui'
-
-import { ManageVaultButton } from './ManageVaultButton'
-import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
-import { ManageVaultEditing } from './ManageVaultEditing'
 
 function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
+
   return stage === 'multiplyTransitionEditing' ? (
     <Grid mt={-3}>
       <Grid variant="text.paragraph3" sx={{ color: 'neutral80' }}>
@@ -93,7 +96,7 @@ export function ManageVaultForm(
         />
       )}
       {isDaiAllowanceStage && (
-        <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token={'DAI'} />
+        <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token="DAI" />
       )}
       {isManageStage && <ManageVaultConfirmationStatus {...props} />}
     </VaultFormContainer>

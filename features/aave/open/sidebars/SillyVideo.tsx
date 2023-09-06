@@ -1,5 +1,5 @@
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { useEffect, useRef } from 'react'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 
 export function SillyVideo({
   playVideo,
@@ -9,6 +9,7 @@ export function SillyVideo({
   onVideoEnd: () => void
 }) {
   const vidRef = useRef<HTMLVideoElement>(null)
+
   useEffect(() => {
     if (!document.createElement('video').canPlayType('video/webm')) {
       onVideoEnd()
@@ -20,6 +21,7 @@ export function SillyVideo({
       void vidRef.current.play()
     }
   }, [playVideo])
+
   return (
     <video
       style={{

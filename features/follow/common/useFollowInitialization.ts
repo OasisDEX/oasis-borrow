@@ -1,6 +1,6 @@
+import { useEffect } from 'react'
 import { FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE } from 'features/follow/common/followedVaultsLimitReached'
 import { uiChanges } from 'helpers/uiChanges'
-import { useEffect } from 'react'
 
 export function useFollowInitialization({ isLimitReached }: { isLimitReached: boolean }) {
   useEffect(() => {
@@ -9,5 +9,6 @@ export function useFollowInitialization({ isLimitReached }: { isLimitReached: bo
       isLimitReached,
     })
   }, [isLimitReached])
+
   return isLimitReached
 }

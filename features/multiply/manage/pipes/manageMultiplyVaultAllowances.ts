@@ -1,7 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
-
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
+import {
+  ManageMultiplyVaultChange,
+  ManageMultiplyVaultState,
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
 
 export const allowanceDefaults: Partial<ManageMultiplyVaultState> = {
   collateralAllowanceAmount: maxUint256,
@@ -63,6 +65,7 @@ export function applyManageVaultAllowance(
 ): ManageMultiplyVaultState {
   if (change.kind === 'collateralAllowance') {
     const { collateralAllowanceAmount } = change
+
     return {
       ...state,
       collateralAllowanceAmount,
@@ -71,6 +74,7 @@ export function applyManageVaultAllowance(
 
   if (change.kind === 'collateralAllowanceAsDepositAmount') {
     const { depositAmount } = state
+
     return {
       ...state,
       selectedCollateralAllowanceRadio: 'depositAmount',
@@ -96,6 +100,7 @@ export function applyManageVaultAllowance(
 
   if (change.kind === 'daiAllowance') {
     const { daiAllowanceAmount } = change
+
     return {
       ...state,
       daiAllowanceAmount,
@@ -107,6 +112,7 @@ export function applyManageVaultAllowance(
       paybackAmount,
       vault: { debtOffset },
     } = state
+
     return {
       ...state,
       selectedDaiAllowanceRadio: 'actionAmount',
@@ -119,6 +125,7 @@ export function applyManageVaultAllowance(
       depositDaiAmount,
       vault: { debtOffset },
     } = state
+
     return {
       ...state,
       selectedDaiAllowanceRadio: 'actionAmount',

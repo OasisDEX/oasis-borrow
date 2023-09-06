@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { IMultiplyStrategy, IPosition, IStrategy, OPERATION_NAMES } from '@oasisdex/dma-library'
 import { useActor } from '@xstate/react'
@@ -12,6 +13,8 @@ import { Skeleton } from 'components/Skeleton'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { ConnectedSidebarSection, StrategyInformationContainer } from 'features/aave/components'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import { GetReviewingSidebarProps } from 'features/aave/manage/sidebars/GetReviewingSidebarProps'
+import { ManageAaveReviewingStateView } from 'features/aave/manage/sidebars/ManageAaveReviewingStateView'
 import {
   ManageAaveContext,
   ManageAaveEvent,
@@ -26,13 +29,9 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
-import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
-
-import { GetReviewingSidebarProps } from './GetReviewingSidebarProps'
-import { ManageAaveReviewingStateView } from './ManageAaveReviewingStateView'
 
 export interface ManageAaveAutomation {
   stopLoss: {
@@ -61,6 +60,7 @@ export function isLoading(state: ManageAaveStateMachineState) {
 
 export function isLocked(state: ManageAaveStateMachineState) {
   const { ownerAddress, web3Context } = state.context
+
   return !(allDefined(ownerAddress, web3Context) && ownerAddress === web3Context!.account)
 }
 
@@ -69,6 +69,7 @@ export function textButtonReturningToAdjust({
   send,
 }: ManageAaveStateProps): Pick<SidebarSectionProps, 'textButton'> {
   const { t } = useTranslation()
+
   if (state.can('BACK_TO_EDITING')) {
     return {
       textButton: {
@@ -77,6 +78,7 @@ export function textButtonReturningToAdjust({
       },
     }
   }
+
   return {}
 }
 
@@ -188,6 +190,7 @@ export function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
     const position = context.currentPosition
     const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol)
     const debt = amountFromWei(position.debt.amount, position.debt.symbol)
+
     return collateral
       .times(context.collateralPrice || zero)
       .times(position.category.maxLoanToValue)
@@ -213,11 +216,13 @@ export function calculateMaxCollateralAmount(context: ManageAaveContext): BigNum
       context.currentPosition?.collateral.symbol || '',
     )
   }
+
   return context.balance?.collateral.balance || zero
 }
 
 export function ManageAaveSaveSwitchFailureStateView({ state, send }: ManageAaveStateProps) {
   const productType = state.context.strategyConfig.type
+
   useEffect(() => {
     if (productType === 'Borrow') {
       send({ type: 'RETRY_BORROW_SWITCH' })
@@ -271,7 +276,7 @@ export function ManageAaveSwitchStateView({
       isLoading: false,
       disabled: false,
       label: t('manage-earn.aave.vault-form.confirm-btn'),
-      action: () => send({ type: 'SWITCH_CONFIRMED', productType: productType }),
+      action: () => send({ type: 'SWITCH_CONFIRMED', productType }),
     },
     textButton: textButtonReturningToAdjust({ state, send }).textButton,
   }
@@ -363,7 +368,7 @@ function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStat
 
 function getDropdownConfig({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
-  const itemPerAction: Record<ManagePositionAvailableActions, SidebarSectionHeaderSelectItem> = {
+  const itemPerAction: { [key: ManagePositionAvailableActions]: SidebarSectionHeaderSelectItem } = {
     adjust: {
       label: t('adjust'),
       icon: 'circle_slider',
@@ -449,9 +454,10 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
 
   const dropdownConfig: SidebarSectionHeaderDropdown = {
     disabled: false,
-    forcePanel: (state.value as Record<string, string>).frontend,
+    forcePanel: (state.value as { [key: string]: string }).frontend,
     items: strategyAvailableActions,
   }
+
   return dropdownConfig
 }
 
@@ -576,7 +582,7 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
     default: {
-      return <></>
+      return <>{null}</>
     }
   }
 }

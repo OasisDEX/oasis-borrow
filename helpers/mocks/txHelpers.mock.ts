@@ -84,5 +84,6 @@ export function mockTxState<T extends TxMeta>(
       broadcastedAt: new Date(),
     })
   }
+
   throw new Error('Not implemented yet')
 }

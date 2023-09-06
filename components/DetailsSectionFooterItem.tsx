@@ -1,15 +1,14 @@
+import React, { ReactNode, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
-import { VaultDetailsCardModal } from 'components/vault/VaultDetails'
-import { ModalProps, useModal } from 'helpers/modalHook'
-import { TranslateStringType } from 'helpers/translateStringType'
-import React, { ReactNode, useState } from 'react'
-import { Box, Flex, Grid, Text } from 'theme-ui'
-
 import {
   DetailsSectionContentCardChangePill,
   DetailsSectionContentCardChangePillProps,
-} from './DetailsSectionContentCard'
+} from 'components/DetailsSectionContentCard'
+import { VaultDetailsCardModal } from 'components/vault/VaultDetails'
+import { ModalProps, useModal } from 'helpers/modalHook'
+import { TranslateStringType } from 'helpers/translateStringType'
+import { Box, Flex, Grid, Text } from 'theme-ui'
 
 interface DetailsSectionFooterItemWrapperProps {
   children: ReactNode

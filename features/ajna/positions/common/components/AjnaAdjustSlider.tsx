@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { normalizeValue } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
@@ -9,7 +10,6 @@ import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helper
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
 import { Flex, Text } from 'theme-ui'
 
 const min = new BigNumber(0.01)

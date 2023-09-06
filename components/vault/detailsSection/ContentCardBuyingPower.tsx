@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import {
   ChangeVariantType,
@@ -7,7 +8,6 @@ import {
 import { formatAmount } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardBuyingPowerProps {

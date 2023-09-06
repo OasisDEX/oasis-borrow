@@ -1,13 +1,12 @@
 import { ActionCall } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { isDangerTransactionEnabled } from 'blockchain/better-calls/is-danger-transaction-enabled'
+import { GasMultiplier } from 'blockchain/better-calls/utils'
+import { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networkSetById } from 'blockchain/networks'
 import { ethers } from 'ethers'
 import { AccountImplementation__factory, OperationExecutor__factory } from 'types/ethers-contracts'
-
-import { isDangerTransactionEnabled } from './is-danger-transaction-enabled'
-import { GasMultiplier } from './utils'
-import { EstimatedGasResult } from './utils/types'
 
 export interface DpmExecuteParameters {
   networkId: NetworkIds
@@ -24,8 +23,10 @@ async function validateParameters({
   proxyAddress,
 }: Pick<DpmExecuteParameters, 'proxyAddress' | 'signer' | 'networkId'>) {
   const signerChainId = await signer.getChainId()
+
   if (signerChainId !== networkId) {
     const signerNetworkConfig = networkSetById[signerChainId]
+
     if (
       signerNetworkConfig?.isCustomFork &&
       networkId === signerNetworkConfig.getParentNetwork()?.id
@@ -40,6 +41,7 @@ async function validateParameters({
 
   const dpm = AccountImplementation__factory.connect(proxyAddress, signer)
   const contracts = getNetworkContracts(networkId)
+
   ensureContractsExist(networkId, contracts, ['operationExecutor'])
   const { operationExecutor } = contracts
 
@@ -74,13 +76,16 @@ export async function estimateGasOnDpm({
     const result = await dpm.estimateGas.execute(operationExecutor.address, encodedCallDAta, {
       value: ethers.utils.parseEther(value.toString()).toHexString(),
     })
+
     return {
       estimatedGas: new BigNumber(result.toString()).multipliedBy(GasMultiplier).toFixed(0),
       transactionData,
     }
   } catch (e) {
     const message = `Error estimating gas. Action: ${operationName} on proxy: ${proxyAddress}. Network: ${networkId}`
+
     console.error(message, e)
+
     throw new Error(message, {
       cause: e,
     })
@@ -109,6 +114,7 @@ export async function createExecuteTransaction({
       `Danger transaction enabled. Gas limit: ${dangerTransactionEnabled.gasLimit}. Operation name: ${operationName}`,
       calls,
     )
+
     return await dpm.execute(operationExecutor.address, encodedCallDAta, {
       value: ethers.utils.parseEther(value.toString()).toHexString(),
       gasLimit: ethers.BigNumber.from(dangerTransactionEnabled.gasLimit),
@@ -122,6 +128,7 @@ export async function createExecuteTransaction({
     value,
     calls,
   })
+
   return await dpm.execute(operationExecutor.address, encodedCallDAta, {
     value: ethers.utils.parseEther(value.toString()).toHexString(),
     gasLimit: gasLimit?.estimatedGas ?? undefined,

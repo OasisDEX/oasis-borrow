@@ -1,3 +1,4 @@
+import React from 'react'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableHeading } from 'components/assetsTable/AssetsTableHeading'
@@ -21,7 +22,6 @@ import { formatAddress } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function FollowedTable({ address }: { address: string }) {
   const { t } = useTranslation()

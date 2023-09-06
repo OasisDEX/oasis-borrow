@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
+import { OpenGuniVaultState, Stage } from 'features/earn/guni/open/pipes/openGuniVault'
 import {
   customAllowanceAmountEmptyValidator,
   customAllowanceAmountExceedsMaxUint256Validator,
@@ -12,8 +13,6 @@ import { isNullish } from 'helpers/functions'
 import { GUNI_MAX_SLIPPAGE, GUNI_SLIPPAGE } from 'helpers/multiply/calculations'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
-
-import { OpenGuniVaultState, Stage } from './openGuniVault'
 
 const defaultOpenVaultStageCategories = {
   isEditingStage: false,
@@ -222,6 +221,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
   const invalidSlippage = slippage.gt(GUNI_MAX_SLIPPAGE)
 
   const customSlippageOverridden = !customSlippage.eq(GUNI_SLIPPAGE)
+
   state.slippage = GUNI_SLIPPAGE
 
   const potentialGenerateAmountLessThanDebtFloor =

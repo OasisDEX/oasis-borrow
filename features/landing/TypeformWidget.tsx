@@ -8,6 +8,7 @@ export function TypeformWidget() {
       return
     }
     const script = document.createElement('script')
+
     script.id = scriptId
     script.src = '//embed.typeform.com/next/embed.js'
     document.body.append(script)

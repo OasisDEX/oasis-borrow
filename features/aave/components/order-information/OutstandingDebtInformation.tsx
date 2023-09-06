@@ -1,3 +1,4 @@
+import React from 'react'
 import { IPosition } from '@oasisdex/dma-library'
 import { Flex } from '@theme-ui/components'
 import { amountFromWei } from 'blockchain/utils'
@@ -8,7 +9,6 @@ import {
 import { formatAmount } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface DebtCollateralInformation {
   currentPosition: IPosition
@@ -17,6 +17,7 @@ interface DebtCollateralInformation {
 
 function formatDebtAmount(pos: IPosition) {
   const amount = pos.debt.amount.lt(zero) ? zero : pos.debt.amount
+
   return `${formatAmount(amountFromWei(amount, pos.debt.symbol), pos.debt.symbol)} ${
     pos.debt.symbol
   }`

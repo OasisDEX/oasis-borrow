@@ -1,3 +1,4 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useMainnetEnsName, useMainnetEnsNames } from 'blockchain/ens'
 import { Context } from 'blockchain/network'
@@ -12,14 +13,14 @@ import { useWalletManagement } from 'features/web3OnBoard'
 import { formatAddress } from 'helpers/formatters/format'
 import { useModalContext } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
-import { Box, Button, Card, Divider, Flex, Grid, Spinner, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
+import { Box, Button, Card, Divider, Flex, Grid, Spinner, Text } from 'theme-ui'
 
 interface Props {
   context: Context
   userReferral: UserReferralState
 }
+
 export interface UpsertUser {
   hasAccepted: boolean
   isReferred: boolean
@@ -40,6 +41,7 @@ export function FeesView({ userReferral }: Props) {
 
     if (userReferral.user) {
       const jwtToken = jwtAuthGetToken(userReferral.user.address)
+
       if (jwtToken)
         createUserUsingApi$(
           hasAccepted,
@@ -232,7 +234,7 @@ export function FeesView({ userReferral }: Props) {
                   </Box>
                   <Box>
                     <AppLink
-                      href={`https://etherscan.com/address/#`}
+                      href="https://etherscan.com/address/#"
                       sx={{ fontSize: 2 }}
                       variant="inText"
                     >
@@ -283,30 +285,28 @@ export function FeesView({ userReferral }: Props) {
                 {userReferral.state === 'currentUser' &&
                   !userReferral.invitePending &&
                   userReferral?.referrer && (
-                    <>
-                      <AppLink
-                        href={`https://etherscan.com/address/${userReferral?.referrer}`}
+                    <AppLink
+                      href={`https://etherscan.com/address/${userReferral?.referrer}`}
+                      sx={{
+                        fontSize: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        pt: '16px',
+                        lineHeight: '22px',
+                      }}
+                      variant="inText"
+                    >
+                      {t('ref.etherscan')}
+                      <Icon
+                        name="arrow_right"
+                        size="12px"
                         sx={{
-                          fontSize: 2,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          pt: '16px',
-                          lineHeight: '22px',
+                          ml: 1,
+                          position: 'relative',
                         }}
-                        variant="inText"
-                      >
-                        {t('ref.etherscan')}
-                        <Icon
-                          name="arrow_right"
-                          size="12px"
-                          sx={{
-                            ml: 1,
-                            position: 'relative',
-                          }}
-                        />
-                      </AppLink>
-                    </>
+                      />
+                    </AppLink>
                   )}
                 {userReferral.state === 'currentUser' && userReferral.invitePending && (
                   <>

@@ -1,3 +1,4 @@
+import React, { Fragment } from 'react'
 import { AssetsTableBanner } from 'components/assetsTable/AssetsTableBanner'
 import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
 import {
@@ -8,7 +9,6 @@ import {
 } from 'components/assetsTable/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { Fragment } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
 const fullWidthColumns = ['asset', 'action', 'cdpId', 'collateralDebt']

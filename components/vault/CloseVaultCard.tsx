@@ -1,5 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import React from 'react'
+import { Icon } from '@makerdao/dai-ui-icons'
 import { Card, Flex, Text } from 'theme-ui'
 
 export function CloseVaultCard({

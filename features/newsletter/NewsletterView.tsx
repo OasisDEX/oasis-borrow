@@ -1,15 +1,18 @@
+import React, { FormEvent, useEffect, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { isMainContextAvailable } from 'components/context'
 import { AppLink } from 'components/Links'
+import {
+  createNewsletter$,
+  NewsletterMessage,
+  NewsletterState,
+} from 'features/newsletter/newsletter'
+import { NewsletterResponseMessage } from 'features/newsletter/newsletterApi'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { FormEvent, useEffect, useState } from 'react'
 import { GRADIENTS } from 'theme'
 import { Box, Button, Flex, Grid, Heading, Input, Text } from 'theme-ui'
-
-import { createNewsletter$, NewsletterMessage, NewsletterState } from './newsletter'
-import { NewsletterResponseMessage } from './newsletterApi'
 
 export const NEWSLETTER_FORM_ERROR: {
   [key in NewsletterMessage | NewsletterResponseMessage]: string
@@ -198,7 +201,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
                   components={{
                     1: <AppLink href="/privacy" variant="inText" />,
                   }}
-                ></Trans>
+                />
               </Text>
             </Box>
           )}

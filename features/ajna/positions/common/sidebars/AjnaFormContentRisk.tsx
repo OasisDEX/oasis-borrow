@@ -1,3 +1,4 @@
+import React from 'react'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
 import { WithArrow } from 'components/WithArrow'
@@ -6,7 +7,6 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Image, Text } from 'theme-ui'
 
 const LINKS_MAP: { [key in AjnaProduct]: string } = {

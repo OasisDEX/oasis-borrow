@@ -1,6 +1,6 @@
+import React, { Ref } from 'react'
 import { useCoolMode } from 'helpers/sweet/useCoolMode'
 import { WithChildren } from 'helpers/types'
-import React, { Ref } from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
 
 export interface BasicLayoutProps extends WithChildren {
@@ -13,6 +13,7 @@ export interface BasicLayoutProps extends WithChildren {
 
 export function BasicLayout({ header, footer, children, sx, variant, bg }: BasicLayoutProps) {
   const ref = useCoolMode()
+
   return (
     <Flex
       sx={{

@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { ClaimTxnState, createBonusPipe$ } from 'features/bonus/bonusPipe'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { BehaviorSubject, of } from 'rxjs'
-
-import { ClaimTxnState, createBonusPipe$ } from './bonusPipe'
 
 describe('bonusPipe', () => {
   describe('showing the blockchain state', () => {
@@ -32,6 +31,7 @@ describe('bonusPipe', () => {
   describe('claiming the rewards', () => {
     it('calls claim interface and updates state when claiming', () => {
       const claimAllStub = jest.fn(() => of(ClaimTxnState.PENDING))
+
       function bonusAdapterStub() {
         return {
           bonus$: of({

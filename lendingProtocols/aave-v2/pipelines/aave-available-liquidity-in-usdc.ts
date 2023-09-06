@@ -19,6 +19,7 @@ export function aaveLikeAvailableLiquidityInUSDC$(
     map(([reserveData, tokenPrice, usdcPrice]) => {
       const liquidityInEthPrice = reserveData.availableLiquidity.times(tokenPrice)
       const ETH_USDC_price = new BigNumber(1).div(usdcPrice) // price of one ETH in USDC
+
       return liquidityInEthPrice.times(ETH_USDC_price)
     }),
     catchError((error) => {
@@ -26,6 +27,7 @@ export function aaveLikeAvailableLiquidityInUSDC$(
         `Can't get available liquidity for ${JSON.stringify(reserveDataToken, null, 2)}`,
         error,
       )
+
       return of(zero)
     }),
   )

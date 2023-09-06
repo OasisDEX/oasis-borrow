@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react'
 import { Protocol } from '@prisma/client'
 import { ProtocolLabelProps } from 'components/ProtocolLabel'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
@@ -9,7 +10,6 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
 
 function AaveHeader({
   strategyConfig,
@@ -37,8 +37,7 @@ function AaveHeader({
     if (!positionTokenPrices) {
       return []
     }
-    const collateralTokenPrice = positionTokenPrices[0]
-    const debtTokenPrice = positionTokenPrices[1]
+    const [collateralTokenPrice, debtTokenPrice] = positionTokenPrices
     const positionPrice =
       strategyConfig.strategyType === StrategyType.Long
         ? collateralTokenPrice.div(debtTokenPrice)
@@ -85,7 +84,7 @@ function AaveHeader({
 }
 
 export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
-  return <AaveHeader strategyConfig={strategyConfig} headerLabelString={'vault.header-aave-open'} />
+  return <AaveHeader strategyConfig={strategyConfig} headerLabelString="vault.header-aave-open" />
 }
 
 export function AaveManageHeader({ strategyConfig, positionId }: ManageAaveHeaderProps) {
@@ -98,7 +97,7 @@ export function AaveManageHeader({ strategyConfig, positionId }: ManageAaveHeade
   return (
     <AaveHeader
       strategyConfig={strategyConfig}
-      headerLabelString={'vault.header-aave-view'}
+      headerLabelString="vault.header-aave-view"
       followButton={followButton}
       shareButton
     />

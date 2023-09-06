@@ -1,3 +1,4 @@
+import React from 'react'
 import { NORMALISED_PRECISION } from 'actions/aave-like'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromPrecision } from 'blockchain/utils'
@@ -8,7 +9,6 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid } from 'theme-ui'
 
 export function DebtInput(props: SecondaryInputProps) {
@@ -33,16 +33,16 @@ export function DebtInput(props: SecondaryInputProps) {
   return (
     <Grid gap={3}>
       <VaultActionInput
-        action={'Borrow'}
+        action="Borrow"
         amount={userInputDebt}
-        hasAuxiliary={true}
+        hasAuxiliary
         auxiliaryAmount={
           state.context.userInput.debtAmount?.times(state.context.balance?.debt.price || zero) ||
           zero
         }
         hasError={amountDebtTooHigh}
         maxAmount={maxDebt}
-        showMax={true}
+        showMax
         maxAmountLabel={t('max')}
         onSetMax={() => {
           send({ type: 'SET_DEBT', debt: maxDebt })

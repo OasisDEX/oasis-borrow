@@ -1,3 +1,4 @@
+import React from 'react'
 import { useActor } from '@xstate/react'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
@@ -7,15 +8,17 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
+import {
+  ProxyEvent,
+  ProxyStateMachine,
+  ProxyStateMachineState,
+} from 'features/stateMachines/proxy/state'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Image, Text } from 'theme-ui'
 import { ActorRefFrom, Sender } from 'xstate'
-
-import { ProxyEvent, ProxyStateMachine, ProxyStateMachineState } from './state'
 
 interface ProxyViewProps {
   proxyMachine: ActorRefFrom<ProxyStateMachine>
@@ -39,7 +42,7 @@ function ProxyInfoStateView({ state, send, steps }: ProxyViewStateProps) {
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'vault-form.subtext.proxy-start'}
+              i18nKey="vault-form.subtext.proxy-start"
               components={{
                 1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_PROXY} sx={{ fontSize: 2 }} />,
               }}
@@ -64,7 +67,7 @@ function ProxyInfoStateView({ state, send, steps }: ProxyViewStateProps) {
       </Grid>
     ),
     primaryButton: {
-      steps: steps,
+      steps,
       isLoading: false,
       disabled: isProxyCreationDisabled,
       label: state.matches('proxyFailure') ? t('retry-create-proxy') : t('create-proxy-btn'),
@@ -84,7 +87,7 @@ function ProxyRunningView(props: { steps: [number, number] }) {
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'vault-form.subtext.proxy-progress'}
+              i18nKey="vault-form.subtext.proxy-progress"
               components={{
                 1: <AppLink href={EXTERNAL_LINKS.KB.WHAT_IS_PROXY} sx={{ fontSize: 2 }} />,
               }}
@@ -104,8 +107,10 @@ function ProxyRunningView(props: { steps: [number, number] }) {
       label: t('creating-proxy'),
     },
   }
+
   return <SidebarSection {...sidebarSectionProps} />
 }
+
 export function ProxyView({ proxyMachine, steps }: ProxyViewProps) {
   const [state, send] = useActor(proxyMachine)
 
@@ -118,6 +123,6 @@ export function ProxyView({ proxyMachine, steps }: ProxyViewProps) {
     case state.matches('proxyInProgress'):
       return <ProxyRunningView steps={steps} />
     default:
-      return <></>
+      return <>{null}</>
   }
 }

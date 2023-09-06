@@ -1,9 +1,8 @@
-import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { content as cookieContent } from './cookie/cookie'
-import { content as privacyContent } from './privacy/privacy'
-import { content as tosContent } from './tos/tos'
+import { content as cookieContent } from 'features/content/cookie/cookie'
+import { content as privacyContent } from 'features/content/privacy/privacy'
+import { content as tosContent } from 'features/content/tos/tos'
+import { useTranslation } from 'next-i18next'
 
 export interface ContentType {
   [key: string]: any

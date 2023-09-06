@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
+import { sentryBaseConfig } from 'sentry.base.config'
 
-import { sentryBaseConfig } from './../../sentry.base.config'
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {
     case 'POST':
@@ -17,7 +17,7 @@ const SENTRY_HOST = SENTRY_URL.hostname
 
 async function tunnel(req: NextApiRequest, res: NextApiResponse) {
   const envelope = req.body
-  const piece = envelope.split('\n')[0]
+  const [piece] = envelope.split('\n')
   const header = JSON.parse(piece)
   const dsn = new URL(header.dsn)
   const projectId = dsn.pathname.replace('/', '')
@@ -25,6 +25,7 @@ async function tunnel(req: NextApiRequest, res: NextApiResponse) {
 
   if (dsn.hostname === SENTRY_HOST && SENTRY_PROJECT_IDS.includes(projectId)) {
     const postRes = await axios.post(upstreamSentryUrl, envelope)
+
     if (postRes.status === 200) {
       return res.status(200).json('tunnel/ok')
     } else {

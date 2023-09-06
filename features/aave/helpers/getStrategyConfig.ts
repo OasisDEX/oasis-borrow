@@ -1,6 +1,7 @@
 import { NetworkNames, networksByName } from 'blockchain/networks'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { loadStrategyFromTokens } from 'features/aave'
+import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getLastCreatedPositionForProxy, PositionCreated } from 'features/aave/services'
 import { IStrategyConfig, PositionId } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -10,8 +11,6 @@ import { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines
 import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
-
-import { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
 
 export function getStrategyConfig$(
   proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
@@ -24,6 +23,7 @@ export function getStrategyConfig$(
   return proxiesForPosition$(positionId).pipe(
     switchMap(({ dsProxy, dpmProxy }) => {
       const effectiveProxyAddress = dsProxy || dpmProxy?.proxy
+
       return combineLatest(
         iif(
           () => effectiveProxyAddress !== undefined,
@@ -37,6 +37,7 @@ export function getStrategyConfig$(
     }),
     map(([aaveUserConfigurations, lastCreatedPosition]) => {
       const vaultTypeIsUnknown = vaultType === VaultType.Unknown
+
       // event has a higher priority than assets
       if (lastCreatedPosition !== undefined) {
         const _vaultType = vaultTypeIsUnknown
@@ -111,6 +112,7 @@ export async function getAaveV3StrategyConfig(
   }
 
   const dmpProxy = await getUserDpmProxy(vaultId, networkId)
+
   if (!dmpProxy) {
     throw new Error(`Can't load strategy config for position without dmpProxy. VaultId: ${vaultId}`)
   }

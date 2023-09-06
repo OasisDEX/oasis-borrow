@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { createOraclePriceData$, createTokenPriceInUSD$, OraclePriceData } from 'blockchain/prices'
 import dayjs from 'dayjs'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of, throwError } from 'rxjs'
-
-import { createOraclePriceData$, createTokenPriceInUSD$, OraclePriceData } from './prices'
 
 describe('createTokenPriceInUSD$', () => {
   const tokenTickers$ = of({
@@ -116,6 +115,7 @@ describe('createOraclePriceData$', () => {
       zzz$: () => Observable<BigNumber>
       hop$: () => Observable<BigNumber>
     }
+
     beforeEach(() => {
       pipes = {
         peek$: jest.fn(() => of(['1000', true])),
@@ -128,8 +128,8 @@ describe('createOraclePriceData$', () => {
     type TestCase = {
       requestedValue: keyof OraclePriceData
       runAssertion: (result: Partial<OraclePriceData>) => void
-      streamsNotCalled: Array<keyof typeof pipes>
-      streamsCalled: Array<keyof typeof pipes>
+      streamsNotCalled: (keyof typeof pipes)[]
+      streamsCalled: (keyof typeof pipes)[]
     }
 
     function runTest({ requestedValue, runAssertion, streamsCalled, streamsNotCalled }: TestCase) {

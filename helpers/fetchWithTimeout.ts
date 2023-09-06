@@ -8,6 +8,7 @@ export async function fetchWithTimeout(resource: RequestInfo, options: any) {
     ...options,
     signal: controller.signal,
   })
+
   clearTimeout(id)
 
   return response

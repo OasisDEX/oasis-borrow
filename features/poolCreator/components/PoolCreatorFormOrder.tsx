@@ -1,8 +1,8 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { TokensGroup } from 'components/TokensGroup'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Flex, Text } from 'theme-ui'
 
 interface PoolCreatorFormOrderProps {

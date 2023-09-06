@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -11,7 +12,6 @@ import { useAutomationContext } from 'components/context'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface GetProtectionBannerProps {
   ilk: string
@@ -27,7 +27,7 @@ export function GetProtectionBannerControl({
   debt,
 }: GetProtectionBannerProps) {
   const { t } = useTranslation()
-  const setHash = useHash()[1]
+  const [, setHash] = useHash()
   const {
     triggerData: { stopLossTriggerData },
     environmentData: { chainId },
@@ -36,28 +36,26 @@ export function GetProtectionBannerControl({
   const isAllowedForAutomation = isSupportedAutomationIlk(chainId, ilk)
 
   return !stopLossTriggerData.isStopLossEnabled && isAllowedForAutomation && !debt.isZero() ? (
-    <>
-      <Banner
-        title={t('vault-banners.get-protection.header')}
-        description={t('vault-banners.get-protection.content', { token })}
-        image={{
-          src: '/static/img/setup-banner/stop-loss.svg',
-          backgroundColor: bannerGradientPresets.stopLoss[0],
-          backgroundColorEnd: bannerGradientPresets.stopLoss[1],
-        }}
-        button={{
-          action: () => {
-            trackingEvents.automation.buttonClick(
-              AutomationEventIds.SelectStopLoss,
-              Pages.VaultsOverview,
-              CommonAnalyticsSections.Banner,
-              { vaultId: vaultId.toString(), ilk },
-            )
-            setHash(VaultViewMode.Protection)
-          },
-          text: t('vault-banners.get-protection.button'),
-        }}
-      />
-    </>
+    <Banner
+      title={t('vault-banners.get-protection.header')}
+      description={t('vault-banners.get-protection.content', { token })}
+      image={{
+        src: '/static/img/setup-banner/stop-loss.svg',
+        backgroundColor: bannerGradientPresets.stopLoss[0],
+        backgroundColorEnd: bannerGradientPresets.stopLoss[1],
+      }}
+      button={{
+        action: () => {
+          trackingEvents.automation.buttonClick(
+            AutomationEventIds.SelectStopLoss,
+            Pages.VaultsOverview,
+            CommonAnalyticsSections.Banner,
+            { vaultId: vaultId.toString(), ilk },
+          )
+          setHash(VaultViewMode.Protection)
+        },
+        text: t('vault-banners.get-protection.button'),
+      }}
+    />
   ) : null
 }

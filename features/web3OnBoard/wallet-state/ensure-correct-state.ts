@@ -1,4 +1,4 @@
-import { WalletManagementState } from './wallet-management-state'
+import { WalletManagementState } from 'features/web3OnBoard/wallet-state/wallet-management-state'
 
 export function ensureCorrectState<TType extends WalletManagementState['status']>(
   state: WalletManagementState,

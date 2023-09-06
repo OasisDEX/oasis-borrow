@@ -1,9 +1,9 @@
+import React from 'react'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaFormFieldDeposit } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
-import React from 'react'
 
 export function AjnaMultiplyFormContentDepositCollateral() {
   // const { t } = useTranslation()
@@ -31,9 +31,9 @@ export function AjnaMultiplyFormContentDepositCollateral() {
        * added to product continuous improvements backlog
        * https://app.shortcut.com/oazo-apps/story/10553/multiply-deposit-ltv-decreases-are-not-supported-in-operation
        */}
-      {/*<PillAccordion title={t('adjust-your-position-additional')}>*/}
+      {/* <PillAccordion title={t('adjust-your-position-additional')}>*/}
       {/*  <AjnaMultiplySlider disabled={!depositAmount} />*/}
-      {/*</PillAccordion>*/}
+      {/* </PillAccordion>*/}
       {depositAmount && (
         <AjnaFormContentSummary>
           <AjnaMultiplyFormOrder />

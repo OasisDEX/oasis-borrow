@@ -1,7 +1,8 @@
+import en from 'features/content/tos/en.mdx'
+import es from 'features/content/tos/es.mdx'
+import pt from 'features/content/tos/pt.mdx'
+
 import { ContentType } from '..'
-import en from './en.mdx'
-import es from './es.mdx'
-import pt from './pt.mdx'
 
 export const content: ContentType = {
   en,

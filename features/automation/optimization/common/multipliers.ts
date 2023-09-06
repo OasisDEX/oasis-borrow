@@ -94,6 +94,7 @@ export function getDefaultMultiplier({
     for (let i = midIndex; i < multipliers.length; i++) {
       if (multipliers[i] >= minMultiplier && multipliers[i] <= maxMultiplier) return multipliers[i]
     }
+
     return multipliers[midIndex]
   }
 }

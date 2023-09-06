@@ -1,9 +1,9 @@
+import React from 'react'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Heading, Text } from 'theme-ui'
 
 export function DiscoverWrapperWithIntro({ children }: WithChildren) {

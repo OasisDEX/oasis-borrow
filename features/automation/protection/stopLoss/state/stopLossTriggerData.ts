@@ -51,6 +51,7 @@ function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataTy
     ) {
       return acc.stopLossLevel.lt(obj.stopLossLevel) ? acc : obj
     }
+
     return acc.stopLossLevel.gt(obj.stopLossLevel) ? acc : obj
   })
 }
@@ -68,6 +69,7 @@ export function extractStopLossData(
   overwriteDefault?: StopLossTriggerData,
 ): StopLossTriggerData {
   const defaultState = overwriteDefault || defaultStopLossData
+
   if (data.triggers && data.triggers.length > 0) {
     const stopLossTriggersData = getTriggersByType(
       data.triggers,

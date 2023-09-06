@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react'
+import ReactSelect from 'react-select'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ChevronUpDown } from 'components/ChevronUpDown'
@@ -8,6 +10,7 @@ import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
+import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import {
   ManageMultiplyVaultState,
   OtherAction,
@@ -23,13 +26,9 @@ import { handleNumericInput } from 'helpers/input'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
-import ReactSelect from 'react-select'
 import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
-import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
-
-//TODO max buy token, not needed right now but may be useful in near feature according to the designs
+// TODO max buy token, not needed right now but may be useful in near feature according to the designs
 // function BuyTokenInput({
 //   vault: { token },
 //   updateBuy,
@@ -62,7 +61,7 @@ import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChan
 //   )
 // }
 
-//TODO max sell token, not needed right now but may be useful in near feature according to the designs
+// TODO max sell token, not needed right now but may be useful in near feature according to the designs
 // function SellTokenInput({
 //   accountIsController,
 //   updateSell,
@@ -110,10 +109,10 @@ function DepositTokenInput({
       action="Deposit"
       currencyCode={token}
       tokenUsdPrice={currentCollateralPrice}
-      showMax={true}
-      hasAuxiliary={true}
+      showMax
+      hasAuxiliary
       onSetMax={updateDepositAmountMax!}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       amount={depositAmount}
       auxiliaryAmount={depositAmountUSD}
       maxAmount={maxDepositAmount}
@@ -141,10 +140,10 @@ function WithdrawTokenInput({
       action="Withdraw"
       currencyCode={token}
       tokenUsdPrice={currentCollateralPrice}
-      showMax={true}
-      hasAuxiliary={true}
+      showMax
+      hasAuxiliary
       onSetMax={updateWithdrawAmountMax!}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       amount={withdrawAmount}
       auxiliaryAmount={withdrawAmountUSD}
       maxAmount={maxWithdrawAmount}
@@ -167,9 +166,9 @@ function PaybackInput({
       action="Deposit"
       amount={paybackAmount}
       currencyCode="DAI"
-      showMax={true}
+      showMax
       maxAmount={maxPaybackAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       onSetMax={updatePaybackAmountMax}
       onChange={handleNumericInput(updatePaybackAmount!)}
       hasError={false}
@@ -188,9 +187,9 @@ function DepositDaiInput({
       action="Deposit"
       amount={depositDaiAmount}
       currencyCode="DAI"
-      showMax={true}
+      showMax
       maxAmount={maxDepositDaiAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       onSetMax={updateDepositDaiAmountMax}
       onChange={handleNumericInput(updateDepositDaiAmount!)}
       hasError={false}
@@ -209,9 +208,9 @@ function GenerateInput({
       action="Withdraw"
       amount={generateAmount}
       currencyCode="DAI"
-      showMax={true}
+      showMax
       maxAmount={maxGenerateAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       onSetMax={updateGenerateAmountMax}
       onChange={handleNumericInput(updateGenerateAmount!)}
       hasError={false}
@@ -478,7 +477,7 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
           icon={tokenData.iconCircle}
           onClick={() => setCloseVaultTo!('collateral')}
           isActive={closeToCollateral}
-          optionName={'collateral'}
+          optionName="collateral"
         />
 
         <CloseVaultCard
@@ -486,7 +485,7 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
           icon="dai_circle_color"
           onClick={() => setCloseVaultTo!('dai')}
           isActive={!closeToCollateral}
-          optionName={'dai'}
+          optionName="dai"
         />
       </Grid>
       <Text variant="paragraph3" sx={{ color: 'neutral80', mt: 3 }}>
@@ -530,7 +529,7 @@ function DepositCollateralAction(props: ManageMultiplyVaultState) {
 
           {showSliderController && (
             <Box>
-              <SliderInput {...props} collapsed={true} />
+              <SliderInput {...props} collapsed />
             </Box>
           )}
         </Box>
@@ -565,7 +564,7 @@ function WithdrawCollateralAction(props: ManageMultiplyVaultState) {
 
           {showSliderController && (
             <Box>
-              <SliderInput {...props} collapsed={true} />
+              <SliderInput {...props} collapsed />
             </Box>
           )}
         </Box>
@@ -603,7 +602,7 @@ function DepositDAIAction(props: ManageMultiplyVaultState) {
 
           {showSliderController && (
             <Box>
-              <SliderInput {...props} collapsed={true} />
+              <SliderInput {...props} collapsed />
             </Box>
           )}
         </Box>
@@ -638,7 +637,7 @@ function WithdrawDAIAction(props: ManageMultiplyVaultState) {
 
           {showSliderController && (
             <Box>
-              <SliderInput {...props} collapsed={true} />
+              <SliderInput {...props} collapsed />
             </Box>
           )}
         </Box>
@@ -671,12 +670,14 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
   const [uiState] = useUIChanges<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT)
 
   const effectiveStage = uiState?.currentStage || stage
+
   useEffect(() => {
     if (effectiveStage === 'closeVault') {
       props.toggle?.('otherActions')
       props.setOtherAction?.('closeVault')
     }
   }, [effectiveStage])
+
   return (
     <Grid gap={4}>
       {stage === 'adjustPosition' && <AdjustPositionForm {...props} />}

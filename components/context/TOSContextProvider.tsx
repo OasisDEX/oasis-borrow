@@ -1,3 +1,5 @@
+import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { currentContent } from 'features/content'
 import { jwtAuthSetupToken$ } from 'features/shared/jwt'
 import {
@@ -12,10 +14,7 @@ import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walle
 import { WalletRiskResponse } from 'features/walletAssociatedRisk/walletRiskApi'
 import { DepreciatedServices } from 'helpers/context/types'
 import { WithChildren } from 'helpers/types'
-import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 import { Observable } from 'rxjs'
-
-import { useMainContext } from './MainContextProvider'
 
 export const tosContext = React.createContext<TOSContext | undefined>(undefined)
 
@@ -25,9 +24,11 @@ export function isTOSContextAvailable(): boolean {
 
 export function useTOSContext(): TOSContext {
   const ac = useContext(tosContext)
+
   if (!ac) {
     throw new Error("TOSContext not available! useTOSContext can't be used serverside")
   }
+
   return ac
 }
 

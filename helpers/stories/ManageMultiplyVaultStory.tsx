@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
@@ -14,11 +15,10 @@ import {
   MockManageMultiplyVaultProps,
 } from 'helpers/mocks/manageMultiplyVault.mock'
 import { memoize } from 'lodash'
-import React, { useEffect } from 'react'
 import { EMPTY, from, of } from 'rxjs'
 import { first } from 'rxjs/operators'
-import { Card, Container, Grid } from 'theme-ui'
 import { InjectTokenIconsDefs } from 'theme/tokenIcons'
+import { Card, Container, Grid } from 'theme-ui'
 
 type ManageMultiplyVaultStory = { title?: string } & MockManageMultiplyVaultProps
 

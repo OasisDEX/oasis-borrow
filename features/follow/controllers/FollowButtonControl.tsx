@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { Protocol, UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
@@ -15,7 +16,6 @@ import {
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React, { useEffect, useState } from 'react'
 import { SxStyleProp } from 'theme-ui'
 
 export type FollowButtonControlProps = {
@@ -40,6 +40,7 @@ export function FollowButtonControl({
   const [isLimitReachedState] = useUIChanges<FollowedVaultsLimitReachedChange>(
     FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
   )
+
   useEffect(() => {
     void getFollowFromApi(followerAddress)
       .then((resp) => {
@@ -56,6 +57,7 @@ export function FollowButtonControl({
       (item) =>
         new BigNumber(item.vault_id).eq(vaultId) && new BigNumber(item.vault_chain_id).eq(chainId),
     )
+
     setIsFollowing(currentFollowedVault !== undefined)
 
     uiChanges.publish(FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE, {
@@ -68,6 +70,7 @@ export function FollowButtonControl({
   async function buttonClickHandler() {
     setProcessing(true)
     const jwtToken = jwtAuthGetToken(followerAddress)
+
     if (vaultId && jwtToken) {
       if (!isFollowing) {
         await followVault(jwtToken)
@@ -77,6 +80,7 @@ export function FollowButtonControl({
     }
   }
   const isWalletConnected = accountIsConnectedValidator({ account: followerAddress })
+
   async function unfollowVault(jwtToken: string) {
     try {
       await unfollowVaultUsingApi(vaultId, chainId, protocol, jwtToken)
@@ -94,12 +98,14 @@ export function FollowButtonControl({
   async function followVault(jwtToken: string) {
     try {
       const followedVaults = await followVaultUsingApi(vaultId, chainId, protocol, jwtToken)
+
       handleGetFollowedVaults(followedVaults)
       setIsFollowing(true)
     } catch (e) {
       console.error(e)
     }
   }
+
   return (
     <FollowButton
       isProcessing={isProcessing}

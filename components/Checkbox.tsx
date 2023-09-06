@@ -1,5 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import React, { FC, MouseEventHandler } from 'react'
+import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex } from 'theme-ui'
 
 interface CheckboxProps {

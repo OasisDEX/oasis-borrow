@@ -59,4 +59,5 @@ const sparkConfig: LendingProtocolConfig = {
 }
 
 const lendingProtocols = [aaveV2Config, aaveV3Config, ajnaConfig, makerConfig, sparkConfig]
+
 export const lendingProtocolsByName = keyBy(lendingProtocols, 'name')

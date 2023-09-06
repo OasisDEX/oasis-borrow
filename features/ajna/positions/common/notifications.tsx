@@ -1,3 +1,4 @@
+import React, { Dispatch, FC } from 'react'
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AppLink } from 'components/Links'
@@ -28,7 +29,6 @@ import {
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one, zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
-import React, { Dispatch, FC } from 'react'
 
 interface AjnaLiquidationNotificationWithLinkProps {
   translationKey: string
@@ -230,7 +230,7 @@ const ajnaNotifications: {
     message: {
       component: (
         <Trans
-          i18nKey={'ajna.position-page.common.notifications.safety-switch-open.message'}
+          i18nKey="ajna.position-page.common.notifications.safety-switch-open.message"
           components={[
             <AppLink
               sx={{ fontSize: 'inherit', color: 'inherit' }}
@@ -250,7 +250,7 @@ const ajnaNotifications: {
     message: {
       component: (
         <Trans
-          i18nKey={'ajna.position-page.common.notifications.safety-switch-manage.message'}
+          i18nKey="ajna.position-page.common.notifications.safety-switch-manage.message"
           components={[
             <AppLink
               sx={{ fontSize: 'inherit', color: 'inherit' }}

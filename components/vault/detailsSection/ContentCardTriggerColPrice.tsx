@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import {
   ChangeVariantType,
@@ -6,7 +7,6 @@ import {
 } from 'components/DetailsSectionContentCard'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardTriggerColPriceProps {
@@ -22,6 +22,7 @@ interface ContentCardTriggerColPriceModalProps {
 
 function ContentCardTriggerColPriceModal({ token }: ContentCardTriggerColPriceModalProps) {
   const { t } = useTranslation()
+
   return (
     <Grid gap={2}>
       <Heading variant="header3">{t('auto-take-profit.trigger-col-price', { token })}</Heading>

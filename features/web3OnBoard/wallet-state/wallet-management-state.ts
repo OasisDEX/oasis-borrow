@@ -43,6 +43,7 @@ export function getDesiredNetworkHexId(state: WalletManagementState): NetworkCon
   if (state.pageNetworkHexIds && state.pageNetworkHexIds.length > 0) {
     return state.pageNetworkHexIds[0] // let's assume that the first network is the desired one
   }
+
   return state.desiredNetworkHexId || state.walletNetworkHexId || NetworkHexIds.MAINNET // fallback to mainnet
 }
 

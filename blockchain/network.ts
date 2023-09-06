@@ -1,5 +1,6 @@
 // tslint:disable:no-console
 import BigNumber from 'bignumber.js'
+import { getNetworkRpcEndpoint, NetworkConfig, NetworkIds, networksById } from 'blockchain/networks'
 import { ethers } from 'ethers'
 import {
   contract,
@@ -21,8 +22,6 @@ import {
   switchMap,
 } from 'rxjs/operators'
 import Web3 from 'web3'
-
-import { getNetworkRpcEndpoint, NetworkConfig, NetworkIds, networksById } from './networks'
 
 export const every1Seconds$ = interval(1000).pipe(startWith(0))
 export const every3Seconds$ = interval(3000).pipe(startWith(0))
@@ -99,6 +98,7 @@ export function createOnEveryBlock$(
     switchMap(([{ web3 }]) => bindNodeCallback(web3.eth.getBlockNumber)()),
     catchError((error, source) => {
       console.log(error)
+
       return concat(every5Seconds$.pipe(skip(1), first()), source)
     }),
     distinctUntilChanged(),
@@ -134,9 +134,9 @@ export function createInitializedAccount$(account$: Observable<string | undefine
 }
 
 export function reload(network: string) {
-  if (document.location.href.indexOf('network=') !== -1) {
-    document.location.href = document.location.href.replace(/network=[a-z]+/i, 'network=' + network)
+  if (document.location.href.includes('network=')) {
+    document.location.href = document.location.href.replace(/network=[a-z]+/i, `network=${network}`)
   } else {
-    document.location.href = document.location.href + '?network=' + network
+    document.location.href = `${document.location.href}?network=${network}`
   }
 }

@@ -1,3 +1,4 @@
+import React, { FC } from 'react'
 import { AppLink } from 'components/Links'
 import {
   SidebarSectionStatus,
@@ -7,7 +8,6 @@ import { TxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxManage
 import { useConnection } from 'features/web3OnBoard'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
-import React, { FC } from 'react'
 import { Button, Flex, Grid, Spinner } from 'theme-ui'
 
 interface PoolCreatorActionControllerProps {

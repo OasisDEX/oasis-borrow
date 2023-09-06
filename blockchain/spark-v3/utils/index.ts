@@ -18,7 +18,7 @@ export type ContractForNetwork<Contract> = {
   readonly address: string
   readonly contract: Contract
   readonly contractGenesis: number
-  readonly tokenMappings: Record<string, { address: string }>
+  readonly tokenMappings: { [key: string]: { address: string } }
   readonly baseCurrencyUnit: BigNumber
 }
 
@@ -61,7 +61,7 @@ export function wethToEthAddress<T>(
   tokenMappings: ContractForNetwork<T>['tokenMappings'],
   token: SparkV3ReserveDataParameters['token'],
 ): string {
-  return tokenMappings[token].address === tokenMappings['ETH'].address
-    ? tokenMappings['WETH'].address
+  return tokenMappings[token].address === tokenMappings.ETH.address
+    ? tokenMappings.WETH.address
     : tokenMappings[token].address
 }

@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
+import { BaseParameters, getNetworkMapping, wethToEthAddress } from 'blockchain/spark-v3/utils'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
 import { SparkV3PoolDataProvider__factory } from 'types/ethers-contracts'
-
-import { BaseParameters, getNetworkMapping, wethToEthAddress } from './utils'
 
 export interface SparkV3UserReserveDataParameters extends BaseParameters {
   token: string
@@ -69,6 +68,7 @@ export function getSparkV3UserReserveData({
 }: SparkV3UserReserveDataParameters): Promise<SparkV3UserReserveData> {
   const { contract, tokenMappings } = networkMappings[networkId]()
   const tokenAddress = wethToEthAddress(tokenMappings, token)
+
   return contract.getUserReserveData(tokenAddress, address).then((result) => {
     return {
       currentSpTokenBalance: amountFromWei(
@@ -98,7 +98,9 @@ export function getSparkV3ReserveData({
 }: SparkV3ReserveDataParameters): Promise<SparkV3ReserveDataReply> {
   const { contract, tokenMappings } = networkMappings[networkId]()
   const tokenAddress = wethToEthAddress(tokenMappings, token)
+
   warnIfAddressIsZero(tokenAddress, networkId, 'sparkV3PoolDataProvider', 'getReserveData')
+
   return contract.getReserveData(tokenAddress).then((result) => {
     const totalSpToken = amountFromWei(new BigNumber(result.totalSpToken.toString()), token)
     const totalStableDebt = amountFromWei(new BigNumber(result.totalStableDebt.toString()), token)
@@ -106,6 +108,7 @@ export function getSparkV3ReserveData({
       new BigNumber(result.totalVariableDebt.toString()),
       token,
     )
+
     return {
       availableLiquidity: totalSpToken.minus(totalStableDebt).minus(totalVariableDebt),
       unbacked: new BigNumber(result.unbacked.toString()),
@@ -131,6 +134,7 @@ export function getSparkV3ReserveConfigurationData({
   token,
 }: SparkV3ReserveConfigurationParameters): Promise<SparkV3ReserveConfigurationData> {
   const { contract, tokenMappings } = networkMappings[networkId]()
+
   warnIfAddressIsZero(
     tokenMappings[token].address,
     networkId,
@@ -138,6 +142,7 @@ export function getSparkV3ReserveConfigurationData({
     'getSparkV3ReserveConfigurationData',
   )
   const tokenAddress = wethToEthAddress(tokenMappings, token)
+
   return contract.getReserveConfigurationData(tokenAddress).then((result) => {
     return {
       ltv: new BigNumber(result.ltv.toString()).div(10000), // 6900 -> 0.69
@@ -157,12 +162,14 @@ export function getSparkV3EModeCategoryForAsset({
 }: SparkV3EModeForAssetParameters): Promise<BigNumber> {
   const { contract, tokenMappings } = networkMappings[networkId]()
   const address = wethToEthAddress(tokenMappings, token)
+
   warnIfAddressIsZero(
     address,
     networkId,
     'sparkV3PoolDataProvider',
     'getSparkV3EModeCategoryForAsset',
   )
+
   return contract.getReserveEModeCategory(address).then((result) => {
     return new BigNumber(result.toString())
   })

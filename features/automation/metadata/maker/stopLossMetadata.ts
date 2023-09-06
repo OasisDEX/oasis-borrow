@@ -169,7 +169,7 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
           id,
           owner,
           isCloseToCollateral: collateralActive,
-          stopLossLevel: stopLossLevel,
+          stopLossLevel,
           replacedTriggerId: triggerId.toNumber(),
         })
       },

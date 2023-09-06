@@ -1,9 +1,11 @@
 import { BigNumber } from 'bignumber.js'
+import {
+  ManageMultiplyVaultChange,
+  ManageMultiplyVaultState,
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { manageMultiplyInputsDefaults } from 'features/multiply/manage/pipes/manageMultiplyVaultForm'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { zero } from 'helpers/zero'
-
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
-import { manageMultiplyInputsDefaults } from './manageMultiplyVaultForm'
 
 interface DepositAmountChange {
   kind: 'depositAmount'
@@ -395,9 +397,10 @@ export function applyManageVaultInput(
       vault: { token },
     } = state
     const currencyDigits = calculateTokenPrecisionByValue({
-      token: token,
+      token,
       usdPrice: currentCollateralPrice,
     })
+
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
@@ -480,6 +483,7 @@ export function applyManageVaultInput(
 
   if (change.kind === 'withdrawAmount') {
     const { priceInfo } = state
+
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
@@ -491,6 +495,7 @@ export function applyManageVaultInput(
 
   if (change.kind === 'withdrawAmountUSD') {
     const { priceInfo } = state
+
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
@@ -523,6 +528,7 @@ export function applyManageVaultInput(
 
   if (change.kind === 'generateAmountMax') {
     const { maxGenerateAmount } = state
+
     return {
       ...state,
       ...manageMultiplyInputsDefaults,

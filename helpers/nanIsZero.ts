@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
-
-import { zero } from './zero'
+import { zero } from 'helpers/zero'
 
 export function NaNIsZero(number: BigNumber) {
   return number.isNaN() ? zero : number

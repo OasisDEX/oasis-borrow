@@ -1,6 +1,6 @@
+import React from 'react'
 import { useConnectWallet } from '@web3-onboard/react'
 import { svgStringToBase64 } from 'helpers/svgStringToBase64'
-import React from 'react'
 import { Box, Image, SxStyleProp } from 'theme-ui'
 
 type BlockNativeAvatarProps = {
@@ -13,6 +13,7 @@ export function BlockNativeAvatar({ sx }: BlockNativeAvatarProps) {
     box: '32px',
     icon: '20px',
   }
+
   return (
     <Box
       sx={{

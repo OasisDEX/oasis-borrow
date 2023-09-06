@@ -12,14 +12,17 @@ import {
   extractStopLossData,
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { fetchWithOperationId, flatEvents } from 'features/vaultHistory/vaultHistory'
+import {
+  ReturnedAutomationEvent,
+  ReturnedEvent,
+  VaultEvent,
+} from 'features/vaultHistory/vaultHistoryEvents'
 import { gql, GraphQLClient } from 'graphql-request'
 import { isEqual, memoize } from 'lodash'
 import { combineLatest, from, Observable, timer } from 'rxjs'
 import { distinctUntilChanged, shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'
-
-import { fetchWithOperationId, flatEvents } from './vaultHistory'
-import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
   query vaultsMultiplyHistories($urns: [String!], $cdpIds: [BigFloat!]) {
@@ -167,11 +170,13 @@ export function vaultsWithHistory$(
   const makeClient = memoize(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
+
   return timer(0, refreshInterval).pipe(
     switchMap(() => combineLatest(context$, vaults$(address))),
     distinctUntilChanged(isEqual),
     switchMap(([{ chainId }, vaults]: [Context, VaultWithValue<VaultWithType>[]]) => {
       const apiClient = makeClient(getNetworkContracts(NetworkIds.MAINNET, chainId).cacheApi)
+
       return from(
         getDataFromCache(
           apiClient,

@@ -87,8 +87,8 @@ export function createGetAaveStopLossMetadata(
     const sliderMax = liquidationRatio.minus(aaveOffsets.manage.max).times(100)
 
     const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
-      stopLossLevel: stopLossLevel,
-      isStopLossEnabled: isStopLossEnabled,
+      stopLossLevel,
+      isStopLossEnabled,
       initialStopLossSelected: sliderMax
         .minus(new BigNumber(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE).times(100))
         .div(100),

@@ -1,7 +1,7 @@
+import { useEffect, useState } from 'react'
 import { NetworkIds } from 'blockchain/networks'
 import { SubgraphBaseResponse, Subgraphs, SubgraphsResponses } from 'features/subgraphLoader/types'
 import getConfig from 'next/config'
-import { useEffect, useState } from 'react'
 
 interface UseSubgraphLoader<R> {
   isError: boolean

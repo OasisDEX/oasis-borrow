@@ -18,7 +18,7 @@ export function useRedirect() {
   const router = useRouter()
 
   function push(pathname: string, query: Dictionary<string> = {}) {
-    const network = router.query.network
+    const { network } = router.query
     const queryParams = network ? { ...query, network } : query
 
     void router.push({
@@ -28,7 +28,7 @@ export function useRedirect() {
   }
 
   function replace(pathname: string, query: Dictionary<string> = {}) {
-    const network = router.query.network
+    const { network } = router.query
     const queryParams = network ? { ...query, network } : query
 
     void router.replace({

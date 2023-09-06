@@ -1,3 +1,4 @@
+import React from 'react'
 import { ManageMultiplyVaultContainer } from 'components/vault/commonMultiply/ManageMultiplyVaultContainer'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { ManageEarnVaultContainer } from 'components/vault/earn/ManageEarnVaultContainer'
@@ -5,15 +6,13 @@ import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVa
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { SidebarManageGuniVault } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVault'
+import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { ManageInstiVaultContainer } from 'features/instiVault/manage/containers/ManageInstiVaultContainer'
 import { ManageMultiplyVaultDetails } from 'features/multiply/manage/containers/ManageMultiplyVaultDetails'
 import { SidebarManageMultiplyVault } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
-import React from 'react'
 import { Container } from 'theme-ui'
-
-import { GeneralManageVaultState } from './generalManageVault'
-import { VaultType } from './vaultType'
 
 interface GeneralManageVaultViewProps {
   generalManageVault: GeneralManageVaultState

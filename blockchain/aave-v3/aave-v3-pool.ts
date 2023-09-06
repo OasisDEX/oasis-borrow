@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { BaseParameters, getNetworkMapping } from 'blockchain/aave-v3/utils'
 import { NetworkIds } from 'blockchain/networks'
 import { AaveV3Pool__factory } from 'types/ethers-contracts'
-
-import { BaseParameters, getNetworkMapping } from './utils'
 
 export interface AaveV3UserAccountData {
   totalCollateralBase: BigNumber
@@ -68,6 +67,7 @@ export function getAaveV3UserConfigurations({
   address,
 }: AaveV3UserConfigurationsParameters): Promise<AaveV3ConfigurationData> {
   const { contract } = networkMappings[networkId]()
+
   return contract.getUserConfiguration(address).then((result) => {
     return result.map((value) => value.toString())
   })
@@ -77,6 +77,7 @@ export function getAaveV3ReservesList({
   networkId,
 }: BaseParameters): Promise<AaveV3ConfigurationData> {
   const { contract } = networkMappings[networkId]()
+
   return contract.getReservesList().then((result) => {
     return result.map((value) => value.toString())
   })
@@ -87,6 +88,7 @@ export function getEModeCategoryData({
   categoryId,
 }: GetEModeCategoryDataParameters): Promise<GetEModeCategoryDataResult> {
   const { contract } = networkMappings[networkId]()
+
   return contract.getEModeCategoryData(categoryId.toString(16)).then((result) => {
     return {
       ltv: new BigNumber(result.ltv.toString()).div(10000),

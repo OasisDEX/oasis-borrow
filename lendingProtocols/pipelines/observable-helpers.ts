@@ -29,7 +29,7 @@ export function makeObservableForNetworkId<Args extends { networkId: NetworkIds 
   refreshTrigger$: Observable<unknown>,
   valueGetter: (args: Args) => Result | Promise<Result>,
   networkId: NetworkIds = NetworkIds.MAINNET,
-  pipeName: string = '',
+  pipeName = '',
   resolver: (args: Args) => string = defaultResolver,
 ): (a: Omit<Args, 'networkId'>) => Observable<Result> {
   return memoize((args) => {
@@ -38,8 +38,9 @@ export function makeObservableForNetworkId<Args extends { networkId: NetworkIds 
     }
     const actualArgs = <Args>{
       ...args,
-      networkId: networkId,
+      networkId,
     }
+
     return refreshTrigger$.pipe(
       switchMap(async () => await valueGetter(actualArgs)),
       distinctUntilChanged((a, b) => isEqual(a, b)),
@@ -49,6 +50,7 @@ export function makeObservableForNetworkId<Args extends { networkId: NetworkIds 
           `Error getting value for Args ${JSON.stringify(actualArgs)}. For pipe: ${pipeName}`,
           error,
         )
+
         return EMPTY
       }),
     )

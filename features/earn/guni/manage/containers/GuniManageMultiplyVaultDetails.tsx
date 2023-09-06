@@ -1,3 +1,4 @@
+import React from 'react'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCardWrapper,
@@ -11,7 +12,6 @@ import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCard
 import { ContentFooterItemsEarn } from 'components/vault/detailsSection/ContentFooterItemsEarn'
 import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box } from 'theme-ui'
 
 export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {

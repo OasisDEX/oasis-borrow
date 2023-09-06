@@ -1,5 +1,5 @@
+import { NetworkIds } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols'
-import { NetworkIds } from '../../../blockchain/networks'
 
 export interface GetOnChainPositionParams {
   networkId: NetworkIds,

@@ -1,10 +1,10 @@
+import React from 'react'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export const AjnaBorrowOriginationFee = () => {
   const { t } = useTranslation()

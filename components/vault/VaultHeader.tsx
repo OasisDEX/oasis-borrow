@@ -1,14 +1,13 @@
+import React, { ReactNode } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { Tooltip, useTooltip } from 'components/Tooltip'
+import { VaultHeaderContainer } from 'components/vault/VaultHeaderContainer'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
 import { SxStyleProp } from 'theme-ui'
-
-import { VaultHeaderContainer } from './VaultHeaderContainer'
 
 export function VaultIlkDetailsItem({
   label,

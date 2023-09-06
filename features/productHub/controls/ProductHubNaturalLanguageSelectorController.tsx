@@ -1,9 +1,9 @@
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
 import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { FC, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'next-i18next'
 import { Box, Heading } from 'theme-ui'
 
 interface ProductHubNaturalLanguageSelectorControllerProps {
@@ -43,7 +43,7 @@ export const ProductHubNaturalLanguageSelectorController: FC<
           gradient={gradient}
           options={Object.values(productHubOptionsMap).map((option) => option.product)}
           parentRef={ref}
-          withHeaders={true}
+          withHeaders
           onChange={(selected) => {
             const typedValue = selected.value as ProductHubProductType
             const tokenInUrl = selectedToken !== ALL_ASSETS ? selectedToken : undefined
@@ -74,7 +74,7 @@ export const ProductHubNaturalLanguageSelectorController: FC<
           options={Object.values(productHubOptionsMap[selectedProduct].tokens)}
           overwriteOption={overwriteOption}
           parentRef={ref}
-          valueAsLabel={true}
+          valueAsLabel
           onChange={(selected) => {
             const tokenInUrl = selected.value !== ALL_ASSETS ? selected.value : undefined
 

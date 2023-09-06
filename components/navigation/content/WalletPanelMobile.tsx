@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { useAccountContext, useMainContext } from 'components/context'
 import { MobileSidePanelPortal, ModalCloseIcon } from 'components/Modal'
 import { useSharedUI } from 'components/SharedUIProvider'
@@ -5,7 +6,6 @@ import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/
 import { ContextAccountDetails, getShowHeaderSettings } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
-import React, { useState } from 'react'
 import { Box, Button, Card, Flex } from 'theme-ui'
 
 export function WalletPanelMobile() {

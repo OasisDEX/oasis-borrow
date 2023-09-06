@@ -1,12 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { GasMultiplier } from 'blockchain/better-calls/utils'
+import { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networkSetById } from 'blockchain/networks'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ethers } from 'ethers'
 import { AccountFactory__factory } from 'types/ethers-contracts'
-
-import { GasMultiplier } from './utils'
-import { EstimatedGasResult } from './utils/types'
 
 export interface CreateAccountParameters {
   networkId: NetworkIds
@@ -15,8 +14,10 @@ export interface CreateAccountParameters {
 
 async function validateParameters({ signer, networkId }: CreateAccountParameters) {
   const signerChainId = await signer.getChainId()
+
   if (signerChainId !== networkId) {
     const signerNetworkConfig = networkSetById[signerChainId]
+
     if (
       signerNetworkConfig?.isCustomFork &&
       networkId === signerNetworkConfig.getParentNetwork()?.id
@@ -30,6 +31,7 @@ async function validateParameters({ signer, networkId }: CreateAccountParameters
   }
 
   const contracts = getNetworkContracts(networkId)
+
   ensureContractsExist(networkId, contracts, ['accountFactory'])
   const { accountFactory } = contracts
 
@@ -47,6 +49,7 @@ export async function estimateGasCreateAccount({
   try {
     const transactionData = accountFactory.interface.encodeFunctionData('createAccount()')
     const result = await accountFactory.estimateGas['createAccount()']()
+
     return {
       estimatedGas: new BigNumber(result.toString()).multipliedBy(GasMultiplier).toFixed(0),
       transactionData,
@@ -56,6 +59,7 @@ export async function estimateGasCreateAccount({
       `Error estimating gas. Action: createAccount on factory: ${accountFactory.address}. Network: ${networkId}`,
       e,
     )
+
     return undefined
   }
 }
@@ -73,13 +77,16 @@ export async function createCreateAccountTransaction({
 
 export function extractResultFromContractReceipt(receipt: ethers.ContractReceipt): UserDpmAccount {
   const event = receipt.events?.find((e) => e.event === 'AccountCreated')
+
   if (!event) {
     throw new Error('No AccountCreated event found in receipt')
   }
   const proxyAddress = event.args?.proxy
+
   if (!proxyAddress) {
     throw new Error('No proxy address found in AccountCreated event')
   }
+
   return {
     proxy: proxyAddress,
     user: event.args?.user,

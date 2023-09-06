@@ -1,3 +1,4 @@
+import React from 'react'
 import { isSupportedNetwork, NetworkNames, networksByName } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { ProductContextHandler } from 'components/context'
@@ -17,12 +18,11 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { AaveLendingProtocol, checkIfAave } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useRouter } from 'next/router'
-import React from 'react'
-import { Grid } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
+import { Grid } from 'theme-ui'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const networkOrProduct = ctx.query.networkOrProduct as string
@@ -35,7 +35,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
         ...(await serverSideTranslations(ctx.locale!, ['common'])),
         vault: ctx.query.vault || null,
         network: networkOrProduct,
-        protocol: protocol,
+        protocol,
       },
     }
   }
@@ -84,12 +84,14 @@ function WithAaveStrategy({
       strategyConfigError,
     )
     void push(INTERNAL_LINKS.notFound)
-    return <></>
+
+    return <>{null}</>
   }
 
   const _updateStrategyConfig = updateStrategyConfig
     ? updateStrategyConfig(positionId, network)
     : undefined
+
   return (
     <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
       <WithLoadingIndicator
@@ -136,6 +138,7 @@ function safeGetAddress(address: string | undefined) {
       return undefined
     }
   }
+
   return undefined
 }
 

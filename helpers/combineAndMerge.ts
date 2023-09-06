@@ -48,7 +48,7 @@ export function combineAndMerge<O1, O2, O3, O4, O5, O6, O7, O8>(
   o7: O<O7>,
   o8: O<O8>,
 ): O<O1 | O2 | O3 | O4 | O5 | O6 | O7 | O8>
-export function combineAndMerge(...observables: Array<O<any>>): O<any> {
+export function combineAndMerge(...observables: O<any>[]): O<any> {
   return combineLatest(...observables).pipe(
     scan((previous: any[], current: any) => difference(current, previous), []),
     mergeMap((values) => of(...values)),

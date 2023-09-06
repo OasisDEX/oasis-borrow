@@ -1,12 +1,12 @@
+import React, { useRef, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useMainnetEnsName } from 'blockchain/ens'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { useRef, useState } from 'react'
-import { Box, Card, Flex, Text, Textarea } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
+import { Box, Card, Flex, Text, Textarea } from 'theme-ui'
 
 interface Props {
   address: string
@@ -19,6 +19,7 @@ function ReferralLink({ address }: Props) {
 
   function copyToClipboard() {
     const clipboardContent = clipboardAddressContentRef.current
+
     if (clipboardContent) {
       clipboardContent.select()
       document.execCommand('copy')
@@ -28,6 +29,7 @@ function ReferralLink({ address }: Props) {
       }, 2000)
     }
   }
+
   return (
     <Flex
       sx={{
@@ -81,6 +83,7 @@ function ReferralLink({ address }: Props) {
 export function ReferralsView({ address }: Props) {
   const { t } = useTranslation()
   const [ensName] = useMainnetEnsName(address)
+
   return (
     <Box
       sx={{

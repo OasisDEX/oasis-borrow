@@ -26,6 +26,42 @@ import {
   addStopLossTrigger,
   applyStopLossOpenFlowTransaction,
 } from 'features/automation/protection/stopLoss/openFlow/stopLossOpenFlowTransaction'
+import {
+  applyOpenVaultCalculations,
+  defaultOpenVaultStateCalculations,
+  OpenVaultCalculations,
+} from 'features/borrow/open/pipes/openVaultCalculations'
+import {
+  applyOpenVaultConditions,
+  applyOpenVaultStageCategorisation,
+  calculateInitialTotalSteps,
+  defaultOpenVaultConditions,
+  OpenVaultConditions,
+} from 'features/borrow/open/pipes/openVaultConditions'
+import {
+  applyOpenVaultEnvironment,
+  OpenVaultEnvironmentChange,
+} from 'features/borrow/open/pipes/openVaultEnvironment'
+import { applyOpenVaultForm, OpenVaultFormChange } from 'features/borrow/open/pipes/openVaultForm'
+import {
+  applyOpenVaultInput,
+  OpenVaultInputChange,
+} from 'features/borrow/open/pipes/openVaultInput'
+import {
+  applyOpenVaultSummary,
+  defaultOpenVaultSummary,
+  OpenVaultSummary,
+} from 'features/borrow/open/pipes/openVaultSummary'
+import {
+  applyEstimateGas,
+  applyOpenVaultTransaction,
+  openVault,
+} from 'features/borrow/open/pipes/openVaultTransactions'
+import {
+  finalValidation,
+  validateErrors,
+  validateWarnings,
+} from 'features/borrow/open/pipes/openVaultValidations'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
@@ -52,29 +88,6 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import {
-  applyOpenVaultCalculations,
-  defaultOpenVaultStateCalculations,
-  OpenVaultCalculations,
-} from './openVaultCalculations'
-import {
-  applyOpenVaultConditions,
-  applyOpenVaultStageCategorisation,
-  calculateInitialTotalSteps,
-  defaultOpenVaultConditions,
-  OpenVaultConditions,
-} from './openVaultConditions'
-import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
-import { applyOpenVaultForm, OpenVaultFormChange } from './openVaultForm'
-import { applyOpenVaultInput, OpenVaultInputChange } from './openVaultInput'
-import {
-  applyOpenVaultSummary,
-  defaultOpenVaultSummary,
-  OpenVaultSummary,
-} from './openVaultSummary'
-import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
-import { finalValidation, validateErrors, validateWarnings } from './openVaultValidations'
-
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
   stateToOverride: Partial<OpenVaultState>
@@ -87,6 +100,7 @@ function applyOpenVaultInjectedOverride(state: OpenVaultState, change: OpenVault
       ...change.stateToOverride,
     }
   }
+
   return state
 }
 
@@ -356,7 +370,8 @@ export function createOpenVault$(
           proxyActionsAdapterResolver$({ ilk }),
         ).pipe(
           switchMap(([context, txHelpers, token, proxyActionsAdapter]) => {
-            const account = context.account
+            const { account } = context
+
             return combineLatest(
               priceInfo$(token),
               balanceInfo$(token, account),

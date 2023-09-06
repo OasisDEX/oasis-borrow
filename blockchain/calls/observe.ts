@@ -1,9 +1,8 @@
+import { call, CallDef } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
 import { isEqual, memoize } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
-
-import { call, CallDef } from './callsHelpers'
 
 export function observe<A, R>(
   refreshTrigger$: Observable<any>,

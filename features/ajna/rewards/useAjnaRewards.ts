@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { Rewards } from 'features/ajna/common/components/AjnaRewardCard'
 import { getAjnaRewards } from 'features/ajna/positions/common/helpers/getAjnaRewards'
@@ -5,7 +6,6 @@ import { useWalletManagement } from 'features/web3OnBoard'
 import { getAjnaRewardsData } from 'handlers/ajna-rewards/getAjnaRewardsData'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
-import { useCallback, useEffect, useMemo, useState } from 'react'
 
 interface AjnaRewardsParamsState {
   rewards: Rewards

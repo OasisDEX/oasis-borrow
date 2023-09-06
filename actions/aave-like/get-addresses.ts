@@ -38,6 +38,7 @@ export function getAddresses(
           'aaveV2ProtocolDataProvider',
           'aaveV3Oracle',
         ]
+
   ensureContractsExist(networkId, contracts, contractProperties)
   ensureTokensExist(networkId, contracts)
   ensureChainlinkTokenPairsExist(networkId, contracts, ['ETHUSD'])
@@ -45,22 +46,22 @@ export function getAddresses(
 
   const sharedAddresses = {
     tokens: {
-      DAI: contracts.tokens['DAI'].address,
+      DAI: contracts.tokens.DAI.address,
       ETH: ethNullAddress,
-      WETH: contracts.tokens['WETH'].address,
-      USDC: contracts.tokens['USDC'].address,
-      WBTC: contracts.tokens['WBTC'].address,
-      WSTETH: contracts.tokens['WSTETH'].address,
-      CBETH: contracts.tokens['CBETH'].address,
-      RETH: contracts.tokens['RETH'].address,
-      STETH: contracts.tokens['STETH'].address,
-      GHO: contracts.tokens['GHO'].address,
-      USDT: contracts.tokens['USDT'].address,
-      SDAI: contracts.tokens['SDAI'].address,
-      LUSD: contracts.tokens['LUSD'].address,
-      FRAX: contracts.tokens['FRAX'].address,
+      WETH: contracts.tokens.WETH.address,
+      USDC: contracts.tokens.USDC.address,
+      WBTC: contracts.tokens.WBTC.address,
+      WSTETH: contracts.tokens.WSTETH.address,
+      CBETH: contracts.tokens.CBETH.address,
+      RETH: contracts.tokens.RETH.address,
+      STETH: contracts.tokens.STETH.address,
+      GHO: contracts.tokens.GHO.address,
+      USDT: contracts.tokens.USDT.address,
+      SDAI: contracts.tokens.SDAI.address,
+      LUSD: contracts.tokens.LUSD.address,
+      FRAX: contracts.tokens.FRAX.address,
     },
-    chainlinkEthUsdPriceFeed: contracts.chainlinkPriceOracle['ETHUSD'].address,
+    chainlinkEthUsdPriceFeed: contracts.chainlinkPriceOracle.ETHUSD.address,
     operationExecutor: contracts.operationExecutor.address,
     swapAddress: contracts.swapAddress,
   }

@@ -1,9 +1,8 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
-import React from 'react'
-
-import { AddAutoTakeProfitInfoSection } from './AddAutoTakeProfitInfoSection'
+import { AddAutoTakeProfitInfoSection } from 'features/automation/optimization/autoTakeProfit/controls/AddAutoTakeProfitInfoSection'
 
 interface AutoTakeProfitInfoSectionControlProps {
   toCollateral: boolean
@@ -25,11 +24,11 @@ export function AutoTakeProfitInfoSectionControl({
     getOnCloseEstimations({
       colMarketPrice: triggerColPrice,
       colOraclePrice: triggerColPrice,
-      debt: debt,
-      debtOffset: debtOffset,
+      debt,
+      debtOffset,
       ethMarketPrice,
-      lockedCollateral: lockedCollateral,
-      toCollateral: toCollateral,
+      lockedCollateral,
+      toCollateral,
     })
 
   return (

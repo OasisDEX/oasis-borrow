@@ -1,9 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { setAllowance } from 'features/allowance/setAllowance'
 import { TxHelpers } from 'helpers/context/types'
 import { TxError } from 'helpers/types'
-
-import { setAllowance } from './setAllowance'
 
 // TODO: there is inconsistency between open/manage
 // in open there is just one allowance called allowance
@@ -51,7 +50,7 @@ export const ALLOWANCE_STAGES = [
   'allowanceSuccess',
 ] as const
 
-export type AllowanceStages = (typeof ALLOWANCE_STAGES)[number]
+export type AllowanceStages = typeof ALLOWANCE_STAGES[number]
 
 export function getIsAllowanceStage(stage: string): stage is AllowanceStages {
   return ALLOWANCE_STAGES.includes(stage as any)
@@ -111,6 +110,7 @@ export function applyAllowanceChanges<S extends AllowanceState & StateDependenci
 ): S {
   if (change.kind === 'allowance') {
     const { allowanceAmount } = change
+
     return {
       ...state,
       allowanceAmount,
@@ -119,6 +119,7 @@ export function applyAllowanceChanges<S extends AllowanceState & StateDependenci
 
   if (change.kind === 'allowanceAsDepositAmount') {
     const { depositAmount } = state
+
     return {
       ...state,
       selectedAllowanceRadio: 'depositAmount',
@@ -151,6 +152,7 @@ export function applyAllowanceChanges<S extends AllowanceState & StateDependenci
 
   if (change.kind === 'allowanceInProgress') {
     const { allowanceTxHash } = change
+
     return {
       ...state,
       allowanceTxHash,
@@ -160,6 +162,7 @@ export function applyAllowanceChanges<S extends AllowanceState & StateDependenci
 
   if (change.kind === 'allowanceFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'allowanceFailure',
@@ -169,6 +172,7 @@ export function applyAllowanceChanges<S extends AllowanceState & StateDependenci
 
   if (change.kind === 'allowanceSuccess') {
     const { allowance } = change
+
     return {
       ...state,
       stage: 'allowanceSuccess',
@@ -256,6 +260,7 @@ export function applyAllowanceConditions<
     !!(depositAmount && !depositAmount.isZero() && (!allowance || depositAmount.gt(allowance)))
 
   const customAllowanceAmountEmpty = selectedAllowanceRadio === 'custom' && !allowanceAmount
+
   return {
     ...state,
     customAllowanceAmountEmpty,

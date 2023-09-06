@@ -1,10 +1,9 @@
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
+import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { compareBigNumber } from 'helpers/compare'
 import { applyChange, Change, Direction, toggleSort } from 'helpers/form'
 import { Observable, Subject } from 'rxjs'
 import { map, scan, startWith, switchMap } from 'rxjs/operators'
-
-import { IlkWithBalance } from './ilksWithBalances'
 
 export type IlkSortBy =
   | 'ilkDebtAvailable'
@@ -30,6 +29,7 @@ function applyFilter(state: IlksFilterState, change: Changes): IlksFilterState {
   switch (change.kind) {
     case 'sortBy':
       const [sortBy, direction] = toggleSort(state.sortBy, state.direction, change.sortBy)
+
       return {
         ...state,
         sortBy,
@@ -46,6 +46,7 @@ export function sortIlks(
   direction: Direction,
 ): IlkWithBalance[] {
   const filter = `${sortBy}_${direction}`
+
   switch (filter) {
     case 'ilkDebtAvailable_ASC':
       return ilks.sort((a, b) => compareBigNumber(a.ilkDebtAvailable, b.ilkDebtAvailable))
@@ -71,6 +72,7 @@ function filterByTag(ilks: IlkWithBalance[], tag: CoinTag | undefined) {
   if (tag === undefined) {
     return ilks
   }
+
   return ilks.filter((ilk) => {
     const tokenMeta = getToken(ilk.token)
 
@@ -97,6 +99,7 @@ export interface IlksWithFilters {
 
 export function ilksWithFilter$(ilks$: Observable<IlkWithBalance[]>): Observable<IlksWithFilters> {
   const change$ = new Subject<Changes>()
+
   function change(ch: Changes) {
     change$.next(ch)
   }

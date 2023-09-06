@@ -1,10 +1,10 @@
-import { TranslatedContent } from 'features/content'
-import { useScrollToTop } from 'helpers/useScrollToTop'
 import React from 'react'
-
-import en from './en.mdx'
+import { TranslatedContent } from 'features/content'
+import en from 'features/content/faqs/aave/multiply/en.mdx'
+import { useScrollToTop } from 'helpers/useScrollToTop'
 
 export const AaveMultiplyFaq = () => {
   useScrollToTop()
+
   return <TranslatedContent content={{ en /* es, pt */ }} />
 }

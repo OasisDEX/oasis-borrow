@@ -1,9 +1,9 @@
+import React from 'react'
 import { useInterpret } from '@xstate/react'
 import { ManageAaveStateMachine } from 'features/aave/manage/state'
 import { IStrategyConfig, PositionId, ProxyType } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { env } from 'process'
-import React from 'react'
 
 export const defaultManageTokenInputValues = {
   // defaults for the manage collateral/debt are set here
@@ -34,14 +34,15 @@ function setupManageAaveStateContext({
       strategyConfig: strategy,
       userInput: {},
       manageTokenInput: defaultManageTokenInputValues,
-      positionCreatedBy: positionCreatedBy,
-      positionId: positionId,
+      positionCreatedBy,
+      positionId,
       getSlippageFrom: strategy.defaultSlippage !== undefined ? 'strategyConfig' : 'userSettings',
       updateStrategyConfig,
       historyEvents: [],
     }),
     { devTools: env.NODE_ENV !== 'production' },
   ).start()
+
   return {
     stateMachine,
   }
@@ -55,9 +56,11 @@ const manageAaveStateContext = React.createContext<ManageAaveStateMachineContext
 
 export function useManageAaveStateMachineContext(): ManageAaveStateMachineContext {
   const ac = React.useContext(manageAaveStateContext)
+
   if (!ac) {
     throw new Error('ManageAaveStateMachineContext not available!')
   }
+
   return ac
 }
 
@@ -79,6 +82,7 @@ export function ManageAaveStateMachineContextProvider({
     positionId,
     updateStrategyConfig,
   })
+
   return (
     <manageAaveStateContext.Provider value={context}>{children}</manageAaveStateContext.Provider>
   )

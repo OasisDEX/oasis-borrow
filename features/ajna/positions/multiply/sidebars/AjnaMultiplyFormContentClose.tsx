@@ -1,3 +1,5 @@
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -5,8 +7,6 @@ import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/A
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
 
 export function AjnaMultiplyFormContentClose() {

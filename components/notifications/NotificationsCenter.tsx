@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
 import { useNotificationSocket } from 'components/context'
 import { NotificationCardsWrapper } from 'components/notifications/NotificationCardsWrapper'
@@ -9,7 +10,6 @@ import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { throttle } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
 import { Box, Grid } from 'theme-ui'
 
 export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {

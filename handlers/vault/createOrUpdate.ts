@@ -1,10 +1,9 @@
 import { VaultType } from '@prisma/client'
 import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
+import { selectVaultByIdAndChainId } from 'handlers/vault/get'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
-
-import { selectVaultByIdAndChainId } from './get'
 
 const vaultSchema = z.object({
   id: z.number(),
@@ -40,6 +39,7 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
     } else {
       await prisma.$executeRawUnsafe(updateQuery)
     }
+
     return res.status(200).send('OK')
   } else {
     return res.status(401).send('Unauthorized')

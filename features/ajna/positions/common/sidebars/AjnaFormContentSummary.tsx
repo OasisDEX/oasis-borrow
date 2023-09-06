@@ -1,8 +1,8 @@
+import React, { PropsWithChildren } from 'react'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { AjnaValidationMessages } from 'features/ajna/positions/common/components/AjnaValidationMessages'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
-import React, { PropsWithChildren } from 'react'
 
 interface AjnaFormContentSummaryProps {
   showReset?: boolean

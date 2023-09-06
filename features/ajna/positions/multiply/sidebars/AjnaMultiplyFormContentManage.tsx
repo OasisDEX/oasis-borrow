@@ -1,3 +1,4 @@
+import React from 'react'
 import { ActionPills } from 'components/ActionPills'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaMultiplyFormContentAdjust } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentAdjust'
@@ -9,7 +10,6 @@ import { AjnaMultiplyFormContentPayback } from 'features/ajna/positions/multiply
 import { AjnaMultiplyFormContentSwitch } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentSwitch'
 import { AjnaMultiplyFormContentWithdrawCollateral } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentWithdrawCollateral'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function AjnaMultiplyFormContentManage() {
   const { t } = useTranslation()

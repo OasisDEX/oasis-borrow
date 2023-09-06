@@ -1,13 +1,12 @@
+import React, { useEffect } from 'react'
 import { BigNumber } from 'bignumber.js'
 import { useMainContext, useProductContext } from 'components/context'
+import { GeneralManageLayout } from 'components/vault/GeneralManageLayout'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import React, { useEffect } from 'react'
-
-import { GeneralManageLayout } from './GeneralManageLayout'
 
 interface GeneralManageControlProps {
   id: BigNumber
@@ -44,7 +43,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
               followButton={{
                 followerAddress: account,
                 vaultId: id,
-                chainId: chainId,
+                chainId,
                 protocol: 'maker',
               }}
               chainId={chainId}

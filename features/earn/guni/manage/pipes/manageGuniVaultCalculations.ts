@@ -1,3 +1,4 @@
+import { GuniTxData, ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
 import { calculateYield } from 'helpers/earn/calculations'
 import {
   calculateGrossEarnings,
@@ -5,8 +6,6 @@ import {
   calculatePNL,
 } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
-
-import { GuniTxData, ManageEarnVaultState } from './manageGuniVault'
 
 // this method extends / overwrites  applyManageVaultCalculations
 export function applyGuniCalculations(state: ManageEarnVaultState & GuniTxData) {
@@ -43,7 +42,7 @@ export function applyGuniCalculations(state: ManageEarnVaultState & GuniTxData) 
     currentPnL,
     earningsToDate: grossEarnings,
     earningsToDateAfterFees: netEarnings,
-    netAPY: netAPY,
+    netAPY,
     afterCloseToDai:
       sharedAmount0 && minToTokenAmount ? sharedAmount0.plus(minToTokenAmount).minus(debt) : zero,
   }

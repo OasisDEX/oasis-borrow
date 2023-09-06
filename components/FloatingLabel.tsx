@@ -1,5 +1,5 @@
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Flex, Image, SxStyleProp, Text } from 'theme-ui'
 
 interface FloatingLabelProps {

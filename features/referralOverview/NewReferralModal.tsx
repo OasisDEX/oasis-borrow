@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { useMainnetEnsName } from 'blockchain/ens'
 import { ReferralModal } from 'components/ReferralModal'
 import { SuccessfulJoinModal } from 'components/SuccessfullJoinModal'
@@ -7,7 +8,6 @@ import { jwtAuthGetToken } from 'features/shared/jwt'
 import { useConnection } from 'features/web3OnBoard'
 import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
 
 interface NewReferralModalProps {
   account?: string | null
@@ -29,6 +29,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
 
     if (userReferral && account) {
       const jwtToken = jwtAuthGetToken(account)
+
       if (jwtToken)
         createUserUsingApi$(
           hasAccepted,
@@ -75,7 +76,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
           account={account}
           userReferral={userReferral}
           heading={t('ref.modal.successful-join')}
-        ></SuccessfulJoinModal>
+        />
       )}{' '}
     </>
   )

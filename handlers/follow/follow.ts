@@ -25,6 +25,7 @@ const usersWhoFollowVaultsSchema = z.object({
 function handleUnsupportedProtocol(req: NextApiRequest, res: NextApiResponse) {
   const protocolFromBody = req.body.protocol.toLowerCase()
   const supportedProtocols = Object.values(Protocol).map((value) => value.toString())
+
   if (!supportedProtocols.includes(protocolFromBody)) {
     return res.status(418).json({ error: `Protocol ${protocolFromBody} is not supported` })
   }
@@ -32,6 +33,7 @@ function handleUnsupportedProtocol(req: NextApiRequest, res: NextApiResponse) {
 
 function handleUnsupportedNetwork(req: NextApiRequest, res: NextApiResponse) {
   const chainIdFromBody = req.body.vault_chain_id
+
   if (!Object.values(NetworkIds).includes(chainIdFromBody)) {
     return res.status(418).json({ error: `Chain with ID ${chainIdFromBody} is not supported` })
   }
@@ -42,6 +44,7 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
   handleUnsupportedNetwork(req, res)
   const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
   const user = getUserFromRequest(req)
+
   if (!user) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
@@ -73,6 +76,7 @@ export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
   handleUnsupportedNetwork(req, res)
   const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
   const user = getUserFromRequest(req)
+
   if (!user) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
@@ -83,6 +87,7 @@ export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
     vault_chain_id,
     protocol: protocol as Protocol,
   }
+
   await prisma.usersWhoFollowVaults
     .deleteMany({
       where: userWhoUnfollowsVaultData,

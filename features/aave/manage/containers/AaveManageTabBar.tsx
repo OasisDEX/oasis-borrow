@@ -1,3 +1,4 @@
+import React from 'react'
 import { useActor } from '@xstate/react'
 import { useAutomationContext } from 'components/context'
 import { PositionHistory } from 'components/history/PositionHistory'
@@ -16,7 +17,6 @@ import {
   AaveLikeReserveData,
 } from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Card, Grid } from 'theme-ui'
 
 interface AaveManageTabBarProps {

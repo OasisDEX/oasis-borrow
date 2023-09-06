@@ -1,12 +1,11 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { SidebarSectionFooterButton } from 'components/sidebar/SidebarSectionFooterButton'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
+import { OrderInformationTooltipAction } from 'features/aave/components/order-information/OrderInformationTooltipAction'
 import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Flex, Text } from 'theme-ui'
-
-import { OrderInformationTooltipAction } from './OrderInformationTooltipAction'
 
 interface SlippageInformationProps {
   slippage: BigNumber
@@ -23,6 +22,7 @@ function ChangeSlippageToUserSettings({
   buttonLabel: string
 }) {
   const { t } = useTranslation()
+
   return (
     <Box sx={{ p: 3 }}>
       {t('vault-changes.slippage-info')}
@@ -39,6 +39,7 @@ function ChangeSlippageToUserSettings({
 
 function BasicSlippageInformation({ slippage }: SlippageInformationProps) {
   const { t } = useTranslation()
+
   return (
     <VaultChangesInformationItem
       label={t('vault-changes.slippage-limit')}
@@ -49,12 +50,13 @@ function BasicSlippageInformation({ slippage }: SlippageInformationProps) {
 
 function SlippageFromStrategyWithTooltip({ slippage, changeSlippage }: SlippageInformationProps) {
   const { t } = useTranslation()
+
   return (
     <VaultChangesInformationItem
       label={t('vault-changes.slippage-limit')}
       value={
         <Flex>
-          <Text color={'primary100'}>{formatPercent(slippage.times(100), { precision: 2 })}</Text>{' '}
+          <Text color="primary100">{formatPercent(slippage.times(100), { precision: 2 })}</Text>{' '}
           <OrderInformationTooltipAction>
             <ChangeSlippageToUserSettings
               buttonLabel={t('vault-changes.slippage-from-settings')}
@@ -71,12 +73,13 @@ function SlippageFromStrategyWithTooltip({ slippage, changeSlippage }: SlippageI
 
 function SlippageFromSettingsWithTooltip({ slippage, changeSlippage }: SlippageInformationProps) {
   const { t } = useTranslation()
+
   return (
     <VaultChangesInformationItem
       label={t('vault-changes.slippage-limit')}
       value={
         <Flex>
-          <Text color={'warning100'}>{formatPercent(slippage.times(100), { precision: 2 })}</Text>
+          <Text color="warning100">{formatPercent(slippage.times(100), { precision: 2 })}</Text>
           <OrderInformationTooltipAction>
             <ChangeSlippageToUserSettings
               buttonLabel={t('vault-changes.slippage-from-strategy')}
@@ -95,5 +98,6 @@ export function SlippageInformation(props: SlippageInformationProps) {
   if (!props.isStrategyHasSlippage) return <BasicSlippageInformation {...props} />
   if (props.getSlippageFrom === 'strategyConfig')
     return <SlippageFromStrategyWithTooltip {...props} />
+
   return <SlippageFromSettingsWithTooltip {...props} />
 }

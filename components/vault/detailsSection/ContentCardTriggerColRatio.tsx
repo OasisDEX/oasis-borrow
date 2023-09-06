@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import {
   ChangeVariantType,
@@ -6,7 +7,6 @@ import {
 } from 'components/DetailsSectionContentCard'
 import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardTriggerColRatioProps {
@@ -18,6 +18,7 @@ interface ContentCardTriggerColRatioProps {
 
 function ContentCardTriggerColRatioModal() {
   const { t } = useTranslation()
+
   return (
     <Grid gap={2}>
       <Heading variant="header3">{t('auto-take-profit.trigger-col-ratio')}</Heading>

@@ -1,12 +1,11 @@
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
 import { AutomationBotAggregator, DsProxy } from 'types/web3-v1-contracts'
-
-import { TxMetaKind } from './txMeta'
 
 export type AutomationBotAggregatorBaseTriggerData = {
   proxyAddress: string
@@ -14,7 +13,7 @@ export type AutomationBotAggregatorBaseTriggerData = {
 export type AutomationBotAddAggregatorTriggerData = AutomationBotAggregatorBaseTriggerData & {
   groupTypeId: number
   replacedTriggerIds: any // TODO ŁW replace any https://app.shortcut.com/oazo-apps/story/5388/change-types-in-transactiondef
-  triggersData: any //AutomationBotAddTriggerData[],
+  triggersData: any // AutomationBotAddTriggerData[],
   kind: TxMetaKind.addTriggerGroup
 }
 export type AutomationBotRemoveTriggersData = AutomationBotAggregatorBaseTriggerData & {

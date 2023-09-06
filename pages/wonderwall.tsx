@@ -1,9 +1,9 @@
+import React from 'react'
 import { LandingPageLayout } from 'components/layouts'
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 import { Box, Button, Grid } from 'theme-ui'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({

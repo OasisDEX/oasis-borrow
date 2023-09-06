@@ -1,3 +1,4 @@
+import React, { Fragment } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/layouts'
@@ -7,7 +8,6 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useScrollToTop } from 'helpers/useScrollToTop'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React, { Fragment } from 'react'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
@@ -67,6 +67,7 @@ function SecurityPage() {
       links: [{ url: INTERNAL_LINKS.privacy, label: t('security.category.shield.link-privacy') }],
     },
   ]
+
   return (
     <Box sx={{ width: '100%', mt: [4, 5], pb: [4, 6] }}>
       <Heading variant="header2" sx={{ textAlign: 'center', mb: 2 }}>
@@ -108,7 +109,7 @@ function SecurityPage() {
                   }}
                 >
                   {category.links.map((link) => (
-                    <AppLink variant="inText" target="_blank" href={link.url}>
+                    <AppLink key={link.label} variant="inText" target="_blank" href={link.url}>
                       {link.label}
                       <Icon
                         name="arrow_right"

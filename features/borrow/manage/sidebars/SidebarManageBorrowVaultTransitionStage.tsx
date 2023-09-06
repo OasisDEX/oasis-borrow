@@ -1,8 +1,8 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ListWithIcon } from 'components/ListWithIcon'
 import { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
 export function SidebarManageBorrowVaultTransitionStage({

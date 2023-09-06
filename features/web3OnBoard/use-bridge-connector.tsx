@@ -1,9 +1,8 @@
+import { useCallback, useMemo } from 'react'
 import { WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
 import { isNetworkHexIdSupported, NetworkConfigHexId } from 'blockchain/networks'
-import { useCallback, useMemo } from 'react'
-
-import { BridgeConnector } from './bridge-connector'
+import { BridgeConnector } from 'features/web3OnBoard/bridge-connector'
 
 export interface BridgeConnectorState {
   createConnector: () => Promise<boolean>
@@ -25,6 +24,7 @@ export function useBridgeConnector(): BridgeConnectorState {
     ) {
       return new BridgeConnector(wallet, chains, disconnect)
     }
+
     return undefined
   }, [wallet, chains, disconnect, connectedChain])
 
@@ -34,6 +34,7 @@ export function useBridgeConnector(): BridgeConnectorState {
     }
     const currentWallet = await connect()
     const isWalletConnected = currentWallet && currentWallet.length > 0
+
     return isWalletConnected
   }, [wallet, connect, connecting, connector])
 

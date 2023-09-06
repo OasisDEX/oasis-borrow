@@ -119,7 +119,7 @@ export function applyManageVaultInput<VaultState extends ManageStandardBorrowVau
   if (change.kind === 'depositUSD' && canDeposit) {
     const { depositAmountUSD } = change
     const { priceInfo, vault } = state
-    const currentCollateralPrice = priceInfo.currentCollateralPrice
+    const { currentCollateralPrice } = priceInfo
     const currencyDigits = calculateTokenPrecisionByValue({
       token: vault.token,
       usdPrice: currentCollateralPrice,
@@ -167,6 +167,7 @@ export function applyManageVaultInput<VaultState extends ManageStandardBorrowVau
         }),
       ...paybackAndWithdrawDefaults,
     }
+
     return thing
   }
 
@@ -239,6 +240,7 @@ export function applyManageVaultInput<VaultState extends ManageStandardBorrowVau
 
   if (change.kind === 'payback' && canPayback) {
     const { paybackAmount } = change
+
     return {
       ...state,
       paybackAmount,

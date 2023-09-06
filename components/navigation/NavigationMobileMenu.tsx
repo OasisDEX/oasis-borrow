@@ -1,9 +1,9 @@
+import React from 'react'
 import { DrawerMenu } from 'components/DrawerMenu'
 import { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
 import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { NavigationMobileMenuLink } from 'components/navigation/NavigationMobileMenuLink'
 import { NavigationMobileMenuPanel } from 'components/navigation/NavigationMobileMenuPanel'
-import React from 'react'
 import { Box } from 'theme-ui'
 
 interface NavigationMobileMenuProps {

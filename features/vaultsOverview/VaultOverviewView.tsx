@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react'
 import { Announcement } from 'components/Announcement'
 import { useProductContext } from 'components/context'
 import { getAddress } from 'ethers/lib/utils'
@@ -5,14 +6,12 @@ import { AssetsAndPositionsOverview } from 'features/vaultsOverview/containers/A
 import { ConnectWalletPrompt } from 'features/vaultsOverview/containers/ConnectWalletPrompt'
 import { FollowedTable } from 'features/vaultsOverview/containers/FollowedTable'
 import { PositionsTable } from 'features/vaultsOverview/containers/PositionsTable'
+import { VaultOwnershipNotice } from 'features/vaultsOverview/containers/VaultOwnershipNotice'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
-
-import { VaultOwnershipNotice } from './containers/VaultOwnershipNotice'
 
 export function VaultsOverviewView({ address }: { address: string }) {
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')

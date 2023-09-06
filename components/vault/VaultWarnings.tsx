@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
@@ -6,7 +7,6 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
 const ConstantMultipleKBLink = (
@@ -31,11 +31,13 @@ export function VaultWarnings({
   isAutoBuyEnabled,
 }: VaultWarningsProps) {
   const { t } = useTranslation()
+
   if (!warningMessages.length) return null
 
   function applyWarningMessageTranslation(message: VaultWarningMessage) {
     const translate = (key: string, args?: Dictionary<any>) =>
       t(`vault-warnings.${key}`, args || {})
+
     switch (message) {
       case 'potentialGenerateAmountLessThanDebtFloor':
         return translate('potential-generate-amount-less-than-debt-floor', {
@@ -153,9 +155,9 @@ export function VaultWarnings({
     }
   }
 
-  const messages = warningMessages.reduce(
+  const messages = warningMessages.reduce<(string | JSX.Element)[]>(
     (acc, message) => [...acc, applyWarningMessageTranslation(message)],
-    [] as (string | JSX.Element)[],
+    [],
   )
 
   return <MessageCard {...{ messages, type: 'warning', withBullet: messages.length > 1 }} />

@@ -1,3 +1,4 @@
+import React from 'react'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
@@ -12,7 +13,6 @@ import {
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Flex } from 'theme-ui'
 
 interface StopLossCompleteInformationProps {

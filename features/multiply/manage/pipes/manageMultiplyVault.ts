@@ -23,6 +23,62 @@ import {
   saveVaultTypeForAccount,
   VaultType,
 } from 'features/generalManageVault/vaultType'
+import {
+  applyExchange,
+  createExchangeChange$,
+  createInitialQuoteChange,
+  ExchangeQuoteChanges,
+} from 'features/multiply/manage/pipes/manageMultiplyQuote'
+import {
+  applyManageVaultAllowance,
+  ManageVaultAllowanceChange,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultAllowances'
+import {
+  applyManageVaultCalculations,
+  defaultManageMultiplyVaultCalculations,
+  ManageVaultCalculations,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import {
+  applyManageVaultConditions,
+  applyManageVaultStageCategorisation,
+  defaultManageMultiplyVaultConditions,
+  ManageVaultConditions,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultConditions'
+import {
+  applyManageVaultEnvironment,
+  ManageVaultEnvironmentChange,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultEnvironment'
+import {
+  applyManageVaultForm,
+  ManageVaultFormChange,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultForm'
+import {
+  applyManageVaultInput,
+  ManageVaultInputChange,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultInput'
+import {
+  applyManageVaultSummary,
+  defaultManageVaultSummary,
+  ManageVaultSummary,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultSummary'
+import {
+  applyEstimateGas,
+  applyManageVaultTransaction,
+  createProxy,
+  ManageVaultTransactionChange,
+  setCollateralAllowance,
+  setDaiAllowance,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultTransactions'
+import {
+  applyManageVaultTransition,
+  ManageVaultTransitionChange,
+  progressAdjust,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultTransitions'
+import {
+  finalValidation,
+  validateErrors,
+  validateWarnings,
+} from 'features/multiply/manage/pipes/manageMultiplyVaultValidations'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
@@ -41,53 +97,6 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
-import {
-  applyExchange,
-  createExchangeChange$,
-  createInitialQuoteChange,
-  ExchangeQuoteChanges,
-} from './manageMultiplyQuote'
-import {
-  applyManageVaultAllowance,
-  ManageVaultAllowanceChange,
-} from './manageMultiplyVaultAllowances'
-import {
-  applyManageVaultCalculations,
-  defaultManageMultiplyVaultCalculations,
-  ManageVaultCalculations,
-} from './manageMultiplyVaultCalculations'
-import {
-  applyManageVaultConditions,
-  applyManageVaultStageCategorisation,
-  defaultManageMultiplyVaultConditions,
-  ManageVaultConditions,
-} from './manageMultiplyVaultConditions'
-import {
-  applyManageVaultEnvironment,
-  ManageVaultEnvironmentChange,
-} from './manageMultiplyVaultEnvironment'
-import { applyManageVaultForm, ManageVaultFormChange } from './manageMultiplyVaultForm'
-import { applyManageVaultInput, ManageVaultInputChange } from './manageMultiplyVaultInput'
-import {
-  applyManageVaultSummary,
-  defaultManageVaultSummary,
-  ManageVaultSummary,
-} from './manageMultiplyVaultSummary'
-import {
-  applyEstimateGas,
-  applyManageVaultTransaction,
-  createProxy,
-  ManageVaultTransactionChange,
-  setCollateralAllowance,
-  setDaiAllowance,
-} from './manageMultiplyVaultTransactions'
-import {
-  applyManageVaultTransition,
-  ManageVaultTransitionChange,
-  progressAdjust,
-} from './manageMultiplyVaultTransitions'
-import { finalValidation, validateErrors, validateWarnings } from './manageMultiplyVaultValidations'
-
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
   stateToOverride: Partial<ManageMultiplyVaultState>
@@ -103,6 +112,7 @@ function applyManageVaultInjectedOverride(
       ...change.stateToOverride,
     }
   }
+
   return state
 }
 
@@ -128,6 +138,7 @@ function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChang
   const s8 = applyManageVaultCalculations(s7)
   const s9 = applyManageVaultStageCategorisation(s8)
   const s10 = applyManageVaultConditions(s9)
+
   return applyManageVaultSummary(s10)
 }
 
@@ -509,6 +520,7 @@ export function createManageMultiplyVault$(
   return context$.pipe(
     switchMap((context) => {
       const account = context.status === 'connected' ? context.account : undefined
+
       return vault$(id, context.chainId).pipe(
         first(),
         switchMap((vault) => {

@@ -14,6 +14,7 @@ function extractUuidFromUrl(url: string): string | null {
   }
 
   const parts = url.split('/')
+
   return parts[parts.length - 1]
 }
 
@@ -22,6 +23,7 @@ export async function addCustomForkToTheWallet(network: NetworkConfig) {
     return
   }
   const { ethereum } = window as unknown as WindowWithInjectedWallet
+
   if (!network.isCustomFork) {
     throw new Error('Only custom forks can be added to the wallet')
   }

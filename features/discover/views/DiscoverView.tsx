@@ -1,3 +1,4 @@
+import React from 'react'
 import { getMixpanelUserContext } from 'analytics/analytics'
 import { useMainContext } from 'components/context'
 import { DiscoverNavigation } from 'features/discover/common/DiscoverNavigation'
@@ -6,7 +7,6 @@ import { DiscoverControl } from 'features/discover/controllers/DiscoverControl'
 import { DiscoverPages } from 'features/discover/types'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function DiscoverView({ kind }: { kind: DiscoverPages }) {
   const { i18n } = useTranslation()

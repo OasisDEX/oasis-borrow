@@ -1,8 +1,7 @@
-import { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
+import { VaultTabTag } from 'components/vault/VaultTabTag'
+import { TranslateStringType } from 'helpers/translateStringType'
 import { Button } from 'theme-ui'
-
-import { VaultTabTag } from './vault/VaultTabTag'
 
 export type TabVariant = 'large' | 'medium' | 'small' | 'underline'
 
@@ -23,7 +22,7 @@ export function Tab({ variant, value, label, selected, tag, onClick }: TabProps)
   return (
     <Button
       key={value}
-      variant={'tab'}
+      variant="tab"
       onClick={onClick}
       sx={{
         ...styles[variant],

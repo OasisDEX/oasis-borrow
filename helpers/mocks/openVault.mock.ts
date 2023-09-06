@@ -7,13 +7,12 @@ import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { TxHelpers } from 'helpers/context/types'
+import { mockBalanceInfo$, MockBalanceInfoProps } from 'helpers/mocks/balanceInfo.mock'
+import { mockContextConnected$ } from 'helpers/mocks/context.mock'
+import { mockIlkData$, MockIlkDataProps, mockIlkToToken$ } from 'helpers/mocks/ilks.mock'
+import { mockPriceInfo$, MockPriceInfoProps } from 'helpers/mocks/priceInfo.mock'
 import { protoTxHelpers } from 'helpers/protoTxHelpers'
 import { Observable, of } from 'rxjs'
-
-import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
-import { mockContextConnected$ } from './context.mock'
-import { mockIlkData$, MockIlkDataProps, mockIlkToToken$ } from './ilks.mock'
-import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 
 export function addGasEstimationMock<T>(state: T, gasEstimationUsd?: BigNumber) {
   return of({ ...state, gasEstimationUsd })
@@ -60,7 +59,7 @@ export function mockOpenVault$({
   ilk = 'WBTC-A',
   gasEstimationUsd,
 }: MockOpenVaultProps = {}) {
-  const token = ilk.split('-')[0]
+  const [token] = ilk.split('-')
 
   const context$ =
     _context$ ||

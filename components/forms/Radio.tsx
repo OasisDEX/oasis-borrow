@@ -6,6 +6,7 @@ interface Props {
   checked: boolean
   name: string
 }
+
 export function Radio({ children, checked, onChange, name }: React.PropsWithChildren<Props>) {
   return (
     <Label

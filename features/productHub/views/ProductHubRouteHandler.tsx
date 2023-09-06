@@ -1,3 +1,4 @@
+import React from 'react'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
 import { AppLayout } from 'components/layouts'
@@ -7,7 +8,6 @@ import { ProductHubView } from 'features/productHub/views'
 import { WithChildren } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetStaticPaths } from 'next'
-import React from 'react'
 
 function ProductHubRouteHandler({
   product,

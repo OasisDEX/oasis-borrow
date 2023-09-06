@@ -1,6 +1,6 @@
+import React from 'react'
 import { Box, Flex, Text } from '@theme-ui/components'
 import { WithChildren } from 'helpers/types'
-import React from 'react'
 
 export function WithVaultFormStepIndicator({
   currentStep,

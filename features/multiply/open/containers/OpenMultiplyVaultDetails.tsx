@@ -1,3 +1,4 @@
+import React from 'react'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCardWrapper,
@@ -12,7 +13,6 @@ import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const {

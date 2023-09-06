@@ -1,3 +1,4 @@
+import React, { FC, useMemo, useState } from 'react'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { useMainContext, useProductContext } from 'components/context'
@@ -16,7 +17,6 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
-import React, { FC, useMemo, useState } from 'react'
 import { Box, Grid } from 'theme-ui'
 
 interface PoolFinderViewProps {

@@ -1,8 +1,7 @@
 import React from 'react'
-import { Box, Card, Flex } from 'theme-ui'
-
-import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
+import { ChevronUpDown } from 'components/ChevronUpDown'
+import { Box, Card, Flex } from 'theme-ui'
 
 export const reactSelectCustomComponents = <T extends object>(): Partial<SelectComponents<T>> => ({
   IndicatorsContainer: () => null,

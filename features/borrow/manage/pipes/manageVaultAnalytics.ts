@@ -2,12 +2,11 @@ import { INPUT_DEBOUNCE_TIME, Pages, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { networkSetById } from 'blockchain/networks'
+import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
-
-import { ManageStandardBorrowVaultState } from './manageVault'
 
 type GenerateAmountChange = {
   kind: 'generateAmountChange'
@@ -186,7 +185,7 @@ export function createManageVaultAnalytics$(
     map(({ vault: { ilk }, depositAmount, withdrawAmount, generateAmount, paybackAmount }) => ({
       kind: 'manageVaultConfirm',
       value: {
-        ilk: ilk,
+        ilk,
         collateralAmount:
           depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
         daiAmount:
@@ -210,7 +209,7 @@ export function createManageVaultAnalytics$(
         }) => ({
           kind: 'manageVaultConfirmTransaction',
           value: {
-            ilk: ilk,
+            ilk,
             collateralAmount:
               depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
             daiAmount:
@@ -238,6 +237,7 @@ export function createManageVaultAnalytics$(
         ).pipe(
           tap((event) => {
             const page = stage === 'daiEditing' ? Pages.ManageDai : Pages.ManageCollateral
+
             switch (event.kind) {
               case 'depositAmountChange':
                 tracker.manageVaultDepositAmount(
@@ -245,6 +245,7 @@ export function createManageVaultAnalytics$(
                   event.value.amount.toString(),
                   event.value.setMax,
                 )
+
                 break
               case 'generateAmountChange':
                 tracker.manageVaultGenerateAmount(
@@ -252,6 +253,7 @@ export function createManageVaultAnalytics$(
                   event.value.amount.toString(),
                   event.value.setMax,
                 )
+
                 break
               case 'paybackAmountChange':
                 tracker.manageVaultPaybackAmount(
@@ -259,6 +261,7 @@ export function createManageVaultAnalytics$(
                   event.value.amount.toString(),
                   event.value.setMax,
                 )
+
                 break
               case 'withdrawAmountChange':
                 tracker.manageVaultWithdrawAmount(
@@ -266,18 +269,21 @@ export function createManageVaultAnalytics$(
                   event.value.amount.toString(),
                   event.value.setMax,
                 )
+
                 break
               case 'collateralAllowanceChange':
                 tracker.manageCollateralPickAllowance(
                   event.value.type.toString(),
                   event.value.amount.toString(),
                 )
+
                 break
               case 'daiAllowanceChange':
                 tracker.manageDaiPickAllowance(
                   event.value.type.toString(),
                   event.value.amount.toString(),
                 )
+
                 break
               case 'manageVaultConfirm':
                 tracker.manageVaultConfirm(
@@ -286,6 +292,7 @@ export function createManageVaultAnalytics$(
                   event.value.collateralAmount.toString(),
                   event.value.daiAmount.toString(),
                 )
+
                 break
               case 'manageVaultConfirmTransaction':
                 const network = networkSetById[context.id].name
@@ -300,6 +307,7 @@ export function createManageVaultAnalytics$(
                   network,
                   walletType,
                 )
+
                 break
               default:
                 throw new Error('Unhandled Scenario')

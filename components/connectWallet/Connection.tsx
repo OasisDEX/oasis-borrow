@@ -1,7 +1,7 @@
+import { useEffect } from 'react'
 import { NetworkConfigHexId } from 'blockchain/networks'
 import { useConnection } from 'features/web3OnBoard'
 import { WithChildren } from 'helpers/types'
-import { useEffect } from 'react'
 
 export function Connection({
   children,

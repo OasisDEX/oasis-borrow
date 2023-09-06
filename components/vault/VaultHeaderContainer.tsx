@@ -1,8 +1,7 @@
-import { PriceInfo } from 'features/shared/priceInfo'
 import React, { ReactNode } from 'react'
+import { DefaultVaultHeadline } from 'components/vault/DefaultVaultHeadline'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { Box, Grid } from 'theme-ui'
-
-import { DefaultVaultHeadline } from './DefaultVaultHeadline'
 
 export function VaultHeaderContainer({
   children,

@@ -23,6 +23,7 @@ export const mapAjnaEarnEvents = (
       gasPrice: event.gasPrice,
       gasUsed: event.gasUsed,
     }
+
     switch (event.kind) {
       case 'AjnaMoveQuote':
       case 'AjnaMoveQuoteNft':
@@ -56,6 +57,7 @@ export const mapAjnaEarnEvents = (
         }
       default: {
         console.warn('No ajna event kind found')
+
         return {}
       }
     }

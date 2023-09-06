@@ -1,3 +1,4 @@
+import React from 'react'
 import { BigNumber } from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { TabBar } from 'components/TabBar'
@@ -16,7 +17,6 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { Loadable } from 'helpers/loadable'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Card, Grid } from 'theme-ui'
 
 interface DsrViewProps {

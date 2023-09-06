@@ -1,7 +1,6 @@
+import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
 import { errorMessagesHandler, VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage, warningMessagesHandler } from 'features/form/warningMessagesHandler'
-
-import { OpenGuniVaultState } from './openGuniVault'
 
 export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultState {
   const {

@@ -1,11 +1,10 @@
+import React, { ChangeEvent } from 'react'
 import BigNumber from 'bignumber.js'
 import { VaultAction, VaultActionInput } from 'components/vault/VaultActionInput'
+import { DsrDepositInfoSection } from 'features/dsr/components/DsrDepositInfoSection'
 import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { HasGasEstimation } from 'helpers/context/types'
-import React, { ChangeEvent } from 'react'
 import { Box } from 'theme-ui'
-
-import { DsrDepositInfoSection } from './DsrDepositInfoSection'
 
 interface DsrWithdrawDaiFormProps {
   onDepositAmountChange: (e: ChangeEvent<HTMLInputElement>) => void

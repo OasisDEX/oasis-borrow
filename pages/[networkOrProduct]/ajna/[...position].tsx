@@ -1,3 +1,4 @@
+import React from 'react'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { isSupportedNetwork, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { ProductContextHandler } from 'components/context'
@@ -8,7 +9,6 @@ import { AjnaProduct } from 'features/ajna/common/types'
 import { AjnaProductController } from 'features/ajna/positions/common/controls/AjnaProductController'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 
 interface AjnaPositionPageProps {
   id: string

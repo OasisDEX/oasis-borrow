@@ -94,6 +94,7 @@ export const mapAjnaBorrowishEvents = (
       }
       default: {
         console.warn('No ajna event kind found')
+
         return {}
       }
     }

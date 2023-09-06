@@ -1,10 +1,10 @@
+import React from 'react'
 import { getToken } from 'blockchain/tokensMetadata'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid } from 'theme-ui'
 import { Sender, StateFrom } from 'xstate'
 
@@ -20,13 +20,13 @@ export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProp
   return (
     <Grid gap={3}>
       <VaultActionInput
-        action={'Deposit'}
+        action="Deposit"
         amount={state.context.userInput?.amount}
-        hasAuxiliary={true}
+        hasAuxiliary
         auxiliaryAmount={state.context.auxiliaryAmount}
         hasError={false}
         maxAmount={state.context.balance?.deposit.balance}
-        showMax={true}
+        showMax
         maxAmountLabel={t('balance')}
         onSetMax={() => {
           send({ type: 'SET_AMOUNT', amount: state.context.balance?.deposit.balance ?? zero })

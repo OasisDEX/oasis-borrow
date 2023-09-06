@@ -172,8 +172,8 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
   const automationContextProps = {
     positionData: {
       token: collateralToken,
-      debtToken: debtToken,
-      positionRatio: positionRatio,
+      debtToken,
+      positionRatio,
       debt,
       id: zero,
       ilk: collateralToken,

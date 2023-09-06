@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
@@ -11,7 +12,6 @@ import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/format
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Card, Divider, Grid, Heading, Text } from 'theme-ui'
 
 interface NetValueProps {
@@ -33,7 +33,7 @@ export function VaultDetailsNetValueModal({
   close,
 }: ModalProps<NetValueProps>) {
   const { t } = useTranslation()
-  const collateralTags = vault ? (getToken(vault?.token).tags as String[]) : []
+  const collateralTags = vault ? (getToken(vault?.token).tags as string[]) : []
   const isCollateralLpToken = vault ? collateralTags.includes('lp-token') : false
   const renderCollateralValue = !isCollateralLpToken
 
@@ -178,7 +178,7 @@ export function VaultDetailsNetValueModal({
       <Divider variant="styles.hrVaultFormBottom" />
       <Grid gap={2} columns={[1, 2, 3]}>
         <Box>{t('manage-multiply-vault.card.gas-fees')}</Box>
-        <Box></Box>
+        <Box />
         <Box>{`$${formatAmount(totalGasSpentUSD, 'USD')}`}</Box>
       </Grid>
       <Card

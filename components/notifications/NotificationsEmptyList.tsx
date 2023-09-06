@@ -1,7 +1,7 @@
+import React from 'react'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Heading, Text } from 'theme-ui'
 
 export function NotificationsEmptyList() {

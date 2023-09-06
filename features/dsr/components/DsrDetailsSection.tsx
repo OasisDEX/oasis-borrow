@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import {
@@ -9,7 +10,6 @@ import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface DsrDetailsSectionProps {
   dsr: BigNumber

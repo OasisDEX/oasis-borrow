@@ -1,3 +1,4 @@
+import React from 'react'
 import { Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
@@ -9,7 +10,6 @@ import dayjs from 'dayjs'
 import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Flex } from 'theme-ui'
 
 interface StopLossSummaryInformationProps {

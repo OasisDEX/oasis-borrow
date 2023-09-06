@@ -1,8 +1,8 @@
+import React, { FC } from 'react'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans } from 'next-i18next'
-import React, { FC } from 'react'
 
 interface DsrNotificationWithLinkProps {
   translationKey: string

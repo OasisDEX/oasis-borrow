@@ -1,4 +1,4 @@
-import { allDefined } from './allDefined'
+import { allDefined } from 'helpers/allDefined'
 
 describe('allDefined', () => {
   describe('basic cases', () => {
@@ -23,6 +23,7 @@ describe('allDefined', () => {
 
   describe('chaining + objects', () => {
     let fixture: any
+
     beforeEach(() => {
       fixture = {
         nestedObject: {

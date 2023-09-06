@@ -148,6 +148,14 @@ import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positio
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createPositionsList$ } from 'features/vaultsOverview/vaultsOverview'
 import { bigNumberTostring } from 'helpers/bigNumberToString'
+import { refreshInterval } from 'helpers/context/constants'
+import { MainContext } from 'helpers/context/MainContext'
+import {
+  DepreciatedServices,
+  HasGasEstimation,
+  ProtocolsServices,
+  TxHelpers,
+} from 'helpers/context/types'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation } from 'helpers/form'
 import { supportedBorrowIlks, supportedEarnIlks, supportedMultiplyIlks } from 'helpers/productCards'
@@ -159,6 +167,7 @@ import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { getSparkV3Services } from 'lendingProtocols/spark-v3'
 import { isEqual, memoize } from 'lodash'
 import { equals } from 'ramda'
+import curry from 'ramda/src/curry'
 import { combineLatest, defer, Observable, of } from 'rxjs'
 import {
   distinctUntilChanged,
@@ -168,11 +177,6 @@ import {
   shareReplay,
   switchMap,
 } from 'rxjs/operators'
-
-import { refreshInterval } from './constants'
-import { MainContext } from './MainContext'
-import { DepreciatedServices, HasGasEstimation, ProtocolsServices, TxHelpers } from './types'
-import curry from 'ramda/src/curry'
 
 export function setupProductContext(
   {
@@ -223,8 +227,8 @@ export function setupProductContext(
     )
     .subscribe(({ account, networkName, connectionKind, method, walletLabel }) => {
       if (account) {
-        Sentry.setUser({ id: account, walletLabel: walletLabel })
-        mixpanelIdentify(account, { walletType: connectionKind, walletLabel: walletLabel })
+        Sentry.setUser({ id: account, walletLabel })
+        mixpanelIdentify(account, { walletType: connectionKind, walletLabel })
         trackingEvents.accountChange(account, networkName, connectionKind, method, walletLabel)
       }
     })
@@ -442,6 +446,7 @@ export function setupProductContext(
       combineLatest(context$, proxyAddressDsrObservable$(addressFromUrl)).pipe(
         switchMap(([context, proxyAddress]) => {
           if (!proxyAddress) return of(zero)
+
           return everyBlock$(
             defer(() => call(context, pie)(proxyAddress)),
             equals,

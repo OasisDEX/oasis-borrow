@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 
 function getSessionStorageOrDefault<T>(key: string, defaultValue: T): T {
   const stored = sessionStorage.getItem(key)
+
   if (!stored) {
     return defaultValue
   }
+
   return JSON.parse(stored)
 }
 

@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
@@ -21,7 +22,6 @@ import {
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
 
 export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultState) {
   const [showFees, setShowFees] = useState(false)

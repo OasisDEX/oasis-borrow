@@ -32,7 +32,7 @@ export type AaveV2GetUserConfigurationParameters = {
 
 const factory = AaveV2LendingPool__factory
 const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
-const address = getNetworkContracts(NetworkIds.MAINNET).aaveV2LendingPool.address
+const { address } = getNetworkContracts(NetworkIds.MAINNET).aaveV2LendingPool
 const contract = factory.connect(address, rpcProvider)
 
 export function getAaveV2UserAccountData({

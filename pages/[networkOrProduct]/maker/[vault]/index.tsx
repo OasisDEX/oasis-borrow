@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { ethereumMainnetHexId, isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
@@ -9,10 +10,10 @@ import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAs
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NotFoundPage from 'pages/not-found'
-import React from 'react'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const networkOrProduct = ctx.query.networkOrProduct as string
+
   if (isSupportedNetwork(networkOrProduct) && networkOrProduct === NetworkNames.ethereumMainnet) {
     return {
       props: {
@@ -36,7 +37,7 @@ function Vault({ id }: { id: string }) {
 
   return (
     <ProductContextHandler>
-      <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
+      <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
             {isValidVaultId ? <GeneralManageControl id={vaultId} /> : <NotFoundPage />}

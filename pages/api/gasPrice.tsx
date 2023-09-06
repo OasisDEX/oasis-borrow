@@ -6,6 +6,7 @@ const cache = new NodeCache({ stdTTL: 9 })
 
 const handler = async function (_req: NextApiRequest, res: NextApiResponse) {
   const time = cache.get('time')
+
   if (!time) {
     axios({
       method: 'get',
@@ -20,7 +21,8 @@ const handler = async function (_req: NextApiRequest, res: NextApiResponse) {
         const responseFromBlocknative: any = response.data
         const estimatedPricesForNextBlock: any =
           responseFromBlocknative?.blockPrices[0].estimatedPrices
-        const estimatedPriceFor95PercentConfidence = estimatedPricesForNextBlock[1]
+        const [, estimatedPriceFor95PercentConfidence] = estimatedPricesForNextBlock
+
         cache.set('time', new Date().getTime())
         cache.set('estimatedPriceFor95PercentConfidence', estimatedPriceFor95PercentConfidence)
         res.status(200)
@@ -43,8 +45,9 @@ const handler = async function (_req: NextApiRequest, res: NextApiResponse) {
       })
   } else {
     const estimatedPriceFor95PercentConfidence = cache.get('estimatedPriceFor95PercentConfidence')
+
     res.json({
-      time: time,
+      time,
       fromCache: true,
       maxPriorityFeePerGas: estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas,
       maxFeePerGas: estimatedPriceFor95PercentConfidence.maxFeePerGas,

@@ -73,7 +73,7 @@ export function parsePoolResponse(
           earnStrategy: `${collateralToken}/${quoteToken} LP`,
           fee,
           managementType: 'active',
-          collateralAddress: collateralAddress,
+          collateralAddress,
           collateralToken: identifiedTokens[collateralAddress.toLowerCase()].symbol,
           collateralIcon:
             identifiedTokens[collateralAddress.toLowerCase()].source === 'blockchain'

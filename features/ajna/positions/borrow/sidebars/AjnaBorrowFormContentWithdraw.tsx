@@ -1,3 +1,4 @@
+import React from 'react'
 import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { getAjnaBorrowPaybackMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowPaybackMax'
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
@@ -8,7 +9,6 @@ import {
   AjnaFormFieldPayback,
   AjnaFormFieldWithdraw,
 } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
-import React from 'react'
 
 export function AjnaBorrowFormContentWithdraw() {
   const {

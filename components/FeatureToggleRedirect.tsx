@@ -1,7 +1,7 @@
+import React, { PropsWithChildren } from 'react'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Feature, useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useRouter } from 'next/router'
-import React, { PropsWithChildren } from 'react'
 
 export type FeatureToggleRedirectProps = {
   feature: Feature

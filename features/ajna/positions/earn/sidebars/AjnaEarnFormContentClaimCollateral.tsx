@@ -1,10 +1,10 @@
+import React from 'react'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaEarnFormOrder } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormOrder'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans } from 'next-i18next'
-import React from 'react'
 
 export function AjnaEarnFormContentClaimCollateral() {
   return (

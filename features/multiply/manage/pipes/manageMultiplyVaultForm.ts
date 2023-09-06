@@ -1,14 +1,13 @@
-import { zero } from 'helpers/zero'
-
 import {
   CloseVaultTo,
   MainAction,
   ManageMultiplyVaultChange,
   ManageMultiplyVaultState,
   OtherAction,
-} from './manageMultiplyVault'
-import { allowanceDefaults } from './manageMultiplyVaultAllowances'
-import { MAX_COLL_RATIO } from './manageMultiplyVaultCalculations'
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { allowanceDefaults } from 'features/multiply/manage/pipes/manageMultiplyVaultAllowances'
+import { MAX_COLL_RATIO } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { zero } from 'helpers/zero'
 
 export type ManageVaultFormChange =
   | {

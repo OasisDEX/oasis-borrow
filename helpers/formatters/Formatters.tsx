@@ -1,8 +1,5 @@
-import { BigNumber } from 'bignumber.js'
-import { zero } from 'helpers/zero'
 import * as React from 'react'
-import { Text } from 'theme-ui'
-
+import { BigNumber } from 'bignumber.js'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -12,7 +9,9 @@ import {
   formatPriceDown,
   formatPriceUp,
   toShorthandNumber,
-} from './format'
+} from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
+import { Text } from 'theme-ui'
 
 export type FormatNumberProps = React.HTMLAttributes<HTMLSpanElement> & {
   value: BigNumber
@@ -31,6 +30,7 @@ const FormatNumber = (props: FormatNumberProps) => {
     : match[2]
     ? [`${match[1]}${match[3]}${match[4]}`, match[5]]
     : [`${match[1]}.0`]
+
   return (
     <span title={value.toString()} {...spanProps}>
       {value.lt(zero) ? '-' : ''}
@@ -49,6 +49,7 @@ export type FormatAmountProps = Omit<FormatNumberProps, 'value'> & {
 export const FormatAmount = (props: FormatAmountProps) => {
   const { fallback, value, greyedNonSignZeros, token, formatter, ...spanProps } = props
   const greyed = greyedNonSignZeros || false // by default greyed is false
+
   if (fallback !== undefined && value === undefined) {
     return (
       <Text as="span" {...spanProps}>
@@ -118,11 +119,13 @@ export const FormatPercent = (props: FormatPercentProps) => {
             plus,
           },
         )
+
   return <span {...spanProps}>{v}</span>
 }
 
 export const Money = (props: FormatAmountProps) => {
   const { className, style, ...otherProps } = props
+
   return (
     <span className={className} style={style}>
       <FormatAmount data-test-id="amount" {...otherProps} /> {otherProps.token}
@@ -143,5 +146,6 @@ export const FormatQuoteToken = (props: { token: string }) => {
     TUSD: 'green',
     PAX: 'green',
   }
+
   return <span style={{ color: colors[props.token] }}>{props.token}</span>
 }

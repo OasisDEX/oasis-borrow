@@ -1,7 +1,6 @@
 import { NetworkNames } from 'blockchain/networks/network-names'
+import { infuraProjectId } from 'config/runtimeConfig'
 import { clientId } from 'helpers/clientId'
-
-import { infuraProjectId } from './runtimeConfig'
 
 function getRpc(network: NetworkNames): string {
   if (process.env.APP_FULL_DOMAIN) {

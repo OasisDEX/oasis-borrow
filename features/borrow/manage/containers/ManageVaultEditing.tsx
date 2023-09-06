@@ -1,11 +1,10 @@
+import React, { ReactNode } from 'react'
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
+import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
 import { Box, Button, Divider, Grid, Text } from 'theme-ui'
-
-import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'
 
 function DepositInput({
   maxDepositAmount,
@@ -25,10 +24,10 @@ function DepositInput({
       action="Deposit"
       currencyCode={token}
       tokenUsdPrice={currentCollateralPrice}
-      showMax={true}
-      hasAuxiliary={true}
+      showMax
+      hasAuxiliary
       onSetMax={updateDepositMax!}
-      maxAmountLabel={'Balance'}
+      maxAmountLabel="Balance"
       amount={depositAmount}
       auxiliaryAmount={depositAmountUSD}
       maxAmount={maxDepositAmount}
@@ -53,11 +52,11 @@ function GenerateInput({
       collapsed={collapsed}
       action="Generate"
       amount={generateAmount}
-      currencyCode={'DAI'}
-      showMax={true}
+      currencyCode="DAI"
+      showMax
       disabled={!accountIsController}
       maxAmount={maxGenerateAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       onSetMax={updateGenerateMax}
       onChange={handleNumericInput(updateGenerate!)}
       hasError={false}
@@ -82,15 +81,15 @@ function WithdrawInput({
     <VaultActionInput
       collapsed={collapsed}
       action="Withdraw"
-      showMax={true}
-      hasAuxiliary={true}
+      showMax
+      hasAuxiliary
       tokenUsdPrice={currentCollateralPrice}
       onSetMax={updateWithdrawMax}
       disabled={!accountIsController}
       amount={withdrawAmount}
       auxiliaryAmount={withdrawAmountUSD}
       maxAmount={maxWithdrawAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       maxAuxiliaryAmount={maxWithdrawAmountUSD}
       currencyCode={token}
       hasError={false}
@@ -112,10 +111,10 @@ function PaybackInput({
       collapsed={collapsed}
       action="Payback"
       amount={paybackAmount}
-      currencyCode={'DAI'}
-      showMax={true}
+      currencyCode="DAI"
+      showMax
       maxAmount={maxPaybackAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel="Max"
       onSetMax={updatePaybackMax}
       onChange={handleNumericInput(updatePayback!)}
       hasError={false}

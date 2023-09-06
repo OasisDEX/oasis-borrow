@@ -1,8 +1,13 @@
+import React from 'react'
 import { useActor } from '@xstate/react'
 import { PageSEOTags } from 'components/HeadTags'
 import { TabBar } from 'components/TabBar'
 import { useAaveContext } from 'features/aave'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
+import {
+  OpenAaveStateMachineContextProvider,
+  useOpenAaveStateMachineContext,
+} from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import { SidebarOpenAaveVault } from 'features/aave/open/sidebars/SidebarOpenAaveVault'
 import { OpenAaveStateMachine } from 'features/aave/open/state'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
@@ -12,13 +17,7 @@ import { AavePositionAlreadyOpenedNotice } from 'features/notices/VaultsNoticesV
 import { Survey } from 'features/survey'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Card, Container, Grid } from 'theme-ui'
-
-import {
-  OpenAaveStateMachineContextProvider,
-  useOpenAaveStateMachineContext,
-} from './AaveOpenStateMachineContext'
 
 function AavePositionNotice() {
   const { stateMachine } = useOpenAaveStateMachineContext()
@@ -28,6 +27,7 @@ function AavePositionNotice() {
   if (context.hasOpenedPosition) {
     return <AavePositionAlreadyOpenedNotice />
   }
+
   return null
 }
 
@@ -71,7 +71,7 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
               <AutomationContextInput {...automationContextProps}>
                 <Box>
                   <SimulateSectionComponent config={strategyConfig} />
-                  <Box sx={{ mt: 5 }}></Box>
+                  <Box sx={{ mt: 5 }} />
                 </Box>
                 <Box>
                   <SidebarOpenAaveVault />
@@ -106,6 +106,7 @@ function AaveOpenContainer({
   config: IStrategyConfig
 }) {
   const Header = config.viewComponents.headerOpen
+
   return (
     <OpenAaveStateMachineContextProvider machine={aaveStateMachine} config={config}>
       <Container variant="vaultPageContainer">
@@ -121,6 +122,7 @@ function AaveOpenContainer({
 export function AaveOpenView({ config }: { config: IStrategyConfig }) {
   const { aaveStateMachine } = useAaveContext(config.protocol, config.network)
   const { t } = useTranslation()
+
   return (
     <>
       <PageSEOTags

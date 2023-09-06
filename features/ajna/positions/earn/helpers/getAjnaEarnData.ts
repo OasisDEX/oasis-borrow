@@ -28,7 +28,7 @@ export const getAjnaEarnData: (networkId: NetworkIds) => GetEarnData =
     ) {
       const earnPosition = response.account.earnPositions.find((position) => position.lps > 0)
 
-      const anyPositionForCumulatives = response.account.earnPositions[0]
+      const [anyPositionForCumulatives] = response.account.earnPositions
 
       const cumulativeValues = {
         earnCumulativeQuoteTokenDeposit: new BigNumber(

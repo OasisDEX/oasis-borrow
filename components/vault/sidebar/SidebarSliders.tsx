@@ -1,3 +1,4 @@
+import React, { ChangeEvent } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
@@ -8,7 +9,6 @@ import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { extractGenerateErrors } from 'helpers/messageMappers'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ChangeEvent } from 'react'
 import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
 type VaultState = OpenMultiplyVaultState | ManageMultiplyVaultState
@@ -94,16 +94,14 @@ export function SidebarSliderAdjustMultiply({
             sx={{ fontWeight: 'semiBold', textAlign: 'right', color: collRatioColor }}
           >
             {!currentCollaterizationRatio.isEqualTo(afterCollateralizationRatio) && (
-              <>
-                <Text
-                  as="span"
-                  variant="paragraph1"
-                  sx={{ fontWeight: 'semiBold', color: 'primary100' }}
-                >
-                  {formatPercent(currentCollaterizationRatio.times(100))}
-                  <Icon name="arrow_right" size="16px" sx={{ ml: 2, mr: 2 }} />
-                </Text>
-              </>
+              <Text
+                as="span"
+                variant="paragraph1"
+                sx={{ fontWeight: 'semiBold', color: 'primary100' }}
+              >
+                {formatPercent(currentCollaterizationRatio.times(100))}
+                <Icon name="arrow_right" size="16px" sx={{ ml: 2, mr: 2 }} />
+              </Text>
             )}
             {formatPercent(afterCollateralizationRatio.times(100))}
           </Text>

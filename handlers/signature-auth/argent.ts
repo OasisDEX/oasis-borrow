@@ -49,6 +49,7 @@ export async function isValidSignature(
 
   try {
     await wallet.methods.isValidSignature(messageBytes32, signature).call()
+
     return true
   } catch (err) {
     return false

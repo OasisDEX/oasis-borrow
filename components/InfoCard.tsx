@@ -1,10 +1,9 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
+import { AppLink } from 'components/Links'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
-import React from 'react'
 import { Box, Card, Heading, SxStyleProp, Text } from 'theme-ui'
-
-import { AppLink } from './Links'
 
 function CardContent({
   title,
@@ -54,7 +53,7 @@ function CardWrapper({
 type InfoCardProps = {
   title: string
   subtitle: string
-  links: Array<{ href: string; text: string }>
+  links: { href: string; text: string }[]
   backgroundImage: string
   backgroundGradient: string
   sx?: SxStyleProp

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import {
@@ -12,7 +13,6 @@ import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPool
 import { useAjnaRewards } from 'features/ajna/rewards/useAjnaRewards'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Text } from 'theme-ui'
 
 interface ContentCardNetBorrowCostProps {

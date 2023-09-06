@@ -1,12 +1,11 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
+import { VaultHeader, VaultIlkDetailsItem } from 'components/vault/VaultHeader'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
-
-import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
 
 export interface DefaultVaultHeaderProps {
   header: string

@@ -1,8 +1,8 @@
+import React from 'react'
 import { AppLink } from 'components/Links'
 import { navigationBreakpointsWithPixels } from 'components/navigation/Navigation'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import React from 'react'
 import { Box, Image } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 

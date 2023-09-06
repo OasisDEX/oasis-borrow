@@ -7,6 +7,12 @@ import { Vault } from 'blockchain/vaults'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import {
+  AutomationEvent,
+  ReturnedAutomationEvent,
+  ReturnedEvent,
+  VaultEvent,
+} from 'features/vaultHistory/vaultHistoryEvents'
 import { gql, GraphQLClient } from 'graphql-request'
 import { flatten, memoize } from 'lodash'
 import pickBy from 'lodash/pickBy'
@@ -14,20 +20,13 @@ import { equals } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
-import {
-  AutomationEvent,
-  ReturnedAutomationEvent,
-  ReturnedEvent,
-  VaultEvent,
-} from './vaultHistoryEvents'
-
 export function groupHistoryEventsByHash(events: VaultHistoryEvent[]) {
-  return events.reduce((acc, curr) => {
+  return events.reduce<{ [key: string]: VaultHistoryEvent[] }>((acc, curr) => {
     return {
       ...acc,
       [curr.hash]: [...(acc[curr.hash] ? acc[curr.hash] : []), curr],
     }
-  }, {} as Record<string, VaultHistoryEvent[]>)
+  }, {})
 }
 
 export function getAddConstantMultipleHistoryEventIndex(events: VaultEvent[]) {
@@ -137,13 +136,13 @@ export function getAddOrRemoveTrigger(events: VaultHistoryEvent[]) {
   const addOrRemove = ['added', 'removed']
   const addCombination = ['added']
 
-  const eventTypes = events.reduce((acc, curr) => {
+  const eventTypes = events.reduce<string[]>((acc, curr) => {
     if (acc.includes((curr as AutomationEvent).eventType)) {
       return acc
     }
 
     return [...acc, (curr as AutomationEvent).eventType]
-  }, [] as string[])
+  }, [])
 
   const addOrRemoveEvents = events.filter(
     (item) => 'triggerId' in item && addOrRemove.includes(item.eventType),
@@ -166,13 +165,13 @@ export function getUpdateTrigger(events: VaultHistoryEvent[]) {
   const updateCombination = ['added', 'removed']
 
   const eventTypes = events
-    .reduce((acc, curr) => {
+    .reduce<string[]>((acc, curr) => {
       if (acc.includes((curr as AutomationEvent).eventType)) {
         return acc
       }
 
       return [...acc, (curr as AutomationEvent).eventType]
-    }, [] as string[])
+    }, [])
     .sort()
 
   const isUpdateTriggerEvent = equals(eventTypes, updateCombination)
@@ -207,7 +206,7 @@ export function getOverrideTriggers(events: VaultHistoryEvent[]) {
   const overrideCombinationV2 = ['added', 'added', 'removed', 'removed']
 
   const eventTypes = events
-    .reduce((acc, curr) => [...acc, (curr as AutomationEvent).eventType], [] as string[])
+    .reduce<string[]>((acc, curr) => [...acc, (curr as AutomationEvent).eventType], [])
     .sort()
   const isOverrideTriggerEvent =
     equals(eventTypes, overrideCombinationV1) || equals(eventTypes, overrideCombinationV2)
@@ -275,33 +274,36 @@ export function getExecuteTrigger(events: VaultHistoryEvent[]) {
 export function mapAutomationEvents(events: VaultHistoryEvent[]) {
   const groupedByHash = groupHistoryEventsByHash(events)
 
-  const wrappedByHash = Object.keys(groupedByHash).reduce((acc, key) => {
-    const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
-    const executeTriggerEvent = getExecuteTrigger(groupedByHash[key])
-    const addOrRemoveEvent = getAddOrRemoveTrigger(groupedByHash[key])
-    const overrideEvents = getOverrideTriggers(groupedByHash[key])
+  const wrappedByHash = Object.keys(groupedByHash).reduce<{ [key: string]: VaultHistoryEvent[] }>(
+    (acc, key) => {
+      const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
+      const executeTriggerEvent = getExecuteTrigger(groupedByHash[key])
+      const addOrRemoveEvent = getAddOrRemoveTrigger(groupedByHash[key])
+      const overrideEvents = getOverrideTriggers(groupedByHash[key])
 
-    if (overrideEvents) {
-      return { ...acc, [key]: overrideEvents }
-    }
-
-    if (updateTriggerEvent) {
-      return { ...acc, [key]: [updateTriggerEvent] }
-    }
-
-    if (executeTriggerEvent) {
-      return {
-        ...acc,
-        [key]: [executeTriggerEvent],
+      if (overrideEvents) {
+        return { ...acc, [key]: overrideEvents }
       }
-    }
 
-    if (addOrRemoveEvent) {
-      return { ...acc, [key]: [addOrRemoveEvent] }
-    }
+      if (updateTriggerEvent) {
+        return { ...acc, [key]: [updateTriggerEvent] }
+      }
 
-    return { ...acc, [key]: groupedByHash[key] }
-  }, {} as Record<string, VaultHistoryEvent[]>)
+      if (executeTriggerEvent) {
+        return {
+          ...acc,
+          [key]: [executeTriggerEvent],
+        }
+      }
+
+      if (addOrRemoveEvent) {
+        return { ...acc, [key]: [addOrRemoveEvent] }
+      }
+
+      return { ...acc, [key]: groupedByHash[key] }
+    },
+    {},
+  )
 
   return flatten(Object.values(wrappedByHash))
 }
@@ -339,6 +341,7 @@ export function splitEvents(
       },
     ]
   }
+
   return event
 }
 
@@ -532,6 +535,7 @@ function parseBigNumbersFields(
     'oraclePrice',
     'ethPrice',
   ]
+
   return Object.entries(event).reduce(
     (acc, [key, value]) =>
       bigNumberFields.includes(key) && value != null
@@ -546,6 +550,7 @@ async function getVaultMultiplyHistory(
   urn: string,
 ): Promise<ReturnedEvent[]> {
   const data = await client.request(query, { urn })
+
   return data.allVaultMultiplyHistories.nodes
 }
 
@@ -554,6 +559,7 @@ async function getVaultAutomationHistory(
   id: BigNumber,
 ): Promise<ReturnedAutomationEvent[]> {
   const triggersData = await client.request(triggerEventsQuery, { cdpId: id.toNumber() })
+
   return triggersData.allTriggerEvents.nodes
 }
 
@@ -564,6 +570,7 @@ async function getVaultAutomationV2History(
   const triggersData = await client.request(triggerEventsQueryUsingProxy, {
     proxyAddress: proxyAddress.toLowerCase(),
   })
+
   return triggersData.allTriggerEvents.nodes
 }
 
@@ -617,9 +624,11 @@ export function createVaultHistory$(
   const makeClient = memoize(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
+
   return combineLatest(context$, vault$(vaultId)).pipe(
     switchMap(([{ chainId }, { token, address, id }]) => {
       const { etherscan, cacheApi, ethtx } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+
       return onEveryBlock$.pipe(
         switchMap(() => {
           const apiClient = makeClient(cacheApi)
@@ -647,12 +656,15 @@ export function createAaveHistory$(
   const makeClient = memoize(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
+
   return combineLatest(context$).pipe(
     switchMap(([{ chainId }]) => {
       const { etherscan, cacheApi, ethtx } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+
       return onEveryBlock$.pipe(
         switchMap(() => {
           const apiClient = makeClient(cacheApi)
+
           return combineLatest(of([]), getVaultAutomationV2History(apiClient, proxyAddress))
         }),
         mapEventsToVaultEvents,

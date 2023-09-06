@@ -1,18 +1,17 @@
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { ContextConnected } from 'blockchain/network'
-import { contractDesc } from 'blockchain/networks'
-import { amountToWei } from 'blockchain/utils'
-import { zero } from 'helpers/zero'
-import { DsProxy } from 'types/web3-v1-contracts'
-
 import {
   ClaimRewardData,
   DepositAndGenerateData,
   OpenData,
   ProxyActionsSmartContractAdapterInterface,
   WithdrawAndPaybackData,
-} from './adapters/ProxyActionsSmartContractAdapterInterface'
+} from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { ContextConnected } from 'blockchain/network'
+import { contractDesc } from 'blockchain/networks'
+import { amountToWei } from 'blockchain/utils'
+import { zero } from 'helpers/zero'
+import { DsProxy } from 'types/web3-v1-contracts'
 
 export interface VaultActionsLogicInterface {
   open: TransactionDef<OpenData>
@@ -104,12 +103,14 @@ export function getWithdrawAndPaybackCallData(
       if (shouldPaybackAll) {
         return proxyActionsSmartContractAdapter.wipeAllAndFreeETH(context, data)
       }
+
       return proxyActionsSmartContractAdapter.wipeAndFreeETH(context, data)
     }
 
     if (shouldPaybackAll) {
       return proxyActionsSmartContractAdapter.wipeAllAndFreeGem(context, data)
     }
+
     return proxyActionsSmartContractAdapter.wipeAndFreeGem(context, data)
   }
 
@@ -117,6 +118,7 @@ export function getWithdrawAndPaybackCallData(
     if (token === 'ETH') {
       return proxyActionsSmartContractAdapter.freeETH(context, data)
     }
+
     return proxyActionsSmartContractAdapter.freeGem(context, data)
   }
 
@@ -124,6 +126,7 @@ export function getWithdrawAndPaybackCallData(
     if (shouldPaybackAll) {
       return proxyActionsSmartContractAdapter.wipeAll(context, data)
     }
+
     return proxyActionsSmartContractAdapter.wipe(context, data)
   }
 
@@ -168,7 +171,9 @@ function getOpenCallData(
     if (token === 'ETH') {
       return proxyActionAdapter.openLockETHAndDraw(context, data)
     }
+
     return proxyActionAdapter.openLockGemAndDraw(context, data)
   }
+
   return proxyActionAdapter.open(context, data)
 }

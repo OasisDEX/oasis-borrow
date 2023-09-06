@@ -1,9 +1,8 @@
+import { useCallback, useEffect } from 'react'
 import { ConnectedChain, WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
 import { NetworkConfigHexId, networkSetByHexId, useCustomForkParameter } from 'blockchain/networks'
-import { useCallback, useEffect } from 'react'
-
-import { addCustomForkToTheWallet } from './injected-wallet-interactions'
+import { addCustomForkToTheWallet } from 'features/web3OnBoard/injected-wallet-interactions'
 
 export interface ChainSetter {
   setChain: (
@@ -22,13 +21,16 @@ export function useChainSetter(): ChainSetter {
   const addForkToWallet = useCallback(
     async (wallet: WalletState, networkHexId: NetworkConfigHexId) => {
       const networkConfig = networkSetByHexId[networkHexId]
+
       if (!networkConfig) {
         return
       }
       if (networkConfig.isCustomFork && wallet.label === 'MetaMask') {
         const parentConfig = networkConfig.getParentNetwork()
+
         if (parentConfig) {
           const forkConfig = customFork[parentConfig.name]
+
           if (forkConfig && !forkConfig.isAddedToWallet) {
             await addCustomForkToTheWallet(networkConfig).then(() => {
               setCustomFork({
@@ -64,6 +66,7 @@ export function useChainSetter(): ChainSetter {
 
       await addForkToWallet(wallet, networkHexId)
       const setChainResult = await setChain({ chainId: networkHexId })
+
       if (setChainResult) {
         onSuccess()
       } else {

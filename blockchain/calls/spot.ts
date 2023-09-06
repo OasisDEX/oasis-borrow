@@ -1,11 +1,10 @@
 import BigNumber from 'bignumber.js'
+import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { amountFromRay } from 'blockchain/utils'
 import { McdSpot } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
-
-import { CallDef } from './callsHelpers'
 
 export interface SpotIlk {
   priceFeedAddress: string

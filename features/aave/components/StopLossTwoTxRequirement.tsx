@@ -1,5 +1,5 @@
-import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { useTranslation } from 'next-i18next'
 import { Text } from 'theme-ui'
 
 export function StopLossTwoTxRequirement({ typeKey }: { typeKey: string }) {

@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
+import {
+  OpenMultiplyVaultChange,
+  OpenMultiplyVaultState,
+} from 'features/multiply/open/pipes/openMultiplyVault'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
-
-import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 interface DepositChange {
   kind: 'deposit'
@@ -48,9 +50,9 @@ export function applyOpenVaultInput(
   if (change.kind === 'depositUSD') {
     const { depositAmountUSD } = change
     const { priceInfo, token } = state
-    const currentCollateralPrice = priceInfo.currentCollateralPrice
+    const { currentCollateralPrice } = priceInfo
     const currencyDigits = calculateTokenPrecisionByValue({
-      token: token,
+      token,
       usdPrice: currentCollateralPrice,
     })
     const depositAmount =

@@ -60,9 +60,9 @@ function parseAggregatedDataAuction({
         }
       }
 
-      const auction = auctions[0]
+      const [auction] = auctions
       const borrowishEvents = mapAjnaBorrowishEvents(history)
-      const mostRecentHistoryEvent = borrowishEvents[0]
+      const [mostRecentHistoryEvent] = borrowishEvents
 
       const graceTimeRemaining = timeAgo({
         to: new Date(auction.endOfGracePeriod),

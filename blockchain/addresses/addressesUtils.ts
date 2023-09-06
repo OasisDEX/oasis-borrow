@@ -7,6 +7,7 @@ export function getOsms(addresses: Dictionary<string>, ilks: readonly string[]) 
   const keysLegalPostfixes = ilks.map((x) =>
     x.substring(0, x.indexOf('-') > 0 ? x.indexOf('-') : x.length),
   )
+
   return Object.entries(addresses)
     .filter(([key]) => /PIP_.*/.test(key))
     .filter(
@@ -20,6 +21,7 @@ export function getCollaterals(addresses: Dictionary<string>, ilks: readonly str
   const keysLegalPostfixes = ilks.map((x) =>
     x.substring(0, x.indexOf('-') > 0 ? x.indexOf('-') : x.length),
   )
+
   return Object.entries(addresses)
     .filter(([key]) => /PIP_.*/.test(key))
     .filter(([key]) => key !== 'ETH')
@@ -43,5 +45,5 @@ export function getCollateralJoinContracts(addresses: Dictionary<string>, ilks: 
     .filter(([key]) => /MCD_JOIN_(.*)/.test(key))
     .map(([key, address]) => [key.replace('MCD_JOIN_', '').replace(/_/g, '-'), address])
     .filter(([key]) => ilks.includes(key))
-    .reduce((acc, [ilk, address]) => ({ ...acc, [ilk]: address }), {} as Dictionary<string>)
+    .reduce<Dictionary<string>>((acc, [ilk, address]) => ({ ...acc, [ilk]: address }), {})
 }

@@ -1,3 +1,5 @@
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFaqController } from 'features/ajna/positions/common/controls/AjnaFaqController'
 import { AjnaPositionHistoryController } from 'features/ajna/positions/common/controls/AjnaPositionHistoryController'
@@ -6,8 +8,6 @@ import { AjnaEarnFormController } from 'features/ajna/positions/earn/controls/Aj
 import { AjnaEarnOverviewController } from 'features/ajna/positions/earn/controls/AjnaEarnOverviewController'
 import en from 'features/content/faqs/ajna/earn/en.mdx'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { Grid } from 'theme-ui'
 
 export function AjnaEarnPositionController() {

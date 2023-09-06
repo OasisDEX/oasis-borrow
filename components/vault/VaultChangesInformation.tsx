@@ -1,3 +1,4 @@
+import React, { ReactNode, useCallback, useMemo } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
@@ -11,7 +12,6 @@ import { isTouchDevice } from 'helpers/isTouchDevice'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode, useCallback, useMemo } from 'react'
 
 export function VaultChangesInformationItem({
   label,
@@ -95,6 +95,7 @@ export function VaultChangesInformationArrow() {
 
 export function EstimationError({ withBrackets }: { withBrackets: boolean }) {
   const textError = 'n/a'
+
   return (
     <Text as="div" sx={{ color: 'critical100' }}>
       {withBrackets ? `(${textError})` : textError}
@@ -108,6 +109,7 @@ export const formatGasEstimationUSD = (gasEstimation: HasGasEstimation) => {
       `could not format formatGasEstimationUSD:  gasEstimation.gasEstimationUsd is ${gasEstimation.gasEstimationUsd}`,
     )
   }
+
   return `$${formatAmount(gasEstimation.gasEstimationUsd, 'USD')}`
 }
 
@@ -117,6 +119,7 @@ export const formatGasEstimationETH = (gasEstimation: HasGasEstimation) => {
       `could not format formatGasEstimationETH:  gasEstimation.gasEstimationEth is ${gasEstimation.gasEstimationEth}`,
     )
   }
+
   return `${formatAmount(gasEstimation.gasEstimationEth, 'ETH')} ETH`
 }
 
@@ -173,6 +176,7 @@ export function getEstimatedGasFeeText(
 
 export function VaultChangesInformationEstimatedGasFee(props: HasGasEstimation) {
   const { t } = useTranslation()
+
   return (
     <VaultChangesInformationItem
       label={t('max-gas-fee')}

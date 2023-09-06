@@ -1,8 +1,7 @@
 import { notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler, VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage, warningMessagesHandler } from 'features/form/warningMessagesHandler'
-
-import { ManageMultiplyVaultState } from './manageMultiplyVault'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 
 export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyVaultState {
   const {
@@ -138,6 +137,7 @@ export function validateWarnings(state: ManageMultiplyVaultState): ManageMultipl
       }),
     )
   }
+
   return { ...state, warningMessages }
 }
 

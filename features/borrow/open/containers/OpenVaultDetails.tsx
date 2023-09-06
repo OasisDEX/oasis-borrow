@@ -1,3 +1,4 @@
+import React from 'react'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCardWrapper,
@@ -12,7 +13,6 @@ import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function OpenVaultDetails(props: OpenVaultState) {
   const {
@@ -41,45 +41,43 @@ export function OpenVaultDetails(props: OpenVaultState) {
   const daiYieldFromTotalCollateral = maxGenerateAmountCurrentPrice.minus(generateAmount || zero)
 
   return (
-    <>
-      <DetailsSection
-        title={t('system.overview')}
-        content={
-          <DetailsSectionContentCardWrapper>
-            <ContentCardLiquidationPrice
-              liquidationPrice={liquidationPrice}
-              liquidationRatio={liquidationRatio}
-              afterLiquidationPrice={afterLiquidationPrice}
-              changeVariant={changeVariant}
-            />
-            <ContentCardCollateralizationRatio
-              positionRatio={collateralizationRatio}
-              afterPositionRatio={afterCollateralizationRatio}
-              changeVariant={changeVariant}
-            />
-            <ContentCardCollateralLocked
-              token={token}
-              lockedCollateralUSD={depositAmountUSD}
-              afterLockedCollateralUSD={afterDepositAmountUSD}
-              changeVariant={changeVariant}
-            />
-          </DetailsSectionContentCardWrapper>
-        }
-        footer={
-          <DetailsSectionFooterItemWrapper>
-            <ContentFooterItemsBorrow
-              token={token}
-              debt={zero}
-              freeCollateral={zero}
-              afterDebt={generateAmount || zero}
-              afterFreeCollateral={afterFreeCollateral}
-              daiYieldFromLockedCollateral={zero}
-              daiYieldFromTotalCollateral={daiYieldFromTotalCollateral}
-              changeVariant={changeVariant}
-            />
-          </DetailsSectionFooterItemWrapper>
-        }
-      />
-    </>
+    <DetailsSection
+      title={t('system.overview')}
+      content={
+        <DetailsSectionContentCardWrapper>
+          <ContentCardLiquidationPrice
+            liquidationPrice={liquidationPrice}
+            liquidationRatio={liquidationRatio}
+            afterLiquidationPrice={afterLiquidationPrice}
+            changeVariant={changeVariant}
+          />
+          <ContentCardCollateralizationRatio
+            positionRatio={collateralizationRatio}
+            afterPositionRatio={afterCollateralizationRatio}
+            changeVariant={changeVariant}
+          />
+          <ContentCardCollateralLocked
+            token={token}
+            lockedCollateralUSD={depositAmountUSD}
+            afterLockedCollateralUSD={afterDepositAmountUSD}
+            changeVariant={changeVariant}
+          />
+        </DetailsSectionContentCardWrapper>
+      }
+      footer={
+        <DetailsSectionFooterItemWrapper>
+          <ContentFooterItemsBorrow
+            token={token}
+            debt={zero}
+            freeCollateral={zero}
+            afterDebt={generateAmount || zero}
+            afterFreeCollateral={afterFreeCollateral}
+            daiYieldFromLockedCollateral={zero}
+            daiYieldFromTotalCollateral={daiYieldFromTotalCollateral}
+            changeVariant={changeVariant}
+          />
+        </DetailsSectionFooterItemWrapper>
+      }
+    />
   )
 }

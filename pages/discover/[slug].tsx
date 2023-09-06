@@ -1,3 +1,4 @@
+import React from 'react'
 import { WithConnection } from 'components/connectWallet'
 import { FunctionalContextHandler } from 'components/context'
 import {
@@ -12,7 +13,6 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 
 function DiscoverPage({ kind }: { kind: DiscoverPages }) {
   return (

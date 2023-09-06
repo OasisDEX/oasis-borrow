@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
@@ -19,7 +20,6 @@ import {
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
 
 export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
@@ -101,13 +101,13 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
             }
           />
           <VaultChangesInformationItem
-            label={'Slippage Limit'}
+            label="Slippage Limit"
             value={formatPercent(slippage.times(100), { precision: 2 })}
           />
         </>
       )}
       <VaultChangesInformationItem
-        label={'Multiply'}
+        label="Multiply"
         value={
           <Flex>
             {multiply?.toFixed(2)}x
@@ -127,7 +127,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         }
       />
       <VaultChangesInformationItem
-        label={'Collateral Ratio'}
+        label="Collateral Ratio"
         value={
           <Flex>
             <Text sx={{ color: collRatioColor }}>
@@ -172,12 +172,12 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         <Grid pl={3} gap={2}>
           {loanFee.gt(zero) && (
             <VaultChangesInformationItem
-              label={'3rd party protocol fees'}
+              label="3rd party protocol fees"
               value={`$${formatAmount(loanFee, 'USD')}`}
             />
           )}
           <VaultChangesInformationItem
-            label={'Summer.fi fee'}
+            label="Summer.fi fee"
             value={`$${formatAmount(oazoFee, 'USD')}`}
           />
           <VaultChangesInformationEstimatedGasFee {...props} />

@@ -1,3 +1,4 @@
+import React, { FC, KeyboardEvent, useEffect, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -12,7 +13,6 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { FC, KeyboardEvent, useEffect, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Text } from 'theme-ui'
 
@@ -108,8 +108,8 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled }) => {
     const snappedValue = snapToPredefinedValues(manualAmount)
     let index = mappedAjnaBuckets.indexOf(snappedValue)
 
-    if (variant === '+') index = index - 1
-    if (variant === '-') index = index + 1
+    if (variant === '+') index -= 1
+    if (variant === '-') index += 1
 
     const selectedValue = mappedAjnaBuckets.at(index) || zero
 

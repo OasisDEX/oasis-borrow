@@ -51,6 +51,7 @@ export function getAjnaSidebarPrimaryButtonActions({
     case isTxSuccess && flow === 'open':
       const resolvedCollateralUrl = isOracless ? collateralAddress : collateralToken
       const resolvedQuoteUrl = isOracless ? quoteAddress : quoteToken
+
       return {
         url: `/ethereum/ajna/${product}/${resolvedCollateralUrl}-${resolvedQuoteUrl}/${resolvedId}`,
       }

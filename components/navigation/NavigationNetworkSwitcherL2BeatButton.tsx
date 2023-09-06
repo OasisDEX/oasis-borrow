@@ -1,7 +1,7 @@
+import React, { useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
 import l2beatLogo from 'public/static/img/l2beat-logo.svg'
-import React, { useState } from 'react'
 import { Box, Image, Link } from 'theme-ui'
 
 export const L2BeatSection = () => {

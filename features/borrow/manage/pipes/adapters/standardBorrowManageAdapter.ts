@@ -2,6 +2,10 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { Vault } from 'blockchain/vaults'
 import {
+  BorrowManageAdapterInterface,
+  CreateInitialVaultStateArgs,
+} from 'features/borrow/manage/pipes/adapters/borrowManageAdapterInterface'
+import {
   defaultMutableManageVaultState,
   ManageStandardBorrowVaultState,
   ManageVaultChange,
@@ -29,11 +33,6 @@ import { applyManageVaultTransition } from 'features/borrow/manage/pipes/viewSta
 import { GasEstimationStatus } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 
-import {
-  BorrowManageAdapterInterface,
-  CreateInitialVaultStateArgs,
-} from './borrowManageAdapterInterface'
-
 export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
   Vault,
   ManageStandardBorrowVaultState
@@ -56,6 +55,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
     const s8 = applyManageVaultCalculations(s7, zero, s7.ilkData.liquidationRatio)
     const s9 = applyManageVaultStageCategorisation(s8)
     const s10 = applyManageVaultConditions(s9)
+
     return applyManageVaultSummary(s10)
   },
 
@@ -108,6 +108,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
       constantMultipleData: undefined,
       injectStateOverride,
     }
+
     return initialState
   },
 }

@@ -1,10 +1,9 @@
+import { useEffect } from 'react'
 import { usePrevious } from '@react-hooks-library/core'
 import { NetworkHexIds } from 'blockchain/networks'
+import { useLegacyDefaultChain } from 'features/web3OnBoard/use-legacy-default-chain'
+import { WalletManagementState } from 'features/web3OnBoard/wallet-state'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-
-import { useLegacyDefaultChain } from './use-legacy-default-chain'
-import { WalletManagementState } from './wallet-state'
 
 /*
  * I don't like this solution,

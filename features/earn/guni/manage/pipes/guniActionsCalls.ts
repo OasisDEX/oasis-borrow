@@ -27,6 +27,7 @@ export const getUnderlyingBalances: CallDef<
 > = {
   call: ({ token }, { contract, chainId }) => {
     const guniToken = getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token]
+
     return contract<GuniToken>(guniToken).methods.getUnderlyingBalances
   },
   prepareArgs: () => [],
@@ -45,11 +46,13 @@ export const getUnderlyingBalances: CallDef<
 export const getTotalSupply: CallDef<{ token: string }, BigNumber> = {
   call: ({ token }, { contract, chainId }) => {
     const guniToken = getNetworkContracts(NetworkIds.MAINNET, chainId).tokens[token]
+
     return contract<GuniToken>(guniToken).methods.totalSupply
   },
   prepareArgs: () => [],
   postprocess: (total: any, { token }) => {
     const { precision } = getToken(token)
+
     return new BigNumber(total).div(new BigNumber(10).pow(precision))
   },
 }
@@ -120,6 +123,7 @@ export function closeGuniVault<S extends CloseGuniTxStateDependencies>(
               )
 
               const jwtToken = jwtAuthGetToken(account as string)
+
               if (id && jwtToken) {
                 saveVaultUsingApi$(
                   id,

@@ -1,8 +1,7 @@
+import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler, VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage, warningMessagesHandler } from 'features/form/warningMessagesHandler'
-
-import { OpenVaultState } from './openVault'
 
 export function validateErrors(state: OpenVaultState): OpenVaultState {
   const {
@@ -103,6 +102,7 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
       }),
     )
   }
+
   return { ...state, warningMessages }
 }
 

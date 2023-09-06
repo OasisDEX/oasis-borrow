@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { User } from '@prisma/client'
 import { getAddress } from 'ethers/lib/utils'
 import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
@@ -52,12 +53,14 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
       user_that_referred_address: checksumReferredAddress,
       accepted: params.accepted,
     }
+
     try {
       const result = await prisma.user.upsert({
         where: { address: params.address },
         create: userCreate,
         update: userUpdate,
       })
+
       return res.status(200).json(result)
     } catch (error) {
       return res.status(401).json(error)

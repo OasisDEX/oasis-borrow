@@ -9,14 +9,17 @@ async function tokensPricesHandler(req: NextApiRequest, res: NextApiResponse) {
     case 'GET':
       try {
         const tickers = await getTicker()
+
         if (tickers?.data) {
           res.setHeader('Cache-Control', 'public, s-maxage=90, stale-while-revalidate=119')
+
           return res.status(200).json(tickers.data)
         }
 
         return res.status(500).json({ error: 'Token tickers unavailable' })
       } catch (e) {
         console.error(e)
+
         return res.status(500).end()
       }
     default:

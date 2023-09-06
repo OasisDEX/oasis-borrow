@@ -1,7 +1,7 @@
+import React from 'react'
 import { MessageCard } from 'components/MessageCard'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export interface ValidationMessagesProps {
   messages: string[]

@@ -4,6 +4,28 @@ import { TokenBalances } from 'blockchain/tokens'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { AccountContext } from 'components/context'
 import dayjs from 'dayjs'
+import { AaveContext } from 'features/aave/aave-context'
+import { getCommonPartsFromProductContext } from 'features/aave/get-common-parts-from-app-context'
+import { getAaveV3StrategyConfig, ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import {
+  getManageAaveStateMachine,
+  getManageAaveV3PositionStateMachineServices,
+} from 'features/aave/manage/services'
+import {
+  getOpenAaveStateMachine,
+  getOpenAaveV3PositionStateMachineServices,
+} from 'features/aave/open/services'
+import {
+  getAaveHistoryEvents,
+  getAaveSupportedTokenBalances$,
+  getAdjustAaveParametersMachine,
+  getCloseAaveParametersMachine,
+  getDepositBorrowAaveMachine,
+  getOpenAaveParametersMachine,
+  getStrategyInfo$,
+} from 'features/aave/services'
+import { getSupportedTokens } from 'features/aave/strategies'
+import { IStrategyConfig, PositionId } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
@@ -19,26 +41,6 @@ import { curry } from 'ramda'
 import { merge, Observable, of, Subject } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
 
-import { AaveContext } from './aave-context'
-import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
-import { getAaveV3StrategyConfig, ProxiesRelatedWithPosition } from './helpers'
-import {
-  getManageAaveStateMachine,
-  getManageAaveV3PositionStateMachineServices,
-} from './manage/services'
-import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } from './open/services'
-import {
-  getAaveHistoryEvents,
-  getAaveSupportedTokenBalances$,
-  getAdjustAaveParametersMachine,
-  getCloseAaveParametersMachine,
-  getDepositBorrowAaveMachine,
-  getOpenAaveParametersMachine,
-  getStrategyInfo$,
-} from './services'
-import { getSupportedTokens } from './strategies'
-import { IStrategyConfig, PositionId } from './types'
-
 export type StrategyUpdateParams = {
   positionId: PositionId
   networkName: NetworkNames
@@ -52,6 +54,7 @@ export function setupAaveV3Context(
   network: NetworkNames,
 ): AaveContext {
   const networkId = networksByName[network].id
+
   ensureIsSupportedAaveV3NetworkId(networkId)
 
   const { txHelpers$, onEveryBlock$, context$, connectedContext$, chainContext$ } = mainContext
@@ -86,6 +89,7 @@ export function setupAaveV3Context(
       return of(undefined).pipe(
         switchMap(async () => {
           const dpm = await userDpms(positionId.vaultId!, networkId)
+
           return {
             dsProxy: undefined,
             dpmProxy: dpm,
@@ -113,7 +117,7 @@ export function setupAaveV3Context(
 
   const earnCollateralsReserveData = {
     WSTETH: aaveLikeReserveConfigurationData$({ collateralToken: 'WSTETH', debtToken: 'ETH' }),
-  } as Record<string, Observable<AaveLikeReserveConfigurationData>>
+  } as { [key: string]: Observable<AaveLikeReserveConfigurationData> }
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
@@ -236,9 +240,9 @@ export function setupAaveV3Context(
   function updateStrategyConfig(positionId: PositionId, networkName: NetworkNames) {
     return (vaultType: VaultType) => {
       strategyUpdateTrigger.next({
-        positionId: positionId,
-        networkName: networkName,
-        vaultType: vaultType,
+        positionId,
+        networkName,
+        vaultType,
       })
     }
   }

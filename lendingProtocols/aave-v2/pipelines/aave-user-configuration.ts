@@ -15,7 +15,7 @@ export type AaveUserConfigurationResult = {
   collateral: boolean
   borrowed: boolean
   asset: string
-  assetName: (typeof mainnet.common)[keyof typeof mainnet.common]
+  assetName: typeof mainnet.common[keyof typeof mainnet.common]
 }
 
 export type AaveUserConfigurationResults = AaveUserConfigurationResult[] & {
@@ -51,7 +51,7 @@ export function createAaveUserConfiguration(
 
   // aave does not pad this binary string
   while (binaryString.length < aaveReserveList.length * 2) {
-    binaryString = '0' + binaryString
+    binaryString = `0${binaryString}`
   }
 
   const results: AaveUserConfigurationResult[] =

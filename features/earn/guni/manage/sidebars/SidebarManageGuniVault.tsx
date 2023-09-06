@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
@@ -17,7 +18,6 @@ import {
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
@@ -50,9 +50,11 @@ export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
     switch (stage) {
       case 'adjustPosition':
         setForcePanel('overview')
+
         break
       case 'otherActions':
         setForcePanel('close')
+
         break
     }
   }, [stage])

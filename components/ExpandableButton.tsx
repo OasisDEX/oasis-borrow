@@ -1,8 +1,7 @@
-import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import React, { useState } from 'react'
+import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { Box, Button, Text } from 'theme-ui'
-
-import { ExpandableArrow } from './dumb/ExpandableArrow'
 
 export interface ButtonWithAction {
   label: string

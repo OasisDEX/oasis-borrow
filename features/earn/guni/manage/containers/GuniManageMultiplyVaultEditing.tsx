@@ -1,11 +1,10 @@
+import React from 'react'
 import { CloseVaultCard } from 'components/vault/CloseVaultCard'
+import { GuniManageMultiplyVaultChangesInformation } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultChangesInformation'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Divider, Flex, Grid, Text } from 'theme-ui'
-
-import { GuniManageMultiplyVaultChangesInformation } from './GuniManageMultiplyVaultChangesInformation'
 
 function CloseVaultAction(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()

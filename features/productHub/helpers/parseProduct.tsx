@@ -1,3 +1,5 @@
+import React from 'react'
+import { Trans } from 'react-i18next'
 import { negativeToZero } from '@oasisdex/dma-library'
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
@@ -5,8 +7,6 @@ import { AssetsTableRowData } from 'components/assetsTable/types'
 import { parseProductNumbers } from 'features/productHub/helpers'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
 import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
-import React from 'react'
-import { Trans } from 'react-i18next'
 
 export function parseProduct(
   {

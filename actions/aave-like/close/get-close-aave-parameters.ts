@@ -52,6 +52,7 @@ export async function getCloseAaveParameters({
   switch (protocol) {
     case LendingProtocol.AaveV2:
       const addressesV2 = getAddresses(networkId, LendingProtocol.AaveV2)
+
       return strategies.aave.multiply.v2.close(stratArgs, {
         ...stratDeps,
         addresses: addressesV2,
@@ -59,6 +60,7 @@ export async function getCloseAaveParameters({
       })
     case LendingProtocol.AaveV3:
       const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
+
       return strategies.aave.multiply.v3.close(stratArgs, {
         ...stratDeps,
         addresses: addressesV3,
@@ -66,6 +68,7 @@ export async function getCloseAaveParameters({
       })
     case LendingProtocol.SparkV3:
       const addressesSpark = getAddresses(networkId, LendingProtocol.SparkV3)
+
       return strategies.spark.multiply.close(stratArgs, {
         ...stratDeps,
         addresses: addressesSpark,

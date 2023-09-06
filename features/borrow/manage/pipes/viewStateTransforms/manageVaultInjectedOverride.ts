@@ -13,5 +13,6 @@ export function applyManageVaultInjectedOverride<VaultState extends ManageStanda
       ...change.stateToOverride,
     }
   }
+
   return state
 }

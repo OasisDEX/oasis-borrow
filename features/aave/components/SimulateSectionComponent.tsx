@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react'
 import { IMultiplyStrategy, IRiskRatio, IStrategy } from '@oasisdex/dma-library'
 import { useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
@@ -18,11 +19,11 @@ import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
 import { Box } from 'theme-ui'
 
 function mapSimulation(simulation?: Simulation): string[] {
   if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]
+
   return [
     `${formatCryptoBalance(simulation.earningAfterFees)} ${simulation.token}`,
     `${formatCryptoBalance(simulation.netValue)} ${simulation.token}`,
@@ -61,6 +62,7 @@ function SimulationSection({
   const fees = useMemo(() => {
     const swapFee = (transitionHasSwap(transition) && transition.simulation.swap.tokenFee) || zero
     const gasFee = gasPrice?.gasEstimationEth || zero
+
     return swapFee.plus(gasFee)
   }, [transition, gasPrice])
 
@@ -83,21 +85,19 @@ function SimulationSection({
       <DetailsSection
         title={<SimulateTitle token={token} depositAmount={amount} />}
         content={
-          <>
-            <DetailsSectionContentTable
-              headers={[
-                t('earn-vault.simulate.header1'),
-                t('earn-vault.simulate.header2'),
-                t('earn-vault.simulate.header3'),
-              ]}
-              rows={[
-                [t('earn-vault.simulate.rowlabel1'), ...mapSimulation(simulation?.previous30Days)],
-                [t('earn-vault.simulate.rowlabel2'), ...mapSimulation(simulation?.previous90Days)],
-                [t('earn-vault.simulate.rowlabel3'), ...mapSimulation(simulation?.previous1Year)],
-              ]}
-              footnote={<>{t('earn-vault.simulate.footnote1')}</>}
-            />
-          </>
+          <DetailsSectionContentTable
+            headers={[
+              t('earn-vault.simulate.header1'),
+              t('earn-vault.simulate.header2'),
+              t('earn-vault.simulate.header3'),
+            ]}
+            rows={[
+              [t('earn-vault.simulate.rowlabel1'), ...mapSimulation(simulation?.previous30Days)],
+              [t('earn-vault.simulate.rowlabel2'), ...mapSimulation(simulation?.previous90Days)],
+              [t('earn-vault.simulate.rowlabel3'), ...mapSimulation(simulation?.previous1Year)],
+            ]}
+            footnote={<>{t('earn-vault.simulate.footnote1')}</>}
+          />
         }
         footer={
           <DetailsSectionFooterItemWrapper>

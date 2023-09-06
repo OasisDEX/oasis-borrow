@@ -1,9 +1,9 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardNetAPYProps {
@@ -17,6 +17,7 @@ type ContentCardNetAPYModalProps = {
 
 function ContentCardNetAPYModal({ token }: ContentCardNetAPYModalProps) {
   const { t } = useTranslation()
+
   return (
     <Grid gap={2}>
       <Heading variant="header3">{t('manage-earn-vault.net-apy')}</Heading>

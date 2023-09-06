@@ -1,14 +1,16 @@
-import { NetworkConfigHexId } from 'blockchain/networks'
-import { useConnection, useWalletManagement } from 'features/web3OnBoard'
-import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
-import { Grid } from 'theme-ui'
-
+import { NetworkConfigHexId } from 'blockchain/networks'
 import {
   SidebarSectionFooterButton,
   SidebarSectionFooterButtonProps,
-} from './SidebarSectionFooterButton'
-import { SidebarSectionStatus, SidebarSectionStatusProps } from './SidebarSectionStatus'
+} from 'components/sidebar/SidebarSectionFooterButton'
+import {
+  SidebarSectionStatus,
+  SidebarSectionStatusProps,
+} from 'components/sidebar/SidebarSectionStatus'
+import { useConnection, useWalletManagement } from 'features/web3OnBoard'
+import { useTranslation } from 'next-i18next'
+import { Grid } from 'theme-ui'
 
 export type SidebarSectionFooterButtonSettings = Omit<SidebarSectionFooterButtonProps, 'variant'>
 
@@ -72,6 +74,7 @@ function useResolvePrimaryButton({
   const connectButton = useConnectWalletPrimaryButton()
   const changeChainButton = useChangeChainButton({ requiredChainHexId })
   const { wallet } = useWalletManagement()
+
   if (requireConnection && !wallet) {
     return {
       resolvedPrimaryButton: connectButton,
@@ -89,6 +92,7 @@ function useResolvePrimaryButton({
       blockOthers: true,
     }
   }
+
   return {
     resolvedPrimaryButton: primaryButton,
     blockOthers: false,

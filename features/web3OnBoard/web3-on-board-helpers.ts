@@ -5,5 +5,6 @@ export function getConnectedNetwork(wallet: WalletState | null): NetworkConfigHe
   if (!wallet) return null
 
   const connectedChainId = wallet.chains[0].id
+
   return connectedChainId as NetworkConfigHexId
 }

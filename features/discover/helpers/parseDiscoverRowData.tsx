@@ -1,3 +1,5 @@
+import React, { ReactNode } from 'react'
+import { Trans } from 'react-i18next'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
@@ -15,8 +17,6 @@ import {
   DiscoverTableStatusRowData,
 } from 'features/discover/types'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
-import React, { ReactNode } from 'react'
-import { Trans } from 'react-i18next'
 import { timeAgo } from 'utils'
 
 interface ParseDiscoverCellDataParams {
@@ -91,6 +91,7 @@ function ParseDiscoverCellData({ kind, label, lang, row }: ParseDiscoverCellData
       )
     case 'activity':
       const activity = row.activity as DiscoverTableActivityRowData
+
       return (
         <AssetsTableDataCellPill color={getActivityPillColor(activity)}>
           <Trans
@@ -108,7 +109,7 @@ function ParseDiscoverCellData({ kind, label, lang, row }: ParseDiscoverCellData
       return (
         <AssetsTableDataCellAction
           link={`/${stringified.cdpId}`}
-          newTab={true}
+          newTab
           onClick={() => trackingEvents.discover.viewPosition(kind, stringified.cdpId)}
         />
       )

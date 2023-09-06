@@ -1,6 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import {
+  OpenMultiplyVaultChange,
+  OpenMultiplyVaultState,
+} from 'features/multiply/open/pipes/openMultiplyVault'
 import { compareBigNumber } from 'helpers/compareBigNumber'
 import { EMPTY, Observable } from 'rxjs'
 import {
@@ -13,8 +17,6 @@ import {
   take,
   withLatestFrom,
 } from 'rxjs/operators'
-
-import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 type ExchangeQuoteSuccessChange = {
   kind: 'quote'
@@ -37,6 +39,7 @@ type ExchangeSwapFailureChange = {
 type ExchangeQuoteResetChange = {
   kind: 'quoteReset'
 }
+
 export type ExchangeQuoteChanges =
   | ExchangeQuoteSuccessChange
   | ExchangeQuoteFailureChange
@@ -70,6 +73,7 @@ export function applyExchange(state: OpenMultiplyVaultState, change: OpenMultipl
 
   if (change.kind === 'quoteReset') {
     const { quote: _quote, ...rest } = state
+
     return rest
   }
 
@@ -125,6 +129,7 @@ export function createExchangeChange$(
               'defaultExchange',
             )
           }
+
           return EMPTY
         }),
       ),

@@ -1,5 +1,5 @@
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { Fragment, useRef } from 'react'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { theme } from 'theme'
 import { Box } from 'theme-ui'
 

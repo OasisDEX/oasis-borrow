@@ -1,6 +1,5 @@
+import { BatchManager, Request } from 'helpers/api/BatchManager'
 import NodeCache from 'node-cache'
-
-import { BatchManager, Request } from './BatchManager'
 
 const mockConnection = 'https://www.goingnowhere.com'
 
@@ -18,6 +17,7 @@ describe('BatchManager', () => {
     const mockFetchJson = jest.fn(() => Promise.resolve([]))
 
     const batchManager = createBatchManager(mockFetchJson)
+
     await batchManager.batchCall(mockBatch)
 
     expect(mockFetchJson).toHaveBeenCalledTimes(1)
@@ -55,6 +55,7 @@ describe('BatchManager', () => {
     // First call
     await batchManager.batchCall(mockBatch)
     const defaultCacheTtlPlus100ms = 15100
+
     jest.advanceTimersByTime(defaultCacheTtlPlus100ms)
 
     // Second call
@@ -80,7 +81,7 @@ describe('BatchManager', () => {
       // Second call (all from cache)
       const batchResults = await batchManager.batchCall(mockBatch)
 
-      batchResults.forEach(function (result, index) {
+      batchResults.forEach((result, index) => {
         expect(result.requestIdx).toBe(index)
       })
       expect(batchResults.map((batchResult) => batchResult.data)).toEqual(mockBatch)
@@ -98,7 +99,7 @@ describe('BatchManager', () => {
       const batchResults = await batchManager.batchCall(mockBatch)
 
       // ASSERT
-      batchResults.forEach(function (result, index) {
+      batchResults.forEach((result, index) => {
         expect(result.requestIdx).toBe(index)
       })
       expect(batchResults.map((batchResult) => batchResult.data)).toEqual(mockBatch)
@@ -146,7 +147,7 @@ describe('BatchManager', () => {
 
       // ASSERT
 
-      batchResults.forEach(function (result, index) {
+      batchResults.forEach((result, index) => {
         expect(result.requestIdx).toBe(index)
       })
       expect(batchResults.map((batchResult) => batchResult.data)).toEqual([
@@ -170,7 +171,7 @@ function createBatchManager(mockFetchJson: any) {
   })
 }
 
-function createMockBatch(startSliceIndex: number = 0, endSliceIndex: number = 9): Request[] {
+function createMockBatch(startSliceIndex = 0, endSliceIndex = 9): Request[] {
   if (startSliceIndex < 0 || startSliceIndex >= 9) {
     throw new Error(`Start Index must be greater than or equal to zero and less than 9`)
   }

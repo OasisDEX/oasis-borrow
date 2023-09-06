@@ -1,9 +1,9 @@
+import React from 'react'
 import { AaveLikePosition } from '@oasisdex/dma-library'
 import { useInterpret } from '@xstate/react'
 import { OpenAaveStateMachine } from 'features/aave/open/state'
 import { IStrategyConfig, ProxyType } from 'features/aave/types'
 import { zero } from 'helpers/zero'
-import React from 'react'
 
 function setupOpenAaveStateContext({
   machine,
@@ -32,6 +32,7 @@ function setupOpenAaveStateContext({
     }),
     { devTools: process.env.NODE_ENV !== 'production' },
   ).start()
+
   return {
     stateMachine,
   }
@@ -43,9 +44,11 @@ const openAaveStateContext = React.createContext<OpenAaveStateMachineContext | u
 
 export function useOpenAaveStateMachineContext(): OpenAaveStateMachineContext {
   const ac = React.useContext(openAaveStateContext)
+
   if (!ac) {
     throw new Error('OpenAaveStateMachineContext not available!')
   }
+
   return ac
 }
 
@@ -55,5 +58,6 @@ export function OpenAaveStateMachineContextProvider({
   config,
 }: React.PropsWithChildren<{ machine: OpenAaveStateMachine; config: IStrategyConfig }>) {
   const context = setupOpenAaveStateContext({ machine, config })
+
   return <openAaveStateContext.Provider value={context}>{children}</openAaveStateContext.Provider>
 }

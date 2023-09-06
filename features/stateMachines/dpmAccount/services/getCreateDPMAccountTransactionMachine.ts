@@ -1,4 +1,5 @@
 import { TxState } from '@oasisdex/transactions'
+import { SuccessTxState } from '@oasisdex/transactions/lib/src/types'
 import { createAccount, CreateDPMAccount } from 'blockchain/calls/accountFactory'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -14,8 +15,6 @@ import {
 import { TxHelpers } from 'helpers/context/types'
 import { Observable } from 'rxjs'
 
-import { SuccessTxState } from '@oasisdex/transactions/lib/src/types'
-
 export function getCreateDPMAccountTransactionMachine(
   txHelpers$: Observable<TxHelpers>,
   context$: Observable<ContextConnected>,
@@ -26,6 +25,7 @@ export function getCreateDPMAccountTransactionMachine(
     context$,
     extractDpmProxyFromTxnReceipt,
   )
+
   return createTransactionStateMachine<CreateDPMAccount, UserDpmAccount>(createAccount, {
     kind: TxMetaKind.createAccount,
   }).withConfig({

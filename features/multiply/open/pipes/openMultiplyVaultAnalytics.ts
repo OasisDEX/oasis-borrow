@@ -4,11 +4,13 @@ import { Context } from 'blockchain/network'
 import { networkSetById } from 'blockchain/networks'
 import { AccountDetails } from 'features/account/AccountData'
 import { formatOazoFee } from 'features/multiply/manage/utils'
+import {
+  MutableOpenMultiplyVaultState,
+  OpenMultiplyVaultState,
+} from 'features/multiply/open/pipes/openMultiplyVault'
 import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
-
-import { MutableOpenMultiplyVaultState, OpenMultiplyVaultState } from './openMultiplyVault'
 
 type DepositAmountChange = {
   kind: 'depositAmountChange'
@@ -98,7 +100,7 @@ export function createOpenMultiplyVaultAnalytics$(
     map(({ ilk, depositAmount, multiply }) => ({
       kind: 'openMultiplyVaultConfirm',
       value: {
-        ilk: ilk,
+        ilk,
         collateralAmount: depositAmount,
         // slight movements on market price are causing change of multiply
         // to counter that we round passed multiply to not have retriggered events
@@ -114,7 +116,7 @@ export function createOpenMultiplyVaultAnalytics$(
       map(({ ilk, depositAmount, openTxHash, multiply, oazoFee }) => ({
         kind: 'openMultiplyVaultConfirmTransaction',
         value: {
-          ilk: ilk,
+          ilk,
           collateralAmount: depositAmount,
           multiply: multiply?.toFixed(3),
           txHash: openTxHash,
@@ -136,6 +138,7 @@ export function createOpenMultiplyVaultAnalytics$(
           switch (event.kind) {
             case 'depositAmountChange':
               tracker.createVaultDeposit(firstCDP, event.value.toString())
+
               break
             case 'allowanceChange':
               tracker.pickAllowance(
@@ -143,6 +146,7 @@ export function createOpenMultiplyVaultAnalytics$(
                 event.value.type.toString(),
                 event.value.amount.toString(),
               )
+
               break
             case 'openMultiplyVaultConfirm':
               tracker.multiply.confirmOpenMultiplyConfirm(
@@ -151,6 +155,7 @@ export function createOpenMultiplyVaultAnalytics$(
                 event.value.collateralAmount.toString(),
                 event.value.multiply.toString(),
               )
+
               break
             case 'openMultiplyVaultConfirmTransaction':
               const network = networkSetById[context.chainId].name
@@ -166,6 +171,7 @@ export function createOpenMultiplyVaultAnalytics$(
                 walletType,
                 event.value.oasisFee,
               )
+
               break
             default:
               throw new Error('Unhandled Scenario')

@@ -1,7 +1,6 @@
+import { UserJwtPayload } from 'handlers/signature-auth/signin'
 import { NextApiRequest } from 'next'
 import { assert } from 'ts-essentials'
-
-import { UserJwtPayload } from './signin'
 
 export function getUserFromRequest(req: NextApiRequest): UserJwtPayload {
   const user = (req as any).auth as UserJwtPayload

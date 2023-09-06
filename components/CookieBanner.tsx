@@ -1,13 +1,13 @@
+import React, { Fragment, useState } from 'react'
 import { COOKIE_NAMES, CookieName, manageCookie } from 'analytics/common'
 import { Checkbox } from 'components/Checkbox'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { AppLink } from 'components/Links'
 import { currentContent } from 'features/content'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { Fragment, useState } from 'react'
 import { Box, Button, Card, Container, Flex, Grid, Text } from 'theme-ui'
 
-type SelectedCookies = Record<CookieName, boolean>
+type SelectedCookies = { [key: CookieName]: boolean }
 
 export type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies; version: string }
 export function initSelectedCookies(defaultValue: boolean): SelectedCookies {
@@ -32,6 +32,7 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
 
   function toggleCookie(cookieName: CookieName) {
     const isEnabled = selectedCookies[cookieName]
+
     setSelectedCookies({
       ...selectedCookies,
       [cookieName]: !isEnabled,

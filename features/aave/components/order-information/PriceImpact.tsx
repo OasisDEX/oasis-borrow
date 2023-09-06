@@ -1,3 +1,4 @@
+import React, { useEffect, useMemo, useState } from 'react'
 import { IMultiplyStrategy } from '@oasisdex/dma-library'
 import { Text } from '@theme-ui/components'
 import { swapCall } from 'actions/aave-like'
@@ -14,7 +15,6 @@ import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useMemo, useState } from 'react'
 
 interface PriceImpactProps {
   slippage: BigNumber
@@ -40,6 +40,7 @@ export function PriceImpact({
 
   const { swapAddress, sourceTokenAddress, targetTokenAddress, networkId } = useMemo(() => {
     const contracts = getNetworkContracts(strategyConfig.networkId)
+
     ensurePropertiesExist(strategyConfig.networkId, contracts, ['swapAddress'])
     ensureGivenTokensExist(strategyConfig.networkId, contracts, [
       sourceToken.symbol,
@@ -69,6 +70,7 @@ export function PriceImpact({
       const to = amountFromWei(response.toTokenAmount, targetToken.precision)
 
       const price = sourceToken.symbol === tokens.collateral ? to.div(from) : from.div(to)
+
       setMarketPrice(price)
     })
   }, [
@@ -82,7 +84,7 @@ export function PriceImpact({
   ])
 
   if (fromTokenAmount.eq(zero) || toTokenAmount.eq(zero)) {
-    return <></>
+    return <>{null}</>
   }
 
   const swapPrice =

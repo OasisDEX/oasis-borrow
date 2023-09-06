@@ -1,12 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { BaseCallParameters, BaseTransactionParameters } from 'blockchain/better-calls/utils'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { ensureTokensExist, getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, networkSetById } from 'blockchain/networks'
 import { amountFromWei, amountToWei } from 'blockchain/utils'
 import { ethers } from 'ethers'
 import { Erc20__factory } from 'types/ethers-contracts'
-
-import { BaseCallParameters, BaseTransactionParameters } from './utils'
 
 export interface TokenBalanceArgs extends BaseCallParameters {
   token: string
@@ -27,16 +26,19 @@ export interface ApproveTokenTransactionParameters extends BaseTransactionParame
 
 export function tokenBalance({ token, account, networkId }: TokenBalanceArgs): Promise<BigNumber> {
   const rpcProvider = getRpcProvider(networkId)
+
   if (token === 'ETH') {
     return rpcProvider.getBalance(account).then((result) => {
       return amountFromWei(new BigNumber(result.toString()), token)
     })
   }
   const contracts = getNetworkContracts(networkId)
+
   ensureTokensExist(networkId, contracts)
   const { tokens } = contracts
 
   const contract = Erc20__factory.connect(tokens[token].address, rpcProvider)
+
   return contract.balanceOf(account).then((result) => {
     return amountFromWei(new BigNumber(result.toString()), token)
   })
@@ -49,14 +51,17 @@ export function tokenAllowance({
   networkId,
 }: TokenAllowanceArgs): Promise<BigNumber> {
   const rpcProvider = getRpcProvider(networkId)
+
   if (token === 'ETH') {
     return Promise.resolve(maxUint256)
   }
   const contracts = getNetworkContracts(networkId)
+
   ensureTokensExist(networkId, contracts)
   const { tokens } = contracts
 
   const contract = Erc20__factory.connect(tokens[token].address, rpcProvider)
+
   return contract.allowance(owner, spender).then((result) => {
     return amountFromWei(new BigNumber(result.toString()), token)
   })
@@ -70,8 +75,10 @@ export async function createApproveTransaction({
   amount,
 }: ApproveTokenTransactionParameters): Promise<ethers.ContractTransaction> {
   const signerChainId = await signer.getChainId()
+
   if (signerChainId !== networkId) {
     const signerNetworkConfig = networkSetById[signerChainId]
+
     if (
       signerNetworkConfig?.isCustomFork &&
       networkId === signerNetworkConfig.getParentNetwork()?.id
@@ -84,6 +91,7 @@ export async function createApproveTransaction({
     }
   }
   const contracts = getNetworkContracts(networkId)
+
   ensureTokensExist(networkId, contracts)
   const { tokens } = contracts
 
@@ -103,8 +111,10 @@ export async function createDisapproveTransaction({
   spender,
 }: ApproveTokenTransactionParameters): Promise<ethers.ContractTransaction> {
   const signerChainId = await signer.getChainId()
+
   if (signerChainId !== networkId) {
     const signerNetworkConfig = networkSetById[signerChainId]
+
     if (
       signerNetworkConfig?.isCustomFork &&
       networkId === signerNetworkConfig.getParentNetwork()?.id
@@ -117,9 +127,11 @@ export async function createDisapproveTransaction({
     }
   }
   const contracts = getNetworkContracts(networkId)
+
   ensureTokensExist(networkId, contracts)
   const { tokens } = contracts
 
   const contract = Erc20__factory.connect(tokens[token].address, signer)
+
   return await contract.approve(spender, 0)
 }

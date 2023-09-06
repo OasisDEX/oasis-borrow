@@ -1,5 +1,5 @@
-import { DiscoverPages } from 'features/discover/types'
 import React from 'react'
+import { DiscoverPages } from 'features/discover/types'
 
 type DiscoverIconsList = { [key in DiscoverPages]: JSX.Element }
 

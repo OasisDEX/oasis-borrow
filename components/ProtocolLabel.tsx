@@ -1,7 +1,7 @@
+import React from 'react'
 import { NetworkNames, networksByName } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
-import React from 'react'
 import { Box, Flex, Image } from 'theme-ui'
 
 export interface ProtocolLabelProps {

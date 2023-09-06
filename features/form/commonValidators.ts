@@ -507,7 +507,7 @@ export function automationTriggeredValidator({
   }
 
   const mappedAuto = mapAutomationEvents(vaultHistory)
-  const potentialExecutionEvent = mappedAuto[0]
+  const [potentialExecutionEvent] = mappedAuto
 
   if (
     !('autoKind' in potentialExecutionEvent) ||

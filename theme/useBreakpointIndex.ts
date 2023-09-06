@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { theme } from 'theme'
 
 export function useBreakpointIndex() {
-  const breakpoints = theme.breakpoints
+  const { breakpoints } = theme
   const [value, setValue] = useState(1)
 
   useEffect(() => {
@@ -13,6 +13,7 @@ export function useBreakpointIndex() {
 
     function onResize() {
       const newValue = getIndex()
+
       if (value !== newValue) {
         setValue(newValue)
       }
@@ -20,6 +21,7 @@ export function useBreakpointIndex() {
 
     onResize()
     window.addEventListener('resize', onResize)
+
     return () => window.removeEventListener('resize', onResize)
   }, [breakpoints, value])
 

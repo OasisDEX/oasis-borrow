@@ -1,9 +1,9 @@
+import React, { ChangeEvent } from 'react'
 import BigNumber from 'bignumber.js'
 import { TokenConfig } from 'blockchain/tokensMetadata'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { ChangeEvent } from 'react'
 import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons'
 import { Box, Button, Flex } from 'theme-ui'
 
@@ -84,6 +84,7 @@ export function handleNumericInput(fn: (n?: BigNumber) => void) {
   return (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/,/g, '')
     const amount = value !== '' ? new BigNumber(value) : undefined
+
     fn(amount)
   }
 }

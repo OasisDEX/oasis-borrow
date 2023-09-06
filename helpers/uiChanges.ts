@@ -119,7 +119,7 @@ export type UIReducer = (prev: any, event: any) => any
 function createUIChangesSubject(): UIChanges {
   const latest: any = {}
 
-  const reducers: ReducersMap = {} //TODO: Is there a way to strongly type this ?
+  const reducers: ReducersMap = {} // TODO: Is there a way to strongly type this ?
 
   interface PublisherRecord {
     subjectName: string
@@ -140,6 +140,7 @@ function createUIChangesSubject(): UIChanges {
     const accumulatedEvent = reducers.hasOwnProperty(subjectName)
       ? reducers[subjectName](lastPayload(subjectName) || {}, event)
       : lastPayload(subjectName)
+
     latest[subjectName] = accumulatedEvent
     commonSubject.next({
       subjectName,
@@ -195,6 +196,7 @@ function initializeUIChanges() {
     FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
     followedVaultsLimitReachedChangeReducer,
   )
+
   return uiChangesSubject
 }
 

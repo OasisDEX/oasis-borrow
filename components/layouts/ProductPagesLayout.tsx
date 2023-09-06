@@ -1,24 +1,21 @@
+import React from 'react'
 import { Footer } from 'components/Footer'
+import { WithAnnouncementLayout } from 'components/layouts/WithAnnouncementLayout'
 import { NavigationController } from 'features/navigation/controls/NavigationController'
 import { WithChildren } from 'helpers/types'
-import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
-
-import { WithAnnouncementLayout } from './WithAnnouncementLayout'
 
 export function ProductPagesLayout({ children }: WithChildren) {
   return (
-    <>
-      <WithAnnouncementLayout
-        header={<NavigationController />}
-        footer={<Footer />}
-        showAnnouncement={false}
-        variant="landingContainer"
-        sx={{ position: 'relative' }}
-        bg={<BackgroundLight />}
-      >
-        {children}
-      </WithAnnouncementLayout>
-    </>
+    <WithAnnouncementLayout
+      header={<NavigationController />}
+      footer={<Footer />}
+      showAnnouncement={false}
+      variant="landingContainer"
+      sx={{ position: 'relative' }}
+      bg={<BackgroundLight />}
+    >
+      {children}
+    </WithAnnouncementLayout>
   )
 }

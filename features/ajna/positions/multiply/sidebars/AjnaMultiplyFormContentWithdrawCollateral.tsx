@@ -1,3 +1,4 @@
+import React from 'react'
 import { getToken } from 'blockchain/tokensMetadata'
 import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -5,7 +6,6 @@ import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/A
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaFormFieldWithdraw } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
-import React from 'react'
 
 export function AjnaMultiplyFormContentWithdrawCollateral() {
   // const { t } = useTranslation()
@@ -42,9 +42,9 @@ export function AjnaMultiplyFormContentWithdrawCollateral() {
        * added to product continuous improvements backlog
        * https://app.shortcut.com/oazo-apps/story/10552/multiply-withdrawal-ltv-increases-are-not-supported-in-operation
        */}
-      {/*<PillAccordion title={t('adjust-your-position-additional')}>*/}
+      {/* <PillAccordion title={t('adjust-your-position-additional')}>*/}
       {/*  <AjnaMultiplySlider disabled={!withdrawAmount} />*/}
-      {/*</PillAccordion>*/}
+      {/* </PillAccordion>*/}
       {withdrawAmount && (
         <AjnaFormContentSummary>
           <AjnaMultiplyFormOrder />

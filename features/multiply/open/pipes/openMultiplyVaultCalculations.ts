@@ -1,11 +1,10 @@
 import { getMultiplyParams } from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
 import { openFlowInitialStopLossLevel } from 'features/automation/common/helpers'
+import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
-
-import { OpenMultiplyVaultState } from './openMultiplyVault'
 
 export const MAX_COLL_RATIO = new BigNumber(5)
 

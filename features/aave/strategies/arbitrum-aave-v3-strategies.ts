@@ -10,7 +10,7 @@ import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
+export const arbitrumAaveV3Strategies: IStrategyConfig[] = [
   {
     network: NetworkNames.arbitrumMainnet,
     networkId: NetworkIds.ARBITRUMMAINNET,

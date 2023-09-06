@@ -1,13 +1,12 @@
 import { recoverPersonalSignature } from '@metamask/eth-sig-util'
 import { utils } from 'ethers'
+import { checkIfArgentWallet, isValidSignature } from 'handlers/signature-auth/argent'
+import { ChallengeJWT } from 'handlers/signature-auth/challenge'
+import { checkIfGnosisOwner } from 'handlers/signature-auth/gnosis'
 import jwt from 'jsonwebtoken'
 import { NextApiHandler } from 'next'
 import Web3 from 'web3'
 import * as z from 'zod'
-
-import { checkIfArgentWallet, isValidSignature } from './argent'
-import { ChallengeJWT } from './challenge'
-import { checkIfGnosisOwner } from './gnosis'
 
 export interface signInOptions {
   challengeJWTSecret: string
@@ -32,7 +31,7 @@ const inputSchema = z.object({
   isGnosisSafe: z.boolean(),
 })
 
-const networkMap: Record<number, string> = {
+const networkMap: { [key: number]: string } = {
   1: 'mainnet',
   5: 'goerli',
 }
@@ -58,6 +57,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
     const message = recreateSignedMessage(challenge)
 
     let isArgentWallet = false
+
     try {
       isArgentWallet = await checkIfArgentWallet(web3, challenge.address)
     } catch {
@@ -89,6 +89,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       }
     } else {
       const signedAddress = recoverPersonalSignature({ data: message, signature: body.signature })
+
       if (signedAddress.toLowerCase() !== challenge.address) {
         const isOwner = await checkIfGnosisOwner(web3, challenge, signedAddress)
 
@@ -136,6 +137,7 @@ async function getMessageHash(web3: Web3, message: string, safe: string) {
 
   const contract = new web3.eth.Contract(GnosisSafeABI as any, safe)
   const domainSeparator = await contract.methods.domainSeparator().call()
+
   return utils.solidityKeccak256(
     ['bytes1', 'bytes1', 'bytes32', 'bytes32'],
     [0x19, 0x01, domainSeparator, safeMessageHash],

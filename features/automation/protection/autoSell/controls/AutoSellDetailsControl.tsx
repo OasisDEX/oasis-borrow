@@ -1,3 +1,4 @@
+import React from 'react'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { useAutomationContext } from 'components/context'
 import { checkIfIsEditingAutoBS } from 'features/automation/common/helpers'
@@ -8,7 +9,6 @@ import {
 import { AutoSellDetailsLayout } from 'features/automation/protection/autoSell/controls/AutoSellDetailsLayout'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React from 'react'
 
 export function AutoSellDetailsControl() {
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')

@@ -1,3 +1,4 @@
+import React from 'react'
 import { FieldDepositDai } from 'components/vault/sidebar/SidebarFields'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -9,7 +10,6 @@ import {
   extractGenerateErrors,
 } from 'helpers/messageMappers'
 import { Trans } from 'next-i18next'
-import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
 export function SidebarOpenGuniVaultEditingState(props: OpenGuniVaultState) {

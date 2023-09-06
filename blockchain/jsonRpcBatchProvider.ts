@@ -3,25 +3,24 @@ import { fetchJson } from '@ethersproject/web'
 import { ethers } from 'ethers'
 
 // Experimental
-type PendingBatch = Record<
-  string,
-  Array<{
-    request: { method: string; params: Array<any>; id: number; jsonrpc: '2.0' }
+type PendingBatch = {
+  [key: string]: {
+    request: { method: string; params: any[]; id: number; jsonrpc: '2.0' }
     resolve: (result: any) => void
     reject: (error: Error) => void
-  }>
->
+  }[]
+}
 
 export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
   _pendingBatchAggregator: NodeJS.Timeout | null = null
   _pendingBatch: PendingBatch | null = null
 
-  send(method: string, params: Array<any>): Promise<any> {
+  send(method: string, params: any[]): Promise<any> {
     const request = {
-      method: method,
-      params: params,
+      method,
+      params,
       id: this._nextId++,
-      jsonrpc: '2.0' as '2.0',
+      jsonrpc: '2.0' as const,
     }
 
     if (this._pendingBatch == null) {
@@ -53,6 +52,7 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
         // Get teh current batch and clear it, so new requests
         // go into the next batch
         const batch = this._pendingBatch
+
         if (batch === null) {
           return Promise.resolve()
         }
@@ -73,11 +73,12 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
               request: deepCopy(request),
               provider: this,
             })
+
             return fetchJson(this.connection, JSON.stringify(request)).then(
               (result) => {
                 this.emit('debug', {
                   action: 'response',
-                  request: request,
+                  request,
                   response: result,
                   provider: this,
                 })
@@ -86,6 +87,7 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
                 // on whether it was a success or error
                 batch[method].forEach((inflightRequest, index) => {
                   const payload = result[index]
+
                   if (payload.error) {
                     console.error(
                       `[jsonRpcBatchProvider: ${
@@ -97,6 +99,7 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
                       inflightRequest.request,
                     )
                     const error = new Error(payload.error.message)
+
                     ;(<any>error).code = payload.error.code
                     ;(<any>error).data = payload.error.data
                     inflightRequest.reject(error)
@@ -108,8 +111,8 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
               (error) => {
                 this.emit('debug', {
                   action: 'response',
-                  error: error,
-                  request: request,
+                  error,
+                  request,
                   provider: this,
                 })
 

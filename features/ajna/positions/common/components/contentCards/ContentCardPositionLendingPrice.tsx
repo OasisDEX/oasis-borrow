@@ -1,3 +1,4 @@
+import React from 'react'
 import { normalizeValue } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
@@ -11,7 +12,6 @@ import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/compo
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Card, Heading, Text } from 'theme-ui'
 
 interface ContentCardPositionLendingPriceModalProps {

@@ -1,14 +1,13 @@
 import { BigNumber } from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networks'
+import { getToken } from 'blockchain/tokensMetadata'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { bindNodeCallback, combineLatest, forkJoin, Observable, of, timer } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { distinctUntilChanged, first, map, shareReplay, switchMap, tap } from 'rxjs/operators'
-
-import { getNetworkContracts } from './contracts'
-import { NetworkIds } from './networks'
-import { getToken } from './tokensMetadata'
 
 export interface Tickers {
   [label: string]: BigNumber
@@ -35,11 +34,13 @@ export function createGasPrice$(
   }).pipe(
     tap((response) => {
       if (response.status !== 200) throw new Error(response.responseText)
+
       return response
     }),
     map(({ response }) => {
       const maxFeePerGas = new BigNumber(response.maxFeePerGas)
       const maxPriorityFeePerGas = new BigNumber(response.maxPriorityFeePerGas)
+
       return {
         maxFeePerGas,
         maxPriorityFeePerGas,
@@ -78,6 +79,7 @@ export function createGasPrice$(
           blockNative.maxPriorityFeePerGas,
         )
       }
+
       return gasFees
     }),
     distinctUntilChanged(isEqual),
@@ -99,8 +101,9 @@ export const tokenPrices$: Observable<Tickers> = timer(0, 1000 * 60).pipe(
   shareReplay(1),
 )
 
-function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefined>) {
+function getPrice(tickers: Tickers, tickerServiceLabels: (string | undefined)[]) {
   const errorsArray = []
+
   for (const label of tickerServiceLabels) {
     if (label && tickers[label]) {
       return tickers[label]
@@ -132,7 +135,7 @@ export function getTokenPrice(token: string, tickers: Tickers) {
 export function createTokenPriceInUSD$(
   every10Seconds$: Observable<any>,
   tokenTicker$: Observable<Tickers>,
-  tokens: Array<string>,
+  tokens: string[],
 ): Observable<Tickers> {
   return combineLatest(every10Seconds$, tokenTicker$).pipe(
     switchMap(([_, tickers]) =>
@@ -178,22 +181,25 @@ function transformOraclePrice({
   token: string
   oraclePrice: [string, boolean]
 }): BigNumber {
-  const precision = getToken(token).precision
+  const { precision } = getToken(token)
   const rawPrice = new BigNumber(oraclePrice[0])
     .shiftedBy(-18)
     .toFixed(precision, BigNumber.ROUND_DOWN)
+
   return new BigNumber(rawPrice)
 }
 
 export function calculatePricePercentageChange(current: BigNumber, next: BigNumber): BigNumber {
   const rawPriceChange = current.div(next)
+
   if (rawPriceChange.isZero()) return zero
+
   return current.minus(next).div(current).times(-1)
 }
 
 export type OraclePriceDataArgs = {
   token: string
-  requestedData: Array<keyof OraclePriceData>
+  requestedData: (keyof OraclePriceData)[]
 }
 
 export function createOraclePriceData$(

@@ -3,14 +3,13 @@ import BigNumber from 'bignumber.js'
 import * as accountImplementation from 'blockchain/abi/account-implementation.json'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { contractDesc } from 'blockchain/networks'
 import { amountToWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
 import { AccountImplementation, DsProxy, OperationExecutor } from 'types/web3-v1-contracts'
-
-import { TxMetaKind } from './txMeta'
 
 export interface OperationExecutorTxMeta extends TxMeta {
   kind: TxMetaKind.operationExecutor
@@ -29,8 +28,10 @@ export const callOperationExecutorWithDsProxy: TransactionDef<OperationExecutorT
   },
   prepareArgs: (data, context) => {
     const contracts = getNetworkContracts(context.chainId)
+
     ensureContractsExist(context.chainId, contracts, ['operationExecutor'])
     const { operationExecutor } = contracts
+
     return [operationExecutor.address, getCallData(data, context)]
   },
   options: ({ token, amount = zero }) =>
@@ -40,12 +41,14 @@ export const callOperationExecutorWithDsProxy: TransactionDef<OperationExecutorT
 export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutorTxMeta> = {
   call: (args, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, args.proxyAddress))
-      .methods['execute']
+      .methods.execute
   },
   prepareArgs: (data, context) => {
     const contracts = getNetworkContracts(context.chainId)
+
     ensureContractsExist(context.chainId, contracts, ['operationExecutor'])
     const { operationExecutor } = contracts
+
     return [operationExecutor.address, getCallData(data, context)]
   },
   options: ({ token, amount = zero }) =>
@@ -54,8 +57,10 @@ export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutor
 
 function getCallData(data: OperationExecutorTxMeta, context: ContextConnected) {
   const contracts = getNetworkContracts(context.chainId)
+
   ensureContractsExist(context.chainId, contracts, ['operationExecutor'])
   const { operationExecutor } = contracts
+
   return context
     .contract<OperationExecutor>(operationExecutor)
     .methods.executeOp(data.calls, data.operationName)

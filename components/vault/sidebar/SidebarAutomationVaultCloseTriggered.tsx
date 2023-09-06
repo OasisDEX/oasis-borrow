@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import { autoKindToCopyMap } from 'features/automation/common/consts'
@@ -10,7 +11,6 @@ import {
   StopLossExecutedEvent,
 } from 'features/vaultHistory/vaultHistoryEvents'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Text } from 'theme-ui'
 
 interface SidebarAutomationVaultCloseTriggeredProps {

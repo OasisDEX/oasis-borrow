@@ -1,3 +1,4 @@
+import React, { Dispatch } from 'react'
 import BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -12,7 +13,6 @@ import {
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { Dispatch } from 'react'
 
 interface AjnaFormField<D> {
   dispatchAmount: Dispatch<D>
@@ -68,7 +68,7 @@ export function AjnaFormFieldDeposit({
       hasAuxiliary={!isOracless}
       hasError={false}
       disabled={isDisabled || isFormFrozen}
-      showMax={true}
+      showMax
       maxAmount={maxAmount}
       maxAuxiliaryAmount={maxAmount?.times(tokenPrice)}
       maxAmountLabel={t(maxAmountLabel)}
@@ -200,7 +200,7 @@ export function AjnaFormFieldPayback({
       hasAuxiliary={!isOracless}
       hasError={false}
       disabled={isDisabled || isFormFrozen}
-      showMax={true}
+      showMax
       // TODO: should be quoteBalance or total debt, whatever is lower, but debt is not yet available
       maxAmount={maxAmount}
       maxAuxiliaryAmount={maxAmount?.times(quotePrice)}

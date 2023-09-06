@@ -1,4 +1,6 @@
+import React from 'react'
 import { useActor } from '@xstate/react'
+import { PositionInfoComponent } from 'features/aave/components/PositionInfoComponent'
 import { useSimulationYields } from 'features/aave/hooks'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { IStrategyConfig } from 'features/aave/types'
@@ -7,9 +9,6 @@ import {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveData,
 } from 'lendingProtocols/aave-like-common'
-import React from 'react'
-
-import { PositionInfoComponent } from './PositionInfoComponent'
 
 export type ManageSectionComponentProps = {
   aaveReserveState: AaveLikeReserveConfigurationData

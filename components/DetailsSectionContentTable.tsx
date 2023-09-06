@@ -1,11 +1,10 @@
 import React, { useMemo, useState } from 'react'
 import ReactSelect from 'react-select'
+import { SelectComponents } from 'react-select/src/components'
+import { ChevronUpDown } from 'components/ChevronUpDown'
 import { oasisBaseTheme } from 'theme'
 import { Box, Card, Flex, Grid, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
-
-import { ChevronUpDown } from './ChevronUpDown'
-import { SelectComponents } from 'react-select/src/components'
 
 interface ContentTableProps {
   headers: string[]
@@ -19,7 +18,7 @@ interface TableHeaderOption {
 
 export function DetailsSectionContentTable({ headers, rows, footnote }: ContentTableProps) {
   const mobileHeaders = headers.slice(1).map((header) => ({ label: header }))
-  const defaultMobileHeader = mobileHeaders[0]
+  const [defaultMobileHeader] = mobileHeaders
   const [selectedMobileHeader, setSelectedMobileHeader] =
     useState<TableHeaderOption>(defaultMobileHeader)
   const isMobileView = useMediaQuery(`(max-width: ${oasisBaseTheme?.breakpoints[0]})`)

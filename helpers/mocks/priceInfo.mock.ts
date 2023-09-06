@@ -56,5 +56,6 @@ export function mockPriceInfo$({
   function oraclePriceData$({ token }: OraclePriceDataArgs) {
     return _oraclePriceData$ || token === 'ETH' ? ethPriceInfo$ : collateralPriceInfo$
   }
+
   return createPriceInfo$(oraclePriceData$, token)
 }

@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/react'
 import { useEffect, useState } from 'react'
+import * as Sentry from '@sentry/react'
 import { Observable } from 'rxjs'
 
 export type Unpack<T extends Observable<any>> = T extends Observable<infer U> ? U : never
@@ -24,6 +24,7 @@ export function useObservable<O extends Observable<any>>(o$: O): [Unpack<O> | un
         raiseObservableErrorInSentry(e)
       },
     )
+
     return () => subscription.unsubscribe()
   }, [o$])
 

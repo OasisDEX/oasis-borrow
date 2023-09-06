@@ -1,4 +1,4 @@
-import { OpenVaultChange, OpenVaultState } from './openVault'
+import { OpenVaultChange, OpenVaultState } from 'features/borrow/open/pipes/openVault'
 
 export type OpenVaultFormChange = {
   kind: 'toggleGenerateOption'

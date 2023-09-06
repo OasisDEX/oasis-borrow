@@ -1,5 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import React, { PropsWithChildren } from 'react'
+import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, SxProps } from 'theme-ui'
 
 export type DrawerMenuProps = {

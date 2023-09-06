@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import {
   AfterPillProps,
@@ -7,11 +8,11 @@ import {
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 function MinActiveColRatioModal({ close }: ModalProps<{}>) {
   const { t } = useTranslation()
+
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
@@ -42,6 +43,7 @@ export function MinActiveColRatioCard(props: MinActiveColRatioProps) {
   const openModal = useModal()
   const { afterPill, activeCollRatioPriceUSD, afterActiveCollRatioPriceUSD, activeCollRatio } =
     props
+
   return (
     <VaultDetailsCard
       title={t('manage-insti-vault.card.min-active-coll-ratio.price')}

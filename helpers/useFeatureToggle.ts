@@ -1,7 +1,8 @@
 import { mapValues } from 'lodash'
+
 export const FT_LOCAL_STORAGE_KEY = 'features'
 
-type ConfiguredFeatures = Record<Feature, boolean>
+type ConfiguredFeatures = { [key: Feature]: boolean }
 
 export type Feature =
   | 'TestFeature'
@@ -42,7 +43,7 @@ export type Feature =
   | 'SparkProtocolBorrow'
   | 'SparkProtocolMultiply'
 
-const configuredFeatures: Record<Feature, boolean> = {
+const configuredFeatures: { [key: Feature]: boolean } = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
   '🌞': false, // or https://summer.fi/harheeharheeharhee to enable.  https://summer.fi/<any vault ID> to disable.
@@ -91,7 +92,7 @@ export function configureLocalStorageForTests(data: { [feature in Feature]?: boo
 // Because a feature is enabled if it's enabled either in code or local storage, the
 // feature ends up enabled.
 
-export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = []) {
+export function loadFeatureToggles(testFeaturesFlaggedEnabled: Feature[] = []) {
   // update local toggles
   if (typeof localStorage !== 'undefined') {
     // No-yet-loaded features are always set to false in local storage even if true in code.
@@ -112,6 +113,7 @@ export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = 
     }
 
     const featureFlagsInLocalStorage = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
+
     if (!featureFlagsInLocalStorage) {
       localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(featuresSourcedFromCode))
     } else {
@@ -119,6 +121,7 @@ export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = 
         featureFlagsInLocalStorage,
       ) as ConfiguredFeatures
       const merged = { ...featuresSourcedFromCode, ...userSelectedFeatures }
+
       localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(merged))
     }
   }
@@ -130,6 +133,7 @@ export function getFeatureToggle(feature: Feature): boolean {
 
     return JSON.parse(userEnabledFeatures || '{}')[feature] || configuredFeatures[feature]
   }
+
   return false
 }
 

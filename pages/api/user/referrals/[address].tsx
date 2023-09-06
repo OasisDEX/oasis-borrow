@@ -18,6 +18,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json(referredUsers)
   }
 }
+
 export async function selectUsersByReferredAddress(address: string): Promise<User[] | null> {
   return prisma.user.findMany({
     where: { user_that_referred_address: address },

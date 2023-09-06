@@ -1,5 +1,5 @@
-import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { useTranslation } from 'next-i18next'
 import { Box, Button } from 'theme-ui'
 
 interface ViewMoreProps {

@@ -50,6 +50,7 @@ export const identifyTokens$ = (
             )
             .map((token) => (token === 'WETH' ? 'ETH' : token)),
         )
+
         localTokensAddresses = localTokens.map((token) =>
           tokensContracts[token].address.toLowerCase(),
         )

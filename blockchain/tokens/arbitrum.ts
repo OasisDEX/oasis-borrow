@@ -32,4 +32,4 @@ export const tokensArbitrum = {
   WSTETH: contractDesc(erc20, arbitrum.common.WSTETH),
   YIELDBTC: contractDesc(erc20, arbitrum.common.YIELDBTC),
   YIELDETH: contractDesc(erc20, arbitrum.common.YIELDETH),
-} as Record<string, ContractDesc>
+} as { [key: string]: ContractDesc }

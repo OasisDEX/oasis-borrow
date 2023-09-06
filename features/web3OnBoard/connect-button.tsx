@@ -1,9 +1,8 @@
-import { WithArrow } from 'components/WithArrow'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { WithArrow } from 'components/WithArrow'
+import { useConnection } from 'features/web3OnBoard/useConnection'
+import { useTranslation } from 'next-i18next'
 import { Button } from 'theme-ui'
-
-import { useConnection } from './useConnection'
 
 export function ConnectButton() {
   const { t } = useTranslation()

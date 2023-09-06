@@ -1,3 +1,4 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/layouts'
@@ -6,7 +7,6 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useScrollToTop } from 'helpers/useScrollToTop'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
@@ -70,6 +70,7 @@ const BlockHeading = ({
 function BrandAssetsPage() {
   useScrollToTop()
   const { t } = useTranslation()
+
   return (
     <Box sx={{ width: '100%', mt: 5, pb: 7 }}>
       <Heading variant="header2" sx={{ textAlign: 'center', mb: 2 }}>
@@ -157,8 +158,8 @@ function BrandAssetsPage() {
         infoTranslation={t('brand-assets.category.minimum-size.info')}
       />
       <Grid sx={twoColumnsLayoutBoxSX}>
-        {assetsList.minimumSizeList.map((minSizeAsset) => (
-          <Box>
+        {assetsList.minimumSizeList.map((minSizeAsset, i) => (
+          <Box key={i}>
             <Box
               bg="neutral30"
               sx={{
@@ -203,8 +204,8 @@ function BrandAssetsPage() {
         infoTranslation={t('brand-assets.category.best-practices.info')}
       />
       <Grid sx={twoColumnsLayoutBoxSX}>
-        {assetsList.incorrectUseCasesMap.map((incorrectUseCase) => (
-          <Box>
+        {assetsList.incorrectUseCasesMap.map((incorrectUseCase, i) => (
+          <Box key={i}>
             <Box
               bg="neutral30"
               sx={{

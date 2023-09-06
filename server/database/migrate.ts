@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
 import { join } from 'path'
 import pg from 'pg'
 import { migrate } from 'postgres-migrations'
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 require('dotenv-flow').config({ path: __dirname })
 
 async function main() {
@@ -13,6 +15,7 @@ async function main() {
     connectionString: process.env.DATABASE_URL,
   }
   const client = new pg.Client(dbConfig)
+
   await client.connect()
   console.log('Running migrations')
   await migrate({ client }, join(__dirname, '../database/migrations'))

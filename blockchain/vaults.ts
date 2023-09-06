@@ -1,6 +1,13 @@
 import { UsersWhoFollowVaults, VaultType } from '@prisma/client'
 import BigNumber from 'bignumber.js'
+import { GetCdpsArgs, GetCdpsResult } from 'blockchain/calls/getCdps'
+import { CallObservable } from 'blockchain/calls/observe'
+import { vatGem, vatUrns } from 'blockchain/calls/vat'
+import { MakerVaultType, VaultResolve } from 'blockchain/calls/vaultResolver'
+import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
+import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
+import { buildPosition } from 'blockchain/vault.maths'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import { UserSettingsState } from 'features/userSettings/userSettings'
@@ -9,14 +16,6 @@ import { LendingProtocol } from 'lendingProtocols'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
-
-import { GetCdpsArgs, GetCdpsResult } from './calls/getCdps'
-import { CallObservable } from './calls/observe'
-import { vatGem, vatUrns } from './calls/vat'
-import { MakerVaultType, VaultResolve } from './calls/vaultResolver'
-import { IlkData } from './ilks'
-import { OraclePriceData, OraclePriceDataArgs } from './prices'
-import { buildPosition } from './vault.maths'
 
 BigNumber.config({
   POW_PRECISION: 100,
@@ -50,6 +49,7 @@ export function createStandardCdps$(
       if (proxyAddress === undefined) {
         return of([])
       }
+
       return getCdps$({ proxyAddress, descending: true }).pipe(
         map(({ ids }) => ids.map((id) => new BigNumber(id))),
       )
@@ -62,6 +62,7 @@ export function createStandardCdps$(
 interface CdpIdsResolver {
   (address: string): Observable<BigNumber[]>
 }
+
 export function createVaults$(
   refreshInterval: Observable<number>,
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
@@ -133,8 +134,9 @@ export function decorateVaultsWithValue$<V extends VaultWithType>(
   address: string,
 ): Observable<VaultWithValue<V>[]> {
   return combineLatest(vaults$(address), userSettings$).pipe(
-    switchMap(([vaults, userSettings]: [Array<VaultWithType>, UserSettingsState]) => {
+    switchMap(([vaults, userSettings]: [VaultWithType[], UserSettingsState]) => {
       if (vaults.length === 0) return of([])
+
       return combineLatest(
         vaults.map((vault) => {
           if (vault.type === 'borrow') {
@@ -154,6 +156,7 @@ export function decorateVaultsWithValue$<V extends VaultWithType>(
                   quote.status === 'SUCCESS'
                     ? vault.lockedCollateral.times(quote.tokenPrice)
                     : vault.lockedCollateralUSD
+
                 return { ...vault, value: collateralValue.minus(vault.debt) }
               }),
             )

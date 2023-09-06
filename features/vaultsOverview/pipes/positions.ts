@@ -18,6 +18,7 @@ import {
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { ApiVault, ApiVaultsParams } from 'features/shared/vaultApi'
+import { Position } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveLikeUrlSlug, mapAaveProtocol } from 'helpers/getAaveLikeStrategyUrl'
 import { productToVaultType } from 'helpers/productToVaultType'
@@ -33,8 +34,6 @@ import { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-se
 import { memoize } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
-
-import { Position } from './positionsOverviewSummary'
 
 type CreatePositionEnvironmentPropsType = {
   tickerPrices$: (tokens: string[]) => Observable<Tickers>
@@ -112,6 +111,7 @@ export function createPositions$(
   const _aaveV2Positions$ = aaveV2MainnetPositions$(address)
   const _aaveV3Positions$ = aaveV3MainnetPositions$(address)
   const _optimismPositions$ = optimismPositions$(address)
+
   return combineLatest(
     _makerPositions$,
     _aaveV2Positions$,
@@ -179,8 +179,7 @@ function buildAaveViewModel(
         const { position } = protocolData
         const isDebtZero = position.debt.amount.isZero()
 
-        const oracleCollateralTokenPriceInEth = assetPrices[0]
-        const oracleDebtTokenPriceInEth = assetPrices[1]
+        const [oracleCollateralTokenPriceInEth, oracleDebtTokenPriceInEth] = assetPrices
 
         const collateralToken = positionCreatedEvent.collateralTokenSymbol
         const debtToken = positionCreatedEvent.debtTokenSymbol
@@ -202,7 +201,7 @@ function buildAaveViewModel(
           ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
           : zero
 
-        const variableBorrowRate = preparedAaveReserve.variableBorrowRate
+        const { variableBorrowRate } = preparedAaveReserve
 
         const fundingCost = !isDebtZero
           ? debtNotWei
@@ -238,8 +237,8 @@ function buildAaveViewModel(
         return {
           token: collateralToken,
           debtToken,
-          title: title,
-          url: `/ethereum/aave/${mapAaveProtocol(protocol)}/${positionId}`, //TODO: Proper network handling
+          title,
+          url: `/ethereum/aave/${mapAaveProtocol(protocol)}/${positionId}`, // TODO: Proper network handling
           id: isAddress(positionId) ? formatAddress(positionId) : positionId,
           netValue: netValueUsd,
           multiple: position.riskRatio.multiple,
@@ -252,7 +251,7 @@ function buildAaveViewModel(
           isOwner,
           lockedCollateral: collateralNotWei,
           type: mappymap[positionCreatedEvent.positionType],
-          liquidity: liquidity,
+          liquidity,
           stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
           protocol,
           chainId,
@@ -302,8 +301,7 @@ function buildAaveLikeV3OnlyViewModel(
         const { position } = protocolData
         const isDebtZero = position.debt.amount.isZero()
 
-        const oracleCollateralTokenPriceInEth = assetPrices[0]
-        const oracleDebtTokenPriceInEth = assetPrices[1]
+        const [oracleCollateralTokenPriceInEth, oracleDebtTokenPriceInEth] = assetPrices
 
         const collateralToken = positionCreatedEvent.collateralTokenSymbol
         const debtToken = positionCreatedEvent.debtTokenSymbol
@@ -325,7 +323,7 @@ function buildAaveLikeV3OnlyViewModel(
           ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
           : zero
 
-        const variableBorrowRate = preparedAaveReserve.variableBorrowRate
+        const { variableBorrowRate } = preparedAaveReserve
 
         const fundingCost = !isDebtZero
           ? debtNotWei
@@ -360,7 +358,7 @@ function buildAaveLikeV3OnlyViewModel(
         return {
           token: collateralToken,
           debtToken,
-          title: title,
+          title,
           url: `/${strategyConfig.network}/${mapAaveLikeUrlSlug(protocol)}/${mapAaveProtocol(
             protocol,
           )}/${positionId}`,
@@ -375,7 +373,7 @@ function buildAaveLikeV3OnlyViewModel(
           isOwner,
           lockedCollateral: collateralNotWei,
           type: mappymap[strategyConfig.type],
-          liquidity: liquidity,
+          liquidity,
           stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
           protocol,
           chainId,
@@ -443,6 +441,7 @@ export function createAaveV2Position$(
 ): Observable<AaveLikePosition[]> {
   const { context$, tickerPrices$, readPositionCreatedEvents$, automationTriggersData$ } =
     environment
+
   return context$.pipe(
     switchMap((context) => {
       return context.chainId !== NetworkIds.GOERLI
@@ -469,6 +468,7 @@ export function createAaveV2Position$(
                     },
                   ),
                 ]
+
                 return readPositionCreatedEvents$(walletAddress).pipe(
                   map((positionCreatedEvents) => {
                     return [
@@ -484,6 +484,7 @@ export function createAaveV2Position$(
                           const userProxy = userProxiesData.find(
                             (userProxy) => userProxy.proxy === pce.proxyAddress,
                           )
+
                           if (!userProxy) {
                             throw new Error('nope')
                           }
@@ -553,10 +554,12 @@ const createAaveV3LikeDpmPosition = memoize(
           const subjects$ = positionCreatedEvents
             .map((pce) => {
               const network = getNetworkById(networkId)
+
               if (!network) {
                 console.warn(
                   `Given network is not supported right now. Can't display Aaave V3 Position on network ${networkId}`,
                 )
+
                 return null
               }
 
@@ -567,6 +570,7 @@ const createAaveV3LikeDpmPosition = memoize(
                 : undefined
 
               let strategyConfig: IStrategyConfig | null = null
+
               try {
                 strategyConfig = loadStrategyFromTokens(
                   pce.collateralTokenSymbol,
@@ -616,6 +620,7 @@ const createAaveV3LikeDpmPosition = memoize(
                 }),
               )
             })
+
           return combineLatest(subjects$)
         }),
         startWith([] as AaveLikePosition[]),

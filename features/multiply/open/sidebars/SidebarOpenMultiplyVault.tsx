@@ -1,3 +1,4 @@
+import React from 'react'
 import { AutomationContextProvider, useAccountContext } from 'components/context'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
@@ -24,7 +25,6 @@ import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid } from 'theme-ui'
 
 export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {

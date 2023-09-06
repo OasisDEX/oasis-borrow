@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
+import { BaseParameters, getNetworkMapping, wethToEthAddress } from 'blockchain/spark-v3/utils'
 import { one } from 'helpers/zero'
 import { SparkV3Oracle__factory } from 'types/ethers-contracts'
-
-import { BaseParameters, getNetworkMapping, wethToEthAddress } from './utils'
 
 export interface SparkV3AssetsPricesParameters extends BaseParameters {
   tokens: string[]
@@ -25,6 +24,7 @@ export function getSparkV3AssetsPrices({
 }: SparkV3AssetsPricesParameters): Promise<BigNumber[]> {
   const { contract, tokenMappings, baseCurrencyUnit } = networkMappings[networkId]()
   const tokenAddresses = tokens.map((token) => wethToEthAddress(tokenMappings, token))
+
   return contract.getAssetsPrices(tokenAddresses).then((result) => {
     return result.map((tokenPriceInBaseCurrency) =>
       new BigNumber(tokenPriceInBaseCurrency.toString()).div(baseCurrencyUnit),
@@ -39,6 +39,7 @@ export function getSparkV3OracleAssetPrice({
 }: SparkV3OracleAssetPriceDataParameters) {
   const { contract, tokenMappings, baseCurrencyUnit } = networkMappings[networkId]()
   const tokenAddress = wethToEthAddress(tokenMappings, token)
+
   return contract.getAssetPrice(tokenAddress).then((result) => {
     return new BigNumber(result.toString()).times(amount).div(baseCurrencyUnit)
   })

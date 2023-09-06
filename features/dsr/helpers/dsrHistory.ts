@@ -6,8 +6,8 @@ import { funcSigTopic } from 'blockchain/utils'
 import { gql, GraphQLClient } from 'graphql-request'
 import padStart from 'lodash/padStart'
 import { combineLatest, merge, Observable, of } from 'rxjs'
-import { fromPromise } from 'rxjs/internal-compatibility'
 import { mergeAll } from 'rxjs/internal/operators'
+import { fromPromise } from 'rxjs/internal-compatibility'
 import { filter, map, mergeMap, toArray } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
 import Web3 from 'web3'
@@ -64,6 +64,7 @@ async function getBlockTimestamp({ chainId }: Context, blockNumber: number): Pro
   const block = await apiClient.request(historicalBlockNumbers, {
     blockNumber,
   })
+
   return new Date(block.allHistoricBlocks.nodes[0].timestamp).getTime() / 1000
 }
 
@@ -78,7 +79,7 @@ function createEventTypeHistory$(
   const potEvents$ = fromPromise(
     web3ProviderGetPastLogs.eth.getPastLogs({
       address: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdPot.address,
-      topics: [eventSigntures[kind][0], '0x' + padStart(proxyAddress.slice(2), 64, '0')],
+      topics: [eventSigntures[kind][0], `0x${padStart(proxyAddress.slice(2), 64, '0')}`],
       fromBlock,
     }),
   )
@@ -86,7 +87,7 @@ function createEventTypeHistory$(
   const adapterEvents$ = fromPromise(
     web3ProviderGetPastLogs.eth.getPastLogs({
       address: getNetworkContracts(NetworkIds.MAINNET, context.chainId).mcdJoinDai.address,
-      topics: [eventSigntures[kind][1], '0x' + padStart(proxyAddress.slice(2), 64, '0')],
+      topics: [eventSigntures[kind][1], `0x${padStart(proxyAddress.slice(2), 64, '0')}`],
       fromBlock,
     }),
   )
@@ -100,10 +101,12 @@ function createEventTypeHistory$(
           return e.transactionHash === event.transactionHash
         }),
       )
+
       return combineLatest(of(event), adapterFiltered$)
     }),
     map((result: LogEvent[]) => {
       const [potEvent, joinEvent] = result
+
       return {
         kind,
         block: potEvent.blockNumber,
@@ -146,6 +149,7 @@ export function createDsrHistory$(context: Context, proxyAddress: string): Obser
       return list.sort((a: LogEvent, b: LogEvent) => {
         if (a.block > b.block) return -1
         if (a.block < b.block) return 1
+
         return 0
       })
     }),

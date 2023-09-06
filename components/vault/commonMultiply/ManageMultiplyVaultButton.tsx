@@ -1,7 +1,7 @@
+import React from 'react'
 import { trackingEvents } from 'analytics/analytics'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 

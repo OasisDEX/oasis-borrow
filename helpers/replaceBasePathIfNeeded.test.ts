@@ -1,4 +1,4 @@
-import { replaceBasePathIfNeeded } from './useRedirect'
+import { replaceBasePathIfNeeded } from 'helpers/useRedirect'
 
 describe('Replace base path in the beginning of each path', () => {
   it('happy path', () => {

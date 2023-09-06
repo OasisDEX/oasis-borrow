@@ -28,7 +28,7 @@ export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevel
 
   if (env !== 'production' && env !== 'staging') {
     return {
-      track: function (eventType: string, payload: any) {
+      track(eventType: string, payload: any) {
         console.info('\n✨ Mixpanel Event: ', eventType, payload, '\n')
       },
       get_distinct_id: () => 'test_id',
@@ -199,7 +199,7 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
   let win: Window
 
   if (typeof window === 'undefined') {
-    var loc = { hostname: '' }
+    const loc = { hostname: '' }
 
     win = {
       navigator: { userAgent: '' },
@@ -220,6 +220,7 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
       ? '$direct'
       : new URL(initialReferrer).hostname
     : ''
+
   void fetch(`/api/t`, {
     method: 'POST',
     headers: {
@@ -950,6 +951,7 @@ export const trackingEvents = {
         page: Pages.OpenEarnSTETH,
         section: CommonAnalyticsSections.OpenPosition,
       }
+
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
     stETHOpenPositionConfirmDeposit: (depositAmount: BigNumber) => {
@@ -960,6 +962,7 @@ export const trackingEvents = {
         page: Pages.OpenEarnSTETH,
         section: CommonAnalyticsSections.OpenPosition,
       }
+
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
     stETHOpenPositionMoveSlider: (depositAmount: BigNumber, riskRatio: BigNumber) => {
@@ -971,6 +974,7 @@ export const trackingEvents = {
         page: Pages.OpenEarnSTETH,
         section: CommonAnalyticsSections.OpenPosition,
       }
+
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
     stETHOpenPositionConfirmRisk: (depositAmount: BigNumber, riskRatio: BigNumber) => {
@@ -982,6 +986,7 @@ export const trackingEvents = {
         page: Pages.OpenEarnSTETH,
         section: CommonAnalyticsSections.OpenPosition,
       }
+
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
     stETHOpenPositionConfirmTransaction: (depositAmount: BigNumber, riskRatio: BigNumber) => {
@@ -993,6 +998,7 @@ export const trackingEvents = {
         page: Pages.OpenEarnSTETH,
         section: CommonAnalyticsSections.OpenPosition,
       }
+
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
     aaveAdjustRiskSliderAction: (
@@ -1011,6 +1017,7 @@ export const trackingEvents = {
         }[productType.toLocaleLowerCase()],
         section: 'AdjustRisk',
       }
+
       mixpanelInternalAPI(
         action === 'MoveSlider' ? EventTypes.InputChange : EventTypes.ButtonClick,
         eventBody,
@@ -1024,6 +1031,7 @@ export const trackingEvents = {
         page: Pages.ManageSTETH,
         section: 'AdjustRisk',
       }
+
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
     stETHClosePositionConfirm: () => {
@@ -1033,6 +1041,7 @@ export const trackingEvents = {
         page: Pages.ManageSTETH,
         section: 'ClosePosition',
       }
+
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
     stETHClosePositionConfirmTransaction: () => {
@@ -1042,6 +1051,7 @@ export const trackingEvents = {
         page: Pages.ManageSTETH,
         section: 'ClosePosition',
       }
+
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
   },
@@ -1147,10 +1157,12 @@ export const trackingEvents = {
   },
   swapWidgetEvent: (id: SwapWidgetEvents, eventData: Route | RouteExecutionUpdate) => {
     const eventBody = { id, section: 'SwapWidget', product: 'SwapWidget', eventData }
+
     !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.SwapWidgetEvent, eventBody)
   },
   topBannerEvent: (id: TopBannerEvents, topBannerName: string) => {
     const eventBody = { id, section: 'TopBanner', product: 'TopBanner', topBannerName }
+
     !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.TopBannerEvent, eventBody)
   },
   daiSavingsRate: (
@@ -1170,6 +1182,7 @@ export const trackingEvents = {
       product: ProductType.EARN,
       txHash,
     }
+
     if (event === EventTypes.InputChange) {
       !mixpanel.has_opted_out_tracking() &&
         mixpanelInternalAPI(event, {

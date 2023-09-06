@@ -1,3 +1,4 @@
+import React from 'react'
 import { useAutomationContext, useGasEstimationContext } from 'components/context'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
@@ -29,7 +30,6 @@ import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { uiChanges } from 'helpers/uiChanges'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
 interface SidebarSetupStopLossProps {

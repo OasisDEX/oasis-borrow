@@ -1,7 +1,8 @@
+import en from 'features/content/privacy/en.mdx'
+import es from 'features/content/privacy/es.mdx'
+import pt from 'features/content/privacy/pt.mdx'
+
 import { ContentType } from '..'
-import en from './en.mdx'
-import es from './es.mdx'
-import pt from './pt.mdx'
 
 export const content: ContentType = {
   en,

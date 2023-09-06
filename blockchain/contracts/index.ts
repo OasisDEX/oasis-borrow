@@ -1,12 +1,11 @@
 import { Tokens } from '@prisma/client'
 import * as erc20 from 'blockchain/abi/erc20.json'
+import { arbitrumContracts } from 'blockchain/contracts/arbitrum'
+import { goerliContracts } from 'blockchain/contracts/goerli'
+import { mainnetContracts } from 'blockchain/contracts/mainnet'
+import { optimismContracts } from 'blockchain/contracts/optimism'
 import { getContractNetworkByWalletNetwork, NetworkIds, networkSetById } from 'blockchain/networks'
 import { ContractDesc } from 'features/web3Context'
-
-import { arbitrumContracts } from './arbitrum'
-import { goerliContracts } from './goerli'
-import { mainnetContracts } from './mainnet'
-import { optimismContracts } from './optimism'
 
 // this const will contain contracts of tokens, that aren't a part of original config
 // but identified by identifyTokens$ observable whenever it's called
@@ -37,12 +36,13 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
     : contractChainId
 
   const networkConfig = networkSetById[correctNetworkId]
-  let contracts: Record<string, unknown> = allNetworksContracts[correctNetworkId]
+  let contracts: { [key: string]: unknown } = allNetworksContracts[correctNetworkId]
 
   let finalNetworkId = correctNetworkId
 
   if (!contracts && networkConfig.isCustomFork) {
     const parentConfig = networkConfig.getParentNetwork()
+
     if (!parentConfig) {
       throw new Error(
         `Can't find parent network for ${correctNetworkId} chain  even though it's a custom fork`,
@@ -60,7 +60,7 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
   ensureTokensExist(finalNetworkId, contractsForWithToknes)
 
   // ETH needs to be first because we use the `WETH` address in that configuration. To ensure that ETH is placed before WETH, we put it at the top of the list.
-  const tokens: Record<string, ContractDesc> =
+  const tokens: { [key: string]: ContractDesc } =
     finalNetworkId === NetworkIds.MAINNET || finalNetworkId === NetworkIds.GOERLI
       ? {
           ETH: contractsForWithToknes.tokens.ETH,
@@ -91,9 +91,9 @@ export function extendTokensContracts(tokens: Tokens[]): void {
 export function ensureContractsExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
-  properties: ReadonlyArray<string>,
+  properties: readonly string[],
 ): asserts contracts is {
-  [K in (typeof properties)[number]]: ContractDesc & { genesisBlock: number }
+  [K in typeof properties[number]]: ContractDesc & { genesisBlock: number }
 } {
   if (properties.some((p) => !contracts.hasOwnProperty(p))) {
     throw new Error(
@@ -105,9 +105,9 @@ export function ensureContractsExist(
 export function ensurePropertiesExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
-  properties: ReadonlyArray<string>,
+  properties: readonly string[],
 ): asserts contracts is {
-  [K in (typeof properties)[number]]: string
+  [K in typeof properties[number]]: string
 } {
   if (properties.some((p) => !contracts.hasOwnProperty(p))) {
     throw new Error(`Can't find properties: ${JSON.stringify(properties)} on ${chainId} chain`)
@@ -138,7 +138,7 @@ export function ensureEtherscanExist(
 export function ensureTokensExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
-): asserts contracts is { tokens: Record<string, ContractDesc> } {
+): asserts contracts is { tokens: { [key: string]: ContractDesc } } {
   if (!contracts.hasOwnProperty('tokens')) {
     throw new Error(`Can't find tokens definition on ${chainId} chain`)
   }
@@ -147,10 +147,11 @@ export function ensureTokensExist(
 export function ensureGivenTokensExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
-  tokens: ReadonlyArray<string>,
-): asserts contracts is { tokens: { [K in (typeof tokens)[number]]: ContractDesc } } {
+  tokens: readonly string[],
+): asserts contracts is { tokens: { [K in typeof tokens[number]]: ContractDesc } } {
   ensureTokensExist(chainId, contracts)
   const notFoundTokens = tokens.filter((p) => !contracts.tokens.hasOwnProperty(p))
+
   if (notFoundTokens.length > 0) {
     throw new Error(
       `Can't find tokens definitions: ${JSON.stringify(
@@ -163,17 +164,17 @@ export function ensureGivenTokensExist(
 export function ensureChainlinkTokenPairsExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
-  tokenPairs: ReadonlyArray<string>,
+  tokenPairs: readonly string[],
 ): asserts contracts is {
   chainlinkPriceOracle: {
-    [K in (typeof tokenPairs)[number]]: ContractDesc
+    [K in typeof tokenPairs[number]]: ContractDesc
   }
 } {
   if (!contracts.hasOwnProperty('chainlinkPriceOracle')) {
     throw new Error(`Can't find chainlinkTokenPairs definition on ${chainId} chain`)
   }
 
-  const chainlinkPriceOracle = (contracts as { chainlinkPriceOracle: unknown }).chainlinkPriceOracle
+  const { chainlinkPriceOracle } = contracts as { chainlinkPriceOracle: unknown }
 
   if (typeof chainlinkPriceOracle !== 'object' || chainlinkPriceOracle === null) {
     throw new Error(`chainlinkPriceOracle definition on ${chainId} chain is not an object`)

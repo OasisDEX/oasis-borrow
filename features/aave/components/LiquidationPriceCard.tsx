@@ -1,3 +1,4 @@
+import React from 'react'
 import { IPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
@@ -10,7 +11,6 @@ import {
   AaveLikeReserveData,
 } from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
 export function LiquidationPriceCard(props: {
@@ -46,6 +46,7 @@ export function LiquidationPriceCard(props: {
     : undefined
 
   const { t } = useTranslation()
+
   return (
     <DetailsSectionContentCard
       title={t('system.liquidation-price')}

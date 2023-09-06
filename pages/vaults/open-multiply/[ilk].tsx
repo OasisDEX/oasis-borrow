@@ -1,3 +1,4 @@
+import React from 'react'
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
 import { ProductContextHandler } from 'components/context'
@@ -12,10 +13,10 @@ import { LendingProtocolLabel } from 'lendingProtocols'
 import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 
 export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
   const paths = supportedMultiplyIlks.map((ilk) => ({ params: { ilk } })) // these paths will be generated at built time
+
   return {
     paths,
     fallback: true,
@@ -33,9 +34,10 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
 
 function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
+
   return (
     <ProductContextHandler>
-      <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
+      <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
             <PageSEOTags

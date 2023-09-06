@@ -1,18 +1,17 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
+import { arbitrumAaveV3Strategies } from 'features/aave/strategies/arbitrum-aave-v3-strategies'
+import { ethereumAaveV2Strategies } from 'features/aave/strategies/ethereum-aave-v2-strategies'
+import { ethereumAaveV3Strategies } from 'features/aave/strategies/ethereum-aave-v3-strategies'
+import { ethereumSparkV3Strategies } from 'features/aave/strategies/ethereum-spark-v3-strategies'
+import { optimismAaveV3Strategies } from 'features/aave/strategies/optimism-aave-v3-strategies'
 import { isSupportedProductType, IStrategyConfig, ProductType } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { productToVaultType } from 'helpers/productToVaultType'
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { isLendingProtocol, LendingProtocol } from 'lendingProtocols'
-
-import { arbitrumAaveV3Strategies } from './arbitrum-aave-v3-strategies'
-import { ethereumAaveV2Strategies } from './ethereum-aave-v2-strategies'
-import { ethereumAaveV3Strategies } from './ethereum-aave-v3-strategies'
-import { ethereumSparkV3Strategies } from './ethereum-spark-v3-strategies'
-import { optimismAaveV3Strategies } from './optimism-aave-v3-strategies'
 
 export const strategies = [
   ...ethereumAaveV2Strategies,
@@ -47,9 +46,11 @@ export function loadStrategyFromUrl(
       s.type.toUpperCase() === positionType.toUpperCase() &&
       s.protocol.toUpperCase() === protocol.toUpperCase(),
   )
+
   if (!strategy) {
     throw new Error(`Strategy not found for slug: ${slug}`)
   }
+
   return strategy
 }
 
@@ -71,6 +72,7 @@ export function loadStrategyFromTokens(
       vaultType === undefined ||
       vaultType === VaultType.Unknown ||
       vaultType === productToVaultType(s.type)
+
     return (
       s.tokens.collateral === actualCollateralToken &&
       s.tokens.debt === actualDebtToken &&
@@ -85,6 +87,7 @@ export function loadStrategyFromTokens(
       `Strategy not found for ${collateralToken}/${debtToken} (${actualCollateralToken}/${actualDebtToken}) for protocol: ${protocol} on network: ${networkName}`,
     )
   }
+
   return strategy
 }
 
@@ -117,6 +120,7 @@ export function isSupportedStrategy(
         s.urlSlug.toLowerCase() === strategy.toLowerCase() &&
         s.type.toLowerCase() === product.toLowerCase(),
     )
+
     if (definedStrategy) {
       return [true, definedStrategy]
     } else {

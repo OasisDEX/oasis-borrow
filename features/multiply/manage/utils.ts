@@ -44,7 +44,7 @@ export function calculateTotalDepositWithdrawals(
       .map((event) => {
         if (['OPEN_MULTIPLY_VAULT', 'INCREASE_MULTIPLE'].includes(event.kind)) {
           const ethDeposited = event.depositCollateral || new BigNumber(0)
-          const ethPrice = event.ethPrice
+          const { ethPrice } = event
 
           return ethDeposited.times(ethPrice)
         } else if (type === 'WITHDRAW') {

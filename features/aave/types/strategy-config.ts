@@ -1,15 +1,14 @@
-import { NetworkConfigHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { IPosition, IRiskRatio } from '@oasisdex/dma-library'
-import { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
-import { Feature } from 'helpers/useFeatureToggle'
 import BigNumber from 'bignumber.js'
-
-import { AaveManageComponentProps, ManageSectionComponentProps, ViewPositionSectionComponentProps } from '../components'
-import { ManagePositionAvailableActions } from './manage-position-available-actions'
-import { PositionId } from './position-id'
-import { BaseViewProps } from './base-aave-context'
-import { BaseAaveEvent } from './base-aave-event'
-import { ProductType } from './is-supported-product-type'
+import { NetworkConfigHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
+import { AaveManageComponentProps, ManageSectionComponentProps, ViewPositionSectionComponentProps } from 'features/aave/components'
+import { BaseViewProps } from 'features/aave/types/base-aave-context'
+import { BaseAaveEvent } from 'features/aave/types/base-aave-event'
+import { ProductType } from 'features/aave/types/is-supported-product-type'
+import { ManagePositionAvailableActions } from 'features/aave/types/manage-position-available-actions'
+import { PositionId } from 'features/aave/types/position-id'
+import { Feature } from 'helpers/useFeatureToggle'
+import { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element
 type ManageAaveHeader = (props: ManageAaveHeaderProps) => JSX.Element

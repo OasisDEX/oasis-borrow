@@ -4,9 +4,8 @@ import {
   AaveV2ReserveDataReply,
 } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { zero } from 'helpers/zero'
+import { aaveLikeAvailableLiquidityInUSDC$ } from 'lendingProtocols/aave-v2/pipelines/aave-available-liquidity-in-usdc'
 import { of, throwError } from 'rxjs'
-
-import { aaveLikeAvailableLiquidityInUSDC$ } from './aave-available-liquidity-in-usdc'
 
 describe('prepareAaveAvailableLiquidityInUSDC$', () => {
   it('should return the correct value', (done) => {

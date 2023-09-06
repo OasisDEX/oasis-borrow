@@ -1,3 +1,4 @@
+import React, { FC, ReactNode } from 'react'
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { AppLink } from 'components/Links'
@@ -10,7 +11,6 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { FC, ReactNode } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 
 interface Link {
@@ -156,9 +156,9 @@ const AjnaRewardCardBanner: FC<AjnaRewardCardBannerProps> = ({
           )}
         </Text>
         {/* TODO uncomment once ajna token usdc price will be available*/}
-        {/*<Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>*/}
+        {/* <Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>*/}
         {/*  ${(rewards.usd)}*/}
-        {/*</Text>*/}
+        {/* </Text>*/}
         {!notAvailable && (
           <>
             {rewards.tokens.gt(zero) && (

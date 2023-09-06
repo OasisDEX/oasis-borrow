@@ -10,6 +10,7 @@ describe('instiVault$', () => {
       startValue: number,
     ): [BehaviorSubject<BigNumber>, () => BehaviorSubject<BigNumber>] {
       const bs = new BehaviorSubject<BigNumber>(new BigNumber(startValue))
+
       return [bs, () => bs]
     }
 
@@ -46,6 +47,7 @@ describe('instiVault$', () => {
     })
 
     const state = getStateUnpacker(instiVault$)
+
     expect(state().daiYieldFromLockedCollateral.toString()).toBe('800000000')
   })
 })

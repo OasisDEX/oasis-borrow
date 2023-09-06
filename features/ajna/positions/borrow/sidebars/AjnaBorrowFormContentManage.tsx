@@ -1,4 +1,7 @@
+import React from 'react'
 import { ActionPills } from 'components/ActionPills'
+import { AjnaBorrowFormContentAdjust } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentAdjust'
+import { AjnaBorrowFormContentClose } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentClose'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentGenerate } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentGenerate'
 import { AjnaBorrowFormContentPayback } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentPayback'
@@ -6,10 +9,6 @@ import { AjnaBorrowFormContentSwitch } from 'features/ajna/positions/borrow/side
 import { AjnaBorrowFormContentWithdraw } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentWithdraw'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
-
-import { AjnaBorrowFormContentAdjust } from './AjnaBorrowFormContentAdjust'
-import { AjnaBorrowFormContentClose } from './AjnaBorrowFormContentClose'
 
 export function AjnaBorrowFormContentManage() {
   const { t } = useTranslation()

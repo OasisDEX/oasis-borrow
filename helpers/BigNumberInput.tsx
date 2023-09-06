@@ -1,6 +1,6 @@
-import { BigNumber } from 'bignumber.js'
 import React, { ChangeEvent, useRef } from 'react'
 import { default as MaskedInput, MaskedInputProps } from 'react-text-mask'
+import { BigNumber } from 'bignumber.js'
 import { Input } from 'theme-ui'
 
 export const BigNumberInput = ({
@@ -24,6 +24,7 @@ export const BigNumberInput = ({
 
   const currentValue = value as string | undefined
   let maskValue: string | undefined
+
   if (
     lastValue.current &&
     currentValue &&
@@ -66,8 +67,10 @@ export const BigNumberInput = ({
 }
 
 type Pipe = (v: string, config: { rawValue: string }) => string | false
+
 export const composePipes = (p1: Pipe, p2: Pipe) => (v: string, config: { rawValue: string }) => {
   const tmp = p1(v, config)
+
   return tmp === false ? tmp : p2(tmp, config)
 }
 
@@ -77,5 +80,6 @@ export const lessThanOrEqual =
     if (!value) {
       return value
     }
+
     return new BigNumber(value.replace(/,/g, '')).lte(max) ? value : false
   }

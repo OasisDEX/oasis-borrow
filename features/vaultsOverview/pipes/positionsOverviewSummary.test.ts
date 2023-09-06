@@ -1,9 +1,12 @@
 import BigNumber from 'bignumber.js'
+import {
+  createPositionsOverviewSummary$,
+  Position,
+  PositionView,
+} from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
-
-import { createPositionsOverviewSummary$, Position, PositionView } from './positionsOverviewSummary'
 
 describe('positionsOverviewSummary', () => {
   afterEach(() => {
@@ -11,7 +14,7 @@ describe('positionsOverviewSummary', () => {
   })
 
   it('calculates proportions correctly, maps usd, and sorts values', () => {
-    const mockBalances: Record<string, BigNumber | undefined> = {
+    const mockBalances: { [key: string]: BigNumber | undefined } = {
       ETH: new BigNumber(1),
       WBTC: new BigNumber(5),
     }
@@ -35,8 +38,7 @@ describe('positionsOverviewSummary', () => {
 
     const state = getStateUnpacker(obsv$)
 
-    const wbtc = state().assetsAndPositions[0]
-    const eth = state().assetsAndPositions[1]
+    const [wbtc, eth] = state().assetsAndPositions
 
     // 'orders values by usd'
     expect(wbtc.token).toBe('WBTC')
@@ -53,7 +55,7 @@ describe('positionsOverviewSummary', () => {
   })
 
   it('calculates the other proportion correctly', () => {
-    const mockBalances: Record<string, BigNumber | undefined> = {
+    const mockBalances: { [key: string]: BigNumber | undefined } = {
       ETH: new BigNumber(16),
       WBTC: new BigNumber(5),
       STETH: new BigNumber(5),
@@ -62,7 +64,7 @@ describe('positionsOverviewSummary', () => {
       // these two tokens included in 'other' proportion
       BAT: new BigNumber(5),
       RENBTC: new BigNumber(4),
-    } satisfies Record<string, BigNumber>
+    } as { [key: string]: BigNumber }
 
     const walletBalance$ = jest.fn((token: string) => of(mockBalances[token] || zero))
 
@@ -92,7 +94,7 @@ describe('positionsOverviewSummary', () => {
   })
 
   it('includes the maker positions', () => {
-    const mockBalances: Record<string, BigNumber | undefined> = {
+    const mockBalances: { [key: string]: BigNumber | undefined } = {
       ETH: new BigNumber(1),
     }
 
@@ -104,7 +106,7 @@ describe('positionsOverviewSummary', () => {
       }),
     )
 
-    const positions: Array<Position> = [
+    const positions: Position[] = [
       {
         token: 'ETH',
         title: 'ETH-A Oasis Multiply',
@@ -129,9 +131,7 @@ describe('positionsOverviewSummary', () => {
 
     const state = getStateUnpacker(obsv$)
 
-    const earnPosition = state().assetsAndPositions[0]
-    const ethInWallet = state().assetsAndPositions[1]
-    const multiplyPosition = state().assetsAndPositions[2]
+    const [earnPosition, ethInWallet, multiplyPosition] = state().assetsAndPositions
 
     expect(earnPosition.token)
 

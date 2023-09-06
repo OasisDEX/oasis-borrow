@@ -1,6 +1,6 @@
+import React, { useCallback, useEffect, useState } from 'react'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { checkedToggleDataIcon, notCheckedToggleDataIcon } from 'helpers/icons'
-import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Input, SxStyleProp } from 'theme-ui'
 
 interface ToggleProps {

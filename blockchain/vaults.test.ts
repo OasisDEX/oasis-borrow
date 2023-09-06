@@ -14,6 +14,7 @@ describe('vaults$', () => {
 
   it('should produce some vault state', () => {
     const state = mockVaults()
+
     expect(state()).toBeDefined()
   })
 

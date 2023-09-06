@@ -1,7 +1,6 @@
-import { usePrevious } from '@react-hooks-library/core'
 import { useEffect } from 'react'
-
-import { WalletManagementState } from './wallet-management-state'
+import { usePrevious } from '@react-hooks-library/core'
+import { WalletManagementState } from 'features/web3OnBoard/wallet-state/wallet-management-state'
 
 interface IDebugWalletState {
   state: WalletManagementState
@@ -12,6 +11,7 @@ export function useDebugWalletState({ state }: IDebugWalletState) {
 
   const stringValue = (state: WalletManagementState | undefined) => {
     if (state === undefined) return ''
+
     return JSON.stringify(
       {
         walletNetwork: state.walletNetworkHexId,
@@ -22,6 +22,7 @@ export function useDebugWalletState({ state }: IDebugWalletState) {
       2,
     )
   }
+
   useEffect(() => {
     console.log(
       `Current State: ${state.status}. (${stringValue(state)}) Transition from state: ${

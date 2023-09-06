@@ -26,7 +26,7 @@ export function getOasisStats(): Promise<OasisStats | null> {
       connection.execute({
         sqlText: 'select * from "OAZO_ANALYTICS"."PUBLIC"."FE_DATA" ORDER by LOAD_TIME desc;',
         streamResult: false, // prevent rows from being returned inline in the complete callback
-        complete: function (err, stmt, rows: StatsResponse[] | undefined) {
+        complete(err, stmt, rows: StatsResponse[] | undefined) {
           if (err || !rows) {
             return resolve(null)
           }

@@ -1,6 +1,6 @@
+import React from 'react'
 import { AssetsTableBannerProps } from 'components/assetsTable/types'
 import { AppLink } from 'components/Links'
-import React from 'react'
 import { Box, Button, Flex, Heading, Text } from 'theme-ui'
 
 export function AssetsTableBanner({
@@ -36,7 +36,7 @@ export function AssetsTableBanner({
       <Box sx={{ flexShrink: 0, width: ['100%', null, 'auto'], ml: 'auto' }}>
         <AppLink
           href={link}
-          internalInNewTab={true}
+          internalInNewTab
           onClick={() => {
             onClick && onClick(link)
           }}

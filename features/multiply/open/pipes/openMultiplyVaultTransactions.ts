@@ -8,6 +8,10 @@ import { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import {
+  OpenMultiplyVaultChange,
+  OpenMultiplyVaultState,
+} from 'features/multiply/open/pipes/openMultiplyVault'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
@@ -18,8 +22,6 @@ import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
-
-import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 export function applyOpenMultiplyVaultTransaction(
   state: OpenMultiplyVaultState,
@@ -34,6 +36,7 @@ export function applyOpenMultiplyVaultTransaction(
 
   if (change.kind === 'txInProgress') {
     const { openTxHash } = change
+
     return {
       ...state,
       openTxHash,
@@ -43,6 +46,7 @@ export function applyOpenMultiplyVaultTransaction(
 
   if (change.kind === 'openVaultConfirming') {
     const { openVaultConfirmations } = change
+
     return {
       ...state,
       openVaultConfirmations,
@@ -51,6 +55,7 @@ export function applyOpenMultiplyVaultTransaction(
 
   if (change.kind === 'txFailure') {
     const { txError } = change
+
     return {
       ...state,
       stage: 'txFailure',
@@ -120,6 +125,7 @@ export function multiplyVault(
   }: OpenMultiplyVaultState,
 ) {
   const { tokensMainnet, defaultExchange } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+
   return getQuote$(
     getTokenMetaData('DAI', tokensMainnet),
     getTokenMetaData(token, tokensMainnet),
@@ -143,7 +149,7 @@ export function multiplyVault(
           exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
           borrowedCollateral: buyingCollateral,
           requiredDebt: borrowedDaiAmount,
-          toTokenAmount: toTokenAmount,
+          toTokenAmount,
           fromTokenAmount,
         }).pipe(
           transactionToX<OpenMultiplyVaultChange, OpenMultiplyData>(
@@ -165,6 +171,7 @@ export function multiplyVault(
               )
 
               const jwtToken = jwtAuthGetToken(account)
+
               if (id && jwtToken) {
                 saveVaultUsingApi$(
                   id,

@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import {
   extractFieldDepositCollateralData,
   extractFieldGenerateDaiData,
@@ -10,7 +11,6 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { OpenVaultChangesInformation } from 'features/borrow/open/containers/OpenVaultChangesInformation'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
-import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {

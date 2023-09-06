@@ -1,3 +1,4 @@
+import React from 'react'
 import { useAccountContext } from 'components/context'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
@@ -19,7 +20,6 @@ import {
 import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React from 'react'
 import { Grid } from 'theme-ui'
 
 export function SidebarOpenGuniVault(props: OpenGuniVaultState) {

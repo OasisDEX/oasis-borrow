@@ -2,13 +2,15 @@ import { Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { networkSetById } from 'blockchain/networks'
+import {
+  CloseVaultTo,
+  ManageMultiplyVaultState,
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { formatOazoFee } from 'features/multiply/manage/utils'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { merge, Observable } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
-
-import { CloseVaultTo, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type AdjustPositionConfirm = {
   kind: 'adjustPositionConfirm'
@@ -199,6 +201,7 @@ export function createManageMultiplyVaultAnalytics$(
           switch (event.kind) {
             case 'adjustPositionConfirm':
               tracker.multiply.adjustPositionConfirm(event.value.ilk, event.value.multiply)
+
               break
             case 'adjustPositionConfirmTransaction':
               tracker.multiply.adjustPositionConfirmTransaction(
@@ -209,6 +212,7 @@ export function createManageMultiplyVaultAnalytics$(
                 walletType,
                 event.value.oasisFee,
               )
+
               break
             case 'otherActionsConfirm':
               tracker.multiply.otherActionsConfirm(
@@ -216,6 +220,7 @@ export function createManageMultiplyVaultAnalytics$(
                 event.value.collateralAmount.toString(),
                 event.value.daiAmount.toString(),
               )
+
               break
             case 'otherActionsConfirmTransaction':
               tracker.multiply.otherActionsConfirmTransaction(
@@ -227,6 +232,7 @@ export function createManageMultiplyVaultAnalytics$(
                 walletType,
                 event.value.oasisFee,
               )
+
               break
             case 'closeVaultConfirm':
               tracker.multiply.closeVaultConfirm(
@@ -234,6 +240,7 @@ export function createManageMultiplyVaultAnalytics$(
                 event.value.debt,
                 event.value.closeTo,
               )
+
               break
             case 'closeVaultConfirmTransaction':
               tracker.multiply.closeVaultConfirmTransaction(
@@ -245,6 +252,7 @@ export function createManageMultiplyVaultAnalytics$(
                 walletType,
                 event.value.oasisFee,
               )
+
               break
             default:
               throw new Error('Unhandled Scenario')
