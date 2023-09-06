@@ -4,6 +4,7 @@ import { SidebarAutomationVaultCloseTriggered } from 'components/vault/sidebar/S
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { getAutomationThatClosedVault } from 'features/automation/common/helpers'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { SidebarManageMultiplyVaultManageStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultManageStage'
 import { SidebarManageMultiplyVaultTransitionStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultTransitionStage'
@@ -25,8 +26,6 @@ import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 import { SidebarManageMultiplyVaultEditingStage } from './SidebarManageMultiplyVaultEditingStage'
-import { VaultType } from 'features/generalManageVault/vaultType'
-
 
 export const otherActionsCollateralPanel = ['depositCollateral', 'withdrawCollateral']
 export const otherActionsDaiPanel = ['depositDai', 'paybackDai', 'withdrawDai']
@@ -130,7 +129,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
           panel: 'dai',
           action: () => {
             toggle!('otherActions')
-            if (vaultType === VaultType.Borrow) { 
+            if (vaultType === VaultType.Borrow) {
               setOtherAction!('paybackDai')
             } else {
               setOtherAction!('depositDai')
@@ -138,9 +137,10 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
           },
         },
         {
-          label: vaultType === VaultType.Borrow 
-            ?  t('system.actions.borrow.switch-to-multiply') 
-            : t('system.actions.multiply.switch-to-borrow'),
+          label:
+            vaultType === VaultType.Borrow
+              ? t('system.actions.borrow.switch-to-multiply')
+              : t('system.actions.multiply.switch-to-borrow'),
           icon: 'circle_exchange',
           iconShrink: 2,
           panel: 'transition',
@@ -170,7 +170,13 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
             {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
               <SidebarVaultAllowanceStage {...props} />
             )}
-            {isBorrowTransitionStage && <SidebarManageMultiplyVaultTransitionStage stage={stage} vaultType={vaultType} token={token} />}
+            {isBorrowTransitionStage && (
+              <SidebarManageMultiplyVaultTransitionStage
+                stage={stage}
+                vaultType={vaultType}
+                token={token}
+              />
+            )}
             {isManageStage && <SidebarManageMultiplyVaultManageStage {...props} />}
           </>
         ) : (

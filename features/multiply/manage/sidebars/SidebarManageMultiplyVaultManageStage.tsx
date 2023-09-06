@@ -25,7 +25,11 @@ export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVault
     case 'manageSuccess':
       return (
         <>
-          {vaultType === VaultType.Multiply ? <ManageMultiplyVaultChangesInformation {...props} /> : <ManageVaultChangesInformation {...props} />}
+          {vaultType === VaultType.Multiply ? (
+            <ManageMultiplyVaultChangesInformation {...props} />
+          ) : (
+            <ManageVaultChangesInformation {...props} />
+          )}
           <VaultChangesWithADelayCard />
         </>
       )
@@ -35,7 +39,11 @@ export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVault
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('vault-form.subtext.review-manage')}
           </Text>
-          {vaultType === VaultType.Multiply ? <ManageMultiplyVaultChangesInformation {...props} /> : <ManageVaultChangesInformation {...props} />}
+          {vaultType === VaultType.Multiply ? (
+            <ManageMultiplyVaultChangesInformation {...props} />
+          ) : (
+            <ManageVaultChangesInformation {...props} />
+          )}
         </>
       )
   }

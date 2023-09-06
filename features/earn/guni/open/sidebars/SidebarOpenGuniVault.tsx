@@ -63,7 +63,11 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow, vaultType: VaultType.Earn }),
+      label: getPrimaryButtonLabel({
+        ...primaryButtonLabelParams,
+        flow,
+        vaultType: VaultType.Earn,
+      }),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress || (isProxyStage && isProxyCreationDisabled),
       isLoading: isLoadingStage,

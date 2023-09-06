@@ -10,6 +10,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { applyExchange } from 'features/multiply/manage/pipes/manageMultiplyQuote'
 import {
   ManageMultiplyVaultChange,
@@ -52,7 +53,6 @@ import { closeGuniVault } from './guniActionsCalls'
 import { applyGuniCalculations } from './manageGuniVaultCalculations'
 import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
 import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
-import { VaultType } from 'features/generalManageVault/vaultType'
 
 export type ManageEarnVaultState = ManageMultiplyVaultState & {
   totalValueLocked?: BigNumber
@@ -123,7 +123,10 @@ function apply(
   change: ManageMultiplyVaultChange | GuniTxDataChange,
 ): ManageEarnVaultState {
   const s1 = applyExchange(change as ManageMultiplyVaultChange, state)
-  const s2 = applyManageVaultTransition(change as ManageMultiplyVaultChange, s1) as ManageEarnVaultState
+  const s2 = applyManageVaultTransition(
+    change as ManageMultiplyVaultChange,
+    s1,
+  ) as ManageEarnVaultState
   const s3 = applyManageGuniVaultTransition(change as ManageMultiplyVaultChange, s2)
   const s4 = applyManageVaultTransaction(change as ManageMultiplyVaultChange, s3)
   const s5 = applyManageVaultEnvironment(change as ManageMultiplyVaultChange, s4)

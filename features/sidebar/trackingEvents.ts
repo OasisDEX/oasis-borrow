@@ -30,13 +30,7 @@ export function regressTrackingEvent({ props, firstCDP }: TrackingEventOpenVault
 }
 
 export function progressTrackingEvent({ props, firstCDP }: TrackingEventOpenVaultProps): void {
-  const {
-    stage,
-    proxyAddress,
-    insufficientAllowance,
-    depositAmount,
-    generateAmount,
-  } = props
+  const { stage, proxyAddress, insufficientAllowance, depositAmount, generateAmount } = props
 
   switch (stage) {
     case 'editing':

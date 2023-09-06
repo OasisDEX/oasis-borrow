@@ -8,6 +8,8 @@ import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
+import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import {
   ManageMultiplyVaultState,
   OtherAction,
@@ -28,8 +30,6 @@ import ReactSelect from 'react-select'
 import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
 
 //TODO max buy token, not needed right now but may be useful in near feature according to the designs
 // function BuyTokenInput({
@@ -684,9 +684,11 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
       {stage === 'adjustPosition' && <AdjustPositionForm {...props} />}
       {stage === 'otherActions' && <OtherActionsForm {...props} />}
       {!inputAmountsEmpty && <Divider />}
-      {vaultType === VaultType.Multiply 
-        ? <ManageMultiplyVaultChangesInformation {...props} /> 
-        : <ManageVaultChangesInformation {...props} />}
+      {vaultType === VaultType.Multiply ? (
+        <ManageMultiplyVaultChangesInformation {...props} />
+      ) : (
+        <ManageVaultChangesInformation {...props} />
+      )}
     </Grid>
   )
 }

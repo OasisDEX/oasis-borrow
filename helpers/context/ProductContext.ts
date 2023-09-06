@@ -4,11 +4,7 @@ import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { dogIlk } from 'blockchain/calls/dog'
-import {
-  tokenAllowance,
-  tokenBalance,
-  tokenBalanceFromAddress,
-} from 'blockchain/calls/erc20'
+import { tokenAllowance, tokenBalance, tokenBalanceFromAddress } from 'blockchain/calls/erc20'
 import { jugIlk } from 'blockchain/calls/jug'
 import { observe } from 'blockchain/calls/observe'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'

@@ -81,10 +81,7 @@ export const tokensMainnet = {
   ETH_ACTUAL: contractDesc(erc20, mainnet.common.ETH),
 } as Record<string, ContractDesc>
 
-export const ilksNotSupportedOnGoerli = [
-  'GUNIV3DAIUSDC1-A',
-  'GUNIV3DAIUSDC2-A',
-] as const
+export const ilksNotSupportedOnGoerli = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'] as const
 
 export const ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET = 16183119
 export const AAVE_V3_POOL_GENESIS_MAINNET = 16291127

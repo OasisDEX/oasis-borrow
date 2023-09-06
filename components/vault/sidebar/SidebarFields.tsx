@@ -21,10 +21,7 @@ import { useTranslation } from 'next-i18next'
 import { pick } from 'ramda'
 import React from 'react'
 
-type VaultState =
-  | OpenVaultState
-  | OpenMultiplyVaultState
-  | ManageMultiplyVaultState
+type VaultState = OpenVaultState | OpenMultiplyVaultState | ManageMultiplyVaultState
 
 interface FieldProps {
   action?: VaultAction

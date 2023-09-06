@@ -87,7 +87,7 @@ export function getPrimaryButtonLabel({
   canTransition = true,
   isClosedVaultPanelVisible = false,
   vaultType,
-}: PrimaryButtonLabelParams & { flow: SidebarFlow, vaultType: VaultType }): string {
+}: PrimaryButtonLabelParams & { flow: SidebarFlow; vaultType: VaultType }): string {
   const { t } = useTranslation()
   const allowanceToken =
     insufficientDaiAllowance || flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
@@ -169,8 +169,8 @@ export function getPrimaryButtonLabel({
     case 'borrowTransitionEditing':
       if (vaultType === VaultType.Borrow) {
         return canTransition
-        ? t('borrow-to-multiply.button-start')
-        : t('borrow-to-multiply.button-not-supported', { token: token?.toUpperCase() })
+          ? t('borrow-to-multiply.button-start')
+          : t('borrow-to-multiply.button-not-supported', { token: token?.toUpperCase() })
       }
       return canTransition
         ? t('multiply-to-borrow.button-start')

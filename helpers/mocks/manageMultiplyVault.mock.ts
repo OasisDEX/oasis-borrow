@@ -4,6 +4,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import {
   createManageMultiplyVault$,
   ManageMultiplyVaultState,
@@ -27,7 +28,6 @@ import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 import { slippageLimitMock } from './slippageLimit.mock'
 import { mockedEmptyStopLossTrigger } from './stopLoss.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
-import { VaultType } from 'features/generalManageVault/vaultType'
 
 export const MOCK_VAULT_ID = one
 export const MOCK_CHAIN_ID = new BigNumber(2137)

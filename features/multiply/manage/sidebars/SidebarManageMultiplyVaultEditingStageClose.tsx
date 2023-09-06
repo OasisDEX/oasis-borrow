@@ -6,9 +6,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-export function SidebarManageMultiplyVaultEditingStageClose(
-  props: ManageMultiplyVaultState,
-) {
+export function SidebarManageMultiplyVaultEditingStageClose(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
   const {

@@ -12,7 +12,7 @@ export function SidebarManageMultiplyVaultTransitionStage({
   token,
 }: {
   stage: ManageMultiplyVaultStage
-  vaultType: VaultType,
+  vaultType: VaultType
   token: string
 }) {
   const { t } = useTranslation()
@@ -24,42 +24,42 @@ export function SidebarManageMultiplyVaultTransitionStage({
   if (vaultType === VaultType.Borrow) {
     return (
       <Grid gap={3}>
-      {stage === 'borrowTransitionEditing' ? (
-        <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('vault-form.header.multiply-transition', { token })}
-          </Text>
-          <ListWithIcon
-            icon="checkmark"
-            iconSize="14px"
-            iconColor="primary100"
-            items={[
-              t('borrow-to-multiply.checkmark1', { token }),
-              t('borrow-to-multiply.checkmark2'),
-              t('borrow-to-multiply.checkmark3'),
-              t('borrow-to-multiply.checkmark4'),
-            ]}
-            listStyle={{ my: 2 }}
-          />
-          <Text as="p" variant="paragraph3" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
-            {t('borrow-to-multiply.subheader2')}
-          </Text>
-          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('borrow-to-multiply.paragraph2')}
-          </Text>
-        </>
-      ) : (
-        <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('vault-form.header.go-to-multiply')}
-          </Text>
-          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('vault-form.subtext.confirm')}
-          </Text>
-          <Icon name="multiply_transition" size="auto" />
-        </>
-      )}
-    </Grid>
+        {stage === 'borrowTransitionEditing' ? (
+          <>
+            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+              {t('vault-form.header.multiply-transition', { token })}
+            </Text>
+            <ListWithIcon
+              icon="checkmark"
+              iconSize="14px"
+              iconColor="primary100"
+              items={[
+                t('borrow-to-multiply.checkmark1', { token }),
+                t('borrow-to-multiply.checkmark2'),
+                t('borrow-to-multiply.checkmark3'),
+                t('borrow-to-multiply.checkmark4'),
+              ]}
+              listStyle={{ my: 2 }}
+            />
+            <Text as="p" variant="paragraph3" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
+              {t('borrow-to-multiply.subheader2')}
+            </Text>
+            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+              {t('borrow-to-multiply.paragraph2')}
+            </Text>
+          </>
+        ) : (
+          <>
+            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+              {t('vault-form.header.go-to-multiply')}
+            </Text>
+            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+              {t('vault-form.subtext.confirm')}
+            </Text>
+            <Icon name="multiply_transition" size="auto" />
+          </>
+        )}
+      </Grid>
     )
   }
 

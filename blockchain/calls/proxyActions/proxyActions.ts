@@ -483,7 +483,6 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
     
     ${data.exchangeData}`)
 
-    
     if (data.exchangeData) {
       return [dssMultiplyProxyActions.address, getCloseVaultCallData(data, context).encodeABI()]
     } else {

@@ -97,7 +97,11 @@ export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ flow, ...primaryButtonLabelParams, vaultType: VaultType.Earn }),
+      label: getPrimaryButtonLabel({
+        flow,
+        ...primaryButtonLabelParams,
+        vaultType: VaultType.Earn,
+      }),
       hidden: stage === 'adjustPosition',
       disabled: !canProgress || !accountIsConnected,
       isLoading: isLoadingStage,

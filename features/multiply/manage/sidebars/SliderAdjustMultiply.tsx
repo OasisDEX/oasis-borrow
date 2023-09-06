@@ -4,7 +4,7 @@ import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageM
 import { MAX_COLL_RATIO } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
 import React from 'react'
 
-export type SliderAdjustMultiplyParams = (ManageMultiplyVaultState) & {
+export type SliderAdjustMultiplyParams = ManageMultiplyVaultState & {
   collapsed?: boolean
   disabled?: boolean
 }

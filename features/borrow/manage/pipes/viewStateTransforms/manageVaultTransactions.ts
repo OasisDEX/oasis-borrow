@@ -2,7 +2,10 @@ import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import {
+  ManageMultiplyVaultChange,
+  ManageMultiplyVaultState,
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { TxError } from 'helpers/types'

@@ -193,9 +193,7 @@ export function AccountContextProvider({ children }: WithChildren) {
         bigNumberTostring,
       )
       const vaults$ = memoize(
-        curry(createVaults$)(onEveryBlock$, vault$, chainContext$, [
-          standardCdps$,
-        ]),
+        curry(createVaults$)(onEveryBlock$, vault$, chainContext$, [standardCdps$]),
       )
       const hasActiveDsProxyAavePosition$ = hasActiveAavePositionOnDsProxy$(
         connectedContext$,
