@@ -4,16 +4,10 @@ import {
   AaveManageHeader,
   AaveMultiplyManageComponent,
   AaveOpenHeader,
-  AavePositionHeaderNoDetails,
   adjustRiskView,
   DebtInput,
-  headerWithDetails,
-  ManageSectionComponent,
-  SimulateSectionComponent,
-  ViewPositionSectionComponent,
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
-import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
 import { allActionsAvailableBorrow } from 'features/aave/strategies/all-actions-available-borrow'
 import { allActionsAvailableInMultiply } from 'features/aave/strategies/all-actions-available-in-multiply'
 import {
@@ -24,7 +18,6 @@ import {
 } from 'features/aave/strategies/common'
 import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
-import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
@@ -265,24 +258,24 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
       urlSlug: `${config.collateral.toLowerCase()}${config.debt.toLowerCase()}`,
       proxyType: ProxyType.DpmProxy,
       viewComponents: {
-        headerOpen: headerWithDetails(adjustRiskSliders.wstethEth.riskRatios.minimum),
-        headerManage: AavePositionHeaderNoDetails,
-        headerView: AavePositionHeaderNoDetails,
-        simulateSection: SimulateSectionComponent,
-        vaultDetailsManage: ManageSectionComponent,
-        vaultDetailsView: ViewPositionSectionComponent,
-        secondaryInput: adjustRiskView(adjustRiskSliders.wstethEth),
-        adjustRiskInput: adjustRiskView(adjustRiskSliders.wstethEth),
-        positionInfo: AaveEarnFaqV3,
-        sidebarTitle: 'open-earn.aave.vault-form.title',
-        sidebarButton: 'open-earn.aave.vault-form.open-btn',
+        headerOpen: AaveOpenHeader,
+        headerManage: AaveManageHeader,
+        headerView: AaveManageHeader,
+        simulateSection: AaveMultiplyManageComponent,
+        vaultDetailsManage: AaveMultiplyManageComponent,
+        vaultDetailsView: AaveMultiplyManageComponent,
+        secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+        adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+        positionInfo: AaveMultiplyFaq,
+        sidebarTitle: 'open-multiply.sidebar.title',
+        sidebarButton: 'open-multiply.sidebar.open-btn',
       },
       tokens: {
         collateral: config.collateral,
         debt: config.debt,
         deposit: config.collateral,
       },
-      riskRatios: adjustRiskSliders.wstethEth.riskRatios,
+      riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
       type: ProductType.Earn,
       protocol: LendingProtocol.SparkV3,
       availableActions: () => {

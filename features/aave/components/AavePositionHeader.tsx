@@ -65,12 +65,16 @@ function AavePositionHeader({
   minimumRiskRatio: IRiskRatio
 }) {
   const { t } = useTranslation()
+  const isSparkProtocol = strategy.protocol === LendingProtocol.SparkV3
 
-  const minYields = useAaveEarnYields(minimumRiskRatio, strategy.protocol, strategy.network, [
-    '7Days',
-  ])
+  const minYields = useAaveEarnYields(
+    !isSparkProtocol ? minimumRiskRatio : undefined,
+    strategy.protocol,
+    strategy.network,
+    ['7Days'],
+  )
   const maxYields = useAaveEarnYields(
-    maxRisk || minimumRiskRatio,
+    !isSparkProtocol ? maxRisk || minimumRiskRatio : undefined,
     strategy.protocol,
     strategy.network,
     ['7Days', '7DaysOffset', '90Days', '90DaysOffset'],
@@ -102,7 +106,7 @@ function AavePositionHeader({
       }),
     })
   }
-  if (maxYields?.annualisedYield90days) {
+  if (maxYields && maxYields?.annualisedYield90days) {
     const yield90DaysDiff = maxYields.annualisedYield90daysOffset!.minus(
       maxYields.annualisedYield90days,
     )
