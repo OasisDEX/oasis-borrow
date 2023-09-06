@@ -7,7 +7,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AaveContext } from './aave-context'
 import { setupAaveV2Context } from './setup-aave-v2-context'
 import { setupAaveV3Context } from './setup-aave-v3-context'
-import { setupSparkV3Context } from './setup-spark-v3-context'
 
 type AaveContexts = Partial<
   Record<NetworkNames, Partial<Record<AaveLendingProtocol | SparkLendingProtocol, AaveContext>>>

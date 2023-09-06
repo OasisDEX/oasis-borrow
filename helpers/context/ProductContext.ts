@@ -655,11 +655,6 @@ export function setupProductContext(
       (wallet) => wallet,
     )
 
-  const optimismDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
-    curry(getUserDpmProxies$)(of({ chainId: NetworkIds.OPTIMISMMAINNET })),
-    (walletAddress) => walletAddress,
-  )
-
   const aaveOptimismPositions$: (walletAddress: string) => Observable<AaveLikePosition[]> = memoize(
     curry(createAaveV3DpmPosition$)(
       context$,
@@ -674,7 +669,7 @@ export function setupProductContext(
     (wallet) => wallet,
   )
 
-  const aaveArbitrumPositions$: (walletAddress: string) => Observable<AavePosition[]> = memoize(
+  const aaveArbitrumPositions$: (walletAddress: string) => Observable<AaveLikePosition[]> = memoize(
     curry(createAaveV3DpmPosition$)(
       context$,
       arbitrumDpmProxies$,

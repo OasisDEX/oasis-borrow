@@ -9,10 +9,10 @@ export const AAVE_V3_POOL_GENESIS_GOERLI = 4365693
 const { arbitrum } = ADDRESSES
 
 export const tokensArbitrum = {
+  ETH: contractDesc(erc20, arbitrum.common.WETH),
   CBETH: contractDesc(erc20, arbitrum.common.CBETH),
   CRVV1ETHSTETH: contractDesc(guniToken, arbitrum.common.CRVV1ETHSTETH),
   DAI: contractDesc(erc20, arbitrum.common.DAI),
-  ETH: contractDesc(erc20, arbitrum.common.WETH),
   FRAX: contractDesc(erc20, arbitrum.common.FRAX),
   GHO: contractDesc(erc20, arbitrum.common.GHO),
   GUNIV3DAIUSDC1: contractDesc(guniToken, arbitrum.common.GUNIV3DAIUSDC1),
@@ -22,6 +22,7 @@ export const tokensArbitrum = {
   MKR: contractDesc(erc20, arbitrum.maker.common.McdGov),
   RETH: contractDesc(erc20, arbitrum.common.RETH),
   RENBTC: contractDesc(erc20, arbitrum.common.RENBTC),
+  RETH: contractDesc(erc20, arbitrum.common.RETH),
   SDAI: contractDesc(erc20, arbitrum.common.SDAI),
   STETH: contractDesc(erc20, arbitrum.common.STETH),
   TBTC: contractDesc(erc20, arbitrum.common.TBTC),
@@ -33,6 +34,4 @@ export const tokensArbitrum = {
   WSTETH: contractDesc(erc20, arbitrum.common.WSTETH),
   YIELDBTC: contractDesc(erc20, arbitrum.common.YIELDBTC),
   YIELDETH: contractDesc(erc20, arbitrum.common.YIELDETH),
-  ETH: contractDesc(erc20, arbitrum.common.ETH),
-  RETH: contractDesc(erc20, arbitrum.common.RETH),
 } as Record<string, ContractDesc>
