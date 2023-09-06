@@ -97,7 +97,7 @@ export function setupSparkV3Context(
     (positionId) => JSON.stringify(positionId),
   )
 
-  const protocolData = protocols[LendingProtocol.AaveV3][networkId]
+  const protocolData = protocols[LendingProtocol.SparkV3][networkId]
 
   const {
     aaveLikeUserAccountData$,
