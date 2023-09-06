@@ -1,4 +1,4 @@
-import { Network } from '@oasisdex/dma-library'
+import { IPosition, Network, Tokens } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { NetworkIds } from 'blockchain/networks'
 import { getOneInchCall } from 'helpers/swap'
@@ -36,3 +36,18 @@ export function swapCall(
     : 'v4.0'
   return getOneInchCall(swapAddress, network, oneInchVersion)
 }
+
+export const getCurrentPositionLibCallData = (currentPosition: IPosition) => [
+  {
+    symbol:
+      currentPosition.collateral.symbol === 'ETH'
+        ? 'WETH'
+        : (currentPosition.collateral.symbol as Tokens),
+    precision: currentPosition.collateral.precision,
+  },
+  {
+    symbol:
+      currentPosition.debt.symbol === 'ETH' ? 'WETH' : (currentPosition.debt.symbol as Tokens),
+    precision: currentPosition.debt.precision,
+  },
+]

@@ -1,6 +1,10 @@
-import { IMultiplyStrategy, strategies, Tokens } from '@oasisdex/dma-library'
+import { IMultiplyStrategy, strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
-import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
+import {
+  getCurrentPositionLibCallData,
+  networkIdToLibraryNetwork,
+  swapCall,
+} from 'actions/aave-like/helpers'
 import { AdjustAaveParameters } from 'actions/aave-like/types'
 import { getRpcProvider } from 'blockchain/networks'
 import { ProxyType } from 'features/aave/types'
@@ -13,22 +17,14 @@ export async function getAdjustPositionParameters({
   riskRatio,
   currentPosition,
   proxyType,
-  positionType,
+  positionType: _positionType,
   protocol,
   networkId,
 }: AdjustAaveParameters): Promise<IMultiplyStrategy> {
   try {
     const provider = getRpcProvider(networkId)
 
-    const collateralToken = {
-      symbol: currentPosition.collateral.symbol as Tokens,
-      precision: currentPosition.collateral.precision,
-    }
-
-    const debtToken = {
-      symbol: currentPosition.debt.symbol as Tokens,
-      precision: currentPosition.debt.precision,
-    }
+    const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
 
     const aaveLikeAjdustStrategyType = {
       [LendingProtocol.AaveV2]: strategies.aave.multiply.v2,
@@ -53,7 +49,8 @@ export async function getAdjustPositionParameters({
       user: userAddress,
       isDPMProxy: proxyType === ProxyType.DpmProxy,
       network: networkIdToLibraryNetwork(networkId),
-      positionType,
+      positionType: 'Multiply', // this needs to be multiply even if we use this for adjusting borrow
+      // from the lib perspective borrow and multiply are the same
     }
 
     switch (protocol) {
