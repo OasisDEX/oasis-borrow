@@ -25,7 +25,6 @@ import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
 import { TxHelpers } from 'helpers/context/types'
 import { productToVaultType } from 'helpers/productToVaultType'
-import { LendingProtocol } from 'lendingProtocols'
 import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of, throwError } from 'rxjs'
@@ -228,7 +227,7 @@ export function getManageAaveV3PositionStateMachineServices(
             token,
             updatedVaultType,
             chainId,
-            LendingProtocol.AaveV3,
+            context.strategyConfig.protocol,
           )
         }),
         map(() => ({ type: 'SWITCH_SUCCESS', productType: updatedVaultType })),
