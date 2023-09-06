@@ -41,9 +41,9 @@ export const useAsyncEffect = (
           // Component was unmounted before the mount callback returned, cancel it
           void unmountCallback()
         }
-      } catch (error) {
+      } catch (innerError) {
         if (!isMounted.current) return
-        setError(error)
+        setError(innerError)
         setIsLoading(false)
       }
     })()
@@ -56,9 +56,9 @@ export const useAsyncEffect = (
             if (!isMounted.current) return
             setResult(undefined)
           })
-          .catch((error: unknown) => {
+          .catch((innerError: unknown) => {
             if (!isMounted.current) return
-            setError(error)
+            setError(innerError)
           })
       }
     }

@@ -19,7 +19,6 @@ export async function getCloseAaveParameters({
   shouldCloseToCollateral,
   protocol,
   networkId,
-  positionType,
 }: CloseAaveParameters): Promise<IMultiplyStrategy> {
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
 
@@ -47,7 +46,7 @@ export async function getCloseAaveParameters({
     isDPMProxy: proxyType === ProxyType.DpmProxy,
     network: networkIdToLibraryNetwork(networkId),
     positionType: 'Multiply', // this needs to be multiply even if we use this for closing borrow
-    // from the lib perspective borrow and multiply are the same
+    // from the lib perspective close is a multiply based operation
   }
 
   switch (protocol) {
