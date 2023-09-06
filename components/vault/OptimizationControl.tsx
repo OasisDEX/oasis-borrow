@@ -1,6 +1,8 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAutomationContext, useMainContext } from 'components/context'
 import { AppLink } from 'components/Links'
+import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
 import {
   AUTO_BUY_FORM_CHANGE,
   AutoBSFormChange,
@@ -23,10 +25,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Container } from 'theme-ui'
-
-import { DefaultVaultLayout } from './DefaultVaultLayout'
 
 interface ZeroDebtOptimizationBannerProps {
   useTranslationKeys?: boolean

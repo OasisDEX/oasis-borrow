@@ -15,6 +15,7 @@ import {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
 } from 'handlers/product-hub/types'
+import { makerProductHubProducts } from 'handlers/product-hub/update-handlers/maker/makerProducts'
 import { one, zero } from 'helpers/zero'
 import {
   McdJug__factory,
@@ -23,8 +24,6 @@ import {
   Vat__factory,
 } from 'types/ethers-contracts'
 import Web3 from 'web3'
-
-import { makerProductHubProducts } from './makerProducts'
 
 const VatFactory = Vat__factory
 const JugFactory = McdJug__factory

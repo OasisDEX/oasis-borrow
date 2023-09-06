@@ -1,16 +1,15 @@
 import BigNumber from 'bignumber.js'
+import { CallObservable } from 'blockchain/calls/observe'
+import { vatGem, vatUrns } from 'blockchain/calls/vat'
+import { VaultResolve } from 'blockchain/calls/vaultResolver'
+import { IlkData } from 'blockchain/ilks'
+import { Context } from 'blockchain/network'
+import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
+import { buildPosition, collateralPriceAtRatio } from 'blockchain/vault.maths'
+import { Vault } from 'blockchain/vaults'
 import dayjs from 'dayjs'
 import { combineLatest, Observable, of } from 'rxjs'
 import { shareReplay, switchMap } from 'rxjs/operators'
-
-import { CallObservable } from './calls/observe'
-import { vatGem, vatUrns } from './calls/vat'
-import { VaultResolve } from './calls/vaultResolver'
-import { IlkData } from './ilks'
-import { Context } from './network'
-import { OraclePriceData, OraclePriceDataArgs } from './prices'
-import { buildPosition, collateralPriceAtRatio } from './vault.maths'
-import { Vault } from './vaults'
 
 export interface InstiVault extends Vault {
   originationFeePercent: BigNumber

@@ -6,14 +6,13 @@ import { PriceInfo } from 'features/shared/priceInfo'
 import { TxHelpers } from 'helpers/context/types'
 import { mockBalanceInfo$, MockBalanceInfoProps } from 'helpers/mocks/balanceInfo.mock'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
+import { MockExchangeQuote, mockExchangeQuote$ } from 'helpers/mocks/exchangeQuote.mock'
 import { mockIlkData$, MockIlkDataProps } from 'helpers/mocks/ilks.mock'
+import { addGasEstimationMock } from 'helpers/mocks/openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from 'helpers/mocks/priceInfo.mock'
+import { slippageLimitMock } from 'helpers/mocks/slippageLimit.mock'
 import { protoTxHelpers } from 'helpers/protoTxHelpers'
 import { Observable, of } from 'rxjs'
-
-import { MockExchangeQuote, mockExchangeQuote$ } from './exchangeQuote.mock'
-import { addGasEstimationMock } from './openVault.mock'
-import { slippageLimitMock } from './slippageLimit.mock'
 
 export interface MockOpenMultiplyVaultProps {
   _ilkData$?: Observable<IlkData>

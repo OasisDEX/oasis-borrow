@@ -1,10 +1,10 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TopBannerEvents, trackingEvents } from 'analytics/analytics'
 import { WithChildren } from 'helpers/types'
 import { useLocalStorage } from 'helpers/useLocalStorage'
-import React from 'react'
-import { Box } from 'theme-ui'
 import { rollDownTopBannerAnimation } from 'theme/animations'
+import { Box } from 'theme-ui'
 
 export const TopBanner = ({ name, children }: { name: string } & WithChildren) => {
   const [topBannerClosed, setTopBannerClosed] = useLocalStorage(`TopBanner_${name}_closed`, false)

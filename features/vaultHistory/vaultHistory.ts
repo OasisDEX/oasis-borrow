@@ -7,19 +7,18 @@ import { Vault } from 'blockchain/vaults'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import {
+  AutomationEvent,
+  ReturnedAutomationEvent,
+  ReturnedEvent,
+  VaultEvent,
+} from 'features/vaultHistory/vaultHistoryEvents'
 import { gql, GraphQLClient } from 'graphql-request'
 import { flatten, memoize } from 'lodash'
 import pickBy from 'lodash/pickBy'
 import { equals } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
-
-import {
-  AutomationEvent,
-  ReturnedAutomationEvent,
-  ReturnedEvent,
-  VaultEvent,
-} from './vaultHistoryEvents'
 
 export function groupHistoryEventsByHash(events: VaultHistoryEvent[]) {
   return events.reduce((acc, curr) => {

@@ -3,13 +3,12 @@ import { Vault } from 'blockchain/vaults'
 import { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { LendingProtocol } from 'lendingProtocols'
 import { Observable } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
-
-import { VaultType } from './vaultType'
 
 export type WithToggle<T> = T & { toggleVaultType: () => void }
 

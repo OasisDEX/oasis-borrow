@@ -1,3 +1,4 @@
+import React from 'react'
 import { negativeToZero } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { ChangeVariantType } from 'components/DetailsSectionContentCard'
@@ -8,7 +9,6 @@ import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPool
 import { useAjnaRewards } from 'features/ajna/rewards/useAjnaRewards'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface ContentFooterItemsEarnOpenProps {
   collateralToken: string

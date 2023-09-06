@@ -1,3 +1,4 @@
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
@@ -6,7 +7,6 @@ import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { Box, Flex, Image, Text } from 'theme-ui'
 
 export interface GenericMultiselectOption {

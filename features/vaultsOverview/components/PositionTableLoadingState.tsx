@@ -1,6 +1,6 @@
+import React from 'react'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { Skeleton } from 'components/Skeleton'
-import React from 'react'
 
 export function PositionTableLoadingState() {
   return (

@@ -1,6 +1,6 @@
+import React from 'react'
 import { DetailsSection, DetailsSectionTitle } from 'components/DetailsSection'
 import { Skeleton } from 'components/Skeleton'
-import React from 'react'
 import { Flex, Grid } from 'theme-ui'
 
 function InputLoadingState() {

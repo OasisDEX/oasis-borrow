@@ -1,14 +1,13 @@
 import { Reducer } from 'react'
+import { connectedWalletStateReducer } from 'features/web3OnBoard/wallet-state/connected-wallet-state-reducer'
+import { connectingWalletStateReducer } from 'features/web3OnBoard/wallet-state/connecting-wallet-state-reducer'
+import { disconnectedWalletStateReducer } from 'features/web3OnBoard/wallet-state/disconnected-wallet-state-reducer'
+import { disconnectingWalletStateReducer } from 'features/web3OnBoard/wallet-state/disconnecting-wallet-state-reducer'
+import { settingChainWalletStateReducer } from 'features/web3OnBoard/wallet-state/setting-chain-wallet-state-reducer'
+import { unsupportedNetworkWalletStateReducer } from 'features/web3OnBoard/wallet-state/unsupported-network-wallet-state-reducer'
+import { WalletManagementState, WalletManagementStateStatus } from 'features/web3OnBoard/wallet-state/wallet-management-state'
+import { WalletStateEvent } from 'features/web3OnBoard/wallet-state/wallet-state-event'
 import { match } from 'ts-pattern'
-
-import { connectedWalletStateReducer } from './connected-wallet-state-reducer'
-import { connectingWalletStateReducer } from './connecting-wallet-state-reducer'
-import { disconnectedWalletStateReducer } from './disconnected-wallet-state-reducer'
-import { disconnectingWalletStateReducer } from './disconnecting-wallet-state-reducer'
-import { settingChainWalletStateReducer } from './setting-chain-wallet-state-reducer'
-import { unsupportedNetworkWalletStateReducer } from './unsupported-network-wallet-state-reducer'
-import { WalletManagementState, WalletManagementStateStatus } from './wallet-management-state'
-import { WalletStateEvent } from './wallet-state-event'
 
 export const walletStateReducer: Reducer<WalletManagementState, WalletStateEvent> = (
   state: WalletManagementState,

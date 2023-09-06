@@ -1,3 +1,4 @@
+import React, { FC } from 'react'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { AjnaIsCachedPosition } from 'features/ajna/common/types'
@@ -6,7 +7,6 @@ import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/A
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { FC } from 'react'
 
 export const AjnaClaimCollateralFormOrderInformation: FC<AjnaIsCachedPosition> = ({
   cached = false,

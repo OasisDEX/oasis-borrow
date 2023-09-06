@@ -1,3 +1,5 @@
+import React, { useState } from 'react'
+import ReactDOM from 'react-dom'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
 import BigNumber from 'bignumber.js'
@@ -21,10 +23,8 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
-import { Box, Card, Flex, Grid, Heading, Image, Link, SxStyleProp, Text } from 'theme-ui'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
+import { Box, Card, Flex, Grid, Heading, Image, Link, SxStyleProp, Text } from 'theme-ui'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'

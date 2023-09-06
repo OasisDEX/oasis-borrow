@@ -1,3 +1,4 @@
+import { ReactElement, useEffect, useMemo } from 'react'
 import {
   AutomationBotRemoveTriggersData,
   removeAutomationBotAggregatorTriggers,
@@ -21,7 +22,6 @@ import { StopLossResetData } from 'features/automation/protection/stopLoss/state
 import { TxHelpers } from 'helpers/context/types'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { uiChanges } from 'helpers/uiChanges'
-import { ReactElement, useEffect, useMemo } from 'react'
 
 export interface AddAndRemoveTxHandler {
   callOnSuccess?: () => void

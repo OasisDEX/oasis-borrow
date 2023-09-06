@@ -1,8 +1,8 @@
+import { useEffect } from 'react'
 import type { Route } from '@lifi/sdk'
 import type { RouteExecutionUpdate } from '@lifi/widget'
 import { useWidgetEvents, WidgetEvent } from '@lifi/widget'
 import { SwapWidgetEvents, trackingEvents } from 'analytics/analytics'
-import { useEffect } from 'react'
 
 export const useTrackSwapWidgetEvents = () => {
   const widgetEvents = useWidgetEvents()

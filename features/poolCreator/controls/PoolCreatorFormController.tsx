@@ -1,3 +1,4 @@
+import React, { FC } from 'react'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
@@ -12,7 +13,6 @@ import { formatAddress } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TextInput } from 'helpers/TextInput'
 import { useTranslation } from 'next-i18next'
-import React, { FC } from 'react'
 import { Flex, Grid, Image } from 'theme-ui'
 
 interface PoolCreatorFormControllerProps {

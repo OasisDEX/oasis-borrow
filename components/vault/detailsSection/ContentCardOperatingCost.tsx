@@ -1,8 +1,8 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 function ContentCardOperatingCostModal() {

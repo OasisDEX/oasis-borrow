@@ -1,5 +1,7 @@
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { NotificationsEventAdditionalParams } from 'analytics/analytics'
 import { NetworkIds } from 'blockchain/networks'
+import { isMainContextAvailable, useMainContext } from 'components/context/MainContextProvider'
 import {
   firstNotificationsRelevantDate,
   maxNumberOfNotifications,
@@ -15,10 +17,7 @@ import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { uiChanges } from 'helpers/uiChanges'
 import getConfig from 'next/config'
-import React, { createContext, useContext, useEffect, useState } from 'react'
 import io, { Socket } from 'socket.io-client'
-
-import { isMainContextAvailable, useMainContext } from './MainContextProvider'
 
 interface WebSocket {
   socket?: Socket

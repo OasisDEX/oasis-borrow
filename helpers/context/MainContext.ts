@@ -12,11 +12,10 @@ import {
 import { NetworkIds } from 'blockchain/networks'
 import { createGasPrice$ } from 'blockchain/prices'
 import { createWeb3Context$ } from 'features/web3Context'
+import { DepreciatedServices, TxData, TxHelpers$ } from 'helpers/context/types'
 import { createTxHelpers$ } from 'helpers/createTxHelpers'
 import { Observable, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
-
-import { DepreciatedServices, TxData, TxHelpers$ } from './types'
 
 export function setupMainContext() {
   console.log('Main context setup')

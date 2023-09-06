@@ -1,3 +1,4 @@
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AssetsTableBanner } from 'components/assetsTable/AssetsTableBanner'
 import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
@@ -14,7 +15,6 @@ import { StatefulTooltip } from 'components/Tooltip'
 import { getRandomString } from 'helpers/getRandomString'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 interface AssetsTableHeaderCellProps {

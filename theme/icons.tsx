@@ -1,8 +1,7 @@
+import React from 'react'
 import { icons as daiUiIcons } from '@makerdao/dai-ui-icons'
 import { icons as brandingIcons } from '@makerdao/dai-ui-icons-branding'
-import React from 'react'
-
-import { tokenIcons } from './tokenIcons'
+import { tokenIcons } from 'theme/tokenIcons'
 
 const customIcons = {
   clock: {

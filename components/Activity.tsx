@@ -1,6 +1,6 @@
+import React, { ReactNode } from 'react'
 import dayjs from 'dayjs'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
 
 interface ActivityItemProps {

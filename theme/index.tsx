@@ -1,7 +1,6 @@
 import { FTPolar } from 'helpers/fonts'
-
-import { fadeInAnimation } from './animations'
-import { icons } from './icons'
+import { fadeInAnimation } from 'theme/animations'
+import { icons } from 'theme/icons'
 
 // Duplication from theme as exporting const from package library is breaking dai-ui website and theme-ui doesn't support yet transitions tokens :(
 // To refactor if they will include this support

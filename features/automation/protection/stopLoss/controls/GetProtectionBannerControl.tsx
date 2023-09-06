@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -11,7 +12,6 @@ import { useAutomationContext } from 'components/context'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface GetProtectionBannerProps {
   ilk: string

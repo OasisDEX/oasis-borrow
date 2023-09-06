@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { ensNameToAddressMainnet } from 'blockchain/ens'
 import { useAccountContext, useMainContext } from 'components/context'
 import { isAddress } from 'ethers/lib/utils'
@@ -7,7 +8,6 @@ import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
 
 export function ReferralHandler() {
   const { query, isReady } = useRouter()

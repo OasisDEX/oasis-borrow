@@ -1,6 +1,6 @@
+import React, { ReactNode } from 'react'
 import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
-import React, { ReactNode } from 'react'
 import { SxStyleProp, Text } from 'theme-ui'
 
 interface EstimationOnCloseProps {

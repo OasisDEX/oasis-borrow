@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
@@ -9,7 +10,6 @@ import { formatAmount } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
 interface CollateralLockedProps {

@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import {
   enableNetworksSet,
   filterNetworksAccordingToSavedNetwork,
@@ -9,18 +10,16 @@ import {
   NetworkNames,
   networkSetByHexId,
 } from 'blockchain/networks'
+import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
+import { NetworkButton } from 'components/navigation/NavigationNetworkSwitcherButton'
+import { NavigationNetworkSwitcherIcon } from 'components/navigation/NavigationNetworkSwitcherIcon'
+import { L2BeatSection } from 'components/navigation/NavigationNetworkSwitcherL2BeatButton'
+import { NavigationNetworkSwitcherModal } from 'components/navigation/NavigationNetworkSwitcherModal'
 import { useConnection, useWalletManagement } from 'features/web3OnBoard'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useModalContext } from 'helpers/modalHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React, { useState } from 'react'
 import { Box, Button } from 'theme-ui'
-
-import { NavigationOrb } from './NavigationMenuOrb'
-import { NetworkButton } from './NavigationNetworkSwitcherButton'
-import { NavigationNetworkSwitcherIcon } from './NavigationNetworkSwitcherIcon'
-import { L2BeatSection } from './NavigationNetworkSwitcherL2BeatButton'
-import { NavigationNetworkSwitcherModal } from './NavigationNetworkSwitcherModal'
 
 const renderSeparator = () => {
   return (

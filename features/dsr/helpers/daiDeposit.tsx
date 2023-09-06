@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { calculateDsrBalance } from 'features/dsr/helpers/dsrPot'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-
-import { calculateDsrBalance } from './dsrPot'
 
 export function createDaiDeposit$(
   chi$: Observable<BigNumber>,

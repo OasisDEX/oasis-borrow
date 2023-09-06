@@ -1,3 +1,4 @@
+import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
@@ -8,8 +9,6 @@ import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
-
-import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
 const PROXY_API_ENDPOINT_SWAP = `/api/exchange/v4.0/1/swap`
 

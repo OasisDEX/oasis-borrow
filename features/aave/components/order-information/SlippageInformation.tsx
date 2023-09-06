@@ -1,12 +1,11 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { SidebarSectionFooterButton } from 'components/sidebar/SidebarSectionFooterButton'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
+import { OrderInformationTooltipAction } from 'features/aave/components/order-information/OrderInformationTooltipAction'
 import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Flex, Text } from 'theme-ui'
-
-import { OrderInformationTooltipAction } from './OrderInformationTooltipAction'
 
 interface SlippageInformationProps {
   slippage: BigNumber

@@ -1,3 +1,4 @@
+import React, { Dispatch } from 'react'
 import BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -12,7 +13,6 @@ import {
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { Dispatch } from 'react'
 
 interface AjnaFormField<D> {
   dispatchAmount: Dispatch<D>

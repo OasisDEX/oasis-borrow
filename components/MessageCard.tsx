@@ -1,5 +1,5 @@
-import { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
+import { TranslateStringType } from 'helpers/translateStringType'
 import { Card, Flex, Grid, Text } from 'theme-ui'
 
 interface NoticeCardProps {

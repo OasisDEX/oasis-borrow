@@ -2,12 +2,11 @@ import { INPUT_DEBOUNCE_TIME, Pages, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { networkSetById } from 'blockchain/networks'
+import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
-
-import { ManageStandardBorrowVaultState } from './manageVault'
 
 type GenerateAmountChange = {
   kind: 'generateAmountChange'

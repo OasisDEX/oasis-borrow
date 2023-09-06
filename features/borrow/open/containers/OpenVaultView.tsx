@@ -1,6 +1,8 @@
+import React, { useEffect } from 'react'
 import { trackingEvents } from 'analytics/analytics'
 import { useAccountContext, useMainContext, useProductContext } from 'components/context'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
+import { OpenVaultDetails } from 'features/borrow/open/containers/OpenVaultDetails'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { createOpenVaultAnalytics$ } from 'features/borrow/open/pipes/openVaultAnalytics'
 import { SidebarOpenBorrowVault } from 'features/borrow/open/sidebars/SidebarOpenBorrowVault'
@@ -8,10 +10,7 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
 import { Box, Container, Grid } from 'theme-ui'
-
-import { OpenVaultDetails } from './OpenVaultDetails'
 
 function OpenVaultForm(props: OpenVaultState) {
   return (

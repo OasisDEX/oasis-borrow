@@ -1,3 +1,4 @@
+import React from 'react'
 import { AutomationEventIds, Pages } from 'analytics/analytics'
 import { useAutomationContext } from 'components/context'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
@@ -17,7 +18,6 @@ import { getConstantMultipleStatus } from 'features/automation/optimization/cons
 import { getConstantMultipleTxHandlers } from 'features/automation/optimization/constantMultiple/state/constantMultipleTxHandlers'
 import { TxHelpers } from 'helpers/context/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React from 'react'
 
 interface ConstantMultipleFormControlProps {
   isConstantMultipleActive: boolean

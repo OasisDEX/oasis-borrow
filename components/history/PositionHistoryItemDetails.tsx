@@ -1,8 +1,10 @@
+import React, { FC } from 'react'
 import { normalizeValue } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { DefinitionList } from 'components/DefinitionList'
+import { PositionHistoryRow } from 'components/history/PositionHistoryRow'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import { AaveHistoryEvent, hasTrigger } from 'features/ajna/history/types'
@@ -15,9 +17,6 @@ import {
 } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { FC } from 'react'
-
-import { PositionHistoryRow } from './PositionHistoryRow'
 
 interface PositionHistoryItemDetailsProps {
   collateralToken: string

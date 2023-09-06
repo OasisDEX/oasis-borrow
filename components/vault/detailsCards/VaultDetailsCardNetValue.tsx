@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
@@ -11,7 +12,6 @@ import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/format
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Card, Divider, Grid, Heading, Text } from 'theme-ui'
 
 interface NetValueProps {

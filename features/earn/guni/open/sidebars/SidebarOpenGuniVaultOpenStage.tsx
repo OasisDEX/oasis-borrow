@@ -1,10 +1,10 @@
+import React from 'react'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { GuniOpenMultiplyVaultChangesInformation } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultChangesInformation'
 import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
-import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { Text } from 'theme-ui'
 
 export function SidebarOpenGuniVaultOpenStage(props: OpenGuniVaultState) {
   const { t } = useTranslation()

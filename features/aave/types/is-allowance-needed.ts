@@ -1,8 +1,8 @@
-import { zero } from 'helpers/zero'
-import { BaseAaveContext } from './base-aave-context'
 import BigNumber from 'bignumber.js'
-import { ManageDebtActionsEnum } from './manage-debt-actions-enum'
-import { ManageCollateralActionsEnum } from './manage-collateral-actions-enum'
+import { BaseAaveContext } from 'features/aave/types/base-aave-context'
+import { ManageCollateralActionsEnum } from 'features/aave/types/manage-collateral-actions-enum'
+import { ManageDebtActionsEnum } from 'features/aave/types/manage-debt-actions-enum'
+import { zero } from 'helpers/zero'
 
 function allowanceForToken(
   transactionToken: string,

@@ -1,8 +1,8 @@
+import React, { FC } from 'react'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { PromoCardLoadingState } from 'components/PromoCard'
 import { Skeleton } from 'components/Skeleton'
-import React, { FC } from 'react'
 import { Box, Grid } from 'theme-ui'
 
 export const ProductHubLoadingState: FC = () => {

@@ -1,16 +1,15 @@
 import { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
-import { getStorageValue } from 'helpers/useLocalStorage'
-import { keyBy, memoize } from 'lodash'
-
-import { NetworkIds } from './network-ids'
-import { NetworkLabelType, NetworkNames } from './network-names'
-import { NetworkConfig, NetworkConfigHexId, networksByName } from './networks-config'
+import { NetworkIds } from 'blockchain/networks/network-ids'
+import { NetworkLabelType, NetworkNames } from 'blockchain/networks/network-names'
+import { NetworkConfig, NetworkConfigHexId, networksByName } from 'blockchain/networks/networks-config'
 import {
   CustomForkParameterType,
   CustomForkStorageKey,
   isValidCustomForkParameter,
-} from './use-custom-fork-parameter'
+} from 'blockchain/networks/use-custom-fork-parameter'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
+import { getStorageValue } from 'helpers/useLocalStorage'
+import { keyBy, memoize } from 'lodash'
 
 export const forkSettings = getFeatureToggle('UseNetworkSwitcherForks')
   ? getStorageValue<CustomForkParameterType>(CustomForkStorageKey, {}, isValidCustomForkParameter)

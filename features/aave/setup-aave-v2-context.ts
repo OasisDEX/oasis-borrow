@@ -2,6 +2,23 @@ import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { TokenBalances } from 'blockchain/tokens'
 import { AccountContext } from 'components/context'
 import dayjs from 'dayjs'
+import { AaveContext } from 'features/aave/aave-context'
+import { getCommonPartsFromProductContext } from 'features/aave/get-common-parts-from-app-context'
+import {
+  getManageAaveStateMachine,
+  getManageAaveV2PositionStateMachineServices,
+} from 'features/aave/manage/services'
+import { getOpenAaveStateMachine, getOpenAaveV2PositionStateMachineServices } from 'features/aave/open/services'
+import {
+  getAaveSupportedTokenBalances$,
+  getAdjustAaveParametersMachine,
+  getCloseAaveParametersMachine,
+  getDepositBorrowAaveMachine,
+  getOpenAaveParametersMachine,
+  getStrategyInfo$,
+} from 'features/aave/services'
+import { getSupportedTokens } from 'features/aave/strategies'
+import { IStrategyConfig } from 'features/aave/types'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { MainContext } from 'helpers/context/MainContext'
@@ -13,24 +30,6 @@ import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-
-import { AaveContext } from './aave-context'
-import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
-import {
-  getManageAaveStateMachine,
-  getManageAaveV2PositionStateMachineServices,
-} from './manage/services'
-import { getOpenAaveStateMachine, getOpenAaveV2PositionStateMachineServices } from './open/services'
-import {
-  getAaveSupportedTokenBalances$,
-  getAdjustAaveParametersMachine,
-  getCloseAaveParametersMachine,
-  getDepositBorrowAaveMachine,
-  getOpenAaveParametersMachine,
-  getStrategyInfo$,
-} from './services'
-import { getSupportedTokens } from './strategies'
-import { IStrategyConfig } from './types'
 
 export function setupAaveV2Context(
   mainContext: MainContext,

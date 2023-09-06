@@ -1,21 +1,21 @@
+import { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { IRiskRatio } from '@oasisdex/dma-library'
-import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
-import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
-import { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
-import { AllowanceStateMachineResponseEvent } from 'features/stateMachines/allowance'
 import {
   IStrategyInfo, ManageTokenInput,
   RefTransactionMachine,
   StrategyTokenAllowance,
   StrategyTokenBalance,
-} from './base-aave-context'
+} from 'features/aave/types/base-aave-context'
+import { ManageCollateralActionsEnum } from 'features/aave/types/manage-collateral-actions-enum'
+import { ManageDebtActionsEnum } from 'features/aave/types/manage-debt-actions-enum'
 import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
+import { AllowanceStateMachineResponseEvent } from 'features/stateMachines/allowance'
+import { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
+import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
 import { UserSettingsState } from 'features/userSettings/userSettings'
-import { ManageDebtActionsEnum } from './manage-debt-actions-enum'
-import { ManageCollateralActionsEnum } from './manage-collateral-actions-enum'
+import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 
 type AaveOpenPositionWithStopLossEvents =
   | { type: 'SET_STOP_LOSS_LEVEL'; stopLossLevel: BigNumber }

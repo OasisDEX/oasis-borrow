@@ -1,6 +1,6 @@
-import { ListWithIcon } from 'components/ListWithIcon'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { ListWithIcon } from 'components/ListWithIcon'
 import { Text } from 'theme-ui'
 
 export function AjnaMultiplyFormContentSwitch() {

@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-
-import { roundToThousand } from './roundToThousand'
+import { roundToThousand } from 'helpers/roundToThousand'
 
 const notRoundedValue = new BigNumber(12345)
 

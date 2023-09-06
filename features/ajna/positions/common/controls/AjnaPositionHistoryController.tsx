@@ -1,10 +1,10 @@
+import React from 'react'
 import { PositionHistory } from 'components/history/PositionHistory'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
 export function AjnaPositionViewInfoPlaceholder() {

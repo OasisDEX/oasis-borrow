@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { useAutomationContext, useGasEstimationContext } from 'components/context'
@@ -34,7 +35,6 @@ import {
 } from 'helpers/messageMappers'
 import { uiChanges } from 'helpers/uiChanges'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
 interface SidebarSetupAutoTakeProfitProps {

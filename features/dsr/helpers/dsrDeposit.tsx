@@ -11,6 +11,7 @@ import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/Manag
 import { setDsrAllowance } from 'features/allowance/setAllowance'
 import { createProxy } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
 import { convertDsr, depositDsr, withdrawDsr } from 'features/dsr/helpers/actions'
+import { exit, join, savingsDaiConvert, savingsDaiDeposit } from 'features/dsr/helpers/potCalls'
 import { DaiDepositChange } from 'features/dsr/pipes/dsrWithdraw'
 import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { applyDsrAllowanceChanges } from 'features/dsr/utils/applyDsrAllowance'
@@ -23,8 +24,6 @@ import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
-
-import { exit, join, savingsDaiConvert, savingsDaiDeposit } from './potCalls'
 
 export type DsrDepositStage =
   | 'editing'

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { compareBigNumber } from 'helpers/compareBigNumber'
 import { EMPTY, Observable } from 'rxjs'
 import {
@@ -13,8 +14,6 @@ import {
   take,
   withLatestFrom,
 } from 'rxjs/operators'
-
-import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 type ExchangeQuoteSuccessChange = {
   kind: 'quote'

@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
+import { getTotalValueLocked$ } from 'blockchain/collateral'
+import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of, throwError } from 'rxjs'
-
-import { getTotalValueLocked$ } from './collateral'
-import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 describe('getTotalValueLocked$', () => {
   it('should return collateral times current price from oracle', () => {

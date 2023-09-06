@@ -1,6 +1,5 @@
+import { BatchManager, Request } from 'helpers/api/BatchManager'
 import NodeCache from 'node-cache'
-
-import { BatchManager, Request } from './BatchManager'
 
 const mockConnection = 'https://www.goingnowhere.com'
 

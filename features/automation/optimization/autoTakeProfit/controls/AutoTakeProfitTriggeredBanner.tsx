@@ -1,7 +1,7 @@
+import React from 'react'
 import { bannerGradientPresets } from 'components/Banner'
 import { AutomationTriggeredBannerControl } from 'features/automation/common/controls/AutomationTriggeredBannerControl'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function AutoTakeProfitTriggeredBanner() {
   const { t } = useTranslation()

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
 import {
@@ -7,7 +8,11 @@ import {
   useMainContext,
 } from 'components/context'
 import { AppLink } from 'components/Links'
+import { UpsertUser } from 'features/referralOverview/FeesView'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
+import { ReferralLayout } from 'features/referralOverview/ReferralLayout'
+import { UserReferralState } from 'features/referralOverview/user'
+import { createUserUsingApi$ } from 'features/referralOverview/userApi'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { useConnection } from 'features/web3OnBoard'
@@ -18,13 +23,7 @@ import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useRedirect } from 'helpers/useRedirect'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Button, Flex, Image, Text } from 'theme-ui'
-
-import { UpsertUser } from './FeesView'
-import { ReferralLayout } from './ReferralLayout'
-import { UserReferralState } from './user'
-import { createUserUsingApi$ } from './userApi'
 
 interface Props {
   context: Context

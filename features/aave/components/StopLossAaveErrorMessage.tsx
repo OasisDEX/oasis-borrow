@@ -1,6 +1,6 @@
+import React from 'react'
 import { MessageCard } from 'components/MessageCard'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function StopLossAaveErrorMessage() {
   const { t } = useTranslation()

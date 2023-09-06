@@ -1,5 +1,5 @@
+import { BaseAaveContext } from 'features/aave/types/base-aave-context'
 import { SLIPPAGE_DEFAULT } from 'features/userSettings/userSettings'
-import { BaseAaveContext } from './base-aave-context'
 
 export function getSlippage(
   context: Pick<BaseAaveContext, 'getSlippageFrom' | 'userSettings' | 'strategyConfig'>,

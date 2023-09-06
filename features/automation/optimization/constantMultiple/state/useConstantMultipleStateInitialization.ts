@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import BigNumber from 'bignumber.js'
 import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
@@ -16,7 +17,6 @@ import {
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { uiChanges } from 'helpers/uiChanges'
-import { useEffect } from 'react'
 
 export const CONSTANT_MULTIPLE_GROUP_TYPE = 1
 

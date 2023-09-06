@@ -1,3 +1,4 @@
+import React, { useCallback } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { NetworkConfig, NetworkConfigHexId, NetworkNames } from 'blockchain/networks'
 import {
@@ -7,7 +8,6 @@ import {
 } from 'features/swapWidget/SwapWidgetChange'
 import { useObservable } from 'helpers/observableHook'
 import { uiChanges } from 'helpers/uiChanges'
-import React, { useCallback } from 'react'
 import { Box, Button, Image, Link } from 'theme-ui'
 
 export const NetworkButton = ({

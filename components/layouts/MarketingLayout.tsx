@@ -1,10 +1,9 @@
+import React from 'react'
 import { Footer } from 'components/Footer'
+import { marketingBackgrounds } from 'components/layouts/backgrounds'
+import { BasicLayout } from 'components/layouts/BasicLayout'
 import { NavigationController } from 'features/navigation/controls/NavigationController'
 import { WithChildren } from 'helpers/types'
-import React from 'react'
-
-import { marketingBackgrounds } from './backgrounds'
-import { BasicLayout } from './BasicLayout'
 
 export interface MarketingLayoutProps extends WithChildren {
   variant?: string

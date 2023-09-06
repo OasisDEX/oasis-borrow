@@ -1,11 +1,11 @@
+import React from 'react'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { StopLossTwoTxRequirement } from 'features/aave/components'
 import { OpenMultiplyVaultChangesInformation } from 'features/multiply/open/containers/OpenMultiplyVaultChangesInformation'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
-import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { Text } from 'theme-ui'
 
 export function SidebarOpenMultiplyVaultOpenStage(props: OpenMultiplyVaultState) {
   const { t } = useTranslation()

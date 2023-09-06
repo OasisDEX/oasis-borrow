@@ -1,9 +1,9 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface ContentFooterItemsMultiplyProps {
   token: string

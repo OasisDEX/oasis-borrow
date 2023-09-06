@@ -1,9 +1,8 @@
+import React from 'react'
+import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
 import { AjnaAdjustSlider } from 'features/ajna/positions/common/components/AjnaAdjustSlider'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
-import React from 'react'
-
-import { AjnaBorrowFormOrder } from './AjnaBorrowFormOrder'
 
 export function AjnaBorrowFormContentAdjust() {
   const {

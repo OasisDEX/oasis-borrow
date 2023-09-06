@@ -1,3 +1,4 @@
+import React from 'react'
 import { AutomationEventIds, Pages } from 'analytics/analytics'
 import { useAutomationContext } from 'components/context'
 import { CloseVaultToEnum, MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/common/consts'
@@ -16,7 +17,6 @@ import {
 import { getStopLossTxHandlers } from 'features/automation/protection/stopLoss/state/stopLossTxHandlers'
 import { TxHelpers } from 'helpers/context/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React from 'react'
 
 interface StopLossFormControlProps {
   isStopLossActive: boolean

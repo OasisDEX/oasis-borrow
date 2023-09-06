@@ -1,8 +1,8 @@
+import React, { FC } from 'react'
 import { MessageCard } from 'components/MessageCard'
 import { AjnaValidationItem } from 'features/ajna/common/types'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useTranslation } from 'next-i18next'
-import React, { FC } from 'react'
 
 interface AjnaValidationMessagesProps {
   validations: AjnaValidationItem[]

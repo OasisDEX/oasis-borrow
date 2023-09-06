@@ -14,11 +14,10 @@ import { productHubSparkRewardsTooltip } from 'features/productHub/content'
 import { ProductHubProductType } from 'features/productHub/types'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
+import { sparkV3ProductHubProducts } from 'handlers/product-hub/update-handlers/sparkV3/sparkV3Products'
 import { ensureFind } from 'helpers/ensure-find'
 import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { memoize } from 'lodash'
-
-import { sparkV3ProductHubProducts } from './sparkV3Products'
 
 type SparkV3Networks = NetworkNames.ethereumMainnet
 

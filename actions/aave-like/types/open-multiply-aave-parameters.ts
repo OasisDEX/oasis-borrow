@@ -1,8 +1,8 @@
-import { Tokens, IRiskRatio } from '@oasisdex/dma-library'
+import { IRiskRatio,Tokens } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { ProxyType } from 'features/aave/types'
 import { AaveLendingProtocol } from 'lendingProtocols'
-import { NetworkIds } from 'blockchain/networks'
 
 export interface OpenMultiplyAaveParameters {
   amount: BigNumber

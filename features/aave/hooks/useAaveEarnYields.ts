@@ -1,9 +1,9 @@
+import { useEffect, useState } from 'react'
 import { IRiskRatio } from '@oasisdex/dma-library'
 import { NetworkNames } from 'blockchain/networks'
 import { useAaveContext } from 'features/aave'
 import { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
-import { useEffect, useState } from 'react'
 
 export function useAaveEarnYields(
   riskRatio: IRiskRatio | undefined,

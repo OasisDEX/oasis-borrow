@@ -1,3 +1,4 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import {
   CustomForkParameterFieldsType,
@@ -9,7 +10,6 @@ import {
 } from 'blockchain/networks'
 import { Modal } from 'components/Modal'
 import { ModalProps } from 'helpers/modalHook'
-import React from 'react'
 import { Box, Button, Flex, IconButton, Image, Input, Text } from 'theme-ui'
 
 export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>) {

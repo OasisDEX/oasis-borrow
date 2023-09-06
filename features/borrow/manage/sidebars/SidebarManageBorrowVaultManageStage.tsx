@@ -1,10 +1,10 @@
+import React, { useEffect, useState } from 'react'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
-import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { Text } from 'theme-ui'
 
 export function SidebarManageBorrowVaultManageStage(props: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()

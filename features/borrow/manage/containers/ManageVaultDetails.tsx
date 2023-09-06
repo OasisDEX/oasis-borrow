@@ -1,3 +1,4 @@
+import React from 'react'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAutomationContext } from 'components/context'
 import { DetailsSection } from 'components/DetailsSection'
@@ -27,7 +28,6 @@ import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/man
 import { formatAmount } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
 export function ManageVaultDetailsSummary({

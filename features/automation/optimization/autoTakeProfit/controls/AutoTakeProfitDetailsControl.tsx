@@ -1,6 +1,8 @@
+import React from 'react'
 import { ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { useAutomationContext } from 'components/context'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
+import { AutoTakeProfitDetailsLayout } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitDetailsLayout'
 import { checkIfIsEditingAutoTakeProfit } from 'features/automation/optimization/autoTakeProfit/helpers'
 import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
@@ -8,9 +10,6 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React from 'react'
-
-import { AutoTakeProfitDetailsLayout } from './AutoTakeProfitDetailsLayout'
 
 export function AutoTakeProfitDetailsControl() {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)

@@ -1,11 +1,11 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
-import { Flex, Grid, Heading, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
+import { Flex, Grid, Heading, Text } from 'theme-ui'
 
 export function ReferralLayout({ children }: WithChildren) {
   const { t } = useTranslation()

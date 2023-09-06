@@ -1,5 +1,5 @@
-import { AppSpinner } from 'helpers/AppSpinner'
 import React from 'react'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { Box } from 'theme-ui'
 
 export function DiscoverPreloader({ isContentLoaded = false }: { isContentLoaded?: boolean }) {

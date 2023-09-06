@@ -1,5 +1,5 @@
-import { AppLink } from 'components/Links'
 import React, { ReactNode } from 'react'
+import { AppLink } from 'components/Links'
 import { Box, Text } from 'theme-ui'
 
 export interface NavigationMenuPanelAsset {

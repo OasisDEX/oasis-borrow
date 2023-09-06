@@ -8,13 +8,12 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { amountFromPrecision, amountFromRay, amountToRay } from 'blockchain/utils'
+import { Bonus, BonusAdapter, ClaimTxnState } from 'features/bonus/bonusPipe'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap, take } from 'rxjs/operators'
-
-import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
 
 function calculateUnclaimedBonusAmount({
   unclaimedInCurve,

@@ -1,10 +1,9 @@
 import { Reducer } from 'react'
+import { ensureCorrectState } from 'features/web3OnBoard/wallet-state/ensure-correct-state'
+import { WalletManagementState, WalletManagementStateStatus } from 'features/web3OnBoard/wallet-state/wallet-management-state'
+import { WalletStateEvent, WalletStateEventType } from 'features/web3OnBoard/wallet-state/wallet-state-event'
+import { canTransitWithNetworkHexId } from 'features/web3OnBoard/wallet-state/wallet-state-guards'
 import { match, P } from 'ts-pattern'
-
-import { ensureCorrectState } from './ensure-correct-state'
-import { WalletManagementState, WalletManagementStateStatus } from './wallet-management-state'
-import { WalletStateEvent, WalletStateEventType } from './wallet-state-event'
-import { canTransitWithNetworkHexId } from './wallet-state-guards'
 
 export const unsupportedNetworkWalletStateReducer: Reducer<
   WalletManagementState,

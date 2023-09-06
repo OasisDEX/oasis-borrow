@@ -1,3 +1,4 @@
+import React, { useEffect, useMemo, useState } from 'react'
 import { IMultiplyStrategy } from '@oasisdex/dma-library'
 import { Text } from '@theme-ui/components'
 import { swapCall } from 'actions/aave-like'
@@ -14,7 +15,6 @@ import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useMemo, useState } from 'react'
 
 interface PriceImpactProps {
   slippage: BigNumber

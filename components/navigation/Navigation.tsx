@@ -1,3 +1,4 @@
+import React, { ReactNode } from 'react'
 import { NavigationActions } from 'components/navigation/NavigationActions'
 import {
   NavigationBranding,
@@ -11,7 +12,6 @@ import { NavigationMobileMenu } from 'components/navigation/NavigationMobileMenu
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
-import React, { ReactNode } from 'react'
 import { Box, Container, ThemeProvider } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 

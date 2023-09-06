@@ -1,10 +1,10 @@
+import React, { ReactNode } from 'react'
 import { DetailsSection, DetailsSectionTitle } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { Skeleton } from 'components/Skeleton'
 import { VaultHeadline, VaultHeadlineProps } from 'components/vault/VaultHeadline'
-import React, { ReactNode } from 'react'
 import { Container, Flex, Grid } from 'theme-ui'
 
 function ContentCardLoadingState() {

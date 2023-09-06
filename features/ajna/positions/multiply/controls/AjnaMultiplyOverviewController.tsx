@@ -1,3 +1,4 @@
+import React from 'react'
 import { normalizeValue } from '@oasisdex/dma-library'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
@@ -13,7 +14,6 @@ import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPool
 import { ContentFooterItemsMultiply } from 'features/ajna/positions/multiply/components/ContentFooterItemsMultiply'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid } from 'theme-ui'
 
 export function AjnaMultiplyOverviewController() {

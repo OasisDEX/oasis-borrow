@@ -1,7 +1,6 @@
 import dynamic from 'next/dynamic'
+import { fadeIn, rollDownTopBanner, rollDownTopBannerMobile, slideIn } from 'theme/animations/keyframes'
 import { SxStyleProp } from 'theme-ui'
-
-import { fadeIn, rollDownTopBanner, rollDownTopBannerMobile, slideIn } from './keyframes'
 
 export const slideInAnimation = {
   opacity: 0,

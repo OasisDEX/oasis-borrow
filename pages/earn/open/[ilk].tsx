@@ -1,3 +1,4 @@
+import React from 'react'
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
 import { AppLayout } from 'components/layouts'
@@ -7,7 +8,6 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { supportedEarnIlks } from 'helpers/productCards'
 import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 
 export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
   const paths = supportedEarnIlks.map((ilk) => ({ params: { ilk } })) // these paths will be generated at built time

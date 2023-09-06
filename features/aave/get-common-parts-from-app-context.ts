@@ -7,6 +7,9 @@ import {
 import { getNetworkContracts } from 'blockchain/contracts'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { AccountContext } from 'components/context'
+import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers'
+import { getAvailableDPMProxy$, getOperationExecutorTransactionMachine } from 'features/aave/services'
+import { PositionId } from 'features/aave/types'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
 import { getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
 import { GraphQLClient } from 'graphql-request'
@@ -17,10 +20,6 @@ import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { distinctUntilKeyChanged, map, switchMap } from 'rxjs/operators'
-
-import { getProxiesRelatedWithPosition$ } from './helpers'
-import { getAvailableDPMProxy$, getOperationExecutorTransactionMachine } from './services'
-import { PositionId } from './types'
 
 export function getCommonPartsFromProductContext(
   { connectedContext$, context$, txHelpers$ }: MainContext,

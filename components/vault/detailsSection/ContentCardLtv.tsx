@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
@@ -8,7 +9,6 @@ import { useModal } from 'helpers/modalHook'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { theme } from 'theme'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 

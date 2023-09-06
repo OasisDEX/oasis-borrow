@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react'
+import ReactSelect from 'react-select'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ChevronUpDown } from 'components/ChevronUpDown'
@@ -8,6 +10,7 @@ import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
+import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import {
   ManageMultiplyVaultState,
   OtherAction,
@@ -23,11 +26,7 @@ import { handleNumericInput } from 'helpers/input'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
-import ReactSelect from 'react-select'
 import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
-
-import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 
 //TODO max buy token, not needed right now but may be useful in near feature according to the designs
 // function BuyTokenInput({

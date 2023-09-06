@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
 import { GasEstimation } from 'components/GasEstimation'
@@ -12,7 +13,6 @@ import { AutomationValidationMessages } from 'features/automation/common/sidebar
 import { AutomationFeatures } from 'features/automation/common/types'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Flex, Grid, Text } from 'theme-ui'
 
 interface CancelDownsideProtectionInformationProps {

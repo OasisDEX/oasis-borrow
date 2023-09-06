@@ -1,9 +1,9 @@
+import { useCallback, useEffect, useState } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { isTestnetNetworkId } from 'blockchain/networks'
 import { ProductHubData } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { ProductHubDataParams, PromoCardsCollection } from 'handlers/product-hub/types'
-import { useCallback, useEffect, useState } from 'react'
 
 export interface ProductHubDataState {
   data?: ProductHubData

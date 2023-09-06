@@ -1,15 +1,14 @@
+import React, { ChangeEvent } from 'react'
 import BigNumber from 'bignumber.js'
 import { Checkbox } from 'components/Checkbox'
 import { AppLink } from 'components/Links'
 import { VaultAction, VaultActionInput } from 'components/vault/VaultActionInput'
+import { DsrDepositInfoSection } from 'features/dsr/components/DsrDepositInfoSection'
 import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { HasGasEstimation } from 'helpers/context/types'
 import { useTranslation } from 'next-i18next'
-import React, { ChangeEvent } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
-
-import { DsrDepositInfoSection } from './DsrDepositInfoSection'
 
 interface DsrDepositDaiFormProps {
   onDepositAmountChange: (e: ChangeEvent<HTMLInputElement>) => void

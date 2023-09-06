@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS, getToken, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -6,6 +7,9 @@ import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaul
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { getAutomationThatClosedVault } from 'features/automation/common/helpers'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { SidebarManageBorrowVaultEditingStage } from 'features/borrow/manage/sidebars/SidebarManageBorrowVaultEditingStage'
+import { SidebarManageBorrowVaultManageStage } from 'features/borrow/manage/sidebars/SidebarManageBorrowVaultManageStage'
+import { SidebarManageBorrowVaultTransitionStage } from 'features/borrow/manage/sidebars/SidebarManageBorrowVaultTransitionStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -20,12 +24,7 @@ import {
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
-
-import { SidebarManageBorrowVaultEditingStage } from './SidebarManageBorrowVaultEditingStage'
-import { SidebarManageBorrowVaultManageStage } from './SidebarManageBorrowVaultManageStage'
-import { SidebarManageBorrowVaultTransitionStage } from './SidebarManageBorrowVaultTransitionStage'
 
 export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()

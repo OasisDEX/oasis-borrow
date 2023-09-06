@@ -1,8 +1,7 @@
+import { NewsletterStage } from 'features/newsletter/newsletter'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map, startWith } from 'rxjs/operators'
-
-import { NewsletterStage } from './newsletter'
 
 export type NewsletterData = {
   email: string

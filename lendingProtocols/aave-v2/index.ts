@@ -4,13 +4,12 @@ import {
   AaveLikeReserveConfigurationDataParams,
   AaveLikeServices,
 } from 'lendingProtocols/aave-like-common'
+import * as pipelines from 'lendingProtocols/aave-v2/pipelines'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { makeObservable, makeOneObservable } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
-import { Observable } from 'rxjs'
-
-import * as pipelines from './pipelines'
 import curry from 'ramda/src/curry'
+import { Observable } from 'rxjs'
 
 interface AaveV2ServicesDependencies {
   refresh$: Observable<unknown>

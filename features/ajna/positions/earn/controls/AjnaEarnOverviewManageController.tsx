@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   calculateAjnaMaxLiquidityWithdraw,
   getPoolLiquidity,
@@ -16,7 +17,6 @@ import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/compo
 import { getLendingPriceColor } from 'features/ajna/positions/earn/helpers/getLendingPriceColor'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function AjnaEarnOverviewManageController() {
   const { t } = useTranslation()

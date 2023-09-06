@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -6,18 +7,16 @@ import {
 } from 'analytics/analytics'
 import { useAutomationContext } from 'components/context'
 import { TabBar } from 'components/TabBar'
+import { HistoryControl } from 'components/vault/HistoryControl'
+import { OptimizationControl } from 'components/vault/OptimizationControl'
+import { ProtectionControl } from 'components/vault/ProtectionControl'
+import { VaultInformationControl } from 'components/vault/VaultInformationControl'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
 import { TAB_CHANGE_SUBJECT, TabChange } from 'features/generalManageVault/TabChange'
 import { uiChanges } from 'helpers/uiChanges'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
-
-import { HistoryControl } from './HistoryControl'
-import { OptimizationControl } from './OptimizationControl'
-import { ProtectionControl } from './ProtectionControl'
-import { VaultInformationControl } from './VaultInformationControl'
 
 export enum VaultViewMode {
   Overview = 'overview',

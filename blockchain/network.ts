@@ -1,5 +1,6 @@
 // tslint:disable:no-console
 import BigNumber from 'bignumber.js'
+import { getNetworkRpcEndpoint, NetworkConfig, NetworkIds, networksById } from 'blockchain/networks'
 import { ethers } from 'ethers'
 import {
   contract,
@@ -21,8 +22,6 @@ import {
   switchMap,
 } from 'rxjs/operators'
 import Web3 from 'web3'
-
-import { getNetworkRpcEndpoint, NetworkConfig, NetworkIds, networksById } from './networks'
 
 export const every1Seconds$ = interval(1000).pipe(startWith(0))
 export const every3Seconds$ = interval(3000).pipe(startWith(0))

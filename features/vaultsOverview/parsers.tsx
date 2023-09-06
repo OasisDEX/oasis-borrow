@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   AjnaEarnPosition,
   AjnaPosition,
@@ -34,7 +35,6 @@ import { calculatePNL } from 'helpers/multiply/calculations'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import React from 'react'
 import { Text } from 'theme-ui'
 
 interface PositionTableRow {

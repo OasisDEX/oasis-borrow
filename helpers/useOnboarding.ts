@@ -1,4 +1,4 @@
-import { useLocalStorage } from './useLocalStorage'
+import { useLocalStorage } from 'helpers/useLocalStorage'
 
 type Onboardable = 'SwapWidget' // add more onboardable features here...
 

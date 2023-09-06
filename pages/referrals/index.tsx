@@ -1,3 +1,4 @@
+import React from 'react'
 import { WithConnection } from 'components/connectWallet'
 import { TOSContextProvider } from 'components/context'
 import { PageSEOTags } from 'components/HeadTags'
@@ -6,7 +7,6 @@ import { ReferralLandingSummary } from 'features/referralOverview/ReferralLandin
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {

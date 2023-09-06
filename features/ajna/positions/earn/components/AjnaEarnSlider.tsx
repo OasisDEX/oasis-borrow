@@ -1,3 +1,4 @@
+import React, { FC, useEffect, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { PillAccordion } from 'components/PillAccordion'
@@ -11,7 +12,6 @@ import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/sna
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useEffect, useMemo } from 'react'
 import { Box } from 'theme-ui'
 
 interface AjnaEarnSliderProps {

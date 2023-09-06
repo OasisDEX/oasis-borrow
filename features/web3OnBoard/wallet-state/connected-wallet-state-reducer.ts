@@ -1,18 +1,17 @@
-import { getOppositeNetworkHexIdByHexId } from 'blockchain/networks'
 import { Reducer } from 'react'
-import { match, P } from 'ts-pattern'
-
-import { ensureCorrectState } from './ensure-correct-state'
+import { getOppositeNetworkHexIdByHexId } from 'blockchain/networks'
+import { ensureCorrectState } from 'features/web3OnBoard/wallet-state/ensure-correct-state'
 import {
   getDesiredNetworkHexId,
   WalletManagementState,
   WalletManagementStateStatus,
-} from './wallet-management-state'
-import { WalletStateEvent, WalletStateEventType } from './wallet-state-event'
+} from 'features/web3OnBoard/wallet-state/wallet-management-state'
+import { WalletStateEvent, WalletStateEventType } from 'features/web3OnBoard/wallet-state/wallet-state-event'
 import {
   canTransitWithNetworkHexId,
   shouldSendChangeNetworkOnConnected,
-} from './wallet-state-guards'
+} from 'features/web3OnBoard/wallet-state/wallet-state-guards'
+import { match, P } from 'ts-pattern'
 
 export const connectedWalletStateReducer: Reducer<WalletManagementState, WalletStateEvent> = (
   state: WalletManagementState,

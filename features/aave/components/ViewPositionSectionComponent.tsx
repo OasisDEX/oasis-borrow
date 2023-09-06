@@ -1,10 +1,9 @@
+import React from 'react'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
+import { PositionInfoComponent } from 'features/aave/components/PositionInfoComponent'
 import { useSimulationYields } from 'features/aave/hooks'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { AaveLikeProtocolData, AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
-import React from 'react'
-
-import { PositionInfoComponent } from './PositionInfoComponent'
 
 export type ViewPositionSectionComponentProps = {
   aaveReserveState: AaveV2ReserveConfigurationData

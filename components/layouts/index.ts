@@ -1,10 +1,10 @@
-import { AppLayout } from './AppLayout'
-import { marketingBackgrounds } from './backgrounds'
-import { BasicLayout, BasicLayoutProps } from './BasicLayout'
-import { LandingPageLayout } from './LandingPageLayout'
-import { MarketingLayout, MarketingLayoutProps } from './MarketingLayout'
-import { ProductPagesLayout } from './ProductPagesLayout'
-import { WithAnnouncementLandingLayout, WithAnnouncementLayout } from './WithAnnouncementLayout'
+import { AppLayout } from 'components/layouts/AppLayout'
+import { marketingBackgrounds } from 'components/layouts/backgrounds'
+import { BasicLayout, BasicLayoutProps } from 'components/layouts/BasicLayout'
+import { LandingPageLayout } from 'components/layouts/LandingPageLayout'
+import { MarketingLayout, MarketingLayoutProps } from 'components/layouts/MarketingLayout'
+import { ProductPagesLayout } from 'components/layouts/ProductPagesLayout'
+import { WithAnnouncementLandingLayout, WithAnnouncementLayout } from 'components/layouts/WithAnnouncementLayout'
 
 export {
   AppLayout,

@@ -1,6 +1,6 @@
-import { BigNumber } from 'bignumber.js'
 import React, { ChangeEvent, useRef } from 'react'
 import { default as MaskedInput, MaskedInputProps } from 'react-text-mask'
+import { BigNumber } from 'bignumber.js'
 import { Input } from 'theme-ui'
 
 export const BigNumberInput = ({

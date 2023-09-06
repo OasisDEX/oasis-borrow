@@ -1,3 +1,4 @@
+import React from 'react'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
 import {
@@ -11,7 +12,6 @@ import { HasGasEstimation } from 'helpers/context/types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Image, Text } from 'theme-ui'
 
 interface SidebarOpenVaultProxyStageProps {

@@ -1,10 +1,9 @@
+import { ensureContractsExist, extendContract, getNetworkContracts } from 'blockchain/contracts'
+import { Context } from 'blockchain/network'
+import { getRpcProvidersForLogs, NetworkIds } from 'blockchain/networks'
 import { Observable, of } from 'rxjs'
 import { catchError, first, shareReplay, switchMap } from 'rxjs/operators'
 import { AccountFactory__factory, AccountGuard__factory } from 'types/ethers-contracts'
-
-import { ensureContractsExist, extendContract, getNetworkContracts } from './contracts'
-import { Context } from './network'
-import { getRpcProvidersForLogs, NetworkIds } from './networks'
 
 export interface UserDpmAccount {
   proxy: string

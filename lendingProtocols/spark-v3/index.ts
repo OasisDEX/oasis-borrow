@@ -7,10 +7,6 @@ import {
 import { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { makeObservableForNetworkId } from 'lendingProtocols/pipelines'
-import { memoize } from 'lodash'
-import { curry } from 'ramda'
-import { Observable } from 'rxjs'
-
 import {
   getReserveConfigurationDataWithEMode$,
   getSparkProtocolData$,
@@ -18,7 +14,10 @@ import {
   mapSparkUserAccountData$,
   prepareSparkAvailableLiquidityInUSDC$,
   sparkV3OnChainPosition,
-} from './pipelines'
+} from 'lendingProtocols/spark-v3/pipelines'
+import { memoize } from 'lodash'
+import { curry } from 'ramda'
+import { Observable } from 'rxjs'
 
 interface SparkV3ServicesDependencies {
   refresh$: Observable<unknown>

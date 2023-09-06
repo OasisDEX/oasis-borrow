@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { DAY_BI } from 'components/constants'
 import { DetailsSection } from 'components/DetailsSection'
@@ -13,7 +14,6 @@ import { getRate } from 'features/dsr/helpers/dsrPot'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 function mapSimulation(simulation?: Simulation): string[] {
   if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]

@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
+import { createPositionsOverviewSummary$, Position, PositionView } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
-
-import { createPositionsOverviewSummary$, Position, PositionView } from './positionsOverviewSummary'
 
 describe('positionsOverviewSummary', () => {
   afterEach(() => {

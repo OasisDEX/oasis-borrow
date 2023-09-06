@@ -1,9 +1,8 @@
+import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
+import { useAccountContext } from 'components/context/AccountContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { ProductContext, setupProductContext } from 'helpers/context/ProductContext'
 import { WithChildren } from 'helpers/types'
-import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
-
-import { useAccountContext } from './AccountContextProvider'
-import { useMainContext } from './MainContextProvider'
 
 export const productContext = React.createContext<ProductContext | undefined>(undefined)
 

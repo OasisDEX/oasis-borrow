@@ -1,14 +1,13 @@
 import { BigNumber } from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networks'
+import { getToken } from 'blockchain/tokensMetadata'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { bindNodeCallback, combineLatest, forkJoin, Observable, of, timer } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { distinctUntilChanged, first, map, shareReplay, switchMap, tap } from 'rxjs/operators'
-
-import { getNetworkContracts } from './contracts'
-import { NetworkIds } from './networks'
-import { getToken } from './tokensMetadata'
 
 export interface Tickers {
   [label: string]: BigNumber

@@ -1,3 +1,4 @@
+import React from 'react'
 import { useActor } from '@xstate/react'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
@@ -8,17 +9,15 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
-import { Grid, Image, Text } from 'theme-ui'
-import { ActorRefFrom, Sender, StateFrom } from 'xstate'
-
 import {
   DPMAccountStateMachine,
   DPMAccountStateMachineEvents,
-} from './state/createDPMAccountStateMachine'
+} from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { Trans, useTranslation } from 'next-i18next'
+import { Grid, Image, Text } from 'theme-ui'
+import { ActorRefFrom, Sender, StateFrom } from 'xstate'
 
 export interface CreateDPMAccountViewProps {
   machine: ActorRefFrom<DPMAccountStateMachine>

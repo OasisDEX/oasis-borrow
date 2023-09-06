@@ -1,6 +1,6 @@
+import React from 'react'
 import { isMainContextAvailable, useMainContext } from 'components/context'
 import { WithChildren } from 'helpers/types'
-import React from 'react'
 
 function SetupWeb3ContextInternal({ children }: WithChildren) {
   const { setupWeb3Context$ } = useMainContext()

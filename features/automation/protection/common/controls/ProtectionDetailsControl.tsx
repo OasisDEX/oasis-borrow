@@ -1,3 +1,4 @@
+import React from 'react'
 import { useAutomationContext } from 'components/context'
 import { getAvailableAutomation } from 'features/automation/common/helpers'
 import {
@@ -8,7 +9,6 @@ import { AutoSellDetailsControl } from 'features/automation/protection/autoSell/
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { StopLossDetailsControl } from 'features/automation/protection/stopLoss/controls/StopLossDetailsControl'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React from 'react'
 
 export function ProtectionDetailsControl() {
   const {

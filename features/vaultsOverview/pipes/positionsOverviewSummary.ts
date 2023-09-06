@@ -1,12 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { Tickers } from 'blockchain/prices'
 import { tokenList } from 'components/swapWidget/tokenList'
+import { AssetAction } from 'features/vaultsOverview/pipes/assetActions'
 import { zero } from 'helpers/zero'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { debounceTime, distinctUntilChanged, map, shareReplay } from 'rxjs/operators'
-
-import { AssetAction } from './assetActions'
 
 export type PositionView = {
   token: string

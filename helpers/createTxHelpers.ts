@@ -7,11 +7,10 @@ import {
 } from 'blockchain/calls/callsHelpers'
 import { ContextConnected } from 'blockchain/network'
 import { GasPriceParams } from 'blockchain/prices'
+import { TxData, TxHelpers$ } from 'helpers/context/types'
 import { getGasMultiplier } from 'helpers/getGasMultiplier'
 import { Observable } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
-
-import { TxData, TxHelpers$ } from './context/types'
 
 export function createTxHelpers$(
   context$: Observable<ContextConnected>,

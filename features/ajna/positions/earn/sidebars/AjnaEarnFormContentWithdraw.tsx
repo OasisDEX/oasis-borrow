@@ -1,3 +1,4 @@
+import React from 'react'
 import { calculateAjnaMaxLiquidityWithdraw, getPoolLiquidity } from '@oasisdex/dma-library'
 import { PillAccordion } from 'components/PillAccordion'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -8,7 +9,6 @@ import { AjnaEarnSlider } from 'features/ajna/positions/earn/components/AjnaEarn
 import { getAjnaEarnWithdrawMax } from 'features/ajna/positions/earn/helpers/getAjnaEarnWithdrawMax'
 import { AjnaEarnFormOrder } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormOrder'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function AjnaEarnFormContentWithdraw() {
   const { t } = useTranslation()

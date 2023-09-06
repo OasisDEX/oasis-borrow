@@ -1,12 +1,11 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
+import { AppLink } from 'components/Links'
+import { Modal } from 'components/Modal'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
-
-import { AppLink } from './Links'
-import { Modal } from './Modal'
 
 interface ReferralModaProps {
   heading: string

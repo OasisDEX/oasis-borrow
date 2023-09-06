@@ -18,6 +18,7 @@ import {
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { ApiVault, ApiVaultsParams } from 'features/shared/vaultApi'
+import { Position } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveLikeUrlSlug, mapAaveProtocol } from 'helpers/getAaveLikeStrategyUrl'
 import { productToVaultType } from 'helpers/productToVaultType'
@@ -33,8 +34,6 @@ import { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-se
 import { memoize } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
-
-import { Position } from './positionsOverviewSummary'
 
 type CreatePositionEnvironmentPropsType = {
   tickerPrices$: (tokens: string[]) => Observable<Tickers>

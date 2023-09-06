@@ -1,7 +1,7 @@
+import React from 'react'
 import { VaultDetailsCardModal } from 'components/vault/VaultDetails'
 import { ModalProps } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 export function VaultDetailsBuyingPowerModal({ close }: ModalProps) {

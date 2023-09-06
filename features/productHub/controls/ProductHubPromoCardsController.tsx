@@ -1,6 +1,6 @@
+import React, { FC, useMemo } from 'react'
 import { PromoCard } from 'components/PromoCard'
 import { ProductHubProductType, ProductHubPromoCards } from 'features/productHub/types'
-import React, { FC, useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
 interface ProductHubPromoCardsControllerProps {

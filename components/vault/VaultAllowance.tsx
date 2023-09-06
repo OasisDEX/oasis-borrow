@@ -1,3 +1,4 @@
+import React from 'react'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
@@ -9,7 +10,6 @@ import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { CommonVaultState } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 

@@ -9,6 +9,7 @@ import {
   ajnaOpenBorrow,
   ajnaPaybackWithdrawBorrow,
 } from 'actions/ajna/borrow'
+import { ajnaAdjust, ajnaClose } from 'actions/ajna/common'
 import { ajnaClaimEarn, ajnaDepositEarn, ajnaOpenEarn, ajnaWithdrawEarn } from 'actions/ajna/earn'
 import { ajnaOpenMultiply } from 'actions/ajna/multiply'
 import BigNumber from 'bignumber.js'
@@ -20,8 +21,6 @@ import { AjnaFormState, AjnaGenericPosition } from 'features/ajna/common/types'
 import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
-
-import { ajnaAdjust, ajnaClose } from './common'
 
 interface AjnaTxHandlerInput {
   collateralAddress: string

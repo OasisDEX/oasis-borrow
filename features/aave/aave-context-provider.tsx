@@ -1,13 +1,12 @@
+import React, { useContext, useEffect, useState } from 'react'
 import { NetworkNames } from 'blockchain/networks'
 import { useAccountContext, useMainContext, useProductContext } from 'components/context'
+import { AaveContext } from 'features/aave/aave-context'
+import { setupAaveV2Context } from 'features/aave/setup-aave-v2-context'
+import { setupAaveV3Context } from 'features/aave/setup-aave-v3-context'
+import { setupSparkV3Context } from 'features/aave/setup-spark-v3-context'
 import { WithChildren } from 'helpers/types'
 import { AaveLendingProtocol, LendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
-import React, { useContext, useEffect, useState } from 'react'
-
-import { AaveContext } from './aave-context'
-import { setupAaveV2Context } from './setup-aave-v2-context'
-import { setupAaveV3Context } from './setup-aave-v3-context'
-import { setupSparkV3Context } from './setup-spark-v3-context'
 
 type AaveContexts = Partial<
   Record<NetworkNames, Partial<Record<AaveLendingProtocol | SparkLendingProtocol, AaveContext>>>

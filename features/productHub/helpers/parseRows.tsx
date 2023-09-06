@@ -1,3 +1,4 @@
+import React from 'react'
 import { NetworkIds } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
@@ -6,7 +7,6 @@ import { ProtocolLabel } from 'components/ProtocolLabel'
 import { getActionUrl, parseProduct } from 'features/productHub/helpers'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
 import { upperFirst } from 'lodash'
-import React from 'react'
 
 export function parseRows(
   rows: ProductHubItem[],

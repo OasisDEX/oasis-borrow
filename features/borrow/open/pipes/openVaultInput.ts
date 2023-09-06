@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { OpenVaultChange, OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { isNullish } from 'helpers/functions'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
-
-import { OpenVaultChange, OpenVaultState } from './openVault'
 
 interface DepositChange {
   kind: 'deposit'

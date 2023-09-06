@@ -3,6 +3,7 @@ import { createDsProxy } from 'blockchain/calls/proxy'
 import { OpenData } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { OpenVaultChange, OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
@@ -12,8 +13,6 @@ import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { iif, Observable, of } from 'rxjs'
-
-import { OpenVaultChange, OpenVaultState } from './openVault'
 
 export function applyOpenVaultTransaction(
   state: OpenVaultState,

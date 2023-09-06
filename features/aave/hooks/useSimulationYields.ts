@@ -1,11 +1,10 @@
+import { useEffect, useState } from 'react'
 import { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { useAaveEarnYields } from 'features/aave/hooks/useAaveEarnYields'
 import { calculateSimulation, CalculateSimulationResult } from 'features/aave/open/services'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
-import { useEffect, useState } from 'react'
-
-import { useAaveEarnYields } from './useAaveEarnYields'
 
 type useSimulationYieldsParams = {
   amount?: BigNumber

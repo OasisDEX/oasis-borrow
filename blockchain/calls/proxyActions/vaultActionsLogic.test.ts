@@ -1,10 +1,9 @@
 import { BigNumber } from 'bignumber.js'
+import { MockProxyActionsSmartContractAdapter } from 'blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
+import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { one } from 'helpers/zero'
-
-import { MockProxyActionsSmartContractAdapter } from './adapters/mockProxyActionsSmartContractAdapter'
-import { vaultActionsLogic } from './vaultActionsLogic'
 
 describe('vaultActionsLogic', () => {
   describe('withdrawAndPayback', () => {

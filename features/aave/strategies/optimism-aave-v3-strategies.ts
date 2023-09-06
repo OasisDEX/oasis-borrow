@@ -2,11 +2,10 @@ import { NetworkIds, NetworkNames, optimismMainnetHexId } from 'blockchain/netwo
 import { AaveManageHeader, AaveOpenHeader, adjustRiskView } from 'features/aave/components'
 import { AaveMultiplyManageComponent } from 'features/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
+import { allActionsAvailableInMultiply } from 'features/aave/strategies/all-actions-available-in-multiply'
 import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { LendingProtocol } from 'lendingProtocols'
-
-import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
 
 export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
   {

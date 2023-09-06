@@ -1,3 +1,4 @@
+import React from 'react'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
 import { DetailsSection } from 'components/DetailsSection'
@@ -13,7 +14,6 @@ import { usePoolCreatorFormReducto } from 'features/poolCreator/state/poolCreato
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box } from 'theme-ui'
 
 export function AjnaPoolCreatorController() {

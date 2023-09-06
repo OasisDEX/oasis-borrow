@@ -1,10 +1,10 @@
+import React from 'react'
 import { Box } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
 import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Flex } from 'theme-ui'
 
 interface StopLossCommonOrderInformationProps {

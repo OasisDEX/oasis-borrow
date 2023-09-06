@@ -1,3 +1,4 @@
+import React from 'react'
 import { AjnaBorrowOriginationFee } from 'features/ajna/positions/borrow/controls/AjnaBorrowOriginationFee'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
@@ -9,7 +10,6 @@ import {
   AjnaFormFieldDeposit,
   AjnaFormFieldGenerate,
 } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
-import React from 'react'
 
 export function AjnaBorrowFormContentGenerate() {
   const {

@@ -1,3 +1,4 @@
+import React, { useCallback } from 'react'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { FloatingLabel } from 'components/FloatingLabel'
 import { ProductCardsWrapper } from 'components/productCards/ProductCardsWrapper'
@@ -11,7 +12,6 @@ import { useConnection } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
 import { Button, Flex } from 'theme-ui'
 
 const miningRewardsCard = {

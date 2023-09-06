@@ -1,14 +1,13 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import { maxUint256, tokenAllowance, tokenBalance, tokenBalanceFromAddress } from 'blockchain/calls/erc20'
+import { CallObservable } from 'blockchain/calls/observe'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networks'
+import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
 import { bindNodeCallback, combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
-
-import { maxUint256, tokenAllowance, tokenBalance, tokenBalanceFromAddress } from './calls/erc20'
-import { CallObservable } from './calls/observe'
-import { Context } from './network'
-import { NetworkIds } from './networks'
-import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 export function createBalance$(
   updateInterval$: Observable<any>,

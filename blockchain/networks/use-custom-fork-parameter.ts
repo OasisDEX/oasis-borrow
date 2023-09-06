@@ -1,7 +1,6 @@
+import { isSupportedNetwork, NetworkNames } from 'blockchain/networks/network-names'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
-
-import { isSupportedNetwork, NetworkNames } from './network-names'
 
 export type CustomForkParameterFieldsType = 'url' | 'id' | 'isAddedToWallet'
 export type CustomForkParameterType = Partial<

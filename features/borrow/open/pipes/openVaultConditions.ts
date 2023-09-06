@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { OpenVaultStage, OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import {
   customAllowanceAmountEmptyValidator,
   customAllowanceAmountExceedsMaxUint256Validator,
@@ -15,8 +16,6 @@ import { isNullish } from 'helpers/functions'
 import { getTotalStepsForOpenVaultFlow } from 'helpers/totalSteps'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
-
-import { OpenVaultStage, OpenVaultState } from './openVault'
 
 const defaultOpenVaultStageCategories = {
   isEditingStage: false,

@@ -1,6 +1,7 @@
 import { TxMeta, TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { legacyToggle } from 'features/multiply/manage/tests/legacyToggle'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { mockTxState } from 'helpers/mocks/txHelpers.mock'
 import { DEFAULT_PROXY_ADDRESS, defaultCollateral, defaultDebt } from 'helpers/mocks/vaults.mock'
@@ -9,8 +10,6 @@ import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
-
-import { legacyToggle } from './legacyToggle'
 
 type GlobalMock = NodeJS.Global & { document: { getElementById: () => void } }
 ;(global as unknown as GlobalMock).document = {

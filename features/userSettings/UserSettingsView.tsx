@@ -1,3 +1,4 @@
+import React, { ChangeEvent, useCallback, useRef, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { ContextConnected } from 'blockchain/network'
@@ -5,6 +6,12 @@ import { BlockNativeAvatar } from 'components/BlockNativeAvatar'
 import { useAccountContext, useMainContext, useNotificationSocket } from 'components/context'
 import { AppLink } from 'components/Links'
 import { AccountDetails } from 'features/account/AccountData'
+import {
+  SLIPPAGE_OPTIONS,
+  UserSettingsErrorMessages,
+  UserSettingsState,
+  UserSettingsWarningMessages,
+} from 'features/userSettings/userSettings'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { AppSpinner } from 'helpers/AppSpinner'
@@ -16,9 +23,8 @@ import {
   formatPrecision,
 } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
-import React, { ChangeEvent, useCallback, useRef, useState } from 'react'
+import { useTranslation } from 'next-i18next'
 import { createNumberMask } from 'text-mask-addons'
 import {
   Box,
@@ -33,13 +39,6 @@ import {
   Textarea,
 } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
-
-import {
-  SLIPPAGE_OPTIONS,
-  UserSettingsErrorMessages,
-  UserSettingsState,
-  UserSettingsWarningMessages,
-} from './userSettings'
 
 function SlippageOptionButton({
   option,

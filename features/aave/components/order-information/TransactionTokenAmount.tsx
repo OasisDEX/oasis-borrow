@@ -1,3 +1,4 @@
+import React from 'react'
 import { IMultiplyStrategy } from '@oasisdex/dma-library'
 import { Flex, Text } from '@theme-ui/components'
 import { amountFromWei } from 'blockchain/utils'
@@ -8,7 +9,6 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface BuyingTokenAmountProps {
   transactionParameters: IMultiplyStrategy

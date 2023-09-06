@@ -1,5 +1,5 @@
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { PropsWithChildren } from 'react'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Box } from 'theme-ui'
 
 export const backgroundSize = {

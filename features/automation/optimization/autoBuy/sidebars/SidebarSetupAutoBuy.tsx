@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { useAutomationContext, useGasEstimationContext } from 'components/context'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -15,6 +16,7 @@ import {
 } from 'features/automation/common/state/autoBSFormChange'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { getAutoBuyMinMaxValues } from 'features/automation/optimization/autoBuy/helpers'
+import { AutoBuyInfoSectionControl } from 'features/automation/optimization/autoBuy/sidebars/AutoBuyInfoSectionControl'
 import { SidebarAutoBuyEditingStage } from 'features/automation/optimization/autoBuy/sidebars/SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from 'features/automation/optimization/autoBuy/sidebars/SidebarAutoBuyRemovalEditingStage'
 import {
@@ -27,10 +29,7 @@ import {
   extractCancelAutomationWarnings,
 } from 'helpers/messageMappers'
 import { uiChanges } from 'helpers/uiChanges'
-import React from 'react'
 import { Grid } from 'theme-ui'
-
-import { AutoBuyInfoSectionControl } from './AutoBuyInfoSectionControl'
 
 interface SidebarSetupAutoBuyProps {
   autoBuyState: AutoBSFormChange

@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { amountFromGwei, amountFromRad, amountFromRay } from 'blockchain/utils'
 import { RAD } from 'components/constants'
 import { one } from 'helpers/zero'
-
-import { amountFromGwei, amountFromRad, amountFromRay } from './utils'
 
 describe('utils$', () => {
   it('should not reconfigure global precision for bignumber', () => {

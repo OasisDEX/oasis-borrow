@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import {
@@ -9,7 +10,6 @@ import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/compo
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface ContentCardLiquidationPriceProps {
   isLoading?: boolean

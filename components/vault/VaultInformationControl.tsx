@@ -1,11 +1,10 @@
+import React from 'react'
 import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
+import { VaultInformation } from 'components/vault/VaultInformation'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
-
-import { VaultInformation } from './VaultInformation'
 
 interface VaultInformationControlProps {
   generalManageVault: GeneralManageVaultState

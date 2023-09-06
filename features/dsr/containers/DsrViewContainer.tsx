@@ -1,15 +1,14 @@
+import React from 'react'
 import { BigNumber } from 'bignumber.js'
 import { useMainContext, useProductContext } from 'components/context'
+import { DsrView } from 'features/dsr/containers/DsrView'
 import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
 import { RAY } from 'features/dsr/utils/constants'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
-import React from 'react'
 import { Container } from 'theme-ui'
-
-import { DsrView } from './DsrView'
 
 export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
   const { context$ } = useMainContext()

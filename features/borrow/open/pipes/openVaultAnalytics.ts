@@ -3,12 +3,11 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { networkSetById } from 'blockchain/networks'
 import { AccountDetails } from 'features/account/AccountData'
+import { MutableOpenVaultState, OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
-
-import { MutableOpenVaultState, OpenVaultState } from './openVault'
 
 type GenerateAmountChange = {
   kind: 'generateAmountChange'

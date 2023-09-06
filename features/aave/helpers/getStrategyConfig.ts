@@ -1,6 +1,7 @@
 import { NetworkNames, networksByName } from 'blockchain/networks'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { loadStrategyFromTokens } from 'features/aave'
+import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getLastCreatedPositionForProxy, PositionCreated } from 'features/aave/services'
 import { IStrategyConfig, PositionId } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -10,8 +11,6 @@ import { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines
 import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
-
-import { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
 
 export function getStrategyConfig$(
   proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,

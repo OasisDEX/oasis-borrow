@@ -1,8 +1,7 @@
+import { ProxyActionsAdapterType } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { proxyActionsAdapterResolver$ } from 'blockchain/calls/proxyActions/proxyActionsAdapterResolver'
 import { MakerVaultType } from 'blockchain/calls/vaultResolver'
 import { getStateUnpacker } from 'helpers/testHelpers'
-
-import { ProxyActionsAdapterType } from './adapters/ProxyActionsSmartContractAdapterInterface'
-import { proxyActionsAdapterResolver$ } from './proxyActionsAdapterResolver'
 
 describe('proxyActionsAdapterResolver', () => {
   describe('crate from ilk (open new vault)', () => {

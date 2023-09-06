@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import {
   AfterPillProps,
@@ -9,7 +10,6 @@ import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/man
 import { formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
 interface CollaterlizationRatioProps {

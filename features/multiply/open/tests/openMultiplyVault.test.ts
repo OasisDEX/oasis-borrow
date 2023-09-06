@@ -3,6 +3,7 @@
 import { TxMeta, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { newCDPTxReceipt } from 'features/multiply/open/tests/fixtures/newCDPtxReceipt'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { mockOpenMultiplyVault } from 'helpers/mocks/openMultiplyVault.mock'
 import { mockTxState } from 'helpers/mocks/txHelpers.mock'
@@ -12,8 +13,6 @@ import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
-
-import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 
 // TODO: [Mocha -> Jest] Rewrite in Jest compatible format.
 describe.skip('open multiply vault', () => {

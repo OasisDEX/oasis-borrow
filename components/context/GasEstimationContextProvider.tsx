@@ -1,15 +1,14 @@
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { isProductContextAvailable, useProductContext } from 'components/context/ProductContextProvider'
 import { GasEstimationStatus, HasGasEstimation, TxData } from 'helpers/context/types'
 import { TX_DATA_CHANGE, TxPayloadChange } from 'helpers/gasEstimate'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { of } from 'rxjs'
-
-import { isProductContextAvailable, useProductContext } from './ProductContextProvider'
 
 export type GasEstimationContext = {
   isSuccessful: boolean

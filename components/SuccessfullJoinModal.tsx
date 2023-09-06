@@ -1,13 +1,12 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
+import { AppLink } from 'components/Links'
+import { Modal } from 'components/Modal'
 import { UserReferralState } from 'features/referralOverview/user'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
-
-import { AppLink } from './Links'
-import { Modal } from './Modal'
 
 interface NewReferralProps {
   account: string | undefined

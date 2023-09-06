@@ -1,7 +1,7 @@
+import React, { useCallback } from 'react'
 import { Banner, BannerProps } from 'components/Banner'
 import { useSessionStorage } from 'helpers/useSessionStorage'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
 
 interface AutomationTriggeredBannerControlProps extends BannerProps {
   sessionStorageKey: string

@@ -1,16 +1,15 @@
+import { useEffect, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { useMainContext, useProductContext } from 'components/context'
 import { getPositionCreatedEventForProxyAddress } from 'features/aave/services'
-import { useEffect, useState } from 'react'
+import { allDefined } from 'helpers/allDefined'
+import { callBackIfDefined } from 'helpers/callBackIfDefined'
+import { setupAllowanceContext, setupDpmContext } from 'helpers/dummyStateMachine'
+import { zero } from 'helpers/zero'
 import { combineLatest } from 'rxjs'
 import { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
-
-import { allDefined } from './allDefined'
-import { callBackIfDefined } from './callBackIfDefined'
-import { setupAllowanceContext, setupDpmContext } from './dummyStateMachine'
-import { zero } from './zero'
 
 type UseFlowStateReturnType = ReturnType<typeof useFlowState>
 

@@ -1,7 +1,7 @@
+import React, { useEffect, useRef, useState } from 'react'
 import { NavigationMenuDropdownContent } from 'components/navigation/NavigationMenuDropdownContent'
 import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { NavigationMenuPointer } from 'components/navigation/NavigationMenuPointer'
-import React, { useEffect, useRef, useState } from 'react'
 import { Flex } from 'theme-ui'
 
 export interface NavigationMenuDropdownProps {

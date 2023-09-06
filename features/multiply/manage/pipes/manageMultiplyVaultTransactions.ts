@@ -18,6 +18,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
+import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { checkIfGnosisSafe } from 'helpers/checkIfGnosisSafe'
 import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
@@ -26,8 +27,6 @@ import { TxError } from 'helpers/types'
 import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
-
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type ProxyChange =
   | {

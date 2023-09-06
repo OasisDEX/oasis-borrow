@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import {
@@ -12,7 +13,6 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
 
 export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultState) {
   const [showFees, setShowFees] = useState(false)

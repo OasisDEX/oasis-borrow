@@ -1,6 +1,6 @@
+import React, { ReactNode } from 'react'
 import { AppLink } from 'components/Links'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import React, { ReactNode } from 'react'
 import { Box, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
 interface LandingBannerProps {

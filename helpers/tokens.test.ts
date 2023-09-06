@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-
-import { calculateTokenPrecisionByValue } from './tokens'
+import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 
 describe('token input precision calculation', () => {
   it('when token price is between to 1-9.99 USD', () => {

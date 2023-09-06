@@ -1,11 +1,10 @@
+import React from 'react'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { GuniOpenMultiplyVaultChangesInformation } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultChangesInformation'
 import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Divider, Flex, Grid, Text } from 'theme-ui'
-
-import { GuniOpenMultiplyVaultChangesInformation } from './GuniOpenMultiplyVaultChangesInformation'
 
 export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
   const { t } = useTranslation()

@@ -1,3 +1,4 @@
+import React from 'react'
 import { WithConnection } from 'components/connectWallet'
 import { ProductContextHandler } from 'components/context'
 import { PageSEOTags } from 'components/HeadTags'
@@ -9,7 +10,6 @@ import { WithChildren } from 'helpers/types'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {

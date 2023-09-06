@@ -1,3 +1,4 @@
+import React from 'react'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { GasPriceParams } from 'blockchain/prices'
@@ -6,6 +7,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
+import { GuniVaultDetailsTitle } from 'features/earn/guni/open/containers/GuniVaultDetailsTitle'
 import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
 import {
   calculateBreakeven,
@@ -18,10 +20,7 @@ import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box } from 'theme-ui'
-
-import { GuniVaultDetailsTitle } from './GuniVaultDetailsTitle'
 
 const examplePosition = {
   usdcSwapAmount: new BigNumber(3_750_000),

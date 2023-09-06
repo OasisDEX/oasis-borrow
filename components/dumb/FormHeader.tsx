@@ -1,5 +1,5 @@
-import { Text } from '@theme-ui/components'
 import React, { ReactNode } from 'react'
+import { Text } from '@theme-ui/components'
 import { Box, Divider } from 'theme-ui'
 
 interface FormHeaderProps {

@@ -1,10 +1,9 @@
 import { VaultType } from '@prisma/client'
 import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
+import { selectVaultByIdAndChainId } from 'handlers/vault/get'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
-
-import { selectVaultByIdAndChainId } from './get'
 
 const vaultSchema = z.object({
   id: z.number(),

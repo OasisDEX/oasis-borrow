@@ -1,6 +1,6 @@
+import { useEffect, useRef } from 'react'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { random } from 'lodash'
-import { useEffect, useRef } from 'react'
 
 interface Particle {
   direction: number

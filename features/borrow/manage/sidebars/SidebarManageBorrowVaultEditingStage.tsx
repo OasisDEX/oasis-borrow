@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { ActionPills } from 'components/ActionPills'
 import {
   extractFieldDepositCollateralData,
@@ -16,7 +17,6 @@ import { ManageVaultChangesInformation } from 'features/borrow/manage/containers
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrowVaultState) {

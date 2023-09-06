@@ -1,8 +1,8 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
 
 interface GuniVaultDetailsTitleProps {

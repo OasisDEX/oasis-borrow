@@ -1,3 +1,4 @@
+import React from 'react'
 import { IRiskRatio, RiskRatio } from '@oasisdex/dma-library'
 import { Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
@@ -15,7 +16,6 @@ import { useObservable } from 'helpers/observableHook'
 import { AaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import { PreparedAaveTotalValueLocked } from 'lendingProtocols/aave-v2/pipelines'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 const tokenPairList = {
   [LendingProtocol.AaveV2]: {

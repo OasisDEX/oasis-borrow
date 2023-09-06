@@ -12,14 +12,13 @@ import {
   extractStopLossData,
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { fetchWithOperationId, flatEvents } from 'features/vaultHistory/vaultHistory'
+import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { gql, GraphQLClient } from 'graphql-request'
 import { isEqual, memoize } from 'lodash'
 import { combineLatest, from, Observable, timer } from 'rxjs'
 import { distinctUntilChanged, shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'
-
-import { fetchWithOperationId, flatEvents } from './vaultHistory'
-import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
   query vaultsMultiplyHistories($urns: [String!], $cdpIds: [BigFloat!]) {

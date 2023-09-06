@@ -1,13 +1,12 @@
+import React from 'react'
+import { getPriceChangeColor } from 'components/vault/VaultDetails'
+import { VaultHeadline, VaultHeadlineProps } from 'components/vault/VaultHeadline'
 import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { moreMinutes } from 'helpers/time'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { timeAgo } from 'utils'
-
-import { getPriceChangeColor } from './VaultDetails'
-import { VaultHeadline, VaultHeadlineProps } from './VaultHeadline'
 
 export function DefaultVaultHeadline({
   header,

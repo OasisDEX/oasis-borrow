@@ -1,24 +1,23 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { Context } from 'blockchain/network'
-import { TxHelpers } from 'helpers/context/types'
-import { zero } from 'helpers/zero'
-import { Observable } from 'rxjs'
-
 import {
   defaultMutableManageMultiplyVaultState,
   ManageMultiplyVaultChange,
   ManageMultiplyVaultEditingStage,
   ManageMultiplyVaultState,
-} from './manageMultiplyVault'
-import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations'
-import { defaultManageMultiplyVaultConditions } from './manageMultiplyVaultConditions'
-import { manageMultiplyInputsDefaults, manageVaultFormDefaults } from './manageMultiplyVaultForm'
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { defaultManageMultiplyVaultCalculations } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { defaultManageMultiplyVaultConditions } from 'features/multiply/manage/pipes/manageMultiplyVaultConditions'
+import { manageMultiplyInputsDefaults, manageVaultFormDefaults } from 'features/multiply/manage/pipes/manageMultiplyVaultForm'
 import {
   adjustPosition,
   closeVault,
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
-} from './manageMultiplyVaultTransactions'
+} from 'features/multiply/manage/pipes/manageMultiplyVaultTransactions'
+import { TxHelpers } from 'helpers/context/types'
+import { zero } from 'helpers/zero'
+import { Observable } from 'rxjs'
 
 type ManageVaultBorrowTransitionChange =
   | {

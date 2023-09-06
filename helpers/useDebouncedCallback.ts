@@ -1,5 +1,5 @@
-import { debounce } from 'lodash'
 import { useCallback, useEffect } from 'react'
+import { debounce } from 'lodash'
 
 // Hook which listen for given value changes and after specified delay when change does not occur calls callback
 export function useDebouncedCallback<T>(

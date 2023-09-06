@@ -1,5 +1,5 @@
-import { MessageCard } from 'components/MessageCard'
 import React from 'react'
+import { MessageCard } from 'components/MessageCard'
 
 export function VaultChangesWithADelayCard() {
   return (

@@ -1,8 +1,7 @@
+import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { OpenVaultCalculations } from 'features/borrow/open/pipes/openVaultCalculations'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
-
-import { OpenVaultState } from './openVault'
-import { OpenVaultCalculations } from './openVaultCalculations'
 
 export type OpenVaultSummary = Pick<OpenVaultCalculations, 'afterCollateralBalance'> &
   Pick<BalanceInfo, 'collateralBalance'>

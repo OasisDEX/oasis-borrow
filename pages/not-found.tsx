@@ -1,10 +1,10 @@
+import React from 'react'
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/layouts'
 import { AppLink } from 'components/Links'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 import { Button, Container, Grid, Heading } from 'theme-ui'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({

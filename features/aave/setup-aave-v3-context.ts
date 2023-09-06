@@ -4,6 +4,25 @@ import { TokenBalances } from 'blockchain/tokens'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { AccountContext } from 'components/context'
 import dayjs from 'dayjs'
+import { AaveContext } from 'features/aave/aave-context'
+import { getCommonPartsFromProductContext } from 'features/aave/get-common-parts-from-app-context'
+import { getAaveV3StrategyConfig, ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import {
+  getManageAaveStateMachine,
+  getManageAaveV3PositionStateMachineServices,
+} from 'features/aave/manage/services'
+import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } from 'features/aave/open/services'
+import {
+  getAaveHistoryEvents,
+  getAaveSupportedTokenBalances$,
+  getAdjustAaveParametersMachine,
+  getCloseAaveParametersMachine,
+  getDepositBorrowAaveMachine,
+  getOpenAaveParametersMachine,
+  getStrategyInfo$,
+} from 'features/aave/services'
+import { getSupportedTokens } from 'features/aave/strategies'
+import { IStrategyConfig, PositionId } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
@@ -18,26 +37,6 @@ import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { merge, Observable, of, Subject } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
-
-import { AaveContext } from './aave-context'
-import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
-import { getAaveV3StrategyConfig, ProxiesRelatedWithPosition } from './helpers'
-import {
-  getManageAaveStateMachine,
-  getManageAaveV3PositionStateMachineServices,
-} from './manage/services'
-import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } from './open/services'
-import {
-  getAaveHistoryEvents,
-  getAaveSupportedTokenBalances$,
-  getAdjustAaveParametersMachine,
-  getCloseAaveParametersMachine,
-  getDepositBorrowAaveMachine,
-  getOpenAaveParametersMachine,
-  getStrategyInfo$,
-} from './services'
-import { getSupportedTokens } from './strategies'
-import { IStrategyConfig, PositionId } from './types'
 
 export type StrategyUpdateParams = {
   positionId: PositionId

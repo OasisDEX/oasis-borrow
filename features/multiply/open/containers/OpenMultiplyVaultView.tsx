@@ -1,17 +1,16 @@
+import React, { useEffect } from 'react'
 import { trackingEvents } from 'analytics/analytics'
 import { useAccountContext, useMainContext, useProductContext } from 'components/context'
 import { OpenMultiplyVaultContainer } from 'components/vault/commonMultiply/OpenMultiplyVaultContainer'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
+import { OpenMultiplyVaultDetails } from 'features/multiply/open/containers/OpenMultiplyVaultDetails'
+import { OpenMultiplyVaultForm } from 'features/multiply/open/containers/OpenMultiplyVaultForm'
 import { createOpenMultiplyVaultAnalytics$ } from 'features/multiply/open/pipes/openMultiplyVaultAnalytics'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
 import { Container } from 'theme-ui'
-
-import { OpenMultiplyVaultDetails } from './OpenMultiplyVaultDetails'
-import { OpenMultiplyVaultForm } from './OpenMultiplyVaultForm'
 
 export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
   const { openMultiplyVault$ } = useProductContext()

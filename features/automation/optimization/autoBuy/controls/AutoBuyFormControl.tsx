@@ -1,3 +1,4 @@
+import React from 'react'
 import { TriggerType } from '@oasisdex/automation'
 import { AutomationEventIds, Pages } from 'analytics/analytics'
 import { useAutomationContext } from 'components/context'
@@ -14,7 +15,6 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/autoBuy/sidebars/SidebarSetupAutoBuy'
 import { TxHelpers } from 'helpers/context/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React from 'react'
 
 interface AutoBuyFormControlProps {
   isAutoBuyActive: boolean

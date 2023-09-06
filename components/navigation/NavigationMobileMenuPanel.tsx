@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AssetPill } from 'components/AssetPill'
@@ -6,7 +7,6 @@ import { mobileLinkSx } from 'components/navigation/common'
 import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { WithArrow } from 'components/WithArrow'
 import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers/getAjnaWithArrowColorScheme'
-import React, { useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
 type NavigationMobileMenuPanelProps = NavigationMenuPanelType & {

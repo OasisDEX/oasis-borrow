@@ -1,3 +1,4 @@
+import React from 'react'
 import { BigNumber } from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
@@ -5,7 +6,6 @@ import { AfterPillProps } from 'components/vault/VaultDetails'
 import { StopLossBannerLayout } from 'features/automation/protection/stopLoss/controls/StopLossBannerLayout'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { uiChanges } from 'helpers/uiChanges'
-import React from 'react'
 
 interface StopLossBannerControlProps {
   liquidationPrice: BigNumber

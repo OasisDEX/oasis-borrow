@@ -1,3 +1,4 @@
+import React, { ReactNode, useCallback, useMemo } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
@@ -11,7 +12,6 @@ import { isTouchDevice } from 'helpers/isTouchDevice'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode, useCallback, useMemo } from 'react'
 
 export function VaultChangesInformationItem({
   label,

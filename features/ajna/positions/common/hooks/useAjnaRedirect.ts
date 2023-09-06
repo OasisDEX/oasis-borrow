@@ -1,8 +1,8 @@
+import { useEffect, useState } from 'react'
 import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { useEffect, useState } from 'react'
 
 interface AjnaRedirectProps {
   ajnaPositionData?: AjnaGenericPosition

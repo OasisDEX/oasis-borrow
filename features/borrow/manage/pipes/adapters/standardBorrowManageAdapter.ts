@@ -2,6 +2,10 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { Vault } from 'blockchain/vaults'
 import {
+  BorrowManageAdapterInterface,
+  CreateInitialVaultStateArgs,
+} from 'features/borrow/manage/pipes/adapters/borrowManageAdapterInterface'
+import {
   defaultMutableManageVaultState,
   ManageStandardBorrowVaultState,
   ManageVaultChange,
@@ -28,11 +32,6 @@ import { applyManageVaultTransaction } from 'features/borrow/manage/pipes/viewSt
 import { applyManageVaultTransition } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransitions'
 import { GasEstimationStatus } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
-
-import {
-  BorrowManageAdapterInterface,
-  CreateInitialVaultStateArgs,
-} from './borrowManageAdapterInterface'
 
 export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
   Vault,

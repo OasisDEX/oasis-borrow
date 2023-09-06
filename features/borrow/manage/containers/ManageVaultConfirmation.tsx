@@ -1,11 +1,10 @@
+import React, { ReactNode, useEffect, useState } from 'react'
 import { Divider } from '@theme-ui/components'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
+import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode, useEffect, useState } from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
-
-import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'
 
 export function ManageVaultConfirmation(
   props: ManageStandardBorrowVaultState & { txnCostDisplay?: ReactNode },

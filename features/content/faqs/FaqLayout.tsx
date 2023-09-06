@@ -1,8 +1,8 @@
+import React, { ReactElement, useState } from 'react'
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithChildren } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { ReactElement, useState } from 'react'
 import { Box, Grid, Link, SxStyleProp, Text } from 'theme-ui'
 
 function getHeadingId(text: string) {

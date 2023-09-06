@@ -1,14 +1,13 @@
 import { Reducer } from 'react'
-import { match, P } from 'ts-pattern'
-
-import { ensureCorrectState } from './ensure-correct-state'
+import { ensureCorrectState } from 'features/web3OnBoard/wallet-state/ensure-correct-state'
 import {
   getDesiredNetworkHexId,
   WalletManagementState,
   WalletManagementStateStatus,
-} from './wallet-management-state'
-import { WalletStateEvent, WalletStateEventType } from './wallet-state-event'
-import { canTransitWithNetworkHexId } from './wallet-state-guards'
+} from 'features/web3OnBoard/wallet-state/wallet-management-state'
+import { WalletStateEvent, WalletStateEventType } from 'features/web3OnBoard/wallet-state/wallet-state-event'
+import { canTransitWithNetworkHexId } from 'features/web3OnBoard/wallet-state/wallet-state-guards'
+import { match, P } from 'ts-pattern'
 
 export const settingChainWalletStateReducer: Reducer<WalletManagementState, WalletStateEvent> = (
   state,

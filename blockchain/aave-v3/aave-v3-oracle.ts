@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
+import { BaseParameters, getNetworkMapping, wethToEthAddress } from 'blockchain/aave-v3/utils'
 import { NetworkIds } from 'blockchain/networks'
 import { one } from 'helpers/zero'
 import { AaveV3Oracle__factory } from 'types/ethers-contracts/'
-
-import { BaseParameters, getNetworkMapping, wethToEthAddress } from './utils'
 
 export interface AaveV3AssetsPricesParameters extends BaseParameters {
   tokens: string[]

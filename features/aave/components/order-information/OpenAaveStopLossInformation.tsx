@@ -1,3 +1,4 @@
+import React from 'react'
 import { IStrategy } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
@@ -7,7 +8,6 @@ import { DimmedList } from 'components/DImmedList'
 import { OpenFlowStopLossSummary } from 'components/OpenFlowStopLossSummary'
 import { StopLossCommonOrderInformation } from 'features/automation/protection/common/controls/StopLossCommonOrderInformation'
 import { one, zero } from 'helpers/zero'
-import React from 'react'
 
 interface OpenAaveStopLossInformationProps {
   stopLossLevel: BigNumber

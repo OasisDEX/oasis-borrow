@@ -1,3 +1,4 @@
+import React, { FC } from 'react'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
 import { Toggle } from 'components/Toggle'
@@ -8,7 +9,6 @@ import { AjnaEarnFormOrder } from 'features/ajna/positions/earn/sidebars/AjnaEar
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
-import React, { FC } from 'react'
 import { Card, Flex, Heading, Image, Text } from 'theme-ui'
 
 interface RewardsHeaderProps {

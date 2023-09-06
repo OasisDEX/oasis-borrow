@@ -1,14 +1,17 @@
+import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import ReactDOM from 'react-dom'
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
+import { AppLink } from 'components/Links'
 import { useSharedUI } from 'components/SharedUIProvider'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { ModalProps } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { ReactNode, useCallback, useEffect, useState } from 'react'
-import ReactDOM from 'react-dom'
+import curry from 'ramda/src/curry'
 import { TRANSITIONS } from 'theme'
+import { useOnMobile } from 'theme/useBreakpointIndex'
 import {
   Box,
   Button,
@@ -22,10 +25,6 @@ import {
   SxStyleProp,
   Text,
 } from 'theme-ui'
-import { useOnMobile } from 'theme/useBreakpointIndex'
-
-import { AppLink } from './Links'
-import curry from 'ramda/src/curry'
 
 interface ModalCloseIconProps extends ModalProps<WithChildren> {
   sx?: SxStyleProp

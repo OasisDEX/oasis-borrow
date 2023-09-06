@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { BaseParameters, getNetworkMapping } from 'blockchain/aave-v3/utils'
 import { NetworkIds } from 'blockchain/networks'
 import { AaveV3Pool__factory } from 'types/ethers-contracts'
-
-import { BaseParameters, getNetworkMapping } from './utils'
 
 export interface AaveV3UserAccountData {
   totalCollateralBase: BigNumber

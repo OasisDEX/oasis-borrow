@@ -1,6 +1,5 @@
+import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
 import { GUNI_MAX_SLIPPAGE } from 'helpers/multiply/calculations'
-
-import { ManageEarnVaultState } from './manageGuniVault'
 
 // this method extends / overwrites applyManageVaultConditions
 export function applyGuniManageVaultConditions(state: ManageEarnVaultState): ManageEarnVaultState {

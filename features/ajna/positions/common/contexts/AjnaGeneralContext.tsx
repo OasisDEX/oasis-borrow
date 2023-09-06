@@ -1,3 +1,11 @@
+import React, {
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { GasPriceParams } from 'blockchain/prices'
@@ -17,14 +25,6 @@ import { getTxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxMan
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
 import { TxDetails } from 'helpers/handleTransaction'
 import { useAccount } from 'helpers/useAccount'
-import React, {
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
 
 interface AjnaGeneralContextProviderProps {
   collateralAddress: string

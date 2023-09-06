@@ -1,7 +1,7 @@
+import React, { useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { WithChildren } from 'helpers/types'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
-import React, { useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 export function OrderInformationTooltipAction({ children }: WithChildren) {

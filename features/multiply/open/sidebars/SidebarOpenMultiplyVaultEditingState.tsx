@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import {
   extractFieldDepositCollateralData,
@@ -10,7 +11,6 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { OpenMultiplyVaultChangesInformation } from 'features/multiply/open/containers/OpenMultiplyVaultChangesInformation'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
-import React from 'react'
 import { Grid } from 'theme-ui'
 
 export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultState) {

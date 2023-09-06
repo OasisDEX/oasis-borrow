@@ -1,3 +1,4 @@
+import React, { useEffect, useMemo, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import {
   deployAjnaPool,
@@ -27,9 +28,8 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useEffect, useMemo, useState } from 'react'
-import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { first } from 'rxjs/operators'
+import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { Text } from 'theme-ui'
 
 interface UsePoolCreatorDataProps {

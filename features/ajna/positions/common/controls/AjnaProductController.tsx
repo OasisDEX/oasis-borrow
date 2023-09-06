@@ -1,3 +1,4 @@
+import React from 'react'
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { NetworkHexIds } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
@@ -29,9 +30,8 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { one } from 'helpers/zero'
 import { upperFirst } from 'lodash'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React from 'react'
+import { useTranslation } from 'next-i18next'
 
 interface AjnaProductControllerProps {
   collateralToken?: string

@@ -1,3 +1,4 @@
+import React from 'react'
 import { useActor } from '@xstate/react'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
@@ -7,15 +8,13 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
+import { ProxyEvent, ProxyStateMachine, ProxyStateMachineState } from 'features/stateMachines/proxy/state'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Image, Text } from 'theme-ui'
 import { ActorRefFrom, Sender } from 'xstate'
-
-import { ProxyEvent, ProxyStateMachine, ProxyStateMachineState } from './state'
 
 interface ProxyViewProps {
   proxyMachine: ActorRefFrom<ProxyStateMachine>

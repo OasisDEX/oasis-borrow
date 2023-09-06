@@ -1,7 +1,7 @@
-import { AppLink } from 'components/Links'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { AppLink } from 'components/Links'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { Button } from 'theme-ui'
 
 interface AssetsTableDataRiskProtectionProps {

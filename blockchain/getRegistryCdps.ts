@@ -1,12 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networks'
 import isEqual from 'lodash/isEqual'
 import { of } from 'ramda'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
-
-import { getNetworkContracts } from './contracts'
-import { Context } from './network'
-import { NetworkIds } from './networks'
 
 function filterSupportedIlksOnNetwork(joins: Record<string, string>, ilks: string[]): string[] {
   const supportedIlks = Object.keys(joins)

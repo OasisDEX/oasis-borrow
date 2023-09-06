@@ -1,15 +1,14 @@
+import React, { PropsWithChildren, ReactNode, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
+import { AppLink } from 'components/Links'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
+import { CollRatioColor, VaultDetailsCardModal } from 'components/vault/VaultDetails'
+import { WithArrow } from 'components/WithArrow'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { TranslateStringType } from 'helpers/translateStringType'
-import React, { PropsWithChildren, ReactNode, useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
-
-import { AppLink } from './Links'
-import { CollRatioColor, VaultDetailsCardModal } from './vault/VaultDetails'
-import { WithArrow } from './WithArrow'
 
 export type ChangeVariantType = 'positive' | 'negative'
 

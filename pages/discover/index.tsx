@@ -1,7 +1,7 @@
+import React from 'react'
 import { discoverPagesMeta } from 'features/discover/meta'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { GetServerSidePropsContext } from 'next'
-import React from 'react'
 
 export default function DiscoverPage() {
   return <></>

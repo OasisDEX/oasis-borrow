@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
@@ -11,7 +12,6 @@ import { ConstantMultipleTriggerData } from 'features/automation/optimization/co
 import { prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggersData'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
-import { useMemo } from 'react'
 
 interface GetConstantMultipleTxHandlersParams {
   autoBuyTriggerData: AutoBSTriggerData

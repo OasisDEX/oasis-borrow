@@ -1,8 +1,8 @@
+import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
-import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
 export interface HeaderSelectorOption {

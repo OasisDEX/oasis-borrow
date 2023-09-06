@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
@@ -12,7 +13,6 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
-import { useMemo } from 'react'
 
 interface GetAutoTakeProfitTxHandlersParams {
   id: BigNumber

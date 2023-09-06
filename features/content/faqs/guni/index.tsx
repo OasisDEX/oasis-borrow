@@ -1,6 +1,5 @@
-import { TranslatedContent } from 'features/content'
 import React from 'react'
-
-import en from './en.mdx'
+import { TranslatedContent } from 'features/content'
+import en from 'features/content/faqs/guni/en.mdx'
 
 export const guniFaq = <TranslatedContent content={{ en /* es, pt */ }} />

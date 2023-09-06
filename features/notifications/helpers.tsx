@@ -1,3 +1,4 @@
+import React from 'react'
 import { BigNumber } from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import {
@@ -7,7 +8,6 @@ import {
 } from 'features/notifications/types'
 import { formatAmount } from 'helpers/formatters/format'
 import { Trans } from 'next-i18next'
-import React from 'react'
 
 export function getNotificationTitle({
   type,

@@ -1,3 +1,4 @@
+import React from 'react'
 import { IPosition, IStrategy } from '@oasisdex/dma-library'
 import { Flex } from '@theme-ui/components'
 import {
@@ -6,7 +7,6 @@ import {
 } from 'components/vault/VaultChangesInformation'
 import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface LtvInformationProps {
   transactionParameters: IStrategy

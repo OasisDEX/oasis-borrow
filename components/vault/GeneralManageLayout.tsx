@@ -1,5 +1,8 @@
+import React from 'react'
 import { NetworkIds } from 'blockchain/networks'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
+import { DefaultVaultHeadline } from 'components/vault/DefaultVaultHeadline'
+import { GeneralManageTabBar } from 'components/vault/GeneralManageTabBar'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
@@ -7,11 +10,7 @@ import { GeneralManageVaultState } from 'features/generalManageVault/generalMana
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Card, Grid } from 'theme-ui'
-
-import { DefaultVaultHeadline } from './DefaultVaultHeadline'
-import { GeneralManageTabBar } from './GeneralManageTabBar'
 
 interface GeneralManageLayoutProps {
   generalManageVault: GeneralManageVaultState

@@ -1,6 +1,5 @@
 import { readFileSync } from 'fs'
-
-import nextConfig from './next-i18next.config'
+import nextConfig from 'next-i18next.config'
 
 describe('Locale - proper JSON files', () => {
   const localeList = nextConfig.i18n.locales

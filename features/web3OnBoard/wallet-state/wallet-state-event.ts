@@ -1,8 +1,7 @@
 import { NetworkConfigHexId } from 'blockchain/networks'
 import { BridgeConnector } from 'features/web3OnBoard/bridge-connector'
+import { WalletManagementState } from 'features/web3OnBoard/wallet-state/wallet-management-state'
 import { ReductoActions } from 'helpers/useReducto'
-
-import { WalletManagementState } from './wallet-management-state'
 
 export enum WalletStateEventType {
   connect = 'connect',

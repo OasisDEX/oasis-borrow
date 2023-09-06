@@ -8,6 +8,10 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import dayjs, { Dayjs } from 'dayjs'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
+import { closeGuniVault } from 'features/earn/guni/manage/pipes/guniActionsCalls'
+import { applyGuniCalculations } from 'features/earn/guni/manage/pipes/manageGuniVaultCalculations'
+import { applyGuniManageVaultConditions } from 'features/earn/guni/manage/pipes/manageGuniVaultConditions'
+import { applyGuniManageEstimateGas } from 'features/earn/guni/manage/pipes/manageGuniVaultTransactions'
 import { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { applyExchange } from 'features/multiply/manage/pipes/manageMultiplyQuote'
@@ -47,11 +51,6 @@ import { one } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
-
-import { closeGuniVault } from './guniActionsCalls'
-import { applyGuniCalculations } from './manageGuniVaultCalculations'
-import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
-import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,

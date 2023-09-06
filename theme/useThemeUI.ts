@@ -1,6 +1,5 @@
+import { OasisTheme } from 'theme/index'
 import { Theme, useThemeUI } from 'theme-ui'
-
-import { OasisTheme } from './index'
 
 interface ExactContextValue extends Omit<Theme, 'theme'> {
   theme: OasisTheme

@@ -1,5 +1,7 @@
+import React from 'react'
 import { useActor } from '@xstate/react'
 import { useAaveContext } from 'features/aave'
+import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { AaveManageTabBar } from 'features/aave/manage/containers/AaveManageTabBar'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { AaveAutomationContext } from 'features/automation/contexts/AaveAutomationContext'
@@ -12,10 +14,7 @@ import {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveData,
 } from 'lendingProtocols/aave-like-common'
-import React from 'react'
 import { Box, Container } from 'theme-ui'
-
-import { useManageAaveStateMachineContext } from './AaveManageStateMachineContext'
 
 interface AaveManageViewPositionViewProps {
   address: string

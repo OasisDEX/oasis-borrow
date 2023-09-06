@@ -1,5 +1,5 @@
-import { isTouchDevice } from 'helpers/isTouchDevice'
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { isTouchDevice } from 'helpers/isTouchDevice'
 import { Box, Card, SxStyleProp } from 'theme-ui'
 
 export function useTooltip() {

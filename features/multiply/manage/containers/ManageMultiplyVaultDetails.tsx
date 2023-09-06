@@ -1,3 +1,4 @@
+import React from 'react'
 import { useAutomationContext } from 'components/context'
 import { DetailsSection } from 'components/DetailsSection'
 import {
@@ -19,7 +20,6 @@ import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {

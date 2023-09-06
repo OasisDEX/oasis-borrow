@@ -1,5 +1,5 @@
-import BigNumber from 'bignumber.js'
 import React from 'react'
+import BigNumber from 'bignumber.js'
 
 export type PieChartItem = {
   value: BigNumber

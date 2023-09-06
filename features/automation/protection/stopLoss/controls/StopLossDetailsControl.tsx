@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -19,7 +20,6 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface StopLossDetailsControlProps {
   isStopLossActive: boolean

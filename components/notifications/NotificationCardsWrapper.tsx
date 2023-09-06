@@ -1,3 +1,4 @@
+import React from 'react'
 import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
 import { useNotificationSocket } from 'components/context'
 import { NotificationCard } from 'components/notifications/NotificationCard'
@@ -6,7 +7,6 @@ import { getNotificationTitle } from 'features/notifications/helpers'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import { NotificationTypes } from 'features/notifications/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React from 'react'
 
 export function NotificationCardsWrapper() {
   const { socket, analyticsData } = useNotificationSocket()

@@ -1,12 +1,11 @@
 import { Tokens } from '@prisma/client'
 import * as erc20 from 'blockchain/abi/erc20.json'
+import { arbitrumContracts } from 'blockchain/contracts/arbitrum'
+import { goerliContracts } from 'blockchain/contracts/goerli'
+import { mainnetContracts } from 'blockchain/contracts/mainnet'
+import { optimismContracts } from 'blockchain/contracts/optimism'
 import { getContractNetworkByWalletNetwork, NetworkIds, networkSetById } from 'blockchain/networks'
 import { ContractDesc } from 'features/web3Context'
-
-import { arbitrumContracts } from './arbitrum'
-import { goerliContracts } from './goerli'
-import { mainnetContracts } from './mainnet'
-import { optimismContracts } from './optimism'
 
 // this const will contain contracts of tokens, that aren't a part of original config
 // but identified by identifyTokens$ observable whenever it's called

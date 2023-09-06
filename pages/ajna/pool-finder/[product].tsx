@@ -1,3 +1,4 @@
+import React from 'react'
 import { ProductContextHandler } from 'components/context'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
@@ -6,7 +7,6 @@ import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { ProductHubProductType } from 'features/productHub/types'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 
 function AjnaPoolFinderPage({ product }: { product: ProductHubProductType }) {
   return (

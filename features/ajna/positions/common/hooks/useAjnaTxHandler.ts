@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Strategy } from '@oasisdex/dma-library'
 import { TxStatus } from '@oasisdex/transactions'
 import { AjnaTxData, getAjnaParameters } from 'actions/ajna'
@@ -15,7 +16,6 @@ import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { uiChanges } from 'helpers/uiChanges'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
-import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 export interface OasisActionCallData extends AjnaTxData {

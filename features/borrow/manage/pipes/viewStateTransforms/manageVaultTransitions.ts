@@ -6,18 +6,17 @@ import {
   ManageVaultChange,
   ManageVaultEditingStage,
 } from 'features/borrow/manage/pipes/manageVault'
-import { TxHelpers } from 'helpers/context/types'
-import { zero } from 'helpers/zero'
-import { Observable } from 'rxjs'
-
-import { defaultManageVaultCalculations } from './manageVaultCalculations'
-import { defaultManageVaultConditions } from './manageVaultConditions'
-import { manageVaultFormDefaults } from './manageVaultForm'
-import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageVaultInput'
+import { defaultManageVaultCalculations } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultCalculations'
+import { defaultManageVaultConditions } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultConditions'
+import { manageVaultFormDefaults } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultForm'
+import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultInput'
 import {
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
-} from './manageVaultTransactions'
+} from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
+import { TxHelpers } from 'helpers/context/types'
+import { zero } from 'helpers/zero'
+import { Observable } from 'rxjs'
 
 type ManageVaultMultiplyTransitionChange =
   | {

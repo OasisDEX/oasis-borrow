@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableHeading } from 'components/assetsTable/AssetsTableHeading'
@@ -33,7 +34,6 @@ import { formatAddress } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
 
 export function PositionsTable({
   address,

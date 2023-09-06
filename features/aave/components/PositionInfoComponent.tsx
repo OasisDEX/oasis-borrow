@@ -1,3 +1,4 @@
+import React from 'react'
 import { IPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
@@ -11,15 +12,13 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
+import { ManageSectionModal } from 'features/aave/components/ManageSectionModal'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
-
-import { ManageSectionModal } from './ManageSectionModal'
 
 const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
   const critical = new BigNumber(5)

@@ -1,8 +1,8 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
 export interface ContentCardDynamicStopPriceModalProps {

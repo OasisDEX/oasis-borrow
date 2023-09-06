@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { getEstimatedGasFeeTextOld } from 'components/vault/VaultChangesInformation'
@@ -5,7 +6,6 @@ import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { HasGasEstimation } from 'helpers/context/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface DsrDepositInfoSectionProps {
   daiToDeposit: BigNumber

@@ -1,5 +1,8 @@
+import React, { useEffect, useMemo } from 'react'
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
+import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountViewConsumed } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { useConnection } from 'features/web3OnBoard'
@@ -7,11 +10,7 @@ import { allDefined } from 'helpers/allDefined'
 import { callBackIfDefined } from 'helpers/callBackIfDefined'
 import { useFlowState, UseFlowStateCBParamsType, UseFlowStateCBType } from 'helpers/useFlowState'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useMemo } from 'react'
 import { Grid, Text } from 'theme-ui'
-
-import { SidebarSection, SidebarSectionProps } from './sidebar/SidebarSection'
-import { SidebarSectionFooterButtonSettings } from './sidebar/SidebarSectionFooter'
 
 export type CreateDPMAccountViewProps = {
   noConnectionContent?: JSX.Element

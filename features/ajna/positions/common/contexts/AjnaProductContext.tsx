@@ -1,3 +1,12 @@
+import React, {
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { AjnaEarnPosition, AjnaPosition, SwapData } from '@oasisdex/dma-library'
 import { AjnaSimulationData } from 'actions/ajna'
 import { useGasEstimationContext, useProductContext } from 'components/context'
@@ -28,15 +37,6 @@ import {
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React, {
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
 
 interface AjnaProductContextProviderPropsWithBorrow {
   formReducto: typeof useAjnaBorrowFormReducto

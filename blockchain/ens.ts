@@ -1,10 +1,9 @@
-import { ethers } from 'ethers'
 import { useMemo, useState } from 'react'
+import { Context } from 'blockchain/network'
+import { getNetworkRpcEndpoint, NetworkIds } from 'blockchain/networks'
+import { ethers } from 'ethers'
 import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-
-import { Context } from './network'
-import { getNetworkRpcEndpoint, NetworkIds } from './networks'
 
 export function resolveENSName$(context$: Observable<Context>, address: string) {
   return context$.pipe(

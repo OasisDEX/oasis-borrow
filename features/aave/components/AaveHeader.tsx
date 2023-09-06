@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react'
 import { Protocol } from '@prisma/client'
 import { ProtocolLabelProps } from 'components/ProtocolLabel'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
@@ -9,7 +10,6 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
 
 function AaveHeader({
   strategyConfig,

@@ -1,23 +1,22 @@
+import React from 'react'
 import { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
+import { FeesInformation } from 'features/aave/components/order-information/FeesInformation'
+import { LtvInformation } from 'features/aave/components/order-information/LtvInformation'
+import { MultiplyInformation } from 'features/aave/components/order-information/MultiplyInformation'
+import {
+  OutstandingDebtInformation,
+  TotalCollateralInformation,
+} from 'features/aave/components/order-information/OutstandingDebtInformation'
+import { PriceImpact } from 'features/aave/components/order-information/PriceImpact'
+import { SlippageInformation } from 'features/aave/components/order-information/SlippageInformation'
+import { TransactionTokenAmount } from 'features/aave/components/order-information/TransactionTokenAmount'
 import { getSlippage, ProductType, StrategyTokenBalance } from 'features/aave/types'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { HasGasEstimation } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
-
-import { FeesInformation } from './FeesInformation'
-import { LtvInformation } from './LtvInformation'
-import { MultiplyInformation } from './MultiplyInformation'
-import {
-  OutstandingDebtInformation,
-  TotalCollateralInformation,
-} from './OutstandingDebtInformation'
-import { PriceImpact } from './PriceImpact'
-import { SlippageInformation } from './SlippageInformation'
-import { TransactionTokenAmount } from './TransactionTokenAmount'
 
 export type OpenAaveInformationContainerProps = {
   state: {

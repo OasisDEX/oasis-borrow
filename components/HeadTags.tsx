@@ -1,9 +1,9 @@
+import React from 'react'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getRandomString } from 'helpers/getRandomString'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
-import React from 'react'
+import { useTranslation } from 'next-i18next'
 import { useTheme } from 'theme/useThemeUI'
 
 export function HeadTags() {

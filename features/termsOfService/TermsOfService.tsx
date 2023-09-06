@@ -1,3 +1,4 @@
+import React, { ReactNode, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import {
   FunctionalContextHandler,
@@ -9,15 +10,13 @@ import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { UserReferralState } from 'features/referralOverview/user'
+import { TermsAcceptanceStage, TermsAcceptanceState } from 'features/termsOfService/termsAcceptance'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
-import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
-import React, { ReactNode, useState } from 'react'
-import { Box, Button, Flex, Grid, Heading, Label, Text } from 'theme-ui'
+import { useTranslation } from 'next-i18next'
 import { fadeIn } from 'theme/animations'
-
-import { TermsAcceptanceStage, TermsAcceptanceState } from './termsAcceptance'
+import { Box, Button, Flex, Grid, Heading, Label, Text } from 'theme-ui'
 
 interface WithTermsOfServiceProps {
   children: ReactNode

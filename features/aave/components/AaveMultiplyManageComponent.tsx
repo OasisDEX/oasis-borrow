@@ -1,15 +1,14 @@
+import React from 'react'
 import { IPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { useAaveContext } from 'features/aave'
+import { AaveMultiplyPositionData } from 'features/aave/components/AaveMultiplyPositionData'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { IStrategyConfig } from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import React from 'react'
-
-import { AaveMultiplyPositionData } from './AaveMultiplyPositionData'
 
 export type AaveManageComponentProps = {
   isOpenView?: boolean

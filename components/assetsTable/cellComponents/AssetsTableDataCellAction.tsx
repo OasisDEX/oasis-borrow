@@ -1,5 +1,5 @@
-import { AppLink } from 'components/Links'
 import React from 'react'
+import { AppLink } from 'components/Links'
 import { Button, Flex } from 'theme-ui'
 
 interface AssetsTableDataCellActionProps {

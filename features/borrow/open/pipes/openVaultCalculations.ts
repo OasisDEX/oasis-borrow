@@ -1,8 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { openFlowInitialStopLossLevel } from 'features/automation/common/helpers'
+import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { zero } from 'helpers/zero'
-
-import { OpenVaultState } from './openVault'
 
 export interface OpenVaultCalculations {
   afterLiquidationPrice: BigNumber

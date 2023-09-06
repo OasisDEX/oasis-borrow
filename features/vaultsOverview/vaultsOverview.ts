@@ -1,10 +1,9 @@
 import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { Dsr } from 'features/dsr/utils/createDsr'
+import { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
+import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-
-import { AaveLikePosition } from './pipes/positions'
-import { MakerPositionDetails } from './pipes/positionsList'
 
 export interface PositionsList {
   makerPositions: MakerPositionDetails[]

@@ -1,7 +1,7 @@
-import { TokensGroup } from 'components/TokensGroup'
-import { allDefined } from 'helpers/allDefined'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { TokensGroup } from 'components/TokensGroup'
+import { allDefined } from 'helpers/allDefined'
 import { Flex, Text } from 'theme-ui'
 
 interface AssetsTableDataCellAssetProps {

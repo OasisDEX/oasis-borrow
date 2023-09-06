@@ -2,14 +2,13 @@
 // @ts-nocheck
 import { BigNumber } from 'bignumber.js'
 import { defaultAllowanceState } from 'features/allowance/allowance'
+import { EnvironmentState } from 'features/earn/guni/open/pipes/enviroment'
+import { openGuniVault, TxStateDependencies } from 'features/earn/guni/open/pipes/guniActionsCalls'
+import { defaultGuniOpenMultiplyVaultConditions } from 'features/earn/guni/open/pipes/openGuniVaultConditions'
 import { defaultProxyStage } from 'features/proxy/proxy'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
-
-import { EnvironmentState } from './enviroment'
-import { openGuniVault, TxStateDependencies } from './guniActionsCalls'
-import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions'
 
 export type EditingStage = 'editing'
 export type DepositChange = { kind: 'depositAmount'; depositAmount?: BigNumber }

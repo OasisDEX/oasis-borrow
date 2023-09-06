@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
@@ -11,6 +12,7 @@ import { calculateMultipleFromTargetCollRatio } from 'features/automation/common
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import {
   formatAddress,
@@ -23,11 +25,8 @@ import { interpolate } from 'helpers/interpolate'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 import { TranslationType } from 'ts_modules/i18next'
-
-import { VaultHistoryEvent } from './vaultHistory'
 
 function resolveTranslationForEventsWithTriggers(event: AutomationEvent) {
   const isGroup = 'groupId' in event && event.groupId

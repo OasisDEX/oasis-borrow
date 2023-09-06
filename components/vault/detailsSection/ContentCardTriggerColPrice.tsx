@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import {
   ChangeVariantType,
@@ -6,7 +7,6 @@ import {
 } from 'components/DetailsSectionContentCard'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardTriggerColPriceProps {

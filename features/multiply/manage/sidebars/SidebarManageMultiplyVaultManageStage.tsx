@@ -1,10 +1,10 @@
+import React, { useEffect, useState } from 'react'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
-import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { Text } from 'theme-ui'
 
 export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()

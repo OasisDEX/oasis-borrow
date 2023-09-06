@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect } from 'react'
 import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
 import { useNotificationSocket } from 'components/context'
 import { NotificationPreferenceCard } from 'components/notifications/NotificationPreferenceCard'
@@ -8,7 +9,6 @@ import {
   NotificationSubscriptionTypes,
 } from 'features/notifications/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React, { useCallback, useEffect } from 'react'
 
 export function NotificationPreferenceCardWrapper() {
   const { socket, analyticsData } = useNotificationSocket()

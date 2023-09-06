@@ -1,10 +1,10 @@
+import React, { ReactNode } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
-import React, { ReactNode } from 'react'
 import { Box, Card, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
 export type CollRatioColor = 'primary100' | 'critical100' | 'warning100' | 'success100'

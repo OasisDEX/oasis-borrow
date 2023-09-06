@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import dayjs from 'dayjs'
+import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
@@ -7,8 +8,6 @@ import { mockVault$ } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one } from 'helpers/zero'
 import { of } from 'rxjs/internal/observable/of'
-
-import { createVaultsNotices$ } from './vaultsNotices'
 
 describe('createVaultNotices$', () => {
   it('should assign ownership banner', () => {

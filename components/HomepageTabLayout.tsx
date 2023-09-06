@@ -1,6 +1,6 @@
 import React from 'react'
-import { Flex, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
+import { Flex, Text } from 'theme-ui'
 
 export function HomepageTabLayout(props: { paraText?: JSX.Element; cards: JSX.Element }) {
   return (

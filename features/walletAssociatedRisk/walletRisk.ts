@@ -1,10 +1,9 @@
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { TermsAcceptanceState } from 'features/termsOfService/termsAcceptance'
+import { getWalletRisk$, WalletRiskResponse } from 'features/walletAssociatedRisk/walletRiskApi'
 import { Web3Context } from 'features/web3Context'
 import { Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
-
-import { getWalletRisk$, WalletRiskResponse } from './walletRiskApi'
 
 export function createWalletAssociatedRisk$(
   web3Context$: Observable<Web3Context>,

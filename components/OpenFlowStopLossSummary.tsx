@@ -1,9 +1,9 @@
+import React from 'react'
 import { Box, Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface OpenFlowStopLossSummaryProps {
   stopLossLevel: BigNumber

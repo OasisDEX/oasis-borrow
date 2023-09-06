@@ -1,9 +1,8 @@
+import { forkNetworks, forkSettings } from 'blockchain/networks/forks-config'
+import { NetworkIds } from 'blockchain/networks/network-ids'
+import { NetworkConfig, NetworkConfigHexId, networks, networksById } from 'blockchain/networks/networks-config'
 import { keyBy } from 'lodash'
 import { env } from 'process'
-
-import { forkNetworks, forkSettings } from './forks-config'
-import { NetworkIds } from './network-ids'
-import { NetworkConfig, NetworkConfigHexId, networks, networksById } from './networks-config'
 
 export const isTestnetEnabled = () => {
   const isDev = env.NODE_ENV !== 'production'

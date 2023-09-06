@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { AppLink } from 'components/Links'
@@ -8,7 +9,6 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
 const KbLink = (

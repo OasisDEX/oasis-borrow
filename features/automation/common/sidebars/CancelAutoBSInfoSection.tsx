@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
@@ -5,7 +6,6 @@ import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTrigge
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface CancelAutoBSInfoSectionProps {
   positionRatio: BigNumber

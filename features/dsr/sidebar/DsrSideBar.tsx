@@ -1,3 +1,4 @@
+import React, { ChangeEvent, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
@@ -12,7 +13,6 @@ import { isProxyStage } from 'features/proxy/proxy'
 import { HasGasEstimation } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ChangeEvent, useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
 export type DsrSidebarTabOptions = 'deposit' | 'withdraw' | 'convert'

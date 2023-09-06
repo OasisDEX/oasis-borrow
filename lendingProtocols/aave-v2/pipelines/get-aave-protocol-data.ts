@@ -11,11 +11,10 @@ import {
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
+import { GetAaveV2OnChainPosition } from 'lendingProtocols/aave-v2/pipelines/aave-get-on-chain-position'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
-
-import { GetAaveV2OnChainPosition } from './aave-get-on-chain-position'
 
 export type AaveOracleAssetPriceDataType = ({ token }: { token: string }) => Observable<BigNumber>
 

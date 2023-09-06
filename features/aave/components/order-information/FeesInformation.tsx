@@ -1,3 +1,4 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Swap } from '@oasisdex/dma-library'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
@@ -11,7 +12,6 @@ import { HasGasEstimation } from 'helpers/context/types'
 import { formatAmount } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 interface FeesInformationProps {
   estimatedGasPrice?: HasGasEstimation

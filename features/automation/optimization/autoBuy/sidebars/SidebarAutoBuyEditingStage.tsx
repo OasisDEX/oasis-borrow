@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { Pages } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
@@ -28,6 +29,7 @@ import {
 } from 'features/automation/common/state/autoBSFormChange'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { AutoBuyInfoSectionControl } from 'features/automation/optimization/autoBuy/sidebars/AutoBuyInfoSectionControl'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
@@ -38,10 +40,7 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
 import { Text } from 'theme-ui'
-
-import { AutoBuyInfoSectionControl } from './AutoBuyInfoSectionControl'
 
 interface SidebarAutoBuyEditingStageProps {
   isEditing: boolean

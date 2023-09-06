@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react'
 import { IMultiplyStrategy, IRiskRatio, IStrategy } from '@oasisdex/dma-library'
 import { useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
@@ -18,7 +19,6 @@ import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
 import { Box } from 'theme-ui'
 
 function mapSimulation(simulation?: Simulation): string[] {

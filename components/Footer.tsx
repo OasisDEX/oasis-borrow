@@ -1,17 +1,16 @@
+import React from 'react'
+import { SelectComponents } from 'react-select/src/components'
 import { Icon } from '@makerdao/dai-ui-icons'
+import { ChevronUpDown } from 'components/ChevronUpDown'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
 import dayjs from 'dayjs'
 import { NewsletterSection } from 'features/newsletter/NewsletterView'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
-import React from 'react'
+import { useTranslation } from 'next-i18next'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
-
-import { ChevronUpDown } from './ChevronUpDown'
-import { SelectComponents } from 'react-select/src/components'
 
 const {
   publicRuntimeConfig: { buildHash, buildDate, showBuildInfo },

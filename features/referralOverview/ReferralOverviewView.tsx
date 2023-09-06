@@ -1,16 +1,15 @@
+import React from 'react'
 import { Context } from 'blockchain/network'
 import { useAccountContext, useMainContext } from 'components/context'
 import { getAddress } from 'ethers/lib/utils'
+import { FeesView } from 'features/referralOverview/FeesView'
+import { ReferralLanding } from 'features/referralOverview/ReferralLanding'
+import { ReferralLayout } from 'features/referralOverview/ReferralLayout'
+import { ReferralsView } from 'features/referralOverview/ReferralsView'
+import { UserReferralState } from 'features/referralOverview/user'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import React from 'react'
-
-import { FeesView } from './FeesView'
-import { ReferralLanding } from './ReferralLanding'
-import { ReferralLayout } from './ReferralLayout'
-import { ReferralsView } from './ReferralsView'
-import { UserReferralState } from './user'
 
 interface Props {
   context: Context

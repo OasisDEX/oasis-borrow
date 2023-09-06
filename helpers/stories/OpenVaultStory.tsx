@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'
@@ -7,7 +8,6 @@ import {
 } from 'features/borrow/open/pipes/openVault'
 import { ProductContext } from 'helpers/context/ProductContext'
 import { mockOpenVault$, MockOpenVaultProps } from 'helpers/mocks/openVault.mock'
-import React, { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'

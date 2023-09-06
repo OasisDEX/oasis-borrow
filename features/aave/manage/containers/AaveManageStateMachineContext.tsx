@@ -1,9 +1,9 @@
+import React from 'react'
 import { useInterpret } from '@xstate/react'
 import { ManageAaveStateMachine } from 'features/aave/manage/state'
 import { IStrategyConfig, PositionId, ProxyType } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { env } from 'process'
-import React from 'react'
 
 export const defaultManageTokenInputValues = {
   // defaults for the manage collateral/debt are set here

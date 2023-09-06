@@ -1,10 +1,9 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import React, { useLayoutEffect, useState } from 'react'
+import { Icon } from '@makerdao/dai-ui-icons'
+import { AppLink } from 'components/Links'
+import { Notice } from 'components/Notice'
+import { WithArrow } from 'components/WithArrow'
 import { Box, Flex, Text } from 'theme-ui'
-
-import { AppLink } from './Links'
-import { Notice } from './Notice'
-import { WithArrow } from './WithArrow'
 
 function Separator() {
   return (

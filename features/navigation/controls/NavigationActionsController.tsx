@@ -1,3 +1,4 @@
+import React from 'react'
 import { MyPositionsOrb } from 'components/navigation/content/MyPositionsOrb'
 import { NotificationsOrb } from 'components/navigation/content/NotificationsOrb'
 import { SwapWidgetOrb } from 'components/navigation/content/SwapWidgetOrb'
@@ -7,7 +8,6 @@ import { navigationBreakpoints } from 'components/navigation/Navigation'
 import { NavigationNetworkSwitcherOrb } from 'components/navigation/NavigationNetworkSwitcher'
 import { ConnectButton } from 'features/web3OnBoard'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface NavigationActionsControllerProps {

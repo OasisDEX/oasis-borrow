@@ -1,5 +1,5 @@
 // main network names skipping the testnets mapping
-import { NetworkNames } from './network-names'
+import { NetworkNames } from 'blockchain/networks/network-names'
 
 export enum MainNetworkNames {
   ethereumMainnet = NetworkNames.ethereumMainnet,

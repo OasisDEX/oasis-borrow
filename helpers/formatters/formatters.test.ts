@@ -1,12 +1,11 @@
 import { BigNumber } from 'bignumber.js'
-import { billion, million, thousand, zero } from 'helpers/zero'
-
 import {
   formatAsShorthandNumbers,
   formatCryptoBalance,
   formatDecimalAsPercent,
   formatFiatBalance,
-} from './format'
+} from 'helpers/formatters/format'
+import { billion, million, thousand, zero } from 'helpers/zero'
 
 describe('Formatting numbers as shorthand ones', () => {
   beforeEach(() => {

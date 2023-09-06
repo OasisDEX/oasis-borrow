@@ -1,3 +1,4 @@
+import React from 'react'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -7,7 +8,6 @@ import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/A
 import { ContentFooterItemsEarnOpen } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnOpen'
 import { getAjnaSimulationRows } from 'features/ajna/positions/earn/helpers/getAjnaSimulationRows'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function AjnaEarnOverviewOpenController() {
   const { t } = useTranslation()

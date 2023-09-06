@@ -1,6 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { StandardDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
+import { getWithdrawAndPaybackCallData } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
@@ -17,9 +19,6 @@ import {
   DssProxyActions,
   MultiplyProxyActions,
 } from 'types/web3-v1-contracts'
-
-import { StandardDssProxyActionsContractAdapter } from './adapters/standardDssProxyActionsContractAdapter'
-import { getWithdrawAndPaybackCallData } from './vaultActionsLogic'
 
 export type OpenMultiplyData = {
   kind: TxMetaKind.multiply

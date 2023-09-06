@@ -1,6 +1,6 @@
-import '@testing-library/jest-dom'
+import { LocalStorage } from 'test-configs/mock-local-storage'
 
-import { LocalStorage } from './mock-local-storage'
+import '@testing-library/jest-dom'
 
 beforeEach(() => {
   localStorage = new LocalStorage()

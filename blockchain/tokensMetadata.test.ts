@@ -1,4 +1,4 @@
-import { getToken, getTokens, tokens } from './tokensMetadata'
+import { getToken, getTokens, tokens } from 'blockchain/tokensMetadata'
 
 const tokenKeys = [
   'symbol',

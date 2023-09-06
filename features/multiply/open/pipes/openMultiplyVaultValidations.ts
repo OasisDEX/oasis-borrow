@@ -1,8 +1,7 @@
 import { notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler, VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage, warningMessagesHandler } from 'features/form/warningMessagesHandler'
-
-import { OpenMultiplyVaultState } from './openMultiplyVault'
+import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 
 export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {

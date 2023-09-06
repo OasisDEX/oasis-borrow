@@ -1,3 +1,4 @@
+import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -42,7 +43,6 @@ import { useStopLossStateInitialization } from 'features/automation/protection/s
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
-import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 
 export interface AutomationEnvironmentData {
   canInteract: boolean

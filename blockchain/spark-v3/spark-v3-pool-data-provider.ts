@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
+import { BaseParameters, getNetworkMapping, wethToEthAddress } from 'blockchain/spark-v3/utils'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
 import { SparkV3PoolDataProvider__factory } from 'types/ethers-contracts'
-
-import { BaseParameters, getNetworkMapping, wethToEthAddress } from './utils'
 
 export interface SparkV3UserReserveDataParameters extends BaseParameters {
   token: string

@@ -1,7 +1,7 @@
-import { ListWithIcon } from 'components/ListWithIcon'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { ListWithIcon } from 'components/ListWithIcon'
+import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { Text } from 'theme-ui'
 
 export function AjnaBorrowFormContentSwitch() {

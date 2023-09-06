@@ -1,11 +1,10 @@
 /* eslint-disable func-style */
 
 import BigNumber from 'bignumber.js'
+import { createUserSettings$, SaveUserSettingsFunction, SLIPPAGE_DEFAULT } from 'features/userSettings/userSettings'
+import { checkUserSettingsLocalStorage$, saveUserSettingsLocalStorage$ } from 'features/userSettings/userSettingsLocal'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of, throwError } from 'rxjs'
-
-import { createUserSettings$, SaveUserSettingsFunction, SLIPPAGE_DEFAULT } from './userSettings'
-import { checkUserSettingsLocalStorage$, saveUserSettingsLocalStorage$ } from './userSettingsLocal'
 
 interface MockUserSettingsProps {
   _checkUserSettings$?: () => Observable<{ slippage: string | null }>

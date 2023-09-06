@@ -1,3 +1,4 @@
+import React from 'react'
 import { WithConnection } from 'components/connectWallet'
 import { ProductContextHandler } from 'components/context'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
@@ -7,7 +8,6 @@ import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 
 function AjnaPoolCreatorPage() {
   return (

@@ -1,11 +1,10 @@
 import BigNumber from 'bignumber.js'
 import * as mcdCropJoinAbi from 'blockchain/abi/dss-crop-join.json'
+import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { DssCropper } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
-
-import { CallDef } from './callsHelpers'
 
 export const cropperUrnProxy: CallDef<string, string> = {
   call: (_, { contract, chainId }) =>

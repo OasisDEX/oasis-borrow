@@ -1,14 +1,13 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
+import { Hero } from 'features/homepage/common/Hero'
+import { HomepagePromoBlock } from 'features/homepage/common/HomepagePromoBlock'
+import { OasisStats } from 'features/homepage/OasisStats'
+import { useOasisStats } from 'features/homepage/stats'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Container, Flex, Grid, Text } from 'theme-ui'
-
-import { Hero } from './common/Hero'
-import { HomepagePromoBlock } from './common/HomepagePromoBlock'
-import { OasisStats } from './OasisStats'
-import { useOasisStats } from './stats'
 
 function StatCell({ label, value }: { label: string; value: string }) {
   return (

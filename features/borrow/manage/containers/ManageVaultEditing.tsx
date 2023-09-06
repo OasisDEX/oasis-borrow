@@ -1,11 +1,10 @@
+import React, { ReactNode } from 'react'
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
+import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
 import { Box, Button, Divider, Grid, Text } from 'theme-ui'
-
-import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'
 
 function DepositInput({
   maxDepositAmount,

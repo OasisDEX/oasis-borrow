@@ -1,6 +1,6 @@
+import React from 'react'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 import { Spinner } from 'theme-ui'
 

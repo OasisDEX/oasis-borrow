@@ -1,9 +1,9 @@
+import { useEffect } from 'react'
 import BigNumber from 'bignumber.js'
 import { StopLossMetadata } from 'features/automation/metadata/types'
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { uiChanges } from 'helpers/uiChanges'
-import { useEffect } from 'react'
 
 export function useStopLossStateInitialization({
   positionRatio,

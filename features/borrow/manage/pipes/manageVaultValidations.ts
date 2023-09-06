@@ -1,8 +1,7 @@
+import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler, VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage, warningMessagesHandler } from 'features/form/warningMessagesHandler'
-
-import { ManageStandardBorrowVaultState } from './manageVault'
 
 export function validateErrors(
   state: ManageStandardBorrowVaultState,

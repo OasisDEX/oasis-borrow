@@ -1,9 +1,9 @@
+import React from 'react'
 import { useAutomationContext } from 'components/context'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function CancelConstantMultipleInfoSection() {
   const { t } = useTranslation()

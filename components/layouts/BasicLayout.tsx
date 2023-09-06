@@ -1,6 +1,6 @@
+import React, { Ref } from 'react'
 import { useCoolMode } from 'helpers/sweet/useCoolMode'
 import { WithChildren } from 'helpers/types'
-import React, { Ref } from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
 
 export interface BasicLayoutProps extends WithChildren {

@@ -1,3 +1,5 @@
+import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { currentContent } from 'features/content'
 import { jwtAuthSetupToken$ } from 'features/shared/jwt'
 import {
@@ -12,10 +14,7 @@ import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walle
 import { WalletRiskResponse } from 'features/walletAssociatedRisk/walletRiskApi'
 import { DepreciatedServices } from 'helpers/context/types'
 import { WithChildren } from 'helpers/types'
-import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 import { Observable } from 'rxjs'
-
-import { useMainContext } from './MainContextProvider'
 
 export const tosContext = React.createContext<TOSContext | undefined>(undefined)
 

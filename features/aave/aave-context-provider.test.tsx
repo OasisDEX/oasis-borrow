@@ -1,3 +1,4 @@
+import React from 'react'
 import { renderHook } from '@testing-library/react'
 import { NetworkNames } from 'blockchain/networks'
 import {
@@ -8,14 +9,12 @@ import {
   MainContextProvider,
   productContext,
 } from 'components/context'
+import { AaveContext } from 'features/aave/aave-context'
+import { aaveContext, AaveContextProvider, useAaveContext } from 'features/aave/aave-context-provider'
+import * as setupAaveV2ContextModule from 'features/aave/setup-aave-v2-context'
 import { ProductContext } from 'helpers/context/ProductContext'
 import { WithChildren } from 'helpers/types'
 import { LendingProtocol } from 'lendingProtocols'
-import React from 'react'
-
-import { AaveContext } from './aave-context'
-import { aaveContext, AaveContextProvider, useAaveContext } from './aave-context-provider'
-import * as setupAaveV2ContextModule from './setup-aave-v2-context'
 
 jest.mock('./setup-aave-v2-context', () => {
   return {

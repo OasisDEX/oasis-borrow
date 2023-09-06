@@ -7,14 +7,13 @@ import {
 } from 'blockchain/network'
 import { networksById } from 'blockchain/networks'
 import { contract, ContractDesc } from 'features/web3Context'
-import Web3 from 'web3'
-
 import {
   mockWeb3Context$,
   mockWeb3ContextConnected,
   mockWeb3ContextConnectedReadonly,
   MockWeb3ContextProps,
-} from './web3Context.mock'
+} from 'helpers/mocks/web3Context.mock'
+import Web3 from 'web3'
 
 export function mockContext$(props: MockWeb3ContextProps) {
   const web3Context$ = mockWeb3Context$(props)

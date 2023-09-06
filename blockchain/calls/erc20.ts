@@ -1,13 +1,12 @@
 import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import * as erc20 from 'blockchain/abi/erc20.json'
+import { CallDef, TransactionDef } from 'blockchain/calls/callsHelpers'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Erc20 } from 'types/web3-v1-contracts'
-
-import { CallDef, TransactionDef } from './callsHelpers'
-import { TxMetaKind } from './txMeta'
 
 export const MIN_ALLOWANCE = new BigNumber('0xffffffffffffffffffffffffffffffff')
 //

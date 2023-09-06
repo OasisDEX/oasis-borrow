@@ -1,9 +1,8 @@
 import { BigNumber } from 'bignumber.js'
+import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { manageMultiplyInputsDefaults } from 'features/multiply/manage/pipes/manageMultiplyVaultForm'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { zero } from 'helpers/zero'
-
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
-import { manageMultiplyInputsDefaults } from './manageMultiplyVaultForm'
 
 interface DepositAmountChange {
   kind: 'depositAmount'

@@ -1,5 +1,5 @@
-import { Skeleton } from 'components/Skeleton'
 import React from 'react'
+import { Skeleton } from 'components/Skeleton'
 import { Box } from 'theme-ui'
 
 export const SwapWidgetSkeleton = () => (

@@ -1,5 +1,5 @@
-import { GetServerSidePropsContext } from 'next'
 import React from 'react'
+import { GetServerSidePropsContext } from 'next'
 
 function AjnaManagePositionPageRedirect() {
   return <></>

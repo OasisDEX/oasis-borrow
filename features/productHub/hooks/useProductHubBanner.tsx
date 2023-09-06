@@ -1,3 +1,4 @@
+import React from 'react'
 import { AssetsTableBannerProps } from 'components/assetsTable/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -5,7 +6,6 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { startCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import poolFinderIcon from 'public/static/img/product_hub_banners/pool-finder.svg'
-import React from 'react'
 import { Image } from 'theme-ui'
 
 interface ProductHubBannerProps {

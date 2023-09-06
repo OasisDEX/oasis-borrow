@@ -1,3 +1,4 @@
+import React, { ReactNode } from 'react'
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
@@ -8,7 +9,6 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
 import { Box, Container } from 'theme-ui'
 
 interface AjnaPositionViewProps {

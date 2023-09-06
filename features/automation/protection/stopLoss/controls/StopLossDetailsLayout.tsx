@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
@@ -11,7 +12,6 @@ import {
   StopLossMetadataDetailCards,
 } from 'features/automation/metadata/types'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export interface StopLossDetailsLayoutProps {
   stopLossLevel: BigNumber

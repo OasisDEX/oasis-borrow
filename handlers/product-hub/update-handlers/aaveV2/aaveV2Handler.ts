@@ -8,12 +8,11 @@ import dayjs from 'dayjs'
 import { ProductHubProductType } from 'features/productHub/types'
 import { GraphQLClient } from 'graphql-request'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
+import { aaveV2ProductHubProducts } from 'handlers/product-hub/update-handlers/aaveV2/aaveV2Products'
 import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { flatten } from 'lodash'
 import { curry } from 'ramda'
-
-import { aaveV2ProductHubProducts } from './aaveV2Products'
 
 export default async function (tickers: Tickers): ProductHubHandlerResponse {
   // Multiply: max multiple, liq available, variable fee

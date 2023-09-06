@@ -1,5 +1,5 @@
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { useEffect, useRef } from 'react'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 
 export function SillyVideo({
   playVideo,

@@ -1,4 +1,4 @@
-import { NetworkNames } from './network-names'
+import { NetworkNames } from 'blockchain/networks/network-names'
 
 // these are used for the tab title
 export const networkTabTitleIconMap: Record<NetworkNames | 'fork', string> = {

@@ -1,11 +1,10 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
+import { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
+import { getNetworkRpcEndpoint } from 'blockchain/networks'
 import { JSONRPCRequestPayload } from 'ethereum-types'
 import { providers } from 'ethers'
 import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
-
-import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
-import { getNetworkRpcEndpoint } from './networks'
 
 function fixChainId(chainId: string | number) {
   return Number(chainId).valueOf()

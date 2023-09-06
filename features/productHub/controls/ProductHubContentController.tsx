@@ -1,3 +1,4 @@
+import React, { FC, useMemo } from 'react'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
@@ -15,7 +16,6 @@ import {
 import { useWalletManagement } from 'features/web3OnBoard'
 import { useFeatureToggles } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
-import React, { FC, useMemo } from 'react'
 
 interface ProductHubContentControllerProps {
   initialNetwork?: ProductHubSupportedNetworks[]

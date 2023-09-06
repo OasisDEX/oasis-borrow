@@ -1,5 +1,5 @@
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Box, Image } from 'theme-ui'
 
 export function BackgroundLight() {

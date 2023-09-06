@@ -1,3 +1,4 @@
+import React from 'react'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentTransition } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentTransition'
@@ -9,7 +10,6 @@ import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/Ajn
 import { AjnaFormContentTransaction } from 'features/ajna/positions/common/sidebars/AjnaFormContentTransaction'
 import { AjnaFormView } from 'features/ajna/positions/common/views/AjnaFormView'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function AjnaBorrowFormController() {
   const { t } = useTranslation()

@@ -7,14 +7,13 @@ import { createVault$, Vault } from 'blockchain/vaults'
 import { generateRandomBigNumber } from 'features/automation/optimization/autoTakeProfit/tests/utils'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getRandomString } from 'helpers/getRandomString'
+import { mockContextConnected$ } from 'helpers/mocks/context.mock'
+import { mockIlkData$, mockIlkToToken$ } from 'helpers/mocks/ilks.mock'
+import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
-
-import { mockContextConnected$ } from './context.mock'
-import { mockIlkData$, mockIlkToToken$ } from './ilks.mock'
-import { mockPriceInfo$ } from './priceInfo.mock'
 
 export interface MockVaultProps {
   _cdpManagerUrns$?: Observable<string>

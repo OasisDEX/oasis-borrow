@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
-
 import {
   createSparkUserConfiguration,
   SparkUserConfigurationResult,
-} from './spark-user-configuration'
+} from 'lendingProtocols/spark-v3/pipelines/spark-user-configuration'
 
 describe('SparkUserConfiguration', () => {
   function generateUserConfig(input: string): string {

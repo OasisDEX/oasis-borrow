@@ -5,13 +5,12 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
+import { ProxyContext, ProxyEvent, ProxyObservableService } from 'features/stateMachines/proxy/state/types'
 import { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { isEqual } from 'lodash'
 import { of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
-
-import { ProxyContext, ProxyEvent, ProxyObservableService } from './types'
 
 const createProxy: ProxyObservableService = (
   { dependencies, contextConnected, txHelpers }: ProxyContext,

@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
 import {
@@ -10,7 +11,6 @@ import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardLiquidationPriceModalProps {

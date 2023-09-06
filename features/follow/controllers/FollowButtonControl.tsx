@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { Protocol, UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
@@ -15,7 +16,6 @@ import {
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React, { useEffect, useState } from 'react'
 import { SxStyleProp } from 'theme-ui'
 
 export type FollowButtonControlProps = {

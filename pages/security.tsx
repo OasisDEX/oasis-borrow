@@ -1,3 +1,4 @@
+import React, { Fragment } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/layouts'
@@ -7,7 +8,6 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useScrollToTop } from 'helpers/useScrollToTop'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React, { Fragment } from 'react'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({

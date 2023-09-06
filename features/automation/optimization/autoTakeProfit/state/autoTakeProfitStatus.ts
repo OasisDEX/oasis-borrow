@@ -13,18 +13,17 @@ import {
   checkIfIsEditingAutoTakeProfit,
 } from 'features/automation/optimization/autoTakeProfit/helpers'
 import {
+  AUTO_TAKE_PROFIT_FORM_CHANGE,
+  AutoTakeProfitFormChange,
+  AutoTakeProfitResetData,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import {
   AutoTakeProfitTriggerData,
   prepareAutoTakeProfitResetData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
 import { uiChanges } from 'helpers/uiChanges'
-
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
-  AutoTakeProfitFormChange,
-  AutoTakeProfitResetData,
-} from './autoTakeProfitFormChange'
 
 interface GetAutoTakeProfitStatusParams {
   id: BigNumber

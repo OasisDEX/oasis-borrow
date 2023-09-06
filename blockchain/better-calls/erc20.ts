@@ -1,12 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { BaseCallParameters, BaseTransactionParameters } from 'blockchain/better-calls/utils'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { ensureTokensExist, getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, networkSetById } from 'blockchain/networks'
 import { amountFromWei, amountToWei } from 'blockchain/utils'
 import { ethers } from 'ethers'
 import { Erc20__factory } from 'types/ethers-contracts'
-
-import { BaseCallParameters, BaseTransactionParameters } from './utils'
 
 export interface TokenBalanceArgs extends BaseCallParameters {
   token: string

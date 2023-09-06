@@ -1,3 +1,11 @@
+import {
+  ClaimRewardData,
+  DepositAndGenerateData,
+  OpenData,
+  ProxyActionsAdapterType,
+  ProxyActionsSmartContractAdapterInterface,
+  WithdrawAndPaybackData,
+} from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
@@ -9,15 +17,6 @@ import {
   PayableTransactionObject,
 } from 'types/web3-v1-contracts/types'
 import Web3 from 'web3'
-
-import {
-  ClaimRewardData,
-  DepositAndGenerateData,
-  OpenData,
-  ProxyActionsAdapterType,
-  ProxyActionsSmartContractAdapterInterface,
-  WithdrawAndPaybackData,
-} from './ProxyActionsSmartContractAdapterInterface'
 
 // Adapter for maker protocol proxy actions that does not require a `manager`.  These proxy actions
 // use the CDP Registry instead, on the maker protocol side.

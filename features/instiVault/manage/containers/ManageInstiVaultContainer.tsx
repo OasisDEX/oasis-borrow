@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { trackingEvents } from 'analytics/analytics'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { useMainContext, useProductContext } from 'components/context'
@@ -9,12 +10,10 @@ import {
 import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
 import { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
+import { ManageInstiVaultDetails } from 'features/instiVault/manage/containers/ManageInstiVaultDetails'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
-
-import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 
 export function ManageInstiVaultContainer({ manageVault }: { manageVault: ManageInstiVaultState }) {
   const { context$ } = useMainContext()

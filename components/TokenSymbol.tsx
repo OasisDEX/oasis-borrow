@@ -1,6 +1,6 @@
+import React, { ComponentProps } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
-import React, { ComponentProps } from 'react'
 import { Flex, Text } from 'theme-ui'
 
 export function TokenSymbol({

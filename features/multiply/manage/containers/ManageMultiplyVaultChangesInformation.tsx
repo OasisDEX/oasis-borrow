@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
@@ -19,7 +20,6 @@ import {
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
 
 export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()

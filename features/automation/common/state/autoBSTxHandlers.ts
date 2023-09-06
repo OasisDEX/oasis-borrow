@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
@@ -8,7 +9,6 @@ import { prepareAddAutoBSTriggerData } from 'features/automation/common/state/au
 import { AutoBSTriggerTypes, AutomationBSPublishType } from 'features/automation/common/types'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
-import { useMemo } from 'react'
 
 interface GetAutoBSTxHandlersParams {
   autoBSState: AutoBSFormChange

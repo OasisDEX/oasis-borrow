@@ -1,22 +1,21 @@
+import React, { createContext, useCallback, useContext, useEffect } from 'react'
 import { ConnectorEvent } from '@web3-react/types'
 import { NetworkConfigHexId, NetworkIds } from 'blockchain/networks'
-import { useModalContext } from 'helpers/modalHook'
-import { WithChildren } from 'helpers/types'
-import { useReducto } from 'helpers/useReducto'
-import React, { createContext, useCallback, useContext, useEffect } from 'react'
-
-import { getNetworksFromPageNetwork } from './get-networks-from-page-network'
-import { UnsupportedNetworkModal } from './unsupported-network-modal'
-import { useBridgeConnector } from './use-bridge-connector'
-import { useChainSetter } from './use-chain-setter'
-import { useNetworkConnector } from './use-network-connector'
-import { useSafetyReload } from './use-safety-reload'
-import { WalletManagementState, WalletStateEvent, walletStateReducer } from './wallet-state'
+import { getNetworksFromPageNetwork } from 'features/web3OnBoard/get-networks-from-page-network'
+import { UnsupportedNetworkModal } from 'features/web3OnBoard/unsupported-network-modal'
+import { useBridgeConnector } from 'features/web3OnBoard/use-bridge-connector'
+import { useChainSetter } from 'features/web3OnBoard/use-chain-setter'
+import { useNetworkConnector } from 'features/web3OnBoard/use-network-connector'
+import { useSafetyReload } from 'features/web3OnBoard/use-safety-reload'
+import { WalletManagementState, WalletStateEvent, walletStateReducer } from 'features/web3OnBoard/wallet-state'
 import {
   areThePageNetworksTheSame,
   WalletManagementStateStatus,
-} from './wallet-state/wallet-management-state'
-import { WalletStateEventType } from './wallet-state/wallet-state-event'
+} from 'features/web3OnBoard/wallet-state/wallet-management-state'
+import { WalletStateEventType } from 'features/web3OnBoard/wallet-state/wallet-state-event'
+import { useModalContext } from 'helpers/modalHook'
+import { WithChildren } from 'helpers/types'
+import { useReducto } from 'helpers/useReducto'
 
 export type Web3OnBoardConnectorContext = {
   connect: (desiredNetworkHexId?: NetworkConfigHexId, couldBeConnectedToTestNet?: boolean) => void

@@ -1,8 +1,7 @@
 import { ContextConnected } from 'blockchain/network'
+import { createProxyStateMachine } from 'features/stateMachines/proxy/state/machine'
 import { HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import { Observable } from 'rxjs'
-
-import { createProxyStateMachine } from './machine'
 
 export interface ProxyContext {
   readonly dependencies: {

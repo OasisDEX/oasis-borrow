@@ -1,3 +1,4 @@
+import React, { ChangeEvent, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import { ActionPills } from 'components/ActionPills'
 import { MessageCard } from 'components/MessageCard'
@@ -11,9 +12,8 @@ import { HasGasEstimation } from 'helpers/context/types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ChangeEvent, useMemo } from 'react'
-import { Box, Flex, Image } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { Box, Flex, Image } from 'theme-ui'
 
 interface DsrEditingProps {
   activeTab: DsrSidebarTabOptions

@@ -1,14 +1,13 @@
+import { useEffect } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { NetworkConnector } from '@web3-react/network-connector'
 import { Provider as Web3Provider } from 'ethereum-types'
 import { ethers } from 'ethers'
+import { Web3Context } from 'features/web3Context/types'
 import { BridgeConnector, useWeb3OnBoardConnectorContext } from 'features/web3OnBoard'
 import { isEqual } from 'lodash'
-import { useEffect } from 'react'
 import { Observable, ReplaySubject } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/operators'
-
-import { Web3Context } from './types'
 
 export type BalanceOfMethod = (address: string) => { call: () => Promise<string> }
 

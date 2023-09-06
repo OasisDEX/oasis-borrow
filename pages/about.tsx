@@ -1,3 +1,4 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/layouts'
@@ -8,7 +9,6 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { sortBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 
 function AboutPage({ members }: { members: TeamMember[] }) {

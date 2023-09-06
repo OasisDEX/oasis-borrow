@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
@@ -8,7 +9,6 @@ import {
 import { ProductContext } from 'helpers/context/ProductContext'
 import { mockGuniOpenEarnVault } from 'helpers/mocks/guniOpenEarnVault.mock'
 import { MockOpenMultiplyVaultProps } from 'helpers/mocks/openMultiplyVault.mock'
-import React, { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'

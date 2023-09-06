@@ -1,7 +1,6 @@
-import { usePrevious } from '@react-hooks-library/core'
 import { useEffect } from 'react'
-
-import { WalletManagementState } from './wallet-management-state'
+import { usePrevious } from '@react-hooks-library/core'
+import { WalletManagementState } from 'features/web3OnBoard/wallet-state/wallet-management-state'
 
 interface IDebugWalletState {
   state: WalletManagementState

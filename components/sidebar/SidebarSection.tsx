@@ -1,11 +1,10 @@
+import React, { useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { MobileSidePanel } from 'components/Modal'
-import React, { useState } from 'react'
+import { SidebarSectionContent, SidebarSectionContentProps } from 'components/sidebar/SidebarSectionContent'
+import { SidebarSectionFooter, SidebarSectionFooterProps } from 'components/sidebar/SidebarSectionFooter'
+import { SidebarSectionHeader, SidebarSectionHeaderProps } from 'components/sidebar/SidebarSectionHeader'
 import { Card } from 'theme-ui'
-
-import { SidebarSectionContent, SidebarSectionContentProps } from './SidebarSectionContent'
-import { SidebarSectionFooter, SidebarSectionFooterProps } from './SidebarSectionFooter'
-import { SidebarSectionHeader, SidebarSectionHeaderProps } from './SidebarSectionHeader'
 
 export interface SidebarSectionProps
   extends Omit<SidebarSectionHeaderProps, 'onSelect'>,

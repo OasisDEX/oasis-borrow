@@ -1,10 +1,10 @@
+import React, { ReactNode, useState } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
 import { TranslateStringType } from 'helpers/translateStringType'
-import React, { ReactNode, useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
 export type SecondaryVariantType = 'positive' | 'negative' | 'neutral'

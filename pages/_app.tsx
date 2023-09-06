@@ -1,3 +1,4 @@
+import React, { useEffect, useRef } from 'react'
 import { CacheProvider, Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 // @ts-ignore
@@ -34,17 +35,16 @@ import { FTPolar } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
 import { loadFeatureToggles } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
-import { appWithTranslation, i18n, useTranslation } from 'next-i18next'
-import nextI18NextConfig from 'next-i18next.config.js'
 import { AppProps } from 'next/app'
 import getConfig from 'next/config'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useEffect, useRef } from 'react'
+import { appWithTranslation, i18n, useTranslation } from 'next-i18next'
+import nextI18NextConfig from 'next-i18next.config.js'
 import { theme } from 'theme'
+import { web3OnboardStyles } from 'theme/web3OnboardStyles'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
-import { web3OnboardStyles } from 'theme/web3OnboardStyles'
 import Web3 from 'web3'
 
 if (process.env.NODE_ENV !== 'production') {

@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -28,6 +29,7 @@ import {
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { ConstantMultipleInfoSectionControl } from 'features/automation/optimization/constantMultiple/sidebars/ConstantMultipleInfoSectionControl'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
@@ -49,10 +51,7 @@ import { uiChanges } from 'helpers/uiChanges'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Text } from 'theme-ui'
-
-import { ConstantMultipleInfoSectionControl } from './ConstantMultipleInfoSectionControl'
 
 interface SidebaConstantMultiplerEditingStageProps {
   isEditing: boolean

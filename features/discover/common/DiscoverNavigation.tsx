@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { GenericSelect } from 'components/GenericSelect'
 import { AppLink } from 'components/Links'
@@ -6,10 +7,9 @@ import { DiscoverPages } from 'features/discover/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
 import { theme } from 'theme'
-import { Box, Flex, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
+import { Box, Flex, Text } from 'theme-ui'
 
 interface DiscoverNavigationProps {
   kind: DiscoverPages

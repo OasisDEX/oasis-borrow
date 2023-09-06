@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import {
   AfterPillProps,
@@ -7,7 +8,6 @@ import {
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 function MinActiveColRatioModal({ close }: ModalProps<{}>) {

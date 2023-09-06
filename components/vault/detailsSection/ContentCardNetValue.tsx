@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useProductContext } from 'components/context'
@@ -10,7 +11,6 @@ import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/format
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
 import { Box, Card, Divider, Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardNetValueModalProps {

@@ -1,9 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { setAllowance } from 'features/allowance/setAllowance'
 import { TxHelpers } from 'helpers/context/types'
 import { TxError } from 'helpers/types'
-
-import { setAllowance } from './setAllowance'
 
 // TODO: there is inconsistency between open/manage
 // in open there is just one allowance called allowance

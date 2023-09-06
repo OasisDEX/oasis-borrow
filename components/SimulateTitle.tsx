@@ -1,10 +1,10 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getTokenGuarded } from 'blockchain/tokensMetadata'
 import { GenericTokenIcon } from 'components/GenericTokenIcon'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
 
 interface SimulateTitleProps {

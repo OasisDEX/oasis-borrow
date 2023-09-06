@@ -1,4 +1,4 @@
-import { allDefined } from './allDefined'
+import { allDefined } from 'helpers/allDefined'
 
 describe('allDefined', () => {
   describe('basic cases', () => {

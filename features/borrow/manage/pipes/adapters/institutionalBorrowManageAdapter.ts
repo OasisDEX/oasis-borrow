@@ -2,6 +2,11 @@ import BigNumber from 'bignumber.js'
 import { InstiVault } from 'blockchain/instiVault'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import {
+  BorrowManageAdapterInterface,
+  CreateInitialVaultStateArgs,
+} from 'features/borrow/manage/pipes/adapters/borrowManageAdapterInterface'
+import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
+import {
   GenericManageBorrowVaultState,
   ManageStandardBorrowVaultState,
   ManageVaultChange,
@@ -20,12 +25,6 @@ import { applyManageVaultSummary } from 'features/borrow/manage/pipes/viewStateT
 import { applyManageVaultTransaction } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
 import { applyManageVaultTransition } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransitions'
 import { zero } from 'helpers/zero'
-
-import {
-  BorrowManageAdapterInterface,
-  CreateInitialVaultStateArgs,
-} from './borrowManageAdapterInterface'
-import { StandardBorrowManageAdapter } from './standardBorrowManageAdapter'
 
 export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
   transactionFeeETH?: BigNumber

@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { trackingEvents } from 'analytics/analytics'
 import { useMainContext, useProductContext } from 'components/context'
 import { DefaultVaultHeaderProps } from 'components/vault/DefaultVaultHeader'
@@ -6,7 +7,6 @@ import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pi
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
 import { Observable } from 'rxjs'
 import { Box, Grid } from 'theme-ui'
 

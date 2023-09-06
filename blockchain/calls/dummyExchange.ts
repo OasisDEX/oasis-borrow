@@ -1,11 +1,10 @@
 import BigNumber from 'bignumber.js'
 import * as dummyExchange from 'blockchain/abi/dummy-exchange.json'
+import { CallDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { amountToWei } from 'blockchain/utils'
 import { DummyExchange } from 'types/web3-v1-contracts'
-
-import { CallDef } from './callsHelpers'
 
 export const setExchangePrice: CallDef<{ price: BigNumber }, any> = {
   call: (_, { contract, chainId }) => {

@@ -1,4 +1,3 @@
-import { throttle } from 'lodash'
 import React, {
   ChangeEvent,
   MouseEvent,
@@ -10,10 +9,11 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import { throttle } from 'lodash'
 import { OasisTheme } from 'theme'
-import { Box, Flex, Grid, Slider, Text } from 'theme-ui'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 import { useTheme } from 'theme/useThemeUI'
+import { Box, Flex, Grid, Slider, Text } from 'theme-ui'
 
 function getSliderBoxBoundaries(boxRef: RefObject<HTMLDivElement>) {
   const box = boxRef.current?.getBoundingClientRect()

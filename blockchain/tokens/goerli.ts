@@ -3,9 +3,8 @@ import * as erc20 from 'blockchain/abi/erc20.json'
 import * as guniToken from 'blockchain/abi/guni-token.json'
 import { getCollateralTokens } from 'blockchain/addresses/addressesUtils'
 import { contractDesc } from 'blockchain/networks'
+import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { ContractDesc } from 'features/web3Context'
-
-import { supportedIlks } from './mainnet'
 
 export const ACCOUNT_GUARD_FACTORY_GENESIS_GOERLI = 8420373
 export const AAVE_V3_POOL_GENESIS_GOERLI = 8294332

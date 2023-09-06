@@ -4,13 +4,12 @@ import { JugIlk, jugIlk } from 'blockchain/calls/jug'
 import { CallObservable } from 'blockchain/calls/observe'
 import { SpotIlk, spotIlk } from 'blockchain/calls/spot'
 import { VatIlk, vatIlk } from 'blockchain/calls/vat'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networks'
 import { one, zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, retry, shareReplay, switchMap } from 'rxjs/operators'
-
-import { getNetworkContracts } from './contracts'
-import { NetworkIds } from './networks'
 
 export function createIlksSupportedOnNetwork$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(

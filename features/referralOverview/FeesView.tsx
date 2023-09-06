@@ -1,3 +1,4 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useMainnetEnsName, useMainnetEnsNames } from 'blockchain/ens'
 import { Context } from 'blockchain/network'
@@ -12,9 +13,8 @@ import { useWalletManagement } from 'features/web3OnBoard'
 import { formatAddress } from 'helpers/formatters/format'
 import { useModalContext } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
-import { Box, Button, Card, Divider, Flex, Grid, Spinner, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
+import { Box, Button, Card, Divider, Flex, Grid, Spinner, Text } from 'theme-ui'
 
 interface Props {
   context: Context

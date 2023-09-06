@@ -1,6 +1,6 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Flex, Text } from 'theme-ui'
 
 export function NotificationsSetupSuccess() {

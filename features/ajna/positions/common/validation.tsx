@@ -1,3 +1,4 @@
+import React, { FC } from 'react'
 import { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { AjnaSimulationValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
@@ -24,7 +25,6 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
-import React, { FC } from 'react'
 
 interface AjnaValidationWithLinkProps {
   name: string

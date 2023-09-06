@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { useAutomationContext, useGasEstimationContext } from 'components/context'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -10,6 +11,7 @@ import { getAutomationTextButtonLabel } from 'features/automation/common/sidebar
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
+import { ConstantMultipleInfoSectionControl } from 'features/automation/optimization/constantMultiple/sidebars/ConstantMultipleInfoSectionControl'
 import { SidebarConstantMultipleEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleEditingStage'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleRemovalEditingStage'
 import {
@@ -26,10 +28,7 @@ import {
   extractCancelAutomationWarnings,
 } from 'helpers/messageMappers'
 import { uiChanges } from 'helpers/uiChanges'
-import React from 'react'
 import { Grid } from 'theme-ui'
-
-import { ConstantMultipleInfoSectionControl } from './ConstantMultipleInfoSectionControl'
 
 interface SidebarSetupConstantMultipleProps {
   collateralToBePurchased: BigNumber

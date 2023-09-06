@@ -1,10 +1,10 @@
+import React, { FC } from 'react'
 import { Banner } from 'components/Banner'
 import { AppLink } from 'components/Links'
 import { AjnaFlow } from 'features/ajna/common/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useRedirect } from 'helpers/useRedirect'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { FC } from 'react'
 
 interface AjnaTokensBannerControllerProps {
   flow: AjnaFlow

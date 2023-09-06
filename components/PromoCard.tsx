@@ -1,10 +1,10 @@
+import React, { FC } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { ProtocolLabel, ProtocolLabelProps } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
 import { Translatable, TranslatableType } from 'components/Translatable'
-import React, { FC } from 'react'
 import { Box, Flex, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 export type PromoCardVariant = 'neutral' | 'positive' | 'negative'

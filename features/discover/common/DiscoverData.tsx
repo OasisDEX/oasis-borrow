@@ -1,9 +1,9 @@
+import React from 'react'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableBannerProps, AssetsTableRowData } from 'components/assetsTable/types'
 import { DiscoverDataResponseError } from 'features/discover/api'
 import { DiscoverError } from 'features/discover/common/DiscoverError'
 import { DiscoverPreloader } from 'features/discover/common/DiscoverPreloader'
-import React from 'react'
 import { Box } from 'theme-ui'
 
 interface DiscoverDataProps {

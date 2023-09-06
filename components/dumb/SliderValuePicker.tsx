@@ -1,7 +1,7 @@
+import React, { ReactNode } from 'react'
 import { Grid, Slider, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { TranslateStringType } from 'helpers/translateStringType'
-import React, { ReactNode } from 'react'
 import { Flex, SxStyleProp, useThemeUI } from 'theme-ui'
 
 export interface SliderValuePickerProps {

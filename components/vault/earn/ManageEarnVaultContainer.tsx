@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { trackingEvents } from 'analytics/analytics'
 import { useMainContext, useProductContext } from 'components/context'
 import { EarnVaultHeaderProps } from 'features/earn/guni/common/GuniVaultHeader'
@@ -5,7 +6,6 @@ import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuni
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React, { useEffect } from 'react'
 import { Box, Grid } from 'theme-ui'
 
 export interface ManageEarnVaultContainerProps {

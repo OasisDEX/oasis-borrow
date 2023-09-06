@@ -1,9 +1,9 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useMainContext } from 'components/context'
 import { useConnection } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Button, Flex, Heading } from 'theme-ui'
 
 export function ConnectWalletPrompt() {

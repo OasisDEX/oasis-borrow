@@ -5,12 +5,6 @@ import {
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
 import { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
-import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
-import { makeObservableForNetworkId } from 'lendingProtocols/pipelines'
-import { memoize } from 'lodash'
-import { curry } from 'ramda'
-import { Observable } from 'rxjs'
-
 import {
   aaveV3OnChainPosition,
   getAaveProtocolData$,
@@ -18,7 +12,12 @@ import {
   getReserveConfigurationDataWithEMode$,
   mapAaveUserAccountData$,
   prepareaaveAvailableLiquidityInUSDC$,
-} from './pipelines'
+} from 'lendingProtocols/aave-v3/pipelines'
+import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
+import { makeObservableForNetworkId } from 'lendingProtocols/pipelines'
+import { memoize } from 'lodash'
+import { curry } from 'ramda'
+import { Observable } from 'rxjs'
 
 interface AaveV3ServicesDependencies {
   refresh$: Observable<unknown>

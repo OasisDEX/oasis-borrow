@@ -1,6 +1,6 @@
+import React from 'react'
 import { AssetsTableBannerProps } from 'components/assetsTable/types'
 import { AppLink } from 'components/Links'
-import React from 'react'
 import { Box, Button, Flex, Heading, Text } from 'theme-ui'
 
 export function AssetsTableBanner({

@@ -1,12 +1,11 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
+import { AppLink } from 'components/Links'
+import { Notice } from 'components/Notice'
 import { useConnection } from 'features/web3OnBoard'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans } from 'next-i18next'
-import React from 'react'
 import { Box, Flex, Image, Text } from 'theme-ui'
-
-import { AppLink } from './Links'
-import { Notice } from './Notice'
 
 interface HomePageBannerProps {
   heading: string

@@ -1,3 +1,4 @@
+import React, { Dispatch, FC } from 'react'
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AppLink } from 'components/Links'
@@ -28,7 +29,6 @@ import {
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one, zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
-import React, { Dispatch, FC } from 'react'
 
 interface AjnaLiquidationNotificationWithLinkProps {
   translationKey: string

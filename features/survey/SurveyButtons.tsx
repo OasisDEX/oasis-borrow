@@ -1,7 +1,7 @@
+import React from 'react'
 import { Global } from '@emotion/core'
 import { Popover, Sidetab } from '@typeform/embed-react'
 import { useLocalStorage } from 'helpers/useLocalStorage'
-import React from 'react'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 
 const typeformPopoverButton = '.tf-v1-popover .tf-v1-popover-button'

@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
@@ -29,7 +30,6 @@ import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
 interface SliderAdjustMultiplyParams extends ManageMultiplyVaultState {

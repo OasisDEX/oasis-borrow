@@ -1,10 +1,10 @@
+import React from 'react'
 import { IPosition } from '@oasisdex/dma-library'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { StrategyType } from 'features/aave/types'
 import { formatPrecision } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function NetValueCard({
   strategyType,

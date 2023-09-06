@@ -1,9 +1,8 @@
 import { BigNumber } from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { RAD, RAD_PRECISION, RAY, RAY_PRECISION, WAD } from 'components/constants'
 import padEnd from 'lodash/padEnd'
 import ethAbi, { AbiCoder } from 'web3-eth-abi'
-
-import { getToken } from './tokensMetadata'
 
 // Set global decimals places to the minimum unit we operate on
 BigNumber.set({ DECIMAL_PLACES: 45 })

@@ -1,3 +1,6 @@
+import React, { useState } from 'react'
+import ReactSelect, { components } from 'react-select'
+import { styleFn, Styles } from 'react-select/src/styles'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
@@ -5,13 +8,9 @@ import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import { keyBy } from 'lodash'
-import React, { useState } from 'react'
-import ReactSelect, { components } from 'react-select'
 import { theme } from 'theme'
-import { Box, SxProps, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
-
-import { styleFn, Styles } from 'react-select/src/styles'
+import { Box, SxProps, Text } from 'theme-ui'
 
 type ReactSelectCSSProperties = ReturnType<styleFn>
 type ReactSelectSimplifiedStyles = {

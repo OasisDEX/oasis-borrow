@@ -1,8 +1,8 @@
+import React from 'react'
 import { AjnaAdjustSlider } from 'features/ajna/positions/common/components/AjnaAdjustSlider'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
-import React from 'react'
 
 export function AjnaMultiplyFormContentAdjust() {
   const {

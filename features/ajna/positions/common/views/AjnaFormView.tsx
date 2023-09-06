@@ -1,3 +1,4 @@
+import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { useMainContext } from 'components/context'
@@ -28,7 +29,6 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useFlowState } from 'helpers/useFlowState'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 interface AjnaFormViewProps {

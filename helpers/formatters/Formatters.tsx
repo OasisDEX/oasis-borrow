@@ -1,8 +1,5 @@
-import { BigNumber } from 'bignumber.js'
-import { zero } from 'helpers/zero'
 import * as React from 'react'
-import { Text } from 'theme-ui'
-
+import { BigNumber } from 'bignumber.js'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -12,7 +9,9 @@ import {
   formatPriceDown,
   formatPriceUp,
   toShorthandNumber,
-} from './format'
+} from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
+import { Text } from 'theme-ui'
 
 export type FormatNumberProps = React.HTMLAttributes<HTMLSpanElement> & {
   value: BigNumber

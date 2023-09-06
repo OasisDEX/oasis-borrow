@@ -1,3 +1,4 @@
+import React from 'react'
 import { IPosition } from '@oasisdex/dma-library'
 import { getCurrentPositionLibCallData } from 'actions/aave-like/helpers'
 import BigNumber from 'bignumber.js'
@@ -11,6 +12,8 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
+import { LiquidationPriceCard } from 'features/aave/components/LiquidationPriceCard'
+import { NetValueCard } from 'features/aave/components/NetValueCard'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
@@ -23,11 +26,7 @@ import {
   AaveLikeReserveData,
 } from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
-
-import { LiquidationPriceCard } from './LiquidationPriceCard'
-import { NetValueCard } from './NetValueCard'
 
 type AaveBorrowPositionDataProps = {
   currentPosition: IPosition

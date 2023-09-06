@@ -1,9 +1,9 @@
+import React from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOnboarding } from 'helpers/useOnboarding'
-import React from 'react'
-import { Trans, useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Image, Text } from 'theme-ui'
 
 export const SwapWidgetOnboarding = () => {

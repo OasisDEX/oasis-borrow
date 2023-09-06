@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { VaultAction, VaultActionInput } from 'components/vault/VaultActionInput'
@@ -20,7 +21,6 @@ import {
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import { pick } from 'ramda'
-import React from 'react'
 
 type VaultState =
   | OpenVaultState

@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
@@ -6,7 +7,6 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
 const ConstantMultipleKBLink = (

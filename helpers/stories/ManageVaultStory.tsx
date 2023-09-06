@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import BigNumber from 'bignumber.js'
 import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
@@ -15,7 +16,6 @@ import {
   MockManageVaultProps,
 } from 'helpers/mocks/manageVault.mock'
 import { memoize } from 'lodash'
-import React, { useEffect } from 'react'
 import { EMPTY, from, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'

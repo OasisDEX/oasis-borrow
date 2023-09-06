@@ -1,5 +1,5 @@
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { ReactNode } from 'react'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Flex, Heading, Image, Text } from 'theme-ui'
 
 interface AssetsTableNoResultsProps {

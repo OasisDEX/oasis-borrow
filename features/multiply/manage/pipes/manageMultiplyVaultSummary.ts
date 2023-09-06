@@ -1,9 +1,8 @@
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { ManageVaultCalculations } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { ManageVaultConditions } from 'features/multiply/manage/pipes/manageMultiplyVaultConditions'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
-
-import { ManageMultiplyVaultState } from './manageMultiplyVault'
-import { ManageVaultCalculations } from './manageMultiplyVaultCalculations'
-import { ManageVaultConditions } from './manageMultiplyVaultConditions'
 
 export type ManageVaultSummary = Pick<
   ManageVaultCalculations,

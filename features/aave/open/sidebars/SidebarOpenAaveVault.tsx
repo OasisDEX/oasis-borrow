@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { useActor } from '@xstate/react'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -11,6 +12,8 @@ import {
 import { hasUserInteracted } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
+import { SidebarOpenAaveVaultEditingState } from 'features/aave/open/sidebars/SidebarOpenAaveVaultEditingState'
+import { SillyVideo } from 'features/aave/open/sidebars/SillyVideo'
 import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
 import { isAllowanceNeeded, ProductType, ProxyType } from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
@@ -24,13 +27,9 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTomfoolery } from 'helpers/useTomfoolery'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
-import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
+import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender, StateFrom } from 'xstate'
-
-import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
-import { SillyVideo } from './SillyVideo'
 
 function isLoading(state: StateFrom<OpenAaveStateMachine>) {
   return state.matches('background.loading')

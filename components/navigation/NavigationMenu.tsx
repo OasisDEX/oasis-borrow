@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { NavigationMenuDropdown } from 'components/navigation/NavigationMenuDropdown'
 import {
   NavigationMenuLink,
@@ -7,7 +8,6 @@ import {
   NavigationMenuPanel,
   NavigationMenuPanelType,
 } from 'components/navigation/NavigationMenuPanel'
-import React, { useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 interface NavigationMenuProps {

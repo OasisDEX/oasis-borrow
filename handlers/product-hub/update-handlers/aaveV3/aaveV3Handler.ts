@@ -14,13 +14,12 @@ import { ProductHubProductType } from 'features/productHub/types'
 import { GraphQLClient } from 'graphql-request'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
+import { aaveV3ProductHubProducts } from 'handlers/product-hub/update-handlers/aaveV3/aaveV3Products'
 import { ensureFind } from 'helpers/ensure-find'
 import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-
-import { aaveV3ProductHubProducts } from './aaveV3Products'
 
 type AaveV3Networks =
   | NetworkNames.ethereumMainnet

@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarAutomationVaultCloseTriggered } from 'components/vault/sidebar/SidebarAutomationVaultCloseTriggered'
@@ -5,6 +6,7 @@ import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaul
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { getAutomationThatClosedVault } from 'features/automation/common/helpers'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { SidebarManageMultiplyVaultEditingStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultEditingStage'
 import { SidebarManageMultiplyVaultManageStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultManageStage'
 import { SidebarManageMultiplyVaultTransitionStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultTransitionStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
@@ -21,10 +23,7 @@ import {
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
-
-import { SidebarManageMultiplyVaultEditingStage } from './SidebarManageMultiplyVaultEditingStage'
 
 export const otherActionsCollateralPanel = ['depositCollateral', 'withdrawCollateral']
 export const otherActionsDaiPanel = ['depositDai', 'paybackDai', 'withdrawDai']

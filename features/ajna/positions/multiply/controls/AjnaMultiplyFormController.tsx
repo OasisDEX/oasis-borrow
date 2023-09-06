@@ -1,3 +1,5 @@
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
@@ -7,8 +9,6 @@ import { AjnaMultiplyFormContentManage } from 'features/ajna/positions/multiply/
 import { AjnaMultiplyFormContentOpen } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentOpen'
 import { AjnaMultiplyFormContentTransition } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentTransition'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
 
 export function AjnaMultiplyFormController() {
   const { t } = useTranslation()

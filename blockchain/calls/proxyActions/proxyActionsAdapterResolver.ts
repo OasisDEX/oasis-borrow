@@ -1,11 +1,10 @@
+import { CharteredDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
+import { CropjoinProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
+import { ProxyActionsSmartContractAdapterInterface } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { StandardDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { MakerVaultType } from 'blockchain/calls/vaultResolver'
 import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
 import { Observable, of, throwError } from 'rxjs'
-
-import { CharteredDssProxyActionsContractAdapter } from './adapters/CharteredDssProxyActionsContractAdapter'
-import { CropjoinProxyActionsContractAdapter } from './adapters/CropjoinProxyActionsSmartContractAdapter'
-import { ProxyActionsSmartContractAdapterInterface } from './adapters/ProxyActionsSmartContractAdapterInterface'
-import { StandardDssProxyActionsContractAdapter } from './adapters/standardDssProxyActionsContractAdapter'
 
 type Args = ResolveFromIlkArgs | ResolveFromMakerVaultTypeArgs
 

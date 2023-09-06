@@ -1,12 +1,11 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import { useRedirect } from 'helpers/useRedirect'
-import { useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
 import React, { useCallback, useMemo } from 'react'
 import ReactSelect, { OptionProps, SingleValueProps, ValueType } from 'react-select'
+import { Icon } from '@makerdao/dai-ui-icons'
+import { reactSelectCustomComponents } from 'components/reactSelectCustomComponents'
+import { useRedirect } from 'helpers/useRedirect'
+import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { Box, Flex } from 'theme-ui'
-
-import { reactSelectCustomComponents } from './reactSelectCustomComponents'
 
 function OptionWithIcon({ innerProps, isSelected, data }: OptionProps<AssetsSelectOption>) {
   return (

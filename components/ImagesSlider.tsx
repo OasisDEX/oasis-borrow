@@ -1,7 +1,7 @@
-import { random } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { Container, Grid, Image, SxProps } from 'theme-ui'
+import { random } from 'lodash'
 import { fadeInAnimationMobile } from 'theme/animations'
+import { Container, Grid, Image, SxProps } from 'theme-ui'
 
 export type ImagesSliderProps = {
   items: {

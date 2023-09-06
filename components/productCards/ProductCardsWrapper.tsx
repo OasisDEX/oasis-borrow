@@ -1,8 +1,8 @@
-import { AppSpinner } from 'helpers/AppSpinner'
 import React, { ReactNode } from 'react'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { theme } from 'theme'
-import { Box, Flex, Grid, SxStyleProp } from 'theme-ui'
 import { fadeInAnimationDelay, slideInAnimation } from 'theme/animations'
+import { Box, Flex, Grid, SxStyleProp } from 'theme-ui'
 
 interface ProductCardWrapperProps {
   children: Array<ReactNode>

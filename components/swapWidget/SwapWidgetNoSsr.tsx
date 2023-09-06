@@ -1,6 +1,5 @@
+import { SwapWidgetSkeleton } from 'components/swapWidget/SwapWidgetSkeleton'
 import dynamic from 'next/dynamic'
-
-import { SwapWidgetSkeleton } from './SwapWidgetSkeleton'
 
 export const SwapWidgetNoSsr = dynamic(
   () => {

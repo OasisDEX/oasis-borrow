@@ -1,3 +1,4 @@
+import React from 'react'
 import { ActionPills } from 'components/ActionPills'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaEarnFormContentAdjust } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentAdjust'
@@ -5,7 +6,6 @@ import { AjnaEarnFormContentClaimCollateral } from 'features/ajna/positions/earn
 import { AjnaEarnFormContentDeposit } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentDeposit'
 import { AjnaEarnFormContentWithdraw } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentWithdraw'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function AjnaEarnFormContentManage() {
   const { t } = useTranslation()

@@ -1,3 +1,4 @@
+import React, { PropsWithChildren, useMemo } from 'react'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { ManageAaveContext } from 'features/aave/manage/state'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
@@ -7,7 +8,6 @@ import { createGetAaveStopLossMetadata } from 'features/automation/metadata/aave
 import { defaultStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
-import React, { PropsWithChildren, useMemo } from 'react'
 
 export interface AaveManageVaultState {
   address: string

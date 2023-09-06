@@ -1,7 +1,6 @@
+import { ChallengeJWT } from 'handlers/signature-auth/challenge'
 import Web3 from 'web3'
 import { AbiItem } from 'web3-utils'
-
-import { ChallengeJWT } from './challenge'
 
 export const gnosisAbi: AbiItem[] = [
   {

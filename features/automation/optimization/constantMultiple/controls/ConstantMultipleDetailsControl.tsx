@@ -1,3 +1,4 @@
+import React from 'react'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { useAutomationContext } from 'components/context'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
@@ -14,7 +15,6 @@ import {
 } from 'helpers/multiply/calculations'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React from 'react'
 
 interface ConstantMultipleDetailsControlProps {
   vaultHistory: VaultHistoryEvent[]

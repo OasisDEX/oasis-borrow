@@ -1,3 +1,4 @@
+import React from 'react'
 import { NORMALISED_PRECISION } from 'actions/aave-like'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromPrecision } from 'blockchain/utils'
@@ -8,7 +9,6 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid } from 'theme-ui'
 
 export function DebtInput(props: SecondaryInputProps) {

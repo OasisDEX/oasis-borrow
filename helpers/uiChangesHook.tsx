@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-
-import { SupportedUIChangeType, uiChanges } from './uiChanges'
+import { SupportedUIChangeType, uiChanges } from 'helpers/uiChanges'
 
 export function useUIChanges<T extends SupportedUIChangeType>(topic: string): T[] {
   const [lastUIState, lastUIStateSetter] = useState(uiChanges.lastPayload<T>(topic))

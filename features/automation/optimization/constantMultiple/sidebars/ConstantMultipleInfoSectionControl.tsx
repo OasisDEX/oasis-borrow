@@ -1,9 +1,9 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/consts'
 import { AddConstantMultipleInfoSection } from 'features/automation/optimization/constantMultiple/controls/AddConstantMultipleInfoSection'
 import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { zero } from 'helpers/zero'
-import React from 'react'
 
 interface ConstantMultipleInfoSectionControlProps {
   token: string

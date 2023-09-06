@@ -1,11 +1,10 @@
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { ContextConnected } from 'blockchain/network'
+import { NetworkIds } from 'blockchain/networks'
+import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
 import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
-
-import { getNetworkContracts } from './contracts'
-import { ContextConnected } from './network'
-import { NetworkIds } from './networks/'
-import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 export interface CollateralLocked {
   ilk: string

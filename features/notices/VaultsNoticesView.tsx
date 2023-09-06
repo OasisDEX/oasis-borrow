@@ -1,3 +1,5 @@
+import React, { useEffect, useMemo, useState } from 'react'
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
@@ -10,6 +12,7 @@ import dayjs from 'dayjs'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { ManageAaveStateMachine } from 'features/aave/manage/state'
 import { getAaveNoticeBanner, getLiquidatedHeaderNotice } from 'features/notices/helpers'
+import { VaultNoticesState } from 'features/notices/vaultsNotices'
 import { ReclaimCollateralButton } from 'features/reclaimCollateral/reclaimCollateralView'
 import { ProtocolsServices } from 'helpers/context/types'
 import {
@@ -23,15 +26,11 @@ import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useMemo, useState } from 'react'
-import { CountdownCircleTimer } from 'react-countdown-circle-timer'
-import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 import { useTheme } from 'theme/useThemeUI'
+import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 import { LiquidationCallEvent as AaveLiquidationCallEventV2 } from 'types/ethers-contracts/AaveV2LendingPool'
 import { LiquidationCallEvent as AaveLiquidationCallEventV3 } from 'types/ethers-contracts/AaveV3Pool'
 import { StateFrom } from 'xstate'
-
-import { VaultNoticesState } from './vaultsNotices'
 
 type VaultNoticeProps = {
   status?: JSX.Element

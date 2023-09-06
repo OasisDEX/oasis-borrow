@@ -1,7 +1,7 @@
-import { DetailsSection } from 'components/DetailsSection'
-import { ContentType, TranslatedContent } from 'features/content'
 import React, { FC } from 'react'
 import { useTranslation } from 'react-i18next'
+import { DetailsSection } from 'components/DetailsSection'
+import { ContentType, TranslatedContent } from 'features/content'
 import { Grid } from 'theme-ui'
 
 interface AjnaFaqControllerProps {

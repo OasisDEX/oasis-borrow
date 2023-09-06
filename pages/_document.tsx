@@ -1,7 +1,7 @@
+import React from 'react'
 import { PWATags } from 'components/HeadTags'
 import { extractCritical } from 'emotion-server'
 import Document, { DocumentContext, Head, Html, Main, NextScript } from 'next/document'
-import React from 'react'
 import { InjectTokenIconsDefs } from 'theme/tokenIcons'
 
 export default class MyDocument extends Document<Document> {

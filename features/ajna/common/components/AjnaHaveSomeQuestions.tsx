@@ -1,7 +1,7 @@
+import React from 'react'
 import { InfoCard } from 'components/InfoCard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
 export function AjnaHaveSomeQuestions() {

@@ -1,4 +1,7 @@
 import { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
+import { NetworkHexIds } from 'blockchain/networks/network-hex-ids'
+import { NetworkIds } from 'blockchain/networks/network-ids'
+import { NetworkLabelType, NetworkNames } from 'blockchain/networks/network-names'
 import {
   arbitrumGoerliRpc,
   arbitrumMainnetRpc,
@@ -25,10 +28,6 @@ import optimismMainnetBadge from 'public/static/img/network_icons/optimism_badge
 import optimismMainnetIcon from 'public/static/img/network_icons/optimism_mainnet.svg'
 import polygonMainnetBadge from 'public/static/img/network_icons/polygon_badge_mainnet.svg'
 import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.svg'
-
-import { NetworkHexIds } from './network-hex-ids'
-import { NetworkIds } from './network-ids'
-import { NetworkLabelType, NetworkNames } from './network-names'
 
 export type NetworkConfigHexId = `0x${number | string}`
 

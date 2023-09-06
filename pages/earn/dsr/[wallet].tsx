@@ -1,3 +1,4 @@
+import React from 'react'
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { ProductContextHandler } from 'components/context'
@@ -12,7 +13,6 @@ import { LendingProtocolLabel } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {

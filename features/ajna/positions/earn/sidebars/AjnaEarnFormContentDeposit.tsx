@@ -1,3 +1,4 @@
+import React from 'react'
 import { PillAccordion } from 'components/PillAccordion'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
@@ -6,7 +7,6 @@ import { AjnaFormFieldDeposit } from 'features/ajna/positions/common/sidebars/Aj
 import { AjnaEarnSlider } from 'features/ajna/positions/earn/components/AjnaEarnSlider'
 import { AjnaEarnFormOrder } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormOrder'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export function AjnaEarnFormContentDeposit() {
   const { t } = useTranslation()

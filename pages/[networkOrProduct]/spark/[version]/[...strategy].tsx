@@ -1,3 +1,4 @@
+import React from 'react'
 import { NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { DeferedContextProvider, ProductContextHandler } from 'components/context'
@@ -10,9 +11,8 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
-import React from 'react'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {

@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
+import { BaseParameters, getNetworkMapping } from 'blockchain/spark-v3/utils'
 import { SparkV3Pool__factory } from 'types/ethers-contracts'
-
-import { BaseParameters, getNetworkMapping } from './utils'
 
 export interface SparkV3UserAccountData {
   totalCollateralBase: BigNumber

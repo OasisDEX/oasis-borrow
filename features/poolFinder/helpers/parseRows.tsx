@@ -1,3 +1,4 @@
+import React from 'react'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
@@ -9,7 +10,6 @@ import { parseProduct } from 'features/productHub/helpers'
 import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
-import React from 'react'
 
 export function parseRows(
   chainId: NetworkIds,

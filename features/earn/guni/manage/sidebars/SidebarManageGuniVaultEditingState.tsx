@@ -1,3 +1,4 @@
+import React from 'react'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -6,7 +7,6 @@ import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageM
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
 export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultState) {

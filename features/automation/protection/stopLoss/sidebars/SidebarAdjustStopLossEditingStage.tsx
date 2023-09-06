@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -34,7 +35,6 @@ import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
 interface SetDownsideProtectionInformationProps {

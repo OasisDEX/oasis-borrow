@@ -1,6 +1,6 @@
+import React, { useCallback } from 'react'
 import { Toggle } from 'components/Toggle'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
 import { Card, Flex, Text } from 'theme-ui'
 
 interface NotificationPrefrenceCardProps {

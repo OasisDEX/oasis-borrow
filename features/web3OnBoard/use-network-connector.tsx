@@ -1,8 +1,7 @@
+import { useMemo } from 'react'
 import { NetworkConnector } from '@web3-react/network-connector'
 import { enableNetworksSet, NetworkConfig, NetworkIds } from 'blockchain/networks'
-import { useMemo } from 'react'
-
-import { useLegacyDefaultChain } from './use-legacy-default-chain'
+import { useLegacyDefaultChain } from 'features/web3OnBoard/use-legacy-default-chain'
 
 export type NetworkConnectorState = {
   networkConnector: NetworkConnector

@@ -1,3 +1,4 @@
+import React from 'react'
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { AutomationContextProvider, useAccountContext } from 'components/context'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -8,6 +9,8 @@ import { openVaultWithStopLossAnalytics } from 'features/automation/common/helpe
 import { getDataForStopLoss } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { SidebarOpenBorrowVaultEditingStage } from 'features/borrow/open/sidebars/SidebarOpenBorrowVaultEditingStage'
+import { SidebarOpenBorrowVaultOpenStage } from 'features/borrow/open/sidebars/SidebarOpenBorrowVaultOpenStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -23,11 +26,7 @@ import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid } from 'theme-ui'
-
-import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
-import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
 
 export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const { t } = useTranslation()

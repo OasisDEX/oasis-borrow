@@ -1,19 +1,18 @@
+import React from 'react'
 import { IAdjustStrategy, IRiskRatio, IStrategy, RiskRatio } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { WithArrow } from 'components/WithArrow'
+import { StopLossAaveErrorMessage } from 'features/aave/components/StopLossAaveErrorMessage'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { SecondaryInputProps } from 'features/aave/types'
 import { getLiquidationPriceAccountingForPrecision } from 'features/shared/liquidationPrice'
 import { formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
-
-import { StopLossAaveErrorMessage } from './StopLossAaveErrorMessage'
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
   return (

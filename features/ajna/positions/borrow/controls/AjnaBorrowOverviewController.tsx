@@ -1,3 +1,4 @@
+import React from 'react'
 import { negativeToZero, normalizeValue } from '@oasisdex/dma-library'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
@@ -16,7 +17,6 @@ import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOri
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Grid } from 'theme-ui'
 
 export function AjnaBorrowOverviewController() {

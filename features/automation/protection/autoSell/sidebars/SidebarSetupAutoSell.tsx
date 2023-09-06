@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { useAutomationContext, useGasEstimationContext } from 'components/context'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -16,6 +17,7 @@ import {
 } from 'features/automation/common/state/autoBSFormChange'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { getAutoSellMinMaxValues } from 'features/automation/protection/autoSell/helpers'
+import { AutoSellInfoSectionControl } from 'features/automation/protection/autoSell/sidebars/AutoSellInfoSectionControl'
 import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/autoSell/sidebars/SidebarAuteSellCancelEditingStage'
 import { SidebarAutoSellAddEditingStage } from 'features/automation/protection/autoSell/sidebars/SidebarAutoSellAddEditingStage'
 import {
@@ -28,10 +30,7 @@ import {
   extractCancelAutomationWarnings,
 } from 'helpers/messageMappers'
 import { uiChanges } from 'helpers/uiChanges'
-import React from 'react'
 import { Grid } from 'theme-ui'
-
-import { AutoSellInfoSectionControl } from './AutoSellInfoSectionControl'
 
 interface SidebarSetupAutoSellProps {
   isAutoSellActive: boolean

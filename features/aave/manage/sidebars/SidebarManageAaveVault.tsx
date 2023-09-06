@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { IMultiplyStrategy, IPosition, IStrategy, OPERATION_NAMES } from '@oasisdex/dma-library'
 import { useActor } from '@xstate/react'
@@ -12,6 +13,8 @@ import { Skeleton } from 'components/Skeleton'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { ConnectedSidebarSection, StrategyInformationContainer } from 'features/aave/components'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import { GetReviewingSidebarProps } from 'features/aave/manage/sidebars/GetReviewingSidebarProps'
+import { ManageAaveReviewingStateView } from 'features/aave/manage/sidebars/ManageAaveReviewingStateView'
 import {
   ManageAaveContext,
   ManageAaveEvent,
@@ -26,13 +29,9 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
-import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
-
-import { GetReviewingSidebarProps } from './GetReviewingSidebarProps'
-import { ManageAaveReviewingStateView } from './ManageAaveReviewingStateView'
 
 export interface ManageAaveAutomation {
   stopLoss: {

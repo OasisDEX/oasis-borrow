@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import {
@@ -8,7 +9,6 @@ import {
 import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Card, Text } from 'theme-ui'
 
 interface ContentCardThresholdPriceModalProps {

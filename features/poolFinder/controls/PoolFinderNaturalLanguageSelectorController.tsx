@@ -1,10 +1,10 @@
+import React, { FC, useRef } from 'react'
 import { HeaderSelector } from 'components/HeaderSelector'
 import { productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { FC, useRef } from 'react'
+import { useTranslation } from 'next-i18next'
 import { Box, Heading } from 'theme-ui'
 
 interface PoolFinderNaturalLanguageSelectorControllerProps {

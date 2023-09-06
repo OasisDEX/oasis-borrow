@@ -1,3 +1,11 @@
+import {
+  ClaimRewardData,
+  DepositAndGenerateData,
+  OpenData,
+  ProxyActionsAdapterType,
+  ProxyActionsSmartContractAdapterInterface,
+  WithdrawAndPaybackData,
+} from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
@@ -8,15 +16,6 @@ import {
   PayableTransactionObject,
 } from 'types/web3-v1-contracts/types'
 import Web3 from 'web3'
-
-import {
-  ClaimRewardData,
-  DepositAndGenerateData,
-  OpenData,
-  ProxyActionsAdapterType,
-  ProxyActionsSmartContractAdapterInterface,
-  WithdrawAndPaybackData,
-} from './ProxyActionsSmartContractAdapterInterface'
 
 export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAdapterInterface = {
   AdapterType: ProxyActionsAdapterType.STANDARD,

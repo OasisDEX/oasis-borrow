@@ -1,12 +1,11 @@
+import React, { PropsWithChildren, ReactNode, useState } from 'react'
 import {
   DetailsSectionNotification,
   DetailsSectionNotificationItem,
 } from 'components/DetailsSectionNotification'
-import React, { PropsWithChildren, ReactNode, useState } from 'react'
+import { ButtonWithAction, ButtonWithActions, ExpandableButton } from 'components/ExpandableButton'
+import { VaultTabTag } from 'components/vault/VaultTabTag'
 import { Box, Card, Flex, Heading } from 'theme-ui'
-
-import { ButtonWithAction, ButtonWithActions, ExpandableButton } from './ExpandableButton'
-import { VaultTabTag } from './vault/VaultTabTag'
 
 type DetailsSectionButtons = (ButtonWithAction | ButtonWithActions)[]
 

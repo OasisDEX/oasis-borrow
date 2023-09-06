@@ -148,6 +148,9 @@ import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positio
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createPositionsList$ } from 'features/vaultsOverview/vaultsOverview'
 import { bigNumberTostring } from 'helpers/bigNumberToString'
+import { refreshInterval } from 'helpers/context/constants'
+import { MainContext } from 'helpers/context/MainContext'
+import { DepreciatedServices, HasGasEstimation, ProtocolsServices, TxHelpers } from 'helpers/context/types'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation } from 'helpers/form'
 import { supportedBorrowIlks, supportedEarnIlks, supportedMultiplyIlks } from 'helpers/productCards'
@@ -159,6 +162,7 @@ import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { getSparkV3Services } from 'lendingProtocols/spark-v3'
 import { isEqual, memoize } from 'lodash'
 import { equals } from 'ramda'
+import curry from 'ramda/src/curry'
 import { combineLatest, defer, Observable, of } from 'rxjs'
 import {
   distinctUntilChanged,
@@ -168,11 +172,6 @@ import {
   shareReplay,
   switchMap,
 } from 'rxjs/operators'
-
-import { refreshInterval } from './constants'
-import { MainContext } from './MainContext'
-import { DepreciatedServices, HasGasEstimation, ProtocolsServices, TxHelpers } from './types'
-import curry from 'ramda/src/curry'
 
 export function setupProductContext(
   {

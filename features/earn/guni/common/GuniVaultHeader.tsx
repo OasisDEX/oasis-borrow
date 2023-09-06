@@ -1,3 +1,4 @@
+import React from 'react'
 import BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context'
 import { EarnVaultHeadline } from 'components/vault/EarnVaultHeadline'
@@ -11,7 +12,6 @@ import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 export interface EarnVaultHeaderProps {
   ilk: string

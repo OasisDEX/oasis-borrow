@@ -1,3 +1,4 @@
+import React, { useCallback } from 'react'
 import {
   AutomationEventIds,
   AutomationEventsAdditionalParams,
@@ -9,7 +10,6 @@ import { ActionPills } from 'components/ActionPills'
 import { Item } from 'components/infoSection/Item'
 import { maxUint32 } from 'features/automation/common/consts'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
 
 interface MaxGasPriceSectionProps {
   onChange: (item: number) => void

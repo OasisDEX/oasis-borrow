@@ -1,3 +1,4 @@
+import React from 'react'
 import { PageSEOTags } from 'components/HeadTags'
 import { AjnaProductHubController } from 'features/ajna/common/controls/AjnaProductHubController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
@@ -6,7 +7,6 @@ import { ProductHubProductType } from 'features/productHub/types'
 import { upperFirst } from 'lodash'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 
 function AjnaProductSlugPage({
   product,

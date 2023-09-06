@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { BigNumber } from 'bignumber.js'
 import { claimAjnaRewards } from 'blockchain/calls/ajnaRewardsClaimer'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -11,7 +12,6 @@ import { useWalletManagement } from 'features/web3OnBoard'
 import { handleTransaction, TxDetails } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { one, zero } from 'helpers/zero'
-import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 interface AjnaUserNfts {

@@ -1,7 +1,9 @@
+import React, { useEffect } from 'react'
 import { trackingEvents } from 'analytics/analytics'
 import { useMainContext, useProductContext } from 'components/context'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
 import { SidebarManageBorrowVault } from 'features/borrow/manage/sidebars/SidebarManageBorrowVault'
@@ -10,10 +12,7 @@ import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { uiChanges } from 'helpers/uiChanges'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
 import { Box, Grid } from 'theme-ui'
-
-import { ManageVaultDetails } from './ManageVaultDetails'
 
 export function ManageVaultContainer({
   manageVault,

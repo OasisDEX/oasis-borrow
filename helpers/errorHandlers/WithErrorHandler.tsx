@@ -1,8 +1,7 @@
+import React, { useEffect } from 'react'
+import { ErrorModal } from 'helpers/errorHandlers/ErrorModal'
 import { useModal } from 'helpers/modalHook'
 import { env } from 'process'
-import React, { useEffect } from 'react'
-
-import { ErrorModal } from './ErrorModal'
 
 export function WithErrorHandler({
   error,

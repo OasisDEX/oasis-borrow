@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { BaseParameters, getNetworkMapping, wethToEthAddress } from 'blockchain/aave-v3/utils'
 import { NetworkIds } from 'blockchain/networks'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
 import { AaveV3PoolDataProvider__factory } from 'types/ethers-contracts'
-
-import { BaseParameters, getNetworkMapping, wethToEthAddress } from './utils'
 
 export interface AaveV3UserReserveDataParameters extends BaseParameters {
   token: string
