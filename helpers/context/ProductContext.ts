@@ -591,7 +591,7 @@ export function setupProductContext(
   const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
 
   const manageMultiplyVault$ = memoize(
-    (id: BigNumber, vaultType: VaultType.Borrow | VaultType.Multiply) =>
+    (id: BigNumber, vaultType: VaultType) =>
       createManageMultiplyVault$(
         context$,
         txHelpers$,

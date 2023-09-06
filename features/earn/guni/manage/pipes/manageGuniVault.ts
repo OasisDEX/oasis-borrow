@@ -52,6 +52,18 @@ import { closeGuniVault } from './guniActionsCalls'
 import { applyGuniCalculations } from './manageGuniVaultCalculations'
 import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
 import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
+import { VaultType } from 'features/generalManageVault/vaultType'
+
+export type ManageEarnVaultState = ManageMultiplyVaultState & {
+  totalValueLocked?: BigNumber
+  earningsToDate?: BigNumber
+  earningsToDateAfterFees?: BigNumber
+  netAPY?: BigNumber
+  makerOracleTokenPrices: {
+    today: MakerOracleTokenPrice
+    sevenDaysAgo: MakerOracleTokenPrice
+  }
+}
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,
@@ -111,7 +123,7 @@ function apply(
   change: ManageMultiplyVaultChange | GuniTxDataChange,
 ): ManageEarnVaultState {
   const s1 = applyExchange(change as ManageMultiplyVaultChange, state)
-  const s2 = applyManageVaultTransition(change as ManageMultiplyVaultChange, s1)
+  const s2 = applyManageVaultTransition(change as ManageMultiplyVaultChange, s1) as ManageEarnVaultState
   const s3 = applyManageGuniVaultTransition(change as ManageMultiplyVaultChange, s2)
   const s4 = applyManageVaultTransaction(change as ManageMultiplyVaultChange, s3)
   const s5 = applyManageVaultEnvironment(change as ManageMultiplyVaultChange, s4)
@@ -174,17 +186,6 @@ export const defaultMutableManageMultiplyVaultState = {
   mainAction: 'buy',
   otherAction: 'closeVault',
 } as MutableManageMultiplyVaultState
-
-export type ManageEarnVaultState = ManageMultiplyVaultState & {
-  totalValueLocked?: BigNumber
-  earningsToDate?: BigNumber
-  earningsToDateAfterFees?: BigNumber
-  netAPY?: BigNumber
-  makerOracleTokenPrices: {
-    today: MakerOracleTokenPrice
-    sevenDaysAgo: MakerOracleTokenPrice
-  }
-}
 
 export function createManageGuniVault$(
   context$: Observable<Context>,
@@ -268,6 +269,7 @@ export function createManageGuniVault$(
                       ...defaultMutableManageMultiplyVaultState,
                       ...defaultManageMultiplyVaultCalculations,
                       ...defaultManageMultiplyVaultConditions,
+                      vaultType: VaultType.Earn,
                       vault,
                       priceInfo,
                       balanceInfo,

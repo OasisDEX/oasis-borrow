@@ -1,7 +1,6 @@
 import { trackingEvents } from 'analytics/analytics'
 import { BigNumber } from 'bignumber.js'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { zero } from 'helpers/zero'
 
 interface TrackingEventOpenVaultProps {
   props: {
@@ -37,8 +36,6 @@ export function progressTrackingEvent({ props, firstCDP }: TrackingEventOpenVaul
     insufficientAllowance,
     depositAmount,
     generateAmount,
-    paybackAmount,
-    withdrawAmount,
   } = props
 
   switch (stage) {
@@ -51,14 +48,6 @@ export function progressTrackingEvent({ props, firstCDP }: TrackingEventOpenVaul
         )
       else if (insufficientAllowance) trackingEvents.setTokenAllowance(firstCDP)
       else trackingEvents.createVaultConfirm(firstCDP)
-      break
-    case 'daiEditing':
-      if (generateAmount?.gt(zero)) trackingEvents.manageDaiGenerateConfirm()
-      else if (paybackAmount?.gt(zero)) trackingEvents.manageDaiPaybackConfirm()
-      break
-    case 'collateralEditing':
-      if (depositAmount?.gt(zero)) trackingEvents.manageCollateralDepositConfirm()
-      else if (withdrawAmount?.gt(zero)) trackingEvents.manageCollateralWithdrawConfirm()
       break
     case 'proxyWaitingForConfirmation':
       trackingEvents.createProxy(firstCDP)

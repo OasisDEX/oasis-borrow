@@ -97,8 +97,6 @@ export function getPrimaryButtonLabel({
   switch (stage) {
     case 'editing':
     case 'stopLossEditing':
-    case 'collateralEditing':
-    case 'daiEditing':
     case 'adjustPosition':
     case 'otherActions':
     case 'manageWaitingForConfirmation':
@@ -168,18 +166,6 @@ export function getPrimaryButtonLabel({
     case 'manageWaitingForApproval':
     case 'manageInProgress':
       return t('changing-vault')
-    case 'multiplyTransitionEditing':
-      return canTransition
-        ? t('borrow-to-multiply.button-start')
-        : t('borrow-to-multiply.button-not-supported', { token: token?.toUpperCase() })
-    case 'multiplyTransitionWaitingForConfirmation':
-      return t('borrow-to-multiply.button-confirm')
-    case 'multiplyTransitionInProgress':
-      return t('borrow-to-multiply.button-progress')
-    case 'multiplyTransitionFailure':
-      return t('borrow-to-multiply.button-failure')
-    case 'multiplyTransitionSuccess':
-      return t('borrow-to-multiply.button-success')
     case 'borrowTransitionEditing':
       if (vaultType === VaultType.Borrow) {
         return canTransition

@@ -12,10 +12,14 @@ export function SidebarManageMultiplyVaultTransitionStage({
   token,
 }: {
   stage: ManageMultiplyVaultStage
-  vaultType: VaultType.Borrow | VaultType.Multiply,
+  vaultType: VaultType,
   token: string
 }) {
   const { t } = useTranslation()
+
+  if (vaultType === VaultType.Earn) {
+    throw new Error('SidebarManageMultiplyVaultTransitionStage supports only Borrow and Multiply')
+  }
 
   if (vaultType === VaultType.Borrow) {
     return (

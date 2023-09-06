@@ -27,6 +27,7 @@ import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 import { slippageLimitMock } from './slippageLimit.mock'
 import { mockedEmptyStopLossTrigger } from './stopLoss.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
+import { VaultType } from 'features/generalManageVault/vaultType'
 
 export const MOCK_VAULT_ID = one
 export const MOCK_CHAIN_ID = new BigNumber(2137)
@@ -173,6 +174,7 @@ export function mockManageMultiplyVault$({
     vaultHistory$,
     saveVaultType$,
     automationTriggersData$,
+    VaultType.Multiply,
     MOCK_VAULT_ID,
   )
 }

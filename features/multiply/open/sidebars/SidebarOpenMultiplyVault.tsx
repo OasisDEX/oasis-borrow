@@ -64,7 +64,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
   const firstCDP = isFirstCdp(accountData)
   const gasData = extractGasDataFromState(props)
 
-  const primaryButtonLabelParams = extractPrimaryButtonLabelParams({...props, vaultType: VaultType.Multiply})
+  const primaryButtonLabelParams = extractPrimaryButtonLabelParams({...props })
   const sidebarTxData = extractSidebarTxData(props)
   const { stopLossSidebarProps, automationContextProps } = getDataForStopLoss(props, 'multiply')
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')

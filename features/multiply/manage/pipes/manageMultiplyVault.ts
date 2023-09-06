@@ -198,7 +198,7 @@ export interface ManageVaultEnvironment {
   exchangeError: boolean
   slippage: BigNumber
   vaultHistory: VaultHistoryEvent[]
-  vaultType: VaultType.Borrow | VaultType.Multiply
+  vaultType: VaultType
 }
 
 interface ManageVaultFunctions {
@@ -466,10 +466,14 @@ function addTransitions(
 }
 
 export function defaultMutableManageMultiplyVaultState(
-  vaultType: VaultType.Borrow | VaultType.Multiply,
+  vaultType: VaultType,
   lockedCollateral?: BigNumber,
 ): MutableManageMultiplyVaultState {
   const hasZeroCollateral = lockedCollateral?.eq(zero)
+
+  if (vaultType === VaultType.Earn) {
+    throw new Error('Wrong vault type, only Borrow and Multiply')
+  }
 
   return {
     stage: vaultType === VaultType.Borrow 
@@ -510,7 +514,7 @@ export function createManageMultiplyVault$(
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   saveVaultType$: SaveVaultType,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
-  vaultType: VaultType.Borrow | VaultType.Multiply,
+  vaultType: VaultType,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(

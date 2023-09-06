@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
-import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'

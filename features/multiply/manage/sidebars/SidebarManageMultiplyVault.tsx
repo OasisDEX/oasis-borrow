@@ -26,7 +26,7 @@ import { Grid } from 'theme-ui'
 
 import { SidebarManageMultiplyVaultEditingStage } from './SidebarManageMultiplyVaultEditingStage'
 import { VaultType } from 'features/generalManageVault/vaultType'
-import { SidebarManageBorrowVaultEditingStage } from 'features/borrow/manage/sidebars/SidebarManageBorrowVaultEditingStage'
+
 
 export const otherActionsCollateralPanel = ['depositCollateral', 'withdrawCollateral']
 export const otherActionsDaiPanel = ['depositDai', 'paybackDai', 'withdrawDai']

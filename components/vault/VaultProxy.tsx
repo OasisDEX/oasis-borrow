@@ -1,7 +1,6 @@
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
 import { WithArrow } from 'components/WithArrow'
-import { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault'
 import { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
 import { ManageMultiplyVaultStage } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -54,7 +53,7 @@ export function VaultProxyContentBox({
   stage,
   gasData,
 }: {
-  stage: OpenVaultStage | ManageBorrowVaultStage | ManageMultiplyVaultStage
+  stage: OpenVaultStage | ManageMultiplyVaultStage
   gasData: HasGasEstimation
 }) {
   const { t } = useTranslation()
@@ -89,7 +88,7 @@ export function VaultProxyContentBox({
 export function VaultProxySubtitle({
   stage,
 }: {
-  stage: OpenVaultStage | ManageBorrowVaultStage | ManageMultiplyVaultStage
+  stage: OpenVaultStage | ManageMultiplyVaultStage
 }) {
   return (
     <Trans

@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
-import { ManageBorrowVaultState, ManageVaultChange } from 'features/borrow/manage/pipes/manageVault'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { compareBigNumber } from 'helpers/compareBigNumber'
 import { EMPTY, Observable } from 'rxjs'
@@ -46,9 +45,9 @@ export type ExchangeQuoteChanges =
   | ExchangeSwapSuccessChange
   | ExchangeSwapFailureChange
 
-export function applyExchange<VS extends ManageMultiplyVaultState | ManageBorrowVaultState>(
-  change: ManageMultiplyVaultChange | ManageVaultChange,
-  state: VS,
+export function applyExchange(
+  change: ManageMultiplyVaultChange,
+  state: ManageMultiplyVaultState,
 ) {
   if (change.kind === 'quoteError' || change.kind === 'swapError') {
     return {
@@ -93,7 +92,7 @@ export function swapToChange(swap: Quote) {
     : { kind: 'swapError' as const }
 }
 
-export function createExchangeChange$<S extends ManageMultiplyVaultState | ManageBorrowVaultState>(
+export function createExchangeChange$(
   exchangeQuote$: (
     token: string,
     slippage: BigNumber,
@@ -101,7 +100,7 @@ export function createExchangeChange$<S extends ManageMultiplyVaultState | Manag
     action: ExchangeAction,
     exchangeType: ExchangeType,
   ) => Observable<Quote>,
-  state$: Observable<S>,
+  state$: Observable<ManageMultiplyVaultState>,
 ) {
   const stateChanges$ = state$.pipe(
     map((state) => state),
