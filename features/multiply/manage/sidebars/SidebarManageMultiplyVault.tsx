@@ -130,7 +130,11 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
           panel: 'dai',
           action: () => {
             toggle!('otherActions')
-            setOtherAction!('depositDai')
+            if (vaultType === VaultType.Borrow) { 
+              setOtherAction!('paybackDai')
+            } else {
+              setOtherAction!('depositDai')
+            }
           },
         },
         {
@@ -161,7 +165,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
       <Grid gap={3}>
         {!isClosedVaultPanelVisible ? (
           <>
-            {isEditingStage && vaultType === VaultType.Multiply ? <SidebarManageMultiplyVaultEditingStage {...props} /> : <SidebarManageBorrowVaultEditingStage {...props} />}
+            {isEditingStage && <SidebarManageMultiplyVaultEditingStage {...props} />}
             {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
             {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
               <SidebarVaultAllowanceStage {...props} />
