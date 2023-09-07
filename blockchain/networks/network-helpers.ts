@@ -58,7 +58,11 @@ export const networkSetById = keyBy(enableNetworksSet, 'id')
 export const getOppositeNetworkHexIdByHexId = (currentConnectedChainHexId: NetworkConfigHexId) => {
   const networkConfig = networkSetByHexId[currentConnectedChainHexId]
   if (!networkConfig)
-    console.info('NetworkConfig not found for hexid ', currentConnectedChainHexId, ' using mainnet.')
+    console.info(
+      'NetworkConfig not found for hexid ',
+      currentConnectedChainHexId,
+      ' using mainnet.',
+    )
   return (
     (networkConfig &&
       (networkConfig.testnet ? networkConfig.mainnetHexId : networkConfig.testnetHexId)) ||
