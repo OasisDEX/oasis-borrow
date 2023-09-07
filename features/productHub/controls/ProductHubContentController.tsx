@@ -45,6 +45,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     sparkBorrowEnabled,
     sparkEarnEnabled,
     sparkMultiplyEnabled,
+    sparkSDAIETHEnabled,
   ] = useFeatureToggles([
     'AjnaSafetySwitch',
     'AjnaPoolFinder',
@@ -52,6 +53,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     'SparkProtocolBorrow',
     'SparkProtocolEarn',
     'SparkProtocolMultiply',
+    'SparkProtocolSDAIETH',
   ])
 
   const { chainId } = useWalletManagement()
@@ -66,13 +68,15 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 
   const dataMatchedToFeatureFlags = useMemo(
     () =>
-      tableData.filter(({ label, protocol, product }) => {
+      tableData.filter(({ label, protocol, product, primaryToken, secondaryToken }) => {
         const isAjna = protocol === LendingProtocol.Ajna
         const isSpark = protocol === LendingProtocol.SparkV3
 
         const isBorrow = product.includes(ProductHubProductType.Borrow)
         const isEarn = product.includes(ProductHubProductType.Earn)
         const isMultiply = product.includes(ProductHubProductType.Multiply)
+
+        const isSDAIETH = primaryToken === 'SDAI' && secondaryToken === 'ETH'
 
         const unalailableChecksList = [
           // these checks predicate that the pool/strategy is UNAVAILABLE
@@ -83,6 +87,10 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
           isSpark && isBorrow && !(sparkEnabled && sparkBorrowEnabled),
           isSpark && isEarn && !(sparkEnabled && sparkEarnEnabled),
           isSpark && isMultiply && !(sparkEnabled && sparkMultiplyEnabled),
+          isSpark &&
+            isSDAIETH &&
+            (isMultiply || isBorrow) &&
+            !(sparkEnabled && sparkSDAIETHEnabled),
         ]
         if (unalailableChecksList.some((check) => !!check)) {
           return false
@@ -95,6 +103,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
       sparkBorrowEnabled,
       sparkEarnEnabled,
       sparkMultiplyEnabled,
+      sparkSDAIETHEnabled,
       ajnaSafetySwitchOn,
       ajnaPoolFinderEnabled,
       ajnaOraclessPoolPairsKeys,
