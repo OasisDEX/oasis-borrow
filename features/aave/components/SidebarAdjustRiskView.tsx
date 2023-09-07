@@ -43,7 +43,7 @@ type BoundaryConfig = {
 }
 
 export type AdjustRiskViewConfig = {
-  liquidationPriceFormatter: (qty: BigNumber) => TokenDisplay
+  liquidationPriceFormatter: (qty: BigNumber, token?: string) => TokenDisplay
   rightBoundary: BoundaryConfig
   link?: {
     url: string
@@ -70,7 +70,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     send,
     isLoading,
     viewLocked = false,
-    showWarring = false,
+    showWarning = false,
     onChainPosition,
     stopLossError,
   }: SecondaryInputProps) {
@@ -143,7 +143,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
               return '...'
             } else {
               return (onChainPosition || hasUserInteracted(state)) && !value.isNaN()
-                ? viewConfig.liquidationPriceFormatter(value)
+                ? viewConfig.liquidationPriceFormatter(value, debtToken)
                 : '-'
             }
           }}
@@ -213,7 +213,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
           </Link>
         )}
         {stopLossError && <StopLossAaveErrorMessage />}
-        {showWarring ? (
+        {showWarning ? (
           <MessageCard
             messages={[t('manage-earn-vault.has-asset-already')]}
             type="error"

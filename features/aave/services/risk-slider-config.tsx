@@ -5,8 +5,14 @@ import { formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import React from 'react'
 
 export const adjustRiskSliderConfig: AdjustRiskViewConfig = {
-  liquidationPriceFormatter: (qty) => {
-    return <>${formatBigNumber(qty, 2)}</>
+  liquidationPriceFormatter: (qty, token) => {
+    return (
+      <>
+        {token ? '' : '$'}
+        {formatBigNumber(qty, 2)}
+        {` ${token}`}
+      </>
+    )
   },
   rightBoundary: {
     valueExtractor: (data) => data?.ltv,
