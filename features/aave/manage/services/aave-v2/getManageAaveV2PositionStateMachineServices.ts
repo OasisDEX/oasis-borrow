@@ -19,7 +19,7 @@ import { createEthersTransactionStateMachine } from 'features/stateMachines/tran
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
 import { TxHelpers } from 'helpers/context/types'
-import { ProtocolData } from 'lendingProtocols/aaveCommon'
+import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
@@ -34,11 +34,11 @@ export function getManageAaveV2PositionStateMachineServices(
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
-  aaveProtocolData$: (
+  aaveLikeProtocolData$: (
     collateralToken: string,
     debtToken: string,
     proxyAddress: string,
-  ) => Observable<ProtocolData>,
+  ) => Observable<AaveLikeProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
@@ -143,7 +143,7 @@ export function getManageAaveV2PositionStateMachineServices(
         map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter((address) => !!address),
         switchMap((proxyAddress) =>
-          aaveProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
+          aaveLikeProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
         ),
         map((aaveProtocolData) => ({
           type: 'CURRENT_POSITION_CHANGED',
@@ -156,7 +156,7 @@ export function getManageAaveV2PositionStateMachineServices(
         map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter((address) => !!address),
         switchMap((proxyAddress) =>
-          aaveProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
+          aaveLikeProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
         ),
         map((aaveProtocolData) => ({
           type: 'UPDATE_PROTOCOL_DATA',

@@ -1,15 +1,15 @@
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { useSimulationYields } from 'features/aave/hooks'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
-import { ProtocolData, ReserveData } from 'lendingProtocols/aaveCommon'
+import { AaveLikeProtocolData, AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import React from 'react'
 
 import { PositionInfoComponent } from './PositionInfoComponent'
 
 export type ViewPositionSectionComponentProps = {
   aaveReserveState: AaveV2ReserveConfigurationData
-  aaveReserveDataDebtToken: ReserveData
-  aaveProtocolData?: ProtocolData
+  aaveReserveDataDebtToken: AaveLikeReserveData
+  aaveProtocolData?: AaveLikeProtocolData
   strategyConfig: IStrategyConfig
 }
 

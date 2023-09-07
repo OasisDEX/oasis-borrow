@@ -3,10 +3,10 @@ import BigNumber from 'bignumber.js'
 import dayjs from 'dayjs'
 import { gql, GraphQLClient } from 'graphql-request'
 import {
-  AaveYieldsResponse,
+  AaveLikeYieldsResponse,
   FilterYieldFieldsType,
   yieldsDateFormat,
-} from 'lendingProtocols/aaveCommon/yields'
+} from 'lendingProtocols/aave-like-common/yields'
 import { isObservable, Observable } from 'rxjs'
 import { first } from 'rxjs/operators'
 
@@ -127,7 +127,7 @@ export async function getAaveStEthYield(
   currentDate: dayjs.Dayjs,
   riskRatio: IRiskRatio,
   fields: FilterYieldFieldsType[],
-): Promise<AaveYieldsResponse> {
+): Promise<AaveLikeYieldsResponse> {
   const currentDateGuarded = currentDate.clone()
   const reserveAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
   const getClient = isObservable(client) ? await client.pipe(first()).toPromise() : client

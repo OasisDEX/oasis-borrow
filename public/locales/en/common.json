@@ -521,8 +521,8 @@
   "landing": {
     "hero": {
       "main": {
-        "headline": "DeFi made simple and secure",
-        "subheader": "Take advantage of powerful automation strategies and user-friendly UX."
+        "headline": "The best place to Borrow and Earn in DeFi",
+        "subheader": "Power up your portfolio by Borrowing, Lending and Multiplying your favourite assets. Made Safe and Easy by industry leading automation tools."
       },
       "ajna": {
         "headline": "Use the only market-driven lending protocol",
@@ -1260,9 +1260,8 @@
   "vault": {
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "header": "{{ilk}} Vault {{id}}",
-    "header-aave-open": "Open {{collateral}}/{{debt}} Aave position",
-    "header-aave-view": "Aave {{collateral}}/{{debt}}",
-    "header-aave-view-id": "Aave {{collateral}}/{{debt}} Vault {{vaultId}}",
+    "header-aave-open": "Open {{collateral}}/{{debt}} {{protocol}} position",
+    "header-aave-view": "{{protocol}} {{collateral}}/{{debt}}",
     "header-current-market-price": "Current Market Price",
     "insti-header": "Institutional {{ilk}} Vault {{id}}",
     "next-price": "Next price in {{count}} minute",
@@ -1495,7 +1494,7 @@
     },
     "history-coming-soon": {
       "header": "History support coming soon",
-      "description": "We currently don't support AAVE history on the Ethereum mainnet or L2 networks, but we'll be adding this feature soon."
+      "description": "We currently don't support {{protocol}} history on the Ethereum mainnet or L2 networks, but we'll be adding this feature soon."
     }
   },
   "view": "View",
@@ -2380,7 +2379,9 @@
       "product-header": {
         "token-pair-list": {
           "aave-steth-eth": "Aave stETH yield multiple",
-          "aave-wsteth-eth": "Aave wstETH yield multiple"
+          "aave-wsteth-eth": "Aave wstETH yield multiple",
+          "spark-wsteth-eth": "Spark wstETH yield multiple",
+          "spark-reth-eth": "Spark rETH yield multiple"
         },
         "current-yield": "Current yield",
         "90-day-avg-yield": "90 Day Avg",
@@ -2687,6 +2688,16 @@
             "success-manage": "Your {{collateralToken}}/{{quoteToken}} Ajna Position was updated"
           }
         },
+        "dupe-modal": {
+          "title": "Are you sure you want to open a new {{product}} position in the Ajna {{collateralToken}}/{{quoteToken}} pool?",
+          "description-borrower-singular": "You already have borrower position in this pool.",
+          "description-borrower-plural": "You already have borrower positions in this pool.",
+          "description-lender-singular": "You already have lender position in this pool.",
+          "description-lender-plural": "You already have lender positions in this pool.",
+          "help": "You can either create a new position in this pool or go to your existing position.",
+          "cta-primary": "Go to your Portfolio",
+          "cta-textual": "Open new position"
+        },
         "notifications": {
           "time-to-liquidation": {
             "title": "Your position will be moved to liquidation {{time}}",
@@ -2704,9 +2715,13 @@
             "title": "This position was partially liquidated. Some part of your collateral was sold to cover your debt",
             "message": "Your debt was increased by 90 days before liquidation as a penalty. During the liquidation your position recollateralized and was removed from liquidation. <0>Read more about Ajna Liquidations →</0>"
           },
-          "safety-switch-on": {
+          "safety-switch-open": {
             "title": "Opening Ajna positions temporary disabled",
             "message": "Due to a technical issue we have currently disabled opening new Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
+          },
+          "safety-switch-manage": {
+            "title": "Some features of Ajna positions are temporary disabled",
+            "message": "Due to a technical issue we have currently disabled some features of Ajna positions, as they might not result in the expected outcome for our users. You can withdraw deposited tokens or repay position's debt. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
           },
           "near-lup": {
             "title": "Your position's threshold price is approaching the LUP",
@@ -2922,6 +2937,12 @@
       "oracless-ltv": "Max LTV is not available for this pool as Summer.fi does not currently support USD price feeds for these assets. You can still open a position in this pool. The maximum risk will be determined by lenders in the pool.",
       "rewards-available-soon": "Rewards are earned automatically and will be claimable weekly in the near future.",
       "this-pool-is-earning-ajna-tokens": "This pool is earning Summer.fi × Ajna token Rewards"
+    }
+  },
+  "spark": {
+    "product-hub-tooltips": {
+      "elligible-for-spk-airdrop": "Positions on this pair are elligible for the SPK airdrop.",
+      "elligible-for-spk-airdrop-description": "More information on the Airdrop can be found on the Maker forum"
     }
   },
   "product-hub": {

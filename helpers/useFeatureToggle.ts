@@ -37,6 +37,10 @@ export type Feature =
   | 'UseNetworkSwitcherForks'
   | 'UseNetworkSwitcherOptimism'
   | 'UseNetworkSwitcherTestnets'
+  | 'SparkProtocol'
+  | 'SparkProtocolEarn'
+  | 'SparkProtocolBorrow'
+  | 'SparkProtocolMultiply'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -52,7 +56,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3ProtectionWrite: true,
   AjnaPoolFinder: true,
   AjnaReusableDPM: false,
-  AjnaSafetySwitch: false,
+  AjnaSafetySwitch: true,
   AjnaSuppressValidation: false,
   ConstantMultipleReadOnly: false,
   DaiSavingsRate: true,
@@ -72,6 +76,10 @@ const configuredFeatures: Record<Feature, boolean> = {
   UseNetworkSwitcherForks: false,
   UseNetworkSwitcherOptimism: true,
   UseNetworkSwitcherTestnets: false,
+  SparkProtocol: false,
+  SparkProtocolEarn: false,
+  SparkProtocolBorrow: false,
+  SparkProtocolMultiply: false,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {
@@ -127,4 +135,8 @@ export function getFeatureToggle(feature: Feature): boolean {
 
 export function useFeatureToggle(feature: Feature): boolean {
   return getFeatureToggle(feature)
+}
+
+export function useFeatureToggles(features: Feature[]): boolean[] {
+  return features.map(getFeatureToggle)
 }

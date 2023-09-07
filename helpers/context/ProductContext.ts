@@ -30,8 +30,8 @@ import {
   getUserDpmProxy$,
   UserDpmAccount,
 } from 'blockchain/userDpmProxies'
-import { createVaultsFromIds$, decorateVaultsWithValue$ } from 'blockchain/vaults'
-import { AccountContext, TOSContext } from 'components/context'
+import { createVaultsFromIds$, decorateVaultsWithValue$, Vault } from 'blockchain/vaults'
+import { AccountContext } from 'components/context'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
@@ -105,16 +105,16 @@ import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
 import {
-  AavePosition,
+  AaveLikePosition,
   createAaveV2Position$,
   createAaveV3DpmPosition$,
   createMakerPositions$,
   createPositions$,
+  createSparkV3DpmPosition$,
 } from 'features/vaultsOverview/pipes/positions'
 import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createPositionsList$ } from 'features/vaultsOverview/vaultsOverview'
-import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
 import { bigNumberTostring } from 'helpers/bigNumberToString'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation } from 'helpers/form'
@@ -124,6 +124,7 @@ import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
 import { getAaveV3Services } from 'lendingProtocols/aave-v3'
+import { getSparkV3Services } from 'lendingProtocols/spark-v3'
 import { isEqual, memoize } from 'lodash'
 import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of } from 'rxjs'
@@ -153,7 +154,6 @@ export function setupProductContext(
     onEveryBlock$,
     oracleContext$,
     txHelpers$,
-    web3Context$,
   }: MainContext,
   {
     balance$,
@@ -169,9 +169,8 @@ export function setupProductContext(
     vault$,
     vaults$,
   }: AccountContext,
-  { termsAcceptance$ }: TOSContext,
 ) {
-  console.log('Product context setup')
+  console.info('Product context setup')
   combineLatest(account$, connectedContext$)
     .pipe(
       mergeMap(([account, network]) => {
@@ -212,18 +211,25 @@ export function setupProductContext(
   }
 
   // protocols
-  const aaveV2 = getAaveV2Services({
+  const aaveV2Services = getAaveV2Services({
     refresh$: onEveryBlock$,
   })
 
-  const aaveV3 = getAaveV3Services({ refresh$: onEveryBlock$, networkId: NetworkIds.MAINNET })
-  const aaveV3Optimism = getAaveV3Services({
+  const aaveV3Services = getAaveV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.MAINNET,
+  })
+  const aaveV3OptimismServices = getAaveV3Services({
     refresh$: onEveryBlock$,
     networkId: NetworkIds.OPTIMISMMAINNET,
   })
-  const aaveV3Arbitrum = getAaveV3Services({
+  const aaveV3ArbitrumServices = getAaveV3Services({
     refresh$: onEveryBlock$,
     networkId: NetworkIds.ARBITRUMMAINNET,
+  })
+  const sparkV3Services = getSparkV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.MAINNET,
   })
 
   // base
@@ -461,7 +467,7 @@ export function setupProductContext(
   const strategyConfig$ = memoize(
     curry(getStrategyConfig$)(
       proxiesRelatedWithPosition$,
-      aaveV2.aaveProxyConfiguration$,
+      aaveV2Services.aaveLikeProxyConfiguration$,
       lastCreatedPositionForProxy$,
     ),
     (positionId: PositionId, networkName: NetworkNames) =>
@@ -494,23 +500,28 @@ export function setupProductContext(
     return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.AaveV3)
   })
 
-  const mainnetAaveV2Positions$: (walletAddress: string) => Observable<AavePosition[]> = memoize(
-    curry(createAaveV2Position$)(
-      {
-        dsProxy$: proxyAddress$,
-        userDpmProxies$: mainnetDpmProxies$,
-      },
-      {
-        tickerPrices$: tokenPriceUSDStatic$,
-        context$,
-        automationTriggersData$,
-        readPositionCreatedEvents$: mainnetAaveV2PositionCreatedEvents$,
-      },
-      aaveV2,
-    ),
-  )
+  const mainnetSparkV3PositionCreatedEvents$ = memoize((walletAddress: string) => {
+    return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.SparkV3)
+  })
 
-  const aaveMainnetAaveV3Positions$: (walletAddress: string) => Observable<AavePosition[]> =
+  const mainnetAaveV2Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
+    memoize(
+      curry(createAaveV2Position$)(
+        {
+          dsProxy$: proxyAddress$,
+          userDpmProxies$: mainnetDpmProxies$,
+        },
+        {
+          tickerPrices$: tokenPriceUSDStatic$,
+          context$,
+          automationTriggersData$,
+          readPositionCreatedEvents$: mainnetAaveV2PositionCreatedEvents$,
+        },
+        aaveV2Services,
+      ),
+    )
+
+  const aaveMainnetAaveV3Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
     memoize(
       curry(createAaveV3DpmPosition$)(
         context$,
@@ -519,7 +530,22 @@ export function setupProductContext(
         mainnetAaveV3PositionCreatedEvents$,
         getApiVaults,
         automationTriggersData$,
-        aaveV3,
+        aaveV3Services,
+        NetworkIds.MAINNET,
+      ),
+      (wallet) => wallet,
+    )
+
+  const sparkMainnetSparkV3Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
+    memoize(
+      curry(createSparkV3DpmPosition$)(
+        context$,
+        mainnetDpmProxies$,
+        tokenPriceUSDStatic$,
+        mainnetSparkV3PositionCreatedEvents$,
+        getApiVaults,
+        automationTriggersData$,
+        sparkV3Services,
         NetworkIds.MAINNET,
       ),
       (wallet) => wallet,
@@ -530,7 +556,7 @@ export function setupProductContext(
     (walletAddress) => walletAddress,
   )
 
-  const aaveOptimismPositions$: (walletAddress: string) => Observable<AavePosition[]> = memoize(
+  const aaveOptimismPositions$: (walletAddress: string) => Observable<AaveLikePosition[]> = memoize(
     curry(createAaveV3DpmPosition$)(
       context$,
       optimismDpmProxies$,
@@ -538,21 +564,34 @@ export function setupProductContext(
       optimismReadPositionCreatedEvents$,
       getApiVaults,
       () => of<TriggersData | undefined>(undefined), // Triggers are not supported on optimism
-      aaveV3Optimism,
+      aaveV3OptimismServices,
       NetworkIds.OPTIMISMMAINNET,
     ),
     (wallet) => wallet,
   )
 
-  const aavePositions$ = memoize((walletAddress: string) => {
+  const aaveLikePositions$ = memoize((walletAddress: string) => {
     return combineLatest([
       mainnetAaveV2Positions$(walletAddress),
       aaveMainnetAaveV3Positions$(walletAddress),
+      sparkMainnetSparkV3Positions$(walletAddress),
       aaveOptimismPositions$(walletAddress),
     ]).pipe(
-      map(([mainnetAaveV2Positions, mainnetAaveV3Positions, optimismAaveV3Positions]) => {
-        return [...mainnetAaveV2Positions, ...mainnetAaveV3Positions, ...optimismAaveV3Positions]
-      }),
+      map(
+        ([
+          mainnetAaveV2Positions,
+          mainnetAaveV3Positions,
+          mainnetSparkV3Positions,
+          optimismAaveV3Positions,
+        ]) => {
+          return [
+            ...mainnetAaveV2Positions,
+            ...mainnetAaveV3Positions,
+            ...mainnetSparkV3Positions,
+            ...optimismAaveV3Positions,
+          ]
+        },
+      ),
     )
   })
 
@@ -694,8 +733,6 @@ export function setupProductContext(
     curry(createPositionsOverviewSummary$)(balanceLean$, tokenPriceUSD$, positions$, assetActions$),
   )
 
-  const walletAssociatedRisk$ = createWalletAssociatedRisk$(web3Context$, termsAcceptance$)
-
   const vaultBanners$ = memoize(
     curry(createVaultsNotices$)(context$, priceInfo$, vault$, vaultHistory$),
     bigNumberTostring,
@@ -778,7 +815,7 @@ export function setupProductContext(
   )
 
   const ownersPositionsList$ = memoize(
-    curry(createPositionsList$)(positionsList$, aavePositions$, ajnaPositions$, dsr$),
+    curry(createPositionsList$)(positionsList$, aaveLikePositions$, ajnaPositions$, dsr$),
   )
 
   const followedList$ = memoize(
@@ -796,11 +833,14 @@ export function setupProductContext(
   )
 
   const protocols: ProtocolsServices = {
-    [LendingProtocol.AaveV2]: aaveV2,
+    [LendingProtocol.AaveV2]: aaveV2Services,
     [LendingProtocol.AaveV3]: {
-      [NetworkIds.MAINNET]: aaveV3,
-      [NetworkIds.OPTIMISMMAINNET]: aaveV3Optimism,
-      [NetworkIds.ARBITRUMMAINNET]: aaveV3Arbitrum,
+      [NetworkIds.MAINNET]: aaveV3Services,
+      [NetworkIds.OPTIMISMMAINNET]: aaveV3OptimismServices,
+      [NetworkIds.ARBITRUMMAINNET]: aaveV3ArbitrumServices,
+    },
+    [LendingProtocol.SparkV3]: {
+      [NetworkIds.MAINNET]: sparkV3Services,
     },
   }
 
@@ -871,10 +911,10 @@ export function setupProductContext(
   )
 
   return {
-    aaveAvailableLiquidityInUSDC$: aaveV2.aaveAvailableLiquidityInUSDC$,
-    aaveLiquidations$: aaveV2.aaveLiquidations$, // @deprecated,
-    aaveProtocolData$: aaveV2.aaveProtocolData$,
-    aaveUserAccountData$: aaveV2.aaveUserAccountData$,
+    aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
+    aaveLikeLiquidations$: aaveV2Services.aaveLikeLiquidations$, // @deprecated,
+    aaveLikeProtocolData$: aaveV2Services.aaveLikeProtocolData$,
+    aaveLikeUserAccountData$: aaveV2Services.aaveLikeUserAccountData$,
     addGasEstimation$,
     ajnaPosition$,
     allowance$,
@@ -922,7 +962,6 @@ export function setupProductContext(
     userDpmProxy$,
     vaultBanners$,
     vaultHistory$,
-    walletAssociatedRisk$,
     yields$,
     yieldsChange$,
   }

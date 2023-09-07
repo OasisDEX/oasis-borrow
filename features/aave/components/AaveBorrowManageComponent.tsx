@@ -18,20 +18,18 @@ export function AaveBorrowManageComponent({
   dpmProxy,
   isOpenView,
 }: AaveManageComponentProps) {
-  const { getAaveReserveData$, aaveReserveConfigurationData$, aaveHistory$ } = useAaveContext(
-    strategyConfig.protocol,
-    strategyConfig.network,
-  )
+  const { getAaveLikeReserveData$, aaveLikeReserveConfigurationData$, aaveHistory$ } =
+    useAaveContext(strategyConfig.protocol, strategyConfig.network)
   const _aaveHistory$ = aaveHistory$(dpmProxy!)
   const [aaveHistory, aaveHistoryError] = useObservable(_aaveHistory$)
   const [debtTokenReserveData, debtTokenReserveDataError] = useObservable(
-    getAaveReserveData$({ token: strategyConfig.tokens.debt }),
+    getAaveLikeReserveData$({ token: strategyConfig.tokens.debt }),
   )
   const [collateralTokenReserveData, collateralTokenReserveDataError] = useObservable(
-    getAaveReserveData$({ token: strategyConfig.tokens.collateral }),
+    getAaveLikeReserveData$({ token: strategyConfig.tokens.collateral }),
   )
   const [debtTokenReserveConfigurationData, debtTokenReserveConfigurationDataError] = useObservable(
-    aaveReserveConfigurationData$({
+    aaveLikeReserveConfigurationData$({
       collateralToken: strategyConfig.tokens.debt,
       debtToken: strategyConfig.tokens.collateral,
     }),

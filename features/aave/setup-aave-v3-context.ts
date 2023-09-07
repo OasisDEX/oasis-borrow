@@ -11,9 +11,9 @@ import { MainContext } from 'helpers/context/MainContext'
 import { ProductContext } from 'helpers/context/ProductContext'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
+import { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
-import { ReserveConfigurationData } from 'lendingProtocols/aaveCommon'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { merge, Observable, of, Subject } from 'rxjs'
@@ -97,14 +97,16 @@ export function setupAaveV3Context(
     (positionId) => JSON.stringify(positionId),
   )
 
+  const protocolData = protocols[LendingProtocol.AaveV3][networkId]
+
   const {
-    aaveUserAccountData$,
-    aaveProtocolData$,
-    aaveReserveConfigurationData$,
-    aaveOracleAssetPriceData$,
-    getAaveReserveData$,
-    getAaveAssetsPrices$,
-  } = protocols[LendingProtocol.AaveV3][networkId]
+    aaveLikeUserAccountData$,
+    aaveLikeProtocolData$,
+    aaveLikeReserveConfigurationData$,
+    aaveLikeOracleAssetPriceData$,
+    getAaveLikeReserveData$,
+    getAaveLikeAssetsPrices$,
+  } = protocolData
 
   const aaveEarnYieldsQuery = memoize(
     curry(getAaveWstEthYield)(disconnectedGraphQLClient$, dayjs()),
@@ -112,12 +114,12 @@ export function setupAaveV3Context(
   )
 
   const earnCollateralsReserveData = {
-    WSTETH: aaveReserveConfigurationData$({ collateralToken: 'WSTETH', debtToken: 'ETH' }),
-  } as Record<string, Observable<ReserveConfigurationData>>
+    WSTETH: aaveLikeReserveConfigurationData$({ collateralToken: 'WSTETH', debtToken: 'ETH' }),
+  } as Record<string, Observable<AaveLikeReserveConfigurationData>>
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
-      aaveOracleAssetPriceData$,
+      aaveLikeOracleAssetPriceData$,
       of(one), // aave v3 base is already in USD
       getSupportedTokens(LendingProtocol.AaveV3, network),
       networkId,
@@ -131,7 +133,7 @@ export function setupAaveV3Context(
   )
 
   const strategyInfo$ = memoize(
-    curry(getStrategyInfo$)(aaveOracleAssetPriceData$, aaveReserveConfigurationData$),
+    curry(getStrategyInfo$)(aaveLikeOracleAssetPriceData$, aaveLikeReserveConfigurationData$),
     (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
@@ -149,15 +151,15 @@ export function setupAaveV3Context(
     txHelpers$,
     tokenBalances$,
     proxyForAccount$,
-    aaveUserAccountData$,
+    aaveLikeUserAccountData$,
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    aaveProtocolData$,
+    aaveLikeProtocolData$,
     allowanceForAccount$,
     unconsumedDpmProxyForConnectedAccount$,
     proxyConsumed$,
-    aaveReserveConfigurationData$,
+    aaveLikeReserveConfigurationData$,
   )
 
   const manageAaveStateMachineServices = getManageAaveV3PositionStateMachineServices(
@@ -169,7 +171,7 @@ export function setupAaveV3Context(
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    aaveProtocolData$,
+    aaveLikeProtocolData$,
     allowanceForAccount$,
     getAaveHistoryEvents,
   )
@@ -200,9 +202,9 @@ export function setupAaveV3Context(
   )
 
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
-    getAaveReserveData$({ token: 'WSTETH' }),
-    getAaveReserveData$({ token: 'ETH' }),
-    getAaveAssetsPrices$({
+    getAaveLikeReserveData$({ token: 'WSTETH' }),
+    getAaveLikeReserveData$({ token: 'ETH' }),
+    getAaveLikeAssetsPrices$({
       tokens: ['ETH', 'WSTETH'],
     }),
   )
@@ -223,7 +225,7 @@ export function setupAaveV3Context(
             (params) => params.positionId === positionId && params.networkName === networkName,
           ),
         ),
-        // The initial trigger from WithStrategy
+        // The initial trigger from WithAaveStrategy
         of({ positionId, networkName, vaultType }),
       ).pipe(
         switchMap((params) =>
@@ -244,7 +246,7 @@ export function setupAaveV3Context(
   }
 
   return {
-    ...protocols[LendingProtocol.AaveV3][networkId],
+    ...protocolData,
     aaveStateMachine,
     aaveManageStateMachine,
     aaveTotalValueLocked$,

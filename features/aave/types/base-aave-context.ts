@@ -1,4 +1,4 @@
-import { IPosition, IRiskRatio, ISimplePositionTransition, IStrategy, PositionTransition } from '@oasisdex/dma-library'
+import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
@@ -14,7 +14,7 @@ import { HasGasEstimation } from 'helpers/context/types'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { EthersTransactionStateMachine, TransactionStateMachine } from 'features/stateMachines/transaction'
 import { zero } from 'helpers/zero'
-import { ProtocolData } from 'lendingProtocols/aaveCommon'
+import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 
 export type UserInput = {
@@ -54,7 +54,6 @@ export type RefTransactionMachine =
   | ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   | ActorRefFrom<EthersTransactionStateMachine<any>> // todo
 
-
 export interface BaseAaveContext {
   strategyConfig: IStrategyConfig
   userInput: UserInput
@@ -69,7 +68,7 @@ export interface BaseAaveContext {
   currentStep: number
   totalSteps: number
 
-  transition?: ISimplePositionTransition | PositionTransition | IStrategy
+  transition?: IStrategy
   estimatedGasPrice?: HasGasEstimation
   /**
    * @deprecated no idea what token it is. use **balance.__token__.balance** instead
@@ -95,7 +94,7 @@ export interface BaseAaveContext {
   web3Context?: Context
   userSettings?: UserSettingsState
   error?: string | unknown
-  protocolData?: ProtocolData
+  protocolData?: AaveLikeProtocolData
   userDpmAccount?: UserDpmAccount
   effectiveProxyAddress?: string
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>

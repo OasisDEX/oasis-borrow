@@ -85,7 +85,7 @@ export function AccountContextProvider({ children }: WithChildren) {
 
   useEffect(() => {
     setContext(() => {
-      console.log('Account context setup')
+      console.info('Account context setup')
       const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
       const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
       const proxyOwner$ = memoize(curry(createProxyOwner$)(onEveryBlock$, context$))
@@ -223,8 +223,6 @@ export function AccountContextProvider({ children }: WithChildren) {
         checkReferralLocalStorage$,
       )
 
-      const checkReferralLocal$ = checkReferralLocalStorage$()
-
       return {
         accountData$,
         allNetworkReadPositionCreatedEvents$,
@@ -234,7 +232,6 @@ export function AccountContextProvider({ children }: WithChildren) {
         cdpManagerUrns$,
         cdpRegistryCdps$,
         cdpRegistryOwns$,
-        checkReferralLocal$,
         dogIlks$,
         ensName$,
         getCdps$,
@@ -288,7 +285,6 @@ export type AccountContext = {
   cdpManagerUrns$: (args: BigNumber) => Observable<string>
   cdpRegistryCdps$: (args: { ilk: string; usr: string }) => Observable<BigNumber | null>
   cdpRegistryOwns$: (args: BigNumber) => Observable<string>
-  checkReferralLocal$: Observable<string | null>
   dogIlks$: (args: string) => Observable<DogIlk>
   ensName$: (address: string) => Observable<string | void | null>
   getCdps$: (args: GetCdpsArgs) => Observable<GetCdpsResult>

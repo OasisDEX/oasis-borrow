@@ -1,10 +1,13 @@
 import { BaseNetworkNames, NetworkNames, networksByName } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
+import { GenericMultiselectOption } from 'components/GenericMultiselect'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
 import { ProductHubProductType } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
+import { clone } from 'ramda'
 
 export const ALL_ASSETS = 'all assets'
 
@@ -96,7 +99,7 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
   },
 }
 
-export const productHubOptionsMap: {
+export const productHubOptionsMapBase: {
   [key in ProductHubProductType]: {
     product: HeaderSelectorOption
     tokens: { [key: string]: HeaderSelectorOption }
@@ -141,7 +144,23 @@ export const productHubOptionsMap: {
   },
 }
 
-export const productHubStrategyFilter = [
+const productHubOptionsMap = clone(productHubOptionsMapBase)
+
+if (getFeatureToggle('AjnaSafetySwitch')) {
+  delete productHubOptionsMap.borrow.tokens.YFI
+  delete productHubOptionsMap.borrow.tokens.GHO
+  delete productHubOptionsMap.borrow.tokens.WLD
+  delete productHubOptionsMap.multiply.tokens.YFI
+  delete productHubOptionsMap.multiply.tokens.GHO
+  delete productHubOptionsMap.earn.tokens.BTC
+  delete productHubOptionsMap.earn.tokens.USDC
+  delete productHubOptionsMap.earn.tokens.GHO
+  delete productHubOptionsMap.earn.tokens.WLD
+}
+
+export { productHubOptionsMap }
+
+export const productHubStrategyFilter: GenericMultiselectOption[] = [
   {
     label: 'Long',
     value: 'long',
@@ -152,7 +171,7 @@ export const productHubStrategyFilter = [
   },
 ]
 
-export const productHubNetworkFilter = [
+export const productHubNetworkFilter: GenericMultiselectOption[] = [
   {
     label: networksByName[BaseNetworkNames.Ethereum].label,
     value: networksByName[BaseNetworkNames.Ethereum].name,
@@ -170,7 +189,7 @@ export const productHubNetworkFilter = [
   },
 ]
 
-export const productHubTestNetworkFilter = [
+export const productHubTestNetworkFilter: GenericMultiselectOption[] = [
   {
     label: networksByName[BaseNetworkNames.Ethereum].label,
     value: networksByName[NetworkNames.ethereumGoerli].name,
@@ -188,7 +207,7 @@ export const productHubTestNetworkFilter = [
   },
 ]
 
-export const productHubProtocolFilter = [
+export const productHubProtocolFilter: GenericMultiselectOption[] = [
   {
     label: lendingProtocolsByName[LendingProtocol.Maker].label,
     value: lendingProtocolsByName[LendingProtocol.Maker].name,
@@ -208,5 +227,11 @@ export const productHubProtocolFilter = [
     label: lendingProtocolsByName[LendingProtocol.Ajna].label,
     value: lendingProtocolsByName[LendingProtocol.Ajna].name,
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
+  },
+  {
+    label: lendingProtocolsByName[LendingProtocol.SparkV3].label,
+    value: lendingProtocolsByName[LendingProtocol.SparkV3].name,
+    image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
+    featureFlag: 'SparkProtocol',
   },
 ]

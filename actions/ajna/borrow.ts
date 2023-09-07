@@ -34,13 +34,18 @@ export const ajnaDepositGenerateBorrow = ({
   commonPayload,
   dependencies,
   position,
+  simulation,
 }: {
   state: Pick<AjnaBorrowFormState, 'depositAmount' | 'generateAmount'>
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
+  simulation?: AjnaGenericPosition
 }) => {
   const { depositAmount, generateAmount } = state
+
+  const borrowishPosition = position as AjnaPosition
+  const borrowishSimulation = simulation as AjnaPosition | undefined
 
   return strategies.ajna.borrow.depositBorrow(
     {
@@ -48,6 +53,9 @@ export const ajnaDepositGenerateBorrow = ({
       collateralAmount: depositAmount || zero,
       position: position as AjnaPosition,
       quoteAmount: generateAmount || zero,
+      stamploanEnabled: !!borrowishSimulation?.liquidationPrice.lt(
+        borrowishPosition.liquidationPriceT0Np,
+      ),
     },
     dependencies,
   )
@@ -77,7 +85,9 @@ export const ajnaPaybackWithdrawBorrow = ({
       collateralAmount: withdrawAmount || zero,
       position: position as AjnaPosition,
       quoteAmount: paybackAmount || zero,
-      stamploan: !!borrowishSimulation?.liquidationPrice.lt(borrowishPosition.liquidationPriceT0Np),
+      stamploanEnabled: !!borrowishSimulation?.liquidationPrice.lt(
+        borrowishPosition.liquidationPriceT0Np,
+      ),
     },
     dependencies,
   )

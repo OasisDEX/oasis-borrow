@@ -90,5 +90,5 @@ export function pluginDevModeHelpers(
         }),
       )
       .subscribe(identity)
-  console.log('dev helpers initialized!')
+  console.info('dev helpers initialized!')
 }

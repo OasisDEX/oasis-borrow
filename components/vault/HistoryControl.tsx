@@ -3,6 +3,7 @@ import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
+import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -16,7 +17,7 @@ export function HistoryControl({ vaultHistory }: HistoryControlProps) {
   )
 }
 
-export function DisabledHistoryControl() {
+export function DisabledHistoryControl({ protocol }: { protocol: LendingProtocol }) {
   const { t } = useTranslation()
 
   return (
@@ -24,7 +25,9 @@ export function DisabledHistoryControl() {
       status={<Icon size="34px" name="warning" />}
       withClose={false}
       header={t('vault-banners.history-coming-soon.header')}
-      subheader={t('vault-banners.history-coming-soon.description')}
+      subheader={t('vault-banners.history-coming-soon.description', {
+        protocol: LendingProtocolLabel[protocol],
+      })}
       color="primary100"
     />
   )

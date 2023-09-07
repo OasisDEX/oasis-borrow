@@ -5,11 +5,11 @@ import { VaultType } from 'features/generalManageVault/vaultType'
 import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import {
-  AaveServices,
-  AaveYieldsResponse,
+  AaveLikeReserveConfigurationData,
+  AaveLikeServices,
+  AaveLikeYieldsResponse,
   FilterYieldFieldsType,
-  ReserveConfigurationData,
-} from 'lendingProtocols/aaveCommon'
+} from 'lendingProtocols/aave-like-common'
 import { Observable } from 'rxjs'
 
 import { ProxiesRelatedWithPosition } from './helpers'
@@ -21,14 +21,14 @@ type AaveTotalValueLocked = {
   totalValueLocked: BigNumber
 }
 
-export type AaveContext = AaveServices & {
+export type AaveContext = AaveLikeServices & {
   aaveStateMachine: OpenAaveStateMachine
   aaveManageStateMachine: ManageAaveStateMachine
   aaveTotalValueLocked$: Observable<AaveTotalValueLocked>
   aaveEarnYieldsQuery: (
     riskRatio: IRiskRatio,
     fields: FilterYieldFieldsType[],
-  ) => Promise<AaveYieldsResponse>
+  ) => Promise<AaveLikeYieldsResponse>
   strategyConfig$: (
     positionId: PositionId,
     networkName: NetworkNames,
@@ -42,7 +42,7 @@ export type AaveContext = AaveServices & {
   proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>
   chainlinkUSDCUSDOraclePrice$: Observable<BigNumber>
   chainLinkETHUSDOraclePrice$: Observable<BigNumber>
-  earnCollateralsReserveData: Record<string, Observable<ReserveConfigurationData>>
+  earnCollateralsReserveData: Record<string, Observable<AaveLikeReserveConfigurationData>>
   dpmAccountStateMachine: DPMAccountStateMachine
   aaveHistory$: (proxyAddress: string) => Observable<VaultHistoryEvent[]>
 }

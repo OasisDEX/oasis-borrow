@@ -22,7 +22,7 @@ import { StopLossTriggerData } from 'features/automation/protection/stopLoss/sta
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { getDsrValue, getFundingCost, getProtection } from 'features/vaultsOverview/helpers'
-import { AavePosition } from 'features/vaultsOverview/pipes/positions'
+import { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
 import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
 import {
   formatAddress,
@@ -86,6 +86,7 @@ const isAutomationEnabledProtocol = (protocol: LendingProtocol, network: Network
     [LendingProtocol.AaveV3]: aaveProtection && network === NetworkNames.ethereumMainnet,
     [LendingProtocol.AaveV2]: false,
     [LendingProtocol.Ajna]: false,
+    [LendingProtocol.SparkV3]: false, // TODO: add automation for Spark
   }[protocol]
 }
 
@@ -186,7 +187,9 @@ export function parseMakerEarnPositionRows(
   )
 }
 
-export function parseAaveBorrowPositionRows(positions: AavePosition[]): PositionTableBorrowRow[] {
+export function parseAaveBorrowPositionRows(
+  positions: AaveLikePosition[],
+): PositionTableBorrowRow[] {
   return positions.map((position) => ({
     asset: `${position.token}/${position.debtToken}`,
     collateralLocked: position.lockedCollateral,
@@ -212,7 +215,7 @@ export function parseAaveBorrowPositionRows(positions: AavePosition[]): Position
 }
 
 export function parseAaveMultiplyPositionRows(
-  positions: AavePosition[],
+  positions: AaveLikePosition[],
 ): PositionTableMultiplyRow[] {
   return positions.map(
     ({
@@ -246,7 +249,7 @@ export function parseAaveMultiplyPositionRows(
     }),
   )
 }
-export function parseAaveEarnPositionRows(positions: AavePosition[]): PositionTableEarnRow[] {
+export function parseAaveEarnPositionRows(positions: AaveLikePosition[]): PositionTableEarnRow[] {
   return positions.map(({ debtToken, id, liquidity, netValue, protocol, token, url, chainId }) => ({
     asset: `${token}/${debtToken}`,
     icons: [token, debtToken],

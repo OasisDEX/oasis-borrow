@@ -24,12 +24,12 @@ import { allDefined } from 'helpers/allDefined'
 import { TxHelpers } from 'helpers/context/types'
 import { LendingProtocol } from 'lendingProtocols'
 import {
-  AaveReserveConfigurationDataParams,
-  ProtocolData,
-  ReserveConfigurationData,
-  UserAccountData,
-  UserAccountDataArgs,
-} from 'lendingProtocols/aaveCommon'
+  AaveLikeProtocolData,
+  AaveLikeReserveConfigurationData,
+  AaveLikeReserveConfigurationDataParams,
+  AaveLikeUserAccountData,
+  AaveLikeUserAccountDataArgs,
+} from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of, throwError } from 'rxjs'
 import { catchError, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
@@ -40,21 +40,23 @@ export function getOpenAaveV3PositionStateMachineServices(
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances | undefined>,
   connectedProxy$: Observable<string | undefined>,
-  aaveUserAccountData$: (parameters: UserAccountDataArgs) => Observable<UserAccountData>,
+  aaveLikeUserAccountData$: (
+    parameters: AaveLikeUserAccountDataArgs,
+  ) => Observable<AaveLikeUserAccountData>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
-  aaveProtocolData$: (
+  aaveLikeProtocolData$: (
     collateralToken: string,
     debtToken: string,
     proxyAddress: string,
-  ) => Observable<ProtocolData>,
+  ) => Observable<AaveLikeProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
   userDpmProxy$: Observable<UserDpmAccount | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
   aaveReserveConfiguration$: (
-    args: AaveReserveConfigurationDataParams,
-  ) => Observable<ReserveConfigurationData>,
+    args: AaveLikeReserveConfigurationDataParams,
+  ) => Observable<AaveLikeReserveConfigurationData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -159,7 +161,7 @@ export function getOpenAaveV3PositionStateMachineServices(
       return connectedProxy$.pipe(
         filter((address) => address !== undefined),
         switchMap((proxyAddress) =>
-          aaveProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
+          aaveLikeProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
         ),
         map((aaveProtocolData) => ({
           type: 'UPDATE_PROTOCOL_DATA',

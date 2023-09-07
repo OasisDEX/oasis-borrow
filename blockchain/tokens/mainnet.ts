@@ -59,10 +59,15 @@ export const tokensMainnet = {
   CRVV1ETHSTETH: contractDesc(guniToken, mainnet.common.CRVV1ETHSTETH),
   DAI: contractDesc(erc20, mainnet.common.DAI),
   ETH: contractDesc(erc20, mainnet.common.WETH),
+  // See @oasisdex/addresses package for info
+  // Used to represent ETH as an ERC20 token
+  ETH_ACTUAL: contractDesc(erc20, mainnet.common.ETH),
+  FRAX: contractDesc(erc20, mainnet.common.FRAX),
   GHO: contractDesc(erc20, mainnet.common.GHO),
   GUNIV3DAIUSDC1: contractDesc(guniToken, mainnet.common.GUNIV3DAIUSDC1),
   GUNIV3DAIUSDC2: contractDesc(guniToken, mainnet.common.GUNIV3DAIUSDC2),
   LDO: contractDesc(erc20, mainnet.common.LDO),
+  LUSD: contractDesc(erc20, mainnet.common.LUSD),
   MKR: contractDesc(erc20, mainnet.maker.common.McdGov),
   RENBTC: contractDesc(erc20, mainnet.common.RENBTC),
   SDAI: contractDesc(savingsDai, mainnet.common.SDAI),
@@ -76,9 +81,6 @@ export const tokensMainnet = {
   WSTETH: contractDesc(erc20, mainnet.common.WSTETH),
   YIELDBTC: contractDesc(erc20, mainnet.common.YIELDBTC),
   YIELDETH: contractDesc(erc20, mainnet.common.YIELDETH),
-  // Used to represent ETH as an ERC20 token
-  // See @oasisdex/addresses package for info
-  ETH_ACTUAL: contractDesc(erc20, mainnet.common.ETH),
 } as Record<string, ContractDesc>
 
 export const ilksNotSupportedOnGoerli = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'] as const
@@ -86,3 +88,7 @@ export const ilksNotSupportedOnGoerli = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A']
 export const ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET = 16183119
 export const AAVE_V3_POOL_GENESIS_MAINNET = 16291127
 export const AAVE_V2_LENDING_POOL_GENESIS_MAINNET = 11362579
+
+export const SPARK_V3_LENDING_POOL_GENESIS_MAINNET = 16776401
+export const SPARK_V3_ORACLE_GENESIS_MAINNET = 16776437
+export const SPARK_V3_POOL_DATA_PROVIDER_GENESIS_MAINNET = 16776391

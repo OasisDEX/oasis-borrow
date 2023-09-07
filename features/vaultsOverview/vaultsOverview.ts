@@ -3,32 +3,32 @@ import { Dsr } from 'features/dsr/utils/createDsr'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { AavePosition } from './pipes/positions'
+import { AaveLikePosition } from './pipes/positions'
 import { MakerPositionDetails } from './pipes/positionsList'
 
 export interface PositionsList {
   makerPositions: MakerPositionDetails[]
-  aavePositions: AavePosition[]
+  aaveLikePositions: AaveLikePosition[]
   ajnaPositions: AjnaPositionDetails[]
   dsrPosition: Dsr
 }
 
 export function createPositionsList$(
   makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
-  aavePositions$: (address: string) => Observable<AavePosition[]>,
+  aaveLikePositions$: (address: string) => Observable<AaveLikePosition[]>,
   ajnaPositions$: (address: string) => Observable<AjnaPositionDetails[]>,
   dsr$: (address: string) => Observable<Dsr>,
   address: string,
 ): Observable<PositionsList> {
   return combineLatest(
     makerPositions$(address),
-    aavePositions$(address),
+    aaveLikePositions$(address),
     ajnaPositions$(address),
     dsr$(address),
   ).pipe(
-    map(([makerPositions, aavePositions, ajnaPositions, dsrPosition]) => ({
+    map(([makerPositions, aaveLikePositions, ajnaPositions, dsrPosition]) => ({
       makerPositions: makerPositions,
-      aavePositions: aavePositions,
+      aaveLikePositions: aaveLikePositions,
       ajnaPositions: ajnaPositions,
       dsrPosition: dsrPosition,
     })),

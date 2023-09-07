@@ -8,6 +8,8 @@ import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
+import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
+import { WalletRiskResponse } from 'features/walletAssociatedRisk/walletRiskApi'
 import { DepreciatedServices } from 'helpers/context/types'
 import { WithChildren } from 'helpers/types'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
@@ -35,7 +37,7 @@ export function TOSContextProvider({ children }: WithChildren) {
 
   useEffect(() => {
     setContext(() => {
-      console.log('Terms of service context setup')
+      console.info('Terms of service context setup')
       const termsAcceptance$ = createTermsAcceptance$(
         web3Context$,
         currentContent.tos.version,
@@ -44,8 +46,11 @@ export function TOSContextProvider({ children }: WithChildren) {
         saveAcceptanceFromApi$,
       )
 
+      const walletAssociatedRisk$ = createWalletAssociatedRisk$(web3Context$, termsAcceptance$)
+
       return {
         termsAcceptance$,
+        walletAssociatedRisk$,
       }
     })
   }, [txHelpers$, web3Context$])
@@ -55,4 +60,5 @@ export function TOSContextProvider({ children }: WithChildren) {
 
 export type TOSContext = {
   termsAcceptance$: Observable<TermsAcceptanceState>
+  walletAssociatedRisk$: Observable<WalletRiskResponse | undefined>
 } & DepreciatedServices

@@ -18,7 +18,10 @@ export type AjnaBorrowAction =
   | 'generate-borrow'
   | 'payback-borrow'
   | 'switch-borrow'
-export type AjnaBorrowPanel = 'collateral' | 'quote' | 'switch'
+  | 'close-borrow'
+  | 'adjust-borrow'
+
+export type AjnaBorrowPanel = 'collateral' | 'quote' | 'switch' | 'close' | 'adjust'
 
 export type AjnaEarnAction = 'open-earn' | 'deposit-earn' | 'withdraw-earn' | 'claim-earn'
 export type AjnaEarnPanel = 'adjust' | 'liquidity' | 'claim-collateral'

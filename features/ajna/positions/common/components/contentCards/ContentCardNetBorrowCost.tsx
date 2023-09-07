@@ -76,7 +76,7 @@ export function ContentCardNetBorrowCost({
               lineHeight: 'body',
             }}
           >
-            <Icon size={24} name="sparks" color="interactive100" />
+            <Icon size={24} name="ajnaSparks" color="interactive100" />
           </StatefulTooltip>
         )}
         {formatted.netBorrowCost}

@@ -1,4 +1,5 @@
 import { IPosition } from '@oasisdex/dma-library'
+import { getCurrentPositionLibCallData } from 'actions/aave-like/helpers'
 import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import {
@@ -18,7 +19,10 @@ import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { zero } from 'helpers/zero'
-import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
+import {
+  AaveLikeReserveConfigurationData,
+  AaveLikeReserveData,
+} from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
@@ -31,9 +35,9 @@ type AaveMultiplyPositionDataProps = {
   nextPosition?: IPosition
   collateralTokenPrice: BigNumber
   debtTokenPrice: BigNumber
-  collateralTokenReserveData: ReserveData
-  debtTokenReserveData: ReserveData
-  debtTokenReserveConfigurationData: ReserveConfigurationData
+  collateralTokenReserveData: AaveLikeReserveData
+  debtTokenReserveData: AaveLikeReserveData
+  debtTokenReserveConfigurationData: AaveLikeReserveConfigurationData
   aaveHistory: VaultHistoryEvent[]
   isAutomationAvailable?: boolean
   strategyType: StrategyType
@@ -52,6 +56,7 @@ export function AaveMultiplyPositionData({
   strategyType,
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
+  const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
 
   const currentPositionThings = calculateViewValuesForPosition(
     currentPosition,
@@ -145,19 +150,19 @@ export function AaveMultiplyPositionData({
                   </Text>
                   <Heading variant="header4">
                     {t('aave-position-modal.net-borrow-cost.second-header', {
-                      debtToken: currentPosition.debt.symbol,
+                      debtToken: debtToken.symbol,
                     })}
                   </Heading>
                   <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
                     {t('aave-position-modal.net-borrow-cost.third-description-line', {
-                      debtToken: currentPosition.debt.symbol,
+                      debtToken: debtToken.symbol,
                     })}
                     <Text as="span" variant="boldParagraph3" sx={{ mt: 1 }}>
                       {t('aave-position-modal.net-borrow-cost.positive-negative-line')}
                     </Text>
                   </Text>
                   <Card as="p" variant="vaultDetailsCardModal">
-                    {`${formatPrecision(netBorrowCostInUSDC, 2)} ${currentPosition.debt.symbol}`}
+                    {`${formatPrecision(netBorrowCostInUSDC, 2)} ${debtToken.symbol}`}
                   </Card>
                 </Grid>
               }
@@ -174,11 +179,11 @@ export function AaveMultiplyPositionData({
           <DetailsSectionFooterItemWrapper columns={2}>
             <DetailsSectionFooterItem
               sx={{ pr: 3 }}
-              title={t('system.total-exposure', { token: currentPosition.collateral.symbol })}
+              title={t('system.total-exposure', { token: collateralToken.symbol })}
               value={`${formatAmount(
                 currentPositionThings.totalExposure,
-                currentPosition.collateral.symbol,
-              )} ${currentPosition.collateral.symbol}`}
+                collateralToken.symbol,
+              )} ${collateralToken.symbol}`}
               change={
                 nextPositionThings && {
                   variant: nextPositionThings.totalExposure.gt(currentPositionThings.totalExposure)
@@ -186,17 +191,15 @@ export function AaveMultiplyPositionData({
                     : 'negative',
                   value: `${formatAmount(
                     nextPositionThings.totalExposure,
-                    currentPosition.collateral.symbol,
-                  )} ${currentPosition.collateral.symbol} ${t('after')}`,
+                    collateralToken.symbol,
+                  )} ${collateralToken.symbol} ${t('after')}`,
                 }
               }
             />
             <DetailsSectionFooterItem
               sx={{ pr: 3 }}
               title={t('system.position-debt')}
-              value={`${formatPrecision(currentPositionThings.debt, 4)} ${
-                currentPosition.debt.symbol
-              }`}
+              value={`${formatPrecision(currentPositionThings.debt, 4)} ${debtToken.symbol}`}
               change={
                 nextPositionThings && {
                   variant: nextPositionThings.debt.gt(currentPositionThings.debt)
@@ -227,9 +230,7 @@ export function AaveMultiplyPositionData({
             <DetailsSectionFooterItem
               sx={{ pr: 3 }}
               title={t('system.buying-power')}
-              value={`${formatPrecision(currentPositionThings.buyingPower, 2)} ${
-                currentPosition.debt.symbol
-              }`}
+              value={`${formatPrecision(currentPositionThings.buyingPower, 2)} ${debtToken.symbol}`}
               change={
                 nextPositionThings && {
                   variant: nextPositionThings.buyingPower.gt(currentPositionThings.buyingPower)

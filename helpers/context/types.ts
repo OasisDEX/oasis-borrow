@@ -33,8 +33,8 @@ import {
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { NetworkIds } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols'
+import { AaveLikeServices } from 'lendingProtocols/aave-like-common'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
-import { AaveServices } from 'lendingProtocols/aaveCommon'
 import { Observable } from 'rxjs'
 
 export type TxData =
@@ -104,34 +104,37 @@ export type AddGasEstimationFunction = <S extends HasGasEstimation>(
 ) => Observable<S>
 
 export type ProtocolsServices = {
-  [LendingProtocol.AaveV2]: AaveServices
+  [LendingProtocol.AaveV2]: AaveLikeServices
   [LendingProtocol.AaveV3]: {
-    [NetworkIds.MAINNET]: AaveServices
-    [NetworkIds.OPTIMISMMAINNET]: AaveServices
-    [NetworkIds.ARBITRUMMAINNET]: AaveServices
+    [NetworkIds.MAINNET]: AaveLikeServices
+    [NetworkIds.OPTIMISMMAINNET]: AaveLikeServices
+    [NetworkIds.ARBITRUMMAINNET]: AaveLikeServices
+  }
+  [LendingProtocol.SparkV3]: {
+    [NetworkIds.MAINNET]: AaveLikeServices
   }
 }
 
 export type DepreciatedServices = {
   /**
-   * @deprecated use protocols[LendingProtocols.AaveV2].aaveLiquidations$ instead
+   * @deprecated use protocols[LendingProtocols.AaveV2].aaveLikeLiquidations$ instead
    */
-  aaveLiquidations$?: ReturnType<typeof getAaveV2Services>['aaveLiquidations$']
+  aaveLikeLiquidations$?: ReturnType<typeof getAaveV2Services>['aaveLikeLiquidations$']
 
   /**
-   * @deprecated use protocols[LendingProtocols.AaveV2].aaveUserAccountData$ instead
+   * @deprecated use protocols[LendingProtocols.AaveV2].aaveLikeUserAccountData$ instead
    */
-  aaveUserAccountData$?: ReturnType<typeof getAaveV2Services>['aaveUserAccountData$']
+  aaveLikeUserAccountData$?: ReturnType<typeof getAaveV2Services>['aaveLikeUserAccountData$']
 
   /**
-   * @deprecated use protocols[LendingProtocols.AaveV2].aaveAvailableLiquidityInUSDC$ instead
+   * @deprecated use protocols[LendingProtocols.AaveV2].aaveLikeAvailableLiquidityInUSDC$ instead
    */
-  aaveAvailableLiquidityInUSDC$?: ReturnType<
+  aaveLikeAvailableLiquidityInUSDC$?: ReturnType<
     typeof getAaveV2Services
-  >['aaveAvailableLiquidityInUSDC$']
+  >['aaveLikeAvailableLiquidityInUSDC$']
 
   /**
-   * @deprecated use protocols[LendingProtocols.AaveV2].aaveProtocolData$ instead
+   * @deprecated use protocols[LendingProtocols.AaveV2].aaveLikeProtocolData$ instead
    */
-  aaveProtocolData$?: ReturnType<typeof getAaveV2Services>['aaveProtocolData$']
+  aaveLikeProtocolData$?: ReturnType<typeof getAaveV2Services>['aaveLikeProtocolData$']
 }

@@ -23,9 +23,12 @@ function AaveHeader({
   shareButton?: boolean
 }) {
   const { t } = useTranslation()
-  const { getAaveAssetsPrices$ } = useAaveContext(strategyConfig.protocol, strategyConfig.network)
+  const { getAaveLikeAssetsPrices$ } = useAaveContext(
+    strategyConfig.protocol,
+    strategyConfig.network,
+  )
   const [positionTokenPrices, positionTokenPricesError] = useObservable(
-    getAaveAssetsPrices$({
+    getAaveLikeAssetsPrices$({
       tokens: [strategyConfig.tokens.collateral, strategyConfig.tokens.debt],
     }),
   )
@@ -62,7 +65,14 @@ function AaveHeader({
   return (
     <WithErrorHandler error={[positionTokenPricesError]}>
       <VaultHeadline
-        header={t(headerLabelString, { ...strategyConfig.tokens })}
+        header={t(headerLabelString, {
+          ...strategyConfig.tokens,
+          protocol: {
+            aavev2: 'Aave',
+            aavev3: 'Aave',
+            sparkv3: 'Spark',
+          }[strategyConfig.protocol],
+        })}
         tokens={[strategyConfig.tokens.collateral, strategyConfig.tokens.debt]}
         loading={!positionTokenPrices}
         details={detailsList}
