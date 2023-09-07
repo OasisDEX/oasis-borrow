@@ -1,6 +1,6 @@
-import { IStrategy, strategies, Tokens } from '@oasisdex/dma-library'
+import { IStrategy, strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
-import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
+import { getCurrentPositionLibCallData, networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
 import { ManageAaveParameters } from 'actions/aave-like/types'
 import BigNumber from 'bignumber.js'
 import { getRpcProvider } from 'blockchain/networks'
@@ -51,6 +51,7 @@ export async function getManagePositionParameters(
   const provider = getRpcProvider(networkId)
 
   const [collateral, debt] = getTokensInBaseUnit(parameters)
+  const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
 
   const aaveLikeBorrowStrategyType = {
     [LendingProtocol.AaveV2]: strategies.aave.borrow.v2,
@@ -70,14 +71,8 @@ export async function getManagePositionParameters(
 
       const paybackWithdrawStratArgs: AaveLikePaybackWithdrawStrategyArgs = {
         slippage,
-        debtToken: {
-          symbol: currentPosition.debt.symbol as Tokens,
-          precision: currentPosition.debt.precision,
-        },
-        collateralToken: {
-          symbol: currentPosition.collateral.symbol as Tokens,
-          precision: currentPosition.collateral.precision,
-        },
+        debtToken,
+        collateralToken,
         amountCollateralToWithdrawInBaseUnit: collateral,
         amountDebtToPaybackInBaseUnit: debt,
       }
@@ -131,21 +126,12 @@ export async function getManagePositionParameters(
       >[1]
 
       const borrowDepositStratArgs: AaveLikeDepositBorrowStrategyArgs = {
-        debtToken: {
-          symbol: currentPosition.debt.symbol as Tokens,
-          precision: currentPosition.debt.precision,
-        },
-        collateralToken: {
-          symbol: currentPosition.collateral.symbol as Tokens,
-          precision: currentPosition.collateral.precision,
-        },
+        debtToken,
+        collateralToken,
         slippage,
         amountDebtToBorrowInBaseUnit: debt,
         amountCollateralToDepositInBaseUnit: collateral,
-        entryToken: {
-          symbol: currentPosition.collateral.symbol as Tokens,
-          precision: currentPosition.collateral.precision,
-        },
+        entryToken: collateralToken,
       }
 
       const borrowDepositStratDeps: Omit<AaveLikeDepositBorrowStrategyDeps, 'addresses'> = {

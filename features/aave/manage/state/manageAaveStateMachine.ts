@@ -737,6 +737,7 @@ export function createManageAaveStateMachine(
                 token,
                 amount,
                 protocol: context.strategyConfig.protocol,
+                positionType: context.strategyConfig.type,
                 shouldCloseToCollateral:
                   context.manageTokenInput?.closingToken === context.tokens.collateral,
                 userAddress: context.web3Context?.account ?? ethNullAddress,

@@ -97,6 +97,8 @@ export function setupAaveV3Context(
     (positionId) => JSON.stringify(positionId),
   )
 
+  const protocolData = protocols[LendingProtocol.AaveV3][networkId]
+
   const {
     aaveLikeUserAccountData$,
     aaveLikeProtocolData$,
@@ -104,7 +106,7 @@ export function setupAaveV3Context(
     aaveLikeOracleAssetPriceData$,
     getAaveLikeReserveData$,
     getAaveLikeAssetsPrices$,
-  } = protocols[LendingProtocol.AaveV3][networkId]
+  } = protocolData
 
   const aaveEarnYieldsQuery = memoize(
     curry(getAaveWstEthYield)(disconnectedGraphQLClient$, dayjs()),
@@ -244,7 +246,7 @@ export function setupAaveV3Context(
   }
 
   return {
-    ...protocols[LendingProtocol.SparkV3][1],
+    ...protocolData,
     aaveStateMachine,
     aaveManageStateMachine,
     aaveTotalValueLocked$,

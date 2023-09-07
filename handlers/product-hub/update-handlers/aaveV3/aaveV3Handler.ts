@@ -12,6 +12,7 @@ import dayjs from 'dayjs'
 import { wstethRiskRatio } from 'features/aave/constants'
 import { ProductHubProductType } from 'features/productHub/types'
 import { GraphQLClient } from 'graphql-request'
+import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
@@ -62,7 +63,7 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
           .minus(reserveData.totalStableDebt)
           .minus(reserveData.totalVariableDebt)
           .times(debtTokenPrice),
-        fee: reserveData.variableBorrowRate,
+        fee: aaveLikeAprToApy(reserveData.variableBorrowRate),
       },
     }
   })

@@ -28,7 +28,9 @@ export function WithErrorHandler({
     return <>{children}</>
   }
 
-  function isArrayOfErrorsWithoutUndefinedElements(error: any) {
-    return Array.isArray(error) ? error.some((el) => el !== undefined) : error !== undefined
+  function isArrayOfErrorsWithoutUndefinedElements(innerError: any) {
+    return Array.isArray(innerError)
+      ? innerError.some((el) => el !== undefined)
+      : innerError !== undefined
   }
 }

@@ -15,11 +15,11 @@ export function getUserFromApi$(address: string, trigger$: Subject<void>): Obser
         },
       }).pipe(
         map((resp) => {
-          return resp.response as User
+          return resp.response as User | null
         }),
         catchError((err) => {
           if (err.xhr.status === 404) {
-            return of(null)
+            return of(undefined)
           }
           throw err
         }),
@@ -34,11 +34,11 @@ export function getUserFromApi$(address: string, trigger$: Subject<void>): Obser
         },
       }).pipe(
         map((resp) => {
-          return resp.response as User
+          return resp.response as User | null
         }),
         catchError((err) => {
           if (err.xhr.status === 404) {
-            return of(null)
+            return of(undefined)
           }
           throw err
         }),
