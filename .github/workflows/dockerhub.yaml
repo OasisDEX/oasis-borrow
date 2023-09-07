@@ -36,7 +36,6 @@ jobs:
       run: |
         docker pull $DOCKERHUB_ORG/$REPO_NAME:$LATEST_TAG
         docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
-                     --build-arg API_HOST=${{ secrets.API_HOST_STAGING }} \
                      --build-arg MIXPANEL_ENV=staging \
                      --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }} \
                      --build-arg ADROLL_ADV_ID=${{ secrets.ADROLL_ADV_ID_STAGING }} \

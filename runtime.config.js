@@ -2,7 +2,6 @@ const publicRuntimeConfig = {
   // Will be available on both server and client
   buildHash: process.env.COMMIT_SHA,
   buildDate: Date.now(),
-  apiHost: process.env.API_HOST,
   notificationsHost: process.env.NOTIFICATIONS_HOST,
   notificationsHostGoerli: process.env.NOTIFICATIONS_HOST_GOERLI,
   basePath: process.env.APP_FULL_DOMAIN,
