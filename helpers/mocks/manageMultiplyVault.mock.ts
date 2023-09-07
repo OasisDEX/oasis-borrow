@@ -4,6 +4,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import {
   createManageMultiplyVault$,
   ManageMultiplyVaultState,
@@ -173,6 +174,7 @@ export function mockManageMultiplyVault$({
     vaultHistory$,
     saveVaultType$,
     automationTriggersData$,
+    VaultType.Multiply,
     MOCK_VAULT_ID,
   )
 }

@@ -15,6 +15,8 @@ import { OptionalAdjust } from 'components/vault/sidebar/SidebarOptionalAdjust'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import {
@@ -39,19 +41,27 @@ function SidebarManageMultiplyVaultEditingStageDepositCollateral(props: ManageMu
     toggleSliderController,
     vault: { token },
     accountIsController,
+    vaultType,
   } = props
 
   return (
     <>
       <FieldDepositCollateral token={token} {...extractFieldDepositCollateralData(props)} />
-      <OptionalAdjust
-        label={t('adjust-your-position-additional')}
-        isVisible={depositAmount?.gt(zero) && accountIsController}
-        isExpanded={showSliderController}
-        clickHandler={toggleSliderController}
-      >
-        <SliderAdjustMultiply collapsed={true} {...props} />
-      </OptionalAdjust>
+      {vaultType === VaultType.Multiply && (
+        <>
+          <OptionalAdjust
+            label={t('adjust-your-position-additional')}
+            isVisible={depositAmount?.gt(zero) && accountIsController}
+            isExpanded={showSliderController}
+            clickHandler={toggleSliderController}
+          >
+            <SliderAdjustMultiply collapsed={true} {...props} />
+          </OptionalAdjust>
+        </>
+      )}
+      {vaultType === VaultType.Borrow && (
+        <FieldGenerateDai {...extractFieldGenerateDaiData(props)} disabled={!depositAmount} />
+      )}
     </>
   )
 }
@@ -64,19 +74,25 @@ function SidebarManageMultiplyVaultEditingStageWithdrawCollateral(props: ManageM
     vault: { debt, token },
     showSliderController,
     toggleSliderController,
+    vaultType,
   } = props
 
   return (
     <>
       <FieldWithdrawCollateral token={token} {...extractFieldWithdrawCollateralData(props)} />
-      <OptionalAdjust
-        label={t('adjust-your-position-additional')}
-        isVisible={withdrawAmount?.gt(zero) && debt.gt(zero)}
-        isExpanded={showSliderController}
-        clickHandler={toggleSliderController}
-      >
-        <SliderAdjustMultiply collapsed={true} {...props} />
-      </OptionalAdjust>
+      {vaultType === VaultType.Multiply && (
+        <OptionalAdjust
+          label={t('adjust-your-position-additional')}
+          isVisible={withdrawAmount?.gt(zero) && debt.gt(zero)}
+          isExpanded={showSliderController}
+          clickHandler={toggleSliderController}
+        >
+          <SliderAdjustMultiply collapsed={true} {...props} />
+        </OptionalAdjust>
+      )}
+      {vaultType === VaultType.Borrow && (
+        <FieldPaybackDai {...extractFieldPaybackDaiData(props)} disabled={!withdrawAmount} />
+      )}
     </>
   )
 }
@@ -109,6 +125,11 @@ function SidebarManageMultiplyVaultEditingStagePaybackDai(props: ManageMultiplyV
         {t('system.multiply-reduce-debt')}
       </Text>
       <FieldPaybackDai {...extractFieldPaybackDaiData(props)} />
+      <FieldWithdrawCollateral
+        token={props.vault.token}
+        {...extractFieldWithdrawCollateralData(props)}
+        disabled={!props.paybackAmount}
+      />
     </>
   )
 }
@@ -120,19 +141,29 @@ function SidebarManageMultiplyVaultEditingStageWithdrawDai(props: ManageMultiply
     vault: { debt },
     showSliderController,
     toggleSliderController,
+    vaultType,
   } = props
 
   return (
     <>
       <FieldGenerateDai debt={debt} action="Withdraw" {...extractFieldGenerateDaiData(props)} />
-      <OptionalAdjust
-        label={t('adjust-your-position-additional')}
-        isVisible={generateAmount?.gt(zero) && debt.gt(zero)}
-        isExpanded={showSliderController}
-        clickHandler={toggleSliderController}
-      >
-        <SliderAdjustMultiply collapsed={true} {...props} />
-      </OptionalAdjust>
+      {vaultType === VaultType.Multiply && (
+        <OptionalAdjust
+          label={t('adjust-your-position-additional')}
+          isVisible={generateAmount?.gt(zero) && debt.gt(zero)}
+          isExpanded={showSliderController}
+          clickHandler={toggleSliderController}
+        >
+          <SliderAdjustMultiply collapsed={true} {...props} />
+        </OptionalAdjust>
+      )}
+      {vaultType === VaultType.Borrow && (
+        <FieldDepositCollateral
+          token={props.vault.token}
+          {...extractFieldDepositCollateralData(props)}
+          disabled={!props.generateAmount}
+        />
+      )}
     </>
   )
 }
@@ -153,6 +184,7 @@ export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaul
     updateWithdrawAmount,
     vault: { debt },
     warningMessages,
+    vaultType,
   } = props
 
   return (
@@ -194,23 +226,27 @@ export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaul
               <ActionPills
                 active={otherAction}
                 items={[
-                  {
-                    id: 'depositDai',
-                    label: t('system.actions.multiply.buy-coll'),
-                    action: () => {
-                      setOtherAction!('depositDai')
-                    },
-                  },
+                  ...(vaultType === VaultType.Multiply
+                    ? [
+                        {
+                          id: 'depositDai',
+                          label: t('system.actions.multiply.buy-coll'),
+                          action: () => {
+                            setOtherAction!('depositDai')
+                          },
+                        },
+                      ]
+                    : []),
                   {
                     id: 'paybackDai',
-                    label: t('system.actions.multiply.reduce-debt'),
+                    label: t('system.actions.multiply.paybck'),
                     action: () => {
                       setOtherAction!('paybackDai')
                     },
                   },
                   {
                     id: 'withdrawDai',
-                    label: t('withdraw'),
+                    label: t('system.actions.multiply.borrow'),
                     action: () => {
                       setOtherAction!('withdrawDai')
                     },
@@ -247,7 +283,11 @@ export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaul
 
       <VaultErrors {...props} errorMessages={extractCommonErrors(errorMessages)} />
       <VaultWarnings {...props} warningMessages={extractCommonWarnings(warningMessages)} />
-      <ManageMultiplyVaultChangesInformation {...props} />
+      {vaultType === VaultType.Multiply ? (
+        <ManageMultiplyVaultChangesInformation {...props} />
+      ) : (
+        <ManageVaultChangesInformation {...props} />
+      )}
     </Grid>
   )
 }

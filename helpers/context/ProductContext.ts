@@ -4,11 +4,7 @@ import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { dogIlk } from 'blockchain/calls/dog'
-import {
-  tokenAllowance,
-  tokenBalance,
-  tokenBalanceFromAddress,
-} from 'blockchain/calls/erc20'
+import { tokenAllowance, tokenBalance, tokenBalanceFromAddress } from 'blockchain/calls/erc20'
 import { jugIlk } from 'blockchain/calls/jug'
 import { observe } from 'blockchain/calls/observe'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
@@ -62,8 +58,6 @@ import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
-import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
-import { createManageVault$ } from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
 import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
@@ -592,32 +586,8 @@ export function setupProductContext(
   const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
   const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
 
-  const manageVault$ = memoize(
-    (id: BigNumber) =>
-      createManageVault$(
-        context$,
-        txHelpers$,
-        proxyAddress$,
-        allowance$,
-        priceInfo$,
-        balanceInfo$,
-        ilkData$,
-        vault$,
-        exchangeQuote$,
-        saveVaultUsingApi$,
-        addGasEstimation$,
-        userSettings$,
-        vaultHistory$,
-        proxyActionsAdapterResolver$,
-        StandardBorrowManageAdapter,
-        automationTriggersData$,
-        id,
-      ),
-    bigNumberTostring,
-  )
-
   const manageMultiplyVault$ = memoize(
-    (id: BigNumber) =>
+    (id: BigNumber, vaultType: VaultType) =>
       createManageMultiplyVault$(
         context$,
         txHelpers$,
@@ -633,6 +603,7 @@ export function setupProductContext(
         vaultHistory$,
         saveVaultUsingApi$,
         automationTriggersData$,
+        vaultType,
         id,
       ),
     bigNumberTostring,
@@ -692,7 +663,6 @@ export function setupProductContext(
     curry(createGeneralManageVault$)(
       manageMultiplyVault$,
       manageGuniVault$,
-      manageVault$,
       checkOasisCDPType$,
       vault$,
     ),
@@ -932,7 +902,6 @@ export function setupProductContext(
     ilks$: ilksSupportedOnNetwork$,
     manageGuniVault$,
     manageMultiplyVault$,
-    manageVault$: manageVault$,
     openGuniVault$,
     openMultiplyVault$,
     openVault$,

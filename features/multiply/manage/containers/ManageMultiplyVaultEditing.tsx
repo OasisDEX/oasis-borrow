@@ -8,6 +8,8 @@ import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
+import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import {
   ManageMultiplyVaultState,
   OtherAction,
@@ -667,7 +669,7 @@ function OtherActionsForm(props: ManageMultiplyVaultState) {
 }
 
 export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
-  const { stage, inputAmountsEmpty } = props
+  const { stage, inputAmountsEmpty, vaultType } = props
   const [uiState] = useUIChanges<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT)
 
   const effectiveStage = uiState?.currentStage || stage
@@ -682,7 +684,11 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
       {stage === 'adjustPosition' && <AdjustPositionForm {...props} />}
       {stage === 'otherActions' && <OtherActionsForm {...props} />}
       {!inputAmountsEmpty && <Divider />}
-      <ManageMultiplyVaultChangesInformation {...props} />
+      {vaultType === VaultType.Multiply ? (
+        <ManageMultiplyVaultChangesInformation {...props} />
+      ) : (
+        <ManageVaultChangesInformation {...props} />
+      )}
     </Grid>
   )
 }

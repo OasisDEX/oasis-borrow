@@ -1,7 +1,6 @@
 import { ManageMultiplyVaultContainer } from 'components/vault/commonMultiply/ManageMultiplyVaultContainer'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { ManageEarnVaultContainer } from 'components/vault/earn/ManageEarnVaultContainer'
-import { ManageBorrowVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { SidebarManageGuniVault } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVault'
@@ -25,11 +24,6 @@ export function GeneralManageVaultViewAutomation({
 
   switch (vaultType) {
     case VaultType.Borrow:
-      return (
-        <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-          <ManageBorrowVaultContainer manageVault={generalManageVault.state} />
-        </Container>
-      )
     case VaultType.Multiply:
       return (
         <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>

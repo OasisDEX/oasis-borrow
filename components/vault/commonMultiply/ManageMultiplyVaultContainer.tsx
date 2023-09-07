@@ -1,9 +1,14 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useMainContext, useProductContext } from 'components/context'
 import { DefaultVaultHeaderProps } from 'components/vault/DefaultVaultHeader'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { uiChanges } from 'helpers/uiChanges'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -43,7 +48,9 @@ export function ManageMultiplyVaultContainer({
       GUNIV3DAIUSDC2: manageGuniVault$(id),
     }
     const subscription = createManageMultiplyVaultAnalytics$(
-      manageVaultMap[token] ? manageVaultMap[token] : manageMultiplyVault$(id),
+      manageVaultMap[token]
+        ? manageVaultMap[token]
+        : manageMultiplyVault$(id, manageVault.vaultType),
       context$,
       trackingEvents,
     ).subscribe()
@@ -67,7 +74,20 @@ export function ManageMultiplyVaultContainer({
       )}
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
-          <Details {...manageVault} />
+          {}
+          {manageVault.vaultType === VaultType.Multiply ? (
+            <Details {...manageVault} />
+          ) : (
+            <ManageVaultDetails
+              {...manageVault}
+              onBannerButtonClickHandler={() => {
+                uiChanges.publish(TAB_CHANGE_SUBJECT, {
+                  type: 'change-tab',
+                  currentMode: VaultViewMode.Protection,
+                })
+              }}
+            />
+          )}
           {!stopLossReadEnabled && <History vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>

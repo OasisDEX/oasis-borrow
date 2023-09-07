@@ -282,9 +282,9 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
   isSuccessStage: false,
-  exchangeDataRequired: false,
-  shouldShowExchangeError: false,
-  isExchangeLoading: false,
+  exchangeDataRequired: false, //added
+  shouldShowExchangeError: false, //added
+  isExchangeLoading: false, //added
 
   insufficientCollateralAllowance: false,
   customCollateralAllowanceAmountEmpty: false,
@@ -787,9 +787,11 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     generateAmountExceedsDaiYieldFromTotalCollateral,
     generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice,
     generateAmountLessThanDebtFloor,
-    generateAmountMoreThanMaxFlashAmount,
     paybackAmountExceedsDaiBalance,
     paybackAmountExceedsVaultDebt,
+
+    generateAmountMoreThanMaxFlashAmount,
+
     ledgerWalletContractDataDisabled,
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,

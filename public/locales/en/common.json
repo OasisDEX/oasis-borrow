@@ -1190,6 +1190,8 @@
         "buy-coll": "Buy Coll.",
         "reduce-debt": "Reduce Debt",
         "withdraw": "Withdraw",
+        "borrow": "Borrow",
+        "paybck": "Payback",
         "switch-to-borrow": "Switch to Borrow",
         "deposit-collateral": "Deposit collateral",
         "withdraw-collateral": "Withdraw collateral",

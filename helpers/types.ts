@@ -1,4 +1,3 @@
-import { ManageBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
@@ -13,7 +12,6 @@ export type WithQuery = { query?: ParsedUrlQuery }
 export type WithReadonlyAccount = { readonlyAccount?: boolean }
 export type CommonVaultState =
   | OpenVaultState
-  | ManageBorrowVaultState
   | OpenMultiplyVaultState
   | ManageMultiplyVaultState
   | OpenGuniVaultState
