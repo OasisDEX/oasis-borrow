@@ -1489,7 +1489,7 @@
     },
     "history-coming-soon": {
       "header": "History support coming soon",
-      "description": "We currently don't support AAVE history on the Ethereum mainnet or L2 networks, but we'll be adding this feature soon."
+      "description": "We currently don't support {{protocol}} history on the Ethereum mainnet or L2 networks, but we'll be adding this feature soon."
     }
   },
   "view": "View",

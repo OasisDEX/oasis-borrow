@@ -134,7 +134,7 @@ export function AaveManageTabBar({
               {
                 value: 'history',
                 label: t('system.history'),
-                content: <DisabledHistoryControl />,
+                content: <DisabledHistoryControl protocol={strategyConfig.protocol} />,
               },
             ]),
       ]}
