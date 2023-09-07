@@ -11,6 +11,8 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
   pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin-oasis-borrow
     ports:
       - "8888:80"
     environment:
