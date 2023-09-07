@@ -13,7 +13,7 @@ export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVault
 
   const { stage, vaultType } = props
 
-  const [vaultChange, setVaultChanges] = useState<ManageMultiplyVaultState>(props)
+  const [, setVaultChanges] = useState<ManageMultiplyVaultState>(props)
 
   useEffect(() => {
     if (props.stage !== 'manageSuccess') setVaultChanges(props)
