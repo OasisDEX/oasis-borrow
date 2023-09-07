@@ -26,6 +26,7 @@ export function LiquidationPriceCard(props: {
 }) {
   const belowCurrentPricePercentage = formatDecimalAsPercent(
     props.currentPositionThings.liquidationPriceInDebt
+      .times(props.debtTokenPrice)
       .minus(props.collateralTokenPrice)
       .dividedBy(props.collateralTokenPrice)
       .absoluteValue(),
