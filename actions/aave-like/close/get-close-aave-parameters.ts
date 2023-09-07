@@ -1,6 +1,10 @@
-import { IMultiplyStrategy, strategies, Tokens } from '@oasisdex/dma-library'
+import { IMultiplyStrategy, strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
-import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
+import {
+  getCurrentPositionLibCallData,
+  networkIdToLibraryNetwork,
+  swapCall,
+} from 'actions/aave-like/helpers'
 import { CloseAaveParameters } from 'actions/aave-like/types'
 import { getRpcProvider } from 'blockchain/networks'
 import { ProxyType } from 'features/aave/types'
@@ -15,17 +19,8 @@ export async function getCloseAaveParameters({
   shouldCloseToCollateral,
   protocol,
   networkId,
-  positionType,
 }: CloseAaveParameters): Promise<IMultiplyStrategy> {
-  const collateralToken = {
-    symbol: currentPosition.collateral.symbol as Tokens,
-    precision: currentPosition.collateral.precision,
-  }
-
-  const debtToken = {
-    symbol: currentPosition.debt.symbol as Tokens,
-    precision: currentPosition.debt.precision,
-  }
+  const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
 
   const aaveLikeCloseStrategyType = {
     [LendingProtocol.AaveV2]: strategies.aave.multiply.v2,
@@ -50,7 +45,8 @@ export async function getCloseAaveParameters({
     user: userAddress,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
     network: networkIdToLibraryNetwork(networkId),
-    positionType,
+    positionType: 'Multiply', // this needs to be multiply even if we use this for closing borrow
+    // from the lib perspective close is a multiply based operation
   }
 
   switch (protocol) {
@@ -69,7 +65,7 @@ export async function getCloseAaveParameters({
         getSwapData: swapCall(addressesV3, networkId),
       })
     case LendingProtocol.SparkV3:
-      const addressesSpark = getAddresses(networkId, LendingProtocol.AaveV3)
+      const addressesSpark = getAddresses(networkId, LendingProtocol.SparkV3)
       return strategies.spark.multiply.close(stratArgs, {
         ...stratDeps,
         addresses: addressesSpark,
