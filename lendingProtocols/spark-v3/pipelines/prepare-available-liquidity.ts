@@ -19,7 +19,7 @@ export function prepareSparkAvailableLiquidityInUSDC$(
       return availableLiquidityInETH.times(USD_in_WETH_price)
     }),
     catchError((error) => {
-      console.log(
+      console.error(
         `Can't get Spark V3 available liquidity for ${JSON.stringify(reserveDataToken, null, 2)}`,
         error,
       )

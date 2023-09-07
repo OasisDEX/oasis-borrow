@@ -14,9 +14,9 @@ async function main() {
   }
   const client = new pg.Client(dbConfig)
   await client.connect()
-  console.log('Running migrations')
+  console.info('Running migrations')
   await migrate({ client }, join(__dirname, '../database/migrations'))
-  console.log('Migrations DONE')
+  console.info('Migrations DONE')
 
   await client.end()
 }

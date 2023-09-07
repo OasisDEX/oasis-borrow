@@ -73,7 +73,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
             try {
               return await provider!.send(payload.method, payload.params)
             } catch (err) {
-              console.log(err)
+              console.error(err)
               return 0
             }
           }

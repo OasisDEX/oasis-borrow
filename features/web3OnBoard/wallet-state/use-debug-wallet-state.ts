@@ -23,7 +23,7 @@ export function useDebugWalletState({ state }: IDebugWalletState) {
     )
   }
   useEffect(() => {
-    console.log(
+    console.info(
       `Current State: ${state.status}. (${stringValue(state)}) Transition from state: ${
         previousState?.status
       }. (${stringValue(previousState)})`,

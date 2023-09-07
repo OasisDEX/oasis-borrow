@@ -98,7 +98,7 @@ export function createOnEveryBlock$(
   const onEveryBlock$ = combineLatest(web3Context$, every5Seconds$).pipe(
     switchMap(([{ web3 }]) => bindNodeCallback(web3.eth.getBlockNumber)()),
     catchError((error, source) => {
-      console.log(error)
+      console.error(error)
       return concat(every5Seconds$.pipe(skip(1), first()), source)
     }),
     distinctUntilChanged(),

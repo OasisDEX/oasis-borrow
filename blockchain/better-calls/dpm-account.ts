@@ -30,7 +30,7 @@ async function validateParameters({
       signerNetworkConfig?.isCustomFork &&
       networkId === signerNetworkConfig.getParentNetwork()?.id
     ) {
-      console.log(`Using custom fork for the transaction. Network: ${networkId}`)
+      console.info(`Using custom fork for the transaction. Network: ${networkId}`)
     } else {
       throw new Error(
         `Signer is on a different network than the one specified. Signer: ${signerChainId}. Network: ${networkId}`,

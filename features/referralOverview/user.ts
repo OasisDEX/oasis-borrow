@@ -63,7 +63,6 @@ export function createUserReferral$(
         txHelpers$,
       ).pipe(
         switchMap(([user, referrals, referralRewards, referrer, claimedReferralRewards]) => {
-          console.log('user', user)
           // newUser gets referrer address from local storage, currentUser from the db
           if (!user && referrer) {
             const referrerAddress = referrer.slice(1, -1)

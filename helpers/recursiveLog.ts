@@ -24,5 +24,5 @@ function spaces(depth: number) {
 }
 
 function log(value: any, name: string, depth: number, tag: string) {
-  console.log(`${tag} - ${spaces(depth)} ${name}: ${value}`)
+  console.info(`${tag} - ${spaces(depth)} ${name}: ${value}`)
 }
