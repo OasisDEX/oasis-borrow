@@ -30,7 +30,7 @@ import {
   getUserDpmProxy$,
   UserDpmAccount,
 } from 'blockchain/userDpmProxies'
-import { createVaultsFromIds$, decorateVaultsWithValue$, Vault } from 'blockchain/vaults'
+import { createVaultsFromIds$, decorateVaultsWithValue$ } from 'blockchain/vaults'
 import { AccountContext } from 'components/context'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
