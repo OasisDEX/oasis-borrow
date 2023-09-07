@@ -17,7 +17,9 @@ services:
       - PGADMIN_DEFAULT_EMAIL=user@summer.fi
       - PGADMIN_DEFAULT_PASSWORD=pass
     volumes:
-      - pgadmin-data:/var/lib/pgadminvolumes:
+      - pgadmin-data:/var/lib/pgadminvolumes
+
+volumes:
   db_data:
     driver: local
   pgadmin-data:
