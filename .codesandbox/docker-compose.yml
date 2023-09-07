@@ -8,10 +8,17 @@ services:
       - POSTGRES_HOST=localhost
       - POSTGRES_PORT=5432
       - POSTGRES_DB=db
-    ports:
-      - '5432:5432'
     volumes:
       - db_data:/var/lib/postgresql/data
-volumes:
+  pgadmin:
+    ports:
+      - "8888:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@summer.fi
+      - PGADMIN_DEFAULT_PASSWORD=pass
+    volumes:
+      - pgadmin-data:/var/lib/pgadminvolumes:
   db_data:
+    driver: local
+  pgadmin-data:
     driver: local
