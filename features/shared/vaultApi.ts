@@ -203,7 +203,7 @@ export function saveVaultUsingApi$(
     },
   }).pipe(
     map(() => {
-      console.log('Vault saved')
+      console.info('Vault saved')
     }),
   )
 }

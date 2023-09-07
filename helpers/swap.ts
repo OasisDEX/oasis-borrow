@@ -115,13 +115,13 @@ export function getOneInchCall(
     )
 
     if (debug) {
-      console.log('1inch')
-      console.log('fromTokenAmount', response.fromTokenAmount.toString())
-      console.log('toTokenAmount', response.toTokenAmount.toString())
-      console.log('slippage', slippage.times('100').toString())
-      console.log('minToTokenAmount', response.toTokenAmount.toString())
-      console.log('exchangeCalldata', response.tx.data)
-      console.log('protocols', protocols)
+      console.info('1inch')
+      console.info('fromTokenAmount', response.fromTokenAmount.toString())
+      console.info('toTokenAmount', response.toTokenAmount.toString())
+      console.info('slippage', slippage.times('100').toString())
+      console.info('minToTokenAmount', response.toTokenAmount.toString())
+      console.info('exchangeCalldata', response.tx.data)
+      console.info('protocols', protocols)
     }
 
     return {

@@ -130,7 +130,7 @@ async function requestJWT(
 
           return returnValue(safeJwt)
         } catch (error) {
-          console.log('GS: error occurred', error)
+          console.error('GS: error occurred', error)
         }
       }, 5 * 1000)
 

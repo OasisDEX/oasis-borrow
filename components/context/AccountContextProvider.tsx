@@ -89,7 +89,7 @@ export function AccountContextProvider({ children }: WithChildren) {
 
   useEffect(() => {
     setContext(() => {
-      console.log('Account context setup')
+      console.info('Account context setup')
       const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
       const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
       const proxyOwner$ = memoize(curry(createProxyOwner$)(onEveryBlock$, context$))

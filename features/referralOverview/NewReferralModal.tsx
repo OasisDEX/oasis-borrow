@@ -39,7 +39,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
           if (res === 200) {
             hasAccepted ? setSuccess(true) : userReferral.trigger()
           } else {
-            console.log('Error creating user')
+            console.error('Error creating user')
             localStorage.removeItem(`referral`)
             userReferral.trigger()
           }

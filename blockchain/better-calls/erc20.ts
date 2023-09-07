@@ -76,7 +76,7 @@ export async function createApproveTransaction({
       signerNetworkConfig?.isCustomFork &&
       networkId === signerNetworkConfig.getParentNetwork()?.id
     ) {
-      console.log(`Using custom fork for the transaction. Network: ${networkId}`)
+      console.info(`Using custom fork for the transaction. Network: ${networkId}`)
     } else {
       throw new Error(
         `Signer is on a different network than the one specified. Signer: ${signerChainId}. Network: ${networkId}`,
@@ -109,7 +109,7 @@ export async function createDisapproveTransaction({
       signerNetworkConfig?.isCustomFork &&
       networkId === signerNetworkConfig.getParentNetwork()?.id
     ) {
-      console.log(`Using custom fork for the transaction. Network: ${networkId}`)
+      console.info(`Using custom fork for the transaction. Network: ${networkId}`)
     } else {
       throw new Error(
         `Signer is on a different network than the one specified. Signer: ${signerChainId}. Network: ${networkId}`,

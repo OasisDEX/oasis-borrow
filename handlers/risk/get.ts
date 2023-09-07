@@ -72,9 +72,9 @@ async function checkIfRisky(address: string) {
     const trmData = await getTrmRisk(address)
 
     try {
-      console.log(`TRM_LOG ${address} check, payload ${JSON.stringify(trmData)}`)
+      console.info(`TRM_LOG ${address} check, payload ${JSON.stringify(trmData)}`)
     } catch (ex) {
-      console.log('TRM_LOG logging failed', ex)
+      console.error('TRM_LOG logging failed', ex)
     }
 
     if (!trmData.addressRiskIndicators.length) {
@@ -85,7 +85,7 @@ async function checkIfRisky(address: string) {
       .map((indicator) => Number(indicator.totalVolumeUsd) > 0)
       .includes(true)
   } catch (ex) {
-    console.log(`TRM_LOG ${address} check failed`)
+    console.error(`TRM_LOG ${address} check failed`)
     throw ex
   }
 }

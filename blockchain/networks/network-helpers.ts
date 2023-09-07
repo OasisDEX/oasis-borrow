@@ -45,7 +45,7 @@ const networksWithForksAtTheBeginning: NetworkConfig[] = [...forkNetworks, ...ne
 
 const networksSet = networksWithForksAtTheBeginning.reduce((acc, network) => {
   if (acc.some((n) => n.hexId === network.hexId)) {
-    console.log('NetworkConfig with hexId ', network.hexId, ' already exists, skipping.')
+    console.info('NetworkConfig with hexId ', network.hexId, ' already exists, skipping.')
     return acc
   }
   return [...acc, network]
@@ -58,7 +58,11 @@ export const networkSetById = keyBy(enableNetworksSet, 'id')
 export const getOppositeNetworkHexIdByHexId = (currentConnectedChainHexId: NetworkConfigHexId) => {
   const networkConfig = networkSetByHexId[currentConnectedChainHexId]
   if (!networkConfig)
-    console.log('NetworkConfig not found for hexid ', currentConnectedChainHexId, ' using mainnet.')
+    console.info(
+      'NetworkConfig not found for hexid ',
+      currentConnectedChainHexId,
+      ' using mainnet.',
+    )
   return (
     (networkConfig &&
       (networkConfig.testnet ? networkConfig.mainnetHexId : networkConfig.testnetHexId)) ||

@@ -22,7 +22,7 @@ export function aaveLikeAvailableLiquidityInUSDC$(
       return liquidityInEthPrice.times(ETH_USDC_price)
     }),
     catchError((error) => {
-      console.log(
+      console.error(
         `Can't get available liquidity for ${JSON.stringify(reserveDataToken, null, 2)}`,
         error,
       )

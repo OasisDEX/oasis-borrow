@@ -207,7 +207,7 @@ export function setupProductContext(
     vaults$,
   }: AccountContext,
 ) {
-  console.log('Product context setup')
+  console.info('Product context setup')
   combineLatest(account$, connectedContext$)
     .pipe(
       mergeMap(([account, network]) => {
