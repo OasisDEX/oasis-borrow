@@ -22,7 +22,7 @@ services:
       postgres:
         condition: service_healthy
     ports:
-      - "8888:80"
+      - "5050:80"
     healthcheck:
       test: [ "CMD", "wget", "-O", "-", "http://localhost:80/misc/ping" ]
       interval: 10s
@@ -31,6 +31,8 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
+      PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT: False
+      PGADMIN_CONFIG_WTF_CSRF_ENABLED: False
     volumes:
       - pgadmin-data:/var/lib/pgadminvolumes
 

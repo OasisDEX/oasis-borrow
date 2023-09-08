@@ -11,7 +11,7 @@
       "command": "yarn start:preview",
       "runAtStart": true,
       "preview": {
-        "port": 4000,
+        "port": 3000,
         "prLink": "direct"
       }
     },
