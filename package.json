@@ -9,7 +9,7 @@
     "start": "next dev",
     "start:debug": "NODE_OPTIONS='--inspect' next dev",
     "start:prod": "yarn migrate && next start",
-    "start:preview": "yarn build:8gb && next start",
+    "start:preview": "yarn build:8gb && next start -p 4000",
     "migrate": "npx ts-node server/database/migrate.ts",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",
     "prisma:generate": "prisma generate --schema=./server/database/schema.prisma",
