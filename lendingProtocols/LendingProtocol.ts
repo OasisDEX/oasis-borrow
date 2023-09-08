@@ -32,6 +32,12 @@ export const checkIfSpark = (
   return isLendingProtocol(protocol) && protocol === LendingProtocol.SparkV3
 }
 
+export const isAaveLikeLendingProtocol = (
+  protocol: string | LendingProtocol,
+): protocol is AaveLikeLendingProtocol => {
+  return checkIfAave(protocol) || checkIfSpark(protocol)
+}
+
 export const isLendingProtocol = (value: string): value is LendingProtocol => {
   return Object.values<string>(LendingProtocol).includes(value)
 }
