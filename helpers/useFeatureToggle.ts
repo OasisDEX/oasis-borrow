@@ -77,10 +77,10 @@ const configuredFeatures: Record<Feature, boolean> = {
   UseNetworkSwitcherForks: false,
   UseNetworkSwitcherOptimism: true,
   UseNetworkSwitcherTestnets: false,
-  SparkProtocol: false,
-  SparkProtocolEarn: false,
-  SparkProtocolBorrow: false,
-  SparkProtocolMultiply: false,
+  SparkProtocol: true,
+  SparkProtocolEarn: true,
+  SparkProtocolBorrow: true,
+  SparkProtocolMultiply: true,
   SparkProtocolSDAIETH: false,
 }
 
