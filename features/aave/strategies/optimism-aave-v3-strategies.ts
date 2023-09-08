@@ -1,108 +1,452 @@
 import { NetworkIds, NetworkNames, optimismMainnetHexId } from 'blockchain/networks'
-import { AaveManageHeader, AaveOpenHeader, adjustRiskView } from 'features/aave/components'
+import {
+  AaveBorrowManageComponent,
+  AaveManageHeader,
+  AaveOpenHeader,
+  adjustRiskView,
+  DebtInput,
+} from 'features/aave/components'
 import { AaveMultiplyManageComponent } from 'features/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
+import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 
+import { allActionsAvailableBorrow } from './all-actions-available-borrow'
 import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
+import {
+  hasBorrowProductType,
+  hasEarnProductType,
+  hasMultiplyProductType,
+  TokenPairConfig,
+} from './common'
+
+const availableTokenPairs: TokenPairConfig[] = [
+  {
+    collateral: 'ETH',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3OptimismBorrow',
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: 'AaveV3OptimismMultiply',
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: 'AaveV3OptimismMultiply',
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: 'AaveV3OptimismBorrow',
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'WSTETH',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3OptimismBorrow',
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: 'AaveV3OptimismMultiply',
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: 'AaveV3OptimismMultiply',
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: 'AaveV3OptimismBorrow',
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'WBTC',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3OptimismBorrow',
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: 'AaveV3OptimismMultiply',
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: 'AaveV3OptimismMultiply',
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: 'AaveV3OptimismBorrow',
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'ETH',
+    debt: 'DAI',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3OptimismBorrow',
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: 'AaveV3OptimismMultiply',
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: 'AaveV3OptimismMultiply',
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: 'AaveV3OptimismBorrow',
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'WSTETH',
+    debt: 'DAI',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3OptimismBorrow',
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: 'AaveV3OptimismMultiply',
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: 'AaveV3OptimismMultiply',
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: 'AaveV3OptimismBorrow',
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'WBTC',
+    debt: 'DAI',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3OptimismBorrow',
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: 'AaveV3OptimismMultiply',
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: 'AaveV3OptimismMultiply',
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: 'AaveV3OptimismBorrow',
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'WSTETH',
+    debt: 'ETH',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: 'AaveV3OptimismEarn',
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: 'AaveV3OptimismBorrow',
+          },
+        ],
+      },
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3OptimismBorrow',
+        additionalManageActions: [
+          {
+            action: 'switch-to-earn',
+            featureToggle: 'AaveV3OptimismEarn',
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'DAI',
+    debt: 'ETH',
+    strategyType: StrategyType.Short,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3OptimismBorrow',
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: 'AaveV3OptimismMultiply',
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: 'AaveV3OptimismMultiply',
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: 'AaveV3OptimismBorrow',
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'DAI',
+    debt: 'WBTC',
+    strategyType: StrategyType.Short,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3OptimismBorrow',
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: 'AaveV3OptimismMultiply',
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: 'AaveV3OptimismMultiply',
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: 'AaveV3OptimismBorrow',
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'USDC',
+    debt: 'ETH',
+    strategyType: StrategyType.Short,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3OptimismBorrow',
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: 'AaveV3OptimismMultiply',
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: 'AaveV3OptimismMultiply',
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: 'AaveV3OptimismBorrow',
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'USDC',
+    debt: 'WBTC',
+    strategyType: StrategyType.Short,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: 'AaveV3OptimismBorrow',
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: 'AaveV3OptimismMultiply',
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: 'AaveV3OptimismMultiply',
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: 'AaveV3OptimismBorrow',
+          },
+        ],
+      },
+    },
+  },
+]
+
+const borrowStrategies: IStrategyConfig[] = availableTokenPairs
+  .filter(hasBorrowProductType)
+  .map((config) => {
+    return {
+      network: NetworkNames.optimismMainnet,
+      networkId: NetworkIds.OPTIMISMMAINNET,
+      networkHexId: optimismMainnetHexId,
+      name: `${config.collateral.toLowerCase()}${config.debt.toLowerCase()}V3`,
+      urlSlug: `${config.collateral.toLowerCase()}${config.debt.toLowerCase()}`,
+      proxyType: ProxyType.DpmProxy,
+      viewComponents: {
+        headerOpen: AaveOpenHeader,
+        headerManage: AaveManageHeader,
+        headerView: AaveManageHeader,
+        simulateSection: AaveBorrowManageComponent,
+        vaultDetailsManage: AaveBorrowManageComponent,
+        vaultDetailsView: AaveBorrowManageComponent,
+        secondaryInput: DebtInput,
+        adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+        positionInfo: AaveBorrowFaq,
+        sidebarTitle: 'open-borrow.sidebar.title',
+        sidebarButton: 'open-borrow.sidebar.open-btn',
+      },
+      tokens: {
+        collateral: config.collateral,
+        debt: config.debt,
+        deposit: config.collateral,
+      },
+      riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+      featureToggle: config.productTypes.Borrow.featureToggle,
+      type: ProductType.Borrow,
+      protocol: LendingProtocol.AaveV3,
+      availableActions: () => {
+        const additionalAction =
+          config.productTypes.Borrow.additionalManageActions
+            ?.filter(({ featureToggle }) => {
+              const isFeatureEnabled =
+                featureToggle === undefined || getFeatureToggle(featureToggle)
+              return isFeatureEnabled
+            })
+            .map(({ action }) => action) ?? []
+        return [...allActionsAvailableBorrow, ...additionalAction]
+      },
+      executeTransactionWith: 'ethers' as const,
+      strategyType: config.strategyType,
+    }
+  })
+
+const multiplyStategies: IStrategyConfig[] = availableTokenPairs
+  .filter(hasMultiplyProductType)
+  .map((config) => {
+    return {
+      network: NetworkNames.optimismMainnet,
+      networkId: NetworkIds.OPTIMISMMAINNET,
+      networkHexId: optimismMainnetHexId,
+      name: `${config.collateral.toLowerCase()}${config.debt.toLowerCase()}V3`,
+      urlSlug: `${config.collateral.toLowerCase()}${config.debt.toLowerCase()}`,
+      proxyType: ProxyType.DpmProxy,
+      viewComponents: {
+        headerOpen: AaveOpenHeader,
+        headerManage: AaveManageHeader,
+        headerView: AaveManageHeader,
+        simulateSection: AaveMultiplyManageComponent,
+        vaultDetailsManage: AaveMultiplyManageComponent,
+        vaultDetailsView: AaveMultiplyManageComponent,
+        secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+        adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+        positionInfo: AaveMultiplyFaq,
+        sidebarTitle: 'open-multiply.sidebar.title',
+        sidebarButton: 'open-multiply.sidebar.open-btn',
+      },
+      tokens: {
+        collateral: config.collateral,
+        debt: config.debt,
+        deposit: config.collateral,
+      },
+      riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+      type: ProductType.Multiply,
+      protocol: LendingProtocol.AaveV3,
+      availableActions: () => {
+        const additionalAction =
+          config.productTypes.Multiply.additionalManageActions
+            ?.filter(({ featureToggle }) => {
+              const isFeatureEnabled =
+                featureToggle === undefined || getFeatureToggle(featureToggle)
+              return isFeatureEnabled
+            })
+            .map(({ action }) => action) ?? []
+        return [...allActionsAvailableInMultiply, ...additionalAction]
+      },
+      executeTransactionWith: 'ethers',
+      strategyType: config.strategyType,
+      featureToggle: config.productTypes.Multiply.featureToggle,
+    }
+  })
+
+const earnStrategies: IStrategyConfig[] = availableTokenPairs
+  .filter(hasEarnProductType)
+  .map((config) => {
+    return {
+      network: NetworkNames.optimismMainnet,
+      networkId: NetworkIds.OPTIMISMMAINNET,
+      networkHexId: optimismMainnetHexId,
+      name: `${config.collateral.toLowerCase()}${config.debt.toLowerCase()}V3`,
+      urlSlug: `${config.collateral.toLowerCase()}${config.debt.toLowerCase()}`,
+      proxyType: ProxyType.DpmProxy,
+      viewComponents: {
+        headerOpen: AaveOpenHeader,
+        headerManage: AaveManageHeader,
+        headerView: AaveManageHeader,
+        simulateSection: AaveMultiplyManageComponent,
+        vaultDetailsManage: AaveMultiplyManageComponent,
+        vaultDetailsView: AaveMultiplyManageComponent,
+        secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+        adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
+        positionInfo: AaveMultiplyFaq,
+        sidebarTitle: 'open-multiply.sidebar.title',
+        sidebarButton: 'open-multiply.sidebar.open-btn',
+      },
+      tokens: {
+        collateral: config.collateral,
+        debt: config.debt,
+        deposit: config.collateral,
+      },
+      riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+      type: ProductType.Earn,
+      protocol: LendingProtocol.AaveV3,
+      availableActions: () => {
+        const additionalAction =
+          config.productTypes.Earn.additionalManageActions
+            ?.filter(({ featureToggle }) => {
+              const isFeatureEnabled =
+                featureToggle === undefined || getFeatureToggle(featureToggle)
+              return isFeatureEnabled
+            })
+            .map(({ action }) => action) ?? []
+        return [...allActionsAvailableInMultiply, ...additionalAction]
+      },
+      executeTransactionWith: 'ethers',
+      strategyType: config.strategyType,
+      featureToggle: config.productTypes.Earn.featureToggle,
+    }
+  })
 
 export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
-  {
-    network: NetworkNames.optimismMainnet,
-    networkId: NetworkIds.OPTIMISMMAINNET,
-    networkHexId: optimismMainnetHexId,
-    name: 'optimism-ethusdc',
-    urlSlug: 'ethusdc',
-    proxyType: ProxyType.DpmProxy,
-    viewComponents: {
-      headerOpen: AaveOpenHeader,
-      headerManage: AaveManageHeader,
-      headerView: AaveManageHeader,
-      simulateSection: AaveMultiplyManageComponent,
-      vaultDetailsManage: AaveMultiplyManageComponent,
-      vaultDetailsView: AaveMultiplyManageComponent,
-      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
-      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
-      positionInfo: AaveMultiplyFaq,
-      sidebarTitle: 'open-multiply.sidebar.title',
-      sidebarButton: 'open-multiply.sidebar.open-btn',
-    },
-    tokens: {
-      collateral: 'ETH',
-      debt: 'USDC',
-      deposit: 'ETH',
-    },
-    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    type: ProductType.Multiply,
-    protocol: LendingProtocol.AaveV3,
-    availableActions: () => allActionsAvailableInMultiply,
-    executeTransactionWith: 'ethers',
-    strategyType: StrategyType.Long,
-  },
-  {
-    network: NetworkNames.optimismMainnet,
-    networkId: NetworkIds.OPTIMISMMAINNET,
-    networkHexId: optimismMainnetHexId,
-    name: 'optimism-wstethusdc',
-    urlSlug: 'wstethusdc',
-    proxyType: ProxyType.DpmProxy,
-    viewComponents: {
-      headerOpen: AaveOpenHeader,
-      headerManage: AaveManageHeader,
-      headerView: AaveManageHeader,
-      simulateSection: AaveMultiplyManageComponent,
-      vaultDetailsManage: AaveMultiplyManageComponent,
-      vaultDetailsView: AaveMultiplyManageComponent,
-      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
-      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
-      positionInfo: AaveMultiplyFaq,
-      sidebarTitle: 'open-multiply.sidebar.title',
-      sidebarButton: 'open-multiply.sidebar.open-btn',
-    },
-    tokens: {
-      collateral: 'WSTETH',
-      debt: 'USDC',
-      deposit: 'WSTETH',
-    },
-    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    type: ProductType.Multiply,
-    protocol: LendingProtocol.AaveV3,
-    availableActions: () => allActionsAvailableInMultiply,
-    executeTransactionWith: 'ethers',
-    strategyType: StrategyType.Long,
-  },
-  {
-    network: NetworkNames.optimismMainnet,
-    networkId: NetworkIds.OPTIMISMMAINNET,
-    networkHexId: optimismMainnetHexId,
-    name: 'optimism-wbtcusdc',
-    urlSlug: 'wbtcusdc',
-    proxyType: ProxyType.DpmProxy,
-    viewComponents: {
-      headerOpen: AaveOpenHeader,
-      headerManage: AaveManageHeader,
-      headerView: AaveManageHeader,
-      simulateSection: AaveMultiplyManageComponent,
-      vaultDetailsManage: AaveMultiplyManageComponent,
-      vaultDetailsView: AaveMultiplyManageComponent,
-      secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
-      adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
-      positionInfo: AaveMultiplyFaq,
-      sidebarTitle: 'open-multiply.sidebar.title',
-      sidebarButton: 'open-multiply.sidebar.open-btn',
-    },
-    tokens: {
-      collateral: 'WBTC',
-      debt: 'USDC',
-      deposit: 'WBTC',
-    },
-    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    type: ProductType.Multiply,
-    protocol: LendingProtocol.AaveV3,
-    availableActions: () => allActionsAvailableInMultiply,
-    executeTransactionWith: 'ethers',
-    strategyType: StrategyType.Long,
-  },
+  ...borrowStrategies,
+  ...multiplyStategies,
+  ...earnStrategies,
 ]
