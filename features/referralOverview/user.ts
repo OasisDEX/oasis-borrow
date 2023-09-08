@@ -51,7 +51,7 @@ export function createUserReferral$(
   return web3Context$.pipe(
     switchMap((web3Context) => {
       if (web3Context.status !== 'connected') {
-        return of({ state: 'walletConnectionInProgress' } as UserReferralState)
+        return of({ state: 'walletConnectionInProgress', trigger: trigger } as UserReferralState)
       }
 
       return combineLatest(
