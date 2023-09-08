@@ -1,9 +1,11 @@
+import { TriggerType } from '@oasisdex/automation'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { OpenAaveContext } from 'features/aave/open/state'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 
 interface AaveStopLossDataInput {
   collateralToken: string
@@ -55,5 +57,19 @@ export function extractStopLossDataInput(context: OpenAaveContext): AaveStopLoss
       .tokens[collateralToken].address,
     stopLossLevel: context.stopLossLevel || zero,
     collateralActive: context.collateralActive || false,
+  }
+}
+
+export function getAveeStopLossTriggerType(protocol: LendingProtocol): TriggerType {
+  if (!protocol) {
+    throw new Error('Protocol is not defined')
+  }
+
+  switch (protocol) {
+    case LendingProtocol.SparkV3:
+      return TriggerType.SparkStopLossToDebtV2
+
+    default:
+      return TriggerType.AaveStopLossToDebtV2
   }
 }

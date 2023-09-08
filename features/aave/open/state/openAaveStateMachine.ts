@@ -1,4 +1,3 @@
-import { TriggerType } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/dma-library'
 import { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave-like'
 import { OpenAaveParameters } from 'actions/aave-like/types'
@@ -33,7 +32,10 @@ import {
   AutomationAddTriggerTxDef,
 } from 'features/automation/common/txDefinitions'
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
-import { extractStopLossDataInput } from 'features/automation/protection/stopLoss/openFlow/helpers'
+import {
+  extractStopLossDataInput,
+  getAveeStopLossTriggerType,
+} from 'features/automation/protection/stopLoss/openFlow/helpers'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { createDPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
@@ -882,7 +884,7 @@ export function createOpenAaveStateMachine(
             stopLossTxData: {
               ...prepareStopLossTriggerDataV2(
                 proxyAddress!,
-                TriggerType.AaveStopLossToDebtV2,
+                getAveeStopLossTriggerType(context.strategyConfig.protocol),
                 false,
                 stopLossLevel,
                 debtTokenAddress!,

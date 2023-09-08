@@ -42,6 +42,7 @@ export type Feature =
   | 'SparkProtocolBorrow'
   | 'SparkProtocolMultiply'
   | 'SparkProtocolSDAIETH'
+  | 'SparkProtocolStopLoss'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -82,6 +83,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   SparkProtocolBorrow: true,
   SparkProtocolMultiply: true,
   SparkProtocolSDAIETH: false,
+  SparkProtocolStopLoss: false,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {

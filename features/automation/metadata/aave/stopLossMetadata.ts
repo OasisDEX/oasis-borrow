@@ -1,4 +1,3 @@
-import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import {
   addAutomationBotTriggerV2,
@@ -31,6 +30,7 @@ import {
   getSliderPercentageFill,
   getStartingSlRatio,
 } from 'features/automation/protection/stopLoss/helpers'
+import { getAveeStopLossTriggerType } from 'features/automation/protection/stopLoss/openFlow/helpers'
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { formatPercent } from 'helpers/formatters/format'
@@ -184,7 +184,7 @@ export function createGetAaveStopLossMetadata(
         prepareAddStopLossTriggerData: ({ stopLossLevel, collateralActive }) => {
           const baseTriggerData = prepareStopLossTriggerDataV2(
             owner,
-            TriggerType.AaveStopLossToDebtV2,
+            getAveeStopLossTriggerType(lendingProtocol),
             collateralActive,
             stopLossLevel,
             debtTokenAddress!,
