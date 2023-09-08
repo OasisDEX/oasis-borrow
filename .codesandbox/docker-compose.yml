@@ -29,10 +29,10 @@ services:
       timeout: 10s
       retries: 5
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT: False
-      PGADMIN_CONFIG_WTF_CSRF_ENABLED: False
+      POSTGRES_USER: 'user'
+      POSTGRES_PASSWORD: 'pass'
+      PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT: 'False'
+      PGADMIN_CONFIG_WTF_CSRF_ENABLED: 'False'
     volumes:
       - pgadmin-data:/var/lib/pgadminvolumes
 
