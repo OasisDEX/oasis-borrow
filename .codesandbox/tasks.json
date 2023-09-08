@@ -1,6 +1,6 @@
 {
   "$schema": "https://codesandbox.io/schemas/tasks.json",
-  "setupTasks": ["yarn install", "yarn migrate"],
+  "setupTasks": ["yarn install", "yarn migrate", "yarn build"],
   "tasks": {
     "install-dependencies": {
       "name": "Install Dependencies",
@@ -8,20 +8,20 @@
     },
     "start-app": {
       "name": "Run Dev Server",
-      "command": "yarn start",
+      "command": "yarn start"
+    },
+    "start-production": {
+      "name": "Run Production Server",
+      "command": "yarn start:prod",
       "runAtStart": true,
       "preview": {
         "port": 3000,
         "prLink": "direct"
       }
     },
-    "start-production": {
-      "name": "Run Production Server",
-      "command": "yarn start:prod",
-    },
     "update-product-hub": {
       "name": "Update Product Hub",
-      "command": "yarn update-product-hub",
-    },
+      "command": "yarn update-product-hub"
+    }
   }
 }
