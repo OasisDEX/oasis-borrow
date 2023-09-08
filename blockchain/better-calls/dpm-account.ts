@@ -71,9 +71,11 @@ export async function estimateGasOnDpm({
       operationExecutor.address,
       encodedCallDAta,
     ])
+
     const result = await dpm.estimateGas.execute(operationExecutor.address, encodedCallDAta, {
       value: ethers.utils.parseEther(value.toString()).toHexString(),
     })
+
     return {
       estimatedGas: new BigNumber(result.toString()).multipliedBy(GasMultiplier).toFixed(0),
       transactionData,
