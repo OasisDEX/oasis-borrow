@@ -39,15 +39,11 @@ export function swapCall(
 
 export const getCurrentPositionLibCallData = (currentPosition: IPosition) => [
   {
-    symbol:
-      currentPosition.collateral.symbol === 'ETH'
-        ? 'WETH'
-        : (currentPosition.collateral.symbol as Tokens),
+    symbol: currentPosition.collateral.symbol as Tokens,
     precision: currentPosition.collateral.precision,
   },
   {
-    symbol:
-      currentPosition.debt.symbol === 'ETH' ? 'WETH' : (currentPosition.debt.symbol as Tokens),
+    symbol: currentPosition.debt.symbol as Tokens,
     precision: currentPosition.debt.precision,
   },
 ]
