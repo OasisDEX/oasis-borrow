@@ -1,18 +1,14 @@
 {
   "$schema": "https://codesandbox.io/schemas/tasks.json",
-  "setupTasks": ["yarn install", "yarn migrate", "yarn build:8gb"],
+  "setupTasks": ["yarn install", "yarn migrate"],
   "tasks": {
     "install-dependencies": {
       "name": "Install Dependencies",
       "command": "yarn install"
     },
-    "start-app": {
-      "name": "Run Dev Server",
-      "command": "yarn start"
-    },
     "start-production": {
       "name": "Run Production Server",
-      "command": "yarn start:prod",
+      "command": "yarn start:preview",
       "runAtStart": true,
       "preview": {
         "port": 3000,
