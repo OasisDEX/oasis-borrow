@@ -41,6 +41,7 @@ export type Feature =
   | 'SparkProtocolEarn'
   | 'SparkProtocolBorrow'
   | 'SparkProtocolMultiply'
+  | 'SparkProtocolSDAIETH'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -76,10 +77,11 @@ const configuredFeatures: Record<Feature, boolean> = {
   UseNetworkSwitcherForks: false,
   UseNetworkSwitcherOptimism: true,
   UseNetworkSwitcherTestnets: false,
-  SparkProtocol: false,
-  SparkProtocolEarn: false,
-  SparkProtocolBorrow: false,
-  SparkProtocolMultiply: false,
+  SparkProtocol: true,
+  SparkProtocolEarn: true,
+  SparkProtocolBorrow: true,
+  SparkProtocolMultiply: true,
+  SparkProtocolSDAIETH: false,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {
