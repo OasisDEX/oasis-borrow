@@ -42,12 +42,15 @@ export const identifyTokens$ = (
 
         const localTokens = uniq(
           Object.keys(tokensContracts)
-            .filter(
-              (token) =>
+            .filter((token) => {
+              if (tokensContracts[token] === undefined) return false
+
+              return (
                 tokensAddresses
                   .map((address) => address.toLowerCase())
-                  .includes(tokensContracts[token].address.toLowerCase()) && getTokenGuarded(token),
-            )
+                  .includes(tokensContracts[token].address.toLowerCase()) && getTokenGuarded(token)
+              )
+            })
             .map((token) => (token === 'WETH' ? 'ETH' : token)),
         )
         localTokensAddresses = localTokens.map((token) =>
