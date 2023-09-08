@@ -1,6 +1,6 @@
 {
   "$schema": "https://codesandbox.io/schemas/tasks.json",
-  "setupTasks": ["yarn install", "yarn migrate", "yarn build"],
+  "setupTasks": ["yarn install", "yarn migrate", "yarn build:8gb"],
   "tasks": {
     "install-dependencies": {
       "name": "Install Dependencies",
