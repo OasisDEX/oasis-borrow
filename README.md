@@ -112,7 +112,6 @@ INFURA_PROJECT_ID="<API key from Infura>"
 OPTIMISM_MAINNET_RPC_URL="<Optimism URL from Alchemy>"
 ARBITRUM_MAINNET_RPC_URL="<Arbitrum URL from Alchemy>"
 SENTRY_RELEASE="local"
-APP_FULL_DOMAIN="http://localhost:3000"
 PRODUCT_HUB_KEY="<any value of your choice>"
 ```
 
