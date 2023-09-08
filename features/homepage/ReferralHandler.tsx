@@ -27,13 +27,14 @@ export function ReferralHandler() {
       if (linkReferral && context && isReferrerAddress) {
         setLocalReferral(linkReferral)
         setLandedWithRef(true)
-        if (userReferral) userReferral.trigger()
+        if (userReferral && userReferral.trigger && !userReferral.referrer) userReferral.trigger()
       } else if (linkReferral && context && !isReferrerAddress) {
         ensNameToAddressMainnet(linkReferral)
           .then((resolvedAddress) => {
             setLocalReferral(resolvedAddress)
             setLandedWithRef(true)
-            if (userReferral) userReferral.trigger()
+            if (userReferral && userReferral.trigger && !userReferral.referrer)
+              userReferral.trigger()
           })
           .catch((error) => {
             console.error('Error getting ensName for referral', linkReferral, error)
