@@ -112,7 +112,6 @@ INFURA_PROJECT_ID="<API key from Infura>"
 OPTIMISM_MAINNET_RPC_URL="<Optimism URL from Alchemy>"
 ARBITRUM_MAINNET_RPC_URL="<Arbitrum URL from Alchemy>"
 SENTRY_RELEASE="local"
-APP_FULL_DOMAIN="http://localhost:3000"
 PRODUCT_HUB_KEY="<any value of your choice>"
 ```
 
@@ -124,8 +123,6 @@ PRODUCT_HUB_KEY="<any value of your choice>"
 - `COMMIT_SHA` - The value is used together with `SHOW_BUILD_INFO`. Main usages is to display a
   commit in the footer. This targets build deployments to staging environments so that the team can
   see which version the UI reflects. The value could be a branch name or specific commit.
-
-- `API_HOST` - The value is used to construct links based on root domain.
 
 - `MIXPANEL_ENV` - The value could be either `production` or anything else you'd like to use to
   denote that it's NOT production. The difference is where the events are sent. For "development"
