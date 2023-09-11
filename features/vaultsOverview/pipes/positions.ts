@@ -10,7 +10,8 @@ import { ethers } from 'ethers'
 import { isAddress } from 'ethers/lib/utils'
 import { loadStrategyFromTokens } from 'features/aave'
 import { PositionCreated } from 'features/aave/services'
-import { IStrategyConfig } from 'features/aave/types'
+import { calculateLiquidationPrice } from 'features/aave/services/calculate-liquidation-price'
+import { IStrategyConfig, StrategyType } from 'features/aave/types'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import {
@@ -82,6 +83,7 @@ export type AaveLikePosition = Position & {
   debt: BigNumber
   netValue: BigNumber
   liquidationPrice: BigNumber
+  liquidationPriceToken: string
   variableBorrowRate: BigNumber
   fundingCost: BigNumber
   lockedCollateral: BigNumber
@@ -259,6 +261,7 @@ function buildAaveViewModel(
           riskRatio: position.riskRatio,
           debt: debtNotWei,
           liquidationPrice,
+          liquidationPriceToken: debtToken,
           fundingCost,
           variableBorrowRate,
           contentsUsd: netValueUsd,
@@ -334,9 +337,19 @@ function buildAaveLikeV3OnlyViewModel(
           .times(oracleCollateralTokenPriceInEth)
           .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
 
-        const liquidationPrice = !isDebtZero
-          ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
-          : zero
+        const { liquidationPriceInCollateral, liquidationPriceInDebt } = calculateLiquidationPrice({
+          collateral: position.collateral,
+          debt: position.debt,
+          liquidationRatio: position.category.liquidationThreshold,
+        })
+
+        const liquidationPrice =
+          strategyConfig.strategyType === StrategyType.Long
+            ? liquidationPriceInDebt
+            : liquidationPriceInCollateral
+
+        const liquidationPriceToken =
+          strategyConfig.strategyType === StrategyType.Long ? debtToken : collateralToken
 
         const variableBorrowRate = preparedAaveReserve.variableBorrowRate
 
@@ -383,6 +396,7 @@ function buildAaveLikeV3OnlyViewModel(
           riskRatio: position.riskRatio,
           debt: debtNotWei,
           liquidationPrice,
+          liquidationPriceToken,
           fundingCost,
           contentsUsd: netValueUsd,
           isOwner,

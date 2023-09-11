@@ -5,8 +5,8 @@ import { MessageCard } from 'components/MessageCard'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { WithArrow } from 'components/WithArrow'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
-import { SecondaryInputProps } from 'features/aave/types'
-import { getLiquidationPriceAccountingForPrecision } from 'features/shared/liquidationPrice'
+import { calculateLiquidationPrice } from 'features/aave/services/calculate-liquidation-price'
+import { SecondaryInputProps, StrategyType } from 'features/aave/types'
 import { formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -94,11 +94,31 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
         )
       : viewConfig.riskRatios.minimum.loanToValue
 
-    const liquidationPrice = targetPosition
-      ? getLiquidationPriceAccountingForPrecision(targetPosition)
+    const { liquidationPriceInDebt, liquidationPriceInCollateral } = targetPosition
+      ? calculateLiquidationPrice({
+          collateral: targetPosition.collateral,
+          debt: targetPosition.debt,
+          liquidationRatio: targetPosition.category.liquidationThreshold,
+        })
       : onChainPosition
-      ? getLiquidationPriceAccountingForPrecision(onChainPosition)
-      : zero
+      ? calculateLiquidationPrice({
+          collateral: onChainPosition.collateral,
+          debt: onChainPosition.debt,
+          liquidationRatio: onChainPosition.category.liquidationThreshold,
+        })
+      : { liquidationPriceInDebt: zero, liquidationPriceInCollateral: zero }
+
+    const { strategyConfig } = state.context
+
+    const liquidationPrice =
+      strategyConfig.strategyType === StrategyType.Long
+        ? liquidationPriceInDebt
+        : liquidationPriceInCollateral
+
+    const liquidationPriceToken =
+      strategyConfig.strategyType === StrategyType.Long
+        ? strategyConfig.tokens.debt
+        : strategyConfig.tokens.collateral
 
     const oracleAssetPrice = strategyInfo?.oracleAssetPrice.collateral || zero
     const oraclePriceCollateralToDebt = strategyInfo
@@ -143,7 +163,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
               return '...'
             } else {
               return (onChainPosition || hasUserInteracted(state)) && !value.isNaN()
-                ? viewConfig.liquidationPriceFormatter(value, debtToken)
+                ? viewConfig.liquidationPriceFormatter(value, liquidationPriceToken)
                 : '-'
             }
           }}
