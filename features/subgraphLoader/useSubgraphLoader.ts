@@ -1,6 +1,5 @@
 import { NetworkIds } from 'blockchain/networks'
 import { SubgraphBaseResponse, Subgraphs, SubgraphsResponses } from 'features/subgraphLoader/types'
-import getConfig from 'next/config'
 import { useEffect, useState } from 'react'
 
 interface UseSubgraphLoader<R> {
@@ -19,7 +18,7 @@ export async function loadSubgraph<
   networkId: NetworkIds,
   params: P = {} as P,
 ): Promise<SubgraphsResponses[S][keyof SubgraphsResponses[S]]> {
-  const response = await fetch(`${getConfig()?.publicRuntimeConfig?.basePath}/api/subgraph`, {
+  const response = await fetch(`/api/subgraph`, {
     method: 'POST',
     body: JSON.stringify({
       subgraph,
