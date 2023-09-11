@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 const rpcBase = `${process.env.API_GATEWAY}/prod/rpc/`
 
-function getRpcNode(network: NetworkNames): string | undefined {
+export function getRpcNode(network: NetworkNames): string | undefined {
   switch (network) {
     // case 'hardhat': // hardhat does not request this one
     case NetworkNames.ethereumMainnet:
@@ -43,7 +43,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     },
   }
   const request = new Request(rpcUrl!, {
-    method:req.method,
+    method: req.method,
     body: JSON.stringify(req.body),
     headers: {
       ...config.headers,
