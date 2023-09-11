@@ -1,8 +1,5 @@
 import { Protocol, UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import getConfig from 'next/config'
-
-const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
 export async function followVaultUsingApi(
   vaultId: BigNumber,
@@ -10,7 +7,7 @@ export async function followVaultUsingApi(
   protocol: Protocol,
   token: string,
 ): Promise<UsersWhoFollowVaults[]> {
-  return fetch(`${basePath}/api/follow`, {
+  return fetch(`/api/follow`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -34,7 +31,7 @@ export async function followVaultUsingApi(
 }
 
 export function getFollowFromApi(address: string): Promise<UsersWhoFollowVaults[]> {
-  return fetch(`${basePath}/api/follow/${address}`, {
+  return fetch(`/api/follow/${address}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -60,7 +57,7 @@ export async function unfollowVaultUsingApi(
   protocol: Protocol,
   token: string,
 ): Promise<{ message: String }> {
-  return fetch(`${basePath}/api/follow`, {
+  return fetch(`/api/follow`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

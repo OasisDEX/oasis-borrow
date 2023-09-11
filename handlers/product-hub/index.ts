@@ -1,5 +1,7 @@
 import { Prisma, PrismaPromise, Protocol } from '@prisma/client'
+import BigNumber from 'bignumber.js'
 import { networks } from 'blockchain/networks'
+import { Tickers } from 'blockchain/prices'
 import { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
 import { checkIfAllHandlersExist, filterTableData, measureTime } from 'handlers/product-hub/helpers'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
@@ -8,9 +10,9 @@ import {
   HandleUpdateProductHubDataProps,
 } from 'handlers/product-hub/types'
 import { PRODUCT_HUB_HANDLERS } from 'handlers/product-hub/update-handlers'
+import { tokenTickers } from 'helpers/api/tokenTickers'
 import { flatten, uniq } from 'lodash'
 import { NextApiResponse } from 'next'
-import getConfig from 'next/config'
 import { prisma } from 'server/prisma'
 
 export async function handleGetProductHubData(
@@ -63,6 +65,18 @@ export async function handleGetProductHubData(
     })
 }
 
+type ProtocolError = {
+  protocol: Protocol
+  error: Error | unknown
+  message: string
+  stack: string | undefined
+  cause: string | undefined | unknown
+}
+
+const isProtocolError = (error: unknown): error is ProtocolError => {
+  return error !== undefined && typeof error === 'object' && error !== null && 'protocol' in error
+}
+
 export async function updateProductHubData(
   req: HandleUpdateProductHubDataProps,
   res: NextApiResponse,
@@ -103,19 +117,46 @@ export async function updateProductHubData(
         call: PRODUCT_HUB_HANDLERS[protocol],
       }
     })
-    const tickers = await (
-      await fetch(`${getConfig()?.publicRuntimeConfig?.basePath}/api/tokensPrices`)
-    ).json()
+    const tickers = await tokenTickers()
+    if (!tickers) {
+      return res.status(502).json({
+        errorMessage: 'Error getting token tickers',
+        dryRun,
+      })
+    }
+
+    const parsedTickers = Object.entries(tickers).reduce((acc, [key, value]) => {
+      acc[key.toLowerCase()] = new BigNumber(value)
+      return acc
+    }, {} as Tickers)
 
     const dataHandlersPromiseList = await Promise.all(
       handlersList.map(({ name, call }) => {
         const startTime = Date.now()
-        return call(tickers).then(({ table, warnings }) => ({
-          name, // protocol name
-          warnings,
-          data: table,
-          processingTime: measureTime ? Date.now() - startTime : undefined,
-        }))
+        return call(parsedTickers)
+          .then(({ table, warnings }) => ({
+            name, // protocol name
+            warnings,
+            data: table,
+            processingTime: measureTime ? Date.now() - startTime : undefined,
+          }))
+          .catch((error) => {
+            const wrappedError: ProtocolError = {
+              protocol: name,
+              message: `Error processing data for protocol "${name}"`,
+              error: error,
+              stack: undefined,
+              cause: undefined,
+            }
+
+            if (error instanceof Error) {
+              wrappedError.cause = error.cause
+              wrappedError.stack = error.stack
+              wrappedError.error = error
+            }
+
+            throw wrappedError
+          })
       }),
     )
 
@@ -155,6 +196,16 @@ export async function updateProductHubData(
     return res.status(200).json({ data: dataHandlersPromiseList, dryRun })
   } catch (error) {
     const { body } = req
+    if (isProtocolError(error)) {
+      return res.status(502).json({
+        errorMessage: `Error processing data for protocol "${error.protocol}"`,
+        innerError: error.error?.toString(),
+        dryRun: body.dryRun,
+        body: JSON.stringify(body),
+        stack: error.stack,
+        cause: error.cause,
+      })
+    }
     return res.status(502).json({
       errorMessage: 'Critical Error updating Product Hub data',
       // @ts-ignore
