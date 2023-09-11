@@ -65,6 +65,18 @@ export async function handleGetProductHubData(
     })
 }
 
+type ProtocolError = {
+  protocol: Protocol
+  error: Error | unknown
+  message: string
+  stack: string | undefined
+  cause: string | undefined | unknown
+}
+
+const isProtocolError = (error: unknown): error is ProtocolError => {
+  return error !== undefined && typeof error === 'object' && error !== null && 'protocol' in error
+}
+
 export async function updateProductHubData(
   req: HandleUpdateProductHubDataProps,
   res: NextApiResponse,
@@ -121,12 +133,30 @@ export async function updateProductHubData(
     const dataHandlersPromiseList = await Promise.all(
       handlersList.map(({ name, call }) => {
         const startTime = Date.now()
-        return call(parsedTickers).then(({ table, warnings }) => ({
-          name, // protocol name
-          warnings,
-          data: table,
-          processingTime: measureTime ? Date.now() - startTime : undefined,
-        }))
+        return call(parsedTickers)
+          .then(({ table, warnings }) => ({
+            name, // protocol name
+            warnings,
+            data: table,
+            processingTime: measureTime ? Date.now() - startTime : undefined,
+          }))
+          .catch((error) => {
+            const wrappedError: ProtocolError = {
+              protocol: name,
+              message: `Error processing data for protocol "${name}"`,
+              error: error,
+              stack: undefined,
+              cause: undefined,
+            }
+
+            if (error instanceof Error) {
+              wrappedError.cause = error.cause
+              wrappedError.stack = error.stack
+              wrappedError.error = error
+            }
+
+            throw wrappedError
+          })
       }),
     )
 
@@ -166,6 +196,16 @@ export async function updateProductHubData(
     return res.status(200).json({ data: dataHandlersPromiseList, dryRun })
   } catch (error) {
     const { body } = req
+    if (isProtocolError(error)) {
+      return res.status(502).json({
+        errorMessage: `Error processing data for protocol "${error.protocol}"`,
+        innerError: error.error?.toString(),
+        dryRun: body.dryRun,
+        body: JSON.stringify(body),
+        stack: error.stack,
+        cause: error.cause,
+      })
+    }
     return res.status(502).json({
       errorMessage: 'Critical Error updating Product Hub data',
       // @ts-ignore
