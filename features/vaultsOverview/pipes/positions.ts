@@ -106,26 +106,39 @@ export function createPositions$(
   aaveV2MainnetPositions$: (address: string) => Observable<Position[]>,
   aaveV3MainnetPositions$: (address: string) => Observable<Position[]>,
   optimismPositions$: (address: string) => Observable<Position[]>,
+  arbitrumPositions$: (address: string) => Observable<Position[]>,
+
   address: string,
 ): Observable<Position[]> {
   const _makerPositions$ = makerPositions$(address)
   const _aaveV2Positions$ = aaveV2MainnetPositions$(address)
   const _aaveV3Positions$ = aaveV3MainnetPositions$(address)
   const _optimismPositions$ = optimismPositions$(address)
+  const _arbitrumPositions$ = arbitrumPositions$(address)
   return combineLatest(
     _makerPositions$,
     _aaveV2Positions$,
     _aaveV3Positions$,
     _optimismPositions$,
+    _arbitrumPositions$,
   ).pipe(
-    map(([makerPositions, aaveV2Positions, aaveV3MainnetPositions, optimismPositions]) => {
-      return [
-        ...makerPositions,
-        ...aaveV2Positions,
-        ...aaveV3MainnetPositions,
-        ...optimismPositions,
-      ]
-    }),
+    map(
+      ([
+        makerPositions,
+        aaveV2Positions,
+        aaveV3MainnetPositions,
+        optimismPositions,
+        arbitrumPositions,
+      ]) => {
+        return [
+          ...makerPositions,
+          ...aaveV2Positions,
+          ...aaveV3MainnetPositions,
+          ...optimismPositions,
+          ...arbitrumPositions,
+        ]
+      },
+    ),
   )
 }
 

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import {
+  ARBITRUM_DEFAULT_LIQUIDITY_PROVIDERS,
   ETHEREUM_MAINNET_DEFAULT_PROTOCOLS,
   OPTIMIMS_DEFAULT_PROCOTOLS,
 } from 'features/exchange/exchange'
@@ -100,6 +101,10 @@ export function getOneInchCall(
       .with(
         { protocols: [], networkId: NetworkIds.MAINNET },
         () => ETHEREUM_MAINNET_DEFAULT_PROTOCOLS,
+      )
+      .with(
+        { protocols: [], networkId: NetworkIds.ARBITRUMMAINNET },
+        () => ARBITRUM_DEFAULT_LIQUIDITY_PROVIDERS,
       )
       .otherwise(() => protocols)
 

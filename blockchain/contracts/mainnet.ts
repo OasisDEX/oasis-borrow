@@ -230,5 +230,12 @@ export const mainnetContracts = {
   SdaiOracle: contractDesc(ajnaPoolInfo, mainnet.common.SdaiOracle),
 }
 
-export type MainnetContracts = typeof mainnetContracts
+type DeprecatedProperties = {
+  /*
+   * @deprecated use `tokens` instead
+   */
+  tokensMainnet: typeof tokensMainnet
+}
+
+export type MainnetContracts = typeof mainnetContracts & DeprecatedProperties
 export type MainnetContractsWithOptional = Optional<MainnetContracts, OptionalContracts>
