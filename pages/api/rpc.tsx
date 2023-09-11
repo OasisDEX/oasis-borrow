@@ -43,7 +43,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     },
   }
   const request = new Request(rpcUrl!, {
-    method: 'POST',
+    method:req.method,
     body: JSON.stringify(req.body),
     headers: {
       ...config.headers,
@@ -51,8 +51,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     },
   })
   const response = await fetch(request)
-  const resolvedResponse = await response.json()
-  return res.status(200).send(resolvedResponse)
+  // const resolvedResponse = await response.json()
+  return res.status(200).send(response)
 }
 
 export default rpc
