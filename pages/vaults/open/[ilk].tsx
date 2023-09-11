@@ -1,7 +1,8 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
+import { ProductContextHandler } from 'components/context'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/Layouts'
+import { AppLayout } from 'components/layouts'
 import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
@@ -32,24 +33,26 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
 function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
   return (
-    <WithWalletConnection chainId={ethereumMainnetHexId}>
-      <WithTermsOfService>
-        <WithWalletAssociatedRisk>
-          <PageSEOTags
-            title="seo.title-product-w-tokens"
-            titleParams={{
-              product: t('seo.borrow.title'),
-              protocol: LendingProtocolLabel.maker,
-              token1: ilk,
-              token2: 'DAI',
-            }}
-            description="seo.borrow.description"
-            url="/borrow"
-          />
-          <OpenVaultView ilk={ilk} />
-        </WithWalletAssociatedRisk>
-      </WithTermsOfService>
-    </WithWalletConnection>
+    <ProductContextHandler>
+      <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
+        <WithTermsOfService>
+          <WithWalletAssociatedRisk>
+            <PageSEOTags
+              title="seo.title-product-w-tokens"
+              titleParams={{
+                product: t('seo.borrow.title'),
+                protocol: LendingProtocolLabel.maker,
+                token1: ilk,
+                token2: 'DAI',
+              }}
+              description="seo.borrow.description"
+              url="/borrow"
+            />
+            <OpenVaultView ilk={ilk} />
+          </WithWalletAssociatedRisk>
+        </WithTermsOfService>
+      </WithWalletConnection>
+    </ProductContextHandler>
   )
 }
 

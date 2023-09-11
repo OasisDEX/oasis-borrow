@@ -1,4 +1,3 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
@@ -10,7 +9,7 @@ import React from 'react'
 export const AjnaBorrowOriginationFee = () => {
   const { t } = useTranslation()
   const {
-    environment: { quoteToken, quotePrice },
+    environment: { isOracless, quoteToken, quotePrice },
   } = useAjnaGeneralContext()
   const {
     position: {
@@ -18,15 +17,14 @@ export const AjnaBorrowOriginationFee = () => {
     },
   } = useAjnaProductContext('borrow')
   const originationFee = getOriginationFee(position, simulation)
-  const originationFeeFormatted = `${formatCryptoBalance(
-    originationFee,
-  )} ${quoteToken} ($${formatAmount(originationFee.times(quotePrice), 'USD')})`
+  const originationFeeFormatted = `${formatCryptoBalance(originationFee)} ${quoteToken}`
+  const originationFeeFormattedUSD = `($${formatAmount(originationFee.times(quotePrice), 'USD')})`
 
   return (
     <HighlightedOrderInformation
       label={t('ajna.position-page.borrow.common.form.origination-fee', { quoteToken })}
-      iconCircle={getToken(quoteToken).iconCircle}
-      value={originationFeeFormatted}
+      symbol={quoteToken}
+      value={`${originationFeeFormatted} ${!isOracless ? originationFeeFormattedUSD : ''}`}
     />
   )
 }

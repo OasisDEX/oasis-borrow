@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
+import { useProductContext } from 'components/context'
 import { EarnVaultHeadline } from 'components/vault/EarnVaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
+import dayjs from 'dayjs'
 import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { YieldChange } from 'helpers/earn/calculations'
@@ -9,7 +10,6 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
-import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -20,11 +20,11 @@ export interface EarnVaultHeaderProps {
   shareButton?: boolean
 }
 
-const currentDate = moment().startOf('day')
+const currentDate = dayjs().startOf('day')
 const previousDate = currentDate.clone().subtract(1, 'day')
 
 export function GuniVaultHeader({ ilk, token, followButton, shareButton }: EarnVaultHeaderProps) {
-  const { yieldsChange$, totalValueLocked$ } = useAppContext()
+  const { yieldsChange$, totalValueLocked$ } = useProductContext()
   const [yieldChanges, changesError] = useObservable(yieldsChange$(currentDate, previousDate, ilk))
   const [totalValueLocked, totalValueLockedError] = useObservable(totalValueLocked$(ilk))
 
@@ -46,7 +46,7 @@ export function GuniVaultHeader({ ilk, token, followButton, shareButton }: EarnV
           return (
             <EarnVaultHeadline
               header={ilk}
-              token={[token]}
+              tokens={[token]}
               details={details}
               followButton={followButton}
               shareButton={shareButton}

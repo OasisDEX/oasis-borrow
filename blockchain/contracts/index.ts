@@ -1,3 +1,5 @@
+import { Tokens } from '@prisma/client'
+import * as erc20 from 'blockchain/abi/erc20.json'
 import { getContractNetworkByWalletNetwork, NetworkIds, networkSetById } from 'blockchain/networks'
 import { ContractDesc } from 'features/web3Context'
 
@@ -5,6 +7,10 @@ import { arbitrumContracts } from './arbitrum'
 import { goerliContracts } from './goerli'
 import { mainnetContracts } from './mainnet'
 import { optimismContracts } from './optimism'
+
+// this const will contain contracts of tokens, that aren't a part of original config
+// but identified by identifyTokens$ observable whenever it's called
+const extendedTokensContracts: { [key: string]: ContractDesc & { genesisBlock: number } } = {}
 
 export const allNetworksContracts = {
   [NetworkIds.MAINNET]: mainnetContracts,
@@ -33,6 +39,8 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
   const networkConfig = networkSetById[correctNetworkId]
   let contracts: Record<string, unknown> = allNetworksContracts[correctNetworkId]
 
+  let finalNetworkId = correctNetworkId
+
   if (!contracts && networkConfig.isCustomFork) {
     const parentConfig = networkConfig.getParentNetwork()
     if (!parentConfig) {
@@ -40,12 +48,44 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
         `Can't find parent network for ${correctNetworkId} chain  even though it's a custom fork`,
       )
     }
+    finalNetworkId = parentConfig.id
     contracts = allNetworksContracts[parentConfig.id]
   }
   if (!contracts) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
   }
-  return contracts as Pick<AllNetworksContractsType, NetworkId>[NetworkId]
+
+  const contractsForWithToknes = contracts
+
+  ensureTokensExist(finalNetworkId, contractsForWithToknes)
+
+  // ETH needs to be first because we use the `WETH` address in that configuration. To ensure that ETH is placed before WETH, we put it at the top of the list.
+  const tokens: Record<string, ContractDesc> =
+    finalNetworkId === NetworkIds.MAINNET || finalNetworkId === NetworkIds.GOERLI
+      ? {
+          ETH: contractsForWithToknes.tokens.ETH,
+          ...contractsForWithToknes.tokens,
+          ...extendedTokensContracts,
+        }
+      : {
+          ETH: contractsForWithToknes.tokens.ETH,
+          ...contractsForWithToknes.tokens,
+        }
+
+  return {
+    ...contracts,
+    tokens,
+  } as Pick<AllNetworksContractsType, NetworkId>[NetworkId]
+}
+
+export function extendTokensContracts(tokens: Tokens[]): void {
+  tokens.forEach((token) => {
+    extendedTokensContracts[token.symbol] = {
+      abi: erc20,
+      address: token.address,
+      genesisBlock: 0,
+    }
+  })
 }
 
 export function ensureContractsExist(
@@ -86,9 +126,12 @@ export function ensureSafeConfirmationsExist(
 export function ensureEtherscanExist(
   chainId: NetworkIds,
   contracts: ReturnType<typeof getNetworkContracts>,
-): asserts contracts is { etherscan: { url: string; apiUrl: string } } {
+): asserts contracts is { etherscan: { url: string; apiUrl: string }; ethtx: { url: string } } {
   if (!contracts.hasOwnProperty('etherscan')) {
     throw new Error(`Can't find etherscan definition on ${chainId} chain`)
+  }
+  if (!contracts.hasOwnProperty('ethtx')) {
+    throw new Error(`Can't find ethx definition on ${chainId} chain`)
   }
 }
 
@@ -107,8 +150,13 @@ export function ensureGivenTokensExist(
   tokens: ReadonlyArray<string>,
 ): asserts contracts is { tokens: { [K in (typeof tokens)[number]]: ContractDesc } } {
   ensureTokensExist(chainId, contracts)
-  if (tokens.some((p) => !contracts.tokens.hasOwnProperty(p))) {
-    throw new Error(`Can't find tokens definitions: ${JSON.stringify(tokens)} on ${chainId} chain`)
+  const notFoundTokens = tokens.filter((p) => !contracts.tokens.hasOwnProperty(p))
+  if (notFoundTokens.length > 0) {
+    throw new Error(
+      `Can't find tokens definitions: ${JSON.stringify(
+        notFoundTokens,
+      )}. searching for: ${JSON.stringify(tokens)} on ${chainId} chain`,
+    )
   }
 }
 

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
@@ -166,6 +167,7 @@ export interface MultiplyBaseEvent {
   gasFee: BigNumber // in wei
   rate: BigNumber
   token: string
+  chainId: NetworkIds
 }
 interface OpenMultiplyEvent extends MultiplyBaseEvent {
   kind: 'OPEN_MULTIPLY_VAULT'
@@ -230,6 +232,7 @@ interface AutomationBaseEvent {
   ethPrice: BigNumber
   groupId?: string
   autoKind: string
+  chainId: NetworkIds
 }
 
 type StopLossCloseEvent = CloseVaultExitDaiMultipleEvent | CloseVaultExitCollateralMultipleEvent

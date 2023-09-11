@@ -1,6 +1,5 @@
 import { NetworkIds } from 'blockchain/networks'
 import { SubgraphBaseResponse, Subgraphs, SubgraphsResponses } from 'features/subgraphLoader/types'
-import { getNetworkId } from 'features/web3Context'
 import getConfig from 'next/config'
 import { useEffect, useState } from 'react'
 
@@ -17,17 +16,16 @@ export async function loadSubgraph<
 >(
   subgraph: S,
   method: M,
+  networkId: NetworkIds,
   params: P = {} as P,
-  networkId?: NetworkIds,
 ): Promise<SubgraphsResponses[S][keyof SubgraphsResponses[S]]> {
-  const resolvedNetworkId = networkId || (getNetworkId() as NetworkIds)
   const response = await fetch(`${getConfig()?.publicRuntimeConfig?.basePath}/api/subgraph`, {
     method: 'POST',
     body: JSON.stringify({
       subgraph,
       method,
       params,
-      networkId: resolvedNetworkId,
+      networkId,
     }),
   })
 
@@ -38,7 +36,7 @@ export function useSubgraphLoader<
   S extends keyof Subgraphs,
   M extends keyof Subgraphs[S],
   P extends Subgraphs[S][M],
->(subgraph: S, method: M, params: P, networkId?: NetworkIds) {
+>(subgraph: S, method: M, params: P, networkId: NetworkIds) {
   const stringifiedParams = JSON.stringify(params)
   const [state, setState] = useState<
     UseSubgraphLoader<SubgraphsResponses[S][keyof SubgraphsResponses[S]]>
@@ -54,7 +52,7 @@ export function useSubgraphLoader<
       isLoading: true,
     }))
 
-    loadSubgraph(subgraph, method, params, networkId)
+    loadSubgraph(subgraph, method, networkId, params)
       // @ts-ignore
       // TODO adjust types
       .then(({ success, response }) => {

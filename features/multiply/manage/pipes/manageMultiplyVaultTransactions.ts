@@ -17,9 +17,9 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
-import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { checkIfGnosisSafe } from 'helpers/checkIfGnosisSafe'
+import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
 import { TxError } from 'helpers/types'
@@ -691,11 +691,11 @@ export function applyEstimateGas(
               ? // add oazo fee because Oazo takes the fee from the pre swap amount,
                 // so that means that required debt on the vault must be increased
                 // to incorporate this fee.
-                swap.daiAmount.div(one.minus(OAZO_FEE))
+                swap.quoteAmount.div(one.minus(OAZO_FEE))
               : // remove slippage because we are selling collateral and buying DAI,
                 // and so we will only end up with the amount of DAI that is
                 // returned from the exchange minus the slippage.
-                swap.daiAmount.div(one.plus(SLIPPAGE))
+                swap.quoteAmount.div(one.plus(SLIPPAGE))
             : zero
 
         const borrowedCollateral =

@@ -7,7 +7,9 @@ import {
   AjnaFormActionsUpdateDpm,
   AjnaFormActionsUpdateGenerate,
   AjnaFormActionsUpdatePayback,
+  AjnaFormActionsUpdatePaybackMax,
   AjnaFormActionsUpdateWithdraw,
+  AjnaUpdateLoanToValue,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
@@ -20,6 +22,7 @@ export interface AjnaMultiplyFormState {
   generateAmountUSD?: BigNumber
   paybackAmount?: BigNumber
   paybackAmountUSD?: BigNumber
+  paybackAmountMax: boolean
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   loanToValue?: BigNumber
@@ -36,9 +39,11 @@ export type AjnaMultiplyFormAction = ReductoActions<
   | AjnaFormActionsUpdateDeposit
   | AjnaFormActionsUpdateGenerate
   | AjnaFormActionsUpdatePayback
+  | AjnaFormActionsUpdatePaybackMax
   | AjnaFormActionsUpdateWithdraw
   | AjnaFormActionsUpdateDpm
   | AjnaFormActionsReset
+  | AjnaUpdateLoanToValue
 >
 
 export const ajnaMultiplyReset = {
@@ -48,8 +53,10 @@ export const ajnaMultiplyReset = {
   generateAmountUSD: undefined,
   paybackAmount: undefined,
   paybackAmountUSD: undefined,
+  paybackAmountMax: false,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
+  loanToValue: undefined,
 }
 
 export const ajnaMultiplyDefault: AjnaMultiplyFormState = {
@@ -90,6 +97,11 @@ export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyForm
             paybackAmount: action.paybackAmount,
             paybackAmountUSD: action.paybackAmountUSD,
           }
+        case 'update-payback-max':
+          return {
+            ...state,
+            paybackAmountMax: action.paybackAmountMax,
+          }
         case 'update-withdraw':
           return {
             ...state,
@@ -105,7 +117,11 @@ export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyForm
           return {
             ...state,
             ...ajnaMultiplyReset,
-            loanToValue: rest.loanToValue,
+          }
+        case 'update-loan-to-value':
+          return {
+            ...state,
+            loanToValue: action.loanToValue,
           }
         default:
           return state

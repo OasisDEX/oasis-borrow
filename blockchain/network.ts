@@ -2,11 +2,12 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 import {
+  contract,
+  ContractDesc,
   Web3Context,
   Web3ContextConnected,
   Web3ContextConnectedReadonly,
 } from 'features/web3Context'
-import { contract, ContractDesc } from 'features/web3Context'
 import { bindNodeCallback, combineLatest, concat, interval, Observable } from 'rxjs'
 import {
   catchError,
@@ -59,9 +60,7 @@ export function createContext$(
   return web3ContextConnected$.pipe(
     map((web3Context) => {
       const networkData = networksById[web3Context.chainId]
-      const web3ProviderGetPastLogs = new Web3(
-        getNetworkRpcEndpoint(NetworkIds.MAINNET, web3Context.chainId),
-      )
+      const web3ProviderGetPastLogs = new Web3(getNetworkRpcEndpoint(web3Context.chainId))
 
       return {
         ...networkData,
@@ -99,7 +98,7 @@ export function createOnEveryBlock$(
   const onEveryBlock$ = combineLatest(web3Context$, every5Seconds$).pipe(
     switchMap(([{ web3 }]) => bindNodeCallback(web3.eth.getBlockNumber)()),
     catchError((error, source) => {
-      console.log(error)
+      console.error(error)
       return concat(every5Seconds$.pipe(skip(1), first()), source)
     }),
     distinctUntilChanged(),

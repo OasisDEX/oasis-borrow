@@ -71,7 +71,9 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
     case 'basic-sell': {
       const autoBSData = extractAutoBSData({
         triggersData: {
+          isAutomationDataLoaded: true,
           isAutomationEnabled: false,
+          chainId: event.chainId,
           triggers: [
             {
               triggerId: Number(event.triggerId),
@@ -92,7 +94,9 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
     }
     case 'stop-loss':
       const stopLossData = extractStopLossData({
+        isAutomationDataLoaded: true,
         isAutomationEnabled: false,
+        chainId: event.chainId,
         triggers: [
           {
             triggerId: Number(event.triggerId),
@@ -108,7 +112,9 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
       }
     case 'auto-take-profit':
       const autoTakeProfitData = extractAutoTakeProfitData({
+        isAutomationDataLoaded: true,
         isAutomationEnabled: false,
+        chainId: event.chainId,
         triggers: [
           {
             triggerId: Number(event.triggerId),

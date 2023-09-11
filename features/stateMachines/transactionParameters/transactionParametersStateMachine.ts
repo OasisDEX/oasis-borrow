@@ -1,4 +1,4 @@
-import { ISimplePositionTransition, IStrategy, PositionTransition } from '@oasisdex/dma-library'
+import { IMultiplyStrategy, IOpenDepositBorrowStrategy, IStrategy } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DpmExecuteParameters, estimateGasOnDpm } from 'blockchain/better-calls/dpm-account'
 import { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
@@ -6,9 +6,8 @@ import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExe
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ethNullAddress, NetworkIds } from 'blockchain/networks'
 import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
-import { TxHelpers } from 'components/AppContext'
 import { ethers } from 'ethers'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { GasEstimationStatus, HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
@@ -28,7 +27,7 @@ export interface BaseTransactionParameters {
 
 export type TransactionParametersStateMachineContext<T extends BaseTransactionParameters> = {
   parameters?: T
-  strategy?: ISimplePositionTransition | PositionTransition | IStrategy
+  strategy?: IStrategy
 
   /**
    * @deprecated This is old stuff. It uses `web3.js`. We want to move to `ethers.js` and get rid of RxJS.
@@ -52,7 +51,7 @@ export type TransactionParametersStateMachineContext<T extends BaseTransactionPa
 export type TransactionParametersStateMachineResponseEvent =
   | {
       type: 'STRATEGY_RECEIVED'
-      transition?: ISimplePositionTransition | PositionTransition | IStrategy
+      transition?: IStrategy | IOpenDepositBorrowStrategy
     }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
@@ -70,7 +69,7 @@ export type TransactionParametersStateMachineEvent<T> =
   | { type: 'SIGNER_CHANGED'; signer: ethers.Signer }
   | { type: 'GAS_PRICE_ESTIMATION_CHANGED'; estimatedGasPrice: HasGasEstimation }
 
-export type LibraryCallReturn = ISimplePositionTransition | PositionTransition | IStrategy
+export type LibraryCallReturn = IMultiplyStrategy | IStrategy
 export type LibraryCallDelegate<T> = (parameters: T) => Promise<LibraryCallReturn>
 
 export function createTransactionParametersStateMachine<T extends BaseTransactionParameters>(
@@ -109,6 +108,13 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         idle: {},
         gettingParameters: {
           entry: ['setRetries'],
+          on: {
+            VARIABLES_RECEIVED: {
+              target: 'gettingParameters',
+              cond: 'parametersReady',
+              actions: ['updateContext', 'resetRetries'],
+            },
+          },
           invoke: {
             src: 'getParameters',
             id: 'library-call',
@@ -250,7 +256,10 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         },
         estimateGasPrice: ({ estimatedGas, networkId, gasEstimationResult }) => {
           if (networkId === NetworkIds.MAINNET) {
-            return gasEstimation$(estimatedGas!).pipe(
+            if (!estimatedGas && !gasEstimationResult?.estimatedGas) {
+              throw new Error('Error estimating gas price: no gas amount.')
+            }
+            return gasEstimation$(estimatedGas || Number(gasEstimationResult!.estimatedGas)).pipe(
               distinctUntilChanged<HasGasEstimation>(isEqual),
               map((gasPriceEstimation) => ({
                 type: 'GAS_PRICE_ESTIMATION_CHANGED',

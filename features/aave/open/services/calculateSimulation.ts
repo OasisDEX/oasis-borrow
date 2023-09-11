@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
+import dayjs from 'dayjs'
 import { one, zero } from 'helpers/zero'
-import { AaveYieldsResponse } from 'lendingProtocols/aaveCommon'
-import moment from 'moment/moment'
+import { AaveLikeYieldsResponse } from 'lendingProtocols/aave-like-common'
 
-const AAVE_INCEPTION_DATE = moment('2022-02-28')
+const AAVE_INCEPTION_DATE = dayjs('2022-02-28')
 
 export interface Simulation {
   earningAfterFees: BigNumber
@@ -31,7 +31,7 @@ export function calculateSimulation({
   fees?: BigNumber
   amount: BigNumber
   token: string
-  yields: AaveYieldsResponse
+  yields: AaveLikeYieldsResponse
 }): CalculateSimulationResult {
   const earningsPerDay =
     yields.annualisedYield7days &&
@@ -78,7 +78,7 @@ export function calculateSimulation({
         amount,
         annualizedYield: yields.annualisedYieldSinceInception,
         token,
-        days: moment().diff(AAVE_INCEPTION_DATE, 'days'),
+        days: dayjs().diff(AAVE_INCEPTION_DATE, 'days'),
       }),
   }
 }

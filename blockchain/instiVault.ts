@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { combineLatest, Observable, of } from 'rxjs'
 import { shareReplay, switchMap } from 'rxjs/operators'
 
@@ -104,7 +104,7 @@ export function createInstiVault$(
                     collateral: lockedCollateral,
                     vaultDebt: debt,
                   }),
-                  termEnd: moment().add(3, 'months').toDate(),
+                  termEnd: dayjs().add(3, 'months').toDate(),
                   currentFixedFee: charteredFee,
                   nextFeeChange: '0.9% at $20.4m',
                 })

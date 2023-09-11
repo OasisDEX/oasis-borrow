@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { DAY_BI } from 'components/constants'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import {
@@ -8,6 +9,7 @@ import {
 import { SimulateTitle } from 'components/SimulateTitle'
 import { Simulation } from 'features/aave/open/services'
 import { DsrBanner } from 'features/dsr/components/DsrBanner'
+import { getRate } from 'features/dsr/helpers/dsrPot'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -23,28 +25,33 @@ function mapSimulation(simulation?: Simulation): string[] {
 
 export function DsrSimulationSection({
   userInputAmount,
-  apy,
+  dsr,
 }: {
   userInputAmount?: BigNumber
-  apy: BigNumber
+  dsr: BigNumber
 }) {
   const { t } = useTranslation()
   const amount = userInputAmount || new BigNumber(150000)
+  const next30dayRate = getRate(dsr, DAY_BI.times(30)).decimalPlaces(5, BigNumber.ROUND_UP).minus(1)
+  const next90dayRate = getRate(dsr, DAY_BI.times(90)).decimalPlaces(5, BigNumber.ROUND_UP).minus(1)
+  const next1yearRate = getRate(dsr, DAY_BI.times(365))
+    .decimalPlaces(5, BigNumber.ROUND_UP)
+    .minus(1)
 
   const simulation = {
     next30Days: {
-      earningAfterFees: amount.times(one.plus(apy.div(100).div(365).times(30))).minus(amount),
-      netValue: amount.times(one.plus(apy.div(100).div(365).times(30))),
+      earningAfterFees: amount.times(one.plus(next30dayRate)).minus(amount),
+      netValue: amount.times(one.plus(next30dayRate)),
       token: 'DAI',
     },
     next90Days: {
-      earningAfterFees: amount.times(one.plus(apy.div(100).div(365).times(90))).minus(amount),
-      netValue: amount.times(one.plus(apy.div(100).div(365).times(90))),
+      earningAfterFees: amount.times(one.plus(next90dayRate)).minus(amount),
+      netValue: amount.times(one.plus(next90dayRate)),
       token: 'DAI',
     },
     next1Year: {
-      earningAfterFees: amount.times(one.plus(apy.div(100))).minus(amount),
-      netValue: amount.times(one.plus(apy.div(100))),
+      earningAfterFees: amount.times(one.plus(next1yearRate)).minus(amount),
+      netValue: amount.times(one.plus(next1yearRate)),
       token: 'DAI',
     },
   }
@@ -73,7 +80,7 @@ export function DsrSimulationSection({
           <DetailsSectionFooterItemWrapper>
             <DetailsSectionFooterItem
               title={t('dsr.details.current-dai-savings-rate')}
-              value={formatDecimalAsPercent(apy.div(100))}
+              value={formatDecimalAsPercent(next1yearRate)}
             />
           </DetailsSectionFooterItemWrapper>
         }

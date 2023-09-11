@@ -1,124 +1,60 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import {
   enableNetworksSet,
-  getOppositeNetworkHexIdByHexId,
-  mainnetNetworkParameter,
-  NetworkConfigHexId,
-  NetworkIds,
-  networkSetByHexId,
-} from 'blockchain/networks'
-import {
   filterNetworksAccordingToSavedNetwork,
   filterNetworksAccordingToWalletNetwork,
   isTestnet,
   isTestnetEnabled,
   isTestnetNetworkHexId,
+  NetworkIdToNetworkHexIds,
+  NetworkNames,
+  networkSetByHexId,
 } from 'blockchain/networks'
-import { NetworkConfig } from 'blockchain/networks'
-import { useConnection } from 'features/web3OnBoard'
+import { useConnection, useWalletManagement } from 'features/web3OnBoard'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
-import { useModal } from 'helpers/modalHook'
+import { useModalContext } from 'helpers/modalHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React from 'react'
-import { Box, Button, Image } from 'theme-ui'
+import React, { useState } from 'react'
+import { Box, Button } from 'theme-ui'
 
 import { NavigationOrb } from './NavigationMenuOrb'
+import { NetworkButton } from './NavigationNetworkSwitcherButton'
 import { NavigationNetworkSwitcherIcon } from './NavigationNetworkSwitcherIcon'
+import { L2BeatSection } from './NavigationNetworkSwitcherL2BeatButton'
 import { NavigationNetworkSwitcherModal } from './NavigationNetworkSwitcherModal'
 
+const renderSeparator = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="216" height="1" viewBox="0 0 216 1" fill="none">
+      <rect width="216" height="1" fill="#EAEAEA" />
+    </svg>
+  )
+}
+
 export function NavigationNetworkSwitcherOrb() {
-  const { connectedChain, connect, connecting } = useConnection({
-    initialConnect: false,
-  })
+  const { connecting, toggleBetweenMainnetAndTestnet, setChain } = useConnection()
+  const { wallet, chainId } = useWalletManagement()
+  const connectedChain = wallet?.chainHexId
   const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
-  const openModal = useModal()
+  const { openModal } = useModalContext()
 
   const useTestnets = useFeatureToggle('UseNetworkSwitcherTestnets')
   const useForks = useFeatureToggle('UseNetworkSwitcherForks')
-  const useArbitrum = useFeatureToggle('UseNetworkSwitcherArbitrum')
-  const useOptimism = useFeatureToggle('UseNetworkSwitcherOptimism')
 
-  const toggleChains = (currentConnectedChain: NetworkConfigHexId) => {
-    return connect(getOppositeNetworkHexIdByHexId(currentConnectedChain), { forced: true })
-  }
-  const { hexId: customNetworkHexId } = mainnetNetworkParameter
-
-  const handleNetworkButton = (network: NetworkConfig) => {
-    const isCurrentNetwork = network.name === currentNetworkName
-    return (
-      <Button
-        variant="networkPicker"
-        sx={{
-          fontWeight: isCurrentNetwork ? '600' : '400',
-          whiteSpace: 'pre',
-          color: isCurrentNetwork ? 'primary100' : 'neutral80',
-          ':hover': {
-            color: 'primary100',
-            ...(network.isCustomFork && {
-              '::before': {
-                top: '-5px',
-                left: '-5px',
-              },
-            }),
-          },
-          ...(network.isCustomFork && {
-            '::before': {
-              content: '"👷‍♂️"',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '36px',
-              height: '36px',
-              display: 'block',
-              zIndex: '1',
-              transform: 'rotate(-40deg)',
-              transition: '0.2s top, 0.2s left',
-            },
-          }),
-        }}
-        onClick={() => connect(network.hexId)}
-        disabled={connecting}
-        key={network.hexId}
-      >
-        <Image
-          src={network.icon}
-          sx={{
-            mr: 3,
-            minWidth: 4,
-            minHeight: 4,
-            position: 'relative',
-            zIndex: '2',
-          }}
-        />
-        {network.label}
-        <Box
-          sx={{
-            width: '100%',
-            textAlign: 'right',
-            position: 'relative',
-            opacity: isCurrentNetwork ? 1 : 0,
-            left: isCurrentNetwork ? 0 : 2,
-            transition: '0.2s opacity, 0.2s left',
-            mb: '-3px',
-          }}
-        >
-          <Icon name="tick" color="interactive100" />
-        </Box>
-      </Button>
-    )
-  }
+  const [currentHoverNetworkName, setCurrentHoverNetworkName] = useState<NetworkNames | undefined>(
+    currentNetworkName,
+  )
 
   return (
     <NavigationOrb customIcon={NavigationNetworkSwitcherIcon}>
-      {(_isOpen) => (
+      {() => (
         <>
           <Box
             sx={{
-              width: ['100%', '260px'],
+              width: ['100%', '240px'],
               gap: 2,
               display: 'flex',
               flexDirection: 'column',
-              padding: 3,
+              padding: '16px 12px',
               overflow: 'hidden',
             }}
           >
@@ -126,25 +62,28 @@ export function NavigationNetworkSwitcherOrb() {
               .filter(
                 connectedChain
                   ? filterNetworksAccordingToWalletNetwork(connectedChain)
-                  : filterNetworksAccordingToSavedNetwork(customNetworkHexId),
+                  : filterNetworksAccordingToSavedNetwork(NetworkIdToNetworkHexIds(chainId)),
               )
-              .filter((network) => {
-                if (network.id === NetworkIds.OPTIMISMMAINNET && !useOptimism) {
-                  return false
-                }
-                if (network.id === NetworkIds.ARBITRUMMAINNET && !useArbitrum) {
-                  return false
-                }
-                return true
-              })
-              .map(handleNetworkButton)}
+              .map((network) => (
+                <NetworkButton
+                  key={network.hexId}
+                  network={network}
+                  setChain={setChain}
+                  connecting={connecting}
+                  currentNetworkName={currentNetworkName}
+                  currentHoverNetworkName={currentHoverNetworkName}
+                  setCurrentHoverNetworkName={setCurrentHoverNetworkName}
+                />
+              ))}
+            {renderSeparator()}
+            <L2BeatSection />
             {(connectedChain || isTestnetEnabled()) && (
               <>
                 {useTestnets && (
                   <Button
                     variant="bean"
                     sx={{ fontSize: 2 }}
-                    onClick={() => toggleChains(connectedChain ?? customNetworkHexId)}
+                    onClick={() => toggleBetweenMainnetAndTestnet()}
                   >
                     <Box sx={{ width: '100%' }}>
                       {(() => {
@@ -153,7 +92,7 @@ export function NavigationNetworkSwitcherOrb() {
                             isTestnet(connectedChain) ? 'main net 🏠' : 'test net 🌲'
                           }`
                         }
-                        if (isTestnetNetworkHexId(customNetworkHexId)) {
+                        if (isTestnetNetworkHexId(NetworkIdToNetworkHexIds(chainId))) {
                           return 'Change to main net 🏠'
                         }
                         return 'Change to test net 🌲'

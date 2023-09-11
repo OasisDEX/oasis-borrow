@@ -7,6 +7,7 @@ import * as aaveV3PoolDataProvider from 'blockchain/abi/aave-v3-pool-data-provid
 import * as aaveV3Pool from 'blockchain/abi/aave-v3-pool.json'
 import * as accountFactory from 'blockchain/abi/account-factory.json'
 import * as accountGuard from 'blockchain/abi/account-guard.json'
+import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.json'
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
 import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
@@ -41,6 +42,9 @@ import * as merkleRedeemer from 'blockchain/abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.json'
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
+import * as sparkV3Oracle from 'blockchain/abi/spark-v3-oracle.json'
+import * as sparkV3PoolDataProvider from 'blockchain/abi/spark-v3-pool-data-provider.json'
+import * as sparkV3Pool from 'blockchain/abi/spark-v3-pool.json'
 import * as vat from 'blockchain/abi/vat.json'
 import {
   getCollateralJoinContracts,
@@ -52,10 +56,16 @@ import {
   AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
   AAVE_V3_POOL_GENESIS_MAINNET,
   ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
+  SPARK_V3_LENDING_POOL_GENESIS_MAINNET,
+  SPARK_V3_ORACLE_GENESIS_MAINNET,
+  SPARK_V3_POOL_DATA_PROVIDER_GENESIS_MAINNET,
   supportedIlks,
   tokensMainnet,
 } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey, mainnetCacheUrl } from 'config/runtimeConfig'
+import { Optional } from 'helpers/types'
+
+import { OptionalContracts } from './optional-contracts'
 
 const { mainnet } = ADDRESSES
 
@@ -121,9 +131,9 @@ export const mainnetContracts = {
   } as Record<string, string>,
   aaveV2ProtocolDataProvider: contractDesc(
     aaveV2ProtocolDataProvider,
-    mainnet.aave.v2.ProtocolDataProvider,
+    mainnet.aave.v2.PoolDataProvider,
   ),
-  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, mainnet.aave.v2.PriceOracle),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, mainnet.aave.v2.Oracle),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_ETHUSD),
@@ -145,32 +155,62 @@ export const mainnetContracts = {
     mainnet.mpa.core.AccountGuard,
     ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET,
   ),
-  aaveV3Pool: contractDesc(aaveV3Pool, mainnet.aave.v3.Pool, AAVE_V3_POOL_GENESIS_MAINNET),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, mainnet.aave.v3.AaveOracle),
-  aaveV3PoolDataProvider: contractDesc(
-    aaveV3PoolDataProvider,
-    mainnet.aave.v3.AavePoolDataProvider,
+  aaveV3Pool: contractDesc(aaveV3Pool, mainnet.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_MAINNET),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, mainnet.aave.v3.Oracle),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, mainnet.aave.v3.PoolDataProvider),
+  sparkV3Pool: contractDesc(
+    sparkV3Pool,
+    mainnet.spark.LendingPool!,
+    SPARK_V3_LENDING_POOL_GENESIS_MAINNET,
+  ),
+  sparkV3Oracle: contractDesc(
+    sparkV3Oracle,
+    mainnet.spark.Oracle!,
+    SPARK_V3_ORACLE_GENESIS_MAINNET,
+  ),
+  sparkV3PoolDataProvider: contractDesc(
+    sparkV3PoolDataProvider,
+    mainnet.spark.PoolDataProvider!,
+    SPARK_V3_POOL_DATA_PROVIDER_GENESIS_MAINNET,
   ),
   // TODO ajna addresses to be updated
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, mainnet.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, mainnet.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
+    'CBETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_CBETHETH),
+    'CBETH-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_CBETHGHO),
     'ETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_ETHDAI),
+    'ETH-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_ETHGHO),
     'ETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_ETHUSDC),
+    'GHO-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_GHODAI),
     'RETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHDAI),
     'RETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHETH),
+    'RETH-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHGHO),
     'RETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHUSDC),
+    'SDAI-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SDAIUSDC),
+    'TBTC-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_TBTCUSDC),
+    'TBTC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_TBTCWBTC),
     'USDC-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCETH),
     'USDC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCWBTC),
+    'USDC-WLD': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCWLD),
     'WBTC-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WBTCDAI),
+    'WBTC-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WBTCGHO),
     'WBTC-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WBTCUSDC),
+    'WLD-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WLDUSDC),
     'WSTETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHDAI),
     'WSTETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHETH),
+    'WSTETH-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHUSDC),
+    'YFI-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YFIDAI),
+  },
+  ajnaOraclessPoolPairs: {
+    'YIELDBTC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDBTCWBTC),
+    'YIELDETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDETHETH),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, mainnet.ajna.AjnaRewardsManager),
   // TODO update address
   ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, mainnet.ajna.AjnaRewardsClaimer),
+  ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, mainnet.ajna.ERC20PoolFactory),
   // not contracts
   cacheApi: mainnetCacheUrl,
   safeConfirmations: 10,
@@ -187,6 +227,8 @@ export const mainnetContracts = {
   magicLink: {
     apiKey: '',
   },
+  SdaiOracle: contractDesc(ajnaPoolInfo, mainnet.common.SdaiOracle),
 }
 
 export type MainnetContracts = typeof mainnetContracts
+export type MainnetContractsWithOptional = Optional<MainnetContracts, OptionalContracts>

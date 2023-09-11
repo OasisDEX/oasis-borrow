@@ -18,7 +18,7 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
   const { t } = useTranslation()
 
   const {
-    environment: { quoteToken, collateralPrice, quotePrice, isShort, priceFormat },
+    environment: { quoteToken, collateralPrice, quotePrice, isShort, priceFormat, isOracless },
     steps: { isFlowStateReady },
     tx: { txDetails, isTxSuccess },
   } = useAjnaGeneralContext()
@@ -45,10 +45,13 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
     afterAmountToLend:
       simulationData?.quoteTokenAmount &&
       `${formatCryptoBalance(simulationData.quoteTokenAmount)} ${quoteToken}`,
-    netApy: apyCurrentPosition.per365d
-      ? formatDecimalAsPercent(apyCurrentPosition.per365d)
-      : formatDecimalAsPercent(zero),
-    afterNetApy: apySimulation?.per365d && formatDecimalAsPercent(apySimulation.per365d),
+    netApy:
+      positionData.isEarningFees && apyCurrentPosition.per365d
+        ? formatDecimalAsPercent(apyCurrentPosition.per365d)
+        : formatDecimalAsPercent(zero),
+    afterNetApy: apySimulation?.per365d
+      ? formatDecimalAsPercent(simulationData?.isEarningFees ? apySimulation.per365d : zero)
+      : undefined,
     lendingPrice: `${formatCryptoBalance(
       normalizeValue(isShort ? one.div(positionData.price) : positionData.price),
     )} ${priceFormat}`,
@@ -89,12 +92,16 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
           change: formatted.afterLendingPrice,
           isLoading,
         },
-        {
-          label: t('max-ltv-to-lend-at'),
-          value: formatted.maxLtv,
-          change: formatted.afterMaxLtv,
-          isLoading,
-        },
+        ...(!isOracless
+          ? [
+              {
+                label: t('max-ltv-to-lend-at'),
+                value: formatted.maxLtv,
+                change: formatted.afterMaxLtv,
+                isLoading,
+              },
+            ]
+          : []),
         ...(withAjnaFee
           ? [
               {

@@ -3,14 +3,15 @@ import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'
 import { networksByName } from 'blockchain/networks'
-import { ProtocolsServices } from 'components/AppContext'
-import { useAppContext } from 'components/AppContextProvider'
+import { useProductContext } from 'components/context'
 import { AppLink } from 'components/Links'
 import { Notice } from 'components/Notice'
+import dayjs from 'dayjs'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { ManageAaveStateMachine } from 'features/aave/manage/state'
 import { getAaveNoticeBanner, getLiquidatedHeaderNotice } from 'features/notices/helpers'
 import { ReclaimCollateralButton } from 'features/reclaimCollateral/reclaimCollateralView'
+import { ProtocolsServices } from 'helpers/context/types'
 import {
   formatAddress,
   formatCryptoBalance,
@@ -21,12 +22,13 @@ import { TranslateStringType } from 'helpers/translateStringType'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 import { useTheme } from 'theme/useThemeUI'
+import { LiquidationCallEvent as AaveLiquidationCallEventV2 } from 'types/ethers-contracts/AaveV2LendingPool'
+import { LiquidationCallEvent as AaveLiquidationCallEventV3 } from 'types/ethers-contracts/AaveV3Pool'
 import { StateFrom } from 'xstate'
 
 import { VaultNoticesState } from './vaultsNotices'
@@ -361,7 +363,7 @@ export function VaultNextPriceUpdateCounter({
   useEffect(() => {
     const nextUpdateTimestamp = nextPriceUpdateDate?.getTime()
     const nextUpdateInSeconds = nextUpdateTimestamp ? nextUpdateTimestamp / 1000 : 0
-    const now = moment().unix()
+    const now = dayjs().unix()
     const left = nextUpdateInSeconds - now
 
     setConfig({
@@ -421,7 +423,7 @@ export function VaultNextPriceUpdateCounter({
 }
 
 export function VaultNoticesView({ id }: { id: BigNumber }) {
-  const { vaultBanners$ } = useAppContext()
+  const { vaultBanners$ } = useProductContext()
   const [vaultBanners] = useObservable(vaultBanners$(id))
 
   if (!vaultBanners) return null
@@ -530,15 +532,15 @@ function getProtocolServices(
   }
   const networkId = networksByName[strategyConfig.network].id
   ensureIsSupportedAaveV3NetworkId(networkId)
-  return protocols[strategyConfig.protocol][networkId]
+  return protocols[strategyConfig.protocol as LendingProtocol.AaveV3][networkId] // this isnt a thing on Spark V3
 }
 
 export function AavePositionNoticesView() {
-  const { protocols } = useAppContext()
+  const { protocols } = useProductContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
-  const { aaveLiquidations$ } = getProtocolServices(state, protocols)
-  const preparedAaveLiquidations$ = aaveLiquidations$({
+  const { aaveLikeLiquidations$ } = getProtocolServices(state, protocols)
+  const preparedAaveLiquidations$ = aaveLikeLiquidations$({
     proxyAddress: state.context.proxyAddress || '',
   })
   const [aaveLiquidations] = useObservable(preparedAaveLiquidations$)
@@ -568,7 +570,9 @@ export function AavePositionNoticesView() {
     maxLoanToValue,
     liquidationThreshold,
     connectedProxyAddress,
-    aaveLiquidations,
+    aaveLiquidations: aaveLiquidations as
+      | AaveLiquidationCallEventV3[]
+      | AaveLiquidationCallEventV2[], // as this is only for aave
     ownerAddress,
     connectedAddress: web3Context?.account,
   })

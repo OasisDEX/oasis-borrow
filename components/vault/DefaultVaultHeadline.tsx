@@ -18,7 +18,7 @@ export function DefaultVaultHeadline({
   shareButton,
 }: {
   header: VaultHeadlineProps['header']
-  token: VaultHeadlineProps['token']
+  token: VaultHeadlineProps['tokens']
   priceInfo: PriceInfo
   colRatio?: string
   followButton?: FollowButtonControlProps
@@ -73,7 +73,7 @@ export function DefaultVaultHeadline({
   return (
     <VaultHeadline
       header={header}
-      token={token}
+      tokens={token}
       details={detailsList}
       followButton={followButton}
       shareButton={shareButton}

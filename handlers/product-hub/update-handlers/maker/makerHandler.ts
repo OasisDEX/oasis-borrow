@@ -5,6 +5,7 @@ import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds, networksById } from 'blockchain/networks'
+import { getTokenPrice, Tickers } from 'blockchain/prices'
 import { amountFromRad, amountFromRay } from 'blockchain/utils'
 import { RAY, SECONDS_PER_YEAR } from 'components/constants'
 import { BigNumberish } from 'ethers'
@@ -38,6 +39,7 @@ const getIlk = (label: string) =>
 
 async function getMakerData(
   networkId: NetworkIds.MAINNET | NetworkIds.GOERLI,
+  tickers: Tickers,
 ): ProductHubHandlerResponse {
   const rpcProvider = getRpcProvider(networkId)
   const VatContractAddress = getNetworkContracts(networkId).vat.address
@@ -48,6 +50,7 @@ async function getMakerData(
   const SpotContract = SpotFactory.connect(SpotContractAddress, rpcProvider)
   const PotContractAddress = getNetworkContracts(networkId).mcdPot.address
   const PotContract = PotFactory.connect(PotContractAddress, rpcProvider)
+  const daiPrice = new BigNumber(getTokenPrice('DAI', tickers))
 
   const ilksListWithHexValues = makerProductHubProducts.reduce((acc, product) => {
     const ilk = getIlk(product.label)
@@ -109,13 +112,20 @@ async function getMakerData(
     return {
       table: makerProductHubProducts
         .map((product) => {
-          if (product.label === 'CRVV1ETHSTETH-A' && networkId === NetworkIds.GOERLI) {
+          const { secondaryToken, primaryToken, label } = product
+          const tokensAddresses = getNetworkContracts(networkId).tokens
+          const primaryTokenAddress = tokensAddresses[primaryToken].address
+          const secondaryTokenAddress = tokensAddresses[secondaryToken].address
+
+          if (label === 'CRVV1ETHSTETH-A' && networkId === NetworkIds.GOERLI) {
             // CRVV1ETHSTETH-A on goerli has some wonky numbers, skipping that
             return
           }
-          if (product.label === 'DSR') {
+          if (label === 'DSR') {
             return {
               ...product,
+              primaryTokenAddress,
+              secondaryTokenAddress,
               network: networksById[networkId].name as ProductHubSupportedNetworks,
               weeklyNetApy: getYearlyRate(bigNumberify(dsrData) || zero)
                 .decimalPlaces(5, BigNumber.ROUND_UP)
@@ -123,14 +133,18 @@ async function getMakerData(
                 .toString(),
             }
           }
-          const ilk = getIlk(product.label)
+          const ilk = getIlk(label)
           const { liquidityAvailable } = vatIlkData.find((data) => data[ilk])![ilk]
           const { fee } = jugIlkData.find((data) => data[ilk])![ilk]
           const { maxMultiple, maxLtv } = spotIlkData.find((data) => data[ilk])![ilk]
+          const liquidity = liquidityAvailable.times(daiPrice)
+
           return {
             ...product,
+            primaryTokenAddress,
+            secondaryTokenAddress,
             network: networksById[networkId].name as ProductHubSupportedNetworks,
-            liquidity: liquidityAvailable.toString(),
+            liquidity: liquidity.toString(),
             fee: fee.toString(),
             maxMultiply: maxMultiple.toString(),
             maxLtv: maxLtv.toString(),
@@ -142,18 +156,19 @@ async function getMakerData(
   })
 }
 
-export default async function (): ProductHubHandlerResponse {
-  return Promise.all([getMakerData(NetworkIds.MAINNET), getMakerData(NetworkIds.GOERLI)]).then(
-    (responses) => {
-      return responses.reduce<ProductHubHandlerResponseData>(
-        (v, response) => {
-          return {
-            table: [...v.table, ...response.table],
-            warnings: [...v.warnings, ...response.warnings],
-          }
-        },
-        { table: [], warnings: [] },
-      )
-    },
-  )
+export default async function (tickers: Tickers): ProductHubHandlerResponse {
+  return Promise.all([
+    getMakerData(NetworkIds.MAINNET, tickers),
+    getMakerData(NetworkIds.GOERLI, tickers),
+  ]).then((responses) => {
+    return responses.reduce<ProductHubHandlerResponseData>(
+      (v, response) => {
+        return {
+          table: [...v.table, ...response.table],
+          warnings: [...v.warnings, ...response.warnings],
+        }
+      },
+      { table: [], warnings: [] },
+    )
+  })
 }

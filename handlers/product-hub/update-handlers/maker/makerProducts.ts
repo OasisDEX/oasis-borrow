@@ -1,8 +1,8 @@
-import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 // network is added in the handler
-export const makerProductHubProducts: Omit<ProductHubItem, 'network'>[] = [
+export const makerProductHubProducts: Omit<ProductHubItemWithoutAddress, 'network'>[] = [
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'ETH',
@@ -63,6 +63,7 @@ export const makerProductHubProducts: Omit<ProductHubItem, 'network'>[] = [
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
+    primaryTokenGroup: 'BTC',
     secondaryToken: 'DAI',
     protocol: LendingProtocol.Maker,
     label: 'WBTC-A/DAI',
@@ -72,6 +73,7 @@ export const makerProductHubProducts: Omit<ProductHubItem, 'network'>[] = [
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
+    primaryTokenGroup: 'BTC',
     secondaryToken: 'DAI',
     protocol: LendingProtocol.Maker,
     label: 'WBTC-B/DAI',
@@ -81,6 +83,7 @@ export const makerProductHubProducts: Omit<ProductHubItem, 'network'>[] = [
   {
     product: [ProductHubProductType.Borrow, ProductHubProductType.Multiply],
     primaryToken: 'WBTC',
+    primaryTokenGroup: 'BTC',
     secondaryToken: 'DAI',
     protocol: LendingProtocol.Maker,
     label: 'WBTC-C/DAI',

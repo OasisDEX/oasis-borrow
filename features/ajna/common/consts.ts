@@ -3,28 +3,6 @@ import { AjnaFlow, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/typ
 
 export const ajnaProducts: AjnaProduct[] = ['borrow', 'earn', 'multiply']
 
-export const DEFAULT_SELECTED_TOKEN = 'ETH'
-
-export const ajnaComingSoonPools = [
-  'CBETH-ETH',
-  'DAI-ETH',
-  'DAI-RETH',
-  'DAI-WBTC',
-  'ETH-DAI',
-  'ETH-USDC',
-  'RETH-DAI',
-  'RETH-ETH',
-  'USDC-DAI',
-  'USDC-ETH',
-  'USDC-WBTC',
-  'USDC-WSTETH',
-  'WBTC-DAI',
-  'WBTC-USDC',
-  'WBTC-USDC',
-  'WSTETH-ETH',
-  'WSTETH-USDC',
-]
-
 export const steps: {
   [ProductKey in AjnaProduct]: {
     [FlowKey in AjnaFlow]: AjnaSidebarStep[]
@@ -48,9 +26,44 @@ export const ajnaFormExternalSteps: AjnaSidebarStep[] = ['dpm']
 export const ajnaFormStepsWithTransaction: AjnaSidebarStep[] = ['transaction']
 
 export const LTVWarningThreshold = new BigNumber(0.05)
+export const LUPPercentageOffset = new BigNumber(0.05)
 
 export const ajnaLastIndexBucketPrice = new BigNumber(99836282890)
 
 // safe defaults which should ensure reasonable slider range for newly created pools
-export const ajnaDefaultPoolRangeMarketPriceOffset = 0.8 // 80%
-export const ajnaDefaultMarketPriceOffset = 0.45 // 45%
+export const ajnaDefaultPoolRangeMarketPriceOffset = 0.99 // 99%
+
+export const AJNA_POOLS_WITH_YIELD_LOOP = ['CBETH-ETH', 'RETH-ETH', 'WSTETH-ETH']
+export const AJNA_POOLS_WITH_REWARDS = [
+  'CBETH-ETH',
+  'ETH-USDC',
+  'RETH-DAI',
+  'RETH-ETH',
+  'SDAI-USDC',
+  'USDC-ETH',
+  'USDC-WBTC',
+  'WBTC-DAI',
+  'WBTC-USDC',
+  'WSTETH-DAI',
+  'WSTETH-ETH',
+  'WSTETH-USDC',
+  'YFI-DAI',
+  'YIELDBTC-WBTC',
+  'YIELDETH-ETH',
+]
+export const AJNA_SHORT_POSITION_COLLATERALS = ['DAI', 'USDC']
+export const AJNA_TOKENS_WITH_MULTIPLY = [
+  'CBETH',
+  'DAI',
+  'ETH',
+  'ETH',
+  'GHO',
+  'RETH',
+  'SDAI',
+  'USDC',
+  'WBTC',
+  'WSTETH',
+  'YFI',
+]
+
+export const AJNA_BORROWISH_PRODUCTS: AjnaProduct[] = ['borrow', 'multiply']

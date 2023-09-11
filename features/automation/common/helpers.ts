@@ -1,6 +1,5 @@
 import { Result } from '@ethersproject/abi'
-import { TriggerType } from '@oasisdex/automation'
-import { decodeTriggerDataAsJson } from '@oasisdex/automation'
+import { decodeTriggerDataAsJson, TriggerType } from '@oasisdex/automation'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -9,7 +8,6 @@ import {
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
-import { UIChanges } from 'components/AppContext'
 import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   aaveTokenPairsAllowedAutomation,
@@ -33,9 +31,9 @@ import {
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { getNetworkId } from 'features/web3Context'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+import { UIChanges } from 'helpers/uiChanges'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one, zero } from 'helpers/zero'
 
@@ -49,9 +47,8 @@ export interface TriggerDataType {
 export function getTriggersByType(
   triggers: TriggerRecord[],
   triggerTypes: TriggerType[],
+  networkId: NetworkIds,
 ): TriggerDataType[] {
-  const networkId = getNetworkId() === NetworkIds.GOERLI ? NetworkIds.GOERLI : NetworkIds.MAINNET
-
   try {
     const decodedTriggers = triggers.map((trigger) => {
       const result = decodeTriggerDataAsJson(
@@ -506,8 +503,7 @@ export function openFlowInitialStopLossLevel({
   return stopLossSliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE).times(100)
 }
 
-export function isSupportedAutomationTokenPair(collateralToken: string, debtToken: string) {
+export function isSupportedAaveAutomationTokenPair(collateralToken: string, debtToken: string) {
   const joined = [collateralToken, debtToken].join('-')
-
   return aaveTokenPairsAllowedAutomation.map((pair) => pair.join('-')).includes(joined)
 }

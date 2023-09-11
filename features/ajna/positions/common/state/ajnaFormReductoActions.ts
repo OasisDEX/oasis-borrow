@@ -15,6 +15,10 @@ export interface AjnaFormActionsUpdatePayback {
   paybackAmount?: BigNumber
   paybackAmountUSD?: BigNumber
 }
+export interface AjnaFormActionsUpdatePaybackMax {
+  type: 'update-payback-max'
+  paybackAmountMax: boolean
+}
 export interface AjnaFormActionsUpdateWithdraw {
   type: 'update-withdraw'
   withdrawAmount?: BigNumber
@@ -26,4 +30,8 @@ export interface AjnaFormActionsUpdateDpm {
 }
 export interface AjnaFormActionsReset {
   type: 'reset'
+}
+export interface AjnaUpdateLoanToValue {
+  type: 'update-loan-to-value'
+  loanToValue: BigNumber
 }

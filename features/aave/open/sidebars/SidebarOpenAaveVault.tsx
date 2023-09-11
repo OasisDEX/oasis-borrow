@@ -2,15 +2,18 @@ import { useActor } from '@xstate/react'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
-import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
-import { ConnectedSidebarSection } from 'features/aave/common/components/connected-sidebar-section'
-import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
-import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
-import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
-import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import {
+  ConnectedSidebarSection,
+  OpenAaveStopLossInformation,
+  StopLossTwoTxRequirement,
+  StrategyInformationContainer,
+} from 'features/aave/components'
 import { hasUserInteracted } from 'features/aave/helpers'
+import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
+import { isAllowanceNeeded, ProductType, ProxyType } from 'features/aave/types'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { AllowanceView } from 'features/stateMachines/allowance'
@@ -298,12 +301,32 @@ function EditingStateViewSidebarPrimaryButton({
       : state.context.connectedProxyAddress !== undefined
 
   const allowanceNeeded = isAllowanceNeeded(state.context)
+  const isSettingStopLoss =
+    !state.context.stopLossSkipped &&
+    supportsAaveStopLoss(
+      state.context.strategyConfig.protocol,
+      state.context.strategyConfig.networkId,
+    ) &&
+    isSupportedAaveAutomationTokenPair(
+      state.context.strategyConfig.tokens.collateral,
+      state.context.strategyConfig.tokens.debt,
+    ) &&
+    state.context.strategyConfig.type === ProductType.Multiply
 
-  const label = hasProxy
-    ? allowanceNeeded
-      ? t('set-allowance-for', { token: state.context.strategyConfig.tokens.deposit })
-      : t(state.context.strategyConfig.viewComponents.sidebarButton)
-    : t('dpm.create-flow.welcome-screen.create-button')
+  function getLabel() {
+    if (!hasProxy) {
+      return t('dpm.create-flow.welcome-screen.create-button')
+    }
+    if (allowanceNeeded) {
+      return t('set-allowance-for', { token: state.context.strategyConfig.tokens.deposit })
+    }
+    if (isSettingStopLoss) {
+      return t('setup-stop-loss')
+    }
+    return t(state.context.strategyConfig.viewComponents.sidebarButton)
+  }
+
+  const label = getLabel()
 
   return {
     isLoading: isLoading(),
@@ -337,7 +360,7 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
           send={send}
           isLoading={isLoading}
           viewLocked={hasOpenedPosition}
-          showWarring={hasOpenedPosition}
+          showWarning={hasOpenedPosition}
         />
         {hasUserInteracted(state) && (
           <StrategyInformationContainer
@@ -464,6 +487,8 @@ export function SidebarOpenAaveVault() {
     case state.matches('frontend.stopLossTxFailure'):
       return <StopLossTxFailureStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txSuccess'):
+    case state.matches('frontend.savePositionToDb'):
+    case state.matches('frontend.finalized'):
       return <OpenAaveSuccessStateView state={state} send={send} isLoading={loading} />
     default: {
       return <>{JSON.stringify(state.value)}</>

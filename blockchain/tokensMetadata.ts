@@ -1,14 +1,8 @@
-import { LendingProtocol } from 'lendingProtocols'
+import { ensureTokensExist, getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
+import { tokenConfigs } from 'blockchain/token-metadata-list'
 import { findKey, keyBy } from 'lodash'
 import type { ElementOf } from 'ts-essentials'
-
-import { ensureTokensExist, getNetworkContracts } from './contracts'
-import { MainNetworkNames, NetworkIds } from './networks'
-import {
-  aaveV2TokensMetadata,
-  aaveV3TokensMetadata,
-  makerTokensMetadata,
-} from './token-metadata-list'
 
 export interface TokenConfig {
   symbol: string
@@ -33,18 +27,16 @@ export interface TokenConfig {
   background: string
   digitsInstant?: number
   safeCollRatio?: number
-  protocol: LendingProtocol
-  chain: MainNetworkNames
+  oracleTicker?: string
+  source?: string
 }
+
+export type SimplifiedTokenConfig = Pick<TokenConfig, 'name' | 'precision' | 'symbol' | 'source'>
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
 export type CoinTag = ElementOf<typeof COIN_TAGS>
 
-export const tokens: TokenConfig[] = [
-  ...makerTokensMetadata,
-  ...aaveV2TokensMetadata,
-  ...aaveV3TokensMetadata,
-]
+export const tokens: TokenConfig[] = [...tokenConfigs]
 
 // ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers
 export const tokensBySymbol = keyBy(tokens, 'symbol')
@@ -59,21 +51,15 @@ export function getToken(tokenSymbol: TokenSymbolType): TokenMetadataType {
   return tokensBySymbol[tokenSymbol]
 }
 
+export function getTokenGuarded(
+  tokenSymbol: TokenSymbolType,
+): ReturnType<typeof getToken> | undefined {
+  return Object.keys(tokensBySymbol).includes(tokenSymbol) ? getToken(tokenSymbol) : undefined
+}
+
 export function getTokens(tokenSymbol: TokenSymbolType[]): typeof tokens {
   if (tokenSymbol instanceof Array) {
     return tokenSymbol.map(getToken)
-  }
-  throw new Error(`tokenSymbol should be an array, got ${tokenSymbol}`)
-}
-
-export function getTokensWithChain(
-  tokenSymbol: TokenSymbolType[],
-  chain?: MainNetworkNames,
-): typeof tokens {
-  if (tokenSymbol instanceof Array) {
-    return tokenSymbol
-      .map(getToken)
-      .filter((token) => token.chain === chain || MainNetworkNames.ethereumGoerli)
   }
   throw new Error(`tokenSymbol should be an array, got ${tokenSymbol}`)
 }
@@ -127,8 +113,8 @@ export const ETH_TOKENS = tokens
 
 export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']
 
-const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {
-  ethereumMainnet: [
+const ALLOWED_AUTOMATION_ILKS: Partial<Record<NetworkIds, string[]>> = {
+  [NetworkIds.MAINNET]: [
     'ETH-A',
     'ETH-B',
     'ETH-C',
@@ -144,10 +130,18 @@ const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {
     'MANA-A',
     'RETH-A',
   ],
-  ethereumGoerli: ['ETH-A', 'ETH-B', 'ETH-C', 'WSTETH-A', 'WBTC-A', 'WBTC-B', 'WBTC-C', 'RETH-A'],
+  [NetworkIds.GOERLI]: [
+    'ETH-A',
+    'ETH-B',
+    'ETH-C',
+    'WSTETH-A',
+    'WBTC-A',
+    'WBTC-B',
+    'WBTC-C',
+    'RETH-A',
+  ],
 }
 
-export function isSupportedAutomationIlk(network: string, ilk: string) {
-  const key = network in ALLOWED_AUTOMATION_ILKS ? network : 'ethereumMainnet'
-  return ALLOWED_AUTOMATION_ILKS[key].includes(ilk)
+export function isSupportedAutomationIlk(networkId: NetworkIds, ilk: string) {
+  return ALLOWED_AUTOMATION_ILKS[networkId]?.includes(ilk) ?? false
 }

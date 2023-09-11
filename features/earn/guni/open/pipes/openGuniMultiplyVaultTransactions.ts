@@ -1,7 +1,7 @@
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { openGuniMultiplyVault } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { OAZO_LOWER_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
@@ -27,7 +27,7 @@ export function applyGuniEstimateGas(
     } = state
 
     const daiAmount =
-      swap?.status === 'SUCCESS' ? swap.daiAmount.div(one.minus(OAZO_LOWER_FEE)) : zero
+      swap?.status === 'SUCCESS' ? swap.quoteAmount.div(one.minus(OAZO_LOWER_FEE)) : zero
     const collateralAmount =
       swap?.status === 'SUCCESS' ? swap.collateralAmount.times(one.minus(SLIPPAGE)) : zero
 

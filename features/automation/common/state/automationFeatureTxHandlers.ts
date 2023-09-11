@@ -5,8 +5,6 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { TxHelpers } from 'components/AppContext'
-import { useAppContext } from 'components/AppContextProvider'
 import {
   addAutomationTrigger,
   removeAutomationTrigger,
@@ -18,6 +16,8 @@ import {
 import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
 import { AutomationContracts } from 'features/automation/metadata/types'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { TxHelpers } from 'helpers/context/types'
+import { uiChanges } from 'helpers/uiChanges'
 
 export interface AutomationTxHandlerAnalytics {
   id: { add: AutomationEventIds; edit: AutomationEventIds; remove: AutomationEventIds }
@@ -82,7 +82,6 @@ export function getAutomationFeatureTxHandlers({
   analytics,
   contracts,
 }: GetAutomationFeatureTxHandlersParams): AutomationFeatureTxHandlers {
-  const { uiChanges } = useAppContext()
   const triggerEnabled = !!triggersId.filter((item) => item).length
 
   const analyticsAdditionalParams = {

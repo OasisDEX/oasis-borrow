@@ -1,36 +1,37 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { NetworkIds } from 'blockchain/networks'
 import { DefinitionListItem } from 'components/DefinitionList'
+import { PositionHistoryItemDetails } from 'components/history/PositionHistoryItemDetails'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
-import {
-  AaveHistoryEvent,
-  AjnaHistoryEvent,
-} from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { AaveHistoryEvent, AjnaBorrowerEvent, AjnaHistoryEvent } from 'features/ajna/history/types'
 import { getHistoryEventLabel } from 'features/positionHistory/getHistoryEventLabel'
 import { useTranslation } from 'next-i18next'
 import React, { FC, useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
-import { PositionHistoryItemDetails } from './PositionHistoryItemDetails'
-
 interface PositionHistoryItemProps {
-  item: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent>
-  ethtxUrl: string
-  etherscanUrl: string
   collateralToken: string
-  quoteToken: string
+  etherscanUrl: string
+  ethtxUrl: string
+  isOracless?: boolean
   isShort?: boolean
+  item: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent> | Partial<AjnaBorrowerEvent>
   priceFormat?: string
+  quoteToken: string
+  networkId: NetworkIds
 }
 
 export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
-  item,
-  ethtxUrl,
-  etherscanUrl,
   collateralToken,
-  quoteToken,
+  etherscanUrl,
+  ethtxUrl,
+  isOracless,
   isShort,
+  item,
   priceFormat,
+  quoteToken,
+  networkId,
 }) => {
   const [opened, setOpened] = useState(false)
   const { t, i18n } = useTranslation()
@@ -60,7 +61,7 @@ export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
         onClick={() => setOpened(!opened)}
       >
         <Text as="p" sx={{ fontWeight: 'semiBold', color: 'primary100' }}>
-          {getHistoryEventLabel({ kind: item.kind, isOpen: item.isOpen })}
+          {getHistoryEventLabel({ kind: item.kind, isOpen: 'isOpen' in item && item.isOpen })}
         </Text>
         <Text as="time" sx={{ color: 'neutral80', whiteSpace: 'nowrap', fontWeight: 'semiBold' }}>
           {humanDate}
@@ -77,11 +78,13 @@ export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
       {opened && (
         <Box sx={{ pb: 3 }}>
           <PositionHistoryItemDetails
+            collateralToken={collateralToken}
             event={item}
+            isOracless={isOracless}
             isShort={isShort}
             priceFormat={priceFormat}
             quoteToken={quoteToken}
-            collateralToken={collateralToken}
+            networkId={networkId}
           />
           <Flex
             sx={{

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import {
   ChangeVariantType,
   ContentCardProps,
@@ -15,7 +16,8 @@ interface ContentCardLiquidationPriceProps {
   priceFormat: string
   liquidationPrice: BigNumber
   afterLiquidationPrice?: BigNumber
-  belowCurrentPrice: BigNumber
+  belowCurrentPrice?: BigNumber
+  withTooltips?: boolean
   changeVariant?: ChangeVariantType
 }
 
@@ -25,6 +27,7 @@ export function ContentCardLiquidationPrice({
   liquidationPrice,
   afterLiquidationPrice,
   belowCurrentPrice,
+  withTooltips,
   changeVariant = 'positive',
 }: ContentCardLiquidationPriceProps) {
   const { t } = useTranslation()
@@ -32,7 +35,7 @@ export function ContentCardLiquidationPrice({
   const formatted = {
     liquidationPrice: formatCryptoBalance(liquidationPrice),
     afterLiquidationPrice: afterLiquidationPrice && formatCryptoBalance(afterLiquidationPrice),
-    belowCurrentPrice: formatDecimalAsPercent(belowCurrentPrice.abs()),
+    belowCurrentPrice: belowCurrentPrice && formatDecimalAsPercent(belowCurrentPrice.abs()),
   }
 
   const contentCardSettings: ContentCardProps = {
@@ -41,9 +44,16 @@ export function ContentCardLiquidationPrice({
     unit: `${priceFormat}`,
     change: {
       isLoading,
-      value:
+      value: afterLiquidationPrice && [
+        '',
+        `${formatted.afterLiquidationPrice}`,
+        `${priceFormat} ${t('system.cards.common.after')}`,
+      ],
+      ...(withTooltips &&
         afterLiquidationPrice &&
-        `${formatted.afterLiquidationPrice} ${priceFormat} ${t('system.cards.common.after')}`,
+        !afterLiquidationPrice.isZero() && {
+          tooltip: `${afterLiquidationPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`,
+        }),
       variant: changeVariant,
     },
     modal: (
@@ -55,7 +65,11 @@ export function ContentCardLiquidationPrice({
     ),
   }
 
-  if (!liquidationPrice.isZero()) {
+  if (withTooltips && !liquidationPrice.isZero()) {
+    contentCardSettings.valueTooltip = `${liquidationPrice.dp(DEFAULT_TOKEN_DIGITS)} ${priceFormat}`
+  }
+
+  if (belowCurrentPrice && !liquidationPrice.isZero()) {
     contentCardSettings.footnote = t(
       `ajna.position-page.borrow.common.overview.${
         belowCurrentPrice.gt(zero) ? 'below' : 'above'

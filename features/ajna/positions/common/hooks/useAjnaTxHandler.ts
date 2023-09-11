@@ -5,7 +5,7 @@ import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getRpcProvider } from 'blockchain/networks'
 import { cancelable, CancelablePromise } from 'cancelable-promise'
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext } from 'components/context'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
@@ -13,6 +13,7 @@ import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
+import { uiChanges } from 'helpers/uiChanges'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
@@ -23,19 +24,33 @@ export interface OasisActionCallData extends AjnaTxData {
 }
 
 export function useAjnaTxHandler(): () => void {
-  const { txHelpers$, context$, uiChanges } = useAppContext()
+  const { txHelpers$, context$ } = useMainContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {
-    tx: { setTxDetails },
-    environment: { collateralPrice, collateralToken, ethPrice, quotePrice, quoteToken, product },
+    tx: { setTxDetails, txDetails },
+    environment: {
+      collateralAddress,
+      collateralPrecision,
+      collateralPrice,
+      collateralToken,
+      ethPrice,
+      quoteAddress,
+      quotePrecision,
+      quotePrice,
+      quoteToken,
+      product,
+      slippage,
+    },
     steps: { isExternalStep, currentStep },
   } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
     position: {
       currentPosition: { position, simulation },
+      swap,
       setCachedPosition,
+      setCachedSwap,
       setIsLoadingSimulation,
       setSimulation,
     },
@@ -47,7 +62,13 @@ export function useAjnaTxHandler(): () => void {
     useState<CancelablePromise<Strategy<typeof position> | undefined>>()
 
   const { dpmAddress } = state
-  const isFormEmpty = getIsFormEmpty({ product, state, position, currentStep })
+  const isFormEmpty = getIsFormEmpty({
+    product,
+    state,
+    position,
+    currentStep,
+    txStatus: txDetails?.txStatus,
+  })
 
   useEffect(() => {
     cancelablePromise?.cancel()
@@ -58,22 +79,28 @@ export function useAjnaTxHandler(): () => void {
     } else {
       setIsLoadingSimulation(true)
     }
-  }, [context?.chainId, state, isFormEmpty])
+  }, [context?.chainId, state, isFormEmpty, slippage])
 
   useDebouncedEffect(
     () => {
       if (context && !isExternalStep && currentStep !== 'risk' && !isFormEmpty) {
         const promise = cancelable(
           getAjnaParameters({
+            collateralAddress,
+            collateralPrecision,
             collateralPrice,
             collateralToken,
             context,
+            isFormValid,
             position,
+            simulation,
+            quoteAddress,
+            quotePrecision,
             quotePrice,
             quoteToken,
             rpcProvider: getRpcProvider(context.chainId),
+            slippage,
             state,
-            isFormValid,
           }),
         )
         setCancelablePromise(promise)
@@ -101,7 +128,7 @@ export function useAjnaTxHandler(): () => void {
           })
       }
     },
-    [context?.chainId, state, isExternalStep],
+    [context?.chainId, state, isExternalStep, slippage],
     250,
   )
 
@@ -111,18 +138,21 @@ export function useAjnaTxHandler(): () => void {
 
   return () =>
     txHelpers
-      .sendWithGasEstimation(callOasisActionsWithDpmProxy, {
+      .send(callOasisActionsWithDpmProxy, {
         kind: TxMetaKind.libraryCall,
         proxyAddress: dpmAddress,
         ...txData,
       })
       .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
       .subscribe((txState) => {
-        if (txState.status === TxStatus.WaitingForConfirmation)
+        if (txState.status === TxStatus.WaitingForConfirmation) {
           setCachedPosition({
             position,
             simulation,
           })
+          swap?.current && setCachedSwap(swap.current)
+        }
+
         if (txState.status === TxStatus.Success) dispatch({ type: 'reset' })
         handleTransaction({ txState, ethPrice, setTxDetails })
       })

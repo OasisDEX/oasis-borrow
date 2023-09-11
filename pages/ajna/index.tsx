@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
-import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
+import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaHomepageView } from 'features/homepage/AjnaHomepageView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -7,9 +7,7 @@ import React from 'react'
 function AjnaLandingPage() {
   return (
     <WithConnection>
-      <AjnaWrapper>
-        <AjnaHomepageView />
-      </AjnaWrapper>
+      <AjnaHomepageView />
     </WithConnection>
   )
 }

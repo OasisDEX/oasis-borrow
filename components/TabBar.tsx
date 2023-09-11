@@ -14,6 +14,7 @@ export type TabSection = {
   tag?: {
     include: boolean
     active: boolean
+    isLoading?: boolean
   }
   topContent?: JSX.Element | string
   content: JSX.Element
@@ -81,7 +82,9 @@ export function TabBar({
                 return (
                   <Flex sx={{ alignItems: 'center' }}>
                     {data.label}
-                    {data.tag && <VaultTabTag isEnabled={data.tag.active} />}
+                    {data.tag && (
+                      <VaultTabTag isEnabled={data.tag.active} isLoading={data.tag.isLoading} />
+                    )}
                   </Flex>
                 )
               },
@@ -103,7 +106,9 @@ export function TabBar({
                       sx={{ fontWeight: isSelected ? 'semiBold' : 'body', alignItems: 'center' }}
                     >
                       {data.label}
-                      {data.tag && <VaultTabTag isEnabled={data.tag.active} />}
+                      {data.tag && (
+                        <VaultTabTag isEnabled={data.tag.active} isLoading={data.tag.isLoading} />
+                      )}
                     </Flex>
                   </Box>
                 )

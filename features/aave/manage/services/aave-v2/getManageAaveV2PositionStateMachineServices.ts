@@ -4,24 +4,24 @@ import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { TokenBalances } from 'blockchain/tokens'
-import { TxHelpers } from 'components/AppContext'
+import { ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
+import { getPricesFeed$ } from 'features/aave/services'
 import {
   contextToEthersTransactions,
   IStrategyConfig,
   IStrategyInfo,
   StrategyTokenAllowance,
   StrategyTokenBalance,
-} from 'features/aave/common'
-import { getPricesFeed$ } from 'features/aave/common/services/getPricesFeed'
-import { ProxiesRelatedWithPosition } from 'features/aave/helpers'
-import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
-import { PositionId } from 'features/aave/types'
+} from 'features/aave/types'
+import { PositionId } from 'features/aave/types/position-id'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
-import { ProtocolData } from 'lendingProtocols/aaveCommon'
+import { TxHelpers } from 'helpers/context/types'
+import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 import { interpret } from 'xstate'
 
@@ -34,11 +34,11 @@ export function getManageAaveV2PositionStateMachineServices(
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
-  aaveProtocolData$: (
+  aaveLikeProtocolData$: (
     collateralToken: string,
     debtToken: string,
     proxyAddress: string,
-  ) => Observable<ProtocolData>,
+  ) => Observable<AaveLikeProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
@@ -143,7 +143,7 @@ export function getManageAaveV2PositionStateMachineServices(
         map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter((address) => !!address),
         switchMap((proxyAddress) =>
-          aaveProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
+          aaveLikeProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
         ),
         map((aaveProtocolData) => ({
           type: 'CURRENT_POSITION_CHANGED',
@@ -156,7 +156,7 @@ export function getManageAaveV2PositionStateMachineServices(
         map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter((address) => !!address),
         switchMap((proxyAddress) =>
-          aaveProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
+          aaveLikeProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
         ),
         map((aaveProtocolData) => ({
           type: 'UPDATE_PROTOCOL_DATA',
@@ -188,6 +188,11 @@ export function getManageAaveV2PositionStateMachineServices(
         })),
         distinctUntilChanged(isEqual),
       )
+    },
+    historyCallback: () => () => {},
+    savePositionToDb$: () => {
+      // TODO: replace with actual implementation.
+      return of({ type: 'SWITCH_SUCCESS' })
     },
   }
 }

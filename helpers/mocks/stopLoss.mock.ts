@@ -1,7 +1,9 @@
+import { NetworkIds } from 'blockchain/networks'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 
 // mock with 300% stop loss level
 export const mockedStopLossTrigger: TriggersData = {
+  isAutomationDataLoaded: true,
   isAutomationEnabled: true,
   triggers: [
     {
@@ -11,9 +13,12 @@ export const mockedStopLossTrigger: TriggersData = {
         '0x00000000000000000000000000000000000000000000000000000000000000870000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000012c',
     },
   ],
+  chainId: NetworkIds.MAINNET,
 }
 
 export const mockedEmptyStopLossTrigger: TriggersData = {
+  isAutomationDataLoaded: true,
   isAutomationEnabled: false,
   triggers: [],
+  chainId: NetworkIds.MAINNET,
 }

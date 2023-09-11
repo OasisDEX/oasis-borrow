@@ -1,6 +1,6 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
-import { AppLayout } from 'components/Layouts'
+import { AppLayout } from 'components/layouts'
 import { useAccount } from 'helpers/useAccount'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -23,7 +23,11 @@ function DsrProxyPage({ walletAddress }: { walletAddress: string }) {
     void replace(`/earn/dsr/${walletContextAddress}`)
   }
 
-  return <WithWalletConnection chainId={ethereumMainnetHexId}>{null}</WithWalletConnection>
+  return (
+    <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
+      {null}
+    </WithWalletConnection>
+  )
 }
 
 DsrProxyPage.layout = AppLayout

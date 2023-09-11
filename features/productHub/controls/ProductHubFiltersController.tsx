@@ -1,5 +1,4 @@
-import { isTestnetNetworkId, NetworkIds, useCustomNetworkParameter } from 'blockchain/networks'
-import { getToken } from 'blockchain/tokensMetadata'
+import { isTestnetNetworkId } from 'blockchain/networks'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { GenericMultiselect } from 'components/GenericMultiselect'
 import {
@@ -18,6 +17,7 @@ import {
   ProductHubProductType,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
+import { useWalletManagement } from 'features/web3OnBoard'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -46,17 +46,19 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
   onChange,
 }) => {
   const { t } = useTranslation()
-  const [networkParameter] = useCustomNetworkParameter()
+  const { chainId } = useWalletManagement()
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
-  const isTestnet = isTestnetNetworkId(networkParameter?.id ?? NetworkIds.MAINNET)
+  const isTestnet = isTestnetNetworkId(chainId)
 
   const debtTokens = useMemo(
     () =>
-      uniq(data.map((item) => item.secondaryToken)).map((item) => ({
-        label: item,
-        value: item,
-        icon: getToken(item).iconCircle,
-      })),
+      uniq(data.map((item) => item.secondaryToken))
+        .map((item) => ({
+          label: item,
+          value: item,
+          token: item,
+        }))
+        .sort((a, b) => (a.value > b.value ? 1 : -1)),
     [data],
   )
   const secondaryTokens = useMemo(
@@ -73,7 +75,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
       ).map((item) => ({
         label: item,
         value: item,
-        icon: getToken(item).iconCircle,
+        token: item,
       })),
     [data, selectedToken],
   )

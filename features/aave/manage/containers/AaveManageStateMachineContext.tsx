@@ -1,7 +1,7 @@
 import { useInterpret } from '@xstate/react'
-import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { ManageAaveStateMachine } from 'features/aave/manage/state'
-import { PositionId } from 'features/aave/types'
+import { IStrategyConfig, PositionId, ProxyType } from 'features/aave/types'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { env } from 'process'
 import React from 'react'
 
@@ -16,10 +16,12 @@ function setupManageAaveStateContext({
   machine,
   strategy,
   positionId,
+  updateStrategyConfig,
 }: {
   machine: ManageAaveStateMachine
   strategy: IStrategyConfig
   positionId: PositionId
+  updateStrategyConfig?: (vaultType: VaultType) => void
 }) {
   const positionCreatedBy =
     positionId.vaultId !== undefined ? ProxyType.DpmProxy : ProxyType.DsProxy
@@ -35,6 +37,8 @@ function setupManageAaveStateContext({
       positionCreatedBy: positionCreatedBy,
       positionId: positionId,
       getSlippageFrom: strategy.defaultSlippage !== undefined ? 'strategyConfig' : 'userSettings',
+      updateStrategyConfig,
+      historyEvents: [],
     }),
     { devTools: env.NODE_ENV !== 'production' },
   ).start()
@@ -62,12 +66,19 @@ export function ManageAaveStateMachineContextProvider({
   machine,
   strategy,
   positionId,
+  updateStrategyConfig,
 }: React.PropsWithChildren<{
   machine: ManageAaveStateMachine
   strategy: IStrategyConfig
   positionId: PositionId
+  updateStrategyConfig?: (vaultType: VaultType) => void
 }>) {
-  const context = setupManageAaveStateContext({ machine, strategy, positionId })
+  const context = setupManageAaveStateContext({
+    machine,
+    strategy,
+    positionId,
+    updateStrategyConfig,
+  })
   return (
     <manageAaveStateContext.Provider value={context}>{children}</manageAaveStateContext.Provider>
   )

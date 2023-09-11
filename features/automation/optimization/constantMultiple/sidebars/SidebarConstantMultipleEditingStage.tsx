@@ -6,8 +6,7 @@ import {
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { ActionPills } from 'components/ActionPills'
-import { useAppContext } from 'components/AppContextProvider'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { AppLink } from 'components/Links'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
@@ -46,6 +45,7 @@ import {
   extractConstantMultipleMinSellErrors,
   extractConstantMultipleSliderWarnings,
 } from 'helpers/messageMappers'
+import { uiChanges } from 'helpers/uiChanges'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { Trans, useTranslation } from 'next-i18next'
@@ -82,7 +82,6 @@ export function SidebarConstantMultipleEditingStage({
   estimatedSellFee,
 }: SidebaConstantMultiplerEditingStageProps) {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
   const {
     positionData: { ilk, id, positionRatio, debt, debtFloor, token },

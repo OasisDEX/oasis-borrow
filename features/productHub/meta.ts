@@ -1,11 +1,13 @@
 import { BaseNetworkNames, NetworkNames, networksByName } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
+import { GenericMultiselectOption } from 'components/GenericMultiselect'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
 import { ProductHubProductType } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
+import { clone } from 'ramda'
 
 export const ALL_ASSETS = 'all assets'
 
@@ -59,11 +61,11 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'ETH',
     icon: getToken('ETH').iconCircle,
   },
-  WBTC: {
-    title: 'Wrapped BTC',
-    description: 'WBTC',
-    value: 'WBTC',
-    icon: getToken('WBTC').iconCircle,
+  BTC: {
+    title: 'Bitcoin',
+    description: 'WBTC/TBTC',
+    value: 'BTC',
+    icon: 'btc_circle_color',
   },
   USDC: {
     title: 'USDCoin',
@@ -77,9 +79,27 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     value: 'DAI',
     icon: getToken('DAI').iconCircle,
   },
+  YFI: {
+    title: 'Yearn',
+    description: 'YFI',
+    value: 'YFI',
+    icon: getToken('YFI').iconCircle,
+  },
+  GHO: {
+    title: 'GHO stablecoin',
+    description: 'GHO',
+    value: 'GHO',
+    icon: getToken('GHO').iconCircle,
+  },
+  WLD: {
+    title: 'Worldcoin',
+    description: 'WLD',
+    value: 'WLD',
+    icon: getToken('WLD').iconCircle,
+  },
 }
 
-export const productHubOptionsMap: {
+export const productHubOptionsMapBase: {
   [key in ProductHubProductType]: {
     product: HeaderSelectorOption
     tokens: { [key: string]: HeaderSelectorOption }
@@ -90,7 +110,12 @@ export const productHubOptionsMap: {
     tokens: {
       all: productHubTokenOptions.all,
       ETH: productHubTokenOptions.ETH,
-      WBTC: productHubTokenOptions.WBTC,
+      BTC: productHubTokenOptions.BTC,
+      USDC: productHubTokenOptions.USDC,
+      DAI: productHubTokenOptions.DAI,
+      YFI: productHubTokenOptions.YFI,
+      GHO: productHubTokenOptions.GHO,
+      WLD: productHubTokenOptions.WLD,
     },
   },
   multiply: {
@@ -98,9 +123,11 @@ export const productHubOptionsMap: {
     tokens: {
       all: productHubTokenOptions.all,
       ETH: productHubTokenOptions.ETH,
-      WBTC: productHubTokenOptions.WBTC,
+      BTC: productHubTokenOptions.BTC,
       USDC: productHubTokenOptions.USDC,
+      YFI: productHubTokenOptions.YFI,
       DAI: productHubTokenOptions.DAI,
+      GHO: productHubTokenOptions.GHO,
     },
   },
   earn: {
@@ -108,49 +135,32 @@ export const productHubOptionsMap: {
     tokens: {
       all: productHubTokenOptions.all,
       ETH: productHubTokenOptions.ETH,
+      BTC: productHubTokenOptions.BTC,
+      USDC: productHubTokenOptions.USDC,
       DAI: productHubTokenOptions.DAI,
+      GHO: productHubTokenOptions.GHO,
+      WLD: productHubTokenOptions.WLD,
     },
   },
 }
 
-export const productHubTestnetOptionsMap: {
-  [key in ProductHubProductType]: {
-    product: HeaderSelectorOption
-    tokens: { [key: string]: HeaderSelectorOption }
-  }
-} = {
-  borrow: {
-    product: productHubProductOptions.borrow,
-    tokens: {
-      all: productHubTokenOptions.all,
-      ETH: productHubTokenOptions.ETH,
-      WBTC: productHubTokenOptions.WBTC,
-      USDC: productHubTokenOptions.USDC,
-    },
-  },
-  multiply: {
-    product: productHubProductOptions.multiply,
-    tokens: {
-      all: productHubTokenOptions.all,
-      ETH: productHubTokenOptions.ETH,
-      WBTC: productHubTokenOptions.WBTC,
-      USDC: productHubTokenOptions.USDC,
-      DAI: productHubTokenOptions.DAI,
-    },
-  },
-  earn: {
-    product: productHubProductOptions.earn,
-    tokens: {
-      all: productHubTokenOptions.all,
-      ETH: productHubTokenOptions.ETH,
-      WBTC: productHubTokenOptions.WBTC,
-      USDC: productHubTokenOptions.USDC,
-      DAI: productHubTokenOptions.DAI,
-    },
-  },
+const productHubOptionsMap = clone(productHubOptionsMapBase)
+
+if (getFeatureToggle('AjnaSafetySwitch')) {
+  delete productHubOptionsMap.borrow.tokens.YFI
+  delete productHubOptionsMap.borrow.tokens.GHO
+  delete productHubOptionsMap.borrow.tokens.WLD
+  delete productHubOptionsMap.multiply.tokens.YFI
+  delete productHubOptionsMap.multiply.tokens.GHO
+  delete productHubOptionsMap.earn.tokens.BTC
+  delete productHubOptionsMap.earn.tokens.USDC
+  delete productHubOptionsMap.earn.tokens.GHO
+  delete productHubOptionsMap.earn.tokens.WLD
 }
 
-export const productHubStrategyFilter = [
+export { productHubOptionsMap }
+
+export const productHubStrategyFilter: GenericMultiselectOption[] = [
   {
     label: 'Long',
     value: 'long',
@@ -161,7 +171,7 @@ export const productHubStrategyFilter = [
   },
 ]
 
-export const productHubNetworkFilter = [
+export const productHubNetworkFilter: GenericMultiselectOption[] = [
   {
     label: networksByName[BaseNetworkNames.Ethereum].label,
     value: networksByName[BaseNetworkNames.Ethereum].name,
@@ -179,7 +189,7 @@ export const productHubNetworkFilter = [
   },
 ]
 
-export const productHubTestNetworkFilter = [
+export const productHubTestNetworkFilter: GenericMultiselectOption[] = [
   {
     label: networksByName[BaseNetworkNames.Ethereum].label,
     value: networksByName[NetworkNames.ethereumGoerli].name,
@@ -197,7 +207,7 @@ export const productHubTestNetworkFilter = [
   },
 ]
 
-const productHubProtocolFilter = [
+export const productHubProtocolFilter: GenericMultiselectOption[] = [
   {
     label: lendingProtocolsByName[LendingProtocol.Maker].label,
     value: lendingProtocolsByName[LendingProtocol.Maker].name,
@@ -213,14 +223,15 @@ const productHubProtocolFilter = [
     value: lendingProtocolsByName[LendingProtocol.AaveV3].name,
     image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
   },
-]
-
-if (getFeatureToggle('Ajna')) {
-  productHubProtocolFilter.push({
+  {
     label: lendingProtocolsByName[LendingProtocol.Ajna].label,
     value: lendingProtocolsByName[LendingProtocol.Ajna].name,
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-  })
-}
-
-export { productHubProtocolFilter }
+  },
+  {
+    label: lendingProtocolsByName[LendingProtocol.SparkV3].label,
+    value: lendingProtocolsByName[LendingProtocol.SparkV3].name,
+    image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
+    featureFlag: 'SparkProtocol',
+  },
+]

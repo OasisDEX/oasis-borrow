@@ -34,12 +34,15 @@ export function AjnaPositionView({
       flow,
       id,
       isShort,
+      isOracless,
       owner,
       priceFormat,
       product,
       quotePrice,
       quoteToken,
       dpmProxy,
+      collateralIcon,
+      quoteIcon,
     },
   } = useAjnaGeneralContext()
 
@@ -58,21 +61,29 @@ export function AjnaPositionView({
           id,
           product,
           quoteToken,
+          collateralIcon,
+          quoteIcon,
         })}
         {...(flow === 'manage' && { shareButton: true })}
         details={[
           ...(headlineDetails || []),
-          {
-            label: t('ajna.position-page.common.headline.current-market-price', {
-              collateralToken,
-            }),
-            value: `${formatCryptoBalance(
-              isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice),
-            )} ${priceFormat}`,
-          },
+          ...(!isOracless
+            ? [
+                {
+                  label: t('ajna.position-page.common.headline.current-market-price', {
+                    collateralToken,
+                  }),
+                  value: `${formatCryptoBalance(
+                    isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice),
+                  )} ${priceFormat}`,
+                },
+              ]
+            : []),
         ]}
         handleClick={
-          proxyReveal ? () => console.log(`DPM proxy: ${dpmProxy?.toLowerCase()}`) : undefined
+          proxyReveal
+            ? () => console.info(`DPM proxy: ${dpmProxy?.toLowerCase()}, DPM owner: ${owner}`)
+            : undefined
         }
       />
       <TabBar

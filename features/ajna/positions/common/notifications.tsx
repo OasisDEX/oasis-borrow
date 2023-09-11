@@ -1,6 +1,7 @@
-import { AjnaEarnPosition } from '@oasisdex/dma-library'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AppLink } from 'components/Links'
+import { LUPPercentageOffset } from 'features/ajna/common/consts'
 import {
   AjnaFlow,
   AjnaGenericPosition,
@@ -15,7 +16,7 @@ import {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
   AjnaPositionAuction,
-} from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
+} from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import {
   AjnaEarnFormAction,
   AjnaEarnFormState,
@@ -25,7 +26,7 @@ import {
   AjnaMultiplyFormState,
 } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
 import React, { Dispatch, FC } from 'react'
 
@@ -83,8 +84,11 @@ const ajnaNotifications: {
   gotPartiallyLiquidated: NotificationCallbackWithParams<null>
   lendingPriceFrozen: NotificationCallbackWithParams<LendingPriceFrozenParams>
   priceAboveMomp: NotificationCallbackWithParams<PriceAboveMompParams>
-  safetySwichOn: NotificationCallbackWithParams<null>
+  safetySwichOpen: NotificationCallbackWithParams<null>
+  safetySwichManage: NotificationCallbackWithParams<null>
   timeToLiquidation: NotificationCallbackWithParams<TimeToLiquidationParams>
+  nearLup: NotificationCallbackWithParams<null>
+  aboveLup: NotificationCallbackWithParams<null>
 } = {
   priceAboveMomp: ({ action, message }) => ({
     title: {
@@ -138,7 +142,14 @@ const ajnaNotifications: {
       params: { time },
     },
     message: {
-      translationKey: 'ajna.position-page.common.notifications.time-to-liquidation.message',
+      component: (
+        <Trans
+          i18nKey="ajna.position-page.common.notifications.time-to-liquidation.message"
+          components={{
+            1: <strong />,
+          }}
+        />
+      ),
     },
     icon: 'coins_cross',
     type: 'warning',
@@ -212,14 +223,14 @@ const ajnaNotifications: {
     type: 'error',
     closable: true,
   }),
-  safetySwichOn: () => ({
+  safetySwichOpen: () => ({
     title: {
-      translationKey: 'ajna.position-page.common.notifications.safety-switch-on.title',
+      translationKey: 'ajna.position-page.common.notifications.safety-switch-open.title',
     },
     message: {
       component: (
         <Trans
-          i18nKey={'ajna.position-page.common.notifications.safety-switch-on.message'}
+          i18nKey={'ajna.position-page.common.notifications.safety-switch-open.message'}
           components={[
             <AppLink
               sx={{ fontSize: 'inherit', color: 'inherit' }}
@@ -231,6 +242,48 @@ const ajnaNotifications: {
     },
     icon: 'liquidation',
     type: 'error',
+  }),
+  safetySwichManage: () => ({
+    title: {
+      translationKey: 'ajna.position-page.common.notifications.safety-switch-manage.title',
+    },
+    message: {
+      component: (
+        <Trans
+          i18nKey={'ajna.position-page.common.notifications.safety-switch-manage.message'}
+          components={[
+            <AppLink
+              sx={{ fontSize: 'inherit', color: 'inherit' }}
+              href={EXTERNAL_LINKS.DISCORD}
+            />,
+          ]}
+        />
+      ),
+    },
+    icon: 'liquidation',
+    type: 'error',
+  }),
+  nearLup: () => ({
+    title: {
+      translationKey: 'ajna.position-page.common.notifications.near-lup.title',
+    },
+    message: {
+      translationKey: 'ajna.position-page.common.notifications.near-lup.message',
+    },
+    icon: 'coins_cross',
+    type: 'warning',
+    closable: true,
+  }),
+  aboveLup: () => ({
+    title: {
+      translationKey: 'ajna.position-page.common.notifications.above-lup.title',
+    },
+    message: {
+      translationKey: 'ajna.position-page.common.notifications.above-lup.message',
+    },
+    icon: 'coins_cross',
+    type: 'error',
+    closable: true,
   }),
 }
 
@@ -244,6 +297,7 @@ export function getAjnaNotifications({
   dispatch,
   updateState,
   product,
+  isOracless,
 }: {
   ajnaSafetySwitchOn: boolean
   flow: AjnaFlow
@@ -260,17 +314,23 @@ export function getAjnaNotifications({
     | AjnaUpdateState<AjnaEarnFormState>
     | AjnaUpdateState<AjnaMultiplyFormState>
   product: AjnaProduct
+  isOracless: boolean
 }) {
   const notifications: DetailsSectionNotificationItem[] = []
 
-  if (ajnaSafetySwitchOn && flow === 'open') {
-    notifications.push(ajnaNotifications.safetySwichOn(null))
+  if (ajnaSafetySwitchOn) {
+    notifications.push(
+      flow === 'open'
+        ? ajnaNotifications.safetySwichOpen(null)
+        : ajnaNotifications.safetySwichManage(null),
+    )
   }
 
   switch (product) {
     case 'multiply':
     case 'borrow':
       const borrowishPositionAuction = positionAuction as AjnaBorrowishPositionAuction
+      const borrowishPosition = position as AjnaPosition
 
       if (borrowishPositionAuction.isDuringGraceTime) {
         notifications.push(
@@ -291,6 +351,23 @@ export function getAjnaNotifications({
       if (borrowishPositionAuction.isLiquidated) {
         notifications.push(ajnaNotifications.gotLiquidated(null))
       }
+
+      if (
+        borrowishPosition.thresholdPrice.gt(
+          borrowishPosition.pool.lowestUtilizedPrice.times(one.minus(LUPPercentageOffset)),
+        ) &&
+        isOracless
+      ) {
+        notifications.push(ajnaNotifications.nearLup(null))
+      }
+
+      if (
+        borrowishPosition.thresholdPrice.gt(borrowishPosition.pool.lowestUtilizedPrice) &&
+        isOracless
+      ) {
+        notifications.push(ajnaNotifications.aboveLup(null))
+      }
+
       break
     case 'earn': {
       if (flow === 'manage') {
@@ -301,8 +378,9 @@ export function getAjnaNotifications({
         } = position as AjnaEarnPosition
         const earningNoApy = price.lt(highestThresholdPrice) && price.gt(zero)
         const priceAboveMomp = price.gt(mostOptimisticMatchingPrice)
-        const emptyPosition = quoteTokenAmount.isZero()
         const earnPositionAuction = positionAuction as AjnaEarnPositionAuction
+        const emptyPosition =
+          quoteTokenAmount.isZero() && !earnPositionAuction.isCollateralToWithdraw
 
         const moveToAdjust = () => {
           dispatch({ type: 'reset' })

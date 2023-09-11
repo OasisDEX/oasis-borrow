@@ -2,14 +2,15 @@ import { useActor } from '@xstate/react'
 import { PageSEOTags } from 'components/HeadTags'
 import { TabBar } from 'components/TabBar'
 import { useAaveContext } from 'features/aave'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { SidebarOpenAaveVault } from 'features/aave/open/sidebars/SidebarOpenAaveVault'
 import { OpenAaveStateMachine } from 'features/aave/open/state'
+import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { AavePositionAlreadyOpenedNotice } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Container, Grid } from 'theme-ui'
@@ -37,6 +38,7 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
 
   return (
     <SimulateSection
+      isOpenView
       strategyConfig={config}
       currentPosition={state.context.currentPosition}
       collateralPrice={state.context.collateralPrice}
@@ -66,15 +68,15 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
           label: t('open-vault.simulate'),
           content: (
             <Grid variant="vaultContainer">
-              <Box>
-                <SimulateSectionComponent config={strategyConfig} />
-                <Box sx={{ mt: 5 }}></Box>
-              </Box>
-              <Box>
-                <AutomationContextInput {...automationContextProps}>
+              <AutomationContextInput {...automationContextProps}>
+                <Box>
+                  <SimulateSectionComponent config={strategyConfig} />
+                  <Box sx={{ mt: 5 }}></Box>
+                </Box>
+                <Box>
                   <SidebarOpenAaveVault />
-                </AutomationContextInput>
-              </Box>
+                </Box>
+              </AutomationContextInput>
             </Grid>
           ),
         },
@@ -125,7 +127,7 @@ export function AaveOpenView({ config }: { config: IStrategyConfig }) {
         title="seo.title-product-w-tokens"
         titleParams={{
           product: t(`seo.${config.type.toLocaleLowerCase()}.title`),
-          protocol: config.protocol,
+          protocol: LendingProtocolLabel[config.protocol],
           token1: config.tokens.collateral,
           token2: config.tokens.debt,
         }}

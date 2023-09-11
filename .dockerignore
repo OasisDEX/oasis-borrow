@@ -8,3 +8,4 @@ node_modules
 .env*.local
 ./server/database/.env
 ./server/database/.env.*
+.vercel

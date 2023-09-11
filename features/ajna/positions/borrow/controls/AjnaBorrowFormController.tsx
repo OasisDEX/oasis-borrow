@@ -1,10 +1,10 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentTransition } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentTransition'
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
 import { AjnaFormContentTransaction } from 'features/ajna/positions/common/sidebars/AjnaFormContentTransaction'
 import { AjnaFormView } from 'features/ajna/positions/common/views/AjnaFormView'
@@ -14,7 +14,7 @@ import React from 'react'
 export function AjnaBorrowFormController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, flow, quoteToken },
+    environment: { collateralToken, flow, quoteToken, collateralIcon, quoteIcon },
     steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
@@ -38,7 +38,7 @@ export function AjnaBorrowFormController() {
               }),
               panel: 'collateral',
               shortLabel: collateralToken,
-              icon: getToken(collateralToken).iconCircle,
+              tokenIcon: collateralIcon,
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'collateral')
@@ -52,7 +52,7 @@ export function AjnaBorrowFormController() {
               }),
               panel: 'quote',
               shortLabel: quoteToken,
-              icon: getToken(quoteToken).iconCircle,
+              tokenIcon: quoteIcon,
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'quote')
@@ -60,17 +60,45 @@ export function AjnaBorrowFormController() {
                 updateState('action', 'generate-borrow')
               },
             },
-            {
-              label: t('system.actions.borrow.switch-to-multiply'),
-              icon: 'circle_exchange',
-              iconShrink: 2,
-              panel: 'switch',
-              action: () => {
-                dispatch({ type: 'reset' })
-                updateState('uiDropdown', 'switch')
-                updateState('action', 'switch-borrow')
-              },
-            },
+            ...(isPoolSupportingMultiply({ collateralToken, quoteToken })
+              ? [
+                  {
+                    label: t('system.actions.borrow.switch-to-multiply'),
+                    icon: 'circle_exchange',
+                    iconShrink: 2,
+                    panel: 'switch',
+                    action: () => {
+                      dispatch({ type: 'reset' })
+                      updateState('uiDropdown', 'switch')
+                      updateState('action', 'switch-borrow')
+                    },
+                  },
+                  {
+                    label: t('system.actions.common.close-position'),
+                    icon: 'circle_close',
+                    iconShrink: 2,
+                    panel: 'close',
+                    action: () => {
+                      dispatch({ type: 'reset' })
+                      updateState('uiDropdown', 'close')
+                      updateState('closeTo', 'collateral')
+                      updateState('action', 'close-borrow')
+                    },
+                  },
+                  // {
+                  //   label: t('system.adjust-position'),
+                  //   panel: 'adjust',
+                  //   shortLabel: t('adjust'),
+                  //   icon: 'circle_slider',
+                  //   iconShrink: 2,
+                  //   action: () => {
+                  //     dispatch({ type: 'reset' })
+                  //     updateState('uiDropdown', 'adjust')
+                  //     updateState('action', 'adjust-borrow')
+                  //   },
+                  // },
+                ]
+              : []),
           ],
         },
       })}

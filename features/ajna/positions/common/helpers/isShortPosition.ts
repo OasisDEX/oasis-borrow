@@ -1,9 +1,9 @@
-const SHORT_POSITION_COLLATERALS = ['DAI', 'USDC']
+import { AJNA_SHORT_POSITION_COLLATERALS } from 'features/ajna/common/consts'
 
-interface isShortPositionParams {
+interface IsShortPositionParams {
   collateralToken: string
 }
 
-export function isShortPosition({ collateralToken }: isShortPositionParams): boolean {
-  return SHORT_POSITION_COLLATERALS.includes(collateralToken)
+export function isShortPosition({ collateralToken }: IsShortPositionParams): boolean {
+  return AJNA_SHORT_POSITION_COLLATERALS.includes(collateralToken)
 }

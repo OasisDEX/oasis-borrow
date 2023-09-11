@@ -6,12 +6,12 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
-import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
@@ -211,7 +211,7 @@ export function applyEstimateGas(
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
     const { proxyAddress, depositAmount, ilk, token, account, swap, skipFL, isProxyStage } = state
 
-    const daiAmount = swap?.status === 'SUCCESS' ? swap.daiAmount.div(one.minus(OAZO_FEE)) : zero
+    const daiAmount = swap?.status === 'SUCCESS' ? swap.quoteAmount.div(one.minus(OAZO_FEE)) : zero
     const collateralAmount = swap?.status === 'SUCCESS' ? swap.collateralAmount : zero
 
     if (proxyAddress && depositAmount) {

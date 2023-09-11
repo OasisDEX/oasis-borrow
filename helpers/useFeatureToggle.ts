@@ -6,96 +6,82 @@ type ConfiguredFeatures = Record<Feature, boolean>
 export type Feature =
   | 'TestFeature'
   | 'AnotherTestFeature'
+  | '🌞'
+  | 'AaveV3Arbitrum'
+  | 'AaveV3Borrow'
+  | 'AaveV3EarncbETHeth'
+  | 'AaveV3EarnrETHeth'
+  | 'AaveV3Multiply'
+  | 'AaveV3History'
+  | 'AaveV3Protection'
+  | 'AaveV3ProtectionWrite'
+  | 'AjnaPoolFinder'
+  | 'AjnaReusableDPM'
+  | 'AjnaSafetySwitch'
+  | 'AjnaSuppressValidation'
+  | 'ConstantMultipleReadOnly'
+  | 'DaiSavingsRate'
+  | 'DisableSidebarScroll'
+  | 'FollowAAVEVaults'
+  | 'ProxyCreationDisabled'
+  | 'ProxyReveal'
+  | 'ReadOnlyAutoTakeProfit'
+  | 'ReadOnlyBasicBS'
+  | 'Referrals'
+  | 'Sillyness'
+  | 'StopLossOpenFlow'
   | 'StopLossRead'
   | 'StopLossWrite'
-  | 'StopLossOpenFlow'
-  | 'BatchCache'
-  | 'ReadOnlyBasicBS'
-  | 'Notifications'
-  | 'Referrals'
-  | 'ConstantMultipleReadOnly'
-  | 'DisableSidebarScroll'
-  | 'ProxyCreationDisabled'
-  | 'AutoTakeProfit'
-  | 'UpdatedPnL'
-  | 'ReadOnlyAutoTakeProfit'
-  | 'DiscoverOasis'
-  | 'AaveBorrow'
-  | 'AaveV3EarnWSTETH'
-  | 'FollowVaults'
-  | 'AaveProtection'
-  | 'AaveProtectionWrite'
-  | 'Ajna'
-  | 'AjnaSafetySwitch'
-  | 'DaiSavingsRate'
-  | 'FollowAAVEVaults'
-  | 'Sillyness'
   | 'UseNetworkSwitcher'
-  | 'UseNetworkSwitcherForks'
-  | 'UseNetworkSwitcherTestnets'
   | 'UseNetworkSwitcherArbitrum'
+  | 'UseNetworkSwitcherForks'
   | 'UseNetworkSwitcherOptimism'
-  | 'UseNetworkRowProductCard'
-  | 'AaveV3Optimism'
-  | 'AaveV3Arbitrum'
-  | 'AaveV3MultiplycbETHusdc'
-  | 'AaveV3MultiplywBTCusdc'
-  | 'AaveV3MultiplywstETHusdc'
-  | 'AaveV3MultiplyETHusdc'
-  | 'AaveV3MultiplyrETHusdc'
-  | 'AaveV3EarnrETHeth'
-  | 'AaveV3EarncbETHeth'
-  | 'AaveV2ProductCard'
-  | 'SwapWidget'
-  | '🌞'
-  | 'ProxyReveal'
+  | 'UseNetworkSwitcherTestnets'
+  | 'SparkProtocol'
+  | 'SparkProtocolEarn'
+  | 'SparkProtocolBorrow'
+  | 'SparkProtocolMultiply'
+  | 'SparkProtocolSDAIETH'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
+  '🌞': false, // or https://summer.fi/harheeharheeharhee to enable.  https://summer.fi/<any vault ID> to disable.
+  AaveV3Arbitrum: false,
+  AaveV3Borrow: false,
+  AaveV3EarncbETHeth: false,
+  AaveV3EarnrETHeth: false,
+  AaveV3Multiply: false,
+  AaveV3History: false,
+  AaveV3Protection: true,
+  AaveV3ProtectionWrite: true,
+  AjnaPoolFinder: true,
+  AjnaReusableDPM: false,
+  AjnaSafetySwitch: true,
+  AjnaSuppressValidation: false,
+  ConstantMultipleReadOnly: false,
+  DaiSavingsRate: true,
+  DisableSidebarScroll: false,
+  FollowAAVEVaults: false,
+  ProxyCreationDisabled: false,
+  ProxyReveal: false,
+  ReadOnlyAutoTakeProfit: false,
+  ReadOnlyBasicBS: false,
+  Referrals: true,
+  Sillyness: false,
+  StopLossOpenFlow: false,
   StopLossRead: true,
   StopLossWrite: true,
-  BatchCache: false,
-  StopLossOpenFlow: false,
-  ReadOnlyBasicBS: false,
-  Notifications: true,
-  Referrals: true,
-  ConstantMultipleReadOnly: false,
-  DisableSidebarScroll: false,
-  ProxyCreationDisabled: false,
-  AutoTakeProfit: true,
-  UpdatedPnL: false,
-  ReadOnlyAutoTakeProfit: false,
-  DiscoverOasis: true,
-  AaveBorrow: false,
-  AaveV3EarnWSTETH: true,
-  FollowVaults: true,
-  AaveProtection: false,
-  AaveProtectionWrite: false,
-  Ajna: false,
-  AjnaSafetySwitch: false,
-  DaiSavingsRate: true,
-  FollowAAVEVaults: false,
-  Sillyness: false,
   UseNetworkSwitcher: true,
-  UseNetworkSwitcherForks: false,
-  UseNetworkSwitcherTestnets: false,
   UseNetworkSwitcherArbitrum: false,
+  UseNetworkSwitcherForks: false,
   UseNetworkSwitcherOptimism: true,
-  UseNetworkRowProductCard: false,
-  AaveV3Optimism: true,
-  AaveV3Arbitrum: false,
-  AaveV2ProductCard: true,
-  AaveV3MultiplycbETHusdc: true,
-  AaveV3MultiplywBTCusdc: true,
-  AaveV3MultiplyETHusdc: true,
-  AaveV3EarncbETHeth: false,
-  AaveV3MultiplyrETHusdc: true,
-  AaveV3EarnrETHeth: false,
-  AaveV3MultiplywstETHusdc: true,
-  SwapWidget: true,
-  ProxyReveal: false,
-  '🌞': false, // or https://summer.fi/harheeharheeharhee to enable.  https://summer.fi/<any vault ID> to disable.
+  UseNetworkSwitcherTestnets: false,
+  SparkProtocol: false,
+  SparkProtocolEarn: false,
+  SparkProtocolBorrow: false,
+  SparkProtocolMultiply: false,
+  SparkProtocolSDAIETH: false,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {
@@ -151,4 +137,8 @@ export function getFeatureToggle(feature: Feature): boolean {
 
 export function useFeatureToggle(feature: Feature): boolean {
   return getFeatureToggle(feature)
+}
+
+export function useFeatureToggles(features: Feature[]): boolean[] {
+  return features.map(getFeatureToggle)
 }

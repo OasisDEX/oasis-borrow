@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
+import dayjs from 'dayjs'
 import { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
 import { one, zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
@@ -33,8 +33,8 @@ export interface YieldChange {
 
 export interface YieldChanges {
   ilk: string
-  currentDate: moment.Moment
-  previousDate: moment.Moment
+  currentDate: dayjs.Dayjs
+  previousDate: dayjs.Dayjs
   changes: {
     [key in YieldPeriod]?: YieldChange
   }
@@ -45,17 +45,17 @@ export const SupportedIlkForYieldsCalculations = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAI
 export function getYields$(
   makerOracleTokenPricesInDates$: (
     token: string,
-    timestamps: moment.Moment[],
+    timestamps: dayjs.Dayjs[],
   ) => Observable<MakerOracleTokenPrice[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilk: string,
-  date?: moment.Moment,
+  date?: dayjs.Dayjs,
 ): Observable<Yield> {
   if (!SupportedIlkForYieldsCalculations.includes(ilk)) {
     throw new Error(`${ilk} is not supported for Yields calculations`)
   }
 
-  const referenceDate = date || moment()
+  const referenceDate = date || dayjs()
 
   const timestampsWithPeriods = [
     {
@@ -142,9 +142,9 @@ function calculateChange(current?: YieldValue, previous?: YieldValue): YieldChan
 }
 
 export function getYieldChange$(
-  getYields$: (ilk: string, referenceDate: moment.Moment) => Observable<Yield>,
-  currentDate: moment.Moment,
-  previousDate: moment.Moment,
+  getYields$: (ilk: string, referenceDate: dayjs.Dayjs) => Observable<Yield>,
+  currentDate: dayjs.Dayjs,
+  previousDate: dayjs.Dayjs,
   ilk: string,
 ): Observable<YieldChanges> {
   if (!SupportedIlkForYieldsCalculations.includes(ilk)) {

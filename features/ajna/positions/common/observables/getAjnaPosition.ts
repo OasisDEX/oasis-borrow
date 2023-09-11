@@ -5,11 +5,15 @@ import { Context } from 'blockchain/network'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
+import { PositionCreated } from 'features/aave/services'
+import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
+import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
+import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
+import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
@@ -26,6 +30,8 @@ export function getAjnaPosition$(
   collateralPrice: BigNumber,
   quotePrice: BigNumber,
   { collateralToken, product, protocol, proxy, quoteToken }: DpmPositionData,
+  collateralAddress?: string,
+  quoteAddress?: string,
 ): Observable<AjnaGenericPosition> {
   return combineLatest(
     context$,
@@ -43,14 +49,17 @@ export function getAjnaPosition$(
         quotePrice,
         proxyAddress: proxy,
         poolAddress:
-          ajnaPoolPairs[`${collateralToken}-${quoteToken}` as keyof typeof ajnaPoolPairs].address,
+          collateralAddress && quoteAddress
+            ? await getAjnaPoolAddress(collateralAddress, quoteAddress, context.chainId)
+            : ajnaPoolPairs[`${collateralToken}-${quoteToken}` as keyof typeof ajnaPoolPairs]
+                .address,
       }
 
       const commonDependency = {
         poolInfoAddress: ajnaPoolInfo.address,
         rewardsManagerAddress: ajnaRewardsManager.address,
         provider: getRpcProvider(context.chainId),
-        getPoolData: getAjnaPoolData,
+        getPoolData: getAjnaPoolData(context.chainId),
       }
 
       switch (product as AjnaProduct) {
@@ -60,7 +69,7 @@ export function getAjnaPosition$(
         case 'earn':
           return await views.ajna.getEarnPosition(commonPayload, {
             ...commonDependency,
-            getEarnData: getAjnaEarnData,
+            getEarnData: getAjnaEarnData(context.chainId),
           })
       }
     }),
@@ -74,8 +83,18 @@ export function getAjnaPositionDetails$(
   collateralPrice: BigNumber,
   quotePrice: BigNumber,
   details: DpmPositionData,
+  collateralAddress: string,
+  quoteAddress: string,
 ): Observable<AjnaPositionDetails> {
-  return getAjnaPosition$(context$, undefined, collateralPrice, quotePrice, details).pipe(
+  return getAjnaPosition$(
+    context$,
+    undefined,
+    collateralPrice,
+    quotePrice,
+    details,
+    collateralAddress,
+    quoteAddress,
+  ).pipe(
     switchMap((position) => {
       return [{ position, details }]
     }),
@@ -95,11 +114,14 @@ export function getAjnaPositionsWithDetails$(
     readPositionCreatedEvents$(walletAddress),
     context$,
   ).pipe(
-    switchMap(([userDpmProxies, positionCreatedEvents]) => {
+    switchMap(([userDpmProxies, positionCreatedEvents, context]) => {
       const idMap = userDpmProxies.reduce<{ [key: string]: string }>(
         (a, v) => ({ ...a, [v.proxy]: v.vaultId }),
         {},
       )
+
+      if (positionCreatedEvents.length === 0) return of([])
+
       const tokens: string[] = uniq(
         positionCreatedEvents
           .map(({ collateralTokenSymbol, debtTokenSymbol }) => [
@@ -117,25 +139,48 @@ export function getAjnaPositionsWithDetails$(
               .filter(({ protocol }) => protocol.toLowerCase() === LendingProtocol.Ajna)
               .map(
                 ({
+                  collateralTokenAddress,
                   collateralTokenSymbol,
+                  debtTokenAddress,
                   debtTokenSymbol,
                   positionType,
                   protocol,
                   proxyAddress,
                 }) => {
-                  return getAjnaPositionDetails$(
-                    context$,
-                    tokenPrice[collateralTokenSymbol],
-                    tokenPrice[debtTokenSymbol],
-                    {
-                      collateralToken: collateralTokenSymbol,
-                      product: positionType.toLowerCase(),
-                      protocol,
-                      proxy: proxyAddress,
-                      quoteToken: debtTokenSymbol,
-                      user: walletAddress,
-                      vaultId: idMap[proxyAddress],
-                    },
+                  const isOracless = isPoolOracless({
+                    chainId: context.chainId,
+                    collateralToken: collateralTokenSymbol,
+                    quoteToken: debtTokenSymbol,
+                  })
+                  const vaultId = idMap[proxyAddress]
+
+                  return combineLatest(
+                    checkMultipleVaultsFromApi$([idMap[proxyAddress]], protocol),
+                  ).pipe(
+                    switchMap(([vaultsFromApi]) =>
+                      getAjnaPositionDetails$(
+                        context$,
+                        isOracless ? one : tokenPrice[collateralTokenSymbol],
+                        isOracless ? one : tokenPrice[debtTokenSymbol],
+                        {
+                          collateralToken: collateralTokenSymbol,
+                          collateralTokenAddress,
+                          hasMultiplePositions: false,
+                          product: (positionType === 'Earn'
+                            ? positionType
+                            : vaultsFromApi[vaultId] || positionType
+                          ).toLowerCase(),
+                          protocol,
+                          proxy: proxyAddress,
+                          quoteToken: debtTokenSymbol,
+                          quoteTokenAddress: debtTokenAddress,
+                          user: walletAddress,
+                          vaultId,
+                        },
+                        collateralTokenAddress,
+                        debtTokenAddress,
+                      ),
+                    ),
                   )
                 },
               ),

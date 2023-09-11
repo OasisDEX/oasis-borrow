@@ -1,55 +1,54 @@
-import { getNetworkContracts } from 'blockchain/contracts'
+import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { useAppContext } from 'components/AppContextProvider'
 import { DefinitionList } from 'components/DefinitionList'
 import { DetailsSection } from 'components/DetailsSection'
-import { Skeleton } from 'components/Skeleton'
-import {
-  AaveHistoryEvent,
-  AjnaHistoryEvent,
-} from 'features/ajna/positions/common/helpers/getAjnaHistory'
-import { useObservable } from 'helpers/observableHook'
+import { PositionHistoryItem } from 'components/history/PositionHistoryItem'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import { AaveHistoryEvent } from 'features/ajna/history/types'
 import { useTranslation } from 'next-i18next'
 import React, { FC } from 'react'
 
-import { PositionHistoryItem } from './PositionHistoryItem'
-
 interface PositionHistoryProps {
-  historyEvents: Partial<AjnaHistoryEvent>[] | Partial<AaveHistoryEvent>[]
   collateralToken: string
-  quoteToken: string
+  historyEvents: Partial<AjnaUnifiedHistoryEvent>[] | Partial<AaveHistoryEvent>[]
+  isOracless?: boolean
   isShort?: boolean
   priceFormat?: string
+  quoteToken: string
+  networkId: NetworkIds
 }
 
 export const PositionHistory: FC<PositionHistoryProps> = ({
-  historyEvents,
-  quoteToken,
   collateralToken,
+  historyEvents,
+  isOracless = false,
   isShort = false,
   priceFormat,
+  quoteToken,
+  networkId,
 }) => {
-  const { context$ } = useAppContext()
-  const [context] = useObservable(context$)
-
   const { t } = useTranslation()
-  return !context ? (
-    <Skeleton height="440px" />
-  ) : (
+
+  const contracts = getNetworkContracts(networkId)
+  ensureEtherscanExist(networkId, contracts)
+  const { etherscan, ethtx } = contracts
+  return (
     <DetailsSection
       title={t('position-history.header')}
       content={
         <DefinitionList>
           {historyEvents.map((item) => (
             <PositionHistoryItem
-              item={item}
-              etherscanUrl={getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan.url}
-              ethtxUrl={getNetworkContracts(NetworkIds.MAINNET, context.chainId).ethtx.url}
-              key={`${item.id}-${item.txHash}`}
+              collateralToken={collateralToken}
+              etherscanUrl={etherscan.url}
+              ethtxUrl={ethtx.url}
+              isOracless={isOracless}
               isShort={isShort}
+              item={item}
+              key={`${item.id}-${item.txHash}`}
               priceFormat={priceFormat}
               quoteToken={quoteToken}
-              collateralToken={collateralToken}
+              networkId={networkId}
             />
           ))}
         </DefinitionList>

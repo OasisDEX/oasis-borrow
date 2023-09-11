@@ -4,7 +4,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { Context, every5Seconds$ } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
-import { PositionId } from 'features/aave/types'
+import { PositionId } from 'features/aave/types/position-id'
 import { getAllActiveTriggers } from 'features/automation/api/allActiveTriggers'
 import {
   AutoBSTriggerData,
@@ -26,16 +26,16 @@ import { GraphQLClient } from 'graphql-request'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
-// TODO - ŁW - Implement tests for this file
-
 async function loadTriggerDataFromCache({
   positionId,
   proxyAddress,
   cacheApi,
+  chainId,
 }: {
   positionId: number
   cacheApi: string
   proxyAddress?: string
+  chainId: NetworkIds
 }): Promise<TriggersData> {
   const activeTriggersForVault = await getAllActiveTriggers(
     new GraphQLClient(cacheApi),
@@ -44,8 +44,10 @@ async function loadTriggerDataFromCache({
   )
 
   return {
+    isAutomationDataLoaded: true,
     isAutomationEnabled: activeTriggersForVault.length > 0,
     triggers: activeTriggersForVault,
+    chainId,
   }
 }
 
@@ -57,7 +59,9 @@ export interface TriggerRecord {
 }
 
 export interface TriggersData {
+  isAutomationDataLoaded: boolean
   isAutomationEnabled: boolean
+  chainId: NetworkIds
   triggers?: TriggerRecord[]
 }
 
@@ -74,6 +78,7 @@ export function createAutomationTriggersData(
         positionId: id.toNumber(),
         proxyAddress: proxies.dpmProxy?.proxy,
         cacheApi: getNetworkContracts(NetworkIds.MAINNET, context.chainId).cacheApi,
+        chainId: context.chainId,
       })
     }),
     distinctUntilChanged((s1, s2) => {

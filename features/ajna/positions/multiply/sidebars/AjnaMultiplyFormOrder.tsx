@@ -1,31 +1,39 @@
 import BigNumber from 'bignumber.js'
+import { useProductContext } from 'components/context'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { SecondaryVariantType } from 'components/infoSection/Item'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
+import { resolveIfCachedSwap } from 'features/ajna/positions/common/helpers/resolveIfCachedSwap'
+import { resolveSwapTokenPrice } from 'features/ajna/positions/common/helpers/resolveSwapTokenPrice'
+import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
   formatAmount,
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
+import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { useObservable } from 'helpers/observableHook'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Box } from 'theme-ui'
 
 export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
+  const { exchangeQuote$ } = useProductContext()
   const {
-    environment: { collateralPrice, collateralToken, quoteToken },
+    environment: { collateralPrice, collateralToken, quoteToken, slippage, isShort, quotePrice },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails },
   } = useAjnaGeneralContext()
   const {
     form: {
-      state: { action },
+      state: { action, loanToValue },
     },
-    position: { cachedPosition, isSimulationLoading, currentPosition },
+    position: { cachedPosition, isSimulationLoading, currentPosition, swap },
   } = useAjnaProductContext('multiply')
 
   const { positionData, simulationData } = resolveIfCachedPosition({
@@ -34,35 +42,73 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     currentPosition,
   })
 
+  const swapData = resolveIfCachedSwap({
+    cached,
+    currentSwap: swap?.current,
+    cachedSwap: swap?.cached,
+  })
+
+  const tokenPrice = resolveSwapTokenPrice({ positionData, simulationData, swapData })
+
   const withSlippage =
     action &&
     [
       'open-multiply',
+      'adjust',
       'deposit-collateral-multiply',
       'deposit-quote-multiply',
       'withdraw-multiply',
       'close-multiply',
+      'close-borrow',
+      'adjust-borrow',
     ].includes(action)
-  // TODO: add condition for both withBuying and withSelling to check id they should be displayed for:
-  // deposit-collateral-multiply, deposit-quote-multiply, withdraw-multiply
-  const withBuying = action === 'open-multiply'
-  const withSelling = action === 'close-multiply'
+
+  const withBuying =
+    action === 'open-multiply' ||
+    (['adjust', 'deposit-collateral-multiply', 'withdraw-multiply'].includes(action as string) &&
+      loanToValue?.gt(positionData.riskRatio.loanToValue))
+  const withSelling =
+    action === 'close-multiply' ||
+    (['adjust', 'deposit-collateral-multiply', 'withdraw-multiply'].includes(action as string) &&
+      loanToValue?.lt(positionData.riskRatio.loanToValue))
   const withOasisFee = withBuying || withSelling
 
-  const slippageLimit = new BigNumber(0.005)
-  const buyingCollateral = new BigNumber(1.1645)
-  const sellingCollateral = new BigNumber(11.2)
-  const priceImpact = new BigNumber(0.0064)
-  const oasisFee = new BigNumber(withOasisFee ? 5.48 : zero)
+  const initialQuote$ = exchangeQuote$(
+    collateralToken,
+    slippage,
+    // use ~1$ worth amount of collateral or quote token
+    one.div(withBuying ? quotePrice : collateralPrice),
+    withBuying ? 'BUY_COLLATERAL' : 'SELL_COLLATERAL',
+    'defaultExchange',
+    quoteToken,
+  )
+
+  const [initialQuote] = useObservable(initialQuote$)
+
+  const buyingOrSellingCollateral = swapData
+    ? withBuying
+      ? swapData.minToTokenAmount
+      : swapData.fromTokenAmount
+    : zero
+
+  const priceImpact =
+    initialQuote?.status === 'SUCCESS' && tokenPrice
+      ? calculatePriceImpact(initialQuote.tokenPrice, tokenPrice).div(100)
+      : undefined
+
+  const oasisFee = withOasisFee
+    ? buyingOrSellingCollateral.times(OAZO_FEE.times(collateralPrice))
+    : zero
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {
-    totalExposure: `${positionData.collateralAmount} ${collateralToken}`,
+    totalExposure: `${formatCryptoBalance(positionData.collateralAmount)} ${collateralToken}`,
     afterTotalExposure:
-      simulationData?.collateralAmount && `${simulationData.collateralAmount} ${collateralToken}`,
+      simulationData?.collateralAmount &&
+      `${formatCryptoBalance(simulationData.collateralAmount)} ${collateralToken}`,
     multiple: `${positionData.riskRatio.multiple.toFixed(2)}x`,
     afterMultiple: simulationData?.riskRatio && `${simulationData.riskRatio.multiple.toFixed(2)}x`,
-    slippageLimit: formatDecimalAsPercent(slippageLimit),
+    slippageLimit: formatDecimalAsPercent(slippage),
     positionDebt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterPositionDebt:
       simulationData?.debtAmount &&
@@ -71,18 +117,28 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     afterLoanToValue:
       simulationData?.riskRatio &&
       formatDecimalAsPercent(
-        simulationData.riskRatio.loanToValue.decimalPlaces(2, BigNumber.ROUND_DOWN),
+        simulationData.riskRatio.loanToValue.decimalPlaces(4, BigNumber.ROUND_DOWN),
       ),
     dynamicMaxLtv: formatDecimalAsPercent(positionData.maxRiskRatio.loanToValue),
     afterDynamicMaxLtv:
       simulationData?.maxRiskRatio.loanToValue &&
       formatDecimalAsPercent(simulationData.maxRiskRatio.loanToValue),
-    buyingCollateral: `${formatCryptoBalance(buyingCollateral)} ${collateralToken}`,
-    buyingCollateralUSD: `$${formatAmount(buyingCollateral.times(collateralPrice), 'USD')}`,
-    sellingCollateral: `${formatCryptoBalance(sellingCollateral)} ${collateralToken}`,
-    sellingCollateralUSD: `$${formatAmount(sellingCollateral.times(collateralPrice), 'USD')}`,
-    collateralPrice: `$${formatAmount(collateralPrice, 'USD')}`,
-    collateralPriceImpact: formatDecimalAsPercent(priceImpact),
+    buyingCollateral: `${formatCryptoBalance(buyingOrSellingCollateral)} ${collateralToken}`,
+    buyingCollateralUSD: `$${formatAmount(
+      buyingOrSellingCollateral.times(collateralPrice),
+      'USD',
+    )}`,
+    sellingCollateral: `${formatCryptoBalance(buyingOrSellingCollateral)} ${collateralToken}`,
+    sellingCollateralUSD: `$${formatAmount(
+      buyingOrSellingCollateral.times(collateralPrice),
+      'USD',
+    )}`,
+    marketPrice: tokenPrice
+      ? `${formatCryptoBalance(
+          isShort ? one.div(tokenPrice) : tokenPrice,
+        )} ${collateralToken}/${quoteToken}`
+      : 'n/a',
+    marketPriceImpact: priceImpact ? formatDecimalAsPercent(priceImpact) : 'n/a',
     oasisFee: `$${formatAmount(oasisFee, 'USD')}`,
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
@@ -124,10 +180,12 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
         ...(withBuying || withSelling
           ? [
               {
-                label: t('vault-changes.price-impact', { token: collateralToken }),
-                value: formatted.collateralPrice,
+                label: t('vault-changes.price-impact', {
+                  token: `${collateralToken}/${quoteToken}`,
+                }),
+                value: formatted.marketPrice,
                 secondary: {
-                  value: formatted.collateralPriceImpact,
+                  value: formatted.marketPriceImpact,
                   variant: 'negative' as SecondaryVariantType,
                 },
                 isLoading,
@@ -182,9 +240,19 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
           : isFlowStateReady
           ? [
               {
-                label: t('system.max-transaction-cost'),
-                value: <GasEstimation addition={oasisFee} />,
-                dropdownValues: oasisFee
+                label: t('transaction-fee'),
+                value: (
+                  <>
+                    {!oasisFee.isZero() && (
+                      <>
+                        {formatted.oasisFee}
+                        <Box sx={{ mx: '4px' }}>+</Box>
+                      </>
+                    )}
+                    <GasEstimation />
+                  </>
+                ),
+                dropdownValues: !oasisFee.isZero()
                   ? [
                       {
                         label: t('vault-changes.oasis-fee'),

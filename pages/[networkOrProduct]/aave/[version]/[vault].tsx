@@ -1,12 +1,15 @@
-import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
+import { isSupportedNetwork, NetworkNames, networksByName } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
+import { ProductContextHandler } from 'components/context'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/Layouts'
+import { AppLayout } from 'components/layouts'
 import { getAddress } from 'ethers/lib/utils'
 import { AaveContextProvider, useAaveContext } from 'features/aave'
 import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
-import { PositionId } from 'features/aave/types'
+import { PositionId } from 'features/aave/types/position-id'
+import { VaultType } from 'features/generalManageVault/vaultType'
+import { useApiVaults } from 'features/shared/vaultApi'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -45,7 +48,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-function WithStrategy({
+function WithAaveStrategy({
   positionId,
   protocol,
   network,
@@ -56,14 +59,24 @@ function WithStrategy({
 }) {
   const { push } = useRouter()
   const { t } = useTranslation()
-  const { strategyConfig$, aaveManageStateMachine, proxiesRelatedWithPosition$ } = useAaveContext(
-    protocol,
-    network,
+  const chainId = networksByName[network].id
+
+  const apiVaults = useApiVaults({ vaultIds: [positionId.vaultId ?? -1], protocol, chainId })
+
+  const {
+    strategyConfig$,
+    updateStrategyConfig,
+    aaveManageStateMachine,
+    proxiesRelatedWithPosition$,
+  } = useAaveContext(protocol, network)
+  const [strategyConfig, strategyConfigError] = useObservable(
+    /* If VaultType.Unknown specified then when loading config it'll try to respect position created type */
+    strategyConfig$(positionId, network, apiVaults[0]?.type || VaultType.Unknown),
   )
-  const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(positionId, network))
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId),
   )
+
   if (strategyConfigError) {
     console.warn(
       `Strategy config not found for network: ${network} and positionId`,
@@ -73,6 +86,10 @@ function WithStrategy({
     void push(INTERNAL_LINKS.notFound)
     return <></>
   }
+
+  const _updateStrategyConfig = updateStrategyConfig
+    ? updateStrategyConfig(positionId, network)
+    : undefined
   return (
     <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
       <WithLoadingIndicator
@@ -84,6 +101,7 @@ function WithStrategy({
             machine={aaveManageStateMachine}
             positionId={positionId}
             strategy={_strategyConfig}
+            updateStrategyConfig={_updateStrategyConfig}
           >
             <PageSEOTags
               title="seo.title-product-w-tokens"
@@ -141,17 +159,19 @@ function Position({
   }
 
   return (
-    <AaveContextProvider>
-      <WithConnection>
-        <WithTermsOfService>
-          <WithStrategy
-            positionId={{ walletAddress: address, vaultId }}
-            protocol={protocol}
-            network={network}
-          />
-        </WithTermsOfService>
-      </WithConnection>
-    </AaveContextProvider>
+    <ProductContextHandler>
+      <AaveContextProvider>
+        <WithConnection>
+          <WithTermsOfService>
+            <WithAaveStrategy
+              positionId={{ walletAddress: address, vaultId }}
+              protocol={protocol}
+              network={network}
+            />
+          </WithTermsOfService>
+        </WithConnection>
+      </AaveContextProvider>
+    </ProductContextHandler>
   )
 }
 

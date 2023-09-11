@@ -20,8 +20,11 @@ export enum TxMetaKind {
   operationExecutor = 'operationExecutor',
   createAccount = 'createAccount',
   dsrJoin = 'dsrJoin',
+  savingsDaiDeposit = 'savingsDaiDeposit',
+  savingsDaiConvert = 'savingsDaiConvert',
   dsrExit = 'dsrExit',
   dsrExitAll = 'dsrExitAll',
   libraryCall = 'libraryCall',
   claimAjnaRewards = 'claimAjnaRewards',
+  deployAjnaPool = 'deployAjnaPool',
 }

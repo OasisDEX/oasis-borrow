@@ -1,4 +1,3 @@
-import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import { getAvailableAutomation } from 'features/automation/common/helpers'
@@ -11,7 +10,7 @@ import {
 import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { uiChanges } from 'helpers/uiChanges'
 import { useTranslation } from 'next-i18next'
 
 interface GetAutoFeaturesSidebarDropdownProps {
@@ -40,7 +39,6 @@ function getAutoFeaturesSidebarDropdownItem({
   isFeatureEnabled,
 }: GetAutoFeaturesSidebarDropdownItemProps): SidebarSectionHeaderSelectItem {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
 
   return {
     label: `${t(isFeatureEnabled ? 'manage' : 'setup')} ${t(translationKey)}`,
@@ -74,8 +72,6 @@ export function getAutoFeaturesSidebarDropdown({
   vaultType,
   protocol,
 }: GetAutoFeaturesSidebarDropdownProps): SidebarSectionHeaderDropdown | undefined {
-  const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
-
   const stopLossDropdownItem = getAutoFeaturesSidebarDropdownItem({
     translationKey: 'system.stop-loss',
     type: 'Protection',
@@ -128,7 +124,7 @@ export function getAutoFeaturesSidebarDropdown({
           ...(vaultType === VaultType.Multiply && isConstantMultipleAvailable
             ? [constantMultipleDropdownItem]
             : []),
-          ...(autoTakeProfitEnabled && isTakeProfitAvailable ? [autoTakeProfitDropdownItem] : []),
+          ...(isTakeProfitAvailable ? [autoTakeProfitDropdownItem] : []),
         ]
       : []),
   ]

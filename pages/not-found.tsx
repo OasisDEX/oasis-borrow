@@ -1,6 +1,7 @@
 import { PageSEOTags } from 'components/HeadTags'
-import { MarketingLayout } from 'components/Layouts'
+import { MarketingLayout } from 'components/layouts'
 import { AppLink } from 'components/Links'
+import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -28,6 +29,8 @@ function NotFoundPage() {
   )
 }
 
-NotFoundPage.layout = MarketingLayout
+NotFoundPage.layout = ({ children }: WithChildren) => (
+  <MarketingLayout topBackground="light">{children}</MarketingLayout>
+)
 
 export default NotFoundPage

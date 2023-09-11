@@ -42,6 +42,7 @@ model Vault {
 enum VaultType {
   borrow
   multiply
+  earn
 
   @@map("vault_type")
 }
@@ -72,12 +73,13 @@ model WeeklyClaim {
 }
 
 model MerkleTree {
-  week_number Int       @unique
-  start_block Int?
-  end_block   Int?
-  timestamp   DateTime? @default(now())
-  tree_root   String
-  snapshot    String?
+  week_number  Int       @unique
+  start_block  Int?
+  end_block    Int?
+  timestamp    DateTime? @default(now())
+  tree_root    String
+  snapshot     String?
+  tx_processed Boolean   @default(false)
 
   @@map("merkle_tree")
 }
@@ -226,28 +228,30 @@ model UsersWhoFollowVaults {
 }
 
 model ProductHubItems {
-  id String @id @default(uuid())
-  label String
-  network NetworkNamesWithTestnets
-  primaryToken String
-  primaryTokenGroup String?
-  product Product[]
-  protocol Protocol
-  secondaryToken String
-  secondaryTokenGroup String?
-  weeklyNetApy String?
-  depositToken String?
-  earnStrategy String?
-  fee String?
-  liquidity String?
-  managementType ProductHubManagementSimple?
-  maxLtv String?
-  maxMultiply String?
-  multiplyStrategy String?
-  multiplyStrategyType ProductHubStrategy?
-  reverseTokens Boolean?
-  updatedAt DateTime @updatedAt
-  tooltips Json?
+  id                    String                      @id @default(uuid())
+  label                 String
+  network               NetworkNamesWithTestnets
+  primaryToken          String
+  primaryTokenGroup     String?
+  product               Product[]
+  protocol              Protocol
+  secondaryToken        String
+  secondaryTokenGroup   String?
+  weeklyNetApy          String?
+  depositToken          String?
+  earnStrategy          String?
+  fee                   String?
+  liquidity             String?
+  managementType        ProductHubManagementSimple?
+  maxLtv                String?
+  maxMultiply           String?
+  multiplyStrategy      String?
+  multiplyStrategyType  ProductHubStrategy?
+  reverseTokens         Boolean?
+  updatedAt             DateTime                    @updatedAt
+  tooltips              Json?
+  primaryTokenAddress   String                      @default("0x0000000000000000000000000000000000000000")
+  secondaryTokenAddress String                      @default("0x0000000000000000000000000000000000000000")
 
   @@unique([label, network, product, protocol, primaryToken, secondaryToken], name: "product_hub_item_id")
   @@map("product_hub_items")
@@ -258,6 +262,7 @@ enum Protocol {
   aavev2
   aavev3
   ajna
+  sparkv3
 
   @@map("protocol")
 }
@@ -312,4 +317,58 @@ enum ProductHubStrategy {
   short
 
   @@map("multiplyStrategyType")
+}
+
+model AjnaRewardsWeeklyClaim {
+  id           Int      @id @default(autoincrement())
+  timestamp    DateTime @default(now())
+  chain_id     Int
+  user_address String
+  amount       String
+
+  week_number Int
+
+  proof String[]
+
+  @@unique([week_number, user_address, chain_id], name: "week_number_userAddress_chain_id_unique_id")
+  @@map("ajna_rewards_weekly_claim")
+}
+
+model AjnaRewardsDailyClaim {
+  id           Int      @id @default(autoincrement())
+  timestamp    DateTime @default(now())
+  chain_id     Int
+  user_address String
+  amount       String
+
+  week_number Int
+  day_number  Int
+
+  @@unique([day_number, user_address, chain_id], name: "day_number_userAddress_chain_id_unique_id")
+  @@map("ajna_rewards_daily_claim")
+}
+
+model AjnaRewardsMerkleTree {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  chain_id  Int
+
+  week_number  Int
+  tree_root    String
+  tx_processed Boolean @default(false)
+
+  @@unique([week_number, chain_id], name: "week_number_chain_id_unique_id")
+  @@map("ajna_rewards_merkle_tree")
+}
+
+model Tokens {
+  address   String
+  name      String
+  symbol    String
+  precision Int
+  chain_id  Int
+  source    String
+
+  @@unique([address, chain_id], name: "address_chain_id_unique_id")
+  @@map("tokens")
 }

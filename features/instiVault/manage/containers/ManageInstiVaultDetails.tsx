@@ -7,10 +7,10 @@ import {
   getCollRatioColor,
   VaultDetailsCard,
 } from 'components/vault/VaultDetails'
+import dayjs from 'dayjs'
 import { ManageVaultDetailsSummary } from 'features/borrow/manage/containers/ManageVaultDetails'
 import { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
-import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
@@ -64,9 +64,9 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
         />
         <VaultDetailsCard
           title={t('manage-insti-vault.card.term-end')}
-          value={moment(termEnd).format('Do MMMM YYYY')}
+          value={dayjs(termEnd).format('Do MMMM YYYY')}
           valueBottom={t('manage-insti-vault.card.days-remaining', {
-            days: moment(termEnd).diff(moment(), 'days'),
+            days: dayjs(termEnd).diff(dayjs(), 'days'),
           })}
           {...afterPill}
         />

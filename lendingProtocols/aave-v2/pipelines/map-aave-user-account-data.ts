@@ -1,7 +1,12 @@
 import { getAaveV2UserAccountData } from 'blockchain/aave'
-import { UserAccountData, UserAccountDataArgs } from 'lendingProtocols/aaveCommon/userAccountData'
+import {
+  AaveLikeUserAccountData,
+  AaveLikeUserAccountDataArgs,
+} from 'lendingProtocols/aave-like-common/aave-like-user-account-data'
 
-export function mapAaveUserAccountData(args: UserAccountDataArgs): Promise<UserAccountData> {
+export function mapAaveUserAccountData(
+  args: AaveLikeUserAccountDataArgs,
+): Promise<AaveLikeUserAccountData> {
   return getAaveV2UserAccountData(args).then((userAccountDataV2) => ({
     totalCollateral: userAccountDataV2.totalCollateralETH,
     totalDebt: userAccountDataV2.totalDebtETH,

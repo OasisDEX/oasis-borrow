@@ -7,11 +7,13 @@ import { ContentCardCollateralLocked } from 'features/ajna/positions/common/comp
 import { ContentCardLiquidationPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardLiquidationPrice'
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
 import { ContentCardPositionDebt } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionDebt'
+import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
+import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -23,11 +25,13 @@ export function AjnaBorrowOverviewController() {
     environment: {
       collateralPrice,
       collateralToken,
+      flow,
+      isOracless,
       isShort,
+      owner,
       priceFormat,
       quotePrice,
       quoteToken,
-      flow,
     },
   } = useAjnaGeneralContext()
   const {
@@ -39,8 +43,8 @@ export function AjnaBorrowOverviewController() {
   } = useAjnaProductContext('borrow')
 
   const liquidationPrice = isShort
-    ? normalizeValue(one.div(position.liquidationPrice))
-    : position.liquidationPrice
+    ? normalizeValue(one.div(position.liquidationPriceT0Np))
+    : position.liquidationPriceT0Np
   const belowCurrentPrice = one.minus(
     isShort
       ? normalizeValue(one.div(position.liquidationToMarketPrice))
@@ -50,7 +54,7 @@ export function AjnaBorrowOverviewController() {
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
     (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
-  const changeVariant = getBorrowishChangeVariant(simulation)
+  const changeVariant = getBorrowishChangeVariant({ simulation, isOracless })
 
   const originationFee = getOriginationFee(position, simulation)
 
@@ -66,33 +70,56 @@ export function AjnaBorrowOverviewController() {
               priceFormat={priceFormat}
               liquidationPrice={liquidationPrice}
               afterLiquidationPrice={afterLiquidationPrice}
-              belowCurrentPrice={belowCurrentPrice}
+              withTooltips={isOracless}
               changeVariant={changeVariant}
-            />
-            <ContentCardLoanToValue
-              isLoading={isSimulationLoading}
-              loanToValue={position.riskRatio.loanToValue}
-              afterLoanToValue={simulation?.riskRatio.loanToValue}
-              {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
-                dynamicMaxLtv: position.maxRiskRatio.loanToValue,
+              {...(!isOracless && {
+                belowCurrentPrice,
               })}
-              changeVariant={changeVariant}
             />
+            {isOracless ? (
+              <ContentCardThresholdPrice
+                isLoading={isSimulationLoading}
+                thresholdPrice={position.thresholdPrice}
+                debtAmount={position.debtAmount}
+                collateralAmount={position.collateralAmount}
+                afterThresholdPrice={simulation?.thresholdPrice}
+                priceFormat={priceFormat}
+                withTooltips
+                changeVariant={changeVariant}
+                {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
+                  lup: position.pool.lup,
+                })}
+              />
+            ) : (
+              <ContentCardLoanToValue
+                isLoading={isSimulationLoading}
+                loanToValue={position.riskRatio.loanToValue}
+                afterLoanToValue={simulation?.riskRatio.loanToValue}
+                {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
+                  dynamicMaxLtv: position.maxRiskRatio.loanToValue,
+                })}
+                changeVariant={changeVariant}
+              />
+            )}
             <ContentCardCollateralLocked
               isLoading={isSimulationLoading}
               collateralToken={collateralToken}
               collateralLocked={position.collateralAmount}
-              collateralLockedUSD={position.collateralAmount.times(collateralPrice)}
               afterCollateralLocked={simulation?.collateralAmount}
               changeVariant={changeVariant}
+              {...(!isOracless && {
+                collateralLockedUSD: position.collateralAmount.times(collateralPrice),
+              })}
             />
             <ContentCardPositionDebt
               isLoading={isSimulationLoading}
               quoteToken={quoteToken}
               positionDebt={position.debtAmount}
-              positionDebtUSD={position.debtAmount.times(quotePrice)}
               afterPositionDebt={simulation?.debtAmount.plus(originationFee)}
               changeVariant={changeVariant}
+              {...(!isOracless && {
+                positionDebtUSD: position.debtAmount.times(quotePrice),
+              })}
             />
           </DetailsSectionContentCardWrapper>
         }
@@ -102,6 +129,7 @@ export function AjnaBorrowOverviewController() {
               isLoading={isSimulationLoading}
               collateralToken={collateralToken}
               quoteToken={quoteToken}
+              owner={owner}
               cost={position.pool.interestRate}
               availableToBorrow={position.debtAvailable()}
               afterAvailableToBorrow={
@@ -114,7 +142,9 @@ export function AjnaBorrowOverviewController() {
           </DetailsSectionFooterItemWrapper>
         }
       />
-      <AjnaTokensBannerController flow={flow} />
+      {isPoolWithRewards({ collateralToken, quoteToken }) && (
+        <AjnaTokensBannerController flow={flow} />
+      )}
     </Grid>
   )
 }

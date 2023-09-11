@@ -1,16 +1,24 @@
-import { calculateAjnaApyPerDays } from '@oasisdex/dma-library'
+import { getPoolLiquidity } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
 import { getTokenPrice, Tickers } from 'blockchain/prices'
-import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
-import { WAD_PRECISION } from 'components/constants'
+import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
+import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import {
   AjnaPoolsTableData,
-  getAjnaPoolsTableData,
-} from 'features/ajna/positions/common/helpers/getAjnaPoolsTableData'
+  getAjnaPoolsData,
+} from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
+import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
+import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
-import { isYieldLoopPool } from 'features/ajna/positions/common/helpers/isYieldLoopPool'
+import {
+  productHubAjnaRewardsTooltip,
+  productHubEmptyPoolMaxLtvTooltip,
+  productHubEmptyPoolMaxMultipleTooltip,
+  productHubEmptyPoolWeeklyApyTooltip,
+  productHubOraclessLtvTooltip,
+} from 'features/productHub/content'
 import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import {
@@ -20,77 +28,86 @@ import {
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
-import getConfig from 'next/config'
 
 async function getAjnaPoolData(
   networkId: NetworkIds.MAINNET | NetworkIds.GOERLI,
+  tickers: Tickers,
 ): Promise<ProductHubHandlerResponseData> {
-  const supportedPairs = Object.keys(getNetworkContracts(networkId).ajnaPoolPairs)
-  const tokens = uniq(supportedPairs.flatMap((pair) => pair.split('-')))
-  const tickers = (await (
-    await fetch(`${getConfig()?.publicRuntimeConfig?.basePath}/api/tokensPrices`)
-  ).json()) as Tickers
-  const prices = tokens.reduce<{ [key: string]: BigNumber }>(
+  const poolContracts = {
+    ...getNetworkContracts(networkId).ajnaPoolPairs,
+    ...getNetworkContracts(networkId).ajnaOraclessPoolPairs,
+  }
+  const poolAddresses = [
+    ...Object.values(getNetworkContracts(networkId).ajnaPoolPairs),
+    ...Object.values(getNetworkContracts(networkId).ajnaOraclessPoolPairs),
+  ].map((contract) => contract.address.toLowerCase())
+  const prices = uniq(
+    Object.keys(getNetworkContracts(networkId).ajnaPoolPairs).flatMap((pair) => pair.split('-')),
+  ).reduce<Tickers>(
     (v, token) => ({ ...v, [token]: new BigNumber(getTokenPrice(token, tickers)) }),
     {},
   )
 
   try {
-    return (await getAjnaPoolsTableData(networkId))
-      .reduce<{ pair: [string, string]; pool: AjnaPoolsTableData }[]>((v, pool) => {
-        try {
-          return [
-            ...v,
-            {
-              pair: [
-                getTokenSymbolFromAddress(networkId, pool.collateralAddress),
-                getTokenSymbolFromAddress(networkId, pool.quoteTokenAddress),
-              ],
-              pool,
-            },
-          ]
-        } catch (e) {
-          console.warn('Token address not found within context', e)
-
-          return v
-        }
-      }, [])
-      .filter(({ pair: [collateralToken, quoteToken] }) =>
-        supportedPairs.includes(`${collateralToken}-${quoteToken}`),
+    return (await getAjnaPoolsData(networkId))
+      .reduce<{ pair: [string, string]; pool: AjnaPoolsTableData }[]>(
+        (v, pool) =>
+          poolAddresses.includes(pool.address.toLowerCase())
+            ? [
+                ...v,
+                {
+                  pair: (
+                    Object.keys(poolContracts).find(
+                      (key) =>
+                        poolContracts[key as keyof typeof poolContracts].address.toLowerCase() ===
+                        pool.address.toLowerCase(),
+                    ) as string
+                  ).split('-') as [string, string],
+                  pool,
+                },
+              ]
+            : v,
+        [],
       )
-      .sort((a, b) => (`${a.pair[0]}-${a.pair[1]}` > `${b.pair[0]}-${b.pair[1]}` ? 1 : -1))
       .reduce<ProductHubHandlerResponseData>(
         (
           v,
           {
             pair: [collateralToken, quoteToken],
             pool: {
+              collateralAddress: collateralTokenAddress,
               buckets,
-              dailyPercentageRate30dAverage,
               debt,
-              depositSize,
               interestRate,
-              highestThresholdPriceIndex,
               lowestUtilizedPrice,
               lowestUtilizedPriceIndex,
+              lendApr,
+              quoteTokenAddress,
             },
           },
         ) => {
-          const negativeWadPrecision = WAD_PRECISION * -1
+          const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
+          const isOracless = isPoolOracless({ chainId: networkId, collateralToken, quoteToken })
           const isShort = isShortPosition({ collateralToken })
-          const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
-          const collateralPrice = prices[collateralToken]
-          const quotePrice = prices[quoteToken]
+          // Temporary hidden yield loops products until APY solution is found
+          // const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
+          const isWithMultiply = isPoolSupportingMultiply({ collateralToken, quoteToken })
+          const collateralPrice = isOracless ? one : prices[collateralToken]
+          const quotePrice = isOracless ? one : prices[quoteToken]
           const marketPrice = collateralPrice.div(quotePrice)
           const label = `${collateralToken}/${quoteToken}`
           const network = networksById[networkId].name as ProductHubSupportedNetworks
           const protocol = LendingProtocol.Ajna
           const maxLtv = lowestUtilizedPrice.div(marketPrice).toString()
-          const liquidity = buckets
-            .filter((bucket) => new BigNumber(bucket.index).lte(highestThresholdPriceIndex))
-            .reduce((acc, bucket) => acc.plus(bucket.quoteTokens), zero)
-            .shiftedBy(negativeWadPrecision)
-            .minus(debt)
+          const liquidity = getPoolLiquidity({
+            buckets: buckets.map((bucket) => ({
+              ...bucket,
+              index: new BigNumber(bucket.index),
+              quoteTokens: new BigNumber(bucket.quoteTokens),
+            })),
+            debt: debt.shiftedBy(WAD_PRECISION),
+          })
+            .shiftedBy(NEGATIVE_WAD_PRECISION)
             .times(prices[quoteToken])
             .toString()
           const fee = interestRate.toString()
@@ -101,25 +118,9 @@ async function getAjnaPoolData(
             zero,
           ).toString()
           const earnLPStrategy = `${collateralToken}/${quoteToken} LP`
-          const earnYieldLoopStrategy = `${collateralToken}/${quoteToken} Yield Loop`
+          // const earnYieldLoopStrategy = `${collateralToken}/${quoteToken} Yield Loop`
           const managementType = 'active'
-          const weeklyNetApy = calculateAjnaApyPerDays(
-            depositSize,
-            dailyPercentageRate30dAverage,
-            7,
-          ).toString()
-
-          const ajnaRewardsTooltip = {
-            content: {
-              title: {
-                key: 'ajna.product-hub-tooltips.this-pool-is-earning-ajna-tokens',
-              },
-              description: {
-                key: 'ajna.product-hub-tooltips.rewards-available-soon',
-              },
-            },
-            icon: 'sparks',
-          }
+          const weeklyNetApy = lendApr.toString()
 
           return {
             table: [
@@ -131,49 +132,47 @@ async function getAjnaPoolData(
                 ...getTokenGroup(collateralToken, 'primary'),
                 product: [
                   ProductHubProductType.Borrow,
-                  ProductHubProductType.Multiply,
-                  ...(isYieldLoop ? [ProductHubProductType.Earn] : []),
+                  ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
+                  // ...(isYieldLoop && isWithMultiply ? [ProductHubProductType.Earn] : []),
                 ],
                 protocol,
                 secondaryToken: quoteToken,
                 ...getTokenGroup(quoteToken, 'secondary'),
                 fee,
                 liquidity,
-                ...(lowestUtilizedPriceIndex > 0 && {
-                  maxLtv,
-                  maxMultiply,
-                }),
+                ...(isPoolNotEmpty &&
+                  !isOracless && {
+                    maxLtv,
+                    maxMultiply,
+                  }),
                 multiplyStrategy,
                 multiplyStrategyType,
-                ...(isYieldLoop && {
-                  earnStrategy: earnYieldLoopStrategy,
-                  managementType,
-                  weeklyNetApy,
-                }),
+                // ...(isYieldLoop && {
+                //   earnStrategy: earnYieldLoopStrategy,
+                //   managementType,
+                //   ...(isPoolNotEmpty && {
+                //     weeklyNetApy,
+                //   }),
+                // }),
+                primaryTokenAddress: collateralTokenAddress.toLowerCase(),
+                secondaryTokenAddress: quoteTokenAddress.toLowerCase(),
                 tooltips: {
-                  fee: ajnaRewardsTooltip,
-                  ...(isYieldLoop && {
-                    weeklyNetApy: ajnaRewardsTooltip,
+                  ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
+                    fee: productHubAjnaRewardsTooltip,
+                    ...(isPoolNotEmpty && {
+                      weeklyNetApy: productHubAjnaRewardsTooltip,
+                    }),
                   }),
-                  ...(lowestUtilizedPriceIndex === 0 && {
-                    maxLtv: {
-                      content: {
-                        description: {
-                          key: 'ajna.product-hub-tooltips.no-max-ltv',
-                        },
-                      },
-                      icon: 'question_o',
-                      iconColor: 'neutral80',
-                    },
-                    maxMultiply: {
-                      content: {
-                        description: {
-                          key: 'ajna.product-hub-tooltips.no-max-multiple',
-                        },
-                      },
-                      icon: 'question_o',
-                      iconColor: 'neutral80',
-                    },
+                  ...(!isOracless &&
+                    !isPoolNotEmpty && {
+                      maxLtv: productHubEmptyPoolMaxLtvTooltip,
+                      maxMultiply: productHubEmptyPoolMaxMultipleTooltip,
+                    }),
+                  ...(!isPoolNotEmpty && {
+                    weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+                  }),
+                  ...(isOracless && {
+                    maxLtv: productHubOraclessLtvTooltip,
                   }),
                 },
               },
@@ -189,10 +188,20 @@ async function getAjnaPoolData(
                 earnStrategy: earnLPStrategy,
                 liquidity,
                 managementType,
-                weeklyNetApy,
+                ...(isPoolNotEmpty && {
+                  weeklyNetApy,
+                }),
                 reverseTokens: true,
+                primaryTokenAddress: quoteTokenAddress.toLowerCase(),
+                secondaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 tooltips: {
-                  weeklyNetApy: ajnaRewardsTooltip,
+                  ...(isPoolNotEmpty &&
+                    isPoolWithRewards({ collateralToken, quoteToken }) && {
+                      weeklyNetApy: productHubAjnaRewardsTooltip,
+                    }),
+                  ...(!isPoolNotEmpty && {
+                    weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+                  }),
                 },
               },
             ],
@@ -207,10 +216,10 @@ async function getAjnaPoolData(
   }
 }
 
-export default async function (): ProductHubHandlerResponse {
+export default async function (tickers: Tickers): ProductHubHandlerResponse {
   return Promise.all([
-    getAjnaPoolData(NetworkIds.MAINNET),
-    getAjnaPoolData(NetworkIds.GOERLI),
+    getAjnaPoolData(NetworkIds.MAINNET, tickers),
+    getAjnaPoolData(NetworkIds.GOERLI, tickers),
   ]).then((responses) => {
     return responses.reduce<ProductHubHandlerResponseData>(
       (v, response) => {

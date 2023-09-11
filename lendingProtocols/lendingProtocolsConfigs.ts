@@ -7,6 +7,8 @@ import ajnaIcon from 'public/static/img/protocol_icons/ajna_icon.svg'
 import ajnaLogo from 'public/static/img/protocol_icons/ajna_logo.svg'
 import makerIcon from 'public/static/img/protocol_icons/maker_icon.svg'
 import makerLogo from 'public/static/img/protocol_icons/maker_logo.svg'
+import sparkIcon from 'public/static/img/protocol_icons/spark_icon.svg'
+import sparkLogo from 'public/static/img/protocol_icons/spark_logo.svg'
 
 export type LendingProtocolConfig = {
   name: LendingProtocol
@@ -48,5 +50,13 @@ const makerConfig: LendingProtocolConfig = {
   logoScale: 1,
 }
 
-const lendingProtocols = [aaveV2Config, aaveV3Config, ajnaConfig, makerConfig]
+const sparkConfig: LendingProtocolConfig = {
+  name: LendingProtocol.SparkV3,
+  label: LendingProtocolLabel.sparkv3,
+  icon: sparkIcon as string,
+  logo: sparkLogo as string,
+  logoScale: 1.6,
+}
+
+const lendingProtocols = [aaveV2Config, aaveV3Config, ajnaConfig, makerConfig, sparkConfig]
 export const lendingProtocolsByName = keyBy(lendingProtocols, 'name')

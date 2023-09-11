@@ -116,6 +116,7 @@ export type VaultWithHistory = VaultWithValue<VaultWithType> & {
 function mapToVaultWithHistory(
   vaults: VaultWithValue<VaultWithType>[],
   { events, automationEvents, activeTriggers }: CacheResult,
+  chainId: NetworkIds,
 ): VaultWithHistory[] {
   return vaults.map((vault) => {
     const vaultEvents = events.filter((event) => event.urn === vault.address)
@@ -133,13 +134,17 @@ function mapToVaultWithHistory(
 
     const history = flatEvents([vaultEvents, vaultAutomationEvents])
     const stopLossData = extractStopLossData({
+      isAutomationDataLoaded: true,
       isAutomationEnabled,
       triggers,
+      chainId,
     })
     const autoSellData = extractAutoBSData({
       triggersData: {
+        isAutomationDataLoaded: true,
         isAutomationEnabled,
         triggers,
+        chainId,
       },
       triggerType: TriggerType.BasicSell,
     })
@@ -173,7 +178,7 @@ export function vaultsWithHistory$(
           vaults.map((vault) => vault.address.toLowerCase()),
           vaults.map((vault) => vault.id),
         ),
-      ).pipe(map((cacheResult) => mapToVaultWithHistory(vaults, cacheResult)))
+      ).pipe(map((cacheResult) => mapToVaultWithHistory(vaults, cacheResult, chainId)))
     }),
     shareReplay(1),
   )

@@ -1,4 +1,6 @@
+import { NetworkNames } from 'blockchain/networks'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
+import { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 
@@ -8,6 +10,10 @@ interface AjnaBorrowHeadlinePropsParams {
   id?: string
   product?: AjnaProduct
   quoteToken?: string
+  collateralAddress?: string
+  quoteAddress?: string
+  collateralIcon?: string
+  quoteIcon?: string
 }
 
 export function getAjnaHeadlineProps({
@@ -16,20 +22,27 @@ export function getAjnaHeadlineProps({
   id,
   product,
   quoteToken,
+  collateralIcon,
+  quoteIcon,
 }: AjnaBorrowHeadlinePropsParams) {
   const { t } = useTranslation()
 
   return {
     ...(collateralToken &&
-      quoteToken && {
+      quoteToken &&
+      collateralIcon &&
+      quoteIcon && {
         header: t(`ajna.position-page.common.headline.${flow}`, {
           collateralToken,
           id,
           product: upperFirst(product),
           quoteToken,
         }),
-        token: [collateralToken, quoteToken],
-        label: '/static/img/ajna-product-card-label.svg',
+        tokens: [collateralIcon, quoteIcon],
+        protocol: {
+          network: NetworkNames.ethereumMainnet,
+          protocol: LendingProtocol.Ajna,
+        },
       }),
   }
 }

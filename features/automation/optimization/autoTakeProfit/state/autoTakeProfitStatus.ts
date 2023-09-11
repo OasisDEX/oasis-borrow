@@ -5,7 +5,6 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { closeVaultOptions } from 'features/automation/common/consts'
 import { SidebarAutomationStages } from 'features/automation/common/types'
@@ -19,6 +18,7 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
+import { uiChanges } from 'helpers/uiChanges'
 
 import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
@@ -64,8 +64,6 @@ export function getAutoTakeProfitStatus({
   stage,
   tokenMarketPrice,
 }: GetAutoTakeProfitStatusParams): AutoTakeProfitStatus {
-  const { uiChanges } = useAppContext()
-
   const isEditing = checkIfIsEditingAutoTakeProfit({
     autoTakeProfitState,
     autoTakeProfitTriggerData,

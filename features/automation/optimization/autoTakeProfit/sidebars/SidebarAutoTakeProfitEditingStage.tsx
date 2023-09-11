@@ -4,8 +4,7 @@ import {
   Pages,
   trackingEvents,
 } from 'analytics/analytics'
-import { useAppContext } from 'components/AppContextProvider'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
@@ -24,6 +23,7 @@ import { prepareAutoTakeProfitResetData } from 'features/automation/optimization
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { uiChanges } from 'helpers/uiChanges'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -48,7 +48,6 @@ export function SidebarAutoTakeProfitEditingStage({
   warnings,
 }: SidebarAutoTakeProfitEditingStageProps) {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
   const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
 
   const {

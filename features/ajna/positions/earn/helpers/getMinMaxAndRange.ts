@@ -1,9 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { WAD_PRECISION } from 'components/constants'
-import {
-  ajnaDefaultMarketPriceOffset,
-  ajnaDefaultPoolRangeMarketPriceOffset,
-} from 'features/ajna/common/consts'
+import { ajnaDefaultPoolRangeMarketPriceOffset } from 'features/ajna/common/consts'
+import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { one, zero } from 'helpers/zero'
 
 export const getMinMaxAndRange = ({
@@ -12,6 +10,7 @@ export const getMinMaxAndRange = ({
   lowestUtilizedPriceIndex,
   mostOptimisticMatchingPrice,
   marketPrice,
+  isOracless,
   offset, // 0 - 1, percentage value
 }: {
   highestThresholdPrice: BigNumber
@@ -19,25 +18,23 @@ export const getMinMaxAndRange = ({
   lowestUtilizedPriceIndex: BigNumber
   mostOptimisticMatchingPrice: BigNumber
   marketPrice: BigNumber
+  isOracless: boolean
   offset: number
 }) => {
   // check whether pool contain liquidity and borrowers, if no generate default range from the lowest price to market price
+  // for oraceless we don't show slider in this case. so logic is not adjusted for that occasion
   if (lowestUtilizedPriceIndex.eq(zero)) {
     const defaultRange = [marketPrice.times(one.minus(ajnaDefaultPoolRangeMarketPriceOffset))]
 
-    while (
-      defaultRange[defaultRange.length - 1].lt(
-        marketPrice.times(one.minus(ajnaDefaultMarketPriceOffset)),
-      )
-    ) {
+    while (defaultRange[defaultRange.length - 1].lt(marketPrice)) {
       defaultRange.push(
         defaultRange[defaultRange.length - 1].times(1.005).decimalPlaces(WAD_PRECISION),
       )
     }
 
     return {
-      min: defaultRange[0],
-      max: defaultRange[defaultRange.length - 1],
+      min: snapToPredefinedValues(defaultRange[0]),
+      max: snapToPredefinedValues(defaultRange[defaultRange.length - 1]),
       range: defaultRange,
     }
   }
@@ -75,12 +72,13 @@ export const getMinMaxAndRange = ({
   const range = [
     ...new Set([...nearHtpMinRange, ...lupNearHtpRange, ...lupNearMompRange, ...nearMompMaxRange]),
   ]
+    .filter((item) => (isOracless ? true : item.lt(marketPrice)))
     .sort((a, b) => a.toNumber() - b.toNumber())
     .map((item) => item.decimalPlaces(18))
 
   return {
-    min: range[0],
-    max: range[range.length - 1],
+    min: snapToPredefinedValues(range[0]),
+    max: snapToPredefinedValues(range[range.length - 1]),
     range,
   }
 }

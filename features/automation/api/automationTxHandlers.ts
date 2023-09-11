@@ -9,7 +9,6 @@ import {
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { AutomationTxData, TxHelpers, UIChanges } from 'components/AppContext'
 import {
   addTransactionMap,
   AutomationAddTriggerData,
@@ -18,7 +17,9 @@ import {
   AutomationRemoveTriggerTxDef,
 } from 'features/automation/common/txDefinitions'
 import { AutomationPublishType } from 'features/automation/common/types'
+import { AutomationTxData, TxHelpers } from 'helpers/context/types'
 import { handleTransaction } from 'helpers/handleTransaction'
+import { UIChanges } from 'helpers/uiChanges'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 export const takeUntilTxState = [

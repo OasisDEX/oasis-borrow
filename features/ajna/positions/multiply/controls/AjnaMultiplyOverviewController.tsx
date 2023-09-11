@@ -1,5 +1,4 @@
 import { normalizeValue } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
@@ -10,6 +9,7 @@ import { ContentCardNetValue } from 'features/ajna/positions/common/components/c
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
+import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { ContentFooterItemsMultiply } from 'features/ajna/positions/multiply/components/ContentFooterItemsMultiply'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -23,10 +23,12 @@ export function AjnaMultiplyOverviewController() {
       collateralToken,
       quoteToken,
       flow,
+      owner,
       collateralPrice,
       priceFormat,
       quotePrice,
       isShort,
+      isProxyWithManyPositions,
     },
   } = useAjnaGeneralContext()
 
@@ -35,17 +37,24 @@ export function AjnaMultiplyOverviewController() {
     position: {
       isSimulationLoading,
       currentPosition: { position, simulation },
+      cumulatives,
     },
   } = useAjnaProductContext('multiply')
 
   const changeVariant = 'positive'
 
-  // TODO: replace with data from simulation
-  const pnl = new BigNumber(-110.26)
+  let pnl = zero
+  if (cumulatives) {
+    pnl = position.pnl(
+      cumulatives.cumulativeDeposit,
+      cumulatives.cumulativeWithdraw,
+      cumulatives.cumulativeFees,
+    )
+  }
 
   const liquidationPrice = isShort
-    ? normalizeValue(one.div(position.liquidationPrice))
-    : position.liquidationPrice
+    ? normalizeValue(one.div(position.liquidationPriceT0Np))
+    : position.liquidationPriceT0Np
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
     (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
@@ -55,6 +64,11 @@ export function AjnaMultiplyOverviewController() {
       ? normalizeValue(one.div(position.liquidationToMarketPrice))
       : position.liquidationToMarketPrice,
   )
+
+  const afterBuyingPower =
+    simulation && !simulation.pool.lowestUtilizedPriceIndex.isZero()
+      ? simulation.buyingPower
+      : undefined
 
   return (
     <Grid gap={2}>
@@ -81,6 +95,9 @@ export function AjnaMultiplyOverviewController() {
               changeVariant={changeVariant}
             />
             <ContentCardNetBorrowCost
+              collateralToken={collateralToken}
+              quoteToken={quoteToken}
+              owner={owner}
               netBorrowCost={position.pool.interestRate}
               changeVariant={changeVariant}
             />
@@ -93,6 +110,9 @@ export function AjnaMultiplyOverviewController() {
                 .times(collateralPrice)
                 .minus(simulation?.debtAmount.times(quotePrice))}
               pnl={pnl}
+              // For now we need to hide P&L for proxies with many positions
+              // because subgraph doesn't support it yet
+              pnlNotAvailable={isProxyWithManyPositions}
               showPnl={flow === 'manage'}
               changeVariant={changeVariant}
             />
@@ -111,13 +131,15 @@ export function AjnaMultiplyOverviewController() {
               multiple={position.riskRatio.multiple}
               afterMultiple={simulation?.riskRatio.multiple}
               buyingPower={position.buyingPower}
-              afterBuyingPower={simulation && simulation.buyingPower}
+              afterBuyingPower={afterBuyingPower}
               changeVariant={changeVariant}
             />
           </DetailsSectionFooterItemWrapper>
         }
       />
-      <AjnaTokensBannerController flow={flow} />
+      {isPoolWithRewards({ collateralToken, quoteToken }) && (
+        <AjnaTokensBannerController flow={flow} />
+      )}
     </Grid>
   )
 }

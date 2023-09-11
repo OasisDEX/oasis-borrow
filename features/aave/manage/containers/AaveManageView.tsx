@@ -1,14 +1,17 @@
 import { useActor } from '@xstate/react'
 import { useAaveContext } from 'features/aave'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AaveManageTabBar } from 'features/aave/manage/containers/AaveManageTabBar'
+import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { AaveAutomationContext } from 'features/automation/contexts/AaveAutomationContext'
 import { AavePositionNoticesView } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
+import {
+  AaveLikeReserveConfigurationData,
+  AaveLikeReserveData,
+} from 'lendingProtocols/aave-like-common'
 import React from 'react'
 import { Box, Container } from 'theme-ui'
 
@@ -25,8 +28,8 @@ function AaveManageContainer({
   aaveReserveDataDebtToken,
   address,
 }: {
-  aaveReserveState: ReserveConfigurationData
-  aaveReserveDataDebtToken: ReserveData
+  aaveReserveState: AaveLikeReserveConfigurationData
+  aaveReserveDataDebtToken: AaveLikeReserveData
   strategyConfig: IStrategyConfig
   address: string
 }) {
@@ -67,15 +70,15 @@ export function AaveManagePositionView({
   address,
   strategyConfig,
 }: AaveManageViewPositionViewProps) {
-  const { aaveReserveConfigurationData$, getAaveReserveData$ } = useAaveContext(
+  const { aaveLikeReserveConfigurationData$, getAaveLikeReserveData$ } = useAaveContext(
     strategyConfig.protocol,
     strategyConfig.network,
   )
   const [aaveReserveDataDebt, aaveReserveDataDebtError] = useObservable(
-    getAaveReserveData$({ token: strategyConfig.tokens.debt }),
+    getAaveLikeReserveData$({ token: strategyConfig.tokens.debt }),
   )
   const [aaveReserveState, aaveReserveStateError] = useObservable(
-    aaveReserveConfigurationData$({
+    aaveLikeReserveConfigurationData$({
       collateralToken: strategyConfig.tokens.collateral,
       debtToken: strategyConfig.tokens.debt,
     }),

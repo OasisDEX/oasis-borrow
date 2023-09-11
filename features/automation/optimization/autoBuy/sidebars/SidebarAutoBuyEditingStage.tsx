@@ -1,8 +1,7 @@
 import { Pages } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { useAppContext } from 'components/AppContextProvider'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { AppLink } from 'components/Links'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
@@ -34,6 +33,7 @@ import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { handleNumericInput } from 'helpers/input'
+import { uiChanges } from 'helpers/uiChanges'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
@@ -68,7 +68,6 @@ export function SidebarAutoBuyEditingStage({
     positionData: { id, ilk, token, debt, debtFloor, lockedCollateral, positionRatio },
     triggerData: { autoBuyTriggerData, stopLossTriggerData },
   } = useAutomationContext()
-  const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
   const { t } = useTranslation()
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')

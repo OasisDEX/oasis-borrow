@@ -1,18 +1,20 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
+import { getTokenGuarded } from 'blockchain/tokensMetadata'
+import { GenericTokenIcon } from 'components/GenericTokenIcon'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
 
 interface SimulateTitleProps {
-  token?: string
+  token: string
+  tokenSymbol?: string
   depositAmount?: BigNumber
 }
 
-export function SimulateTitle({ token = 'ETH', depositAmount }: SimulateTitleProps) {
-  const { iconCircle } = getToken(token)
+export function SimulateTitle({ token, tokenSymbol, depositAmount }: SimulateTitleProps) {
+  const tokenConfig = getTokenGuarded(token)
 
   return (
     <Flex
@@ -24,14 +26,18 @@ export function SimulateTitle({ token = 'ETH', depositAmount }: SimulateTitlePro
         alignItems: 'center',
       }}
     >
-      <Icon
-        name={iconCircle}
-        size="64px"
-        sx={{
-          verticalAlign: 'text-bottom',
-          mr: 3,
-        }}
-      />
+      {tokenConfig ? (
+        <Icon
+          name={tokenConfig.iconCircle}
+          size="64px"
+          sx={{
+            verticalAlign: 'text-bottom',
+            mr: 3,
+          }}
+        />
+      ) : (
+        <GenericTokenIcon size={64} symbol={token} sx={{ mr: 3 }} />
+      )}
       <Box>
         <Heading
           as="h3"
@@ -42,7 +48,7 @@ export function SimulateTitle({ token = 'ETH', depositAmount }: SimulateTitlePro
             color: 'primary100',
           }}
         >
-          {`${formatCryptoBalance(depositAmount || zero)} ${token}`}
+          {`${formatCryptoBalance(depositAmount || zero)} ${tokenSymbol || token}`}
         </Heading>
         <Text
           variant="paragraph3"

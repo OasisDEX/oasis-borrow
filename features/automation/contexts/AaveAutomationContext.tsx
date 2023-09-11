@@ -1,9 +1,9 @@
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { ManageAaveContext } from 'features/aave/manage/state'
+import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { getAutomationAavePositionData } from 'features/automation/common/context/getAutomationAavePositionData'
 import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
-import { getAaveStopLossMetadata } from 'features/automation/metadata/aave/stopLossMetadata'
+import { createGetAaveStopLossMetadata } from 'features/automation/metadata/aave/stopLossMetadata'
 import { defaultStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
@@ -49,7 +49,10 @@ export function AaveAutomationContext({
       commonData={commonData}
       protocol={VaultProtocol.Aave}
       metadata={{
-        stopLoss: getAaveStopLossMetadata,
+        stopLoss: createGetAaveStopLossMetadata(
+          aaveManageVault.strategyConfig.protocol,
+          aaveManageVault.strategyConfig.networkId,
+        ),
       }}
       overwriteTriggersDefaults={{
         stopLossTriggerData: defaultStopLossTriggerData,

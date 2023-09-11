@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppSpinner } from 'helpers/AppSpinner'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/context/types'
 import { formatPrice } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

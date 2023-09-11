@@ -1,5 +1,4 @@
-import { NetworkNames } from 'blockchain/networks'
-import { networksByName } from 'blockchain/networks'
+import { NetworkNames, networksByName } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import React from 'react'

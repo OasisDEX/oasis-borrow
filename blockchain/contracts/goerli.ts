@@ -7,6 +7,7 @@ import * as aaveV3PoolDataProvider from 'blockchain/abi/aave-v3-pool-data-provid
 import * as aaveV3Pool from 'blockchain/abi/aave-v3-pool.json'
 import * as accountFactory from 'blockchain/abi/account-factory.json'
 import * as accountGuard from 'blockchain/abi/account-guard.json'
+import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.json'
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
 import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
@@ -57,11 +58,11 @@ import {
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
-import { MainnetContracts, mainnetContracts } from './mainnet'
+import { mainnetContracts, MainnetContractsWithOptional } from './mainnet'
 
 const { goerli } = ADDRESSES
 
-export const goerliContracts: MainnetContracts = {
+export const goerliContracts: MainnetContractsWithOptional = {
   otc: contractDesc(otc, goerli.common.Otc),
   collaterals: getCollaterals(goerli.common, supportedIlks),
   tokens: tokensGoerli,
@@ -132,9 +133,9 @@ export const goerliContracts: MainnetContracts = {
   aaveTokens: {},
   aaveV2ProtocolDataProvider: contractDesc(
     aaveV2ProtocolDataProvider,
-    goerli.aave.v2.ProtocolDataProvider,
+    goerli.aave.v2.PoolDataProvider,
   ),
-  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, goerli.aave.v2.PriceOracle),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, goerli.aave.v2.Oracle),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_ETHUSD),
@@ -157,28 +158,46 @@ export const goerliContracts: MainnetContracts = {
     goerli.mpa.core.AccountGuard,
     ACCOUNT_GUARD_FACTORY_GENESIS_GOERLI,
   ),
-  aaveV3Pool: contractDesc(aaveV3Pool, goerli.aave.v3.Pool, AAVE_V3_POOL_GENESIS_GOERLI),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, goerli.aave.v3.AaveOracle),
-  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, goerli.aave.v3.AavePoolDataProvider),
+  aaveV3Pool: contractDesc(aaveV3Pool, goerli.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_GOERLI),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, goerli.aave.v3.Oracle),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, goerli.aave.v3.PoolDataProvider),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, goerli.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, goerli.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
+    'CBETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_CBETHETH),
+    'CBETH-GHO': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_CBETHGHO),
     'ETH-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ETHDAI),
+    'ETH-GHO': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ETHGHO),
     'ETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ETHUSDC),
+    'GHO-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_GHODAI),
     'RETH-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RETHDAI),
     'RETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RETHETH),
+    'RETH-GHO': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RETHGHO),
     'RETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RETHUSDC),
+    'SDAI-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SDAIUSDC),
+    'TBTC-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_TBTCUSDC),
+    'TBTC-WBTC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_TBTCWBTC),
     'USDC-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_USDCETH),
     'USDC-WBTC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_USDCWBTC),
+    'USDC-WLD': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_USDCWLD),
     'WBTC-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WBTCDAI),
+    'WBTC-GHO': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WBTCGHO),
     'WBTC-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WBTCUSDC),
+    'WLD-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WLDUSDC),
     'WSTETH-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHDAI),
     'WSTETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHETH),
+    'WSTETH-GHO': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHUSDC),
+    'YFI-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YFIDAI),
+  },
+  ajnaOraclessPoolPairs: {
+    'YIELDBTC-WBTC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YIELDBTCWBTC),
+    'YIELDETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YIELDETHETH),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, goerli.ajna.AjnaRewardsManager),
   // TODO update address
   ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, goerli.ajna.AjnaRewardsClaimer),
+  ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, goerli.ajna.ERC20PoolFactory),
   // NOT contracts
   cacheApi: 'https://cache-goerli-staging.staging.summer.fi/api/v1',
   safeConfirmations: 6,
@@ -195,4 +214,5 @@ export const goerliContracts: MainnetContracts = {
   magicLink: {
     apiKey: '',
   },
+  SdaiOracle: contractDesc(ajnaPoolInfo, goerli.common.SdaiOracle),
 }

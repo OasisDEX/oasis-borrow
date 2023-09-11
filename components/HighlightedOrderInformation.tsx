@@ -1,17 +1,20 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Skeleton } from 'components/Skeleton'
+import { TokensGroup } from 'components/TokensGroup'
 import React, { ReactNode } from 'react'
 import { SxStyleProp, Text } from 'theme-ui'
 
 interface EstimationOnCloseProps {
+  isLoading?: boolean
   label: string
+  symbol?: string
   value: ReactNode
-  iconCircle?: string
   valueSx?: SxStyleProp
 }
 
 export function HighlightedOrderInformation({
-  iconCircle,
+  isLoading = false,
   label,
+  symbol,
   value,
   valueSx,
 }: EstimationOnCloseProps) {
@@ -27,11 +30,11 @@ export function HighlightedOrderInformation({
       }}
     >
       <Text as="span" sx={{ display: 'flex', color: 'neutral80' }}>
-        {iconCircle && <Icon name={iconCircle} size="24px" sx={{ mt: '-1px', mr: 1 }} />}
+        {symbol && <TokensGroup tokens={[symbol]} forceSize={24} sx={{ mt: '-1px', mr: 1 }} />}
         {label}
       </Text>
       <Text as="span" sx={{ display: 'block', height: '100%', ...valueSx }}>
-        {value}
+        {isLoading ? <Skeleton width={100} /> : value}
       </Text>
     </Text>
   )

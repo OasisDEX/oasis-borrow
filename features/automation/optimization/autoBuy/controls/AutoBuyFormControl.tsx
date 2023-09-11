@@ -1,7 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import { AutomationEventIds, Pages } from 'analytics/analytics'
-import { TxHelpers } from 'components/AppContext'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { resolveMaxBuyPriceAnalytics } from 'features/automation/common/helpers'
 import {
@@ -13,6 +12,7 @@ import { getAutoBSTxHandlers } from 'features/automation/common/state/autoBSTxHa
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/autoBuy/sidebars/SidebarSetupAutoBuy'
+import { TxHelpers } from 'helpers/context/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 

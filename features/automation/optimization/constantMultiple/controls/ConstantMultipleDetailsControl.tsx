@@ -1,5 +1,5 @@
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
 import { ConstantMultipleDetailsLayout } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleDetailsLayout'
 import { checkIfIsEditingConstantMultiple } from 'features/automation/optimization/constantMultiple/helpers'

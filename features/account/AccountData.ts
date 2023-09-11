@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
+import { PositionCreated } from 'features/aave/services'
 import { Web3Context } from 'features/web3Context'
 import { startWithDefault } from 'helpers/operators'
 import { combineLatest, Observable } from 'rxjs'
@@ -32,9 +32,11 @@ export function createAccountData(
         startWithDefault(readPositionCreatedEvents$(context.account), []),
       ).pipe(
         map(([balance, numberOfVaults, ensName, hasAavePosition, dpmPositionCreatedEvents]) => {
+          // dpm valuts contains aave & ajna positions
           const numberOfDpmVaults = dpmPositionCreatedEvents.length
             ? dpmPositionCreatedEvents.length
             : 0
+          // only one position per user is allowed on ds proxys
           const numberOfAavePositions = hasAavePosition ? 1 : 0
 
           return {

@@ -1,18 +1,27 @@
-import {
-  AjnaHistoryEvent,
-  AjnaHistoryEvents,
-} from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 
-export const mapAjnaEarnEvents = (events: AjnaHistoryEvents): Partial<AjnaHistoryEvent>[] => {
+export const mapAjnaEarnEvents = (
+  events: AjnaUnifiedHistoryEvent[],
+): Partial<AjnaUnifiedHistoryEvent>[] => {
   const mappedEvents = events.map((event) => {
     const basicData = {
       kind: event.kind,
       txHash: event.txHash,
       timestamp: event.timestamp,
       totalFee: event.totalFee,
+      totalFeeInQuoteToken: event.totalFee,
       debtAddress: event.debtAddress,
       collateralAddress: event.collateralAddress,
+      addOrRemovePrice: event.addOrRemovePrice,
       isOpen: event.isOpen,
+
+      // TODO potentially items for calculating pnl and total earnings until we have better handling in subgraph
+      depositAmount: event.depositAmount,
+      withdrawAmount: event.withdrawAmount,
+      debtOraclePrice: event.debtOraclePrice,
+      ethPrice: event.ethPrice,
+      gasPrice: event.gasPrice,
+      gasUsed: event.gasUsed,
     }
     switch (event.kind) {
       case 'AjnaMoveQuote':
@@ -52,5 +61,5 @@ export const mapAjnaEarnEvents = (events: AjnaHistoryEvents): Partial<AjnaHistor
     }
   })
 
-  return mappedEvents.filter((event) => !!event)
+  return mappedEvents.filter((event) => !!event && Object.keys(event).length > 0)
 }

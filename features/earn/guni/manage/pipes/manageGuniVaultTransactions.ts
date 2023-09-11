@@ -1,8 +1,8 @@
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { closeGuniVaultCall } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 

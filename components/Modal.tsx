@@ -37,7 +37,7 @@ export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: Mod
   const handleEscClose = useCallback((event) => {
     const { keyCode } = event
     if (keyCode === 27) {
-      close()
+      close && close()
     }
   }, [])
 
@@ -234,7 +234,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
 export function MobileSidePanelPortal({ children }: WithChildren) {
   const onMobile = useOnMobile()
 
-  return onMobile ? ReactDOM.createPortal(children, document.body) : children
+  return onMobile && document.body ? ReactDOM.createPortal(children, document.body) : children
 }
 
 export function MobileSidePanel({
@@ -327,7 +327,7 @@ export function ModalTrezorMetamaskEIP1559() {
   }
 
   const disconnectHandler = async () => {
-    await disconnect()
+    disconnect()
     close()
   }
 

@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { useAppContext } from 'components/AppContextProvider'
+import { useProductContext } from 'components/context'
 import { PieChart } from 'components/dumb/PieChart'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
@@ -18,7 +18,6 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
@@ -347,9 +346,7 @@ function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
 }
 
 export function AssetsAndPositionsOverview({ address }: { address: string }) {
-  const followVaultsEnabled = useFeatureToggle('FollowVaults')
-
-  const { positionsOverviewSummary$ } = useAppContext()
+  const { positionsOverviewSummary$ } = useProductContext()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
 
   const [positionsOverviewSummary, positionOverviewSummaryError] = useObservable(
@@ -360,7 +357,7 @@ export function AssetsAndPositionsOverview({ address }: { address: string }) {
     <WithErrorHandler error={[positionOverviewSummaryError]}>
       <WithLoadingIndicator
         value={[positionsOverviewSummary]}
-        {...(followVaultsEnabled && { customLoader: <AssetsAndPositionsOverviewLoadingState /> })}
+        customLoader={<AssetsAndPositionsOverviewLoadingState />}
       >
         {([_positionsOverviewSummary]) => <AssetsAndPositionsView {..._positionsOverviewSummary} />}
       </WithLoadingIndicator>

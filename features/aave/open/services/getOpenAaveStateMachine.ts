@@ -1,7 +1,6 @@
-import { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave'
+import { OpenAaveParameters } from 'actions/aave-like/types'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
-import { AutomationTxData } from 'components/AppContext'
 import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from 'features/aave/open/state'
 import {
   AutomationAddTriggerData,
@@ -12,11 +11,11 @@ import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
 import { ProxyStateMachine } from 'features/stateMachines/proxy'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import { TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
+import { AutomationTxData } from 'helpers/context/types'
 
 export function getOpenAaveStateMachine(
   services: OpenAaveStateMachineServices,
-  openMultiplyParametersMachine: TransactionParametersStateMachine<OpenMultiplyAaveParameters>,
-  openDepositBorrowParametersMachine: TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>,
+  openMultiplyParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
   dsProxyMachine: ProxyStateMachine,
   dpmProxyMachine: DPMAccountStateMachine,
   allowanceMachine: AllowanceStateMachine,
@@ -31,7 +30,6 @@ export function getOpenAaveStateMachine(
 ) {
   return createOpenAaveStateMachine(
     openMultiplyParametersMachine,
-    openDepositBorrowParametersMachine,
     dsProxyMachine,
     dpmProxyMachine,
     allowanceMachine,

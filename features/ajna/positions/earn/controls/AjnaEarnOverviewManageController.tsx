@@ -1,29 +1,62 @@
+import {
+  calculateAjnaMaxLiquidityWithdraw,
+  getPoolLiquidity,
+  negativeToZero,
+} from '@oasisdex/dma-library'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
-import { ContentCardCurrentEarnings } from 'features/ajna/positions/common/components/contentCards/ContentCardCurrentEarnings'
+import { ContentCardEarnNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardEarnNetValue'
 import { ContentCardMaxLendingLTV } from 'features/ajna/positions/common/components/contentCards/ContentCardMaxLendingLTV'
 import { ContentCardPositionLendingPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionLendingPrice'
-import { ContentCardTokensDeposited } from 'features/ajna/positions/common/components/contentCards/ContentCardTokensDeposited'
+import { ContentCardTotalEarnings } from 'features/ajna/positions/common/components/contentCards/ContentCardTotalEarnings'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnManage'
-import { one, zero } from 'helpers/zero'
+import { getLendingPriceColor } from 'features/ajna/positions/earn/helpers/getLendingPriceColor'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export function AjnaEarnOverviewManageController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, quotePrice },
+    environment: {
+      collateralToken,
+      isOracless,
+      isShort,
+      owner,
+      priceFormat,
+      quotePrice,
+      quoteToken,
+    },
   } = useAjnaGeneralContext()
   const {
+    form: {
+      state: { depositAmount, withdrawAmount },
+    },
     position: {
-      isSimulationLoading,
       currentPosition: { position, simulation },
+      isSimulationLoading,
     },
     notifications,
   } = useAjnaProductContext('earn')
+
+  const { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice } = position.pool
+
+  const availableToWithdraw = calculateAjnaMaxLiquidityWithdraw({
+    pool: position.pool,
+    poolCurrentLiquidity: getPoolLiquidity(position.pool),
+    position,
+    simulation,
+  })
+
+  const lendingPriceColor = getLendingPriceColor({
+    highestThresholdPrice,
+    lowestUtilizedPrice,
+    mostOptimisticMatchingPrice,
+    price: position.price,
+  })
 
   return (
     <DetailsSection
@@ -31,47 +64,65 @@ export function AjnaEarnOverviewManageController() {
       notifications={notifications}
       content={
         <DetailsSectionContentCardWrapper>
-          <ContentCardCurrentEarnings
+          <ContentCardTotalEarnings
             quoteToken={quoteToken}
-            // TODO adjust once data available in subgraph
-            currentEarnings={zero}
-            netPnL={zero}
+            totalEarnings={position.totalEarnings.withFees}
+            totalEarningsWithoutFees={position.totalEarnings.withoutFees}
+            netPnL={position.pnl.withoutFees}
           />
-          <ContentCardTokensDeposited
+          <ContentCardEarnNetValue
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
-            tokensDeposited={position.quoteTokenAmount}
-            tokensDepositedUSD={position.quoteTokenAmount.times(quotePrice)}
-            afterTokensDeposited={simulation?.quoteTokenAmount}
+            netValue={position.quoteTokenAmount}
+            netValueUSD={!isOracless ? position.quoteTokenAmount.times(quotePrice) : undefined}
+            afterNetValue={simulation?.quoteTokenAmount}
           />
-          <ContentCardMaxLendingLTV
-            isLoading={isSimulationLoading}
-            price={position.price}
-            quoteToken={quoteToken}
-            collateralToken={collateralToken}
-            maxLendingPercentage={position.maxRiskRatio.loanToValue}
-            afterMaxLendingPercentage={simulation?.maxRiskRatio.loanToValue}
-          />
+          {!isOracless && (
+            <ContentCardMaxLendingLTV
+              isLoading={isSimulationLoading}
+              price={position.price}
+              quoteToken={quoteToken}
+              collateralToken={collateralToken}
+              maxLendingPercentage={position.maxRiskRatio.loanToValue}
+              afterMaxLendingPercentage={simulation?.maxRiskRatio.loanToValue}
+            />
+          )}
           <ContentCardPositionLendingPrice
             isLoading={isSimulationLoading}
-            collateralToken={collateralToken}
             quoteToken={quoteToken}
+            priceFormat={priceFormat}
+            isShort={isShort}
             positionLendingPrice={position.price}
             highestThresholdPrice={position.pool.highestThresholdPrice}
             afterPositionLendingPrice={simulation?.price}
-            relationToMarketPrice={position.maxRiskRatio.loanToValue.minus(one)}
+            priceColor={lendingPriceColor.color}
+            priceColorIndex={lendingPriceColor.index}
+            withTooltips={isOracless}
           />
         </DetailsSectionContentCardWrapper>
       }
       footer={
         <DetailsSectionFooterItemWrapper>
           <ContentFooterItemsEarnManage
+            isLoading={isSimulationLoading}
+            collateralToken={collateralToken}
             quoteToken={quoteToken}
-            availableToWithdraw={position.quoteTokenAmount}
+            owner={owner}
+            availableToWithdraw={availableToWithdraw}
             // TODO adjust once data available in subgraph
             projectedAnnualReward={zero}
-            totalAjnaRewards={position.rewards}
-            afterAvailableToWithdraw={simulation?.quoteTokenAmount}
+            afterAvailableToWithdraw={
+              simulation
+                ? negativeToZero(
+                    depositAmount
+                      ? availableToWithdraw.plus(depositAmount)
+                      : withdrawAmount
+                      ? availableToWithdraw.minus(withdrawAmount)
+                      : zero,
+                  )
+                : undefined
+            }
+            isOracless={isOracless}
           />
         </DetailsSectionFooterItemWrapper>
       }

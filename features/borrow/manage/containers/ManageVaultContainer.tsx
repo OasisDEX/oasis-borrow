@@ -1,5 +1,5 @@
 import { trackingEvents } from 'analytics/analytics'
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext, useProductContext } from 'components/context'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
@@ -7,6 +7,7 @@ import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manage
 import { SidebarManageBorrowVault } from 'features/borrow/manage/sidebars/SidebarManageBorrowVault'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
+import { uiChanges } from 'helpers/uiChanges'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -19,7 +20,8 @@ export function ManageVaultContainer({
 }: {
   manageVault: ManageStandardBorrowVaultState
 }) {
-  const { manageVault$, context$, uiChanges } = useAppContext()
+  const { context$ } = useMainContext()
+  const { manageVault$ } = useProductContext()
   const {
     vault: { id, ilk, token },
     clear,

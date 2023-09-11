@@ -1,4 +1,3 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
@@ -14,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 export function AjnaMultiplyFormController() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, flow, quoteToken },
+    environment: { collateralToken, flow, quoteToken, collateralIcon, quoteIcon },
     steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
@@ -41,6 +40,7 @@ export function AjnaMultiplyFormController() {
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'adjust')
+                updateState('action', 'adjust')
               },
             },
             {
@@ -49,7 +49,7 @@ export function AjnaMultiplyFormController() {
               }),
               panel: 'collateral',
               shortLabel: collateralToken,
-              icon: getToken(collateralToken).iconCircle,
+              tokenIcon: collateralIcon,
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'collateral')
@@ -63,12 +63,12 @@ export function AjnaMultiplyFormController() {
               }),
               panel: 'quote',
               shortLabel: quoteToken,
-              icon: getToken(quoteToken).iconCircle,
+              tokenIcon: quoteIcon,
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'quote')
-                updateState('uiPill', 'deposit-quote-multiply')
-                updateState('action', 'deposit-quote-multiply')
+                updateState('uiPill', 'payback-multiply')
+                updateState('action', 'payback-multiply')
               },
             },
             {

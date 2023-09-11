@@ -59,15 +59,6 @@ export function AjnaMultiplyFormContentManage() {
             active={uiPill}
             items={[
               {
-                id: 'deposit-quote-multiply',
-                label: t('system.actions.multiply.buy-coll'),
-                action: () => {
-                  dispatch({ type: 'reset' })
-                  updateState('uiPill', 'deposit-quote-multiply')
-                  updateState('action', 'deposit-quote-multiply')
-                },
-              },
-              {
                 id: 'payback-multiply',
                 label: t('system.actions.multiply.reduce-debt'),
                 action: () => {

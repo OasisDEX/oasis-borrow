@@ -1,19 +1,14 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
-import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
-import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useLocalStorage } from 'helpers/useLocalStorage'
+import { useAccount } from 'helpers/useAccount'
 import { Trans, useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Box, Container, Flex, Grid, Text } from 'theme-ui'
 
 import { Hero } from './common/Hero'
 import { HomepagePromoBlock } from './common/HomepagePromoBlock'
 import { OasisStats } from './OasisStats'
+import { useOasisStats } from './stats'
 
 function StatCell({ label, value }: { label: string; value: string }) {
   return (
@@ -31,7 +26,7 @@ function StatCell({ label, value }: { label: string; value: string }) {
   )
 }
 
-function ManagedVolumeStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats }) {
+function ManagedVolumeStats({ oasisStats }: { oasisStats?: OasisStats }) {
   const { t } = useTranslation()
   return (
     <HomepagePromoBlock.Big
@@ -43,25 +38,25 @@ function ManagedVolumeStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats 
         <StatCell
           label={t('landing.stats.30-day-volume')}
           value={
-            oasisStatsValue
-              ? `$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.monthlyVolume), 2)}`
+            oasisStats
+              ? `$${formatAsShorthandNumbers(new BigNumber(oasisStats.monthlyVolume), 2)}`
               : '-'
           }
         />
         <StatCell
           label={t('landing.stats.managed-on-oasis')}
           value={
-            oasisStatsValue
-              ? `$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.managedOnOasis), 2)}`
+            oasisStats
+              ? `$${formatAsShorthandNumbers(new BigNumber(oasisStats.managedOnOasis), 2)}`
               : '-'
           }
         />
         <StatCell
           label={t('landing.stats.collateral-automated')}
           value={
-            oasisStatsValue
+            oasisStats
               ? `$${formatAsShorthandNumbers(
-                  new BigNumber(oasisStatsValue.lockedCollateralActiveTrigger),
+                  new BigNumber(oasisStats.lockedCollateralActiveTrigger),
                   2,
                 )}`
               : '-'
@@ -73,33 +68,10 @@ function ManagedVolumeStats({ oasisStatsValue }: { oasisStatsValue?: OasisStats 
 }
 
 export const HomepageHero = () => {
-  const router = useRouter()
-  const { context$, checkReferralLocal$, userReferral$, getOasisStats$ } = useAppContext()
-  const [oasisStatsValue] = useObservable(getOasisStats$())
-  const [context] = useObservable(context$)
-  const [userReferral] = useObservable(userReferral$)
-  const [checkReferralLocal] = useObservable(checkReferralLocal$)
-
-  useEffect(() => {
-    if (!localReferral && referralsEnabled) {
-      const linkReferral = router.query.ref as string
-      if (linkReferral) {
-        setLocalReferral(linkReferral)
-        setLandedWithRef(linkReferral)
-      }
-    }
-  }, [checkReferralLocal, router.isReady])
-
-  const referralsEnabled = useFeatureToggle('Referrals')
-  const notificationsEnabled = useFeatureToggle('Notifications')
-  const [landedWithRef, setLandedWithRef] = useState('')
-  const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
+  const { data: oasisStats } = useOasisStats()
+  const { isConnected } = useAccount()
   return (
     <Container>
-      {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
-        <NewReferralModal />
-      )}
-      {(referralsEnabled || notificationsEnabled) && <TermsOfService userReferral={userReferral} />}
       <Flex
         sx={{
           height: 'auto',
@@ -107,11 +79,11 @@ export const HomepageHero = () => {
         }}
       >
         <Hero
-          isConnected={context?.status === 'connected'}
+          isConnected={isConnected}
           heading="landing.hero.main.headline"
           subheading={<Trans i18nKey="landing.hero.main.subheader" components={[<br />]} />}
         />
-        <ManagedVolumeStats oasisStatsValue={oasisStatsValue} />
+        <ManagedVolumeStats oasisStats={oasisStats} />
       </Flex>
     </Container>
   )

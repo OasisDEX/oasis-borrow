@@ -13,6 +13,7 @@ interface ContentCardNetValueProps {
   netValue: BigNumber
   afterNetValue?: BigNumber
   pnl: BigNumber
+  pnlNotAvailable?: boolean
   showPnl: boolean
   changeVariant?: ChangeVariantType
 }
@@ -22,6 +23,7 @@ export function ContentCardNetValue({
   netValue,
   afterNetValue,
   pnl,
+  pnlNotAvailable = false,
   showPnl,
   changeVariant = 'positive',
 }: ContentCardNetValueProps) {
@@ -30,7 +32,9 @@ export function ContentCardNetValue({
   const formatted = {
     netValue: formatFiatBalance(netValue),
     afterNetValue: afterNetValue && `${formatFiatBalance(afterNetValue)} USD`,
-    pnl: `${t('ajna.position-page.multiply.common.overview.pnl')}: $${formatFiatBalance(pnl)}`,
+    pnl: `${t('ajna.position-page.multiply.common.overview.pnl')}: ${
+      pnlNotAvailable ? 'n/a' : `$${formatFiatBalance(pnl)}`
+    }`,
   }
 
   const contentCardSettings: ContentCardProps = {

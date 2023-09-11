@@ -6,7 +6,11 @@ import {
   AaveV2UserReserveData,
   AaveV2UserReserveDataParameters,
 } from 'blockchain/aave/aaveV2ProtocolDataProvider'
-import { ProtocolData, UserAccountData, UserAccountDataArgs } from 'lendingProtocols/aaveCommon'
+import {
+  AaveLikeProtocolData,
+  AaveLikeUserAccountData,
+  AaveLikeUserAccountDataArgs,
+} from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
@@ -31,19 +35,21 @@ export function getAaveProtocolData$(
   aaveUserReserveData$: (
     args: AaveV2UserReserveDataParameters,
   ) => Observable<AaveV2UserReserveData>,
-  aaveUserAccountData$: (args: UserAccountDataArgs) => Observable<UserAccountData>,
-  aaveOracleAssetPriceData$: AaveOracleAssetPriceDataType,
+  aaveLikeUserAccountData$: (
+    args: AaveLikeUserAccountDataArgs,
+  ) => Observable<AaveLikeUserAccountData>,
+  aaveLikeOracleAssetPriceData$: AaveOracleAssetPriceDataType,
   aaveUserConfiguration$: AaveUserConfigurationType,
   aaveReservesList$: Observable<AaveV2ConfigurationData>,
   aaveOnChainPosition$: (params: GetAaveV2OnChainPosition) => Observable<IPosition>,
   collateralToken: string,
   debtToken: string,
   proxyAddress: string,
-): Observable<ProtocolData> {
+): Observable<AaveLikeProtocolData> {
   return combineLatest(
     aaveUserReserveData$({ token: collateralToken, address: proxyAddress }),
-    aaveUserAccountData$({ address: proxyAddress }),
-    aaveOracleAssetPriceData$({ token: collateralToken }),
+    aaveLikeUserAccountData$({ address: proxyAddress }),
+    aaveLikeOracleAssetPriceData$({ token: collateralToken }),
     aaveUserConfiguration$({ address: proxyAddress }),
     aaveReservesList$,
     aaveOnChainPosition$({ collateralToken, debtToken, proxyAddress }),

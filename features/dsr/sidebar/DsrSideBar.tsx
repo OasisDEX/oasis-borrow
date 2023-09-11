@@ -9,17 +9,18 @@ import { DsrDepositStage, DsrDepositState } from 'features/dsr/helpers/dsrDeposi
 import { DsrSidebarCreation } from 'features/dsr/sidebar/DsrSidebarCreation'
 import { createPrimaryButtonLabel, isDsrButtonDisabled } from 'features/dsr/utils/helpers'
 import { isProxyStage } from 'features/proxy/proxy'
-import { HasGasEstimation } from 'helpers/form'
+import { HasGasEstimation } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ChangeEvent, useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
-export type DsrSidebarTabOptions = 'deposit' | 'withdraw'
+export type DsrSidebarTabOptions = 'deposit' | 'withdraw' | 'convert'
 
 interface DsrSidebarProps {
   activeTab: DsrSidebarTabOptions
   daiBalance: BigNumber
+  sDaiBalance: BigNumber
   onDepositAmountChange: (e: ChangeEvent<HTMLInputElement>) => void
   depositInputValue?: BigNumber
   withDrawInputValue?: BigNumber
@@ -27,6 +28,7 @@ interface DsrSidebarProps {
   stage: DsrDepositStage
   proxyAddress?: string
   daiAllowance?: BigNumber
+  daiWalletAllowance?: BigNumber
   isLoading: boolean
   isOwner: boolean
   dsrDepositState: DsrDepositState
@@ -41,6 +43,7 @@ interface DsrSidebarProps {
 export function DsrSideBar({
   activeTab,
   daiBalance,
+  sDaiBalance,
   onDepositAmountChange,
   depositInputValue,
   onPrimaryButtonClick,
@@ -49,6 +52,7 @@ export function DsrSideBar({
   withDrawInputValue,
   proxyAddress,
   daiAllowance,
+  daiWalletAllowance,
   dsrDepositState,
   isOwner,
   operationChange,
@@ -67,8 +71,10 @@ export function DsrSideBar({
       depositInputValue,
       proxyAddress,
       daiAllowance,
+      daiWalletAllowance,
+      isMintingSDai: dsrDepositState.isMintingSDai,
     })
-  }, [stage, activeTab, proxyAddress, depositInputValue?.toNumber()])
+  }, [stage, activeTab, proxyAddress, depositInputValue?.toNumber(), dsrDepositState.isMintingSDai])
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(netValue.gt(zero) ? 'dsr.titles.manage' : 'dsr.titles.setup'),
@@ -91,10 +97,18 @@ export function DsrSideBar({
             onDepositAmountChange={onDepositAmountChange}
             depositInputValue={depositInputValue}
             daiBalance={daiBalance}
+            sDaiBalance={sDaiBalance}
             operationChange={operationChange}
             validationMessages={validationMessages}
             netValue={netValue}
             gasData={gasData}
+            onCheckboxChange={() => {
+              dsrDepositState.change({
+                kind: 'isMintingSDai',
+                isMintingSDai: !dsrDepositState.isMintingSDai,
+              })
+            }}
+            isMintingSDai={dsrDepositState.isMintingSDai}
           />
         )}
         {[

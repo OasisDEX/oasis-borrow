@@ -91,7 +91,7 @@ export function extractAutoBSData({
 }: ExtractAutoBSDataProps): AutoBSTriggerData {
   if (triggersData.triggers && triggersData.triggers.length > 0) {
     const triggersList = triggersData.triggers.filter((item) => !!item.groupId === isInGroup)
-    const autoBSTriggers = getTriggersByType(triggersList, [triggerType])
+    const autoBSTriggers = getTriggersByType(triggersList, [triggerType], triggersData.chainId)
 
     if (autoBSTriggers.length) {
       return mapAutoBSTriggerData(autoBSTriggers)[0]

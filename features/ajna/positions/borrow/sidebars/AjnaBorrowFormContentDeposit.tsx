@@ -1,4 +1,3 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import { AjnaBorrowOriginationFee } from 'features/ajna/positions/borrow/controls/AjnaBorrowOriginationFee'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
@@ -14,7 +13,13 @@ import React from 'react'
 
 export function AjnaBorrowFormContentDeposit() {
   const {
-    environment: { collateralBalance, collateralPrice, collateralToken, quoteToken },
+    environment: {
+      collateralBalance,
+      collateralDigits,
+      collateralPrice,
+      collateralToken,
+      quoteDigits,
+    },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -26,9 +31,9 @@ export function AjnaBorrowFormContentDeposit() {
     },
   } = useAjnaProductContext('borrow')
 
-  const debtMin = getAjnaBorrowDebtMin({ digits: getToken(quoteToken).digits, position })
+  const debtMin = getAjnaBorrowDebtMin({ digits: quoteDigits, position })
   const debtMax = getAjnaBorrowDebtMax({
-    precision: getToken(quoteToken).precision,
+    digits: quoteDigits,
     position,
     simulation,
   })
@@ -41,15 +46,11 @@ export function AjnaBorrowFormContentDeposit() {
         resetOnClear
         token={collateralToken}
         tokenPrice={collateralPrice}
+        tokenDigits={collateralDigits}
       />
-      <AjnaFormFieldGenerate
-        dispatchAmount={dispatch}
-        isDisabled={!depositAmount || depositAmount?.lte(0)}
-        maxAmount={debtMax}
-        minAmount={debtMin}
-      />
+      <AjnaFormFieldGenerate dispatchAmount={dispatch} maxAmount={debtMax} minAmount={debtMin} />
       {generateAmount && <AjnaBorrowOriginationFee />}
-      {depositAmount && (
+      {(depositAmount || generateAmount) && (
         <AjnaFormContentSummary>
           <AjnaBorrowFormOrder />
         </AjnaFormContentSummary>

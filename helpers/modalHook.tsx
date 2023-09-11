@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import * as ReactDOM from 'react-dom'
 
 export interface WithClose {
-  close: () => void
+  close?: () => void
   id?: string
 }
 
@@ -18,8 +18,22 @@ export type ModalOpener = <M extends React.ComponentType<any>, P extends React.C
   modalComponentProps?: Omit<P, 'close'>,
 ) => void
 
-const ModalContext = React.createContext<ModalOpener>(() => {
-  console.warn('ModalContext not setup properly ')
+type ModalOpenerWithClose = ModalOpener & WithClose
+
+export interface ModalState {
+  openModal: ModalOpenerWithClose
+  closeModal: () => void
+  modal: Modal | undefined
+}
+
+const ModalContext = React.createContext<ModalState>({
+  openModal: () => {
+    console.warn('ModalContext not setup properly ')
+  },
+  closeModal: () => {
+    console.warn('ModalContext not setup properly ')
+  },
+  modal: undefined,
 })
 
 export function ModalProvider(props: { children?: React.ReactNode }) {
@@ -28,13 +42,22 @@ export function ModalProvider(props: { children?: React.ReactNode }) {
   function close() {
     setModal(undefined)
   }
+  const openModal: ModalOpenerWithClose = (modal, modalProps) => {
+    setModal({
+      modalComponent: modal,
+      modalComponentProps: modalProps,
+    })
+  }
+  // Adding this to the context so that we can close the modal from anywhere
+  // without having to pass the close function down the component tree
+  openModal.close = close
+
   return (
     <ModalContext.Provider
-      value={(modal, modalProps) => {
-        setModal({
-          modalComponent: modal,
-          modalComponentProps: modalProps,
-        })
+      value={{
+        openModal,
+        closeModal: close,
+        modal: TheModal,
       }}
     >
       {props.children}
@@ -47,6 +70,13 @@ export function ModalProvider(props: { children?: React.ReactNode }) {
   )
 }
 
-export function useModal(): ModalOpener {
+/**
+ * @deprecated use useModalContext instead. This is only here for backwards compatibility. New hook contains handler for closing and reference for actual modal.
+ */
+export function useModal(): ModalOpenerWithClose {
+  return useContext(ModalContext).openModal
+}
+
+export function useModalContext(): ModalState {
   return useContext(ModalContext)
 }

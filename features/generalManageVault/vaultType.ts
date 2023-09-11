@@ -15,6 +15,7 @@ export enum VaultType {
   Borrow = 'borrow',
   Multiply = 'multiply',
   Earn = 'earn',
+  Unknown = 'unknown',
 }
 
 export type SaveVaultType = (

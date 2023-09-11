@@ -12,6 +12,7 @@ import { formatPrecision } from 'helpers/formatters/format'
 import { camelCase, upperFirst } from 'lodash'
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
+import { match, P } from 'ts-pattern'
 
 type PropertyNameType = '$initial_referrer' | '$user_id'
 
@@ -90,6 +91,7 @@ export enum Pages {
   AutoSell = 'AutoSell',
   ConstantMultiple = 'ConstantMultiple',
   TakeProfit = 'TakeProfit',
+  DAISavingsRate = 'DAISavingsRate',
 }
 
 export enum AutomationEventIds {
@@ -179,6 +181,7 @@ export enum CommonAnalyticsSections {
   Form = 'Form',
   NotificationCenter = 'NotificationCenter',
   NotificationPreferences = 'NotificationPreferences',
+  OpenPosition = 'OpenPosition',
 }
 
 export enum EventTypes {
@@ -945,7 +948,7 @@ export const trackingEvents = {
         product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
         page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        section: CommonAnalyticsSections.OpenPosition,
       }
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
@@ -955,7 +958,7 @@ export const trackingEvents = {
         product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
         page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        section: CommonAnalyticsSections.OpenPosition,
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
@@ -966,7 +969,7 @@ export const trackingEvents = {
         depositAmount: depositAmount.toString(),
         riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        section: CommonAnalyticsSections.OpenPosition,
       }
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
@@ -977,7 +980,7 @@ export const trackingEvents = {
         depositAmount: depositAmount.toString(),
         riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        section: CommonAnalyticsSections.OpenPosition,
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
@@ -988,29 +991,30 @@ export const trackingEvents = {
         depositAmount: depositAmount.toString(),
         riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        section: CommonAnalyticsSections.OpenPosition,
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    stETHAdjustRiskMoveSlider: (riskRatio: BigNumber) => {
+    aaveAdjustRiskSliderAction: (
+      action: 'ConfirmRisk' | 'MoveSlider',
+      riskRatio: BigNumber,
+      productType: ProductType,
+    ) => {
       const eventBody = {
-        id: 'MoveSlider',
-        product: ProductType.EARN,
+        id: action,
+        product: productType.toLocaleLowerCase(),
         riskRatio: formatPrecision(riskRatio, 4),
-        page: Pages.ManageSTETH,
+        page: {
+          [ProductType.MULTIPLY]: Pages.AdjustPosition,
+          [ProductType.EARN]: Pages.ManageSTETH,
+          [ProductType.BORROW]: '',
+        }[productType.toLocaleLowerCase()],
         section: 'AdjustRisk',
       }
-      mixpanelInternalAPI(EventTypes.InputChange, eventBody)
-    },
-    stETHAdjustRiskConfirmRisk: (riskRatio: BigNumber) => {
-      const eventBody = {
-        id: 'ConfirmRisk',
-        product: ProductType.EARN,
-        riskRatio: formatPrecision(riskRatio, 4),
-        page: Pages.ManageSTETH,
-        section: 'AdjustRisk',
-      }
-      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      mixpanelInternalAPI(
+        action === 'MoveSlider' ? EventTypes.InputChange : EventTypes.ButtonClick,
+        eventBody,
+      )
     },
     stETHAdjustRiskConfirmTransaction: (riskRatio: BigNumber) => {
       const eventBody = {
@@ -1148,6 +1152,51 @@ export const trackingEvents = {
   topBannerEvent: (id: TopBannerEvents, topBannerName: string) => {
     const eventBody = { id, section: 'TopBanner', product: 'TopBanner', topBannerName }
     !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.TopBannerEvent, eventBody)
+  },
+  daiSavingsRate: (
+    event: EventTypes.InputChange | EventTypes.ButtonClick,
+    eventData: {
+      depositAmount: number
+      operation?: 'deposit' | 'withdraw' | 'convert'
+      txHash?: string
+      network?: string
+      walletType?: string
+    },
+  ) => {
+    const { txHash, ...eventDataRest } = eventData
+    const eventCommons = {
+      section: CommonAnalyticsSections.Form,
+      page: Pages.DAISavingsRate,
+      product: ProductType.EARN,
+      txHash,
+    }
+    if (event === EventTypes.InputChange) {
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(event, {
+          ...eventCommons,
+          id: {
+            [EventTypes.InputChange]: 'DepositAmount',
+          },
+          eventData: { txHash, ...eventDataRest },
+        })
+    }
+
+    const eventId = match(eventDataRest.operation)
+      .with('deposit', () => 'ConfirmDeposit')
+      .with('withdraw', () => 'ConfirmWithdraw')
+      .with('convert', () => 'ConfirmConvert')
+      .with(P._, () => 'Undefiend')
+      .run()
+
+    if (event === EventTypes.ButtonClick) {
+      mixpanelInternalAPI(event, {
+        ...eventCommons,
+        id: {
+          [EventTypes.ButtonClick]: eventId,
+        },
+        eventData: mixpanel.has_opted_out_tracking() ? { txHash } : { txHash, ...eventDataRest },
+      })
+    }
   },
 }
 

@@ -20,8 +20,8 @@ export const useAsync = <T, E = string>(asyncFunction: Promise<T>, immediate = t
         setValue(response)
         setStatus('success')
       })
-      .catch((error) => {
-        setError(error)
+      .catch((innerError) => {
+        setError(innerError)
         setStatus('error')
       })
   }, [asyncFunction])

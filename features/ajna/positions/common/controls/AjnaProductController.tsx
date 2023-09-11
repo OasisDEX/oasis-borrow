@@ -1,23 +1,21 @@
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
-import { useAppContext } from 'components/AppContextProvider'
+import { NetworkHexIds } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { steps } from 'features/ajna/common/consts'
-import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaBorrowPositionController } from 'features/ajna/positions/borrow/controls/AjnaBorrowPositionController'
 import { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { AjnaGeneralContextProvider } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { AjnaProductContextProvider } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
-import { getAjnaHistory$ } from 'features/ajna/positions/common/observables/getAjnaHistory'
+import { useAjnaData } from 'features/ajna/positions/common/hooks/useAjnaData'
+import { useAjnaRedirect } from 'features/ajna/positions/common/hooks/useAjnaRedirect'
 import {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
-  getAjnaPositionAuction$,
-} from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
-import { getStaticDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
+} from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
 import { getAjnaEarnDefaultAction } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultAction'
 import { getAjnaEarnDefaultUiDropdown } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultUiDropdown'
@@ -29,35 +27,18 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { getPositionIdentity } from 'helpers/getPositionIdentity'
-import { useObservable } from 'helpers/observableHook'
-import { useAccount } from 'helpers/useAccount'
+import { one } from 'helpers/zero'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React from 'react'
-import { useMemo } from 'react'
-import { EMPTY } from 'rxjs'
 
-interface AjnaProductControllerOpenFlow {
-  collateralToken: string
-  product: AjnaProduct
-  quoteToken: string
-  id?: never
-}
-
-interface AjnaProductControllerManageFlow {
-  id: string
-  collateralToken?: never
-  product?: never
-  quoteToken?: never
-}
-
-type AjnaProductControllerProps = (
-  | AjnaProductControllerOpenFlow
-  | AjnaProductControllerManageFlow
-) & {
+interface AjnaProductControllerProps {
+  collateralToken?: string
+  id?: string
   flow: AjnaFlow
+  product?: AjnaProduct
+  quoteToken?: string
 }
 
 export function AjnaProductController({
@@ -69,225 +50,179 @@ export function AjnaProductController({
 }: AjnaProductControllerProps) {
   const { t } = useTranslation()
   const { push } = useRouter()
+
   const {
-    ajnaPosition$,
-    balancesInfoArray$,
-    dpmPositionData$,
-    tokenPriceUSD$,
-    gasPrice$,
-    userSettings$,
-  } = useAppContext()
-  const { walletAddress } = useAccount()
+    data: {
+      ajnaPositionAggregatedData,
+      ajnaPositionData,
+      balancesInfoArrayData,
+      dpmPositionData,
+      ethBalanceData,
+      gasPriceData,
+      tokenPriceUSDData,
+      userSettingsData,
+      tokensIconsData,
+    },
+    errors,
+    isOracless,
+    tokensPrecision,
+  } = useAjnaData({
+    collateralToken,
+    id,
+    product,
+    quoteToken,
+  })
+  const redirect = useAjnaRedirect({
+    ajnaPositionData,
+    collateralToken,
+    dpmPositionData,
+    id,
+    product,
+    quoteToken,
+  })
 
-  const [userSettingsData, userSettingsError] = useObservable(userSettings$)
-
-  const [gasPriceData, gasPriceError] = useObservable(gasPrice$)
-  const [dpmPositionData, dpmPositionError] = useObservable(
-    useMemo(
-      () =>
-        id
-          ? dpmPositionData$(getPositionIdentity(id))
-          : collateralToken && product && quoteToken
-          ? getStaticDpmPositionData$({ collateralToken, product, protocol: 'Ajna', quoteToken })
-          : EMPTY,
-      [collateralToken, id, product, quoteToken],
-    ),
-  )
-  const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
-    useMemo(
-      () =>
-        dpmPositionData
-          ? balancesInfoArray$(
-              [dpmPositionData.collateralToken, dpmPositionData.quoteToken, 'ETH'],
-              walletAddress || dpmPositionData.user,
-            )
-          : EMPTY,
-      [dpmPositionData, walletAddress],
-    ),
-  )
-  const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
-    useMemo(
-      () =>
-        dpmPositionData
-          ? tokenPriceUSD$([dpmPositionData.collateralToken, dpmPositionData.quoteToken, 'ETH'])
-          : EMPTY,
-      [dpmPositionData],
-    ),
-  )
-  const [ajnaPositionData, ajnaPositionError] = useObservable(
-    useMemo(
-      () =>
-        dpmPositionData && tokenPriceUSDData
-          ? ajnaPosition$(
-              tokenPriceUSDData[dpmPositionData.collateralToken],
-              tokenPriceUSDData[dpmPositionData.quoteToken],
-              dpmPositionData,
-            )
-          : EMPTY,
-      [dpmPositionData, tokenPriceUSDData],
-    ),
-  )
-
-  const [ajnaPositionAuctionData, ajnaPositionAuctionError] = useObservable(
-    useMemo(
-      () =>
-        dpmPositionData && ajnaPositionData
-          ? getAjnaPositionAuction$({ dpmPositionData, ajnaPositionData })
-          : EMPTY,
-      [dpmPositionData, ajnaPositionData],
-    ),
-  )
-
-  const [ajnaHistoryData, ajnaHistoryError] = useObservable(
-    useMemo(
-      () => (dpmPositionData ? getAjnaHistory$({ dpmPositionData }) : EMPTY),
-      [dpmPositionData, ajnaPositionData],
-    ),
-  )
-
-  if ((dpmPositionData || ajnaPositionData) === null) void push('/not-found')
+  if (redirect) void push(redirect)
 
   return (
-    <WithConnection>
+    <WithConnection pageChainId={NetworkHexIds.MAINNET} includeTestNet={true}>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
-          <AjnaWrapper>
-            <WithErrorHandler
-              error={[
-                ajnaPositionError,
-                balancesInfoArrayError,
-                dpmPositionError,
-                tokenPriceUSDError,
-                gasPriceError,
-                ajnaPositionAuctionError,
-                ajnaHistoryError,
-                userSettingsError,
+          <WithErrorHandler error={errors}>
+            <WithLoadingIndicator
+              value={[
+                ajnaPositionData,
+                ethBalanceData,
+                balancesInfoArrayData,
+                dpmPositionData,
+                tokenPriceUSDData,
+                gasPriceData,
+                ajnaPositionAggregatedData,
+                userSettingsData,
+                tokensPrecision,
+                tokensIconsData,
               ]}
+              customLoader={
+                <PositionLoadingState
+                  {...getAjnaHeadlineProps({
+                    collateralToken: dpmPositionData?.collateralToken,
+                    flow,
+                    product: dpmPositionData?.product as AjnaProduct,
+                    quoteToken: dpmPositionData?.quoteToken,
+                    collateralIcon: tokensIconsData?.collateralToken,
+                    quoteIcon: tokensIconsData?.quoteToken,
+                    id,
+                  })}
+                />
+              }
             >
-              <WithLoadingIndicator
-                value={[
-                  ajnaPositionData,
-                  balancesInfoArrayData,
-                  dpmPositionData,
-                  tokenPriceUSDData,
-                  gasPriceData,
-                  ajnaPositionAuctionData,
-                  ajnaHistoryData,
-                  userSettingsData,
-                ]}
-                customLoader={
-                  <PositionLoadingState
-                    {...getAjnaHeadlineProps({
-                      collateralToken: dpmPositionData?.collateralToken,
-                      flow,
-                      product: dpmPositionData?.product as AjnaProduct,
-                      quoteToken: dpmPositionData?.quoteToken,
-                      id,
-                    })}
+              {([
+                ajnaPosition,
+                [ethBalance],
+                [collateralBalance, quoteBalance],
+                dpmPosition,
+                tokenPriceUSD,
+                gasPrice,
+                { auction, history, cumulatives },
+                { slippage },
+                { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
+                tokensIconsData,
+              ]) => (
+                <>
+                  <PageSEOTags
+                    title="seo.title-product-w-tokens"
+                    titleParams={{
+                      product: t(`seo.ajnaProductPage.title`, {
+                        product: upperFirst(dpmPosition.product),
+                      }),
+                      protocol: 'Ajna',
+                      token1: dpmPosition.collateralToken,
+                      token2: dpmPosition.quoteToken,
+                    }}
+                    description="seo.ajna.description"
+                    url={document.location.pathname}
                   />
-                }
-              >
-                {([
-                  ajnaPosition,
-                  [collateralBalance, quoteBalance, ethBalance],
-                  dpmPosition,
-                  tokenPriceUSD,
-                  gasPrice,
-                  ajnaPositionAuction,
-                  ajnaHistory,
-                  { slippage },
-                ]) =>
-                  ajnaPosition ? (
-                    <>
-                      <PageSEOTags
-                        title="seo.title-product-w-tokens"
-                        titleParams={{
-                          product: t(`seo.ajnaProductPage.title`, {
-                            product: upperFirst(dpmPosition.product),
-                          }),
-                          protocol: 'Ajna',
-                          token1: dpmPosition.collateralToken,
-                          token2: dpmPosition.quoteToken,
+                  <AjnaGeneralContextProvider
+                    collateralAddress={dpmPosition.collateralTokenAddress}
+                    collateralBalance={collateralBalance}
+                    collateralDigits={collateralDigits}
+                    collateralPrecision={collateralPrecision}
+                    collateralPrice={isOracless ? one : tokenPriceUSD[dpmPosition.collateralToken]}
+                    collateralToken={dpmPosition.collateralToken}
+                    collateralIcon={tokensIconsData.collateralToken}
+                    {...(flow === 'manage' && { dpmProxy: dpmPosition.proxy })}
+                    ethBalance={ethBalance}
+                    ethPrice={tokenPriceUSD.ETH}
+                    flow={flow}
+                    id={id}
+                    isOracless={!!isOracless}
+                    owner={dpmPosition.user}
+                    product={dpmPosition.product as AjnaProduct}
+                    quoteAddress={dpmPosition.quoteTokenAddress}
+                    quoteBalance={quoteBalance}
+                    quoteDigits={quoteDigits}
+                    quotePrecision={quotePrecision}
+                    quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
+                    quoteToken={dpmPosition.quoteToken}
+                    quoteIcon={tokensIconsData.quoteToken}
+                    steps={steps[dpmPosition.product as AjnaProduct][flow]}
+                    gasPrice={gasPrice}
+                    slippage={slippage}
+                    isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
+                  >
+                    {dpmPosition.product === 'borrow' && (
+                      <AjnaProductContextProvider
+                        formDefaults={{
+                          action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
                         }}
-                        description="seo.ajna.description"
-                        url={document.location.pathname}
-                      />
-                      <AjnaGeneralContextProvider
-                        collateralBalance={collateralBalance}
-                        collateralPrice={tokenPriceUSD[dpmPosition.collateralToken]}
-                        collateralToken={dpmPosition.collateralToken}
-                        {...(flow === 'manage' && { dpmProxy: dpmPosition.proxy })}
-                        ethBalance={ethBalance}
-                        ethPrice={tokenPriceUSD.ETH}
-                        flow={flow}
-                        id={id}
-                        owner={dpmPosition.user}
-                        product={dpmPosition.product as AjnaProduct}
-                        quoteBalance={quoteBalance}
-                        quotePrice={tokenPriceUSD[dpmPosition.quoteToken]}
-                        quoteToken={dpmPosition.quoteToken}
-                        steps={steps[dpmPosition.product as AjnaProduct][flow]}
-                        gasPrice={gasPrice}
-                        slippage={slippage}
+                        formReducto={useAjnaBorrowFormReducto}
+                        position={ajnaPosition as AjnaPosition}
+                        product={dpmPosition.product}
+                        positionAuction={auction as AjnaBorrowishPositionAuction}
+                        positionHistory={history}
+                        positionCumulatives={cumulatives}
                       >
-                        {dpmPosition.product === 'borrow' && (
-                          <AjnaProductContextProvider
-                            formDefaults={{
-                              action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
-                            }}
-                            formReducto={useAjnaBorrowFormReducto}
-                            position={ajnaPosition as AjnaPosition}
-                            product={dpmPosition.product}
-                            positionAuction={ajnaPositionAuction as AjnaBorrowishPositionAuction}
-                            positionHistory={ajnaHistory}
-                          >
-                            <AjnaBorrowPositionController />
-                          </AjnaProductContextProvider>
-                        )}
-                        {dpmPosition.product === 'earn' && (
-                          <AjnaProductContextProvider
-                            formDefaults={{
-                              action: getAjnaEarnDefaultAction(
-                                flow,
-                                ajnaPosition as AjnaEarnPosition,
-                              ),
-                              uiDropdown: getAjnaEarnDefaultUiDropdown(
-                                ajnaPosition as AjnaEarnPosition,
-                              ),
-                              price: getEarnDefaultPrice(ajnaPosition as AjnaEarnPosition),
-                            }}
-                            formReducto={useAjnaEarnFormReducto}
-                            position={ajnaPosition as AjnaEarnPosition}
-                            product={dpmPosition.product}
-                            positionAuction={ajnaPositionAuction as AjnaEarnPositionAuction}
-                            positionHistory={ajnaHistory}
-                          >
-                            <AjnaEarnPositionController />
-                          </AjnaProductContextProvider>
-                        )}
-                        {dpmPosition.product === 'multiply' && (
-                          <AjnaProductContextProvider
-                            formDefaults={{
-                              action: flow === 'open' ? 'open-multiply' : 'adjust',
-                            }}
-                            formReducto={useAjnaMultiplyFormReducto}
-                            position={ajnaPosition as AjnaPosition}
-                            product={dpmPosition.product}
-                            positionAuction={ajnaPositionAuction as AjnaBorrowishPositionAuction}
-                            positionHistory={ajnaHistory}
-                          >
-                            <AjnaMultiplyPositionController />
-                          </AjnaProductContextProvider>
-                        )}
-                      </AjnaGeneralContextProvider>
-                    </>
-                  ) : (
-                    <></>
-                  )
-                }
-              </WithLoadingIndicator>
-            </WithErrorHandler>
-          </AjnaWrapper>
+                        <AjnaBorrowPositionController />
+                      </AjnaProductContextProvider>
+                    )}
+                    {dpmPosition.product === 'earn' && (
+                      <AjnaProductContextProvider
+                        formDefaults={{
+                          action: getAjnaEarnDefaultAction(flow, ajnaPosition as AjnaEarnPosition),
+                          uiDropdown: getAjnaEarnDefaultUiDropdown(
+                            ajnaPosition as AjnaEarnPosition,
+                          ),
+                          price: getEarnDefaultPrice(ajnaPosition as AjnaEarnPosition),
+                        }}
+                        formReducto={useAjnaEarnFormReducto}
+                        position={ajnaPosition as AjnaEarnPosition}
+                        product={dpmPosition.product}
+                        positionAuction={auction as AjnaEarnPositionAuction}
+                        positionHistory={history}
+                        positionCumulatives={cumulatives}
+                      >
+                        <AjnaEarnPositionController />
+                      </AjnaProductContextProvider>
+                    )}
+                    {dpmPosition.product === 'multiply' && (
+                      <AjnaProductContextProvider
+                        formDefaults={{
+                          action: flow === 'open' ? 'open-multiply' : 'adjust',
+                        }}
+                        formReducto={useAjnaMultiplyFormReducto}
+                        position={ajnaPosition as AjnaPosition}
+                        product={dpmPosition.product}
+                        positionAuction={auction as AjnaBorrowishPositionAuction}
+                        positionHistory={history}
+                        positionCumulatives={cumulatives}
+                      >
+                        <AjnaMultiplyPositionController />
+                      </AjnaProductContextProvider>
+                    )}
+                  </AjnaGeneralContextProvider>
+                </>
+              )}
+            </WithLoadingIndicator>
+          </WithErrorHandler>
         </WithWalletAssociatedRisk>
       </WithTermsOfService>
     </WithConnection>

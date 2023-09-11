@@ -1,20 +1,27 @@
 import { useActor } from '@xstate/react'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext } from 'components/context'
+import { PositionHistory } from 'components/history/PositionHistory'
 import { TabBar } from 'components/TabBar'
+import { DisabledHistoryControl } from 'components/vault/HistoryControl'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { isAaveHistorySupported } from 'features/aave/helpers'
+import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
-import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
+import { IStrategyConfig } from 'features/aave/types/strategy-config'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { ReserveConfigurationData, ReserveData } from 'lendingProtocols/aaveCommon'
+import {
+  AaveLikeReserveConfigurationData,
+  AaveLikeReserveData,
+} from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid } from 'theme-ui'
 
 interface AaveManageTabBarProps {
-  aaveReserveState: ReserveConfigurationData
-  aaveReserveDataDebtToken: ReserveData
+  aaveReserveState: AaveLikeReserveConfigurationData
+  aaveReserveDataDebtToken: AaveLikeReserveData
   strategyConfig: IStrategyConfig
 }
 
@@ -24,8 +31,10 @@ export function AaveManageTabBar({
   aaveReserveDataDebtToken,
 }: AaveManageTabBarProps) {
   const { t } = useTranslation()
-  const aaveProtection = useFeatureToggle('AaveProtection')
+  const aaveProtection = useFeatureToggle('AaveV3Protection')
+  const aaveHistory = useFeatureToggle('AaveV3History')
   const {
+    automationTriggersData: { isAutomationDataLoaded },
     triggerData: { stopLossTriggerData },
   } = useAutomationContext()
   const { stateMachine } = useManageAaveStateMachineContext()
@@ -39,7 +48,7 @@ export function AaveManageTabBar({
   } = state.context
 
   const protectionEnabled = stopLossTriggerData.isStopLossEnabled
-  const showAutomationTabs = isSupportedAutomationTokenPair(collateralToken, debtToken)
+  const showAutomationTabs = isSupportedAaveAutomationTokenPair(collateralToken, debtToken)
 
   const isClosingPosition = state.matches('frontend.reviewingClosing')
   const hasCloseTokenSet = !!state.context.manageTokenInput?.closingToken
@@ -47,11 +56,15 @@ export function AaveManageTabBar({
   const adjustingTouched = state.matches('frontend.editing') && state.context.userInput.riskRatio
   const manageTouched =
     (state.matches('frontend.manageCollateral') || state.matches('frontend.manageDebt')) &&
+    supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
     state.context.manageTokenInput?.manageTokenActionValue
   const nextPosition =
     adjustingTouched || manageTouched || (isClosingPosition && hasCloseTokenSet)
       ? state.context.transition?.simulation.position
       : undefined
+
+  const historyIsSupported =
+    aaveHistory && isAaveHistorySupported(state.context.strategyConfig.networkId)
 
   return (
     <TabBar
@@ -91,11 +104,39 @@ export function AaveManageTabBar({
               {
                 label: t('system.protection'),
                 value: 'protection',
-                tag: { include: true, active: protectionEnabled },
+                tag: {
+                  include: true,
+                  active: protectionEnabled,
+                  isLoading: !isAutomationDataLoaded,
+                },
                 content: <ProtectionControl />,
               },
             ]
           : []),
+        ...(historyIsSupported === undefined
+          ? []
+          : historyIsSupported
+          ? [
+              {
+                value: 'history',
+                label: t('system.history'),
+                content: (
+                  <PositionHistory
+                    collateralToken={collateralToken}
+                    historyEvents={state.context.historyEvents}
+                    quoteToken={debtToken}
+                    networkId={strategyConfig.networkId}
+                  />
+                ),
+              },
+            ]
+          : [
+              {
+                value: 'history',
+                label: t('system.history'),
+                content: <DisabledHistoryControl protocol={strategyConfig.protocol} />,
+              },
+            ]),
       ]}
     />
   )

@@ -1,9 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
 import { Skeleton } from 'components/Skeleton'
+import { StatefulTooltip } from 'components/Tooltip'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { TranslateStringType } from 'helpers/translateStringType'
-import React, { ReactNode, useState } from 'react'
+import React, { PropsWithChildren, ReactNode, useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
@@ -12,9 +13,14 @@ import { WithArrow } from './WithArrow'
 
 export type ChangeVariantType = 'positive' | 'negative'
 
+interface DetailsSectionContentCardTooltipProps {
+  value: ReactNode
+}
+
 export interface DetailsSectionContentCardChangePillProps {
   isLoading?: boolean
-  value?: string
+  tooltip?: string
+  value?: string | [string, string, string]
   variant: ChangeVariantType
 }
 
@@ -25,15 +31,20 @@ interface DetailsSectionContentCardLinkProps {
 }
 
 export interface ContentCardProps {
-  title: string
-  value?: string
-  unit?: TranslateStringType
   change?: DetailsSectionContentCardChangePillProps
-  footnote?: TranslateStringType
-  link?: DetailsSectionContentCardLinkProps
-  modal?: TranslateStringType | JSX.Element
+  changeTooltip?: ReactNode
   customBackground?: string
   customUnitStyle?: SystemStyleObject
+  customValueColor?: string
+  extra?: ReactNode
+  footnote?: string | [string, string, string]
+  footnoteTooltip?: string
+  link?: DetailsSectionContentCardLinkProps
+  modal?: TranslateStringType | JSX.Element
+  title: string
+  unit?: TranslateStringType
+  value?: ReactNode
+  valueTooltip?: ReactNode
 }
 
 export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
@@ -42,11 +53,39 @@ export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantT
     : 'negative'
 }
 
+function DetailsSectionContentCardTooltip({
+  children,
+  value,
+}: PropsWithChildren<DetailsSectionContentCardTooltipProps>) {
+  return (
+    <StatefulTooltip
+      inline
+      tooltip={value}
+      containerSx={{ display: 'inline', borderBottom: '1px dotted', borderColor: 'inherit' }}
+      tooltipSx={{
+        fontSize: 1,
+        fontWeight: 'regular',
+        fontFamily: 'body',
+        lineHeight: 'body',
+        whiteSpace: 'pre',
+        border: 'none',
+        borderRadius: 'medium',
+        boxShadow: 'buttonMenu',
+      }}
+    >
+      {children}
+    </StatefulTooltip>
+  )
+}
+
 export function DetailsSectionContentCardChangePill({
   isLoading,
+  tooltip,
   value,
   variant,
 }: DetailsSectionContentCardChangePillProps) {
+  const isValueArray = Array.isArray(value)
+
   return (
     <>
       {(value || isLoading) && (
@@ -74,17 +113,25 @@ export function DetailsSectionContentCardChangePill({
               }),
               borderRadius: 'mediumLarge',
               opacity: isLoading ? 0 : 1,
-              transition: '200ms opacity',
             }}
           >
-            {value}
+            {tooltip ? (
+              <>
+                {isValueArray && `${value[0]} `}
+                <DetailsSectionContentCardTooltip value={tooltip}>
+                  {isValueArray ? value[1] : value}
+                </DetailsSectionContentCardTooltip>
+                {isValueArray && ` ${value[2]}`}
+              </>
+            ) : (
+              <>{isValueArray ? value.join(' ') : value}</>
+            )}
           </Text>
         </>
       )}
     </>
   )
 }
-
 function DetailsSectionContentCardLink({ label, url, action }: DetailsSectionContentCardLinkProps) {
   return (
     <>
@@ -105,7 +152,6 @@ function DetailsSectionContentCardLink({ label, url, action }: DetailsSectionCon
     </>
   )
 }
-
 function DetailsSectionContentCardModal({
   close,
   children,
@@ -126,15 +172,19 @@ export function DetailsSectionContentCardWrapper({ children }: { children: React
 }
 
 export function DetailsSectionContentCard({
-  title,
-  value,
-  unit,
   change,
-  footnote,
-  link,
-  modal,
   customBackground = '',
   customUnitStyle = {},
+  customValueColor,
+  extra,
+  footnote,
+  footnoteTooltip,
+  link,
+  modal,
+  title,
+  unit,
+  value,
+  valueTooltip,
 }: ContentCardProps) {
   const openModal = useModal()
   const [isHighlighted, setIsHighlighted] = useState(false)
@@ -151,6 +201,7 @@ export function DetailsSectionContentCard({
     cardBackgroundColor = customBackground
   }
   const cursorStyle = { cursor: modal ? 'pointer' : 'auto' }
+  const isFootnoteArray = Array.isArray(footnote)
 
   return (
     <Flex
@@ -186,10 +237,23 @@ export function DetailsSectionContentCard({
       <Text
         as="p"
         variant="header3"
-        sx={{ maxWidth: '100%', lineHeight: 'loose', ...cursorStyle }}
+        sx={{
+          maxWidth: '100%',
+          lineHeight: 'loose',
+          ...cursorStyle,
+          ...(customValueColor && {
+            color: customValueColor,
+          }),
+        }}
         {...hightlightableItemEvents}
       >
-        {value || '-'}
+        {valueTooltip ? (
+          <DetailsSectionContentCardTooltip value={valueTooltip}>
+            {value || '-'}
+          </DetailsSectionContentCardTooltip>
+        ) : (
+          value || '-'
+        )}
         {unit && (
           <Text as="small" sx={{ ml: 1, fontSize: 5, ...customUnitStyle }}>
             {unit}
@@ -201,6 +265,11 @@ export function DetailsSectionContentCard({
           <DetailsSectionContentCardChangePill {...change} />
         </Box>
       )}
+      {extra && (
+        <Box sx={{ pt: '12px', ...cursorStyle }} {...hightlightableItemEvents}>
+          {extra}
+        </Box>
+      )}
       {footnote && (
         <Text
           as="p"
@@ -208,7 +277,17 @@ export function DetailsSectionContentCard({
           sx={{ maxWidth: '100%', pt: 2, fontSize: '12px', ...cursorStyle }}
           {...hightlightableItemEvents}
         >
-          {footnote}
+          {footnoteTooltip ? (
+            <>
+              {isFootnoteArray && `${footnote[0]} `}
+              <DetailsSectionContentCardTooltip value={footnoteTooltip}>
+                {isFootnoteArray ? footnote[1] : footnote}
+              </DetailsSectionContentCardTooltip>
+              {isFootnoteArray && ` ${footnote[2]}`}
+            </>
+          ) : (
+            <>{isFootnoteArray ? footnote.join(' ') : footnote}</>
+          )}
         </Text>
       )}
       {link?.label && (link?.url || link?.action) && <DetailsSectionContentCardLink {...link} />}

@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { getEstimatedGasFeeTextOld } from 'components/vault/VaultChangesInformation'
 import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
-import { HasGasEstimation } from 'helpers/form'
-import { formatAmount } from 'helpers/formatters/format'
+import { HasGasEstimation } from 'helpers/context/types'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -11,23 +11,25 @@ interface DsrDepositInfoSectionProps {
   daiToDeposit: BigNumber
   activeTab: DsrSidebarTabOptions
   gasData: HasGasEstimation
+  token?: string
 }
 
 export function DsrDepositInfoSection({
   daiToDeposit,
   activeTab,
   gasData,
+  token = 'DAI',
 }: DsrDepositInfoSectionProps) {
   const { t } = useTranslation()
 
-  const daiToDepositValue = formatAmount(daiToDeposit, 'USD')
+  const daiToDepositValue = formatCryptoBalance(daiToDeposit)
 
   return (
     <InfoSection
       title={t('vault-changes.order-information')}
       items={[
         {
-          label: t('dsr.order.total-dai', { action: activeTab }),
+          label: t('dsr.order.total-dai', { action: activeTab, token }),
           value: daiToDepositValue,
         },
         {

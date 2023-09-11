@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { AaveV3ReserveDataReply } from 'blockchain/aave-v3'
-import { ReserveData } from 'lendingProtocols/aaveCommon'
+import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
@@ -11,14 +11,14 @@ export type PreparedAaveTotalValueLocked = {
 type PrepareAaveTVLProps = [AaveV3ReserveDataReply, AaveV3ReserveDataReply, BigNumber[]]
 
 export function prepareAaveTotalValueLocked$(
-  getAaveWstEthReserveData$: Observable<ReserveData>,
-  getAaveWEthReserveData$: Observable<ReserveData>,
-  getAaveAssetsPrices$: Observable<BigNumber[]>,
+  getAaveWstEthReserveData$: Observable<AaveLikeReserveData>,
+  getAaveWEthReserveData$: Observable<AaveLikeReserveData>,
+  getAaveLikeAssetsPrices$: Observable<BigNumber[]>,
 ): Observable<PreparedAaveTotalValueLocked> {
   return combineLatest(
     getAaveWstEthReserveData$,
     getAaveWEthReserveData$,
-    getAaveAssetsPrices$,
+    getAaveLikeAssetsPrices$,
   ).pipe(
     map(([WSTETH_reserveData, ETH_reserveData, [ethPrice, wstEthPrice]]: PrepareAaveTVLProps) => {
       const wstEthAvailableLiquidity = new BigNumber(WSTETH_reserveData.availableLiquidity)

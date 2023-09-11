@@ -1,4 +1,4 @@
-import { Strategy } from '@oasisdex/dma-library'
+import { AjnaStrategy } from '@oasisdex/dma-library'
 
 export interface AjnaTxData {
   data: string
@@ -11,4 +11,4 @@ export interface AjnaSimulationValidationItem {
   data?: { [key: string]: string }
 }
 
-export type AjnaSimulationData<P> = Strategy<P>['simulation']
+export type AjnaSimulationData<P> = AjnaStrategy<P>['simulation']

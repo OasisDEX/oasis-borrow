@@ -1,7 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { GasPriceParams } from 'blockchain/prices'
-import { isAppContextAvailable } from 'components/AppContextProvider'
+import { isProductContextAvailable } from 'components/context'
 import {
   AjnaFlow,
   AjnaProduct,
@@ -27,22 +27,32 @@ import React, {
 } from 'react'
 
 interface AjnaGeneralContextProviderProps {
+  collateralAddress: string
   collateralBalance: BigNumber
+  collateralDigits: number
+  collateralPrecision: number
   collateralPrice: BigNumber
   collateralToken: string
+  collateralIcon: string
   dpmProxy?: string
   ethBalance: BigNumber
   ethPrice: BigNumber
   flow: AjnaFlow
   id?: string
+  isOracless: boolean
   owner: string
   product: AjnaProduct
+  quoteAddress: string
   quoteBalance: BigNumber
+  quoteDigits: number
+  quotePrecision: number
   quotePrice: BigNumber
   quoteToken: string
+  quoteIcon: string
   steps: AjnaSidebarStep[]
   gasPrice: GasPriceParams
   slippage: BigNumber
+  isProxyWithManyPositions: boolean
 }
 
 type AjnaGeneralContextEnvironment = Omit<AjnaGeneralContextProviderProps, 'steps'> & {
@@ -95,7 +105,7 @@ export function AjnaGeneralContextProvider({
   steps,
   ...props
 }: PropsWithChildren<AjnaGeneralContextProviderProps>) {
-  if (!isAppContextAvailable()) return null
+  if (!isProductContextAvailable()) return null
 
   const {
     flow,
@@ -106,6 +116,7 @@ export function AjnaGeneralContextProvider({
     owner,
     product,
     slippage,
+    isProxyWithManyPositions,
   } = props
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaSidebarStep>(steps[0])
@@ -152,6 +163,7 @@ export function AjnaGeneralContextProvider({
     environment: {
       ...props,
       isShort,
+      isProxyWithManyPositions,
       priceFormat: isShort
         ? `${quoteToken}/${collateralToken}`
         : `${collateralToken}/${quoteToken}`,

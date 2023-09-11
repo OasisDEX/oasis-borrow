@@ -5,7 +5,7 @@ import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
 import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
-import { getNetworkRpcEndpoint, NetworkIds } from './networks'
+import { getNetworkRpcEndpoint } from './networks'
 
 function fixChainId(chainId: string | number) {
   return Number(chainId).valueOf()
@@ -20,8 +20,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
       if (!provider) {
         const chainId = fixChainId(await chainIdPromise)
         jsonRpcBatchProvider =
-          jsonRpcBatchProvider ??
-          new JsonRpcBatchProvider(getNetworkRpcEndpoint(NetworkIds.MAINNET, chainId), chainId)
+          jsonRpcBatchProvider ?? new JsonRpcBatchProvider(getNetworkRpcEndpoint(chainId), chainId)
         provider = jsonRpcBatchProvider
       }
       return provider
@@ -74,7 +73,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
             try {
               return await provider!.send(payload.method, payload.params)
             } catch (err) {
-              console.log(err)
+              console.error(err)
               return 0
             }
           }

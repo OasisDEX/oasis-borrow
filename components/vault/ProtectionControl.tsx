@@ -1,6 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useAppContext } from 'components/AppContextProvider'
-import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutomationContext, useMainContext } from 'components/context'
 import { AppLink } from 'components/Links'
 import {
   AUTO_SELL_FORM_CHANGE,
@@ -26,7 +25,7 @@ import { DefaultVaultLayout } from './DefaultVaultLayout'
 interface ZeroDebtProtectionBannerProps {
   useTranslationKeys?: boolean
   header: string
-  description: string
+  description: string | JSX.Element
   debtToken?: string
   ratioParamTranslationKey?: string
   bannerStrategiesKey?: string
@@ -51,7 +50,7 @@ function ZeroDebtProtectionBanner({
       header={useTranslationKeys ? t(header, { debtToken }) : header}
       subheader={
         <>
-          {useTranslationKeys
+          {useTranslationKeys && typeof description === 'string'
             ? t(description, {
                 ratioParamTranslationKey: t(ratioParamTranslationKey!),
                 bannerStrategiesKey: t(bannerStrategiesKey!),
@@ -116,15 +115,21 @@ function getZeroDebtProtectionBannerProps({
     return {
       useTranslationKeys: false,
       showLink: false,
-      header: 'Creation of the new stop loss trigger is currently disabled.',
-      description:
-        "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW stop loss triggers, as they might not result in the expected outcome. Please use the 'close vault' option if you want to close your vault right now.",
+      header: 'Stop loss protection is not yet available for these positions.',
+      description: (
+        <>
+          Currently, the Summer.Fi Stop loss is not yet available for this position. Let the team
+          know if you would like to set-up a Stop loss for this position on{' '}
+          <AppLink href="mailto:support@summer.fi">support@summer.fi</AppLink> or our{' '}
+          <AppLink href={EXTERNAL_LINKS.DISCORD}>Discord</AppLink>.
+        </>
+      ),
     }
   }
 }
 
 export function ProtectionControl() {
-  const { txHelpers$ } = useAppContext()
+  const { txHelpers$ } = useMainContext()
   const {
     positionData: { debt, debtFloor, debtToken },
     metadata: {

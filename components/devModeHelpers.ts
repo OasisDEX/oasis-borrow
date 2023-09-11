@@ -5,8 +5,8 @@ import { disapprove } from 'blockchain/calls/erc20'
 import { setProxyOwner } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
-import { TxHelpers$ } from 'components/AppContext'
 import { createExchangeQuote$ } from 'features/exchange/exchange'
+import { TxHelpers$ } from 'helpers/context/types'
 import { identity, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
@@ -90,5 +90,5 @@ export function pluginDevModeHelpers(
         }),
       )
       .subscribe(identity)
-  console.log('dev helpers initialized!')
+  console.info('dev helpers initialized!')
 }

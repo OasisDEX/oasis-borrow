@@ -1,11 +1,9 @@
-import { getStorageValue } from 'helpers/useLocalStorage'
 import { keyBy } from 'lodash'
 import { env } from 'process'
 
 import { forkNetworks, forkSettings } from './forks-config'
 import { NetworkIds } from './network-ids'
 import { NetworkConfig, NetworkConfigHexId, networks, networksById } from './networks-config'
-import { CustomNetworkStorageKey, mainnetNetworkParameter } from './use-custom-network-parameter'
 
 export const isTestnetEnabled = () => {
   const isDev = env.NODE_ENV !== 'production'
@@ -47,20 +45,24 @@ const networksWithForksAtTheBeginning: NetworkConfig[] = [...forkNetworks, ...ne
 
 const networksSet = networksWithForksAtTheBeginning.reduce((acc, network) => {
   if (acc.some((n) => n.hexId === network.hexId)) {
-    console.log('NetworkConfig with hexId ', network.hexId, ' already exists, skipping.')
+    console.info('NetworkConfig with hexId ', network.hexId, ' already exists, skipping.')
     return acc
   }
   return [...acc, network]
 }, [] as NetworkConfig[])
 
-export const enableNetworksSet = networksSet.filter((network) => network.enabled)
+export const enableNetworksSet = networksSet.filter((network) => network.isEnabled())
 export const networkSetByHexId = keyBy(enableNetworksSet, 'hexId')
 export const networkSetById = keyBy(enableNetworksSet, 'id')
 
 export const getOppositeNetworkHexIdByHexId = (currentConnectedChainHexId: NetworkConfigHexId) => {
   const networkConfig = networkSetByHexId[currentConnectedChainHexId]
   if (!networkConfig)
-    console.log('NetworkConfig not found for hexid ', currentConnectedChainHexId, ' using mainnet.')
+    console.info(
+      'NetworkConfig not found for hexid ',
+      currentConnectedChainHexId,
+      ' using mainnet.',
+    )
   return (
     (networkConfig &&
       (networkConfig.testnet ? networkConfig.mainnetHexId : networkConfig.testnetHexId)) ||
@@ -135,10 +137,7 @@ export const filterNetworksAccordingToSavedNetwork =
     return isTestnetNetworkHexId(customNetworkHexId) ? network.testnet : !network.testnet
   }
 
-export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: NetworkIds) {
-  const customNetworkData = getStorageValue(CustomNetworkStorageKey, '')
-  const { id } = (customNetworkData || mainnetNetworkParameter) as typeof mainnetNetworkParameter
-  const isTestnet = isTestnetNetworkId(connectedChainId || id)
+export function getNetworkRpcEndpoint(networkId: NetworkIds) {
   const isForkSet = isForkSetForNetworkId(networkId)
   if (!networksById[networkId]) {
     throw new Error('Invalid contract chain id provided or not implemented yet')
@@ -147,9 +146,7 @@ export function getNetworkRpcEndpoint(networkId: NetworkIds, connectedChainId?: 
     const networkName = networksById[networkId].name
     return forkSettings[networkName]!.url
   }
-  return isTestnet
-    ? networksById[networksById[networkId].testnetId!].rpcUrl
-    : networksById[networkId].rpcUrl
+  return networksById[networkId].rpcUrl
 }
 
 export function getNetworkById(networkId: NetworkIds) {
@@ -180,4 +177,12 @@ export function getNetworksHexIdsByHexId(networkHexId: NetworkConfigHexId): Netw
     (id): id is NetworkConfigHexId => id !== undefined,
   )
   return Array.from(new Set(baseHexs))
+}
+
+export function isNetworkHexIdSupported(networkId: NetworkConfigHexId) {
+  return !!networkSetByHexId[networkId]
+}
+
+export function NetworkIdToNetworkHexIds(networkId: NetworkIds): NetworkConfigHexId {
+  return networkId.toString(16) as NetworkConfigHexId
 }

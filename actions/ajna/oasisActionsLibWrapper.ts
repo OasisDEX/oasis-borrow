@@ -1,75 +1,90 @@
-import { AjnaCommonDependencies, AjnaCommonPayload, Network, Strategy } from '@oasisdex/dma-library'
+import {
+  AjnaCommonDependencies,
+  AjnaCommonPayload,
+  AjnaStrategy,
+  Network,
+} from '@oasisdex/dma-library'
 import {
   ajnaDepositGenerateBorrow,
   ajnaOpenBorrow,
   ajnaPaybackWithdrawBorrow,
 } from 'actions/ajna/borrow'
 import { ajnaClaimEarn, ajnaDepositEarn, ajnaOpenEarn, ajnaWithdrawEarn } from 'actions/ajna/earn'
-import { ajnaAdjustMultiply, ajnaCloseMultiply, ajnaOpenMultiply } from 'actions/ajna/multiply'
+import { ajnaOpenMultiply } from 'actions/ajna/multiply'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
-import { getToken } from 'blockchain/tokensMetadata'
 import { ethers } from 'ethers'
-import { AjnaFormState, AjnaGenericPosition, AjnaPoolPairs } from 'features/ajna/common/types'
+import { AjnaFormState, AjnaGenericPosition } from 'features/ajna/common/types'
+import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
+import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
+
+import { ajnaAdjust, ajnaClose } from './common'
 
 interface AjnaTxHandlerInput {
+  collateralAddress: string
+  collateralPrecision: number
   collateralPrice: BigNumber
   collateralToken: string
   context: Context
+  isFormValid: boolean
   position: AjnaGenericPosition
+  simulation?: AjnaGenericPosition
+  quoteAddress: string
+  quotePrecision: number
   quotePrice: BigNumber
   quoteToken: string
   rpcProvider: ethers.providers.Provider
+  slippage: BigNumber
   state: AjnaFormState
-  isFormValid: boolean
 }
 
 export async function getAjnaParameters({
+  collateralAddress,
+  collateralPrecision,
   collateralPrice,
   collateralToken,
   context,
+  isFormValid,
   position,
+  simulation,
+  quoteAddress,
+  quotePrecision,
   quotePrice,
   quoteToken,
   rpcProvider,
+  slippage,
   state,
-  isFormValid,
-}: AjnaTxHandlerInput): Promise<Strategy<AjnaGenericPosition> | undefined> {
-  const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
+}: AjnaTxHandlerInput): Promise<AjnaStrategy<AjnaGenericPosition> | undefined> {
   const defaultPromise = Promise.resolve(undefined)
   const chainId = context.chainId
-  const quoteTokenPrecision = getToken(quoteToken).precision
-  const collateralTokenPrecision = getToken(collateralToken).precision
+  const walletAddress = context.account
 
   const { action, dpmAddress } = state
   const addressesConfig = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
+  const poolAddress = await getAjnaPoolAddress(collateralAddress, quoteAddress, chainId)
 
   const dependencies: AjnaCommonDependencies = {
     ajnaProxyActions: addressesConfig.ajnaProxyActions.address,
     poolInfoAddress: addressesConfig.ajnaPoolInfo.address,
     provider: rpcProvider,
     WETH: addressesConfig.tokens.ETH.address,
-    getPoolData: getAjnaPoolData,
+    getPoolData: getAjnaPoolData(chainId),
     network: 'mainnet' as Network,
   }
 
-  if (!addressesConfig.ajnaPoolPairs[tokenPair]) {
-    throw new Error(`No pool for given token pair: ${tokenPair}`)
-  }
-
   const commonPayload: AjnaCommonPayload = {
-    collateralTokenPrecision,
+    collateralTokenPrecision: collateralPrecision,
     dpmProxyAddress: dpmAddress,
-    poolAddress: addressesConfig.ajnaPoolPairs[tokenPair].address,
-    quoteTokenPrecision,
+    poolAddress,
+    quoteTokenPrecision: quotePrecision,
     collateralPrice,
     quotePrice,
   }
 
-  if (!isFormValid) {
+  if (!isFormValid || !walletAddress) {
     return defaultPromise
   }
 
@@ -79,11 +94,23 @@ export async function getAjnaParameters({
     }
     case 'deposit-borrow':
     case 'generate-borrow': {
-      return ajnaDepositGenerateBorrow({ state, commonPayload, dependencies, position })
+      return ajnaDepositGenerateBorrow({ state, commonPayload, dependencies, position, simulation })
     }
     case 'payback-borrow':
     case 'withdraw-borrow': {
-      return ajnaPaybackWithdrawBorrow({ state, commonPayload, dependencies, position })
+      return ajnaPaybackWithdrawBorrow({
+        state: {
+          ...state,
+          paybackAmount:
+            state.paybackAmount && state.paybackAmountMax
+              ? getMaxIncreasedValue(state.paybackAmount, position.pool.interestRate)
+              : state.paybackAmount,
+        },
+        commonPayload,
+        dependencies,
+        position,
+        simulation,
+      })
     }
 
     case 'open-earn': {
@@ -99,18 +126,44 @@ export async function getAjnaParameters({
       return ajnaClaimEarn({ state, commonPayload, dependencies, position })
     }
     case 'open-multiply': {
-      return ajnaOpenMultiply({ state, commonPayload, dependencies })
+      return ajnaOpenMultiply({
+        state,
+        commonPayload,
+        dependencies,
+        chainId,
+        collateralToken,
+        quoteToken,
+        walletAddress,
+        pool: position.pool,
+        slippage,
+      })
     }
+    case 'adjust-borrow':
     case 'adjust': {
-      return ajnaAdjustMultiply({ state, commonPayload, dependencies, position })
+      return ajnaAdjust({
+        state,
+        commonPayload,
+        dependencies,
+        position,
+        slippage,
+        collateralToken,
+        quoteToken,
+      })
     }
     case 'generate-multiply':
     case 'deposit-collateral-multiply': {
       const { loanToValue } = state
 
       if (loanToValue) {
-        // TODO here handling for complex action once available
-        return defaultPromise
+        return ajnaAdjust({
+          state,
+          commonPayload,
+          dependencies,
+          position,
+          slippage,
+          collateralToken,
+          quoteToken,
+        })
       }
 
       return ajnaDepositGenerateBorrow({
@@ -118,25 +171,55 @@ export async function getAjnaParameters({
         commonPayload,
         dependencies,
         position,
+        simulation,
       })
     }
     case 'payback-multiply':
     case 'withdraw-multiply': {
       const { loanToValue } = state
-
-      if (loanToValue) {
-        // TODO here handling for complex action once available
-        return defaultPromise
+      const resolvedState = {
+        ...state,
+        paybackAmount:
+          state.paybackAmount && state.paybackAmountMax
+            ? getMaxIncreasedValue(state.paybackAmount, position.pool.interestRate)
+            : state.paybackAmount,
       }
 
-      return ajnaPaybackWithdrawBorrow({ state, commonPayload, dependencies, position })
+      if (loanToValue) {
+        return ajnaAdjust({
+          state: resolvedState,
+          commonPayload,
+          dependencies,
+          position,
+          slippage,
+          collateralToken,
+          quoteToken,
+        })
+      }
+
+      return ajnaPaybackWithdrawBorrow({
+        state: resolvedState,
+        commonPayload,
+        dependencies,
+        position,
+        simulation,
+      })
     }
     case 'deposit-quote-multiply': {
       // TODO here handling for complex action once available
       return defaultPromise
     }
+    case 'close-borrow':
     case 'close-multiply': {
-      return ajnaCloseMultiply({ commonPayload, dependencies, position })
+      return ajnaClose({
+        state,
+        commonPayload,
+        dependencies,
+        position,
+        collateralToken,
+        quoteToken,
+        slippage,
+      })
     }
     default:
       return defaultPromise

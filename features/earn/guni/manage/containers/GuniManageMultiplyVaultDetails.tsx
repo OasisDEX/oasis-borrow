@@ -9,7 +9,6 @@ import { ContentCardMultiple } from 'components/vault/detailsSection/ContentCard
 import { ContentCardNetAPY } from 'components/vault/detailsSection/ContentCardNetAPY'
 import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
 import { ContentFooterItemsEarn } from 'components/vault/detailsSection/ContentFooterItemsEarn'
-import { dsrNotification } from 'content/dsr-notification'
 import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -45,7 +44,6 @@ export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
     <Box>
       <DetailsSection
         title={t('manage-earn-vault.overview-earn', { earnId: id })}
-        notifications={[dsrNotification]}
         content={
           <DetailsSectionContentCardWrapper>
             <ContentCardNetValue

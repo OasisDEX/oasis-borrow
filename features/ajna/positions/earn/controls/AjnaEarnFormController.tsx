@@ -1,4 +1,3 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
@@ -15,7 +14,7 @@ import React from 'react'
 export function AjnaEarnFormController() {
   const { t } = useTranslation()
   const {
-    environment: { flow, quoteToken, collateralToken },
+    environment: { flow, quoteToken, collateralToken, quoteIcon, collateralIcon },
     steps: { currentStep },
   } = useAjnaGeneralContext()
   const {
@@ -59,7 +58,7 @@ export function AjnaEarnFormController() {
                 }),
                 panel: 'liquidity',
                 shortLabel: quoteToken,
-                icon: getToken(quoteToken).iconCircle,
+                tokenIcon: quoteIcon,
                 action: () => {
                   dispatch({ type: 'reset' })
                   updateState('uiDropdown', 'liquidity')
@@ -73,7 +72,7 @@ export function AjnaEarnFormController() {
                       label: t('system.claim-collateral'),
                       panel: 'claim-collateral',
                       shortLabel: collateralToken,
-                      icon: getToken(collateralToken).iconCircle,
+                      tokenIcon: collateralIcon,
                       iconShrink: 2,
                       action: () => {
                         dispatch({ type: 'reset' })

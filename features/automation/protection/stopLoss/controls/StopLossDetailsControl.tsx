@@ -4,9 +4,8 @@ import {
   Pages,
   trackingEvents,
 } from 'analytics/analytics'
-import { useAppContext } from 'components/AppContextProvider'
-import { useAutomationContext } from 'components/AutomationContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
+import { useAutomationContext } from 'components/context'
 import { AppLink } from 'components/Links'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
@@ -17,6 +16,7 @@ import {
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -58,7 +58,6 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
       stopLossTriggerData: { isStopLossEnabled, stopLossLevel, isToCollateral },
     },
   } = useAutomationContext()
-  const { uiChanges } = useAppContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
   const afterMaxToken = getMaxToken(stopLossState)
   const afterDynamicStopLossPrice = getExecutionPrice(stopLossState)

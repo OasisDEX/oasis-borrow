@@ -1,3 +1,4 @@
+import { useMainnetEnsName } from 'blockchain/ens'
 import { ReferralModal } from 'components/ReferralModal'
 import { SuccessfulJoinModal } from 'components/SuccessfullJoinModal'
 import { UserReferralState } from 'features/referralOverview/user'
@@ -21,9 +22,8 @@ interface UpsertUser {
 export function NewReferralModal({ account, userReferral }: NewReferralModalProps) {
   const { t } = useTranslation()
   const [success, setSuccess] = useState(false)
-  const { connect } = useConnection({
-    initialConnect: false,
-  })
+  const { connect } = useConnection()
+  const [refEnsName] = useMainnetEnsName(userReferral?.referrer)
   const createUser = async (upsertUser: UpsertUser) => {
     const { hasAccepted, isReferred } = upsertUser
 
@@ -38,6 +38,10 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
         ).subscribe((res) => {
           if (res === 200) {
             hasAccepted ? setSuccess(true) : userReferral.trigger()
+          } else {
+            console.error('Error creating user')
+            localStorage.removeItem(`referral`)
+            userReferral.trigger()
           }
         })
     }
@@ -48,15 +52,14 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
       {!success && !userReferral && (
         <ReferralModal
           heading="Welcome to the Summer.fi Referral Program"
-          topButton={{ text: t('connect-wallet'), func: async () => await connect() }}
+          topButton={{ text: t('connect-wallet'), func: () => connect() }}
         />
       )}
-      {!success && userReferral && userReferral.state === 'newUser' && (
+      {!success && userReferral && userReferral.state === 'newUser' && refEnsName !== undefined && (
         <ReferralModal
-          heading={`${t('ref.modal.you-have-been-ref')} ${formatAddress(
-            userReferral.referrer!,
-            6,
-          )}`}
+          heading={`${t('ref.modal.you-have-been-ref')} ${
+            refEnsName || formatAddress(userReferral.referrer!, 6)
+          }`}
           topButton={{
             text: t('ref.modal.accept'),
             func: () => createUser({ hasAccepted: true, isReferred: true }),

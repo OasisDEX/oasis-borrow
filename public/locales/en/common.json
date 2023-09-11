@@ -143,7 +143,7 @@
   "create-proxy": "Create a proxy",
   "create-proxy-btn": "Create Proxy",
   "create-proxy-desc": "In order to use Savings and other features, you will need a wallet proxy.",
-  "smart-proxy-desc": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be send to your address.",
+  "smart-proxy-desc": "To close your vault, a part of your position will be sold to pay back the outstanding debt. The rest of your collateral will be send to your address.",
   "create-vault": "Create Vault",
   "create-your-vault": "Create your vault",
   "creating-proxy": "Creating Proxy",
@@ -211,6 +211,7 @@
       "activate": "Activate",
       "inactive": "Inactive",
       "not-available": "Not available yet",
+      "unavailable": "Unavailable",
       "no-entries": "There are no entries available for selected filters.",
       "no-items": "There are no items matching your filters.",
       "no-items-description": "Find other products by updating your filter. If you are missing a product you would like to see on Summer.Fi, please contact us.",
@@ -231,6 +232,7 @@
         "col-ratio": "Col. ratio",
         "collateral-debt": "Collateral/Debt",
         "collateral-locked": "Collateral locked",
+        "collateral-quote": "Collateral/Quote",
         "collateral-value": "Collateral value",
         "current-multiple": "Current multiple",
         "debt": "Debt",
@@ -238,7 +240,7 @@
         "earnings-to-date": "Earnings to date",
         "funding-cost": "Funding cost",
         "liquidation-price": "Liquidation price",
-        "liquidity-avaliable": "Liquidity avaliable",
+        "liquidity-available": "Liquidity available",
         "liquidity": "Liquidity",
         "long-short": "Long/Short",
         "management": "Management",
@@ -273,7 +275,7 @@
         "liquidity": "The current available liquidity allowing increases of positions.",
         "net-usd-value": "The current net value of the position based on the oracle price of the collateral in the position minus the debt.",
         "pnl": "The current profit or loss percentage of your position, including incurred gas costs. For a more detailed look on the profit and loss, please check the position.",
-        "protection": "Indicates if a any Protection feature has been set up for this position. If not, you can activate it on the Protection page by clicking the button.",
+        "protection": "Indicates if any Protection feature has been set up for this position. If not, you can activate it on the Protection page by clicking the button.",
         "variable": "The variable annual rate paid over the debt in this position. This can be changed by the governance body of the protocol.",
         "vault-debt": "The amount of dai debt in this position"
       },
@@ -315,6 +317,7 @@
       }
     }
   },
+  "earned": "earned",
   "earning": "Earning",
   "edit-token-allowance": "Edit {{token}} allowance",
   "edit-vault-details": "Edit Vault details",
@@ -358,7 +361,7 @@
   "deposit-generate-description-recent-failed": "Failed to deposit and generate from vault {{ id }}",
   "withdraw-payback-description-pending": "Withdrawing {{ withdrawAmount }} {{ token }} and paying back {{ paybackAmount }} DAI to vault {{ id }}",
   "withdraw-payback-description-recent": "Withdrawn {{ withdrawAmount }} {{ token }} and payed back {{ paybackAmount }} DAI to vault {{ id }}",
-  "withdraw-payback-description-recent-failed": "Failed to withdraw and payback to vault {{ id }}",
+  "withdraw-payback-description-recent-failed": "Failed to withdraw and pay back to vault {{ id }}",
   "reclaim-collateral-description-pending": "Reclaiming {{ amount }} {{ token }} from vault {{ id }}",
   "reclaim-collateral-description-recent": "Reclaimed {{ amount }} {{ token }} from vault {{ id }}",
   "reclaim-collateral-description-recent-failed": "Failed to reclaim collateral from vault {{ id }}",
@@ -418,7 +421,7 @@
     "move_dest": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt to the vault",
     "move_src": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt from the vault",
     "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",
-    "payback": "Payback <0>{{daiAmount}}</0> Dai to Vault",
+    "payback": "Pay back <0>{{daiAmount}}</0> Dai to Vault",
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
     "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
     "open_multiply_vault": "Opened multiply Vault",
@@ -453,11 +456,14 @@
   "position-history": {
     "header": "Position History",
     "open-position": "Open Position",
+    "close-position": "Close Position",
     "deposit": "Deposit",
     "withdraw": "Withdraw",
     "generate": "Generate",
+    "borrow": "Borrow",
     "repay": "Repay",
     "deposit-generate": "Deposit and generate",
+    "liquidation": "Position liquidated",
     "repay-withdraw": "Repay and withdraw",
     "move-lending-price": "Move lending price",
     "deposit-and-move-lending-price": "Deposit and move lending price",
@@ -472,7 +478,31 @@
     "total-fees": "Total fees",
     "origination-fee": "Origination fee",
     "lending-price": "Lending price",
-    "event": "Event"
+    "event": "Event",
+    "auction-started": "Auction started",
+    "auction-settled": "Auction settled",
+    "debt-to-cover": "Debt to cover",
+    "collateral-for-liquidation": "Collateral for liquidation",
+    "settled-debt": "Settled debt",
+    "remaining-collateral": "Remaining collateral",
+    "multiple": "Multiple",
+    "bought": "Bought",
+    "sold": "Sold",
+    "market-price": "Market price",
+    "net-value": "Net value",
+    "increase-multiple": "Increase multiple",
+    "decrease-multiple": "Decrease multiple",
+    "max-coverage": "Max coverage",
+    "sl-level": "Stop loss level",
+    "swaped": "Swapped",
+    "automation": {
+      "stop-loss-collateral-added": "Stop loss to collateral added",
+      "stop-loss-collateral-removed": "Stop loss to collateral removed",
+      "stop-loss-collateral-executed": "Stop loss to collateral executed",
+      "stop-loss-debt-added": "Stop loss to debt added",
+      "stop-loss-debt-removed": "Stop loss to debt removed",
+      "stop-loss-debt-executed": "Stop loss to debt executed"
+    }
   },
   "triggers": {
     "added": "added",
@@ -491,12 +521,14 @@
   "landing": {
     "hero": {
       "main": {
-        "headline": "DeFi made simple and secure",
-        "subheader": "Take advantage of powerful automation strategies and user-friendly UX."
+        "headline": "The best place to Borrow and Earn in DeFi",
+        "subheader": "Power up your portfolio by Borrowing, Lending and Multiplying your favourite assets. Made Safe and Easy by industry leading automation tools."
       },
       "ajna": {
         "headline": "Use the only market-driven lending protocol",
-        "subheader": "On Ajna you can borrow crypto and earn yield. Benefiting from more competitive, market-driven parameters. <0>Learn more about Ajna on Summer.fi →</0>"
+        "subheader": "On Ajna you can borrow crypto and earn yield. Benefiting from more competitive, market-driven parameters. <0>Learn more about Ajna on Summer.fi →</0>",
+        "primary-cta": "Discover Ajna Pools",
+        "secondary-cta": "Create an Ajna Pool"
       }
     },
     "stats": {
@@ -559,7 +591,7 @@
     "benefits": {
       "ajna": {
         "header": "Benefits of Ajna protocol",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sollicitudin mollis fringilla. Nunc bibendum ultricies mi. Donec vitae elementum turpis.",
+        "description": "Ajna is a permissionless, non-custodial, peer to peer lending and borrowing protocol. It requires no governance and no oracle price feeds in order to function.",
         "card-header-1": "Borrow and lend against your entire crypto portfolio",
         "card-header-2": "Immutable and governance free system",
         "card-header-3": "Competitive, market-driven parameters"
@@ -775,16 +807,18 @@
     "below-current-ratio": "({{percentage}} below current ratio)",
     "below-current-price": "{{percentage}} below current price",
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
+    "stop-loss-ltv": "Stop Loss LTV: {{percentage}}",
     "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
     "net-value-modal": "Net Value",
     "net-value-calculation": "The current net value is calculated based on the oracle price of {{oraclePrice}} {{collateralSymbol}}/{{debtSymbol}}. This net value doesn't include the cost of the closing fee or the difference that might happen due to slippage or price changes once you close your position. Net value of position if closed will likely be lower.",
-    "after-ltv-ratio-below-stop-loss-ltv": "You cannot make adjustments to your position which take it below your Stop-Loss Loan to Value"
+    "after-ltv-ratio-below-stop-loss-ltv": "You cannot make adjustments to your position which take it above your Stop-Loss Loan to Value, please update or cancel your stop-loss if you want to make this adjustment."
   },
   "aave-position-modal": {
     "liquidation-price": {
       "first-header": "Liquidation Price",
       "second-header": "Liquidation Penalty",
-      "first-description-line": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
+      "first-description-line-long": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
+      "first-description-line-short": "The Liquidation Price is the debt price at which a position will be liquidated. This number is denominated in collateral",
       "second-description-line": "This is {{percent}} below current price",
       "third-description-line": "The liquidation penalty is the % that will be added to the debt as a penalty in case of liquidation."
     },
@@ -792,9 +826,12 @@
       "first-header": "Current Loan to Value (LTV)",
       "second-header": "Max Loan to value",
       "third-header": "Liquidation Threshold (LT)",
+      "fourth-header": "Stop loss Loan to Value",
       "first-description-line": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied",
       "second-description-line": "The Max Loan to Value (LTV) ratio defines the maximum amount that can be borrowed with your collateral",
-      "third-description-line": "The liquidation threshold is the percentage at which a position is undercollateralised. If your LTV rises above the LT, the position is undercollateralised and could be liquidated."
+      "third-description-line": "The liquidation threshold is the percentage at which a position is undercollateralised. If your LTV rises above the LT, the position is undercollateralised and could be liquidated.",
+      "fourth-description-line": "The Stop loss Loan to Value indicates the Loan to value at which your position will be stop lossed. You can adjust this in the <0>protection tab</0>.",
+      "stop-loss-not-set": "Not set - click to set up stop loss."
     },
     "net-borrow-cost": {
       "first-header": "Net borrow Cost %",
@@ -870,7 +907,8 @@
     "brand-assets": "Brand assets",
     "security": "Security",
     "discover": "Discover",
-    "app": "Summer.fi"
+    "app": "Summer.fi",
+    "ajna-rewards": "Ajna Rewards"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -984,8 +1022,14 @@
       "description": "Ajna is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
     },
     "ajnaProductPage": {
-      "title": "{{product}} - Summer.fi × Ajna",
-      "description": "Ajna is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
+      "title": "{{product}} - Summer.fi × Ajna"
+    },
+    "ajnaPoolFinder": {
+      "title": "Ajna pool finder - Summer.fi × Ajna"
+    },
+    "ajnaPoolCreator": {
+      "title": "Ajna pool creator - Summer.fi × Ajna",
+      "description": "Create any ERC-20 token pool on the Ajna protocol, this will be available straight away on Summer.fi."
     },
     "multiply": {
       "title": "Multiply - Summer.fi",
@@ -1004,6 +1048,7 @@
     "title-dsr": "Dai Savings Rate Strategy - {{protocol}} - {{product}}"
   },
   "set-allowance-for": "Set Allowance for {{token}}",
+  "setup-stop-loss": "Setup Stop-Loss",
   "setting-allowance-for": "Setting Allowance for {{token}}",
   "setup-proxy": "Setup Proxy",
   "setup-wallet": "Setup your wallet",
@@ -1137,7 +1182,8 @@
       "borrow": {
         "edit-dai": "Manage DAI",
         "edit-collateral": "Manage collateral ({{token}})",
-        "switch-to-multiply": "Switch to Multiply"
+        "switch-to-multiply": "Switch to Multiply",
+        "switch-to-earn": "Switch to Earn"
       },
       "multiply": {
         "adjust": "Adjust",
@@ -1147,11 +1193,12 @@
         "switch-to-borrow": "Switch to Borrow",
         "deposit-collateral": "Deposit collateral",
         "withdraw-collateral": "Withdraw collateral",
-        "payback-debt": "Payback debt",
+        "payback-debt": "Pay back debt",
         "borrow-debt": "Borrow debt"
       },
       "earn": {
-        "vault-overview": "Vault overview"
+        "vault-overview": "Vault overview",
+        "switch-to-borrow": "Switch to Borrow"
       }
     },
     "cards": {
@@ -1211,9 +1258,9 @@
   "vault": {
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "header": "{{ilk}} Vault {{id}}",
-    "header-aave-open": "Open {{collateral}}/{{debt}} Aave position",
-    "header-aave-view": "Aave {{collateral}}/{{debt}}",
-    "header-aave-view-id": "Aave {{collateral}}/{{debt}} Vault {{vaultId}}",
+    "header-aave-open": "Open {{collateral}}/{{debt}} {{protocol}} position",
+    "header-aave-view": "{{protocol}} {{collateral}}/{{debt}}",
+    "header-current-market-price": "Current Market Price",
     "insti-header": "Institutional {{ilk}} Vault {{id}}",
     "next-price": "Next price in {{count}} minute",
     "open-vault": "Open {{ilk}} Vault",
@@ -1239,15 +1286,15 @@
     "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
     "generate-amount-exceeds-dai-yield-from-total-collateral": "The collateralization ratio for this Maker Vault is too low. Please generate less Dai",
     "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "The collateralization ratio for this Maker Vault is too low at the next price update. Please generate less Dai",
-    "payback-amount-exceeds-dai-balance": "You cannot payback more Dai than the amount in your wallet",
-    "payback-amount-exceeds-vault-debt": "You are trying to payback more than your Dai debt for this Maker Vault",
-    "payback-amount-exceeds": "You cannot payback more than {{maxPaybackAmount}} {{token}}",
+    "payback-amount-exceeds-dai-balance": "You cannot pay back more Dai than the amount in your wallet",
+    "payback-amount-exceeds-vault-debt": "You are trying to pay back more than your Dai debt for this Maker Vault",
+    "payback-amount-exceeds": "You cannot pay back more than {{maxPaybackAmount}} {{token}}",
     "borrow-amount-exceeds-max": "You cannot borrow more than {{maxBorrowAmount}} {{token}}",
     "custom-collateral-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
     "custom-collateral-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
     "custom-dai-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
     "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
-    "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
+    "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
     "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral by choosing 'Manage collateral' option in select.",
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
@@ -1273,7 +1320,7 @@
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
-    "debt-is-less-than-debt-floor": "Your current Dai debt is below the minimum of {{debtFloor}}. Because of this some Vault actions are not possible. Please generate more Dai to take you above the minimum or payback all your debt",
+    "debt-is-less-than-debt-floor": "Your current Dai debt is below the minimum of {{debtFloor}}. Because of this some Vault actions are not possible. Please generate more Dai to take you above the minimum or pay back all your debt",
     "vault-will-be-at-risk-level-danger": "With this action your vault will be at a collateralization ratio very close to the minimum required",
     "vault-will-be-at-risk-level-danger-at-next-price": "With this action your vault will be at a collateralization ratio very close to the minimum required at the next price update",
     "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
@@ -1306,7 +1353,7 @@
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
-    "closing": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be sent to your address."
+    "closing": "To close your vault, a part of your position will be sold to pay back the outstanding debt. The rest of your collateral will be sent to your address."
   },
   "vault-changes": {
     "order-information": "Order information",
@@ -1330,7 +1377,7 @@
     "borrow": "Borrow",
     "deposit": "Deposit",
     "generate": "Generate",
-    "payback": "Payback",
+    "payback": "Pay back",
     "withdraw": "Withdraw"
   },
   "vault-changed": "Vault changed!",
@@ -1439,6 +1486,10 @@
       "header": "What are the risks",
       "content": "Find out about the underlying creation of the position, the risks, where your capital is at and more in the FAQ section.",
       "button": "Learn more"
+    },
+    "history-coming-soon": {
+      "header": "History support coming soon",
+      "description": "We currently don't support {{protocol}} history on the Ethereum mainnet or L2 networks, but we'll be adding this feature soon."
     }
   },
   "view": "View",
@@ -1496,7 +1547,7 @@
     },
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",
-      "dai": "Generate DAI from the collateral in your vault, or payback DAI. Save gas by combining transactions.",
+      "dai": "Generate DAI from the collateral in your vault, or pay back DAI. Save gas by combining transactions.",
       "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
       "edit-multiply": "Simulate your vault by configuring the amount of collateral to deposit, and slide your multiply factor.",
       "edit-multiply-dai": "This vault can be created by simply <1>depositing DAI</1>. The transaction will create the {{token}} position for you based on this DAI deposit.",
@@ -1634,6 +1685,7 @@
     "title": "Stay up to date with Summer.fi",
     "subtitle": "Subscribe to the newsletter for Summer.fi updates",
     "placeholder": "Email Address",
+    "placeholder-disabled": "Temporarily disabled",
     "button": "Subscribe",
     "success": "Thank you for subscribing the newsletter!",
     "gdpr": "By entering your email address, you acknowledge that Oazo Apps Limited will collect and process your personal data for marketing purposes (e.g. newsletter, updates). For more information please refer to our <1>Privacy Policy.</1>",
@@ -1732,7 +1784,6 @@
         "title": "High rETH multiple option",
         "description": "Maximise your rETH exposure with Aave and USDC."
       },
-
       "borrow-against-ETH": {
         "title": "AAVE ETH",
         "description": "A position to borrow against your ETH in AAVE"
@@ -1855,7 +1906,7 @@
     },
     "dai": {
       "description": "Dai is the largest overcollateralized decentralized stablecoin. Dai can be generated on Summer.fi using various collateral types. Here we show the products that will net you returns in DAI.",
-      "link": "https://kb.summer.fi/help/what-is-dai"
+      "link": "https://docs.summer.fi/protocols/maker"
     },
     "uni": {
       "description": "UNI is the governance token of Uniswap Protocol, which is governed by a decentralized community who propose and vote on upgrades to the protocol. Uniswap is a decentralized trading protocol for swapping ERC20 tokens.",
@@ -2201,7 +2252,7 @@
   "ref": {
     "banner": "New: Earn up to 9.9x stETH Yield on Summer.fi Earn. Read more here",
     "ref-a-friend": "Refer a Friend",
-    "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Summer.fi... forever! Read more about ",
+    "intro-1": "Refer a friend to us and each of you get rewarded with 5% of all fees that your friend generates on Summer.fi... forever! Read more about ",
     "intro-link": "Summer.fi Refer a Friend",
     "total": "Total DAI fees earned",
     "not-claimed": "DAI not claimed",
@@ -2251,7 +2302,10 @@
       "link-2": "Referral Guide",
       "successful-body": "You will now receive 5% of all fees that they generate on Summer.fi. You can now go directly to the Summer.fi homepage or see your referral dashboard.",
       "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Summer.fi Refer a Friend program.",
-      "successful-join": "You have successfully joined the Summer.fi Refer a Friend program."
+      "successful-join": "You have successfully joined the Summer.fi Refer a Friend program.",
+      "switch-network-heading": "Switch network to Optimism to claim rewards",
+      "switch-network-p1": "Summer.fi only supports to claim your reward on Optimism at this moment. Please change your network to Optimism to continue.",
+      "switch-network-button-text": "Switch network"
     }
   },
   "notifications": {
@@ -2300,6 +2354,8 @@
         "close": "Close vault",
         "confirm-btn": "Confirm",
         "close-description": "To close your position, all your collateral will be sold to pay back the outstanding debt. The remaining {{closeToToken}} will be sent to your address.",
+        "switch-description": "You're about to switch your positions product type to {{productType}}. This will give you access to metrics and functionality specific to {{productType}} products.",
+        "switching-description": "Position reloading with new product type. This may take a moment.",
         "stop-close": "Not right now",
         "token-amount-after-closing": "{{token}} after closing",
         "retry-btn": "Retry",
@@ -2307,7 +2363,9 @@
         "adjust-description": "You are about to adjust the risk level of your vault. Please confirm the changes below.",
         "back-to-editing": "Back to editing",
         "success-title": "Success!",
-        "position-adjusted-btn": "OK"
+        "position-adjusted-btn": "OK",
+        "switching-title": "Switching position type to {{type}}",
+        "confirm-switch": "Switch position type to {{type}}"
       }
     }
   },
@@ -2316,7 +2374,9 @@
       "product-header": {
         "token-pair-list": {
           "aave-steth-eth": "Aave stETH yield multiple",
-          "aave-wsteth-eth": "Aave wstETH yield multiple"
+          "aave-wsteth-eth": "Aave wstETH yield multiple",
+          "spark-wsteth-eth": "Spark wstETH yield multiple",
+          "spark-reth-eth": "Spark rETH yield multiple"
         },
         "current-yield": "Current yield",
         "90-day-avg-yield": "90 Day Avg",
@@ -2339,7 +2399,7 @@
           "increase-risk": "Increase risk",
           "decrease-risk": "Decrease risk",
           "vault-message-ok": "At the chosen risk level, the price of {{collateralToken}} needs to move over {{priceMovement}} with respect to {{debtToken}} for this position to be available for liquidation. Aave's liquidations penalty is at least {{liquidationPenalty}}.",
-          "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves over {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. Aave's liquidations penalty is at least {{liquidationPenalty}}."
+          "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves over {{priceMovement}} with respect to {{debtToken}} this {{positionType}} position could be liquidated. Aave's liquidations penalty is at least {{liquidationPenalty}}."
         }
       },
       "af-title": "Fill the gas tank",
@@ -2442,13 +2502,14 @@
     },
     "labels": {
       "deposit": "Deposit",
-      "withdraw": "Withdraw"
+      "withdraw": "Withdraw",
+      "convert": "Convert"
     },
     "product-card": {
       "description": "Earn on your Dai using the Maker Protocol"
     },
     "order": {
-      "total-dai": "Total DAI {{action}}"
+      "total-dai": "Total {{token}} {{action}}"
     },
     "simulation": {
       "header1": "Duration",
@@ -2468,6 +2529,14 @@
     },
     "landing-page-banner": {
       "title": "NEW DSR RATE! Earn 3.49% on your DAI. <1>Get started</1>"
+    },
+    "links": {
+      "what-is-sdai": "What's sDAI"
+    },
+    "common": {
+      "mint-savings-dai": "Mint Savings Dai (sDAI)",
+      "conversion-desc": "If you are are holding Savings Dai (sDAI) you can convert it back to Dai. Converting back to Dai means you will no longer accrue the Dai Savings Rate on the amount you convert.",
+      "what-is-sdai-conversion": "What is sDAI conversion?"
     }
   },
   "ajna": {
@@ -2479,18 +2548,22 @@
     },
     "other-assets": "Other assets you can borrow against",
     "landing-banner": {
-      "title": "Get Ajna token when you use Ajna protocol",
-      "description": "summer.fi users are eligible for exclusive Ajna token rewards! Open and Ajna position through summer.fi and automatically earn Ajna tokens.",
+      "title": "Get exclusive Ajna tokens when you use Summer.fi",
+      "description": "Summer.fi users are eligible for exclusive Ajna token rewards! Open an Ajna position through Summer.fi and automatically earn Ajna tokens.",
       "button-label": "See my rewards →",
       "link-label": "Visit Ajna website →"
     },
     "learn": {
       "ajna-website": "Ajna website",
       "anja-faq": "Ajna FAQ",
-      "ajna-discord": "Anja Discord",
+      "ajna-discord": "Ajna Discord",
       "ajna-twitter": "Ajna Twitter",
       "oasis-discord": "Summer.fi Discord",
       "oasis-twitter": "Summer.fi Twitter"
+    },
+    "product-finder": {
+      "multiply-soon-title": "Ajna Multiply coming soon",
+      "multiply-soon-intro": "We're busy building Multiply for Ajna and will be releasing it shortly. For now you can <1>Borrow</1> and <2>Earn</2> on Ajna."
     },
     "product-cards": {
       "borrow-against-your": "Borrow against your {{token}}",
@@ -2536,7 +2609,9 @@
         "banners": {
           "tokens": {
             "title": "This position earns AJNA tokens",
+            "title-below-lup": "Adjust your position to earn AJNA tokens",
             "description-open": "Opening this Ajna position on Summer.fi makes you eligible for AJNA token rewards. You will earn automatically with weekly claim periods.",
+            "description-manage-below-lup": "By opening an Ajna position on Summer.fi you can earn exclusive AJNA tokens. Adjust your position lending price to the active liquidity range in order to start earning AJNA rewards. <1><2>Find out more here.</1></2>",
             "description-manage": "This Ajna position on Summer.fi makes you eligible for AJNA token rewards. You are earning automatically and tokens will be claimable weekly in the near future.",
             "button-open": "Read more about AJNA rewards",
             "button-manage": "Claim your AJNA tokens"
@@ -2545,6 +2620,7 @@
         "form": {
           "title": {
             "risk": "Things to know before opening an Ajna position",
+            "risk-oracless": "This pool is offered with Ajna Lite UI, things to know:",
             "setup": "Configure your Ajna {{product}} Position",
             "manage": "Manage your Ajna {{product}} Position",
             "transaction": "Confirm your Ajna {{product}} Position",
@@ -2554,25 +2630,34 @@
             "nft": "This Position is eligible for Ajna token rewards"
           },
           "risk": {
-            "intro": "Anja is a new money market DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position:",
+            "intro": "Ajna is a new money market DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position:",
             "bullet-points": {
               "borrow": [
                 "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
                 "There is an origination fee when borrowing to avoid rapid changes in rates.",
                 "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
               ],
-              "multiply": ["Lorem ipsum dolor sit amet"],
+              "multiply": [
+                "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
+                "There is an origination fee when borrowing (or multiplying) to avoid rapid changes in rates.",
+                "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
+              ],
               "earn": [
                 "Its a new DeFi protocol. <2><4>See Ajna Audits here</4></2>",
                 "Your position will lend only against one asset.",
                 "Failure to monitor and adjust your position may result in holding the collateral asset",
                 "Ajna has no oracles and a unique liquidation mechanism. <3><4>Read more on how Ajna works</4></3>"
+              ],
+              "oracless": [
+                "<5>Always do your own research and make sure you have selected the correct token contract address<5/>",
+                "This asset pair is supported with Ajna Lite UI, no price feed information will be available",
+                "Monitor your position closely and ensure you understand the risks before proceeding"
               ]
             }
           },
           "nft": {
             "intro": "The Ajna rewards this position is eligible for",
-            "token-rewards": "Summer.fi x AJNA Token Rewards",
+            "token-rewards": "Summer.fi × AJNA Token Rewards",
             "protocol-rewards": "AJNA Protocol Rewards",
             "opt": "Ajna Protocol Rewards are switched off by default as the gas fees could cost more than the rewards.",
             "bullet-points": {
@@ -2598,14 +2683,24 @@
             "success-manage": "Your {{collateralToken}}/{{quoteToken}} Ajna Position was updated"
           }
         },
+        "dupe-modal": {
+          "title": "Are you sure you want to open a new {{product}} position in the Ajna {{collateralToken}}/{{quoteToken}} pool?",
+          "description-borrower-singular": "You already have borrower position in this pool.",
+          "description-borrower-plural": "You already have borrower positions in this pool.",
+          "description-lender-singular": "You already have lender position in this pool.",
+          "description-lender-plural": "You already have lender positions in this pool.",
+          "help": "You can either create a new position in this pool or go to your existing position.",
+          "cta-primary": "Go to your Portfolio",
+          "cta-textual": "Open new position"
+        },
         "notifications": {
           "time-to-liquidation": {
             "title": "Your position will be moved to liquidation {{time}}",
-            "message": "Your position is at risk of liquidation, adjust it now to save it"
+            "message": "Your position is at risk of liquidation, a penalty of 90 days of interest has been applied. <1>Deposit collateral</1> or <1>Repay your Debt</1> to save it"
           },
           "being-liquidated": {
             "title": "This position is currently being liquidated",
-            "message": "A penalty of 7% has been applied increasing to the total debt. Liquidators can bid on your collateral to payback the debt. You can still adjust your position, by paying back debt or adding more collateral to remove it from the liquidation auction. <0>Read more about Ajna Liquidations →</0>"
+            "message": "A penalty of 7% has been applied increasing to the total debt. Liquidators can bid on your collateral to pay back the debt. You can still adjust your position, by paying back debt or adding more collateral to remove it from the liquidation auction. <0>Read more about Ajna Liquidations →</0>"
           },
           "got-liquidated": {
             "title": "This position got liquidated. You have collateral to withdraw",
@@ -2615,9 +2710,21 @@
             "title": "This position was partially liquidated. Some part of your collateral was sold to cover your debt",
             "message": "Your debt was increased by 90 days before liquidation as a penalty. During the liquidation your position recollateralized and was removed from liquidation. <0>Read more about Ajna Liquidations →</0>"
           },
-          "safety-switch-on": {
+          "safety-switch-open": {
             "title": "Opening Ajna positions temporary disabled",
             "message": "Due to a technical issue we have currently disabled opening new Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
+          },
+          "safety-switch-manage": {
+            "title": "Some features of Ajna positions are temporary disabled",
+            "message": "Due to a technical issue we have currently disabled some features of Ajna positions, as they might not result in the expected outcome for our users. You can withdraw deposited tokens or repay position's debt. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
+          },
+          "near-lup": {
+            "title": "Your position's threshold price is approaching the LUP",
+            "message": "Adjust your position to ensure it stays below the LUP in order to avoid being eligible for liquidation"
+          },
+          "above-lup": {
+            "title": "Your position is eligible for liquidation",
+            "message": "Adjust your position to ensure the Threshold price stays below the LUP in order to avoid being eligible for liquidation"
           },
           "read-more": "Read more about Ajna Liquidations"
         }
@@ -2625,15 +2732,23 @@
       "borrow": {
         "common": {
           "overview": {
-            "dynamic-max-ltv": "Dynamic Max LTV: {{dynamicMaxLtv}}",
-            "liquidation-price": "Liquidation Price",
-            "liquidation-price-modal-desc": "The liquidation price represent the price at which it is expected that liquidators successfully action your collateral to repay your debt. Monitor this value compared to market price",
             "above-current-price": "{{priceRatio}} above current price",
             "below-current-price": "{{priceRatio}} below current price",
-            "loan-to-value": "Loan to value",
-            "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
             "collateral-locked": "Collateral locked",
             "collateral-locked-modal-desc": "This is the amount of tokens you have as collateral for your debt.",
+            "dynamic-max-ltv": "Dynamic Max LTV",
+            "dynamic-max-ltv-modal-desc": "Ajna Max LTV changes with lenders and borrowers activities. Pay attention to not go over the max and risk being liquidated.",
+            "liquidation-price": "Liquidation Price",
+            "liquidation-price-modal-desc": "The liquidation price represent the price at which it is expected that liquidators successfully action your collateral to repay your debt. Monitor this value compared to market price.",
+            "loan-to-value": "Loan to value",
+            "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
+            "threshold-price": "Threshold Price",
+            "threshold-price-modal-desc-part-1": "By taking the debt token amount and dividing it by the collateral token amount, the loan’s threshold price, TP, can be calculated.",
+            "threshold-price-modal-desc-part-2": "Your loan will be eligible to be kicked into the liquidation queue if the pool's Lowest Utilization Price (LUP) is less than your Threshold price.",
+            "threshold-price-modal-desc-part-3": "To avoid liquidation, always ensure your TP < LUP",
+            "threshold-price-modal-desc-formula": "debt amount / collateral amount",
+            "threshold-price-modal-desc-explanation-tp": "Threshold Price =",
+            "threshold-price-modal-desc-explanation-lup": "Lowest Utilization Price =",
             "position-debt": "Position debt",
             "position-debt-modal-desc": "This is the total number of tokens you have borrowed plus any accrued interests."
           },
@@ -2641,9 +2756,14 @@
             "origination-fee": "{{quoteToken}} Origination Fee"
           },
           "footer": {
-            "borrow-rate": "Borrow Rate",
             "available-to-borrow": "Available to borrow",
-            "available-to-withdraw": "Available to withdraw"
+            "available-to-borrow-modal-desc": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt.",
+            "available-to-withdraw": "Available to withdraw",
+            "available-to-withdraw-modal-desc": "This the the amount of collateral you can withdraw taking into account the current max LTV and debt of the position.",
+            "borrow-rate": "Borrow Rate",
+            "borrow-rate-modal-desc": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
+            "earned-ajna-tokens": "Earned Ajna tokens",
+            "earned-ajna-tokens-tooltip-desc": "You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released."
           }
         }
       },
@@ -2651,7 +2771,7 @@
         "common": {
           "headline": {
             "current-yield": "Current yield",
-            "90-day-avg": "90 Day Avg",
+            "30-day-avg": "30 Day Avg",
             "current-market-price": "Current Market Price"
           },
           "form": {
@@ -2681,22 +2801,30 @@
         "manage": {
           "overview": {
             "above-market-price": "{{amount}} above market price",
+            "available-to-withdraw": "Available to withdraw",
+            "available-to-withdraw-modal-desc": "This the the amount of tokens you can withdraw that are not frozen in liquidation or being lent out.",
             "below-market-price": "{{amount}} below market price",
-            "current-earnings": "Current earnings",
-            "current-earnings-modal-desc": "The amount of {{quoteToken}} you have earn since the last time this position has been adjusted:",
-            "projected-annual-reward": "Projected annual reward",
-            "total-ajna-rewards": "Total AJNA rewards",
             "early-withdrawal-ends-in": "{{earlyWithdrawalPenalty}} (ends {{earlyWithdrawalPeriod}})",
             "early-withdrawal-period": "Early withdrawal period",
+            "max-lending-ltv-modal-desc": "The max lending LTV represents the terms you are offering to borrowers. Your selected price divided the market price represents the maximum LTV you are allowing others to borrow against their collateral for your lent asset.",
             "max-lending-ltv": "Max lending LTV",
-            "max-lending-ltv-modal-desc": "The max lending LTV represents the % of {{quoteToken}} you are willing to lend for each unit of {{collateralToken}}. This value moves as the price of {{collateralToken}}/{{quoteToken}} changes. You should adjust your position as the price changes to earn yield in a safe way:",
-            "net-pnl": "Net PnL: {{netPnL}}",
-            "position-lending-price": "Position lending price",
-            "position-lending-price-modal-desc": "The lending price is akin to a limit order, if the market price hits the selected price you will be left with collateral tokens. It's expected that borrowers are liquidated some time before your price is reached, and you will be able to withdraw funds in the token you deposited.",
+            "maximum-yield-price-modal": "Maximum Yield Price",
+            "maximum-yield-price-modal-desc": "Above this lending price you will not earn any yield. Select a lending price below this level to earn.",
             "minimum-yield-price-modal": "Minimum Yield Price",
             "minimum-yield-price-modal-desc": "Below this lending price you will not earn any yield. Select a lending price above this level to earn.",
-            "tokens-deposited": "Tokens deposited",
-            "tokens-deposited-modal-desc": "The total amount of tokens deposited into the protocol, this includes the earned amount:"
+            "net-pnl": "Net PnL: {{netPnL}}",
+            "net-value-modal-desc": "The total amount of tokens available in position, this includes the earned amount.",
+            "net-value": "Net value",
+            "position-lending-price": "Position lending price",
+            "position-lending-price-modal-desc": "The lending price is akin to a limit order, if the market price hits the selected price you will be left with collateral tokens. It's expected that borrowers are liquidated some time before your price is reached, and you will be able to withdraw funds in the token you deposited.",
+            "projected-annual-reward": "Projected annual reward",
+            "projected-annual-rewards-modal-desc": "At the current weekly distribution and AJNA token price the implied annual rewards rate is.",
+            "projected-annual-rewards": "Projected annual rewards",
+            "total-ajna-rewards": "Total AJNA rewards",
+            "total-ajna-rewards-modal-desc": "You have earned Ajna tokens from Summer.fi × Ajna token rewards. This is the total amount across all your portfolio positions. These are claimable weekly after tokens are released.",
+            "total-earnings": "Total earnings",
+            "total-earnings-modal-desc": "The amount of {{quoteToken}} you have earned since this position was opened. The total earnings you have made from this position excluding any gas costs are:",
+            "total-earnings-modal-sub-desc": "Including gas costs, your net earnings on this pool are:"
           },
           "notifications": {
             "deposit-is-not-withdrawable": {
@@ -2711,7 +2839,7 @@
             },
             "empty-position": {
               "title": "Your lending position is empty",
-              "message": "To start earning you need to provide liquidity using your quote tokens"
+              "message": "To start earning you need to provide liquidity using your tokens"
             },
             "lending-price-frozen": {
               "title": "This lending price is currently frozen and borrowers are being liquidated",
@@ -2728,6 +2856,7 @@
         "common": {
           "overview": {
             "net-borrow-cost": "Net Borrow Cost",
+            "net-borrow-cost-modal-desc": "The net borrow cost rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
             "net-value": "Net Value",
             "pnl": "P&L"
           },
@@ -2742,15 +2871,17 @@
     },
     "validations": {
       "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet.",
-      "payback-amount-exceeds-debt-token-balance": "You cannot payback more than the amount of debt token in your wallet.",
+      "payback-amount-exceeds-debt-token-balance": "You cannot pay back more than the amount of debt token in your wallet.",
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
       "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction.",
-      "withdraw-undercollateralized": "You cannot withdraw more than {{amount}} {{collateralToken}}, as this would take your position below the minimum LTV. Please enter a lower amount.",
-      "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would take your position above the maximum LTV. Please enter a lower amount.",
+      "withdraw-undercollateralized": "You cannot withdraw more than {{amount}} {{collateralToken}}, as this would make your position eligible for liquidation. Please enter a lower amount.",
+      "borrow-undercollateralized": "You cannot generate more than {{amount}} {{quoteToken}}, as this would make your position eligible for liquidation. Please enter a lower amount.",
       "earning-no-apy": "You will be lending without earning any yield.",
       "withdraw-more-than-available": "You cannot withdraw more than {{amount}} {{token}}, please select a lower amount.",
-      "after-lup-index-bigger-than-htp-index": "You cannot withdraw this amount as there is not enough available liquidity in the pool. Please withdraw a lower amount or wait for more available liquidity.",
-      "debt-less-then-dust-limit": "Minimum debt amount you can draw is {{minDebtAmount}}, as this is the minimum required by the pool. Please enter an amount at least equal to the minimum borrow amount.",
+      "after-lup-index-bigger-than-htp-index-deposit": "You cannot adjust this position as there is not enough available liquidity in the pool. Please wait for more available liquidity.",
+      "after-lup-index-bigger-than-htp-index-withdraw": "You cannot withdraw this amount as there is not enough available liquidity in the pool. Please withdraw a lower amount or wait for more available liquidity.",
+      "debt-less-then-dust-limit": "The minimum debt for a position in this pool is {{minDebtAmount}}. Please update the parameters of this action to ensure the position has debt above {{minDebtAmount}} or no debt",
+      "debt-less-then-dust-limit-multiply": "Minimum debt generated is below the pool minimum. Please increase your deposit size or increase the LTV (if available).",
       "repay-more-then-debt": "You cannot repay more than the total debt amount {{amount}} {{quoteToken}}.",
       "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}.",
       "withdraw-close-to-max-ltv": "Withdrawing {{amount}} {{collateralToken}}, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
@@ -2761,7 +2892,7 @@
       "price-below-htp": "Unutilized Liquidity: Lending at this price means you are not earning any yield. <1>A deposit fee of 1 day's interest applies to all deposits below the active liquidity range.</1> <2><1>Help me pick correctly →</1></2>",
       "price-between-htp-and-lup": "Available Liquidity: Your deposit is earning yield but is not currently utilised by borrowers. <1>A deposit fee of 1 day's interest applies to all deposits below the active liquidity range.</1> <2><1>Help me pick correctly →</1></2>",
       "price-between-lup-and-momp": "Active liquidity: You are actively lending and will earn a yield whenever there are loans above {{lup}} {{collateralToken}}/{{quoteToken}}. <2><1>Help me pick correctly →</1></2>",
-      "price-above-momp": "Boundary Liquidity: Your selected price is too close to market price. In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending. <2><1>Help me pick correctly →</1></2>",
+      "price-above-momp": "Boundary Liquidity: Your selected price is close to market price. If {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending. <2><1>Help me pick correctly →</1></2>",
       "safety-switch-on": "Due to a technical issue we have currently disabled depositing tokens into empty Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
     },
     "rewards": {
@@ -2771,16 +2902,15 @@
         "mining": {
           "title": "AJNA Protocol Rewards",
           "list-1": "Rewards Earn Positions only",
-          "list-2": "Fortnightly Claim period",
-          "list-3": "Earn proportionally to % of pool interest generated",
-          "list-4": "You need to opt-in to stake your positions",
+          "list-2": "Earn proportionally to % of pool interest generated",
+          "list-3": "You need to opt-in to stake your positions",
           "link": "Learn more about Ajna Liquidity Mining Rewards",
           "banner": {
             "title": "AJNA Liquidity Mining Rewards "
           }
         },
         "token": {
-          "title": "Summer.fi x Ajna Token Rewards",
+          "title": "Summer.fi × Ajna Token Rewards",
           "list-1": "Rewards exclusive to Summer.fi users!",
           "list-2": "Rewards for Borrowing, Lending and Multiplying",
           "list-3": "Tokens will be claimable weekly in the near future",
@@ -2791,14 +2921,23 @@
           "floatingLabel": "Exclusive to Summer.fi"
         },
         "earning-across": "Earning across <1><2>{{value}} Ajna positions</2></1>",
-        "button": "Claim AJNA tokens"
+        "button": "Claim AJNA tokens",
+        "button-disabled": "Claiming available soon"
       }
     },
     "product-hub-tooltips": {
       "no-max-ltv": "There are currently no borrow or multiply positions for this pool. Max LTV will be calculated following the creation of the first position.",
       "no-max-multiple": "There are currently no borrow or multiply positions for this pool. Max multiple will be calculated following the creation of the first position.",
+      "no-weekly-apy": "There are currently no borrow or multiply positions for this pool. 7 day net APY will be calculated following the creation of the first position.",
+      "oracless-ltv": "Max LTV is not available for this pool as Summer.fi does not currently support USD price feeds for these assets. You can still open a position in this pool. The maximum risk will be determined by lenders in the pool.",
       "rewards-available-soon": "Rewards are earned automatically and will be claimable weekly in the near future.",
-      "this-pool-is-earning-ajna-tokens": "This pool is earning summer.fi × Ajna token Rewards"
+      "this-pool-is-earning-ajna-tokens": "This pool is earning Summer.fi × Ajna token Rewards"
+    }
+  },
+  "spark": {
+    "product-hub-tooltips": {
+      "elligible-for-spk-airdrop": "Positions on this pair are elligible for the SPK airdrop.",
+      "elligible-for-spk-airdrop-description": "More information on the Airdrop can be found on the Maker forum"
     }
   },
   "product-hub": {
@@ -2822,6 +2961,8 @@
     },
     "promo-cards": {
       "7-day-avg-apy": "7 day avg APY",
+      "active-management": "Active management",
+      "ajna-pools-accumulate-rewards": "Ajna pools supported in Summer.fi accumulate token rewards over time",
       "automation-enabled": "Automation enabled",
       "borrow-against": "Borrow {{debtToken}} against {{collateralToken}}",
       "borrow-and-earn-ajna": "Borrow {{quoteToken}} with {{collateralToken}} and earn Ajna Tokens",
@@ -2829,7 +2970,7 @@
       "check-out-our-security": "Check out our security",
       "earn-fully-self-custodial": "Earn fully self-custodial",
       "earn-on-your-assets": "Earn on your assets",
-      "earn-on-your-dai": "Earn 3.49% on your Dai",
+      "earn-on-your-dai": "Earn on your Dai",
       "earn-staking-rewards": "Earn staking rewards",
       "enter-with-token": "Enter with {{token}}",
       "exposure-against": "Multiply exposure to {{collateralToken}} against {{debtToken}}",
@@ -2837,14 +2978,14 @@
       "get-liquidity-from-your-assets-using-ajna": "Get liquidity from your assets using Ajna",
       "get-liquidity-from-your-assets": "Get liquidity from your assets",
       "get-to-know-ajna-multiply": "Get to know Ajna Multiply",
-      "get-to-know-multiply": "Get to know Multiply",
       "get-weekly-apy": "Get {{weeklyNetApy}} 7 day net APY",
       "highest-available-ltv": "Highest available LTV",
       "highest-multiple": "Highest multiple",
+      "how-to-use-borrow-on-ajna": "How to use Borrow on Ajna?",
+      "increase-or-decrease-the-exposure-to-your-collateral-asset-in-one-transaction": "Increase or decrease the exposure to your collateral asset in one transaction",
       "learn-how-can-you-earn-by-lending-your-assets": "Learn how can you earn by lending your assets",
       "learn-how-to-avoid-getting-your-position-liquidated": "Learn how to avoid getting your position liquidated",
       "learn-how-to-use-borrow-and-get-liquidity": "Learn how to use Borrow, and get liquidity",
-      "learn-how-to-use-multiply-to-optimize-your-position": "Learn how to use Multiply to optimize your position",
       "lend-against-collateral": "Lend {{quoteToken}} against {{collateralToken}} collateral",
       "lend-and-stake-to-earn": "Lend & stake to earn the best rates in DeFi",
       "lends-to-one-token": "Lends to 1 token",
@@ -2858,10 +2999,12 @@
       "up-to-exposure-against": "Up to {{maxMultiple}} exposure to {{collateralToken}} against {{debtToken}}",
       "up-to-multiple": "Up to {{maxMultiple}} multiple",
       "up-to-yield-exposure": "Up to {{maxMultiple}} Yield Exposure",
+      "what-are-ajna-rewards": "What are Ajna rewards?",
       "what-are-the-rist-of-earn-on-ajna": "What are the risks of Earn on Ajna?",
+      "what-is-earn-on-ajna": "What is Earn on Ajna?",
+      "what-is-multiply": "What is Multiply?",
       "yield-loop-strategy": "{{collateralToken}}/{{quoteToken}} Yield Loop Strategy",
-      "you-always-stay-in-control": "You always stay in control of your assets",
-      "what-is-earn-on-ajna": "What is Earn on Ajna?"
+      "you-always-stay-in-control": "You always stay in control of your assets"
     },
     "table": {
       "active": "Active",
@@ -2876,6 +3019,70 @@
       "strategies": "Strategies",
       "networks": "Networks",
       "protocols": "Protocols"
+    },
+    "banners": {
+      "pool-finder": {
+        "title": "Looking for a custom pool?",
+        "description": "Find any pool on Ajna and open a position using Ajna lite.",
+        "cta": "Search custom pools"
+      }
+    }
+  },
+  "navigation-network": {
+    "l2beat-title": "Learn about L2s",
+    "l2beat-description": "L2BEAT is an analytics and research website about Ethereum layer two (L2) scaling."
+  },
+  "pool-finder": {
+    "header": {
+      "using-ajna": "using Ajna"
+    },
+    "form": {
+      "pool-address": "Pool address",
+      "collateral-token": "Collateral token",
+      "quote-token": "Quote token",
+      "token-placeholder": "Symbol, name or address"
+    },
+    "validation": {
+      "no-results": "There are no items matching your criteria.",
+      "no-results-description": "Find other pools by updating your criteria. If you are missing a pool you would like to see, you can <AppLink>create one by yourself →</AppLink>",
+      "no-results-suggest-address": "Try searching for a pool by providing token address instead of its name or symbol. If you are missing a pool you would like to see, you can <AppLink>create one by yourself →</AppLink>"
+    }
+  },
+  "pool-creator": {
+    "header": {
+      "title": "Ajna Pool Creator",
+      "intro": "Create any ERC-20 token pool on the Ajna protocol, this will be available straight away on Summer.fi. <AppLink><WithArrow>Find out more here</WithArrow></AppLink>"
+    },
+    "form": {
+      "title": "Configure new Ajna pool",
+      "collateral-token-address": "Collateral token address",
+      "quote-token-address": "Quote token address",
+      "pools-interest-rate": "Initial pool interest rate",
+      "min-interest-rate": "Min. {{minInterestRate}}%",
+      "max-interest-rate": "Up to {{maxInterestRate}}%",
+      "submit": "Create pool"
+    },
+    "order-information": {
+      "pool": "Pool",
+      "initial-interest-rate": "Initial interest rate"
+    },
+    "validations": {
+      "collateral-is-not-address": "Collateral token address is not valid contract address.",
+      "collateral-is-not-erc20": "Collateral token address is not valid ERC-20 token.",
+      "quote-is-not-address": "Quote token address is not valid contract address.",
+      "quote-is-not-erc20": "Quote token address is not valid ERC-20 token.",
+      "collateral-equals-quote": "Collateral and Quote token addresses cannot be the same.",
+      "pool-already-exists": "<0>{{collateralToken}}/{{quoteToken}}</0> pool already exists - you can use this pool directly to either <1>Borrow →</1> or <2>Earn →</2>",
+      "unknown-error": "There was an unknown error, please try again later."
+    },
+    "transaction": {
+      "progress": "Creating {{collateralToken}}/{{quoteToken}} Ajna pool",
+      "success": "{{collateralToken}}/{{quoteToken}} Ajna pool was created"
+    }
+  },
+  "aave": {
+    "header": {
+      "current-market-price": "Current Market Price"
     }
   }
 }

@@ -1,4 +1,4 @@
-import { getToken } from 'blockchain/tokensMetadata'
+import { calculateAjnaMaxLiquidityWithdraw, getPoolLiquidity } from '@oasisdex/dma-library'
 import { PillAccordion } from 'components/PillAccordion'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
@@ -13,21 +13,27 @@ import React from 'react'
 export function AjnaEarnFormContentWithdraw() {
   const { t } = useTranslation()
   const {
-    environment: { quotePrice, quoteToken },
+    environment: { quotePrice, quoteToken, isOracless, quoteDigits },
   } = useAjnaGeneralContext()
   const {
-    form: { dispatch },
+    form: {
+      dispatch,
+      state: { withdrawAmount },
+    },
     validation: { isFormValid },
     position: {
-      currentPosition: {
-        position: { quoteTokenAmount },
-      },
+      currentPosition: { position, simulation },
     },
   } = useAjnaProductContext('earn')
 
   const withdrawMax = getAjnaEarnWithdrawMax({
-    quoteTokenAmount,
-    digits: getToken(quoteToken).precision,
+    quoteTokenAmount: calculateAjnaMaxLiquidityWithdraw({
+      pool: position.pool,
+      poolCurrentLiquidity: getPoolLiquidity(position.pool),
+      position,
+      simulation,
+    }),
+    digits: quoteDigits,
   })
 
   return (
@@ -38,9 +44,13 @@ export function AjnaEarnFormContentWithdraw() {
         token={quoteToken}
         tokenPrice={quotePrice}
         maxAmount={withdrawMax}
+        tokenDigits={quoteDigits}
       />
       <PillAccordion title={t('ajna.position-page.earn.common.form.adjust-lending-price-bucket')}>
-        <AjnaEarnSlider />
+        <AjnaEarnSlider
+          isDisabled={!withdrawAmount}
+          nestedManualInput={!(isOracless && position.pool.lowestUtilizedPriceIndex.isZero())}
+        />
       </PillAccordion>
       {isFormValid && (
         <AjnaFormContentSummary>

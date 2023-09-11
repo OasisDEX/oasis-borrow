@@ -220,9 +220,9 @@ function makeElementCool(element: HTMLElement): () => void {
     updateMousePosition(e)
     autoAddParticle = true
     void audioPlayer.play().then(() => {
-      console.log('🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺')
-      console.log('🎺 🎺 🎺 🎺 🎺 🎺 HAARHEEH 🎺 🎺 🎺 🎺 🎺 🎺')
-      console.log('🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺🎺  🎺')
+      console.info('🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺')
+      console.info('🎺 🎺 🎺 🎺 🎺 🎺 HAARHEEH 🎺 🎺 🎺 🎺 🎺 🎺')
+      console.info('🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺 🎺🎺  🎺')
     })
     audioPlayer.setAttribute('loop', '')
     document.body.appendChild(buttonElement)

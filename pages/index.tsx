@@ -1,7 +1,6 @@
 import { WithConnection } from 'components/connectWallet'
-import { DeferedContextProvider } from 'components/DeferedContextProvider'
-import { LandingPageLayout } from 'components/Layouts'
-import { aaveContext, AaveContextProvider } from 'features/aave'
+import { FunctionalContextHandler } from 'components/context'
+import { LandingPageLayout } from 'components/layouts'
 import { HomepageView } from 'features/homepage/HomepageView'
 import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -15,14 +14,12 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 
 function LandingPage() {
   return (
-    <AaveContextProvider>
-      <DeferedContextProvider context={aaveContext}>
-        <WithConnection>
-          <HomepageView />
-          <Survey for="homepage" />
-        </WithConnection>
-      </DeferedContextProvider>
-    </AaveContextProvider>
+    <FunctionalContextHandler>
+      <WithConnection>
+        <HomepageView />
+        <Survey for="homepage" />
+      </WithConnection>
+    </FunctionalContextHandler>
   )
 }
 

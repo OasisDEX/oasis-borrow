@@ -5,7 +5,7 @@ import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 
-export function aaveAvailableLiquidityInUSDC$(
+export function aaveLikeAvailableLiquidityInUSDC$(
   getReserveData$: (args: AaveV2ReserveDataParameters) => Observable<AaveV2ReserveDataReply>,
   getAssetPrice$: (args: AaveV2GetAssetPriceParameters) => Observable<BigNumber>,
   getUSDCPriceInEth$: Observable<BigNumber>,
@@ -22,7 +22,7 @@ export function aaveAvailableLiquidityInUSDC$(
       return liquidityInEthPrice.times(ETH_USDC_price)
     }),
     catchError((error) => {
-      console.log(
+      console.error(
         `Can't get available liquidity for ${JSON.stringify(reserveDataToken, null, 2)}`,
         error,
       )

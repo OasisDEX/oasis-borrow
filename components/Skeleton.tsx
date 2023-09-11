@@ -22,14 +22,16 @@ interface SkeletonProps {
   doughnut?: string | number
   gap?: string | number
   height?: string | number
+  radius?: string
   sx?: SxStyleProp
   width?: string | number
 }
 
-function SkeletonLine({
+export function SkeletonLine({
   circle = false,
   color = 'default',
   doughnut,
+  radius = 'medium',
   width = '100%',
   height = 3,
   sx,
@@ -42,7 +44,7 @@ function SkeletonLine({
         position: 'relative',
         width,
         height,
-        borderRadius: circle || doughnut ? 'ellipse' : 'medium',
+        borderRadius: circle || doughnut ? 'ellipse' : radius,
         backgroundColor: theme[0],
         overflow: 'hidden',
         ...sx,

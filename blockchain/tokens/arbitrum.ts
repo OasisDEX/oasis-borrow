@@ -1,30 +1,35 @@
 import { ADDRESSES } from '@oasisdex/addresses'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import * as guniToken from 'blockchain/abi/guni-token.json'
-import { getCollateralTokens } from 'blockchain/addresses/addressesUtils'
 import { contractDesc } from 'blockchain/networks'
 import { ContractDesc } from 'features/web3Context'
-
-import { supportedIlks } from './mainnet'
 
 export const AAVE_V3_POOL_GENESIS_GOERLI = 4365693
 
 const { arbitrum } = ADDRESSES
 
 export const tokensArbitrum = {
-  ...getCollateralTokens({ ...arbitrum.maker.pips, ...arbitrum.common }, supportedIlks),
-  GUNIV3DAIUSDC1: contractDesc(guniToken, arbitrum.common.GUNIV3DAIUSDC1),
-  GUNIV3DAIUSDC2: contractDesc(guniToken, arbitrum.common.GUNIV3DAIUSDC2),
+  CBETH: contractDesc(erc20, arbitrum.common.CBETH),
   CRVV1ETHSTETH: contractDesc(guniToken, arbitrum.common.CRVV1ETHSTETH),
   DAI: contractDesc(erc20, arbitrum.common.DAI),
+  ETH: contractDesc(erc20, arbitrum.common.WETH),
+  FRAX: contractDesc(erc20, arbitrum.common.FRAX),
+  GHO: contractDesc(erc20, arbitrum.common.GHO),
+  GUNIV3DAIUSDC1: contractDesc(guniToken, arbitrum.common.GUNIV3DAIUSDC1),
+  GUNIV3DAIUSDC2: contractDesc(guniToken, arbitrum.common.GUNIV3DAIUSDC2),
   LDO: contractDesc(erc20, arbitrum.common.LDO),
+  LUSD: contractDesc(erc20, arbitrum.common.LUSD),
   MKR: contractDesc(erc20, arbitrum.maker.common.McdGov),
-  STETH: contractDesc(erc20, arbitrum.common.STETH),
-  USDP: contractDesc(erc20, arbitrum.common.PAXUSD),
-  WSTETH: contractDesc(erc20, arbitrum.common.WSTETH),
-  WETH: contractDesc(erc20, arbitrum.common.WETH),
-  USDC: contractDesc(erc20, arbitrum.common.USDC),
-  WBTC: contractDesc(erc20, arbitrum.common.WBTC),
   RENBTC: contractDesc(erc20, arbitrum.common.RENBTC),
-  CBETH: contractDesc(erc20, arbitrum.common.CBETH),
+  SDAI: contractDesc(erc20, arbitrum.common.SDAI),
+  STETH: contractDesc(erc20, arbitrum.common.STETH),
+  TBTC: contractDesc(erc20, arbitrum.common.TBTC),
+  USDC: contractDesc(erc20, arbitrum.common.USDC),
+  USDP: contractDesc(erc20, arbitrum.common.PAXUSD),
+  WBTC: contractDesc(erc20, arbitrum.common.WBTC),
+  WETH: contractDesc(erc20, arbitrum.common.WETH),
+  WLD: contractDesc(erc20, arbitrum.common.WLD),
+  WSTETH: contractDesc(erc20, arbitrum.common.WSTETH),
+  YIELDBTC: contractDesc(erc20, arbitrum.common.YIELDBTC),
+  YIELDETH: contractDesc(erc20, arbitrum.common.YIELDETH),
 } as Record<string, ContractDesc>

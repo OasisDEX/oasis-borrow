@@ -1,7 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
-import { useAutomationContext } from 'components/AutomationContextProvider'
-import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
+import { useAutomationContext, useGasEstimationContext } from 'components/context'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
 import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
@@ -28,6 +26,7 @@ import {
   extractCancelAutomationErrors,
   extractCancelAutomationWarnings,
 } from 'helpers/messageMappers'
+import { uiChanges } from 'helpers/uiChanges'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -70,7 +69,6 @@ export function SidebarSetupAutoBuy({
   isAutoBuyActive,
 }: SidebarSetupAutoBuyProps) {
   const gasEstimation = useGasEstimationContext()
-  const { uiChanges } = useAppContext()
   const {
     environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
     positionData: { nextPositionRatio, token, liquidationRatio, vaultType },

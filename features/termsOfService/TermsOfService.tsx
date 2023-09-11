@@ -1,5 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useAppContext } from 'components/AppContextProvider'
+import {
+  FunctionalContextHandler,
+  useAccountContext,
+  useMainContext,
+  useTOSContext,
+} from 'components/context'
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
@@ -10,7 +15,7 @@ import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React, { ReactNode, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Label, Text } from 'theme-ui'
-import { fadeIn } from 'theme/keyframes'
+import { fadeIn } from 'theme/animations'
 
 import { TermsAcceptanceStage, TermsAcceptanceState } from './termsAcceptance'
 
@@ -180,13 +185,10 @@ const hiddenStages: TermsAcceptanceStage[] = [
 ]
 
 export function TermsOfService({ userReferral }: { userReferral?: UserReferralState }) {
-  const { termsAcceptance$ } = useAppContext()
+  const { termsAcceptance$ } = useTOSContext()
   const [termsAcceptance] = useObservable(termsAcceptance$)
 
   const { disconnect, wallet } = useWalletManagement()
-  const disconnectHandler = async () => {
-    await disconnect()
-  }
 
   if (
     userReferral?.state === 'newUser' &&
@@ -221,7 +223,7 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
             case 'jwtInvalidProgress':
             case 'jwtInvalidWaiting4Acceptance':
             case 'acceptanceSaveInProgress':
-              return <TOSWaiting4Signature {...termsAcceptance} disconnect={disconnectHandler} />
+              return <TOSWaiting4Signature {...termsAcceptance} disconnect={disconnect} />
             case 'acceptanceCheckFailed':
             case 'jwtAuthFailed':
             case 'jwtAuthRejected':
@@ -241,7 +243,8 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
 }
 
 export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
-  const { web3ContextConnected$, userReferral$ } = useAppContext()
+  const { web3ContextConnected$ } = useMainContext()
+  const { userReferral$ } = useAccountContext()
   const [web3ContextConnected] = useObservable(web3ContextConnected$)
   const [userReferral] = useObservable(userReferral$)
 
@@ -256,9 +259,9 @@ export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
   }
 
   return (
-    <>
+    <FunctionalContextHandler>
       {children}
       <TermsOfService userReferral={userReferral} />
-    </>
+    </FunctionalContextHandler>
   )
 }

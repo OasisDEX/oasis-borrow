@@ -1,6 +1,4 @@
-import { useAppContext } from 'components/AppContextProvider'
-import { useAutomationContext } from 'components/AutomationContextProvider'
-import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
+import { useAutomationContext, useGasEstimationContext } from 'components/context'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
@@ -28,6 +26,7 @@ import {
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
+import { uiChanges } from 'helpers/uiChanges'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -64,7 +63,6 @@ export function SidebarSetupStopLoss({
   isStopLossActive,
 }: SidebarSetupStopLossProps) {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
   const automationContext = useAutomationContext()
   const {
     environmentData: { ethMarketPrice, etherscanUrl },

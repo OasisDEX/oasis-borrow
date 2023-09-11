@@ -1,10 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
+import dayjs from 'dayjs'
 import { NewsletterSection } from 'features/newsletter/NewsletterView'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React from 'react'
@@ -22,6 +22,7 @@ const FOOTER_SECTIONS = [
     titleKey: 'nav.about',
     links: [
       { labelKey: 'nav.team', url: INTERNAL_LINKS.about },
+      { labelKey: 'nav.contact', url: EXTERNAL_LINKS.KB.CONTACT, target: '_blank' },
       { labelKey: 'nav.careers', url: EXTERNAL_LINKS.WORKABLE },
       { labelKey: 'nav.privacy', url: INTERNAL_LINKS.privacy },
       { labelKey: 'nav.cookie', url: INTERNAL_LINKS.cookie },
@@ -34,10 +35,9 @@ const FOOTER_SECTIONS = [
     links: [
       { labelKey: 'nav.discover', url: INTERNAL_LINKS.discover, target: '_self' },
       { labelKey: 'nav.blog', url: EXTERNAL_LINKS.BLOG.MAIN, target: '_self' },
-      // add link
       { labelKey: 'nav.knowledge-centre', url: EXTERNAL_LINKS.KB.HELP, target: '_blank' },
-      { labelKey: 'nav.contact', url: EXTERNAL_LINKS.KB.CONTACT, target: '_blank' },
       { labelKey: 'nav.bug-bounty', url: EXTERNAL_LINKS.BUG_BOUNTY, target: '_blank' },
+      { labelKey: 'nav.ajna-rewards', url: INTERNAL_LINKS.ajnaRewards },
       { labelKey: 'nav.referrals', url: INTERNAL_LINKS.referrals },
       { labelKey: 'nav.brand-assets', url: INTERNAL_LINKS.brand },
     ],
@@ -114,7 +114,7 @@ const LangSelectComponents: Partial<
 
 export function TemporaryFooter() {
   const commit = buildHash.substring(0, 10)
-  const date = moment(buildDate).format('DD.MM.YYYY HH:MM')
+  const date = dayjs(buildDate).format('DD.MM.YYYY HH:MM')
   console.debug(`Build commit: ${commit} Build date: ${date}`)
   return (
     showBuildInfo && (

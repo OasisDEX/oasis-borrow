@@ -1,5 +1,5 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
-import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
+import { StopLossTwoTxRequirement } from 'features/aave/components'
 import { OpenVaultChangesInformation } from 'features/borrow/open/containers/OpenVaultChangesInformation'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { useTranslation } from 'next-i18next'

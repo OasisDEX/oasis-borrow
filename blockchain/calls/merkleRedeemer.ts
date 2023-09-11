@@ -21,8 +21,9 @@ export type ClaimMultipleData = {
 }
 
 export const claimMultiple: TransactionDef<ClaimMultipleData> = {
-  call: (_, { contract, chainId }) => {
-    return contract<MerkleRedeemer>(getNetworkContracts(NetworkIds.MAINNET, chainId).merkleRedeemer)
+  call: (_, { contract }) => {
+    // Claims are on the optimism only
+    return contract<MerkleRedeemer>(getNetworkContracts(NetworkIds.OPTIMISMMAINNET).merkleRedeemer)
       .methods.claimMultiple
   },
   prepareArgs: (data) => {

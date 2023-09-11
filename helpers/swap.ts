@@ -1,6 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
-import { defaultExchangeProtocols } from 'features/exchange/exchange'
+import {
+  ETHEREUM_MAINNET_DEFAULT_PROTOCOLS,
+  OPTIMIMS_DEFAULT_PROCOTOLS,
+} from 'features/exchange/exchange'
+import { match } from 'ts-pattern'
 
 import { one } from './zero'
 
@@ -28,6 +32,8 @@ async function swapOneInchTokens(
   return exchangeTokens(url)
 }
 
+const PROXY_API_ENDPOINT = `/api/exchange`
+
 function formatOneInchSwapUrl(
   fromToken: string,
   toToken: string,
@@ -39,7 +45,7 @@ function formatOneInchSwapUrl(
   protocols: string[] = [],
 ) {
   const protocolsParam = !protocols?.length ? '' : `&protocols=${protocols.join(',')}`
-  return `https://oasis.api.enterprise.1inch.exchange/${oneInchVersion}/${chainId}/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false`
+  return `${PROXY_API_ENDPOINT}/${oneInchVersion}/${chainId}/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false`
 }
 
 async function exchangeTokens(url: string): Promise<any> {
@@ -49,7 +55,7 @@ async function exchangeTokens(url: string): Promise<any> {
     throw new Error(`Error performing 1inch swap request ${url}: ${await response.text()}`)
   }
 
-  return response.json() as Promise<any>
+  return (await response.json()) as Promise<any>
 }
 
 export async function oneInchCallMock(
@@ -72,26 +78,6 @@ export async function oneInchCallMock(
   }
 }
 
-export const optimismLiquidityProviders = [
-  'OPTIMISM_UNISWAP_V3',
-  'OPTIMISM_SYNTHETIX',
-  'OPTIMISM_SYNTHETIX_WRAPPER',
-  'OPTIMISM_ONE_INCH_LIMIT_ORDER',
-  'OPTIMISM_ONE_INCH_LIMIT_ORDER_V2',
-  'OPTIMISM_ONE_INCH_LIMIT_ORDER_V3',
-  'OPTIMISM_CURVE',
-  // 'OPTIMISM_BALANCER_V2', - We can't use balancer due to reentrancy issues
-  'OPTIMISM_VELODROME',
-  'OPTIMISM_KYBERSWAP_ELASTIC',
-  'OPTIMISM_CLIPPER_COVES',
-  'OPTIMISM_KYBER_DMM_STATIC',
-  'OPTIMISM_AAVE_V3',
-  'OPTIMISM_ELK',
-  'OPTIMISM_WOOFI_V2',
-  'OPTIMISM_TRIDENT',
-  'OPTIMISM_MUMMY_FINANCE',
-]
-
 // TODO: export from oasis-earn-sc into @oasisdex/oasis-actions lib and import from there
 export function getOneInchCall(
   swapAddress: string,
@@ -104,10 +90,19 @@ export function getOneInchCall(
     to: string,
     amount: BigNumber,
     slippage: BigNumber,
-    protocols: string[] = defaultExchangeProtocols,
+    protocols: string[] = [],
   ) => {
-    const shouldUseOptimismLiquidityProviders =
-      networkId === NetworkIds.OPTIMISMMAINNET && protocols.length === 0
+    const resolvedProcotols = match({ protocols, networkId })
+      .with(
+        { protocols: [], networkId: NetworkIds.OPTIMISMMAINNET },
+        () => OPTIMIMS_DEFAULT_PROCOTOLS,
+      )
+      .with(
+        { protocols: [], networkId: NetworkIds.MAINNET },
+        () => ETHEREUM_MAINNET_DEFAULT_PROTOCOLS,
+      )
+      .otherwise(() => protocols)
+
     const response = await swapOneInchTokens(
       from,
       to,
@@ -116,17 +111,17 @@ export function getOneInchCall(
       slippage.times('100').toString(), // 1inch expects slippage in percentage format
       networkId,
       oneInchVersion,
-      shouldUseOptimismLiquidityProviders ? optimismLiquidityProviders : protocols,
+      resolvedProcotols,
     )
 
     if (debug) {
-      console.log('1inch')
-      console.log('fromTokenAmount', response.fromTokenAmount.toString())
-      console.log('toTokenAmount', response.toTokenAmount.toString())
-      console.log('slippage', slippage.times('100').toString())
-      console.log('minToTokenAmount', response.toTokenAmount.toString())
-      console.log('exchangeCalldata', response.tx.data)
-      console.log('protocols', protocols)
+      console.info('1inch')
+      console.info('fromTokenAmount', response.fromTokenAmount.toString())
+      console.info('toTokenAmount', response.toTokenAmount.toString())
+      console.info('slippage', slippage.times('100').toString())
+      console.info('minToTokenAmount', response.toTokenAmount.toString())
+      console.info('exchangeCalldata', response.tx.data)
+      console.info('protocols', protocols)
     }
 
     return {

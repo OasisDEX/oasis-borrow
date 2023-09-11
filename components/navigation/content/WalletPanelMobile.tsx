@@ -1,4 +1,4 @@
-import { useAppContext } from 'components/AppContextProvider'
+import { useAccountContext, useMainContext } from 'components/context'
 import { MobileSidePanelPortal, ModalCloseIcon } from 'components/Modal'
 import { useSharedUI } from 'components/SharedUIProvider'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
@@ -9,7 +9,8 @@ import React, { useState } from 'react'
 import { Box, Button, Card, Flex } from 'theme-ui'
 
 export function WalletPanelMobile() {
-  const { accountData$, connectedContext$ } = useAppContext()
+  const { connectedContext$ } = useMainContext()
+  const { accountData$ } = useAccountContext()
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [context] = useObservable(connectedContext$)

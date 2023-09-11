@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
+import { useMainContext, useProductContext } from 'components/context'
 import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
+import { RAY } from 'features/dsr/utils/constants'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -11,7 +12,8 @@ import { Container } from 'theme-ui'
 import { DsrView } from './DsrView'
 
 export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
-  const { dsrDeposit$, dsr$, context$, potTotalValueLocked$, potDsr$ } = useAppContext()
+  const { context$ } = useMainContext()
+  const { dsrDeposit$, dsr$, potTotalValueLocked$, potDsr$ } = useProductContext()
   const [potDsr] = useObservable(potDsr$)
   const [potTotalValueLocked] = useObservable(potTotalValueLocked$)
   const resolvedDsrDeposit$ = dsrDeposit$(walletAddress)
@@ -25,6 +27,7 @@ export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
         .decimalPlaces(5, BigNumber.ROUND_UP)
         .minus(1)
     : new BigNumber(0.01)
+  const dsr = potDsr || RAY
 
   return (
     <Container variant="vaultPageContainer">
@@ -41,6 +44,7 @@ export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
               context={_context}
               potTotalValueLocked={potTotalValueLocked}
               apy={apy.times(100)}
+              dsr={dsr}
             />
           )}
         </WithLoadingIndicator>

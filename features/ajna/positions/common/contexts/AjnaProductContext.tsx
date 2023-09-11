@@ -1,20 +1,21 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import { AjnaEarnPosition, AjnaPosition, SwapData } from '@oasisdex/dma-library'
 import { AjnaSimulationData } from 'actions/ajna'
-import { useAppContext } from 'components/AppContextProvider'
+import { useGasEstimationContext, useProductContext } from 'components/context'
 import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { AjnaGenericPosition, AjnaProduct, AjnaValidationItem } from 'features/ajna/common/types'
+import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import {
   AjnaBorrowFormState,
   useAjnaBorrowFormReducto,
 } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
-import { AjnaHistoryEvents } from 'features/ajna/positions/common/helpers/getAjnaHistory'
+import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
+import { AjnaPositionCumulatives } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
-} from 'features/ajna/positions/common/observables/getAjnaPositionAuction'
+} from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { getAjnaValidation } from 'features/ajna/positions/common/validation'
 import {
   AjnaEarnFormState,
@@ -43,24 +44,30 @@ interface AjnaProductContextProviderPropsWithBorrow {
   position: AjnaPosition
   product: 'borrow'
   positionAuction: AjnaBorrowishPositionAuction
-  positionHistory: AjnaHistoryEvents
+  positionHistory: AjnaUnifiedHistoryEvent[]
+  positionCumulatives: AjnaPositionCumulatives
 }
+
 interface AjnaProductContextProviderPropsWithEarn {
   formReducto: typeof useAjnaEarnFormReducto
   formDefaults: Partial<AjnaEarnFormState>
   position: AjnaEarnPosition
   product: 'earn'
   positionAuction: AjnaEarnPositionAuction
-  positionHistory: AjnaHistoryEvents
+  positionHistory: AjnaUnifiedHistoryEvent[]
+  positionCumulatives: AjnaPositionCumulatives
 }
+
 interface AjnaProductContextProviderPropsWithMultiply {
   formReducto: typeof useAjnaMultiplyFormReducto
   formDefaults: Partial<AjnaMultiplyFormState>
   position: AjnaPosition
   product: 'multiply'
   positionAuction: AjnaBorrowishPositionAuction
-  positionHistory: AjnaHistoryEvents
+  positionHistory: AjnaUnifiedHistoryEvent[]
+  positionCumulatives: AjnaPositionCumulatives
 }
+
 type AjnaProductDetailsContextProviderProps =
   | AjnaProductContextProviderPropsWithBorrow
   | AjnaProductContextProviderPropsWithEarn
@@ -74,13 +81,19 @@ interface AjnaPositionSet<P> {
 interface AjnaProductContextPosition<P, A> {
   cachedPosition?: AjnaPositionSet<P>
   currentPosition: AjnaPositionSet<P>
+  swap?: {
+    current?: SwapData
+    cached?: SwapData
+  }
   isSimulationLoading?: boolean
   resolvedId?: string
   setCachedPosition: (positionSet: AjnaPositionSet<AjnaGenericPosition>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
   setSimulation: Dispatch<SetStateAction<AjnaSimulationData<AjnaGenericPosition> | undefined>>
+  setCachedSwap: (swap: SwapData) => void
   positionAuction: A
-  history: AjnaHistoryEvents
+  history: AjnaUnifiedHistoryEvent[]
+  cumulatives?: AjnaPositionCumulatives
 }
 
 interface AjnaProductContext<P, F, A> {
@@ -103,11 +116,13 @@ type AjnaProductContextWithBorrow = AjnaProductContext<
   ReturnType<typeof useAjnaBorrowFormReducto>,
   AjnaBorrowishPositionAuction
 >
+
 type AjnaProductContextWithEarn = AjnaProductContext<
   AjnaEarnPosition,
   ReturnType<typeof useAjnaEarnFormReducto>,
   AjnaEarnPositionAuction
 >
+
 type AjnaProductContextWithMultiply = AjnaProductContext<
   AjnaPosition,
   ReturnType<typeof useAjnaMultiplyFormReducto>,
@@ -130,6 +145,7 @@ type PickProductType<T extends AjnaProduct> = T extends 'borrow'
 
 export function useAjnaProductContext<T extends AjnaProduct>(product: T): PickProductType<T> {
   const { environment } = useAjnaGeneralContext()
+
   const context =
     product === 'borrow'
       ? useContext(ajnaBorrowContext)
@@ -153,21 +169,25 @@ export function AjnaProductContextProvider({
   position,
   positionAuction,
   positionHistory,
+  positionCumulatives,
 }: PropsWithChildren<AjnaProductDetailsContextProviderProps>) {
   const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const { walletAddress } = useAccount()
   const gasEstimation = useGasEstimationContext()
-  const { positionIdFromDpmProxy$ } = useAppContext()
+  const { positionIdFromDpmProxy$ } = useProductContext()
 
   const {
     environment: {
       collateralBalance,
+      collateralPrecision,
       collateralToken,
       ethBalance,
       ethPrice,
       flow,
       quoteBalance,
+      quotePrecision,
       quoteToken,
+      isOracless,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -182,8 +202,17 @@ export function AjnaProductContextProvider({
   )
 
   const [cachedPosition, setCachedPosition] = useState<AjnaPositionSet<typeof position>>()
+  const [cachedSwap, setCachedSwap] = useState<SwapData>()
   const [simulation, setSimulation] = useState<AjnaSimulationData<typeof position>>()
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
+
+  // We need to determine the direction of the swap based on change in position risk
+  let isIncreasingPositionRisk = true
+  if (isAjnaPosition(simulation?.position) && isAjnaPosition(position) && simulation) {
+    isIncreasingPositionRisk = simulation.position.riskRatio.loanToValue.gte(
+      position.riskRatio.loanToValue,
+    )
+  }
 
   const validation = useMemo(
     () =>
@@ -235,6 +264,7 @@ export function AjnaProductContextProvider({
         collateralToken,
         dispatch: form.dispatch,
         updateState: form.updateState,
+        isOracless,
       }),
     [quoteToken, collateralToken, position],
   )
@@ -253,12 +283,16 @@ export function AjnaProductContextProvider({
       setCachedPosition: (positionSet) => setCachedPosition(positionSet),
       setIsLoadingSimulation,
       setSimulation,
+      setCachedSwap: (swap) => setCachedSwap(swap),
     },
     validation,
     notifications,
   })
 
   useEffect(() => {
+    const fromTokenPrecision = isIncreasingPositionRisk ? quotePrecision : collateralPrecision
+    const toTokenPrecision = isIncreasingPositionRisk ? collateralPrecision : quotePrecision
+
     setContext((prev) => ({
       ...prev,
       form,
@@ -272,7 +306,16 @@ export function AjnaProductContextProvider({
         isSimulationLoading,
         resolvedId: positionIdFromDpmProxyData,
         positionAuction,
+        swap: {
+          current: formatSwapData({
+            swapData: simulation?.swaps[0],
+            fromTokenPrecision,
+            toTokenPrecision,
+          }),
+          cached: cachedSwap,
+        },
         history: positionHistory,
+        cumulatives: positionCumulatives,
       },
       validation,
       notifications,
@@ -294,6 +337,7 @@ export function AjnaProductContextProvider({
     notifications,
     walletAddress,
     positionHistory,
+    cachedSwap,
   ])
 
   switch (product) {
@@ -316,4 +360,8 @@ export function AjnaProductContextProvider({
         </ajnaMultiplyContext.Provider>
       )
   }
+}
+
+function isAjnaPosition(position: any): position is AjnaPosition {
+  return position instanceof AjnaPosition && typeof position.riskRatio === 'object'
 }

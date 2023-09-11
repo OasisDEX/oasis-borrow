@@ -6,6 +6,7 @@ import * as aaveV3PoolDataProvider from 'blockchain/abi/aave-v3-pool-data-provid
 import * as aaveV3Pool from 'blockchain/abi/aave-v3-pool.json'
 import * as accountFactory from 'blockchain/abi/account-factory.json'
 import * as accountGuard from 'blockchain/abi/account-guard.json'
+import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.json'
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
 import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
@@ -53,16 +54,16 @@ import {
   AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET,
   ACCOUNT_FACTORY_GENESIS_OPTIMISM_MAINNET,
   ACCOUNT_GUARD_GENESIS_OPTIMISM_MAINNET,
+  tokensOptimism,
 } from 'blockchain/tokens/optimism'
-import { tokensOptimism } from 'blockchain/tokens/optimism'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 import { ContractDesc } from 'features/web3Context'
 
-import { MainnetContracts, mainnetContracts } from './mainnet'
+import { mainnetContracts, MainnetContractsWithOptional } from './mainnet'
 
 const { optimism } = ADDRESSES
 
-type OptimismContracts = MainnetContracts & {
+type OptimismContracts = MainnetContractsWithOptional & {
   gasPriceOracle: ContractDesc
 }
 
@@ -137,9 +138,9 @@ export const optimismContracts: OptimismContracts = {
   aaveTokens: {},
   aaveV2ProtocolDataProvider: contractDesc(
     aaveV2ProtocolDataProvider,
-    optimism.aave.v2.ProtocolDataProvider,
+    optimism.aave.v2.PoolDataProvider,
   ),
-  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, optimism.aave.v2.PriceOracle),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, optimism.aave.v2.Oracle),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, optimism.common.ChainlinkPriceOracle_ETHUSD),
@@ -160,33 +161,48 @@ export const optimismContracts: OptimismContracts = {
   ),
   aaveV3Pool: contractDesc(
     aaveV3Pool,
-    optimism.aave.v3.Pool,
+    optimism.aave.v3.LendingPool,
     AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET,
   ),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, optimism.aave.v3.AaveOracle),
-  aaveV3PoolDataProvider: contractDesc(
-    aaveV3PoolDataProvider,
-    optimism.aave.v3.AavePoolDataProvider,
-  ),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, optimism.aave.v3.Oracle),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, optimism.aave.v3.PoolDataProvider),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, optimism.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, optimism.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
+    'CBETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_CBETHETH),
+    'CBETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_CBETHGHO),
     'ETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHDAI),
+    'ETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHGHO),
     'ETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHUSDC),
+    'GHO-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_GHODAI),
     'RETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHDAI),
     'RETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHETH),
+    'RETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHGHO),
     'RETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHUSDC),
+    'SDAI-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_SDAIUSDC),
+    'TBTC-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_TBTCUSDC),
+    'TBTC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_TBTCWBTC),
     'USDC-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCETH),
     'USDC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCWBTC),
+    'USDC-WLD': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCWLD),
     'WBTC-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCDAI),
+    'WBTC-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCGHO),
     'WBTC-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCUSDC),
+    'WLD-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WLDUSDC),
     'WSTETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHDAI),
     'WSTETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHETH),
+    'WSTETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHUSDC),
+    'YFI-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YFIDAI),
+  },
+  ajnaOraclessPoolPairs: {
+    'YIELDBTC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YIELDBTCWBTC),
+    'YIELDETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YIELDETHETH),
   },
   ajnaRewardsManager: contractDesc(ajnaRewardsManager, optimism.ajna.AjnaRewardsManager),
   // TODO update address
   ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, optimism.ajna.AjnaRewardsClaimer),
+  ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, optimism.ajna.ERC20PoolFactory),
   // NOT contracts
   cacheApi: 'not-implemented',
   safeConfirmations: 6,
@@ -204,4 +220,5 @@ export const optimismContracts: OptimismContracts = {
     apiKey: '',
   },
   gasPriceOracle: contractDesc(gasPriceOracle, '0x420000000000000000000000000000000000000F'),
+  SdaiOracle: contractDesc(ajnaPoolInfo, optimism.common.SdaiOracle),
 }

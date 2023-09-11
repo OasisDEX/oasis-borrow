@@ -6,7 +6,7 @@ import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
-import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import dayjs, { Dayjs } from 'dayjs'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
@@ -41,11 +41,10 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { GasEstimationStatus } from 'helpers/form'
+import { AddGasEstimationFunction, GasEstimationStatus, TxHelpers } from 'helpers/context/types'
 import { GUNI_SLIPPAGE } from 'helpers/multiply/calculations'
 import { one } from 'helpers/zero'
 import { curry } from 'lodash'
-import moment, { Moment } from 'moment'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
@@ -209,7 +208,7 @@ export function createManageGuniVault$(
     token: string,
   ) => Observable<{ sharedAmount0: BigNumber; sharedAmount1: BigNumber }>,
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
-  historicalTokenPrices$: (token: string, timestamp: Moment) => Observable<MakerOracleTokenPrice>,
+  historicalTokenPrices$: (token: string, timestamp: Dayjs) => Observable<MakerOracleTokenPrice>,
   id: BigNumber,
 ): Observable<ManageEarnVaultState> {
   return context$.pipe(
@@ -223,8 +222,8 @@ export function createManageGuniVault$(
             balanceInfo$(vault.token, account),
             ilkData$(vault.ilk),
             account ? proxyAddress$(account) : of(undefined),
-            historicalTokenPrices$(vault.token, moment()),
-            historicalTokenPrices$(vault.token, moment().subtract(7, 'd')),
+            historicalTokenPrices$(vault.token, dayjs()),
+            historicalTokenPrices$(vault.token, dayjs().subtract(7, 'd')),
           ).pipe(
             first(),
             switchMap(
@@ -339,8 +338,10 @@ export function createManageGuniVault$(
                                   sharedAmount1: sharedAmount1.minus(0.01),
                                   requiredDebt,
                                   fromTokenAmount: swap.collateralAmount,
-                                  toTokenAmount: swap.daiAmount,
-                                  minToTokenAmount: swap.daiAmount.times(one.minus(state.slippage)),
+                                  toTokenAmount: swap.quoteAmount,
+                                  minToTokenAmount: swap.quoteAmount.times(
+                                    one.minus(state.slippage),
+                                  ),
                                 }
                               }),
                             )

@@ -8,12 +8,17 @@ import React from 'react'
 
 export function AjnaEarnFormContentOpen() {
   const {
-    environment: { quotePrice, quoteToken, quoteBalance },
+    environment: { quotePrice, quoteToken, quoteBalance, quoteDigits, isOracless },
   } = useAjnaGeneralContext()
   const {
     form: {
       dispatch,
       state: { depositAmount },
+    },
+    position: {
+      currentPosition: {
+        position: { pool },
+      },
     },
     validation: { isFormValid },
   } = useAjnaProductContext('earn')
@@ -25,11 +30,12 @@ export function AjnaEarnFormContentOpen() {
         token={quoteToken}
         tokenPrice={quotePrice}
         maxAmount={quoteBalance}
+        tokenDigits={quoteDigits}
         resetOnClear
       />
       <AjnaEarnSlider
         isDisabled={!depositAmount || depositAmount?.lte(0)}
-        nestedManualInput={true}
+        nestedManualInput={!(isOracless && pool.lowestUtilizedPriceIndex.isZero())}
       />
       {isFormValid && (
         <AjnaFormContentSummary>

@@ -1,6 +1,7 @@
 import { PositionHistory } from 'components/history/PositionHistory'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useWalletManagement } from 'features/web3OnBoard'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -17,20 +18,24 @@ export function AjnaPositionViewInfoPlaceholder() {
 export function AjnaPositionHistoryController() {
   const { t } = useTranslation()
   const {
-    environment: { product, isShort, priceFormat, collateralToken, quoteToken },
+    environment: { isOracless, product, isShort, priceFormat, collateralToken, quoteToken },
   } = useAjnaGeneralContext()
   const {
     position: { history },
   } = useAjnaProductContext(product)
 
+  const { chainId } = useWalletManagement()
+
   return history.length ? (
     <Grid variant="vaultContainer">
       <PositionHistory
+        collateralToken={collateralToken}
         historyEvents={history}
+        isOracless={isOracless}
         isShort={isShort}
         priceFormat={priceFormat}
-        collateralToken={collateralToken}
         quoteToken={quoteToken}
+        networkId={chainId}
       />
     </Grid>
   ) : (

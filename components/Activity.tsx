@@ -1,4 +1,4 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
@@ -20,8 +20,8 @@ export function ActivityItem({
   iconColor,
   componentRight,
 }: ActivityItemProps) {
-  const momentTimestamp = typeof timestamp === 'number' ? moment.unix(timestamp) : moment(timestamp)
-  const isSameYear = moment().isSame(moment(momentTimestamp), 'year')
+  const momentTimestamp = typeof timestamp === 'number' ? dayjs.unix(timestamp) : dayjs(timestamp)
+  const isSameYear = dayjs().isSame(dayjs(momentTimestamp), 'year')
 
   const timestampText = isSameYear
     ? momentTimestamp.format('MMM DD HH:mm')

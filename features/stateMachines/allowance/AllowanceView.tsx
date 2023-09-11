@@ -1,5 +1,6 @@
 import { useActor } from '@xstate/react'
-import { getToken } from 'blockchain/tokensMetadata'
+import { getTokenGuarded } from 'blockchain/tokensMetadata'
+import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { Radio } from 'components/forms/Radio'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BigNumberInput } from 'helpers/BigNumberInput'
@@ -93,7 +94,7 @@ function AllowanceInfoStateViewContent({
             value={amount && isCustom ? formatAmount(amount, token) : undefined}
             mask={createNumberMask({
               allowDecimal: true,
-              decimalLimit: getToken(token).digits,
+              decimalLimit: getTokenGuarded(token)?.digits || DEFAULT_TOKEN_DIGITS,
               prefix: '',
             })}
             onChange={handleNumericInput((value) =>
