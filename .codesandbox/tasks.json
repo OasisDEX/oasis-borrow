@@ -13,6 +13,13 @@
       "preview": {
         "port": 3000,
         "prLink": "direct"
+      },
+      "restartOn": {
+        "branch": true,
+        "files": [
+          "/**/*.{ts,tsx}",
+          "package.json"
+        ]
       }
     },
     "update-product-hub": {
