@@ -5,7 +5,6 @@ import getConfig from 'next/config'
 const configUrl = getConfig()?.publicRuntimeConfig?.configUrl
 
 const configFetcherBackend = async function () {
-  console.log('DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG: Fetching new config')
   const response = await fetch(configUrl)
   const data = await response.json()
   return data

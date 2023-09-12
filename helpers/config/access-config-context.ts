@@ -1,6 +1,6 @@
 'use client'
-import { configContext } from 'components/context/ConfigContextProvider'
-import { configLSKey, ConfigResponseType, ConfigResponseTypeKey, emptyConfig } from 'helpers/config'
+import { configContext, emptyConfig } from 'components/context/ConfigContextProvider'
+import { configLSKey, ConfigResponseType, ConfigResponseTypeKey } from 'helpers/config'
 import { useContext as accessContext } from 'react'
 
 export function getAppConfig<T extends ConfigResponseTypeKey>(configKey: T): ConfigResponseType[T] {
@@ -12,7 +12,7 @@ export function getAppConfig<T extends ConfigResponseTypeKey>(configKey: T): Con
     return ac.config[configKey]
   } catch (error) {
     console.error(`getAppConfig: Error getting config value for ${configKey}`)
-    return {} as ConfigResponseType[T]
+    return emptyConfig[configKey]
   }
 }
 
