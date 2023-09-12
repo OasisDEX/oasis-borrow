@@ -1,7 +1,6 @@
 import { Announcement } from 'components/Announcement'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { useCoolMode } from 'helpers/sweet/useCoolMode'
-import React, { Ref } from 'react'
+import React from 'react'
 import { Container, Flex } from 'theme-ui'
 import { Background } from 'theme/Background'
 
@@ -19,8 +18,6 @@ export function WithAnnouncementLandingLayout({
   sx,
   variant,
 }: Omit<WithAnnouncementLayoutProps, 'bg'>) {
-  const ref = useCoolMode()
-
   return (
     <Flex
       sx={{
@@ -29,7 +26,6 @@ export function WithAnnouncementLandingLayout({
         minHeight: '100%',
         ...sx,
       }}
-      ref={ref as Ref<HTMLDivElement>}
     >
       <Background wrapper>{header}</Background>
       {showAnnouncement && (
@@ -59,8 +55,6 @@ export function WithAnnouncementLayout({
   variant,
   bg,
 }: WithAnnouncementLayoutProps) {
-  const ref = useCoolMode()
-
   return (
     <Flex
       sx={{
@@ -69,7 +63,6 @@ export function WithAnnouncementLayout({
         minHeight: '100%',
         ...sx,
       }}
-      ref={ref as Ref<HTMLDivElement>}
     >
       {bg}
       {header}

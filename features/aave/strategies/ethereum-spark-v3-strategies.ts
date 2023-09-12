@@ -12,7 +12,7 @@ import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/
 import { SparkBorrowFaq } from 'features/content/faqs/spark/borrow'
 import { SparkEarnFaqV3 } from 'features/content/faqs/spark/earn'
 import { SparkMultiplyFaq } from 'features/content/faqs/spark/multiply'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
+import { Feature, getAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
@@ -31,20 +31,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocolMultiply',
+        featureToggle: Feature.SparkProtocolMultiply,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocolMultiply',
+            featureToggle: Feature.SparkProtocolMultiply,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocolBorrow',
+        featureToggle: Feature.SparkProtocolBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocolBorrow',
+            featureToggle: Feature.SparkProtocolBorrow,
           },
         ],
       },
@@ -56,20 +56,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocolMultiply',
+        featureToggle: Feature.SparkProtocolMultiply,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocolMultiply',
+            featureToggle: Feature.SparkProtocolMultiply,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocolBorrow',
+        featureToggle: Feature.SparkProtocolBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocolBorrow',
+            featureToggle: Feature.SparkProtocolBorrow,
           },
         ],
       },
@@ -81,20 +81,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocolMultiply',
+        featureToggle: Feature.SparkProtocolMultiply,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocolMultiply',
+            featureToggle: Feature.SparkProtocolMultiply,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocolBorrow',
+        featureToggle: Feature.SparkProtocolBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocolBorrow',
+            featureToggle: Feature.SparkProtocolBorrow,
           },
         ],
       },
@@ -106,20 +106,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocolMultiply',
+        featureToggle: Feature.SparkProtocolMultiply,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocolMultiply',
+            featureToggle: Feature.SparkProtocolMultiply,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocolBorrow',
+        featureToggle: Feature.SparkProtocolBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocolBorrow',
+            featureToggle: Feature.SparkProtocolBorrow,
           },
         ],
       },
@@ -131,7 +131,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: 'SparkProtocolEarn',
+        featureToggle: Feature.SparkProtocolEarn,
         additionalManageActions: [],
       },
     },
@@ -142,7 +142,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: 'SparkProtocolEarn',
+        featureToggle: Feature.SparkProtocolEarn,
         additionalManageActions: [],
       },
     },
@@ -186,7 +186,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Borrow.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getFeatureToggle(featureToggle)
+                featureToggle === undefined || getAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
@@ -233,7 +233,7 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Multiply.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getFeatureToggle(featureToggle)
+                featureToggle === undefined || getAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
@@ -281,7 +281,7 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Earn.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getFeatureToggle(featureToggle)
+                featureToggle === undefined || getAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []

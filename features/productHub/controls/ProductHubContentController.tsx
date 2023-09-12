@@ -13,7 +13,7 @@ import {
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard'
-import { useFeatureToggles } from 'helpers/useFeatureToggle'
+import { getAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import React, { FC, useMemo } from 'react'
 
@@ -38,23 +38,15 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   onChange,
   limitRows,
 }) => {
-  const [
-    ajnaSafetySwitchOn,
-    ajnaPoolFinderEnabled,
-    sparkEnabled,
-    sparkBorrowEnabled,
-    sparkEarnEnabled,
-    sparkMultiplyEnabled,
-    sparkSDAIETHEnabled,
-  ] = useFeatureToggles([
-    'AjnaSafetySwitch',
-    'AjnaPoolFinder',
-    'SparkProtocol',
-    'SparkProtocolBorrow',
-    'SparkProtocolEarn',
-    'SparkProtocolMultiply',
-    'SparkProtocolSDAIETH',
-  ])
+  const {
+    AjnaSafetySwitch: ajnaSafetySwitchOn,
+    AjnaPoolFinder: ajnaPoolFinderEnabled,
+    SparkProtocol: sparkEnabled,
+    SparkProtocolBorrow: sparkBorrowEnabled,
+    SparkProtocolEarn: sparkEarnEnabled,
+    SparkProtocolMultiply: sparkMultiplyEnabled,
+    SparkProtocolSDAIETH: sparkSDAIETHEnabled,
+  } = getAppConfig('features')
 
   const { chainId } = useWalletManagement()
 

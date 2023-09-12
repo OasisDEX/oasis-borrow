@@ -8,6 +8,7 @@ import {
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
+import { Feature } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
@@ -39,7 +40,7 @@ export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: ProductType.Multiply,
     protocol: LendingProtocol.AaveV3,
-    featureToggle: 'AaveV3Arbitrum',
+    featureToggle: Feature.AaveV3Arbitrum,
     availableActions: () => ['close'],
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
@@ -72,7 +73,7 @@ export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: ProductType.Multiply,
     protocol: LendingProtocol.AaveV3,
-    featureToggle: 'AaveV3Arbitrum',
+    featureToggle: Feature.AaveV3Arbitrum,
     availableActions: () => ['close'],
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
@@ -105,7 +106,7 @@ export const arbitrumAaveV3Strategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: ProductType.Multiply,
     protocol: LendingProtocol.AaveV3,
-    featureToggle: 'AaveV3Arbitrum',
+    featureToggle: Feature.AaveV3Arbitrum,
     availableActions: () => ['close'],
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,

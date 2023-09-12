@@ -2,7 +2,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { strategies as aaveStrategyList } from 'features/aave'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
+import { getAppConfigSync } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const getAaveLikeViewStrategyUrl = ({
@@ -31,7 +31,9 @@ export const getAaveLikeViewStrategyUrl = ({
   )
 
   return !search?.urlSlug ||
-    (!bypassFeatureFlag && search?.featureToggle && !getFeatureToggle(search?.featureToggle))
+    (!bypassFeatureFlag &&
+      search?.featureToggle &&
+      !getAppConfigSync('features')[search?.featureToggle])
     ? '/'
     : `/${network}/${aaveLikeProduct}/${version}/${search.type.toLocaleLowerCase()}/${
         search!.urlSlug
