@@ -29,6 +29,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { match } from 'ts-pattern'
 import { Sender } from 'xstate'
 
 import { GetReviewingSidebarProps } from './GetReviewingSidebarProps'
@@ -479,15 +480,17 @@ export function SidebarManageAaveVault() {
 
   const AdjustRisk = state.context.strategyConfig.viewComponents.adjustRiskInput
 
+  const title = match<ProductType, string>(state.context.strategyConfig.type)
+    .with(ProductType.Earn, () => t('manage-earn.aave.vault-form.manage-title'))
+    .with(ProductType.Multiply, () => t('manage-multiply.sidebar.title'))
+    .with(ProductType.Borrow, () => t('manage-borrow.sidebar.title'))
+    .exhaustive()
+
   switch (true) {
     case state.matches('frontend.editing'):
       return (
         <ConnectedSidebarSection
-          title={
-            state.context.strategyConfig.type === 'Earn'
-              ? t('manage-earn.aave.vault-form.manage-title')
-              : t('manage-multiply.sidebar.title')
-          }
+          title={title}
           content={
             <Grid gap={3}>
               <AdjustRisk
