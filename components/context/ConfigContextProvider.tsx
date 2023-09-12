@@ -24,7 +24,6 @@ export const configContext = React.createContext<ConfigContext | undefined>(unde
 
 export function ConfigContextProvider({ children }: WithChildren) {
   const [context, setContext] = useState<ConfigContext | undefined>(undefined)
-
   useEffect(() => {
     const setup = async () => {
       const fetchConfig = async () => {
@@ -38,7 +37,7 @@ export function ConfigContextProvider({ children }: WithChildren) {
         }
       }
       await fetchConfig()
-      setInterval(fetchConfig, 1000 * configCacheTime)
+      setInterval(fetchConfig, 1000 * configCacheTime.frontend)
     }
     void setup()
   }, [])

@@ -20,7 +20,6 @@ export function NavigationActionsController({ isConnected }: NavigationActionsCo
   const isViewBelowM = useMediaQuery(`(max-width: ${navigationBreakpoints[1] - 1}px)`)
 
   const { UseNetworkSwitcher: useNetworkSwitcher } = getAppConfig('features')
-  console.log('useNetworkSwitcher', useNetworkSwitcher)
 
   return (
     <>

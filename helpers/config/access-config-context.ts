@@ -3,6 +3,12 @@ import { configContext, emptyConfig } from 'components/context/ConfigContextProv
 import { configLSKey, ConfigResponseType, ConfigResponseTypeKey } from 'helpers/config'
 import { useContext as accessContext } from 'react'
 
+/**
+ * Returns config from context. If context is not available, returns empty config.
+ * This gets updated when config changes (polling every configCacheTime)
+ * @param configKey
+ * @returns ConfigResponseType[T] or empty config
+ */
 export function getAppConfig<T extends ConfigResponseTypeKey>(configKey: T): ConfigResponseType[T] {
   try {
     const ac = accessContext(configContext)
@@ -16,14 +22,20 @@ export function getAppConfig<T extends ConfigResponseTypeKey>(configKey: T): Con
   }
 }
 
+/**
+ * Saves config to localStorage
+ * @param config
+ * @returns void
+ */
 export function saveConfigToLocalStorage(config: ConfigResponseType) {
   if (!window?.localStorage) return
   localStorage.setItem(configLSKey, JSON.stringify(config))
 }
 
 /**
- *
- * @returns
+ * Returns currently saved config from localStorage
+ * PLEASE NOTE THAT THIS IS NOT DYNAMIC, IT WILL NOT UPDATE WHEN CONFIG CHANGES (only after a refresh)
+ * @returns ConfigResponseType or empty config
  */
 export function loadConfigFromLocalStorage() {
   if (typeof localStorage === 'undefined' || !localStorage || !window?.localStorage) {
@@ -47,7 +59,7 @@ export function loadConfigFromLocalStorage() {
  * Returns currently saved config from localStorage
  * PLEASE NOTE THAT THIS IS NOT DYNAMIC, IT WILL NOT UPDATE WHEN CONFIG CHANGES (only after a refresh)
  * @param configKey
- * @returns ConfigResponseType[T] or empty object
+ * @returns ConfigResponseType[T] or empty config
  */
 export function getAppConfigSync<T extends ConfigResponseTypeKey>(
   configKey: T,
