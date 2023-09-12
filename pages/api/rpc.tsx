@@ -42,17 +42,20 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       'Content-Length': '',
     },
   }
+  if (typeof req.body !== 'string') {
+    req.body = JSON.stringify(req.body)
+  }
   const request = new Request(rpcUrl!, {
     method: req.method,
-    body: JSON.stringify(req.body),
+    body: req.body,
     headers: {
       ...config.headers,
       'Content-Length': JSON.stringify(req.body).length.toString(),
     },
   })
   const response = await fetch(request)
-  // const resolvedResponse = await response.json()
-  return res.status(200).send(response)
+  const resolvedResponse = await response.json()
+  return res.status(200).send(resolvedResponse)
 }
 
 export default rpc
