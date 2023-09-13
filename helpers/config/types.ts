@@ -1,11 +1,10 @@
 export enum Feature {
   TestFeature = 'TestFeature',
   AnotherTestFeature = 'AnotherTestFeature',
-  AaveV3Arbitrum = 'AaveV3Arbitrum',
-  AaveV3Borrow = 'AaveV3Borrow',
+  AaveV3ArbitrumBorrow = 'AaveV3ArbitrumBorrow',
+  AaveV3ArbitrumEarn = 'AaveV3ArbitrumEarn',
   AaveV3EarncbETHeth = 'AaveV3EarncbETHeth',
   AaveV3EarnrETHeth = 'AaveV3EarnrETHeth',
-  AaveV3Multiply = 'AaveV3Multiply',
   AaveV3History = 'AaveV3History',
   AaveV3Protection = 'AaveV3Protection',
   AaveV3ProtectionWrite = 'AaveV3ProtectionWrite',
@@ -26,16 +25,8 @@ export enum Feature {
   StopLossOpenFlow = 'StopLossOpenFlow',
   StopLossRead = 'StopLossRead',
   StopLossWrite = 'StopLossWrite',
-  UseNetworkSwitcher = 'UseNetworkSwitcher',
-  UseNetworkSwitcherArbitrum = 'UseNetworkSwitcherArbitrum',
   UseNetworkSwitcherForks = 'UseNetworkSwitcherForks',
-  UseNetworkSwitcherOptimism = 'UseNetworkSwitcherOptimism',
   UseNetworkSwitcherTestnets = 'UseNetworkSwitcherTestnets',
-  SparkProtocol = 'SparkProtocol',
-  SparkProtocolEarn = 'SparkProtocolEarn',
-  SparkProtocolBorrow = 'SparkProtocolBorrow',
-  SparkProtocolMultiply = 'SparkProtocolMultiply',
-  SparkProtocolSDAIETH = 'SparkProtocolSDAIETH',
 }
 export type ConfiguredFeatures = Record<Feature, boolean>
 
