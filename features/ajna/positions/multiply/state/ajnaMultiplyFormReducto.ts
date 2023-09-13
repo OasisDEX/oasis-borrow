@@ -9,6 +9,7 @@ import {
   AjnaFormActionsUpdatePayback,
   AjnaFormActionsUpdatePaybackMax,
   AjnaFormActionsUpdateWithdraw,
+  AjnaUpdateLoanToValue,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
@@ -42,6 +43,7 @@ export type AjnaMultiplyFormAction = ReductoActions<
   | AjnaFormActionsUpdateWithdraw
   | AjnaFormActionsUpdateDpm
   | AjnaFormActionsReset
+  | AjnaUpdateLoanToValue
 >
 
 export const ajnaMultiplyReset = {
@@ -115,6 +117,11 @@ export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyForm
           return {
             ...state,
             ...ajnaMultiplyReset,
+          }
+        case 'update-loan-to-value':
+          return {
+            ...state,
+            loanToValue: action.loanToValue,
           }
         default:
           return state

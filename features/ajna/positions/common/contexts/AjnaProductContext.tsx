@@ -111,11 +111,13 @@ type AjnaProductContextWithBorrow = AjnaProductContext<
   ReturnType<typeof useAjnaBorrowFormReducto>,
   AjnaBorrowishPositionAuction
 >
+
 type AjnaProductContextWithEarn = AjnaProductContext<
   AjnaEarnPosition,
   ReturnType<typeof useAjnaEarnFormReducto>,
   AjnaEarnPositionAuction
 >
+
 type AjnaProductContextWithMultiply = AjnaProductContext<
   AjnaPosition,
   ReturnType<typeof useAjnaMultiplyFormReducto>,
@@ -138,6 +140,7 @@ type PickProductType<T extends AjnaProduct> = T extends 'borrow'
 
 export function useAjnaProductContext<T extends AjnaProduct>(product: T): PickProductType<T> {
   const { environment } = useAjnaGeneralContext()
+
   const context =
     product === 'borrow'
       ? useContext(ajnaBorrowContext)

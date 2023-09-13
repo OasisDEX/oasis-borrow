@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
 import { toggleArrayItem } from 'helpers/toggleArrayItem'
+import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import { useTranslation } from 'next-i18next'
@@ -14,6 +15,7 @@ export interface GenericMultiselectOption {
   label: string
   token?: string
   value: string
+  featureFlag?: Feature
 }
 
 export interface GenericMultiselectProps {
@@ -157,6 +159,9 @@ export function GenericMultiselect({
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const outsideRef = useOutsideElementClickHandler(() => setIsOpen(false))
   const scrollRef = useRef<HTMLDivElement>(null)
+  const optionsFeatureFlagsArray = options.map((option) =>
+    option.featureFlag ? getFeatureToggle(option.featureFlag) : true,
+  )
 
   useEffect(() => {
     if (didMountRef.current) onChange(values.length ? values : options.map((item) => item.value))
@@ -304,14 +309,16 @@ export function GenericMultiselect({
             }}
             value=""
           />
-          {options.map((option) => (
-            <GenericMultiselectItem
-              isSelected={values.includes(option.value)}
-              key={option.value}
-              onClick={(value) => setValues(toggleArrayItem<string>(values, value))}
-              {...option}
-            />
-          ))}
+          {options.map((option, index) =>
+            optionsFeatureFlagsArray[index] ? (
+              <GenericMultiselectItem
+                isSelected={values.includes(option.value)}
+                key={option.value}
+                onClick={(value) => setValues(toggleArrayItem<string>(values, value))}
+                {...option}
+              />
+            ) : null,
+          )}
         </Flex>
       </Box>
     </Box>

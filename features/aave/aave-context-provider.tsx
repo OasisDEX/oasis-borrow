@@ -32,7 +32,9 @@ export function useAaveContext(
   }
   const aaveContextsForNetwork = ac[network]!
   if (!aaveContextsForNetwork[protocol]) {
-    throw new Error(`AaveContext for network ${network} and protocol ${protocol} is not available!`)
+    throw new Error(
+      `AaveContext for network ${network} and protocol ${protocol} is not available!}`,
+    )
   }
 
   return aaveContextsForNetwork[protocol]!
@@ -70,9 +72,14 @@ export function AaveContextProvider({ children }: WithChildren) {
             NetworkNames.optimismMainnet,
           ),
         },
-        // [NetworkNames.arbitrumMainnet]: {
-        //   [LendingProtocol.AaveV3]: setupAaveV3Context(productContext, NetworkNames.arbitrumMainnet),
-        // },
+        [NetworkNames.arbitrumMainnet]: {
+          [LendingProtocol.AaveV3]: setupAaveV3Context(
+            mainContext,
+            accountContext,
+            productContext,
+            NetworkNames.arbitrumMainnet,
+          ),
+        },
       })
     }
   }, [accountContext, mainContext, productContext])

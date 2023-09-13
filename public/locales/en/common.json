@@ -521,8 +521,8 @@
   "landing": {
     "hero": {
       "main": {
-        "headline": "DeFi made simple and secure",
-        "subheader": "Take advantage of powerful automation strategies and user-friendly UX."
+        "headline": "The best place to Borrow and Earn in DeFi",
+        "subheader": "Power up your portfolio by Borrowing, Lending and Multiplying your favourite assets. Made Safe and Easy by industry leading automation tools."
       },
       "ajna": {
         "headline": "Use the only market-driven lending protocol",
@@ -806,6 +806,7 @@
     "liquidation-price-ratio-modal-aave": "The liquidation price ratio indicates to what price ratio stETH needs to drop in comparison to ETH in order to get liquidated on this position. If this comes within 5% it will be indicated as red, within 20% as orange, and above 20% as green. Liquidation results in a liquidation penalty. You can find the history of the ratio here: <0>Ratio history</0> <1/><1/> You can adjust your risk by using the adjust risk functionality.",
     "below-current-ratio": "({{percentage}} below current ratio)",
     "below-current-price": "{{percentage}} below current price",
+    "above-current-price": "{{percentage}} above current price",
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
     "stop-loss-ltv": "Stop Loss LTV: {{percentage}}",
     "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
@@ -819,7 +820,8 @@
       "second-header": "Liquidation Penalty",
       "first-description-line-long": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
       "first-description-line-short": "The Liquidation Price is the debt price at which a position will be liquidated. This number is denominated in collateral",
-      "second-description-line": "This is {{percent}} below current price",
+      "second-description-line-long": "This is {{percent}} below current price",
+      "second-description-line-short": "This is {{percent}} above current price",
       "third-description-line": "The liquidation penalty is the % that will be added to the debt as a penalty in case of liquidation."
     },
     "ltv": {
@@ -1489,7 +1491,7 @@
     },
     "history-coming-soon": {
       "header": "History support coming soon",
-      "description": "We currently don't support AAVE history on the Ethereum mainnet or L2 networks, but we'll be adding this feature soon."
+      "description": "We currently don't support {{protocol}} history on the Ethereum mainnet or L2 networks, but we'll be adding this feature soon."
     }
   },
   "view": "View",
@@ -2374,7 +2376,9 @@
       "product-header": {
         "token-pair-list": {
           "aave-steth-eth": "Aave stETH yield multiple",
-          "aave-wsteth-eth": "Aave wstETH yield multiple"
+          "aave-wsteth-eth": "Aave wstETH yield multiple",
+          "spark-wsteth-eth": "Spark wstETH yield multiple",
+          "spark-reth-eth": "Spark rETH yield multiple"
         },
         "current-yield": "Current yield",
         "90-day-avg-yield": "90 Day Avg",
@@ -2416,6 +2420,11 @@
     "sidebar": {
       "title": "Manage Multiply position",
       "open-btn": "Manage Multiply position"
+    }
+  },
+  "manage-borrow": {
+    "sidebar": {
+      "title": "Manage Borrow position"
     }
   },
   "open-borrow": {
@@ -2708,9 +2717,13 @@
             "title": "This position was partially liquidated. Some part of your collateral was sold to cover your debt",
             "message": "Your debt was increased by 90 days before liquidation as a penalty. During the liquidation your position recollateralized and was removed from liquidation. <0>Read more about Ajna Liquidations →</0>"
           },
-          "safety-switch-on": {
+          "safety-switch-open": {
             "title": "Opening Ajna positions temporary disabled",
             "message": "Due to a technical issue we have currently disabled opening new Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
+          },
+          "safety-switch-manage": {
+            "title": "Some features of Ajna positions are temporary disabled",
+            "message": "Due to a technical issue we have currently disabled some features of Ajna positions, as they might not result in the expected outcome for our users. You can withdraw deposited tokens or repay position's debt. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
           },
           "near-lup": {
             "title": "Your position's threshold price is approaching the LUP",
@@ -2926,6 +2939,12 @@
       "oracless-ltv": "Max LTV is not available for this pool as Summer.fi does not currently support USD price feeds for these assets. You can still open a position in this pool. The maximum risk will be determined by lenders in the pool.",
       "rewards-available-soon": "Rewards are earned automatically and will be claimable weekly in the near future.",
       "this-pool-is-earning-ajna-tokens": "This pool is earning Summer.fi × Ajna token Rewards"
+    }
+  },
+  "spark": {
+    "product-hub-tooltips": {
+      "elligible-for-spk-airdrop": "Positions on this pair are elligible for the SPK airdrop.",
+      "elligible-for-spk-airdrop-description": "More information on the Airdrop can be found on the Maker forum"
     }
   },
   "product-hub": {

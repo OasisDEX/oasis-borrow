@@ -10,7 +10,7 @@ import {
   ajnaPaybackWithdrawBorrow,
 } from 'actions/ajna/borrow'
 import { ajnaClaimEarn, ajnaDepositEarn, ajnaOpenEarn, ajnaWithdrawEarn } from 'actions/ajna/earn'
-import { ajnaAdjustMultiply, ajnaCloseMultiply, ajnaOpenMultiply } from 'actions/ajna/multiply'
+import { ajnaOpenMultiply } from 'actions/ajna/multiply'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { Context } from 'blockchain/network'
@@ -21,6 +21,8 @@ import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAj
 import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
+
+import { ajnaAdjust, ajnaClose } from './common'
 
 interface AjnaTxHandlerInput {
   collateralAddress: string
@@ -94,7 +96,7 @@ export async function getAjnaParameters({
     }
     case 'deposit-borrow':
     case 'generate-borrow': {
-      return ajnaDepositGenerateBorrow({ state, commonPayload, dependencies, position })
+      return ajnaDepositGenerateBorrow({ state, commonPayload, dependencies, position, simulation })
     }
     case 'payback-borrow':
     case 'withdraw-borrow': {
@@ -138,8 +140,9 @@ export async function getAjnaParameters({
         slippage,
       })
     }
+    case 'adjust-borrow':
     case 'adjust': {
-      return ajnaAdjustMultiply({
+      return ajnaAdjust({
         state,
         commonPayload,
         dependencies,
@@ -154,7 +157,7 @@ export async function getAjnaParameters({
       const { loanToValue } = state
 
       if (loanToValue) {
-        return ajnaAdjustMultiply({
+        return ajnaAdjust({
           state,
           commonPayload,
           dependencies,
@@ -170,6 +173,7 @@ export async function getAjnaParameters({
         commonPayload,
         dependencies,
         position,
+        simulation,
       })
     }
     case 'payback-multiply':
@@ -184,7 +188,7 @@ export async function getAjnaParameters({
       }
 
       if (loanToValue) {
-        return ajnaAdjustMultiply({
+        return ajnaAdjust({
           state: resolvedState,
           commonPayload,
           dependencies,
@@ -207,8 +211,9 @@ export async function getAjnaParameters({
       // TODO here handling for complex action once available
       return defaultPromise
     }
+    case 'close-borrow':
     case 'close-multiply': {
-      return ajnaCloseMultiply({
+      return ajnaClose({
         state,
         commonPayload,
         dependencies,

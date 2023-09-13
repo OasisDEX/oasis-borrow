@@ -53,11 +53,11 @@ import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/arbitrum'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
-import { MainnetContracts, mainnetContracts } from './mainnet'
+import { mainnetContracts, MainnetContractsWithOptional } from './mainnet'
 
 const { arbitrum } = ADDRESSES
 
-export const arbitrumContracts: MainnetContracts = {
+export const arbitrumContracts: MainnetContractsWithOptional = {
   otc: contractDesc(otc, arbitrum.common.Otc),
   collaterals: getCollaterals(arbitrum.common, supportedIlks),
   tokens: tokensArbitrum,
@@ -128,9 +128,9 @@ export const arbitrumContracts: MainnetContracts = {
   aaveTokens: {},
   aaveV2ProtocolDataProvider: contractDesc(
     aaveV2ProtocolDataProvider,
-    arbitrum.aave.v2.ProtocolDataProvider,
+    arbitrum.aave.v2.PoolDataProvider,
   ),
-  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, arbitrum.aave.v2.PriceOracle),
+  aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, arbitrum.aave.v2.Oracle),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, arbitrum.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, arbitrum.common.ChainlinkPriceOracle_ETHUSD),
@@ -141,12 +141,9 @@ export const arbitrumContracts: MainnetContracts = {
   swapAddress: arbitrum.mpa.core.Swap,
   accountFactory: contractDesc(accountFactory, arbitrum.mpa.core.AccountFactory),
   accountGuard: contractDesc(accountGuard, arbitrum.mpa.core.AccountGuard),
-  aaveV3Pool: contractDesc(aaveV3Pool, arbitrum.aave.v3.Pool, AAVE_V3_POOL_GENESIS_GOERLI),
-  aaveV3Oracle: contractDesc(aaveV3Oracle, arbitrum.aave.v3.AaveOracle),
-  aaveV3PoolDataProvider: contractDesc(
-    aaveV3PoolDataProvider,
-    arbitrum.aave.v3.AavePoolDataProvider,
-  ),
+  aaveV3Pool: contractDesc(aaveV3Pool, arbitrum.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_GOERLI),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, arbitrum.aave.v3.Oracle),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, arbitrum.aave.v3.PoolDataProvider),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, arbitrum.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, arbitrum.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
@@ -190,8 +187,8 @@ export const arbitrumContracts: MainnetContracts = {
   openVaultSafeConfirmations: 6,
   taxProxyRegistries: [],
   etherscan: {
-    url: 'https://optimistic.etherscan.io/',
-    apiUrl: 'not-implemented',
+    url: 'https://arbiscan.io/',
+    apiUrl: 'https://api.arbiscan.io/api',
     apiKey: etherscanAPIKey || '',
   },
   ethtx: {

@@ -7,7 +7,12 @@ export type Feature =
   | 'TestFeature'
   | 'AnotherTestFeature'
   | '🌞'
-  | 'AaveV3Arbitrum'
+  | 'AaveV3ArbitrumBorrow'
+  | 'AaveV3ArbitrumMultiply'
+  | 'AaveV3ArbitrumEarn'
+  | 'AaveV3OptimismBorrow'
+  | 'AaveV3OptimismMultiply'
+  | 'AaveV3OptimismEarn'
   | 'AaveV3Borrow'
   | 'AaveV3EarncbETHeth'
   | 'AaveV3EarnrETHeth'
@@ -38,12 +43,21 @@ export type Feature =
   | 'UseNetworkSwitcherOptimism'
   | 'UseNetworkSwitcherTestnets'
   | 'SparkProtocol'
+  | 'SparkProtocolEarn'
+  | 'SparkProtocolBorrow'
+  | 'SparkProtocolMultiply'
+  | 'SparkProtocolSDAIETH'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
   '🌞': false, // or https://summer.fi/harheeharheeharhee to enable.  https://summer.fi/<any vault ID> to disable.
-  AaveV3Arbitrum: false,
+  AaveV3ArbitrumBorrow: false,
+  AaveV3ArbitrumMultiply: false,
+  AaveV3ArbitrumEarn: false,
+  AaveV3OptimismBorrow: false,
+  AaveV3OptimismMultiply: false,
+  AaveV3OptimismEarn: false,
   AaveV3Borrow: false,
   AaveV3EarncbETHeth: false,
   AaveV3EarnrETHeth: false,
@@ -53,7 +67,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveV3ProtectionWrite: true,
   AjnaPoolFinder: true,
   AjnaReusableDPM: false,
-  AjnaSafetySwitch: false,
+  AjnaSafetySwitch: true,
   AjnaSuppressValidation: false,
   ConstantMultipleReadOnly: false,
   DaiSavingsRate: true,
@@ -73,7 +87,11 @@ const configuredFeatures: Record<Feature, boolean> = {
   UseNetworkSwitcherForks: false,
   UseNetworkSwitcherOptimism: true,
   UseNetworkSwitcherTestnets: false,
-  SparkProtocol: false,
+  SparkProtocol: true,
+  SparkProtocolEarn: true,
+  SparkProtocolBorrow: true,
+  SparkProtocolMultiply: true,
+  SparkProtocolSDAIETH: false,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {
@@ -129,4 +147,8 @@ export function getFeatureToggle(feature: Feature): boolean {
 
 export function useFeatureToggle(feature: Feature): boolean {
   return getFeatureToggle(feature)
+}
+
+export function useFeatureToggles(features: Feature[]): boolean[] {
+  return features.map(getFeatureToggle)
 }

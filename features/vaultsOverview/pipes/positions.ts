@@ -10,7 +10,8 @@ import { ethers } from 'ethers'
 import { isAddress } from 'ethers/lib/utils'
 import { loadStrategyFromTokens } from 'features/aave'
 import { PositionCreated } from 'features/aave/services'
-import { IStrategyConfig } from 'features/aave/types'
+import { calculateLiquidationPrice } from 'features/aave/services/calculate-liquidation-price'
+import { IStrategyConfig, StrategyType } from 'features/aave/types'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import {
@@ -19,12 +20,18 @@ import {
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { ApiVault, ApiVaultsParams } from 'features/shared/vaultApi'
 import { formatAddress } from 'helpers/formatters/format'
-import { mapAaveProtocol } from 'helpers/getAaveStrategyUrl'
+import { mapAaveLikeUrlSlug, mapAaveProtocol } from 'helpers/getAaveLikeStrategyUrl'
 import { productToVaultType } from 'helpers/productToVaultType'
 import { zero } from 'helpers/zero'
-import { AaveLendingProtocol, checkIfAave, LendingProtocol } from 'lendingProtocols'
+import {
+  AaveLikeLendingProtocol,
+  checkIfAave,
+  checkIfSpark,
+  LendingProtocol,
+} from 'lendingProtocols'
 import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
+import { memoize } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
@@ -72,10 +79,11 @@ export function createMakerPositions$(
   )
 }
 
-export type AavePosition = Position & {
+export type AaveLikePosition = Position & {
   debt: BigNumber
   netValue: BigNumber
   liquidationPrice: BigNumber
+  liquidationPriceToken: string
   variableBorrowRate: BigNumber
   fundingCost: BigNumber
   lockedCollateral: BigNumber
@@ -89,7 +97,7 @@ export type AavePosition = Position & {
   autoSellData?: AutoBSTriggerData // this is just for type safety in positions table, its not happening right now
   fakePositionCreatedEvtForDsProxyUsers?: boolean
   debtToken: string
-  protocol: AaveLendingProtocol
+  protocol: AaveLikeLendingProtocol
   chainId: NetworkIds
   isAtRiskDanger: boolean
   isAtRiskWarning: boolean
@@ -100,26 +108,39 @@ export function createPositions$(
   aaveV2MainnetPositions$: (address: string) => Observable<Position[]>,
   aaveV3MainnetPositions$: (address: string) => Observable<Position[]>,
   optimismPositions$: (address: string) => Observable<Position[]>,
+  arbitrumPositions$: (address: string) => Observable<Position[]>,
+
   address: string,
 ): Observable<Position[]> {
   const _makerPositions$ = makerPositions$(address)
   const _aaveV2Positions$ = aaveV2MainnetPositions$(address)
   const _aaveV3Positions$ = aaveV3MainnetPositions$(address)
   const _optimismPositions$ = optimismPositions$(address)
+  const _arbitrumPositions$ = arbitrumPositions$(address)
   return combineLatest(
     _makerPositions$,
     _aaveV2Positions$,
     _aaveV3Positions$,
     _optimismPositions$,
+    _arbitrumPositions$,
   ).pipe(
-    map(([makerPositions, aaveV2Positions, aaveV3MainnetPositions, optimismPositions]) => {
-      return [
-        ...makerPositions,
-        ...aaveV2Positions,
-        ...aaveV3MainnetPositions,
-        ...optimismPositions,
-      ]
-    }),
+    map(
+      ([
+        makerPositions,
+        aaveV2Positions,
+        aaveV3MainnetPositions,
+        optimismPositions,
+        arbitrumPositions,
+      ]) => {
+        return [
+          ...makerPositions,
+          ...aaveV2Positions,
+          ...aaveV3MainnetPositions,
+          ...optimismPositions,
+          ...arbitrumPositions,
+        ]
+      },
+    ),
   )
 }
 
@@ -140,7 +161,7 @@ function buildAaveViewModel(
   context: Context,
   walletAddress: string,
   observables: BuildPositionArgs,
-): Observable<AavePosition | undefined> {
+): Observable<AaveLikePosition | undefined> {
   const { collateralTokenSymbol, debtTokenSymbol, proxyAddress, protocol, chainId } =
     positionCreatedEvent
 
@@ -151,13 +172,17 @@ function buildAaveViewModel(
   const resolvedAaveServices = observables.aaveV2
 
   return combineLatest(
-    resolvedAaveServices.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
-    resolvedAaveServices.getAaveAssetsPrices$({
+    resolvedAaveServices.aaveLikeProtocolData$(
+      collateralTokenSymbol,
+      debtTokenSymbol,
+      proxyAddress,
+    ),
+    resolvedAaveServices.getAaveLikeAssetsPrices$({
       tokens: [collateralTokenSymbol, debtTokenSymbol],
     }),
     observables.tickerPrices$([debtTokenSymbol]),
-    resolvedAaveServices.getAaveReserveData$({ token: debtTokenSymbol }),
-    resolvedAaveServices.aaveAvailableLiquidityInUSDC$({
+    resolvedAaveServices.getAaveLikeReserveData$({ token: debtTokenSymbol }),
+    resolvedAaveServices.aaveLikeAvailableLiquidityInUSDC$({
       token: debtTokenSymbol,
     }),
     isAddress(positionId)
@@ -236,6 +261,7 @@ function buildAaveViewModel(
           riskRatio: position.riskRatio,
           debt: debtNotWei,
           liquidationPrice,
+          liquidationPriceToken: debtToken,
           fundingCost,
           variableBorrowRate,
           contentsUsd: netValueUsd,
@@ -254,7 +280,7 @@ function buildAaveViewModel(
   )
 }
 
-function buildAaveV3OnlyViewModel(
+function buildAaveLikeV3OnlyViewModel(
   positionCreatedEvent: PositionCreated,
   positionId: string,
   walletAddress: string,
@@ -263,26 +289,26 @@ function buildAaveV3OnlyViewModel(
   strategyConfig: IStrategyConfig,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData | undefined>,
   tickerPrices$: (tokens: string[]) => Observable<Tickers>,
-): Observable<AavePosition | undefined> {
+): Observable<AaveLikePosition | undefined> {
   const { collateralTokenSymbol, debtTokenSymbol, proxyAddress, protocol, chainId } =
     positionCreatedEvent
 
-  if (!checkIfAave(protocol)) {
+  if (!checkIfAave(protocol) && !checkIfSpark(protocol)) {
     return of(undefined)
   }
 
   return combineLatest(
-    services.aaveProtocolData$(
+    services.aaveLikeProtocolData$(
       strategyConfig.tokens.collateral,
       strategyConfig.tokens.debt,
       proxyAddress,
     ),
-    services.getAaveAssetsPrices$({
+    services.getAaveLikeAssetsPrices$({
       tokens: [collateralTokenSymbol, debtTokenSymbol],
     }),
     tickerPrices$([debtTokenSymbol]),
-    services.getAaveReserveData$({ token: debtTokenSymbol }),
-    services.aaveAvailableLiquidityInUSDC$({
+    services.getAaveLikeReserveData$({ token: debtTokenSymbol }),
+    services.aaveLikeAvailableLiquidityInUSDC$({
       token: debtTokenSymbol,
     }),
     automationTriggersData$(new BigNumber(positionId)),
@@ -311,9 +337,19 @@ function buildAaveV3OnlyViewModel(
           .times(oracleCollateralTokenPriceInEth)
           .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
 
-        const liquidationPrice = !isDebtZero
-          ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
-          : zero
+        const { liquidationPriceInCollateral, liquidationPriceInDebt } = calculateLiquidationPrice({
+          collateral: position.collateral,
+          debt: position.debt,
+          liquidationRatio: position.category.liquidationThreshold,
+        })
+
+        const liquidationPrice =
+          strategyConfig.strategyType === StrategyType.Long
+            ? liquidationPriceInDebt
+            : liquidationPriceInCollateral
+
+        const liquidationPriceToken =
+          strategyConfig.strategyType === StrategyType.Long ? debtToken : collateralToken
 
         const variableBorrowRate = preparedAaveReserve.variableBorrowRate
 
@@ -351,13 +387,16 @@ function buildAaveV3OnlyViewModel(
           token: collateralToken,
           debtToken,
           title: title,
-          url: `/${strategyConfig.network}/aave/${mapAaveProtocol(protocol)}/${positionId}`,
+          url: `/${strategyConfig.network}/${mapAaveLikeUrlSlug(protocol)}/${mapAaveProtocol(
+            protocol,
+          )}/${positionId}`,
           id: positionId,
           netValue: netValueUsd,
           multiple: position.riskRatio.multiple,
           riskRatio: position.riskRatio,
           debt: debtNotWei,
           liquidationPrice,
+          liquidationPriceToken,
           fundingCost,
           contentsUsd: netValueUsd,
           isOwner,
@@ -382,7 +421,7 @@ type FakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition = PositionCrea
 
 function getStethEthAaveV2DsProxyEarnPosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
-  aaveProtocolData$: (
+  aaveLikeProtocolData$: (
     collateralToken: string,
     debtToken: string,
     address: string,
@@ -395,7 +434,7 @@ function getStethEthAaveV2DsProxyEarnPosition$(
         return of([])
       }
 
-      return aaveProtocolData$('STETH', 'ETH', dsProxyAddress).pipe(
+      return aaveLikeProtocolData$('STETH', 'ETH', dsProxyAddress).pipe(
         map((avp) => {
           if (avp && avp.position.collateral.amount.gt(zero)) {
             return [
@@ -428,7 +467,7 @@ export function createAaveV2Position$(
   environment: CreatePositionEnvironmentPropsType,
   aaveV2: AaveLikeServices,
   walletAddress: string,
-): Observable<AavePosition[]> {
+): Observable<AaveLikePosition[]> {
   const { context$, tickerPrices$, readPositionCreatedEvents$, automationTriggersData$ } =
     environment
   return context$.pipe(
@@ -438,7 +477,7 @@ export function createAaveV2Position$(
             proxyAddressesProvider.userDpmProxies$(walletAddress),
             getStethEthAaveV2DsProxyEarnPosition$(
               proxyAddressesProvider,
-              aaveV2.aaveProtocolData$,
+              aaveV2.aaveLikeProtocolData$,
               walletAddress,
             ),
           ).pipe(
@@ -497,114 +536,122 @@ export function createAaveV2Position$(
             map((positions) => positions.filter((position) => position !== undefined)),
             startWith([]),
           )
-        : of([] as AavePosition[])
+        : of([] as AaveLikePosition[])
     }),
   )
 }
 
-export function createAaveV3DpmPosition$(
-  context$: Observable<Pick<Context, 'account'>>,
-  userDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>,
-  tickerPrices$: (tokens: string[]) => Observable<Tickers>,
-  readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>,
-  getApiVaults: (params: ApiVaultsParams) => Promise<ApiVault[]>,
-  automationTriggersData$: (id: BigNumber) => Observable<TriggersData | undefined>,
-  aaveV3: AaveLikeServices,
-  networkId: NetworkIds,
-  walletAddress: string,
-): Observable<AavePosition[]> {
-  return combineLatest(
-    context$,
-    userDpmProxies$(walletAddress),
-    readPositionCreatedEvents$(walletAddress),
-  ).pipe(
-    switchMap(async ([{ account }, userDpmProxies, positionCreatedEvents]) => {
-      const vaultIds = userDpmProxies
-        .map((userProxy) => userProxy.vaultId)
-        .map((id) => Number.parseInt(id))
-      const apiVaults = await getApiVaults({
-        vaultIds,
-        chainId: networkId,
-        protocol: LendingProtocol.AaveV3,
-      })
-
-      return {
-        account,
-        userDpmProxies,
-        positionCreatedEvents,
-        apiVaults,
-      }
-    }),
-    switchMap(({ account, userDpmProxies, positionCreatedEvents, apiVaults }) => {
-      const subjects$ = positionCreatedEvents
-        .map((pce) => {
-          const network = getNetworkById(networkId)
-          if (!network) {
-            console.warn(
-              `Given network is not supported right now. Can't display Aaave V3 Position on network ${networkId}`,
-            )
-            return null
-          }
-
-          const dpm = userDpmProxies.find((userProxy) => userProxy.proxy === pce.proxyAddress)
-
-          const apiVault = dpm
-            ? apiVaults.find((vault) => vault.vaultId === Number.parseInt(dpm.vaultId))
-            : undefined
-
-          let strategyConfig: IStrategyConfig | null = null
-          try {
-            strategyConfig = loadStrategyFromTokens(
-              pce.collateralTokenSymbol,
-              pce.debtTokenSymbol,
-              network.name,
-              LendingProtocol.AaveV3,
-              apiVault?.type ?? productToVaultType(pce.positionType),
-            )
-          } catch (e) {
-            console.warn(`Can't get strategy config for position ${pce.proxyAddress}`, e)
-          }
+const createAaveV3LikeDpmPosition = memoize(
+  (protocol: LendingProtocol) =>
+    (
+      context$: Observable<Pick<Context, 'account'>>,
+      userDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>,
+      tickerPrices$: (tokens: string[]) => Observable<Tickers>,
+      readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>,
+      getApiVaults: (params: ApiVaultsParams) => Promise<ApiVault[]>,
+      automationTriggersData$: (id: BigNumber) => Observable<TriggersData | undefined>,
+      services: AaveLikeServices,
+      networkId: NetworkIds,
+      walletAddress: string,
+    ): Observable<AaveLikePosition[]> => {
+      return combineLatest(
+        context$,
+        userDpmProxies$(walletAddress),
+        readPositionCreatedEvents$(walletAddress),
+      ).pipe(
+        switchMap(async ([{ account }, userDpmProxies, positionCreatedEvents]) => {
+          const vaultIds = userDpmProxies
+            .map((userProxy) => userProxy.vaultId)
+            .map((id) => Number.parseInt(id))
+          const apiVaults = await getApiVaults({
+            vaultIds,
+            chainId: networkId,
+            protocol,
+          })
 
           return {
-            event: pce,
-            dpmProxy: userDpmProxies.find((userProxy) => userProxy.proxy === pce.proxyAddress),
-            strategyConfig,
-            isOwner: walletAddress === account,
+            account,
+            userDpmProxies,
+            positionCreatedEvents,
+            apiVaults,
           }
-        })
-        .filter(
-          (
-            value,
-          ): value is {
-            event: PositionCreated
-            dpmProxy: UserDpmAccount
-            strategyConfig: IStrategyConfig
-            isOwner: boolean
-          } => {
-            return value !== null && value.dpmProxy !== undefined && value.strategyConfig !== null
-          },
-        )
-        .map(({ event, dpmProxy, strategyConfig, isOwner }) => {
-          return buildAaveV3OnlyViewModel(
-            event,
-            dpmProxy!.vaultId,
-            walletAddress,
-            isOwner,
-            aaveV3,
-            strategyConfig,
-            automationTriggersData$,
-            tickerPrices$,
-          ).pipe(
-            filter((position): position is AavePosition => {
-              return position !== undefined
-            }),
-          )
-        })
-      return combineLatest(subjects$)
-    }),
-    startWith([] as AavePosition[]),
-  )
-}
+        }),
+        switchMap(({ account, userDpmProxies, positionCreatedEvents, apiVaults }) => {
+          const subjects$ = positionCreatedEvents
+            .map((pce) => {
+              const network = getNetworkById(networkId)
+              if (!network) {
+                console.warn(
+                  `Given network is not supported right now. Can't display Aaave V3 Position on network ${networkId}`,
+                )
+                return null
+              }
+
+              const dpm = userDpmProxies.find((userProxy) => userProxy.proxy === pce.proxyAddress)
+
+              const apiVault = dpm
+                ? apiVaults.find((vault) => vault.vaultId === Number.parseInt(dpm.vaultId))
+                : undefined
+
+              let strategyConfig: IStrategyConfig | null = null
+              try {
+                strategyConfig = loadStrategyFromTokens(
+                  pce.collateralTokenSymbol,
+                  pce.debtTokenSymbol,
+                  network.name,
+                  protocol,
+                  apiVault?.type ?? productToVaultType(pce.positionType),
+                )
+              } catch (e) {
+                console.warn(`Can't get strategy config for position ${pce.proxyAddress}`, e)
+              }
+
+              return {
+                event: pce,
+                dpmProxy: userDpmProxies.find((userProxy) => userProxy.proxy === pce.proxyAddress),
+                strategyConfig,
+                isOwner: walletAddress === account,
+              }
+            })
+            .filter(
+              (
+                value,
+              ): value is {
+                event: PositionCreated
+                dpmProxy: UserDpmAccount
+                strategyConfig: IStrategyConfig
+                isOwner: boolean
+              } => {
+                return (
+                  value !== null && value.dpmProxy !== undefined && value.strategyConfig !== null
+                )
+              },
+            )
+            .map(({ event, dpmProxy, strategyConfig, isOwner }) => {
+              return buildAaveLikeV3OnlyViewModel(
+                event,
+                dpmProxy!.vaultId,
+                walletAddress,
+                isOwner,
+                services,
+                strategyConfig,
+                automationTriggersData$,
+                tickerPrices$,
+              ).pipe(
+                filter((position): position is AaveLikePosition => {
+                  return position !== undefined
+                }),
+              )
+            })
+          return combineLatest(subjects$)
+        }),
+        startWith([] as AaveLikePosition[]),
+      )
+    },
+)
+
+export const createAaveV3DpmPosition$ = createAaveV3LikeDpmPosition(LendingProtocol.AaveV3)
+export const createSparkV3DpmPosition$ = createAaveV3LikeDpmPosition(LendingProtocol.SparkV3)
 
 const mappymap = {
   Borrow: 'borrow',

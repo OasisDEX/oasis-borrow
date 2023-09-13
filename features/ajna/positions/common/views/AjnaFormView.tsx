@@ -157,6 +157,7 @@ export function AjnaFormView({
     isPrimaryButtonLoading,
     isTextButtonHidden,
   } = getAjnaSidebarButtonsStatus({
+    action: state.action,
     ajnaSafetySwitchOn,
     currentStep,
     editingStep,

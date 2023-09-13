@@ -27,6 +27,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 import { useTheme } from 'theme/useThemeUI'
+import { LiquidationCallEvent as AaveLiquidationCallEventV2 } from 'types/ethers-contracts/AaveV2LendingPool'
+import { LiquidationCallEvent as AaveLiquidationCallEventV3 } from 'types/ethers-contracts/AaveV3Pool'
 import { StateFrom } from 'xstate'
 
 import { VaultNoticesState } from './vaultsNotices'
@@ -530,15 +532,15 @@ function getProtocolServices(
   }
   const networkId = networksByName[strategyConfig.network].id
   ensureIsSupportedAaveV3NetworkId(networkId)
-  return protocols[strategyConfig.protocol][networkId]
+  return protocols[strategyConfig.protocol as LendingProtocol.AaveV3][networkId] // this isnt a thing on Spark V3
 }
 
 export function AavePositionNoticesView() {
   const { protocols } = useProductContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
-  const { aaveLiquidations$ } = getProtocolServices(state, protocols)
-  const preparedAaveLiquidations$ = aaveLiquidations$({
+  const { aaveLikeLiquidations$ } = getProtocolServices(state, protocols)
+  const preparedAaveLiquidations$ = aaveLikeLiquidations$({
     proxyAddress: state.context.proxyAddress || '',
   })
   const [aaveLiquidations] = useObservable(preparedAaveLiquidations$)
@@ -568,7 +570,9 @@ export function AavePositionNoticesView() {
     maxLoanToValue,
     liquidationThreshold,
     connectedProxyAddress,
-    aaveLiquidations,
+    aaveLiquidations: aaveLiquidations as
+      | AaveLiquidationCallEventV3[]
+      | AaveLiquidationCallEventV2[], // as this is only for aave
     ownerAddress,
     connectedAddress: web3Context?.account,
   })

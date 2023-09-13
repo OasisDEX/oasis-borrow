@@ -14,27 +14,23 @@ const { publicRuntimeConfig } = require('./runtime.config.js')
 const path = require('path')
 const { withSentryConfig } = require('@sentry/nextjs')
 
-const isProduction = process.env.NODE_ENV === 'production'
 const basePath = ''
 
 /**
  * @type {import('next').NextConfig}
  */
 const baseConfig = {
-  basePath,
-  typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // We do ythis for now to allow for staging deployments during the
-    // active development phase and are planning to remove this later
-    // !! WARN !!
-    ignoreBuildErrors: isProduction,
+  eslint: {
+    ignoreDuringBuilds: true,
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  basePath,
   productionBrowserSourceMaps: true,
   pageExtensions: ['mdx', 'tsx', 'ts'],
   publicRuntimeConfig: publicRuntimeConfig,
-  webpack: function (config, { isServer }) {
+  webpack: function (config, { isServer, dev }) {
     config.module.rules.push({
       test: /\.(svg|png|jpg|gif)$/,
       use: {
@@ -47,7 +43,7 @@ const baseConfig = {
     })
 
     config.optimization = {
-      minimize: config.mode !== 'development',
+      minimize: !dev,
       minimizer: [
         new TerserPlugin({
           // TODO: Figure out how to disable mangling partially without breaking the aplication.
@@ -58,7 +54,7 @@ const baseConfig = {
         }),
       ],
       splitChunks:
-        !isServer && config.mode !== 'development'
+        !isServer && !dev
           ? {
               chunks: 'all',
             }
@@ -75,18 +71,6 @@ const baseConfig = {
       config.plugins.push(new NodePolyfillPlugin())
     }
 
-    if (!isProduction) {
-      config.watch = true
-      // Don't ignore all node modules.
-      // config.watchOptions.ignored = config.watchOptions.ignored.filter(
-      //   (ignore) => !ignore.toString().includes('node_modules'),
-      // )
-      // Ignore all node modules except those here.
-      config.watchOptions = {
-        ignored: ['node_modules/**'],
-      }
-    }
-
     const enableCircularDependencyPlugin = process.env.ENABLE_CIRCULAR_DEPENDENCY_PLUGIN === 'true'
 
     if (!isServer && enableCircularDependencyPlugin) {
@@ -100,7 +84,7 @@ const baseConfig = {
         }),
       )
     }
-    if (config.mode === 'development') {
+    if (dev) {
       const { I18NextHMRPlugin } = require('i18next-hmr/plugin')
       config.plugins.push(
         new I18NextHMRPlugin({

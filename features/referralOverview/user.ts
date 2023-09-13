@@ -46,28 +46,40 @@ export function createUserReferral$(
     address: string,
     trigger$: Subject<void>,
   ) => Observable<WeeklyClaim[] | null>,
-  checkReferralLocalStorage$: () => Observable<string | null>,
+  checkReferralLocalStorage$: (trigger$: Subject<void>) => Observable<string | null>,
 ): Observable<UserReferralState> {
   return web3Context$.pipe(
     switchMap((web3Context) => {
       if (web3Context.status !== 'connected') {
-        return of({ state: 'walletConnectionInProgress' } as UserReferralState)
+        return of({ state: 'walletConnectionInProgress', trigger: trigger } as UserReferralState)
       }
 
       return combineLatest(
         getUserFromApi$(web3Context.account, trigger$),
         getReferralsFromApi$(web3Context.account),
         getReferralRewardsFromApi$(web3Context.account, trigger$),
-        checkReferralLocalStorage$(),
+        checkReferralLocalStorage$(trigger$),
         getClaimedReferralRewards(web3Context.chainId, web3Context.account),
         txHelpers$,
       ).pipe(
         switchMap(([user, referrals, referralRewards, referrer, claimedReferralRewards]) => {
           // newUser gets referrer address from local storage, currentUser from the db
-          if (!user) {
+          if (!user && referrer) {
+            const referrerAddress = referrer.slice(1, -1)
+            // Check if referrer exists in the database
+            return getUserFromApi$(referrerAddress, trigger$).pipe(
+              switchMap((referrerEntity) => {
+                return of({
+                  state: 'newUser',
+                  referrer: referrerEntity ? referrerAddress : null,
+                  trigger: trigger,
+                })
+              }),
+            )
+          } else if (!user) {
             return of({
               state: 'newUser',
-              referrer: referrer ? referrer.slice(1, -1) : null,
+              referrer: null,
               trigger: trigger,
             })
           }

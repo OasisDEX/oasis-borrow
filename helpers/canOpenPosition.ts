@@ -1,4 +1,4 @@
-import { ISimplePositionTransition, IStrategy, PositionTransition } from '@oasisdex/dma-library'
+import { IStrategy } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { UserInput } from 'features/aave/types'
 import { allDefined } from 'helpers/allDefined'
@@ -16,7 +16,7 @@ export function canOpenPosition({
   hasOpenedPosition?: boolean
   tokenBalance?: BigNumber
   effectiveProxyAddress?: string
-  transition?: ISimplePositionTransition | PositionTransition | IStrategy
+  transition?: IStrategy
 }) {
   return (
     allDefined(

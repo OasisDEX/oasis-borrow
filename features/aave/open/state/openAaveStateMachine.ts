@@ -1,7 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/dma-library'
-import { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave'
-import { OpenAaveParameters } from 'actions/aave/types'
+import { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave-like'
+import { OpenAaveParameters } from 'actions/aave-like/types'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
@@ -779,12 +779,21 @@ export function createOpenAaveStateMachine(
 
           const contextConnected = context.web3Context as any as ContextConnected | undefined
 
-          const protocolVersion =
-            context.strategyConfig.protocol === LendingProtocol.AaveV2 ? 'v2' : 'v3'
+          const protocolVersion = {
+            [LendingProtocol.AaveV2]: 'v2',
+            [LendingProtocol.AaveV3]: 'v3',
+            [LendingProtocol.SparkV3]: 'v3',
+          }[context.strategyConfig.protocol]
+
+          const protocolName = {
+            [LendingProtocol.AaveV2]: 'aave',
+            [LendingProtocol.AaveV3]: 'aave',
+            [LendingProtocol.SparkV3]: 'spark',
+          }[context.strategyConfig.protocol]
 
           const address = shouldUseDpmProxy
-            ? `/${context.strategyConfig.network}/aave/${protocolVersion}/${context.userDpmAccount?.vaultId}`
-            : `/${context.strategyConfig.network}/aave/${protocolVersion}/${contextConnected?.account}`
+            ? `/${context.strategyConfig.network}/${protocolName}/${protocolVersion}/${context.userDpmAccount?.vaultId}`
+            : `/${context.strategyConfig.network}/${protocolName}/${protocolVersion}/${contextConnected?.account}`
 
           return {
             effectiveProxyAddress: proxyAddressToUse,

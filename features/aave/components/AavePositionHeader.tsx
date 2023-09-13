@@ -12,28 +12,46 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { AaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
 import { PreparedAaveTotalValueLocked } from 'lendingProtocols/aave-v2/pipelines'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 const tokenPairList = {
-  stETHethV2: {
-    translationKey: 'open-earn.aave.product-header.token-pair-list.aave-steth-eth',
-    tokenList: ['AAVE', 'STETH', 'ETH'],
+  [LendingProtocol.AaveV2]: {
+    stETHethV2: {
+      translationKey: 'open-earn.aave.product-header.token-pair-list.aave-steth-eth',
+      tokenList: ['AAVE', 'STETH', 'ETH'],
+    },
+    wstETHethV2: {
+      translationKey: 'open-earn.aave.product-header.token-pair-list.aave-wsteth-eth',
+      tokenList: ['AAVE', 'WSTETH', 'ETH'],
+    },
   },
-  stETHethV3: {
-    translationKey: 'open-earn.aave.product-header.token-pair-list.aave-steth-eth',
-    tokenList: ['AAVE', 'STETH', 'ETH'],
+  [LendingProtocol.AaveV3]: {
+    stETHethV3: {
+      translationKey: 'open-earn.aave.product-header.token-pair-list.aave-steth-eth',
+      tokenList: ['AAVE', 'STETH', 'ETH'],
+    },
+    wstETHethV3: {
+      translationKey: 'open-earn.aave.product-header.token-pair-list.aave-wsteth-eth',
+      tokenList: ['AAVE', 'WSTETH', 'ETH'],
+    },
   },
-  wstETHethV2: {
-    translationKey: 'open-earn.aave.product-header.token-pair-list.aave-wsteth-eth',
-    tokenList: ['AAVE', 'WSTETH', 'ETH'],
+  [LendingProtocol.SparkV3]: {
+    wstethethV3: {
+      translationKey: 'open-earn.aave.product-header.token-pair-list.spark-wsteth-eth',
+      tokenList: ['SPARK', 'WSTETH', 'ETH'],
+    },
+    rethethV3: {
+      translationKey: 'open-earn.aave.product-header.token-pair-list.spark-reth-eth',
+      tokenList: ['SPARK', 'RETH', 'ETH'],
+    },
   },
-  wstETHethV3: {
-    translationKey: 'open-earn.aave.product-header.token-pair-list.aave-wsteth-eth',
-    tokenList: ['AAVE', 'WSTETH', 'ETH'],
-  },
-} as Record<string, { translationKey: string; tokenList: string[] }>
+} as Record<
+  AaveLikeLendingProtocol,
+  Record<string, { translationKey: string; tokenList: string[] }>
+>
 
 function AavePositionHeader({
   maxRisk,
@@ -47,12 +65,16 @@ function AavePositionHeader({
   minimumRiskRatio: IRiskRatio
 }) {
   const { t } = useTranslation()
+  const isSparkProtocol = strategy.protocol === LendingProtocol.SparkV3
 
-  const minYields = useAaveEarnYields(minimumRiskRatio, strategy.protocol, strategy.network, [
-    '7Days',
-  ])
+  const minYields = useAaveEarnYields(
+    !isSparkProtocol ? minimumRiskRatio : undefined,
+    strategy.protocol,
+    strategy.network,
+    ['7Days'],
+  )
   const maxYields = useAaveEarnYields(
-    maxRisk || minimumRiskRatio,
+    !isSparkProtocol ? maxRisk || minimumRiskRatio : undefined,
     strategy.protocol,
     strategy.network,
     ['7Days', '7DaysOffset', '90Days', '90DaysOffset'],
@@ -83,7 +105,7 @@ function AavePositionHeader({
       }),
     })
   }
-  if (maxYields?.annualisedYield90days) {
+  if (maxYields && maxYields?.annualisedYield90days) {
     const yield90DaysDiff = maxYields.annualisedYield90daysOffset!.minus(
       maxYields.annualisedYield90days,
     )
@@ -110,8 +132,8 @@ function AavePositionHeader({
 
   return (
     <VaultHeadline
-      header={t(tokenPairList[strategy.name].translationKey)}
-      tokens={tokenPairList[strategy.name].tokenList}
+      header={t(tokenPairList[strategy.protocol][strategy.name].translationKey)}
+      tokens={tokenPairList[strategy.protocol][strategy.name].tokenList}
       details={headlineDetails}
       loading={!aaveTVL?.totalValueLocked}
     />
@@ -124,13 +146,13 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   }: {
     strategyConfig: IStrategyConfig
   }) {
-    const { aaveTotalValueLocked$, aaveReserveConfigurationData$ } = useAaveContext(
+    const { aaveTotalValueLocked$, aaveLikeReserveConfigurationData$ } = useAaveContext(
       strategyConfig.protocol,
       strategyConfig.network,
     )
     const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
     const [aaveReserveConfigData, aaveReserveConfigDataError] = useObservable(
-      aaveReserveConfigurationData$({
+      aaveLikeReserveConfigurationData$({
         collateralToken: strategyConfig.tokens.collateral,
         debtToken: strategyConfig.tokens.debt,
       }),
@@ -158,7 +180,7 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
 
 export function AavePositionHeaderNoDetails({ strategyConfig, positionId }: ManageAaveHeaderProps) {
   const { t } = useTranslation()
-  const tokenData = tokenPairList[strategyConfig.name]
+  const tokenData = tokenPairList[strategyConfig.protocol][strategyConfig.name]
   const { protocol } = strategyConfig
   const followButton: FollowButtonControlProps | undefined = createFollowButton(
     positionId,

@@ -29,6 +29,12 @@ jest.mock('./setup-aave-v3-context', () => {
   }
 })
 
+jest.mock('./setup-spark-v3-context', () => {
+  return {
+    setupSparkV3Context: jest.fn(() => ({} as AaveContext)),
+  }
+})
+
 describe('AaveContextProvider', () => {
   const context = { protocols: {} } as ProductContext
   const wrapper = ({ children }: WithChildren) => (

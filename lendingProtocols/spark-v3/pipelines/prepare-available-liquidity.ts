@@ -1,26 +1,26 @@
 import BigNumber from 'bignumber.js'
-import { AaveV3ReserveDataParameters, AaveV3ReserveDataReply } from 'blockchain/aave-v3'
+import { SparkV3ReserveDataParameters, SparkV3ReserveDataReply } from 'blockchain/spark-v3'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 
-type PrepareAaveAvailableLiquidityProps = [AaveV3ReserveDataReply, BigNumber]
+type PrepareSparkAvailableLiquidityProps = [SparkV3ReserveDataReply, BigNumber]
 
-export function prepareaaveAvailableLiquidityInUSDC$(
-  getAaveReserveData$: (token: AaveV3ReserveDataParameters) => Observable<AaveV3ReserveDataReply>,
+export function prepareSparkAvailableLiquidityInUSDC$(
+  getSparkReserveData$: (
+    token: SparkV3ReserveDataParameters,
+  ) => Observable<SparkV3ReserveDataReply>,
   getWETHPrice$: Observable<BigNumber>,
-  reserveDataToken: AaveV3ReserveDataParameters,
+  reserveDataToken: SparkV3ReserveDataParameters,
 ): Observable<BigNumber> {
-  // THIS IS NOT IN USDC, THIS IS IN USD
-  // Aave V3 Oracle prices are in USD
-  return combineLatest(getAaveReserveData$(reserveDataToken), getWETHPrice$).pipe(
-    map(([reserveData, USD_in_WETH_price]: PrepareAaveAvailableLiquidityProps) => {
+  return combineLatest(getSparkReserveData$(reserveDataToken), getWETHPrice$).pipe(
+    map(([reserveData, USD_in_WETH_price]: PrepareSparkAvailableLiquidityProps) => {
       const availableLiquidityInETH = reserveData.availableLiquidity
       return availableLiquidityInETH.times(USD_in_WETH_price)
     }),
     catchError((error) => {
-      console.log(
-        `Can't get Aave V3 available liquidity for ${JSON.stringify(reserveDataToken, null, 2)}`,
+      console.error(
+        `Can't get Spark V3 available liquidity for ${JSON.stringify(reserveDataToken, null, 2)}`,
         error,
       )
       return of(zero)

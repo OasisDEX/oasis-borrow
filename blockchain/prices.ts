@@ -27,7 +27,7 @@ export function createGasPrice$(
   const minersTip = new BigNumber(5000000000)
 
   const blockNativeRequest$ = ajax({
-    url: `${window.location.origin}/api/gasPrice`,
+    url: `/api/gasPrice`,
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -88,7 +88,7 @@ export function createGasPrice$(
 export const tokenPrices$: Observable<Tickers> = timer(0, 1000 * 60).pipe(
   switchMap(() =>
     ajax({
-      url: `${window.location.origin}/api/tokensPrices`,
+      url: `/api/tokensPrices`,
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -145,7 +145,7 @@ export function createTokenPriceInUSD$(
               [token]: new BigNumber(tokenPrice),
             })
           } catch (err) {
-            console.log(`could not find price for ${token} - no ticker configured`)
+            console.error(`could not find price for ${token} - no ticker configured`)
 
             return of({})
           }

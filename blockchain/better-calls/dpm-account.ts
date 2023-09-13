@@ -30,7 +30,7 @@ async function validateParameters({
       signerNetworkConfig?.isCustomFork &&
       networkId === signerNetworkConfig.getParentNetwork()?.id
     ) {
-      console.log(`Using custom fork for the transaction. Network: ${networkId}`)
+      console.info(`Using custom fork for the transaction. Network: ${networkId}`)
     } else {
       throw new Error(
         `Signer is on a different network than the one specified. Signer: ${signerChainId}. Network: ${networkId}`,
@@ -71,9 +71,11 @@ export async function estimateGasOnDpm({
       operationExecutor.address,
       encodedCallDAta,
     ])
+
     const result = await dpm.estimateGas.execute(operationExecutor.address, encodedCallDAta, {
       value: ethers.utils.parseEther(value.toString()).toHexString(),
     })
+
     return {
       estimatedGas: new BigNumber(result.toString()).multipliedBy(GasMultiplier).toFixed(0),
       transactionData,

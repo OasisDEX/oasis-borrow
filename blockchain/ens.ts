@@ -43,14 +43,19 @@ export async function ensNameToAddressMainnet(ensName: string) {
   })
 }
 
+/**
+ * A hook that returns the ENS name for a given Ethereum address on the mainnet.
+ * @param address The Ethereum address to look up the ENS name for.
+ * @returns A tuple containing the ENS name for the address, or `null` if the address is not registered with ENS, or `undefined` if the ENS name lookup is still in progress.
+ */
 export const useMainnetEnsName = (address?: string | null) => {
-  const [ensName, setEnsName] = useState<string | null>(address || null)
-
+  const [ensName, setEnsName] = useState<string | null | undefined>(undefined)
   useMemo(() => {
     if (!address) return
     addressToEnsNameMainnet(address)
       .then((name) => {
         name !== null && setEnsName(name)
+        name === null && setEnsName(null)
       })
       .catch((err: Error) => {
         console.warn(`Error looking up ENS name for address: ${err.message}`)

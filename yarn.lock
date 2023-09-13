@@ -3902,10 +3902,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oasisdex/addresses@0.0.50":
-  version "0.0.50"
-  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.0.50.tgz#51e9fada3c562f0a5c75d43d680fe0d9d7463c82"
-  integrity sha512-69a0hVG9s0OSWxl8spBgP3gxUZ231g3WStHzEZNNX4aOibrBzhjLDsgJ22dmHZqqccQQA7zSpJDJZU+9SaZTww==
+"@oasisdex/addresses@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.5.tgz#4048c19a5fffa60ff423c92fac0882a96d5e313d"
+  integrity sha512-r8EKyosOgu6fDCJrJnuK0UQYbBBrEdXLxMlrusVWo5VMHfFd3GuM3BDDmhCFp7rX9LJRJUQ6B5+IS13OoVKi8w==
 
 "@oasisdex/automation@^1.5.2":
   version "1.5.2"
@@ -3914,10 +3914,10 @@
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.4.15-rc-dpm.1":
-  version "0.4.15-rc-dpm.1"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.4.15-rc-dpm.1.tgz#0933465041a9695c202dce2d1e07cecefc4eaea0"
-  integrity sha512-+5RDdbTXx4pRfFll3RiZ+DBJne1RMohli2yzJLawl+ziJIbGO2QGTkydhXOGzp4oFohTYwjFDeYQgjV8Tq8iiw==
+"@oasisdex/dma-library@0.5.5":
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.5.5.tgz#f4b6559324d1840c9847b585a689f2d7d86ec9d9"
+  integrity sha512-4CosAXKq8yT6cvmBe/apwZj01UliVeyZk6sim/T5C3e8iqhUEixnKbWIhooSuMH2O5B18NgwS/rjYmyz9BnI4g==
   dependencies:
     bignumber.js "9.0.1"
     ethers "5.6.2"
@@ -9692,16 +9692,16 @@ dot-prop@^5.2.0:
     is-obj "^2.0.0"
 
 dotenv-flow@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/dotenv-flow/-/dotenv-flow-3.1.0.tgz#2abcb4661cf2d0ca5b46d8ff5e95c1045ade9938"
-  integrity sha512-BMA8vfu2DbAx5x5G3C+tgb1hCbONggZTSpBE7B4yCPG5vziKX/lA3CzsjdGKlPvLxZgTbP1qb+KlWux8pYqsmA==
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/dotenv-flow/-/dotenv-flow-3.3.0.tgz#e22341c035d5672b923bf76feb35999f728ee456"
+  integrity sha512-GLSvRqDZ1TGhloS6ZCZ5chdqqv/3XMqZxAnX9rliJiHn6uyJLguKeu+3M2kcagBkoVCnLWYfbR4rfFe1xSU39A==
   dependencies:
-    dotenv "^8.0.0"
+    dotenv "^8.6.0"
 
-dotenv@^8.0.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
-  integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
+dotenv@^8.6.0:
+  version "8.6.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.6.0.tgz#061af664d19f7f4d8fc6e4ff9b584ce237adcb8b"
+  integrity sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==
 
 drbg.js@^1.0.1:
   version "1.0.1"

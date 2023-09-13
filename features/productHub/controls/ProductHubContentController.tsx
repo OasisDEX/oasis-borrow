@@ -13,7 +13,7 @@ import {
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useFeatureToggles } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import React, { FC, useMemo } from 'react'
 
@@ -38,10 +38,29 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   onChange,
   limitRows,
 }) => {
-  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
-  const ajnaPoolFinderEnabled = useFeatureToggle('AjnaPoolFinder')
+  const [
+    ajnaSafetySwitchOn,
+    ajnaPoolFinderEnabled,
+    sparkEnabled,
+    sparkBorrowEnabled,
+    sparkEarnEnabled,
+    sparkMultiplyEnabled,
+    sparkSDAIETHEnabled,
+  ] = useFeatureToggles([
+    'AjnaSafetySwitch',
+    'AjnaPoolFinder',
+    'SparkProtocol',
+    'SparkProtocolBorrow',
+    'SparkProtocolEarn',
+    'SparkProtocolMultiply',
+    'SparkProtocolSDAIETH',
+  ])
 
   const { chainId } = useWalletManagement()
+
+  const ajnaOraclessPoolPairsKeys = Object.keys(
+    getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaOraclessPoolPairs,
+  )
 
   const banner = useProductHubBanner({
     product: selectedProduct,
@@ -49,20 +68,46 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 
   const dataMatchedToFeatureFlags = useMemo(
     () =>
-      tableData.filter(({ label, protocol }) => {
-        let isAvailable = true
+      tableData.filter(({ label, protocol, product, primaryToken, secondaryToken }) => {
+        const isAjna = protocol === LendingProtocol.Ajna
+        const isSpark = protocol === LendingProtocol.SparkV3
 
-        if (ajnaSafetySwitchOn && protocol === LendingProtocol.Ajna) isAvailable = false
-        if (
-          !ajnaPoolFinderEnabled &&
-          Object.keys(
-            getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaOraclessPoolPairs,
-          ).includes(label.replace('/', '-'))
-        )
-          isAvailable = false
-        return isAvailable
+        const isBorrow = product.includes(ProductHubProductType.Borrow)
+        const isEarn = product.includes(ProductHubProductType.Earn)
+        const isMultiply = product.includes(ProductHubProductType.Multiply)
+
+        const isSDAIETH = primaryToken === 'SDAI' && secondaryToken === 'ETH'
+
+        const unalailableChecksList = [
+          // these checks predicate that the pool/strategy is UNAVAILABLE
+          isAjna && ajnaSafetySwitchOn,
+          isAjna &&
+            !ajnaPoolFinderEnabled &&
+            ajnaOraclessPoolPairsKeys.includes(label.replace('/', '-')),
+          isSpark && isBorrow && !(sparkEnabled && sparkBorrowEnabled),
+          isSpark && isEarn && !(sparkEnabled && sparkEarnEnabled),
+          isSpark && isMultiply && !(sparkEnabled && sparkMultiplyEnabled),
+          isSpark &&
+            isSDAIETH &&
+            (isMultiply || isBorrow) &&
+            !(sparkEnabled && sparkSDAIETHEnabled),
+        ]
+        if (unalailableChecksList.some((check) => !!check)) {
+          return false
+        }
+        return true
       }),
-    [ajnaPoolFinderEnabled, ajnaSafetySwitchOn, chainId, tableData],
+    [
+      tableData,
+      sparkEnabled,
+      sparkBorrowEnabled,
+      sparkEarnEnabled,
+      sparkMultiplyEnabled,
+      sparkSDAIETHEnabled,
+      ajnaSafetySwitchOn,
+      ajnaPoolFinderEnabled,
+      ajnaOraclessPoolPairsKeys,
+    ],
   )
   const dataMatchedByNL = useMemo(
     () => matchRowsByNL(dataMatchedToFeatureFlags, selectedProduct, selectedToken),

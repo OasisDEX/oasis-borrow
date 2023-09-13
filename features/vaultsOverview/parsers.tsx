@@ -22,7 +22,7 @@ import { StopLossTriggerData } from 'features/automation/protection/stopLoss/sta
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { getDsrValue, getFundingCost, getProtection } from 'features/vaultsOverview/helpers'
-import { AavePosition } from 'features/vaultsOverview/pipes/positions'
+import { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
 import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
 import {
   formatAddress,
@@ -44,13 +44,13 @@ interface PositionTableRow {
   network: NetworkNames
   protocol: LendingProtocol
   url: string
+  collateralToken: string
+  debtToken: string
 }
 
 export interface PositionTableBorrowRow extends PositionTableRow {
   collateralLocked: BigNumber
-  collateralToken: string
   debt: BigNumber
-  debtToken: string
   stopLossData?: StopLossTriggerData
   autoSellData?: AutoBSTriggerData
   riskRatio: {
@@ -65,6 +65,7 @@ export interface PositionTableBorrowRow extends PositionTableRow {
 export interface PositionTableMultiplyRow extends PositionTableRow {
   fundingCost: BigNumber
   liquidationPrice: BigNumber
+  liquidationPriceToken: string
   multiple: BigNumber
   netValue: BigNumber
   stopLossData?: StopLossTriggerData
@@ -154,6 +155,7 @@ export function parseMakerMultiplyPositionRows(
       icons: [token, 'DAI'],
       id: id.toString(),
       liquidationPrice,
+      liquidationPriceToken: 'DAI',
       multiple: calculateMultiply({ debt, lockedCollateralUSD }),
       netValue: value,
       // TODO: should get chainId from the source event so it works in the generic way for all chains
@@ -163,6 +165,8 @@ export function parseMakerMultiplyPositionRows(
       stopLossData,
       autoSellData,
       isOwner,
+      collateralToken: token,
+      debtToken: 'DAI',
     }),
   )
 }
@@ -170,7 +174,7 @@ export function parseMakerEarnPositionRows(
   positions: MakerPositionDetails[],
 ): PositionTableEarnRow[] {
   return positions.map(
-    ({ debt, history, id, ilk, ilkDebtAvailable, lockedCollateralUSD, value }) => ({
+    ({ debt, history, token, id, ilk, ilkDebtAvailable, lockedCollateralUSD, value }) => ({
       asset: ilk,
       icons: ['DAI', 'USDC'],
       id: id.toString(),
@@ -183,11 +187,15 @@ export function parseMakerEarnPositionRows(
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Maker,
       url: `/ethereum/maker/${id}`,
+      debtToken: 'DAI',
+      collateralToken: token,
     }),
   )
 }
 
-export function parseAaveBorrowPositionRows(positions: AavePosition[]): PositionTableBorrowRow[] {
+export function parseAaveBorrowPositionRows(
+  positions: AaveLikePosition[],
+): PositionTableBorrowRow[] {
   return positions.map((position) => ({
     asset: `${position.token}/${position.debtToken}`,
     collateralLocked: position.lockedCollateral,
@@ -213,7 +221,7 @@ export function parseAaveBorrowPositionRows(positions: AavePosition[]): Position
 }
 
 export function parseAaveMultiplyPositionRows(
-  positions: AavePosition[],
+  positions: AaveLikePosition[],
 ): PositionTableMultiplyRow[] {
   return positions.map(
     ({
@@ -221,6 +229,7 @@ export function parseAaveMultiplyPositionRows(
       fundingCost,
       id,
       liquidationPrice,
+      liquidationPriceToken,
       multiple,
       netValue,
       protocol,
@@ -236,6 +245,7 @@ export function parseAaveMultiplyPositionRows(
       icons: [token, debtToken],
       id,
       liquidationPrice,
+      liquidationPriceToken,
       multiple,
       netValue,
       network: networksById[chainId].name,
@@ -244,10 +254,12 @@ export function parseAaveMultiplyPositionRows(
       stopLossData,
       autoSellData,
       isOwner,
+      collateralToken: token,
+      debtToken: debtToken,
     }),
   )
 }
-export function parseAaveEarnPositionRows(positions: AavePosition[]): PositionTableEarnRow[] {
+export function parseAaveEarnPositionRows(positions: AaveLikePosition[]): PositionTableEarnRow[] {
   return positions.map(({ debtToken, id, liquidity, netValue, protocol, token, url, chainId }) => ({
     asset: `${token}/${debtToken}`,
     icons: [token, debtToken],
@@ -259,6 +271,8 @@ export function parseAaveEarnPositionRows(positions: AavePosition[]): PositionTa
     network: networksById[chainId].name,
     protocol,
     url,
+    debtToken,
+    collateralToken: token,
   }))
 }
 export function parseAjnaBorrowPositionRows(
@@ -332,11 +346,14 @@ export function parseAjnaMultiplyPositionRows(
       icons: [collateralToken, quoteToken],
       id: vaultId.toString(),
       liquidationPrice: liquidationPriceT0Np,
+      liquidationPriceToken: `${collateralToken}/${quoteToken}`,
       multiple: riskRatio.multiple,
       netValue,
       network: NetworkNames.ethereumMainnet,
       protocol: LendingProtocol.Ajna,
       url: `/ethereum/ajna/multiply/${collateralToken}-${quoteToken}/${vaultId}`,
+      collateralToken,
+      debtToken: quoteToken,
     }
   })
 }
@@ -376,6 +393,8 @@ export function parseAjnaEarnPositionRows(
         network: NetworkNames.ethereumMainnet,
         protocol: LendingProtocol.Ajna,
         url: `/ethereum/ajna/earn/${poolUrl}/${vaultId}`,
+        debtToken: quoteToken,
+        collateralToken,
       }
     },
   )
@@ -402,20 +421,23 @@ export function parseDsrEarnPosition({
           network: NetworkNames.ethereumMainnet,
           protocol: LendingProtocol.Maker,
           url: `/earn/dsr/${address}`,
+          debtToken: 'DAI',
+          collateralToken: 'DAI',
         },
       ]
     : []
 }
 
+const isSupportedAaveV3Automation = (
+  protocol: LendingProtocol,
+  collateralToken: string,
+  debtToken: string,
+) =>
+  protocol === LendingProtocol.AaveV3
+    ? isSupportedAaveAutomationTokenPair(collateralToken, debtToken)
+    : true // if its not AaveV3, then we skip this check
+
 export function getBorrowPositionRows(rows: PositionTableBorrowRow[]): AssetsTableRowData[] {
-  const isSupportedAaveV3Automation = (
-    protocol: LendingProtocol,
-    collateralToken: string,
-    debtToken: string,
-  ) =>
-    protocol === LendingProtocol.AaveV3
-      ? isSupportedAaveAutomationTokenPair(collateralToken, debtToken)
-      : true // if its not AaveV3, then we skip this check
   return rows.map(
     ({
       asset,
@@ -481,6 +503,7 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
       icons,
       id,
       liquidationPrice,
+      liquidationPriceToken,
       multiple,
       netValue,
       network,
@@ -489,11 +512,12 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
       stopLossData,
       autoSellData,
       isOwner,
+      collateralToken,
+      debtToken,
     }) => {
-      const formattedLiquidationPrice =
-        protocol.toLowerCase() === LendingProtocol.Ajna
-          ? `${formatCryptoBalance(liquidationPrice)} ${asset}`
-          : `$${formatCryptoBalance(liquidationPrice)}`
+      const formattedLiquidationPrice = `${formatCryptoBalance(
+        liquidationPrice,
+      )} ${liquidationPriceToken}`
 
       return {
         asset: <AssetsTableDataCellAsset asset={asset} icons={icons} positionId={id} />,
@@ -502,7 +526,8 @@ export function getMultiplyPositionRows(rows: PositionTableMultiplyRow[]): Asset
         liquidationPrice: formattedLiquidationPrice,
         fundingCost: `${formatPercent(fundingCost, { precision: 2 })}`,
         protocol: <ProtocolLabel network={network as NetworkNames} protocol={protocol} />,
-        ...(isAutomationEnabledProtocol(protocol, network)
+        ...(isAutomationEnabledProtocol(protocol, network) &&
+        isSupportedAaveV3Automation(protocol, collateralToken, debtToken)
           ? {
               protection: (
                 <AssetsTableDataCellRiskProtectionIcon

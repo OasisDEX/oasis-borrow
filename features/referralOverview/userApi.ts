@@ -1,28 +1,25 @@
 import { User, WeeklyClaim } from '@prisma/client'
-import getConfig from 'next/config'
 import { of } from 'ramda'
 import { Observable, Subject } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map, startWith, switchMap } from 'rxjs/operators'
 
-const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
-
 export function getUserFromApi$(address: string, trigger$: Subject<void>): Observable<User | null> {
   return trigger$.pipe(
     startWith(
       ajax({
-        url: `${basePath}/api/user/${address}`,
+        url: `/api/user/${address}`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       }).pipe(
         map((resp) => {
-          return resp.response as User
+          return resp.response as User | null
         }),
         catchError((err) => {
           if (err.xhr.status === 404) {
-            return of(null)
+            return of(undefined)
           }
           throw err
         }),
@@ -30,18 +27,18 @@ export function getUserFromApi$(address: string, trigger$: Subject<void>): Obser
     ),
     switchMap((_) => {
       return ajax({
-        url: `${basePath}/api/user/${address}`,
+        url: `/api/user/${address}`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       }).pipe(
         map((resp) => {
-          return resp.response as User
+          return resp.response as User | null
         }),
         catchError((err) => {
           if (err.xhr.status === 404) {
-            return of(null)
+            return of(undefined)
           }
           throw err
         }),
@@ -51,7 +48,7 @@ export function getUserFromApi$(address: string, trigger$: Subject<void>): Obser
 }
 export function getReferralsFromApi$(address: string): Observable<User[] | null> {
   return ajax({
-    url: `${basePath}/api/user/referrals/${address}`,
+    url: `/api/user/referrals/${address}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -70,7 +67,7 @@ export function getReferralsFromApi$(address: string): Observable<User[] | null>
 }
 export function getTopEarnersFromApi$(): Observable<User[] | null> {
   return ajax({
-    url: `${basePath}/api/user/top`,
+    url: `/api/user/top`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -94,7 +91,7 @@ export function getReferralRewardsFromApi$(
   return trigger$.pipe(
     startWith(
       ajax({
-        url: `${basePath}/api/user/claims/${address}`,
+        url: `/api/user/claims/${address}`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +110,7 @@ export function getReferralRewardsFromApi$(
     ),
     switchMap((_) => {
       return ajax({
-        url: `${basePath}/api/user/claims/${address}`,
+        url: `/api/user/claims/${address}`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -139,7 +136,7 @@ export function createUserUsingApi$(
   token: string,
 ): Observable<number> {
   return ajax({
-    url: `${basePath}/api/user/create`,
+    url: `/api/user/create`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

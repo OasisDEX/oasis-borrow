@@ -32,7 +32,7 @@ export type ManageAaveHeaderProps = AaveHeaderProps & {
 
 export type SecondaryInputProps = BaseViewProps<EventsRaisedFromSecondaryInput> & {
   viewLocked?: boolean // locks whole view
-  showWarring?: boolean // displays warning
+  showWarning?: boolean // displays warning
   onChainPosition?: IPosition
   stopLossError?: boolean
 }

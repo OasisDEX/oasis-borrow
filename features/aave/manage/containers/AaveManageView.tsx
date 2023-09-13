@@ -70,15 +70,15 @@ export function AaveManagePositionView({
   address,
   strategyConfig,
 }: AaveManageViewPositionViewProps) {
-  const { aaveReserveConfigurationData$, getAaveReserveData$ } = useAaveContext(
+  const { aaveLikeReserveConfigurationData$, getAaveLikeReserveData$ } = useAaveContext(
     strategyConfig.protocol,
     strategyConfig.network,
   )
   const [aaveReserveDataDebt, aaveReserveDataDebtError] = useObservable(
-    getAaveReserveData$({ token: strategyConfig.tokens.debt }),
+    getAaveLikeReserveData$({ token: strategyConfig.tokens.debt }),
   )
   const [aaveReserveState, aaveReserveStateError] = useObservable(
-    aaveReserveConfigurationData$({
+    aaveLikeReserveConfigurationData$({
       collateralToken: strategyConfig.tokens.collateral,
       debtToken: strategyConfig.tokens.debt,
     }),

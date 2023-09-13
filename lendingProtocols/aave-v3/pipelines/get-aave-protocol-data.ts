@@ -26,8 +26,10 @@ export function getAaveProtocolData$(
   aaveUserReserveData$: (
     args: Omit<AaveV3UserReserveDataParameters, 'networkId'>,
   ) => Observable<AaveV3UserReserveData>,
-  aaveUserAccountData$: (args: AaveLikeUserAccountDataArgs) => Observable<AaveLikeUserAccountData>,
-  aaveOracleAssetPriceData$: AaveOracleAssetPriceDataType,
+  aaveLikeUserAccountData$: (
+    args: AaveLikeUserAccountDataArgs,
+  ) => Observable<AaveLikeUserAccountData>,
+  aaveLikeOracleAssetPriceData$: AaveOracleAssetPriceDataType,
   aaveUserConfiguration$: AaveUserConfigurationType,
   aaveReservesList$: Observable<AaveV3ConfigurationData>,
   aaveOnChainPosition$: (params: {
@@ -41,8 +43,8 @@ export function getAaveProtocolData$(
 ): Observable<AaveLikeProtocolData> {
   return combineLatest(
     aaveUserReserveData$({ token: collateralToken, address: proxyAddress }),
-    aaveUserAccountData$({ address: proxyAddress }),
-    aaveOracleAssetPriceData$({ token: collateralToken }),
+    aaveLikeUserAccountData$({ address: proxyAddress }),
+    aaveLikeOracleAssetPriceData$({ token: collateralToken }),
     aaveUserConfiguration$({ address: proxyAddress }),
     aaveReservesList$,
     aaveOnChainPosition$({

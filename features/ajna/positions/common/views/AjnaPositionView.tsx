@@ -82,7 +82,7 @@ export function AjnaPositionView({
         ]}
         handleClick={
           proxyReveal
-            ? () => console.log(`DPM proxy: ${dpmProxy?.toLowerCase()}, DPM owner: ${owner}`)
+            ? () => console.info(`DPM proxy: ${dpmProxy?.toLowerCase()}, DPM owner: ${owner}`)
             : undefined
         }
       />

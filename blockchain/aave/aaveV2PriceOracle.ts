@@ -4,6 +4,7 @@ import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { amountFromWei } from 'blockchain/utils'
 import { one } from 'helpers/zero'
 import { AaveV2PriceOracle__factory } from 'types/ethers-contracts'
+
 export type AaveV2AssetsPricesParameters = {
   tokens: string[]
 }

@@ -15,10 +15,11 @@ interface ProductHubBannerProps {
 export const useProductHubBanner = ({
   product,
 }: ProductHubBannerProps): AssetsTableBannerProps | undefined => {
+  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
   const ajnaPoolFinderEnabled = useFeatureToggle('AjnaPoolFinder')
   const { t } = useTranslation()
 
-  if (ajnaPoolFinderEnabled && product !== ProductHubProductType.Multiply) {
+  if (!ajnaSafetySwitchOn && ajnaPoolFinderEnabled && product !== ProductHubProductType.Multiply) {
     return {
       title: t('product-hub.banners.pool-finder.title'),
       description: t('product-hub.banners.pool-finder.description', {

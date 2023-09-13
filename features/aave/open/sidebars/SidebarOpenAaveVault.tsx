@@ -360,7 +360,7 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
           send={send}
           isLoading={isLoading}
           viewLocked={hasOpenedPosition}
-          showWarring={hasOpenedPosition}
+          showWarning={hasOpenedPosition}
         />
         {hasUserInteracted(state) && (
           <StrategyInformationContainer

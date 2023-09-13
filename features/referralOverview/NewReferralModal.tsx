@@ -38,6 +38,10 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
         ).subscribe((res) => {
           if (res === 200) {
             hasAccepted ? setSuccess(true) : userReferral.trigger()
+          } else {
+            console.error('Error creating user')
+            localStorage.removeItem(`referral`)
+            userReferral.trigger()
           }
         })
     }
@@ -51,7 +55,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
           topButton={{ text: t('connect-wallet'), func: () => connect() }}
         />
       )}
-      {!success && userReferral && userReferral.state === 'newUser' && refEnsName !== null && (
+      {!success && userReferral && userReferral.state === 'newUser' && refEnsName !== undefined && (
         <ReferralModal
           heading={`${t('ref.modal.you-have-been-ref')} ${
             refEnsName || formatAddress(userReferral.referrer!, 6)

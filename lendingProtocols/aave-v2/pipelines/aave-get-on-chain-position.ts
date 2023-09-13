@@ -1,4 +1,4 @@
-import { getOnChainPosition, GetOnChainPositionParams } from 'actions/aave'
+import { getOnChainPosition, GetOnChainPositionParams } from 'actions/aave-like'
 import { NetworkIds } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 
