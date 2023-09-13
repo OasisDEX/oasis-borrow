@@ -31,20 +31,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocolMultiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocolMultiply',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocolBorrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocolBorrow',
+            featureToggle: undefined,
           },
         ],
       },
@@ -56,20 +56,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocolMultiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocolMultiply',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocolBorrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocolBorrow',
+            featureToggle: undefined,
           },
         ],
       },
@@ -81,20 +81,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocolMultiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocolMultiply',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocolBorrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocolBorrow',
+            featureToggle: undefined,
           },
         ],
       },
@@ -103,23 +103,23 @@ const availableTokenPairs: TokenPairConfig[] = [
   {
     collateral: 'SDAI',
     debt: 'ETH',
-    strategyType: StrategyType.Long,
+    strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocolMultiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocolMultiply',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocolBorrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocolBorrow',
+            featureToggle: undefined,
           },
         ],
       },
@@ -131,7 +131,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: 'SparkProtocolEarn',
+        featureToggle: undefined,
         additionalManageActions: [],
       },
     },
@@ -142,7 +142,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: 'SparkProtocolEarn',
+        featureToggle: undefined,
         additionalManageActions: [],
       },
     },
