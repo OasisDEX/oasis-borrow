@@ -384,7 +384,6 @@ export function createOpenVault$(
                     const { StopLossWrite: stopLossWriteEnabled } = mockLocalStorage
                       ? getAppConfigSync('features')
                       : getAppConfig('features')
-                    console.log('stopLossWriteEnabled', stopLossWriteEnabled)
                     const withStopLossStage = stopLossWriteEnabled
                       ? isSupportedAutomationIlk(context.chainId, ilk)
                       : false
