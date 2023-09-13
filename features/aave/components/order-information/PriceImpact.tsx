@@ -9,12 +9,57 @@ import {
 } from 'blockchain/contracts'
 import { amountFromWei, amountToWei } from 'blockchain/utils'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
-import { IStrategyConfig } from 'features/aave/types/strategy-config'
+import { IStrategyConfig, StrategyType } from 'features/aave/types/strategy-config'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
+import { match } from 'ts-pattern'
+
+type GetPriceArgs = {
+  fromAmountInBaseUnit: BigNumber
+  toAmountInBaseUnit: BigNumber
+  sourceToken: {
+    symbol: string
+    precision: number
+  }
+  strategyType: StrategyType
+  targetToken: {
+    symbol: string
+    precision: number
+  }
+  tokens: {
+    collateral: string
+    debt: string
+  }
+}
+const getPrice = ({
+  sourceToken,
+  targetToken,
+  strategyType,
+  fromAmountInBaseUnit,
+  toAmountInBaseUnit,
+  tokens,
+}: GetPriceArgs): BigNumber => {
+  const from = amountFromWei(fromAmountInBaseUnit, sourceToken.precision)
+  const to = amountFromWei(toAmountInBaseUnit, targetToken.precision)
+
+  return match({ sourceToken, strategyType })
+    .with({ sourceToken: { symbol: tokens.collateral }, strategyType: StrategyType.Long }, () =>
+      to.div(from),
+    )
+    .with({ sourceToken: { symbol: tokens.collateral }, strategyType: StrategyType.Short }, () =>
+      from.div(to),
+    )
+    .with({ sourceToken: { symbol: tokens.debt }, strategyType: StrategyType.Long }, () =>
+      from.div(to),
+    )
+    .with({ sourceToken: { symbol: tokens.debt }, strategyType: StrategyType.Short }, () =>
+      to.div(from),
+    )
+    .otherwise(() => zero)
+}
 
 interface PriceImpactProps {
   slippage: BigNumber
@@ -65,10 +110,14 @@ export function PriceImpact({
       amountToWei(one, sourceToken.precision),
       slippage,
     ).then((response) => {
-      const from = amountFromWei(response.fromTokenAmount, sourceToken.precision)
-      const to = amountFromWei(response.toTokenAmount, targetToken.precision)
-
-      const price = sourceToken.symbol === tokens.collateral ? to.div(from) : from.div(to)
+      const price = getPrice({
+        fromAmountInBaseUnit: response.fromTokenAmount,
+        toAmountInBaseUnit: response.toTokenAmount,
+        sourceToken,
+        strategyType: strategyConfig.strategyType,
+        targetToken,
+        tokens,
+      })
       setMarketPrice(price)
     })
   }, [
@@ -76,29 +125,35 @@ export function PriceImpact({
     oneInchCall,
     sourceToken,
     slippage,
-    tokens.collateral,
     sourceTokenAddress,
     targetTokenAddress,
+    strategyConfig,
+    tokens,
   ])
 
   if (fromTokenAmount.eq(zero) || toTokenAmount.eq(zero)) {
     return <></>
   }
 
-  const swapPrice =
-    sourceToken.symbol === tokens.collateral
-      ? amountFromWei(toTokenAmount, targetToken.precision).div(
-          amountFromWei(fromTokenAmount, sourceToken.precision),
-        )
-      : amountFromWei(fromTokenAmount, sourceToken.precision).div(
-          amountFromWei(toTokenAmount, targetToken.precision),
-        )
+  const swapPrice = getPrice({
+    fromAmountInBaseUnit: fromTokenAmount,
+    toAmountInBaseUnit: toTokenAmount,
+    sourceToken,
+    strategyType: strategyConfig.strategyType,
+    targetToken,
+    tokens,
+  })
 
   const priceImpact = calculatePriceImpact(marketPrice, swapPrice)
 
+  const displayToken = match(strategyConfig.strategyType)
+    .with(StrategyType.Long, () => `${tokens.collateral}/${tokens.debt}`)
+    .with(StrategyType.Short, () => `${tokens.debt}/${tokens.collateral}`)
+    .otherwise(() => '')
+
   return (
     <VaultChangesInformationItem
-      label={t('vault-changes.price-impact', { token: `${tokens.collateral}/${tokens.debt}` })}
+      label={t('vault-changes.price-impact', { token: displayToken })}
       value={
         <Text>
           {formatCryptoBalance(marketPrice)}{' '}

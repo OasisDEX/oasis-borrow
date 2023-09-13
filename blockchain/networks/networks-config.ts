@@ -14,7 +14,6 @@ import { mainnetCacheUrl } from 'config/runtimeConfig'
 import { ethers } from 'ethers'
 import { ContractDesc } from 'features/web3Context'
 import { GraphQLClient } from 'graphql-request'
-import { Feature, getAppConfigSync } from 'helpers/config'
 import { Abi } from 'helpers/types'
 import { keyBy, memoize } from 'lodash'
 import { env } from 'process'
@@ -147,7 +146,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   icon: arbitrumMainnetIcon as string,
   badge: arbitrumMainnetBadge as string,
   testnet: false,
-  isEnabled: () => getAppConfigSync('features')[Feature.UseNetworkSwitcherArbitrum],
+  isEnabled: () => true,
   token: 'ETH',
   rpcUrl: arbitrumMainnetRpc,
   getReadProvider: memoize(
@@ -180,7 +179,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   icon: arbitrumMainnetIcon as string,
   badge: arbitrumMainnetBadge as string,
   testnet: true,
-  isEnabled: () => getAppConfigSync('features')[Feature.UseNetworkSwitcherArbitrum],
+  isEnabled: () => true,
   token: 'AGOR',
   rpcUrl: arbitrumGoerliRpc,
   getReadProvider: memoize(
@@ -252,7 +251,7 @@ const optimismMainnetConfig: NetworkConfig = {
   icon: optimismMainnetIcon as string,
   badge: optimismMainnetBadge as string,
   testnet: false,
-  isEnabled: () => getAppConfigSync('features')[Feature.UseNetworkSwitcherOptimism],
+  isEnabled: () => true,
   token: 'ETH',
   rpcUrl: optimismMainnetRpc,
   getReadProvider: memoize(
@@ -285,7 +284,7 @@ const optimismGoerliConfig: NetworkConfig = {
   icon: optimismMainnetIcon as string,
   badge: optimismMainnetBadge as string,
   testnet: true,
-  isEnabled: () => getAppConfigSync('features')[Feature.UseNetworkSwitcherOptimism],
+  isEnabled: () => true,
   token: 'ETH',
   rpcUrl: optimismGoerliRpc,
   getReadProvider: () => undefined,

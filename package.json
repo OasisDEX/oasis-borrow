@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "10.0.1",
+  "version": "10.1.1",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=16.x <=18.x"
@@ -48,9 +48,9 @@
     "@metamask/eth-sig-util": "^5.0.2",
     "@next/font": "^13.1.6",
     "@next/mdx": "12.0.4",
-    "@oasisdex/addresses": "0.1.4-alpha.0",
+    "@oasisdex/addresses": "0.1.5",
     "@oasisdex/automation": "^1.5.2",
-    "@oasisdex/dma-library": "0.5.4-alpha.1",
+    "@oasisdex/dma-library": "0.5.5",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",

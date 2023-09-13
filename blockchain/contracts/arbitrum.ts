@@ -187,8 +187,8 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
   openVaultSafeConfirmations: 6,
   taxProxyRegistries: [],
   etherscan: {
-    url: 'https://optimistic.etherscan.io/',
-    apiUrl: 'not-implemented',
+    url: 'https://arbiscan.io/',
+    apiUrl: 'https://api.arbiscan.io/api',
     apiKey: etherscanAPIKey || '',
   },
   ethtx: {

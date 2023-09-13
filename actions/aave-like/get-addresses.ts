@@ -2,8 +2,8 @@ import { AaveLikeStrategyAddresses } from '@oasisdex/dma-library'
 import {
   ensureChainlinkTokenPairsExist,
   ensureContractsExist,
+  ensureGivenTokensExist,
   ensurePropertiesExist,
-  ensureTokensExist,
   getNetworkContracts,
 } from 'blockchain/contracts'
 import { ethNullAddress, NetworkIds } from 'blockchain/networks'
@@ -39,7 +39,22 @@ export function getAddresses(
           'aaveV3Oracle',
         ]
   ensureContractsExist(networkId, contracts, contractProperties)
-  ensureTokensExist(networkId, contracts)
+  ensureGivenTokensExist(networkId, contracts, [
+    'DAI',
+    'ETH',
+    'WETH',
+    'USDC',
+    'WBTC',
+    'WSTETH',
+    'CBETH',
+    'RETH',
+    'STETH',
+    'GHO',
+    'USDT',
+    'SDAI',
+    'LUSD',
+    'FRAX',
+  ])
   ensureChainlinkTokenPairsExist(networkId, contracts, ['ETHUSD'])
   ensurePropertiesExist(networkId, contracts, ['swapAddress'])
 

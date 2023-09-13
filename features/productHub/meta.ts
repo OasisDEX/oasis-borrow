@@ -232,6 +232,5 @@ export const productHubProtocolFilter: GenericMultiselectOption[] = [
     label: lendingProtocolsByName[LendingProtocol.SparkV3].label,
     value: lendingProtocolsByName[LendingProtocol.SparkV3].name,
     image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
-    featureFlag: Feature.SparkProtocol,
   },
 ]

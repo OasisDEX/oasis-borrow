@@ -48,8 +48,8 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.SparkV3,
     label: 'SDAI/ETH',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long SDAI',
+    multiplyStrategyType: 'short',
+    multiplyStrategy: 'Short ETH',
   },
   {
     product: [ProductHubProductType.Borrow],
