@@ -4,6 +4,7 @@ import { TxMeta, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
+import { configLSKey } from 'helpers/config'
 import { mockOpenVault$ } from 'helpers/mocks/openVault.mock'
 import { mockTxState } from 'helpers/mocks/txHelpers.mock'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
@@ -394,7 +395,7 @@ describe('openVault', () => {
     })
 
     it('should skip stop loss step', () => {
-      localStorage.setItem('features', '{"StopLossWrite":true}')
+      localStorage.setItem(configLSKey, '{"features":{"StopLossWrite":true}}')
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
 
@@ -418,7 +419,7 @@ describe('openVault', () => {
     })
 
     it('should add stop loss successfully', () => {
-      localStorage.setItem('features', '{"StopLossWrite":true}')
+      localStorage.setItem(configLSKey, '{"features":{"StopLossWrite":true}}')
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
       const stopLossLevel = new BigNumber('2')
@@ -449,7 +450,7 @@ describe('openVault', () => {
     })
 
     it('should handle add stop loss failure', () => {
-      localStorage.setItem('features', '{"StopLossWrite":true}')
+      localStorage.setItem(configLSKey, '{"features":{"StopLossWrite":true}}')
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
       const stopLossLevel = new BigNumber('2')

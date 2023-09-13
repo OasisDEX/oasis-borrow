@@ -532,6 +532,7 @@ export function setupProductContext(
       addGasEstimation$,
       proxyActionsAdapterResolver$,
       ilk,
+      false, // true is used to mock test config value
     ),
   )
 
