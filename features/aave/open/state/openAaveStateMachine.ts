@@ -521,6 +521,10 @@ export function createOpenAaveStateMachine(
           useFeatureToggle('AaveV3ProtectionWrite') &&
           supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
           strategyConfig.type === ProductType.Multiply &&
+          isSupportedAaveAutomationTokenPair(
+            strategyConfig.tokens.collateral,
+            strategyConfig.tokens.debt,
+          ) &&
           canOpenPosition({
             userInput,
             hasOpenedPosition,
