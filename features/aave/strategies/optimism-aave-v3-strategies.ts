@@ -30,7 +30,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: undefined,
+        featureToggle: 'AaveV3OptimismBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -43,7 +43,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: undefined,
+            featureToggle: 'AaveV3OptimismBorrow',
           },
         ],
       },
@@ -55,7 +55,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: undefined,
+        featureToggle: 'AaveV3OptimismBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -68,7 +68,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: undefined,
+            featureToggle: 'AaveV3OptimismBorrow',
           },
         ],
       },
@@ -80,7 +80,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: undefined,
+        featureToggle: 'AaveV3OptimismBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -93,7 +93,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: undefined,
+            featureToggle: 'AaveV3OptimismBorrow',
           },
         ],
       },
@@ -105,7 +105,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: undefined,
+        featureToggle: 'AaveV3OptimismBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -118,7 +118,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: undefined,
+            featureToggle: 'AaveV3OptimismBorrow',
           },
         ],
       },
@@ -130,7 +130,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: undefined,
+        featureToggle: 'AaveV3OptimismBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -143,7 +143,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: undefined,
+            featureToggle: 'AaveV3OptimismBorrow',
           },
         ],
       },
@@ -155,7 +155,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: undefined,
+        featureToggle: 'AaveV3OptimismBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -168,7 +168,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: undefined,
+            featureToggle: 'AaveV3OptimismBorrow',
           },
         ],
       },
@@ -184,12 +184,12 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: undefined,
+            featureToggle: 'AaveV3OptimismBorrow',
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: undefined,
+        featureToggle: 'AaveV3OptimismBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-earn',
@@ -205,7 +205,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: undefined,
+        featureToggle: 'AaveV3OptimismBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -218,7 +218,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: undefined,
+            featureToggle: 'AaveV3OptimismBorrow',
           },
         ],
       },
@@ -230,7 +230,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: undefined,
+        featureToggle: 'AaveV3OptimismBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -243,7 +243,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: undefined,
+            featureToggle: 'AaveV3OptimismBorrow',
           },
         ],
       },
@@ -255,7 +255,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: undefined,
+        featureToggle: 'AaveV3OptimismBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -268,7 +268,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: undefined,
+            featureToggle: 'AaveV3OptimismBorrow',
           },
         ],
       },
@@ -280,7 +280,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: undefined,
+        featureToggle: 'AaveV3OptimismBorrow',
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -293,7 +293,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: undefined,
+            featureToggle: 'AaveV3OptimismBorrow',
           },
         ],
       },
