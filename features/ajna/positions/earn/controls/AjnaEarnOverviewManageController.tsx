@@ -80,7 +80,6 @@ export function AjnaEarnOverviewManageController() {
           {!isOracless && (
             <ContentCardMaxLendingLTV
               isLoading={isSimulationLoading}
-              price={position.price}
               quoteToken={quoteToken}
               collateralToken={collateralToken}
               maxLendingPercentage={position.maxRiskRatio.loanToValue}
