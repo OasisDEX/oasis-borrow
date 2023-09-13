@@ -38,7 +38,7 @@ export function WithAnnouncementLandingLayout({
           />
         </Container>
       )}
-      <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
+      <Container variant={variant ?? 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
       </Container>
       {footer}
@@ -76,7 +76,7 @@ export function WithAnnouncementLayout({
           />
         </Container>
       )}
-      <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
+      <Container variant={variant ?? 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
       </Container>
       {footer}

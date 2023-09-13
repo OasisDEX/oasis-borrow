@@ -22,7 +22,7 @@ export function BasicLayout({ header, footer, children, sx, variant, bg }: Basic
     >
       {bg}
       {header}
-      <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
+      <Container variant={variant ?? 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
       </Container>
       {footer}
