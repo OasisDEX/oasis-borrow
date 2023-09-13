@@ -13,7 +13,7 @@ import React from 'react'
 export function AjnaEarnFormContentWithdraw() {
   const { t } = useTranslation()
   const {
-    environment: { quotePrice, quoteToken, isOracless, quoteDigits },
+    environment: { quotePrice, quoteToken, isOracless, quoteDigits, quotePrecision },
   } = useAjnaGeneralContext()
   const {
     form: {
@@ -33,7 +33,7 @@ export function AjnaEarnFormContentWithdraw() {
       position,
       simulation,
     }),
-    digits: quoteDigits,
+    digits: quotePrecision,
   })
 
   return (
