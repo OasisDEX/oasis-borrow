@@ -15,13 +15,7 @@ import {
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
-import {
-  IStrategyConfig,
-  ManagePositionAvailableActions,
-  ProductType,
-  ProxyType,
-  StrategyType,
-} from 'features/aave/types'
+import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
@@ -119,20 +113,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'AaveV3Multiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'AaveV3Multiply',
+            featureToggle: undefined,
           },
         ],
       },
@@ -144,20 +138,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'AaveV3Multiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'AaveV3Multiply',
+            featureToggle: undefined,
           },
         ],
       },
@@ -248,7 +242,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
@@ -294,20 +288,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'AaveV3Multiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'AaveV3Multiply',
+            featureToggle: undefined,
           },
         ],
       },
@@ -319,20 +313,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'AaveV3Multiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3Borrow',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'AaveV3Multiply',
+            featureToggle: undefined,
           },
         ],
       },
@@ -403,7 +397,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3Borrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -718,11 +712,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     type: ProductType.Earn,
     protocol: LendingProtocol.AaveV3,
     availableActions: () => {
-      const isBorrowEnabled = getFeatureToggle('AaveV3Borrow')
-      const additionalActions: ManagePositionAvailableActions[] = isBorrowEnabled
-        ? ['switch-to-borrow']
-        : []
-      return [...allActionsAvailableInMultiply, ...additionalActions]
+      return [...allActionsAvailableInMultiply, 'switch-to-borrow']
     },
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
@@ -758,11 +748,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3EarnrETHeth',
     availableActions: () => {
-      const isBorrowEnabled = getFeatureToggle('AaveV3Borrow')
-      const additionalActions: ManagePositionAvailableActions[] = isBorrowEnabled
-        ? ['switch-to-borrow']
-        : []
-      return [...allActionsAvailableInMultiply, ...additionalActions]
+      return [...allActionsAvailableInMultiply, 'switch-to-borrow']
     },
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
@@ -798,11 +784,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3EarncbETHeth',
     availableActions: () => {
-      const isBorrowEnabled = getFeatureToggle('AaveV3Borrow')
-      const additionalActions: ManagePositionAvailableActions[] = isBorrowEnabled
-        ? ['switch-to-borrow']
-        : []
-      return [...allActionsAvailableInMultiply, ...additionalActions]
+      return [...allActionsAvailableInMultiply, 'switch-to-borrow']
     },
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
