@@ -34,6 +34,7 @@ export type ConfiguredFeatures = Record<Feature, boolean>
 
 export type ConfigResponseType = {
   features: ConfiguredFeatures
+  error?: string
 }
 
 export type ConfigResponseTypeKey = keyof ConfigResponseType

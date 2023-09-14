@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react'
 
 const configFetcher = () =>
   fetch(`/api/config`, {
-    method: 'POST',
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -30,16 +30,21 @@ export function ConfigContextProvider({ children }: WithChildren) {
         try {
           const response = await configFetcher()
           const config = (await response.json()) as ConfigResponseType
+          if (!config || config.error) {
+            throw new Error(`Error fetching config: ${config.error}`)
+          }
           setContext({ config })
           saveConfigToLocalStorage(config)
         } catch (error) {
-          console.error(error)
+          console.error(`Error fetching config: ${error}`)
         }
       }
       await fetchConfig()
       setInterval(fetchConfig, 1000 * configCacheTime.frontend)
     }
-    void setup()
+    setup().catch((error) => {
+      console.error(`Error setting up config context: ${error}`)
+    })
   }, [])
   return <configContext.Provider value={context}>{children}</configContext.Provider>
 }

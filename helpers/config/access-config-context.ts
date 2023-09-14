@@ -1,6 +1,11 @@
 'use client'
 import { configContext, emptyConfig } from 'components/context/ConfigContextProvider'
-import { configLSKey, ConfigResponseType, ConfigResponseTypeKey } from 'helpers/config'
+import {
+  ConfigContext,
+  configLSKey,
+  ConfigResponseType,
+  ConfigResponseTypeKey,
+} from 'helpers/config'
 import { useContext as accessContext } from 'react'
 
 import { configLSOverridesKey } from './constants'
@@ -13,9 +18,17 @@ import { configLSOverridesKey } from './constants'
  */
 export function getAppConfig<T extends ConfigResponseTypeKey>(configKey: T): ConfigResponseType[T] {
   try {
-    const ac = accessContext(configContext)
+    let ac = accessContext(configContext)
     if (!ac) {
       throw new Error("ConfigContext not available! getAppConfig can't be used serverside")
+    }
+    if (window.localStorage) {
+      ac = {
+        ...ac,
+        ...({
+          config: JSON.parse(localStorage.getItem(configLSOverridesKey) || '{}'),
+        } as ConfigContext),
+      }
     }
     return ac.config[configKey]
   } catch (error) {
@@ -24,7 +37,12 @@ export function getAppConfig<T extends ConfigResponseTypeKey>(configKey: T): Con
   }
 }
 
-export function updateOverridesSchema(config: ConfigResponseType) {
+/**
+ * Updates config overrides in localStorage
+ * @param config
+ * @returns void
+ */
+export function updateConfigOverrides(config: ConfigResponseType): void {
   if (!window?.localStorage) return
   let overrideConfigRaw = localStorage.getItem(configLSOverridesKey)
   if (!overrideConfigRaw) {
@@ -32,10 +50,10 @@ export function updateOverridesSchema(config: ConfigResponseType) {
   }
   try {
     const overrideConfig = JSON.parse(overrideConfigRaw)
-    const newOverrideConfig = { ...overrideConfig, ...config }
+    const newOverrideConfig = { ...config, ...overrideConfig }
+    localStorage.setItem(configLSOverridesKey, JSON.stringify(newOverrideConfig))
   } catch (error) {
-    console.error('updateOverridesSchema: Error parsing override config from localStorage', error)
-    return emptyConfig
+    console.error('updateConfigOverrides: Error parsing override config from localStorage', error)
   }
 }
 
@@ -47,6 +65,7 @@ export function updateOverridesSchema(config: ConfigResponseType) {
 export function saveConfigToLocalStorage(config: ConfigResponseType) {
   if (!window?.localStorage) return
   localStorage.setItem(configLSKey, JSON.stringify(config))
+  updateConfigOverrides(config)
 }
 
 /**
@@ -64,7 +83,10 @@ export function loadConfigFromLocalStorage() {
     return emptyConfig
   }
   try {
-    const config = JSON.parse(configRaw)
+    const config = {
+      ...JSON.parse(configRaw),
+      ...JSON.parse(localStorage.getItem(configLSOverridesKey) || '{}'),
+    }
     return config as ConfigResponseType
   } catch (error) {
     console.error('loadConfigFromLocalStorage: Error parsing config from localStorage', error)
