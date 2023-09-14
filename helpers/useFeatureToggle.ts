@@ -40,9 +40,9 @@ const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
   '🌞': false, // or https://summer.fi/harheeharheeharhee to enable.  https://summer.fi/<any vault ID> to disable.
-  AaveV3ArbitrumBorrow: false,
+  AaveV3ArbitrumBorrow: true,
   AaveV3ArbitrumEarn: false,
-  AaveV3OptimismBorrow: false,
+  AaveV3OptimismBorrow: true,
   AaveV3OptimismEarn: false,
   AaveV3EarncbETHeth: false,
   AaveV3EarnrETHeth: false,
