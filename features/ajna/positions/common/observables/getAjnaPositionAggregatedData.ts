@@ -1,4 +1,4 @@
-import { AjnaEarnPosition } from '@oasisdex/dma-library'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { NetworkIds } from 'blockchain/networks'
 import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
@@ -60,6 +60,8 @@ function parseAggregatedDataAuction({
         }
       }
 
+      const ajnaBorrowishPosition = position as AjnaPosition
+
       const auction = auctions[0]
       const borrowishEvents = mapAjnaBorrowishEvents(history)
       const mostRecentHistoryEvent = borrowishEvents[0]
@@ -74,17 +76,14 @@ function parseAggregatedDataAuction({
         mostRecentHistoryEvent.kind as string,
       )
       const isPartiallyLiquidated =
-        auction.collateral.gt(zero) &&
-        auction.debtToCover.gt(zero) &&
-        !auction.inLiquidation &&
-        !isDuringGraceTime &&
+        mostRecentHistoryEvent.kind === 'AuctionSettle' &&
+        ajnaBorrowishPosition.debtAmount.gt(zero) &&
         !isEventAfterAuction
+
       const isLiquidated =
-        auction.debtToCover.isZero() &&
-        !auction.inLiquidation &&
-        !isDuringGraceTime &&
-        !isEventAfterAuction &&
-        !isPartiallyLiquidated
+        mostRecentHistoryEvent.kind === 'AuctionSettle' &&
+        ajnaBorrowishPosition.debtAmount.isZero() &&
+        !isEventAfterAuction
 
       return {
         graceTimeRemaining,
@@ -109,21 +108,15 @@ function parseAggregatedDataAuction({
 }
 
 function parseAggregatedDataHistory({
-  dpmPositionData: { collateralTokenAddress, product, quoteTokenAddress },
+  dpmPositionData: { product },
   history,
 }: {
   dpmPositionData: DpmPositionData
   history: AjnaUnifiedHistoryEvent[]
 }): AjnaUnifiedHistoryEvent[] {
   return (
-    (product === 'earn'
-      ? mapAjnaEarnEvents(history)
-      : mapAjnaBorrowishEvents(history)) as AjnaUnifiedHistoryEvent[]
-  ).filter(
-    (item) =>
-      item.collateralAddress?.toLowerCase() === collateralTokenAddress.toLowerCase() &&
-      item.debtAddress?.toLowerCase() === quoteTokenAddress.toLowerCase(),
-  )
+    product === 'earn' ? mapAjnaEarnEvents(history) : mapAjnaBorrowishEvents(history)
+  ) as AjnaUnifiedHistoryEvent[]
 }
 
 export const getAjnaPositionAggregatedData$ = ({
