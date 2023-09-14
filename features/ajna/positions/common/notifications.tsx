@@ -388,7 +388,7 @@ export function getAjnaNotifications({
           updateState('uiPill', 'deposit-earn')
         }
 
-        if (priceAboveMomp) {
+        if (priceAboveMomp && !isOracless) {
           notifications.push(
             ajnaNotifications.priceAboveMomp({
               message: { collateralToken, quoteToken },
