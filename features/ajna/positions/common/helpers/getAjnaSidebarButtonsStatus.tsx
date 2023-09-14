@@ -81,7 +81,7 @@ export function getAjnaSidebarButtonsStatus({
     !(
       (currentStep === 'transaction' && (!isTxStarted || isTxError)) ||
       (isTransitionWaitingForApproval && !isTransitionInProgress)
-    ) && currentStep !== 'nft'
+    )
 
   return {
     isPrimaryButtonDisabled,
