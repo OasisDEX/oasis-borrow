@@ -3,6 +3,8 @@ import { configContext, emptyConfig } from 'components/context/ConfigContextProv
 import { configLSKey, ConfigResponseType, ConfigResponseTypeKey } from 'helpers/config'
 import { useContext as accessContext } from 'react'
 
+import { configLSOverridesKey } from './constants'
+
 /**
  * Returns config from context. If context is not available, returns empty config.
  * This gets updated when config changes (polling every configCacheTime)
@@ -19,6 +21,21 @@ export function getAppConfig<T extends ConfigResponseTypeKey>(configKey: T): Con
   } catch (error) {
     console.error(`getAppConfig: Error getting config value for ${configKey}`)
     return emptyConfig[configKey]
+  }
+}
+
+export function updateOverridesSchema(config: ConfigResponseType) {
+  if (!window?.localStorage) return
+  let overrideConfigRaw = localStorage.getItem(configLSOverridesKey)
+  if (!overrideConfigRaw) {
+    overrideConfigRaw = '{}'
+  }
+  try {
+    const overrideConfig = JSON.parse(overrideConfigRaw)
+    const newOverrideConfig = { ...overrideConfig, ...config }
+  } catch (error) {
+    console.error('updateOverridesSchema: Error parsing override config from localStorage', error)
+    return emptyConfig
   }
 }
 
@@ -61,7 +78,7 @@ export function loadConfigFromLocalStorage() {
  * @param configKey
  * @returns ConfigResponseType[T] or empty config
  */
-export function getAppConfigSync<T extends ConfigResponseTypeKey>(
+export function getLocalAppConfig<T extends ConfigResponseTypeKey>(
   configKey: T,
 ): ConfigResponseType[T] {
   if (typeof localStorage === 'undefined' || !localStorage || !window?.localStorage) {

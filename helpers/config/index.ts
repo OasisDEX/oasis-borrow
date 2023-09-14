@@ -5,5 +5,5 @@ export type {
   ConfigResponseTypeKey,
   ConfigContext,
 } from './types'
-export { getAppConfig, getAppConfigSync, saveConfigToLocalStorage } from './access-config-context'
+export { getAppConfig, getLocalAppConfig, saveConfigToLocalStorage } from './access-config-context'
 export { configCacheTime, configLSKey } from './constants'

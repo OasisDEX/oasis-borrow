@@ -3,3 +3,4 @@ export const configCacheTime = {
   backend: 60 * 5, // 5 minutes
 }
 export const configLSKey = 'ob-config'
+export const configLSOverridesKey = 'ob-config-overrides'

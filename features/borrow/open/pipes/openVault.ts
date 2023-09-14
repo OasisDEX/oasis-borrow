@@ -38,7 +38,7 @@ import {
   createApplyOpenVaultTransition,
   OpenVaultTransitionChange,
 } from 'features/vaultTransitions/openVaultTransitions'
-import { getAppConfig, getAppConfigSync } from 'helpers/config'
+import { getAppConfig, getLocalAppConfig } from 'helpers/config'
 import {
   AddGasEstimationFunction,
   GasEstimationStatus,
@@ -382,7 +382,7 @@ export function createOpenVault$(
                     }
 
                     const { StopLossWrite: stopLossWriteEnabled } = mockLocalStorage
-                      ? getAppConfigSync('features')
+                      ? getLocalAppConfig('features')
                       : getAppConfig('features')
                     const withStopLossStage = stopLossWriteEnabled
                       ? isSupportedAutomationIlk(context.chainId, ilk)
