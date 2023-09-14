@@ -117,6 +117,5 @@ export function mockOpenVault$({
     gasEstimationMock$,
     () => of(StandardDssProxyActionsContractAdapter),
     ilk,
-    true,
   )
 }

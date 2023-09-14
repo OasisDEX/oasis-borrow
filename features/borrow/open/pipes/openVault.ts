@@ -38,7 +38,7 @@ import {
   createApplyOpenVaultTransition,
   OpenVaultTransitionChange,
 } from 'features/vaultTransitions/openVaultTransitions'
-import { getAppConfig, getLocalAppConfig } from 'helpers/config'
+import { getAppConfig } from 'helpers/config'
 import {
   AddGasEstimationFunction,
   GasEstimationStatus,
@@ -343,7 +343,6 @@ export function createOpenVault$(
     ilk: string
   }) => Observable<ProxyActionsSmartContractAdapterInterface>,
   ilk: string,
-  mockLocalStorage?: boolean, // used just in tests
 ): Observable<OpenVaultState> {
   return ilks$.pipe(
     switchMap((ilks) =>
@@ -381,9 +380,7 @@ export function createOpenVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
-                    const { StopLossWrite: stopLossWriteEnabled } = mockLocalStorage
-                      ? getLocalAppConfig('features')
-                      : getAppConfig('features')
+                    const { StopLossWrite: stopLossWriteEnabled } = getAppConfig('features')
                     const withStopLossStage = stopLossWriteEnabled
                       ? isSupportedAutomationIlk(context.chainId, ilk)
                       : false

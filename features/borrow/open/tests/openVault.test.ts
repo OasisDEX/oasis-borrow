@@ -1,4 +1,5 @@
 /* eslint-disable func-style */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { TxMeta, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
@@ -15,6 +16,12 @@ import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
+
+jest.mock('helpers/config', () => ({
+  getAppConfig: () => ({ StopLossWrite: true }),
+  getLocalAppConfig: () => ({ UseNetworkSwitcherForks: false }),
+  Feature: jest.requireActual('helpers/config').Feature,
+}))
 
 describe('openVault', () => {
   beforeEach(() => {})
@@ -395,7 +402,6 @@ describe('openVault', () => {
     })
 
     it('should skip stop loss step', () => {
-      localStorage.setItem(configLSKey, '{"features":{"StopLossWrite":true}}')
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
 
