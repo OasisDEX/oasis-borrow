@@ -3,7 +3,7 @@ import { NetworkIds } from 'blockchain/networks'
 export const aaveHistorySupport: Record<number, boolean> = {
   // Mainnets
   [NetworkIds.MAINNET]: true,
-  [NetworkIds.OPTIMISMMAINNET]: false,
+  [NetworkIds.OPTIMISMMAINNET]: true,
   [NetworkIds.ARBITRUMMAINNET]: false,
   [NetworkIds.POLYGONMAINNET]: false,
 
