@@ -26,7 +26,7 @@ export function getAppConfig<T extends ConfigResponseTypeKey>(configKey: T): Con
       ac = {
         ...ac,
         ...({
-          config: JSON.parse(localStorage.getItem(configLSOverridesKey) || '{}'),
+          config: JSON.parse(localStorage.getItem(configLSOverridesKey) ?? '{}'),
         } as ConfigContext),
       }
     }
@@ -85,7 +85,7 @@ export function loadConfigFromLocalStorage() {
   try {
     const config = {
       ...JSON.parse(configRaw),
-      ...JSON.parse(localStorage.getItem(configLSOverridesKey) || '{}'),
+      ...JSON.parse(localStorage.getItem(configLSOverridesKey) ?? '{}'),
     }
     return config as ConfigResponseType
   } catch (error) {
