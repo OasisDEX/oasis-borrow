@@ -16,6 +16,7 @@ import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { getAppConfig } from 'helpers/config'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractPrimaryButtonLabelParams,
@@ -23,7 +24,6 @@ import {
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -67,7 +67,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams({ ...props })
   const sidebarTxData = extractSidebarTxData(props)
   const { stopLossSidebarProps, automationContextProps } = getDataForStopLoss(props, 'multiply')
-  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
+  const { ProxyCreationDisabled: isProxyCreationDisabled } = getAppConfig('features')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token, openFlowWithStopLoss }),

@@ -8,12 +8,12 @@ import {
   ConstantMultipleFormChange,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { getAppConfig } from 'helpers/config'
 import {
   calculatePNLFromAddConstantMultipleEvent,
   calculateTotalCostOfConstantMultiple,
 } from 'helpers/multiply/calculations'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
 interface ConstantMultipleDetailsControlProps {
@@ -23,7 +23,7 @@ interface ConstantMultipleDetailsControlProps {
 export function ConstantMultipleDetailsControl({
   vaultHistory,
 }: ConstantMultipleDetailsControlProps) {
-  const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
+  const { ConstantMultipleReadOnly: constantMultipleReadOnlyEnabled } = getAppConfig('features')
 
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
     CONSTANT_MULTIPLE_FORM_CHANGE,

@@ -806,6 +806,7 @@
     "liquidation-price-ratio-modal-aave": "The liquidation price ratio indicates to what price ratio stETH needs to drop in comparison to ETH in order to get liquidated on this position. If this comes within 5% it will be indicated as red, within 20% as orange, and above 20% as green. Liquidation results in a liquidation penalty. You can find the history of the ratio here: <0>Ratio history</0> <1/><1/> You can adjust your risk by using the adjust risk functionality.",
     "below-current-ratio": "({{percentage}} below current ratio)",
     "below-current-price": "{{percentage}} below current price",
+    "above-current-price": "{{percentage}} above current price",
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
     "stop-loss-ltv": "Stop Loss LTV: {{percentage}}",
     "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
@@ -819,7 +820,8 @@
       "second-header": "Liquidation Penalty",
       "first-description-line-long": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
       "first-description-line-short": "The Liquidation Price is the debt price at which a position will be liquidated. This number is denominated in collateral",
-      "second-description-line": "This is {{percent}} below current price",
+      "second-description-line-long": "This is {{percent}} below current price",
+      "second-description-line-short": "This is {{percent}} above current price",
       "third-description-line": "The liquidation penalty is the % that will be added to the debt as a penalty in case of liquidation."
     },
     "ltv": {
@@ -2423,6 +2425,11 @@
     "sidebar": {
       "title": "Manage Multiply position",
       "open-btn": "Manage Multiply position"
+    }
+  },
+  "manage-borrow": {
+    "sidebar": {
+      "title": "Manage Borrow position"
     }
   },
   "open-borrow": {

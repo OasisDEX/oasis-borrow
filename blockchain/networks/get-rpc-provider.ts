@@ -1,20 +1,32 @@
 import { ethers } from 'ethers'
+import { getRpcNode } from 'pages/api/rpc'
 
 import { networkSetById } from './network-helpers'
 import { NetworkIds } from './network-ids'
 import { networksById } from './networks-config'
 
 export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider {
-  const provider = networkSetById[networkId]?.getReadProvider()
+  const network = networkSetById[networkId] ?? networksById[networkId] // check if maybe we should use disabled provider.
+
+  if (!network) {
+    throw new Error(`Network with id ${networkId} does not exist`)
+  }
+
+  // check if server
+  if (typeof window === 'undefined') {
+    const node = getRpcNode(network.name)
+    if (!node) {
+      throw new Error('RPC provider is not available')
+    }
+    return new ethers.providers.JsonRpcProvider(node, {
+      chainId: networkId,
+      name: network.name,
+    })
+  }
+  const provider = network.getReadProvider()
 
   if (provider) {
     return provider
-  }
-
-  const maybeDisabledProvider = networksById[networkId]?.getReadProvider()
-
-  if (maybeDisabledProvider) {
-    return maybeDisabledProvider
   }
 
   throw new Error(

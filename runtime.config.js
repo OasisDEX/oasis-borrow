@@ -2,10 +2,8 @@ const publicRuntimeConfig = {
   // Will be available on both server and client
   buildHash: process.env.COMMIT_SHA,
   buildDate: Date.now(),
-  apiHost: process.env.API_HOST,
   notificationsHost: process.env.NOTIFICATIONS_HOST,
   notificationsHostGoerli: process.env.NOTIFICATIONS_HOST_GOERLI,
-  basePath: process.env.APP_FULL_DOMAIN,
   mixpanelEnv: process.env.MIXPANEL_ENV,
   mixpanelAPIKey: process.env.MIXPANEL_KEY,
   adRollAdvId: process.env.ADROLL_ADV_ID,
@@ -24,8 +22,10 @@ const publicRuntimeConfig = {
   ajnaSubgraphUrl: process.env.AJNA_SUBGRAPH_URL,
   ajnaSubgraphUrlGoerli: process.env.AJNA_SUBGRAPH_URL_GOERLI,
   aaveSubgraphUrl: process.env.AAVE_SUBGRAPH_URL,
+  aaveSubgraphUrlOptimism: process.env.AAVE_OPTIMISM_SUBGRAPH_URL,
   rebrandingUrl: process.env.REBRANDING_POST_URL,
   referralSubgraphUrl: process.env.REFERRAL_SUBGRAPH_URL,
+  configUrl: process.env.CONFIG_URL,
 }
 
 module.exports = {

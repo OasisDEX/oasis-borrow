@@ -2,7 +2,7 @@ import { NetworkNames } from 'blockchain/networks'
 import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const aaveV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
+export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddress[] = [
   // ethereum products
   {
     product: [ProductHubProductType.Earn],
@@ -166,72 +166,6 @@ export const aaveV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     label: 'WSTETH/USDC',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
-  },
-  // arbitrum products
-  {
-    product: [ProductHubProductType.Multiply],
-    primaryToken: 'ETH',
-    secondaryToken: 'USDC',
-    network: NetworkNames.arbitrumMainnet,
-    protocol: LendingProtocol.AaveV3,
-    label: 'ETH/USDC',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long ETH',
-  },
-  {
-    product: [ProductHubProductType.Multiply],
-    primaryToken: 'WSTETH',
-    primaryTokenGroup: 'ETH',
-    secondaryToken: 'USDC',
-    network: NetworkNames.arbitrumMainnet,
-    protocol: LendingProtocol.AaveV3,
-    label: 'WSTETH/USDC',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long WSTETH',
-  },
-  {
-    product: [ProductHubProductType.Multiply],
-    primaryToken: 'WBTC',
-    primaryTokenGroup: 'BTC',
-    secondaryToken: 'USDC',
-    network: NetworkNames.arbitrumMainnet,
-    protocol: LendingProtocol.AaveV3,
-    label: 'WBTC/USDC',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long WBTC',
-  },
-  // optimism products
-  {
-    product: [ProductHubProductType.Multiply],
-    primaryToken: 'ETH',
-    secondaryToken: 'USDC',
-    network: NetworkNames.optimismMainnet,
-    protocol: LendingProtocol.AaveV3,
-    label: 'ETH/USDC',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long ETH',
-  },
-  {
-    product: [ProductHubProductType.Multiply],
-    primaryToken: 'WSTETH',
-    primaryTokenGroup: 'ETH',
-    secondaryToken: 'USDC',
-    network: NetworkNames.optimismMainnet,
-    protocol: LendingProtocol.AaveV3,
-    label: 'WSTETH/USDC',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long WSTETH',
-  },
-  {
-    product: [ProductHubProductType.Multiply],
-    primaryToken: 'WBTC',
-    primaryTokenGroup: 'BTC',
-    secondaryToken: 'USDC',
-    network: NetworkNames.optimismMainnet,
-    protocol: LendingProtocol.AaveV3,
-    label: 'WBTC/USDC',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long WBTC',
   },
   {
     product: [ProductHubProductType.Multiply],

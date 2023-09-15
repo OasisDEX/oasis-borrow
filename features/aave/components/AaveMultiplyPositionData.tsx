@@ -230,15 +230,13 @@ export function AaveMultiplyPositionData({
             <DetailsSectionFooterItem
               sx={{ pr: 3 }}
               title={t('system.buying-power')}
-              value={`${formatPrecision(currentPositionThings.buyingPower, 2)} ${debtToken.symbol}`}
+              value={`${formatPrecision(currentPositionThings.buyingPower, 2)} USD`}
               change={
                 nextPositionThings && {
                   variant: nextPositionThings.buyingPower.gt(currentPositionThings.buyingPower)
                     ? 'positive'
                     : 'negative',
-                  value: `${formatPrecision(nextPositionThings.buyingPower, 2)} ${
-                    nextPosition.debt.symbol
-                  } ${t('after')}`,
+                  value: `${formatPrecision(nextPositionThings.buyingPower, 2)} USD ${t('after')}`,
                 }
               }
             />

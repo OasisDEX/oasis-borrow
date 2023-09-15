@@ -28,7 +28,6 @@ import {
   getPositionIdFromDpmProxy$,
   getUserDpmProxies$,
   getUserDpmProxy$,
-  UserDpmAccount,
 } from 'blockchain/userDpmProxies'
 import { createVaultsFromIds$, decorateVaultsWithValue$ } from 'blockchain/vaults'
 import { AccountContext } from 'components/context'
@@ -160,8 +159,12 @@ export function setupProductContext(
     cdpManagerIlks$,
     ilkData$,
     ilkToToken$,
+    mainnetDpmProxies$,
+    optimismDpmProxies$,
+    arbitrumDpmProxies$,
     mainnetReadPositionCreatedEvents$,
     optimismReadPositionCreatedEvents$,
+    arbitrumReadPositionCreatedEvents$,
     oraclePriceData$,
     proxyAddress$,
     standardCdps$,
@@ -478,11 +481,6 @@ export function setupProductContext(
     curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
   )
 
-  const mainnetDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
-    curry(getUserDpmProxies$)(of({ chainId: NetworkIds.MAINNET })),
-    (walletAddress) => walletAddress,
-  )
-
   const mainnetPositionCreatedEventsForProtocol$ = memoize(
     (walletAddress: string, protocol: LendingProtocol) => {
       return mainnetReadPositionCreatedEvents$(walletAddress).pipe(
@@ -551,11 +549,6 @@ export function setupProductContext(
       (wallet) => wallet,
     )
 
-  const optimismDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
-    curry(getUserDpmProxies$)(of({ chainId: NetworkIds.OPTIMISMMAINNET })),
-    (walletAddress) => walletAddress,
-  )
-
   const aaveOptimismPositions$: (walletAddress: string) => Observable<AaveLikePosition[]> = memoize(
     curry(createAaveV3DpmPosition$)(
       context$,
@@ -570,12 +563,27 @@ export function setupProductContext(
     (wallet) => wallet,
   )
 
+  const aaveArbitrumPositions$: (walletAddress: string) => Observable<AaveLikePosition[]> = memoize(
+    curry(createAaveV3DpmPosition$)(
+      context$,
+      arbitrumDpmProxies$,
+      tokenPriceUSDStatic$,
+      arbitrumReadPositionCreatedEvents$,
+      getApiVaults,
+      () => of<TriggersData | undefined>(undefined), // Triggers are not supported on arbitrum
+      aaveV3ArbitrumServices,
+      NetworkIds.ARBITRUMMAINNET,
+    ),
+    (wallet) => wallet,
+  )
+
   const aaveLikePositions$ = memoize((walletAddress: string) => {
     return combineLatest([
       mainnetAaveV2Positions$(walletAddress),
       aaveMainnetAaveV3Positions$(walletAddress),
       sparkMainnetSparkV3Positions$(walletAddress),
       aaveOptimismPositions$(walletAddress),
+      aaveArbitrumPositions$(walletAddress),
     ]).pipe(
       map(
         ([
@@ -583,12 +591,14 @@ export function setupProductContext(
           mainnetAaveV3Positions,
           mainnetSparkV3Positions,
           optimismAaveV3Positions,
+          arbitrumAavePositions,
         ]) => {
           return [
             ...mainnetAaveV2Positions,
             ...mainnetAaveV3Positions,
             ...mainnetSparkV3Positions,
             ...optimismAaveV3Positions,
+            ...arbitrumAavePositions,
           ]
         },
       ),
@@ -602,6 +612,7 @@ export function setupProductContext(
       mainnetAaveV2Positions$,
       aaveMainnetAaveV3Positions$,
       aaveOptimismPositions$,
+      aaveArbitrumPositions$,
     ),
   )
 

@@ -9,7 +9,7 @@ import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageM
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { uiChanges } from 'helpers/uiChanges'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { getAppConfig } from 'helpers/config'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Observable } from 'rxjs'
@@ -38,7 +38,7 @@ export function ManageMultiplyVaultContainer({
     ilkData,
   } = manageVault
   const { t } = useTranslation()
-  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
+  const { StopLossRead: stopLossReadEnabled } = getAppConfig('features')
 
   useEffect(() => {
     const { token } = manageVault.vault

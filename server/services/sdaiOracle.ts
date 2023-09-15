@@ -1,12 +1,21 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { getRpcProvider, NetworkIds } from 'blockchain/networks'
+import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { CHAIN_LINK_PRECISION } from 'components/constants'
+import { ethers } from 'ethers'
 import { PriceServiceResponse } from 'helpers/types'
+import { getRpcNode } from 'pages/api/rpc'
 import { SdaiPriceOracle__factory as SdaiPriceOracleFactory } from 'types/ethers-contracts'
 
 export async function getSDaiOracleTicker(): Promise<PriceServiceResponse> {
-  const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
+  const node = getRpcNode(NetworkNames.ethereumMainnet)
+  if (!node) {
+    throw new Error('RPC provider is not available')
+  }
+  const rpcProvider = new ethers.providers.JsonRpcProvider(node, {
+    chainId: NetworkIds.MAINNET,
+    name: NetworkNames.ethereumMainnet,
+  })
   const sdaiPriceOracleContractAddress = getNetworkContracts(NetworkIds.MAINNET).SdaiOracle.address
   const sdaiPriceOracleContract = SdaiPriceOracleFactory.connect(
     sdaiPriceOracleContractAddress,

@@ -4,7 +4,7 @@ import { GenericMultiselectOption } from 'components/GenericMultiselect'
 import { HeaderSelectorOption } from 'components/HeaderSelector'
 import { ProductHubProductType } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
+import { Feature, getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { clone } from 'ramda'
@@ -146,7 +146,7 @@ export const productHubOptionsMapBase: {
 
 const productHubOptionsMap = clone(productHubOptionsMapBase)
 
-if (getFeatureToggle('AjnaSafetySwitch')) {
+if (getLocalAppConfig('features')[Feature.AjnaSafetySwitch]) {
   delete productHubOptionsMap.borrow.tokens.YFI
   delete productHubOptionsMap.borrow.tokens.GHO
   delete productHubOptionsMap.borrow.tokens.WLD
@@ -232,6 +232,5 @@ export const productHubProtocolFilter: GenericMultiselectOption[] = [
     label: lendingProtocolsByName[LendingProtocol.SparkV3].label,
     value: lendingProtocolsByName[LendingProtocol.SparkV3].name,
     image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
-    featureFlag: 'SparkProtocol',
   },
 ]

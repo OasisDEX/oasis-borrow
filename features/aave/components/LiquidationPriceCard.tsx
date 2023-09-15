@@ -24,10 +24,21 @@ export function LiquidationPriceCard(props: {
   debtTokenReserveData: AaveLikeReserveData
   debtTokenReserveConfigurationData: AaveLikeReserveConfigurationData
 }) {
+  const { t } = useTranslation()
+
   const belowCurrentPricePercentage = formatDecimalAsPercent(
     props.currentPositionThings.liquidationPriceInDebt
+      .times(props.debtTokenPrice)
       .minus(props.collateralTokenPrice)
       .dividedBy(props.collateralTokenPrice)
+      .absoluteValue(),
+  )
+
+  const aboveCurrentPricePercentage = formatDecimalAsPercent(
+    props.currentPositionThings.liquidationPriceInCollateral
+      .times(props.collateralTokenPrice)
+      .minus(props.debtTokenPrice)
+      .dividedBy(props.debtTokenPrice)
       .absoluteValue(),
   )
 
@@ -45,7 +56,11 @@ export function LiquidationPriceCard(props: {
       : props.nextPositionThings.liquidationPriceInCollateral
     : undefined
 
-  const { t } = useTranslation()
+  const footnoteChange =
+    props.strategyType === StrategyType.Long
+      ? t('manage-earn-vault.below-current-price', { percentage: belowCurrentPricePercentage })
+      : t('manage-earn-vault.above-current-price', { percentage: aboveCurrentPricePercentage })
+
   return (
     <DetailsSectionContentCard
       title={t('system.liquidation-price')}
@@ -56,11 +71,7 @@ export function LiquidationPriceCard(props: {
           value: `${formatPrecision(nextLiquidationPrice, 2)} ${t('after')}`,
         }
       }
-      footnote={
-        !currentLiquidationPrice.eq(zero)
-          ? t('manage-earn-vault.below-current-price', { percentage: belowCurrentPricePercentage })
-          : undefined
-      }
+      footnote={!currentLiquidationPrice.eq(zero) ? footnoteChange : undefined}
       modal={
         <Grid gap={2}>
           <Heading variant="header4">
@@ -76,9 +87,13 @@ export function LiquidationPriceCard(props: {
           </Card>
           {!props.currentPositionThings.liquidationPriceInDebt.isNaN() && (
             <Text as="p" variant="paragraph3" sx={{ mt: 1 }}>
-              {t('aave-position-modal.liquidation-price.second-description-line', {
-                percent: belowCurrentPricePercentage,
-              })}
+              {props.strategyType === StrategyType.Long
+                ? t('aave-position-modal.liquidation-price.second-description-line-long', {
+                    percent: belowCurrentPricePercentage,
+                  })
+                : t('aave-position-modal.liquidation-price.second-description-line-short', {
+                    percent: aboveCurrentPricePercentage,
+                  })}
             </Text>
           )}
           <Heading variant="header4">
