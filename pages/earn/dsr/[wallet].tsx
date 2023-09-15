@@ -8,6 +8,7 @@ import { DsrViewContainer } from 'features/dsr/containers/DsrViewContainer'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
+import { Feature } from 'helpers/config'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
@@ -28,7 +29,7 @@ function Dsr({ walletAddress }: { walletAddress: string }) {
   const { t } = useTranslation()
   return (
     <ProductContextHandler>
-      <WithFeatureToggleRedirect feature="DaiSavingsRate">
+      <WithFeatureToggleRedirect feature={Feature.DaiSavingsRate}>
         <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
           <WithTermsOfService>
             <WithWalletAssociatedRisk>

@@ -3,8 +3,8 @@ import { useAccountContext, useMainContext } from 'components/context'
 import { isAddress } from 'ethers/lib/utils'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
+import { getAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -16,7 +16,7 @@ export function ReferralHandler() {
   const [context] = useObservable(context$)
   const [userReferral] = useObservable(userReferral$)
 
-  const referralsEnabled = useFeatureToggle('Referrals')
+  const { Referrals: referralsEnabled } = getAppConfig('features')
   const [landedWithRef, setLandedWithRef] = useState(false)
   const [localReferral, setLocalReferral] = useLocalStorage('referral', '')
   useEffect(() => {

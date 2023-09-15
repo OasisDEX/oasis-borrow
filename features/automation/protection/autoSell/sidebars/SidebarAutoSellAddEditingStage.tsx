@@ -31,9 +31,9 @@ import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getAppConfig } from 'helpers/config'
 import { handleNumericInput } from 'helpers/input'
 import { uiChanges } from 'helpers/uiChanges'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -73,7 +73,7 @@ export function SidebarAutoSellAddEditingStage({
     collateral: lockedCollateral,
     vaultDebt: debt,
   })
-  const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
+  const { ReadOnlyBasicBS: readOnlyAutoBSEnabled } = getAppConfig('features')
   const isVaultEmpty = debt.isZero()
 
   const { isStopLossEnabled, stopLossLevel } = stopLossTriggerData

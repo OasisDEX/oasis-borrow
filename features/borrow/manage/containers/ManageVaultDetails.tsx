@@ -24,8 +24,8 @@ import { GetProtectionBannerControl } from 'features/automation/protection/stopL
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import { BonusContainer } from 'features/bonus/BonusContainer'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { getAppConfig } from 'helpers/config'
 import { formatAmount } from 'helpers/formatters/format'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
@@ -143,8 +143,8 @@ export function ManageVaultDetails(
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
-  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
-  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+  const { StopLossRead: stopLossReadEnabled, StopLossWrite: stopLossWriteEnabled } =
+    getAppConfig('features')
 
   const shouldShowOverrideAutoBuy =
     isTriggerEnabled &&

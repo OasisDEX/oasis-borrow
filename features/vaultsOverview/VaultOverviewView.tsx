@@ -6,16 +6,16 @@ import { ConnectWalletPrompt } from 'features/vaultsOverview/containers/ConnectW
 import { FollowedTable } from 'features/vaultsOverview/containers/FollowedTable'
 import { PositionsTable } from 'features/vaultsOverview/containers/PositionsTable'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
 import { VaultOwnershipNotice } from './containers/VaultOwnershipNotice'
 
 export function VaultsOverviewView({ address }: { address: string }) {
-  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = getAppConfig('features')
 
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const { ownersPositionsList$ } = useProductContext()

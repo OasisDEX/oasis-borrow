@@ -19,6 +19,7 @@ import {
   MainContextProvider,
   NotificationSocketProvider,
 } from 'components/context'
+import { configContext, ConfigContextProvider } from 'components/context/ConfigContextProvider'
 import { CookieBanner, SavedSettings } from 'components/CookieBanner'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/layouts'
@@ -32,7 +33,6 @@ import { initWeb3OnBoard, Web3OnBoardConnectorProvider } from 'features/web3OnBo
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { FTPolar } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
-import { loadFeatureToggles } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { appWithTranslation, i18n, useTranslation } from 'next-i18next'
 import nextI18NextConfig from 'next-i18next.config.js'
@@ -166,8 +166,6 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     }
 
     router.events.on('routeChangeComplete', handleRouteChange)
-
-    loadFeatureToggles()
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
     }
@@ -210,38 +208,42 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
           <MDXProvider components={{ ...components, a: CustomMDXLink }}>
             <Global styles={globalStyles} />
             <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
-              <MainContextProvider>
-                <DeferedContextProvider context={mainContext}>
-                  <ModalProvider>
-                    <Web3OnBoardConnectorProvider>
-                      <Web3ReactProvider {...{ getLibrary }}>
-                        <HeadTags />
-                        {seoTags}
-                        <SetupWeb3Context>
-                          <NotificationSocketProvider>
-                            <SharedUIProvider>
-                              <WithFollowVaults>
-                                <TopBanner name="rebranding">{topBannerContent}</TopBanner>
-                                <AccountContextProvider>
-                                  <DeferedContextProvider context={accountContext}>
-                                    <Layout {...layoutProps}>
-                                      <Component {...pageProps} />
-                                      <CookieBanner
-                                        setValue={cookiesSetValue}
-                                        value={cookiesValue}
-                                      />
-                                    </Layout>
-                                  </DeferedContextProvider>
-                                </AccountContextProvider>
-                              </WithFollowVaults>
-                            </SharedUIProvider>
-                          </NotificationSocketProvider>
-                        </SetupWeb3Context>
-                      </Web3ReactProvider>
-                    </Web3OnBoardConnectorProvider>
-                  </ModalProvider>
+              <ConfigContextProvider>
+                <DeferedContextProvider context={configContext}>
+                  <MainContextProvider>
+                    <DeferedContextProvider context={mainContext}>
+                      <ModalProvider>
+                        <Web3OnBoardConnectorProvider>
+                          <Web3ReactProvider {...{ getLibrary }}>
+                            <HeadTags />
+                            {seoTags}
+                            <SetupWeb3Context>
+                              <NotificationSocketProvider>
+                                <SharedUIProvider>
+                                  <WithFollowVaults>
+                                    <TopBanner name="rebranding">{topBannerContent}</TopBanner>
+                                    <AccountContextProvider>
+                                      <DeferedContextProvider context={accountContext}>
+                                        <Layout {...layoutProps}>
+                                          <Component {...pageProps} />
+                                          <CookieBanner
+                                            setValue={cookiesSetValue}
+                                            value={cookiesValue}
+                                          />
+                                        </Layout>
+                                      </DeferedContextProvider>
+                                    </AccountContextProvider>
+                                  </WithFollowVaults>
+                                </SharedUIProvider>
+                              </NotificationSocketProvider>
+                            </SetupWeb3Context>
+                          </Web3ReactProvider>
+                        </Web3OnBoardConnectorProvider>
+                      </ModalProvider>
+                    </DeferedContextProvider>
+                  </MainContextProvider>
                 </DeferedContextProvider>
-              </MainContextProvider>
+              </ConfigContextProvider>
             </Web3OnboardProvider>
           </MDXProvider>
         </CacheProvider>

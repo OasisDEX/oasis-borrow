@@ -1,4 +1,3 @@
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 
 import { isSupportedNetwork, NetworkNames } from './network-names'
@@ -28,10 +27,6 @@ export function isValidCustomForkParameter(
 }
 
 export function useCustomForkParameter() {
-  const useForks = useFeatureToggle('UseNetworkSwitcherForks')
-  if (!useForks) {
-    ;[{} as CustomForkParameterType, () => {}]
-  }
   return useLocalStorage<CustomForkParameterType>(
     CustomForkStorageKey,
     {} as CustomForkParameterType,
