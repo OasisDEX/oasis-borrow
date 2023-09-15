@@ -8,6 +8,13 @@ import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/fo
 import React from 'react'
 import { Trans } from 'react-i18next'
 
+const yieldLoopStables = [
+  'SDAI/USDC Yield Loop',
+  'SDAI/LUSD Yield Loop',
+  'SDAI/FRAX Yield Loop',
+  'SDAI/DAI Yield Loop',
+]
+
 export function parseProduct(
   {
     earnStrategy,
@@ -130,7 +137,9 @@ export function parseProduct(
           sortable: weeklyNetApy?.toNumber() || 0,
           value: (
             <>
-              {weeklyNetApy ? (
+              {earnStrategy && yieldLoopStables.includes(earnStrategy) ? (
+                <a href="https://dune.com/Lucianken/aave-v3-sdai-yield-multiple">APY -&gt;</a>
+              ) : weeklyNetApy ? (
                 formatDecimalAsPercent(weeklyNetApy)
               ) : (
                 <AssetsTableDataCellInactive />
