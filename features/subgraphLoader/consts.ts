@@ -24,7 +24,7 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.ARBITRUMGOERLI]: '',
     [NetworkIds.POLYGONMAINNET]: '',
     [NetworkIds.POLYGONMUMBAI]: '',
-    [NetworkIds.OPTIMISMMAINNET]: '',
+    [NetworkIds.OPTIMISMMAINNET]: getConfig()?.publicRuntimeConfig?.aaveSubgraphUrlOptimism,
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
