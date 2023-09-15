@@ -31,7 +31,7 @@ export function getAppConfig<T extends ConfigResponseTypeKey>(configKey: T): Con
         } as ConfigContext),
       }
     }
-    return ac.config[configKey]
+    return ac.config[configKey] || emptyConfig[configKey]
   } catch (error) {
     console.error(`getAppConfig: Error getting config value for ${configKey}`)
     return emptyConfig[configKey]

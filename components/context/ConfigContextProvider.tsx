@@ -16,8 +16,15 @@ const configFetcher = () =>
     },
   })
 
+const alwaysEnabledFeatures = [Feature.AjnaSafetySwitch]
+
 export const emptyConfig = {
-  features: Object.fromEntries(Object.values(Feature).map((feature) => [feature, false])),
+  features: Object.fromEntries(
+    Object.values(Feature).map((feature: Feature) => [
+      feature,
+      alwaysEnabledFeatures.includes(feature),
+    ]),
+  ),
 } as ConfigResponseType
 
 export const configContext = React.createContext<ConfigContext | undefined>(undefined)
