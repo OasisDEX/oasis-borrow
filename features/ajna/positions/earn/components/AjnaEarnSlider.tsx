@@ -4,7 +4,11 @@ import { PillAccordion } from 'components/PillAccordion'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaEarnInput } from 'features/ajna/positions/earn/components/AjnaEarnInput'
-import { AJNA_LUP_MOMP_OFFSET, lendingPriceColors } from 'features/ajna/positions/earn/consts'
+import {
+  AJNA_HTP_OFFSET,
+  AJNA_MOMP_OFFSET,
+  lendingPriceColors,
+} from 'features/ajna/positions/earn/consts'
 import { convertSliderThresholds } from 'features/ajna/positions/earn/helpers/convertSliderThresholds'
 import { getMinMaxAndRange } from 'features/ajna/positions/earn/helpers/getMinMaxAndRange'
 import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
@@ -51,7 +55,8 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
         lowestUtilizedPriceIndex,
         marketPrice: position.marketPrice,
         isOracless,
-        offset: AJNA_LUP_MOMP_OFFSET,
+        mompOffset: AJNA_MOMP_OFFSET,
+        htpOffset: AJNA_HTP_OFFSET,
       }),
     [
       highestThresholdPrice.toString(),
