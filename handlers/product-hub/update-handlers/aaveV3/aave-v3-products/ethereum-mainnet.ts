@@ -420,4 +420,15 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
   },
+  {
+    product: [ProductHubProductType.Earn],
+    primaryToken: 'SDAI',
+    primaryTokenGroup: 'DAI',
+    secondaryToken: 'DAI',
+    network: NetworkNames.ethereumMainnet,
+    protocol: LendingProtocol.AaveV3,
+    label: 'SDAI/DAI',
+    earnStrategy: 'SDAI/DAI Yield Loop',
+    managementType: 'active',
+  },
 ]
