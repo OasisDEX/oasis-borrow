@@ -1,5 +1,6 @@
 'use client'
 import { configContext, emptyConfig } from 'components/context/ConfigContextProvider'
+import { cleanObjectFromNull, cleanObjectToNull } from 'helpers/clean-object'
 import {
   ConfigContext,
   configLSKey,
@@ -50,7 +51,7 @@ export function updateConfigOverrides(config: ConfigResponseType): void {
   }
   try {
     const overrideConfig = JSON.parse(overrideConfigRaw)
-    const newOverrideConfig = { ...config, ...overrideConfig }
+    const newOverrideConfig = { ...cleanObjectToNull(config), ...overrideConfig }
     localStorage.setItem(configLSOverridesKey, JSON.stringify(newOverrideConfig))
   } catch (error) {
     console.error('updateConfigOverrides: Error parsing override config from localStorage', error)
@@ -85,7 +86,7 @@ export function loadConfigFromLocalStorage() {
   try {
     const config = {
       ...JSON.parse(configRaw),
-      ...JSON.parse(localStorage.getItem(configLSOverridesKey) ?? '{}'),
+      ...cleanObjectFromNull(JSON.parse(localStorage.getItem(configLSOverridesKey) ?? '{}')),
     }
     return config as ConfigResponseType
   } catch (error) {
