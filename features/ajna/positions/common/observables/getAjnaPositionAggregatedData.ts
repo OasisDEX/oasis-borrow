@@ -1,5 +1,6 @@
 import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { NetworkIds } from 'blockchain/networks'
+import dayjs from 'dayjs'
 import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import {
@@ -75,7 +76,7 @@ function parseAggregatedDataAuction({
       })
 
       const isDuringGraceTime =
-        auction.endOfGracePeriod - new Date().getTime() > 0 && !isEventAfterAuction
+        auction.endOfGracePeriod - dayjs().valueOf() > 0 && !isEventAfterAuction
       const isBeingLiquidated = !isDuringGraceTime && auction.inLiquidation
       const isPartiallyLiquidated =
         mostRecentHistoryEvent.kind === 'AuctionSettle' &&
