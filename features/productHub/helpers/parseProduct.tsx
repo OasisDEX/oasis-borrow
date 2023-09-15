@@ -1,4 +1,6 @@
 import { negativeToZero } from '@oasisdex/dma-library'
+import { AppLink } from 'components/Links'
+import { WithArrow } from 'components/WithArrow'
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { AssetsTableRowData } from 'components/assetsTable/types'
@@ -138,7 +140,9 @@ export function parseProduct(
           value: (
             <>
               {earnStrategy && yieldLoopStables.includes(earnStrategy) ? (
-                <a href="https://dune.com/Lucianken/aave-v3-sdai-yield-multiple">APY -&gt;</a>
+                <AppLink href="https://dune.com/Lucianken/aave-v3-sdai-yield-multiple">
+                  <WithArrow>APY</WithArrow>
+                </AppLink>
               ) : weeklyNetApy ? (
                 formatDecimalAsPercent(weeklyNetApy)
               ) : (
