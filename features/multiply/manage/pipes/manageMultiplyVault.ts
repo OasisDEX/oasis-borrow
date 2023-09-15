@@ -632,7 +632,6 @@ export function createManageMultiplyVault$(
                         state,
                       ),
                     ),
-                    tap(console.log),
                     tap((state) => stateSubject$.next(state)),
                   )
                 }),
