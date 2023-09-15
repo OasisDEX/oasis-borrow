@@ -19,9 +19,9 @@ import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { getAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Container } from 'theme-ui'
@@ -129,9 +129,11 @@ export function OptimizationControl({ vaultHistory }: OptimizationControlProps) 
     CONSTANT_MULTIPLE_FORM_CHANGE,
   )
 
-  const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
-  const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
-  const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
+  const {
+    ReadOnlyBasicBS: readOnlyAutoBSEnabled,
+    ConstantMultipleReadOnly: constantMultipleReadOnlyEnabled,
+    ReadOnlyAutoTakeProfit: readOnlyAutoTakeProfitEnabled,
+  } = getAppConfig('features')
 
   const vaultHasActiveAutoBuyTrigger = autoBuyTriggerData.isTriggerEnabled
   const vaultHasActiveConstantMultipleTrigger = constantMultipleTriggerData.isTriggerEnabled

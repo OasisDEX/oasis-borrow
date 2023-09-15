@@ -1,3 +1,4 @@
+'use client'
 import { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
 import {
   arbitrumGoerliRpc,

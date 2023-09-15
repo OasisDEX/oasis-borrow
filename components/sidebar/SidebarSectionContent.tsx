@@ -1,4 +1,4 @@
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { getAppConfig } from 'helpers/config'
 import React, { Fragment, useRef } from 'react'
 import { theme } from 'theme'
 import { Box } from 'theme-ui'
@@ -14,7 +14,7 @@ export interface SidebarSectionContentProps {
 }
 
 export function SidebarSectionContent({ activePanel, content }: SidebarSectionContentProps) {
-  const disableSidebarScrollEnabled = useFeatureToggle('DisableSidebarScroll')
+  const { DisableSidebarScroll } = getAppConfig('features')
   const ref = useRef<HTMLDivElement>(null)
 
   return (
@@ -43,7 +43,7 @@ export function SidebarSectionContent({ activePanel, content }: SidebarSectionCo
         mr: 2,
         p: '24px',
         pr: '10px',
-        ...(!disableSidebarScrollEnabled && { maxHeight: 490 }),
+        ...(!DisableSidebarScroll && { maxHeight: 490 }),
       }}
     >
       <Box>

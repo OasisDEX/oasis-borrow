@@ -13,7 +13,7 @@ import {
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard'
-import { useFeatureToggles } from 'helpers/useFeatureToggle'
+import { getAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import React, { FC, useMemo } from 'react'
 
@@ -38,10 +38,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   onChange,
   limitRows,
 }) => {
-  const [ajnaSafetySwitchOn, ajnaPoolFinderEnabled] = useFeatureToggles([
-    'AjnaSafetySwitch',
-    'AjnaPoolFinder',
-  ])
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn, AjnaPoolFinder: ajnaPoolFinderEnabled } =
+    getAppConfig('features')
 
   const { chainId } = useWalletManagement()
 

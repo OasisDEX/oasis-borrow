@@ -19,7 +19,7 @@ import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
+import { Feature, getAppConfig } from 'helpers/config'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
@@ -38,7 +38,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: 'AaveV3EarncbETHeth',
+        featureToggle: Feature.AaveV3EarncbETHeth,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
@@ -51,7 +51,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-earn',
-            featureToggle: 'AaveV3EarncbETHeth',
+            featureToggle: Feature.AaveV3EarncbETHeth,
           },
         ],
       },
@@ -238,7 +238,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: 'AaveV3EarnrETHeth',
+        featureToggle: Feature.AaveV3EarnrETHeth,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
@@ -251,7 +251,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-earn',
-            featureToggle: 'AaveV3EarnrETHeth',
+            featureToggle: Feature.AaveV3EarnrETHeth,
           },
         ],
       },
@@ -596,7 +596,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Borrow.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getFeatureToggle(featureToggle)
+                featureToggle === undefined || getAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
@@ -643,7 +643,7 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Multiply.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getFeatureToggle(featureToggle)
+                featureToggle === undefined || getAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
@@ -692,7 +692,7 @@ const sdaiEarnStrategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Earn.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getFeatureToggle(featureToggle)
+                featureToggle === undefined || getAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
@@ -771,7 +771,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: ProductType.Earn,
     protocol: LendingProtocol.AaveV3,
-    featureToggle: 'AaveV3EarnrETHeth',
+    featureToggle: Feature.AaveV3EarnrETHeth,
     availableActions: () => {
       return [...allActionsAvailableInMultiply, 'switch-to-borrow']
     },
@@ -807,7 +807,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: ProductType.Earn,
     protocol: LendingProtocol.AaveV3,
-    featureToggle: 'AaveV3EarncbETHeth',
+    featureToggle: Feature.AaveV3EarncbETHeth,
     availableActions: () => {
       return [...allActionsAvailableInMultiply, 'switch-to-borrow']
     },

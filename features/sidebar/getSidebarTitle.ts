@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js'
 import { autoKindToCopyMap } from 'features/automation/common/consts'
 import { AutomationKinds } from 'features/automation/common/types'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { getAppConfig } from 'helpers/config'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 
 interface GetSidebarTitleParams {
@@ -102,7 +102,7 @@ export function getSidebarTitle({
 }: GetSidebarTitleParams) {
   const { t } = useTranslation()
   const allowanceToken = flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
-  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
+  const { ProxyCreationDisabled: isProxyCreationDisabled } = getAppConfig('features')
 
   if (isClosedVaultPanelVisible && automationThatClosedVault)
     return t('automation.trigger-executed', {
