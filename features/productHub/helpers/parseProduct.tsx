@@ -2,11 +2,20 @@ import { negativeToZero } from '@oasisdex/dma-library'
 import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponents/AssetsTableDataCellInactive'
 import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import { AssetsTableRowData } from 'components/assetsTable/types'
+import { AppLink } from 'components/Links'
+import { WithArrow } from 'components/WithArrow'
 import { parseProductNumbers } from 'features/productHub/helpers'
 import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
 import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
 import React from 'react'
 import { Trans } from 'react-i18next'
+
+const yieldLoopStables = [
+  'SDAI/USDC Yield Loop',
+  'SDAI/LUSD Yield Loop',
+  'SDAI/FRAX Yield Loop',
+  'SDAI/DAI Yield Loop',
+]
 
 export function parseProduct(
   {
@@ -130,7 +139,11 @@ export function parseProduct(
           sortable: weeklyNetApy?.toNumber() || 0,
           value: (
             <>
-              {weeklyNetApy ? (
+              {earnStrategy && yieldLoopStables.includes(earnStrategy) ? (
+                <AppLink href="https://dune.com/Lucianken/aave-v3-sdai-yield-multiple">
+                  <WithArrow>APY</WithArrow>
+                </AppLink>
+              ) : weeklyNetApy ? (
                 formatDecimalAsPercent(weeklyNetApy)
               ) : (
                 <AssetsTableDataCellInactive />
