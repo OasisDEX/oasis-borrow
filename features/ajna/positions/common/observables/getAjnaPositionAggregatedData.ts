@@ -64,17 +64,19 @@ function parseAggregatedDataAuction({
 
       const auction = auctions[0]
       const borrowishEvents = mapAjnaBorrowishEvents(history)
+
       const mostRecentHistoryEvent = borrowishEvents[0]
+      const isEventAfterAuction = !['AuctionSettle', 'Kick'].includes(
+        mostRecentHistoryEvent.kind as string,
+      )
 
       const graceTimeRemaining = timeAgo({
         to: new Date(auction.endOfGracePeriod),
       })
 
-      const isDuringGraceTime = auction.endOfGracePeriod - new Date().getTime() > 0
+      const isDuringGraceTime =
+        auction.endOfGracePeriod - new Date().getTime() > 0 && !isEventAfterAuction
       const isBeingLiquidated = !isDuringGraceTime && auction.inLiquidation
-      const isEventAfterAuction = !['AuctionSettle', 'Kick'].includes(
-        mostRecentHistoryEvent.kind as string,
-      )
       const isPartiallyLiquidated =
         mostRecentHistoryEvent.kind === 'AuctionSettle' &&
         ajnaBorrowishPosition.debtAmount.gt(zero) &&
