@@ -7,7 +7,7 @@ import { NextApiRequest } from 'next'
 export type PromoCardsCollection = 'Home' | 'HomeWithAjna' | 'AjnaLP'
 
 export type ProductHubDataParams = {
-  protocols: LendingProtocol[]
+  protocols: (LendingProtocol | false)[]
   testnet?: boolean
   dryRun?: boolean
 }

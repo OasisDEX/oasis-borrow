@@ -7,6 +7,7 @@ import {
   ConfigResponseType,
   ConfigResponseTypeKey,
 } from 'helpers/config'
+import { merge } from 'lodash'
 import { useContext as accessContext } from 'react'
 
 import { configLSOverridesKey } from './constants'
@@ -24,12 +25,9 @@ export function getAppConfig<T extends ConfigResponseTypeKey>(configKey: T): Con
       throw new Error("ConfigContext not available! getAppConfig can't be used serverside")
     }
     if (window.localStorage) {
-      ac = {
-        ...ac,
-        ...({
-          config: JSON.parse(localStorage.getItem(configLSOverridesKey) ?? '{}'),
-        } as ConfigContext),
-      }
+      ac = merge(ac, {
+        config: loadConfigFromLocalStorage(),
+      } as ConfigContext)
     }
     return ac.config[configKey] || emptyConfig[configKey]
   } catch (error) {
