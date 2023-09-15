@@ -54,7 +54,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
       LendingProtocol.AaveV3,
       LendingProtocol.Maker,
       LendingProtocol.SparkV3,
-    ],
+    ].filter((p) => p) as LendingProtocol[],
     promoCardsCollection,
   })
   const defaultFilters = useMemo(
