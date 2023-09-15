@@ -9,6 +9,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { FeesInformation } from './FeesInformation'
+import { FlashLoanInformation } from './FlashLoanInformation'
 import { LtvInformation } from './LtvInformation'
 import { MultiplyInformation } from './MultiplyInformation'
 import {
@@ -47,6 +48,10 @@ function transitionHasSwap(
   )
 }
 
+function isMultiplyStrategy(transition?: IStrategy): transition is IMultiplyStrategy {
+  return !!transition && (transition as IMultiplyStrategy).flashloan !== undefined
+}
+
 export function StrategyInformationContainer({
   state,
   changeSlippageSource,
@@ -68,6 +73,9 @@ export function StrategyInformationContainer({
           transactionParameters={transition}
           balance={balance}
         />
+      )}
+      {isMultiplyStrategy(transition) && (
+        <FlashLoanInformation transactionParameters={transition} />
       )}
       {simulationHasSwap && balance && (
         <PriceImpact
