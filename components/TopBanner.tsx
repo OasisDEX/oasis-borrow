@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TopBannerEvents, trackingEvents } from 'analytics/analytics'
 import { getAppConfig } from 'helpers/config'
-import { WithChildren } from 'helpers/types'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import React from 'react'
 import { Box } from 'theme-ui'
@@ -10,7 +9,7 @@ import { rollDownTopBannerAnimation } from 'theme/animations'
 import { AppLink } from './Links'
 import { WithArrow } from './WithArrow'
 
-export const TopBanner = ({ name }: { name: string } & WithChildren) => {
+export const TopBanner = () => {
   const { topBanner } = getAppConfig('parameters')
   const [topBannerClosed, setTopBannerClosed] = useLocalStorage(
     `TopBanner_${topBanner.name}_closed`,
@@ -57,7 +56,7 @@ export const TopBanner = ({ name }: { name: string } & WithChildren) => {
             boxSizing: 'content-box',
           }}
           onClick={() => {
-            trackingEvents.topBannerEvent(TopBannerEvents.TopBannerClosed, name)
+            trackingEvents.topBannerEvent(TopBannerEvents.TopBannerClosed, topBanner.name as string)
             setTopBannerClosed(true)
           }}
         />

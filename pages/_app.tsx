@@ -197,7 +197,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                               <NotificationSocketProvider>
                                 <SharedUIProvider>
                                   <WithFollowVaults>
-                                    <TopBanner name="rebranding" />
+                                    <TopBanner />
                                     <AccountContextProvider>
                                       <DeferedContextProvider context={accountContext}>
                                         <Layout {...layoutProps}>
