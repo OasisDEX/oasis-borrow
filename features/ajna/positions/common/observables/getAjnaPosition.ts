@@ -39,7 +39,7 @@ export function getAjnaPosition$(
   ).pipe(
     switchMap(async ([context]) => {
       if (protocol.toLowerCase() !== LendingProtocol.Ajna) return null
-      const { ajnaPoolPairs, ajnaPoolInfo, ajnaRewardsManager } = getNetworkContracts(
+      const { ajnaPoolPairs, ajnaPoolInfo } = getNetworkContracts(
         NetworkIds.MAINNET,
         context.chainId,
       )
@@ -57,7 +57,6 @@ export function getAjnaPosition$(
 
       const commonDependency = {
         poolInfoAddress: ajnaPoolInfo.address,
-        rewardsManagerAddress: ajnaRewardsManager.address,
         provider: getRpcProvider(context.chainId),
         getPoolData: getAjnaPoolData(context.chainId),
       }

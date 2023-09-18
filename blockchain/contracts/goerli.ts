@@ -11,8 +11,6 @@ import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.js
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
 import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
-import * as ajnaRewardsClaimer from 'blockchain/abi/ajna-rewards-claimer.json'
-import * as ajnaRewardsManager from 'blockchain/abi/ajna-rewards-manager.json'
 import * as automationBotAggregator from 'blockchain/abi/automation-bot-aggregator.json'
 import * as automationBotV2 from 'blockchain/abi/automation-bot-v2.json'
 import * as automationBot from 'blockchain/abi/automation-bot.json'
@@ -194,9 +192,6 @@ export const goerliContracts: MainnetContractsWithOptional = {
     'YIELDBTC-WBTC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YIELDBTCWBTC),
     'YIELDETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YIELDETHETH),
   },
-  ajnaRewardsManager: contractDesc(ajnaRewardsManager, goerli.ajna.AjnaRewardsManager),
-  // TODO update address
-  ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, goerli.ajna.AjnaRewardsClaimer),
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, goerli.ajna.ERC20PoolFactory),
   // NOT contracts
   cacheApi: 'https://cache-goerli-staging.staging.summer.fi/api/v1',

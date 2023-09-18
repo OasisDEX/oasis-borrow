@@ -223,24 +223,12 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         earnPositions {
           lps
           index
-          nft {
-            id
-          }
           account {
             earnCumulativeFeesInQuoteToken
             earnCumulativeQuoteTokenDeposit
             earnCumulativeQuoteTokenWithdraw
           }
         }
-      }
-    }
-  `,
-  getAjnaEarnPositionNftId: gql`
-    query getNfts($walletAddress: ID!) {
-      nfts(where: { user_: { id: $walletAddress }, staked: true }) {
-        id
-        staked
-        currentReward
       }
     }
   `,
