@@ -1,4 +1,5 @@
 export enum Feature {
+  // feature toggles
   AaveV3ArbitrumBorrow = 'AaveV3ArbitrumBorrow',
   AaveV3ArbitrumEarn = 'AaveV3ArbitrumEarn',
   AaveV3EarncbETHeth = 'AaveV3EarncbETHeth',
@@ -30,10 +31,20 @@ export enum Feature {
   UseNetworkSwitcherForks = 'UseNetworkSwitcherForks',
   UseNetworkSwitcherTestnets = 'UseNetworkSwitcherTestnets',
 }
+export enum AppParameter {
+  // constants and labels which are
+  // prone to change often
+  topBanner = 'topBanner',
+}
 export type ConfiguredFeatures = Record<Feature, boolean>
+export type ConfiguredAppParameters = Record<
+  AppParameter,
+  { [x: string]: string | boolean | number }
+>
 
 export type ConfigResponseType = {
   features: ConfiguredFeatures
+  parameters: ConfiguredAppParameters
   error?: string
 }
 
