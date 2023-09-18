@@ -19,7 +19,7 @@ const checkTypes = (config: {
   )
 }
 
-export const useAaveLieConfig = () => {
+export const useAaveLikeConfig = () => {
   const result = useMemo(() => {
     const { aaveLike } = getAppConfig('parameters')
     if (!checkTypes(aaveLike)) {

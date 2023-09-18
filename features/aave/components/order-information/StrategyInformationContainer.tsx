@@ -1,6 +1,6 @@
 import { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
-import { useAaveLieConfig } from 'features/aave/hooks'
+import { useAaveLikeConfig } from 'features/aave/hooks'
 import { getSlippage, ProductType, StrategyTokenBalance } from 'features/aave/types'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { UserSettingsState } from 'features/userSettings/userSettings'
@@ -59,7 +59,7 @@ export function StrategyInformationContainer({
 }: OpenAaveInformationContainerProps) {
   const { t } = useTranslation()
 
-  const { orderInformation: orderInformationConfig } = useAaveLieConfig()
+  const { orderInformation: orderInformationConfig } = useAaveLikeConfig()
 
   const { transition, currentPosition, balance, strategyConfig } = state.context
 
