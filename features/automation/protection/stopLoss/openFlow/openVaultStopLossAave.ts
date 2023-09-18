@@ -14,6 +14,7 @@ import {
 } from 'features/automation/protection/stopLoss/helpers'
 import {
   extractStopLossDataInput,
+  getAaveLikeCommandContractType,
   getAveeStopLossTriggerType,
 } from 'features/automation/protection/stopLoss/openFlow/helpers'
 import {
@@ -53,8 +54,10 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
   } = extractStopLossDataInput(context)
 
   function preparedAddStopLossTriggerData(stopLossValue: BigNumber) {
+    const commandContractType = getAaveLikeCommandContractType(context.strategyConfig.protocol)
     return {
       ...prepareStopLossTriggerDataV2(
+        commandContractType,
         proxyAddress!,
         getAveeStopLossTriggerType(context.strategyConfig.protocol),
         collateralActive,

@@ -144,6 +144,7 @@ export function prepareAddStopLossTriggerData({
 }
 
 export function prepareStopLossTriggerDataV2(
+  commandContractType: CommandContractType,
   owner: string,
   triggerType: TriggerType,
   isCloseToCollateral: boolean,
@@ -151,7 +152,7 @@ export function prepareStopLossTriggerDataV2(
   debtTokenAddress: string,
   tokenAddress: string,
 ) {
-  const triggerData = encodeTriggerDataByType(CommandContractType.AaveStopLossCommandV2, [
+  const triggerData = encodeTriggerDataByType(commandContractType, [
     owner, // proxy
     triggerType, // triggerType
     maxCoverage, // maxCoverage, equals to 1500 USDC

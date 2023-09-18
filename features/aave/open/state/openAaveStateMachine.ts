@@ -34,6 +34,7 @@ import {
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
 import {
   extractStopLossDataInput,
+  getAaveLikeCommandContractType,
   getAveeStopLossTriggerType,
 } from 'features/automation/protection/stopLoss/openFlow/helpers'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
@@ -513,13 +514,13 @@ export function createOpenAaveStateMachine(
           allDefined(userInput, effectiveProxyAddress, transition),
         canOpenPosition,
         canSetupStopLoss: ({
-          strategyConfig,
-          tokenBalance,
-          userInput,
-          effectiveProxyAddress,
-          hasOpenedPosition,
-          transition,
-        }) =>
+                             strategyConfig,
+                             tokenBalance,
+                             userInput,
+                             effectiveProxyAddress,
+                             hasOpenedPosition,
+                             transition,
+                           }) =>
           useFeatureToggle('AaveV3ProtectionWrite') &&
           supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
           strategyConfig.type === ProductType.Multiply &&
@@ -617,19 +618,19 @@ export function createOpenAaveStateMachine(
         })),
         eventConfirmRiskRatio: ({ userInput }) => {
           userInput.amount &&
-            userInput.riskRatio?.loanToValue &&
-            trackingEvents.earn.stETHOpenPositionConfirmRisk(
-              userInput.amount,
-              userInput.riskRatio.loanToValue,
-            )
+          userInput.riskRatio?.loanToValue &&
+          trackingEvents.earn.stETHOpenPositionConfirmRisk(
+            userInput.amount,
+            userInput.riskRatio.loanToValue,
+          )
         },
         eventConfirmTransaction: ({ userInput }) => {
           userInput.amount &&
-            userInput.riskRatio?.loanToValue &&
-            trackingEvents.earn.stETHOpenPositionConfirmTransaction(
-              userInput.amount,
-              userInput.riskRatio.loanToValue,
-            )
+          userInput.riskRatio?.loanToValue &&
+          trackingEvents.earn.stETHOpenPositionConfirmTransaction(
+            userInput.amount,
+            userInput.riskRatio.loanToValue,
+          )
         },
         updateContext: assign((_, event) => ({
           ...event,
@@ -879,10 +880,14 @@ export function createOpenAaveStateMachine(
             .reserveConfig!.liquidationThreshold.minus(aaveOffsets.open.max)
             .times(100)
 
+          const commandContractType = getAaveLikeCommandContractType(
+            context.strategyConfig.protocol,
+          )
           return {
             stopLossLevel,
             stopLossTxData: {
               ...prepareStopLossTriggerDataV2(
+                commandContractType,
                 proxyAddress!,
                 getAveeStopLossTriggerType(context.strategyConfig.protocol),
                 false,

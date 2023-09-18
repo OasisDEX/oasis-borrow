@@ -1,4 +1,4 @@
-import { TriggerType } from '@oasisdex/automation'
+import { CommandContractType, TriggerType } from '@oasisdex/automation'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -71,5 +71,16 @@ export function getAveeStopLossTriggerType(protocol: LendingProtocol): TriggerTy
 
     default:
       return TriggerType.AaveStopLossToDebtV2
+  }
+}
+
+export function getAaveLikeCommandContractType(protocol: LendingProtocol) {
+  switch (protocol) {
+    case LendingProtocol.SparkV3:
+      return CommandContractType.SparkStopLossCommandV2
+    case LendingProtocol.AaveV3:
+      return CommandContractType.AaveStopLossCommandV2
+    default:
+      return CommandContractType.AaveStopLossCommandV2
   }
 }

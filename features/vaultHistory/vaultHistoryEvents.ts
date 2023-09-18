@@ -169,6 +169,7 @@ export interface MultiplyBaseEvent {
   token: string
   chainId: NetworkIds
 }
+
 interface OpenMultiplyEvent extends MultiplyBaseEvent {
   kind: 'OPEN_MULTIPLY_VAULT'
   depositCollateral: BigNumber
@@ -225,7 +226,13 @@ interface AutomationBaseEvent {
   commandAddress: string
   addTriggerData: (AutoBSTriggerData | StopLossTriggerData | AutoTakeProfitTriggerData)[]
   removeTriggerData: (AutoBSTriggerData | StopLossTriggerData | AutoTakeProfitTriggerData)[]
-  kind: 'basic-sell' | 'basic-buy' | 'stop-loss' | 'auto-take-profit' | 'aave-stop-loss'
+  kind:
+    | 'basic-sell'
+    | 'basic-buy'
+    | 'stop-loss'
+    | 'auto-take-profit'
+    | 'aave-stop-loss'
+    | 'spark-stop-loss'
   eventType: 'added' | 'updated' | 'removed'
   token: string
   gasFee: BigNumber
