@@ -37,8 +37,6 @@ export function getPrimaryButtonLabelKey({
   switch (currentStep) {
     case 'risk':
       return 'i-understand'
-    case 'nft':
-      return 'confirm'
     case 'transaction':
       if (isTxSuccess && flow === 'open') return 'system.go-to-position'
       else if (isTxSuccess && flow === 'manage') return 'continue'

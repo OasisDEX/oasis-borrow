@@ -10,8 +10,6 @@ import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.js
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
 import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
-import * as ajnaRewardsClaimer from 'blockchain/abi/ajna-rewards-claimer.json'
-import * as ajnaRewardsManager from 'blockchain/abi/ajna-rewards-manager.json'
 import * as automationBotAggregator from 'blockchain/abi/automation-bot-aggregator.json'
 import * as automationBotV2 from 'blockchain/abi/automation-bot-v2.json'
 import * as automationBot from 'blockchain/abi/automation-bot.json'
@@ -199,9 +197,6 @@ export const optimismContracts: OptimismContracts = {
     'YIELDBTC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YIELDBTCWBTC),
     'YIELDETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YIELDETHETH),
   },
-  ajnaRewardsManager: contractDesc(ajnaRewardsManager, optimism.ajna.AjnaRewardsManager),
-  // TODO update address
-  ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, optimism.ajna.AjnaRewardsClaimer),
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, optimism.ajna.ERC20PoolFactory),
   // NOT contracts
   cacheApi: 'not-implemented',
