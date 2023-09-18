@@ -33,7 +33,7 @@ import {
 } from 'features/automation/protection/stopLoss/helpers'
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { getAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -54,7 +54,7 @@ export function createGetAaveStopLossMetadata(
   networkId: NetworkIds,
 ) {
   return function (context: ContextWithoutMetadata): StopLossMetadata {
-    const { AaveV3ProtectionWrite } = getAppConfig('features')
+    const { AaveV3ProtectionWrite } = getLocalAppConfig('features')
     const {
       automationTriggersData,
       triggerData: {
