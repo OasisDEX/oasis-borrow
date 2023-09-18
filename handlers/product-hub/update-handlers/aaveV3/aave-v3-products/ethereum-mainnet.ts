@@ -55,7 +55,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'CBETH/ETH',
-    earnStrategy: 'RETH/ETH Yield Loop',
+    earnStrategy: 'CBETH/ETH Yield Loop',
     managementType: 'active',
   },
   {
