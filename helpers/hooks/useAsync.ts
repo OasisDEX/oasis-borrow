@@ -30,7 +30,7 @@ export const useAsync = <T, E = string>(asyncFunction: Promise<T>, immediate = t
   // in an onClick handler.
   useEffect(() => {
     if (immediate) {
-      void execute()
+      execute().catch((err) => console.error(err))
     }
   }, [execute, immediate])
 
