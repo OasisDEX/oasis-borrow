@@ -15,7 +15,7 @@ export const TopBanner = () => {
     `TopBanner_${topBanner.name}_closed`,
     false,
   )
-  return topBannerClosed && topBanner.name ? null : (
+  return topBannerClosed || !topBanner.name ? null : (
     <>
       <Box
         sx={{
