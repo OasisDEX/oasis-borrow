@@ -1,8 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
+import { Feature, getAppConfig } from 'helpers/config'
 import { toggleArrayItem } from 'helpers/toggleArrayItem'
-import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import { useTranslation } from 'next-i18next'
@@ -160,7 +160,7 @@ export function GenericMultiselect({
   const outsideRef = useOutsideElementClickHandler(() => setIsOpen(false))
   const scrollRef = useRef<HTMLDivElement>(null)
   const optionsFeatureFlagsArray = options.map((option) =>
-    option.featureFlag ? getFeatureToggle(option.featureFlag) : true,
+    option.featureFlag ? getAppConfig('features')[option.featureFlag] : true,
   )
 
   useEffect(() => {

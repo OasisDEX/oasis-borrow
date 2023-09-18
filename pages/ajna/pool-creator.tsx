@@ -6,6 +6,7 @@ import { AjnaPoolCreatorController } from 'features/ajna/common/controls/AjnaPoo
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
+import { Feature } from 'helpers/config'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
@@ -21,7 +22,7 @@ function AjnaPoolCreatorPage() {
         <WithConnection>
           <WithTermsOfService>
             <WithWalletAssociatedRisk>
-              <WithFeatureToggleRedirect feature="AjnaPoolFinder">
+              <WithFeatureToggleRedirect feature={Feature.AjnaPoolFinder}>
                 <AjnaPoolCreatorController />
               </WithFeatureToggleRedirect>
             </WithWalletAssociatedRisk>

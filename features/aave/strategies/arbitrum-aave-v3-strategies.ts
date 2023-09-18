@@ -11,7 +11,7 @@ import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'featur
 import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
+import { Feature, getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
@@ -30,7 +30,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -43,7 +43,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -55,7 +55,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -68,7 +68,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -80,7 +80,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -93,7 +93,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -105,7 +105,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -118,7 +118,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -130,7 +130,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -143,7 +143,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -155,7 +155,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -168,7 +168,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -180,7 +180,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -193,7 +193,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -205,7 +205,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -218,7 +218,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -230,20 +230,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: 'AaveV3ArbitrumEarn',
+        featureToggle: Feature.AaveV3ArbitrumEarn,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-earn',
-            featureToggle: 'AaveV3ArbitrumEarn',
+            featureToggle: Feature.AaveV3ArbitrumEarn,
           },
         ],
       },
@@ -255,20 +255,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: 'AaveV3ArbitrumEarn',
+        featureToggle: Feature.AaveV3ArbitrumEarn,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-earn',
-            featureToggle: 'AaveV3ArbitrumEarn',
+            featureToggle: Feature.AaveV3ArbitrumEarn,
           },
         ],
       },
@@ -280,7 +280,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -293,7 +293,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -305,7 +305,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -318,7 +318,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -330,7 +330,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -343,7 +343,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -355,7 +355,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: 'AaveV3ArbitrumBorrow',
+        featureToggle: Feature.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -368,7 +368,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'AaveV3ArbitrumBorrow',
+            featureToggle: Feature.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -413,7 +413,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Borrow.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getFeatureToggle(featureToggle)
+                featureToggle === undefined || getLocalAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
@@ -460,7 +460,7 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Multiply.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getFeatureToggle(featureToggle)
+                featureToggle === undefined || getLocalAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
@@ -508,7 +508,7 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Earn.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getFeatureToggle(featureToggle)
+                featureToggle === undefined || getLocalAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []

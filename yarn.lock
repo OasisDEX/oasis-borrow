@@ -3907,17 +3907,17 @@
   resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.5.tgz#4048c19a5fffa60ff423c92fac0882a96d5e313d"
   integrity sha512-r8EKyosOgu6fDCJrJnuK0UQYbBBrEdXLxMlrusVWo5VMHfFd3GuM3BDDmhCFp7rX9LJRJUQ6B5+IS13OoVKi8w==
 
-"@oasisdex/automation@^1.5.2":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.5.2.tgz#99810e1c48f5c02221ed358fb3dcd10a7966b0ca"
-  integrity sha512-+SRgQU617PGPN/qpPkW0Xz0f5MJ5mXIQVDKLV4ZYNVy6MyZJ9ihT+6ZN98b1hj2BJYAYvv0OQQz+SlMLP/zKMg==
+"@oasisdex/automation@^1.5.4":
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.5.4.tgz#ee5ae6522d3f277da466bc00f5423bbce35cf1db"
+  integrity sha512-dkyO+t0ccpuG3AtvPaHWxk+xCzXu84dyGovVV14c2aP3uRhS0z+GNFQvhmjINzkQ/YAQMGPhvuD74F0+t80KUQ==
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.5.6":
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.5.6.tgz#1f292e1362acad4268b4728c7441bc99a397535f"
-  integrity sha512-BnUeFS+9SvKOVXsmiR5nc34HfoZ455ozAqcO+9c5ixyXbBedZRFzNCoHpc0QF8C0lkGlbFmWpKZZ/zR3ABk9Uw==
+"@oasisdex/dma-library@0.5.7":
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.5.7.tgz#c26762eb44fe227ec2756c6981c0727968fb2ba7"
+  integrity sha512-SJ2RWVen2BegQor5KGYa3CpPnI9DAA8SsDBaymAfA+zlgZ16DhIg+DZF0RTOwnXcuueLZq8bi28hvm+p+MSWIA==
   dependencies:
     bignumber.js "9.0.1"
     ethers "5.6.2"

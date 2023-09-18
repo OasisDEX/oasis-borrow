@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js'
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { isSupportedProductType, IStrategyConfig, ProductType } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { getAppConfig } from 'helpers/config'
 import { productToVaultType } from 'helpers/productToVaultType'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { isLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
@@ -27,7 +27,7 @@ export function aaveStrategiesList(
   filterProtocol?: IStrategyConfig['protocol'],
 ): IStrategyConfig[] {
   return Object.values(strategies)
-    .filter(({ featureToggle }) => (featureToggle ? getFeatureToggle(featureToggle) : true))
+    .filter(({ featureToggle }) => (featureToggle ? getAppConfig('features')[featureToggle] : true))
     .filter(({ type }) => (filterProduct ? type === filterProduct : true))
     .filter(({ protocol }) => (filterProtocol ? protocol === filterProtocol : true))
 }
