@@ -81,12 +81,14 @@ export interface PositionTableEarnRow extends PositionTableRow {
 
 const isAutomationEnabledProtocol = (protocol: LendingProtocol, network: NetworkNames) => {
   const aaveProtection = useFeatureToggle('AaveV3Protection')
+  const sparkProtection = useFeatureToggle('SparkProtocolStopLoss')
+
   return {
     [LendingProtocol.Maker]: network === NetworkNames.ethereumMainnet,
     [LendingProtocol.AaveV3]: aaveProtection && network === NetworkNames.ethereumMainnet,
     [LendingProtocol.AaveV2]: false,
     [LendingProtocol.Ajna]: false,
-    [LendingProtocol.SparkV3]: false, // TODO: add automation for Spark
+    [LendingProtocol.SparkV3]: sparkProtection && network === NetworkNames.ethereumMainnet,
   }[protocol]
 }
 
