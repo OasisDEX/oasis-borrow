@@ -8,9 +8,6 @@
     "careers-link": "Join Us",
     "pics-title": "Meet the team"
   },
-  "top-banner": {
-    "rebranding": "Oasis.app is now Summer.fi. Read the announcement"
-  },
   "wallet-wrong-network": "Oops, your wallet is not on the right network.",
   "app-wrong-network": "Oops, your wallet is not supported by the current Summer.fi network.",
   "wallet-wrong-network-desc": "It seems your wallet is running on a different network from Summer.fi. Please manually change the network in your wallet, or you can click the button below.",
@@ -2633,8 +2630,7 @@
             "transaction": "Confirm your Ajna {{product}} Position",
             "transition": "Switch your Ajna {{product}} Position",
             "position-frozen": "Position Frozen",
-            "claim-collateral": "Claim collateral",
-            "nft": "This Position is eligible for Ajna token rewards"
+            "claim-collateral": "Claim collateral"
           },
           "risk": {
             "intro": "Ajna is a new money market DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position:",
@@ -2659,26 +2655,6 @@
                 "<5>Always do your own research and make sure you have selected the correct token contract address<5/>",
                 "This asset pair is supported with Ajna Lite UI, no price feed information will be available",
                 "Monitor your position closely and ensure you understand the risks before proceeding"
-              ]
-            }
-          },
-          "nft": {
-            "intro": "The Ajna rewards this position is eligible for",
-            "token-rewards": "Summer.fi × AJNA Token Rewards",
-            "protocol-rewards": "AJNA Protocol Rewards",
-            "opt": "Ajna Protocol Rewards are switched off by default as the gas fees could cost more than the rewards.",
-            "bullet-points": {
-              "token-rewards": [
-                "Rewards exclusive to Summer.fi users only!",
-                "Auto-Earned for lending within the active liquidity range",
-                "Claimable weekly",
-                "Read more about <2><3>Ajna Token Rewards</2></3>"
-              ],
-              "protocol-rewards": [
-                "Optional rewards for Ajna Earn users",
-                "Earned proportional to interest earned in the pool",
-                "Expect an increase in gas fees to manage your position",
-                "Read more about <2><3>Ajna Protocol Rewards</2></3>"
               ]
             }
           },
@@ -2904,18 +2880,8 @@
     },
     "rewards": {
       "title": "Your Ajna token rewards",
-      "intro": "When using the Ajna protocol you are entitled to earn AJNA tokens in 2 different ways. Read below to find out more.",
+      "intro": "When using the Ajna protocol you are entitled to earn AJNA tokens. Read below to find out more.",
       "cards": {
-        "mining": {
-          "title": "AJNA Protocol Rewards",
-          "list-1": "Rewards Earn Positions only",
-          "list-2": "Earn proportionally to % of pool interest generated",
-          "list-3": "You need to opt-in to stake your positions",
-          "link": "Learn more about Ajna Liquidity Mining Rewards",
-          "banner": {
-            "title": "AJNA Liquidity Mining Rewards "
-          }
-        },
         "token": {
           "title": "Summer.fi × Ajna Token Rewards",
           "list-1": "Rewards exclusive to Summer.fi users!",
