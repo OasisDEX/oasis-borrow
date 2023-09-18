@@ -2,11 +2,11 @@ import { Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { PositionId } from 'features/aave/types'
 import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
-import { getAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { useAccount } from 'helpers/useAccount'
 
 export function createFollowButton(positionId: PositionId, protocol: Protocol) {
-  const { FollowAAVEVaults: followAaveVaultsEnabled } = getAppConfig('features')
+  const { FollowAAVEVaults: followAaveVaultsEnabled } = getLocalAppConfig('features')
   const { walletAddress: connectedWalletAddress, chainId } = useAccount()
 
   const followButton: FollowButtonControlProps | undefined =

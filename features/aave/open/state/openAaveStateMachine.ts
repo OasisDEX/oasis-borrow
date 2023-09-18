@@ -49,7 +49,7 @@ import {
 } from 'features/stateMachines/transactionParameters'
 import { allDefined } from 'helpers/allDefined'
 import { canOpenPosition } from 'helpers/canOpenPosition'
-import { getAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { AutomationTxData } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -518,7 +518,7 @@ export function createOpenAaveStateMachine(
           hasOpenedPosition,
           transition,
         }) =>
-          getAppConfig('features').AaveV3ProtectionWrite &&
+          getLocalAppConfig('features').AaveV3ProtectionWrite &&
           supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
           strategyConfig.type === ProductType.Multiply &&
           isSupportedAaveAutomationTokenPair(
@@ -566,7 +566,7 @@ export function createOpenAaveStateMachine(
           const allowance = isAllowanceNeeded(context)
           const proxy = !allDefined(context.effectiveProxyAddress)
           const optionalStopLoss =
-            getAppConfig('features').AaveV3ProtectionWrite &&
+            getLocalAppConfig('features').AaveV3ProtectionWrite &&
             supportsAaveStopLoss(
               context.strategyConfig.protocol,
               context.strategyConfig.networkId,

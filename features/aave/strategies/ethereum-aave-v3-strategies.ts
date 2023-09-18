@@ -19,7 +19,7 @@ import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
-import { Feature, getAppConfig } from 'helpers/config'
+import { Feature, getLocalAppConfig } from 'helpers/config'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
@@ -596,7 +596,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Borrow.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getAppConfig('features')[featureToggle]
+                featureToggle === undefined || getLocalAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
@@ -643,7 +643,7 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Multiply.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getAppConfig('features')[featureToggle]
+                featureToggle === undefined || getLocalAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
@@ -692,7 +692,7 @@ const sdaiEarnStrategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Earn.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getAppConfig('features')[featureToggle]
+                featureToggle === undefined || getLocalAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
