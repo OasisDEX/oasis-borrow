@@ -19,7 +19,7 @@ import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 
 jest.mock('helpers/config', () => ({
   getAppConfig: () => ({ StopLossWrite: true }),
-  getLocalAppConfig: () => ({ UseNetworkSwitcherForks: false }),
+  getLocalAppConfig: () => ({ UseNetworkSwitcherForks: false, StopLossWrite: true }),
   Feature: jest.requireActual('helpers/config').Feature,
 }))
 
