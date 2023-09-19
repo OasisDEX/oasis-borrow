@@ -41,7 +41,7 @@ export function FlashLoanInformation({
         label={'Flashloan Amount'}
         value={
           <Flex>
-            <Text>
+            <Text as={'span'}>
               {formatAmount(flashLoanAmount, flashloanToken)} {flashloanToken}
             </Text>
           </Flex>
@@ -51,7 +51,7 @@ export function FlashLoanInformation({
         <VaultChangesInformationItem
           label={'Flashloan Provider Liquidity'}
           value={
-            <Text color={liquidityColor} sx={{ ml: 2 }}>
+            <Text as={'span'} color={liquidityColor} sx={{ ml: 2 }}>
               {formatAmount(balancerLiquidity, flashloanToken)} {flashloanToken}
             </Text>
           }

@@ -10,7 +10,6 @@ type BalancerLiquidityProps = {
 }
 export const useBalancerVaultLiquidity = ({ token, networkId }: BalancerLiquidityProps) => {
   const [liquidity, setLiquidity] = useState<BigNumber | null>(null)
-  // const cache = useRef(zero)
   const contracts = getNetworkContracts(networkId)
   ensureContractsExist(networkId, contracts, ['balancerVault'])
 
