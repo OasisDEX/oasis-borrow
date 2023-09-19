@@ -16,6 +16,7 @@ import {
 } from 'features/productHub/types'
 import { PromoCardsCollection } from 'handlers/product-hub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { getAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { FC, Fragment, ReactNode, useMemo, useState } from 'react'
@@ -45,14 +46,15 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   limitRows,
 }) => {
   const { t } = useTranslation()
+  const { AjnaSafetySwitch } = getAppConfig('features')
   const { data } = useProductHubData({
     protocols: [
-      LendingProtocol.Ajna,
+      !AjnaSafetySwitch && LendingProtocol.Ajna,
       LendingProtocol.AaveV2,
       LendingProtocol.AaveV3,
       LendingProtocol.Maker,
       LendingProtocol.SparkV3,
-    ],
+    ].filter((p) => p) as LendingProtocol[],
     promoCardsCollection,
   })
   const defaultFilters = useMemo(

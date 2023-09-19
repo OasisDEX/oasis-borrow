@@ -24,9 +24,9 @@ import {
   AjnaMultiplyFormState,
   useAjnaMultiplyFormReducto,
 } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import { getAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, {
   Dispatch,
   PropsWithChildren,
@@ -165,7 +165,7 @@ export function AjnaProductContextProvider({
   positionAuction,
   positionHistory,
 }: PropsWithChildren<AjnaProductDetailsContextProviderProps>) {
-  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = getAppConfig('features')
   const { walletAddress } = useAccount()
   const gasEstimation = useGasEstimationContext()
   const { positionIdFromDpmProxy$ } = useProductContext()

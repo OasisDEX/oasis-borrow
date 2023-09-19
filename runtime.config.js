@@ -24,8 +24,9 @@ const publicRuntimeConfig = {
   ajnaSubgraphV2Url: process.env.AJNA_SUBGRAPH_V2_URL,
   ajnaSubgraphV2UrlGoerli: process.env.AJNA_SUBGRAPH_V2_URL_GOERLI,
   aaveSubgraphUrl: process.env.AAVE_SUBGRAPH_URL,
-  rebrandingUrl: process.env.REBRANDING_POST_URL,
+  aaveSubgraphUrlOptimism: process.env.AAVE_OPTIMISM_SUBGRAPH_URL,
   referralSubgraphUrl: process.env.REFERRAL_SUBGRAPH_URL,
+  configUrl: process.env.CONFIG_URL,
 }
 
 module.exports = {

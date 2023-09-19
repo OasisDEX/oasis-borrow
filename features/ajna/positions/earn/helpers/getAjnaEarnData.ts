@@ -8,7 +8,6 @@ import { zero } from 'helpers/zero'
 const defaultResponse = {
   lps: zero,
   priceIndex: null,
-  nftID: null,
   earnCumulativeQuoteTokenDeposit: zero,
   earnCumulativeFeesInQuoteToken: zero,
   earnCumulativeQuoteTokenWithdraw: zero,
@@ -49,7 +48,6 @@ export const getAjnaEarnData: (networkId: NetworkIds) => GetEarnData =
       return {
         lps: new BigNumber(earnPosition.bucketPositions[0].lps),
         priceIndex: new BigNumber(earnPosition.bucketPositions[0].index),
-        nftID: earnPosition.nft?.id || null,
         ...cumulativeValues,
       }
     }

@@ -13,7 +13,7 @@ import {
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard'
-import { useFeatureToggles } from 'helpers/useFeatureToggle'
+import { getAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import React, { FC, useMemo } from 'react'
 
@@ -38,23 +38,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   onChange,
   limitRows,
 }) => {
-  const [
-    ajnaSafetySwitchOn,
-    ajnaPoolFinderEnabled,
-    sparkEnabled,
-    sparkBorrowEnabled,
-    sparkEarnEnabled,
-    sparkMultiplyEnabled,
-    sparkSDAIETHEnabled,
-  ] = useFeatureToggles([
-    'AjnaSafetySwitch',
-    'AjnaPoolFinder',
-    'SparkProtocol',
-    'SparkProtocolBorrow',
-    'SparkProtocolEarn',
-    'SparkProtocolMultiply',
-    'SparkProtocolSDAIETH',
-  ])
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn, AjnaPoolFinder: ajnaPoolFinderEnabled } =
+    getAppConfig('features')
 
   const { chainId } = useWalletManagement()
 
@@ -68,15 +53,8 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 
   const dataMatchedToFeatureFlags = useMemo(
     () =>
-      tableData.filter(({ label, protocol, product, primaryToken, secondaryToken }) => {
+      tableData.filter(({ label, protocol }) => {
         const isAjna = protocol === LendingProtocol.Ajna
-        const isSpark = protocol === LendingProtocol.SparkV3
-
-        const isBorrow = product.includes(ProductHubProductType.Borrow)
-        const isEarn = product.includes(ProductHubProductType.Earn)
-        const isMultiply = product.includes(ProductHubProductType.Multiply)
-
-        const isSDAIETH = primaryToken === 'SDAI' && secondaryToken === 'ETH'
 
         const unalailableChecksList = [
           // these checks predicate that the pool/strategy is UNAVAILABLE
@@ -84,30 +62,13 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
           isAjna &&
             !ajnaPoolFinderEnabled &&
             ajnaOraclessPoolPairsKeys.includes(label.replace('/', '-')),
-          isSpark && isBorrow && !(sparkEnabled && sparkBorrowEnabled),
-          isSpark && isEarn && !(sparkEnabled && sparkEarnEnabled),
-          isSpark && isMultiply && !(sparkEnabled && sparkMultiplyEnabled),
-          isSpark &&
-            isSDAIETH &&
-            (isMultiply || isBorrow) &&
-            !(sparkEnabled && sparkSDAIETHEnabled),
         ]
         if (unalailableChecksList.some((check) => !!check)) {
           return false
         }
         return true
       }),
-    [
-      tableData,
-      sparkEnabled,
-      sparkBorrowEnabled,
-      sparkEarnEnabled,
-      sparkMultiplyEnabled,
-      sparkSDAIETHEnabled,
-      ajnaSafetySwitchOn,
-      ajnaPoolFinderEnabled,
-      ajnaOraclessPoolPairsKeys,
-    ],
+    [tableData, ajnaSafetySwitchOn, ajnaPoolFinderEnabled, ajnaOraclessPoolPairsKeys],
   )
   const dataMatchedByNL = useMemo(
     () => matchRowsByNL(dataMatchedToFeatureFlags, selectedProduct, selectedToken),

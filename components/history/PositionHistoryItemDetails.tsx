@@ -132,7 +132,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
       )}
       {!isOracless && 'originationFee' in event && event.originationFee?.gt(zero) && (
         <PositionHistoryRow label={t('position-history.origination-fee')}>
-          {formatFiatBalance(event.originationFee)} USD
+          {formatFiatBalance(event.originationFee)} {quoteToken}
         </PositionHistoryRow>
       )}
       {isOracless &&

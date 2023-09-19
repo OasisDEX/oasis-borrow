@@ -79,6 +79,15 @@ async function openPosition(
         addresses: aavev3Addresses,
         getSwapData: swapCall(aavev3Addresses, networkId),
       }
+      if (networkId === NetworkIds.OPTIMISMMAINNET) {
+        args.flashloan = {
+          token: {
+            symbol: 'WETH',
+            address: aavev3Addresses.tokens['WETH'],
+            precision: 18,
+          },
+        }
+      }
       return await strategies.aave.multiply.v3.open(args, dependenciesAaveV3)
     case LendingProtocol.SparkV3:
       const sparkV3Addresses = getAddresses(networkId, LendingProtocol.SparkV3)

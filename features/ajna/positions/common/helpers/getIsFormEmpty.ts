@@ -43,7 +43,6 @@ export function getIsFormEmpty({
       switch (currentStep) {
         case 'setup':
           return !depositAmount && !withdrawAmount
-        case 'nft':
         case 'dpm':
         case 'transaction':
           return txStatus === 'Success'

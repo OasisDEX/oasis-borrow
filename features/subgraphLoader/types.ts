@@ -4,7 +4,6 @@ import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/get
 import { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
 import { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjnaRewards'
 import { SearchAjnaPoolResponse } from 'features/ajna/positions/common/helpers/searchAjnaPool'
-import { AjnaUserNftsResponse } from 'features/ajna/rewards/helpers/getAjnaUserNfts'
 import { AavePositionHistoryResponse } from 'features/positionHistory/types'
 import { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards'
 
@@ -16,7 +15,6 @@ export type Subgraphs = {
     getAjnaPoolData: { poolAddress: string }
     getAjnaCumulatives: { dpmProxyAddress: string; poolAddress: string }
     getAjnaPoolsData: {}
-    getAjnaEarnPositionNftId: { walletAddress: string }
     getAjnaClaimedRewards: { walletAddress: string }
     searchAjnaPool: { collateralAddress: string[]; poolAddress: string[]; quoteAddress: string[] }
   }
@@ -79,7 +77,6 @@ export type SubgraphsResponses = {
     getAjnaEarnPositionData: SubgraphBaseResponse<{
       account: {
         earnPositions: {
-          nft: { id: string } | null
           earnCumulativeQuoteTokenDeposit: number
           earnCumulativeFeesInQuoteToken: number
           earnCumulativeQuoteTokenWithdraw: number
@@ -90,7 +87,6 @@ export type SubgraphsResponses = {
         }[]
       }
     }>
-    getAjnaEarnPositionNftId: SubgraphBaseResponse<{ nfts: AjnaUserNftsResponse[] }>
     getAjnaClaimedRewards: SubgraphBaseResponse<{ claimeds: AjnaClaimedReward[] }>
     searchAjnaPool: SubgraphBaseResponse<{
       pools: SearchAjnaPoolResponse[]
