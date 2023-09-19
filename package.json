@@ -49,7 +49,7 @@
     "@next/font": "^13.1.6",
     "@next/mdx": "12.0.4",
     "@oasisdex/addresses": "0.1.5",
-    "@oasisdex/automation": "^1.5.4",
+    "@oasisdex/automation": "^1.5.7",
     "@oasisdex/dma-library": "0.5.10",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "0.1.4-alpha.0",
