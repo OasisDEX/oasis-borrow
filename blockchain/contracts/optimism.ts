@@ -13,6 +13,7 @@ import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
 import * as automationBotAggregator from 'blockchain/abi/automation-bot-aggregator.json'
 import * as automationBotV2 from 'blockchain/abi/automation-bot-v2.json'
 import * as automationBot from 'blockchain/abi/automation-bot.json'
+import * as balancerVault from 'blockchain/abi/balancer-vault.json'
 import * as cdpRegistry from 'blockchain/abi/cdp-registry.json'
 import * as chainLinkPriceOracle from 'blockchain/abi/chainlink-price-oracle.json'
 import * as dsProxyFactory from 'blockchain/abi/ds-proxy-factory.json'
@@ -198,6 +199,7 @@ export const optimismContracts: OptimismContracts = {
     'YIELDETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YIELDETHETH),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, optimism.ajna.ERC20PoolFactory),
+  balancerVault: contractDesc(balancerVault, optimism.common.BalancerVault),
   // NOT contracts
   cacheApi: 'not-implemented',
   safeConfirmations: 6,

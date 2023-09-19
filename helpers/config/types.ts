@@ -35,11 +35,12 @@ export enum AppParameter {
   // constants and labels which are
   // prone to change often
   topBanner = 'topBanner',
+  aaveLike = 'aaveLike',
 }
 export type ConfiguredFeatures = Record<Feature, boolean>
 export type ConfiguredAppParameters = Record<
   AppParameter,
-  { [x: string]: string | boolean | number }
+  { [x: string]: string | boolean | number | object }
 >
 
 export type ConfigResponseType = {
