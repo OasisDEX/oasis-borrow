@@ -43,8 +43,8 @@ export function AjnaMultiplyOverviewController() {
   const changeVariant = 'positive'
 
   const liquidationPrice = isShort
-    ? normalizeValue(one.div(position.liquidationPriceT0Np))
-    : position.liquidationPriceT0Np
+    ? normalizeValue(one.div(position.liquidationPrice))
+    : position.liquidationPrice
   const afterLiquidationPrice =
     simulation?.liquidationPrice &&
     (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)

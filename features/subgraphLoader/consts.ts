@@ -195,6 +195,8 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           collateral
           bucketLPs
         }
+        loansCount
+        totalAuctionsInPool
       }
     }
   `,
