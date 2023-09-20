@@ -1,6 +1,7 @@
 import type {
   AutoBSChangeAction,
-  AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange';
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
 import {
   AUTO_BUY_FORM_CHANGE,
   AUTO_SELL_FORM_CHANGE,
@@ -8,75 +9,68 @@ import {
 } from 'features/automation/common/state/autoBSFormChange'
 import type {
   AutomationChangeFeature,
-  AutomationChangeFeatureAction } from 'features/automation/common/state/automationFeatureChange';
+  AutomationChangeFeatureAction,
+} from 'features/automation/common/state/automationFeatureChange'
 import {
   AUTOMATION_CHANGE_FEATURE,
   automationChangeFeatureReducer,
 } from 'features/automation/common/state/automationFeatureChange'
 import type {
   AutoTakeProfitFormChange,
-  AutoTakeProfitFormChangeAction } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange';
+  AutoTakeProfitFormChangeAction,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
   autoTakeProfitFormChangeReducer,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import type {
   ConstantMultipleChangeAction,
-  ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange';
+  ConstantMultipleFormChange,
+} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   constantMultipleFormChangeReducer,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import type {
   MultiplyPillChange,
-  MultiplyPillChangeAction } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange';
+  MultiplyPillChangeAction,
+} from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   multiplyPillChangeReducer,
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import type {
   StopLossFormChange,
-  StopLossFormChangeAction } from 'features/automation/protection/stopLoss/state/StopLossFormChange';
+  StopLossFormChangeAction,
+} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import {
   formChangeReducer,
-  STOP_LOSS_FORM_CHANGE
+  STOP_LOSS_FORM_CHANGE,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import type {
   FollowedVaultsLimitReachedChange,
-  FollowedVaultsLimitReachedChangeAction } from 'features/follow/common/followedVaultsLimitReached';
+  FollowedVaultsLimitReachedChangeAction,
+} from 'features/follow/common/followedVaultsLimitReached'
 import {
   FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
   followedVaultsLimitReachedChangeReducer,
 } from 'features/follow/common/followedVaultsLimitReached'
-import type {
-  TabChange,
-  TabChangeAction } from 'features/generalManageVault/TabChange';
-import {
-  TAB_CHANGE_SUBJECT,
-  tabChangeReducer,
-} from 'features/generalManageVault/TabChange'
+import { tabChangeReducer } from 'features/generalManageVault/TabChange'
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
+import type { TabChange, TabChangeAction } from 'features/generalManageVault/TabChange.types'
 import type {
   NotificationChange,
-  NotificationChangeAction } from 'features/notifications/notificationChange';
-import {
-  NOTIFICATION_CHANGE,
-  notificationReducer,
+  NotificationChangeAction,
 } from 'features/notifications/notificationChange'
-import type {
-  SwapWidgetChangeAction,
-  SwapWidgetState } from 'features/swapWidget/SwapWidgetChange';
+import { NOTIFICATION_CHANGE, notificationReducer } from 'features/notifications/notificationChange'
+import type { SwapWidgetChangeAction, SwapWidgetState } from 'features/swapWidget/SwapWidgetChange'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
-  swapWidgetChangeReducer
+  swapWidgetChangeReducer,
 } from 'features/swapWidget/SwapWidgetChange'
-import type {
-  TxPayloadChange,
-  TxPayloadChangeAction } from 'helpers/gasEstimate';
-import {
-  gasEstimationReducer,
-  TX_DATA_CHANGE
-} from 'helpers/gasEstimate'
-import type { Observable } from 'rxjs';
+import type { TxPayloadChange, TxPayloadChangeAction } from 'helpers/gasEstimate'
+import { gasEstimationReducer, TX_DATA_CHANGE } from 'helpers/gasEstimate'
+import type { Observable } from 'rxjs'
 import { Subject } from 'rxjs'
 import { filter, map, shareReplay } from 'rxjs/operators'
 

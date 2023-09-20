@@ -7,13 +7,8 @@ import { DetailsSectionContentTable } from 'components/DetailsSectionContentTabl
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
 import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
-import type {
-  Yield } from 'helpers/earn/calculations';
-import {
-  calculateBreakeven,
-  calculateEarnings,
-  YieldPeriod,
-} from 'helpers/earn/calculations'
+import type { Yield } from 'helpers/earn/calculations'
+import { calculateBreakeven, calculateEarnings, YieldPeriod } from 'helpers/earn/calculations'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { useHash } from 'helpers/useHash'
@@ -22,17 +17,13 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box } from 'theme-ui'
 
+import { EarnSimulateViewMode } from './GuniOpenMultiplyVaultDetails.types'
 import { GuniVaultDetailsTitle } from './GuniVaultDetailsTitle'
 
 const examplePosition = {
   usdcSwapAmount: new BigNumber(3_750_000),
   gasUsed: new BigNumber(1_400_000),
   depositAmount: new BigNumber(150_000),
-}
-
-export enum EarnSimulateViewMode {
-  Simulate = 'simulate',
-  FAQ = 'position-info',
 }
 
 function calculateEntryFees(

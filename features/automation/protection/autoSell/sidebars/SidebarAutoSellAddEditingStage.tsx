@@ -21,16 +21,13 @@ import {
   prepareAutoBSResetData,
 } from 'features/automation/common/helpers'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
-import type {
-  AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange';
-import {
-  AUTO_SELL_FORM_CHANGE
-} from 'features/automation/common/state/autoBSFormChange'
+import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { AUTO_SELL_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getAppConfig } from 'helpers/config'
 import { handleNumericInput } from 'helpers/input'

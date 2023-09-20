@@ -1,5 +1,5 @@
 import { useAutomationContext, useGasEstimationContext } from 'components/context'
-import type { SidebarSectionProps } from 'components/sidebar/SidebarSection';
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
@@ -10,7 +10,7 @@ import { getAutomationStatusTitle } from 'features/automation/common/sidebars/ge
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
-import type { SidebarAutomationStages } from 'features/automation/common/types';
+import type { SidebarAutomationStages } from 'features/automation/common/types'
 import { AutomationFeatures } from 'features/automation/common/types'
 import {
   extractAutomationValidations,
@@ -22,12 +22,9 @@ import {
   SidebarAdjustStopLossEditingStage,
 } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarCancelStopLossEditingStage'
-import type {
-  StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange';
-import {
-  STOP_LOSS_FORM_CHANGE
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
+import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { uiChanges } from 'helpers/uiChanges'
 import { useHash } from 'helpers/useHash'

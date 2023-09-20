@@ -6,34 +6,20 @@ import {
 } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { TabBar } from 'components/TabBar'
-import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
-import type { TabChange } from 'features/generalManageVault/TabChange';
-import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
+import type { TabChange } from 'features/generalManageVault/TabChange.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 
+import type { GeneralManageTabBarProps } from './GeneralManageTabBar.types'
+import { VaultViewMode } from './GeneralManageTabBar.types'
 import { HistoryControl } from './HistoryControl'
 import { OptimizationControl } from './OptimizationControl'
 import { ProtectionControl } from './ProtectionControl'
 import { VaultInformationControl } from './VaultInformationControl'
-
-export enum VaultViewMode {
-  Overview = 'overview',
-  Protection = 'protection',
-  Optimization = 'optimization',
-  History = 'history',
-  PositionInfo = 'position-info',
-  VaultInfo = 'vault-info',
-}
-
-interface GeneralManageTabBarProps {
-  generalManageVault: GeneralManageVaultState
-  positionInfo?: JSX.Element
-  showAutomationTabs: boolean
-}
 
 export function GeneralManageTabBar({
   generalManageVault,

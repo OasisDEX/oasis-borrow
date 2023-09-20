@@ -3,7 +3,7 @@ import { useAutomationContext } from 'components/context'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import type { AfterPillProps } from 'components/vault/VaultDetails'
 import { StopLossBannerLayout } from 'features/automation/protection/stopLoss/controls/StopLossBannerLayout'
-import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
 import { uiChanges } from 'helpers/uiChanges'
 import React from 'react'
 
