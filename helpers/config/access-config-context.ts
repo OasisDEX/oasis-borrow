@@ -49,7 +49,7 @@ export function updateConfigOverrides(config: ConfigResponseType): void {
   }
   try {
     const overrideConfig = JSON.parse(overrideConfigRaw)
-    const newOverrideConfig = { ...cleanObjectToNull(config), ...overrideConfig }
+    const newOverrideConfig = merge(cleanObjectToNull(config), overrideConfig)
     localStorage.setItem(configLSOverridesKey, JSON.stringify(newOverrideConfig))
   } catch (error) {
     console.error('updateConfigOverrides: Error parsing override config from localStorage', error)
