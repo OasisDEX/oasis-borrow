@@ -30,6 +30,7 @@ export enum Feature {
   TestFeature = 'TestFeature',
   UseNetworkSwitcherForks = 'UseNetworkSwitcherForks',
   UseNetworkSwitcherTestnets = 'UseNetworkSwitcherTestnets',
+  SparkProtocolStopLoss = 'SparkProtocolStopLoss',
 }
 export enum AppParameter {
   // constants and labels which are

@@ -69,12 +69,12 @@ export function addAutomationTrigger(
 
   sendWithGasEstimation(resolvedTxDef as TransactionDef<AutomationTxData>, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
-    .subscribe((txState) =>
-      handleTransaction({
+    .subscribe((txState) => {
+      return handleTransaction({
         txState,
         ethPrice,
         setTxDetails: (txDetails) =>
           uiChanges.publish(publishType, { type: 'tx-details', txDetails }),
-      }),
-    )
+      })
+    })
 }

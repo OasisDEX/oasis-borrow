@@ -34,6 +34,7 @@ export interface AutomationTxHandlerAnalytics {
     closeTo?: CloseVaultTo
   }
 }
+
 interface TxHandlerParams {
   callOnSuccess?: () => void
 }

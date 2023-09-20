@@ -235,6 +235,7 @@ export function getOpenAaveV3PositionStateMachineServices(
           : undefined
 
       const proxy = context.userDpmAccount?.proxy
+
       const user = context.userDpmAccount?.user
       if (!proxy) {
         return throwError(new Error('No proxy available - save position unsuccessful'))

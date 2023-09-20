@@ -129,6 +129,7 @@ class EthersTransactionStateMachineTypes<T, TResult = unknown> {
   needsConfiguration() {
     return createEthersTransactionStateMachine<T, TResult>()
   }
+
   withConfig() {
     // @ts-ignore
     return createEthersTransactionStateMachine<T, TResult>().withConfig({})
