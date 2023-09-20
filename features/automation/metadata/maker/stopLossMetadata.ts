@@ -35,8 +35,8 @@ import {
 } from 'features/automation/protection/stopLoss/helpers'
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatPercent } from 'helpers/formatters/format'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
   const {
@@ -116,8 +116,7 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
     triggersId: [triggerId.toNumber()],
     kind: TxMetaKind.removeTriggers,
   }
-
-  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+  const { StopLossWrite: stopLossWriteEnabled } = getLocalAppConfig('features')
 
   return {
     callbacks: {},

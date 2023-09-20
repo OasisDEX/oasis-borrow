@@ -4,10 +4,10 @@ import { InfoCard } from 'components/InfoCard'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getAppConfig } from 'helpers/config'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { scrollTo } from 'helpers/scrollTo'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
@@ -73,7 +73,7 @@ function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
 }
 
 export function HomepageView() {
-  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = getAppConfig('features')
   const { t } = useTranslation()
   const { data: oasisStats } = useOasisStats()
 

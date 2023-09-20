@@ -7,9 +7,9 @@ import {
 } from 'components/vault/VaultChangesInformation'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getAppConfig } from 'helpers/config'
 import { HasGasEstimation } from 'helpers/context/types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Image, Text } from 'theme-ui'
@@ -21,7 +21,7 @@ interface SidebarOpenVaultProxyStageProps {
 
 export function SidebarVaultProxyStage({ stage, gasData }: SidebarOpenVaultProxyStageProps) {
   const { t } = useTranslation()
-  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
+  const { ProxyCreationDisabled: isProxyCreationDisabled } = getAppConfig('features')
 
   const isProxyInfoStage = [
     'proxyWaitingForConfirmation',

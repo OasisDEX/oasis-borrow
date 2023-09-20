@@ -37,6 +37,7 @@ import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getAppConfig } from 'helpers/config'
 import { handleNumericInput } from 'helpers/input'
 import {
   extractConstantMultipleCommonErrors,
@@ -46,7 +47,6 @@ import {
   extractConstantMultipleSliderWarnings,
 } from 'helpers/messageMappers'
 import { uiChanges } from 'helpers/uiChanges'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -117,7 +117,7 @@ export function SidebarConstantMultipleEditingStage({
   })
 
   const isVaultEmpty = debt.isZero()
-  const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
+  const { ConstantMultipleReadOnly: constantMultipleReadOnlyEnabled } = getAppConfig('features')
 
   if (constantMultipleReadOnlyEnabled && !isVaultEmpty) {
     return (

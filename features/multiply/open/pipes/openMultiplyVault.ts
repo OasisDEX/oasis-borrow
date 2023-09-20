@@ -35,6 +35,7 @@ import {
   createApplyOpenVaultTransition,
   OpenVaultTransitionChange,
 } from 'features/vaultTransitions/openVaultTransitions'
+import { getLocalAppConfig } from 'helpers/config'
 import {
   AddGasEstimationFunction,
   GasEstimationStatus,
@@ -43,7 +44,6 @@ import {
 } from 'helpers/context/types'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { TxError } from 'helpers/types'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
@@ -385,7 +385,7 @@ export function createOpenMultiplyVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
-                    const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+                    const { StopLossWrite: stopLossWriteEnabled } = getLocalAppConfig('features')
                     const withStopLossStage = stopLossWriteEnabled
                       ? isSupportedAutomationIlk(context.chainId, ilk)
                       : false

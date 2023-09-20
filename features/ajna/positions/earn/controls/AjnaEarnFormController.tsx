@@ -4,7 +4,6 @@ import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/Ajn
 import { AjnaFormContentTransaction } from 'features/ajna/positions/common/sidebars/AjnaFormContentTransaction'
 import { AjnaFormView } from 'features/ajna/positions/common/views/AjnaFormView'
 import { AjnaEarnFormContentManage } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentManage'
-import { AjnaEarnFormContentNft } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentNft'
 import { AjnaEarnFormContentOpen } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentOpen'
 import { AjnaEarnFormOrder } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormOrder'
 import { zero } from 'helpers/zero'
@@ -95,7 +94,6 @@ export function AjnaEarnFormController() {
     >
       {currentStep === 'risk' && <AjnaFormContentRisk />}
       {currentStep === 'setup' && <AjnaEarnFormContentOpen />}
-      {currentStep === 'nft' && <AjnaEarnFormContentNft />}
       {currentStep === 'manage' && <AjnaEarnFormContentManage />}
       {currentStep === 'transaction' && (
         <AjnaFormContentTransaction orderInformation={AjnaEarnFormOrder} />

@@ -11,7 +11,7 @@ export enum LendingProtocolLabel {
   aavev3 = 'Aave V3',
   ajna = 'Ajna',
   maker = 'Maker',
-  sparkv3 = 'Spark V3',
+  sparkv3 = 'Spark',
 }
 
 export type AaveLendingProtocol = LendingProtocol.AaveV2 | LendingProtocol.AaveV3
@@ -30,6 +30,12 @@ export const checkIfSpark = (
   protocol: string | LendingProtocol,
 ): protocol is SparkLendingProtocol => {
   return isLendingProtocol(protocol) && protocol === LendingProtocol.SparkV3
+}
+
+export const isAaveLikeLendingProtocol = (
+  protocol: string | LendingProtocol,
+): protocol is AaveLikeLendingProtocol => {
+  return checkIfAave(protocol) || checkIfSpark(protocol)
 }
 
 export const isLendingProtocol = (value: string): value is LendingProtocol => {

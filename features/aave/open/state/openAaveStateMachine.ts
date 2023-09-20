@@ -52,8 +52,8 @@ import {
 } from 'features/stateMachines/transactionParameters'
 import { allDefined } from 'helpers/allDefined'
 import { canOpenPosition } from 'helpers/canOpenPosition'
+import { getLocalAppConfig } from 'helpers/config'
 import { AutomationTxData } from 'helpers/context/types'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { ActorRefFrom, assign, createMachine, send, sendTo, spawn } from 'xstate'
@@ -521,9 +521,13 @@ export function createOpenAaveStateMachine(
           hasOpenedPosition,
           transition,
         }) =>
-          useFeatureToggle('AaveV3ProtectionWrite') &&
+          getLocalAppConfig('features').AaveV3ProtectionWrite &&
           supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
           strategyConfig.type === ProductType.Multiply &&
+          isSupportedAaveAutomationTokenPair(
+            strategyConfig.tokens.collateral,
+            strategyConfig.tokens.debt,
+          ) &&
           canOpenPosition({
             userInput,
             hasOpenedPosition,
@@ -565,7 +569,7 @@ export function createOpenAaveStateMachine(
           const allowance = isAllowanceNeeded(context)
           const proxy = !allDefined(context.effectiveProxyAddress)
           const optionalStopLoss =
-            useFeatureToggle('AaveV3ProtectionWrite') &&
+            getLocalAppConfig('features').AaveV3ProtectionWrite &&
             supportsAaveStopLoss(
               context.strategyConfig.protocol,
               context.strategyConfig.networkId,

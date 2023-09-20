@@ -1,3 +1,4 @@
+'use client'
 import { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
 import {
   arbitrumGoerliRpc,
@@ -14,7 +15,6 @@ import { ethers } from 'ethers'
 import { ContractDesc } from 'features/web3Context'
 import { GraphQLClient } from 'graphql-request'
 import { Abi } from 'helpers/types'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { keyBy, memoize } from 'lodash'
 import { env } from 'process'
 import arbitrumMainnetBadge from 'public/static/img/network_icons/arbitrum_badge_mainnet.svg'
@@ -146,7 +146,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   icon: arbitrumMainnetIcon as string,
   badge: arbitrumMainnetBadge as string,
   testnet: false,
-  isEnabled: () => getFeatureToggle('UseNetworkSwitcherArbitrum'),
+  isEnabled: () => true,
   token: 'ETH',
   rpcUrl: arbitrumMainnetRpc,
   getReadProvider: memoize(
@@ -179,7 +179,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   icon: arbitrumMainnetIcon as string,
   badge: arbitrumMainnetBadge as string,
   testnet: true,
-  isEnabled: () => getFeatureToggle('UseNetworkSwitcherArbitrum'),
+  isEnabled: () => true,
   token: 'AGOR',
   rpcUrl: arbitrumGoerliRpc,
   getReadProvider: memoize(
@@ -251,7 +251,7 @@ const optimismMainnetConfig: NetworkConfig = {
   icon: optimismMainnetIcon as string,
   badge: optimismMainnetBadge as string,
   testnet: false,
-  isEnabled: () => getFeatureToggle('UseNetworkSwitcherOptimism'),
+  isEnabled: () => true,
   token: 'ETH',
   rpcUrl: optimismMainnetRpc,
   getReadProvider: memoize(
@@ -284,7 +284,7 @@ const optimismGoerliConfig: NetworkConfig = {
   icon: optimismMainnetIcon as string,
   badge: optimismMainnetBadge as string,
   testnet: true,
-  isEnabled: () => getFeatureToggle('UseNetworkSwitcherOptimism'),
+  isEnabled: () => true,
   token: 'ETH',
   rpcUrl: optimismGoerliRpc,
   getReadProvider: () => undefined,

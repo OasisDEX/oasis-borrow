@@ -1,7 +1,7 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { AdjustRiskViewConfig } from 'features/aave/components'
-import { formatBigNumber, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import React from 'react'
 
 export const adjustRiskSliderConfig: AdjustRiskViewConfig = {
@@ -9,7 +9,7 @@ export const adjustRiskSliderConfig: AdjustRiskViewConfig = {
     return (
       <>
         {token ? '' : '$'}
-        {formatBigNumber(qty, 2)}
+        {formatCryptoBalance(qty)}
         {` ${token}`}
       </>
     )

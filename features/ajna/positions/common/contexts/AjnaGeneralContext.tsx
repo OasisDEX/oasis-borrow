@@ -114,7 +114,6 @@ export function AjnaGeneralContextProvider({
     quoteBalance,
     quoteToken,
     owner,
-    product,
     slippage,
     isProxyWithManyPositions,
   } = props
@@ -136,10 +135,7 @@ export function AjnaGeneralContextProvider({
       currentStep,
       steps,
       editingStep: getAjnaEditingStep({
-        currentStep,
         flow,
-        product,
-        steps,
       }),
       isExternalStep: isExternalStep({ currentStep }),
       isFlowStateReady,

@@ -19,8 +19,8 @@ import { SidebarAdjustStopLossEditingStage } from 'features/automation/protectio
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
+import { getAppConfig } from 'helpers/config'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTomfoolery } from 'helpers/useTomfoolery'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -293,7 +293,7 @@ function EditingStateViewSidebarPrimaryButton({
 > {
   const { t } = useTranslation()
 
-  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
+  const { ProxyCreationDisabled: isProxyCreationDisabled } = getAppConfig('features')
 
   const hasProxy =
     state.context.strategyConfig.proxyType === ProxyType.DpmProxy

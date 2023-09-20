@@ -120,15 +120,28 @@ export function AccountContextProvider({ children }: WithChildren) {
         ),
       )
 
+      const arbitrumDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
+        curry(getUserDpmProxies$)(of({ chainId: NetworkIds.ARBITRUMMAINNET })),
+        (walletAddress) => walletAddress,
+      )
+
+      const arbitrumReadPositionCreatedEvents$ = memoize(
+        curry(createReadPositionCreatedEvents$)(
+          of({ chainId: NetworkIds.ARBITRUMMAINNET }),
+          arbitrumDpmProxies$,
+        ),
+      )
+
       // Here we're aggregating events from all networks to show all open positions
       // Should add new networks here in the future to count all positions
       const allNetworkReadPositionCreatedEvents$ = (wallet: string) =>
         combineLatest([
           mainnetReadPositionCreatedEvents$(wallet),
           optimismReadPositionCreatedEvents$(wallet),
+          arbitrumReadPositionCreatedEvents$(wallet),
         ]).pipe(
-          map(([mainnetEvents, optimismEvents]) => {
-            return [...mainnetEvents, ...optimismEvents]
+          map(([mainnetEvents, optimismEvents, arbitrumEvents]) => {
+            return [...mainnetEvents, ...optimismEvents, ...arbitrumEvents]
           }),
         )
 
@@ -273,8 +286,12 @@ export function AccountContextProvider({ children }: WithChildren) {
         ilkData$,
         ilkToToken$,
         jugIlks$,
+        mainnetDpmProxies$,
+        optimismDpmProxies$,
+        arbitrumDpmProxies$,
         mainnetReadPositionCreatedEvents$,
         optimismReadPositionCreatedEvents$,
+        arbitrumReadPositionCreatedEvents$,
         oraclePriceData$,
         pipHop$,
         pipPeek$,
@@ -330,8 +347,12 @@ export type AccountContext = {
   ilkData$: (ilk: string) => Observable<IlkData>
   ilkToToken$: (ilk: string) => Observable<string>
   jugIlks$: (args: string) => Observable<JugIlk>
+  mainnetDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>
+  optimismDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>
+  arbitrumDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>
   mainnetReadPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>
   optimismReadPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>
+  arbitrumReadPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>
   oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>
   pipHop$: (args: string) => Observable<BigNumber>
   pipPeek$: (args: string) => Observable<[string, boolean]>

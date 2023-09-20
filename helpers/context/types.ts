@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
 import { DeployAjnaPoolTxData } from 'blockchain/calls/ajnaErc20PoolFactory'
-import { ClaimAjnaRewardsTxData } from 'blockchain/calls/ajnaRewardsClaimer'
 import {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
@@ -61,7 +60,6 @@ export type TxData =
   | OperationExecutorTxMeta
   | CreateDPMAccount
   | OasisActionsTxData
-  | ClaimAjnaRewardsTxData
   | DeployAjnaPoolTxData
 
 export enum GasEstimationStatus {

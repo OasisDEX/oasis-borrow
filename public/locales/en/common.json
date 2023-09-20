@@ -8,9 +8,6 @@
     "careers-link": "Join Us",
     "pics-title": "Meet the team"
   },
-  "top-banner": {
-    "rebranding": "Oasis.app is now Summer.fi. Read the announcement"
-  },
   "wallet-wrong-network": "Oops, your wallet is not on the right network.",
   "app-wrong-network": "Oops, your wallet is not supported by the current Summer.fi network.",
   "wallet-wrong-network-desc": "It seems your wallet is running on a different network from Summer.fi. Please manually change the network in your wallet, or you can click the button below.",
@@ -806,6 +803,7 @@
     "liquidation-price-ratio-modal-aave": "The liquidation price ratio indicates to what price ratio stETH needs to drop in comparison to ETH in order to get liquidated on this position. If this comes within 5% it will be indicated as red, within 20% as orange, and above 20% as green. Liquidation results in a liquidation penalty. You can find the history of the ratio here: <0>Ratio history</0> <1/><1/> You can adjust your risk by using the adjust risk functionality.",
     "below-current-ratio": "({{percentage}} below current ratio)",
     "below-current-price": "{{percentage}} below current price",
+    "above-current-price": "{{percentage}} above current price",
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
     "stop-loss-ltv": "Stop Loss LTV: {{percentage}}",
     "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
@@ -819,7 +817,8 @@
       "second-header": "Liquidation Penalty",
       "first-description-line-long": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
       "first-description-line-short": "The Liquidation Price is the debt price at which a position will be liquidated. This number is denominated in collateral",
-      "second-description-line": "This is {{percent}} below current price",
+      "second-description-line-long": "This is {{percent}} below current price",
+      "second-description-line-short": "This is {{percent}} above current price",
       "third-description-line": "The liquidation penalty is the % that will be added to the debt as a penalty in case of liquidation."
     },
     "ltv": {
@@ -834,11 +833,11 @@
       "stop-loss-not-set": "Not set - click to set up stop loss."
     },
     "net-borrow-cost": {
-      "first-header": "Net borrow Cost %",
-      "second-header": "Net borrow cost {{debtToken}}",
-      "first-description-line": "The net borrow cost is the debt APY minus the APY for the collateral supplied.",
+      "first-header": "Cost to borrow %",
+      "second-header": "Cost to borrow {{debtToken}}",
+      "first-description-line": "The cost to borrow is the percentage this position is paying on its net value, using the debt APY minus the APY for the collateral supplied.",
       "second-description-line": "Debt APY * Total Debt * Debt Price/Collateral Price - Lending APY * Total Collateral * Collateral Price",
-      "third-description-line": "The borrow cost expressed in {{debtToken}} amount over one year. This amount is an estimate that changes with the net borrow cost. Your effective real cost will be determined by your PNL.",
+      "third-description-line": "The borrow cost expressed in {{debtToken}} amount over one year. This amount is an estimate that changes with the changes in the rates. Your effective real cost will be determined by your PNL.",
       "positive-negative-line": " If the values are positive you are paying to borrow, if negative you are paid to borrow."
     }
   },
@@ -1225,7 +1224,7 @@
     "remove-trigger": "Remove trigger",
     "add-trigger": "Add trigger",
     "loan-to-value": "Loan to Value",
-    "net-borrow-cost": "Net Borrow Cost",
+    "net-borrow-cost": "Cost to Borrow",
     "position-debt": "Position Debt",
     "current-token-price": "Current {{token}} Price",
     "next-token-price": "Next {{token}} Price"
@@ -2420,6 +2419,11 @@
       "open-btn": "Manage Multiply position"
     }
   },
+  "manage-borrow": {
+    "sidebar": {
+      "title": "Manage Borrow position"
+    }
+  },
   "open-borrow": {
     "sidebar": {
       "title": "Open Borrow position",
@@ -2626,8 +2630,7 @@
             "transaction": "Confirm your Ajna {{product}} Position",
             "transition": "Switch your Ajna {{product}} Position",
             "position-frozen": "Position Frozen",
-            "claim-collateral": "Claim collateral",
-            "nft": "This Position is eligible for Ajna token rewards"
+            "claim-collateral": "Claim collateral"
           },
           "risk": {
             "intro": "Ajna is a new money market DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position:",
@@ -2652,26 +2655,6 @@
                 "<5>Always do your own research and make sure you have selected the correct token contract address<5/>",
                 "This asset pair is supported with Ajna Lite UI, no price feed information will be available",
                 "Monitor your position closely and ensure you understand the risks before proceeding"
-              ]
-            }
-          },
-          "nft": {
-            "intro": "The Ajna rewards this position is eligible for",
-            "token-rewards": "Summer.fi × AJNA Token Rewards",
-            "protocol-rewards": "AJNA Protocol Rewards",
-            "opt": "Ajna Protocol Rewards are switched off by default as the gas fees could cost more than the rewards.",
-            "bullet-points": {
-              "token-rewards": [
-                "Rewards exclusive to Summer.fi users only!",
-                "Auto-Earned for lending within the active liquidity range",
-                "Claimable weekly",
-                "Read more about <2><3>Ajna Token Rewards</2></3>"
-              ],
-              "protocol-rewards": [
-                "Optional rewards for Ajna Earn users",
-                "Earned proportional to interest earned in the pool",
-                "Expect an increase in gas fees to manage your position",
-                "Read more about <2><3>Ajna Protocol Rewards</2></3>"
               ]
             }
           },
@@ -2855,8 +2838,8 @@
       "multiply": {
         "common": {
           "overview": {
-            "net-borrow-cost": "Net Borrow Cost",
-            "net-borrow-cost-modal-desc": "The net borrow cost rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
+            "net-borrow-cost": "Borrow rate",
+            "net-borrow-cost-modal-desc": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
             "net-value": "Net Value",
             "pnl": "P&L"
           },
@@ -2897,18 +2880,8 @@
     },
     "rewards": {
       "title": "Your Ajna token rewards",
-      "intro": "When using the Ajna protocol you are entitled to earn AJNA tokens in 2 different ways. Read below to find out more.",
+      "intro": "When using the Ajna protocol you are entitled to earn AJNA tokens. Read below to find out more.",
       "cards": {
-        "mining": {
-          "title": "AJNA Protocol Rewards",
-          "list-1": "Rewards Earn Positions only",
-          "list-2": "Earn proportionally to % of pool interest generated",
-          "list-3": "You need to opt-in to stake your positions",
-          "link": "Learn more about Ajna Liquidity Mining Rewards",
-          "banner": {
-            "title": "AJNA Liquidity Mining Rewards "
-          }
-        },
         "token": {
           "title": "Summer.fi × Ajna Token Rewards",
           "list-1": "Rewards exclusive to Summer.fi users!",

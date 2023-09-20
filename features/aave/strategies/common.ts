@@ -1,5 +1,5 @@
 import { ManagePositionAvailableActions, ProductType, StrategyType } from 'features/aave/types'
-import { Feature } from 'helpers/useFeatureToggle'
+import { Feature } from 'helpers/config'
 
 export type ProductTypeConfig = {
   featureToggle: Feature | undefined

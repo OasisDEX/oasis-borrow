@@ -21,10 +21,10 @@ import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
 import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
 import { useConnection } from 'features/web3OnBoard'
+import { getAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useFlowState } from 'helpers/useFlowState'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
@@ -41,9 +41,11 @@ export function AjnaFormView({
   children,
   txSuccessAction,
 }: PropsWithChildren<AjnaFormViewProps>) {
-  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
-  const ajnaSuppressValidationEnabled = useFeatureToggle('AjnaSuppressValidation')
-  const ajnaReusableDPMEnabled = useFeatureToggle('AjnaReusableDPM')
+  const {
+    AjnaSafetySwitch: ajnaSafetySwitchOn,
+    AjnaSuppressValidation: ajnaSuppressValidationEnabled,
+    AjnaReusableDPM: ajnaReusableDPMEnabled,
+  } = getAppConfig('features')
 
   const { t } = useTranslation()
   const { context$ } = useMainContext()

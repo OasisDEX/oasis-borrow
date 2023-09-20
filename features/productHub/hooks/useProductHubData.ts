@@ -40,7 +40,7 @@ export const useProductHubData = ({
         responseType: 'json',
         headers: { Accept: 'application/json' },
         data: {
-          protocols,
+          protocols: protocols.filter((p) => p), // could be false cause of disabled protocols
           promoCardsCollection,
           testnet: isTestnetNetworkId(chainId),
         },

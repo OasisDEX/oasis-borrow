@@ -1,5 +1,6 @@
-import { AjnaEarnPosition } from '@oasisdex/dma-library'
+import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { NetworkIds } from 'blockchain/networks'
+import dayjs from 'dayjs'
 import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import {
@@ -60,31 +61,32 @@ function parseAggregatedDataAuction({
         }
       }
 
+      const ajnaBorrowishPosition = position as AjnaPosition
+
       const auction = auctions[0]
       const borrowishEvents = mapAjnaBorrowishEvents(history)
+
       const mostRecentHistoryEvent = borrowishEvents[0]
+      const isEventAfterAuction = !['AuctionSettle', 'Kick'].includes(
+        mostRecentHistoryEvent.kind as string,
+      )
 
       const graceTimeRemaining = timeAgo({
         to: new Date(auction.endOfGracePeriod),
       })
 
-      const isDuringGraceTime = auction.endOfGracePeriod - new Date().getTime() > 0
+      const isDuringGraceTime =
+        auction.endOfGracePeriod - dayjs().valueOf() > 0 && !isEventAfterAuction
       const isBeingLiquidated = !isDuringGraceTime && auction.inLiquidation
-      const isEventAfterAuction = !['AuctionSettle', 'Kick'].includes(
-        mostRecentHistoryEvent.kind as string,
-      )
       const isPartiallyLiquidated =
-        auction.collateral.gt(zero) &&
-        auction.debtToCover.gt(zero) &&
-        !auction.inLiquidation &&
-        !isDuringGraceTime &&
+        mostRecentHistoryEvent.kind === 'AuctionSettle' &&
+        ajnaBorrowishPosition.debtAmount.gt(zero) &&
         !isEventAfterAuction
+
       const isLiquidated =
-        auction.debtToCover.isZero() &&
-        !auction.inLiquidation &&
-        !isDuringGraceTime &&
-        !isEventAfterAuction &&
-        !isPartiallyLiquidated
+        mostRecentHistoryEvent.kind === 'AuctionSettle' &&
+        ajnaBorrowishPosition.debtAmount.isZero() &&
+        !isEventAfterAuction
 
       return {
         graceTimeRemaining,
@@ -97,33 +99,24 @@ function parseAggregatedDataAuction({
     case 'earn': {
       const ajnaEarnPosition = position as AjnaEarnPosition
 
-      const isBucketFrozen = ajnaEarnPosition.price.gt(ajnaEarnPosition.pool.highestPriceBucket)
-      const isCollateralToWithdraw = ajnaEarnPosition.collateralTokenAmount.gt(zero)
-
       return {
-        isBucketFrozen,
-        isCollateralToWithdraw,
+        isBucketFrozen: ajnaEarnPosition.isBucketFrozen,
+        isCollateralToWithdraw: ajnaEarnPosition.collateralTokenAmount.gt(zero),
       }
     }
   }
 }
 
 function parseAggregatedDataHistory({
-  dpmPositionData: { collateralTokenAddress, product, quoteTokenAddress },
+  dpmPositionData: { product },
   history,
 }: {
   dpmPositionData: DpmPositionData
   history: AjnaUnifiedHistoryEvent[]
 }): AjnaUnifiedHistoryEvent[] {
   return (
-    (product === 'earn'
-      ? mapAjnaEarnEvents(history)
-      : mapAjnaBorrowishEvents(history)) as AjnaUnifiedHistoryEvent[]
-  ).filter(
-    (item) =>
-      item.collateralAddress?.toLowerCase() === collateralTokenAddress.toLowerCase() &&
-      item.debtAddress?.toLowerCase() === quoteTokenAddress.toLowerCase(),
-  )
+    product === 'earn' ? mapAjnaEarnEvents(history) : mapAjnaBorrowishEvents(history)
+  ) as AjnaUnifiedHistoryEvent[]
 }
 
 export const getAjnaPositionAggregatedData$ = ({

@@ -36,8 +36,8 @@ import {
 } from 'features/automation/protection/stopLoss/openFlow/helpers'
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatPercent } from 'helpers/formatters/format'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -57,6 +57,7 @@ export function createGetAaveStopLossMetadata(
   networkId: NetworkIds,
 ) {
   return function (context: ContextWithoutMetadata): StopLossMetadata {
+    const { AaveV3ProtectionWrite } = getLocalAppConfig('features')
     const {
       automationTriggersData,
       triggerData: {
@@ -128,7 +129,7 @@ export function createGetAaveStopLossMetadata(
     }
 
     const aaveProtectionWriteEnabled =
-      useFeatureToggle('AaveV3ProtectionWrite') &&
+      AaveV3ProtectionWrite &&
       supportsAaveStopLoss(lendingProtocol, networkId) &&
       isSupportedAaveAutomationTokenPair(token, debtToken)
 
