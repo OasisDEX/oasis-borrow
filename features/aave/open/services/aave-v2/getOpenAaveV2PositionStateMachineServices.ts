@@ -1,25 +1,27 @@
-import BigNumber from 'bignumber.js'
-import { createExecuteTransaction, DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
+import type BigNumber from 'bignumber.js'
+import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account';
+import { createExecuteTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
-import { Tickers } from 'blockchain/prices'
-import { TokenBalances } from 'blockchain/tokens'
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { OpenAaveStateMachineServices } from 'features/aave/open/state'
+import type { Context } from 'blockchain/network'
+import type { Tickers } from 'blockchain/prices'
+import type { TokenBalances } from 'blockchain/tokens'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { OpenAaveStateMachineServices } from 'features/aave/open/state'
 import { getPricesFeed$ } from 'features/aave/services'
+import type {
+  IStrategyInfo,
+  StrategyTokenAllowance,
+  StrategyTokenBalance } from 'features/aave/types';
 import {
   contextToEthersTransactions,
-  IStrategyInfo,
-  ProxyType,
-  StrategyTokenAllowance,
-  StrategyTokenBalance,
+  ProxyType
 } from 'features/aave/types'
-import { IStrategyConfig } from 'features/aave/types/strategy-config'
+import type { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
-import { UserSettingsState } from 'features/userSettings/userSettings'
+import type { UserSettingsState } from 'features/userSettings/userSettings'
 import { allDefined } from 'helpers/allDefined'
-import { TxHelpers } from 'helpers/context/types'
-import {
+import type { TxHelpers } from 'helpers/context/types'
+import type {
   AaveLikeProtocolData,
   AaveLikeReserveConfigurationData,
   AaveLikeReserveConfigurationDataParams,
@@ -27,7 +29,8 @@ import {
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
-import { combineLatest, iif, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { combineLatest, iif, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 import { interpret } from 'xstate'
 

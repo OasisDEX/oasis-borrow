@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react'
 import { useEffect, useState } from 'react'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 
 export type Unpack<T extends Observable<any>> = T extends Observable<infer U> ? U : never
 

@@ -1,22 +1,25 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAutomationContext, useMainContext } from 'components/context'
 import { AppLink } from 'components/Links'
+import type {
+  AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange';
 import {
-  AUTO_BUY_FORM_CHANGE,
-  AutoBSFormChange,
+  AUTO_BUY_FORM_CHANGE
 } from 'features/automation/common/state/autoBSFormChange'
+import type {
+  AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange';
 import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
-  AutoTakeProfitFormChange,
+  AUTO_TAKE_PROFIT_FORM_CHANGE
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { OptimizationDetailsControl } from 'features/automation/optimization/common/controls/OptimizationDetailsControl'
 import { OptimizationFormControl } from 'features/automation/optimization/common/controls/OptimizationFormControl'
+import type {
+  ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange';
 import {
-  CONSTANT_MULTIPLE_FORM_CHANGE,
-  ConstantMultipleFormChange,
+  CONSTANT_MULTIPLE_FORM_CHANGE
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { getAppConfig } from 'helpers/config'

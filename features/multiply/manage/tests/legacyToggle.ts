@@ -1,4 +1,4 @@
-import {
+import type {
   ManageMultiplyVaultEditingStage,
   ManageMultiplyVaultState,
 } from 'features/multiply/manage/pipes/types'

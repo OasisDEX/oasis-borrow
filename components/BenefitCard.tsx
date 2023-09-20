@@ -1,6 +1,7 @@
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
-import React, { PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react';
+import React from 'react'
 import { Box, Card, Flex, Grid, Image, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 

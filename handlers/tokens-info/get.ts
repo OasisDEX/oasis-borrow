@@ -1,4 +1,4 @@
-import { Tokens } from '@prisma/client'
+import type { Tokens } from '@prisma/client'
 import { ethers } from 'ethers'
 import {
   readTokensFromApi,
@@ -6,7 +6,7 @@ import {
   readTokensFromDb,
   saveTokensToDb,
 } from 'handlers/tokens-info/tokens'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import * as z from 'zod'
 
 const paramsSchema = z.object({

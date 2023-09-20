@@ -1,22 +1,23 @@
 import { trackingEvents } from 'analytics/analytics'
-import {
+import type {
   MixpanelAutomationEventIds,
-  MixpanelCommonAnalyticsSections,
-  MixpanelPages,
+  MixpanelPages } from 'analytics/types';
+import {
+  MixpanelCommonAnalyticsSections
 } from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import {
   addAutomationTrigger,
   removeAutomationTrigger,
 } from 'features/automation/api/automationTxHandlers'
-import {
+import type {
   AutomationAddTriggerData,
   AutomationRemoveTriggerData,
 } from 'features/automation/common/txDefinitions'
-import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
-import { AutomationContracts } from 'features/automation/metadata/types'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
-import { TxHelpers } from 'helpers/context/types'
+import type { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
+import type { AutomationContracts } from 'features/automation/metadata/types'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
+import type { TxHelpers } from 'helpers/context/types'
 import { uiChanges } from 'helpers/uiChanges'
 
 export interface AutomationTxHandlerAnalytics {

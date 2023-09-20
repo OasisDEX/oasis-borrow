@@ -28,13 +28,14 @@ import {
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
+import type {
+  ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange';
 import {
-  CONSTANT_MULTIPLE_FORM_CHANGE,
-  ConstantMultipleFormChange,
+  CONSTANT_MULTIPLE_FORM_CHANGE
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { prepareConstantMultipleResetData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getAppConfig } from 'helpers/config'

@@ -1,11 +1,12 @@
 import BigNumber from 'bignumber.js'
+import type {
+  AutomationBotV2RemoveTriggerData } from 'blockchain/calls/automationBot';
 import {
   addAutomationBotTriggerV2,
-  AutomationBotV2RemoveTriggerData,
   removeAutomationBotTriggerV2,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE } from 'features/automation/common/consts'
@@ -18,10 +19,11 @@ import {
   hasMoreDebtThanMaxForStopLoss,
   hasPotentialInsufficientEthFundsForTx,
 } from 'features/automation/common/validation/validators'
-import {
+import type {
   ContextWithoutMetadata,
-  StopLossDetailCards,
-  StopLossMetadata,
+  StopLossMetadata } from 'features/automation/metadata/types';
+import {
+  StopLossDetailCards
 } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
@@ -34,12 +36,12 @@ import {
   getAaveLikeCommandContractType,
   getAveeStopLossTriggerType,
 } from 'features/automation/protection/stopLoss/openFlow/helpers'
-import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { getLocalAppConfig } from 'helpers/config'
 import { formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
+import type { LendingProtocol } from 'lendingProtocols'
 
 export const aaveOffsets = {
   open: {

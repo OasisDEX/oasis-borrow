@@ -1,17 +1,18 @@
-import { ContextConnected } from 'blockchain/network'
-import {
+import type { ContextConnected } from 'blockchain/network'
+import type {
   NonPayableTransactionObject,
   PayableTransactionObject,
   PayableTx,
 } from 'types/web3-v1-contracts/types'
 
-import {
+import type {
   ClaimRewardData,
   DepositAndGenerateData,
   OpenData,
-  ProxyActionsAdapterType,
   ProxyActionsSmartContractAdapterInterface,
-  WithdrawAndPaybackData,
+  WithdrawAndPaybackData } from './ProxyActionsSmartContractAdapterInterface';
+import {
+  ProxyActionsAdapterType
 } from './ProxyActionsSmartContractAdapterInterface'
 
 function createMockPayableTransactionObject<T>(name: string): PayableTransactionObject<T> {

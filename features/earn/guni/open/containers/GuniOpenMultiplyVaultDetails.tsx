@@ -1,16 +1,17 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { GasPriceParams } from 'blockchain/prices'
+import type { GasPriceParams } from 'blockchain/prices'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
-import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import type {
+  Yield } from 'helpers/earn/calculations';
 import {
   calculateBreakeven,
   calculateEarnings,
-  Yield,
   YieldPeriod,
 } from 'helpers/earn/calculations'
 import { formatCryptoBalance } from 'helpers/formatters/format'

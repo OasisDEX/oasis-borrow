@@ -1,15 +1,16 @@
+import type {
+  CloseToParams } from '@oasisdex/multiply';
 import {
-  CloseToParams,
   getCloseToCollateralParams,
   getCloseToDaiParams,
   getMultiplyParams,
 } from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
-import { ExchangeAction } from 'features/exchange/exchange'
+import type { IlkData } from 'blockchain/ilks'
+import type { Vault } from 'blockchain/vaults.types'
+import type { ExchangeAction } from 'features/exchange/exchange'
 import { getMaxPossibleCollRatioOrMax } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
-import { BalanceInfo } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
   calculatePNL,
@@ -20,7 +21,7 @@ import {
 import { roundRatioToBeDivisibleByFive } from 'helpers/roundRatioToBeDivisibleByFive'
 import { one, zero } from 'helpers/zero'
 
-import { ManageMultiplyVaultState } from './types'
+import type { ManageMultiplyVaultState } from './types'
 
 // This value ought to be coupled in relation to how much we round the raw debt
 // value in the vault (vault.debt)

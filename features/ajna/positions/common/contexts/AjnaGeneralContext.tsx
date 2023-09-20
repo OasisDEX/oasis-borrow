@@ -1,8 +1,8 @@
-import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import { GasPriceParams } from 'blockchain/prices'
+import type { TxStatus } from '@oasisdex/transactions'
+import type BigNumber from 'bignumber.js'
+import type { GasPriceParams } from 'blockchain/prices'
 import { isProductContextAvailable } from 'components/context'
-import {
+import type {
   AjnaFlow,
   AjnaProduct,
   AjnaSidebarEditingStep,
@@ -15,12 +15,13 @@ import {
 } from 'features/ajna/positions/common/contexts/ajnaStepManager'
 import { getTxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxManager'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
-import { TxDetails } from 'helpers/handleTransaction'
+import type { TxDetails } from 'helpers/handleTransaction'
 import { useAccount } from 'helpers/useAccount'
-import React, {
+import type {
   Dispatch,
   PropsWithChildren,
-  SetStateAction,
+  SetStateAction } from 'react';
+import React, {
   useContext,
   useEffect,
   useState,

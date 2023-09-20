@@ -4,7 +4,7 @@ import {
   MixpanelCommonAnalyticsSections,
   MixpanelPages,
 } from 'analytics/types'
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { useAutomationContext } from 'components/context'

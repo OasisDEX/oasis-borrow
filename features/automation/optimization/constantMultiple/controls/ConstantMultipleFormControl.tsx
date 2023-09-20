@@ -9,13 +9,14 @@ import {
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupConstantMultiple } from 'features/automation/optimization/constantMultiple/sidebars/SidebarSetupConstantMultiple'
+import type {
+  ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange';
 import {
-  CONSTANT_MULTIPLE_FORM_CHANGE,
-  ConstantMultipleFormChange,
+  CONSTANT_MULTIPLE_FORM_CHANGE
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { getConstantMultipleStatus } from 'features/automation/optimization/constantMultiple/state/constantMultipleStatus'
 import { getConstantMultipleTxHandlers } from 'features/automation/optimization/constantMultiple/state/constantMultipleTxHandlers'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 

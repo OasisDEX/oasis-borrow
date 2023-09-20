@@ -4,26 +4,28 @@ import {
   MixpanelCommonAnalyticsSections,
   MixpanelPages,
 } from 'analytics/types'
-import BigNumber from 'bignumber.js'
-import { PickCloseStateProps } from 'components/dumb/PickCloseState'
+import type BigNumber from 'bignumber.js'
+import type { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { closeVaultOptions } from 'features/automation/common/consts'
-import { SidebarAutomationStages } from 'features/automation/common/types'
+import type { SidebarAutomationStages } from 'features/automation/common/types'
 import {
   checkIfIsDisabledAutoTakeProfit,
   checkIfIsEditingAutoTakeProfit,
 } from 'features/automation/optimization/autoTakeProfit/helpers'
+import type {
+  AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData';
 import {
-  AutoTakeProfitTriggerData,
   prepareAutoTakeProfitResetData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
 import { uiChanges } from 'helpers/uiChanges'
 
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
+import type {
   AutoTakeProfitFormChange,
-  AutoTakeProfitResetData,
+  AutoTakeProfitResetData } from './autoTakeProfitFormChange';
+import {
+  AUTO_TAKE_PROFIT_FORM_CHANGE
 } from './autoTakeProfitFormChange'
 
 interface GetAutoTakeProfitStatusParams {

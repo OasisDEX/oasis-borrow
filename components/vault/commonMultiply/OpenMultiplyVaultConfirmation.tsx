@@ -1,9 +1,10 @@
 import { Divider } from '@theme-ui/components'
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
-import { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault'
+import type { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import type { ReactNode } from 'react';
+import React from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
 
 export function OpenMultiplyVaultConfirmation({

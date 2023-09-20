@@ -7,7 +7,7 @@ import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 
 import { AaveBorrowPositionData } from './AaveBorrowPositionData'
-import { AaveManageComponentProps } from './AaveMultiplyManageComponent'
+import type { AaveManageComponentProps } from './AaveMultiplyManageComponent'
 
 export function AaveBorrowManageComponent({
   currentPosition,

@@ -1,7 +1,7 @@
-import { SidebarAutomationStages } from 'features/automation/common/types'
-import { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import type { SidebarAutomationStages } from 'features/automation/common/types'
+import type { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 
 export function checkIfIsEditingAutoTakeProfit({
   autoTakeProfitState,

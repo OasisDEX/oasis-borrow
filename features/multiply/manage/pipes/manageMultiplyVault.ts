@@ -1,30 +1,40 @@
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
+import type { IlkData } from 'blockchain/ilks';
+import { createIlkDataChange$ } from 'blockchain/ilks'
+import type { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
-import { createVaultChange$, Vault } from 'blockchain/vaults'
+import { createVaultChange$ } from 'blockchain/vaults'
+import type { Vault } from 'blockchain/vaults.types'
+import type {
+  TriggersData } from 'features/automation/api/automationTriggersData';
 import {
-  createAutomationTriggersChange$,
-  TriggersData,
+  createAutomationTriggersChange$
 } from 'features/automation/api/automationTriggersData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
-import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import type {
+  SaveVaultType } from 'features/generalManageVault/vaultType';
 import {
-  SaveVaultType,
   saveVaultTypeForAccount,
   VaultType,
 } from 'features/generalManageVault/vaultType'
-import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
-import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
-import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { AddGasEstimationFunction, GasEstimationStatus, TxHelpers } from 'helpers/context/types'
+import type { BalanceInfo } from 'features/shared/balanceInfo';
+import { balanceInfoChange$ } from 'features/shared/balanceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo';
+import { priceInfoChange$ } from 'features/shared/priceInfo'
+import type { UserSettingsState } from 'features/userSettings/userSettings';
+import { slippageChange$ } from 'features/userSettings/userSettings'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory';
+import { createHistoryChange$ } from 'features/vaultHistory/vaultHistory'
+import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types';
+import { GasEstimationStatus } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { curry } from 'lodash'
-import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { combineLatest, merge, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import {
@@ -55,7 +65,7 @@ import {
 } from './manageMultiplyVaultTransactions'
 import { applyManageVaultTransition, progressAdjust } from './manageMultiplyVaultTransitions'
 import { finalValidation, validateErrors, validateWarnings } from './manageMultiplyVaultValidations'
-import {
+import type {
   CloseVaultTo,
   MainAction,
   ManageMultiplyVaultChange,

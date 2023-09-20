@@ -1,35 +1,36 @@
 import BigNumber from 'bignumber.js'
 import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import type {
+  AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator';
 import {
-  AutomationBotRemoveTriggersData,
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
-import { IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
+import type { IlkData } from 'blockchain/ilks'
+import type { Context } from 'blockchain/network'
 import { emptyNetworkConfig } from 'blockchain/networks'
-import { Tickers } from 'blockchain/prices'
+import type { Tickers } from 'blockchain/prices'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { AutomationPositionData } from 'components/context'
+import type { AutomationPositionData } from 'components/context'
 import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
-import { StopLossMetadata } from 'features/automation/metadata/types'
+import type { StopLossMetadata } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
   getMaxToken,
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
 import { notRequiredStopLossMetadata } from 'features/automation/protection/stopLoss/openFlow/notRequiredProperties'
-import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
-import {
+import type { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
+import type {
   StopLossFormChange,
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
-import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
+import type { BalanceInfo } from 'features/shared/balanceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
 

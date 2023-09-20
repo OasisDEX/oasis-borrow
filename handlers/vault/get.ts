@@ -1,5 +1,5 @@
-import { Vault } from '@prisma/client'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { Vault } from '@prisma/client'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 

@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import type { ethers } from 'ethers'
 import { assign, createMachine } from 'xstate'
 
 export type EthersTransactionStateMachineContext<TParameters, TResult = unknown> = {

@@ -2,37 +2,44 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { CharteredDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
 import { StandardDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
-import { IlkData } from 'blockchain/ilks'
-import { InstiVault } from 'blockchain/instiVault'
-import { Context } from 'blockchain/network'
-import { Vault } from 'blockchain/vaults'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
+import type { IlkData } from 'blockchain/ilks'
+import type { InstiVault } from 'blockchain/instiVault'
+import type { Context } from 'blockchain/network'
+import type { Vault } from 'blockchain/vaults.types'
+import type { TriggersData } from 'features/automation/api/automationTriggersData'
+import type {
+  ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter';
 import {
-  InstitutionalBorrowManageAdapter,
-  ManageInstiVaultState,
+  InstitutionalBorrowManageAdapter
 } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
+import type {
+  ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault';
 import {
-  createManageVault$,
-  ManageStandardBorrowVaultState,
+  createManageVault$
 } from 'features/borrow/manage/pipes/manageVault'
-import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { TxHelpers } from 'helpers/context/types'
+import type { BalanceInfo } from 'features/shared/balanceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import type { TxHelpers } from 'helpers/context/types'
 import { protoTxHelpers } from 'helpers/protoTxHelpers'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
-import { Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
+import type { MockBalanceInfoProps } from './balanceInfo.mock';
+import { mockBalanceInfo$ } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
-import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
+import type { MockIlkDataProps } from './ilks.mock';
+import { mockIlkData$ } from './ilks.mock'
 import { addGasEstimationMock } from './openVault.mock'
-import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
+import type { MockPriceInfoProps } from './priceInfo.mock';
+import { mockPriceInfo$ } from './priceInfo.mock'
 import { mockedEmptyStopLossTrigger } from './stopLoss.mock'
-import { mockVault$, MockVaultProps } from './vaults.mock'
+import type { MockVaultProps } from './vaults.mock';
+import { mockVault$ } from './vaults.mock'
 
 export const MOCK_VAULT_ID = one
 export const MOCK_CHAIN_ID = new BigNumber(2137)

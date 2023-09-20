@@ -1,6 +1,7 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
-import { combineLatest, Observable } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { combineLatest } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 export enum MakerVaultType {

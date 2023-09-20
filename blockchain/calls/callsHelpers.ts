@@ -1,10 +1,11 @@
-import { SendFunction, TxMeta, TxState } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
+import type { SendFunction, TxMeta, TxState } from '@oasisdex/transactions'
+import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context, ContextConnected } from 'blockchain/network'
+import type { Context, ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
-import { GasPrice$ } from 'blockchain/prices'
-import { combineLatest, from, Observable } from 'rxjs'
+import type { GasPrice$ } from 'blockchain/prices'
+import type { Observable } from 'rxjs';
+import { combineLatest, from } from 'rxjs'
 import { first, map, switchMap } from 'rxjs/operators'
 
 export type TxOptions = { to?: string; value?: string; from?: string; gas?: number }

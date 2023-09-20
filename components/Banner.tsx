@@ -1,7 +1,9 @@
 import { AppSpinner } from 'helpers/AppSpinner'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import React, { ReactNode } from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
+import type { ReactNode } from 'react';
+import React from 'react'
+import type { SxProps } from 'theme-ui';
+import { Box, Button, Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
 type BannerGradientPresetsArray = { [key: string]: [string, string] }
 export const bannerGradientPresets: BannerGradientPresetsArray = {

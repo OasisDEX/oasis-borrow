@@ -1,9 +1,9 @@
-import { BalanceInfo } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultCalculations } from './manageMultiplyVaultCalculations'
-import { ManageVaultConditions } from './manageMultiplyVaultConditions'
-import { ManageMultiplyVaultState } from './types'
+import type { ManageVaultCalculations } from './manageMultiplyVaultCalculations'
+import type { ManageVaultConditions } from './manageMultiplyVaultConditions'
+import type { ManageMultiplyVaultState } from './types'
 
 export type ManageVaultSummary = Pick<
   ManageVaultCalculations,

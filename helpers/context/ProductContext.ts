@@ -33,9 +33,11 @@ import { vatIlk } from 'blockchain/calls/vat'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
 import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
-import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
+import type { InstiVault } from 'blockchain/instiVault';
+import { createInstiVault$ } from 'blockchain/instiVault'
 import { every10Seconds$ } from 'blockchain/network'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import type { NetworkNames } from 'blockchain/networks';
+import { NetworkIds } from 'blockchain/networks'
 import { createOraclePriceData$, createTokenPriceInUSD$, tokenPrices$ } from 'blockchain/prices'
 import {
   createAccountBalance$,
@@ -50,8 +52,9 @@ import {
   getUserDpmProxies$,
   getUserDpmProxy$,
 } from 'blockchain/userDpmProxies'
-import { createVaultsFromIds$, decorateVaultsWithValue$, Vault } from 'blockchain/vaults'
-import { AccountContext } from 'components/context'
+import { createVaultsFromIds$, decorateVaultsWithValue$ } from 'blockchain/vaults'
+import type { Vault } from 'blockchain/vaults.types'
+import type { AccountContext } from 'components/context'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
@@ -60,34 +63,39 @@ import {
   createReadPositionCreatedEvents$,
   getLastCreatedPositionForProxy$,
 } from 'features/aave/services'
-import { PositionId } from 'features/aave/types/position-id'
+import type { PositionId } from 'features/aave/types/position-id'
 import {
   getAjnaPosition$,
   getAjnaPositionsWithDetails$,
 } from 'features/ajna/positions/common/observables/getAjnaPosition'
+import type {
+  DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData';
 import {
-  DpmPositionData,
   getDpmPositionData$,
   getDpmPositionDataV2$,
 } from 'features/ajna/positions/common/observables/getDpmPositionData'
+import type {
+  TriggersData } from 'features/automation/api/automationTriggersData';
 import {
-  createAutomationTriggersData,
-  TriggersData,
+  createAutomationTriggersData
 } from 'features/automation/api/automationTriggersData'
+import type {
+  MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange';
 import {
-  MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
-  MultiplyPillChange,
+  MULTIPLY_VAULT_PILL_CHANGE_SUBJECT
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { createBonusPipe$ } from 'features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from 'features/bonus/makerProtocolBonusAdapter'
+import type {
+  ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter';
 import {
-  InstitutionalBorrowManageAdapter,
-  ManageInstiVaultState,
+  InstitutionalBorrowManageAdapter
 } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
+import type {
+  ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault';
 import {
-  createManageVault$,
-  ManageStandardBorrowVaultState,
+  createManageVault$
 } from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
@@ -107,17 +115,19 @@ import {
   createMakerOracleTokenPrices$,
   createMakerOracleTokenPricesForDates$,
 } from 'features/earn/makerOracleTokenPrices'
-import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
+import type { ExchangeAction, ExchangeType } from 'features/exchange/exchange';
+import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { followedVaults$ } from 'features/follow/api'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import type { VaultType } from 'features/generalManageVault/vaultType'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
+import type {
+  BalanceInfo } from 'features/shared/balanceInfo';
 import {
-  BalanceInfo,
   createBalanceInfo$,
   createBalancesArrayInfo$,
   createBalancesFromAddressArrayInfo$,
@@ -135,8 +145,9 @@ import { transactionContextService } from 'features/stateMachines/transaction'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
+import type {
+  AaveLikePosition } from 'features/vaultsOverview/pipes/positions';
 import {
-  AaveLikePosition,
   createAaveV2Position$,
   createAaveV3DpmPosition$,
   createMakerPositions$,
@@ -158,7 +169,8 @@ import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { getSparkV3Services } from 'lendingProtocols/spark-v3'
 import { isEqual, memoize } from 'lodash'
 import { equals } from 'ramda'
-import { combineLatest, defer, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { combineLatest, defer, of } from 'rxjs'
 import {
   distinctUntilChanged,
   distinctUntilKeyChanged,
@@ -169,8 +181,8 @@ import {
 } from 'rxjs/operators'
 
 import { refreshInterval } from './constants'
-import { MainContext } from './MainContext'
-import { DepreciatedServices, HasGasEstimation, ProtocolsServices, TxHelpers } from './types'
+import type { MainContext } from './MainContext'
+import type { DepreciatedServices, HasGasEstimation, ProtocolsServices, TxHelpers } from './types'
 import curry from 'ramda/src/curry'
 
 export function setupProductContext(

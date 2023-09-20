@@ -1,9 +1,9 @@
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
-import { Vault } from 'blockchain/vaults'
+import type { Vault } from 'blockchain/vaults.types'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
@@ -11,10 +11,11 @@ import { gql, GraphQLClient } from 'graphql-request'
 import { flatten, memoize } from 'lodash'
 import pickBy from 'lodash/pickBy'
 import { equals } from 'ramda'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { combineLatest, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
-import {
+import type {
   AutomationEvent,
   ReturnedAutomationEvent,
   ReturnedEvent,

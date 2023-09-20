@@ -1,13 +1,15 @@
-import {
+import type {
   HighestMultiplyPnl,
   HighestRiskPositions,
   LargestDebt,
-  MostYieldEarned,
+  MostYieldEarned } from '@prisma/client';
+import {
   Prisma,
 } from '@prisma/client'
-import {
+import type {
   DiscoverTableColRatioRowData,
-  DiscoverTableStatusRowDataApi,
+  DiscoverTableStatusRowDataApi } from 'features/discover/types';
+import {
   DiscoverTableVaultStatus,
 } from 'features/discover/types'
 

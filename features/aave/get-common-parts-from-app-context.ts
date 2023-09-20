@@ -1,26 +1,27 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { tokenAllowance } from 'blockchain/better-calls/erc20'
+import type {
+  ChainlinkSupportedNetworks } from 'blockchain/calls/chainlink/chainlinkPriceOracle';
 import {
-  ChainlinkSupportedNetworks,
   getChainlinkOraclePrice,
 } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { AccountContext } from 'components/context'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { AccountContext } from 'components/context'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
 import { getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
 import { GraphQLClient } from 'graphql-request'
-import { MainContext } from 'helpers/context/MainContext'
-import { ProductContext } from 'helpers/context/ProductContext'
+import type { MainContext } from 'helpers/context/MainContext'
+import type { ProductContext } from 'helpers/context/ProductContext'
 import { makeOneObservable } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 import { distinctUntilKeyChanged, map, switchMap } from 'rxjs/operators'
 
 import { getProxiesRelatedWithPosition$ } from './helpers'
 import { getAvailableDPMProxy$, getOperationExecutorTransactionMachine } from './services'
-import { PositionId } from './types'
+import type { PositionId } from './types'
 
 export function getCommonPartsFromProductContext(
   { connectedContext$, context$, txHelpers$ }: MainContext,

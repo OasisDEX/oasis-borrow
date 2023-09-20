@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
@@ -6,9 +6,10 @@ import { ContentCardDynamicStopPrice } from 'components/vault/detailsSection/Con
 import { ContentCardEstTokenOnTrigger } from 'components/vault/detailsSection/ContentCardEstTokenOnTrigger'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { ContentCardStopLossLevel } from 'components/vault/detailsSection/ContentCardStopLossLevel'
+import type {
+  StopLossMetadataDetailCards } from 'features/automation/metadata/types';
 import {
-  StopLossDetailCards,
-  StopLossMetadataDetailCards,
+  StopLossDetailCards
 } from 'features/automation/metadata/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

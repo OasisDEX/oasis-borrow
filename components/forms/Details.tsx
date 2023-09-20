@@ -1,5 +1,6 @@
 import React from 'react'
-import { Card, Grid, SxStyleProp, Text } from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui';
+import { Card, Grid, Text } from 'theme-ui'
 
 export function Label({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
   return (

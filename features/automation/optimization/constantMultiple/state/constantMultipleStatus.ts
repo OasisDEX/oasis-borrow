@@ -3,14 +3,15 @@ import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { useMainContext } from 'components/context'
 import { getAutoBSVaultChange } from 'features/automation/common/helpers'
-import { SidebarAutomationStages } from 'features/automation/common/types'
+import type { SidebarAutomationStages } from 'features/automation/common/types'
 import {
   checkIfIsDisabledConstantMultiple,
   checkIfIsEditingConstantMultiple,
 } from 'features/automation/optimization/constantMultiple/helpers'
-import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import type {
+  ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData';
 import {
-  ConstantMultipleTriggerData,
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { OAZO_FEE } from 'helpers/multiply/calculations'

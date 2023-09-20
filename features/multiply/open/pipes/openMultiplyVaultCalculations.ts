@@ -5,7 +5,7 @@ import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
-import { OpenMultiplyVaultState } from './openMultiplyVault'
+import type { OpenMultiplyVaultState } from './openMultiplyVault'
 
 export const MAX_COLL_RATIO = new BigNumber(5)
 

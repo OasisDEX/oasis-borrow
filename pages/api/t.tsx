@@ -1,9 +1,9 @@
 import { enableMixpanelDevelopmentMode } from 'analytics/analytics'
 import { config } from 'analytics/mixpanel'
-import { MixpanelDevelopmentType } from 'analytics/types'
+import type { MixpanelDevelopmentType } from 'analytics/types'
 import { snakeCase } from 'lodash'
 import Mixpanel from 'mixpanel'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 type MixpanelType = MixpanelDevelopmentType | typeof Mixpanel
 let mixpanel: MixpanelType = Mixpanel.init(config.mixpanel.token, config.mixpanel.config)

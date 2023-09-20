@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { StatefulTooltip } from 'components/Tooltip'
-import { Translatable, TranslatableType } from 'components/Translatable'
+import type { TranslatableType } from 'components/Translatable';
+import { Translatable } from 'components/Translatable'
 import React from 'react'
 import { Text } from 'theme-ui'
 

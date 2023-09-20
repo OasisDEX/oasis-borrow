@@ -1,33 +1,37 @@
 import { TxStatus } from '@oasisdex/transactions'
-import { BigNumber } from 'bignumber.js'
-import { approve, ApproveData } from 'blockchain/calls/erc20'
-import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import {
+import type { BigNumber } from 'bignumber.js'
+import type { ApproveData } from 'blockchain/calls/erc20';
+import { approve } from 'blockchain/calls/erc20'
+import type { CreateDsProxyData } from 'blockchain/calls/proxy';
+import { createDsProxy } from 'blockchain/calls/proxy'
+import type {
   DepositAndGenerateData,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { StandardDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
+import type {
+  MultiplyAdjustData } from 'blockchain/calls/proxyActions/proxyActions';
 import {
   adjustMultiplyVault,
-  closeVaultCall,
-  MultiplyAdjustData,
+  closeVaultCall
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { checkIfGnosisSafe } from 'helpers/checkIfGnosisSafe'
-import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
+import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
-import { TxError } from 'helpers/types'
+import type { TxError } from 'helpers/types'
 import { one, zero } from 'helpers/zero'
-import { iif, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { iif, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './types'
+import type { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './types'
 
 type ProxyChange =
   | {

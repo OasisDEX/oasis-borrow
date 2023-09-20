@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import {
   DEFAULT_AUTO_BS_MAX_SLIDER_VALUE,
@@ -10,13 +10,13 @@ import {
   getAutoBSVaultChange,
   resolveMaxBuyOrMinSellPrice,
 } from 'features/automation/common/helpers'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { SidebarAutomationStages } from 'features/automation/common/types'
-import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import type { SidebarAutomationStages } from 'features/automation/common/types'
+import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getAutoSellMinMaxValues } from 'features/automation/protection/autoSell/helpers'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 
 export function getConstantMutliplyMinMaxValues({
   liquidationRatio,

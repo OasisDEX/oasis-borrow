@@ -1,18 +1,18 @@
-import { Prisma, PrismaPromise, Protocol } from '@prisma/client'
+import type { Prisma, PrismaPromise, Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { networks } from 'blockchain/networks'
-import { Tickers } from 'blockchain/prices'
-import { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
+import type { Tickers } from 'blockchain/prices'
+import type { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
 import { checkIfAllHandlersExist, filterTableData, measureTime } from 'handlers/product-hub/helpers'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
-import {
+import type {
   HandleGetProductHubDataProps,
   HandleUpdateProductHubDataProps,
 } from 'handlers/product-hub/types'
 import { PRODUCT_HUB_HANDLERS } from 'handlers/product-hub/update-handlers'
 import { tokenTickers } from 'helpers/api/tokenTickers'
 import { flatten, uniq } from 'lodash'
-import { NextApiResponse } from 'next'
+import type { NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 
 export async function handleGetProductHubData(

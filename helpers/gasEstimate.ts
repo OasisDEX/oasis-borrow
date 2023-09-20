@@ -1,7 +1,7 @@
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { OasisActionsTxData } from 'blockchain/calls/oasisActions'
-import { OasisActionCallData } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
-import {
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { OasisActionsTxData } from 'blockchain/calls/oasisActions'
+import type { OasisActionCallData } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
+import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
   AutomationRemoveTriggerData,

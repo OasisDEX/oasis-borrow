@@ -2,9 +2,11 @@ import { Button } from '@theme-ui/components'
 import { AppLink } from 'components/Links'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { criticalNotifications } from 'features/notifications/consts'
-import { Notification, NotificationTypes } from 'features/notifications/types'
+import type { Notification } from 'features/notifications/types';
+import { NotificationTypes } from 'features/notifications/types'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode, useMemo } from 'react'
+import type { ReactNode } from 'react';
+import React, { useMemo } from 'react'
 import { Box, Card, Flex, Heading, Text } from 'theme-ui'
 
 function getNotificationCardSx({ isCritical, isRead }: { isCritical: boolean; isRead: boolean }) {

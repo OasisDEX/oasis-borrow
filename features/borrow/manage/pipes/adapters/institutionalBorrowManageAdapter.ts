@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js'
-import { InstiVault } from 'blockchain/instiVault'
+import type BigNumber from 'bignumber.js'
+import type { InstiVault } from 'blockchain/instiVault'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import {
+import type {
   GenericManageBorrowVaultState,
   ManageStandardBorrowVaultState,
   ManageVaultChange,
@@ -21,7 +21,7 @@ import { applyManageVaultTransaction } from 'features/borrow/manage/pipes/viewSt
 import { applyManageVaultTransition } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransitions'
 import { zero } from 'helpers/zero'
 
-import {
+import type {
   BorrowManageAdapterInterface,
   CreateInitialVaultStateArgs,
 } from './borrowManageAdapterInterface'

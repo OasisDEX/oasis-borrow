@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { isNullish } from 'helpers/functions'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 
-import { OpenVaultChange, OpenVaultState } from './openVault'
+import type { OpenVaultChange, OpenVaultState } from './openVault'
 
 interface DepositChange {
   kind: 'deposit'

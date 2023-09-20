@@ -2,14 +2,15 @@ import {
   getOpenDepositBorrowPositionParameters,
   getOpenPositionParameters,
 } from 'actions/aave-like'
-import { OpenAaveParameters } from 'actions/aave-like/types'
-import { NetworkIds } from 'blockchain/networks'
+import type { OpenAaveParameters } from 'actions/aave-like/types'
+import type { NetworkIds } from 'blockchain/networks'
+import type {
+  TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters';
 import {
-  createTransactionParametersStateMachine,
-  TransactionParametersStateMachine,
+  createTransactionParametersStateMachine
 } from 'features/stateMachines/transactionParameters'
-import { HasGasEstimation, TxHelpers } from 'helpers/context/types'
-import { Observable } from 'rxjs'
+import type { HasGasEstimation, TxHelpers } from 'helpers/context/types'
+import type { Observable } from 'rxjs'
 
 export function getOpenAaveParametersMachine(
   txHelpers$: Observable<TxHelpers>,

@@ -1,9 +1,9 @@
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
-import { BalanceInfo } from 'features/shared/balanceInfo'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import type { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultCalculations } from './manageVaultCalculations'
-import { ManageVaultConditions } from './manageVaultConditions'
+import type { ManageVaultCalculations } from './manageVaultCalculations'
+import type { ManageVaultConditions } from './manageVaultConditions'
 
 export type ManageVaultSummary = Pick<
   ManageVaultCalculations,

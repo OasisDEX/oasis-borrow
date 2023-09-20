@@ -1,11 +1,11 @@
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
-import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
-import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
-import { TFunction } from 'next-i18next'
-import { ParsedUrlQuery } from 'querystring'
-import { AbiInput, AbiItem } from 'web3-utils'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import type { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
+import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import type { TFunction } from 'next-i18next'
+import type { ParsedUrlQuery } from 'querystring'
+import type { AbiInput, AbiItem } from 'web3-utils'
 
 export type WithChildren = { children?: any }
 export type WithTranslation = { t: TFunction }

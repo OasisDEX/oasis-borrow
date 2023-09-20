@@ -1,14 +1,16 @@
 // tslint:disable:no-console
-import BigNumber from 'bignumber.js'
-import { ethers } from 'ethers'
-import {
-  contract,
+import type BigNumber from 'bignumber.js'
+import type { ethers } from 'ethers'
+import type {
   ContractDesc,
   Web3Context,
   Web3ContextConnected,
-  Web3ContextConnectedReadonly,
+  Web3ContextConnectedReadonly } from 'features/web3Context';
+import {
+  contract
 } from 'features/web3Context'
-import { bindNodeCallback, combineLatest, concat, interval, Observable } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { bindNodeCallback, combineLatest, concat, interval } from 'rxjs'
 import {
   catchError,
   distinctUntilChanged,
@@ -22,7 +24,8 @@ import {
 } from 'rxjs/operators'
 import Web3 from 'web3'
 
-import { getNetworkRpcEndpoint, NetworkConfig, NetworkIds, networksById } from './networks'
+import type { NetworkConfig } from './networks';
+import { getNetworkRpcEndpoint, NetworkIds, networksById } from './networks'
 
 export const every1Seconds$ = interval(1000).pipe(startWith(0))
 export const every3Seconds$ = interval(3000).pipe(startWith(0))

@@ -1,14 +1,16 @@
-import { INPUT_DEBOUNCE_TIME, Tracker } from 'analytics/analytics'
+import type { Tracker } from 'analytics/analytics'
+import { INPUT_DEBOUNCE_TIME } from 'analytics/analytics'
 import { MixpanelPages } from 'analytics/types'
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network'
 import { networkSetById } from 'blockchain/networks'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import { combineLatest, merge, Observable, zip } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, merge, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
-import { ManageStandardBorrowVaultState } from './manageVault'
+import type { ManageStandardBorrowVaultState } from './manageVault'
 
 type GenerateAmountChange = {
   kind: 'generateAmountChange'

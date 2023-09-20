@@ -1,14 +1,16 @@
-import { IMultiplyStrategy, strategies } from '@oasisdex/dma-library'
+import type { IMultiplyStrategy } from '@oasisdex/dma-library';
+import { strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import {
   getCurrentPositionLibCallData,
   networkIdToLibraryNetwork,
   swapCall,
 } from 'actions/aave-like/helpers'
-import { AdjustAaveParameters } from 'actions/aave-like/types'
+import type { AdjustAaveParameters } from 'actions/aave-like/types'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { ProxyType } from 'features/aave/types'
-import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
+import type { AaveLendingProtocol } from 'lendingProtocols';
+import { LendingProtocol } from 'lendingProtocols'
 
 export async function getAdjustPositionParameters({
   userAddress,

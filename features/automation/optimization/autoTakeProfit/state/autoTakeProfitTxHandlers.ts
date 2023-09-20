@@ -1,13 +1,15 @@
-import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
+import type { TxStatus } from '@oasisdex/transactions'
+import type BigNumber from 'bignumber.js'
+import type { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { maxUint32 } from 'features/automation/common/consts'
+import type {
+  AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange';
 import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
-  AutoTakeProfitFormChange,
+  AUTO_TAKE_PROFIT_FORM_CHANGE
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import type {
+  AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData';
 import {
-  AutoTakeProfitTriggerData,
   prepareAddAutoTakeProfitTriggerData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { uiChanges } from 'helpers/uiChanges'

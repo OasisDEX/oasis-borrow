@@ -1,4 +1,4 @@
-import { AutomationFeatures } from 'features/automation/common/types'
+import type { AutomationFeatures } from 'features/automation/common/types'
 
 export type AutomationTypes = 'Protection' | 'Optimization'
 export type AutomationProtectionFeatures =

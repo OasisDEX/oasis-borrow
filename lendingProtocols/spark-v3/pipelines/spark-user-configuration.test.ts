@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 
+import type {
+  SparkUserConfigurationResult } from './spark-user-configuration';
 import {
-  createSparkUserConfiguration,
-  SparkUserConfigurationResult,
+  createSparkUserConfiguration
 } from './spark-user-configuration'
 
 describe('SparkUserConfiguration', () => {

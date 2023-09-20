@@ -1,5 +1,5 @@
 import { TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import {
   prepareAutoBSSliderDefaults,
   resolveMaxBuyOrMinSellPrice,
@@ -9,8 +9,8 @@ import {
   AUTO_BUY_FORM_CHANGE,
   AUTO_SELL_FORM_CHANGE,
 } from 'features/automation/common/state/autoBSFormChange'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { uiChanges } from 'helpers/uiChanges'
 import { useEffect } from 'react'
 

@@ -1,14 +1,15 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { VaultErrors } from 'components/vault/VaultErrors'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
-import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
+import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { extractGenerateErrors } from 'helpers/messageMappers'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ChangeEvent } from 'react'
+import type { ChangeEvent } from 'react';
+import React from 'react'
 import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
 type VaultState = OpenMultiplyVaultState | ManageMultiplyVaultState

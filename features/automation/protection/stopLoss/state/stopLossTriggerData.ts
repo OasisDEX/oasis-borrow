@@ -1,12 +1,13 @@
 import { CommandContractType, encodeTriggerDataByType, TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
-import {
+import type {
   AutomationBaseTriggerData,
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
-import { getTriggersByType, TriggerDataType } from 'features/automation/common/helpers'
+import type { TriggersData } from 'features/automation/api/automationTriggersData'
+import type { TriggerDataType } from 'features/automation/common/helpers';
+import { getTriggersByType } from 'features/automation/common/helpers'
 import { maxCoverage } from 'features/automation/protection/stopLoss/constants'
 import { zero } from 'helpers/zero'
 

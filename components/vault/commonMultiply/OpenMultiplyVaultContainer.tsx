@@ -1,6 +1,7 @@
 import { TabBar } from 'components/TabBar'
 import { useTranslation } from 'next-i18next'
-import React, { ReactElement, useEffect } from 'react'
+import type { ReactElement } from 'react';
+import React, { useEffect } from 'react'
 import { Box, Card, Grid } from 'theme-ui'
 
 interface OpenMultiplyVaultContainerProps {

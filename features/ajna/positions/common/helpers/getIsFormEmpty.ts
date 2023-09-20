@@ -1,15 +1,15 @@
-import { AjnaEarnPosition } from '@oasisdex/dma-library'
-import { TxStatus } from '@oasisdex/transactions'
-import {
+import type { AjnaEarnPosition } from '@oasisdex/dma-library'
+import type { TxStatus } from '@oasisdex/transactions'
+import type {
   AjnaFormState,
   AjnaGenericPosition,
   AjnaProduct,
   AjnaSidebarStep,
 } from 'features/ajna/common/types'
-import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
-import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
-import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 
 interface GetIsFormEmptyParams {
   product: AjnaProduct

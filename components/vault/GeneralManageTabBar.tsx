@@ -6,9 +6,10 @@ import {
 } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { TabBar } from 'components/TabBar'
-import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
+import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
-import { TAB_CHANGE_SUBJECT, TabChange } from 'features/generalManageVault/TabChange'
+import type { TabChange } from 'features/generalManageVault/TabChange';
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { uiChanges } from 'helpers/uiChanges'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'

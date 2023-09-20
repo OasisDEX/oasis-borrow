@@ -1,7 +1,7 @@
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './types'
+import type { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './types'
 
 export const allowanceDefaults: Partial<ManageMultiplyVaultState> = {
   collateralAllowanceAmount: maxUint256,

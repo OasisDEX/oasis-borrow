@@ -1,13 +1,13 @@
 import { getPoolLiquidity } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { IdentifiedTokens } from 'blockchain/identifyTokens'
-import { NetworkIds } from 'blockchain/networks'
-import { Tickers } from 'blockchain/prices'
+import type { IdentifiedTokens } from 'blockchain/identifyTokens'
+import type { NetworkIds } from 'blockchain/networks'
+import type { Tickers } from 'blockchain/prices'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
-import { SearchAjnaPoolData } from 'features/ajna/positions/common/helpers/searchAjnaPool'
-import { OraclessPoolResult } from 'features/poolFinder/types'
+import type { SearchAjnaPoolData } from 'features/ajna/positions/common/helpers/searchAjnaPool'
+import type { OraclessPoolResult } from 'features/poolFinder/types'
 import {
   productHubAjnaRewardsTooltip,
   productHubEmptyPoolMaxLtvTooltip,

@@ -1,49 +1,58 @@
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
-import { compareBigNumber, ContextConnected } from 'blockchain/network'
+import type { IlkData } from 'blockchain/ilks';
+import { createIlkDataChange$ } from 'blockchain/ilks'
+import type { ContextConnected } from 'blockchain/network';
+import { compareBigNumber } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import {
+import type {
   AllowanceChanges,
   AllowanceFunctions,
   AllowanceStages,
-  AllowanceState,
+  AllowanceState } from 'features/allowance/allowance';
+import {
   allowanceTransitions,
   applyAllowanceChanges,
   applyAllowanceConditions,
   applyIsAllowanceStage,
   defaultAllowanceState,
 } from 'features/allowance/allowance'
-import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { TxStage } from 'features/multiply/open/pipes/openMultiplyVault' // TODO: remove
+import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import type { TxStage } from 'features/multiply/open/pipes/openMultiplyVault' // TODO: remove
 import { finalValidation } from 'features/multiply/open/pipes/openMultiplyVaultValidations'
+import type {
+  ProxyChanges,
+  ProxyStages,
+  ProxyState } from 'features/proxy/proxy';
 import {
   addProxyTransitions,
   applyIsProxyStage,
   applyProxyChanges,
-  defaultProxyStage,
-  ProxyChanges,
-  ProxyStages,
-  ProxyState,
+  defaultProxyStage
 } from 'features/proxy/proxy'
-import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
-import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
-import {
+import type { BalanceInfo } from 'features/shared/balanceInfo';
+import { balanceInfoChange$ } from 'features/shared/balanceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo';
+import { priceInfoChange$ } from 'features/shared/priceInfo'
+import type { UserSettingsState } from 'features/userSettings/userSettings';
+import { slippageChange$ } from 'features/userSettings/userSettings'
+import type {
   AddGasEstimationFunction,
-  GasEstimationStatus,
   HasGasEstimation,
-  TxHelpers,
+  TxHelpers } from 'helpers/context/types';
+import {
+  GasEstimationStatus
 } from 'helpers/context/types'
 import { GUNI_SLIPPAGE, OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { combineTransitions } from 'helpers/pipelines/combineTransitions'
-import { TxError } from 'helpers/types'
+import type { TxError } from 'helpers/types'
 import { one, zero } from 'helpers/zero'
-import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { combineLatest, EMPTY, iif, merge, of, Subject, throwError } from 'rxjs'
 import {
   distinctUntilChanged,
   filter,
@@ -56,24 +65,27 @@ import {
 } from 'rxjs/internal/operators'
 import { withLatestFrom } from 'rxjs/operators'
 
-import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
+import type { EnvironmentChange, EnvironmentState } from './enviroment';
+import { applyEnvironment } from './enviroment'
+import type {
+  EditingStage,
+  FormChanges,
+  FormFunctions,
+  FormState } from './guniForm';
 import {
   addFormTransitions,
   applyFormChange,
   applyIsEditingStage,
-  defaultFormState,
-  EditingStage,
-  FormChanges,
-  FormFunctions,
-  FormState,
+  defaultFormState
 } from './guniForm'
 import { validateGuniErrors, validateGuniWarnings } from './guniOpenMultiplyVaultValidations'
 import { applyGuniEstimateGas } from './openGuniMultiplyVaultTransactions'
+import type {
+  GuniOpenMultiplyVaultConditions } from './openGuniVaultConditions';
 import {
   applyGuniOpenVaultConditions,
   applyGuniOpenVaultStageCategorisation,
-  defaultGuniOpenMultiplyVaultConditions,
-  GuniOpenMultiplyVaultConditions,
+  defaultGuniOpenMultiplyVaultConditions
 } from './openGuniVaultConditions'
 import curry from 'ramda/src/curry'
 

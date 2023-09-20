@@ -8,10 +8,10 @@ import { WithArrow } from 'components/WithArrow'
 import dayjs from 'dayjs'
 import { maxUint32, maxUint256 } from 'features/automation/common/consts'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import {
   formatAddress,
   formatAmount,
@@ -20,14 +20,14 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { interpolate } from 'helpers/interpolate'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
-import { TranslationType } from 'ts_modules/i18next'
+import type { TranslationType } from 'ts_modules/i18next'
 
-import { VaultHistoryEvent } from './vaultHistory'
+import type { VaultHistoryEvent } from './vaultHistory'
 
 function resolveTranslationForEventsWithTriggers(event: AutomationEvent) {
   const isGroup = 'groupId' in event && event.groupId

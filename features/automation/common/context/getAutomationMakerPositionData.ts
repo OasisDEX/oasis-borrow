@@ -1,5 +1,5 @@
-import { AutomationPositionData } from 'components/context'
-import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
+import type { AutomationPositionData } from 'components/context'
+import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 
 interface GetAutomationMakerPositionDataParams {
   generalManageVault: GeneralManageVaultState

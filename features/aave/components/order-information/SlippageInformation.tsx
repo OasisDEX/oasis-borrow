@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { SidebarSectionFooterButton } from 'components/sidebar/SidebarSectionFooterButton'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
 import { formatPercent } from 'helpers/formatters/format'

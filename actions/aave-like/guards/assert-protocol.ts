@@ -1,8 +1,9 @@
-import {
+import type {
   AaveLikeLendingProtocol,
+  LendingProtocol } from 'lendingProtocols';
+import {
   checkIfAave,
-  checkIfSpark,
-  LendingProtocol,
+  checkIfSpark
 } from 'lendingProtocols'
 
 export function assertProtocol(

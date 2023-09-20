@@ -1,4 +1,4 @@
-import { AssetsTableBannerProps } from 'components/assetsTable/types'
+import type { AssetsTableBannerProps } from 'components/assetsTable/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getAppConfig } from 'helpers/config'

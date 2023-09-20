@@ -1,10 +1,12 @@
-import { Strategy } from '@oasisdex/dma-library'
+import type { Strategy } from '@oasisdex/dma-library'
 import { TxStatus } from '@oasisdex/transactions'
-import { AjnaTxData, getAjnaParameters } from 'actions/ajna'
+import type { AjnaTxData } from 'actions/ajna';
+import { getAjnaParameters } from 'actions/ajna'
 import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getRpcProvider } from 'blockchain/networks'
-import { cancelable, CancelablePromise } from 'cancelable-promise'
+import type { CancelablePromise } from 'cancelable-promise';
+import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'

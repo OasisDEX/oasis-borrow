@@ -1,5 +1,5 @@
-import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
-import * as mixpanelBrowser from 'mixpanel-browser'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
+import type * as mixpanelBrowser from 'mixpanel-browser'
 
 export type MixpanelPropertyNameType = '$initial_referrer' | '$user_id'
 

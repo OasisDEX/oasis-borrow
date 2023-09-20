@@ -1,13 +1,15 @@
-import { Reducer } from 'react'
+import type { Reducer } from 'react'
 import { match, P } from 'ts-pattern'
 
 import { ensureCorrectState } from './ensure-correct-state'
+import type {
+  WalletManagementState } from './wallet-management-state';
 import {
   getDesiredNetworkHexId,
-  WalletManagementState,
   WalletManagementStateStatus,
 } from './wallet-management-state'
-import { WalletStateEvent, WalletStateEventType } from './wallet-state-event'
+import type { WalletStateEvent } from './wallet-state-event';
+import { WalletStateEventType } from './wallet-state-event'
 import { canTransitWithNetworkHexId } from './wallet-state-guards'
 
 export const connectingWalletStateReducer: Reducer<WalletManagementState, WalletStateEvent> = (

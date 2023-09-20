@@ -2,7 +2,7 @@ import { zero } from 'helpers/zero'
 
 import { allowanceDefaults } from './manageMultiplyVaultAllowances'
 import { MAX_COLL_RATIO } from './manageMultiplyVaultCalculations'
-import {
+import type {
   CloseVaultTo,
   MainAction,
   ManageMultiplyVaultChange,

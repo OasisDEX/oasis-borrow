@@ -1,14 +1,16 @@
-import BigNumber from 'bignumber.js'
-import {
+import type BigNumber from 'bignumber.js'
+import type {
   ChangeVariantType,
-  ContentCardProps,
+  ContentCardProps } from 'components/DetailsSectionContentCard';
+import {
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
+import type {
+  ContentCardDynamicStopPriceModalProps } from 'components/vault/detailsSection/ContentCardDynamicStopPrice';
 import {
-  ContentCardDynamicStopPriceModal,
-  ContentCardDynamicStopPriceModalProps,
+  ContentCardDynamicStopPriceModal
 } from 'components/vault/detailsSection/ContentCardDynamicStopPrice'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

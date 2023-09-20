@@ -1,8 +1,8 @@
-import { JsonRpcProvider } from '@ethersproject/providers'
-import { JSONRPCRequestPayload } from 'ethereum-types'
+import type { JsonRpcProvider } from '@ethersproject/providers'
+import type { JSONRPCRequestPayload } from 'ethereum-types'
 import { providers } from 'ethers'
 import _ from 'lodash'
-import { JsonRpcResponse } from 'web3-core-helpers'
+import type { JsonRpcResponse } from 'web3-core-helpers'
 
 import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
 import { getNetworkRpcEndpoint } from './networks'

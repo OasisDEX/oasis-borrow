@@ -1,11 +1,11 @@
-import BigNumber from 'bignumber.js'
-import {
+import type BigNumber from 'bignumber.js'
+import type {
   PositionHistoryEvent,
   PositionHistoryResponse,
   Trigger,
 } from 'features/positionHistory/types'
 
-import { AjnaUnifiedHistoryEvent } from './ajnaUnifiedHistoryEvent'
+import type { AjnaUnifiedHistoryEvent } from './ajnaUnifiedHistoryEvent'
 
 export interface AjnaHistoryResponse extends PositionHistoryResponse {
   originationFee: string

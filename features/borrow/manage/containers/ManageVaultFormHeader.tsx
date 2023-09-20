@@ -2,7 +2,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { AppLink } from 'components/Links'
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { WithArrow } from 'components/WithArrow'
-import {
+import type {
   ManageStandardBorrowVaultState,
   ManageVaultEditingStage,
 } from 'features/borrow/manage/pipes/manageVault'

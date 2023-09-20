@@ -1,33 +1,35 @@
 import { RiskRatio } from '@oasisdex/dma-library'
-import { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave-like'
-import { OpenAaveParameters } from 'actions/aave-like/types'
+import type { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave-like'
+import type { OpenAaveParameters } from 'actions/aave-like/types'
 import { trackingEvents } from 'analytics/analytics'
-import BigNumber from 'bignumber.js'
-import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
+import type BigNumber from 'bignumber.js'
+import type { AaveV2ReserveConfigurationData } from 'blockchain/aave'
 import { addAutomationBotTriggerV2 } from 'blockchain/calls/automationBot'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type {
+  OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor';
 import {
   callOperationExecutorWithDpmProxy,
-  callOperationExecutorWithDsProxy,
-  OperationExecutorTxMeta,
+  callOperationExecutorWithDsProxy
 } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networks'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
-import {
+import type {
   BaseAaveContext,
   BaseAaveEvent,
+  RefTransactionMachine } from 'features/aave/types';
+import {
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
   ProductType,
-  ProxyType,
-  RefTransactionMachine,
+  ProxyType
 } from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
-import {
+import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
 } from 'features/automation/common/txDefinitions'
@@ -38,27 +40,28 @@ import {
   getAveeStopLossTriggerType,
 } from 'features/automation/protection/stopLoss/openFlow/helpers'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { AllowanceStateMachine } from 'features/stateMachines/allowance'
-import { createDPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
-import {
+import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
+import type { createDPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
+import type {
   DMPAccountStateMachineResultEvents,
   DPMAccountStateMachine,
 } from 'features/stateMachines/dpmAccount/'
-import { ProxyResultEvent, ProxyStateMachine } from 'features/stateMachines/proxy'
-import { TransactionStateMachine } from 'features/stateMachines/transaction'
-import {
+import type { ProxyResultEvent, ProxyStateMachine } from 'features/stateMachines/proxy'
+import type { TransactionStateMachine } from 'features/stateMachines/transaction'
+import type {
   TransactionParametersStateMachine,
   TransactionParametersStateMachineEvent,
 } from 'features/stateMachines/transactionParameters'
 import { allDefined } from 'helpers/allDefined'
 import { canOpenPosition } from 'helpers/canOpenPosition'
 import { getLocalAppConfig } from 'helpers/config'
-import { AutomationTxData } from 'helpers/context/types'
+import type { AutomationTxData } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { ActorRefFrom, assign, createMachine, send, sendTo, spawn } from 'xstate'
+import type { ActorRefFrom } from 'xstate';
+import { assign, createMachine, send, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
-import { MachineOptionsFrom } from 'xstate/lib/types'
+import type { MachineOptionsFrom } from 'xstate/lib/types'
 
 export const totalStepsMap = {
   base: 2,

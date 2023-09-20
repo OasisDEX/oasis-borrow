@@ -11,9 +11,10 @@ import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/auto
 import { AutomationFeatures } from 'features/automation/common/types'
 import { StopLossDetailsLayout } from 'features/automation/protection/stopLoss/controls/StopLossDetailsLayout'
 import { checkIfIsEditingStopLoss } from 'features/automation/protection/stopLoss/helpers'
+import type {
+  StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange';
 import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
+  STOP_LOSS_FORM_CHANGE
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { uiChanges } from 'helpers/uiChanges'

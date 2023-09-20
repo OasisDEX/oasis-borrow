@@ -1,6 +1,6 @@
 import { ManageVaultHeaderAllowance } from 'components/vault/commonMultiply/ManageVaultHeaderAllowance'
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
-import {
+import type {
   ManageMultiplyVaultEditingStage,
   ManageMultiplyVaultState,
 } from 'features/multiply/manage/pipes/types'

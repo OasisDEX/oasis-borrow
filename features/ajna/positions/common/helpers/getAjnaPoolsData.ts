@@ -1,8 +1,8 @@
-import { Bucket } from '@oasisdex/dma-library'
+import type { Bucket } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
-import { SubgraphsResponses } from 'features/subgraphLoader/types'
+import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface AjnaPoolsDataResponse {

@@ -1,14 +1,16 @@
 import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
+import type {
+  MutableOpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault';
 import {
-  defaultMutableOpenMultiplyVaultState,
-  MutableOpenMultiplyVaultState,
+  defaultMutableOpenMultiplyVaultState
 } from 'features/multiply/open/pipes/openMultiplyVault'
-import { ProductContext } from 'helpers/context/ProductContext'
+import type { ProductContext } from 'helpers/context/ProductContext'
+import type {
+  MockOpenMultiplyVaultProps } from 'helpers/mocks/openMultiplyVault.mock';
 import {
-  mockOpenMultiplyVault,
-  MockOpenMultiplyVaultProps,
+  mockOpenMultiplyVault
 } from 'helpers/mocks/openMultiplyVault.mock'
 import React, { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'

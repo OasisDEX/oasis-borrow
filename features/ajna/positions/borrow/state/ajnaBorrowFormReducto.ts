@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
-import { AjnaBorrowAction, AjnaBorrowPanel, AjnaCloseTo } from 'features/ajna/common/types'
-import {
+import type { AjnaBorrowAction, AjnaBorrowPanel, AjnaCloseTo } from 'features/ajna/common/types'
+import type {
   AjnaFormActionsReset,
   AjnaFormActionsUpdateDeposit,
   AjnaFormActionsUpdateDpm,
@@ -11,7 +11,8 @@ import {
   AjnaFormActionsUpdateWithdraw,
   AjnaUpdateLoanToValue,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
-import { ReductoActions, useReducto } from 'helpers/useReducto'
+import type { ReductoActions } from 'helpers/useReducto';
+import { useReducto } from 'helpers/useReducto'
 
 export interface AjnaBorrowFormState {
   action?: AjnaBorrowAction

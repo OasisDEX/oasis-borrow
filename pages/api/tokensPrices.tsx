@@ -1,6 +1,6 @@
 import { cacheObject } from 'helpers/api/cacheObject'
 import { tokenTickers } from 'helpers/api/tokenTickers'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 export const getTicker = cacheObject(tokenTickers, 2 * 60, 'token-tickers')
 

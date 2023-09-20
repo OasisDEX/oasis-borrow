@@ -1,25 +1,28 @@
 import { TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
-import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
+import type { VaultWithType, VaultWithValue } from 'blockchain/vaults.types'
+import type {
+  AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData';
 import {
-  AutoBSTriggerData,
   extractAutoBSData,
 } from 'features/automation/common/state/autoBSTriggerData'
+import type {
+  StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData';
 import {
-  extractStopLossData,
-  StopLossTriggerData,
+  extractStopLossData
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { gql, GraphQLClient } from 'graphql-request'
 import { isEqual, memoize } from 'lodash'
-import { combineLatest, from, Observable, timer } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { combineLatest, from, timer } from 'rxjs'
 import { distinctUntilChanged, shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'
 
 import { fetchWithOperationId, flatEvents } from './vaultHistory'
-import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
+import type { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
   query vaultsMultiplyHistories($urns: [String!], $cdpIds: [BigFloat!]) {

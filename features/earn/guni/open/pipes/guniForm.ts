@@ -1,14 +1,15 @@
 // TODO REMOVE NO CHECK
 // @ts-nocheck
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { defaultAllowanceState } from 'features/allowance/allowance'
 import { defaultProxyStage } from 'features/proxy/proxy'
-import { BalanceInfo } from 'features/shared/balanceInfo'
-import { TxHelpers } from 'helpers/context/types'
+import type { BalanceInfo } from 'features/shared/balanceInfo'
+import type { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 
-import { EnvironmentState } from './enviroment'
-import { openGuniVault, TxStateDependencies } from './guniActionsCalls'
+import type { EnvironmentState } from './enviroment'
+import type { TxStateDependencies } from './guniActionsCalls';
+import { openGuniVault } from './guniActionsCalls'
 import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions'
 
 export type EditingStage = 'editing'

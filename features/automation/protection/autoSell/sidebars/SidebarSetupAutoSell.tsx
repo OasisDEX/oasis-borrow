@@ -1,7 +1,8 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { useAutomationContext, useGasEstimationContext } from 'components/context'
-import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { AddAndRemoveTxHandler } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection';
+import { SidebarSection } from 'components/sidebar/SidebarSection'
+import type { AddAndRemoveTxHandler } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
 import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
 import { getAutomationFormTitle } from 'features/automation/common/sidebars/getAutomationFormTitle'
@@ -10,11 +11,13 @@ import { getAutomationStatusTitle } from 'features/automation/common/sidebars/ge
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
+import type {
+  AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange';
 import {
-  AUTO_SELL_FORM_CHANGE,
-  AutoBSFormChange,
+  AUTO_SELL_FORM_CHANGE
 } from 'features/automation/common/state/autoBSFormChange'
-import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
+import type { SidebarAutomationStages } from 'features/automation/common/types';
+import { AutomationFeatures } from 'features/automation/common/types'
 import { getAutoSellMinMaxValues } from 'features/automation/protection/autoSell/helpers'
 import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/autoSell/sidebars/SidebarAuteSellCancelEditingStage'
 import { SidebarAutoSellAddEditingStage } from 'features/automation/protection/autoSell/sidebars/SidebarAutoSellAddEditingStage'

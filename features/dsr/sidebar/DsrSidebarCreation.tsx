@@ -1,10 +1,11 @@
 import { MessageCard } from 'components/MessageCard'
+import type {
+  SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus';
 import {
-  SidebarSectionStatus,
-  SidebarSectionStatusProps,
+  SidebarSectionStatus
 } from 'components/sidebar/SidebarSectionStatus'
 import { getIsAllowanceStage } from 'features/allowance/allowance'
-import { DsrDepositState } from 'features/dsr/helpers/dsrDeposit'
+import type { DsrDepositState } from 'features/dsr/helpers/dsrDeposit'
 import { isProxyStage } from 'features/proxy/proxy'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'

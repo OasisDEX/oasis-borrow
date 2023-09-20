@@ -1,9 +1,10 @@
 import { trackingEvents } from 'analytics/analytics'
+import type {
+  MixpanelAutomationEventsAdditionalParams,
+  MixpanelPages } from 'analytics/types';
 import {
   MixpanelAutomationEventIds,
-  MixpanelAutomationEventsAdditionalParams,
-  MixpanelCommonAnalyticsSections,
-  MixpanelPages,
+  MixpanelCommonAnalyticsSections
 } from 'analytics/types'
 import { ActionPills } from 'components/ActionPills'
 import { Item } from 'components/infoSection/Item'

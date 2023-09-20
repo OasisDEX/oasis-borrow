@@ -1,5 +1,6 @@
 import { NetworkNames } from 'blockchain/networks'
-import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubItemWithoutAddress } from 'features/productHub/types';
+import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [

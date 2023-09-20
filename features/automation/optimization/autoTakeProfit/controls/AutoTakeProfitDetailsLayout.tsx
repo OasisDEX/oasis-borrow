@@ -4,16 +4,17 @@ import {
   MixpanelCommonAnalyticsSections,
   MixpanelPages,
 } from 'analytics/types'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AppLink } from 'components/Links'
 import { ContentCardTriggerColPrice } from 'components/vault/detailsSection/ContentCardTriggerColPrice'
 import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
+import type {
+  AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange';
 import {
-  AUTOMATION_CHANGE_FEATURE,
-  AutomationChangeFeature,
+  AUTOMATION_CHANGE_FEATURE
 } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'

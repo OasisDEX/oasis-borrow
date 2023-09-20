@@ -4,18 +4,19 @@ import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AssetsTableDataCellPill } from 'components/assetsTable/cellComponents/AssetsTableDataCellPill'
 import { AssetsTableDataCellRiskRatio } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskRatio'
-import { AssetsTableRowData } from 'components/assetsTable/types'
-import { DiscoverDataResponseRow } from 'features/discover/api'
+import type { AssetsTableRowData } from 'components/assetsTable/types'
+import type { DiscoverDataResponseRow } from 'features/discover/api'
 import { getActivityPillColor } from 'features/discover/helpers/getActivityPillColor'
 import { getStatusPillColor } from 'features/discover/helpers/getStatusPillColor'
-import {
+import type {
   DiscoverPages,
   DiscoverTableActivityRowData,
   DiscoverTableColRatioRowData,
   DiscoverTableStatusRowData,
 } from 'features/discover/types'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
-import React, { ReactNode } from 'react'
+import type { ReactNode } from 'react';
+import React from 'react'
 import { Trans } from 'react-i18next'
 import { timeAgo } from 'utils'
 

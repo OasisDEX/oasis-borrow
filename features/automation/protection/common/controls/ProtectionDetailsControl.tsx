@@ -1,8 +1,9 @@
 import { useAutomationContext } from 'components/context'
 import { getAvailableAutomation } from 'features/automation/common/helpers'
+import type {
+  AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange';
 import {
-  AUTOMATION_CHANGE_FEATURE,
-  AutomationChangeFeature,
+  AUTOMATION_CHANGE_FEATURE
 } from 'features/automation/common/state/automationFeatureChange'
 import { AutoSellDetailsControl } from 'features/automation/protection/autoSell/controls/AutoSellDetailsControl'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'

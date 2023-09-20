@@ -1,6 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import React, { PropsWithChildren } from 'react'
-import { Box, SxProps } from 'theme-ui'
+import type { PropsWithChildren } from 'react';
+import React from 'react'
+import type { SxProps } from 'theme-ui';
+import { Box } from 'theme-ui'
 
 export type DrawerMenuProps = {
   mobileCloseOnTop?: boolean

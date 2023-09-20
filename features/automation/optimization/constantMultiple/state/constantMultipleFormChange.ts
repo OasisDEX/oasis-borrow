@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
-import {
+import type {
   AutomationChangeAction,
   AutomationFormChange,
 } from 'features/automation/common/state/autoBSFormChange'

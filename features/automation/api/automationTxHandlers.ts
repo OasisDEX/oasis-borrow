@@ -1,25 +1,27 @@
 import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import {
+import type BigNumber from 'bignumber.js'
+import type {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
 } from 'blockchain/calls/automationBot'
+import type {
+  AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator';
 import {
-  AutomationBotAddAggregatorTriggerData,
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import {
-  addTransactionMap,
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
   AutomationRemoveTriggerData,
-  AutomationRemoveTriggerTxDef,
+  AutomationRemoveTriggerTxDef } from 'features/automation/common/txDefinitions';
+import {
+  addTransactionMap
 } from 'features/automation/common/txDefinitions'
-import { AutomationPublishType } from 'features/automation/common/types'
-import { AutomationTxData, TxHelpers } from 'helpers/context/types'
+import type { AutomationPublishType } from 'features/automation/common/types'
+import type { AutomationTxData, TxHelpers } from 'helpers/context/types'
 import { handleTransaction } from 'helpers/handleTransaction'
-import { UIChanges } from 'helpers/uiChanges'
+import type { UIChanges } from 'helpers/uiChanges'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 export const takeUntilTxState = [

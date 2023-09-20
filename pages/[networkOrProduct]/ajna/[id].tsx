@@ -2,7 +2,7 @@ import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { ProductContextHandler } from 'components/context'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaProductController } from 'features/ajna/positions/common/controls/AjnaProductController'
-import { GetServerSidePropsContext } from 'next'
+import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 

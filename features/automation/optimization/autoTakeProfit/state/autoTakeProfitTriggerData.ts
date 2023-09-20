@@ -1,13 +1,13 @@
 import { CommandContractType, encodeTriggerDataByType, TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
-import {
+import type {
   AutomationBaseTriggerData,
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
+import type { TriggersData } from 'features/automation/api/automationTriggersData'
 import { getTriggersByType } from 'features/automation/common/helpers'
-import {
+import type {
   AutoTakeProfitFormChange,
   AutoTakeProfitResetData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'

@@ -1,9 +1,9 @@
-import { TxMeta } from '@oasisdex/transactions'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { TxMeta } from '@oasisdex/transactions'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
-import { AccountFactory } from 'types/web3-v1-contracts'
+import type { AccountFactory } from 'types/web3-v1-contracts'
 
-import { TxMetaKind } from './txMeta'
+import type { TxMetaKind } from './txMeta'
 
 export interface CreateDPMAccount extends TxMeta {
   kind: TxMetaKind.createAccount

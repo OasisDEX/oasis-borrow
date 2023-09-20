@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js'
-import { StopLossMetadata } from 'features/automation/metadata/types'
+import type BigNumber from 'bignumber.js'
+import type { StopLossMetadata } from 'features/automation/metadata/types'
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { uiChanges } from 'helpers/uiChanges'
 import { useEffect } from 'react'
 

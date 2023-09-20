@@ -1,8 +1,8 @@
-import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import { AutomationFormChange } from 'features/automation/common/state/autoBSFormChange'
-import { AutomationFormType } from 'features/automation/common/state/automationFeatureChange'
-import { TxError } from 'helpers/types'
+import type { TxStatus } from '@oasisdex/transactions'
+import type BigNumber from 'bignumber.js'
+import type { AutomationFormChange } from 'features/automation/common/state/autoBSFormChange'
+import type { AutomationFormType } from 'features/automation/common/state/automationFeatureChange'
+import type { TxError } from 'helpers/types'
 
 export const AUTO_TAKE_PROFIT_FORM_CHANGE = 'AUTO_TAKE_PROFIT_FORM_CHANGE'
 

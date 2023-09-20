@@ -1,7 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import { MixpanelEventTypes } from 'analytics/types'
 import BigNumber from 'bignumber.js'
-import { ManualChange } from 'features/dsr/helpers/dsrDeposit'
+import type { ManualChange } from 'features/dsr/helpers/dsrDeposit'
 
 export function handleAmountChange(change: (ch: ManualChange) => void) {
   return (e: React.ChangeEvent<HTMLInputElement>) => {

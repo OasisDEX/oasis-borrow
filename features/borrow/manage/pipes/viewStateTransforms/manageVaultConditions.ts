@@ -1,4 +1,4 @@
-import {
+import type {
   ManageBorrowVaultStage,
   ManageStandardBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'

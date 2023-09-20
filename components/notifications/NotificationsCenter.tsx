@@ -6,7 +6,8 @@ import { NotificationsCenterContent } from 'components/notifications/Notificatio
 import { NotificationsCenterHeader } from 'components/notifications/NotificationsCenterHeader'
 import { NotificationsError } from 'components/notifications/NotificationsError'
 import { NotificationPreferenceCardWrapper } from 'components/notifications/NotificationsPrefrenceCardWrapper'
-import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import type { NotificationChange } from 'features/notifications/notificationChange';
+import { NOTIFICATION_CHANGE } from 'features/notifications/notificationChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { throttle } from 'lodash'
 import { useTranslation } from 'next-i18next'

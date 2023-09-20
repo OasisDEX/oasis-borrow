@@ -1,28 +1,28 @@
-import BigNumber from 'bignumber.js'
-import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
-import { DeployAjnaPoolTxData } from 'blockchain/calls/ajnaErc20PoolFactory'
-import {
+import type BigNumber from 'bignumber.js'
+import type { CreateDPMAccount } from 'blockchain/calls/accountFactory'
+import type { DeployAjnaPoolTxData } from 'blockchain/calls/ajnaErc20PoolFactory'
+import type {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
   AutomationBotV2RemoveTriggerData,
 } from 'blockchain/calls/automationBot'
-import {
+import type {
   AutomationBotAddAggregatorTriggerData,
   AutomationBotRemoveTriggersData,
 } from 'blockchain/calls/automationBotAggregator'
-import { EstimateGasFunction, SendTransactionFunction } from 'blockchain/calls/callsHelpers'
-import { ApproveData, DisapproveData } from 'blockchain/calls/erc20'
-import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
-import { OasisActionsTxData } from 'blockchain/calls/oasisActions'
-import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
-import { CreateDsProxyData, SetProxyOwnerData } from 'blockchain/calls/proxy'
-import {
+import type { EstimateGasFunction, SendTransactionFunction } from 'blockchain/calls/callsHelpers'
+import type { ApproveData, DisapproveData } from 'blockchain/calls/erc20'
+import type { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
+import type { OasisActionsTxData } from 'blockchain/calls/oasisActions'
+import type { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
+import type { CreateDsProxyData, SetProxyOwnerData } from 'blockchain/calls/proxy'
+import type {
   ClaimRewardData,
   DepositAndGenerateData,
   OpenData,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import {
+import type {
   CloseGuniMultiplyData,
   CloseVaultData,
   MultiplyAdjustData,
@@ -30,11 +30,11 @@ import {
   OpenMultiplyData,
   ReclaimData,
 } from 'blockchain/calls/proxyActions/proxyActions'
-import { NetworkIds } from 'blockchain/networks'
-import { LendingProtocol } from 'lendingProtocols'
-import { AaveLikeServices } from 'lendingProtocols/aave-like-common'
-import { getAaveV2Services } from 'lendingProtocols/aave-v2'
-import { Observable } from 'rxjs'
+import type { NetworkIds } from 'blockchain/networks'
+import type { LendingProtocol } from 'lendingProtocols'
+import type { AaveLikeServices } from 'lendingProtocols/aave-like-common'
+import type { getAaveV2Services } from 'lendingProtocols/aave-v2'
+import type { Observable } from 'rxjs'
 
 export type TxData =
   | OpenData

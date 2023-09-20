@@ -1,7 +1,8 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { jwtAuthGetToken } from 'features/shared/jwt'
-import { LendingProtocol } from 'lendingProtocols'
-import { Observable, of } from 'rxjs'
+import type { LendingProtocol } from 'lendingProtocols'
+import type { Observable } from 'rxjs';
+import { of } from 'rxjs'
 import { catchError, delay, map, startWith } from 'rxjs/operators'
 
 export function checkVaultTypeLocalStorage$(id: BigNumber): Observable<VaultType> {

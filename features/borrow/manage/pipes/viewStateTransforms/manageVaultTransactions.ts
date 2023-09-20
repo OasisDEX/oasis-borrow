@@ -1,22 +1,25 @@
 import { TxStatus } from '@oasisdex/transactions'
-import { BigNumber } from 'bignumber.js'
-import { approve, ApproveData } from 'blockchain/calls/erc20'
-import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import {
+import type { BigNumber } from 'bignumber.js'
+import type { ApproveData } from 'blockchain/calls/erc20';
+import { approve } from 'blockchain/calls/erc20'
+import type { CreateDsProxyData } from 'blockchain/calls/proxy';
+import { createDsProxy } from 'blockchain/calls/proxy'
+import type {
   DepositAndGenerateData,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import type { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import {
+import type {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
 } from 'features/borrow/manage/pipes/manageVault'
-import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
+import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
-import { TxError } from 'helpers/types'
+import type { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
-import { iif, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { iif, of } from 'rxjs'
 import { filter, first, switchMap } from 'rxjs/operators'
 
 type ProxyChange =

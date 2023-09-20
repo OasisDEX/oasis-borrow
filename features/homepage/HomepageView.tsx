@@ -16,7 +16,7 @@ import { slideInAnimation } from 'theme/animations'
 import { HomepageHeadline } from './common/HomepageHeadline'
 import { HomepagePromoBlock } from './common/HomepagePromoBlock'
 import { partnerLogosConfig } from './helpers/constants'
-import { OasisStats } from './OasisStats'
+import type { OasisStats } from './OasisStats'
 import { ReferralHandler } from './ReferralHandler'
 import { useOasisStats } from './stats'
 

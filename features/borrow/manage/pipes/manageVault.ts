@@ -1,62 +1,59 @@
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { ProxyActionsSmartContractAdapterInterface } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import {
-  vaultActionsLogic,
-  VaultActionsLogicInterface,
-} from 'blockchain/calls/proxyActions/vaultActionsLogic'
-import { MakerVaultType } from 'blockchain/calls/vaultResolver'
-import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
-import { createVaultChange$, Vault } from 'blockchain/vaults'
-import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
-import {
-  createAutomationTriggersChange$,
-  TriggersData,
-} from 'features/automation/api/automationTriggersData'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { ProxyActionsSmartContractAdapterInterface } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import type { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import type { MakerVaultType } from 'blockchain/calls/vaultResolver'
+import type { IlkData } from 'blockchain/ilks'
+import { createIlkDataChange$ } from 'blockchain/ilks'
+import type { Context } from 'blockchain/network'
+import { createVaultChange$ } from 'blockchain/vaults'
+import type { Vault } from 'blockchain/vaults.types'
+import type { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
+import type { TriggersData } from 'features/automation/api/automationTriggersData'
+import { createAutomationTriggersChange$ } from 'features/automation/api/automationTriggersData'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import {
-  SaveVaultType,
-  saveVaultTypeForAccount,
-  VaultType,
-} from 'features/generalManageVault/vaultType'
-import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
-import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
-import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { AddGasEstimationFunction, HasGasEstimation, TxHelpers } from 'helpers/context/types'
-import { TxError } from 'helpers/types'
+import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import type { SaveVaultType } from 'features/generalManageVault/vaultType'
+import { saveVaultTypeForAccount, VaultType } from 'features/generalManageVault/vaultType'
+import type { BalanceInfo } from 'features/shared/balanceInfo'
+import { balanceInfoChange$ } from 'features/shared/balanceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo'
+import { priceInfoChange$ } from 'features/shared/priceInfo'
+import type { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { createHistoryChange$ } from 'features/vaultHistory/vaultHistory'
+import type { AddGasEstimationFunction, HasGasEstimation, TxHelpers } from 'helpers/context/types'
+import type { TxError } from 'helpers/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { curry } from 'lodash'
-import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, merge, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { BorrowManageAdapterInterface } from './adapters/borrowManageAdapterInterface'
+import type { BorrowManageAdapterInterface } from './adapters/borrowManageAdapterInterface'
 import { finalValidation, validateErrors, validateWarnings } from './manageVaultValidations'
-import { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
-import { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations'
-import { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions'
-import { ManageVaultEnvironmentChange } from './viewStateTransforms/manageVaultEnvironment'
-import { ManageVaultFormChange } from './viewStateTransforms/manageVaultForm'
-import { ManageVaultInputChange } from './viewStateTransforms/manageVaultInput'
-import { ManageVaultSummary } from './viewStateTransforms/manageVaultSummary'
+import type { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
+import type { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations'
+import type { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions'
+import type { ManageVaultEnvironmentChange } from './viewStateTransforms/manageVaultEnvironment'
+import type { ManageVaultFormChange } from './viewStateTransforms/manageVaultForm'
+import type { ManageVaultInputChange } from './viewStateTransforms/manageVaultInput'
+import type { ManageVaultSummary } from './viewStateTransforms/manageVaultSummary'
+import type { ManageVaultTransactionChange } from './viewStateTransforms/manageVaultTransactions'
 import {
   applyEstimateGas,
   createProxy,
-  ManageVaultTransactionChange,
   setCollateralAllowance,
   setDaiAllowance,
 } from './viewStateTransforms/manageVaultTransactions'
-import {
-  ManageVaultTransitionChange,
-  progressManage,
-} from './viewStateTransforms/manageVaultTransitions'
+import type { ManageVaultTransitionChange } from './viewStateTransforms/manageVaultTransitions'
+import { progressManage } from './viewStateTransforms/manageVaultTransitions'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'

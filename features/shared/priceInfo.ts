@@ -1,6 +1,7 @@
-import { BigNumber } from 'bignumber.js'
-import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { BigNumber } from 'bignumber.js'
+import type { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
+import type { Observable } from 'rxjs';
+import { combineLatest, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
 export interface PriceInfo {

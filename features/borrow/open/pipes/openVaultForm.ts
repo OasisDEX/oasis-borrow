@@ -1,4 +1,4 @@
-import { OpenVaultChange, OpenVaultState } from './openVault'
+import type { OpenVaultChange, OpenVaultState } from './openVault'
 
 export type OpenVaultFormChange = {
   kind: 'toggleGenerateOption'

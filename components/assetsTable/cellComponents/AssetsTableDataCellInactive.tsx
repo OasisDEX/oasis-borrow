@@ -1,4 +1,5 @@
-import React, { PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react';
+import React from 'react'
 import { Text } from 'theme-ui'
 
 export function AssetsTableDataCellInactive({ children = 'n/a' }: PropsWithChildren<{}>) {

@@ -1,12 +1,13 @@
-import {
+import type {
   AjnaCommonDependencies,
   AjnaCommonPayload,
-  AjnaEarnPosition,
+  AjnaEarnPosition } from '@oasisdex/dma-library';
+import {
   strategies,
 } from '@oasisdex/dma-library'
-import { AjnaGenericPosition } from 'features/ajna/common/types'
+import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
-import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
 import { zero } from 'helpers/zero'
 
 export const ajnaOpenEarn = ({

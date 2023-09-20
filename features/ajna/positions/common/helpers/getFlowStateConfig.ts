@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js'
-import { AjnaFlow, AjnaFormState } from 'features/ajna/common/types'
+import type BigNumber from 'bignumber.js'
+import type { AjnaFlow, AjnaFormState } from 'features/ajna/common/types'
 import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
-import { UseFlowStateProps } from 'helpers/useFlowState'
+import type { UseFlowStateProps } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
 
 interface GetFlowStateConfigParams {

@@ -1,6 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
+import type BigNumber from 'bignumber.js'
+import type { TriggersData } from 'features/automation/api/automationTriggersData'
 import { DEFAULT_DEVIATION, DEFAULT_MAX_BASE_FEE_IN_GWEI } from 'features/automation/common/consts'
 import {
   calculateCollRatioFromMultiple,
@@ -8,8 +8,9 @@ import {
   resolveMaxBuyOrMinSellPrice,
   resolveWithThreshold,
 } from 'features/automation/common/helpers'
+import type {
+  AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData';
 import {
-  AutoBSTriggerData,
   extractAutoBSData,
 } from 'features/automation/common/state/autoBSTriggerData'
 import { DEFAULT_TARGET_OFFSET } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'

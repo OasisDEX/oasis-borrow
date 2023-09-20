@@ -1,5 +1,6 @@
-import { Result } from '@ethersproject/abi'
-import { decodeTriggerDataAsJson, TriggerType } from '@oasisdex/automation'
+import type { Result } from '@ethersproject/abi'
+import type { TriggerType } from '@oasisdex/automation';
+import { decodeTriggerDataAsJson } from '@oasisdex/automation'
 import { trackingEvents } from 'analytics/analytics'
 import {
   MixpanelAutomationEventIds,
@@ -7,8 +8,8 @@ import {
   MixpanelPages,
 } from 'analytics/types'
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
-import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
+import type { NetworkIds } from 'blockchain/networks'
+import type { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   aaveTokenPairsAllowedAutomation,
   DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
@@ -17,23 +18,25 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   protocolAutomations,
 } from 'features/automation/common/consts'
+import type {
+  AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange';
 import {
   AUTO_BUY_FORM_CHANGE,
-  AUTO_SELL_FORM_CHANGE,
-  AutoBSFormChange,
+  AUTO_SELL_FORM_CHANGE
 } from 'features/automation/common/state/autoBSFormChange'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import type {
+  SidebarAutomationStages } from 'features/automation/common/types';
 import {
   AutomationFeatures,
-  AutomationKinds,
-  SidebarAutomationStages,
+  AutomationKinds
 } from 'features/automation/common/types'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
-import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { VaultProtocol } from 'helpers/getVaultProtocol'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
+import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import type { VaultProtocol } from 'helpers/getVaultProtocol'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
-import { UIChanges } from 'helpers/uiChanges'
+import type { UIChanges } from 'helpers/uiChanges'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one, zero } from 'helpers/zero'
 

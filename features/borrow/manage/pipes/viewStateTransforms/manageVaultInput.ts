@@ -1,5 +1,5 @@
-import { BigNumber } from 'bignumber.js'
-import {
+import type { BigNumber } from 'bignumber.js'
+import type {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
 } from 'features/borrow/manage/pipes/manageVault'

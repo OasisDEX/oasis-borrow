@@ -3,7 +3,8 @@ import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useCallback, useMemo } from 'react'
-import ReactSelect, { OptionProps, SingleValueProps, ValueType } from 'react-select'
+import type { OptionProps, SingleValueProps, ValueType } from 'react-select';
+import ReactSelect from 'react-select'
 import { Box, Flex } from 'theme-ui'
 
 import { reactSelectCustomComponents } from './reactSelectCustomComponents'

@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 import { startWith } from 'rxjs/operators'
 
 export function startWithDefault<T, K>(o$: Observable<T>, defaultValue: K): Observable<T | K> {

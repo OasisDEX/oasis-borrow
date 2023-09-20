@@ -17,7 +17,7 @@ import { getTotalStepsForOpenVaultFlow } from 'helpers/totalSteps'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import { OpenMultiplyVaultStage, OpenMultiplyVaultState } from './openMultiplyVault'
+import type { OpenMultiplyVaultStage, OpenMultiplyVaultState } from './openMultiplyVault'
 
 const defaultOpenVaultStageCategories = {
   isEditingStage: false,

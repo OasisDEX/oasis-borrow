@@ -1,11 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
-import { MixpanelPages } from 'analytics/types'
-import { COIN_TAGS, CoinTag } from 'blockchain/tokensMetadata'
+import type { MixpanelPages } from 'analytics/types'
+import type { CoinTag } from 'blockchain/tokensMetadata';
+import { COIN_TAGS } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
 import React, { memo, useCallback } from 'react'
 import ReactSelect from 'react-select'
-import { Box, Button, Flex, Input, SxStyleProp } from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui';
+import { Box, Button, Flex, Input } from 'theme-ui'
 
 interface FiltersProps {
   onSearch: (search: string) => void

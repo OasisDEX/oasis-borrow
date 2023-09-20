@@ -9,17 +9,18 @@ import {
 import { ProductHubContentController } from 'features/productHub/controls/ProductHubContentController'
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
 import { ALL_ASSETS } from 'features/productHub/meta'
-import {
+import type {
   ProductHubFilters,
   ProductHubProductType,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
-import { PromoCardsCollection } from 'handlers/product-hub/types'
+import type { PromoCardsCollection } from 'handlers/product-hub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { getAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { FC, Fragment, ReactNode, useMemo, useState } from 'react'
+import type { FC, ReactNode } from 'react';
+import React, { Fragment, useMemo, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 interface ProductHubViewProps {

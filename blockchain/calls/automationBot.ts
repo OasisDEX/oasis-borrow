@@ -1,19 +1,20 @@
-import { TriggerGroupType, TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
+import type { TriggerType } from '@oasisdex/automation';
+import { TriggerGroupType } from '@oasisdex/automation'
+import type BigNumber from 'bignumber.js'
 import * as accountImplementation from 'blockchain/abi/account-implementation.json'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
-import {
+import type {
   AccountImplementation,
   AutomationBot,
   AutomationBotV2,
   DsProxy,
 } from 'types/web3-v1-contracts'
 
-import { TxMetaKind } from './txMeta'
+import type { TxMetaKind } from './txMeta'
 
 export type AutomationBaseTriggerData = {
   cdpId: BigNumber

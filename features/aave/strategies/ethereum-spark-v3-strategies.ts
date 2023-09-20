@@ -8,7 +8,8 @@ import {
   DebtInput,
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
-import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
+import type { IStrategyConfig } from 'features/aave/types';
+import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { SparkBorrowFaq } from 'features/content/faqs/spark/borrow'
 import { SparkEarnFaqV3 } from 'features/content/faqs/spark/earn'
 import { SparkMultiplyFaq } from 'features/content/faqs/spark/multiply'
@@ -17,11 +18,12 @@ import { LendingProtocol } from 'lendingProtocols'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
 import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
+import type {
+  TokenPairConfig } from './common';
 import {
   hasBorrowProductType,
   hasEarnProductType,
-  hasMultiplyProductType,
-  TokenPairConfig,
+  hasMultiplyProductType
 } from './common'
 
 const availableTokenPairs: TokenPairConfig[] = [

@@ -1,9 +1,9 @@
-import { IlkDataChange } from 'blockchain/ilks'
-import { BalanceInfoChange } from 'features/shared/balanceInfo'
-import { PriceInfoChange } from 'features/shared/priceInfo'
-import { SlippageChange } from 'features/userSettings/userSettings'
+import type { IlkDataChange } from 'blockchain/ilks'
+import type { BalanceInfoChange } from 'features/shared/balanceInfo'
+import type { PriceInfoChange } from 'features/shared/priceInfo'
+import type { SlippageChange } from 'features/userSettings/userSettings'
 
-import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
+import type { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 export type OpenVaultEnvironmentChange =
   | PriceInfoChange

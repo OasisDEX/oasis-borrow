@@ -1,8 +1,9 @@
 import { BigNumber } from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import { bindNodeCallback, combineLatest, forkJoin, Observable, of, timer } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { bindNodeCallback, combineLatest, forkJoin, of, timer } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { distinctUntilChanged, first, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 

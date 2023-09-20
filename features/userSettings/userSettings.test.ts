@@ -2,9 +2,11 @@
 
 import BigNumber from 'bignumber.js'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import { Observable, of, throwError } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { of, throwError } from 'rxjs'
 
-import { createUserSettings$, SaveUserSettingsFunction, SLIPPAGE_DEFAULT } from './userSettings'
+import type { SaveUserSettingsFunction } from './userSettings';
+import { createUserSettings$, SLIPPAGE_DEFAULT } from './userSettings'
 import { checkUserSettingsLocalStorage$, saveUserSettingsLocalStorage$ } from './userSettingsLocal'
 
 interface MockUserSettingsProps {

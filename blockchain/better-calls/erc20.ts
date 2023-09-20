@@ -6,7 +6,7 @@ import { amountFromWei, amountToWei } from 'blockchain/utils'
 import { ethers } from 'ethers'
 import { Erc20__factory } from 'types/ethers-contracts'
 
-import { BaseCallParameters, BaseTransactionParameters } from './utils'
+import type { BaseCallParameters, BaseTransactionParameters } from './utils'
 
 export interface TokenBalanceArgs extends BaseCallParameters {
   token: string

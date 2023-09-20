@@ -1,15 +1,17 @@
-import {
-  addAutomationBotTrigger,
+import type {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
-  AutomationBotV2RemoveTriggerData,
-} from 'blockchain/calls/automationBot'
+  AutomationBotV2RemoveTriggerData } from 'blockchain/calls/automationBot';
 import {
-  addAutomationBotAggregatorTrigger,
+  addAutomationBotTrigger
+} from 'blockchain/calls/automationBot'
+import type {
   AutomationBotAddAggregatorTriggerData,
-  AutomationBotRemoveTriggersData,
+  AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator';
+import {
+  addAutomationBotAggregatorTrigger
 } from 'blockchain/calls/automationBotAggregator'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
   AUTO_BUY_FORM_CHANGE,
   AUTO_SELL_FORM_CHANGE,

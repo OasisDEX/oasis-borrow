@@ -1,18 +1,20 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
+import type {
+  MutableManageVaultState } from 'features/borrow/manage/pipes/manageVault';
 import {
-  defaultMutableManageVaultState,
-  MutableManageVaultState,
+  defaultMutableManageVaultState
 } from 'features/borrow/manage/pipes/manageVault'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
-import { ProductContext } from 'helpers/context/ProductContext'
+import type { ProductContext } from 'helpers/context/ProductContext'
+import type {
+  MockManageVaultProps } from 'helpers/mocks/manageVault.mock';
 import {
   MOCK_VAULT_ID,
-  mockManageVault$,
-  MockManageVaultProps,
+  mockManageVault$
 } from 'helpers/mocks/manageVault.mock'
 import { memoize } from 'lodash'
 import React, { useEffect } from 'react'

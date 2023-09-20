@@ -1,8 +1,8 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { Context } from 'blockchain/network'
-import { TxHelpers } from 'helpers/context/types'
+import type { Context } from 'blockchain/network'
+import type { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 
 import { defaultMutableManageMultiplyVaultState } from './manageMultiplyVault'
 import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations'
@@ -14,7 +14,7 @@ import {
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
 } from './manageMultiplyVaultTransactions'
-import {
+import type {
   ManageMultiplyVaultChange,
   ManageMultiplyVaultEditingStage,
   ManageMultiplyVaultState,

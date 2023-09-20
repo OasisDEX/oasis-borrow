@@ -1,8 +1,9 @@
+import type {
+  DiscoverTableActivityRowData,
+  DiscoverTableStatusRowData } from 'features/discover/types';
 import {
   DiscoverApiErrors,
-  DiscoverPages,
-  DiscoverTableActivityRowData,
-  DiscoverTableStatusRowData,
+  DiscoverPages
 } from 'features/discover/types'
 import {
   getColRatio,
@@ -12,7 +13,7 @@ import {
   getTimeSignature,
   wrapFilterCombination,
 } from 'handlers/discover/helpers'
-import { NextApiRequest } from 'next'
+import type { NextApiRequest } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 

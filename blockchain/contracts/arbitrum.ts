@@ -52,7 +52,8 @@ import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/arbitrum'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
-import { mainnetContracts, MainnetContractsWithOptional } from './mainnet'
+import type { MainnetContractsWithOptional } from './mainnet';
+import { mainnetContracts } from './mainnet'
 
 const { arbitrum } = ADDRESSES
 

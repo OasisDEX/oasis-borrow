@@ -1,20 +1,23 @@
-import { TxState, TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import { TokenBalanceRawForJoinArgs } from 'blockchain/calls/erc20'
-import { ClaimRewardData } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import type { TxState } from '@oasisdex/transactions';
+import { TxStatus } from '@oasisdex/transactions'
+import type BigNumber from 'bignumber.js'
+import type { TokenBalanceRawForJoinArgs } from 'blockchain/calls/erc20'
+import type { ClaimRewardData } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import type { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { amountFromPrecision, amountFromRay, amountToRay } from 'blockchain/utils'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { combineLatest, of } from 'rxjs'
 import { map, startWith, switchMap, take } from 'rxjs/operators'
 
-import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
+import type { Bonus, BonusAdapter } from './bonusPipe';
+import { ClaimTxnState } from './bonusPipe'
 
 function calculateUnclaimedBonusAmount({
   unclaimedInCurve,

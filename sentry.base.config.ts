@@ -2,7 +2,7 @@ import {
   CaptureConsole as CaptureConsoleIntegration,
   HttpClient as HttpClientIntegration,
 } from '@sentry/integrations'
-import * as Sentry from '@sentry/nextjs'
+import type * as Sentry from '@sentry/nextjs'
 import getConfig from 'next/config'
 
 const SENTRY_DSN: string =

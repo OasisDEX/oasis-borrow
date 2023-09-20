@@ -1,8 +1,9 @@
 import { NetworkNames } from 'blockchain/networks'
-import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubItemWithoutAddress } from 'features/productHub/types';
+import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
-import { AaveProductHubItemSeed } from './aave-product-hub-item-seed'
+import type { AaveProductHubItemSeed } from './aave-product-hub-item-seed'
 
 const aaveSeed: AaveProductHubItemSeed[] = [
   {

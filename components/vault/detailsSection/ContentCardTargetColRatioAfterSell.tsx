@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
-import {
+import type {
   ChangeVariantType,
-  ContentCardProps,
+  ContentCardProps } from 'components/DetailsSectionContentCard';
+import {
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'

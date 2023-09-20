@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
-import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { compareBigNumber } from 'helpers/compareBigNumber'
-import { EMPTY, Observable } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { EMPTY } from 'rxjs'
 import {
   debounceTime,
   distinctUntilChanged,
@@ -15,7 +16,7 @@ import {
   withLatestFrom,
 } from 'rxjs/operators'
 
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './types'
+import type { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './types'
 
 type ExchangeQuoteSuccessChange = {
   kind: 'quote'

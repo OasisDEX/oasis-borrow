@@ -1,13 +1,13 @@
-import { TxMeta } from '@oasisdex/transactions'
+import type { TxMeta } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
-import { PoolCreatorBoundries } from 'features/poolCreator/types'
+import type { PoolCreatorBoundries } from 'features/poolCreator/types'
 import { AjnaErc20PoolFactory__factory as AjnaErc20PoolFactoryFactory } from 'types/ethers-contracts'
-import { AjnaErc20PoolFactory } from 'types/web3-v1-contracts'
+import type { AjnaErc20PoolFactory } from 'types/web3-v1-contracts'
 
 export interface DeployAjnaPoolTxData extends TxMeta {
   kind: TxMetaKind.deployAjnaPool

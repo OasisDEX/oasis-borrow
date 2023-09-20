@@ -2,10 +2,11 @@ import { AppLink } from 'components/Links'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
-import React, { ReactElement } from 'react'
+import type { ReactElement } from 'react';
+import React from 'react'
 import { Box, Flex, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
 

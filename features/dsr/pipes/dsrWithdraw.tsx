@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js'
-import { HasGasEstimation } from 'helpers/context/types'
-import { Change, Changes } from 'helpers/form'
+import type BigNumber from 'bignumber.js'
+import type { HasGasEstimation } from 'helpers/context/types'
+import type { Change, Changes } from 'helpers/form'
 
 export type DsrWithdrawStage =
   | 'editing'

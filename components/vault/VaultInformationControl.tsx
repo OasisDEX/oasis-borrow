@@ -1,5 +1,5 @@
 import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
-import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
+import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'

@@ -10,7 +10,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { getAppConfig } from 'helpers/config'
 import {

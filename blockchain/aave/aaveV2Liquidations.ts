@@ -1,9 +1,9 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
-import { ethers } from 'ethers'
-import { ContractDesc } from 'features/web3Context'
+import type { ethers } from 'ethers'
+import type { ContractDesc } from 'features/web3Context'
 import { AaveV2LendingPool__factory } from 'types/ethers-contracts'
-import { LiquidationCallEvent } from 'types/ethers-contracts/AaveV2LendingPool'
+import type { LiquidationCallEvent } from 'types/ethers-contracts/AaveV2LendingPool'
 
 // TODO: Move to subgraph.
 async function getLastLiquidationEvent(

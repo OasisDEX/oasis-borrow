@@ -4,7 +4,7 @@ import {
   MixpanelCommonAnalyticsSections,
   MixpanelPages,
 } from 'analytics/types'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
 import { PickCloseState } from 'components/dumb/PickCloseState'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
@@ -23,11 +23,12 @@ import {
 import { AutomationValidationMessages } from 'features/automation/common/sidebars/AutomationValidationMessages'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { StopLossCommonOrderInformation } from 'features/automation/protection/common/controls/StopLossCommonOrderInformation'
+import type {
+  StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange';
 import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
+  STOP_LOSS_FORM_CHANGE
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { uiChanges } from 'helpers/uiChanges'

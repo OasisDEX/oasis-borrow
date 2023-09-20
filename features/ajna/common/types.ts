@@ -1,9 +1,9 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
-import { AllNetworksContractsType } from 'blockchain/contracts'
-import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
-import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
-import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
+import type { AllNetworksContractsType } from 'blockchain/contracts'
+import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 
 export type AjnaGenericPosition = AjnaPosition | AjnaEarnPosition
 export type AjnaProduct = 'borrow' | 'earn' | 'multiply'

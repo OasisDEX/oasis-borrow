@@ -1,7 +1,7 @@
 import { useMainnetEnsName } from 'blockchain/ens'
 import { ReferralModal } from 'components/ReferralModal'
 import { SuccessfulJoinModal } from 'components/SuccessfullJoinModal'
-import { UserReferralState } from 'features/referralOverview/user'
+import type { UserReferralState } from 'features/referralOverview/user'
 import { createUserUsingApi$ } from 'features/referralOverview/userApi'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { useConnection } from 'features/web3OnBoard'

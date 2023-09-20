@@ -1,19 +1,19 @@
-import { Result } from '@ethersproject/abi'
+import type { Result } from '@ethersproject/abi'
 import { CommandContractType, encodeTriggerDataByType, TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
-import {
+import type {
   AutomationBaseTriggerData,
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
+import type { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   DEFAULT_DEVIATION,
   DEFAULT_MAX_BASE_FEE_IN_GWEI,
   maxUint256,
 } from 'features/automation/common/consts'
 import { getTriggersByType } from 'features/automation/common/helpers'
-import { AutoBSTriggerTypes } from 'features/automation/common/types'
+import type { AutoBSTriggerTypes } from 'features/automation/common/types'
 import { zero } from 'helpers/zero'
 
 export interface AutoBSTriggerData {

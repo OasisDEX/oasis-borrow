@@ -1,7 +1,7 @@
 import { ADDRESSES } from '@oasisdex/addresses'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import { contractDesc } from 'blockchain/networks'
-import { ContractDesc } from 'features/web3Context'
+import type { ContractDesc } from 'features/web3Context'
 
 export const AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET = 4365693
 export const ACCOUNT_GUARD_GENESIS_OPTIMISM_MAINNET = 84955123

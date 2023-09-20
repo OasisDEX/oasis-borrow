@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 
-import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
+import type { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 interface DepositChange {
   kind: 'deposit'

@@ -1,4 +1,4 @@
-import {
+import type {
   AjnaCommonDependencies,
   AjnaCommonPayload,
   AjnaStrategy,
@@ -11,12 +11,12 @@ import {
 } from 'actions/ajna/borrow'
 import { ajnaClaimEarn, ajnaDepositEarn, ajnaOpenEarn, ajnaWithdrawEarn } from 'actions/ajna/earn'
 import { ajnaOpenMultiply } from 'actions/ajna/multiply'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
-import { ethers } from 'ethers'
-import { AjnaFormState, AjnaGenericPosition } from 'features/ajna/common/types'
+import type { ethers } from 'ethers'
+import type { AjnaFormState, AjnaGenericPosition } from 'features/ajna/common/types'
 import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'

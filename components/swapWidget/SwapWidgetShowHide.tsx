@@ -1,9 +1,10 @@
 import { useConnectWallet } from '@web3-onboard/react'
 import { DrawerMenu } from 'components/DrawerMenu'
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT,
+import type {
   SwapWidgetChangeAction,
-  SwapWidgetState,
+  SwapWidgetState } from 'features/swapWidget/SwapWidgetChange';
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT
 } from 'features/swapWidget/SwapWidgetChange'
 import { useObservable } from 'helpers/observableHook'
 import { uiChanges } from 'helpers/uiChanges'

@@ -1,7 +1,7 @@
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { subgraphMethodsRecord, subgraphsRecord } from 'features/subgraphLoader/consts'
 import request from 'graphql-request'
-import { NextApiHandler, NextApiRequest } from 'next'
+import type { NextApiHandler, NextApiRequest } from 'next'
 
 async function get({ req: { body } }: { req: NextApiRequest }) {
   try {

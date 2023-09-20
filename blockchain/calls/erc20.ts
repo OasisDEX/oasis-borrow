@@ -4,10 +4,10 @@ import * as erc20 from 'blockchain/abi/erc20.json'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { Erc20 } from 'types/web3-v1-contracts'
+import type { Erc20 } from 'types/web3-v1-contracts'
 
-import { CallDef, TransactionDef } from './callsHelpers'
-import { TxMetaKind } from './txMeta'
+import type { CallDef, TransactionDef } from './callsHelpers'
+import type { TxMetaKind } from './txMeta'
 
 export const MIN_ALLOWANCE = new BigNumber('0xffffffffffffffffffffffffffffffff')
 //

@@ -1,5 +1,7 @@
-import { SLIPPAGE_DEFAULT, UserSettingsState } from 'features/userSettings/userSettings'
-import { Observable, of } from 'rxjs'
+import type { UserSettingsState } from 'features/userSettings/userSettings';
+import { SLIPPAGE_DEFAULT } from 'features/userSettings/userSettings'
+import type { Observable } from 'rxjs';
+import { of } from 'rxjs'
 
 export function slippageLimitMock(
   mockUserData?: Partial<UserSettingsState>,

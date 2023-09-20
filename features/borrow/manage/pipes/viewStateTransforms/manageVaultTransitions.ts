@@ -1,14 +1,15 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
-import {
-  defaultMutableManageVaultState,
+import type { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import type {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
-  ManageVaultEditingStage,
+  ManageVaultEditingStage } from 'features/borrow/manage/pipes/manageVault';
+import {
+  defaultMutableManageVaultState
 } from 'features/borrow/manage/pipes/manageVault'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 
 import { defaultManageVaultCalculations } from './manageVaultCalculations'
 import { defaultManageVaultConditions } from './manageVaultConditions'

@@ -1,7 +1,7 @@
 import { createProxy } from 'features/proxy/createProxy'
-import { TxHelpers } from 'helpers/context/types'
-import { TxError } from 'helpers/types'
-import { Observable } from 'rxjs'
+import type { TxHelpers } from 'helpers/context/types'
+import type { TxError } from 'helpers/types'
+import type { Observable } from 'rxjs'
 
 export interface ProxyState {
   proxyTxHash?: string

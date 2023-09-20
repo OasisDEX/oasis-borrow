@@ -1,4 +1,4 @@
-import { ProductHubItemTooltips, ProductHubManagementType } from 'features/productHub/types'
+import type { ProductHubItemTooltips, ProductHubManagementType } from 'features/productHub/types'
 
 export interface SearchTokensResponse {
   symbol: string

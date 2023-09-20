@@ -1,5 +1,6 @@
-import { NetworkNames, networksByName } from 'blockchain/networks'
-import { LendingProtocol } from 'lendingProtocols'
+import type { NetworkNames } from 'blockchain/networks';
+import { networksByName } from 'blockchain/networks'
+import type { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import React from 'react'
 import { Box, Flex, Image } from 'theme-ui'

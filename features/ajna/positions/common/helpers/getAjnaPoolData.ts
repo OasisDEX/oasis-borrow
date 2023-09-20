@@ -1,6 +1,6 @@
-import { Bucket, GetPoolData } from '@oasisdex/dma-library'
+import type { Bucket, GetPoolData } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { ajnaLastIndexBucketPrice } from 'features/ajna/common/consts'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'

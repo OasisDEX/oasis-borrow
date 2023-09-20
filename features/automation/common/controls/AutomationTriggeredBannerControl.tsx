@@ -1,4 +1,5 @@
-import { Banner, BannerProps } from 'components/Banner'
+import type { BannerProps } from 'components/Banner';
+import { Banner } from 'components/Banner'
 import { useSessionStorage } from 'helpers/useSessionStorage'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'

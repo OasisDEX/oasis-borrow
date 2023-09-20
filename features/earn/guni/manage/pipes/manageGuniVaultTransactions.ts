@@ -1,12 +1,12 @@
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { closeGuniVaultCall } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
-import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
+import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 
-import { GuniTxData } from './manageGuniVault'
+import type { GuniTxData } from './manageGuniVault'
 
 export function applyGuniManageEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,

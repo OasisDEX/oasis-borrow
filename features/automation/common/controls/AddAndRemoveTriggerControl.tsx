@@ -1,27 +1,31 @@
+import type {
+  AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator';
 import {
-  AutomationBotRemoveTriggersData,
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { useAutomationContext } from 'components/context'
-import { AutoBSTriggerResetData } from 'features/automation/common/state/autoBSFormChange'
+import type { AutoBSTriggerResetData } from 'features/automation/common/state/autoBSFormChange'
+import type {
+  AutomationTxHandlerAnalytics } from 'features/automation/common/state/automationFeatureTxHandlers';
 import {
-  AutomationTxHandlerAnalytics,
   getAutomationFeatureTxHandlers,
 } from 'features/automation/common/state/automationFeatureTxHandlers'
-import {
-  addTransactionMap,
+import type {
   AutomationAddTriggerData,
-  AutomationRemoveTriggerData,
+  AutomationRemoveTriggerData } from 'features/automation/common/txDefinitions';
+import {
+  addTransactionMap
 } from 'features/automation/common/txDefinitions'
-import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
-import { AutomationContracts } from 'features/automation/metadata/types'
-import { AutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { TxHelpers } from 'helpers/context/types'
+import type { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
+import type { AutomationContracts } from 'features/automation/metadata/types'
+import type { AutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import type { TxHelpers } from 'helpers/context/types'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { uiChanges } from 'helpers/uiChanges'
-import { ReactElement, useEffect, useMemo } from 'react'
+import type { ReactElement } from 'react';
+import { useEffect, useMemo } from 'react'
 
 export interface AddAndRemoveTxHandler {
   callOnSuccess?: () => void

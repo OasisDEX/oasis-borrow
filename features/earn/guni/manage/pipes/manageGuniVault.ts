@@ -1,15 +1,18 @@
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
+import type { IlkData } from 'blockchain/ilks';
+import { createIlkDataChange$ } from 'blockchain/ilks'
+import type { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { createVaultChange$, Vault } from 'blockchain/vaults'
-import dayjs, { Dayjs } from 'dayjs'
+import { createVaultChange$ } from 'blockchain/vaults'
+import type { Vault } from 'blockchain/vaults.types'
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
-import { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
-import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import type { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
+import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { applyExchange } from 'features/multiply/manage/pipes/manageMultiplyQuote'
 import {
   applyManageVaultCalculations,
@@ -33,19 +36,24 @@ import {
   validateErrors,
   validateWarnings,
 } from 'features/multiply/manage/pipes/manageMultiplyVaultValidations'
-import {
+import type {
   ManageMultiplyVaultChange,
   ManageMultiplyVaultState,
   MutableManageMultiplyVaultState,
 } from 'features/multiply/manage/pipes/types'
-import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
-import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { AddGasEstimationFunction, GasEstimationStatus, TxHelpers } from 'helpers/context/types'
+import type { BalanceInfo } from 'features/shared/balanceInfo';
+import { balanceInfoChange$ } from 'features/shared/balanceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo';
+import { priceInfoChange$ } from 'features/shared/priceInfo'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory';
+import { createHistoryChange$ } from 'features/vaultHistory/vaultHistory'
+import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types';
+import { GasEstimationStatus } from 'helpers/context/types'
 import { GUNI_SLIPPAGE } from 'helpers/multiply/calculations'
 import { one } from 'helpers/zero'
 import { curry } from 'lodash'
-import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { combineLatest, merge, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
 import { closeGuniVault } from './guniActionsCalls'

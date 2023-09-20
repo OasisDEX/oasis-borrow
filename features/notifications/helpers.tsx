@@ -1,8 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
-import {
+import type {
   Notification,
-  NotificationAdditionalData,
+  NotificationAdditionalData } from 'features/notifications/types';
+import {
   NotificationTypes,
 } from 'features/notifications/types'
 import { formatAmount } from 'helpers/formatters/format'

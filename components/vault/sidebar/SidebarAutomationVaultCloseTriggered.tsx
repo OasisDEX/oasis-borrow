@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import { autoKindToCopyMap } from 'features/automation/common/consts'
-import { AutomationKinds } from 'features/automation/common/types'
+import type { AutomationKinds } from 'features/automation/common/types'
 import { StopLossSummaryInformation } from 'features/automation/protection/stopLoss/controls/StopLossSummaryInformation'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import {
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import type {
   AutoTakeProfitExecutedEvent,
   StopLossExecutedEvent,
 } from 'features/vaultHistory/vaultHistoryEvents'

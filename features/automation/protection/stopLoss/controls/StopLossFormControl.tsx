@@ -9,12 +9,13 @@ import {
   checkIfIsEditingStopLoss,
 } from 'features/automation/protection/stopLoss/helpers'
 import { SidebarSetupStopLoss } from 'features/automation/protection/stopLoss/sidebars/SidebarSetupStopLoss'
+import type {
+  StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange';
 import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
+  STOP_LOSS_FORM_CHANGE
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { getStopLossTxHandlers } from 'features/automation/protection/stopLoss/state/stopLossTxHandlers'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 

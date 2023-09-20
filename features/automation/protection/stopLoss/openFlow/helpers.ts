@@ -1,9 +1,9 @@
 import { CommandContractType, TriggerType } from '@oasisdex/automation'
 import { amountFromWei } from '@oasisdex/utils'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { OpenAaveContext } from 'features/aave/open/state'
+import type { OpenAaveContext } from 'features/aave/open/state'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 

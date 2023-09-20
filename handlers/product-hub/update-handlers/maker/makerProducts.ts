@@ -1,4 +1,5 @@
-import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubItemWithoutAddress } from 'features/productHub/types';
+import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 // network is added in the handler

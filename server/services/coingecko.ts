@@ -1,6 +1,7 @@
 import axios from 'axios'
-import { TokenConfig, tokens } from 'blockchain/tokensMetadata'
-import { PriceServiceResponse, RequiredField } from 'helpers/types'
+import type { TokenConfig } from 'blockchain/tokensMetadata';
+import { tokens } from 'blockchain/tokensMetadata'
+import type { PriceServiceResponse, RequiredField } from 'helpers/types'
 
 interface CoingeckoApiResponse {
   [id: string]: { usd: number }

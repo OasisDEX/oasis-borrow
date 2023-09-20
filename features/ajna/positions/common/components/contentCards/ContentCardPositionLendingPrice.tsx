@@ -1,9 +1,10 @@
 import { normalizeValue } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
-import {
+import type {
   ChangeVariantType,
-  ContentCardProps,
+  ContentCardProps } from 'components/DetailsSectionContentCard';
+import {
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
 import { Steps } from 'components/Steps'

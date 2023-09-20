@@ -1,5 +1,5 @@
-import { OtherAction } from 'features/multiply/manage/pipes/types'
-import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import type { OtherAction } from 'features/multiply/manage/pipes/types'
+import type { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { useTranslation } from 'next-i18next'
 
 interface GetTextButtonLabelParams {

@@ -1,4 +1,4 @@
-import { TokenConfig } from 'blockchain/tokensMetadata'
+import type { TokenConfig } from 'blockchain/tokensMetadata'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 
 export const tokenConfigs: TokenConfig[] = [

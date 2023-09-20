@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import { getAddConstantMultipleHistoryEventIndex } from 'features/vaultHistory/vaultHistory'
-import { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
+import type { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { zero } from 'helpers/zero'
 
 export const OAZO_FEE = new BigNumber(0.002)

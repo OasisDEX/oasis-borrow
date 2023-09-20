@@ -1,8 +1,8 @@
-import { ContextConnected } from 'blockchain/network'
-import { HasGasEstimation, TxHelpers } from 'helpers/context/types'
-import { Observable } from 'rxjs'
+import type { ContextConnected } from 'blockchain/network'
+import type { HasGasEstimation, TxHelpers } from 'helpers/context/types'
+import type { Observable } from 'rxjs'
 
-import { createProxyStateMachine } from './machine'
+import type { createProxyStateMachine } from './machine'
 
 export interface ProxyContext {
   readonly dependencies: {

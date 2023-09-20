@@ -1,8 +1,9 @@
 import { useAutomationContext } from 'components/context'
-import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
+import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
+import type {
+  StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange';
 import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
+  STOP_LOSS_FORM_CHANGE
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'

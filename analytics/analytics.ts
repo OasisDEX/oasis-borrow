@@ -1,32 +1,33 @@
 import type { Route } from '@lifi/sdk'
 import type { RouteExecutionUpdate } from '@lifi/widget'
 import { ProductType } from 'analytics/common'
-import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import type BigNumber from 'bignumber.js'
+import type { Context } from 'blockchain/network'
 import browserDetect from 'browser-detect'
 import { getDiscoverMixpanelPage } from 'features/discover/helpers/getDiscoverMixpanelPage'
-import { DiscoverPages } from 'features/discover/types'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
-import { ConnectionKind } from 'features/web3Context'
+import type { DiscoverPages } from 'features/discover/types'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
+import type { ConnectionKind } from 'features/web3Context'
 import { formatPrecision } from 'helpers/formatters/format'
 import { camelCase, upperFirst } from 'lodash'
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
 import { match, P } from 'ts-pattern'
 
-import {
+import type {
   MixpanelAutomationEventIds,
   MixpanelAutomationEventsAdditionalParams,
-  MixpanelCommonAnalyticsSections,
   MixpanelDevelopmentType,
-  MixpanelEventTypes,
   MixpanelNotificationsEventAdditionalParams,
   MixpanelNotificationsEventIds,
-  MixpanelPages,
   MixpanelPropertyNameType,
   MixpanelSwapWidgetEvents,
   MixpanelTopBannerEvents,
-  MixpanelType,
+  MixpanelType } from './types';
+import {
+  MixpanelCommonAnalyticsSections,
+  MixpanelEventTypes,
+  MixpanelPages
 } from './types'
 
 export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevelopmentType {

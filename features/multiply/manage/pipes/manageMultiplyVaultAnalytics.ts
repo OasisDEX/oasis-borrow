@@ -1,14 +1,15 @@
-import { Tracker } from 'analytics/analytics'
+import type { Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network'
 import { networkSetById } from 'blockchain/networks'
 import { formatOazoFee } from 'features/multiply/manage/utils'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import { merge, Observable } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { merge } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
-import { CloseVaultTo, ManageMultiplyVaultState } from './types'
+import type { CloseVaultTo, ManageMultiplyVaultState } from './types'
 
 type AdjustPositionConfirm = {
   kind: 'adjustPositionConfirm'

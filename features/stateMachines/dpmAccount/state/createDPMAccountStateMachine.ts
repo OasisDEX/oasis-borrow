@@ -1,32 +1,38 @@
 import BigNumber from 'bignumber.js'
+import type {
+  CreateAccountParameters } from 'blockchain/better-calls/account-factory';
 import {
-  CreateAccountParameters,
   createCreateAccountTransaction,
   estimateGasCreateAccount,
   extractResultFromContractReceipt,
 } from 'blockchain/better-calls/account-factory'
-import { createAccount, CreateDPMAccount } from 'blockchain/calls/accountFactory'
+import type { CreateDPMAccount } from 'blockchain/calls/accountFactory';
+import { createAccount } from 'blockchain/calls/accountFactory'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
-import { Context, ContextConnected } from 'blockchain/network'
+import type { Context, ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { ethers } from 'ethers'
-import {
-  createEthersTransactionStateMachine,
+import type { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { ethers } from 'ethers'
+import type {
   EthersTransactionStateMachine,
   TransactionStateMachine,
-  TransactionStateMachineResultEvents,
+  TransactionStateMachineResultEvents } from 'features/stateMachines/transaction';
+import {
+  createEthersTransactionStateMachine
 } from 'features/stateMachines/transaction'
-import { GasEstimationStatus, HasGasEstimation, TxHelpers } from 'helpers/context/types'
+import type { HasGasEstimation, TxHelpers } from 'helpers/context/types';
+import { GasEstimationStatus } from 'helpers/context/types'
 import { isEqual } from 'lodash'
-import { Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { of } from 'rxjs'
 import { fromPromise } from 'rxjs/internal-compatibility'
 import { distinctUntilChanged, filter, map, startWith, switchMap } from 'rxjs/operators'
-import { ActorRefFrom, assign, createMachine, interpret, sendParent, spawn } from 'xstate'
+import type { ActorRefFrom } from 'xstate';
+import { assign, createMachine, interpret, sendParent, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
-import { MachineOptionsFrom } from 'xstate/lib/types'
+import type { MachineOptionsFrom } from 'xstate/lib/types'
 
 type RefTransactionMachine =
   | ActorRefFrom<TransactionStateMachine<CreateDPMAccount, UserDpmAccount>>

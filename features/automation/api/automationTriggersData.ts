@@ -1,29 +1,34 @@
 import { TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context, every5Seconds$ } from 'blockchain/network'
+import type { Context } from 'blockchain/network';
+import { every5Seconds$ } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
-import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
-import { PositionId } from 'features/aave/types/position-id'
+import type { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
+import type { PositionId } from 'features/aave/types/position-id'
 import { getAllActiveTriggers } from 'features/automation/api/allActiveTriggers'
+import type {
+  AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData';
 import {
-  AutoBSTriggerData,
   extractAutoBSData,
 } from 'features/automation/common/state/autoBSTriggerData'
+import type {
+  AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData';
 import {
-  AutoTakeProfitTriggerData,
   extractAutoTakeProfitData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import type {
+  ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData';
 import {
-  ConstantMultipleTriggerData,
   extractConstantMultipleData,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import type {
+  StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData';
 import {
-  extractStopLossData,
-  StopLossTriggerData,
+  extractStopLossData
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { GraphQLClient } from 'graphql-request'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
 async function loadTriggerDataFromCache({

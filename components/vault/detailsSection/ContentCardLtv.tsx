@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
-import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
+import type { ContentCardProps } from 'components/DetailsSectionContentCard';
+import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatDecimalAsPercent, formatPercent } from 'helpers/formatters/format'

@@ -5,7 +5,7 @@ import { Box, Card, Flex, Grid, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 import { ChevronUpDown } from './ChevronUpDown'
-import { SelectComponents } from 'react-select/src/components'
+import type { SelectComponents } from 'react-select/src/components'
 
 interface ContentTableProps {
   headers: string[]

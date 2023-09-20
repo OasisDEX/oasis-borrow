@@ -1,12 +1,12 @@
-import { IlkDataChange } from 'blockchain/ilks'
-import { VaultChange } from 'blockchain/vaults'
-import { AutomationTriggersChange } from 'features/automation/api/automationTriggersData'
-import { BalanceInfoChange } from 'features/shared/balanceInfo'
-import { PriceInfoChange } from 'features/shared/priceInfo'
-import { SlippageChange } from 'features/userSettings/userSettings'
-import { VaultHistoryChange } from 'features/vaultHistory/vaultHistory'
+import type { IlkDataChange } from 'blockchain/ilks'
+import type { VaultChange } from 'blockchain/vaults.types'
+import type { AutomationTriggersChange } from 'features/automation/api/automationTriggersData'
+import type { BalanceInfoChange } from 'features/shared/balanceInfo'
+import type { PriceInfoChange } from 'features/shared/priceInfo'
+import type { SlippageChange } from 'features/userSettings/userSettings'
+import type { VaultHistoryChange } from 'features/vaultHistory/vaultHistory'
 
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './types'
+import type { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './types'
 
 export type ManageVaultEnvironmentChange =
   | PriceInfoChange

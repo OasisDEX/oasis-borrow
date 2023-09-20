@@ -1,10 +1,12 @@
-import { Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { of } from 'rxjs'
 import { catchError, first, shareReplay, switchMap } from 'rxjs/operators'
 import { AccountFactory__factory, AccountGuard__factory } from 'types/ethers-contracts'
 
 import { ensureContractsExist, extendContract, getNetworkContracts } from './contracts'
-import { Context } from './network'
-import { getRpcProvidersForLogs, NetworkIds } from './networks'
+import type { Context } from './network'
+import type { NetworkIds } from './networks';
+import { getRpcProvidersForLogs } from './networks'
 
 export interface UserDpmAccount {
   proxy: string

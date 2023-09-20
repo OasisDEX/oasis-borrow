@@ -8,7 +8,8 @@ import {
   DebtInput,
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
-import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
+import type { IStrategyConfig } from 'features/aave/types';
+import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { getLocalAppConfig } from 'helpers/config'
@@ -17,11 +18,12 @@ import { FeaturesEnum } from 'types/config'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
 import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
+import type {
+  TokenPairConfig } from './common';
 import {
   hasBorrowProductType,
   hasEarnProductType,
-  hasMultiplyProductType,
-  TokenPairConfig,
+  hasMultiplyProductType
 } from './common'
 
 const availableTokenPairs: TokenPairConfig[] = [

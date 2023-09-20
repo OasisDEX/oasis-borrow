@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
-import { BalanceInfo } from 'features/shared/balanceInfo'
+import type { IlkData } from 'blockchain/ilks'
+import type { Vault } from 'blockchain/vaults.types'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import type { BalanceInfo } from 'features/shared/balanceInfo'
 import { one, zero } from 'helpers/zero'
 
 // This value ought to be coupled in relation to how much we round the raw debt

@@ -1,8 +1,9 @@
 /* eslint-disable func-style */
 import BigNumber from 'bignumber.js'
 import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import type {
+  AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator';
 import {
-  AutomationBotRemoveTriggersData,
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -21,10 +22,11 @@ import {
   isStopLossTriggerCloseToConstantMultipleSellTrigger,
   isStopLossTriggerHigherThanAutoBuyTarget,
 } from 'features/automation/common/validation/validators'
-import {
+import type {
   ContextWithoutMetadata,
-  StopLossDetailCards,
-  StopLossMetadata,
+  StopLossMetadata } from 'features/automation/metadata/types';
+import {
+  StopLossDetailCards
 } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
@@ -33,7 +35,7 @@ import {
   getSliderPercentageFill,
   getStartingSlRatio,
 } from 'features/automation/protection/stopLoss/helpers'
-import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { getLocalAppConfig } from 'helpers/config'
 import { formatPercent } from 'helpers/formatters/format'

@@ -1,4 +1,4 @@
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network'
 
 export function getGasMultiplier(context: ContextConnected) {
   switch (context.walletLabel) {

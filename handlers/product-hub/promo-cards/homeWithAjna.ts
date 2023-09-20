@@ -1,7 +1,8 @@
-import {
+import type {
   ProductHubItem,
-  ProductHubProductType,
-  ProductHubPromoCards,
+  ProductHubPromoCards } from 'features/productHub/types';
+import {
+  ProductHubProductType
 } from 'features/productHub/types'
 import {
   getAaveV2PromoCards,

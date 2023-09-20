@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { curry } from 'lodash'
-import { merge, Observable, of, Subject } from 'rxjs'
+import type { Observable } from 'rxjs';
+import { merge, of, Subject } from 'rxjs'
 import { catchError, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 type UserSettingsStage = 'editing' | 'inProgress' | 'success' | 'failure'

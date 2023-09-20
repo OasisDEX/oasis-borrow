@@ -12,8 +12,9 @@ import { ContentCardCollateralLocked } from 'components/vault/detailsSection/Con
 import { ContentCardDynamicStopPriceWithColRatio } from 'components/vault/detailsSection/ContentCardDynamicStopPriceWithColRatio'
 import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/ContentCardLiquidationPrice'
 import { ContentFooterItemsBorrow } from 'components/vault/detailsSection/ContentFooterItemsBorrow'
+import type {
+  AfterPillProps } from 'components/vault/VaultDetails';
 import {
-  AfterPillProps,
   getCollRatioColor,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
@@ -23,7 +24,7 @@ import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import { BonusContainer } from 'features/bonus/BonusContainer'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { getAppConfig } from 'helpers/config'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'

@@ -1,6 +1,7 @@
-import {
+import type {
   AjnaEarnPosition,
-  AjnaPosition,
+  AjnaPosition } from '@oasisdex/dma-library';
+import {
   getPoolLiquidity,
   negativeToZero,
 } from '@oasisdex/dma-library'
@@ -12,18 +13,18 @@ import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponen
 import { AssetsTableDataCellRiskNoProtectionAvailableIcon } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskNoProtectionAvailableIcon'
 import { AssetsTableDataCellRiskProtectionIcon } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskProtectionIcon'
 import { AssetsTableDataCellRiskRatio } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskRatio'
-import { AssetsTableRowData } from 'components/assetsTable/types'
+import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
+import type { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { Dsr } from 'features/dsr/utils/createDsr'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { getDsrValue, getFundingCost, getProtection } from 'features/vaultsOverview/helpers'
-import { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
-import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
+import type { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
+import type { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
 import { getAppConfig } from 'helpers/config'
 import {
   formatAddress,

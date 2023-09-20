@@ -4,7 +4,7 @@ import {
   MixpanelCommonAnalyticsSections,
   MixpanelPages,
 } from 'analytics/types'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { useAutomationContext } from 'components/context'
 import { DetailsSection } from 'components/DetailsSection'
@@ -14,9 +14,10 @@ import { ContentCardOperatingCost } from 'components/vault/detailsSection/Conten
 import { ContentCardTargetMultiple } from 'components/vault/detailsSection/ContentCardTargetMultiple'
 import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
 import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
+import type {
+  AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange';
 import {
-  AUTOMATION_CHANGE_FEATURE,
-  AutomationChangeFeature,
+  AUTOMATION_CHANGE_FEATURE
 } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultType } from 'features/generalManageVault/vaultType'

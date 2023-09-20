@@ -3,7 +3,8 @@ import { MixpanelCommonAnalyticsSections, MixpanelNotificationsEventIds } from '
 import { useNotificationSocket } from 'components/context'
 import { NotificationPreferenceCard } from 'components/notifications/NotificationPreferenceCard'
 import { notificationPreferences } from 'features/notifications/consts'
-import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import type { NotificationChange } from 'features/notifications/notificationChange';
+import { NOTIFICATION_CHANGE } from 'features/notifications/notificationChange'
 import {
   NotificationChannelTypes,
   NotificationSubscriptionTypes,

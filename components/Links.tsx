@@ -1,8 +1,9 @@
-import { WithChildren } from 'helpers/types'
-import { LinkProps } from 'next/dist/client/link'
+import type { WithChildren } from 'helpers/types'
+import type { LinkProps } from 'next/dist/client/link'
 import Link from 'next/link'
 import React from 'react'
-import { Link as ThemeLink, SxStyleProp } from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui';
+import { Link as ThemeLink } from 'theme-ui'
 
 export interface AppLinkProps extends WithChildren, LinkProps {
   disabled?: boolean

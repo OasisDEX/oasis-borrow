@@ -1,7 +1,7 @@
 import { useInterpret } from '@xstate/react'
 import { NetworkIds } from 'blockchain/networks'
-import { AllowanceStateMachine } from 'features/stateMachines/allowance'
-import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
+import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
+import type { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
 import { createMachine, send } from 'xstate'
 
 import { zero } from './zero'

@@ -1,37 +1,39 @@
-import { AjnaEarnPosition, AjnaPosition, SwapData } from '@oasisdex/dma-library'
-import { AjnaSimulationData } from 'actions/ajna'
+import type { AjnaEarnPosition, SwapData } from '@oasisdex/dma-library';
+import { AjnaPosition } from '@oasisdex/dma-library'
+import type { AjnaSimulationData } from 'actions/ajna'
 import { useGasEstimationContext, useProductContext } from 'components/context'
-import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import { AjnaGenericPosition, AjnaProduct, AjnaValidationItem } from 'features/ajna/common/types'
-import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import {
+import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import type { AjnaGenericPosition, AjnaProduct, AjnaValidationItem } from 'features/ajna/common/types'
+import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import type {
   AjnaBorrowFormState,
   useAjnaBorrowFormReducto,
 } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
-import { AjnaPositionCumulatives } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
+import type { AjnaPositionCumulatives } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
-import {
+import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { getAjnaValidation } from 'features/ajna/positions/common/validation'
-import {
+import type {
   AjnaEarnFormState,
   useAjnaEarnFormReducto,
 } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
-import {
+import type {
   AjnaMultiplyFormState,
   useAjnaMultiplyFormReducto,
 } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import { getAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import React, {
+import type {
   Dispatch,
   PropsWithChildren,
-  SetStateAction,
+  SetStateAction } from 'react';
+import React, {
   useContext,
   useEffect,
   useMemo,
