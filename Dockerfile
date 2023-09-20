@@ -5,6 +5,7 @@ EXPOSE 3000
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
 COPY ./server/ /usr/src/app/server
+COPY ./scripts/get-config-types.ts /usr/src/app/scripts/get-config-types.ts
 COPY ./blockchain/abi/*.json /usr/src/app/blockchain/abi/
 
 WORKDIR /usr/src/app
