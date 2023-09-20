@@ -8,7 +8,7 @@ import type { Observable } from 'rxjs'
 import { iif, of } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
 
-import type { ProxyChanges } from './proxy'
+import type { ProxyChanges } from './proxy.types'
 
 export function createProxy(
   { sendWithGasEstimation }: TxHelpers,

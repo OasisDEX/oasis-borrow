@@ -16,35 +16,8 @@ import {
   withLatestFrom,
 } from 'rxjs/operators'
 
-import type { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './types'
-
-type ExchangeQuoteSuccessChange = {
-  kind: 'quote'
-  quote: Quote
-}
-
-type ExchangeQuoteFailureChange = {
-  kind: 'quoteError'
-}
-
-type ExchangeSwapSuccessChange = {
-  kind: 'swap'
-  swap: Quote
-}
-
-type ExchangeSwapFailureChange = {
-  kind: 'swapError'
-}
-
-type ExchangeQuoteResetChange = {
-  kind: 'quoteReset'
-}
-export type ExchangeQuoteChanges =
-  | ExchangeQuoteSuccessChange
-  | ExchangeQuoteFailureChange
-  | ExchangeQuoteResetChange
-  | ExchangeSwapSuccessChange
-  | ExchangeSwapFailureChange
+import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
+import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
 
 export function applyExchange<VS extends ManageMultiplyVaultState>(
   change: ManageMultiplyVaultChange,

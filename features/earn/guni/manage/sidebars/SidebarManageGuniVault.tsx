@@ -5,7 +5,7 @@ import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaul
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { SidebarManageGuniVaultEditingState } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVaultEditingState'
 import { SidebarManageGuniVaultManageStage } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVaultManageStage'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'

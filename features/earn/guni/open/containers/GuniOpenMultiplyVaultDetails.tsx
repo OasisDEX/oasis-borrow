@@ -11,7 +11,7 @@ import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniV
 import type { Yield } from 'helpers/earn/calculations'
 import { calculateBreakeven, calculateEarnings, YieldPeriod } from 'helpers/earn/calculations'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
+import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations.constants'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'

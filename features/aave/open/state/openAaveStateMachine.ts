@@ -4,7 +4,7 @@ import type { OpenAaveParameters } from 'actions/aave-like/types'
 import { trackingEvents } from 'analytics/analytics'
 import type BigNumber from 'bignumber.js'
 import type { AaveV2ReserveConfigurationData } from 'blockchain/aave'
-import { addAutomationBotTriggerV2 } from 'blockchain/calls/automationBot'
+import { addAutomationBotTriggerV2 } from 'blockchain/calls/automationBot.constants'
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import type { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import {

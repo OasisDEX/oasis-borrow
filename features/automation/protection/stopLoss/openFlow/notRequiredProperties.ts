@@ -1,4 +1,4 @@
-import type { AutomationBotV2AddTriggerData } from 'blockchain/calls/automationBot'
+import type { AutomationBotV2AddTriggerData } from 'blockchain/calls/automationBot.types'
 import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator'
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import type {

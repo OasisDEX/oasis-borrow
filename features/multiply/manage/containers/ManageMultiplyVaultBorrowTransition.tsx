@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TextWithCheckmark } from 'components/TextWithCheckmark'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
+import type { ManageMultiplyVaultState } from '../pipes/ManageMultiplyVaultState.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'

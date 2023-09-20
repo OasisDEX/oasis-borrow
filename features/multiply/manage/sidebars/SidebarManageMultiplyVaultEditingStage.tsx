@@ -19,7 +19,7 @@ import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSli
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
+import type { ManageMultiplyVaultState } from '../pipes/ManageMultiplyVaultState.types'
 import {
   otherActionsCollateralPanel,
   otherActionsDaiPanel,

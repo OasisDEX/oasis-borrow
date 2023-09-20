@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
-import type { AutomationBotV2RemoveTriggerData } from 'blockchain/calls/automationBot'
 import {
   addAutomationBotTriggerV2,
   removeAutomationBotTriggerV2,
-} from 'blockchain/calls/automationBot'
+} from 'blockchain/calls/automationBot.constants'
+import type { AutomationBotV2RemoveTriggerData } from 'blockchain/calls/automationBot.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import type { NetworkIds } from 'blockchain/networks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'

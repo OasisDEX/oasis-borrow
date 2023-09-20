@@ -10,7 +10,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { applyAllowanceChanges } from 'features/allowance/allowance'
 import { setAllowance } from 'features/allowance/setAllowance'
-import { openFlowInitialStopLossLevel } from 'features/automation/common/helpers'
+import { openFlowInitialStopLossLevel } from 'features/automation/common/openFlowInitialStopLossLevel'
 import { applyOpenVaultStopLoss } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import {
   addStopLossTrigger,

@@ -8,8 +8,8 @@ import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipe
 import type { OpenVaultState } from 'features/borrow/open/pipes/openVault.types'
 import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
-import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
+import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import { handleNumericInput } from 'helpers/input'
 import {
   extractDepositErrors,

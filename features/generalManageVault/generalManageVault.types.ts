@@ -1,7 +1,7 @@
 import type { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter.types'
 import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import type { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault.types'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 
 import type { VaultType } from './vaultType.types'
 

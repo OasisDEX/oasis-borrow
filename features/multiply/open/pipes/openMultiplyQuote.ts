@@ -15,7 +15,7 @@ import {
   withLatestFrom,
 } from 'rxjs/operators'
 
-import type { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
+import type { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault.types'
 
 type ExchangeQuoteSuccessChange = {
   kind: 'quote'

@@ -1,42 +1,13 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { AllNetworksContractsType } from 'blockchain/contracts'
-import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
-import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
-import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+
+import type { AjnaBorrowAction, AjnaEarnAction, AjnaMultiplyAction } from './types/AjnaAction.types'
 
 export type AjnaGenericPosition = AjnaPosition | AjnaEarnPosition
 export type AjnaProduct = 'borrow' | 'earn' | 'multiply'
 export type AjnaFlow = 'open' | 'manage'
-export type AjnaFormState = AjnaBorrowFormState | AjnaEarnFormState | AjnaMultiplyFormState
 export type AjnaFormAction = AjnaBorrowAction | AjnaEarnAction | AjnaMultiplyAction
-
-export type AjnaBorrowAction =
-  | 'open-borrow'
-  | 'deposit-borrow'
-  | 'withdraw-borrow'
-  | 'generate-borrow'
-  | 'payback-borrow'
-  | 'switch-borrow'
-  | 'close-borrow'
-  | 'adjust-borrow'
-
-export type AjnaBorrowPanel = 'collateral' | 'quote' | 'switch' | 'close' | 'adjust'
-
-export type AjnaEarnAction = 'open-earn' | 'deposit-earn' | 'withdraw-earn' | 'claim-earn'
-export type AjnaEarnPanel = 'adjust' | 'liquidity' | 'claim-collateral'
-
-export type AjnaMultiplyAction =
-  | 'open-multiply'
-  | 'adjust'
-  | 'deposit-collateral-multiply'
-  | 'deposit-quote-multiply'
-  | 'generate-multiply'
-  | 'payback-multiply'
-  | 'withdraw-multiply'
-  | 'switch-multiply'
-  | 'close-multiply'
-export type AjnaMultiplyPanel = 'adjust' | 'collateral' | 'quote' | 'switch' | 'close'
 
 export type AjnaSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction' | 'transition'
 

@@ -1,7 +1,7 @@
 import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaPosition } from '@oasisdex/dma-library'
 import { strategies } from '@oasisdex/dma-library'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
-import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
 import { zero } from 'helpers/zero'
 
 export const ajnaOpenBorrow = ({

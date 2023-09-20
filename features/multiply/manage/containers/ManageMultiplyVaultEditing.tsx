@@ -6,8 +6,9 @@ import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultAct
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
 import type { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
-import { MAX_COLL_RATIO } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
-import type { ManageMultiplyVaultState, OtherAction } from 'features/multiply/manage/pipes/types'
+import { MAX_COLL_RATIO } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations.constants'
+import type { OtherAction } from '../pipes/OtherAction.types'
+import type { ManageMultiplyVaultState } from '../pipes/ManageMultiplyVaultState.types'
 import {
   formatAmount,
   formatCryptoBalance,

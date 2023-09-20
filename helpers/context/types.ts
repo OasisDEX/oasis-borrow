@@ -1,11 +1,11 @@
 import type BigNumber from 'bignumber.js'
-import type { CreateDPMAccount } from 'blockchain/calls/accountFactory'
-import type { DeployAjnaPoolTxData } from 'blockchain/calls/ajnaErc20PoolFactory'
+import type { CreateDPMAccount } from 'blockchain/calls/accountFactory.types'
+import type { DeployAjnaPoolTxData } from 'blockchain/calls/ajnaErc20PoolFactory.types'
 import type {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
   AutomationBotV2RemoveTriggerData,
-} from 'blockchain/calls/automationBot'
+} from 'blockchain/calls/automationBot.types'
 import type {
   AutomationBotAddAggregatorTriggerData,
   AutomationBotRemoveTriggersData,

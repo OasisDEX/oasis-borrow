@@ -4,12 +4,12 @@ import type {
   AllowanceFunctions,
   AllowanceStages,
   AllowanceState,
-} from 'features/allowance/allowance'
+} from 'features/allowance/allowance.types'
 import type { Quote } from 'features/exchange/exchange'
 import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import type { TxStage } from 'features/multiply/open/pipes/openMultiplyVault' // TODO: remove
-import type { ProxyChanges, ProxyStages, ProxyState } from 'features/proxy/proxy'
+import type { TxStage } from 'features/multiply/open/pipes/openMultiplyVault.types'
+import type { ProxyChanges, ProxyStages, ProxyState } from 'features/proxy/proxy.types'
 import type { HasGasEstimation } from 'helpers/context/types'
 import type { TxError } from 'helpers/types'
 

@@ -14,7 +14,7 @@ import {
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { OAZO_FEE } from 'helpers/multiply/calculations.constants'
 import { useObservable } from 'helpers/observableHook'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'

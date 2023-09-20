@@ -1,4 +1,4 @@
-import type { OtherAction } from 'features/multiply/manage/pipes/types'
+import type { OtherAction } from 'features/multiply/manage/pipes/OtherAction.types'
 
 export type MultiplyPillChangeAction = {
   type: 'change-multiply-pill'

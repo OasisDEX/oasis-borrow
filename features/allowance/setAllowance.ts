@@ -10,7 +10,7 @@ import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 
-import type { AllowanceChanges, StateDependencies } from './allowance'
+import type { AllowanceChanges, StateDependencies } from './allowance.types'
 
 export function setAllowance(
   { sendWithGasEstimation }: TxHelpers,

@@ -1,14 +1,14 @@
 import type { BigNumber } from 'bignumber.js'
 import type { IlkData } from 'blockchain/ilks.types'
-import type { AllowanceChanges, AllowanceOption } from 'features/allowance/allowance'
+import type { AllowanceChanges, AllowanceOption } from 'features/allowance/allowance.types'
 import type {
   OpenVaultStopLossChanges,
   StopLossOpenFlowStages,
-} from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
+} from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss.types'
 import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
-import type { ProxyChanges } from 'features/proxy/proxy'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
+import type { ProxyChanges } from 'features/proxy/proxy.types'
 import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
 import type { OpenVaultTransactionChange } from 'features/shared/transactions'

@@ -1,6 +1,6 @@
 import type { TxState } from '@oasisdex/transactions'
-import type { CreateDPMAccount } from 'blockchain/calls/accountFactory'
 import { createAccount } from 'blockchain/calls/accountFactory'
+import type { CreateDPMAccount } from 'blockchain/calls/accountFactory.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { ContextConnected } from 'blockchain/network'

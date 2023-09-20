@@ -1,7 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
-import type { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
+import type { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot.types'
 import { maxUint256 } from 'features/automation/common/consts'
 import { prepareAddAutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import type { AutoBSTriggerTypes, AutomationBSPublishType } from 'features/automation/common/types'

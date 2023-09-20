@@ -9,73 +9,17 @@ import type { Observable } from 'rxjs'
 import { merge } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
-import type { CloseVaultTo, ManageMultiplyVaultState } from './types'
-
-type AdjustPositionConfirm = {
-  kind: 'adjustPositionConfirm'
-  value: {
-    ilk: string
-    multiply: string
-  }
-}
-
-type AdjustPositionConfirmTransaction = {
-  kind: 'adjustPositionConfirmTransaction'
-  value: {
-    ilk: string
-    multiply: string
-    txHash: string
-    oasisFee: string
-  }
-}
-
-type OtherActionsConfirm = {
-  kind: 'otherActionsConfirm'
-  value: {
-    ilk: string
-    collateralAmount: BigNumber
-    daiAmount: BigNumber
-  }
-}
-
-type OtherActionsConfirmTransaction = {
-  kind: 'otherActionsConfirmTransaction'
-  value: {
-    ilk: string
-    collateralAmount: BigNumber
-    daiAmount: BigNumber
-    txHash: string
-    oasisFee: string
-  }
-}
-
-type CloseVaultConfirm = {
-  kind: 'closeVaultConfirm'
-  value: {
-    ilk: string
-    debt: string
-    closeTo: CloseVaultTo
-    txHash: string
-  }
-}
-
-type CloseVaultConfirmTransaction = {
-  kind: 'closeVaultConfirmTransaction'
-  value: {
-    ilk: string
-    debt: string
-    closeTo: CloseVaultTo
-    txHash: string
-    oasisFee: string
-  }
-}
-
-type ManageMultiplyConfirmTransaction =
-  | AdjustPositionConfirmTransaction
-  | OtherActionsConfirmTransaction
-  | CloseVaultConfirmTransaction
-
-type ManageMultiplyConfirm = AdjustPositionConfirm | OtherActionsConfirm | CloseVaultConfirm
+import type {
+  AdjustPositionConfirm,
+  AdjustPositionConfirmTransaction,
+  CloseVaultConfirm,
+  CloseVaultConfirmTransaction,
+  ManageMultiplyConfirm,
+  ManageMultiplyConfirmTransaction,
+  OtherActionsConfirm,
+  OtherActionsConfirmTransaction,
+} from './manageMultiplyVaultAnalytics.types'
+import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
 
 export function createManageMultiplyVaultAnalytics$(
   manageMultiplyVaultState$: Observable<ManageMultiplyVaultState>,

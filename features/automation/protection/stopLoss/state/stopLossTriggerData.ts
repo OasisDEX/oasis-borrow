@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import type {
   AutomationBaseTriggerData,
   AutomationBotAddTriggerData,
-} from 'blockchain/calls/automationBot'
+} from 'blockchain/calls/automationBot.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import { getTriggersByType } from 'features/automation/common/helpers'

@@ -9,10 +9,8 @@ import type {
   AjnaValidationItem,
 } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import type {
-  AjnaBorrowFormState,
-  useAjnaBorrowFormReducto,
-} from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import type { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
 import type { AjnaPositionCumulatives } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
@@ -22,14 +20,10 @@ import type {
   AjnaEarnPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { getAjnaValidation } from 'features/ajna/positions/common/validation'
-import type {
-  AjnaEarnFormState,
-  useAjnaEarnFormReducto,
-} from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
-import type {
-  AjnaMultiplyFormState,
-  useAjnaMultiplyFormReducto,
-} from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import type { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
+import type { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
 import { getAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'

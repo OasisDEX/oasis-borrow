@@ -1,33 +1,9 @@
-import type { TxMeta } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import type { TransactionDef } from 'blockchain/calls/callsHelpers'
-import type { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import type { PoolCreatorBoundries } from 'features/poolCreator/types'
 import { AjnaErc20PoolFactory__factory as AjnaErc20PoolFactoryFactory } from 'types/ethers-contracts'
-import type { AjnaErc20PoolFactory } from 'types/web3-v1-contracts'
-
-export interface DeployAjnaPoolTxData extends TxMeta {
-  kind: TxMetaKind.deployAjnaPool
-  collateralAddress: string
-  quoteAddress: string
-  interestRate: string
-}
-
-export const deployAjnaPool: TransactionDef<DeployAjnaPoolTxData> = {
-  call: (_, { contract, chainId }) => {
-    return contract<AjnaErc20PoolFactory>(
-      getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaERC20PoolFactory,
-    ).methods.deployPool
-  },
-  prepareArgs: (data) => {
-    const { collateralAddress, quoteAddress, interestRate } = data
-
-    return [collateralAddress, quoteAddress, interestRate]
-  },
-}
 
 export async function getAjnaPoolInterestRateBoundaries(
   chainId: NetworkIds,

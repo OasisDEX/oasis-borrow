@@ -3,7 +3,7 @@ import type {
   AllowanceChanges,
   AllowanceState,
   StateDependencies,
-} from 'features/allowance/allowance'
+} from 'features/allowance/allowance.types'
 
 export function applyDsrAllowanceChanges<
   S extends AllowanceState & StateDependencies & { isMintingSDai: boolean },

@@ -20,8 +20,8 @@ import { priceInfoChange$ } from 'features/shared/priceInfo'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
 import type { UserSettingsState } from 'features/userSettings/userSettings'
 import { slippageChange$ } from 'features/userSettings/userSettings'
-import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { createHistoryChange$ } from 'features/vaultHistory/vaultHistory'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { GasEstimationStatus } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
@@ -31,25 +31,28 @@ import type { Observable } from 'rxjs'
 import { combineLatest, merge, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import type { CloseVaultTo } from './CloseVaultTo.types'
+import type { MainAction } from './MainAction.types'
 import {
   applyExchange,
   createExchangeChange$,
   createInitialQuoteChange,
 } from './manageMultiplyQuote'
 import { applyManageVaultAllowance } from './manageMultiplyVaultAllowances'
-import {
-  applyManageVaultCalculations,
-  defaultManageMultiplyVaultCalculations,
-} from './manageMultiplyVaultCalculations'
+import { applyManageVaultCalculations } from './manageMultiplyVaultCalculations'
+import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations.constants'
+import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
 import {
   applyManageVaultConditions,
   applyManageVaultStageCategorisation,
-  defaultManageMultiplyVaultConditions,
 } from './manageMultiplyVaultConditions'
+import { defaultManageMultiplyVaultConditions } from './manageMultiplyVaultConditions.constants'
 import { applyManageVaultEnvironment } from './manageMultiplyVaultEnvironment'
 import { applyManageVaultForm } from './manageMultiplyVaultForm'
 import { applyManageVaultInput } from './manageMultiplyVaultInput'
-import { applyManageVaultSummary, defaultManageVaultSummary } from './manageMultiplyVaultSummary'
+import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
+import { applyManageVaultSummary } from './manageMultiplyVaultSummary'
+import { defaultManageVaultSummary } from './manageMultiplyVaultSummary.constants'
 import {
   applyEstimateGas,
   applyManageVaultTransaction,
@@ -59,14 +62,8 @@ import {
 } from './manageMultiplyVaultTransactions'
 import { applyManageVaultTransition, progressAdjust } from './manageMultiplyVaultTransitions'
 import { finalValidation, validateErrors, validateWarnings } from './manageMultiplyVaultValidations'
-import type {
-  CloseVaultTo,
-  MainAction,
-  ManageMultiplyVaultChange,
-  ManageMultiplyVaultState,
-  MutableManageMultiplyVaultState,
-  OtherAction,
-} from './types'
+import type { MutableManageMultiplyVaultState } from './MutableManageMultiplyVaultState.types'
+import type { OtherAction } from './OtherAction.types'
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,

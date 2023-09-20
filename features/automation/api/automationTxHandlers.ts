@@ -2,7 +2,7 @@ import type BigNumber from 'bignumber.js'
 import type {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
-} from 'blockchain/calls/automationBot'
+} from 'blockchain/calls/automationBot.types'
 import type { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
 import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator'
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'

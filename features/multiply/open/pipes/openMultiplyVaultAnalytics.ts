@@ -10,7 +10,10 @@ import type { Observable } from 'rxjs'
 import { combineLatest, merge, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
-import type { MutableOpenMultiplyVaultState, OpenMultiplyVaultState } from './openMultiplyVault'
+import type {
+  MutableOpenMultiplyVaultState,
+  OpenMultiplyVaultState,
+} from './openMultiplyVault.types'
 
 type DepositAmountChange = {
   kind: 'depositAmountChange'

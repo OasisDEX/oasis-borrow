@@ -1,8 +1,3 @@
-import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
-import type { OpenVaultState } from 'features/borrow/open/pipes/openVault.types'
-import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault.types'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
-import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import type { TFunction } from 'next-i18next'
 import type { ParsedUrlQuery } from 'querystring'
 import type { AbiInput, AbiItem } from 'web3-utils'
@@ -11,13 +6,6 @@ export type WithChildren = { children?: any }
 export type WithTranslation = { t: TFunction }
 export type WithQuery = { query?: ParsedUrlQuery }
 export type WithReadonlyAccount = { readonlyAccount?: boolean }
-export type CommonVaultState =
-  | OpenVaultState
-  | ManageStandardBorrowVaultState
-  | OpenMultiplyVaultState
-  | ManageMultiplyVaultState
-  | OpenGuniVaultState
-
 type Shift<A extends Array<any>> = ((...args: A) => void) extends (
   ...args: [A[0], ...infer R]
 ) => void

@@ -1,5 +1,4 @@
 import { TxStatus } from '@oasisdex/transactions'
-import type { BigNumber } from 'bignumber.js'
 import type { ApproveData } from 'blockchain/calls/erc20'
 import { approve } from 'blockchain/calls/erc20'
 import type { CreateDsProxyData } from 'blockchain/calls/proxy'
@@ -20,85 +19,14 @@ import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { checkIfGnosisSafe } from 'helpers/checkIfGnosisSafe'
 import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
-import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
-import type { TxError } from 'helpers/types'
+import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations.constants'
 import { one, zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
 import { iif, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
-import type { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './types'
-
-type ProxyChange =
-  | {
-      kind: 'proxyWaitingForApproval'
-    }
-  | {
-      kind: 'proxyInProgress'
-      proxyTxHash: string
-    }
-  | {
-      kind: 'proxyFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'proxyConfirming'
-      proxyConfirmations?: number
-    }
-  | {
-      kind: 'proxySuccess'
-      proxyAddress: string
-    }
-
-type CollateralAllowanceChange =
-  | { kind: 'collateralAllowanceWaitingForApproval' }
-  | {
-      kind: 'collateralAllowanceInProgress'
-      collateralAllowanceTxHash: string
-    }
-  | {
-      kind: 'collateralAllowanceFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'collateralAllowanceSuccess'
-      collateralAllowance: BigNumber
-    }
-
-type DaiAllowanceChange =
-  | { kind: 'daiAllowanceWaitingForApproval' }
-  | {
-      kind: 'daiAllowanceInProgress'
-      daiAllowanceTxHash: string
-    }
-  | {
-      kind: 'daiAllowanceFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'daiAllowanceSuccess'
-      daiAllowance: BigNumber
-    }
-
-export type ManageChange =
-  | { kind: 'manageWaitingForApproval' }
-  | {
-      kind: 'manageInProgress'
-      manageTxHash: string
-    }
-  | {
-      kind: 'manageFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'manageSuccess'
-    }
-
-export type ManageVaultTransactionChange =
-  | ProxyChange
-  | CollateralAllowanceChange
-  | DaiAllowanceChange
-  | ManageChange
+import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
+import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
 
 export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>(
   change: ManageMultiplyVaultChange,

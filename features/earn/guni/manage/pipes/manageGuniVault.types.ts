@@ -1,6 +1,6 @@
 import type { BigNumber } from 'bignumber.js'
 import type { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 
 export type GuniTxData = {
   sharedAmount0?: BigNumber

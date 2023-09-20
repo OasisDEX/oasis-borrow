@@ -9,7 +9,7 @@ import {
   checkIfIsEditingConstantMultiple,
 } from 'features/automation/optimization/constantMultiple/helpers'
 import { prepareConstantMultipleResetData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { OAZO_FEE } from 'helpers/multiply/calculations.constants'
 import { useObservable } from 'helpers/observableHook'
 
 import type { ConstantMultipleFormChange } from './constantMultipleFormChange.types'

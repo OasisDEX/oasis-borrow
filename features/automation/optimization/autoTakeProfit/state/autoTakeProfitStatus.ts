@@ -13,7 +13,7 @@ import {
   checkIfIsEditingAutoTakeProfit,
 } from 'features/automation/optimization/autoTakeProfit/helpers'
 import { prepareAutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
 import { uiChanges } from 'helpers/uiChanges'
 

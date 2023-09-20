@@ -1,6 +1,6 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
+import type { ManageMultiplyVaultState } from '../pipes/ManageMultiplyVaultState.types'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Text } from 'theme-ui'

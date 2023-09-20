@@ -15,18 +15,16 @@ import type {
 import {
   aaveTokenPairsAllowedAutomation,
   DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
-  DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
   maxUint256,
-  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   protocolAutomations,
 } from 'features/automation/common/consts'
 import type { SidebarAutomationStages } from 'features/automation/common/types'
 import { AutomationFeatures, AutomationKinds } from 'features/automation/common/types'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
-import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import type { VaultProtocol } from 'helpers/getVaultProtocol'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations.constants'
 import type { UIChanges } from 'helpers/uiChanges.types'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one, zero } from 'helpers/zero'
@@ -478,15 +476,6 @@ export function getAvailableAutomation(protocol: VaultProtocol) {
       AutomationFeatures.AUTO_TAKE_PROFIT,
     ),
   }
-}
-
-export function openFlowInitialStopLossLevel({
-  liquidationRatio,
-}: {
-  liquidationRatio: BigNumber
-}) {
-  const stopLossSliderMin = liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
-  return stopLossSliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE).times(100)
 }
 
 export function isSupportedAaveAutomationTokenPair(collateralToken: string, debtToken: string) {

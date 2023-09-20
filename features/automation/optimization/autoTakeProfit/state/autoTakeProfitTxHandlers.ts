@@ -1,6 +1,6 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
-import type { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
+import type { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot.types'
 import { maxUint32 } from 'features/automation/common/consts'
 import { prepareAddAutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { uiChanges } from 'helpers/uiChanges'

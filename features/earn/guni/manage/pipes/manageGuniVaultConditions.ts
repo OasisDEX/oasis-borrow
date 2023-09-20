@@ -1,4 +1,4 @@
-import { GUNI_MAX_SLIPPAGE } from 'helpers/multiply/calculations'
+import { GUNI_MAX_SLIPPAGE } from 'helpers/multiply/calculations.constants'
 
 import type { ManageEarnVaultState } from './manageGuniVault.types'
 

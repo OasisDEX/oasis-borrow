@@ -1,8 +1,8 @@
 // TODO REMOVE NO CHECK
 // @ts-nocheck
 import type { BigNumber } from 'bignumber.js'
-import { defaultAllowanceState } from 'features/allowance/allowance'
-import { defaultProxyStage } from 'features/proxy/proxy'
+import { defaultAllowanceState } from 'features/allowance/allowance.constants'
+import { defaultProxyStage } from 'features/proxy/proxy.constants'
 import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import type { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'

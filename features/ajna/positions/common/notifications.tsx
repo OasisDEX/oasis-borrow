@@ -11,7 +11,7 @@ import type {
 import type {
   AjnaBorrowFormAction,
   AjnaBorrowFormState,
-} from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+} from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
 import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
@@ -20,11 +20,11 @@ import type {
 import type {
   AjnaEarnFormAction,
   AjnaEarnFormState,
-} from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+} from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
 import type {
   AjnaMultiplyFormAction,
   AjnaMultiplyFormState,
-} from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+} from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one, zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'

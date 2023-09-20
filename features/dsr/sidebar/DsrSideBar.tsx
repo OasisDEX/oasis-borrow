@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
-import type { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
+import type { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance.types'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { getIsAllowanceStage } from 'features/allowance/allowance'

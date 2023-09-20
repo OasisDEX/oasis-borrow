@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { openFlowInitialStopLossLevel } from 'features/automation/common/helpers'
+import { openFlowInitialStopLossLevel } from 'features/automation/common/openFlowInitialStopLossLevel'
 import { zero } from 'helpers/zero'
 
 import type { OpenVaultState } from './openVault.types'

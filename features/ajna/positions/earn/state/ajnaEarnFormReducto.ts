@@ -1,48 +1,7 @@
-import type BigNumber from 'bignumber.js'
-import { ethers } from 'ethers'
-import type { AjnaEarnAction, AjnaEarnPanel } from 'features/ajna/common/types'
-import type {
-  AjnaFormActionsReset,
-  AjnaFormActionsUpdateDeposit,
-  AjnaFormActionsUpdateDpm,
-  AjnaFormActionsUpdateWithdraw,
-} from 'features/ajna/positions/common/state/ajnaFormReductoActions'
-import type { ReductoActions } from 'helpers/useReducto'
 import { useReducto } from 'helpers/useReducto'
 
-export interface AjnaEarnFormState {
-  action?: AjnaEarnAction
-  dpmAddress: string
-  depositAmount?: BigNumber
-  depositAmountUSD?: BigNumber
-  price?: BigNumber
-  withdrawAmount?: BigNumber
-  withdrawAmountUSD?: BigNumber
-  uiDropdown: AjnaEarnPanel
-  uiPill: Exclude<AjnaEarnAction, 'open-earn' | 'claim-earn'>
-}
-
-export type AjnaEarnFormAction = ReductoActions<
-  AjnaEarnFormState,
-  | AjnaFormActionsUpdateDeposit
-  | AjnaFormActionsUpdateWithdraw
-  | AjnaFormActionsUpdateDpm
-  | AjnaFormActionsReset
->
-
-export const ajnaEarnReset = {
-  depositAmount: undefined,
-  depositAmountUSD: undefined,
-  withdrawAmount: undefined,
-  withdrawAmountUSD: undefined,
-}
-
-export const ajnaEarnDefault: AjnaEarnFormState = {
-  ...ajnaEarnReset,
-  dpmAddress: ethers.constants.AddressZero,
-  uiDropdown: 'adjust',
-  uiPill: 'deposit-earn',
-}
+import { ajnaEarnDefault, ajnaEarnReset } from './ajnaEarnFormReducto.constants'
+import type { AjnaEarnFormAction, AjnaEarnFormState } from './ajnaEarnFormReducto.types'
 
 export function useAjnaEarnFormReducto({ ...rest }: Partial<AjnaEarnFormState>) {
   const { dispatch, state, updateState } = useReducto<AjnaEarnFormState, AjnaEarnFormAction>({

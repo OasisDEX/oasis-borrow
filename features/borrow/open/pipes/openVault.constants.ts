@@ -1,5 +1,5 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { AllowanceOption } from 'features/allowance/allowance'
+import { AllowanceOption } from 'features/allowance/allowance.types'
 import { zero } from 'helpers/zero'
 
 import type { MutableOpenVaultState, OpenVaultStage } from './openVault.types'

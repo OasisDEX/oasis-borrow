@@ -1,7 +1,7 @@
 import type { BigNumber } from 'bignumber.js'
 import type { IlkData } from 'blockchain/ilks.types'
 import type { Vault } from 'blockchain/vaults.types'
-import type { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
+import type { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance.types'
 import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
 import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData.types'

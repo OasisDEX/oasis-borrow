@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot.constants'
 import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator'
 import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator'
 import type { IlkData } from 'blockchain/ilks.types'
@@ -25,25 +25,13 @@ import type {
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
 import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
 
-export type OpenVaultStopLossLevelChange = {
-  kind: 'stopLossLevel'
-  level: BigNumber
-}
-
-export type OpenVaultStopLossCloseTypeChange = {
-  kind: 'stopLossCloseType'
-  type: 'dai' | 'collateral'
-}
-
-export type OpenVaultStopLossChanges =
-  | OpenVaultStopLossLevelChange
-  | OpenVaultStopLossCloseTypeChange
+import type { OpenVaultStopLossChanges } from './openVaultStopLoss.types'
 
 export function applyOpenVaultStopLoss<S>(state: S, change: OpenVaultStopLossChanges) {
   if (change.kind === 'stopLossLevel') {
@@ -264,11 +252,3 @@ export function getDataForStopLoss(
 
   return { stopLossSidebarProps, automationContextProps }
 }
-
-export type StopLossOpenFlowStages =
-  | 'stopLossEditing'
-  | 'stopLossTxWaitingForConfirmation'
-  | 'stopLossTxWaitingForApproval'
-  | 'stopLossTxInProgress'
-  | 'stopLossTxFailure'
-  | 'stopLossTxSuccess'

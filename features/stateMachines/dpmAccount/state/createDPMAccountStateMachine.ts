@@ -5,8 +5,8 @@ import {
   estimateGasCreateAccount,
   extractResultFromContractReceipt,
 } from 'blockchain/better-calls/account-factory'
-import type { CreateDPMAccount } from 'blockchain/calls/accountFactory'
 import { createAccount } from 'blockchain/calls/accountFactory'
+import type { CreateDPMAccount } from 'blockchain/calls/accountFactory.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import type { Context, ContextConnected } from 'blockchain/network'

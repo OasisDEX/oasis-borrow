@@ -1,61 +1,9 @@
 import { zero } from 'helpers/zero'
 
-import { allowanceDefaults } from './manageMultiplyVaultAllowances'
-import { MAX_COLL_RATIO } from './manageMultiplyVaultCalculations'
-import type {
-  CloseVaultTo,
-  MainAction,
-  ManageMultiplyVaultChange,
-  ManageMultiplyVaultState,
-  OtherAction,
-} from './types'
-
-export type ManageVaultFormChange =
-  | {
-      kind: 'toggleDepositAndGenerateOption'
-    }
-  | {
-      kind: 'togglePaybackAndWithdrawOption'
-    }
-  | {
-      kind: 'resetDefaults'
-    }
-  | {
-      kind: 'toggleSliderController'
-    }
-  | {
-      kind: 'mainAction'
-      mainAction: MainAction
-    }
-  | {
-      kind: 'otherAction'
-      otherAction: OtherAction
-    }
-  | {
-      kind: 'closeVaultTo'
-      closeVaultTo: CloseVaultTo
-    }
-
-export const manageMultiplyInputsDefaults: Partial<ManageMultiplyVaultState> = {
-  buyAmount: undefined,
-  buyAmountUSD: undefined,
-  sellAmount: undefined,
-  sellAmountUSD: undefined,
-  depositAmount: undefined,
-  depositAmountUSD: undefined,
-  depositDaiAmount: undefined,
-  paybackAmount: undefined,
-  withdrawAmount: undefined,
-  withdrawAmountUSD: undefined,
-  generateAmount: undefined,
-
-  requiredCollRatio: undefined,
-}
-
-export const manageVaultFormDefaults: Partial<ManageMultiplyVaultState> = {
-  ...allowanceDefaults,
-  ...manageMultiplyInputsDefaults,
-}
+import { MAX_COLL_RATIO } from './manageMultiplyVaultCalculations.constants'
+import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
+import { manageMultiplyInputsDefaults } from './manageMultiplyVaultForm.constants'
+import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
 
 export function applyManageVaultForm(
   change: ManageMultiplyVaultChange,

@@ -1,25 +1,17 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useMainContext, useProductContext } from 'components/context'
-import type { DefaultVaultHeaderProps } from 'components/vault/DefaultVaultHeader'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
-import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { getAppConfig } from 'helpers/config'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import type { Observable } from 'rxjs'
 import { Box, Grid } from 'theme-ui'
 
-export interface ManageMultiplyVaultContainerProps {
-  manageVault: ManageMultiplyVaultState
-}
-
-interface ManageMultiplyVaultContainerComponents {
-  header: (props: DefaultVaultHeaderProps) => JSX.Element
-  details: (props: ManageMultiplyVaultState) => JSX.Element
-  form: (props: ManageMultiplyVaultState) => JSX.Element
-  history: (props: { vaultHistory: VaultHistoryEvent[] }) => JSX.Element
-}
+import type {
+  ManageMultiplyVaultContainerComponents,
+  ManageMultiplyVaultContainerProps,
+} from './ManageMultiplyVaultContainer.types'
 
 export function ManageMultiplyVaultContainer({
   manageVault,

@@ -1,9 +1,9 @@
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot.constants'
 import type {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
   AutomationBotV2RemoveTriggerData,
-} from 'blockchain/calls/automationBot'
-import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
+} from 'blockchain/calls/automationBot.types'
 import type {
   AutomationBotAddAggregatorTriggerData,
   AutomationBotRemoveTriggersData,

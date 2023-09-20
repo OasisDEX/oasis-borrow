@@ -15,7 +15,7 @@ import type {
   SidebarAutomationStages,
 } from 'features/automation/common/types'
 import type { AutomationContracts } from 'features/automation/metadata/types'
-import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
 import type { TxHelpers } from 'helpers/context/types'
 import { uiChanges } from 'helpers/uiChanges'
 

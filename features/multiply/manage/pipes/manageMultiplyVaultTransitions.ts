@@ -5,65 +5,21 @@ import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
 
 import { defaultMutableManageMultiplyVaultState } from './manageMultiplyVault'
-import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations'
-import { defaultManageMultiplyVaultConditions } from './manageMultiplyVaultConditions'
-import { manageMultiplyInputsDefaults, manageVaultFormDefaults } from './manageMultiplyVaultForm'
+import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations.constants'
+import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
+import { defaultManageMultiplyVaultConditions } from './manageMultiplyVaultConditions.constants'
+import type { ManageMultiplyVaultEditingStage } from './ManageMultiplyVaultEditingStage.types'
+import {
+  manageMultiplyInputsDefaults,
+  manageVaultFormDefaults,
+} from './manageMultiplyVaultForm.constants'
+import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
 import {
   adjustPosition,
   closeVault,
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
 } from './manageMultiplyVaultTransactions'
-import type {
-  ManageMultiplyVaultChange,
-  ManageMultiplyVaultEditingStage,
-  ManageMultiplyVaultState,
-} from './types'
-
-type ManageVaultBorrowTransitionChange =
-  | {
-      kind: 'progressBorrowTransition'
-    }
-  | {
-      kind: 'borrowTransitionInProgress'
-    }
-  | {
-      kind: 'borrowTransitionFailure'
-    }
-  | {
-      kind: 'borrowTransitionSuccess'
-    }
-
-export type ManageVaultTransitionChange =
-  | ManageVaultBorrowTransitionChange
-  | {
-      kind: 'toggleEditing'
-      stage: ManageMultiplyVaultEditingStage
-    }
-  | {
-      kind: 'progressEditing'
-    }
-  | {
-      kind: 'progressProxy'
-    }
-  | {
-      kind: 'progressCollateralAllowance'
-    }
-  | {
-      kind: 'backToEditing'
-    }
-  | {
-      kind: 'resetToEditing'
-    }
-  | {
-      kind: 'regressCollateralAllowance'
-    }
-  | {
-      kind: 'regressDaiAllowance'
-    }
-  | {
-      kind: 'clear'
-    }
 
 export function applyManageVaultTransition<VS extends ManageMultiplyVaultState>(
   change: ManageMultiplyVaultChange,

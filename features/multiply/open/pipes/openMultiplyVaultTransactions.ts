@@ -15,14 +15,14 @@ import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { OAZO_FEE } from 'helpers/multiply/calculations.constants'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import type { Observable } from 'rxjs'
 import { iif, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
 
-import type { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
+import type { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault.types'
 
 export function applyOpenMultiplyVaultTransaction(
   state: OpenMultiplyVaultState,

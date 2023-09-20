@@ -11,17 +11,13 @@ import {
   applyAllowanceChanges,
   applyAllowanceConditions,
   applyIsAllowanceStage,
-  defaultAllowanceState,
 } from 'features/allowance/allowance'
+import { defaultAllowanceState } from 'features/allowance/allowance.constants'
 import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 // TODO: remove
 import { finalValidation } from 'features/multiply/open/pipes/openMultiplyVaultValidations'
-import {
-  addProxyTransitions,
-  applyIsProxyStage,
-  applyProxyChanges,
-  defaultProxyStage,
-} from 'features/proxy/proxy'
+import { addProxyTransitions, applyIsProxyStage, applyProxyChanges } from 'features/proxy/proxy'
+import { defaultProxyStage } from 'features/proxy/proxy.constants'
 import { balanceInfoChange$ } from 'features/shared/balanceInfo'
 import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { priceInfoChange$ } from 'features/shared/priceInfo'
@@ -30,7 +26,7 @@ import type { UserSettingsState } from 'features/userSettings/userSettings'
 import { slippageChange$ } from 'features/userSettings/userSettings'
 import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { GasEstimationStatus } from 'helpers/context/types'
-import { GUNI_SLIPPAGE, OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
+import { GUNI_SLIPPAGE, OAZO_LOWER_FEE } from 'helpers/multiply/calculations.constants'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { combineTransitions } from 'helpers/pipelines/combineTransitions'
 import { one, zero } from 'helpers/zero'

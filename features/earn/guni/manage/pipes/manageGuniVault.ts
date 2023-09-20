@@ -14,21 +14,19 @@ import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVault
 import type { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
 import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { applyExchange } from 'features/multiply/manage/pipes/manageMultiplyQuote'
-import {
-  applyManageVaultCalculations,
-  defaultManageMultiplyVaultCalculations,
-} from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { applyManageVaultCalculations } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { defaultManageMultiplyVaultCalculations } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations.constants'
+import type { ManageMultiplyVaultChange } from 'features/multiply/manage/pipes/ManageMultiplyVaultChange.types'
 import {
   applyManageVaultConditions,
   applyManageVaultStageCategorisation,
-  defaultManageMultiplyVaultConditions,
 } from 'features/multiply/manage/pipes/manageMultiplyVaultConditions'
+import { defaultManageMultiplyVaultConditions } from 'features/multiply/manage/pipes/manageMultiplyVaultConditions.constants'
 import { applyManageVaultEnvironment } from 'features/multiply/manage/pipes/manageMultiplyVaultEnvironment'
-import { manageMultiplyInputsDefaults } from 'features/multiply/manage/pipes/manageMultiplyVaultForm'
-import {
-  applyManageVaultSummary,
-  defaultManageVaultSummary,
-} from 'features/multiply/manage/pipes/manageMultiplyVaultSummary'
+import { manageMultiplyInputsDefaults } from 'features/multiply/manage/pipes/manageMultiplyVaultForm.constants'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
+import { applyManageVaultSummary } from 'features/multiply/manage/pipes/manageMultiplyVaultSummary'
+import { defaultManageVaultSummary } from 'features/multiply/manage/pipes/manageMultiplyVaultSummary.constants'
 import { applyManageVaultTransaction } from 'features/multiply/manage/pipes/manageMultiplyVaultTransactions'
 import { applyManageVaultTransition } from 'features/multiply/manage/pipes/manageMultiplyVaultTransitions'
 import {
@@ -36,11 +34,7 @@ import {
   validateErrors,
   validateWarnings,
 } from 'features/multiply/manage/pipes/manageMultiplyVaultValidations'
-import type {
-  ManageMultiplyVaultChange,
-  ManageMultiplyVaultState,
-  MutableManageMultiplyVaultState,
-} from 'features/multiply/manage/pipes/types'
+import type { MutableManageMultiplyVaultState } from 'features/multiply/manage/pipes/MutableManageMultiplyVaultState.types'
 import { balanceInfoChange$ } from 'features/shared/balanceInfo'
 import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { priceInfoChange$ } from 'features/shared/priceInfo'
@@ -49,7 +43,7 @@ import { createHistoryChange$ } from 'features/vaultHistory/vaultHistory'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { GasEstimationStatus } from 'helpers/context/types'
-import { GUNI_SLIPPAGE } from 'helpers/multiply/calculations'
+import { GUNI_SLIPPAGE } from 'helpers/multiply/calculations.constants'
 import { one } from 'helpers/zero'
 import { curry } from 'lodash'
 import type { Observable } from 'rxjs'

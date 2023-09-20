@@ -7,7 +7,7 @@ import {
   VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { displayMultiple } from 'helpers/display-multiple'
 import {

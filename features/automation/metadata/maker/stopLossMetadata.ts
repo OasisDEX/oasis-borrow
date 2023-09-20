@@ -1,6 +1,6 @@
 /* eslint-disable func-style */
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot.constants'
 import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator'
 import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'

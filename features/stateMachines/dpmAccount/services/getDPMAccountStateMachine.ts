@@ -1,4 +1,4 @@
-import type { CreateDPMAccount } from 'blockchain/calls/accountFactory'
+import type { CreateDPMAccount } from 'blockchain/calls/accountFactory.types'
 import type { Context } from 'blockchain/network'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies'
 import {

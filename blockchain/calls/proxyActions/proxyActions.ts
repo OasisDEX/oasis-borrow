@@ -8,8 +8,8 @@ import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import type { ExchangeAction } from 'features/exchange/exchange'
-import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations.constants'
 import { one, zero } from 'helpers/zero'
 import type {
   DsProxy,

@@ -1,8 +1,6 @@
 import type BigNumber from 'bignumber.js'
-import {
-  deployAjnaPool,
-  getAjnaPoolInterestRateBoundaries,
-} from 'blockchain/calls/ajnaErc20PoolFactory'
+import { getAjnaPoolInterestRateBoundaries } from 'blockchain/calls/ajnaErc20PoolFactory'
+import { deployAjnaPool } from 'blockchain/calls/ajnaErc20PoolFactory.constants'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { IdentifiedTokens } from 'blockchain/identifyTokens'

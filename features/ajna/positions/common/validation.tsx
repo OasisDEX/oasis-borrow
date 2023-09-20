@@ -4,21 +4,21 @@ import type BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import type {
   AjnaFlow,
-  AjnaFormState,
   AjnaGenericPosition,
   AjnaProduct,
   AjnaSidebarStep,
   AjnaValidationItem,
 } from 'features/ajna/common/types'
-import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
+import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
 import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
   AjnaPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
-import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
-import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
+import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { TxError } from 'helpers/types'
