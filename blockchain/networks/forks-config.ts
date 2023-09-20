@@ -1,7 +1,8 @@
 import { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
-import { Feature, getLocalAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { getStorageValue } from 'helpers/useLocalStorage'
 import { keyBy, memoize } from 'lodash'
+import { FeaturesEnum } from 'types/config'
 
 import { NetworkIds } from './network-ids'
 import { NetworkLabelType, NetworkNames } from './network-names'
@@ -12,7 +13,7 @@ import {
   isValidCustomForkParameter,
 } from './use-custom-fork-parameter'
 
-export const forkSettings = getLocalAppConfig('features')[Feature.UseNetworkSwitcherForks]
+export const forkSettings = getLocalAppConfig('features')[FeaturesEnum.UseNetworkSwitcherForks]
   ? getStorageValue<CustomForkParameterType>(CustomForkStorageKey, {}, isValidCustomForkParameter)
   : {}
 

@@ -1,7 +1,8 @@
 import dotenv from 'dotenv'
-import { writeFile } from 'fs/promises'
+import { mkdir, readdir, writeFile } from 'fs/promises'
 import JsonToTS from 'json-to-ts'
 import fetch from 'node-fetch'
+import { join } from 'path'
 dotenv.config({
   path: '.env',
 })
@@ -14,9 +15,9 @@ const getConfig = async () => {
   return await response.json()
 }
 
-const getInterfaces = (configObject: {}) => {
+const getInterfaces = (configObject: { features: {} } = { features: {} }) => {
   try {
-    return JsonToTS(configObject)
+    const interfaces = JsonToTS(configObject)
       .map((typeInterface) => {
         if (typeInterface.includes('RootObject')) {
           return typeInterface.replace('interface RootObject', 'export interface AppConfigType')
@@ -24,6 +25,11 @@ const getInterfaces = (configObject: {}) => {
         return typeInterface
       })
       .join('\n\n')
+    const featuresList = Object.keys(configObject.features || {})
+    const featuresEnum = `export enum FeaturesEnum {
+${featuresList.map((feature) => `  ${feature} = '${feature}',`).join('\n')}
+}`
+    return `${interfaces}\n${featuresEnum}`
   } catch (error) {
     console.error(`Error generating config types: ${error}`)
     return ''
@@ -31,17 +37,34 @@ const getInterfaces = (configObject: {}) => {
 }
 
 const main = async () => {
+  if (!process.env.CONFIG_URL) {
+    console.error('CONFIG_URL environment variable not set')
+    return
+  }
   const config = await getConfig()
   const interfaces = getInterfaces(config)
+  const configPath = join(__dirname, '..', 'types', 'config')
+  const configPathExists = await readdir(configPath).catch(() => false)
 
-  interfaces !== '' &&
-    writeFile('types/config.ts', interfaces)
+  if (!configPathExists) {
+    await mkdir(configPath)
+      .catch(() => {
+        console.error('Error creating types/config directory')
+      })
+      .then(() => {
+        console.info(`${configPath} directory created`)
+      })
+  }
+
+  if (interfaces !== '') {
+    writeFile(join(configPath, 'index.ts'), interfaces)
       .then(() => {
         console.info('Config types generated')
       })
       .catch((error) => {
         console.error(`Error generating config types: ${error}`)
       })
+  }
 }
 
 void main()

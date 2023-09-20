@@ -19,8 +19,9 @@ import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
-import { Feature, getLocalAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
+import { FeaturesEnum } from 'types/config'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
 import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
@@ -38,7 +39,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: Feature.AaveV3EarncbETHeth,
+        featureToggle: FeaturesEnum.AaveV3EarncbETHeth,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
@@ -51,7 +52,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-earn',
-            featureToggle: Feature.AaveV3EarncbETHeth,
+            featureToggle: FeaturesEnum.AaveV3EarncbETHeth,
           },
         ],
       },
@@ -238,7 +239,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: Feature.AaveV3EarnrETHeth,
+        featureToggle: FeaturesEnum.AaveV3EarnrETHeth,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
@@ -251,7 +252,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-earn',
-            featureToggle: Feature.AaveV3EarnrETHeth,
+            featureToggle: FeaturesEnum.AaveV3EarnrETHeth,
           },
         ],
       },
@@ -771,7 +772,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: ProductType.Earn,
     protocol: LendingProtocol.AaveV3,
-    featureToggle: Feature.AaveV3EarnrETHeth,
+    featureToggle: FeaturesEnum.AaveV3EarnrETHeth,
     availableActions: () => {
       return [...allActionsAvailableInMultiply, 'switch-to-borrow']
     },
@@ -807,7 +808,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: ProductType.Earn,
     protocol: LendingProtocol.AaveV3,
-    featureToggle: Feature.AaveV3EarncbETHeth,
+    featureToggle: FeaturesEnum.AaveV3EarncbETHeth,
     availableActions: () => {
       return [...allActionsAvailableInMultiply, 'switch-to-borrow']
     },

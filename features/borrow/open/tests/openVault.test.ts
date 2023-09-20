@@ -20,7 +20,7 @@ import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 jest.mock('helpers/config', () => ({
   getAppConfig: () => ({ StopLossWrite: true }),
   getLocalAppConfig: () => ({ UseNetworkSwitcherForks: false, StopLossWrite: true }),
-  Feature: jest.requireActual('helpers/config').Feature,
+  FeaturesEnum: jest.requireActual('types/config').FeaturesEnum,
 }))
 
 describe('openVault', () => {
