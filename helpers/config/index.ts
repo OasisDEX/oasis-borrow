@@ -1,4 +1,3 @@
-export { Feature } from './types'
 export type {
   ConfiguredFeatures,
   ConfigResponseType,

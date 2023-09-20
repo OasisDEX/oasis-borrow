@@ -1,13 +1,14 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
-import { Feature, getAppConfig } from 'helpers/config'
+import { getAppConfig } from 'helpers/config'
 import { toggleArrayItem } from 'helpers/toggleArrayItem'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { Box, Flex, Image, Text } from 'theme-ui'
+import { FeaturesEnum } from 'types/config'
 
 export interface GenericMultiselectOption {
   icon?: string
@@ -15,7 +16,7 @@ export interface GenericMultiselectOption {
   label: string
   token?: string
   value: string
-  featureFlag?: Feature
+  featureFlag?: FeaturesEnum
 }
 
 export interface GenericMultiselectProps {

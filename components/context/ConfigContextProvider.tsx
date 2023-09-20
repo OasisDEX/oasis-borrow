@@ -2,11 +2,11 @@ import {
   configCacheTime,
   ConfigContext,
   ConfigResponseType,
-  Feature,
   saveConfigToLocalStorage,
 } from 'helpers/config'
 import { WithChildren } from 'helpers/types'
 import React, { useEffect, useState } from 'react'
+import { FeaturesEnum } from 'types/config'
 
 const configFetcher = () =>
   fetch(`/api/config`, {
@@ -17,7 +17,10 @@ const configFetcher = () =>
   })
 
 export const emptyConfig = {
-  features: Object.fromEntries(Object.values(Feature).map((feature: Feature) => [feature, false])),
+  features: Object.fromEntries(
+    Object.values(FeaturesEnum).map((feature: FeaturesEnum) => [feature, false]),
+  ) as Record<FeaturesEnum, boolean>,
+  parameters: {},
 } as ConfigResponseType
 
 export const configContext = React.createContext<ConfigContext | undefined>(undefined)

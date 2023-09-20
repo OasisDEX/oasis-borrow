@@ -165,7 +165,7 @@ const baseConfig = {
 
 module.exports = withBundleAnalyzer(withMDX(baseConfig))
 
-if (process.env.SENTRY_AUTH_TOKEN !== undefined) {
+if (process.env.SENTRY_AUTH_TOKEN !== undefined && process.env.SENTRY_AUTH_TOKEN !== '') {
   module.exports = withSentryConfig(
     module.exports,
     {
