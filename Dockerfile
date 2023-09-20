@@ -5,10 +5,15 @@ EXPOSE 3000
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
 COPY ./server/ /usr/src/app/server
-COPY ./scripts/get-config-types.ts /usr/src/app/scripts/get-config-types.ts
+COPY ./scripts/get-config-types.js /usr/src/app/scripts/get-config-types.js
 COPY ./blockchain/abi/*.json /usr/src/app/blockchain/abi/
 
 WORKDIR /usr/src/app
+
+ARG CONFIG_URL=''
+ENV CONFIG_URL=$CONFIG_URL
+
+RUN yarn --no-progress --non-interactive --frozen-lockfile
 
 ARG COMMIT_SHA='' \
   NOTIFICATIONS_HOST='' \
@@ -30,8 +35,7 @@ ARG COMMIT_SHA='' \
   PRODUCT_HUB_KEY='' \
   ONE_INCH_API_KEY='' \
   ONE_INCH_API_URL='' \
-  REFERRAL_SUBGRAPH_URL='' \
-  CONFIG_URL=''
+  REFERRAL_SUBGRAPH_URL=''
 
 ENV COMMIT_SHA=$COMMIT_SHA \
   NOTIFICATIONS_HOST=$NOTIFICATIONS_HOST \
@@ -57,10 +61,7 @@ ENV COMMIT_SHA=$COMMIT_SHA \
   ONE_INCH_API_KEY=$ONE_INCH_API_KEY \
   ONE_INCH_API_URL=$ONE_INCH_API_URL \
   REFERRAL_SUBGRAPH_URL=$REFERRAL_SUBGRAPH_URL \
-  CONFIG_URL=$CONFIG_URL \
   NODE_OPTIONS=--max-old-space-size=6144
-
-RUN yarn --no-progress --non-interactive --frozen-lockfile
 
 COPY . .
 

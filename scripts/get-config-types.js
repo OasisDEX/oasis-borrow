@@ -1,8 +1,9 @@
-import dotenv from 'dotenv'
-import { mkdir, readdir, writeFile } from 'fs/promises'
-import JsonToTS from 'json-to-ts'
-import fetch from 'node-fetch'
-import { join } from 'path'
+const dotenv = require('dotenv')
+const { mkdir, readdir, writeFile } = require('fs/promises')
+const JsonToTS = require('json-to-ts')
+const fetch = require('node-fetch')
+const { join } = require('path')
+
 dotenv.config({
   path: '.env',
 })
@@ -11,11 +12,11 @@ dotenv.config({
 })
 
 const getConfig = async () => {
-  const response = await fetch(process.env.CONFIG_URL as string)
+  const response = await fetch(process.env.CONFIG_URL)
   return await response.json()
 }
 
-const getInterfaces = (configObject: { features: {} } = { features: {} }) => {
+const getInterfaces = (configObject = { features: {} }) => {
   try {
     const interfaces = JsonToTS(configObject)
       .map((typeInterface) => {
