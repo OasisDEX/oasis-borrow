@@ -34,6 +34,7 @@ export interface AjnaPoolDataResponse {
   buckets: Bucket[]
   loansCount: string
   totalAuctionsInPool: string
+  t0debt: string
 }
 
 export const getAjnaPoolData: (networkId: NetworkIds) => GetPoolData =
@@ -71,6 +72,7 @@ export const getAjnaPoolData: (networkId: NetworkIds) => GetPoolData =
         borrowApr,
         loansCount,
         totalAuctionsInPool,
+        t0debt,
       } = response.pool
 
       const htpBigNumber = new BigNumber(htp)
@@ -131,6 +133,7 @@ export const getAjnaPoolData: (networkId: NetworkIds) => GetPoolData =
         })),
         loansCount: new BigNumber(loansCount),
         totalAuctionsInPool: new BigNumber(totalAuctionsInPool),
+        t0debt: new BigNumber(t0debt).shiftedBy(NEGATIVE_WAD_PRECISION),
       }
     }
 

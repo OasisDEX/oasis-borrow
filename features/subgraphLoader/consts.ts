@@ -197,6 +197,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         }
         loansCount
         totalAuctionsInPool
+        t0debt
       }
     }
   `,
