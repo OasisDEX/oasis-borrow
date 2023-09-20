@@ -3,7 +3,7 @@
 import type { BigNumber } from 'bignumber.js'
 import { defaultAllowanceState } from 'features/allowance/allowance'
 import { defaultProxyStage } from 'features/proxy/proxy'
-import type { BalanceInfo } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import type { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 

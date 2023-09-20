@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import type { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
-import type { PriceInfo } from 'features/shared/priceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo.types'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { lastHour, nextHour } from 'helpers/time'
 import type { Observable } from 'rxjs'

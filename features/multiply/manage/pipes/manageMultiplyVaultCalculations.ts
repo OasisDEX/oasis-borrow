@@ -5,11 +5,11 @@ import {
   getMultiplyParams,
 } from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
-import type { IlkData } from 'blockchain/ilks'
+import type { IlkData } from 'blockchain/ilks.types'
 import type { Vault } from 'blockchain/vaults.types'
 import type { ExchangeAction } from 'features/exchange/exchange'
 import { getMaxPossibleCollRatioOrMax } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
-import type { BalanceInfo } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
   calculatePNL,

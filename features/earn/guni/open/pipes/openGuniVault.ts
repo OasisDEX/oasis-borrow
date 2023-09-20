@@ -1,7 +1,7 @@
 import type { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { IlkData } from 'blockchain/ilks'
 import { createIlkDataChange$ } from 'blockchain/ilks'
+import type { IlkData } from 'blockchain/ilks.types'
 import type { ContextConnected } from 'blockchain/network'
 import { compareBigNumber } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
@@ -22,10 +22,10 @@ import {
   applyProxyChanges,
   defaultProxyStage,
 } from 'features/proxy/proxy'
-import type { BalanceInfo } from 'features/shared/balanceInfo'
 import { balanceInfoChange$ } from 'features/shared/balanceInfo'
-import type { PriceInfo } from 'features/shared/priceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { priceInfoChange$ } from 'features/shared/priceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo.types'
 import type { UserSettingsState } from 'features/userSettings/userSettings'
 import { slippageChange$ } from 'features/userSettings/userSettings'
 import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'

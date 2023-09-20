@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
-import type { DogIlk, dogIlk } from 'blockchain/calls/dog'
-import type { JugIlk, jugIlk } from 'blockchain/calls/jug'
+import type { dogIlk } from 'blockchain/calls/dog'
+import type { jugIlk } from 'blockchain/calls/jug'
 import type { CallObservable } from 'blockchain/calls/observe'
-import type { SpotIlk, spotIlk } from 'blockchain/calls/spot'
-import type { VatIlk, vatIlk } from 'blockchain/calls/vat'
+import type { spotIlk } from 'blockchain/calls/spot'
+import type { vatIlk } from 'blockchain/calls/vat'
 import type { Context } from 'blockchain/network'
 import { one, zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
@@ -11,6 +11,7 @@ import { combineLatest, of } from 'rxjs'
 import { distinctUntilChanged, map, retry, shareReplay, switchMap } from 'rxjs/operators'
 
 import { getNetworkContracts } from './contracts'
+import type { IlkData, IlkDataChange, IlkDataList } from './ilks.types'
 import { NetworkIds } from './networks'
 
 export function createIlksSupportedOnNetwork$(context$: Observable<Context>): Observable<string[]> {
@@ -22,16 +23,6 @@ export function createIlksSupportedOnNetwork$(context$: Observable<Context>): Ob
     ),
   )
 }
-
-interface DerivedIlkData {
-  token: string
-  ilk: string
-  ilkDebt: BigNumber
-  ilkDebtAvailable: BigNumber
-  collateralizationDangerThreshold: BigNumber
-  collateralizationWarningThreshold: BigNumber
-}
-export type IlkData = VatIlk & SpotIlk & JugIlk & DogIlk & DerivedIlkData
 
 // TODO Go in some config somewhere?
 export const COLLATERALIZATION_DANGER_OFFSET = new BigNumber('0.2') // 150% * 1.2 = 180%
@@ -98,8 +89,6 @@ export function createIlkData$(
   )
 }
 
-export type IlkDataList = IlkData[]
-
 export function createIlkDataList$(
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilks$: Observable<string[]>,
@@ -110,11 +99,6 @@ export function createIlkDataList$(
     retry(3),
     shareReplay(1),
   )
-}
-
-export interface IlkDataChange {
-  kind: 'ilkData'
-  ilkData: IlkData
 }
 
 export function createIlkDataChange$(

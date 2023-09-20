@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
 import { Modal, ModalCloseIcon } from 'components/Modal'
-import type { PriceInfo } from 'features/shared/priceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo.types'
 import type { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import type { ReactNode } from 'react'

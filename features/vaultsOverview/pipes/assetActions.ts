@@ -6,7 +6,7 @@ import type { SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChang
 import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
 import type { Web3Context } from 'features/web3Context'
 import { mapTokenToFilter, supportedEarnIlks } from 'helpers/productCards'
-import type { UIChanges } from 'helpers/uiChanges'
+import type { UIChanges } from 'helpers/uiChanges.types'
 import { map as mapLodash, omit, reduce } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, iif, of } from 'rxjs'

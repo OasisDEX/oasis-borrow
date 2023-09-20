@@ -1,5 +1,5 @@
 import { StopLossTwoTxRequirement } from 'features/aave/components'
-import type { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
+import type { OpenVaultStage } from 'features/borrow/open/pipes/openVault.types'
 import type { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'

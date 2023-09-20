@@ -8,7 +8,7 @@ import { SidebarVaultStopLossStage } from 'components/vault/sidebar/SidebarVault
 import { openVaultWithStopLossAnalytics } from 'features/automation/common/helpers'
 import { getDataForStopLoss } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
-import type { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import type { OpenVaultState } from '../pipes/openVault.types'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'

@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import type { BalanceInfo } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
 import { of } from 'rxjs'

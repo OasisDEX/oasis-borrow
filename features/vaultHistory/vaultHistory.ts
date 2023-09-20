@@ -7,7 +7,7 @@ import type { Vault } from 'blockchain/vaults.types'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { gql, GraphQLClient } from 'graphql-request'
+import { GraphQLClient } from 'graphql-request'
 import { flatten, memoize } from 'lodash'
 import pickBy from 'lodash/pickBy'
 import { equals } from 'ramda'
@@ -15,12 +15,14 @@ import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
+import { query, triggerEventsQuery, triggerEventsQueryUsingProxy } from './vaultHistory.constants'
+import type { VaultHistoryEvent, WithSplitMark } from './vaultHistory.types'
 import type {
   AutomationEvent,
   ReturnedAutomationEvent,
   ReturnedEvent,
   VaultEvent,
-} from './vaultHistoryEvents'
+} from './vaultHistoryEvents.types'
 
 export function groupHistoryEventsByHash(events: VaultHistoryEvent[]) {
   return events.reduce((acc, curr) => {
@@ -307,8 +309,6 @@ export function mapAutomationEvents(events: VaultHistoryEvent[]) {
   return flatten(Object.values(wrappedByHash))
 }
 
-type WithSplitMark<T> = T & { splitId?: number }
-
 export function splitEvents(
   event: VaultHistoryEvent,
 ): WithSplitMark<VaultHistoryEvent> | WithSplitMark<VaultHistoryEvent>[] {
@@ -343,21 +343,6 @@ export function splitEvents(
   return event
 }
 
-export type VaultHistoryEvent = VaultEvent & {
-  token: string
-  etherscan?: {
-    url: string
-    apiUrl: string
-    apiKey: string
-  }
-  ethx?: {
-    url: string
-  }
-  daiAmount?: BigNumber
-  collateralAmount?: BigNumber
-  gasFee?: BigNumber
-  depositCollateral?: BigNumber
-}
 export function fetchWithOperationId(url: string, options?: RequestInit) {
   const operationNameRegex = /query (?<operationName>[a-zA-Z0-9]+)\(/gm
 
@@ -368,129 +353,6 @@ export function fetchWithOperationId(url: string, options?: RequestInit) {
 
   return fetch(url, { ...options, body: JSON.stringify({ ...parsedBody, operationName }) })
 }
-
-export interface VaultHistoryChange {
-  kind: 'vaultHistory'
-  vaultHistory: VaultHistoryEvent[]
-}
-
-const query = gql`
-  query vaultMultiplyHistories($urn: String) {
-    allVaultMultiplyHistories(
-      filter: { urn: { equalTo: $urn } }
-      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
-    ) {
-      nodes {
-        hash
-        txId
-        logIndex
-        blockId
-        blockNumber
-        blockHash
-        timestamp
-        id
-        urn
-        kind
-        marketPrice
-        beforeLockedCollateral
-        lockedCollateral
-        beforeCollateralizationRatio
-        collateralizationRatio
-        beforeDebt
-        debt
-        beforeMultiple
-        multiple
-        beforeLiquidationPrice
-        liquidationPrice
-        netValue
-        oazoFee
-        loanFee
-        gasFee
-        totalFee
-        bought
-        depositCollateral
-        depositDai
-        sold
-        withdrawnCollateral
-        withdrawnDai
-        exitCollateral
-        exitDai
-        collateralAmount
-        daiAmount
-        rate
-        vaultCreator
-        depositor
-        cdpId
-        transferFrom
-        transferTo
-        collateral
-        auctionId
-        liqPenalty
-        collateralPrice
-        coveredDebt
-        remainingDebt
-        remainingCollateral
-        collateralTaken
-        ilk
-        oraclePrice
-        ethPrice
-      }
-    }
-  }
-`
-
-const triggerEventsQuery = gql`
-  query triggerEvents($cdpId: BigFloat) {
-    allTriggerEvents(
-      filter: { cdpId: { equalTo: $cdpId } }
-      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
-    ) {
-      nodes {
-        id
-        triggerId
-        cdpId
-        number
-        kind
-        eventType
-        hash
-        timestamp
-        triggerData
-        commandAddress
-        groupId
-        groupType
-        gasFee
-        ethPrice
-      }
-    }
-  }
-`
-
-const triggerEventsQueryUsingProxy = gql`
-  query triggerEvents($proxyAddress: String) {
-    allTriggerEvents(
-      filter: { proxyAddress: { equalTo: $proxyAddress } }
-      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
-    ) {
-      nodes {
-        id
-        triggerId
-        cdpId
-        number
-        kind
-        eventType
-        hash
-        timestamp
-        triggerData
-        commandAddress
-        groupId
-        groupType
-        gasFee
-        ethPrice
-        proxyAddress
-      }
-    }
-  }
-`
 
 function parseBigNumbersFields(
   event: Partial<ReturnedEvent & ReturnedAutomationEvent>,

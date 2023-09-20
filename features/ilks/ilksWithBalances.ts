@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { IlkData, IlkDataList } from 'blockchain/ilks'
+import type { IlkData, IlkDataList } from 'blockchain/ilks.types'
 import type { Context } from 'blockchain/network'
 import type { TokenBalances } from 'blockchain/tokens'
 import isEqual from 'lodash/isEqual'

@@ -1,7 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAccountContext, useMainContext, useProductContext } from 'components/context'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
-import type { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import type { OpenVaultState } from 'features/borrow/open/pipes/openVault.types'
 import { createOpenVaultAnalytics$ } from 'features/borrow/open/pipes/openVaultAnalytics'
 import { SidebarOpenBorrowVault } from 'features/borrow/open/sidebars/SidebarOpenBorrowVault'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'

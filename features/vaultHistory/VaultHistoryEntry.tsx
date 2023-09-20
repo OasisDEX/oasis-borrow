@@ -8,10 +8,7 @@ import { WithArrow } from 'components/WithArrow'
 import dayjs from 'dayjs'
 import { maxUint32, maxUint256 } from 'features/automation/common/consts'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
-import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
-import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
-import type { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents'
+import type { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents.types'
 import {
   formatAddress,
   formatAmount,
@@ -27,7 +24,8 @@ import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 import type { TranslationType } from 'ts_modules/i18next'
 
-import type { VaultHistoryEvent } from './vaultHistory'
+import type { VaultHistoryEvent } from './vaultHistory.types'
+import type { AutomationEntryProps } from './VaultHistoryEntry.types'
 
 function resolveTranslationForEventsWithTriggers(event: AutomationEvent) {
   const isGroup = 'groupId' in event && event.groupId
@@ -116,13 +114,6 @@ function resolveMaxGweiAmount(maxBaseFeeInGwei: BigNumber, unlimited: string) {
   return maxBaseFeeInGwei.isEqualTo(maxUint32)
     ? unlimited
     : formatCryptoBalance(maxBaseFeeInGwei) + ' Gwei'
-}
-
-interface AutomationEntryProps {
-  event: AutomationEvent
-  isAddOrRemoveEvent: boolean
-  isUpdateEvent: boolean
-  addOrRemoveTriggersData: (AutoBSTriggerData | StopLossTriggerData | AutoTakeProfitTriggerData)[]
 }
 
 function StandaloneAutomationEntry({

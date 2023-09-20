@@ -14,7 +14,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import type { Observable } from 'rxjs'
 import { iif, of } from 'rxjs'
 
-import type { OpenVaultChange, OpenVaultState } from './openVault'
+import type { OpenVaultChange, OpenVaultState } from './openVault.types'
 
 export function applyOpenVaultTransaction(
   state: OpenVaultState,

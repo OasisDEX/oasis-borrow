@@ -4,7 +4,7 @@ import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 
-import type { OpenVaultState } from './openVault'
+import type { OpenVaultState } from './openVault.types'
 
 export function validateErrors(state: OpenVaultState): OpenVaultState {
   const {

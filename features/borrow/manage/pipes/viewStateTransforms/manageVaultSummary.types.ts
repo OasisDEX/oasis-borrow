@@ -1,4 +1,4 @@
-import type { BalanceInfo } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 
 import type { ManageVaultCalculations } from './manageVaultCalculations.types'
 import type { ManageVaultConditions } from './manageVaultConditions.types'

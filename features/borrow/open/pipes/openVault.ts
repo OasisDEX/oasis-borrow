@@ -1,78 +1,56 @@
 import type { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
 import type { ProxyActionsSmartContractAdapterInterface } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import type { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { IlkData } from 'blockchain/ilks'
 import { createIlkDataChange$ } from 'blockchain/ilks'
+import type { IlkData } from 'blockchain/ilks.types'
 import type { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
-import type { AllowanceChanges } from 'features/allowance/allowance'
-import { AllowanceOption, applyAllowanceChanges } from 'features/allowance/allowance'
+import { applyAllowanceChanges } from 'features/allowance/allowance'
 import { setAllowance } from 'features/allowance/setAllowance'
 import { openFlowInitialStopLossLevel } from 'features/automation/common/helpers'
-import type {
-  OpenVaultStopLossChanges,
-  StopLossOpenFlowStages,
-} from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import { applyOpenVaultStopLoss } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import {
   addStopLossTrigger,
   applyStopLossOpenFlowTransaction,
 } from 'features/automation/protection/stopLoss/openFlow/stopLossOpenFlowTransaction'
-import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import { createProxy } from 'features/proxy/createProxy'
-import type { ProxyChanges } from 'features/proxy/proxy'
 import { applyProxyChanges } from 'features/proxy/proxy'
-import type { BalanceInfo } from 'features/shared/balanceInfo'
 import { balanceInfoChange$ } from 'features/shared/balanceInfo'
-import type { PriceInfo } from 'features/shared/priceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { priceInfoChange$ } from 'features/shared/priceInfo'
-import type { OpenVaultTransactionChange } from 'features/shared/transactions'
-import type { OpenVaultTransitionChange } from 'features/vaultTransitions/openVaultTransitions'
+import type { PriceInfo } from 'features/shared/priceInfo.types'
 import { createApplyOpenVaultTransition } from 'features/vaultTransitions/openVaultTransitions'
 import { getLocalAppConfig } from 'helpers/config'
-import type { AddGasEstimationFunction, HasGasEstimation, TxHelpers } from 'helpers/context/types'
+import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { GasEstimationStatus } from 'helpers/context/types'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
-import type { TxError } from 'helpers/types'
-import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, iif, merge, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import type { OpenVaultCalculations } from './openVaultCalculations'
-import {
-  applyOpenVaultCalculations,
-  defaultOpenVaultStateCalculations,
-} from './openVaultCalculations'
-import type { OpenVaultConditions } from './openVaultConditions'
+import { defaultMutableOpenVaultState } from './openVault.constants'
+import type { MutableOpenVaultState, OpenVaultChange, OpenVaultState } from './openVault.types'
+import { applyOpenVaultCalculations } from './openVaultCalculations'
+import type { OpenVaultCalculations } from './openVaultCalculations.types'
+import { defaultOpenVaultStateCalculations } from './openVaultCalculations.types'
 import {
   applyOpenVaultConditions,
   applyOpenVaultStageCategorisation,
   calculateInitialTotalSteps,
-  defaultOpenVaultConditions,
 } from './openVaultConditions'
-import type { OpenVaultEnvironmentChange } from './openVaultEnvironment'
+import { defaultOpenVaultConditions } from './openVaultConditions.constants'
+import type { OpenVaultConditions } from './openVaultConditions.types'
 import { applyOpenVaultEnvironment } from './openVaultEnvironment'
-import type { OpenVaultFormChange } from './openVaultForm'
 import { applyOpenVaultForm } from './openVaultForm'
-import type { OpenVaultInputChange } from './openVaultInput'
 import { applyOpenVaultInput } from './openVaultInput'
-import type { OpenVaultSummary } from './openVaultSummary'
-import { applyOpenVaultSummary, defaultOpenVaultSummary } from './openVaultSummary'
+import { applyOpenVaultSummary } from './openVaultSummary'
+import { defaultOpenVaultSummary } from './openVaultSummary.constants'
 import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
 import { finalValidation, validateErrors, validateWarnings } from './openVaultValidations'
-
-interface OpenVaultInjectedOverrideChange {
-  kind: 'injectStateOverride'
-  stateToOverride: Partial<OpenVaultState>
-}
 
 function applyOpenVaultInjectedOverride(state: OpenVaultState, change: OpenVaultChange) {
   if (change.kind === 'injectStateOverride') {
@@ -83,116 +61,6 @@ function applyOpenVaultInjectedOverride(state: OpenVaultState, change: OpenVault
   }
   return state
 }
-
-export type OpenVaultChange =
-  | OpenVaultInputChange
-  | OpenVaultFormChange
-  | OpenVaultTransitionChange
-  | OpenVaultTransactionChange
-  | AllowanceChanges
-  | ProxyChanges
-  | OpenVaultEnvironmentChange
-  | OpenVaultInjectedOverrideChange
-  | OpenVaultStopLossChanges
-
-export type OpenVaultStage =
-  | 'editing'
-  | 'proxyWaitingForConfirmation'
-  | 'proxyWaitingForApproval'
-  | 'proxyInProgress'
-  | 'proxyFailure'
-  | 'proxySuccess'
-  | 'allowanceWaitingForConfirmation'
-  | 'allowanceWaitingForApproval'
-  | 'allowanceInProgress'
-  | 'allowanceFailure'
-  | 'allowanceSuccess'
-  | 'txWaitingForConfirmation'
-  | 'txWaitingForApproval'
-  | 'txInProgress'
-  | 'txFailure'
-  | 'txSuccess'
-  | StopLossOpenFlowStages
-
-export interface MutableOpenVaultState {
-  stage: OpenVaultStage
-  depositAmount?: BigNumber
-  depositAmountUSD?: BigNumber
-  generateAmount?: BigNumber
-  showGenerateOption: boolean
-  selectedAllowanceRadio: AllowanceOption
-  allowanceAmount?: BigNumber
-  stopLossSkipped: boolean
-  stopLossLevel: BigNumber
-  visitedStopLossStep: boolean
-  id?: BigNumber
-}
-
-interface OpenVaultFunctions {
-  progress?: () => void
-  regress?: () => void
-  skipStopLoss?: () => void
-  toggleGenerateOption?: () => void
-  updateDeposit?: (depositAmount?: BigNumber) => void
-  updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
-  updateDepositMax?: () => void
-  updateGenerate?: (generateAmount?: BigNumber) => void
-  updateGenerateMax?: () => void
-  updateAllowanceAmount?: (amount?: BigNumber) => void
-  setAllowanceAmountUnlimited?: () => void
-  setAllowanceAmountToDepositAmount?: () => void
-  setAllowanceAmountCustom?: () => void
-  clear: () => void
-  injectStateOverride: (state: Partial<MutableOpenVaultState>) => void
-}
-
-interface OpenVaultEnvironment {
-  ilk: string
-  account: string
-  token: string
-  priceInfo: PriceInfo
-  balanceInfo: BalanceInfo
-  ilkData: IlkData
-  proxyAddress?: string
-  allowance?: BigNumber
-}
-
-interface OpenVaultTxInfo {
-  allowanceTxHash?: string
-  proxyTxHash?: string
-  openTxHash?: string
-  stopLossTxHash?: string
-  txError?: TxError
-  etherscan?: string
-  proxyConfirmations?: number
-  openVaultConfirmations?: number
-  safeConfirmations: number
-  openVaultSafeConfirmations: number
-}
-
-// TODO to be moved to common
-export interface OpenVaultStopLossSetup {
-  withStopLossStage: boolean
-  setStopLossCloseType: (type: CloseVaultTo) => void
-  setStopLossLevel: (level: BigNumber) => void
-  stopLossCloseType: CloseVaultTo
-  stopLossLevel: BigNumber
-  visitedStopLossStep: boolean
-}
-
-export type OpenVaultState = MutableOpenVaultState &
-  OpenVaultCalculations &
-  OpenVaultFunctions &
-  OpenVaultEnvironment &
-  OpenVaultConditions &
-  OpenVaultTxInfo & {
-    errorMessages: VaultErrorMessage[]
-    warningMessages: VaultWarningMessage[]
-    summary: OpenVaultSummary
-    totalSteps: number
-    currentStep: number
-  } & OpenVaultStopLossSetup &
-  HasGasEstimation
 
 function addTransitions(
   txHelpers: TxHelpers,
@@ -305,19 +173,6 @@ function addTransitions(
   }
 
   return state
-}
-
-export const defaultMutableOpenVaultState: MutableOpenVaultState = {
-  stage: 'editing' as OpenVaultStage,
-  showGenerateOption: false,
-  selectedAllowanceRadio: AllowanceOption.UNLIMITED,
-  allowanceAmount: maxUint256,
-  depositAmount: undefined,
-  depositAmountUSD: undefined,
-  generateAmount: undefined,
-  stopLossSkipped: false,
-  stopLossLevel: zero,
-  visitedStopLossStep: false,
 }
 
 export function createOpenVault$(

@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
-import type { IlkData } from 'blockchain/ilks'
+import type { IlkData } from 'blockchain/ilks.types'
 import type { Vault } from 'blockchain/vaults.types'
 import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
-import type { BalanceInfo } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { one, zero } from 'helpers/zero'
 
 import { PAYBACK_ALL_BOUND } from './manageVaultCalculations.constants'

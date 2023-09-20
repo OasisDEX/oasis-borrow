@@ -1,4 +1,4 @@
-import type { BalanceInfo } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { zero } from 'helpers/zero'
 
 import type { ManageVaultCalculations } from './manageMultiplyVaultCalculations'

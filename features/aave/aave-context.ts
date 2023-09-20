@@ -3,7 +3,7 @@ import type BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
-import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import type {
   AaveLikeReserveConfigurationData,
   AaveLikeServices,

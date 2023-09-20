@@ -4,7 +4,7 @@ import {
   VaultDetailsCard,
   VaultDetailsCardModal,
 } from 'components/vault/VaultDetails'
-import type { PriceInfo } from 'features/shared/priceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import type { ModalProps } from 'helpers/modalHook'

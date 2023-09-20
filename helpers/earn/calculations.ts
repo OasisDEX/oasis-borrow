@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import type { IlkData } from 'blockchain/ilks'
+import type { IlkData } from 'blockchain/ilks.types'
 import dayjs from 'dayjs'
 import type { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
 import { one, zero } from 'helpers/zero'

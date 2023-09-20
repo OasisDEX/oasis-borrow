@@ -1,5 +1,5 @@
 import type { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
-import type { PriceInfo } from 'features/shared/priceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo.types'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { moreMinutes } from 'helpers/time'
 import { useTranslation } from 'next-i18next'

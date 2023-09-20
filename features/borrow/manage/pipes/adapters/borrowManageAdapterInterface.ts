@@ -1,13 +1,13 @@
 import type { BigNumber } from 'bignumber.js'
-import type { IlkData } from 'blockchain/ilks'
+import type { IlkData } from 'blockchain/ilks.types'
 import type { Context } from 'blockchain/network'
 import type { Vault } from 'blockchain/vaults.types'
 import type {
   ManageVaultChange,
   MutableManageVaultState,
 } from 'features/borrow/manage/pipes/manageVault.types'
-import type { BalanceInfo } from 'features/shared/balanceInfo'
-import type { PriceInfo } from 'features/shared/priceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
+import type { PriceInfo } from 'features/shared/priceInfo.types'
 
 export type CreateInitialVaultStateArgs<V extends Vault> = {
   vault: V

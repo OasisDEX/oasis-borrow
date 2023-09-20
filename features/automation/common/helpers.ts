@@ -27,7 +27,7 @@ import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import type { VaultProtocol } from 'helpers/getVaultProtocol'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
-import type { UIChanges } from 'helpers/uiChanges'
+import type { UIChanges } from 'helpers/uiChanges.types'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one, zero } from 'helpers/zero'
 

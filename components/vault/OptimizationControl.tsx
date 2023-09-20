@@ -10,7 +10,7 @@ import { OptimizationFormControl } from 'features/automation/optimization/common
 import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
-import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { getAppConfig } from 'helpers/config'

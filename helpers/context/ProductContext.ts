@@ -112,7 +112,7 @@ import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manag
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
-import type { BalanceInfo } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import {
   createBalanceInfo$,
   createBalancesArrayInfo$,

@@ -15,7 +15,7 @@ import type { GetCdpsArgs, GetCdpsResult } from './calls/getCdps'
 import type { CallObservable } from './calls/observe'
 import type { vatGem, vatUrns } from './calls/vat'
 import type { VaultResolve } from './calls/vaultResolver'
-import type { IlkData } from './ilks'
+import type { IlkData } from './ilks.types'
 import type { OraclePriceData, OraclePriceDataArgs } from './prices'
 import { buildPosition } from './vault.maths'
 import type {

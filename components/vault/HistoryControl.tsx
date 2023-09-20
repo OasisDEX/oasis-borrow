@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
-import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import type { LendingProtocol } from 'lendingProtocols'
 import { LendingProtocolLabel } from 'lendingProtocols'

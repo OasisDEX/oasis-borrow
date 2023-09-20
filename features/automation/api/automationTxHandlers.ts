@@ -16,7 +16,7 @@ import { addTransactionMap } from 'features/automation/common/txDefinitions'
 import type { AutomationPublishType } from 'features/automation/common/types'
 import type { AutomationTxData, TxHelpers } from 'helpers/context/types'
 import { handleTransaction } from 'helpers/handleTransaction'
-import type { UIChanges } from 'helpers/uiChanges'
+import type { UIChanges } from 'helpers/uiChanges.types'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 import { takeUntilTxState } from './takeUntilTxState'
