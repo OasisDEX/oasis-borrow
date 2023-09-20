@@ -1,4 +1,4 @@
-import type { ManageVaultEditingStage } from 'features/borrow/manage/pipes/manageVault.types'
+import type { ManageVaultEditingStage } from 'features/borrow/manage/pipes/types/ManageBorrowVaultStage.types'
 
 type ManageVaultMultiplyTransitionChange =
   | {

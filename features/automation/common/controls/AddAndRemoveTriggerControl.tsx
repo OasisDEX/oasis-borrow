@@ -4,7 +4,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { useAutomationContext } from 'components/context'
 import { getAutomationFeatureTxHandlers } from 'features/automation/common/state/automationFeatureTxHandlers'
 import { addTransactionMap } from 'features/automation/common/txDefinitions'
-import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate.constants'
 import { uiChanges } from 'helpers/uiChanges'
 import { useEffect, useMemo } from 'react'
 

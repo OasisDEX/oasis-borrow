@@ -23,8 +23,8 @@ import type { VaultResolve } from 'blockchain/calls/vaultResolver'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
-import type { IlkData } from 'blockchain/ilks.types'
 import { createIlkData$ } from 'blockchain/ilks'
+import type { IlkData } from 'blockchain/ilks.types'
 import { NetworkIds } from 'blockchain/networks'
 import type { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
 import { createOraclePriceData$ } from 'blockchain/prices'
@@ -47,12 +47,12 @@ import {
   getReferralsFromApi$,
   getUserFromApi$,
 } from 'features/referralOverview/userApi'
-import type { UserSettingsState } from 'features/userSettings/userSettings'
 import { createUserSettings$ } from 'features/userSettings/userSettings'
 import {
   checkUserSettingsLocalStorage$,
   saveUserSettingsLocalStorage$,
 } from 'features/userSettings/userSettingsLocal'
+import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { bigNumberTostring } from 'helpers/bigNumberToString'
 import type { DepreciatedServices } from 'helpers/context/types'
 import { ilkUrnAddressToString } from 'helpers/ilkUrnAddressToString'

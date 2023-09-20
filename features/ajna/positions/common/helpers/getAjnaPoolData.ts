@@ -1,38 +1,10 @@
-import type { Bucket, GetPoolData } from '@oasisdex/dma-library'
+import type { GetPoolData } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { ajnaLastIndexBucketPrice } from 'features/ajna/common/consts'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
-
-export interface AjnaPoolDataResponse {
-  address: string
-  collateralAddress: string
-  quoteTokenAddress: string
-  htp: string
-  hpb: string
-  lup: string
-  htpIndex: string
-  hpbIndex: string
-  lupIndex: string
-  momp: string
-  debt: string
-  depositSize: string
-  interestRate: string
-  apr30dAverage: string
-  dailyPercentageRate30dAverage: string
-  monthlyPercentageRate30dAverage: string
-  poolMinDebtAmount: string
-  poolCollateralization: string
-  poolActualUtilization: string
-  poolTargetUtilization: string
-  currentBurnEpoch: string
-  pendingInflator: string
-  lendApr: string
-  borrowApr: string
-  buckets: Bucket[]
-}
 
 export const getAjnaPoolData: (networkId: NetworkIds) => GetPoolData =
   (networkId) => async (poolAddress: string) => {

@@ -22,7 +22,7 @@ import { applyManageVaultSummary } from 'features/borrow/manage/pipes/viewStateT
 import { defaultManageVaultSummary } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultSummary.constants'
 import { applyManageVaultTransaction } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
 import { applyManageVaultTransition } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransitions'
-import { GasEstimationStatus } from 'helpers/context/types'
+import { GasEstimationStatus } from 'helpers/types/HasGasEstimation'
 import { zero } from 'helpers/zero'
 
 import type {

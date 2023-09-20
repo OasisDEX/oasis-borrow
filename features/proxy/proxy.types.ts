@@ -1,6 +1,12 @@
 import type { TxError } from 'helpers/types'
 
-import type { PROXY_STAGES } from './proxy.constants'
+export const PROXY_STAGES = [
+  'proxyWaitingForConfirmation',
+  'proxyWaitingForApproval',
+  'proxyInProgress',
+  'proxyFailure',
+  'proxySuccess',
+] as const
 
 export interface ProxyState {
   proxyTxHash?: string

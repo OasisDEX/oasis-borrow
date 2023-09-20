@@ -6,7 +6,7 @@ import { createOpenAaveStateMachine } from 'features/aave/open/state'
 import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
-} from 'features/automation/common/txDefinitions'
+} from 'features/automation/common/txDefinitions.types'
 import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import type { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
 import type { ProxyStateMachine } from 'features/stateMachines/proxy'

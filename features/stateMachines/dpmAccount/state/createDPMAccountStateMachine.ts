@@ -20,8 +20,9 @@ import type {
   TransactionStateMachineResultEvents,
 } from 'features/stateMachines/transaction'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
-import type { HasGasEstimation, TxHelpers } from 'helpers/context/types'
-import { GasEstimationStatus } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/types'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
+import { GasEstimationStatus } from 'helpers/types/HasGasEstimation'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
 import { of } from 'rxjs'

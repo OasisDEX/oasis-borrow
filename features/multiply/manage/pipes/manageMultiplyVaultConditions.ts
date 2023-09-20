@@ -31,7 +31,7 @@ import {
   withdrawAmountExceedsFreeCollateralValidator,
   withdrawCollateralOnVaultUnderDebtFloorValidator,
 } from 'features/form/commonValidators'
-import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
+import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings.constants'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'

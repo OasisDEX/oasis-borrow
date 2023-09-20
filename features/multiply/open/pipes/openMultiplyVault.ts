@@ -20,13 +20,13 @@ import { balanceInfoChange$ } from 'features/shared/balanceInfo'
 import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { priceInfoChange$ } from 'features/shared/priceInfo'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
-import type { UserSettingsState } from 'features/userSettings/userSettings'
 import { slippageChange$ } from 'features/userSettings/userSettings'
+import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { createApplyOpenVaultTransition } from 'features/vaultTransitions/openVaultTransitions'
 import { getLocalAppConfig } from 'helpers/config'
 import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
-import { GasEstimationStatus } from 'helpers/context/types'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
+import { GasEstimationStatus } from 'helpers/types/HasGasEstimation'
 import { curry } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, iif, merge, of, Subject, throwError } from 'rxjs'
@@ -39,20 +39,19 @@ import type {
   OpenMultiplyVaultChange,
   OpenMultiplyVaultState,
 } from './openMultiplyVault.types'
-import type { OpenMultiplyVaultCalculations } from './openMultiplyVaultCalculations'
-import {
-  applyOpenMultiplyVaultCalculations,
-  defaultOpenMultiplyVaultStateCalculations,
-} from './openMultiplyVaultCalculations'
-import type { OpenMultiplyVaultConditions } from './openMultiplyVaultConditions'
+import { applyOpenMultiplyVaultCalculations } from './openMultiplyVaultCalculations'
+import { defaultOpenMultiplyVaultStateCalculations } from './openMultiplyVaultCalculations.constants'
+import type { OpenMultiplyVaultCalculations } from './openMultiplyVaultCalculations.types'
 import {
   applyOpenVaultConditions,
   applyOpenVaultStageCategorisation,
-  defaultOpenMultiplyVaultConditions,
 } from './openMultiplyVaultConditions'
+import { defaultOpenMultiplyVaultConditions } from './openMultiplyVaultConditions.constants'
+import type { OpenMultiplyVaultConditions } from './openMultiplyVaultConditions.types'
 import { applyOpenVaultEnvironment } from './openMultiplyVaultEnvironment'
 import { applyOpenVaultInput } from './openMultiplyVaultInput'
-import { applyOpenVaultSummary, defaultOpenVaultSummary } from './openMultiplyVaultSummary'
+import { applyOpenVaultSummary } from './openMultiplyVaultSummary'
+import { defaultOpenVaultSummary } from './openMultiplyVaultSummary.constants'
 import {
   applyEstimateGas,
   applyOpenMultiplyVaultTransaction,

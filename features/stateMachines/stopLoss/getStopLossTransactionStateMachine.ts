@@ -3,7 +3,7 @@ import type { ContextConnected } from 'blockchain/network'
 import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
-} from 'features/automation/common/txDefinitions'
+} from 'features/automation/common/txDefinitions.types'
 import type { CommonTransactionServices } from 'features/stateMachines/transaction'
 import {
   createTransactionStateMachine,

@@ -25,12 +25,12 @@ import type { SxStyleProp } from 'theme-ui'
 import { Box, Button, Card, Flex, Grid, Heading, Link as ThemeLink, Text, Textarea } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
+import { SLIPPAGE_OPTIONS } from './userSettings.constants'
 import type {
   UserSettingsErrorMessages,
   UserSettingsState,
   UserSettingsWarningMessages,
-} from './userSettings'
-import { SLIPPAGE_OPTIONS } from './userSettings'
+} from './userSettings.types'
 
 function SlippageOptionButton({
   option,

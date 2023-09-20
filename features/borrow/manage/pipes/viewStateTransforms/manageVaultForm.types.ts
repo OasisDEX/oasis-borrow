@@ -1,4 +1,4 @@
-import type { MainAction } from 'features/borrow/manage/pipes/manageVault.types'
+import type { MainAction } from 'features/borrow/manage/pipes/types/MainAction.types'
 
 export type ManageVaultFormChange =
   | {

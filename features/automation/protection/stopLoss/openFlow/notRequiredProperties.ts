@@ -6,7 +6,7 @@ import type {
   AutomationContextProviderProps,
   AutomationPositionData,
 } from 'components/context'
-import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
+import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
 import type { AutomationContracts, StopLossMetadata } from 'features/automation/metadata/types'
 import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'

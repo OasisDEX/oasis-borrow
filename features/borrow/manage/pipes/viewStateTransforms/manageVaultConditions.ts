@@ -1,7 +1,5 @@
-import type {
-  ManageBorrowVaultStage,
-  ManageStandardBorrowVaultState,
-} from 'features/borrow/manage/pipes/manageVault.types'
+import type { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/types/ManageBorrowVaultStage.types'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import {
   accountIsConnectedValidator,
   accountIsControllerValidator,

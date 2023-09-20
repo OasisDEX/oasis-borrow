@@ -1,15 +1,4 @@
-import type { IlkDataChange } from 'blockchain/ilks.types'
-import type { BalanceInfoChange } from 'features/shared/balanceInfo.types'
-import type { PriceInfoChange } from 'features/shared/priceInfo.types'
-import type { SlippageChange } from 'features/userSettings/userSettings'
-
 import type { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault.types'
-
-export type OpenVaultEnvironmentChange =
-  | PriceInfoChange
-  | BalanceInfoChange
-  | IlkDataChange
-  | SlippageChange
 
 export function applyOpenVaultEnvironment(
   state: OpenMultiplyVaultState,

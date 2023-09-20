@@ -4,8 +4,8 @@ import { defaultMutableManageVaultState } from 'features/borrow/manage/pipes/man
 import type {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
-  ManageVaultEditingStage,
 } from 'features/borrow/manage/pipes/manageVault.types'
+import type { ManageVaultEditingStage } from 'features/borrow/manage/pipes/types/ManageBorrowVaultStage.types'
 import type { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'

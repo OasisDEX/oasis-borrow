@@ -10,7 +10,7 @@ import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import type { TxStage } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import type { ProxyChanges, ProxyStages, ProxyState } from 'features/proxy/proxy.types'
-import type { HasGasEstimation } from 'helpers/context/types'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
 import type { TxError } from 'helpers/types'
 
 import type { EnvironmentChange, EnvironmentState } from './enviroment'

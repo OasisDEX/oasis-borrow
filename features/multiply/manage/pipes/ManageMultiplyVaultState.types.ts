@@ -4,7 +4,7 @@ import type { ConstantMultipleTriggerData } from 'features/automation/optimizati
 import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import type { HasGasEstimation } from 'helpers/context/types'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
 
 import type { ManageVaultCalculations } from './manageMultiplyVaultCalculations.types'
 import type { ManageVaultConditions } from './manageMultiplyVaultConditions.types'

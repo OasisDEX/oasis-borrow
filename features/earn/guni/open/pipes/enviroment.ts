@@ -2,7 +2,7 @@ import type { BigNumber } from 'bignumber.js'
 import type { IlkData, IlkDataChange } from 'blockchain/ilks.types'
 import type { BalanceInfo, BalanceInfoChange } from 'features/shared/balanceInfo.types'
 import type { PriceInfo, PriceInfoChange } from 'features/shared/priceInfo.types'
-import type { SlippageChange } from 'features/userSettings/userSettings'
+import type { SlippageChange } from 'features/userSettings/userSettings.types'
 
 export interface EnvironmentState {
   ilk: string

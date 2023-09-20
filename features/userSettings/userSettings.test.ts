@@ -5,8 +5,9 @@ import { getStateUnpacker } from 'helpers/testHelpers'
 import type { Observable } from 'rxjs'
 import { of, throwError } from 'rxjs'
 
-import type { SaveUserSettingsFunction } from './userSettings'
-import { createUserSettings$, SLIPPAGE_DEFAULT } from './userSettings'
+import { createUserSettings$ } from './userSettings'
+import { SLIPPAGE_DEFAULT } from './userSettings.constants'
+import type { SaveUserSettingsFunction } from './userSettings.types'
 import { checkUserSettingsLocalStorage$, saveUserSettingsLocalStorage$ } from './userSettingsLocal'
 
 interface MockUserSettingsProps {

@@ -2,7 +2,6 @@ import { createProxy } from 'features/proxy/createProxy'
 import type { TxHelpers } from 'helpers/context/types'
 import type { Observable } from 'rxjs'
 
-import { PROXY_STAGES } from './proxy.constants'
 import type {
   BackToEditingChange,
   Dependencies,
@@ -10,6 +9,7 @@ import type {
   ProxyStages,
   ProxyState,
 } from './proxy.types'
+import { PROXY_STAGES } from './proxy.types'
 
 export function isProxyStage(stage: string): stage is ProxyStages {
   return PROXY_STAGES.includes(stage as any)

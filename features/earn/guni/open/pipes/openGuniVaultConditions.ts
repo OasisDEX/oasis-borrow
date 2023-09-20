@@ -7,7 +7,10 @@ import {
   ethFundsForTxValidator,
   ledgerWalletContractDataDisabledValidator,
 } from 'features/form/commonValidators'
-import { SLIPPAGE_DEFAULT, SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
+import {
+  SLIPPAGE_DEFAULT,
+  SLIPPAGE_WARNING_THRESHOLD,
+} from 'features/userSettings/userSettings.constants'
 import { isNullish } from 'helpers/functions'
 import { GUNI_MAX_SLIPPAGE, GUNI_SLIPPAGE } from 'helpers/multiply/calculations.constants'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'

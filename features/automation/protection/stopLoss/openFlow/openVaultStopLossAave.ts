@@ -3,7 +3,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import type { AutomationPositionData } from 'components/context'
 import type { OpenAaveContext, OpenAaveEvent } from 'features/aave/open/state'
-import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
+import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
 import type { StopLossMetadata } from 'features/automation/metadata/types'
 import {

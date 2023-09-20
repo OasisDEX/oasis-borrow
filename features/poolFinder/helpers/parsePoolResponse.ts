@@ -6,7 +6,7 @@ import type { Tickers } from 'blockchain/prices'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
-import type { SearchAjnaPoolData } from 'features/ajna/positions/common/helpers/searchAjnaPool'
+import type { SearchAjnaPoolData } from 'features/ajna/positions/common/helpers/searchAjnaPool.types'
 import type { OraclessPoolResult } from 'features/poolFinder/types'
 import {
   productHubAjnaRewardsTooltip,

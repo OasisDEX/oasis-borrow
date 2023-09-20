@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
-import { getAddConstantMultipleHistoryEventIndex } from 'features/vaultHistory/vaultHistory'
+import { getAddConstantMultipleHistoryEventIndex } from 'features/vaultHistory/getAddConstantMultipleHistoryEventIndex'
 import type { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents.types'
 import { zero } from 'helpers/zero'
 

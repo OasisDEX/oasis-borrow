@@ -1,5 +1,5 @@
-import type { UserSettingsState } from 'features/userSettings/userSettings'
-import { SLIPPAGE_DEFAULT } from 'features/userSettings/userSettings'
+import type { UserSettingsState } from 'features/userSettings/userSettings.types'
+import { SLIPPAGE_DEFAULT } from 'features/userSettings/userSettings.constants'
 import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 

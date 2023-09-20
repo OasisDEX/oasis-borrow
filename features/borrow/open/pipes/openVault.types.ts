@@ -13,7 +13,7 @@ import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
 import type { OpenVaultTransactionChange } from 'features/shared/transactions'
 import type { OpenVaultTransitionChange } from 'features/vaultTransitions/openVaultTransitions'
-import type { HasGasEstimation } from 'helpers/context/types'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
 import type { TxError } from 'helpers/types'
 
 import type { OpenVaultCalculations } from './openVaultCalculations.types'

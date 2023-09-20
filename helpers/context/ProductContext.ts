@@ -75,8 +75,8 @@ import {
 } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
-import type { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
+import type { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
 import { createBonusPipe$ } from 'features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from 'features/bonus/makerProtocolBonusAdapter'
 import { InstitutionalBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
@@ -112,12 +112,12 @@ import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manag
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
-import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import {
   createBalanceInfo$,
   createBalancesArrayInfo$,
   createBalancesFromAddressArrayInfo$,
 } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, getApiVaults, saveVaultUsingApi$ } from 'features/shared/vaultApi'
@@ -146,6 +146,7 @@ import { bigNumberTostring } from 'helpers/bigNumberToString'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation } from 'helpers/form'
 import { supportedBorrowIlks, supportedEarnIlks, supportedMultiplyIlks } from 'helpers/productCards'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -167,7 +168,7 @@ import {
 
 import { refreshInterval } from './constants'
 import type { MainContext } from './MainContext'
-import type { DepreciatedServices, HasGasEstimation, ProtocolsServices, TxHelpers } from './types'
+import type { DepreciatedServices, ProtocolsServices, TxHelpers } from './types'
 import curry from 'ramda/src/curry'
 
 export function setupProductContext(

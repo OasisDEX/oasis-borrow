@@ -10,8 +10,9 @@ import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
 import type { OmitProperties, ValueOf } from 'ts-essentials'
 
-import type { HasGasEstimation, TxHelpers, TxHelpers$ } from './context/types'
-import { GasEstimationStatus } from './context/types'
+import type { TxHelpers, TxHelpers$ } from './context/types'
+import type { HasGasEstimation } from './types/HasGasEstimation'
+import { GasEstimationStatus } from './types/HasGasEstimation'
 import type { ErrorTxState } from '@oasisdex/transactions/lib/src/types'
 
 export enum FormStage {

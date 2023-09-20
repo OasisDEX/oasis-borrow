@@ -5,7 +5,6 @@ import type { MainAction } from './MainAction.types'
 import type { ManageMultiplyVaultEditingStage } from './ManageMultiplyVaultEditingStage.types'
 import type { MutableManageMultiplyVaultState } from './MutableManageMultiplyVaultState.types'
 import type { OtherAction } from './OtherAction.types'
-
 export interface ManageVaultFunctions {
   progress?: () => void
   regress?: () => void

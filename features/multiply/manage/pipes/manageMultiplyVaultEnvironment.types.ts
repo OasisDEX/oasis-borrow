@@ -3,7 +3,7 @@ import type { VaultChange } from 'blockchain/vaults.types'
 import type { AutomationTriggersChange } from 'features/automation/api/AutomationTriggersChange.types'
 import type { BalanceInfoChange } from 'features/shared/balanceInfo.types'
 import type { PriceInfoChange } from 'features/shared/priceInfo.types'
-import type { SlippageChange } from 'features/userSettings/userSettings'
+import type { SlippageChange } from 'features/userSettings/userSettings.types'
 import type { VaultHistoryChange } from 'features/vaultHistory/vaultHistory.types'
 
 export type ManageVaultEnvironmentChange =

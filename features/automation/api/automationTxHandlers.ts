@@ -6,13 +6,13 @@ import type {
 import type { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
 import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator'
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { addTransactionMap } from 'features/automation/common/txDefinitions'
 import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
   AutomationRemoveTriggerData,
   AutomationRemoveTriggerTxDef,
-} from 'features/automation/common/txDefinitions'
-import { addTransactionMap } from 'features/automation/common/txDefinitions'
+} from 'features/automation/common/txDefinitions.types'
 import type { AutomationPublishType } from 'features/automation/common/types'
 import type { AutomationTxData, TxHelpers } from 'helpers/context/types'
 import { handleTransaction } from 'helpers/handleTransaction'

@@ -10,11 +10,15 @@ import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
-import type { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
-import type { HasGasEstimation } from 'helpers/context/types'
 import type { TxError } from 'helpers/types'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
 
+import type { MainAction } from './types/MainAction.types'
+import type {
+  ManageBorrowVaultStage,
+  ManageVaultEditingStage,
+} from './types/ManageBorrowVaultStage.types'
 import type { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances.types'
 import type { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations.types'
 import type { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions.types'
@@ -38,21 +42,6 @@ export type ManageVaultChange =
   | ManageVaultTransactionChange
   | ManageVaultEnvironmentChange
   | ManageVaultInjectedOverrideChange
-
-export type ManageVaultEditingStage =
-  | 'collateralEditing'
-  | 'daiEditing'
-  | 'multiplyTransitionEditing'
-
-export type ManageBorrowVaultStage =
-  | BaseManageVaultStage
-  | ManageVaultEditingStage
-  | 'multiplyTransitionWaitingForConfirmation'
-  | 'multiplyTransitionInProgress'
-  | 'multiplyTransitionFailure'
-  | 'multiplyTransitionSuccess'
-
-export type MainAction = 'depositGenerate' | 'withdrawPayback'
 
 export interface MutableManageVaultState {
   stage: ManageBorrowVaultStage

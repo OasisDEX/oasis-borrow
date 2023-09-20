@@ -6,7 +6,8 @@ import {
   getDPMAccountStateMachineServices,
 } from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
 import type { TransactionStateMachine } from 'features/stateMachines/transaction'
-import type { HasGasEstimation, TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/types'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
 import type { Observable } from 'rxjs'
 
 export function getDPMAccountStateMachine(

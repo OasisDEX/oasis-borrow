@@ -7,7 +7,7 @@ import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import type { HasGasEstimation } from 'helpers/context/types'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
 import { formatAmount } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'

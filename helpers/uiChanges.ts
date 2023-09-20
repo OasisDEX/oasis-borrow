@@ -26,7 +26,8 @@ import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   swapWidgetChangeReducer,
 } from 'features/swapWidget/SwapWidgetChange'
-import { gasEstimationReducer, TX_DATA_CHANGE } from 'helpers/gasEstimate'
+import { gasEstimationReducer } from 'helpers/gasEstimate'
+import { TX_DATA_CHANGE } from './gasEstimate.constants'
 import type { Observable } from 'rxjs'
 import { Subject } from 'rxjs'
 import { filter, map, shareReplay } from 'rxjs/operators'

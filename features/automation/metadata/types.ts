@@ -1,12 +1,12 @@
 import type BigNumber from 'bignumber.js'
 import type { AutomationContext } from 'components/context'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
   AutomationRemoveTriggerData,
   AutomationRemoveTriggerTxDef,
-} from 'features/automation/common/txDefinitions'
+} from 'features/automation/common/txDefinitions.types'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
 import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData.types'
 import type {

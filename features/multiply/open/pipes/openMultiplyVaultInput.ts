@@ -1,32 +1,6 @@
-import type BigNumber from 'bignumber.js'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 
 import type { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault.types'
-
-interface DepositChange {
-  kind: 'deposit'
-  depositAmount?: BigNumber
-}
-
-interface DepositUSDChange {
-  kind: 'depositUSD'
-  depositAmountUSD?: BigNumber
-}
-
-interface DepositMaxChange {
-  kind: 'depositMax'
-}
-
-interface RequiredCollRatioChange {
-  kind: 'requiredCollRatio'
-  requiredCollRatio?: BigNumber
-}
-
-export type OpenVaultInputChange =
-  | DepositChange
-  | DepositUSDChange
-  | DepositMaxChange
-  | RequiredCollRatioChange
 
 export function applyOpenVaultInput(
   state: OpenMultiplyVaultState,

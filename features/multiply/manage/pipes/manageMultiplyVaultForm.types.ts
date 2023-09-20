@@ -1,6 +1,6 @@
-import type { OtherAction } from './OtherAction.types'
 import type { CloseVaultTo } from './CloseVaultTo.types'
 import type { MainAction } from './MainAction.types'
+import type { OtherAction } from './OtherAction.types'
 
 export type ManageVaultFormChange =
   | {

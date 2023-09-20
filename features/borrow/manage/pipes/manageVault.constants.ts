@@ -1,10 +1,10 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
 
+import type { MutableManageVaultState } from './manageVault.types'
 import type {
   ManageBorrowVaultStage,
   ManageVaultEditingStage,
-  MutableManageVaultState,
-} from './manageVault.types'
+} from './types/ManageBorrowVaultStage.types'
 
 export const defaultMutableManageVaultState: MutableManageVaultState = {
   stage: 'collateralEditing' as ManageBorrowVaultStage,

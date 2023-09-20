@@ -1,4 +1,3 @@
-import type BigNumber from 'bignumber.js'
 import type { CreateDPMAccount } from 'blockchain/calls/accountFactory.types'
 import type { DeployAjnaPoolTxData } from 'blockchain/calls/ajnaErc20PoolFactory.types'
 import type {
@@ -31,6 +30,7 @@ import type {
   ReclaimData,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import type { NetworkIds } from 'blockchain/networks'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
 import type { LendingProtocol } from 'lendingProtocols'
 import type { AaveLikeServices } from 'lendingProtocols/aave-like-common'
 import type { getAaveV2Services } from 'lendingProtocols/aave-v2'
@@ -61,26 +61,6 @@ export type TxData =
   | CreateDPMAccount
   | OasisActionsTxData
   | DeployAjnaPoolTxData
-
-export enum GasEstimationStatus {
-  unset = 'unset',
-  calculating = 'calculating',
-  calculated = 'calculated',
-  error = 'error',
-  unknown = 'unknown',
-}
-
-export interface HasGasEstimationCost {
-  gasEstimationUsd?: BigNumber
-  gasEstimationEth?: BigNumber
-  gasEstimationDai?: BigNumber
-}
-
-export interface HasGasEstimation extends HasGasEstimationCost {
-  gasEstimationStatus: GasEstimationStatus
-  error?: any
-  gasEstimation?: number
-}
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>

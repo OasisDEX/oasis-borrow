@@ -1,5 +1,5 @@
 import { useAutomationContext } from 'components/context'
-import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
+import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'

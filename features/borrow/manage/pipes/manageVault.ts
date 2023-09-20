@@ -29,12 +29,12 @@ import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import type { BorrowManageAdapterInterface } from './adapters/borrowManageAdapterInterface'
 import type {
-  MainAction,
   ManageStandardBorrowVaultState,
   ManageVaultChange,
   MutableManageVaultState,
 } from './manageVault.types'
 import { finalValidation, validateErrors, validateWarnings } from './manageVaultValidations'
+import type { MainAction } from './types/MainAction.types'
 import {
   applyEstimateGas,
   createProxy,

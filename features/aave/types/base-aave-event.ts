@@ -12,8 +12,8 @@ import {
   StrategyTokenAllowance,
   StrategyTokenBalance,
 } from './base-aave-context'
-import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
-import { UserSettingsState } from 'features/userSettings/userSettings'
+import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
+import { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { ManageDebtActionsEnum } from './manage-debt-actions-enum'
 import { ManageCollateralActionsEnum } from './manage-collateral-actions-enum'
 

@@ -17,34 +17,6 @@ import {
 
 import type { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault.types'
 
-type ExchangeQuoteSuccessChange = {
-  kind: 'quote'
-  quote: Quote
-}
-
-type ExchangeQuoteFailureChange = {
-  kind: 'quoteError'
-}
-
-type ExchangeSwapSuccessChange = {
-  kind: 'swap'
-  swap: Quote
-}
-
-type ExchangeSwapFailureChange = {
-  kind: 'swapError'
-}
-
-type ExchangeQuoteResetChange = {
-  kind: 'quoteReset'
-}
-export type ExchangeQuoteChanges =
-  | ExchangeQuoteSuccessChange
-  | ExchangeQuoteFailureChange
-  | ExchangeQuoteResetChange
-  | ExchangeSwapSuccessChange
-  | ExchangeSwapFailureChange
-
 export function applyExchange(state: OpenMultiplyVaultState, change: OpenMultiplyVaultChange) {
   if (change.kind === 'quoteError' || change.kind === 'swapError') {
     return {

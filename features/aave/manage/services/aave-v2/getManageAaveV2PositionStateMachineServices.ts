@@ -17,7 +17,7 @@ import type {
 import { contextToEthersTransactions } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
-import type { UserSettingsState } from 'features/userSettings/userSettings'
+import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { allDefined } from 'helpers/allDefined'
 import type { TxHelpers } from 'helpers/context/types'
 import type { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'

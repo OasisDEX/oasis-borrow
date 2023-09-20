@@ -12,7 +12,7 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
 import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
-import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate.constants'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { uiChanges } from 'helpers/uiChanges'

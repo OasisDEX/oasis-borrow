@@ -32,8 +32,9 @@ import type {
   NotificationChangeAction,
 } from 'features/notifications/notificationChange'
 import type { SwapWidgetChangeAction, SwapWidgetState } from 'features/swapWidget/SwapWidgetChange'
-import type { TxPayloadChange, TxPayloadChangeAction } from 'helpers/gasEstimate'
 import type { Observable } from 'rxjs'
+
+import type { TxPayloadChange, TxPayloadChangeAction } from './gasEstimate.types'
 
 export type SupportedUIChangeType =
   | StopLossFormChange

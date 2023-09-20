@@ -1,11 +1,11 @@
 import type { NetworkIds } from 'blockchain/networks'
 import type { AjnaBorrowerEventsResponse, AjnaHistoryResponse } from 'features/ajna/history/types'
-import type { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
-import type { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
-import type { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjnaRewards'
-import type { SearchAjnaPoolResponse } from 'features/ajna/positions/common/helpers/searchAjnaPool'
+import type { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData.types'
+import type { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsData.types'
+import type { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjnaRewards.types'
+import type { SearchAjnaPoolResponse } from 'features/ajna/positions/common/helpers/searchAjnaPool.types'
 import type { AavePositionHistoryResponse } from 'features/positionHistory/types'
-import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards'
+import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'
 
 export type Subgraphs = {
   Ajna: {

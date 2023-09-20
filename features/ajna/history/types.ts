@@ -26,33 +26,6 @@ export interface AjnaBorrowerEventsResponse {
   } | null
 }
 
-export interface AjnaHistoryEvent extends PositionHistoryEvent {
-  originationFee: BigNumber
-  originationFeeInQuoteToken: BigNumber
-  quoteTokensAfter: BigNumber
-  quoteTokensBefore: BigNumber
-  quoteTokensDelta: BigNumber
-  quoteTokensMoved: BigNumber
-  moveQuoteFromPrice: BigNumber
-  moveQuoteToPrice: BigNumber
-  addOrRemovePrice: BigNumber
-  totalFeeInQuoteToken: BigNumber
-}
-
-export type AjnaBorrowerEvent = {
-  id: string
-  kind: string
-  timestamp: number
-  txHash: string
-  settledDebt: BigNumber
-  debtToCover: BigNumber
-  collateralForLiquidation: BigNumber
-  remainingCollateral: BigNumber
-  auction?: {
-    id: string
-  }
-}
-
 // TODO to be removed when implementing aave history, dummy aave history interface
 export interface AaveHistoryEvent extends PositionHistoryEvent {
   quoteTokensAfter?: BigNumber

@@ -3,7 +3,7 @@ import type { AutomationTxHandlerAnalytics } from 'features/automation/common/st
 import type {
   AutomationAddTriggerData,
   AutomationRemoveTriggerData,
-} from 'features/automation/common/txDefinitions'
+} from 'features/automation/common/txDefinitions.types'
 import type {
   AutomationPublishType,
   SidebarAutomationStages,

@@ -6,10 +6,7 @@ import {
   addAutomationTrigger,
   removeAutomationTrigger,
 } from 'features/automation/api/automationTxHandlers'
-import type {
-  AutomationAddTriggerData,
-  AutomationRemoveTriggerData,
-} from 'features/automation/common/txDefinitions'
+import type { AutomationAddTriggerData, AutomationRemoveTriggerData } from '../txDefinitions.types'
 import type {
   AutomationPublishType,
   SidebarAutomationStages,
