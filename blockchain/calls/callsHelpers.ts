@@ -9,6 +9,7 @@ import { first, map, switchMap } from 'rxjs/operators'
 
 export type TxOptions = { to?: string; value?: string; from?: string; gas?: number }
 export type ArgsType = Array<string | string[] | number | number[] | boolean>
+
 export interface CallDefAbstractContext<A, R, C extends Context> {
   call: (args: A, context: C, account?: string) => any
   prepareArgs: (args: A, context: C, account?: string) => any[]

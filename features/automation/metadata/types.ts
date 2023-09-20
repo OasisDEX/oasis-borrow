@@ -31,9 +31,11 @@ export interface AutomationMetadataValidationParams<T> {
   gasEstimationUsd?: BigNumber
   state: T
 }
+
 export interface AutomationMetadataValidationResult {
   [key: string]: boolean | undefined
 }
+
 export type AutomationMetadataValidationMethod<T> = (
   params: AutomationMetadataValidationParams<T>,
 ) => AutomationMetadataValidationResult
@@ -82,7 +84,9 @@ type AutomationCommonMetadata<T> = {
 
 // TODO: add AutomationCommonMetadata types to all metadata features during their implementation
 export interface AutoBSMetadata {}
+
 export interface AutoTakeProfitMetadata {}
+
 export interface ConstantMultipleMetadata {}
 
 export interface AutomationContracts {

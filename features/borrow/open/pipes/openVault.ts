@@ -38,7 +38,7 @@ import {
   createApplyOpenVaultTransition,
   OpenVaultTransitionChange,
 } from 'features/vaultTransitions/openVaultTransitions'
-import { getAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import {
   AddGasEstimationFunction,
   GasEstimationStatus,
@@ -380,7 +380,7 @@ export function createOpenVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
-                    const { StopLossWrite: stopLossWriteEnabled } = getAppConfig('features')
+                    const { StopLossWrite: stopLossWriteEnabled } = getLocalAppConfig('features')
                     const withStopLossStage = stopLossWriteEnabled
                       ? isSupportedAutomationIlk(context.chainId, ilk)
                       : false

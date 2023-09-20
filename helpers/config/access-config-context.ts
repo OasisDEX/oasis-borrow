@@ -82,10 +82,10 @@ export function loadConfigFromLocalStorage() {
     return emptyConfig
   }
   try {
-    const config = {
-      ...JSON.parse(configRaw),
-      ...cleanObjectFromNull(JSON.parse(localStorage.getItem(configLSOverridesKey) ?? '{}')),
-    }
+    const config = merge(
+      JSON.parse(configRaw),
+      cleanObjectFromNull(JSON.parse(localStorage.getItem(configLSOverridesKey) ?? '{}')),
+    )
     return config as ConfigResponseType
   } catch (error) {
     console.error('loadConfigFromLocalStorage: Error parsing config from localStorage', error)

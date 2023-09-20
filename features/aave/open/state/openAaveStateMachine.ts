@@ -1,4 +1,3 @@
-import { TriggerType } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/dma-library'
 import { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave-like'
 import { OpenAaveParameters } from 'actions/aave-like/types'
@@ -33,7 +32,11 @@ import {
   AutomationAddTriggerTxDef,
 } from 'features/automation/common/txDefinitions'
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
-import { extractStopLossDataInput } from 'features/automation/protection/stopLoss/openFlow/helpers'
+import {
+  extractStopLossDataInput,
+  getAaveLikeCommandContractType,
+  getAveeStopLossTriggerType,
+} from 'features/automation/protection/stopLoss/openFlow/helpers'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { createDPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
@@ -49,7 +52,7 @@ import {
 } from 'features/stateMachines/transactionParameters'
 import { allDefined } from 'helpers/allDefined'
 import { canOpenPosition } from 'helpers/canOpenPosition'
-import { getAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { AutomationTxData } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -518,7 +521,7 @@ export function createOpenAaveStateMachine(
           hasOpenedPosition,
           transition,
         }) =>
-          getAppConfig('features').AaveV3ProtectionWrite &&
+          getLocalAppConfig('features').AaveV3ProtectionWrite &&
           supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
           strategyConfig.type === ProductType.Multiply &&
           isSupportedAaveAutomationTokenPair(
@@ -566,7 +569,7 @@ export function createOpenAaveStateMachine(
           const allowance = isAllowanceNeeded(context)
           const proxy = !allDefined(context.effectiveProxyAddress)
           const optionalStopLoss =
-            getAppConfig('features').AaveV3ProtectionWrite &&
+            getLocalAppConfig('features').AaveV3ProtectionWrite &&
             supportsAaveStopLoss(
               context.strategyConfig.protocol,
               context.strategyConfig.networkId,
@@ -881,12 +884,16 @@ export function createOpenAaveStateMachine(
             .reserveConfig!.liquidationThreshold.minus(aaveOffsets.open.max)
             .times(100)
 
+          const commandContractType = getAaveLikeCommandContractType(
+            context.strategyConfig.protocol,
+          )
           return {
             stopLossLevel,
             stopLossTxData: {
               ...prepareStopLossTriggerDataV2(
+                commandContractType,
                 proxyAddress!,
-                TriggerType.AaveStopLossToDebtV2,
+                getAveeStopLossTriggerType(context.strategyConfig.protocol),
                 false,
                 stopLossLevel,
                 debtTokenAddress!,

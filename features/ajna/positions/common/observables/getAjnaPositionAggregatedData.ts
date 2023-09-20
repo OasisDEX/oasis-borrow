@@ -99,12 +99,9 @@ function parseAggregatedDataAuction({
     case 'earn': {
       const ajnaEarnPosition = position as AjnaEarnPosition
 
-      const isBucketFrozen = ajnaEarnPosition.price.gt(ajnaEarnPosition.pool.highestPriceBucket)
-      const isCollateralToWithdraw = ajnaEarnPosition.collateralTokenAmount.gt(zero)
-
       return {
-        isBucketFrozen,
-        isCollateralToWithdraw,
+        isBucketFrozen: ajnaEarnPosition.isBucketFrozen,
+        isCollateralToWithdraw: ajnaEarnPosition.collateralTokenAmount.gt(zero),
       }
     }
   }
