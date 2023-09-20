@@ -6,7 +6,7 @@ import { PriceInfoChange } from 'features/shared/priceInfo'
 import { SlippageChange } from 'features/userSettings/userSettings'
 import { VaultHistoryChange } from 'features/vaultHistory/vaultHistory'
 
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
+import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './types'
 
 export type ManageVaultEnvironmentChange =
   | PriceInfoChange

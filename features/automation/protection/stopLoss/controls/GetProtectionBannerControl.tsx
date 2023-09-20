@@ -1,9 +1,9 @@
+import { trackingEvents } from 'analytics/analytics'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import { BigNumber } from 'bignumber.js'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { Banner, bannerGradientPresets } from 'components/Banner'
@@ -48,9 +48,9 @@ export function GetProtectionBannerControl({
         button={{
           action: () => {
             trackingEvents.automation.buttonClick(
-              AutomationEventIds.SelectStopLoss,
-              Pages.VaultsOverview,
-              CommonAnalyticsSections.Banner,
+              MixpanelAutomationEventIds.SelectStopLoss,
+              MixpanelPages.VaultsOverview,
+              MixpanelCommonAnalyticsSections.Banner,
               { vaultId: vaultId.toString(), ilk },
             )
             setHash(VaultViewMode.Protection)

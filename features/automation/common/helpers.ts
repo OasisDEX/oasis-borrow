@@ -1,11 +1,11 @@
 import { Result } from '@ethersproject/abi'
 import { decodeTriggerDataAsJson, TriggerType } from '@oasisdex/automation'
+import { trackingEvents } from 'analytics/analytics'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
@@ -28,8 +28,8 @@ import {
   AutomationKinds,
   SidebarAutomationStages,
 } from 'features/automation/common/types'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
@@ -301,9 +301,9 @@ export function getAutomationThatClosedVault({
 }
 
 const analyticsPageMap = {
-  [AutomationFeatures.AUTO_SELL]: Pages.AutoSell,
-  [AutomationFeatures.AUTO_BUY]: Pages.AutoBuy,
-  [AutomationFeatures.CONSTANT_MULTIPLE]: Pages.ConstantMultiple,
+  [AutomationFeatures.AUTO_SELL]: MixpanelPages.AutoSell,
+  [AutomationFeatures.AUTO_BUY]: MixpanelPages.AutoBuy,
+  [AutomationFeatures.CONSTANT_MULTIPLE]: MixpanelPages.ConstantMultiple,
 }
 
 export function automationMultipleRangeSliderAnalytics({
@@ -348,9 +348,9 @@ export function automationMultipleRangeSliderAnalytics({
   useDebouncedCallback((value) => {
     const parsedValues = JSON.parse(value)
     trackingEvents.automation.inputChange(
-      AutomationEventIds.MoveSlider,
+      MixpanelAutomationEventIds.MoveSlider,
       analyticsPageMap[type],
-      CommonAnalyticsSections.Form,
+      MixpanelCommonAnalyticsSections.Form,
       {
         ...analyticsAdditionalParams,
         [leftValueKeyMap[type]]: parsedValues.leftValue,
@@ -426,9 +426,9 @@ export function automationInputsAnalytics({
     useDebouncedCallback(
       (value) =>
         trackingEvents.automation.inputChange(
-          AutomationEventIds.MinSellPrice,
+          MixpanelAutomationEventIds.MinSellPrice,
           analyticsPageMap[type],
-          CommonAnalyticsSections.Form,
+          MixpanelCommonAnalyticsSections.Form,
           {
             ...analyticsAdditionalParams,
             minSellPrice: value,
@@ -441,9 +441,9 @@ export function automationInputsAnalytics({
     useDebouncedCallback(
       (value) =>
         trackingEvents.automation.inputChange(
-          AutomationEventIds.MaxBuyPrice,
+          MixpanelAutomationEventIds.MaxBuyPrice,
           analyticsPageMap[type],
-          CommonAnalyticsSections.Form,
+          MixpanelCommonAnalyticsSections.Form,
           {
             ...analyticsAdditionalParams,
             maxBuyPrice: value,
@@ -467,9 +467,9 @@ export function openVaultWithStopLossAnalytics({
   afterCollateralizationRatio: BigNumber
 }) {
   trackingEvents.automation.buttonClick(
-    AutomationEventIds.AddStopLoss,
-    Pages.OpenVault,
-    CommonAnalyticsSections.Form,
+    MixpanelAutomationEventIds.AddStopLoss,
+    MixpanelPages.OpenVault,
+    MixpanelCommonAnalyticsSections.Form,
     {
       vaultId: id!.toString(),
       ilk,

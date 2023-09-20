@@ -5,19 +5,12 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
-import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import {
   createAutomationTriggersChange$,
   TriggersData,
 } from 'features/automation/api/automationTriggersData'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import {
   SaveVaultType,
   saveVaultTypeForAccount,
@@ -25,16 +18,9 @@ import {
 } from 'features/generalManageVault/vaultType'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
 import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import {
-  AddGasEstimationFunction,
-  GasEstimationStatus,
-  HasGasEstimation,
-  TxHelpers,
-} from 'helpers/context/types'
-import { TxError } from 'helpers/types'
+import { AddGasEstimationFunction, GasEstimationStatus, TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { curry } from 'lodash'
@@ -45,53 +31,38 @@ import {
   applyExchange,
   createExchangeChange$,
   createInitialQuoteChange,
-  ExchangeQuoteChanges,
 } from './manageMultiplyQuote'
-import {
-  applyManageVaultAllowance,
-  ManageVaultAllowanceChange,
-} from './manageMultiplyVaultAllowances'
+import { applyManageVaultAllowance } from './manageMultiplyVaultAllowances'
 import {
   applyManageVaultCalculations,
   defaultManageMultiplyVaultCalculations,
-  ManageVaultCalculations,
 } from './manageMultiplyVaultCalculations'
 import {
   applyManageVaultConditions,
   applyManageVaultStageCategorisation,
   defaultManageMultiplyVaultConditions,
-  ManageVaultConditions,
 } from './manageMultiplyVaultConditions'
-import {
-  applyManageVaultEnvironment,
-  ManageVaultEnvironmentChange,
-} from './manageMultiplyVaultEnvironment'
-import { applyManageVaultForm, ManageVaultFormChange } from './manageMultiplyVaultForm'
-import { applyManageVaultInput, ManageVaultInputChange } from './manageMultiplyVaultInput'
-import {
-  applyManageVaultSummary,
-  defaultManageVaultSummary,
-  ManageVaultSummary,
-} from './manageMultiplyVaultSummary'
+import { applyManageVaultEnvironment } from './manageMultiplyVaultEnvironment'
+import { applyManageVaultForm } from './manageMultiplyVaultForm'
+import { applyManageVaultInput } from './manageMultiplyVaultInput'
+import { applyManageVaultSummary, defaultManageVaultSummary } from './manageMultiplyVaultSummary'
 import {
   applyEstimateGas,
   applyManageVaultTransaction,
   createProxy,
-  ManageVaultTransactionChange,
   setCollateralAllowance,
   setDaiAllowance,
 } from './manageMultiplyVaultTransactions'
-import {
-  applyManageVaultTransition,
-  ManageVaultTransitionChange,
-  progressAdjust,
-} from './manageMultiplyVaultTransitions'
+import { applyManageVaultTransition, progressAdjust } from './manageMultiplyVaultTransitions'
 import { finalValidation, validateErrors, validateWarnings } from './manageMultiplyVaultValidations'
-
-interface ManageVaultInjectedOverrideChange {
-  kind: 'injectStateOverride'
-  stateToOverride: Partial<ManageMultiplyVaultState>
-}
+import {
+  CloseVaultTo,
+  MainAction,
+  ManageMultiplyVaultChange,
+  ManageMultiplyVaultState,
+  MutableManageMultiplyVaultState,
+  OtherAction,
+} from './types'
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,
@@ -105,16 +76,6 @@ function applyManageVaultInjectedOverride(
   }
   return state
 }
-
-export type ManageMultiplyVaultChange =
-  | ManageVaultInputChange
-  | ManageVaultFormChange
-  | ManageVaultAllowanceChange
-  | ManageVaultTransitionChange
-  | ManageVaultTransactionChange
-  | ManageVaultEnvironmentChange
-  | ManageVaultInjectedOverrideChange
-  | ExchangeQuoteChanges
 
 function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChange) {
   const s1 = applyManageVaultInput(change, state)
@@ -130,151 +91,6 @@ function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChang
   const s10 = applyManageVaultConditions(s9)
   return applyManageVaultSummary(s10)
 }
-
-export type ManageMultiplyVaultEditingStage =
-  | 'adjustPosition'
-  | 'otherActions'
-  | 'borrowTransitionEditing'
-
-export type ManageMultiplyVaultStage =
-  | ManageMultiplyVaultEditingStage
-  | BaseManageVaultStage
-  | 'borrowTransitionWaitingForConfirmation'
-  | 'borrowTransitionInProgress'
-  | 'borrowTransitionFailure'
-  | 'borrowTransitionSuccess'
-
-export type MainAction = 'buy' | 'sell'
-export type CloseVaultTo = 'collateral' | 'dai'
-export type OtherAction =
-  | 'depositCollateral'
-  | 'depositDai'
-  | 'paybackDai'
-  | 'withdrawCollateral'
-  | 'withdrawDai'
-  | 'closeVault'
-
-export interface MutableManageMultiplyVaultState {
-  stage: ManageMultiplyVaultStage
-  originalEditingStage: ManageMultiplyVaultEditingStage
-  mainAction: MainAction
-  otherAction: OtherAction
-  showSliderController: boolean
-
-  depositAmount?: BigNumber
-  depositAmountUSD?: BigNumber
-  depositDaiAmount?: BigNumber
-  withdrawAmount?: BigNumber
-  withdrawAmountUSD?: BigNumber
-  paybackAmount?: BigNumber
-  generateAmount?: BigNumber
-  closeVaultTo: CloseVaultTo
-
-  collateralAllowanceAmount?: BigNumber
-  daiAllowanceAmount?: BigNumber
-  selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
-  selectedDaiAllowanceRadio: SelectedDaiAllowanceRadio
-
-  requiredCollRatio?: BigNumber
-  buyAmount?: BigNumber
-  buyAmountUSD?: BigNumber
-
-  sellAmount?: BigNumber
-  sellAmountUSD?: BigNumber
-}
-
-export interface ManageVaultEnvironment {
-  account?: string
-  accountIsController: boolean
-  proxyAddress?: string
-  collateralAllowance?: BigNumber
-  daiAllowance?: BigNumber
-  vault: Vault
-  ilkData: IlkData
-  balanceInfo: BalanceInfo
-  priceInfo: PriceInfo
-  quote?: Quote
-  swap?: Quote
-  exchangeError: boolean
-  slippage: BigNumber
-  vaultHistory: VaultHistoryEvent[]
-}
-
-interface ManageVaultFunctions {
-  progress?: () => void
-  regress?: () => void
-  toggle?: (stage: ManageMultiplyVaultEditingStage) => void
-
-  updateDepositAmount?: (depositAmount?: BigNumber) => void
-  updateDepositAmountUSD?: (depositAmountUSD?: BigNumber) => void
-  updateDepositDaiAmount?: (depositDaiAmount?: BigNumber) => void
-  updateDepositAmountMax?: () => void
-  updateDepositDaiAmountMax?: () => void
-  updatePaybackAmount?: (paybackAmount?: BigNumber) => void
-  updatePaybackAmountMax?: () => void
-
-  updateWithdrawAmount?: (withdrawAmount?: BigNumber) => void
-  updateWithdrawAmountUSD?: (withdrawAmountUSD?: BigNumber) => void
-  updateWithdrawAmountMax?: () => void
-  updateGenerateAmount?: (generateAmount?: BigNumber) => void
-  updateGenerateAmountMax?: () => void
-
-  setCloseVaultTo?: (closeVaultTo: CloseVaultTo) => void
-
-  updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
-  setCollateralAllowanceAmountUnlimited?: () => void
-  setCollateralAllowanceAmountToDepositAmount?: () => void
-  resetCollateralAllowanceAmount?: () => void
-  updateDaiAllowanceAmount?: (amount?: BigNumber) => void
-  setDaiAllowanceAmountUnlimited?: () => void
-  setDaiAllowanceAmountToPaybackAmount?: () => void
-  setDaiAllowanceAmountToDepositDaiAmount?: () => void
-  resetDaiAllowanceAmount?: () => void
-  clear: () => void
-
-  injectStateOverride: (state: Partial<MutableManageMultiplyVaultState>) => void
-
-  toggleSliderController?: () => void
-  updateRequiredCollRatio?: (value: BigNumber) => void
-  setMainAction?: (mainAction: MainAction) => void
-  setOtherAction?: (otherAction: OtherAction) => void
-  updateBuy?: (buyAmount?: BigNumber) => void
-  updateBuyUSD?: (buyAmountUSD?: BigNumber) => void
-  updateBuyMax?: () => void
-  updateSell?: (sellAmount?: BigNumber) => void
-  updateSellUSD?: (sellAmountUSD?: BigNumber) => void
-  updateSellMax?: () => void
-}
-
-interface ManageVaultTxInfo {
-  collateralAllowanceTxHash?: string
-  daiAllowanceTxHash?: string
-  proxyTxHash?: string
-  manageTxHash?: string
-  txError?: TxError
-  etherscan?: string
-  proxyConfirmations?: number
-  safeConfirmations: number
-}
-
-export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
-  ManageVaultCalculations &
-  ManageVaultConditions &
-  ManageVaultEnvironment &
-  ManageVaultFunctions &
-  ManageVaultTxInfo & {
-    errorMessages: VaultErrorMessage[]
-    warningMessages: VaultWarningMessage[]
-    summary: ManageVaultSummary
-    initialTotalSteps: number
-    totalSteps: number
-    currentStep: number
-    stopLossData?: StopLossTriggerData
-    autoBuyData?: AutoBSTriggerData
-    autoSellData?: AutoBSTriggerData
-    constantMultipleData?: ConstantMultipleTriggerData
-    autoTakeProfitData?: AutoTakeProfitTriggerData
-  } & HasGasEstimation
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,

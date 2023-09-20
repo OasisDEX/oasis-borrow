@@ -27,7 +27,7 @@ import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
+import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './types'
 
 type ProxyChange =
   | {

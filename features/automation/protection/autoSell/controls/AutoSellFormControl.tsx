@@ -1,5 +1,5 @@
 import { TriggerType } from '@oasisdex/automation'
-import { AutomationEventIds, Pages } from 'analytics/analytics'
+import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { resolveMinSellPriceAnalytics } from 'features/automation/common/helpers'
@@ -91,11 +91,11 @@ export function AutoSellFormControl({
       txHelpers={txHelpers}
       analytics={{
         id: {
-          add: AutomationEventIds.AddAutoSell,
-          edit: AutomationEventIds.EditAutoSell,
-          remove: AutomationEventIds.RemoveAutoSell,
+          add: MixpanelAutomationEventIds.AddAutoSell,
+          edit: MixpanelAutomationEventIds.EditAutoSell,
+          remove: MixpanelAutomationEventIds.RemoveAutoSell,
         },
-        page: Pages.AutoSell,
+        page: MixpanelPages.AutoSell,
         additionalParams: {
           triggerSellValue: autoSellState.execCollRatio.toString(),
           targetValue: autoSellState.targetCollRatio.toString(),

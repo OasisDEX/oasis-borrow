@@ -1,4 +1,4 @@
-import { AutomationEventIds, Pages } from 'analytics/analytics'
+import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { CloseVaultToEnum } from 'features/automation/common/consts'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
@@ -79,11 +79,11 @@ export function AutoTakeProfitFormControl({
       txHelpers={txHelpers}
       analytics={{
         id: {
-          add: AutomationEventIds.AddTakeProfit,
-          edit: AutomationEventIds.EditTakeProfit,
-          remove: AutomationEventIds.RemoveTakeProfit,
+          add: MixpanelAutomationEventIds.AddTakeProfit,
+          edit: MixpanelAutomationEventIds.EditTakeProfit,
+          remove: MixpanelAutomationEventIds.RemoveTakeProfit,
         },
-        page: Pages.TakeProfit,
+        page: MixpanelPages.TakeProfit,
         additionalParams: {
           triggerValue: autoTakeProfitState.executionPrice.toString(),
           closeTo: autoTakeProfitState.toCollateral

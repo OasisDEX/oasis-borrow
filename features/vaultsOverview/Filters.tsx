@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Pages, trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/analytics'
+import { MixpanelPages } from 'analytics/types'
 import { COIN_TAGS, CoinTag } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
 import React, { memo, useCallback } from 'react'
@@ -11,7 +12,7 @@ interface FiltersProps {
   onTagChange: (tag: CoinTag | undefined) => void
   search: string
   defaultTag: 'your-vaults' | 'all-assets'
-  page: Pages.LandingPage | Pages.OpenVaultOverview | Pages.VaultsOverview
+  page: MixpanelPages.LandingPage | MixpanelPages.OpenVaultOverview | MixpanelPages.VaultsOverview
   tagFilter: CoinTag | undefined
   searchPlaceholder: string
   sx?: SxStyleProp

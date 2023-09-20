@@ -27,7 +27,7 @@ import {
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { VaultProtocol } from 'helpers/getVaultProtocol'

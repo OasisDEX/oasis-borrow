@@ -1,5 +1,6 @@
-import { enableMixpanelDevelopmentMode, MixpanelDevelopmentType } from 'analytics/analytics'
+import { enableMixpanelDevelopmentMode } from 'analytics/analytics'
 import { config } from 'analytics/mixpanel'
+import { MixpanelDevelopmentType } from 'analytics/types'
 import { snakeCase } from 'lodash'
 import Mixpanel from 'mixpanel'
 import { NextApiRequest, NextApiResponse } from 'next'

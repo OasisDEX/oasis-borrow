@@ -1,7 +1,7 @@
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { TFunction } from 'next-i18next'
 import { ParsedUrlQuery } from 'querystring'

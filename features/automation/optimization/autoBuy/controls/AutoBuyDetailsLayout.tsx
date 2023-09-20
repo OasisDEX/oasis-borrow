@@ -1,9 +1,9 @@
+import { trackingEvents } from 'analytics/analytics'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { useAutomationContext } from 'components/context'
@@ -136,9 +136,9 @@ export function AutoBuyDetailsLayout({
                 currentOptimizationFeature: AutomationFeatures.AUTO_BUY,
               })
               trackingEvents.automation.buttonClick(
-                AutomationEventIds.SelectAutoBuy,
-                Pages.OptimizationTab,
-                CommonAnalyticsSections.Banner,
+                MixpanelAutomationEventIds.SelectAutoBuy,
+                MixpanelPages.OptimizationTab,
+                MixpanelCommonAnalyticsSections.Banner,
                 { vaultId: vaultId.toString(), ilk },
               )
             },

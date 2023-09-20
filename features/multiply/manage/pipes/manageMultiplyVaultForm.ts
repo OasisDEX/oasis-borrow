@@ -1,14 +1,14 @@
 import { zero } from 'helpers/zero'
 
+import { allowanceDefaults } from './manageMultiplyVaultAllowances'
+import { MAX_COLL_RATIO } from './manageMultiplyVaultCalculations'
 import {
   CloseVaultTo,
   MainAction,
   ManageMultiplyVaultChange,
   ManageMultiplyVaultState,
   OtherAction,
-} from './manageMultiplyVault'
-import { allowanceDefaults } from './manageMultiplyVaultAllowances'
-import { MAX_COLL_RATIO } from './manageMultiplyVaultCalculations'
+} from './types'
 
 export type ManageVaultFormChange =
   | {

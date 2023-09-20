@@ -1,4 +1,4 @@
-import { Pages } from 'analytics/analytics'
+import { MixpanelPages } from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { useAutomationContext } from 'components/context'
@@ -313,7 +313,7 @@ export function SidebarAutoBuyEditingStage({
         }}
         value={autoBuyState.maxBaseFeeInGwei.toNumber()}
         analytics={{
-          page: Pages.AutoBuy,
+          page: MixpanelPages.AutoBuy,
           additionalParams: { vaultId: id.toString(), ilk },
         }}
       />

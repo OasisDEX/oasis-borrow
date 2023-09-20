@@ -20,7 +20,7 @@ import {
 import { roundRatioToBeDivisibleByFive } from 'helpers/roundRatioToBeDivisibleByFive'
 import { one, zero } from 'helpers/zero'
 
-import { ManageMultiplyVaultState } from './manageMultiplyVault'
+import { ManageMultiplyVaultState } from './types'
 
 // This value ought to be coupled in relation to how much we round the raw debt
 // value in the vault (vault.debt)

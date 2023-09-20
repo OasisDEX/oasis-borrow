@@ -12,11 +12,6 @@ import { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { applyExchange } from 'features/multiply/manage/pipes/manageMultiplyQuote'
 import {
-  ManageMultiplyVaultChange,
-  ManageMultiplyVaultState,
-  MutableManageMultiplyVaultState,
-} from 'features/multiply/manage/pipes/manageMultiplyVault'
-import {
   applyManageVaultCalculations,
   defaultManageMultiplyVaultCalculations,
 } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
@@ -38,6 +33,11 @@ import {
   validateErrors,
   validateWarnings,
 } from 'features/multiply/manage/pipes/manageMultiplyVaultValidations'
+import {
+  ManageMultiplyVaultChange,
+  ManageMultiplyVaultState,
+  MutableManageMultiplyVaultState,
+} from 'features/multiply/manage/pipes/types'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'

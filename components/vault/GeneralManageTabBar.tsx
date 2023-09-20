@@ -1,9 +1,9 @@
+import { trackingEvents } from 'analytics/analytics'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { TabBar } from 'components/TabBar'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
@@ -98,9 +98,9 @@ export function GeneralManageTabBar({
                 content: <ProtectionControl />,
                 callback: () => {
                   trackingEvents.automation.buttonClick(
-                    AutomationEventIds.SelectProtection,
-                    Pages.VaultsOverview,
-                    CommonAnalyticsSections.HeaderTabs,
+                    MixpanelAutomationEventIds.SelectProtection,
+                    MixpanelPages.VaultsOverview,
+                    MixpanelCommonAnalyticsSections.HeaderTabs,
                     analyticsAdditionalParams,
                   )
                 },
@@ -112,9 +112,9 @@ export function GeneralManageTabBar({
                 content: <OptimizationControl vaultHistory={vaultHistory} />,
                 callback: () => {
                   trackingEvents.automation.buttonClick(
-                    AutomationEventIds.SelectOptimization,
-                    Pages.VaultsOverview,
-                    CommonAnalyticsSections.HeaderTabs,
+                    MixpanelAutomationEventIds.SelectOptimization,
+                    MixpanelPages.VaultsOverview,
+                    MixpanelCommonAnalyticsSections.HeaderTabs,
                     analyticsAdditionalParams,
                   )
                 },

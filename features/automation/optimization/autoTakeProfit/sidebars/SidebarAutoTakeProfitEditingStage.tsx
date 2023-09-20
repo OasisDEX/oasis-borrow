@@ -1,9 +1,9 @@
+import { trackingEvents } from 'analytics/analytics'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
@@ -58,9 +58,9 @@ export function SidebarAutoTakeProfitEditingStage({
   useDebouncedCallback(
     (value) =>
       trackingEvents.automation.inputChange(
-        AutomationEventIds.MoveSlider,
-        Pages.TakeProfit,
-        CommonAnalyticsSections.Form,
+        MixpanelAutomationEventIds.MoveSlider,
+        MixpanelPages.TakeProfit,
+        MixpanelCommonAnalyticsSections.Form,
         {
           vaultId: id.toString(),
           ilk: ilk,

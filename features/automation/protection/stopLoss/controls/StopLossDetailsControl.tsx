@@ -1,9 +1,9 @@
+import { trackingEvents } from 'analytics/analytics'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { useAutomationContext } from 'components/context'
 import { AppLink } from 'components/Links'
@@ -120,9 +120,9 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
                 currentProtectionFeature: AutomationFeatures.STOP_LOSS,
               })
               trackingEvents.automation.buttonClick(
-                AutomationEventIds.SelectStopLoss,
-                Pages.ProtectionTab,
-                CommonAnalyticsSections.Banner,
+                MixpanelAutomationEventIds.SelectStopLoss,
+                MixpanelPages.ProtectionTab,
+                MixpanelCommonAnalyticsSections.Banner,
                 { vaultId: id.toString(), ilk: ilk },
               )
             },

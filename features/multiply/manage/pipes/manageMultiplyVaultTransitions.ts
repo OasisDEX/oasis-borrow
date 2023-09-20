@@ -4,12 +4,7 @@ import { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
-import {
-  defaultMutableManageMultiplyVaultState,
-  ManageMultiplyVaultChange,
-  ManageMultiplyVaultEditingStage,
-  ManageMultiplyVaultState,
-} from './manageMultiplyVault'
+import { defaultMutableManageMultiplyVaultState } from './manageMultiplyVault'
 import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations'
 import { defaultManageMultiplyVaultConditions } from './manageMultiplyVaultConditions'
 import { manageMultiplyInputsDefaults, manageVaultFormDefaults } from './manageMultiplyVaultForm'
@@ -19,6 +14,11 @@ import {
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
 } from './manageMultiplyVaultTransactions'
+import {
+  ManageMultiplyVaultChange,
+  ManageMultiplyVaultEditingStage,
+  ManageMultiplyVaultState,
+} from './types'
 
 type ManageVaultBorrowTransitionChange =
   | {

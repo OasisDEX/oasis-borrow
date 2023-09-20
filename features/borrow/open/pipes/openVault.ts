@@ -28,7 +28,7 @@ import {
 } from 'features/automation/protection/stopLoss/openFlow/stopLossOpenFlowTransaction'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import { createProxy } from 'features/proxy/createProxy'
 import { applyProxyChanges, ProxyChanges } from 'features/proxy/proxy'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'

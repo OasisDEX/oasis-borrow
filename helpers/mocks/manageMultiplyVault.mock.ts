@@ -4,10 +4,8 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
-import {
-  createManageMultiplyVault$,
-  ManageMultiplyVaultState,
-} from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'

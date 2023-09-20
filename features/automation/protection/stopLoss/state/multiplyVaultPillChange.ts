@@ -1,4 +1,4 @@
-import { OtherAction } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { OtherAction } from 'features/multiply/manage/pipes/types'
 
 export const MULTIPLY_VAULT_PILL_CHANGE_SUBJECT = 'MultiplyPillChange'
 

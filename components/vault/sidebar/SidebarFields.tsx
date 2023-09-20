@@ -7,7 +7,7 @@ import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/man
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { handleNumericInput } from 'helpers/input'
 import {

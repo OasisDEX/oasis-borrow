@@ -8,7 +8,7 @@ import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import {

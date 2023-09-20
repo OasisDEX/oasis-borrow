@@ -1,5 +1,5 @@
 import { TriggerType } from '@oasisdex/automation'
-import { AutomationEventIds, Pages } from 'analytics/analytics'
+import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { resolveMaxBuyPriceAnalytics } from 'features/automation/common/helpers'
@@ -83,11 +83,11 @@ export function AutoBuyFormControl({
       txHelpers={txHelpers}
       analytics={{
         id: {
-          add: AutomationEventIds.AddAutoBuy,
-          edit: AutomationEventIds.EditAutoBuy,
-          remove: AutomationEventIds.RemoveAutoBuy,
+          add: MixpanelAutomationEventIds.AddAutoBuy,
+          edit: MixpanelAutomationEventIds.EditAutoBuy,
+          remove: MixpanelAutomationEventIds.RemoveAutoBuy,
         },
-        page: Pages.AutoBuy,
+        page: MixpanelPages.AutoBuy,
         additionalParams: {
           triggerBuyValue: autoBuyState.execCollRatio.toString(),
           targetValue: autoBuyState.targetCollRatio.toString(),

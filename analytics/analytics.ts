@@ -6,7 +6,7 @@ import { Context } from 'blockchain/network'
 import browserDetect from 'browser-detect'
 import { getDiscoverMixpanelPage } from 'features/discover/helpers/getDiscoverMixpanelPage'
 import { DiscoverPages } from 'features/discover/types'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import { ConnectionKind } from 'features/web3Context'
 import { formatPrecision } from 'helpers/formatters/format'
 import { camelCase, upperFirst } from 'lodash'
@@ -14,14 +14,20 @@ import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
 import { match, P } from 'ts-pattern'
 
-type PropertyNameType = '$initial_referrer' | '$user_id'
-
-export type MixpanelDevelopmentType = {
-  track: (eventType: string, payload: any) => void
-  get_distinct_id: () => string
-  has_opted_out_tracking: () => boolean
-  get_property: (propertyName: PropertyNameType) => string | null
-}
+import {
+  MixpanelAutomationEventIds,
+  MixpanelAutomationEventsAdditionalParams,
+  MixpanelCommonAnalyticsSections,
+  MixpanelDevelopmentType,
+  MixpanelEventTypes,
+  MixpanelNotificationsEventAdditionalParams,
+  MixpanelNotificationsEventIds,
+  MixpanelPages,
+  MixpanelPropertyNameType,
+  MixpanelSwapWidgetEvents,
+  MixpanelTopBannerEvents,
+  MixpanelType,
+} from './types'
 
 export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevelopmentType {
   const env = getConfig()?.publicRuntimeConfig.mixpanelEnv || process.env.MIXPANEL_ENV
@@ -33,7 +39,7 @@ export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevel
       },
       get_distinct_id: () => 'test_id',
       has_opted_out_tracking: () => false,
-      get_property: (propertyName: PropertyNameType) => {
+      get_property: (propertyName: MixpanelPropertyNameType) => {
         switch (propertyName) {
           case '$initial_referrer':
             return '$direct'
@@ -57,142 +63,11 @@ export function logMixpanelEventInDevelopmentMode(eventType: string, payload: an
   }
 }
 
-type MixpanelType = MixpanelDevelopmentType | typeof mixpanelBrowser
 let mixpanel: MixpanelType = mixpanelBrowser
 
 mixpanel = enableMixpanelDevelopmentMode<MixpanelType>(mixpanel)
 
 export const INPUT_DEBOUNCE_TIME = 800
-
-export enum Pages {
-  VaultCreate = 'VaultCreate',
-  IlksList = 'IlksList',
-  LandingPage = 'LandingPage',
-  OpenVaultOverview = 'OpenVaultOverview',
-  VaultsOverview = 'VaultsOverview',
-  ManageCollateral = 'ManageCollateral',
-  ManageDai = 'ManageDai',
-  OpenMultiply = 'OpenMultiply',
-  AdjustPosition = 'AdjustPosition',
-  OtherActions = 'OtherActions',
-  CloseVault = 'CloseVault',
-  OpenEarnSTETH = 'OpenEarnSTETH',
-  ManageSTETH = 'ManageSTETH',
-  DiscoverOasis = 'DiscoverOasis',
-  DiscoverHighestRiskPositions = 'DiscoverHighestRiskPositions',
-  DiscoverHighestMultiplyPnl = 'DiscoverHighestMultiplyPnl',
-  DiscoverMostYieldEarned = 'DiscoverMostYieldEarned',
-  DiscoverLargestDebt = 'DiscoverLargestDebt',
-  ProtectionTab = 'ProtectionTab',
-  OptimizationTab = 'OptimizationTab',
-  OpenVault = 'OpenVault',
-  StopLoss = 'StopLoss',
-  AutoBuy = 'AutoBuy',
-  AutoSell = 'AutoSell',
-  ConstantMultiple = 'ConstantMultiple',
-  TakeProfit = 'TakeProfit',
-  DAISavingsRate = 'DAISavingsRate',
-}
-
-export enum AutomationEventIds {
-  SelectProtection = 'SelectProtection',
-  SelectOptimization = 'SelectOptimization',
-
-  SelectStopLoss = 'SelectStopLoss',
-  SelectAutoSell = 'SelectAutoSell',
-  SelectAutoBuy = 'SelectAutoBuy',
-  SelectConstantMultiple = 'SelectConstantMultiple',
-  SelectTakeProfit = 'SelectTakeProfit',
-
-  AddStopLoss = 'AddStopLoss',
-  EditStopLoss = 'EditStopLoss',
-  RemoveStopLoss = 'RemoveStopLoss',
-
-  AddAutoBuy = 'AddAutoBuy',
-  EditAutoBuy = 'EditAutoBuy',
-  RemoveAutoBuy = 'RemoveAutoBuy',
-
-  AddAutoSell = 'AddAutoSell',
-  EditAutoSell = 'EditAutoSell',
-  RemoveAutoSell = 'RemoveAutoSell',
-
-  AddConstantMultiple = 'AddConstantMultiple',
-  EditConstantMultiple = 'EditConstantMultiple',
-  RemoveConstantMultiple = 'RemoveConstantMultiple',
-
-  AddTakeProfit = 'AddTakeProfit',
-  EditTakeProfit = 'EditTakeProfit',
-  RemoveTakeProfit = 'RemoveAutoTakeProfit',
-
-  CloseToX = 'CloseToX',
-  MoveSlider = 'MoveSlider',
-  MinSellPrice = 'MinSellPrice',
-  MaxBuyPrice = 'MaxBuyPrice',
-  MaxGasFee = 'MaxGasFee',
-  TargetMultiplier = 'TargetMultiplier',
-}
-
-export interface AutomationEventsAdditionalParams {
-  vaultId: string
-  ilk: string
-  collateralRatio?: string
-  triggerValue?: string
-  triggerBuyValue?: string
-  triggerSellValue?: string
-  targetValue?: string
-  minSellPrice?: string
-  maxBuyPrice?: string
-  maxGasFee?: string
-  targetMultiple?: string
-  closeTo?: CloseVaultTo
-}
-
-export enum SwapWidgetEvents {
-  ExecutionStarted = 'SwapWidgetExecutionStarted',
-  ExecutionUpdated = 'SwapWidgetExecutionUpdated',
-  ExecutionCompleted = 'SwapWidgetExecutionCompleted',
-  ExecutionFailed = 'SwapWidgetExecutionFailed',
-}
-export enum TopBannerEvents {
-  TopBannerClosed = 'TopBannerClosed',
-  TopBannerClicked = 'TopBannerClicked',
-}
-
-export enum NotificationsEventIds {
-  OpenNotificationCenter = 'OpenNotificationCenter',
-  ScrollNotificationCenter = 'ScrollNotificationCenter',
-  MarkAsRead = 'MarkAsRead',
-  GoToVault = 'GoToVault',
-  NotificationPreferences = 'NotificationPreferences',
-  VaultActionNotificationSwitch = 'VaultActionNotificationSwitch',
-  VaultInfoNotificationSwitch = 'VaultInfoNotificationSwitch',
-}
-
-export interface NotificationsEventAdditionalParams {
-  walletAddress: string
-  walletType: string
-  browserType: string
-  notificationSwitch?: 'on' | 'off'
-}
-
-export enum CommonAnalyticsSections {
-  HeaderTabs = 'HeaderTabs',
-  Banner = 'Banner',
-  Form = 'Form',
-  NotificationCenter = 'NotificationCenter',
-  NotificationPreferences = 'NotificationPreferences',
-  OpenPosition = 'OpenPosition',
-}
-
-export enum EventTypes {
-  Pageview = 'Pageview',
-  AccountChange = 'account-change',
-  InputChange = 'input-change',
-  ButtonClick = 'btn-click',
-  OnScroll = 'on-scroll',
-  SwapWidgetEvent = 'swap-widget-event',
-  TopBannerEvent = 'top-banner-event',
-}
 
 // https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string]: any }) {
@@ -263,13 +138,13 @@ export const trackingEvents = {
   landingPageView: (utm: { [key: string]: string | string[] | undefined }) => {
     const eventBody = {
       product: ProductType.BORROW,
-      page: Pages.LandingPage,
+      page: MixpanelPages.LandingPage,
       utm_source: utm.utmSource ? utm.utmSource : 'direct',
       utm_medium: utm.utmMedium ? utm.utmMedium : 'none',
       utm_campaign: utm.utmCampaign ? utm.utmCampaign : 'none',
     }
 
-    mixpanelInternalAPI(EventTypes.Pageview, eventBody)
+    mixpanelInternalAPI(MixpanelEventTypes.Pageview, eventBody)
   },
 
   pageView: (location: string) => {
@@ -278,7 +153,8 @@ export const trackingEvents = {
       id: location,
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.Pageview, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.Pageview, eventBody)
   },
 
   accountChange: (
@@ -298,11 +174,14 @@ export const trackingEvents = {
       walletLabel,
     }
 
-    mixpanelInternalAPI(EventTypes.AccountChange, eventBody)
+    mixpanelInternalAPI(MixpanelEventTypes.AccountChange, eventBody)
   },
 
   searchToken: (
-    page: Pages.LandingPage | Pages.OpenVaultOverview | Pages.VaultsOverview,
+    page:
+      | MixpanelPages.LandingPage
+      | MixpanelPages.OpenVaultOverview
+      | MixpanelPages.VaultsOverview,
     query: string,
   ) => {
     const eventBody = {
@@ -313,10 +192,11 @@ export const trackingEvents = {
       section: 'SelectCollateral',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
   },
 
-  openVault: (page: Pages.LandingPage | Pages.OpenVaultOverview, ilk: string) => {
+  openVault: (page: MixpanelPages.LandingPage | MixpanelPages.OpenVaultOverview, ilk: string) => {
     const eventBody = {
       id: 'OpenVault',
       product: ProductType.BORROW,
@@ -325,7 +205,7 @@ export const trackingEvents = {
       section: 'SelectCollateral',
     }
 
-    mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   createVaultDeposit: (firstCDP: boolean | undefined, amount: string) => {
@@ -334,11 +214,12 @@ export const trackingEvents = {
       product: ProductType.BORROW,
       firstCDP,
       amount,
-      page: Pages.VaultCreate,
+      page: MixpanelPages.VaultCreate,
       section: 'CreateVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
   },
 
   createVaultGenerate: (firstCDP: boolean | undefined, amount: string) => {
@@ -347,11 +228,12 @@ export const trackingEvents = {
       product: ProductType.BORROW,
       firstCDP,
       amount,
-      page: Pages.VaultCreate,
+      page: MixpanelPages.VaultCreate,
       section: 'CreateVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
   },
 
   createVaultSetupProxy: (
@@ -365,11 +247,12 @@ export const trackingEvents = {
       firstCDP,
       depositAmount,
       generateAmount,
-      page: Pages.VaultCreate,
+      page: MixpanelPages.VaultCreate,
       section: 'Configure',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   createProxy: (firstCDP: boolean | undefined) => {
@@ -377,11 +260,12 @@ export const trackingEvents = {
       id: 'CreateProxy',
       product: ProductType.BORROW,
       firstCDP,
-      page: Pages.VaultCreate,
+      page: MixpanelPages.VaultCreate,
       section: 'ProxyDeploy',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   pickAllowance: (firstCDP: boolean | undefined, type: string, amount: string) => {
@@ -391,11 +275,12 @@ export const trackingEvents = {
       firstCDP,
       type,
       amount,
-      page: Pages.VaultCreate,
+      page: MixpanelPages.VaultCreate,
       section: 'Allowance',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
   },
 
   setTokenAllowance: (firstCDP: boolean | undefined) => {
@@ -403,11 +288,12 @@ export const trackingEvents = {
       id: 'SetAllowance',
       product: ProductType.BORROW,
       firstCDP,
-      page: Pages.VaultCreate,
+      page: MixpanelPages.VaultCreate,
       section: 'Configure',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   approveAllowance: (firstCDP: boolean | undefined) => {
@@ -415,11 +301,12 @@ export const trackingEvents = {
       id: 'ApproveAllowance',
       product: ProductType.BORROW,
       firstCDP,
-      page: Pages.VaultCreate,
+      page: MixpanelPages.VaultCreate,
       section: 'Allowance',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   createVaultConfirm: (firstCDP: boolean | undefined) => {
@@ -427,11 +314,12 @@ export const trackingEvents = {
       id: 'Confirm',
       product: ProductType.BORROW,
       firstCDP,
-      page: Pages.VaultCreate,
+      page: MixpanelPages.VaultCreate,
       section: 'CreateVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   confirmVaultConfirm: (
@@ -447,11 +335,12 @@ export const trackingEvents = {
       collateralAmount,
       daiAmount,
       firstCDP,
-      page: Pages.VaultCreate,
+      page: MixpanelPages.VaultCreate,
       section: 'ConfirmVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   confirmVaultConfirmTransaction: (
@@ -473,11 +362,11 @@ export const trackingEvents = {
       txHash,
       network,
       walletType,
-      page: Pages.VaultCreate,
+      page: MixpanelPages.VaultCreate,
       section: 'ConfirmVault',
     }
 
-    mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   confirmVaultEdit: (firstCDP: boolean | undefined) => {
@@ -485,11 +374,12 @@ export const trackingEvents = {
       id: 'EditVault',
       product: ProductType.BORROW,
       firstCDP,
-      page: Pages.VaultCreate,
+      page: MixpanelPages.VaultCreate,
       section: 'ConfirmVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   overviewManage: (vaultId: string, ilk: string) => {
@@ -498,11 +388,12 @@ export const trackingEvents = {
       product: ProductType.BORROW,
       vaultId,
       ilk,
-      page: Pages.VaultsOverview,
+      page: MixpanelPages.VaultsOverview,
       section: 'Table',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   createNewVault: (firstCDP: boolean | undefined) => {
@@ -513,7 +404,8 @@ export const trackingEvents = {
       section: 'NavBar',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   yourVaults: () => {
@@ -523,7 +415,8 @@ export const trackingEvents = {
       section: 'NavBar',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   switchToDai: (ControllerIsConnected: boolean) => {
@@ -531,11 +424,12 @@ export const trackingEvents = {
       id: 'SwitchToDai',
       product: ProductType.BORROW,
       ControllerIsConnected,
-      page: Pages.ManageCollateral,
+      page: MixpanelPages.ManageCollateral,
       section: 'Dai',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   switchToCollateral: (ControllerIsConnected: boolean) => {
@@ -543,15 +437,16 @@ export const trackingEvents = {
       id: 'SwitchToCollateral',
       product: ProductType.BORROW,
       ControllerIsConnected,
-      page: Pages.ManageDai,
+      page: MixpanelPages.ManageDai,
       section: 'Collateral',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   manageVaultDepositAmount: (
-    page: Pages.ManageCollateral | Pages.ManageDai,
+    page: MixpanelPages.ManageCollateral | MixpanelPages.ManageDai,
     amount: string,
     setMax: boolean,
   ) => {
@@ -563,11 +458,12 @@ export const trackingEvents = {
       setMax,
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
   },
 
   manageVaultGenerateAmount: (
-    page: Pages.ManageCollateral | Pages.ManageDai,
+    page: MixpanelPages.ManageCollateral | MixpanelPages.ManageDai,
     amount: string,
     setMax: boolean,
   ) => {
@@ -579,11 +475,12 @@ export const trackingEvents = {
       setMax,
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
   },
 
   manageVaultWithdrawAmount: (
-    page: Pages.ManageCollateral | Pages.ManageDai,
+    page: MixpanelPages.ManageCollateral | MixpanelPages.ManageDai,
     amount: string,
     setMax: boolean,
   ) => {
@@ -595,11 +492,12 @@ export const trackingEvents = {
       setMax,
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
   },
 
   manageVaultPaybackAmount: (
-    page: Pages.ManageCollateral | Pages.ManageDai,
+    page: MixpanelPages.ManageCollateral | MixpanelPages.ManageDai,
     amount: string,
     setMax: boolean,
   ) => {
@@ -611,7 +509,8 @@ export const trackingEvents = {
       setMax,
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
   },
 
   manageVaultConfirmVaultEdit: () => {
@@ -621,12 +520,13 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   // Can we distinguish if went through collateral/daiEditing?
   manageVaultConfirm: (
-    page: Pages.ManageCollateral | Pages.ManageDai,
+    page: MixpanelPages.ManageCollateral | MixpanelPages.ManageDai,
     ilk: string,
     collateralAmount: string,
     daiAmount: string,
@@ -641,11 +541,12 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   manageVaultConfirmTransaction: (
-    page: Pages.ManageCollateral | Pages.ManageDai,
+    page: MixpanelPages.ManageCollateral | MixpanelPages.ManageDai,
     ilk: string,
     collateralAmount: string,
     daiAmount: string,
@@ -666,7 +567,7 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   manageCollateralPickAllowance: (type: string, amount: string) => {
@@ -675,22 +576,24 @@ export const trackingEvents = {
       product: ProductType.BORROW,
       type,
       amount,
-      page: Pages.ManageCollateral,
+      page: MixpanelPages.ManageCollateral,
       section: 'Allowance',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
   },
 
   manageCollateralApproveAllowance: () => {
     const eventBody = {
       id: 'ApproveAllowance',
       product: ProductType.BORROW,
-      page: Pages.ManageCollateral,
+      page: MixpanelPages.ManageCollateral,
       section: 'Allowance',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   manageDaiPickAllowance: (type: string, amount: string) => {
@@ -699,22 +602,24 @@ export const trackingEvents = {
       product: ProductType.BORROW,
       type,
       amount,
-      page: Pages.ManageDai,
+      page: MixpanelPages.ManageDai,
       section: 'Allowance',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
   },
 
   manageDaiApproveAllowance: () => {
     const eventBody = {
       id: 'ApproveAllowance',
       product: ProductType.BORROW,
-      page: Pages.ManageDai,
+      page: MixpanelPages.ManageDai,
       section: 'Allowance',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   // First Confirm button when the user is on Collateral and type into Deposit
@@ -722,11 +627,12 @@ export const trackingEvents = {
     const eventBody = {
       id: 'Confirm',
       product: ProductType.BORROW,
-      page: Pages.ManageCollateral,
+      page: MixpanelPages.ManageCollateral,
       section: 'Deposit',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   // Confirm button when the user is on Collateral and type into Withdraw
@@ -734,11 +640,12 @@ export const trackingEvents = {
     const eventBody = {
       id: 'Confirm',
       product: ProductType.BORROW,
-      page: Pages.ManageCollateral,
+      page: MixpanelPages.ManageCollateral,
       section: 'Withdraw',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   // First Confirm button when the user is on Dai and type into Generate
@@ -746,11 +653,12 @@ export const trackingEvents = {
     const eventBody = {
       id: 'Confirm',
       product: ProductType.BORROW,
-      page: Pages.ManageDai,
+      page: MixpanelPages.ManageDai,
       section: 'Generate',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   // Confirm button when the user is on Dai and type into Payback
@@ -758,11 +666,12 @@ export const trackingEvents = {
     const eventBody = {
       id: 'Confirm',
       product: ProductType.BORROW,
-      page: Pages.ManageDai,
+      page: MixpanelPages.ManageDai,
       section: 'Payback',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   newsletterSubscribe: (section: 'Footer' | 'Homepage') => {
@@ -772,7 +681,8 @@ export const trackingEvents = {
       section,
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
   },
 
   multiply: {
@@ -789,11 +699,12 @@ export const trackingEvents = {
         firstCDP,
         collAmount,
         multiply,
-        page: Pages.OpenMultiply,
+        page: MixpanelPages.OpenMultiply,
         section: 'ConfirmVault',
       }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
 
     confirmOpenMultiplyConfirmTransaction: (
@@ -816,12 +727,12 @@ export const trackingEvents = {
         txHash,
         network,
         walletType,
-        page: Pages.OpenMultiply,
+        page: MixpanelPages.OpenMultiply,
         oasisFee,
         section: 'ConfirmVault',
       }
 
-      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
 
     adjustPositionConfirm: (ilk: string, multiply: string) => {
@@ -830,11 +741,12 @@ export const trackingEvents = {
         product: ProductType.MULTIPLY,
         ilk,
         multiply,
-        page: Pages.AdjustPosition,
+        page: MixpanelPages.AdjustPosition,
         section: 'ConfirmVault',
       }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
 
     adjustPositionConfirmTransaction: (
@@ -854,11 +766,11 @@ export const trackingEvents = {
         network,
         walletType,
         oasisFee,
-        page: Pages.AdjustPosition,
+        page: MixpanelPages.AdjustPosition,
         section: 'ConfirmVault',
       }
 
-      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
 
     otherActionsConfirm: (ilk: string, collateralAmount: string, daiAmount: string) => {
@@ -868,11 +780,12 @@ export const trackingEvents = {
         ilk,
         collateralAmount,
         daiAmount,
-        page: Pages.OtherActions,
+        page: MixpanelPages.OtherActions,
         section: 'ConfirmVault',
       }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
 
     otherActionsConfirmTransaction: (
@@ -894,11 +807,11 @@ export const trackingEvents = {
         network,
         walletType,
         oasisFee,
-        page: Pages.OtherActions,
+        page: MixpanelPages.OtherActions,
         section: 'ConfirmVault',
       }
 
-      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
 
     closeVaultConfirm: (ilk: string, debt: string, closeTo: CloseVaultTo) => {
@@ -908,11 +821,12 @@ export const trackingEvents = {
         ilk,
         debt,
         closeTo,
-        page: Pages.CloseVault,
+        page: MixpanelPages.CloseVault,
         section: 'ConfirmVault',
       }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
 
     closeVaultConfirmTransaction: (
@@ -934,11 +848,11 @@ export const trackingEvents = {
         network,
         walletType,
         oasisFee,
-        page: Pages.CloseVault,
+        page: MixpanelPages.CloseVault,
         section: 'ConfirmVault',
       }
 
-      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
   },
   earn: {
@@ -947,20 +861,20 @@ export const trackingEvents = {
         id: 'DepositAmount',
         product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
-        page: Pages.OpenEarnSTETH,
-        section: CommonAnalyticsSections.OpenPosition,
+        page: MixpanelPages.OpenEarnSTETH,
+        section: MixpanelCommonAnalyticsSections.OpenPosition,
       }
-      mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
     },
     stETHOpenPositionConfirmDeposit: (depositAmount: BigNumber) => {
       const eventBody = {
         id: 'ConfirmDeposit',
         product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
-        page: Pages.OpenEarnSTETH,
-        section: CommonAnalyticsSections.OpenPosition,
+        page: MixpanelPages.OpenEarnSTETH,
+        section: MixpanelCommonAnalyticsSections.OpenPosition,
       }
-      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
     stETHOpenPositionMoveSlider: (depositAmount: BigNumber, riskRatio: BigNumber) => {
       const eventBody = {
@@ -968,10 +882,10 @@ export const trackingEvents = {
         product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
         riskRatio: formatPrecision(riskRatio, 4),
-        page: Pages.OpenEarnSTETH,
-        section: CommonAnalyticsSections.OpenPosition,
+        page: MixpanelPages.OpenEarnSTETH,
+        section: MixpanelCommonAnalyticsSections.OpenPosition,
       }
-      mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
     },
     stETHOpenPositionConfirmRisk: (depositAmount: BigNumber, riskRatio: BigNumber) => {
       const eventBody = {
@@ -979,10 +893,10 @@ export const trackingEvents = {
         product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
         riskRatio: formatPrecision(riskRatio, 4),
-        page: Pages.OpenEarnSTETH,
-        section: CommonAnalyticsSections.OpenPosition,
+        page: MixpanelPages.OpenEarnSTETH,
+        section: MixpanelCommonAnalyticsSections.OpenPosition,
       }
-      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
     stETHOpenPositionConfirmTransaction: (depositAmount: BigNumber, riskRatio: BigNumber) => {
       const eventBody = {
@@ -990,10 +904,10 @@ export const trackingEvents = {
         product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
         riskRatio: formatPrecision(riskRatio, 4),
-        page: Pages.OpenEarnSTETH,
-        section: CommonAnalyticsSections.OpenPosition,
+        page: MixpanelPages.OpenEarnSTETH,
+        section: MixpanelCommonAnalyticsSections.OpenPosition,
       }
-      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
     aaveAdjustRiskSliderAction: (
       action: 'ConfirmRisk' | 'MoveSlider',
@@ -1005,14 +919,14 @@ export const trackingEvents = {
         product: productType.toLocaleLowerCase(),
         riskRatio: formatPrecision(riskRatio, 4),
         page: {
-          [ProductType.MULTIPLY]: Pages.AdjustPosition,
-          [ProductType.EARN]: Pages.ManageSTETH,
+          [ProductType.MULTIPLY]: MixpanelPages.AdjustPosition,
+          [ProductType.EARN]: MixpanelPages.ManageSTETH,
           [ProductType.BORROW]: '',
         }[productType.toLocaleLowerCase()],
         section: 'AdjustRisk',
       }
       mixpanelInternalAPI(
-        action === 'MoveSlider' ? EventTypes.InputChange : EventTypes.ButtonClick,
+        action === 'MoveSlider' ? MixpanelEventTypes.InputChange : MixpanelEventTypes.ButtonClick,
         eventBody,
       )
     },
@@ -1021,45 +935,45 @@ export const trackingEvents = {
         id: 'ConfirmTransaction',
         product: ProductType.EARN,
         riskRatio: formatPrecision(riskRatio, 4),
-        page: Pages.ManageSTETH,
+        page: MixpanelPages.ManageSTETH,
         section: 'AdjustRisk',
       }
-      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
     stETHClosePositionConfirm: () => {
       const eventBody = {
         id: 'Confirm',
         product: ProductType.EARN,
-        page: Pages.ManageSTETH,
+        page: MixpanelPages.ManageSTETH,
         section: 'ClosePosition',
       }
-      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
     stETHClosePositionConfirmTransaction: () => {
       const eventBody = {
         id: 'ConfirmTransaction',
         product: ProductType.EARN,
-        page: Pages.ManageSTETH,
+        page: MixpanelPages.ManageSTETH,
         section: 'ClosePosition',
       }
-      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
   },
 
   discover: {
     selectedInNavigation: (userContext: MixpanelUserContext) => {
-      mixpanelInternalAPI(EventTypes.ButtonClick, {
-        product: Pages.DiscoverOasis,
-        page: Pages.LandingPage,
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, {
+        product: MixpanelPages.DiscoverOasis,
+        page: MixpanelPages.LandingPage,
         section: 'Header/tabs',
         id: 'Discover',
         ...userContext,
       })
     },
     selectedCategory: (kind: DiscoverPages, userContext: MixpanelUserContext) => {
-      mixpanelInternalAPI(EventTypes.ButtonClick, {
-        product: Pages.DiscoverOasis,
-        page: Pages.DiscoverOasis,
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, {
+        product: MixpanelPages.DiscoverOasis,
+        page: MixpanelPages.DiscoverOasis,
         section: 'Categories',
         id: upperFirst(camelCase(kind)),
         ...userContext,
@@ -1071,8 +985,8 @@ export const trackingEvents = {
       value: string,
       userContext: MixpanelUserContext,
     ) => {
-      mixpanelInternalAPI(EventTypes.InputChange, {
-        product: Pages.DiscoverOasis,
+      mixpanelInternalAPI(MixpanelEventTypes.InputChange, {
+        product: MixpanelPages.DiscoverOasis,
         page: getDiscoverMixpanelPage(kind),
         section: 'Filters',
         id: `${upperFirst(camelCase(label))}Filter`,
@@ -1081,8 +995,8 @@ export const trackingEvents = {
       })
     },
     clickedTableBanner: (kind: DiscoverPages, link: string, userContext: MixpanelUserContext) => {
-      mixpanelInternalAPI(EventTypes.ButtonClick, {
-        product: Pages.DiscoverOasis,
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, {
+        product: MixpanelPages.DiscoverOasis,
         page: getDiscoverMixpanelPage(kind),
         section: 'Table',
         id: 'TableBanner',
@@ -1091,8 +1005,8 @@ export const trackingEvents = {
       })
     },
     viewPosition: (kind: DiscoverPages, vaultId: string | number) => {
-      mixpanelInternalAPI(EventTypes.ButtonClick, {
-        product: Pages.DiscoverOasis,
+      mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, {
+        product: MixpanelPages.DiscoverOasis,
         page: getDiscoverMixpanelPage(kind),
         section: 'Table',
         id: 'ViewPosition',
@@ -1102,59 +1016,65 @@ export const trackingEvents = {
   },
   automation: {
     inputChange: (
-      id: AutomationEventIds,
+      id: MixpanelAutomationEventIds,
       page: string,
-      section: CommonAnalyticsSections.Form,
-      additionalParams: AutomationEventsAdditionalParams,
+      section: MixpanelCommonAnalyticsSections.Form,
+      additionalParams: MixpanelAutomationEventsAdditionalParams,
     ) => {
       const eventBody = { id, page, section, product: 'Automation', ...additionalParams }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(MixpanelEventTypes.InputChange, eventBody)
     },
     buttonClick: (
-      id: AutomationEventIds,
+      id: MixpanelAutomationEventIds,
       page: string,
-      section: CommonAnalyticsSections,
-      additionalParams: AutomationEventsAdditionalParams,
+      section: MixpanelCommonAnalyticsSections,
+      additionalParams: MixpanelAutomationEventsAdditionalParams,
     ) => {
       const eventBody = { id, page, section, product: 'Automation', ...additionalParams }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
   },
   notifications: {
     scroll: (
-      id: NotificationsEventIds,
-      section: CommonAnalyticsSections.NotificationCenter,
-      additionalParams: NotificationsEventAdditionalParams,
+      id: MixpanelNotificationsEventIds,
+      section: MixpanelCommonAnalyticsSections.NotificationCenter,
+      additionalParams: MixpanelNotificationsEventAdditionalParams,
     ) => {
       const eventBody = { id, section, product: 'Notifications', ...additionalParams }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.OnScroll, eventBody)
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(MixpanelEventTypes.OnScroll, eventBody)
     },
     buttonClick: (
-      id: NotificationsEventIds,
+      id: MixpanelNotificationsEventIds,
       section:
-        | CommonAnalyticsSections.HeaderTabs
-        | CommonAnalyticsSections.NotificationCenter
-        | CommonAnalyticsSections.NotificationPreferences,
-      additionalParams: NotificationsEventAdditionalParams,
+        | MixpanelCommonAnalyticsSections.HeaderTabs
+        | MixpanelCommonAnalyticsSections.NotificationCenter
+        | MixpanelCommonAnalyticsSections.NotificationPreferences,
+      additionalParams: MixpanelNotificationsEventAdditionalParams,
     ) => {
       const eventBody = { id, section, product: 'Notifications', ...additionalParams }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
     },
   },
-  swapWidgetEvent: (id: SwapWidgetEvents, eventData: Route | RouteExecutionUpdate) => {
+  swapWidgetEvent: (id: MixpanelSwapWidgetEvents, eventData: Route | RouteExecutionUpdate) => {
     const eventBody = { id, section: 'SwapWidget', product: 'SwapWidget', eventData }
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.SwapWidgetEvent, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.SwapWidgetEvent, eventBody)
   },
-  topBannerEvent: (id: TopBannerEvents, topBannerName: string) => {
+  topBannerEvent: (id: MixpanelTopBannerEvents, topBannerName: string) => {
     const eventBody = { id, section: 'TopBanner', product: 'TopBanner', topBannerName }
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.TopBannerEvent, eventBody)
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.TopBannerEvent, eventBody)
   },
   daiSavingsRate: (
-    event: EventTypes.InputChange | EventTypes.ButtonClick,
+    event: MixpanelEventTypes.InputChange | MixpanelEventTypes.ButtonClick,
     eventData: {
       depositAmount: number
       operation?: 'deposit' | 'withdraw' | 'convert'
@@ -1165,17 +1085,17 @@ export const trackingEvents = {
   ) => {
     const { txHash, ...eventDataRest } = eventData
     const eventCommons = {
-      section: CommonAnalyticsSections.Form,
-      page: Pages.DAISavingsRate,
+      section: MixpanelCommonAnalyticsSections.Form,
+      page: MixpanelPages.DAISavingsRate,
       product: ProductType.EARN,
       txHash,
     }
-    if (event === EventTypes.InputChange) {
+    if (event === MixpanelEventTypes.InputChange) {
       !mixpanel.has_opted_out_tracking() &&
         mixpanelInternalAPI(event, {
           ...eventCommons,
           id: {
-            [EventTypes.InputChange]: 'DepositAmount',
+            [MixpanelEventTypes.InputChange]: 'DepositAmount',
           },
           eventData: { txHash, ...eventDataRest },
         })
@@ -1188,11 +1108,11 @@ export const trackingEvents = {
       .with(P._, () => 'Undefiend')
       .run()
 
-    if (event === EventTypes.ButtonClick) {
+    if (event === MixpanelEventTypes.ButtonClick) {
       mixpanelInternalAPI(event, {
         ...eventCommons,
         id: {
-          [EventTypes.ButtonClick]: eventId,
+          [MixpanelEventTypes.ButtonClick]: eventId,
         },
         eventData: mixpanel.has_opted_out_tracking() ? { txHash } : { txHash, ...eventDataRest },
       })

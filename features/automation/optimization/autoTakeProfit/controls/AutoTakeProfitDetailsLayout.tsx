@@ -1,9 +1,9 @@
+import { trackingEvents } from 'analytics/analytics'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
@@ -99,9 +99,9 @@ export function AutoTakeProfitDetailsLayout({
                 currentOptimizationFeature: AutomationFeatures.AUTO_TAKE_PROFIT,
               })
               trackingEvents.automation.buttonClick(
-                AutomationEventIds.SelectTakeProfit,
-                Pages.OptimizationTab,
-                CommonAnalyticsSections.Banner,
+                MixpanelAutomationEventIds.SelectTakeProfit,
+                MixpanelPages.OptimizationTab,
+                MixpanelCommonAnalyticsSections.Banner,
                 { vaultId: vaultId.toString(), ilk },
               )
             },

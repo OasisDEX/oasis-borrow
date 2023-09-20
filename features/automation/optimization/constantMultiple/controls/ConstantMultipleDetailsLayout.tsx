@@ -1,9 +1,9 @@
+import { trackingEvents } from 'analytics/analytics'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { useAutomationContext } from 'components/context'
@@ -128,9 +128,9 @@ export function ConstantMultipleDetailsLayout({
                     currentOptimizationFeature: AutomationFeatures.CONSTANT_MULTIPLE,
                   })
                   trackingEvents.automation.buttonClick(
-                    AutomationEventIds.SelectConstantMultiple,
-                    Pages.OptimizationTab,
-                    CommonAnalyticsSections.Banner,
+                    MixpanelAutomationEventIds.SelectConstantMultiple,
+                    MixpanelPages.OptimizationTab,
+                    MixpanelCommonAnalyticsSections.Banner,
                     { vaultId: vaultId.toString(), ilk },
                   )
                 },

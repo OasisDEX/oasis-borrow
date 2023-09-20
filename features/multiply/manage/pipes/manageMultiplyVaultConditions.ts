@@ -36,7 +36,7 @@ import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import { ManageMultiplyVaultStage, ManageMultiplyVaultState } from './manageMultiplyVault'
+import { ManageMultiplyVaultStage, ManageMultiplyVaultState } from './types'
 
 const defaultManageVaultStageCategories = {
   isEditingStage: false,

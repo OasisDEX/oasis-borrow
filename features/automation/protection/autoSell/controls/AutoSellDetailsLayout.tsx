@@ -1,9 +1,9 @@
+import { trackingEvents } from 'analytics/analytics'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { useAutomationContext } from 'components/context'
@@ -111,9 +111,9 @@ export function AutoSellDetailsLayout({
                 currentProtectionFeature: AutomationFeatures.AUTO_SELL,
               })
               trackingEvents.automation.buttonClick(
-                AutomationEventIds.SelectAutoSell,
-                Pages.ProtectionTab,
-                CommonAnalyticsSections.Banner,
+                MixpanelAutomationEventIds.SelectAutoSell,
+                MixpanelPages.ProtectionTab,
+                MixpanelCommonAnalyticsSections.Banner,
                 { vaultId: id.toString(), ilk },
               )
             },

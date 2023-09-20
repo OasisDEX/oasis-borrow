@@ -1,4 +1,5 @@
-import { INPUT_DEBOUNCE_TIME, Pages, Tracker } from 'analytics/analytics'
+import { INPUT_DEBOUNCE_TIME, Tracker } from 'analytics/analytics'
+import { MixpanelPages } from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { networkSetById } from 'blockchain/networks'
@@ -237,7 +238,8 @@ export function createManageVaultAnalytics$(
           merge(manageVaultConfirm, manageVaultConfirmTransaction),
         ).pipe(
           tap((event) => {
-            const page = stage === 'daiEditing' ? Pages.ManageDai : Pages.ManageCollateral
+            const page =
+              stage === 'daiEditing' ? MixpanelPages.ManageDai : MixpanelPages.ManageCollateral
             switch (event.kind) {
               case 'depositAmountChange':
                 tracker.manageVaultDepositAmount(

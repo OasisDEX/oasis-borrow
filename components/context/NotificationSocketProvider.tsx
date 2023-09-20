@@ -1,4 +1,4 @@
-import { NotificationsEventAdditionalParams } from 'analytics/analytics'
+import { MixpanelNotificationsEventAdditionalParams } from 'analytics/types'
 import { NetworkIds } from 'blockchain/networks'
 import {
   firstNotificationsRelevantDate,
@@ -22,7 +22,7 @@ import { isMainContextAvailable, useMainContext } from './MainContextProvider'
 
 interface WebSocket {
   socket?: Socket
-  analyticsData: NotificationsEventAdditionalParams
+  analyticsData: MixpanelNotificationsEventAdditionalParams
 }
 
 export const NotificationSocketContext = createContext<WebSocket | {}>({})

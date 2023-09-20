@@ -1,9 +1,9 @@
+import { trackingEvents } from 'analytics/analytics'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import {
   addAutomationTrigger,
@@ -15,13 +15,17 @@ import {
 } from 'features/automation/common/txDefinitions'
 import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
 import { AutomationContracts } from 'features/automation/metadata/types'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import { TxHelpers } from 'helpers/context/types'
 import { uiChanges } from 'helpers/uiChanges'
 
 export interface AutomationTxHandlerAnalytics {
-  id: { add: AutomationEventIds; edit: AutomationEventIds; remove: AutomationEventIds }
-  page: Pages
+  id: {
+    add: MixpanelAutomationEventIds
+    edit: MixpanelAutomationEventIds
+    remove: MixpanelAutomationEventIds
+  }
+  page: MixpanelPages
   additionalParams: {
     triggerValue?: string
     triggerBuyValue?: string
@@ -121,7 +125,7 @@ export function getAutomationFeatureTxHandlers({
           trackingEvents.automation.buttonClick(
             triggerEnabled ? analytics.id.edit : analytics.id.add,
             analytics.page,
-            CommonAnalyticsSections.Form,
+            MixpanelCommonAnalyticsSections.Form,
             { ...analyticsAdditionalParams, ...analytics.additionalParams },
           )
         }
@@ -138,7 +142,7 @@ export function getAutomationFeatureTxHandlers({
           trackingEvents.automation.buttonClick(
             analytics.id.remove,
             analytics.page,
-            CommonAnalyticsSections.Form,
+            MixpanelCommonAnalyticsSections.Form,
             {
               ...analyticsAdditionalParams,
               ...analytics.additionalParams,

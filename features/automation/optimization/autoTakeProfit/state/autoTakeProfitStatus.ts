@@ -1,9 +1,9 @@
+import { trackingEvents } from 'analytics/analytics'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { closeVaultOptions } from 'features/automation/common/consts'
@@ -16,7 +16,7 @@ import {
   AutoTakeProfitTriggerData,
   prepareAutoTakeProfitResetData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
 import { uiChanges } from 'helpers/uiChanges'
 
@@ -89,9 +89,9 @@ export function getAutoTakeProfitStatus({
       })
 
       trackingEvents.automation.buttonClick(
-        AutomationEventIds.CloseToX,
-        Pages.TakeProfit,
-        CommonAnalyticsSections.Form,
+        MixpanelAutomationEventIds.CloseToX,
+        MixpanelPages.TakeProfit,
+        MixpanelCommonAnalyticsSections.Form,
         {
           vaultId: id.toString(),
           ilk: ilk,

@@ -3,7 +3,7 @@ import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import {
   ManageMultiplyVaultEditingStage,
   ManageMultiplyVaultState,
-} from 'features/multiply/manage/pipes/manageMultiplyVault'
+} from 'features/multiply/manage/pipes/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Grid, Text } from 'theme-ui'

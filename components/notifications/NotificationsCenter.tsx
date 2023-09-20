@@ -1,4 +1,5 @@
-import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/analytics'
+import { MixpanelCommonAnalyticsSections, MixpanelNotificationsEventIds } from 'analytics/types'
 import { useNotificationSocket } from 'components/context'
 import { NotificationCardsWrapper } from 'components/notifications/NotificationCardsWrapper'
 import { NotificationsCenterContent } from 'components/notifications/NotificationsCenterContent'
@@ -24,8 +25,8 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
 
   const handleScroll = throttle(() => {
     trackingEvents.notifications.scroll(
-      NotificationsEventIds.ScrollNotificationCenter,
-      CommonAnalyticsSections.NotificationCenter,
+      MixpanelNotificationsEventIds.ScrollNotificationCenter,
+      MixpanelCommonAnalyticsSections.NotificationCenter,
       analyticsData,
     )
   }, 500)
@@ -35,8 +36,8 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
       <NotificationsCenterHeader
         onButtonClick={() => {
           trackingEvents.notifications.buttonClick(
-            NotificationsEventIds.NotificationPreferences,
-            CommonAnalyticsSections.NotificationCenter,
+            MixpanelNotificationsEventIds.NotificationPreferences,
+            MixpanelCommonAnalyticsSections.NotificationCenter,
             analyticsData,
           )
           setShowPrefencesTab(!showPreferencesTab)

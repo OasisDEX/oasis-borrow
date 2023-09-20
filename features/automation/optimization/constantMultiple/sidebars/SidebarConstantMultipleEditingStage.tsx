@@ -1,9 +1,9 @@
+import { trackingEvents } from 'analytics/analytics'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import { ActionPills } from 'components/ActionPills'
 import { useAutomationContext } from 'components/context'
@@ -189,9 +189,9 @@ export function SidebarConstantMultipleEditingStage({
               })
 
               trackingEvents.automation.buttonClick(
-                AutomationEventIds.TargetMultiplier,
-                Pages.ConstantMultiple,
-                CommonAnalyticsSections.Form,
+                MixpanelAutomationEventIds.TargetMultiplier,
+                MixpanelPages.ConstantMultiple,
+                MixpanelCommonAnalyticsSections.Form,
                 {
                   vaultId: id.toString(),
                   ilk: ilk,
@@ -362,7 +362,7 @@ export function SidebarConstantMultipleEditingStage({
         }}
         value={constantMultipleState.maxBaseFeeInGwei.toNumber()}
         analytics={{
-          page: Pages.ConstantMultiple,
+          page: MixpanelPages.ConstantMultiple,
           additionalParams: { vaultId: id.toString(), ilk: ilk },
         }}
       />

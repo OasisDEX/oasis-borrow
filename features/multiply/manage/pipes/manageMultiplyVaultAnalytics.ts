@@ -8,7 +8,7 @@ import { isEqual } from 'lodash'
 import { merge, Observable } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
-import { CloseVaultTo, ManageMultiplyVaultState } from './manageMultiplyVault'
+import { CloseVaultTo, ManageMultiplyVaultState } from './types'
 
 type AdjustPositionConfirm = {
   kind: 'adjustPositionConfirm'

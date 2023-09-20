@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/analytics'
+import { MixpanelCommonAnalyticsSections, MixpanelNotificationsEventIds } from 'analytics/types'
 import { useNotificationSocket } from 'components/context'
 import React, { LegacyRef } from 'react'
 import { Box, Button } from 'theme-ui'
@@ -26,8 +27,8 @@ export function NotificationsIconButton({
   const handleButtonClick = () => {
     onButtonClick()
     trackingEvents.notifications.buttonClick(
-      NotificationsEventIds.OpenNotificationCenter,
-      CommonAnalyticsSections.HeaderTabs,
+      MixpanelNotificationsEventIds.OpenNotificationCenter,
+      MixpanelCommonAnalyticsSections.HeaderTabs,
       analyticsData,
     )
   }

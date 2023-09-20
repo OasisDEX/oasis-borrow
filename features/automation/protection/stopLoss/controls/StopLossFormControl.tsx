@@ -1,4 +1,4 @@
-import { AutomationEventIds, Pages } from 'analytics/analytics'
+import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { CloseVaultToEnum, MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/common/consts'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
@@ -92,11 +92,11 @@ export function StopLossFormControl({
       txHelpers={txHelpers}
       analytics={{
         id: {
-          add: AutomationEventIds.AddStopLoss,
-          edit: AutomationEventIds.EditStopLoss,
-          remove: AutomationEventIds.RemoveStopLoss,
+          add: MixpanelAutomationEventIds.AddStopLoss,
+          edit: MixpanelAutomationEventIds.EditStopLoss,
+          remove: MixpanelAutomationEventIds.RemoveStopLoss,
         },
-        page: Pages.StopLoss,
+        page: MixpanelPages.StopLoss,
         additionalParams: {
           triggerValue: stopLossState.stopLossLevel.toString(),
           closeTo: stopLossState.collateralActive

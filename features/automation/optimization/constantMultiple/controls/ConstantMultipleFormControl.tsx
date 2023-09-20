@@ -1,4 +1,4 @@
-import { AutomationEventIds, Pages } from 'analytics/analytics'
+import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import {
@@ -101,11 +101,11 @@ export function ConstantMultipleFormControl({
       txHelpers={txHelpers}
       analytics={{
         id: {
-          add: AutomationEventIds.AddConstantMultiple,
-          edit: AutomationEventIds.EditConstantMultiple,
-          remove: AutomationEventIds.RemoveConstantMultiple,
+          add: MixpanelAutomationEventIds.AddConstantMultiple,
+          edit: MixpanelAutomationEventIds.EditConstantMultiple,
+          remove: MixpanelAutomationEventIds.RemoveConstantMultiple,
         },
-        page: Pages.ConstantMultiple,
+        page: MixpanelPages.ConstantMultiple,
         additionalParams: {
           triggerBuyValue: constantMultipleState.buyExecutionCollRatio.toString(),
           triggerSellValue: constantMultipleState.sellExecutionCollRatio.toString(),

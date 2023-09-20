@@ -3,10 +3,8 @@ import { SharedUIContext } from 'components/SharedUIProvider'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
-import {
-  defaultMutableManageMultiplyVaultState,
-  MutableManageMultiplyVaultState,
-} from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { defaultMutableManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { MutableManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
 import { ProductContext } from 'helpers/context/ProductContext'
 import {
   MOCK_VAULT_ID,

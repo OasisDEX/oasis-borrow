@@ -1,4 +1,5 @@
-import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/analytics'
+import { MixpanelCommonAnalyticsSections, MixpanelNotificationsEventIds } from 'analytics/types'
 import { useNotificationSocket } from 'components/context'
 import { NotificationPreferenceCard } from 'components/notifications/NotificationPreferenceCard'
 import { notificationPreferences } from 'features/notifications/consts'
@@ -16,9 +17,9 @@ export function NotificationPreferenceCardWrapper() {
 
   const subscriptionTypeToAnalyticsIdMap = {
     [NotificationSubscriptionTypes.VAULT_ACTION_NOTIFICATIONS]:
-      NotificationsEventIds.VaultActionNotificationSwitch,
+      MixpanelNotificationsEventIds.VaultActionNotificationSwitch,
     [NotificationSubscriptionTypes.VAULT_INFO_NOTIFICATIONS]:
-      NotificationsEventIds.VaultInfoNotificationSwitch,
+      MixpanelNotificationsEventIds.VaultInfoNotificationSwitch,
   }
 
   const account = analyticsData.walletAddress
@@ -51,7 +52,7 @@ export function NotificationPreferenceCardWrapper() {
         })
         trackingEvents.notifications.buttonClick(
           subscriptionTypeToAnalyticsIdMap[subscriptionType],
-          CommonAnalyticsSections.NotificationPreferences,
+          MixpanelCommonAnalyticsSections.NotificationPreferences,
           { ...analyticsData, notificationSwitch: 'on' },
         )
       } else {
@@ -66,7 +67,7 @@ export function NotificationPreferenceCardWrapper() {
 
         trackingEvents.notifications.buttonClick(
           subscriptionTypeToAnalyticsIdMap[subscriptionType],
-          CommonAnalyticsSections.NotificationPreferences,
+          MixpanelCommonAnalyticsSections.NotificationPreferences,
           { ...analyticsData, notificationSwitch: 'off' },
         )
       }
