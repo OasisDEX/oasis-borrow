@@ -10,8 +10,6 @@ COPY ./blockchain/abi/*.json /usr/src/app/blockchain/abi/
 
 WORKDIR /usr/src/app
 
-RUN yarn --no-progress --non-interactive --frozen-lockfile
-
 ARG COMMIT_SHA='' \
   NOTIFICATIONS_HOST='' \
   NOTIFICATIONS_HOST_GOERLI='' \
@@ -59,6 +57,8 @@ ENV COMMIT_SHA=$COMMIT_SHA \
   ONE_INCH_API_URL=$ONE_INCH_API_URL \
   REFERRAL_SUBGRAPH_URL=$REFERRAL_SUBGRAPH_URL \
   NODE_OPTIONS=--max-old-space-size=6144
+
+RUN yarn --no-progress --non-interactive --frozen-lockfile
 
 COPY . .
 
