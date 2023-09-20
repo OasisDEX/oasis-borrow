@@ -120,7 +120,7 @@
     "sass": "^1.49.4",
     "snowflake-sdk": "^1.6.10",
     "socket.io": "^4.5.1",
-    "terser-webpack-plugin": "^5.3.1",
+    "terser-webpack-plugin": "^5.3.9",
     "text-mask-addons": "^3.7.2",
     "theme-ui": "^0.3.1",
     "ts-node": "10.9.1",
