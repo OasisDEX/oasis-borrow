@@ -34,10 +34,10 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
 
   const background = props.sliderPercentageFill
     ? `linear-gradient(to right, ${colors?.interactive50} 0%, ${colors?.interactive50} ${
-      props.sliderPercentageFill.toNumber() || 0
-    }%, ${colors?.neutral60} ${props.sliderPercentageFill.toNumber() || 0}%, ${
-      colors?.neutral60
-    } 100%)`
+        props.sliderPercentageFill.toNumber() || 0
+      }%, ${colors?.neutral60} ${props.sliderPercentageFill.toNumber() || 0}%, ${
+        colors?.neutral60
+      } 100%)`
     : 'neutral60'
 
   const hasLeftLabel = (props.leftBoundry && props.leftBoundryFormatter) || props.leftLabel

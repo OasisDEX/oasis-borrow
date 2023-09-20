@@ -514,13 +514,13 @@ export function createOpenAaveStateMachine(
           allDefined(userInput, effectiveProxyAddress, transition),
         canOpenPosition,
         canSetupStopLoss: ({
-                             strategyConfig,
-                             tokenBalance,
-                             userInput,
-                             effectiveProxyAddress,
-                             hasOpenedPosition,
-                             transition,
-                           }) =>
+          strategyConfig,
+          tokenBalance,
+          userInput,
+          effectiveProxyAddress,
+          hasOpenedPosition,
+          transition,
+        }) =>
           useFeatureToggle('AaveV3ProtectionWrite') &&
           supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
           strategyConfig.type === ProductType.Multiply &&
@@ -618,19 +618,19 @@ export function createOpenAaveStateMachine(
         })),
         eventConfirmRiskRatio: ({ userInput }) => {
           userInput.amount &&
-          userInput.riskRatio?.loanToValue &&
-          trackingEvents.earn.stETHOpenPositionConfirmRisk(
-            userInput.amount,
-            userInput.riskRatio.loanToValue,
-          )
+            userInput.riskRatio?.loanToValue &&
+            trackingEvents.earn.stETHOpenPositionConfirmRisk(
+              userInput.amount,
+              userInput.riskRatio.loanToValue,
+            )
         },
         eventConfirmTransaction: ({ userInput }) => {
           userInput.amount &&
-          userInput.riskRatio?.loanToValue &&
-          trackingEvents.earn.stETHOpenPositionConfirmTransaction(
-            userInput.amount,
-            userInput.riskRatio.loanToValue,
-          )
+            userInput.riskRatio?.loanToValue &&
+            trackingEvents.earn.stETHOpenPositionConfirmTransaction(
+              userInput.amount,
+              userInput.riskRatio.loanToValue,
+            )
         },
         updateContext: assign((_, event) => ({
           ...event,
