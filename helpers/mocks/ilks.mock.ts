@@ -3,14 +3,14 @@ import type { DogIlk } from 'blockchain/calls/dog'
 import type { JugIlk } from 'blockchain/calls/jug'
 import type { SpotIlk } from 'blockchain/calls/spot'
 import type { VatIlk } from 'blockchain/calls/vat'
-import type { IlkData, IlkDataList } from 'blockchain/ilks';
+import type { IlkData, IlkDataList } from 'blockchain/ilks'
 import { createIlkData$ } from 'blockchain/ilks'
 import { SECONDS_PER_YEAR } from 'components/constants'
 import { Decimal } from 'decimal.js'
 import type { PriceInfo } from 'features/shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { BehaviorSubject, combineLatest, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 

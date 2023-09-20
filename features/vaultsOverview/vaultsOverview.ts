@@ -1,6 +1,6 @@
 import type { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import type { Dsr } from 'features/dsr/utils/createDsr'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/operators'
 

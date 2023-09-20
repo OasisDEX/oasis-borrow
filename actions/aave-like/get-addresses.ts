@@ -7,7 +7,7 @@ import {
   getNetworkContracts,
 } from 'blockchain/contracts'
 import { ethNullAddress, NetworkIds } from 'blockchain/networks'
-import type { AaveLikeLendingProtocol } from 'lendingProtocols';
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 
 export function getAddresses(

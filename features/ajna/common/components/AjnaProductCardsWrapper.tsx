@@ -1,5 +1,5 @@
 import { ProductCardsWrapper } from 'components/productCards/ProductCardsWrapper'
-import type { ReactNodeArray } from 'react';
+import type { ReactNodeArray } from 'react'
 import React from 'react'
 
 interface AjnaProductCardsWrapperProps {

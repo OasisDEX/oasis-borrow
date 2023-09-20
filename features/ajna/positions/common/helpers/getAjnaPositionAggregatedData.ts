@@ -1,11 +1,8 @@
 import BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
-import type {
-  AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent';
-import {
-  ajnaUnifiedHistoryItem,
-} from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import { ajnaUnifiedHistoryItem } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import { mapAjnaAuctionResponse } from 'features/positionHistory/mapAjnaAuctionResponse'
 import { mapPositionHistoryResponseEvent } from 'features/positionHistory/mapPositionHistoryResponseEvent'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'

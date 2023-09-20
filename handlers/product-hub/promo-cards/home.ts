@@ -1,9 +1,5 @@
-import type {
-  ProductHubItem,
-  ProductHubPromoCards } from 'features/productHub/types';
-import {
-  ProductHubProductType
-} from 'features/productHub/types'
+import type { ProductHubItem, ProductHubPromoCards } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import {
   getAaveV2PromoCards,
   getAaveV3PromoCards,

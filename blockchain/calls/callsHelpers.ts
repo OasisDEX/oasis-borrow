@@ -4,7 +4,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import type { Context, ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import type { GasPrice$ } from 'blockchain/prices'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, from } from 'rxjs'
 import { first, map, switchMap } from 'rxjs/operators'
 

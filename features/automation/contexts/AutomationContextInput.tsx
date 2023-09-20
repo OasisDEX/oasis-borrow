@@ -1,11 +1,5 @@
-import type {
-  AutomationCommonData,
-  AutomationPositionData } from 'components/context';
-import {
-  AutomationContextProvider,
-  useMainContext,
-  useProductContext,
-} from 'components/context'
+import type { AutomationCommonData, AutomationPositionData } from 'components/context'
+import { AutomationContextProvider, useMainContext, useProductContext } from 'components/context'
 import type {
   AutomationDefinitionMetadata,
   OverwriteTriggersDefaults,
@@ -14,7 +8,7 @@ import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import type { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react'
 import React, { useMemo } from 'react'
 
 interface GeneralManageControlProps {

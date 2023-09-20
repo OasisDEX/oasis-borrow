@@ -1,4 +1,4 @@
-import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
+import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
 
 export enum VaultViewMode {
   Overview = 'overview',

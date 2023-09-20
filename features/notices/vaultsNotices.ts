@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import type { PriceInfo } from 'features/shared/priceInfo'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { zero } from 'helpers/zero'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 

@@ -1,12 +1,12 @@
 import type BigNumber from 'bignumber.js'
 import type { Context, EveryBlockFunction$ } from 'blockchain/network'
 import type { DsrEvent } from 'features/dsr/helpers/dsrHistory'
-import type { DsrPot, DsrPotKind } from 'features/dsr/helpers/dsrPot';
+import type { DsrPot, DsrPotKind } from 'features/dsr/helpers/dsrPot'
 import { dsrPot$ } from 'features/dsr/helpers/dsrPot'
-import type { Loadable } from 'helpers/loadable';
+import type { Loadable } from 'helpers/loadable'
 import { loadablifyLight } from 'helpers/loadable'
 import { isEqual } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 import type { Dictionary } from 'ts-essentials'

@@ -1,5 +1,5 @@
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { Box } from 'theme-ui'
 

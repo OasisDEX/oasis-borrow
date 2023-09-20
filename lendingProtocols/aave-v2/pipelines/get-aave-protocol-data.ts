@@ -12,7 +12,7 @@ import type {
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 

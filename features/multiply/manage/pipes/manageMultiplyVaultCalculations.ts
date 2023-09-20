@@ -1,5 +1,4 @@
-import type {
-  CloseToParams } from '@oasisdex/multiply';
+import type { CloseToParams } from '@oasisdex/multiply'
 import {
   getCloseToCollateralParams,
   getCloseToDaiParams,

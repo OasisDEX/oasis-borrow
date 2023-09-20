@@ -1,5 +1,5 @@
 import React from 'react'
-import type { SxProps } from 'theme-ui';
+import type { SxProps } from 'theme-ui'
 import { Box } from 'theme-ui'
 
 export interface ExpandablePlusProps {

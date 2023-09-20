@@ -2,9 +2,9 @@ import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { WithChildren } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
-import type { ReactElement } from 'react';
+import type { ReactElement } from 'react'
 import React, { useState } from 'react'
-import type { SxStyleProp } from 'theme-ui';
+import type { SxStyleProp } from 'theme-ui'
 import { Box, Grid, Link, Text } from 'theme-ui'
 
 function getHeadingId(text: string) {

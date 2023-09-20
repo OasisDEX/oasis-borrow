@@ -4,19 +4,13 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import type { VaultWithType, VaultWithValue } from 'blockchain/vaults.types'
-import type {
-  AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData';
-import {
-  extractAutoBSData,
-} from 'features/automation/common/state/autoBSTriggerData'
-import type {
-  StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData';
-import {
-  extractStopLossData
-} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import { gql, GraphQLClient } from 'graphql-request'
 import { isEqual, memoize } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, from, timer } from 'rxjs'
 import { distinctUntilChanged, shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'

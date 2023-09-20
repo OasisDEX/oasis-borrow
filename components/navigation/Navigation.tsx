@@ -1,9 +1,6 @@
 import { NavigationActions } from 'components/navigation/NavigationActions'
-import type {
-  NavigationBrandingPill } from 'components/navigation/NavigationBranding';
-import {
-  NavigationBranding
-} from 'components/navigation/NavigationBranding'
+import type { NavigationBrandingPill } from 'components/navigation/NavigationBranding'
+import { NavigationBranding } from 'components/navigation/NavigationBranding'
 import { NavigationMenu } from 'components/navigation/NavigationMenu'
 import type { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
@@ -12,7 +9,7 @@ import { NavigationMobileMenu } from 'components/navigation/NavigationMobileMenu
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Container, ThemeProvider } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'

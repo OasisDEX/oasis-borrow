@@ -1,14 +1,10 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import type {
-  AaveV3SupportedNetwork } from 'blockchain/aave-v3';
-import {
-  getAaveV3ReserveConfigurationData,
-  getAaveV3ReserveData,
-} from 'blockchain/aave-v3'
+import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
+import { getAaveV3ReserveConfigurationData, getAaveV3ReserveData } from 'blockchain/aave-v3'
 import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
-import type { Tickers } from 'blockchain/prices';
+import type { Tickers } from 'blockchain/prices'
 import { getTokenPrice } from 'blockchain/prices'
 import dayjs from 'dayjs'
 import { wstethRiskRatio } from 'features/aave/constants'

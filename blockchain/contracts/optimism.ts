@@ -58,7 +58,7 @@ import {
 import { etherscanAPIKey } from 'config/runtimeConfig'
 import type { ContractDesc } from 'features/web3Context'
 
-import type { MainnetContractsWithOptional } from './mainnet';
+import type { MainnetContractsWithOptional } from './mainnet'
 import { mainnetContracts } from './mainnet'
 
 const { optimism } = ADDRESSES

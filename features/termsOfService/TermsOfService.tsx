@@ -13,7 +13,7 @@ import { useWalletManagement } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Label, Text } from 'theme-ui'
 import { fadeIn } from 'theme/animations'

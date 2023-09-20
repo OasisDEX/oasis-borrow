@@ -16,14 +16,14 @@ import type { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { applyDsrAllowanceChanges } from 'features/dsr/utils/applyDsrAllowance'
 import type { Dsr } from 'features/dsr/utils/createDsr'
 import { applyProxyChanges } from 'features/proxy/proxy'
-import type { HasGasEstimation } from 'helpers/context/types';
+import type { HasGasEstimation } from 'helpers/context/types'
 import { GasEstimationStatus } from 'helpers/context/types'
-import type { ApplyChange, Change, Changes } from 'helpers/form';
+import type { ApplyChange, Change, Changes } from 'helpers/form'
 import { applyChange } from 'helpers/form'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, merge, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 

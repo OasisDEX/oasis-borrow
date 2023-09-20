@@ -1,9 +1,9 @@
 import { NetworkIds } from 'blockchain/networks'
-import type { AaveV3Pool } from 'types/ethers-contracts';
+import type { AaveV3Pool } from 'types/ethers-contracts'
 import { AaveV3Pool__factory } from 'types/ethers-contracts'
 import type { LiquidationCallEvent } from 'types/ethers-contracts/AaveV3Pool'
 
-import type { BaseParameters, ContractForNetwork } from './utils';
+import type { BaseParameters, ContractForNetwork } from './utils'
 import { getNetworkMapping } from './utils'
 
 async function getLastLiquidationEvent(

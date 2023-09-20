@@ -1,4 +1,4 @@
-import type { TxMeta, TxState } from '@oasisdex/transactions';
+import type { TxMeta, TxState } from '@oasisdex/transactions'
 import { TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'

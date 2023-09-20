@@ -1,6 +1,6 @@
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui';
+import type { SxStyleProp } from 'theme-ui'
 import { Box } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 

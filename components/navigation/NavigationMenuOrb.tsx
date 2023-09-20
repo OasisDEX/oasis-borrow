@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React, { useEffect, useRef } from 'react'
 import { Box, Button } from 'theme-ui'
 

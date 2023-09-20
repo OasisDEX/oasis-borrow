@@ -6,11 +6,8 @@ import { ContentCardDynamicStopPrice } from 'components/vault/detailsSection/Con
 import { ContentCardEstTokenOnTrigger } from 'components/vault/detailsSection/ContentCardEstTokenOnTrigger'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { ContentCardStopLossLevel } from 'components/vault/detailsSection/ContentCardStopLossLevel'
-import type {
-  StopLossMetadataDetailCards } from 'features/automation/metadata/types';
-import {
-  StopLossDetailCards
-} from 'features/automation/metadata/types'
+import type { StopLossMetadataDetailCards } from 'features/automation/metadata/types'
+import { StopLossDetailCards } from 'features/automation/metadata/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 

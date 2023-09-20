@@ -2,15 +2,12 @@ import { getPoolLiquidity } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
-import type { Tickers } from 'blockchain/prices';
+import type { Tickers } from 'blockchain/prices'
 import { getTokenPrice } from 'blockchain/prices'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import type {
-  AjnaPoolsTableData } from 'features/ajna/positions/common/helpers/getAjnaPoolsData';
-import {
-  getAjnaPoolsData,
-} from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
+import type { AjnaPoolsTableData } from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
+import { getAjnaPoolsData } from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
 import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
@@ -21,7 +18,7 @@ import {
   productHubEmptyPoolWeeklyApyTooltip,
   productHubOraclessLtvTooltip,
 } from 'features/productHub/content'
-import type { ProductHubSupportedNetworks } from 'features/productHub/types';
+import type { ProductHubSupportedNetworks } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import type {

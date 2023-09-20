@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import type { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
 import { one, zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 

@@ -7,7 +7,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import type { ContextConnected } from 'blockchain/network'
 import { createExchangeQuote$ } from 'features/exchange/exchange'
 import type { TxHelpers$ } from 'helpers/context/types'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { identity, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 

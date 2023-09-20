@@ -2,10 +2,10 @@ import BigNumber from 'bignumber.js'
 import dayjs from 'dayjs'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of, throwError } from 'rxjs'
 
-import type { OraclePriceData } from './prices';
+import type { OraclePriceData } from './prices'
 import { createOraclePriceData$, createTokenPriceInUSD$ } from './prices'
 
 describe('createTokenPriceInUSD$', () => {

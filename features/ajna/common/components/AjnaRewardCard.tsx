@@ -10,7 +10,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { FC, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react'
 import React from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 

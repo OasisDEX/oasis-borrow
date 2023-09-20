@@ -1,10 +1,10 @@
 import { notEnoughETHtoPayForTx } from 'features/form/commonValidators'
-import type { VaultErrorMessage } from 'features/form/errorMessagesHandler';
+import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
-import type { VaultWarningMessage } from 'features/form/warningMessagesHandler';
+import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 
-import type { ManageStandardBorrowVaultState } from './manageVault'
+import type { ManageStandardBorrowVaultState } from './manageVault.types'
 
 export function validateErrors(
   state: ManageStandardBorrowVaultState,

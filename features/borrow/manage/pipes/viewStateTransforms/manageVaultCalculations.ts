@@ -1,73 +1,11 @@
 import { BigNumber } from 'bignumber.js'
 import type { IlkData } from 'blockchain/ilks'
 import type { Vault } from 'blockchain/vaults.types'
-import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import type { BalanceInfo } from 'features/shared/balanceInfo'
 import { one, zero } from 'helpers/zero'
 
-// This value ought to be coupled in relation to how much we round the raw debt
-// value in the vault (vault.debt)
-export const PAYBACK_ALL_BOUND = new BigNumber('0.01')
-
-export interface ManageVaultCalculations {
-  maxDepositAmount: BigNumber
-  maxDepositAmountUSD: BigNumber
-  maxWithdrawAmountAtCurrentPrice: BigNumber
-  maxWithdrawAmountAtNextPrice: BigNumber
-  maxWithdrawAmount: BigNumber
-  maxWithdrawAmountUSD: BigNumber
-  maxGenerateAmount: BigNumber
-  maxGenerateAmountAtCurrentPrice: BigNumber
-  maxGenerateAmountAtNextPrice: BigNumber
-  maxPaybackAmount: BigNumber
-  daiYieldFromTotalCollateral: BigNumber
-  daiYieldFromTotalCollateralAtNextPrice: BigNumber
-  afterDebt: BigNumber
-  afterLiquidationPrice: BigNumber
-  afterCollateralizationRatio: BigNumber
-  collateralizationRatioAtNextPrice: BigNumber
-  afterCollateralizationRatioAtNextPrice: BigNumber
-  afterFreeCollateral: BigNumber
-  afterFreeCollateralAtNextPrice: BigNumber
-  afterBackingCollateral: BigNumber
-  afterBackingCollateralAtNextPrice: BigNumber
-  afterLockedCollateral: BigNumber
-  afterLockedCollateralUSD: BigNumber
-  afterCollateralBalance: BigNumber
-  shouldPaybackAll: boolean
-  liquidationPriceCurrentPriceDifference: BigNumber | undefined
-  daiYieldFromTotalCollateralWithoutDebt: BigNumber
-}
-
-export const defaultManageVaultCalculations: ManageVaultCalculations = {
-  maxDepositAmount: zero,
-  maxDepositAmountUSD: zero,
-  maxWithdrawAmountAtCurrentPrice: zero,
-  maxWithdrawAmountAtNextPrice: zero,
-  maxWithdrawAmount: zero,
-  maxWithdrawAmountUSD: zero,
-  maxGenerateAmount: zero,
-  maxGenerateAmountAtCurrentPrice: zero,
-  maxGenerateAmountAtNextPrice: zero,
-  maxPaybackAmount: zero,
-  afterDebt: zero,
-  afterCollateralizationRatio: zero,
-  collateralizationRatioAtNextPrice: zero,
-  afterCollateralizationRatioAtNextPrice: zero,
-  afterLiquidationPrice: zero,
-  afterFreeCollateral: zero,
-  afterFreeCollateralAtNextPrice: zero,
-  afterBackingCollateral: zero,
-  afterBackingCollateralAtNextPrice: zero,
-  afterLockedCollateral: zero,
-  afterLockedCollateralUSD: zero,
-  afterCollateralBalance: zero,
-  daiYieldFromTotalCollateral: zero,
-  daiYieldFromTotalCollateralAtNextPrice: zero,
-  shouldPaybackAll: false,
-  liquidationPriceCurrentPriceDifference: undefined,
-  daiYieldFromTotalCollateralWithoutDebt: zero,
-}
+import { PAYBACK_ALL_BOUND } from './manageVaultCalculations.constants'
 
 /*
  * Determines if on the basis of the user input the users intention to pay back

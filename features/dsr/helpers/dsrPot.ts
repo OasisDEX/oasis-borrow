@@ -7,11 +7,11 @@ import { RAY, WAD } from 'features/dsr/utils/constants'
 import { createProxyAddress$ } from 'features/dsr/utils/proxy'
 import { zero } from 'helpers/zero'
 import { equals } from 'ramda'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, defer, zip } from 'rxjs'
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
-import type { DsrEvent } from './dsrHistory';
+import type { DsrEvent } from './dsrHistory'
 import { DsrEventKind } from './dsrHistory'
 import { pie } from './potCalls'
 import { vatDai } from './vatCalls'

@@ -1,12 +1,12 @@
 import { TxStatus } from '@oasisdex/transactions'
-import type { ApproveData } from 'blockchain/calls/erc20';
+import type { ApproveData } from 'blockchain/calls/erc20'
 import { approve } from 'blockchain/calls/erc20'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import type { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 

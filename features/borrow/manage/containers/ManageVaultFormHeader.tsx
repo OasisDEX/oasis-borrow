@@ -5,7 +5,7 @@ import { WithArrow } from 'components/WithArrow'
 import type {
   ManageStandardBorrowVaultState,
   ManageVaultEditingStage,
-} from 'features/borrow/manage/pipes/manageVault'
+} from 'features/borrow/manage/pipes/manageVault.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'

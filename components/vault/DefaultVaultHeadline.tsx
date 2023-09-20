@@ -7,7 +7,7 @@ import React from 'react'
 import { timeAgo } from 'utils'
 
 import { getPriceChangeColor } from './VaultDetails'
-import type { VaultHeadlineProps } from './VaultHeadline';
+import type { VaultHeadlineProps } from './VaultHeadline'
 import { VaultHeadline } from './VaultHeadline'
 
 export function DefaultVaultHeadline({

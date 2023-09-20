@@ -2,7 +2,7 @@ import { useAccountContext, useMainContext } from 'components/context'
 import { MobileSidePanelPortal, ModalCloseIcon } from 'components/Modal'
 import { useSharedUI } from 'components/SharedUIProvider'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
-import type { ContextAccountDetails } from 'helpers/functions';
+import type { ContextAccountDetails } from 'helpers/functions'
 import { getShowHeaderSettings } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'

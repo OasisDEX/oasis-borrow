@@ -7,7 +7,7 @@ import { disconnectedWalletStateReducer } from './disconnected-wallet-state-redu
 import { disconnectingWalletStateReducer } from './disconnecting-wallet-state-reducer'
 import { settingChainWalletStateReducer } from './setting-chain-wallet-state-reducer'
 import { unsupportedNetworkWalletStateReducer } from './unsupported-network-wallet-state-reducer'
-import type { WalletManagementState } from './wallet-management-state';
+import type { WalletManagementState } from './wallet-management-state'
 import { WalletManagementStateStatus } from './wallet-management-state'
 import type { WalletStateEvent } from './wallet-state-event'
 

@@ -15,25 +15,20 @@ import {
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
-import type { IStrategyConfig } from 'features/aave/types';
+import type { IStrategyConfig } from 'features/aave/types'
 import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { getLocalAppConfig } from 'helpers/config'
-import type { AaveLendingProtocol } from 'lendingProtocols';
+import type { AaveLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import { FeaturesEnum } from 'types/config'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
 import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
-import type {
-  TokenPairConfig } from './common';
-import {
-  hasBorrowProductType,
-  hasEarnProductType,
-  hasMultiplyProductType
-} from './common'
+import type { TokenPairConfig } from './common'
+import { hasBorrowProductType, hasEarnProductType, hasMultiplyProductType } from './common'
 
 const availableTokenPairs: TokenPairConfig[] = [
   {

@@ -12,7 +12,7 @@ import { formatAddress } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TextInput } from 'helpers/TextInput'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React from 'react'
 import { Flex, Grid, Image } from 'theme-ui'
 

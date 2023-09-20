@@ -2,10 +2,9 @@ import type {
   DiscoverFiltersSettings,
   DiscoverTableActivityRowData,
   DiscoverTableColRatioRowData,
-  DiscoverTableStatusRowData } from 'features/discover/types';
-import {
-  DiscoverApiErrors
+  DiscoverTableStatusRowData,
 } from 'features/discover/types'
+import { DiscoverApiErrors } from 'features/discover/types'
 import { useObservable } from 'helpers/observableHook'
 import getConfig from 'next/config'
 import { stringify } from 'querystring'

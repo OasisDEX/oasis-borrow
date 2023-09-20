@@ -5,7 +5,7 @@ import type { Vault } from 'blockchain/vaults.types'
 import type {
   ManageVaultChange,
   MutableManageVaultState,
-} from 'features/borrow/manage/pipes/manageVault'
+} from 'features/borrow/manage/pipes/manageVault.types'
 import type { BalanceInfo } from 'features/shared/balanceInfo'
 import type { PriceInfo } from 'features/shared/priceInfo'
 

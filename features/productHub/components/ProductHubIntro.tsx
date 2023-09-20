@@ -2,7 +2,7 @@ import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { productHubLinksMap } from 'features/productHub/meta'
 import type { ProductHubProductType } from 'features/productHub/types'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'

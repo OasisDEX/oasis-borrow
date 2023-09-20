@@ -1,4 +1,4 @@
-import type { IRiskRatio } from '@oasisdex/dma-library';
+import type { IRiskRatio } from '@oasisdex/dma-library'
 import { RiskRatio } from '@oasisdex/dma-library'
 import type { Protocol } from '@prisma/client'
 import type BigNumber from 'bignumber.js'
@@ -13,7 +13,7 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import type { AaveLikeLendingProtocol } from 'lendingProtocols';
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import type { PreparedAaveTotalValueLocked } from 'lendingProtocols/aave-v2/pipelines'
 import { useTranslation } from 'next-i18next'

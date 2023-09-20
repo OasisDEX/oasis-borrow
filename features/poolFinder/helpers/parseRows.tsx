@@ -1,4 +1,4 @@
-import type { NetworkIds } from 'blockchain/networks';
+import type { NetworkIds } from 'blockchain/networks'
 import { NetworkNames } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'

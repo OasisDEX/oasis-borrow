@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { MakerVaultType } from 'blockchain/calls/vaultResolver'
 import type { IlkData } from 'blockchain/ilks'
-import type { InstiVault } from 'blockchain/instiVault';
 import { createInstiVault$ } from 'blockchain/instiVault'
+import type { InstiVault } from 'blockchain/instiVault.types'
 import type { OraclePriceData } from 'blockchain/prices'
 import { createVault$ } from 'blockchain/vaults'
 import type { Vault } from 'blockchain/vaults.types'
@@ -11,7 +11,7 @@ import type { PriceInfo } from 'features/shared/priceInfo'
 import { getRandomString } from 'helpers/getRandomString'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 

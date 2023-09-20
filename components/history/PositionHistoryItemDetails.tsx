@@ -5,7 +5,7 @@ import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { DefinitionList } from 'components/DefinitionList'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import type { AaveHistoryEvent } from 'features/ajna/history/types';
+import type { AaveHistoryEvent } from 'features/ajna/history/types'
 import { hasTrigger } from 'features/ajna/history/types'
 import {
   formatAmountWithPrecision,
@@ -16,7 +16,7 @@ import {
 } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React from 'react'
 
 import { PositionHistoryRow } from './PositionHistoryRow'

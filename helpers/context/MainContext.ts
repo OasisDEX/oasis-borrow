@@ -1,7 +1,6 @@
 import { createSend } from '@oasisdex/transactions'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type {
-  ContextConnected } from 'blockchain/network';
+import type { ContextConnected } from 'blockchain/network'
 import {
   createAccount$,
   createContext$,
@@ -14,7 +13,7 @@ import { NetworkIds } from 'blockchain/networks'
 import { createGasPrice$ } from 'blockchain/prices'
 import { createWeb3Context$ } from 'features/web3Context'
 import { createTxHelpers$ } from 'helpers/createTxHelpers'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 

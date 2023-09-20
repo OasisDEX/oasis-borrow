@@ -6,9 +6,13 @@ import {
   getAutoBSVaultChange,
   prepareAutoBSResetData,
 } from 'features/automation/common/helpers'
-import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import type { AutomationBSPublishType, SidebarAutomationStages } from 'features/automation/common/types'
+import type {
+  AutomationBSPublishType,
+  SidebarAutomationStages,
+} from 'features/automation/common/types'
+
+import type { AutoBSFormChange } from './autoBSFormChange.types'
+import type { AutoBSTriggerData } from './autoBSTriggerData.types'
 
 interface GetAutoBSStatusParams {
   autoBSState: AutoBSFormChange

@@ -9,7 +9,7 @@ import {
 } from 'blockchain/contracts'
 import { amountFromWei, amountToWei } from 'blockchain/utils'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
-import type { IStrategyConfig } from 'features/aave/types/strategy-config';
+import type { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { StrategyType } from 'features/aave/types/strategy-config'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'

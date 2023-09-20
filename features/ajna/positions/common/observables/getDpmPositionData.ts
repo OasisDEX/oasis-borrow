@@ -5,7 +5,7 @@ import type { PositionCreated } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import { isEqual } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, EMPTY, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 

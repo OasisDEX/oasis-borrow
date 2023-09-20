@@ -1,5 +1,4 @@
-import type {
-  NetworkNames } from 'blockchain/networks';
+import type { NetworkNames } from 'blockchain/networks'
 import {
   enableNetworksSet,
   filterNetworksAccordingToSavedNetwork,

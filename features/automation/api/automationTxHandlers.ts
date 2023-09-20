@@ -1,35 +1,25 @@
-import { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
 } from 'blockchain/calls/automationBot'
-import type {
-  AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator';
-import {
-  removeAutomationBotAggregatorTriggers,
-} from 'blockchain/calls/automationBotAggregator'
+import type { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
+import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator'
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
   AutomationRemoveTriggerData,
-  AutomationRemoveTriggerTxDef } from 'features/automation/common/txDefinitions';
-import {
-  addTransactionMap
+  AutomationRemoveTriggerTxDef,
 } from 'features/automation/common/txDefinitions'
+import { addTransactionMap } from 'features/automation/common/txDefinitions'
 import type { AutomationPublishType } from 'features/automation/common/types'
 import type { AutomationTxData, TxHelpers } from 'helpers/context/types'
 import { handleTransaction } from 'helpers/handleTransaction'
 import type { UIChanges } from 'helpers/uiChanges'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
-export const takeUntilTxState = [
-  TxStatus.Success,
-  TxStatus.Failure,
-  TxStatus.Error,
-  TxStatus.CancelledByTheUser,
-]
+import { takeUntilTxState } from './takeUntilTxState'
 
 export function removeAutomationTrigger(
   { sendWithGasEstimation }: TxHelpers,

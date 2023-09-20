@@ -1,6 +1,6 @@
 import { TabBar } from 'components/TabBar'
 import { useTranslation } from 'next-i18next'
-import type { ReactElement } from 'react';
+import type { ReactElement } from 'react'
 import React, { useEffect } from 'react'
 import { Box, Card, Grid } from 'theme-ui'
 

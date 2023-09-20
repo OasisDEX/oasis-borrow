@@ -7,7 +7,7 @@ import type { UserSettingsState } from 'features/userSettings/userSettings'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { isEqual } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -18,7 +18,13 @@ import type { VaultResolve } from './calls/vaultResolver'
 import type { IlkData } from './ilks'
 import type { OraclePriceData, OraclePriceDataArgs } from './prices'
 import { buildPosition } from './vault.maths'
-import type { CdpIdsResolver, Vault, VaultChange, VaultWithType, VaultWithValue } from './vaults.types'
+import type {
+  CdpIdsResolver,
+  Vault,
+  VaultChange,
+  VaultWithType,
+  VaultWithValue,
+} from './vaults.types'
 
 BigNumber.config({
   POW_PRECISION: 100,

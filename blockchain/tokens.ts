@@ -1,11 +1,11 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { bindNodeCallback, combineLatest, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
-import type { tokenAllowance, tokenBalance, tokenBalanceFromAddress } from './calls/erc20';
+import type { tokenAllowance, tokenBalance, tokenBalanceFromAddress } from './calls/erc20'
 import { maxUint256 } from './calls/erc20'
 import type { CallObservable } from './calls/observe'
 import type { Context } from './network'

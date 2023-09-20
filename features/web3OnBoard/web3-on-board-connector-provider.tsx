@@ -1,5 +1,5 @@
 import { ConnectorEvent } from '@web3-react/types'
-import type { NetworkConfigHexId } from 'blockchain/networks';
+import type { NetworkConfigHexId } from 'blockchain/networks'
 import { NetworkIds } from 'blockchain/networks'
 import { useModalContext } from 'helpers/modalHook'
 import type { WithChildren } from 'helpers/types'
@@ -12,7 +12,7 @@ import { useBridgeConnector } from './use-bridge-connector'
 import { useChainSetter } from './use-chain-setter'
 import { useNetworkConnector } from './use-network-connector'
 import { useSafetyReload } from './use-safety-reload'
-import type { WalletManagementState, WalletStateEvent } from './wallet-state';
+import type { WalletManagementState, WalletStateEvent } from './wallet-state'
 import { walletStateReducer } from './wallet-state'
 import {
   areThePageNetworksTheSame,

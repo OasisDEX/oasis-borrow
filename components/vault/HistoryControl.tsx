@@ -3,7 +3,7 @@ import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
-import type { LendingProtocol } from 'lendingProtocols';
+import type { LendingProtocol } from 'lendingProtocols'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

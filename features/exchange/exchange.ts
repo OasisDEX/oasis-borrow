@@ -4,7 +4,7 @@ import type { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import type { ContractDesc } from 'features/web3Context'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'

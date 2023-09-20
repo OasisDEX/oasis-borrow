@@ -12,7 +12,7 @@ import type {
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { Dispatch } from 'react';
+import type { Dispatch } from 'react'
 import React from 'react'
 
 interface AjnaFormField<D> {

@@ -1,5 +1,5 @@
 import { AppLink } from 'components/Links'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
 

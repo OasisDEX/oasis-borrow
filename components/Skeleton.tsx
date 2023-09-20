@@ -1,5 +1,5 @@
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui';
+import type { SxStyleProp } from 'theme-ui'
 import { Box, Grid } from 'theme-ui'
 
 type SkeletonColorTheme = 'default' | 'dark' | 'positive' | 'negative'

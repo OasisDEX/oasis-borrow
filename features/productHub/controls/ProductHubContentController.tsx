@@ -15,7 +15,7 @@ import type {
 import { useWalletManagement } from 'features/web3OnBoard'
 import { getAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React, { useMemo } from 'react'
 
 interface ProductHubContentControllerProps {

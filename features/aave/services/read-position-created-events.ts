@@ -1,14 +1,14 @@
 import { ensureContractsExist, extendContract, getNetworkContracts } from 'blockchain/contracts'
 import { identifyTokens$ } from 'blockchain/identifyTokens'
 import type { Context } from 'blockchain/network'
-import type { NetworkIds } from 'blockchain/networks';
+import type { NetworkIds } from 'blockchain/networks'
 import { getRpcProvidersForLogs } from 'blockchain/networks'
 import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies'
 import type { ContractDesc } from 'features/web3Context'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, EMPTY, of } from 'rxjs'
 import { catchError, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 import { PositionCreated__factory } from 'types/ethers-contracts'

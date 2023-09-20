@@ -11,7 +11,7 @@ import type { HasGasEstimation } from 'helpers/context/types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react'
 import React, { useMemo } from 'react'
 import { Box, Flex, Image } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'

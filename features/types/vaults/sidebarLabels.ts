@@ -1,4 +1,4 @@
-import { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault'
+import { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault.types'
 import { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
 import { ManageMultiplyVaultStage } from 'features/multiply/manage/pipes/types'
 

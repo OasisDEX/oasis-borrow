@@ -28,7 +28,7 @@ import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.
 
 import { NetworkHexIds } from './network-hex-ids'
 import { NetworkIds } from './network-ids'
-import type { NetworkLabelType } from './network-names';
+import type { NetworkLabelType } from './network-names'
 import { NetworkNames } from './network-names'
 
 export type NetworkConfigHexId = `0x${number | string}`

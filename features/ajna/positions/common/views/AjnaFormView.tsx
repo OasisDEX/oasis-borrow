@@ -2,7 +2,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { useMainContext } from 'components/context'
 import { FlowSidebar } from 'components/FlowSidebar'
-import type { SidebarSectionProps } from 'components/sidebar/SidebarSection';
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ethers } from 'ethers'
@@ -29,7 +29,7 @@ import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 

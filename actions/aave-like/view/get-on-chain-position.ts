@@ -1,4 +1,4 @@
-import type { IPosition, Tokens } from '@oasisdex/dma-library';
+import type { IPosition, Tokens } from '@oasisdex/dma-library'
 import { views } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import type { GetOnChainPositionParams } from 'actions/aave-like/types'

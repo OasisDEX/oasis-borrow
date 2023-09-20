@@ -1,5 +1,5 @@
 import { Heading } from '@theme-ui/components'
-import type { ProtocolLabelProps } from 'components/ProtocolLabel';
+import type { ProtocolLabelProps } from 'components/ProtocolLabel'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
@@ -8,16 +8,13 @@ import {
   twitterSharePositionText,
   twitterSharePositionVia,
 } from 'features/follow/common/ShareButton'
-import type {
-  FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl';
-import {
-  FollowButtonControl
-} from 'features/follow/controllers/FollowButtonControl'
-import type { ReactNode } from 'react';
+import type { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
+import { FollowButtonControl } from 'features/follow/controllers/FollowButtonControl'
+import type { ReactNode } from 'react'
 import React from 'react'
 import { Flex } from 'theme-ui'
 
-import type { HeadlineDetailsProp } from './VaultHeadlineDetails';
+import type { HeadlineDetailsProp } from './VaultHeadlineDetails'
 import { VaultHeadlineDetails } from './VaultHeadlineDetails'
 
 export type VaultHeadlineProps = {

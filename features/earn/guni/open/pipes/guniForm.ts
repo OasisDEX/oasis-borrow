@@ -8,7 +8,7 @@ import type { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 
 import type { EnvironmentState } from './enviroment'
-import type { TxStateDependencies } from './guniActionsCalls';
+import type { TxStateDependencies } from './guniActionsCalls'
 import { openGuniVault } from './guniActionsCalls'
 import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions'
 

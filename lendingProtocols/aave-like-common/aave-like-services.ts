@@ -11,7 +11,10 @@ import type {
   AaveLikeReserveConfigurationDataParams,
 } from './aave-like-reserve-configuration-data'
 import type { AaveLikeReserveData } from './aave-like-reserve-data'
-import type { AaveLikeUserAccountData, AaveLikeUserAccountDataArgs } from './aave-like-user-account-data'
+import type {
+  AaveLikeUserAccountData,
+  AaveLikeUserAccountDataArgs,
+} from './aave-like-user-account-data'
 import type { AaveLikeUserConfigurationResults } from './aave-like-user-configuration'
 
 export interface AaveLikeServices {

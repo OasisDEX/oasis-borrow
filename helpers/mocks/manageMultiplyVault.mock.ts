@@ -3,7 +3,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import type { IlkData } from 'blockchain/ilks'
 import type { Context } from 'blockchain/network'
 import type { Vault } from 'blockchain/vaults.types'
-import type { TriggersData } from 'features/automation/api/automationTriggersData'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
 import type { BalanceInfo } from 'features/shared/balanceInfo'
@@ -13,23 +13,23 @@ import type { TxHelpers } from 'helpers/context/types'
 import { mockedMultiplyEvents } from 'helpers/multiply/calculations.mock'
 import { protoTxHelpers } from 'helpers/protoTxHelpers'
 import { one, zero } from 'helpers/zero'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import type { MockBalanceInfoProps } from './balanceInfo.mock';
+import type { MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockBalanceInfo$ } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
-import type { MockExchangeQuote } from './exchangeQuote.mock';
+import type { MockExchangeQuote } from './exchangeQuote.mock'
 import { mockExchangeQuote$ } from './exchangeQuote.mock'
-import type { MockIlkDataProps } from './ilks.mock';
+import type { MockIlkDataProps } from './ilks.mock'
 import { mockIlkData$ } from './ilks.mock'
 import { addGasEstimationMock } from './openVault.mock'
-import type { MockPriceInfoProps } from './priceInfo.mock';
+import type { MockPriceInfoProps } from './priceInfo.mock'
 import { mockPriceInfo$ } from './priceInfo.mock'
 import { slippageLimitMock } from './slippageLimit.mock'
 import { mockedEmptyStopLossTrigger } from './stopLoss.mock'
-import type { MockVaultProps } from './vaults.mock';
+import type { MockVaultProps } from './vaults.mock'
 import { mockVault$ } from './vaults.mock'
 
 export const MOCK_VAULT_ID = one

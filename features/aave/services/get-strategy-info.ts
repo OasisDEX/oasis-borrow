@@ -5,7 +5,7 @@ import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveConfigurationDataParams,
 } from 'lendingProtocols/aave-like-common'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/operators'
 

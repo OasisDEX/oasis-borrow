@@ -1,4 +1,4 @@
-import type { NetworkConfigHexId } from 'blockchain/networks';
+import type { NetworkConfigHexId } from 'blockchain/networks'
 import { forksByParentHexId, networkSetByHexId } from 'blockchain/networks'
 
 export function getNetworksFromPageNetwork(

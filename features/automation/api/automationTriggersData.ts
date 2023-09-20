@@ -1,35 +1,21 @@
 import { TriggerType } from '@oasisdex/automation'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { Context } from 'blockchain/network';
+import type { Context } from 'blockchain/network'
 import { every5Seconds$ } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import type { PositionId } from 'features/aave/types/position-id'
 import { getAllActiveTriggers } from 'features/automation/api/allActiveTriggers'
-import type {
-  AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData';
-import {
-  extractAutoBSData,
-} from 'features/automation/common/state/autoBSTriggerData'
-import type {
-  AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData';
-import {
-  extractAutoTakeProfitData,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import type {
-  ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData';
-import {
-  extractConstantMultipleData,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import type {
-  StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData';
-import {
-  extractStopLossData
-} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
+import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { extractConstantMultipleData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { GraphQLClient } from 'graphql-request'
 import type { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
+
+import type { TriggersData } from './automationTriggersData.types'
 
 async function loadTriggerDataFromCache({
   positionId,
@@ -54,20 +40,6 @@ async function loadTriggerDataFromCache({
     triggers: activeTriggersForVault,
     chainId,
   }
-}
-
-export interface TriggerRecord {
-  triggerId: number
-  groupId?: number
-  commandAddress: string
-  executionParams: string // bytes triggerData from TriggerAdded event
-}
-
-export interface TriggersData {
-  isAutomationDataLoaded: boolean
-  isAutomationEnabled: boolean
-  chainId: NetworkIds
-  triggers?: TriggerRecord[]
 }
 
 export function createAutomationTriggersData(
@@ -113,13 +85,4 @@ export function createAutomationTriggersChange$(
       autoTakeProfitData: extractAutoTakeProfitData(triggers),
     })),
   )
-}
-
-export interface AutomationTriggersChange {
-  kind: 'automationTriggersData'
-  stopLossData: StopLossTriggerData
-  autoSellData: AutoBSTriggerData
-  autoBuyData: AutoBSTriggerData
-  constantMultipleData: ConstantMultipleTriggerData
-  autoTakeProfitData: AutoTakeProfitTriggerData
 }

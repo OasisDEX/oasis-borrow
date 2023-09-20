@@ -6,7 +6,7 @@ import type { SpotIlk, spotIlk } from 'blockchain/calls/spot'
 import type { VatIlk, vatIlk } from 'blockchain/calls/vat'
 import type { Context } from 'blockchain/network'
 import { one, zero } from 'helpers/zero'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { distinctUntilChanged, map, retry, shareReplay, switchMap } from 'rxjs/operators'
 

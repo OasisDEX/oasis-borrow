@@ -2,7 +2,10 @@ import type { IRiskRatio } from '@oasisdex/dma-library'
 import type { NetworkNames } from 'blockchain/networks'
 import { useAaveContext } from 'features/aave'
 import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
-import type { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
+import type {
+  AaveLikeYieldsResponse,
+  FilterYieldFieldsType,
+} from 'lendingProtocols/aave-like-common'
 import { useEffect, useState } from 'react'
 
 export function useAaveEarnYields(

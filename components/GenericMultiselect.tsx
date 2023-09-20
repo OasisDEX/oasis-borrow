@@ -6,7 +6,7 @@ import { toggleArrayItem } from 'helpers/toggleArrayItem'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React, { useEffect, useRef, useState } from 'react'
 import { Box, Flex, Image, Text } from 'theme-ui'
 import type { FeaturesEnum } from 'types/config'

@@ -4,34 +4,17 @@ import { getAvailableAutomation } from 'features/automation/common/helpers'
 import type {
   AutomationOptimizationFeatures,
   AutomationProtectionFeatures,
-  AutomationTypes } from 'features/automation/common/state/automationFeatureChange';
-import {
-  AUTOMATION_CHANGE_FEATURE
 } from 'features/automation/common/state/automationFeatureChange'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import type { VaultProtocol } from 'helpers/getVaultProtocol'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useTranslation } from 'next-i18next'
 
-interface GetAutoFeaturesSidebarDropdownProps {
-  type: AutomationTypes
-  forcePanel: AutomationProtectionFeatures | AutomationOptimizationFeatures
-  vaultType: VaultType
-  protocol: VaultProtocol
-  disabled?: boolean
-  isStopLossEnabled?: boolean
-  isAutoSellEnabled?: boolean
-  isAutoBuyEnabled?: boolean
-  isAutoConstantMultipleEnabled?: boolean
-  isAutoTakeProfitEnabled?: boolean
-}
-interface GetAutoFeaturesSidebarDropdownItemProps {
-  translationKey: string
-  type: AutomationTypes
-  panel: AutomationProtectionFeatures | AutomationOptimizationFeatures
-  isFeatureEnabled?: boolean
-}
+import type {
+  GetAutoFeaturesSidebarDropdownItemProps,
+  GetAutoFeaturesSidebarDropdownProps,
+} from './getAutoFeaturesSidebarDropdown.types'
 
 function getAutoFeaturesSidebarDropdownItem({
   translationKey,

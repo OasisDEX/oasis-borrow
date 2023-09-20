@@ -4,7 +4,7 @@ import { useNotificationSocket } from 'components/context'
 import { NotificationCard } from 'components/notifications/NotificationCard'
 import { NotificationsEmptyList } from 'components/notifications/NotificationsEmptyList'
 import { getNotificationTitle } from 'features/notifications/helpers'
-import type { NotificationChange } from 'features/notifications/notificationChange';
+import type { NotificationChange } from 'features/notifications/notificationChange'
 import { NOTIFICATION_CHANGE } from 'features/notifications/notificationChange'
 import { NotificationTypes } from 'features/notifications/types'
 import { useUIChanges } from 'helpers/uiChangesHook'

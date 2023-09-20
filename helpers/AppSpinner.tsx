@@ -1,6 +1,6 @@
-import type { ReactElement } from 'react';
+import type { ReactElement } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui';
+import type { SxStyleProp } from 'theme-ui'
 import { Box, Flex, Spinner } from 'theme-ui'
 
 // wrapper for <Spinner /> component from theme-ui implemented because <Spinner /> is not mapped to any default variant

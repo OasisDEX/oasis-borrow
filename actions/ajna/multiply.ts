@@ -1,12 +1,5 @@
-import type {
-  AjnaCommonDependencies,
-  AjnaCommonPayload,
-  AjnaPool } from '@oasisdex/dma-library';
-import {
-  normalizeValue,
-  RiskRatio,
-  strategies,
-} from '@oasisdex/dma-library'
+import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaPool } from '@oasisdex/dma-library'
+import { normalizeValue, RiskRatio, strategies } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'

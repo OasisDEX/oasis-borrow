@@ -1,34 +1,7 @@
 import type {
-  MainAction,
   ManageStandardBorrowVaultState,
   ManageVaultChange,
-} from 'features/borrow/manage/pipes/manageVault'
-
-import { allowanceDefaults } from './manageVaultAllowances'
-import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageVaultInput'
-
-export const manageVaultFormDefaults: Partial<ManageStandardBorrowVaultState> = {
-  ...allowanceDefaults,
-  ...depositAndGenerateDefaults,
-  ...paybackAndWithdrawDefaults,
-  showDepositAndGenerateOption: false,
-  showPaybackAndWithdrawOption: false,
-}
-
-export type ManageVaultFormChange =
-  | {
-      kind: 'toggleDepositAndGenerateOption'
-    }
-  | {
-      kind: 'togglePaybackAndWithdrawOption'
-    }
-  | {
-      kind: 'resetDefaults'
-    }
-  | {
-      kind: 'mainAction'
-      mainAction: MainAction
-    }
+} from 'features/borrow/manage/pipes/manageVault.types'
 
 export function applyManageVaultForm<VaultState extends ManageStandardBorrowVaultState>(
   change: ManageVaultChange,

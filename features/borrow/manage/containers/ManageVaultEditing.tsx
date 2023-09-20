@@ -1,8 +1,8 @@
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
-import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Button, Divider, Grid, Text } from 'theme-ui'
 

@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import type { WithChildren } from 'helpers/types'
 import React from 'react'
-import type { SxProps } from 'theme-ui';
+import type { SxProps } from 'theme-ui'
 import { Box, IconButton } from 'theme-ui'
 
 type Closable = {

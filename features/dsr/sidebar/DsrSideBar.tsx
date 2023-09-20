@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { SidebarSectionProps } from 'components/sidebar/SidebarSection';
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
@@ -13,7 +13,7 @@ import { isProxyStage } from 'features/proxy/proxy'
 import type { HasGasEstimation } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 

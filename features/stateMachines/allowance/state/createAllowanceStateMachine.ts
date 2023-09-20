@@ -1,10 +1,7 @@
 import type { TxMeta } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
-import type {
-  ApproveTokenTransactionParameters } from 'blockchain/better-calls/erc20';
-import {
-  createApproveTransaction,
-} from 'blockchain/better-calls/erc20'
+import type { ApproveTokenTransactionParameters } from 'blockchain/better-calls/erc20'
+import { createApproveTransaction } from 'blockchain/better-calls/erc20'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
@@ -13,11 +10,10 @@ import type { ethers } from 'ethers'
 import type {
   EthersTransactionStateMachine,
   TransactionStateMachine,
-  TransactionStateMachineResultEvents } from 'features/stateMachines/transaction';
-import {
-  createEthersTransactionStateMachine
+  TransactionStateMachineResultEvents,
 } from 'features/stateMachines/transaction'
-import type { ActorRefFrom } from 'xstate';
+import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
+import type { ActorRefFrom } from 'xstate'
 import { assign, createMachine, interpret, sendParent, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 

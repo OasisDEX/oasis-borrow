@@ -4,7 +4,7 @@ import type { Vault } from 'blockchain/vaults.types'
 import type { PositionCreated } from 'features/aave/services'
 import type { Web3Context } from 'features/web3Context'
 import { startWithDefault } from 'helpers/operators'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
 

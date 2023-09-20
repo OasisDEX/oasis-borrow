@@ -2,7 +2,7 @@ import { ADDRESSES } from '@oasisdex/addresses'
 import BigNumber from 'bignumber.js'
 import type { SparkV3UserConfigurationsParameters } from 'blockchain/spark-v3'
 import { curry } from 'ramda'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/operators'
 

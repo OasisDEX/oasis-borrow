@@ -1,13 +1,8 @@
 'use client'
 import { configContext, emptyConfig } from 'components/context/ConfigContextProvider'
 import { cleanObjectFromNull, cleanObjectToNull } from 'helpers/clean-object'
-import type {
-  ConfigContext,
-  ConfigResponseType,
-  ConfigResponseTypeKey } from 'helpers/config';
-import {
-  configLSKey
-} from 'helpers/config'
+import type { ConfigContext, ConfigResponseType, ConfigResponseTypeKey } from 'helpers/config'
+import { configLSKey } from 'helpers/config'
 import { merge } from 'lodash'
 import { useContext as accessContext } from 'react'
 

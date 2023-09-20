@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { useAutomationContext, useGasEstimationContext } from 'components/context'
-import type { SidebarSectionProps } from 'components/sidebar/SidebarSection';
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
 import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
@@ -10,15 +10,12 @@ import { getAutomationStatusTitle } from 'features/automation/common/sidebars/ge
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
-import type { SidebarAutomationStages } from 'features/automation/common/types';
+import type { SidebarAutomationStages } from 'features/automation/common/types'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarConstantMultipleEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleEditingStage'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleRemovalEditingStage'
-import type {
-  ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange';
-import {
-  CONSTANT_MULTIPLE_FORM_CHANGE
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
+import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
 import {
   errorsConstantMultipleValidation,
   warningsConstantMultipleValidation,

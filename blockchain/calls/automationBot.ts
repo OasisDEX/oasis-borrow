@@ -1,4 +1,4 @@
-import type { TriggerType } from '@oasisdex/automation';
+import type { TriggerType } from '@oasisdex/automation'
 import { TriggerGroupType } from '@oasisdex/automation'
 import type BigNumber from 'bignumber.js'
 import * as accountImplementation from 'blockchain/abi/account-implementation.json'

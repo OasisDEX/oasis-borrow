@@ -12,7 +12,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { FC, KeyboardEvent } from 'react';
+import type { FC, KeyboardEvent } from 'react'
 import React, { useEffect, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Text } from 'theme-ui'

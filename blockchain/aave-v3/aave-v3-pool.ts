@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import { AaveV3Pool__factory } from 'types/ethers-contracts'
 
-import type { BaseParameters } from './utils';
+import type { BaseParameters } from './utils'
 import { getNetworkMapping } from './utils'
 
 export interface AaveV3UserAccountData {

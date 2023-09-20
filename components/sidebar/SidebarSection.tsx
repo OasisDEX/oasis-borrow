@@ -3,11 +3,11 @@ import { MobileSidePanel } from 'components/Modal'
 import React, { useState } from 'react'
 import { Card } from 'theme-ui'
 
-import type { SidebarSectionContentProps } from './SidebarSectionContent';
+import type { SidebarSectionContentProps } from './SidebarSectionContent'
 import { SidebarSectionContent } from './SidebarSectionContent'
-import type { SidebarSectionFooterProps } from './SidebarSectionFooter';
+import type { SidebarSectionFooterProps } from './SidebarSectionFooter'
 import { SidebarSectionFooter } from './SidebarSectionFooter'
-import type { SidebarSectionHeaderProps } from './SidebarSectionHeader';
+import type { SidebarSectionHeaderProps } from './SidebarSectionHeader'
 import { SidebarSectionHeader } from './SidebarSectionHeader'
 
 export interface SidebarSectionProps

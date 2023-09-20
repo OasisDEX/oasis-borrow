@@ -8,7 +8,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import type { IdentifiedTokens } from 'blockchain/identifyTokens'
 import { NetworkIds } from 'blockchain/networks'
 import { amountToWad } from 'blockchain/utils'
-import type CancelablePromise from 'cancelable-promise';
+import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { useMainContext, useProductContext } from 'components/context'
 import { AppLink } from 'components/Links'
@@ -16,15 +16,12 @@ import { isAddress } from 'ethers/lib/utils'
 import type { AjnaValidationItem } from 'features/ajna/common/types'
 import { getTxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxManager'
 import { getAjnaSidebarTransactionStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarTransactionStatus'
-import type {
-  SearchAjnaPoolData } from 'features/ajna/positions/common/helpers/searchAjnaPool';
-import {
-  searchAjnaPool
-} from 'features/ajna/positions/common/helpers/searchAjnaPool'
-import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
+import type { SearchAjnaPoolData } from 'features/ajna/positions/common/helpers/searchAjnaPool'
+import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
+import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
 import type { PoolCreatorBoundries } from 'features/poolCreator/types'
 import { getOraclessProductUrl } from 'features/poolFinder/helpers'
-import type { TxDetails } from 'helpers/handleTransaction';
+import type { TxDetails } from 'helpers/handleTransaction'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'

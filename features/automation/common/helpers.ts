@@ -1,5 +1,4 @@
-import type { Result } from '@ethersproject/abi'
-import type { TriggerType } from '@oasisdex/automation';
+import type { TriggerType } from '@oasisdex/automation'
 import { decodeTriggerDataAsJson } from '@oasisdex/automation'
 import { trackingEvents } from 'analytics/analytics'
 import {
@@ -9,7 +8,10 @@ import {
 } from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
-import type { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
+import type {
+  TriggerRecord,
+  TriggersData,
+} from 'features/automation/api/automationTriggersData.types'
 import {
   aaveTokenPairsAllowedAutomation,
   DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
@@ -18,19 +20,8 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   protocolAutomations,
 } from 'features/automation/common/consts'
-import type {
-  AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange';
-import {
-  AUTO_BUY_FORM_CHANGE,
-  AUTO_SELL_FORM_CHANGE
-} from 'features/automation/common/state/autoBSFormChange'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import type {
-  SidebarAutomationStages } from 'features/automation/common/types';
-import {
-  AutomationFeatures,
-  AutomationKinds
-} from 'features/automation/common/types'
+import type { SidebarAutomationStages } from 'features/automation/common/types'
+import { AutomationFeatures, AutomationKinds } from 'features/automation/common/types'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
@@ -40,12 +31,12 @@ import type { UIChanges } from 'helpers/uiChanges'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one, zero } from 'helpers/zero'
 
-export interface TriggerDataType {
-  triggerId: number
-  result: Result
-  executionParams: string
-  commandAddress: string
-}
+import { analyticsPageMap } from './analyticsPageMap'
+import { noThreshold } from './noThreshold'
+import { AUTO_BUY_FORM_CHANGE, AUTO_SELL_FORM_CHANGE } from './state/autoBSFormChange.constants'
+import type { AutoBSFormChange } from './state/autoBSFormChange.types'
+import type { AutoBSTriggerData } from './state/autoBSTriggerData.types'
+import type { TriggerDataType } from './TriggerDataType'
 
 export function getTriggersByType(
   triggers: TriggerRecord[],
@@ -303,12 +294,6 @@ export function getAutomationThatClosedVault({
     : undefined
 }
 
-const analyticsPageMap = {
-  [AutomationFeatures.AUTO_SELL]: MixpanelPages.AutoSell,
-  [AutomationFeatures.AUTO_BUY]: MixpanelPages.AutoBuy,
-  [AutomationFeatures.CONSTANT_MULTIPLE]: MixpanelPages.ConstantMultiple,
-}
-
 export function automationMultipleRangeSliderAnalytics({
   leftValue,
   rightValue,
@@ -362,8 +347,6 @@ export function automationMultipleRangeSliderAnalytics({
     )
   }, JSON.stringify({ leftValue: leftValue.toString(), rightValue: rightValue.toString() }))
 }
-
-const noThreshold = 'NoThreshold'
 
 export function resolveMinSellPriceAnalytics({
   withMinSellPriceThreshold,

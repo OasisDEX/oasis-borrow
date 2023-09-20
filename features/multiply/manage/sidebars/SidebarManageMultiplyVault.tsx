@@ -1,5 +1,5 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import type { SidebarSectionProps } from 'components/sidebar/SidebarSection';
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { SidebarAutomationVaultCloseTriggered } from 'components/vault/sidebar/SidebarAutomationVaultCloseTriggered'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'

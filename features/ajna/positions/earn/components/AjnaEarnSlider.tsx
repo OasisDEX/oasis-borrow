@@ -15,7 +15,7 @@ import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/sna
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React, { useEffect, useMemo } from 'react'
 import { Box } from 'theme-ui'
 

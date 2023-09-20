@@ -1,9 +1,13 @@
-import type { AjnaEarnPosition, SwapData } from '@oasisdex/dma-library';
+import type { AjnaEarnPosition, SwapData } from '@oasisdex/dma-library'
 import { AjnaPosition } from '@oasisdex/dma-library'
 import type { AjnaSimulationData } from 'actions/ajna'
 import { useGasEstimationContext, useProductContext } from 'components/context'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import type { AjnaGenericPosition, AjnaProduct, AjnaValidationItem } from 'features/ajna/common/types'
+import type {
+  AjnaGenericPosition,
+  AjnaProduct,
+  AjnaValidationItem,
+} from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import type {
   AjnaBorrowFormState,
@@ -29,16 +33,8 @@ import type {
 import { getAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import type {
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction } from 'react';
-import React, {
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 interface AjnaProductContextProviderPropsWithBorrow {
   formReducto: typeof useAjnaBorrowFormReducto

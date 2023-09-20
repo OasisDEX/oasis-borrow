@@ -12,21 +12,17 @@ import {
   checkIfIsDisabledAutoTakeProfit,
   checkIfIsEditingAutoTakeProfit,
 } from 'features/automation/optimization/autoTakeProfit/helpers'
-import type {
-  AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData';
-import {
-  prepareAutoTakeProfitResetData,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { prepareAutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
 import { uiChanges } from 'helpers/uiChanges'
 
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from './autoTakeProfitFormChange.constants'
 import type {
   AutoTakeProfitFormChange,
-  AutoTakeProfitResetData } from './autoTakeProfitFormChange';
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE
-} from './autoTakeProfitFormChange'
+  AutoTakeProfitResetData,
+} from './autoTakeProfitFormChange.types'
+import type { AutoTakeProfitTriggerData } from './autoTakeProfitTriggerData.types'
 
 interface GetAutoTakeProfitStatusParams {
   id: BigNumber

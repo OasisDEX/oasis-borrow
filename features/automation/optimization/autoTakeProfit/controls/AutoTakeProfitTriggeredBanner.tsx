@@ -1,4 +1,4 @@
-import { bannerGradientPresets } from 'components/Banner'
+import { bannerGradientPresets } from 'components/Banner.constants'
 import { AutomationTriggeredBannerControl } from 'features/automation/common/controls/AutomationTriggeredBannerControl'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

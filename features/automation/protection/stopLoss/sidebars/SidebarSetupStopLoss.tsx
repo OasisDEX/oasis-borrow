@@ -22,8 +22,8 @@ import {
   SidebarAdjustStopLossEditingStage,
 } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarCancelStopLossEditingStage'
-import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
+import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { uiChanges } from 'helpers/uiChanges'

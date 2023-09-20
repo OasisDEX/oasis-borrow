@@ -1,10 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
-import type {
-  AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator';
-import {
-  removeAutomationBotAggregatorTriggers,
-} from 'blockchain/calls/automationBotAggregator'
+import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator'
+import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator'
 import type { IlkData } from 'blockchain/ilks'
 import type { Context } from 'blockchain/network'
 import { emptyNetworkConfig } from 'blockchain/networks'
@@ -26,7 +23,7 @@ import type { SidebarAdjustStopLossEditingStageProps } from 'features/automation
 import type {
   StopLossFormChange,
   StopLossResetData,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+} from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import type { BalanceInfo } from 'features/shared/balanceInfo'

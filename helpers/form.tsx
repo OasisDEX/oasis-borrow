@@ -1,16 +1,16 @@
-import type { TxMeta, TxState } from '@oasisdex/transactions';
+import type { TxMeta, TxState } from '@oasisdex/transactions'
 import { TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import type { BigNumber } from 'bignumber.js'
 import type { GasPriceParams, Tickers } from 'blockchain/prices'
 import { MODAL_CONTAINER_TREZOR_METAMASK_EIP1559 } from 'components/Modal'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
 import type { OmitProperties, ValueOf } from 'ts-essentials'
 
-import type { HasGasEstimation, TxHelpers, TxHelpers$ } from './context/types';
+import type { HasGasEstimation, TxHelpers, TxHelpers$ } from './context/types'
 import { GasEstimationStatus } from './context/types'
 import type { ErrorTxState } from '@oasisdex/transactions/lib/src/types'
 

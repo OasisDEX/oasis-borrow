@@ -5,7 +5,7 @@ import { NetworkHexIds } from 'blockchain/networks'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import { ReferralClaimSwitchNetworkModal } from 'features/referralOverview/referral-claim-switch-network-modal'
-import type { UserReferralState } from 'features/referralOverview/user';
+import type { UserReferralState } from 'features/referralOverview/user'
 import { ClaimTxnState } from 'features/referralOverview/user'
 import { createUserUsingApi$ } from 'features/referralOverview/userApi'
 import { jwtAuthGetToken } from 'features/shared/jwt'

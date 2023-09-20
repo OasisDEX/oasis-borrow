@@ -1,6 +1,6 @@
 import { useLocalStorage } from 'helpers/useLocalStorage'
 
-import type { NetworkNames } from './network-names';
+import type { NetworkNames } from './network-names'
 import { isSupportedNetwork } from './network-names'
 
 export type CustomForkParameterFieldsType = 'url' | 'id' | 'isAddedToWallet'

@@ -10,13 +10,14 @@ import {
   getAutoBSVaultChange,
   resolveMaxBuyOrMinSellPrice,
 } from 'features/automation/common/helpers'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 import type { SidebarAutomationStages } from 'features/automation/common/types'
-import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getAutoSellMinMaxValues } from 'features/automation/protection/autoSell/helpers'
-import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+
+import type { ConstantMultipleFormChange } from './state/constantMultipleFormChange.types'
+import type { ConstantMultipleTriggerData } from './state/constantMultipleTriggerData.types'
 
 export function getConstantMutliplyMinMaxValues({
   liquidationRatio,

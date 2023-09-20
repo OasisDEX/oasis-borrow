@@ -3,11 +3,8 @@ import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { resolveMinSellPriceAnalytics } from 'features/automation/common/helpers'
-import type {
-  AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange';
-import {
-  AUTO_SELL_FORM_CHANGE
-} from 'features/automation/common/state/autoBSFormChange'
+import { AUTO_SELL_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
+import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
 import { getAutoBSStatus } from 'features/automation/common/state/autoBSStatus'
 import { getAutoBSTxHandlers } from 'features/automation/common/state/autoBSTxHandlers'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'

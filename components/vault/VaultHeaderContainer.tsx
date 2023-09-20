@@ -1,5 +1,5 @@
 import type { PriceInfo } from 'features/shared/priceInfo'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 

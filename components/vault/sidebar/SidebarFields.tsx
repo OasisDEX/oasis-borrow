@@ -1,10 +1,10 @@
 import type BigNumber from 'bignumber.js'
 import type { IlkData } from 'blockchain/ilks'
-import type { VaultAction } from 'components/vault/VaultActionInput';
+import type { VaultAction } from 'components/vault/VaultActionInput'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import type { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'

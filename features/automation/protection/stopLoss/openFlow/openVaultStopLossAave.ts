@@ -28,11 +28,9 @@ import {
   notRequiredValues,
 } from 'features/automation/protection/stopLoss/openFlow/notRequiredProperties'
 import type { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
-import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import {
-  defaultStopLossData,
-  prepareStopLossTriggerDataV2,
-} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
+import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { defaultStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.constants'
 import { one, zero } from 'helpers/zero'
 import type { Sender } from 'xstate'
 

@@ -1,4 +1,4 @@
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios'
 import axios from 'axios'
 import { isTestnetNetworkId } from 'blockchain/networks'
 import type { ProductHubData } from 'features/productHub/types'

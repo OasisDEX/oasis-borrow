@@ -19,10 +19,10 @@ import {
   NotificationSocketProvider,
 } from 'components/context'
 import { configContext, ConfigContextProvider } from 'components/context/ConfigContextProvider'
-import type { SavedSettings } from 'components/CookieBanner';
+import type { SavedSettings } from 'components/CookieBanner'
 import { CookieBanner } from 'components/CookieBanner'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
-import type { MarketingLayoutProps } from 'components/layouts';
+import type { MarketingLayoutProps } from 'components/layouts'
 import { AppLayout } from 'components/layouts'
 import { CustomMDXLink } from 'components/Links'
 import { SharedUIProvider } from 'components/SharedUIProvider'

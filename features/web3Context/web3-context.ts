@@ -5,7 +5,7 @@ import { ethers } from 'ethers'
 import { BridgeConnector, useWeb3OnBoardConnectorContext } from 'features/web3OnBoard'
 import { isEqual } from 'lodash'
 import { useEffect } from 'react'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { ReplaySubject } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/operators'
 

@@ -1,7 +1,7 @@
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
 import { WithArrow } from 'components/WithArrow'
-import type { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault'
+import type { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault.types'
 import type { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
 import type { ManageMultiplyVaultStage } from 'features/multiply/manage/pipes/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'

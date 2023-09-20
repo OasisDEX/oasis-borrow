@@ -1,10 +1,7 @@
 import BigNumber from 'bignumber.js'
 
-import type {
-  SparkUserConfigurationResult } from './spark-user-configuration';
-import {
-  createSparkUserConfiguration
-} from './spark-user-configuration'
+import type { SparkUserConfigurationResult } from './spark-user-configuration'
+import { createSparkUserConfiguration } from './spark-user-configuration'
 
 describe('SparkUserConfiguration', () => {
   function generateUserConfig(input: string): string {

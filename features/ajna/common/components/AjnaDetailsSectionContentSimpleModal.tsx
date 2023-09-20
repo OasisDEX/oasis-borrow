@@ -1,9 +1,6 @@
-import type {
-  DetailsSectionContentSimpleModalProps } from 'components/DetailsSectionContentSimpleModal';
-import {
-  DetailsSectionContentSimpleModal
-} from 'components/DetailsSectionContentSimpleModal'
-import type { FC } from 'react';
+import type { DetailsSectionContentSimpleModalProps } from 'components/DetailsSectionContentSimpleModal'
+import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
+import type { FC } from 'react'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 import { ThemeProvider } from 'theme-ui'

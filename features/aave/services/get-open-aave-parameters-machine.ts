@@ -4,11 +4,8 @@ import {
 } from 'actions/aave-like'
 import type { OpenAaveParameters } from 'actions/aave-like/types'
 import type { NetworkIds } from 'blockchain/networks'
-import type {
-  TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters';
-import {
-  createTransactionParametersStateMachine
-} from 'features/stateMachines/transactionParameters'
+import type { TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
+import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 import type { HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import type { Observable } from 'rxjs'
 

@@ -6,7 +6,7 @@ import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
 
-import type { GuniTxData } from './manageGuniVault'
+import type { GuniTxData } from './manageGuniVault.types'
 
 export function applyGuniManageEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,

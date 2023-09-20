@@ -23,11 +23,8 @@ import {
 import { AutomationValidationMessages } from 'features/automation/common/sidebars/AutomationValidationMessages'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { StopLossCommonOrderInformation } from 'features/automation/protection/common/controls/StopLossCommonOrderInformation'
-import type {
-  StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange';
-import {
-  STOP_LOSS_FORM_CHANGE
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
+import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import type { CloseVaultTo } from 'features/multiply/manage/pipes/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'

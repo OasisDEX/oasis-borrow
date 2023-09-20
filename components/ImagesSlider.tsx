@@ -1,6 +1,6 @@
 import { random } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import type { SxProps } from 'theme-ui';
+import type { SxProps } from 'theme-ui'
 import { Container, Grid, Image } from 'theme-ui'
 import { fadeInAnimationMobile } from 'theme/animations'
 

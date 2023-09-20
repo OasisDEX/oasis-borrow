@@ -57,7 +57,7 @@ import {
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
-import type { MainnetContractsWithOptional } from './mainnet';
+import type { MainnetContractsWithOptional } from './mainnet'
 import { mainnetContracts } from './mainnet'
 
 const { goerli } = ADDRESSES

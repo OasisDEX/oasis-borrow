@@ -1,4 +1,4 @@
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map, startWith } from 'rxjs/operators'

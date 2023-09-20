@@ -2,10 +2,7 @@ import BigNumber from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { RAY, WAD } from 'components/constants'
 import type { DsrCreationChange, DsrDepositState } from 'features/dsr/helpers/dsrDeposit'
-import type {
-  DsrExitAllData,
-  DsrExitData,
-  DsrJoinData } from 'features/dsr/helpers/potCalls';
+import type { DsrExitAllData, DsrExitData, DsrJoinData } from 'features/dsr/helpers/potCalls'
 import {
   exit,
   exitAll,
@@ -18,7 +15,7 @@ import type { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { roundDown, roundHalfUp } from 'helpers/rounding'
 import { zero } from 'helpers/zero'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 

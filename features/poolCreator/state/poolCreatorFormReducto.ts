@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { ReductoActions } from 'helpers/useReducto';
+import type { ReductoActions } from 'helpers/useReducto'
 import { useReducto } from 'helpers/useReducto'
 
 interface PoolCreatorFormState {

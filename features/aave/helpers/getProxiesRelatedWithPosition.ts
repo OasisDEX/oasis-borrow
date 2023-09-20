@@ -1,7 +1,7 @@
 import type { UserDpmAccount } from 'blockchain/userDpmProxies'
 import type { PositionId } from 'features/aave/types'
 import { isEqual } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { iif } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 

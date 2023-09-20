@@ -7,7 +7,7 @@ import { formatAddress } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React, { useState } from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
 

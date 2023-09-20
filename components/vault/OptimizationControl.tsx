@@ -1,23 +1,14 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAutomationContext, useMainContext } from 'components/context'
 import { AppLink } from 'components/Links'
-import type {
-  AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange';
-import {
-  AUTO_BUY_FORM_CHANGE
-} from 'features/automation/common/state/autoBSFormChange'
-import type {
-  AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange';
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
+import { AUTO_BUY_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
+import type { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
 import { OptimizationDetailsControl } from 'features/automation/optimization/common/controls/OptimizationDetailsControl'
 import { OptimizationFormControl } from 'features/automation/optimization/common/controls/OptimizationFormControl'
-import type {
-  ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange';
-import {
-  CONSTANT_MULTIPLE_FORM_CHANGE
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'

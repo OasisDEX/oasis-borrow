@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
-import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
 import { AddAutoBuyInfoSection } from 'features/automation/optimization/autoBuy/controls/AddAutoBuyInfoSection'
 import { one } from 'helpers/zero'
 import React from 'react'

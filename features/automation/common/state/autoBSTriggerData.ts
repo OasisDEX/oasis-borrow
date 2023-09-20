@@ -6,7 +6,6 @@ import type {
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import type { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   DEFAULT_DEVIATION,
   DEFAULT_MAX_BASE_FEE_IN_GWEI,
@@ -16,22 +15,7 @@ import { getTriggersByType } from 'features/automation/common/helpers'
 import type { AutoBSTriggerTypes } from 'features/automation/common/types'
 import { zero } from 'helpers/zero'
 
-export interface AutoBSTriggerData {
-  triggerId: BigNumber
-  execCollRatio: BigNumber
-  targetCollRatio: BigNumber
-  maxBuyOrMinSellPrice: BigNumber
-  continuous: boolean
-  deviation: BigNumber
-  maxBaseFeeInGwei: BigNumber
-  isTriggerEnabled: boolean
-}
-
-interface ExtractAutoBSDataProps {
-  triggersData: TriggersData
-  triggerType: TriggerType
-  isInGroup?: boolean
-}
+import type { AutoBSTriggerData, ExtractAutoBSDataProps } from './autoBSTriggerData.types'
 
 function mapAutoBSTriggerData(autoBSTriggers: { triggerId: number; result: Result }[]) {
   return autoBSTriggers.map((trigger) => {

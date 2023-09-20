@@ -17,15 +17,8 @@ import { getTxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxMan
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { useAccount } from 'helpers/useAccount'
-import type {
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction } from 'react';
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 interface AjnaGeneralContextProviderProps {
   collateralAddress: string

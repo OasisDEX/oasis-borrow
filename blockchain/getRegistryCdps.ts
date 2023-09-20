@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import isEqual from 'lodash/isEqual'
 import { of } from 'ramda'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 

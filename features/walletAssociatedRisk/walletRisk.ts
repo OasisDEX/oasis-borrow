@@ -1,11 +1,11 @@
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import type { TermsAcceptanceState } from 'features/termsOfService/termsAcceptance'
 import type { Web3Context } from 'features/web3Context'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
-import type { WalletRiskResponse } from './walletRiskApi';
+import type { WalletRiskResponse } from './walletRiskApi'
 import { getWalletRisk$ } from './walletRiskApi'
 
 export function createWalletAssociatedRisk$(

@@ -1,5 +1,5 @@
 import { Text } from '@theme-ui/components'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Divider } from 'theme-ui'
 

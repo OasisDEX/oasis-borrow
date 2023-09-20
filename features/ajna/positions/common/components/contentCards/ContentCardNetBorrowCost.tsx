@@ -1,11 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
-import type {
-  ChangeVariantType,
-  ContentCardProps } from 'components/DetailsSectionContentCard';
-import {
-  DetailsSectionContentCard,
-} from 'components/DetailsSectionContentCard'
+import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
+import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
 import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'

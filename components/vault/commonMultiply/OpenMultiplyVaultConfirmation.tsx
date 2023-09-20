@@ -3,7 +3,7 @@ import type { BigNumber } from 'bignumber.js'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import type { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
 

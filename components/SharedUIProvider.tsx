@@ -1,5 +1,5 @@
 import type { WithChildren } from 'helpers/types'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React, { createContext, useContext, useState } from 'react'
 
 interface SharedUIState {

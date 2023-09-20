@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
-import type {
-  AutomationBotV2RemoveTriggerData } from 'blockchain/calls/automationBot';
+import type { AutomationBotV2RemoveTriggerData } from 'blockchain/calls/automationBot'
 import {
   addAutomationBotTriggerV2,
   removeAutomationBotTriggerV2,
@@ -19,12 +18,8 @@ import {
   hasMoreDebtThanMaxForStopLoss,
   hasPotentialInsufficientEthFundsForTx,
 } from 'features/automation/common/validation/validators'
-import type {
-  ContextWithoutMetadata,
-  StopLossMetadata } from 'features/automation/metadata/types';
-import {
-  StopLossDetailCards
-} from 'features/automation/metadata/types'
+import type { ContextWithoutMetadata, StopLossMetadata } from 'features/automation/metadata/types'
+import { StopLossDetailCards } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
   getDynamicStopLossPrice,
@@ -36,7 +31,7 @@ import {
   getAaveLikeCommandContractType,
   getAveeStopLossTriggerType,
 } from 'features/automation/protection/stopLoss/openFlow/helpers'
-import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { getLocalAppConfig } from 'helpers/config'
 import { formatPercent } from 'helpers/formatters/format'

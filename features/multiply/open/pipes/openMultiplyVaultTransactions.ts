@@ -1,15 +1,15 @@
 import { TxStatus } from '@oasisdex/transactions'
-import type { ApproveData } from 'blockchain/calls/erc20';
+import type { ApproveData } from 'blockchain/calls/erc20'
 import { approve } from 'blockchain/calls/erc20'
 import { createDsProxy } from 'blockchain/calls/proxy'
-import type { OpenMultiplyData } from 'blockchain/calls/proxyActions/proxyActions';
+import type { OpenMultiplyData } from 'blockchain/calls/proxyActions/proxyActions'
 import { openMultiplyVault } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
@@ -18,7 +18,7 @@ import { transactionToX } from 'helpers/form'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { iif, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
 

@@ -1,11 +1,10 @@
 import type BigNumber from 'bignumber.js'
-import type { InstiVault } from 'blockchain/instiVault'
+import type { InstiVault } from 'blockchain/instiVault.types'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import type {
-  GenericManageBorrowVaultState,
   ManageStandardBorrowVaultState,
   ManageVaultChange,
-} from 'features/borrow/manage/pipes/manageVault'
+} from 'features/borrow/manage/pipes/manageVault.types'
 import { applyManageVaultAllowance } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultAllowances'
 import { applyManageVaultCalculations } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultCalculations'
 import {
@@ -25,26 +24,8 @@ import type {
   BorrowManageAdapterInterface,
   CreateInitialVaultStateArgs,
 } from './borrowManageAdapterInterface'
+import type { ManageInstiVaultState, RiskArgs } from './institutionalBorrowManageAdapter.types'
 import { StandardBorrowManageAdapter } from './standardBorrowManageAdapter'
-
-export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
-  transactionFeeETH?: BigNumber
-  originationFeeUSD?: BigNumber
-  vaultWillBeTakenUnderMinActiveColRatio?: boolean
-  vaultIsCurrentlyUnderMinActiveColRatio?: boolean
-  vaultWillRemainUnderMinActiveColRatio?: boolean
-  afterActiveCollRatioPriceUSD?: BigNumber
-}
-
-type RiskArgs = {
-  inputAmountsEmpty: boolean
-  afterCollateralizationRatioAtNextPrice: BigNumber
-  afterCollateralizationRatio: BigNumber
-  vault: {
-    collateralizationRatioAtNextPrice: BigNumber
-    collateralizationRatio: BigNumber
-  }
-}
 
 function checkColRatioShiftIncreasesPositionRisk(
   currentColRatio: BigNumber,

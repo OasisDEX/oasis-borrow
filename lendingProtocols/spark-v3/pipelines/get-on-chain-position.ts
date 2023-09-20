@@ -1,4 +1,4 @@
-import type { GetOnChainPositionParams } from 'actions/aave-like';
+import type { GetOnChainPositionParams } from 'actions/aave-like'
 import { getOnChainPosition } from 'actions/aave-like'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'

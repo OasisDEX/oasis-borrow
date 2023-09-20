@@ -1,6 +1,6 @@
 import type { ContextConnected } from 'blockchain/network'
 import { startWithDefault } from 'helpers/operators'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { iif, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 

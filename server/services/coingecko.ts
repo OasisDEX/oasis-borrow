@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { TokenConfig } from 'blockchain/tokensMetadata';
+import type { TokenConfig } from 'blockchain/tokensMetadata'
 import { tokens } from 'blockchain/tokensMetadata'
 import type { PriceServiceResponse, RequiredField } from 'helpers/types'
 

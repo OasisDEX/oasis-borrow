@@ -1,19 +1,19 @@
 import type BigNumber from 'bignumber.js'
 import type { AutomationContext } from 'components/context'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
   AutomationRemoveTriggerData,
   AutomationRemoveTriggerTxDef,
 } from 'features/automation/common/txDefinitions'
-import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
+import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData.types'
 import type {
   StopLossFormChange,
   StopLossResetData,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+} from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 
 export type ContextWithoutMetadata = Omit<AutomationContext, 'metadata'>
 

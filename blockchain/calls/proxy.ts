@@ -4,7 +4,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { isEqual } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, defer, of } from 'rxjs'
 import {
   catchError,
@@ -16,7 +16,7 @@ import {
 } from 'rxjs/operators'
 import type { DsProxy, DsProxyRegistry } from 'types/web3-v1-contracts'
 
-import type { CallDef, TransactionDef } from './callsHelpers';
+import type { CallDef, TransactionDef } from './callsHelpers'
 import { call } from './callsHelpers'
 import type { TxMetaKind } from './txMeta'
 

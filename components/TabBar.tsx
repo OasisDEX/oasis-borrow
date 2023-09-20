@@ -5,7 +5,7 @@ import ReactSelect from 'react-select'
 import { Box, Flex, Grid } from 'theme-ui'
 
 import { reactSelectCustomComponents } from './reactSelectCustomComponents'
-import type { TabVariant } from './Tab';
+import type { TabVariant } from './Tab'
 import { Tab } from './Tab'
 import { VaultTabTag } from './vault/VaultTabTag'
 

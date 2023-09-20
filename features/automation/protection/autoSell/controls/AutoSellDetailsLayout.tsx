@@ -5,18 +5,16 @@ import {
   MixpanelPages,
 } from 'analytics/types'
 import type BigNumber from 'bignumber.js'
-import { Banner, bannerGradientPresets } from 'components/Banner'
+import { Banner } from 'components/Banner'
+import { bannerGradientPresets } from 'components/Banner.constants'
 import { useAutomationContext } from 'components/context'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AppLink } from 'components/Links'
 import { ContentCardTargetColRatioAfterSell } from 'components/vault/detailsSection/ContentCardTargetColRatioAfterSell'
 import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
-import type {
-  AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange';
-import {
-  AUTOMATION_CHANGE_FEATURE
-} from 'features/automation/common/state/automationFeatureChange'
+import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { uiChanges } from 'helpers/uiChanges'

@@ -1,5 +1,5 @@
 import type { pillColors } from 'components/assetsTable/cellComponents/AssetsTableDataCellPill'
-import type { DiscoverTableActivityRowData } from 'features/discover/types';
+import type { DiscoverTableActivityRowData } from 'features/discover/types'
 import { DiscoverTableVaultActivity } from 'features/discover/types'
 
 const activityColors: { [key in DiscoverTableVaultActivity]: keyof typeof pillColors } = {

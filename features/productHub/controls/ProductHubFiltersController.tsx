@@ -14,15 +14,14 @@ import type {
   ProductHubFilters,
   ProductHubItem,
   ProductHubMultiplyStrategyType,
-  ProductHubSupportedNetworks } from 'features/productHub/types';
-import {
-  ProductHubProductType
+  ProductHubSupportedNetworks,
 } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard'
 import type { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React, { useMemo } from 'react'
 import { theme } from 'theme'
 import { Box } from 'theme-ui'

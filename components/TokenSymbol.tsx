@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
-import type { ComponentProps } from 'react';
+import type { ComponentProps } from 'react'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
 

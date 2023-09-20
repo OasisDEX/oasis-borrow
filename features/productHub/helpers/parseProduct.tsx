@@ -5,7 +5,7 @@ import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { parseProductNumbers } from 'features/productHub/helpers'
-import type { ProductHubItem } from 'features/productHub/types';
+import type { ProductHubItem } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
 import React from 'react'

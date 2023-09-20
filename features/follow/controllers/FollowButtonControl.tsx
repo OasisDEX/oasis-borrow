@@ -1,11 +1,8 @@
 import type { Protocol, UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
-import type {
-  FollowedVaultsLimitReachedChange } from 'features/follow/common/followedVaultsLimitReached';
-import {
-  FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE
-} from 'features/follow/common/followedVaultsLimitReached'
+import type { FollowedVaultsLimitReachedChange } from 'features/follow/common/followedVaultsLimitReached'
+import { FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE } from 'features/follow/common/followedVaultsLimitReached'
 import { FollowButton } from 'features/follow/view/FollowButton'
 import { accountIsConnectedValidator } from 'features/form/commonValidators'
 import {

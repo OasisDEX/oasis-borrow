@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { ContentCardProps } from 'components/DetailsSectionContentCard';
+import type { ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'

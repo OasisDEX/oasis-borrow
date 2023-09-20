@@ -3,7 +3,7 @@ import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault
 import { useAutomationContext, useGasEstimationContext } from 'components/context'
 import type { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import type { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
-import type { SidebarSectionProps } from 'components/sidebar/SidebarSection';
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
@@ -14,16 +14,13 @@ import { getAutomationStatusTitle } from 'features/automation/common/sidebars/ge
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
-import type { SidebarAutomationStages } from 'features/automation/common/types';
+import type { SidebarAutomationStages } from 'features/automation/common/types'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoTakeProfitInfoSectionControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitInfoSectionControl'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
 import { SidebarAutoTakeProfitRemovalEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitRemovalEditingStage'
-import type {
-  AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange';
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import type { AutoTakeProfitFormChange } from '../state/autoTakeProfitFormChange.types'
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
 import {
   errorsAutoTakeProfitValidation,
   warningsAutoTakeProfitValidation,

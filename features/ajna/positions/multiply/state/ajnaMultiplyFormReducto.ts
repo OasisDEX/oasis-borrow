@@ -11,7 +11,7 @@ import type {
   AjnaFormActionsUpdateWithdraw,
   AjnaUpdateLoanToValue,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
-import type { ReductoActions } from 'helpers/useReducto';
+import type { ReductoActions } from 'helpers/useReducto'
 import { useReducto } from 'helpers/useReducto'
 
 export interface AjnaMultiplyFormState {

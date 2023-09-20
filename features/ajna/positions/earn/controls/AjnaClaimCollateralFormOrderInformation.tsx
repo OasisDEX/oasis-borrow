@@ -6,7 +6,7 @@ import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/A
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React from 'react'
 
 export const AjnaClaimCollateralFormOrderInformation: FC<AjnaIsCachedPosition> = ({

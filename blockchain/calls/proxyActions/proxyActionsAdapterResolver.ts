@@ -1,6 +1,6 @@
 import { MakerVaultType } from 'blockchain/calls/vaultResolver'
 import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of, throwError } from 'rxjs'
 
 import { CharteredDssProxyActionsContractAdapter } from './adapters/CharteredDssProxyActionsContractAdapter'

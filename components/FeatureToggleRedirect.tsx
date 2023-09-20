@@ -1,7 +1,7 @@
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getAppConfig } from 'helpers/config'
 import { useRouter } from 'next/router'
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import type { FeaturesEnum } from 'types/config'
 

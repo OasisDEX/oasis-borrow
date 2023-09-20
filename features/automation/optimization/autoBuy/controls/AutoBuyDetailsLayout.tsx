@@ -5,7 +5,8 @@ import {
   MixpanelPages,
 } from 'analytics/types'
 import type BigNumber from 'bignumber.js'
-import { Banner, bannerGradientPresets } from 'components/Banner'
+import { Banner } from 'components/Banner'
+import { bannerGradientPresets } from 'components/Banner.constants'
 import { useAutomationContext } from 'components/context'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
@@ -14,12 +15,9 @@ import { MessageCard } from 'components/MessageCard'
 import { ContentCardTargetColRatioAfterBuy } from 'components/vault/detailsSection/ContentCardTargetColRatioAfterBuy'
 import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
 import { vaultIdsThatAutoBuyTriggerShouldBeRecreated } from 'features/automation/common/consts'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import type {
-  AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange';
-import {
-  AUTOMATION_CHANGE_FEATURE
-} from 'features/automation/common/state/automationFeatureChange'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { uiChanges } from 'helpers/uiChanges'

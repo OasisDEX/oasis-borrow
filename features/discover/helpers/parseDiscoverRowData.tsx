@@ -15,7 +15,7 @@ import type {
   DiscoverTableStatusRowData,
 } from 'features/discover/types'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import { Trans } from 'react-i18next'
 import { timeAgo } from 'utils'

@@ -23,12 +23,9 @@ import type {
   MixpanelPropertyNameType,
   MixpanelSwapWidgetEvents,
   MixpanelTopBannerEvents,
-  MixpanelType } from './types';
-import {
-  MixpanelCommonAnalyticsSections,
-  MixpanelEventTypes,
-  MixpanelPages
+  MixpanelType,
 } from './types'
+import { MixpanelCommonAnalyticsSections, MixpanelEventTypes, MixpanelPages } from './types'
 
 export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevelopmentType {
   const env = getConfig()?.publicRuntimeConfig.mixpanelEnv || process.env.MIXPANEL_ENV

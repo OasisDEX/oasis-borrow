@@ -1,8 +1,8 @@
-import type { JWToken } from 'features/shared/jwt';
+import type { JWToken } from 'features/shared/jwt'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import type { Web3Context, Web3ContextConnected } from 'features/web3Context'
 import { checkIfGnosisSafe } from 'helpers/checkIfGnosisSafe'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { identity, merge, NEVER, of, Subject } from 'rxjs'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, map, repeat, shareReplay, startWith, switchMap } from 'rxjs/operators'

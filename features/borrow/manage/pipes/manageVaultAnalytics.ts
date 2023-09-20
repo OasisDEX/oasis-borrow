@@ -10,56 +10,16 @@ import type { Observable } from 'rxjs'
 import { combineLatest, merge, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
-import type { ManageStandardBorrowVaultState } from './manageVault'
-
-type GenerateAmountChange = {
-  kind: 'generateAmountChange'
-  value: { amount: BigNumber; setMax: boolean }
-}
-
-type DepositAmountChange = {
-  kind: 'depositAmountChange'
-  value: { amount: BigNumber; setMax: boolean }
-}
-
-type PaybackAmountChange = {
-  kind: 'paybackAmountChange'
-  value: { amount: BigNumber; setMax: boolean }
-}
-
-type WithdrawAmountChange = {
-  kind: 'withdrawAmountChange'
-  value: { amount: BigNumber; setMax: boolean }
-}
-
-type AllowanceChange = {
-  kind: 'collateralAllowanceChange' | 'daiAllowanceChange'
-  value: {
-    type:
-      | Pick<ManageStandardBorrowVaultState, 'selectedDaiAllowanceRadio'>
-      | Pick<ManageStandardBorrowVaultState, 'selectedCollateralAllowanceRadio'>
-    amount: BigNumber
-  }
-}
-
-type ManageVaultConfirm = {
-  kind: 'manageVaultConfirm'
-  value: {
-    ilk: string
-    collateralAmount: BigNumber
-    daiAmount: BigNumber
-  }
-}
-
-type ManageVaultConfirmTransaction = {
-  kind: 'manageVaultConfirmTransaction'
-  value: {
-    ilk: string
-    collateralAmount: BigNumber
-    daiAmount: BigNumber
-    txHash: string
-  }
-}
+import type { ManageStandardBorrowVaultState } from './manageVault.types'
+import type {
+  AllowanceChange,
+  DepositAmountChange,
+  GenerateAmountChange,
+  ManageVaultConfirm,
+  ManageVaultConfirmTransaction,
+  PaybackAmountChange,
+  WithdrawAmountChange,
+} from './manageVaultAnalytics.types'
 
 export function createManageVaultAnalytics$(
   manageVaultState$: Observable<ManageStandardBorrowVaultState>,

@@ -1,4 +1,4 @@
-import type { IOpenDepositBorrowStrategy } from '@oasisdex/dma-library';
+import type { IOpenDepositBorrowStrategy } from '@oasisdex/dma-library'
 import { strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
@@ -6,7 +6,7 @@ import type { OpenAaveDepositBorrowParameters } from 'actions/aave-like/types'
 import { getRpcProvider } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
-import type { AaveLikeLendingProtocol } from 'lendingProtocols';
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 
 export async function getOpenDepositBorrowPositionParameters(

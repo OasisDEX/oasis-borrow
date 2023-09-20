@@ -1,14 +1,14 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import type { NetworkNames } from 'blockchain/networks';
+import type { NetworkNames } from 'blockchain/networks'
 import { isSupportedNetwork } from 'blockchain/networks'
-import type { IStrategyConfig, ProductType } from 'features/aave/types';
+import type { IStrategyConfig, ProductType } from 'features/aave/types'
 import { isSupportedProductType } from 'features/aave/types'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { getLocalAppConfig } from 'helpers/config'
 import { productToVaultType } from 'helpers/productToVaultType'
 import { zero } from 'helpers/zero'
-import type { LendingProtocol } from 'lendingProtocols';
+import type { LendingProtocol } from 'lendingProtocols'
 import { isLendingProtocol } from 'lendingProtocols'
 
 import { arbitrumAaveV3Strategies } from './arbitrum-aave-v3-strategies'

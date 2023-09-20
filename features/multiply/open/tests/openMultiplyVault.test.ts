@@ -1,6 +1,6 @@
 /* eslint-disable func-style */
 
-import type { TxMeta } from '@oasisdex/transactions';
+import type { TxMeta } from '@oasisdex/transactions'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'

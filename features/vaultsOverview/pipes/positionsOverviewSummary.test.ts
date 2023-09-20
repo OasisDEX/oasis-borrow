@@ -3,7 +3,7 @@ import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
 
-import type { Position, PositionView } from './positionsOverviewSummary';
+import type { Position, PositionView } from './positionsOverviewSummary'
 import { createPositionsOverviewSummary$ } from './positionsOverviewSummary'
 
 describe('positionsOverviewSummary', () => {

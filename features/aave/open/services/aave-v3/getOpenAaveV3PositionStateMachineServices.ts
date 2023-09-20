@@ -1,24 +1,22 @@
 import BigNumber from 'bignumber.js'
-import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account';
+import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
 import { createExecuteTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network'
 import type { Tickers } from 'blockchain/prices'
 import type { TokenBalances } from 'blockchain/tokens'
-import type { UserDpmAccount } from 'blockchain/userDpmProxies';
+import type { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
 import type { OpenAaveStateMachineServices } from 'features/aave/open/state'
 import { getPricesFeed$ } from 'features/aave/services'
 import type {
   IStrategyInfo,
   StrategyTokenAllowance,
-  StrategyTokenBalance } from 'features/aave/types';
-import {
-  contextToEthersTransactions,
-  ProxyType
+  StrategyTokenBalance,
 } from 'features/aave/types'
+import { contextToEthersTransactions, ProxyType } from 'features/aave/types'
 import type { IStrategyConfig } from 'features/aave/types/strategy-config'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
@@ -34,7 +32,7 @@ import type {
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, iif, of, throwError } from 'rxjs'
 import { catchError, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 import { interpret } from 'xstate'

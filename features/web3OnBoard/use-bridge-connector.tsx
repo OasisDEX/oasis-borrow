@@ -1,6 +1,6 @@
 import type { WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
-import type { NetworkConfigHexId } from 'blockchain/networks';
+import type { NetworkConfigHexId } from 'blockchain/networks'
 import { isNetworkHexIdSupported } from 'blockchain/networks'
 import { useCallback, useMemo } from 'react'
 

@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { theme } from 'theme'
 import { Box, Grid } from 'theme-ui'

@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import type { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library';
+import type { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library'
 import { OPERATION_NAMES } from '@oasisdex/dma-library'
 import { useActor } from '@xstate/react'
 import type BigNumber from 'bignumber.js'
@@ -18,7 +18,7 @@ import type {
   ManageAaveEvent,
   ManageAaveStateMachineState,
 } from 'features/aave/manage/state'
-import type { ManagePositionAvailableActions } from 'features/aave/types';
+import type { ManagePositionAvailableActions } from 'features/aave/types'
 import { ProductType } from 'features/aave/types'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'

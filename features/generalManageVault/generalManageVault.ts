@@ -1,35 +1,15 @@
 import type BigNumber from 'bignumber.js'
 import type { Vault } from 'blockchain/vaults.types'
-import type { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
-import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
-import type { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
+import type { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter.types'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { LendingProtocol } from 'lendingProtocols'
 import type { Observable } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
 
-import { VaultType } from './vaultType'
-
-export type WithToggle<T> = T & { toggleVaultType: () => void }
-
-export type GeneralManageVaultState =
-  | {
-      type: VaultType.Insti
-      state: WithToggle<ManageInstiVaultState>
-    }
-  | {
-      type: VaultType.Borrow
-      state: WithToggle<ManageStandardBorrowVaultState>
-    }
-  | {
-      type: VaultType.Multiply
-      state: WithToggle<ManageMultiplyVaultState>
-    }
-  | {
-      type: VaultType.Earn
-      state: WithToggle<ManageEarnVaultState>
-    }
+import type { GeneralManageVaultState } from './generalManageVault.types'
+import { VaultType } from './vaultType.types'
 
 export function createGeneralManageVault$(
   manageInstiVault$: (id: BigNumber) => Observable<ManageInstiVaultState>,

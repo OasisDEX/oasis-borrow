@@ -1,8 +1,8 @@
 import type BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 
 interface HistoryEventBase {
   hash: string

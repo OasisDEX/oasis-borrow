@@ -1,13 +1,9 @@
 import type BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import type {
-  AfterPillProps } from 'components/vault/VaultDetails';
-import {
-  VaultDetailsCard,
-  VaultDetailsCardModal,
-} from 'components/vault/VaultDetails'
+import type { AfterPillProps } from 'components/vault/VaultDetails'
+import { VaultDetailsCard, VaultDetailsCardModal } from 'components/vault/VaultDetails'
 import { formatAmount } from 'helpers/formatters/format'
-import type { ModalProps } from 'helpers/modalHook';
+import type { ModalProps } from 'helpers/modalHook'
 import { useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'

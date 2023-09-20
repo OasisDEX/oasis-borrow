@@ -5,7 +5,8 @@ import {
   MixpanelPages,
 } from 'analytics/types'
 import type BigNumber from 'bignumber.js'
-import { Banner, bannerGradientPresets } from 'components/Banner'
+import { Banner } from 'components/Banner'
+import { bannerGradientPresets } from 'components/Banner.constants'
 import { useAutomationContext } from 'components/context'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
@@ -14,13 +15,10 @@ import { ContentCardOperatingCost } from 'components/vault/detailsSection/Conten
 import { ContentCardTargetMultiple } from 'components/vault/detailsSection/ContentCardTargetMultiple'
 import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
 import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
-import type {
-  AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange';
-import {
-  AUTOMATION_CHANGE_FEATURE
-} from 'features/automation/common/state/automationFeatureChange'
+import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'

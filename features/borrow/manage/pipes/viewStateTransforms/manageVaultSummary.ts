@@ -1,25 +1,4 @@
-import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
-import type { BalanceInfo } from 'features/shared/balanceInfo'
-import { zero } from 'helpers/zero'
-
-import type { ManageVaultCalculations } from './manageVaultCalculations'
-import type { ManageVaultConditions } from './manageVaultConditions'
-
-export type ManageVaultSummary = Pick<
-  ManageVaultCalculations,
-  'afterCollateralBalance' | 'afterCollateralizationRatio' | 'afterLiquidationPrice'
-> &
-  Pick<ManageVaultConditions, 'vaultWillBeAtRiskLevelDanger' | 'vaultWillBeAtRiskLevelWarning'> &
-  Pick<BalanceInfo, 'collateralBalance'>
-
-export const defaultManageVaultSummary: ManageVaultSummary = {
-  vaultWillBeAtRiskLevelDanger: false,
-  vaultWillBeAtRiskLevelWarning: false,
-  afterCollateralizationRatio: zero,
-  afterLiquidationPrice: zero,
-  collateralBalance: zero,
-  afterCollateralBalance: zero,
-}
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 
 export function applyManageVaultSummary<VaultState extends ManageStandardBorrowVaultState>(
   state: VaultState,

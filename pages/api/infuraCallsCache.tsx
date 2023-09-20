@@ -1,5 +1,5 @@
 import { networksById } from 'blockchain/networks'
-import type { Request } from 'helpers/api/BatchManager';
+import type { Request } from 'helpers/api/BatchManager'
 import { BatchManager } from 'helpers/api/BatchManager'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import NodeCache from 'node-cache'

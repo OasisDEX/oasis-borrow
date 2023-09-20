@@ -1,13 +1,13 @@
 import { TxStatus } from '@oasisdex/transactions'
 import type { BigNumber } from 'bignumber.js'
-import type { ReclaimData } from 'blockchain/calls/proxyActions/proxyActions';
+import type { ReclaimData } from 'blockchain/calls/proxyActions/proxyActions'
 import { reclaim } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import type { Context, ContextConnected } from 'blockchain/network'
 import type { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import type { TxError } from 'helpers/types'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of, Subject } from 'rxjs'
 import { scan, startWith, switchMap } from 'rxjs/operators'
 

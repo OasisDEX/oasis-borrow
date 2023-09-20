@@ -1,8 +1,8 @@
 import { AppSpinner } from 'helpers/AppSpinner'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import { theme } from 'theme'
-import type { SxStyleProp } from 'theme-ui';
+import type { SxStyleProp } from 'theme-ui'
 import { Box, Flex, Grid } from 'theme-ui'
 import { fadeInAnimationDelay, slideInAnimation } from 'theme/animations'
 

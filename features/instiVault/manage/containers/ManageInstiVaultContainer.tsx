@@ -7,7 +7,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
-import type { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import type { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter.types'
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'

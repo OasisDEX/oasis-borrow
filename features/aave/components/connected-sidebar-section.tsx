@@ -1,4 +1,4 @@
-import type { SidebarSectionProps } from 'components/sidebar/SidebarSection';
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { BaseAaveContext } from 'features/aave/types'
 import React from 'react'

@@ -1,4 +1,4 @@
-import type { CookieName } from 'analytics/common';
+import type { CookieName } from 'analytics/common'
 import { COOKIE_NAMES, manageCookie } from 'analytics/common'
 import { Checkbox } from 'components/Checkbox'
 import { ChevronUpDown } from 'components/ChevronUpDown'

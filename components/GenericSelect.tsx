@@ -8,7 +8,7 @@ import { keyBy } from 'lodash'
 import React, { useState } from 'react'
 import ReactSelect, { components } from 'react-select'
 import { theme } from 'theme'
-import type { SxProps } from 'theme-ui';
+import type { SxProps } from 'theme-ui'
 import { Box, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 

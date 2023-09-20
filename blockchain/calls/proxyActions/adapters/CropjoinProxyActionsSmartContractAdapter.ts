@@ -6,11 +6,8 @@ import type { DssProxyActionsCropjoin } from 'types/web3-v1-contracts'
 import type { NonPayableTransactionObject } from 'types/web3-v1-contracts/types'
 
 import { ManagerlessProxyActionsContractAdapter } from './ManagerlessProxyActionsAdapter'
-import type {
-  ClaimRewardData } from './ProxyActionsSmartContractAdapterInterface';
-import {
-  ProxyActionsAdapterType,
-} from './ProxyActionsSmartContractAdapterInterface'
+import type { ClaimRewardData } from './ProxyActionsSmartContractAdapterInterface'
+import { ProxyActionsAdapterType } from './ProxyActionsSmartContractAdapterInterface'
 
 export class CropjoinProxyActionsContractAdapter extends ManagerlessProxyActionsContractAdapter<DssProxyActionsCropjoin> {
   AdapterType = ProxyActionsAdapterType.CROPJOIN

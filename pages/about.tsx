@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/layouts'
 import { AppLink } from 'components/Links'
-import type { TeamMember } from 'features/about/about';
+import type { TeamMember } from 'features/about/about'
 import { getTeamPicsFileNames, parseMemberInfo } from 'features/about/about'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'

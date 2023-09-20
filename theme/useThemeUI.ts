@@ -1,4 +1,4 @@
-import type { Theme } from 'theme-ui';
+import type { Theme } from 'theme-ui'
 import { useThemeUI } from 'theme-ui'
 
 import type { OasisTheme } from './index'

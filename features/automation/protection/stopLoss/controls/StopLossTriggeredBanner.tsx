@@ -1,4 +1,4 @@
-import { bannerGradientPresets } from 'components/Banner'
+import { bannerGradientPresets } from 'components/Banner.constants'
 import { AppLink } from 'components/Links'
 import { AutomationTriggeredBannerControl } from 'features/automation/common/controls/AutomationTriggeredBannerControl'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'

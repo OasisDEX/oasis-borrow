@@ -33,10 +33,10 @@ import { vatIlk } from 'blockchain/calls/vat'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
 import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
-import type { InstiVault } from 'blockchain/instiVault';
 import { createInstiVault$ } from 'blockchain/instiVault'
+import type { InstiVault } from 'blockchain/instiVault.types'
 import { every10Seconds$ } from 'blockchain/network'
-import type { NetworkNames } from 'blockchain/networks';
+import type { NetworkNames } from 'blockchain/networks'
 import { NetworkIds } from 'blockchain/networks'
 import { createOraclePriceData$, createTokenPriceInUSD$, tokenPrices$ } from 'blockchain/prices'
 import {
@@ -68,35 +68,22 @@ import {
   getAjnaPosition$,
   getAjnaPositionsWithDetails$,
 } from 'features/ajna/positions/common/observables/getAjnaPosition'
-import type {
-  DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData';
+import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import {
   getDpmPositionData$,
   getDpmPositionDataV2$,
 } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import type {
-  TriggersData } from 'features/automation/api/automationTriggersData';
-import {
-  createAutomationTriggersData
-} from 'features/automation/api/automationTriggersData'
-import type {
-  MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange';
-import {
-  MULTIPLY_VAULT_PILL_CHANGE_SUBJECT
-} from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
+import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
+import type { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
+import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
 import { createBonusPipe$ } from 'features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from 'features/bonus/makerProtocolBonusAdapter'
-import type {
-  ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter';
-import {
-  InstitutionalBorrowManageAdapter
-} from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import { InstitutionalBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import type { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter.types'
 import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
-import type {
-  ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault';
-import {
-  createManageVault$
-} from 'features/borrow/manage/pipes/manageVault'
+import { createManageVault$ } from 'features/borrow/manage/pipes/manageVault'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
 import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
@@ -115,18 +102,17 @@ import {
   createMakerOracleTokenPrices$,
   createMakerOracleTokenPricesForDates$,
 } from 'features/earn/makerOracleTokenPrices'
-import type { ExchangeAction, ExchangeType } from 'features/exchange/exchange';
+import type { ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { followedVaults$ } from 'features/follow/api'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
-import type { VaultType } from 'features/generalManageVault/vaultType'
+import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
-import type {
-  BalanceInfo } from 'features/shared/balanceInfo';
+import type { BalanceInfo } from 'features/shared/balanceInfo'
 import {
   createBalanceInfo$,
   createBalancesArrayInfo$,
@@ -145,8 +131,7 @@ import { transactionContextService } from 'features/stateMachines/transaction'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
-import type {
-  AaveLikePosition } from 'features/vaultsOverview/pipes/positions';
+import type { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
 import {
   createAaveV2Position$,
   createAaveV3DpmPosition$,
@@ -169,7 +154,7 @@ import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { getSparkV3Services } from 'lendingProtocols/spark-v3'
 import { isEqual, memoize } from 'lodash'
 import { equals } from 'ramda'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, defer, of } from 'rxjs'
 import {
   distinctUntilChanged,

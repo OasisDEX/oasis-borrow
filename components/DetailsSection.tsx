@@ -1,13 +1,10 @@
-import type {
-  DetailsSectionNotificationItem } from 'components/DetailsSectionNotification';
-import {
-  DetailsSectionNotification
-} from 'components/DetailsSectionNotification'
-import type { PropsWithChildren, ReactNode } from 'react';
+import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import { DetailsSectionNotification } from 'components/DetailsSectionNotification'
+import type { PropsWithChildren, ReactNode } from 'react'
 import React, { useState } from 'react'
 import { Box, Card, Flex, Heading } from 'theme-ui'
 
-import type { ButtonWithAction, ButtonWithActions } from './ExpandableButton';
+import type { ButtonWithAction, ButtonWithActions } from './ExpandableButton'
 import { ExpandableButton } from './ExpandableButton'
 import { VaultTabTag } from './vault/VaultTabTag'
 

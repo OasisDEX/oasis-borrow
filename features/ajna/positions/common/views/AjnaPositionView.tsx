@@ -8,7 +8,7 @@ import { getAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Container } from 'theme-ui'
 

@@ -1,9 +1,9 @@
 import { NetworkNames } from 'blockchain/networks'
 import type { PositionCreated } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types/position-id'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 
 import type { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'

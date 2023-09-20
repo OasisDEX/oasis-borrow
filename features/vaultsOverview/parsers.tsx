@@ -1,10 +1,5 @@
-import type {
-  AjnaEarnPosition,
-  AjnaPosition } from '@oasisdex/dma-library';
-import {
-  getPoolLiquidity,
-  negativeToZero,
-} from '@oasisdex/dma-library'
+import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import { getPoolLiquidity, negativeToZero } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkNames, networksById } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
@@ -18,8 +13,8 @@ import { ProtocolLabel } from 'components/ProtocolLabel'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import type { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import type { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { getDsrValue, getFundingCost, getProtection } from 'features/vaultsOverview/helpers'

@@ -5,13 +5,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { GetReviewingSidebarProps } from './GetReviewingSidebarProps'
-import type {
-  ManageAaveStateProps,
-  WithDropdownConfig } from './SidebarManageAaveVault';
-import {
-  isLocked,
-  textButtonReturningToAdjust
-} from './SidebarManageAaveVault'
+import type { ManageAaveStateProps, WithDropdownConfig } from './SidebarManageAaveVault'
+import { isLocked, textButtonReturningToAdjust } from './SidebarManageAaveVault'
 
 export function ManageAaveReviewingStateView({
   state,

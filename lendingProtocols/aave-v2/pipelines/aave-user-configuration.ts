@@ -2,7 +2,7 @@ import { ADDRESSES } from '@oasisdex/addresses'
 import BigNumber from 'bignumber.js'
 import type { AaveV2UserConfigurationsParameters } from 'blockchain/aave'
 import { curry } from 'ramda'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/operators'
 

@@ -1,10 +1,8 @@
 import type {
   DiscoverTableActivityRowData,
-  DiscoverTableStatusRowData } from 'features/discover/types';
-import {
-  DiscoverApiErrors,
-  DiscoverPages
+  DiscoverTableStatusRowData,
 } from 'features/discover/types'
+import { DiscoverApiErrors, DiscoverPages } from 'features/discover/types'
 import {
   getColRatio,
   getGenericArrayFilter,

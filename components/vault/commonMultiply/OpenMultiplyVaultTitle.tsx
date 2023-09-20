@@ -2,7 +2,7 @@ import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultProxySubtitle } from 'components/vault/VaultProxy'
 import type { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
 

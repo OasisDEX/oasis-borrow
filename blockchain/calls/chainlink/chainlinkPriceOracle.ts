@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { MainnetContracts } from 'blockchain/contracts/mainnet';
+import type { MainnetContracts } from 'blockchain/contracts/mainnet'
 import { mainnetContracts } from 'blockchain/contracts/mainnet'
-import type { NetworkIds } from 'blockchain/networks';
+import type { NetworkIds } from 'blockchain/networks'
 import { getRpcProvider } from 'blockchain/networks'
 import { amountFromWei } from 'blockchain/utils'
 import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'

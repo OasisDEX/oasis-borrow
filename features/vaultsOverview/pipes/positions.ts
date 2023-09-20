@@ -11,31 +11,23 @@ import { isAddress } from 'ethers/lib/utils'
 import { loadStrategyFromTokens } from 'features/aave'
 import type { PositionCreated } from 'features/aave/services'
 import { calculateLiquidationPrice } from 'features/aave/services/calculate-liquidation-price'
-import type { IStrategyConfig } from 'features/aave/types';
+import type { IStrategyConfig } from 'features/aave/types'
 import { StrategyType } from 'features/aave/types'
-import type { TriggersData } from 'features/automation/api/automationTriggersData'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import type {
-  StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData';
-import {
-  extractStopLossData
-} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import type { ApiVault, ApiVaultsParams } from 'features/shared/vaultApi'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveLikeUrlSlug, mapAaveProtocol } from 'helpers/getAaveLikeStrategyUrl'
 import { productToVaultType } from 'helpers/productToVaultType'
 import { zero } from 'helpers/zero'
-import type {
-  AaveLikeLendingProtocol } from 'lendingProtocols';
-import {
-  checkIfAave,
-  checkIfSpark,
-  LendingProtocol,
-} from 'lendingProtocols'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
+import { checkIfAave, checkIfSpark, LendingProtocol } from 'lendingProtocols'
 import type { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import type { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
 import { memoize } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
 

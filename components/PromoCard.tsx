@@ -1,14 +1,14 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
-import type { ProtocolLabelProps } from 'components/ProtocolLabel';
+import type { ProtocolLabelProps } from 'components/ProtocolLabel'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
-import type { TranslatableType } from 'components/Translatable';
+import type { TranslatableType } from 'components/Translatable'
 import { Translatable } from 'components/Translatable'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui';
+import type { SxStyleProp } from 'theme-ui'
 import { Box, Flex, Heading, Image, Text } from 'theme-ui'
 
 export type PromoCardVariant = 'neutral' | 'positive' | 'negative'

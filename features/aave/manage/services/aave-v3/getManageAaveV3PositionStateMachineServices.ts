@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account';
+import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
 import { createExecuteTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network'
@@ -14,10 +14,9 @@ import type {
   IStrategyConfig,
   IStrategyInfo,
   StrategyTokenAllowance,
-  StrategyTokenBalance } from 'features/aave/types';
-import {
-  contextToEthersTransactions
+  StrategyTokenBalance,
 } from 'features/aave/types'
+import { contextToEthersTransactions } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
 import type { AaveHistoryEvent } from 'features/ajna/history/types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
@@ -29,10 +28,10 @@ import type { TxHelpers } from 'helpers/context/types'
 import { productToVaultType } from 'helpers/productToVaultType'
 import type { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of, throwError } from 'rxjs'
 import { catchError, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
-import type { EventObject } from 'xstate';
+import type { EventObject } from 'xstate'
 import { interpret } from 'xstate'
 
 export function getManageAaveV3PositionStateMachineServices(

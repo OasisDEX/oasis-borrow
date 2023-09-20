@@ -1,10 +1,7 @@
 import { currentContent } from 'features/content'
 import { jwtAuthSetupToken$ } from 'features/shared/jwt'
-import type {
-  TermsAcceptanceState } from 'features/termsOfService/termsAcceptance';
-import {
-  createTermsAcceptance$
-} from 'features/termsOfService/termsAcceptance'
+import type { TermsAcceptanceState } from 'features/termsOfService/termsAcceptance'
+import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
 import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,

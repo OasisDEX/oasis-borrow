@@ -1,5 +1,5 @@
 import type { TxState } from '@oasisdex/transactions'
-import type { CreateDPMAccount } from 'blockchain/calls/accountFactory';
+import type { CreateDPMAccount } from 'blockchain/calls/accountFactory'
 import { createAccount } from 'blockchain/calls/accountFactory'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -7,8 +7,7 @@ import type { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { ethers } from 'ethers'
-import type {
-  CommonTransactionServices } from 'features/stateMachines/transaction';
+import type { CommonTransactionServices } from 'features/stateMachines/transaction'
 import {
   createTransactionStateMachine,
   startTransactionService,

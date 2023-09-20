@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import type { ComponentProps } from 'react';
+import type { ComponentProps } from 'react'
 import React from 'react'
 import type { SxStyleProp } from 'theme-ui'
 

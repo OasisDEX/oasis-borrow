@@ -6,7 +6,7 @@ import { formatAmount, formatBigNumber, formatCryptoBalance } from 'helpers/form
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import { one, zero } from 'helpers/zero'
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Grid, Text } from 'theme-ui'

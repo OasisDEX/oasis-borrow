@@ -1,14 +1,13 @@
 import BigNumber from 'bignumber.js'
-import type {
-  AfterPillProps } from 'components/vault/VaultDetails';
+import type { AfterPillProps } from 'components/vault/VaultDetails'
 import {
   getCollRatioColor,
   VaultDetailsCard,
   VaultDetailsCardModal,
 } from 'components/vault/VaultDetails'
-import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import { formatPercent } from 'helpers/formatters/format'
-import type { ModalProps } from 'helpers/modalHook';
+import type { ModalProps } from 'helpers/modalHook'
 import { useModal } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

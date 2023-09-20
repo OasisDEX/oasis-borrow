@@ -1,4 +1,4 @@
-import type { ProductHubItemWithoutAddress } from 'features/productHub/types';
+import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 

@@ -1,8 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Trans } from 'next-i18next'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui';
+import type { SxStyleProp } from 'theme-ui'
 import { Box, Grid, Text } from 'theme-ui'
 
 interface IListWithIconProps {

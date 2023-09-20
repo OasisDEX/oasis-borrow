@@ -1,6 +1,6 @@
 /* eslint-disable func-style */
 import { TxStatus } from '@oasisdex/transactions'
-import type { CreateDsProxyData } from 'blockchain/calls/proxy';
+import type { CreateDsProxyData } from 'blockchain/calls/proxy'
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'

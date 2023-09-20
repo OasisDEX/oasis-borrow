@@ -1,4 +1,4 @@
-import type { MixpanelUserContext } from 'analytics/analytics';
+import type { MixpanelUserContext } from 'analytics/analytics'
 import { trackingEvents } from 'analytics/analytics'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'

@@ -4,9 +4,9 @@ import { Modal, ModalCloseIcon } from 'components/Modal'
 import type { PriceInfo } from 'features/shared/priceInfo'
 import type { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxProps } from 'theme-ui';
+import type { SxProps } from 'theme-ui'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export type CollRatioColor = 'primary100' | 'critical100' | 'warning100' | 'success100'

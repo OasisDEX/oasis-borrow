@@ -1,11 +1,8 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { MockProxyActionsSmartContractAdapter } from 'blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
-import type {
-  VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic';
-import {
-  vaultActionsLogic
-} from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import type { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import type { VaultResolve } from 'blockchain/calls/vaultResolver'
 import { createMockVaultResolver$ } from 'blockchain/calls/vaultResolver.mock'
 import type { ContextConnected } from 'blockchain/network'
@@ -13,7 +10,7 @@ import type { TxHelpers } from 'helpers/context/types'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { protoTxHelpers } from 'helpers/protoTxHelpers'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { NEVER, of } from 'rxjs'
 
 import { ClaimTxnState } from './bonusPipe'

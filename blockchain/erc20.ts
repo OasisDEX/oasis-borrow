@@ -2,7 +2,7 @@ import { amountFromWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import type { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { defer, from } from 'rxjs'
 import { map } from 'rxjs/operators'
 

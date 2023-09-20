@@ -1,7 +1,7 @@
 import type {
   ManageBorrowVaultStage,
   ManageStandardBorrowVaultState,
-} from 'features/borrow/manage/pipes/manageVault'
+} from 'features/borrow/manage/pipes/manageVault.types'
 import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
@@ -38,14 +38,7 @@ import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-const defaultManageVaultStageCategories = {
-  isEditingStage: false,
-  isProxyStage: false,
-  isCollateralAllowanceStage: false,
-  isDaiAllowanceStage: false,
-  isManageStage: false,
-  isMultiplyTransitionStage: false,
-}
+import { defaultManageVaultStageCategories } from './manageVaultConditions.constants'
 
 export function applyManageVaultStageCategorisation<
   VaultState extends ManageStandardBorrowVaultState,
@@ -157,141 +150,6 @@ export function applyManageVaultStageCategorisation<
     default:
       throw new UnreachableCaseError(stage)
   }
-}
-
-export interface ManageVaultConditions {
-  isEditingStage: boolean
-  isProxyStage: boolean
-  isCollateralAllowanceStage: boolean
-  isDaiAllowanceStage: boolean
-  isManageStage: boolean
-  isMultiplyTransitionStage: boolean
-
-  canProgress: boolean
-  canRegress: boolean
-
-  depositAndWithdrawAmountsEmpty: boolean
-  generateAndPaybackAmountsEmpty: boolean
-  inputAmountsEmpty: boolean
-
-  vaultWillBeAtRiskLevelWarning: boolean
-  vaultWillBeAtRiskLevelDanger: boolean
-  vaultWillBeUnderCollateralized: boolean
-
-  vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
-  vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
-  vaultWillBeUnderCollateralizedAtNextPrice: boolean
-  potentialGenerateAmountLessThanDebtFloor: boolean
-  debtIsLessThanDebtFloor: boolean
-
-  accountIsConnected: boolean
-  accountIsController: boolean
-
-  depositingAllEthBalance: boolean
-  depositAmountExceedsCollateralBalance: boolean
-  withdrawAmountExceedsFreeCollateral: boolean
-  withdrawAmountExceedsFreeCollateralAtNextPrice: boolean
-  generateAmountExceedsDaiYieldFromTotalCollateral: boolean
-  generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice: boolean
-  generateAmountLessThanDebtFloor: boolean
-  generateAmountExceedsDebtCeiling: boolean
-  paybackAmountExceedsVaultDebt: boolean
-  paybackAmountExceedsDaiBalance: boolean
-
-  debtWillBeLessThanDebtFloor: boolean
-  isLoadingStage: boolean
-  isSuccessStage: boolean
-
-  insufficientCollateralAllowance: boolean
-  customCollateralAllowanceAmountEmpty: boolean
-  customCollateralAllowanceAmountExceedsMaxUint256: boolean
-  customCollateralAllowanceAmountLessThanDepositAmount: boolean
-  ledgerWalletContractDataDisabled: boolean
-
-  insufficientDaiAllowance: boolean
-  customDaiAllowanceAmountEmpty: boolean
-  customDaiAllowanceAmountExceedsMaxUint256: boolean
-  customDaiAllowanceAmountLessThanPaybackAmount: boolean
-  withdrawCollateralOnVaultUnderDebtFloor: boolean
-  depositCollateralOnVaultUnderDebtFloor: boolean
-
-  stopLossTriggered: boolean
-  autoTakeProfitTriggered: boolean
-  afterCollRatioBelowStopLossRatio: boolean
-  afterCollRatioBelowAutoSellRatio: boolean
-  afterCollRatioAboveAutoBuyRatio: boolean
-  afterCollRatioBelowConstantMultipleSellRatio: boolean
-  afterCollRatioAboveConstantMultipleBuyRatio: boolean
-  takeProfitWillTriggerImmediatelyAfterVaultReopen: boolean
-  existingTakeProfitTriggerAfterVaultReopen: boolean
-
-  potentialInsufficientEthFundsForTx: boolean
-  insufficientEthFundsForTx: boolean
-}
-
-export const defaultManageVaultConditions: ManageVaultConditions = {
-  ...defaultManageVaultStageCategories,
-  canProgress: false,
-  canRegress: false,
-
-  vaultWillBeAtRiskLevelWarning: false,
-  vaultWillBeAtRiskLevelDanger: false,
-  vaultWillBeUnderCollateralized: false,
-
-  vaultWillBeAtRiskLevelWarningAtNextPrice: false,
-  vaultWillBeAtRiskLevelDangerAtNextPrice: false,
-  vaultWillBeUnderCollateralizedAtNextPrice: false,
-  potentialGenerateAmountLessThanDebtFloor: false,
-  debtIsLessThanDebtFloor: false,
-
-  depositAndWithdrawAmountsEmpty: true,
-  generateAndPaybackAmountsEmpty: true,
-  inputAmountsEmpty: true,
-
-  accountIsConnected: false,
-  accountIsController: false,
-
-  depositingAllEthBalance: false,
-  depositAmountExceedsCollateralBalance: false,
-  withdrawAmountExceedsFreeCollateral: false,
-  withdrawAmountExceedsFreeCollateralAtNextPrice: false,
-  generateAmountExceedsDaiYieldFromTotalCollateral: false,
-  generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice: false,
-  generateAmountLessThanDebtFloor: false,
-  generateAmountExceedsDebtCeiling: false,
-  paybackAmountExceedsVaultDebt: false,
-  paybackAmountExceedsDaiBalance: false,
-
-  debtWillBeLessThanDebtFloor: false,
-  isLoadingStage: false,
-  isSuccessStage: false,
-
-  insufficientCollateralAllowance: false,
-  customCollateralAllowanceAmountEmpty: false,
-  customCollateralAllowanceAmountExceedsMaxUint256: false,
-  customCollateralAllowanceAmountLessThanDepositAmount: false,
-  ledgerWalletContractDataDisabled: false,
-
-  insufficientDaiAllowance: false,
-  customDaiAllowanceAmountEmpty: false,
-  customDaiAllowanceAmountExceedsMaxUint256: false,
-  customDaiAllowanceAmountLessThanPaybackAmount: false,
-
-  withdrawCollateralOnVaultUnderDebtFloor: false,
-  depositCollateralOnVaultUnderDebtFloor: false,
-
-  stopLossTriggered: false,
-  autoTakeProfitTriggered: false,
-  afterCollRatioBelowStopLossRatio: false,
-  afterCollRatioBelowAutoSellRatio: false,
-  afterCollRatioAboveAutoBuyRatio: false,
-  afterCollRatioBelowConstantMultipleSellRatio: false,
-  afterCollRatioAboveConstantMultipleBuyRatio: false,
-  takeProfitWillTriggerImmediatelyAfterVaultReopen: false,
-  existingTakeProfitTriggerAfterVaultReopen: false,
-
-  potentialInsufficientEthFundsForTx: false,
-  insufficientEthFundsForTx: false,
 }
 
 export function applyManageVaultConditions<VaultState extends ManageStandardBorrowVaultState>(

@@ -1,7 +1,7 @@
 import type { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
 import { useAaveLikeConfig } from 'features/aave/hooks'
-import type { StrategyTokenBalance } from 'features/aave/types';
+import type { StrategyTokenBalance } from 'features/aave/types'
 import { getSlippage, ProductType } from 'features/aave/types'
 import type { IStrategyConfig } from 'features/aave/types/strategy-config'
 import type { UserSettingsState } from 'features/userSettings/userSettings'

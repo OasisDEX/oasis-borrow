@@ -1,10 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { tokenAllowance } from 'blockchain/better-calls/erc20'
-import type {
-  ChainlinkSupportedNetworks } from 'blockchain/calls/chainlink/chainlinkPriceOracle';
-import {
-  getChainlinkOraclePrice,
-} from 'blockchain/calls/chainlink/chainlinkPriceOracle'
+import type { ChainlinkSupportedNetworks } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
+import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies'
 import type { AccountContext } from 'components/context'

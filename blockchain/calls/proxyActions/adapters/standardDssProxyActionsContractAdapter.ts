@@ -14,10 +14,9 @@ import type {
   DepositAndGenerateData,
   OpenData,
   ProxyActionsSmartContractAdapterInterface,
-  WithdrawAndPaybackData } from './ProxyActionsSmartContractAdapterInterface';
-import {
-  ProxyActionsAdapterType
+  WithdrawAndPaybackData,
 } from './ProxyActionsSmartContractAdapterInterface'
+import { ProxyActionsAdapterType } from './ProxyActionsSmartContractAdapterInterface'
 
 export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAdapterInterface = {
   AdapterType: ProxyActionsAdapterType.STANDARD,

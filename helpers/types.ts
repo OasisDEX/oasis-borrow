@@ -1,4 +1,4 @@
-import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import type { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault.types'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/types'

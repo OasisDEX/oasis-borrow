@@ -6,7 +6,7 @@ import { PositionHistoryItem } from 'components/history/PositionHistoryItem'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import type { AaveHistoryEvent } from 'features/ajna/history/types'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React from 'react'
 
 interface PositionHistoryProps {

@@ -8,15 +8,15 @@ import type { BalanceInfo } from 'features/shared/balanceInfo'
 import type { PriceInfo } from 'features/shared/priceInfo'
 import type { TxHelpers } from 'helpers/context/types'
 import { protoTxHelpers } from 'helpers/protoTxHelpers'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 
-import type { MockBalanceInfoProps } from './balanceInfo.mock';
+import type { MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockBalanceInfo$ } from './balanceInfo.mock'
 import { mockContextConnected$ } from './context.mock'
-import type { MockIlkDataProps } from './ilks.mock';
+import type { MockIlkDataProps } from './ilks.mock'
 import { mockIlkData$, mockIlkToToken$ } from './ilks.mock'
-import type { MockPriceInfoProps } from './priceInfo.mock';
+import type { MockPriceInfoProps } from './priceInfo.mock'
 import { mockPriceInfo$ } from './priceInfo.mock'
 
 export function addGasEstimationMock<T>(state: T, gasEstimationUsd?: BigNumber) {

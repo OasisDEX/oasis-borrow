@@ -2,21 +2,13 @@ import { AppLink } from 'components/Links'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
-import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
-import type { ReactElement } from 'react';
 import React from 'react'
 import { Box, Flex, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
 
-interface SidebarAutomationFeatureCreationStageProps {
-  featureName: AutomationFeatures
-  stage: SidebarVaultStages
-  isAddForm: boolean
-  isRemoveForm: boolean
-  customContent?: ReactElement
-}
+import type { SidebarAutomationFeatureCreationStageProps } from './SidebarAutomationFeatureCreationStage.types'
 
 export function SidebarAutomationFeatureCreationStage({
   featureName,

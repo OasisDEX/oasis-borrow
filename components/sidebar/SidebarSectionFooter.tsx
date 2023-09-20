@@ -4,12 +4,9 @@ import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
-import type {
-  SidebarSectionFooterButtonProps } from './SidebarSectionFooterButton';
-import {
-  SidebarSectionFooterButton
-} from './SidebarSectionFooterButton'
-import type { SidebarSectionStatusProps } from './SidebarSectionStatus';
+import type { SidebarSectionFooterButtonProps } from './SidebarSectionFooterButton'
+import { SidebarSectionFooterButton } from './SidebarSectionFooterButton'
+import type { SidebarSectionStatusProps } from './SidebarSectionStatus'
 import { SidebarSectionStatus } from './SidebarSectionStatus'
 
 export type SidebarSectionFooterButtonSettings = Omit<SidebarSectionFooterButtonProps, 'variant'>

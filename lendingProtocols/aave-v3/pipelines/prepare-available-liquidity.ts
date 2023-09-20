@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import type { AaveV3ReserveDataParameters, AaveV3ReserveDataReply } from 'blockchain/aave-v3'
 import { zero } from 'helpers/zero'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 

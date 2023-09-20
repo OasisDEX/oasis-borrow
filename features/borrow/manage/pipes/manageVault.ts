@@ -1,5 +1,4 @@
 import type { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
 import type { ProxyActionsSmartContractAdapterInterface } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import type { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
@@ -9,27 +8,19 @@ import { createIlkDataChange$ } from 'blockchain/ilks'
 import type { Context } from 'blockchain/network'
 import { createVaultChange$ } from 'blockchain/vaults'
 import type { Vault } from 'blockchain/vaults.types'
-import type { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
-import type { TriggersData } from 'features/automation/api/automationTriggersData'
 import { createAutomationTriggersChange$ } from 'features/automation/api/automationTriggersData'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
-import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import type { SaveVaultType } from 'features/generalManageVault/vaultType'
-import { saveVaultTypeForAccount, VaultType } from 'features/generalManageVault/vaultType'
+import { saveVaultTypeForAccount } from 'features/generalManageVault/vaultType'
+import type { SaveVaultType } from 'features/generalManageVault/vaultType.types'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { BalanceInfo } from 'features/shared/balanceInfo'
 import { balanceInfoChange$ } from 'features/shared/balanceInfo'
 import type { PriceInfo } from 'features/shared/priceInfo'
 import { priceInfoChange$ } from 'features/shared/priceInfo'
-import type { BaseManageVaultStage } from 'features/types/vaults/BaseManageVaultStage'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { createHistoryChange$ } from 'features/vaultHistory/vaultHistory'
-import type { AddGasEstimationFunction, HasGasEstimation, TxHelpers } from 'helpers/context/types'
-import type { TxError } from 'helpers/types'
+import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { curry } from 'lodash'
 import type { Observable } from 'rxjs'
@@ -37,145 +28,20 @@ import { combineLatest, merge, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import type { BorrowManageAdapterInterface } from './adapters/borrowManageAdapterInterface'
+import type {
+  MainAction,
+  ManageStandardBorrowVaultState,
+  ManageVaultChange,
+  MutableManageVaultState,
+} from './manageVault.types'
 import { finalValidation, validateErrors, validateWarnings } from './manageVaultValidations'
-import type { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
-import type { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations'
-import type { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions'
-import type { ManageVaultEnvironmentChange } from './viewStateTransforms/manageVaultEnvironment'
-import type { ManageVaultFormChange } from './viewStateTransforms/manageVaultForm'
-import type { ManageVaultInputChange } from './viewStateTransforms/manageVaultInput'
-import type { ManageVaultSummary } from './viewStateTransforms/manageVaultSummary'
-import type { ManageVaultTransactionChange } from './viewStateTransforms/manageVaultTransactions'
 import {
   applyEstimateGas,
   createProxy,
   setCollateralAllowance,
   setDaiAllowance,
 } from './viewStateTransforms/manageVaultTransactions'
-import type { ManageVaultTransitionChange } from './viewStateTransforms/manageVaultTransitions'
 import { progressManage } from './viewStateTransforms/manageVaultTransitions'
-
-interface ManageVaultInjectedOverrideChange {
-  kind: 'injectStateOverride'
-  stateToOverride: Partial<ManageStandardBorrowVaultState>
-}
-
-export type ManageVaultChange =
-  | ManageVaultInputChange
-  | ManageVaultFormChange
-  | ManageVaultAllowanceChange
-  | ManageVaultTransitionChange
-  | ManageVaultTransactionChange
-  | ManageVaultEnvironmentChange
-  | ManageVaultInjectedOverrideChange
-
-export type ManageVaultEditingStage =
-  | 'collateralEditing'
-  | 'daiEditing'
-  | 'multiplyTransitionEditing'
-
-export type ManageBorrowVaultStage =
-  | BaseManageVaultStage
-  | ManageVaultEditingStage
-  | 'multiplyTransitionWaitingForConfirmation'
-  | 'multiplyTransitionInProgress'
-  | 'multiplyTransitionFailure'
-  | 'multiplyTransitionSuccess'
-
-export type MainAction = 'depositGenerate' | 'withdrawPayback'
-
-export interface MutableManageVaultState {
-  stage: ManageBorrowVaultStage
-  mainAction: MainAction
-  originalEditingStage: ManageVaultEditingStage
-  showDepositAndGenerateOption: boolean
-  showPaybackAndWithdrawOption: boolean
-  depositAmount?: BigNumber
-  depositAmountUSD?: BigNumber
-  withdrawAmount?: BigNumber
-  withdrawAmountUSD?: BigNumber
-  generateAmount?: BigNumber
-  paybackAmount?: BigNumber
-  collateralAllowanceAmount?: BigNumber
-  daiAllowanceAmount?: BigNumber
-  selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
-  selectedDaiAllowanceRadio: SelectedDaiAllowanceRadio
-}
-
-export interface ManageVaultEnvironment<V extends Vault> {
-  account?: string
-  accountIsController: boolean
-  proxyAddress?: string
-  collateralAllowance?: BigNumber
-  daiAllowance?: BigNumber
-  vault: V
-  ilkData: IlkData
-  balanceInfo: BalanceInfo
-  priceInfo: PriceInfo
-  vaultHistory: VaultHistoryEvent[]
-}
-
-interface ManageVaultFunctions {
-  progress?: () => void
-  regress?: () => void
-  toggle?: (stage: ManageVaultEditingStage) => void
-  setMainAction?: (action: MainAction) => void
-  toggleDepositAndGenerateOption?: () => void
-  togglePaybackAndWithdrawOption?: () => void
-  updateDeposit?: (depositAmount?: BigNumber) => void
-  updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
-  updateDepositMax?: () => void
-  updateGenerate?: (generateAmount?: BigNumber) => void
-  updateGenerateMax?: () => void
-  updateWithdraw?: (withdrawAmount?: BigNumber) => void
-  updateWithdrawUSD?: (withdrawAmountUSD?: BigNumber) => void
-  updateWithdrawMax?: () => void
-  updatePayback?: (paybackAmount?: BigNumber) => void
-  updatePaybackMax?: () => void
-  updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
-  setCollateralAllowanceAmountUnlimited?: () => void
-  setCollateralAllowanceAmountToDepositAmount?: () => void
-  resetCollateralAllowanceAmount?: () => void
-  updateDaiAllowanceAmount?: (amount?: BigNumber) => void
-  setDaiAllowanceAmountUnlimited?: () => void
-  setDaiAllowanceAmountToPaybackAmount?: () => void
-  resetDaiAllowanceAmount?: () => void
-  clear: () => void
-  injectStateOverride: (state: Partial<MutableManageVaultState>) => void
-  toggleMultiplyTransition?: () => void
-}
-
-interface ManageVaultTxInfo {
-  collateralAllowanceTxHash?: string
-  daiAllowanceTxHash?: string
-  proxyTxHash?: string
-  manageTxHash?: string
-  txError?: TxError
-  etherscan?: string
-  proxyConfirmations?: number
-  safeConfirmations: number
-}
-
-export type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
-  ManageVaultCalculations &
-  ManageVaultConditions &
-  ManageVaultEnvironment<V> &
-  ManageVaultFunctions &
-  ManageVaultTxInfo & {
-    errorMessages: VaultErrorMessage[]
-    warningMessages: VaultWarningMessage[]
-    summary: ManageVaultSummary
-    initialTotalSteps: number
-    totalSteps: number
-    currentStep: number
-    stopLossData?: StopLossTriggerData
-    autoBuyData?: AutoBSTriggerData
-    autoSellData?: AutoBSTriggerData
-    constantMultipleData?: ConstantMultipleTriggerData
-    autoTakeProfitData?: AutoTakeProfitTriggerData
-  } & HasGasEstimation
-
-export type ManageStandardBorrowVaultState = GenericManageBorrowVaultState<Vault>
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
@@ -347,18 +213,6 @@ function addTransitions(
   }
 
   return state
-}
-
-export const defaultMutableManageVaultState: MutableManageVaultState = {
-  stage: 'collateralEditing' as ManageBorrowVaultStage,
-  mainAction: 'depositGenerate',
-  originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
-  showDepositAndGenerateOption: false,
-  showPaybackAndWithdrawOption: false,
-  collateralAllowanceAmount: maxUint256,
-  daiAllowanceAmount: maxUint256,
-  selectedCollateralAllowanceRadio: 'unlimited' as 'unlimited',
-  selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
 }
 
 export function createManageVault$<V extends Vault, VS extends ManageStandardBorrowVaultState>(

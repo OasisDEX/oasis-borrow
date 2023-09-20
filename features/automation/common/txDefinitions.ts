@@ -1,24 +1,20 @@
 import type {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
-  AutomationBotV2RemoveTriggerData } from 'blockchain/calls/automationBot';
-import {
-  addAutomationBotTrigger
+  AutomationBotV2RemoveTriggerData,
 } from 'blockchain/calls/automationBot'
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import type {
   AutomationBotAddAggregatorTriggerData,
-  AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator';
-import {
-  addAutomationBotAggregatorTrigger
+  AutomationBotRemoveTriggersData,
 } from 'blockchain/calls/automationBotAggregator'
+import { addAutomationBotAggregatorTrigger } from 'blockchain/calls/automationBotAggregator'
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'
-import {
-  AUTO_BUY_FORM_CHANGE,
-  AUTO_SELL_FORM_CHANGE,
-} from 'features/automation/common/state/autoBSFormChange'
-import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
+
+import { AUTO_BUY_FORM_CHANGE, AUTO_SELL_FORM_CHANGE } from './state/autoBSFormChange.constants'
 
 export type AutomationAddTriggerData =
   | AutomationBotAddTriggerData

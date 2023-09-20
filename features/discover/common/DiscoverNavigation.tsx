@@ -1,8 +1,8 @@
-import type { MixpanelUserContext } from 'analytics/analytics';
+import type { MixpanelUserContext } from 'analytics/analytics'
 import { trackingEvents } from 'analytics/analytics'
 import { GenericSelect } from 'components/GenericSelect'
 import { AppLink } from 'components/Links'
-import type { DiscoverPageMeta } from 'features/discover/meta';
+import type { DiscoverPageMeta } from 'features/discover/meta'
 import { discoverPagesMeta } from 'features/discover/meta'
 import type { DiscoverPages } from 'features/discover/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'

@@ -6,27 +6,23 @@ import type BigNumber from 'bignumber.js'
 import type { AaveV2ReserveConfigurationData } from 'blockchain/aave'
 import { addAutomationBotTriggerV2 } from 'blockchain/calls/automationBot'
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'
-import type {
-  OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor';
+import type { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import {
   callOperationExecutorWithDpmProxy,
-  callOperationExecutorWithDsProxy
+  callOperationExecutorWithDsProxy,
 } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import type { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networks'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
-import type {
-  BaseAaveContext,
-  BaseAaveEvent,
-  RefTransactionMachine } from 'features/aave/types';
+import type { BaseAaveContext, BaseAaveEvent, RefTransactionMachine } from 'features/aave/types'
 import {
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
   ProductType,
-  ProxyType
+  ProxyType,
 } from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import type {
@@ -58,7 +54,7 @@ import { getLocalAppConfig } from 'helpers/config'
 import type { AutomationTxData } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import type { ActorRefFrom } from 'xstate';
+import type { ActorRefFrom } from 'xstate'
 import { assign, createMachine, send, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import type { MachineOptionsFrom } from 'xstate/lib/types'

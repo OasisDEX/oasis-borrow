@@ -5,11 +5,8 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import type {
-  StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange';
-import {
-  STOP_LOSS_FORM_CHANGE
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
+import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'

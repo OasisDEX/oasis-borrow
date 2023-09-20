@@ -5,7 +5,7 @@ import { networkSetById } from 'blockchain/networks'
 import { formatOazoFee } from 'features/multiply/manage/utils'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { merge } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 

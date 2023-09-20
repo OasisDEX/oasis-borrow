@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React, { Fragment, useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 

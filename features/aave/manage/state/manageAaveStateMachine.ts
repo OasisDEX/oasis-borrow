@@ -1,11 +1,14 @@
 import type { IPosition } from '@oasisdex/dma-library'
-import type { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave-like'
-import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import type {
-  OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor';
+  AdjustAaveParameters,
+  CloseAaveParameters,
+  ManageAaveParameters,
+} from 'actions/aave-like'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import {
   callOperationExecutorWithDpmProxy,
-  callOperationExecutorWithDsProxy
+  callOperationExecutorWithDsProxy,
 } from 'blockchain/calls/operationExecutor'
 import type { ContextConnected } from 'blockchain/network'
 import { ethNullAddress } from 'blockchain/networks'
@@ -22,16 +25,17 @@ import type {
   IStrategyConfig,
   ManageTokenInput,
   ProductType,
-  RefTransactionMachine } from 'features/aave/types';
+  RefTransactionMachine,
+} from 'features/aave/types'
 import {
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
-  ProxyType
+  ProxyType,
 } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
 import type { AaveHistoryEvent } from 'features/ajna/history/types'
-import type { VaultType } from 'features/generalManageVault/vaultType'
+import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import type { TransactionStateMachine } from 'features/stateMachines/transaction'
 import type {
@@ -41,7 +45,7 @@ import type {
 import { allDefined } from 'helpers/allDefined'
 import { productToVaultType } from 'helpers/productToVaultType'
 import { zero } from 'helpers/zero'
-import type { ActorRefFrom, StateFrom } from 'xstate';
+import type { ActorRefFrom, StateFrom } from 'xstate'
 import { assign, createMachine, send, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import type { MachineOptionsFrom } from 'xstate/lib/types'

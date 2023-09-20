@@ -12,7 +12,7 @@ import {
 } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React from 'react'
 
 export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached = false }) => {

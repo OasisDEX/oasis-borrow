@@ -5,14 +5,14 @@ import type { GasEstimationContext } from 'components/context'
 import { DimmedList } from 'components/DImmedList'
 import { InfoSectionLoadingState } from 'components/infoSection/Item'
 import { Tooltip, useTooltip } from 'components/Tooltip'
-import type { HasGasEstimation } from 'helpers/context/types';
+import type { HasGasEstimation } from 'helpers/context/types'
 import { GasEstimationStatus } from 'helpers/context/types'
 import { formatAmount } from 'helpers/formatters/format'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import type { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React, { useCallback, useMemo } from 'react'
 
 export function VaultChangesInformationItem({

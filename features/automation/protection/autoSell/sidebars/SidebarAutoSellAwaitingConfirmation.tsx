@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import type { Vault } from 'blockchain/vaults.types'
-import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'

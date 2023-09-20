@@ -4,7 +4,7 @@ import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/
 import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { getActionUrl, parseProduct } from 'features/productHub/helpers'
-import type { ProductHubItem } from 'features/productHub/types';
+import type { ProductHubItem } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { upperFirst } from 'lodash'
 import React from 'react'

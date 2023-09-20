@@ -1,10 +1,10 @@
 import { TxStatus } from '@oasisdex/transactions'
-import type { CreateDsProxyData } from 'blockchain/calls/proxy';
+import type { CreateDsProxyData } from 'blockchain/calls/proxy'
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import type { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { iif, of } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
 

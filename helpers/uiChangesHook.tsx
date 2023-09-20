@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import type { SupportedUIChangeType } from './uiChanges';
+import type { SupportedUIChangeType } from './uiChanges'
 import { uiChanges } from './uiChanges'
 
 export function useUIChanges<T extends SupportedUIChangeType>(topic: string): T[] {

@@ -1,6 +1,6 @@
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk'
 import { decode } from 'jsonwebtoken'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { fromPromise } from 'rxjs/internal-compatibility'

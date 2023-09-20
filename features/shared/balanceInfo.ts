@@ -1,6 +1,6 @@
 import type { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
 import { shareReplay } from 'rxjs/operators'

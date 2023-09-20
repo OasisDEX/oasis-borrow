@@ -5,19 +5,13 @@ import type {
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import type { TriggersData } from 'features/automation/api/automationTriggersData'
-import type { TriggerDataType } from 'features/automation/common/helpers';
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import { getTriggersByType } from 'features/automation/common/helpers'
+import type { TriggerDataType } from 'features/automation/common/TriggerDataType'
 import { maxCoverage } from 'features/automation/protection/stopLoss/constants'
-import { zero } from 'helpers/zero'
 
-export interface StopLossTriggerData {
-  isStopLossEnabled: boolean
-  stopLossLevel: BigNumber
-  isToCollateral: boolean
-  triggerId: BigNumber
-  executionParams: string
-}
+import { defaultStopLossData } from './stopLossTriggerData.constants'
+import type { StopLossTriggerData } from './stopLossTriggerData.types'
 
 function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataType[]) {
   const mappedStopLossTriggers = stopLossTriggersData.map((trigger) => {
@@ -62,14 +56,6 @@ function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataTy
     return acc.stopLossLevel.gt(obj.stopLossLevel) ? acc : obj
   })
 }
-
-export const defaultStopLossData = {
-  isStopLossEnabled: false,
-  stopLossLevel: zero,
-  triggerId: zero,
-  isToCollateral: false,
-  executionParams: '0x',
-} as StopLossTriggerData
 
 export function extractStopLossData(
   data: TriggersData,

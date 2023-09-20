@@ -5,15 +5,14 @@ import type { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/type
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import type {
   AjnaPositionAggregatedDataAuctions,
-  AjnaPositionCumulatives } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData';
-import {
-  getAjnaPositionAggregatedData,
+  AjnaPositionCumulatives,
 } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
+import { getAjnaPositionAggregatedData } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { mapAjnaBorrowishEvents } from 'features/ajna/positions/common/helpers/mapBorrowishEvents'
 import { mapAjnaEarnEvents } from 'features/ajna/positions/common/helpers/mapEarnEvents'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { zero } from 'helpers/zero'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { from } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 import { timeAgo } from 'utils'

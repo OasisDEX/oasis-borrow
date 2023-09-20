@@ -5,12 +5,16 @@ import { CreateDPMAccountViewConsumed } from 'features/stateMachines/dpmAccount/
 import { useConnection } from 'features/web3OnBoard'
 import { allDefined } from 'helpers/allDefined'
 import { callBackIfDefined } from 'helpers/callBackIfDefined'
-import type { useFlowState, UseFlowStateCBParamsType, UseFlowStateCBType } from 'helpers/useFlowState'
+import type {
+  useFlowState,
+  UseFlowStateCBParamsType,
+  UseFlowStateCBType,
+} from 'helpers/useFlowState'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo } from 'react'
 import { Grid, Text } from 'theme-ui'
 
-import type { SidebarSectionProps } from './sidebar/SidebarSection';
+import type { SidebarSectionProps } from './sidebar/SidebarSection'
 import { SidebarSection } from './sidebar/SidebarSection'
 import type { SidebarSectionFooterButtonSettings } from './sidebar/SidebarSectionFooter'
 

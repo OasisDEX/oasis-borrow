@@ -8,7 +8,7 @@ import { parseRows } from 'features/poolFinder/helpers'
 import type { OraclessPoolResult, PoolFinderFormState } from 'features/poolFinder/types'
 import type { ProductHubProductType } from 'features/productHub/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React, { useMemo } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 

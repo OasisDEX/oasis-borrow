@@ -5,14 +5,12 @@ import {
   resolveMaxBuyOrMinSellPrice,
   resolveWithThreshold,
 } from 'features/automation/common/helpers'
-import {
-  AUTO_BUY_FORM_CHANGE,
-  AUTO_SELL_FORM_CHANGE,
-} from 'features/automation/common/state/autoBSFormChange'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useEffect } from 'react'
+
+import { AUTO_BUY_FORM_CHANGE, AUTO_SELL_FORM_CHANGE } from './autoBSFormChange.constants'
+import type { AutoBSTriggerData } from './autoBSTriggerData.types'
 
 export function useAutoBSstateInitialization({
   autoTriggersData,

@@ -1,39 +1,33 @@
 import type { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { IlkData } from 'blockchain/ilks';
+import type { IlkData } from 'blockchain/ilks'
 import { createIlkDataChange$ } from 'blockchain/ilks'
 import type { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { createVaultChange$ } from 'blockchain/vaults'
 import type { Vault } from 'blockchain/vaults.types'
-import type {
-  TriggersData } from 'features/automation/api/automationTriggersData';
-import {
-  createAutomationTriggersChange$
-} from 'features/automation/api/automationTriggersData'
+import { createAutomationTriggersChange$ } from 'features/automation/api/automationTriggersData'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
-import type {
-  SaveVaultType } from 'features/generalManageVault/vaultType';
-import {
-  saveVaultTypeForAccount,
-  VaultType,
-} from 'features/generalManageVault/vaultType'
-import type { BalanceInfo } from 'features/shared/balanceInfo';
+import { saveVaultTypeForAccount } from 'features/generalManageVault/vaultType'
+import type { SaveVaultType } from 'features/generalManageVault/vaultType.types'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
+import type { BalanceInfo } from 'features/shared/balanceInfo'
 import { balanceInfoChange$ } from 'features/shared/balanceInfo'
-import type { PriceInfo } from 'features/shared/priceInfo';
+import type { PriceInfo } from 'features/shared/priceInfo'
 import { priceInfoChange$ } from 'features/shared/priceInfo'
-import type { UserSettingsState } from 'features/userSettings/userSettings';
+import type { UserSettingsState } from 'features/userSettings/userSettings'
 import { slippageChange$ } from 'features/userSettings/userSettings'
-import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory';
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { createHistoryChange$ } from 'features/vaultHistory/vaultHistory'
-import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types';
+import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { GasEstimationStatus } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { curry } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, merge, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 

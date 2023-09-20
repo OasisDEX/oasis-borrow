@@ -1,4 +1,4 @@
-import type { IMultiplyStrategy, IRiskRatio, Tokens } from '@oasisdex/dma-library';
+import type { IMultiplyStrategy, IRiskRatio, Tokens } from '@oasisdex/dma-library'
 import { strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { assertProtocol } from 'actions/aave-like/guards'
@@ -9,7 +9,7 @@ import { ethNullAddress, getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { ProxyType } from 'features/aave/types'
-import type { AaveLendingProtocol, AaveLikeLendingProtocol } from 'lendingProtocols';
+import type { AaveLendingProtocol, AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 
 async function openPosition(

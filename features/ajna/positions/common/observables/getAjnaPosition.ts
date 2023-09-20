@@ -16,7 +16,7 @@ import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { isEqual, uniq } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, iif, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 

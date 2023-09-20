@@ -1,9 +1,9 @@
 import { NetworkIds } from 'blockchain/networks'
-import type { SparkV3Pool } from 'types/ethers-contracts';
+import type { SparkV3Pool } from 'types/ethers-contracts'
 import { SparkV3Pool__factory } from 'types/ethers-contracts'
 import type { LiquidationCallEvent } from 'types/ethers-contracts/SparkV3Pool'
 
-import type { BaseParameters, ContractForNetwork } from './utils';
+import type { BaseParameters, ContractForNetwork } from './utils'
 import { getNetworkMapping } from './utils'
 
 async function getLastLiquidationEvent(

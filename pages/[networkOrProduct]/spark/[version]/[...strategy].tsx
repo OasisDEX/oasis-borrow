@@ -4,7 +4,7 @@ import { DeferedContextProvider, ProductContextHandler } from 'components/contex
 import { AppLayout } from 'components/layouts'
 import { aaveContext, AaveContextProvider, isSupportedStrategy } from 'features/aave'
 import { AaveOpenView } from 'features/aave/open/containers/AaveOpenView'
-import type { ProductType } from 'features/aave/types';
+import type { ProductType } from 'features/aave/types'
 import { getSurveyType } from 'features/aave/types'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'

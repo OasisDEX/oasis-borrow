@@ -7,7 +7,7 @@ import { PieChart } from 'components/dumb/PieChart'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
 import { AssetsAndPositionsOverviewLoadingState } from 'features/vaultsOverview/components/AssetsAndPositionsOverviewLoadingState'
-import type { AssetAction } from 'features/vaultsOverview/pipes/assetActions';
+import type { AssetAction } from 'features/vaultsOverview/pipes/assetActions'
 import { isUrlAction } from 'features/vaultsOverview/pipes/assetActions'
 import type {
   PositionView,
@@ -24,7 +24,7 @@ import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
-import type { SxStyleProp } from 'theme-ui';
+import type { SxStyleProp } from 'theme-ui'
 import { Box, Card, Flex, Grid, Heading, Image, Link, Text } from 'theme-ui'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 

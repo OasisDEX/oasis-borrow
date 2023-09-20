@@ -1,5 +1,5 @@
 import type { UserDpmAccount } from 'blockchain/userDpmProxies'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 

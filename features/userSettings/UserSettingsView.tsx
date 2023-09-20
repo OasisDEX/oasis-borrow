@@ -18,31 +18,19 @@ import {
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react'
 import React, { useCallback, useRef, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import type {
-  SxStyleProp } from 'theme-ui';
-import {
-  Box,
-  Button,
-  Card,
-  Flex,
-  Grid,
-  Heading,
-  Link as ThemeLink,
-  Text,
-  Textarea,
-} from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Link as ThemeLink, Text, Textarea } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
 import type {
   UserSettingsErrorMessages,
   UserSettingsState,
-  UserSettingsWarningMessages } from './userSettings';
-import {
-  SLIPPAGE_OPTIONS
+  UserSettingsWarningMessages,
 } from './userSettings'
+import { SLIPPAGE_OPTIONS } from './userSettings'
 
 function SlippageOptionButton({
   option,

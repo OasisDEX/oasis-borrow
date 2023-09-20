@@ -5,7 +5,7 @@ import { Tooltip, useTooltip } from 'components/Tooltip'
 import type { PriceInfo } from 'features/shared/priceInfo'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import type { SxStyleProp } from 'theme-ui'
 

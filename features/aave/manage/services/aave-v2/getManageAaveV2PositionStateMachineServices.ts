@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account';
+import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
 import { createExecuteTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network'
@@ -12,10 +12,9 @@ import type {
   IStrategyConfig,
   IStrategyInfo,
   StrategyTokenAllowance,
-  StrategyTokenBalance } from 'features/aave/types';
-import {
-  contextToEthersTransactions
+  StrategyTokenBalance,
 } from 'features/aave/types'
+import { contextToEthersTransactions } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import type { UserSettingsState } from 'features/userSettings/userSettings'
@@ -23,7 +22,7 @@ import { allDefined } from 'helpers/allDefined'
 import type { TxHelpers } from 'helpers/context/types'
 import type { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 import { interpret } from 'xstate'

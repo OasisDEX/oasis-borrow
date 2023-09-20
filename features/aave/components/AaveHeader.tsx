@@ -3,7 +3,7 @@ import type { ProtocolLabelProps } from 'components/ProtocolLabel'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { useAaveContext } from 'features/aave'
 import { createFollowButton } from 'features/aave/helpers/createFollowButton'
-import type { IStrategyConfig, ManageAaveHeaderProps } from 'features/aave/types';
+import type { IStrategyConfig, ManageAaveHeaderProps } from 'features/aave/types'
 import { StrategyType } from 'features/aave/types'
 import type { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'

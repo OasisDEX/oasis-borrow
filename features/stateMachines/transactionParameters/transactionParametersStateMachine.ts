@@ -1,6 +1,10 @@
-import type { IMultiplyStrategy, IOpenDepositBorrowStrategy, IStrategy } from '@oasisdex/dma-library'
+import type {
+  IMultiplyStrategy,
+  IOpenDepositBorrowStrategy,
+  IStrategy,
+} from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account';
+import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
 import { estimateGasOnDpm } from 'blockchain/better-calls/dpm-account'
 import type { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
 import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
@@ -8,7 +12,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ethNullAddress, NetworkIds } from 'blockchain/networks'
 import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
 import type { ethers } from 'ethers'
-import type { HasGasEstimation, TxHelpers } from 'helpers/context/types';
+import type { HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import { GasEstimationStatus } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'

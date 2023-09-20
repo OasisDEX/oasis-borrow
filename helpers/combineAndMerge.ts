@@ -1,7 +1,7 @@
 /* eslint-disable no-redeclare */
 
 import { difference } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { mergeMap, scan } from 'rxjs/operators'
 

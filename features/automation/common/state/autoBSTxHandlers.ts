@@ -3,12 +3,13 @@ import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { maxUint256 } from 'features/automation/common/consts'
-import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { prepareAddAutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import type { AutoBSTriggerTypes, AutomationBSPublishType } from 'features/automation/common/types'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
+
+import type { AutoBSFormChange } from './autoBSFormChange.types'
 
 interface GetAutoBSTxHandlersParams {
   autoBSState: AutoBSFormChange

@@ -1,10 +1,9 @@
 import type { SendFunction } from '@oasisdex/transactions'
-import type {
-  TransactionDef } from 'blockchain/calls/callsHelpers';
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
   createSendTransaction,
   createSendWithGasConstraints,
-  estimateGas
+  estimateGas,
 } from 'blockchain/calls/callsHelpers'
 import type { ContextConnected } from 'blockchain/network'
 import type { GasPriceParams } from 'blockchain/prices'

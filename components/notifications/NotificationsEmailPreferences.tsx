@@ -3,7 +3,7 @@ import { NotificationPreferenceCard } from 'components/notifications/Notificatio
 import { NotificationsChangeEmailButton } from 'components/notifications/NotificationsChangeEmailButton'
 import { NotificationsSetupSuccess } from 'components/notifications/NotificationsEmailSetupSuccess'
 import { NotificationsError } from 'components/notifications/NotificationsError'
-import type { NotificationChange } from 'features/notifications/notificationChange';
+import type { NotificationChange } from 'features/notifications/notificationChange'
 import { NOTIFICATION_CHANGE } from 'features/notifications/notificationChange'
 import { NotificationChannelTypes } from 'features/notifications/types'
 import { AppSpinner } from 'helpers/AppSpinner'

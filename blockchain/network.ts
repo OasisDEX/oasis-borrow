@@ -5,11 +5,10 @@ import type {
   ContractDesc,
   Web3Context,
   Web3ContextConnected,
-  Web3ContextConnectedReadonly } from 'features/web3Context';
-import {
-  contract
+  Web3ContextConnectedReadonly,
 } from 'features/web3Context'
-import type { Observable } from 'rxjs';
+import { contract } from 'features/web3Context'
+import type { Observable } from 'rxjs'
 import { bindNodeCallback, combineLatest, concat, interval } from 'rxjs'
 import {
   catchError,
@@ -24,7 +23,7 @@ import {
 } from 'rxjs/operators'
 import Web3 from 'web3'
 
-import type { NetworkConfig } from './networks';
+import type { NetworkConfig } from './networks'
 import { getNetworkRpcEndpoint, NetworkIds, networksById } from './networks'
 
 export const every1Seconds$ = interval(1000).pipe(startWith(0))

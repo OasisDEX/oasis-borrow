@@ -4,12 +4,12 @@ import { isMainContextAvailable } from 'components/context'
 import { AppLink } from 'components/Links'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { Trans, useTranslation } from 'next-i18next'
-import type { FormEvent } from 'react';
+import type { FormEvent } from 'react'
 import React, { useEffect, useState } from 'react'
 import { GRADIENTS } from 'theme'
 import { Box, Button, Flex, Grid, Heading, Input, Text } from 'theme-ui'
 
-import type { NewsletterMessage, NewsletterState } from './newsletter';
+import type { NewsletterMessage, NewsletterState } from './newsletter'
 import { createNewsletter$ } from './newsletter'
 import type { NewsletterResponseMessage } from './newsletterApi'
 

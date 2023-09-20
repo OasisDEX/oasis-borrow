@@ -3,55 +3,51 @@ import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/call
 import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
 import { charterUrnProxy } from 'blockchain/calls/charter'
 import { cropperUrnProxy } from 'blockchain/calls/cropper'
-import type { DogIlk } from 'blockchain/calls/dog';
+import type { DogIlk } from 'blockchain/calls/dog'
 import { dogIlk } from 'blockchain/calls/dog'
-import type { TokenBalanceArgs } from 'blockchain/calls/erc20';
+import type { TokenBalanceArgs } from 'blockchain/calls/erc20'
 import { tokenBalance } from 'blockchain/calls/erc20'
-import type { GetCdpsArgs, GetCdpsResult } from 'blockchain/calls/getCdps';
+import type { GetCdpsArgs, GetCdpsResult } from 'blockchain/calls/getCdps'
 import { getCdps } from 'blockchain/calls/getCdps'
 import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
-import type { JugIlk } from 'blockchain/calls/jug';
+import type { JugIlk } from 'blockchain/calls/jug'
 import { jugIlk } from 'blockchain/calls/jug'
 import { observe } from 'blockchain/calls/observe'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import { createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
-import type { SpotIlk } from 'blockchain/calls/spot';
+import type { SpotIlk } from 'blockchain/calls/spot'
 import { spotIlk } from 'blockchain/calls/spot'
-import type { Urn, VatIlk } from 'blockchain/calls/vat';
+import type { Urn, VatIlk } from 'blockchain/calls/vat'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
-import type { VaultResolve } from 'blockchain/calls/vaultResolver';
+import type { VaultResolve } from 'blockchain/calls/vaultResolver'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
-import type { IlkData } from 'blockchain/ilks';
+import type { IlkData } from 'blockchain/ilks'
 import { createIlkData$ } from 'blockchain/ilks'
 import { NetworkIds } from 'blockchain/networks'
-import type { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices';
+import type { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
 import { createOraclePriceData$ } from 'blockchain/prices'
 import { createBalance$ } from 'blockchain/tokens'
 import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
-import type { UserDpmAccount } from 'blockchain/userDpmProxies';
+import type { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { getUserDpmProxies$ } from 'blockchain/userDpmProxies'
 import { createStandardCdps$, createVault$, createVaults$ } from 'blockchain/vaults'
 import type { Vault, VaultWithType } from 'blockchain/vaults.types'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers'
-import type {
-  PositionCreated } from 'features/aave/services';
-import {
-  createProxyConsumed$,
-  createReadPositionCreatedEvents$
-} from 'features/aave/services'
-import type { AccountDetails } from 'features/account/AccountData';
+import type { PositionCreated } from 'features/aave/services'
+import { createProxyConsumed$, createReadPositionCreatedEvents$ } from 'features/aave/services'
+import type { AccountDetails } from 'features/account/AccountData'
 import { createAccountData } from 'features/account/AccountData'
 import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
-import type { UserReferralState } from 'features/referralOverview/user';
+import type { UserReferralState } from 'features/referralOverview/user'
 import { createUserReferral$ } from 'features/referralOverview/user'
 import {
   getReferralRewardsFromApi$,
   getReferralsFromApi$,
   getUserFromApi$,
 } from 'features/referralOverview/userApi'
-import type { UserSettingsState } from 'features/userSettings/userSettings';
+import type { UserSettingsState } from 'features/userSettings/userSettings'
 import { createUserSettings$ } from 'features/userSettings/userSettings'
 import {
   checkUserSettingsLocalStorage$,
@@ -63,7 +59,7 @@ import { ilkUrnAddressToString } from 'helpers/ilkUrnAddressToString'
 import type { WithChildren } from 'helpers/types'
 import { memoize } from 'lodash'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 

@@ -3,7 +3,7 @@ import { env } from 'process'
 
 import { forkNetworks, forkSettings } from './forks-config'
 import type { NetworkIds } from './network-ids'
-import type { NetworkConfig, NetworkConfigHexId } from './networks-config';
+import type { NetworkConfig, NetworkConfigHexId } from './networks-config'
 import { networks, networksById } from './networks-config'
 
 export const isTestnetEnabled = () => {

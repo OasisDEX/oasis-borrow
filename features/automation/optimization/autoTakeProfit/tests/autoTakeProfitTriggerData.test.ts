@@ -3,15 +3,14 @@ import BigNumber from 'bignumber.js'
 import type {
   AutoTakeProfitFormChange,
   AutoTakeProfitResetData,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import type {
-  AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData';
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
 import {
-  defaultAutoTakeProfitData,
   extractAutoTakeProfitData,
   pickTriggerWithLowestExecutionPrice,
   prepareAutoTakeProfitResetData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
+import { defaultAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/defaultAutoTakeProfitData'
 
 import { generateRandomBigNumber } from './utils'
 

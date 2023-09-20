@@ -1,15 +1,14 @@
 import type { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type dayjs from 'dayjs'
-import type { GraphQLClient } from 'graphql-request';
+import type { GraphQLClient } from 'graphql-request'
 import { gql } from 'graphql-request'
 import type {
   AaveLikeYieldsResponse,
-  FilterYieldFieldsType } from 'lendingProtocols/aave-like-common/yields';
-import {
-  yieldsDateFormat,
+  FilterYieldFieldsType,
 } from 'lendingProtocols/aave-like-common/yields'
-import type { Observable } from 'rxjs';
+import { yieldsDateFormat } from 'lendingProtocols/aave-like-common/yields'
+import type { Observable } from 'rxjs'
 import { isObservable } from 'rxjs'
 import { first } from 'rxjs/operators'
 

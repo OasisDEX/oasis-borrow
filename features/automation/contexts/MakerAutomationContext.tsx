@@ -1,9 +1,9 @@
 import { getAutomationMakerPositionData } from 'features/automation/common/context/getAutomationMakerPositionData'
 import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
 import { getMakerStopLossMetadata } from 'features/automation/metadata/maker/stopLossMetadata'
-import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
+import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react'
 import React, { useMemo } from 'react'
 
 interface MakerAutomationContextProps {

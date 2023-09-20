@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import type { AllNetworksContractsType } from 'blockchain/contracts';
+import type { AllNetworksContractsType } from 'blockchain/contracts'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import type { SparkV3ReserveDataParameters } from 'blockchain/spark-v3/spark-v3-pool-data-provider'

@@ -1,11 +1,8 @@
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { useAutomationContext } from 'components/context'
 import { checkIfIsEditingAutoBS } from 'features/automation/common/helpers'
-import type {
-  AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange';
-import {
-  AUTO_BUY_FORM_CHANGE
-} from 'features/automation/common/state/autoBSFormChange'
+import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
+import { AUTO_BUY_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
 import { AutoBuyDetailsLayout } from 'features/automation/optimization/autoBuy/controls/AutoBuyDetailsLayout'
 import { getAppConfig } from 'helpers/config'
 import { useUIChanges } from 'helpers/uiChangesHook'

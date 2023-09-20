@@ -1,4 +1,4 @@
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { concat, of } from 'rxjs'
 import { catchError, first, map, skip, startWith } from 'rxjs/operators'
 

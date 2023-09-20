@@ -4,8 +4,7 @@ import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
 } from 'features/automation/common/txDefinitions'
-import type {
-  CommonTransactionServices } from 'features/stateMachines/transaction';
+import type { CommonTransactionServices } from 'features/stateMachines/transaction'
 import {
   createTransactionStateMachine,
   startTransactionService,

@@ -1,4 +1,4 @@
-import type { TxState } from '@oasisdex/transactions';
+import type { TxState } from '@oasisdex/transactions'
 import { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { TokenBalanceRawForJoinArgs } from 'blockchain/calls/erc20'
@@ -12,11 +12,11 @@ import { amountFromPrecision, amountFromRay, amountToRay } from 'blockchain/util
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { map, startWith, switchMap, take } from 'rxjs/operators'
 
-import type { Bonus, BonusAdapter } from './bonusPipe';
+import type { Bonus, BonusAdapter } from './bonusPipe'
 import { ClaimTxnState } from './bonusPipe'
 
 function calculateUnclaimedBonusAmount({

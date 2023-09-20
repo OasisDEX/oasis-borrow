@@ -1,12 +1,12 @@
-import type {
-  AutoBSChangeAction,
-  AutoBSFormChange,
-} from 'features/automation/common/state/autoBSFormChange'
+import { autoBSFormChangeReducer } from 'features/automation/common/state/autoBSFormChange'
 import {
   AUTO_BUY_FORM_CHANGE,
   AUTO_SELL_FORM_CHANGE,
-  autoBSFormChangeReducer,
-} from 'features/automation/common/state/autoBSFormChange'
+} from 'features/automation/common/state/autoBSFormChange.constants'
+import type {
+  AutoBSChangeAction,
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange.types'
 import type {
   AutomationChangeFeature,
   AutomationChangeFeatureAction,
@@ -15,38 +15,30 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   automationChangeFeatureReducer,
 } from 'features/automation/common/state/automationFeatureChange'
+import { autoTakeProfitFormChangeReducer } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
 import type {
   AutoTakeProfitFormChange,
   AutoTakeProfitFormChangeAction,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
-  autoTakeProfitFormChangeReducer,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
+import { constantMultipleFormChangeReducer } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import type {
   ConstantMultipleChangeAction,
   ConstantMultipleFormChange,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import {
-  CONSTANT_MULTIPLE_FORM_CHANGE,
-  constantMultipleFormChangeReducer,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
+import { multiplyPillChangeReducer } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
+import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
 import type {
   MultiplyPillChange,
   MultiplyPillChangeAction,
-} from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
-import {
-  MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
-  multiplyPillChangeReducer,
-} from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
+} from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
+import { formChangeReducer } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
 import type {
   StopLossFormChange,
   StopLossFormChangeAction,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import {
-  formChangeReducer,
-  STOP_LOSS_FORM_CHANGE,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+} from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import type {
   FollowedVaultsLimitReachedChange,
   FollowedVaultsLimitReachedChangeAction,

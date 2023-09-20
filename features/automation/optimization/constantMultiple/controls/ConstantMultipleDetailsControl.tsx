@@ -3,11 +3,8 @@ import { useAutomationContext } from 'components/context'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
 import { ConstantMultipleDetailsLayout } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleDetailsLayout'
 import { checkIfIsEditingConstantMultiple } from 'features/automation/optimization/constantMultiple/helpers'
-import type {
-  ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange';
-import {
-  CONSTANT_MULTIPLE_FORM_CHANGE
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { getAppConfig } from 'helpers/config'
 import {

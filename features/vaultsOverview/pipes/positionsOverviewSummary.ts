@@ -3,7 +3,7 @@ import type { Tickers } from 'blockchain/prices'
 import { tokenList } from 'components/swapWidget/tokenList'
 import { zero } from 'helpers/zero'
 import { isEqual, uniq } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { debounceTime, distinctUntilChanged, map, shareReplay } from 'rxjs/operators'
 

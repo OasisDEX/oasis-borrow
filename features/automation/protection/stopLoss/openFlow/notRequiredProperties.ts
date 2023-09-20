@@ -8,8 +8,8 @@ import type {
 } from 'components/context'
 import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
 import type { AutomationContracts, StopLossMetadata } from 'features/automation/metadata/types'
-import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import type { VaultType } from 'features/generalManageVault/vaultType'
+import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
+import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
 

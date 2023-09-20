@@ -19,7 +19,7 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { getAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import type { FC, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react'
 import React, { Fragment, useMemo, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 

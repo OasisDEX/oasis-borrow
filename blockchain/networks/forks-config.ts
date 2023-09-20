@@ -6,14 +6,10 @@ import { FeaturesEnum } from 'types/config'
 
 import type { NetworkIds } from './network-ids'
 import type { NetworkLabelType, NetworkNames } from './network-names'
-import type { NetworkConfig, NetworkConfigHexId } from './networks-config';
+import type { NetworkConfig, NetworkConfigHexId } from './networks-config'
 import { networksByName } from './networks-config'
-import type {
-  CustomForkParameterType } from './use-custom-fork-parameter';
-import {
-  CustomForkStorageKey,
-  isValidCustomForkParameter,
-} from './use-custom-fork-parameter'
+import type { CustomForkParameterType } from './use-custom-fork-parameter'
+import { CustomForkStorageKey, isValidCustomForkParameter } from './use-custom-fork-parameter'
 
 export const forkSettings = getLocalAppConfig('features')[FeaturesEnum.UseNetworkSwitcherForks]
   ? getStorageValue<CustomForkParameterType>(CustomForkStorageKey, {}, isValidCustomForkParameter)

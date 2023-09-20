@@ -6,12 +6,11 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { ModalProps } from 'helpers/modalHook'
 import type { WithChildren } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React, { useCallback, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { TRANSITIONS } from 'theme'
-import type {
-  SxStyleProp } from 'theme-ui';
+import type { SxStyleProp } from 'theme-ui'
 import {
   Box,
   Button,

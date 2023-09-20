@@ -10,10 +10,9 @@ import type {
   DepositAndGenerateData,
   OpenData,
   ProxyActionsSmartContractAdapterInterface,
-  WithdrawAndPaybackData } from './ProxyActionsSmartContractAdapterInterface';
-import {
-  ProxyActionsAdapterType
+  WithdrawAndPaybackData,
 } from './ProxyActionsSmartContractAdapterInterface'
+import { ProxyActionsAdapterType } from './ProxyActionsSmartContractAdapterInterface'
 
 function createMockPayableTransactionObject<T>(name: string): PayableTransactionObject<T> {
   return {

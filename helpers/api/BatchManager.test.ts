@@ -1,6 +1,6 @@
 import NodeCache from 'node-cache'
 
-import type { Request } from './BatchManager';
+import type { Request } from './BatchManager'
 import { BatchManager } from './BatchManager'
 
 const mockConnection = 'https://www.goingnowhere.com'

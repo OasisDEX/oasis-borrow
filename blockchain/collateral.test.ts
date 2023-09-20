@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of, throwError } from 'rxjs'
 
 import { getTotalValueLocked$ } from './collateral'

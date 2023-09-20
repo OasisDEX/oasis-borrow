@@ -1,17 +1,14 @@
 import type { ContextConnected } from 'blockchain/network'
 import { ilksNotSupportedOnGoerli } from 'blockchain/tokens/mainnet'
-import type { ProductCategory } from 'config/product-categories';
+import type { ProductCategory } from 'config/product-categories'
 import { getProductCategoryUrl } from 'config/product-categories'
-import type {
-  SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChange';
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT
-} from 'features/swapWidget/SwapWidgetChange'
+import type { SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChange'
+import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
 import type { Web3Context } from 'features/web3Context'
 import { mapTokenToFilter, supportedEarnIlks } from 'helpers/productCards'
 import type { UIChanges } from 'helpers/uiChanges'
 import { map as mapLodash, omit, reduce } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, iif, of } from 'rxjs'
 import { flatMap, map, startWith, switchMap } from 'rxjs/operators'
 

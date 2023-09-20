@@ -2,7 +2,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import { failedStatuses, progressStatuses } from 'features/automation/common/consts'
 import type { AutomationFormType } from 'features/automation/common/state/automationFeatureChange'
-import type { SidebarAutomationStages } from 'features/automation/common/types';
+import type { SidebarAutomationStages } from 'features/automation/common/types'
 import { AutomationFeatures } from 'features/automation/common/types'
 
 interface GetAutomationFeatureStatusParams {

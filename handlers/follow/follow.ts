@@ -1,4 +1,4 @@
-import type { PrismaClient, UsersWhoFollowVaults } from '@prisma/client';
+import type { PrismaClient, UsersWhoFollowVaults } from '@prisma/client'
 import { Protocol } from '@prisma/client'
 import { NetworkIds } from 'blockchain/networks'
 import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'

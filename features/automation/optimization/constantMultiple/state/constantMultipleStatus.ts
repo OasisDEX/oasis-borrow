@@ -8,14 +8,12 @@ import {
   checkIfIsDisabledConstantMultiple,
   checkIfIsEditingConstantMultiple,
 } from 'features/automation/optimization/constantMultiple/helpers'
-import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import type {
-  ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData';
-import {
-  prepareConstantMultipleResetData,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { prepareConstantMultipleResetData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { useObservable } from 'helpers/observableHook'
+
+import type { ConstantMultipleFormChange } from './constantMultipleFormChange.types'
+import type { ConstantMultipleTriggerData } from './constantMultipleTriggerData.types'
 
 interface GetConstantMultipleStatusParams {
   constantMultipleState: ConstantMultipleFormChange

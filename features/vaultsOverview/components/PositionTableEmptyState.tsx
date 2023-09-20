@@ -1,6 +1,6 @@
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 
 export function PositionTableEmptyState({

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { AjnaFormAction } from 'features/ajna/common/types'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { useAccount } from 'helpers/useAccount'

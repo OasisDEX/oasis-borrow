@@ -1,6 +1,6 @@
 import { ExpandablePlus } from 'components/dumb/ExpandablePlus'
 import { useToggle } from 'helpers/useToggle'
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { Box, Button, Text } from 'theme-ui'
 

@@ -8,9 +8,9 @@ import { WithArrow } from 'components/WithArrow'
 import dayjs from 'dayjs'
 import { maxUint32, maxUint256 } from 'features/automation/common/consts'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
-import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import type { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import {
   formatAddress,

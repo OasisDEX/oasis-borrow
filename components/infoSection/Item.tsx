@@ -4,7 +4,7 @@ import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { TranslateStringType } from 'helpers/translateStringType'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React, { useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 

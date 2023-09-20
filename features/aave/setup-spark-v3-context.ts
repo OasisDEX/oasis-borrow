@@ -1,11 +1,11 @@
-import type { NetworkNames } from 'blockchain/networks';
+import type { NetworkNames } from 'blockchain/networks'
 import { networksByName } from 'blockchain/networks'
 import { ensureIsSupportedSparkV3NetworkId } from 'blockchain/spark-v3'
 import type { TokenBalances } from 'blockchain/tokens'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import type { AccountContext } from 'components/context'
 import dayjs from 'dayjs'
-import type { VaultType } from 'features/generalManageVault/vaultType'
+import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import type { MainContext } from 'helpers/context/MainContext'
@@ -17,13 +17,13 @@ import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEth
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { merge, of, Subject } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
 
 import type { AaveContext } from './aave-context'
 import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
-import type { ProxiesRelatedWithPosition } from './helpers';
+import type { ProxiesRelatedWithPosition } from './helpers'
 import { getAaveV3StrategyConfig } from './helpers'
 import {
   getManageAaveStateMachine,

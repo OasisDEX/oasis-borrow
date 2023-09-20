@@ -2,15 +2,15 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import type { SystemStyleObject } from '@styled-system/css'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
-import type { ModalProps } from 'helpers/modalHook';
+import type { ModalProps } from 'helpers/modalHook'
 import { useModal } from 'helpers/modalHook'
 import type { TranslateStringType } from 'helpers/translateStringType'
-import type { PropsWithChildren, ReactNode } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react'
 import React, { useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
-import type { CollRatioColor } from './vault/VaultDetails';
+import type { CollRatioColor } from './vault/VaultDetails'
 import { VaultDetailsCardModal } from './vault/VaultDetails'
 import { WithArrow } from './WithArrow'
 

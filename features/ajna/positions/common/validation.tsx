@@ -24,7 +24,7 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React from 'react'
 
 interface AjnaValidationWithLinkProps {

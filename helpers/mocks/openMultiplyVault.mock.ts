@@ -4,18 +4,18 @@ import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMulti
 import type { BalanceInfo } from 'features/shared/balanceInfo'
 import type { PriceInfo } from 'features/shared/priceInfo'
 import type { TxHelpers } from 'helpers/context/types'
-import type { MockBalanceInfoProps } from 'helpers/mocks/balanceInfo.mock';
+import type { MockBalanceInfoProps } from 'helpers/mocks/balanceInfo.mock'
 import { mockBalanceInfo$ } from 'helpers/mocks/balanceInfo.mock'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
-import type { MockIlkDataProps } from 'helpers/mocks/ilks.mock';
+import type { MockIlkDataProps } from 'helpers/mocks/ilks.mock'
 import { mockIlkData$ } from 'helpers/mocks/ilks.mock'
-import type { MockPriceInfoProps } from 'helpers/mocks/priceInfo.mock';
+import type { MockPriceInfoProps } from 'helpers/mocks/priceInfo.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
 import { protoTxHelpers } from 'helpers/protoTxHelpers'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 
-import type { MockExchangeQuote } from './exchangeQuote.mock';
+import type { MockExchangeQuote } from './exchangeQuote.mock'
 import { mockExchangeQuote$ } from './exchangeQuote.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { slippageLimitMock } from './slippageLimit.mock'

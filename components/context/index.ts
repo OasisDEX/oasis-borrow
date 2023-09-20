@@ -1,5 +1,4 @@
-import type {
-  AccountContext } from 'components/context/AccountContextProvider';
+import type { AccountContext } from 'components/context/AccountContextProvider'
 import {
   accountContext,
   AccountContextProvider,
@@ -11,7 +10,8 @@ import type {
   AutomationContext,
   AutomationContextProviderProps,
   AutomationEnvironmentData,
-  AutomationPositionData } from 'components/context/AutomationContextProvider';
+  AutomationPositionData,
+} from 'components/context/AutomationContextProvider'
 import {
   automationContext,
   AutomationContextProvider,
@@ -19,8 +19,7 @@ import {
 } from 'components/context/AutomationContextProvider'
 import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
 import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
-import type {
-  GasEstimationContext } from 'components/context/GasEstimationContextProvider';
+import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import {
   gasEstimationContext,
   GasEstimationContextProvider,
@@ -44,8 +43,7 @@ import {
   ProductContextProvider,
   useProductContext,
 } from 'components/context/ProductContextProvider'
-import type {
-  TOSContext } from 'components/context/TOSContextProvider';
+import type { TOSContext } from 'components/context/TOSContextProvider'
 import {
   isTOSContextAvailable,
   tosContext,

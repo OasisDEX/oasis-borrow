@@ -14,12 +14,11 @@ import { curry } from 'ramda'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
-import type {
-  ManageAaveStateProps } from './SidebarManageAaveVault';
+import type { ManageAaveStateProps } from './SidebarManageAaveVault'
 import {
   BalanceAfterClose,
   calculateMaxCollateralAmount,
-  calculateMaxDebtAmount
+  calculateMaxDebtAmount,
 } from './SidebarManageAaveVault'
 
 export function GetReviewingSidebarProps({

@@ -16,7 +16,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React, { useMemo, useState } from 'react'
 import { Box, Grid } from 'theme-ui'
 

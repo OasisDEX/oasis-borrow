@@ -11,7 +11,7 @@ import { gql, GraphQLClient } from 'graphql-request'
 import { flatten, memoize } from 'lodash'
 import pickBy from 'lodash/pickBy'
 import { equals } from 'ramda'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 

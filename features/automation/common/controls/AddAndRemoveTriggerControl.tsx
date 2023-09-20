@@ -1,58 +1,14 @@
-import type {
-  AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator';
-import {
-  removeAutomationBotAggregatorTriggers,
-} from 'blockchain/calls/automationBotAggregator'
+import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator'
+import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { useAutomationContext } from 'components/context'
-import type { AutoBSTriggerResetData } from 'features/automation/common/state/autoBSFormChange'
-import type {
-  AutomationTxHandlerAnalytics } from 'features/automation/common/state/automationFeatureTxHandlers';
-import {
-  getAutomationFeatureTxHandlers,
-} from 'features/automation/common/state/automationFeatureTxHandlers'
-import type {
-  AutomationAddTriggerData,
-  AutomationRemoveTriggerData } from 'features/automation/common/txDefinitions';
-import {
-  addTransactionMap
-} from 'features/automation/common/txDefinitions'
-import type { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
-import type { AutomationContracts } from 'features/automation/metadata/types'
-import type { AutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import type { TxHelpers } from 'helpers/context/types'
+import { getAutomationFeatureTxHandlers } from 'features/automation/common/state/automationFeatureTxHandlers'
+import { addTransactionMap } from 'features/automation/common/txDefinitions'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { uiChanges } from 'helpers/uiChanges'
-import type { ReactElement } from 'react';
 import { useEffect, useMemo } from 'react'
 
-export interface AddAndRemoveTxHandler {
-  callOnSuccess?: () => void
-}
-
-interface AddAndRemoveTriggerControlProps {
-  addTxData: AutomationAddTriggerData
-  removeTxData?: AutomationRemoveTriggerData
-  isActiveFlag: boolean
-  isAddForm: boolean
-  isEditing: boolean
-  isRemoveForm: boolean
-  publishType: AutomationPublishType
-  resetData: StopLossResetData | AutoTakeProfitResetData | AutoBSTriggerResetData
-  shouldRemoveAllowance: boolean
-  stage: SidebarAutomationStages
-  textButtonHandlerExtension?: () => void
-  triggersId: number[]
-  txHelpers?: TxHelpers
-  children: (
-    txHandler: (options?: AddAndRemoveTxHandler) => void,
-    textButtonHandler: () => void,
-  ) => ReactElement
-  analytics: AutomationTxHandlerAnalytics
-  // TODO contracts prop is optional until we will have metadata for all auto features
-  contracts?: AutomationContracts
-}
+import type { AddAndRemoveTriggerControlProps } from './AddAndRemoveTriggerControl.types'
 
 export function AddAndRemoveTriggerControl({
   addTxData,

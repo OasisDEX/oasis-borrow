@@ -1,11 +1,12 @@
 import type {
   AdjustAaveParameters,
   CloseAaveParameters,
-  ManageAaveParameters } from 'actions/aave-like';
+  ManageAaveParameters,
+} from 'actions/aave-like'
 import {
   getAdjustPositionParameters,
   getCloseAaveParameters,
-  getManagePositionParameters
+  getManagePositionParameters,
 } from 'actions/aave-like'
 import type { NetworkIds } from 'blockchain/networks'
 import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'

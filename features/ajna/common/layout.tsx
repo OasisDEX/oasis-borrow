@@ -2,7 +2,7 @@ import { Footer } from 'components/Footer'
 import { PageSEOTags } from 'components/HeadTags'
 import { WithAnnouncementLayout } from 'components/layouts'
 import { AjnaNavigationController } from 'features/navigation/controls/AjnaNavigationController'
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 import { ThemeProvider } from 'theme-ui'

@@ -12,8 +12,8 @@ import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import React from 'react'
 import { Container } from 'theme-ui'
 
-import type { GeneralManageVaultState } from './generalManageVault'
-import { VaultType } from './vaultType'
+import type { GeneralManageVaultState } from './generalManageVault.types'
+import { VaultType } from './vaultType.types'
 
 interface GeneralManageVaultViewProps {
   generalManageVault: GeneralManageVaultState

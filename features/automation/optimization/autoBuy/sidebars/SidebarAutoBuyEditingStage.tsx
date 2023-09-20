@@ -22,8 +22,8 @@ import {
   prepareAutoBSResetData,
 } from 'features/automation/common/helpers'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
-import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
-import { AUTO_BUY_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange'
+import { AUTO_BUY_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
+import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'

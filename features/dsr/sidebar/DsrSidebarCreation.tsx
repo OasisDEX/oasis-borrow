@@ -1,9 +1,6 @@
 import { MessageCard } from 'components/MessageCard'
-import type {
-  SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus';
-import {
-  SidebarSectionStatus
-} from 'components/sidebar/SidebarSectionStatus'
+import type { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
+import { SidebarSectionStatus } from 'components/sidebar/SidebarSectionStatus'
 import { getIsAllowanceStage } from 'features/allowance/allowance'
 import type { DsrDepositState } from 'features/dsr/helpers/dsrDeposit'
 import { isProxyStage } from 'features/proxy/proxy'

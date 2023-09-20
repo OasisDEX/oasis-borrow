@@ -1,7 +1,7 @@
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 
-import type { VaultResolve } from './vaultResolver';
+import type { VaultResolve } from './vaultResolver'
 import { MakerVaultType } from './vaultResolver'
 
 export function createMockVaultResolver$(args?: Partial<VaultResolve>): Observable<VaultResolve> {

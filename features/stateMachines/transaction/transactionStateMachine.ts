@@ -1,4 +1,4 @@
-import type { TxMeta, TxState } from '@oasisdex/transactions';
+import type { TxMeta, TxState } from '@oasisdex/transactions'
 import { TxStatus } from '@oasisdex/transactions'
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -6,11 +6,11 @@ import type { Context, ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import type { TxHelpers } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/internal/operators'
 import { first, map, switchMap } from 'rxjs/operators'
-import type { AnyEventObject } from 'xstate';
+import type { AnyEventObject } from 'xstate'
 import { assign, createMachine, sendParent } from 'xstate'
 
 type BaseTransactionStateMachineContext = {

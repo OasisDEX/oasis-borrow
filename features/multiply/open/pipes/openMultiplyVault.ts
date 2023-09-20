@@ -1,24 +1,19 @@
 import type { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { IlkData } from 'blockchain/ilks';
+import type { IlkData } from 'blockchain/ilks'
 import { createIlkDataChange$ } from 'blockchain/ilks'
 import type { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
-import type {
-  AllowanceChanges } from 'features/allowance/allowance';
-import {
-  AllowanceOption,
-  applyAllowanceChanges,
-} from 'features/allowance/allowance'
+import type { AllowanceChanges } from 'features/allowance/allowance'
+import { AllowanceOption, applyAllowanceChanges } from 'features/allowance/allowance'
 import { openFlowInitialStopLossLevel } from 'features/automation/common/helpers'
 import type {
   OpenVaultStopLossChanges,
-  StopLossOpenFlowStages } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss';
-import {
-  applyOpenVaultStopLoss
+  StopLossOpenFlowStages,
 } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
+import { applyOpenVaultStopLoss } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import {
   addStopLossTrigger,
   applyStopLossOpenFlowTransaction,
@@ -29,69 +24,47 @@ import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exch
 import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { createProxy } from 'features/proxy/createProxy'
-import type { ProxyChanges } from 'features/proxy/proxy';
+import type { ProxyChanges } from 'features/proxy/proxy'
 import { applyProxyChanges } from 'features/proxy/proxy'
-import type { BalanceInfo } from 'features/shared/balanceInfo';
+import type { BalanceInfo } from 'features/shared/balanceInfo'
 import { balanceInfoChange$ } from 'features/shared/balanceInfo'
-import type { PriceInfo } from 'features/shared/priceInfo';
+import type { PriceInfo } from 'features/shared/priceInfo'
 import { priceInfoChange$ } from 'features/shared/priceInfo'
 import type { OpenVaultTransactionChange } from 'features/shared/transactions'
-import type { UserSettingsState } from 'features/userSettings/userSettings';
+import type { UserSettingsState } from 'features/userSettings/userSettings'
 import { slippageChange$ } from 'features/userSettings/userSettings'
-import type {
-  OpenVaultTransitionChange } from 'features/vaultTransitions/openVaultTransitions';
-import {
-  createApplyOpenVaultTransition
-} from 'features/vaultTransitions/openVaultTransitions'
+import type { OpenVaultTransitionChange } from 'features/vaultTransitions/openVaultTransitions'
+import { createApplyOpenVaultTransition } from 'features/vaultTransitions/openVaultTransitions'
 import { getLocalAppConfig } from 'helpers/config'
-import type {
-  AddGasEstimationFunction,
-  HasGasEstimation,
-  TxHelpers } from 'helpers/context/types';
-import {
-  GasEstimationStatus
-} from 'helpers/context/types'
+import type { AddGasEstimationFunction, HasGasEstimation, TxHelpers } from 'helpers/context/types'
+import { GasEstimationStatus } from 'helpers/context/types'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import type { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, iif, merge, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
-import type {
-  ExchangeQuoteChanges } from './openMultiplyQuote';
-import {
-  applyExchange,
-  createExchangeChange$,
-  createInitialQuoteChange
-} from './openMultiplyQuote'
-import type {
-  OpenMultiplyVaultCalculations } from './openMultiplyVaultCalculations';
+import type { ExchangeQuoteChanges } from './openMultiplyQuote'
+import { applyExchange, createExchangeChange$, createInitialQuoteChange } from './openMultiplyQuote'
+import type { OpenMultiplyVaultCalculations } from './openMultiplyVaultCalculations'
 import {
   applyOpenMultiplyVaultCalculations,
-  defaultOpenMultiplyVaultStateCalculations
+  defaultOpenMultiplyVaultStateCalculations,
 } from './openMultiplyVaultCalculations'
-import type {
-  OpenMultiplyVaultConditions } from './openMultiplyVaultConditions';
+import type { OpenMultiplyVaultConditions } from './openMultiplyVaultConditions'
 import {
   applyOpenVaultConditions,
   applyOpenVaultStageCategorisation,
-  defaultOpenMultiplyVaultConditions
+  defaultOpenMultiplyVaultConditions,
 } from './openMultiplyVaultConditions'
-import type {
-  OpenVaultEnvironmentChange } from './openMultiplyVaultEnvironment';
-import {
-  applyOpenVaultEnvironment
-} from './openMultiplyVaultEnvironment'
-import type { OpenVaultInputChange } from './openMultiplyVaultInput';
+import type { OpenVaultEnvironmentChange } from './openMultiplyVaultEnvironment'
+import { applyOpenVaultEnvironment } from './openMultiplyVaultEnvironment'
+import type { OpenVaultInputChange } from './openMultiplyVaultInput'
 import { applyOpenVaultInput } from './openMultiplyVaultInput'
-import type {
-  OpenVaultSummary } from './openMultiplyVaultSummary';
-import {
-  applyOpenVaultSummary,
-  defaultOpenVaultSummary
-} from './openMultiplyVaultSummary'
+import type { OpenVaultSummary } from './openMultiplyVaultSummary'
+import { applyOpenVaultSummary, defaultOpenVaultSummary } from './openMultiplyVaultSummary'
 import {
   applyEstimateGas,
   applyOpenMultiplyVaultTransaction,

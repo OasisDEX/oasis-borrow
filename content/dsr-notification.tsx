@@ -2,7 +2,7 @@ import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNo
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans } from 'next-i18next'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React from 'react'
 
 interface DsrNotificationWithLinkProps {

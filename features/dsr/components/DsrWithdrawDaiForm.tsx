@@ -1,9 +1,9 @@
 import type BigNumber from 'bignumber.js'
-import type { VaultAction } from 'components/vault/VaultActionInput';
+import type { VaultAction } from 'components/vault/VaultActionInput'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import type { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import type { HasGasEstimation } from 'helpers/context/types'
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react'
 import React from 'react'
 import { Box } from 'theme-ui'
 

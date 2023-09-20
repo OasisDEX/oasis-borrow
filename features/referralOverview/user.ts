@@ -1,9 +1,9 @@
-import type { TxState } from '@oasisdex/transactions';
+import type { TxState } from '@oasisdex/transactions'
 import { TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import type { User, WeeklyClaim } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import type { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer';
+import type { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
 import { claimMultiple } from 'blockchain/calls/merkleRedeemer'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards'
@@ -11,7 +11,7 @@ import type { Web3Context } from 'features/web3Context'
 import type { TxHelpers } from 'helpers/context/types'
 import { formatAmount } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of, Subject } from 'rxjs'
 import { first, map, share, startWith, switchMap } from 'rxjs/operators'
 

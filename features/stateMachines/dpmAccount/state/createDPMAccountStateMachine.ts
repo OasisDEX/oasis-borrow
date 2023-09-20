@@ -1,12 +1,11 @@
 import BigNumber from 'bignumber.js'
-import type {
-  CreateAccountParameters } from 'blockchain/better-calls/account-factory';
+import type { CreateAccountParameters } from 'blockchain/better-calls/account-factory'
 import {
   createCreateAccountTransaction,
   estimateGasCreateAccount,
   extractResultFromContractReceipt,
 } from 'blockchain/better-calls/account-factory'
-import type { CreateDPMAccount } from 'blockchain/calls/accountFactory';
+import type { CreateDPMAccount } from 'blockchain/calls/accountFactory'
 import { createAccount } from 'blockchain/calls/accountFactory'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
@@ -18,18 +17,17 @@ import type { ethers } from 'ethers'
 import type {
   EthersTransactionStateMachine,
   TransactionStateMachine,
-  TransactionStateMachineResultEvents } from 'features/stateMachines/transaction';
-import {
-  createEthersTransactionStateMachine
+  TransactionStateMachineResultEvents,
 } from 'features/stateMachines/transaction'
-import type { HasGasEstimation, TxHelpers } from 'helpers/context/types';
+import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
+import type { HasGasEstimation, TxHelpers } from 'helpers/context/types'
 import { GasEstimationStatus } from 'helpers/context/types'
 import { isEqual } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { fromPromise } from 'rxjs/internal-compatibility'
 import { distinctUntilChanged, filter, map, startWith, switchMap } from 'rxjs/operators'
-import type { ActorRefFrom } from 'xstate';
+import type { ActorRefFrom } from 'xstate'
 import { assign, createMachine, interpret, sendParent, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import type { MachineOptionsFrom } from 'xstate/lib/types'

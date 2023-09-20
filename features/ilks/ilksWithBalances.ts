@@ -3,7 +3,7 @@ import type { IlkData, IlkDataList } from 'blockchain/ilks'
 import type { Context } from 'blockchain/network'
 import type { TokenBalances } from 'blockchain/tokens'
 import isEqual from 'lodash/isEqual'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 

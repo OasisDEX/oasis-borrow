@@ -1,12 +1,12 @@
 import type { BigNumber } from 'bignumber.js'
-import type { AfterPillProps } from 'components/vault/VaultDetails';
+import type { AfterPillProps } from 'components/vault/VaultDetails'
 import { VaultDetailsAfterPill } from 'components/vault/VaultDetails'
 import { WithArrow } from 'components/WithArrow'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import type { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Button, Card, Flex, Grid, Image, Text } from 'theme-ui'
 

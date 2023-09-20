@@ -1,10 +1,5 @@
-import type {
-  ConfigContext,
-  ConfigResponseType } from 'helpers/config';
-import {
-  configCacheTime,
-  saveConfigToLocalStorage,
-} from 'helpers/config'
+import type { ConfigContext, ConfigResponseType } from 'helpers/config'
+import { configCacheTime, saveConfigToLocalStorage } from 'helpers/config'
 import type { WithChildren } from 'helpers/types'
 import React, { useEffect, useState } from 'react'
 import { FeaturesEnum } from 'types/config'

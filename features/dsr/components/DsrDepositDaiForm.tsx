@@ -1,13 +1,13 @@
 import type BigNumber from 'bignumber.js'
 import { Checkbox } from 'components/Checkbox'
 import { AppLink } from 'components/Links'
-import type { VaultAction } from 'components/vault/VaultActionInput';
+import type { VaultAction } from 'components/vault/VaultActionInput'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import type { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { HasGasEstimation } from 'helpers/context/types'
 import { useTranslation } from 'next-i18next'
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react'
 import React from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 

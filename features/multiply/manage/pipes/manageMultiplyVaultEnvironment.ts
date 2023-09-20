@@ -1,6 +1,6 @@
 import type { IlkDataChange } from 'blockchain/ilks'
 import type { VaultChange } from 'blockchain/vaults.types'
-import type { AutomationTriggersChange } from 'features/automation/api/automationTriggersData'
+import type { AutomationTriggersChange } from 'features/automation/api/automationTriggersData.types'
 import type { BalanceInfoChange } from 'features/shared/balanceInfo'
 import type { PriceInfoChange } from 'features/shared/priceInfo'
 import type { SlippageChange } from 'features/userSettings/userSettings'

@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken, tokensBySymbol } from 'blockchain/tokensMetadata'
 import { GenericTokenIcon } from 'components/GenericTokenIcon'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui';
+import type { SxStyleProp } from 'theme-ui'
 import { Flex } from 'theme-ui'
 
 interface TokensGroupProps {

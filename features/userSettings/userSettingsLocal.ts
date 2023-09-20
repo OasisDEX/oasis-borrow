@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 
 const USER_SETTINGS_LOCAL_STORAGE = 'user_settings'

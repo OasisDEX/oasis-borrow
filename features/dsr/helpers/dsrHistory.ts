@@ -5,7 +5,7 @@ import { getNetworkRpcEndpoint, NetworkIds } from 'blockchain/networks'
 import { funcSigTopic } from 'blockchain/utils'
 import { gql, GraphQLClient } from 'graphql-request'
 import padStart from 'lodash/padStart'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, merge, of } from 'rxjs'
 import { fromPromise } from 'rxjs/internal-compatibility'
 import { mergeAll } from 'rxjs/internal/operators'

@@ -1,14 +1,14 @@
 import type { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { IlkData } from 'blockchain/ilks';
+import type { IlkData } from 'blockchain/ilks'
 import { createIlkDataChange$ } from 'blockchain/ilks'
 import type { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { createVaultChange$ } from 'blockchain/vaults'
 import type { Vault } from 'blockchain/vaults.types'
-import type { Dayjs } from 'dayjs';
+import type { Dayjs } from 'dayjs'
 import dayjs from 'dayjs'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import type { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
@@ -41,22 +41,23 @@ import type {
   ManageMultiplyVaultState,
   MutableManageMultiplyVaultState,
 } from 'features/multiply/manage/pipes/types'
-import type { BalanceInfo } from 'features/shared/balanceInfo';
+import type { BalanceInfo } from 'features/shared/balanceInfo'
 import { balanceInfoChange$ } from 'features/shared/balanceInfo'
-import type { PriceInfo } from 'features/shared/priceInfo';
+import type { PriceInfo } from 'features/shared/priceInfo'
 import { priceInfoChange$ } from 'features/shared/priceInfo'
-import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory';
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { createHistoryChange$ } from 'features/vaultHistory/vaultHistory'
-import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types';
+import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { GasEstimationStatus } from 'helpers/context/types'
 import { GUNI_SLIPPAGE } from 'helpers/multiply/calculations'
 import { one } from 'helpers/zero'
 import { curry } from 'lodash'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, merge, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
 import { closeGuniVault } from './guniActionsCalls'
+import type { GuniTxData, GuniTxDataChange, ManageEarnVaultState } from './manageGuniVault.types'
 import { applyGuniCalculations } from './manageGuniVaultCalculations'
 import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
 import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
@@ -73,17 +74,6 @@ function applyManageVaultInjectedOverride(
   }
   return state
 }
-
-export type GuniTxData = {
-  sharedAmount0?: BigNumber
-  sharedAmount1?: BigNumber
-  minToTokenAmount?: BigNumber
-  toTokenAmount?: BigNumber
-  fromTokenAmount?: BigNumber
-  requiredDebt?: BigNumber
-}
-
-type GuniTxDataChange = { kind: 'guniTxData' }
 
 function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(change: Ch, state: S): S {
   if (change.kind === 'guniTxData') {
@@ -182,17 +172,6 @@ export const defaultMutableManageMultiplyVaultState = {
   mainAction: 'buy',
   otherAction: 'closeVault',
 } as MutableManageMultiplyVaultState
-
-export type ManageEarnVaultState = ManageMultiplyVaultState & {
-  totalValueLocked?: BigNumber
-  earningsToDate?: BigNumber
-  earningsToDateAfterFees?: BigNumber
-  netAPY?: BigNumber
-  makerOracleTokenPrices: {
-    today: MakerOracleTokenPrice
-    sevenDaysAgo: MakerOracleTokenPrice
-  }
-}
 
 export function createManageGuniVault$(
   context$: Observable<Context>,

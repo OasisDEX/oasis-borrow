@@ -4,7 +4,7 @@ import type { ProductHubProductType } from 'features/productHub/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import type { FC } from 'react';
+import type { FC } from 'react'
 import React, { useRef } from 'react'
 import { Box, Heading } from 'theme-ui'
 

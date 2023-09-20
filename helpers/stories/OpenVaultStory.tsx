@@ -1,13 +1,10 @@
 import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'
-import type {
-  MutableOpenVaultState } from 'features/borrow/open/pipes/openVault';
-import {
-  defaultMutableOpenVaultState
-} from 'features/borrow/open/pipes/openVault'
+import type { MutableOpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { defaultMutableOpenVaultState } from 'features/borrow/open/pipes/openVault'
 import type { ProductContext } from 'helpers/context/ProductContext'
-import type { MockOpenVaultProps } from 'helpers/mocks/openVault.mock';
+import type { MockOpenVaultProps } from 'helpers/mocks/openVault.mock'
 import { mockOpenVault$ } from 'helpers/mocks/openVault.mock'
 import React, { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
