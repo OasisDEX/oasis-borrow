@@ -13,7 +13,7 @@ import { GUNI_MAX_SLIPPAGE, GUNI_SLIPPAGE } from 'helpers/multiply/calculations'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import type { OpenGuniVaultState, Stage } from './openGuniVault'
+import type { OpenGuniVaultState, Stage } from './openGuniVault.types'
 
 const defaultOpenVaultStageCategories = {
   isEditingStage: false,

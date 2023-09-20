@@ -1,7 +1,7 @@
 import type { BigNumber } from 'bignumber.js'
 import type { Context } from 'blockchain/network'
 import { TabBar } from 'components/TabBar'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { DsrFaq } from 'features/content/faqs/dsr'
 import { DsrDetailsSection } from 'features/dsr/components/DsrDetailsSection'

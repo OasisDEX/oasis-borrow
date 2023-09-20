@@ -1,11 +1,11 @@
 import { Button } from '@theme-ui/components'
 import { AppLink } from 'components/Links'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
 import { criticalNotifications } from 'features/notifications/consts'
-import type { Notification } from 'features/notifications/types';
+import type { Notification } from 'features/notifications/types'
 import { NotificationTypes } from 'features/notifications/types'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React, { useMemo } from 'react'
 import { Box, Card, Flex, Heading, Text } from 'theme-ui'
 

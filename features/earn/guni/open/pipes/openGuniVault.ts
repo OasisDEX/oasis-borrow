@@ -1,16 +1,11 @@
 import type { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { IlkData } from 'blockchain/ilks';
+import type { IlkData } from 'blockchain/ilks'
 import { createIlkDataChange$ } from 'blockchain/ilks'
-import type { ContextConnected } from 'blockchain/network';
+import type { ContextConnected } from 'blockchain/network'
 import { compareBigNumber } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import type {
-  AllowanceChanges,
-  AllowanceFunctions,
-  AllowanceStages,
-  AllowanceState } from 'features/allowance/allowance';
 import {
   allowanceTransitions,
   applyAllowanceChanges,
@@ -19,39 +14,27 @@ import {
   defaultAllowanceState,
 } from 'features/allowance/allowance'
 import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
-import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import type { TxStage } from 'features/multiply/open/pipes/openMultiplyVault' // TODO: remove
+// TODO: remove
 import { finalValidation } from 'features/multiply/open/pipes/openMultiplyVaultValidations'
-import type {
-  ProxyChanges,
-  ProxyStages,
-  ProxyState } from 'features/proxy/proxy';
 import {
   addProxyTransitions,
   applyIsProxyStage,
   applyProxyChanges,
-  defaultProxyStage
+  defaultProxyStage,
 } from 'features/proxy/proxy'
-import type { BalanceInfo } from 'features/shared/balanceInfo';
+import type { BalanceInfo } from 'features/shared/balanceInfo'
 import { balanceInfoChange$ } from 'features/shared/balanceInfo'
-import type { PriceInfo } from 'features/shared/priceInfo';
+import type { PriceInfo } from 'features/shared/priceInfo'
 import { priceInfoChange$ } from 'features/shared/priceInfo'
-import type { UserSettingsState } from 'features/userSettings/userSettings';
+import type { UserSettingsState } from 'features/userSettings/userSettings'
 import { slippageChange$ } from 'features/userSettings/userSettings'
-import type {
-  AddGasEstimationFunction,
-  HasGasEstimation,
-  TxHelpers } from 'helpers/context/types';
-import {
-  GasEstimationStatus
-} from 'helpers/context/types'
+import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
+import { GasEstimationStatus } from 'helpers/context/types'
 import { GUNI_SLIPPAGE, OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { combineTransitions } from 'helpers/pipelines/combineTransitions'
-import type { TxError } from 'helpers/types'
 import { one, zero } from 'helpers/zero'
-import type { Observable } from 'rxjs';
+import type { Observable } from 'rxjs'
 import { combineLatest, EMPTY, iif, merge, of, Subject, throwError } from 'rxjs'
 import {
   distinctUntilChanged,
@@ -65,35 +48,30 @@ import {
 } from 'rxjs/internal/operators'
 import { withLatestFrom } from 'rxjs/operators'
 
-import type { EnvironmentChange, EnvironmentState } from './enviroment';
 import { applyEnvironment } from './enviroment'
-import type {
-  EditingStage,
-  FormChanges,
-  FormFunctions,
-  FormState } from './guniForm';
 import {
   addFormTransitions,
   applyFormChange,
   applyIsEditingStage,
-  defaultFormState
+  defaultFormState,
 } from './guniForm'
 import { validateGuniErrors, validateGuniWarnings } from './guniOpenMultiplyVaultValidations'
 import { applyGuniEstimateGas } from './openGuniMultiplyVaultTransactions'
 import type {
-  GuniOpenMultiplyVaultConditions } from './openGuniVaultConditions';
+  ExchangeChange,
+  ExchangeState,
+  GuniCalculations,
+  GuniTxDataChange,
+  OpenGuniChanges,
+  OpenGuniVaultState,
+  TokensLpBalanceState,
+} from './openGuniVault.types'
 import {
   applyGuniOpenVaultConditions,
   applyGuniOpenVaultStageCategorisation,
-  defaultGuniOpenMultiplyVaultConditions
+  defaultGuniOpenMultiplyVaultConditions,
 } from './openGuniVaultConditions'
 import curry from 'ramda/src/curry'
-
-type InjectChange = { kind: 'injectStateOverride'; stateToOverride: Partial<OpenGuniVaultState> }
-
-interface OverrideHelper {
-  injectStateOverride: (state: Partial<any>) => void
-}
 
 function applyOpenGuniVaultInjectedOverride(state: OpenGuniVaultState, change: OpenGuniChanges) {
   if (change.kind === 'injectStateOverride') {
@@ -104,51 +82,6 @@ function applyOpenGuniVaultInjectedOverride(state: OpenGuniVaultState, change: O
   }
   return state
 }
-
-export type Stage = EditingStage | ProxyStages | AllowanceStages | TxStage
-
-interface StageState {
-  stage: Stage
-}
-
-interface VaultTxInfo {
-  txError?: TxError
-  etherscan?: string
-  safeConfirmations: number
-}
-
-interface StageFunctions {
-  progress?: () => void
-  regress?: () => void
-  clear: () => void
-}
-
-interface ExchangeState {
-  quote?: Quote
-  swap?: Quote
-  exchangeError: boolean
-  slippage: BigNumber
-}
-
-type ExchangeChange =
-  | { kind: 'quote'; quote: Quote }
-  | { kind: 'swap'; swap: Quote }
-  | { kind: 'exchangeError' }
-
-// function createInitialQuoteChange(
-//   exchangeQuote$: (
-//     token: string,
-//     slippage: BigNumber,
-//     amount: BigNumber,
-//     action: ExchangeAction,
-//   ) => Observable<Quote>,
-//   token: string,
-// ): Observable<ExchangeChange> {
-//   return exchangeQuote$(token, new BigNumber(0.1), new BigNumber(1), 'BUY_COLLATERAL').pipe(
-//     map((quote) => ({ kind: 'quote' as const, quote })),
-//     shareReplay(1),
-//   )
-// }
 
 function applyExchange<S extends ExchangeState>(state: S, change: ExchangeChange): S {
   switch (change.kind) {
@@ -161,67 +94,6 @@ function applyExchange<S extends ExchangeState>(state: S, change: ExchangeChange
     default:
       return state
   }
-}
-
-type OpenGuniChanges =
-  | EnvironmentChange
-  | FormChanges
-  | InjectChange
-  | ProxyChanges
-  | AllowanceChanges
-
-type ErrorState = {
-  errorMessages: VaultErrorMessage[]
-}
-
-type WarringState = {
-  warningMessages: VaultWarningMessage[]
-}
-
-export type OpenGuniVaultState = OverrideHelper &
-  StageState &
-  StageFunctions &
-  AllowanceState &
-  AllowanceFunctions &
-  FormFunctions &
-  FormState &
-  EnvironmentState &
-  ExchangeState &
-  VaultTxInfo &
-  ErrorState &
-  WarringState &
-  ProxyState &
-  GuniCalculations &
-  TokensLpBalanceState &
-  GuniOpenMultiplyVaultConditions & {
-    // TODO - ADDED BY SEBASTIAN TO BE REMOVED
-    maxMultiple: BigNumber
-    afterOutstandingDebt: BigNumber
-    multiply: BigNumber
-    totalCollateral: BigNumber // it was not available in standard multiply state
-    afterNetValueUSD: BigNumber
-    maxDepositAmount: BigNumber
-    txFees: BigNumber
-    impact: BigNumber
-    loanFees: BigNumber
-    oazoFee: BigNumber
-    gettingCollateral: BigNumber // it was not available in standard multiply state
-    gettingCollateralUSD: BigNumber // it was not available in standard multiply state
-    buyingCollateralUSD: BigNumber
-    maxGenerateAmount: BigNumber
-    totalSteps: number
-    currentStep: number
-    netValueUSD: BigNumber
-    minToTokenAmount: BigNumber
-    requiredDebt?: BigNumber
-    currentPnL: BigNumber
-    totalGasSpentUSD: BigNumber
-    id?: BigNumber
-  } & HasGasEstimation
-
-interface GuniCalculations {
-  leveragedAmount?: BigNumber
-  flAmount?: BigNumber
 }
 
 function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumber }>(
@@ -239,37 +111,6 @@ function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumb
     flAmount,
   }
 }
-
-export interface TokensLpBalanceState {
-  token0Amount?: BigNumber
-  token1Amount?: BigNumber
-}
-
-interface GuniTxData {
-  swap?: Quote
-  flAmount?: BigNumber
-  leveragedAmount?: BigNumber
-  token0Amount?: BigNumber
-  token1Amount?: BigNumber
-  amount0?: BigNumber
-  amount1?: BigNumber
-  fromTokenAmount?: BigNumber
-  toTokenAmount?: BigNumber
-  minToTokenAmount?: BigNumber
-  afterCollateralAmount?: BigNumber
-  afterOutstandingDebt?: BigNumber
-  requiredDebt?: BigNumber
-  oazoFee?: BigNumber
-  totalFees?: BigNumber
-  totalCollateral?: BigNumber
-  gettingCollateral: BigNumber
-  gettingCollateralUSD: BigNumber
-  afterNetValueUSD: BigNumber
-  buyingCollateralUSD: BigNumber
-  multiply: BigNumber
-}
-
-type GuniTxDataChange = { kind: 'guniTxData' } & GuniTxData
 
 export function createOpenGuniVault$(
   context$: Observable<ContextConnected>,

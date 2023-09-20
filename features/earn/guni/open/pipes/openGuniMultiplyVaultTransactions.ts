@@ -6,7 +6,7 @@ import { OAZO_LOWER_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
 
-import type { OpenGuniVaultState } from './openGuniVault'
+import type { OpenGuniVaultState } from './openGuniVault.types'
 
 export function applyGuniEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,

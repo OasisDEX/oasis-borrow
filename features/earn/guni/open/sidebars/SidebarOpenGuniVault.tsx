@@ -1,9 +1,9 @@
 import { useAccountContext } from 'components/context'
-import type { SidebarSectionProps } from 'components/sidebar/SidebarSection';
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
-import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault.types'
 import { SidebarOpenGuniVaultEditingState } from 'features/earn/guni/open/sidebars/SidebarOpenGuniVaultEditingState'
 import { SidebarOpenGuniVaultOpenStage } from 'features/earn/guni/open/sidebars/SidebarOpenGuniVaultOpenStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'

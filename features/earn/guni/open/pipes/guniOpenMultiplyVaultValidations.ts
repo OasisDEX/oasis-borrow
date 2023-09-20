@@ -1,9 +1,9 @@
-import type { VaultErrorMessage } from 'features/form/errorMessagesHandler';
+import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
-import type { VaultWarningMessage } from 'features/form/warningMessagesHandler';
+import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 
-import type { OpenGuniVaultState } from './openGuniVault'
+import type { OpenGuniVaultState } from './openGuniVault.types'
 
 export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultState {
   const {

@@ -1,6 +1,6 @@
 import type { BigNumber } from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
 import type { AfterPillProps } from 'components/vault/VaultDetails'
 import { StopLossBannerLayout } from 'features/automation/protection/stopLoss/controls/StopLossBannerLayout'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
