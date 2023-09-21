@@ -2,7 +2,6 @@ import type { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import type { TxHelpers } from 'helpers/context/types'
 
-import { ALLOWANCE_STAGES } from './allowance.constants'
 import type {
   AllowanceChanges,
   AllowanceConditions,
@@ -11,6 +10,7 @@ import type {
   AllowanceState,
   StateDependencies,
 } from './allowance.types'
+import { ALLOWANCE_STAGES } from './allowance.types'
 import { setAllowance } from './setAllowance'
 
 export function getIsAllowanceStage(stage: string): stage is AllowanceStages {

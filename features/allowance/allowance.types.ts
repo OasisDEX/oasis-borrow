@@ -1,7 +1,13 @@
 import type { BigNumber } from 'bignumber.js'
 import type { TxError } from 'helpers/types'
 
-import type { ALLOWANCE_STAGES } from './allowance.constants'
+export const ALLOWANCE_STAGES = [
+  'allowanceWaitingForConfirmation',
+  'allowanceWaitingForApproval',
+  'allowanceInProgress',
+  'allowanceFailure',
+  'allowanceSuccess',
+] as const
 
 // TODO: there is inconsistency between open/manage
 // in open there is just one allowance called allowance

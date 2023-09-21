@@ -20,11 +20,6 @@ import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
-export interface OasisActionCallData extends AjnaTxData {
-  kind: TxMetaKind.libraryCall
-  proxyAddress: string
-}
-
 export function useAjnaTxHandler(): () => void {
   const { txHelpers$, context$ } = useMainContext()
   const [txHelpers] = useObservable(txHelpers$)

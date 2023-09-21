@@ -8,7 +8,7 @@ import type {
 import type {
   AutomationBotAddAggregatorTriggerData,
   AutomationBotRemoveTriggersData,
-} from 'blockchain/calls/automationBotAggregator'
+} from 'blockchain/calls/automationBotAggregator.types'
 import type { EstimateGasFunction, SendTransactionFunction } from 'blockchain/calls/callsHelpers'
 import type { ApproveData, DisapproveData } from 'blockchain/calls/erc20'
 import type { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'

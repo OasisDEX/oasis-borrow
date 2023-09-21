@@ -1,5 +1,5 @@
+import { addAutomationBotAggregatorTrigger } from 'blockchain/calls/automationBotAggregator.constants'
 import { addAutomationBotTrigger } from 'blockchain/calls/automationBot.constants'
-import { addAutomationBotAggregatorTrigger } from 'blockchain/calls/automationBotAggregator'
 import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'

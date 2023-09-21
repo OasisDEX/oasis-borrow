@@ -6,7 +6,7 @@ import type {
 import type {
   AutomationBotAddAggregatorTriggerData,
   AutomationBotRemoveTriggersData,
-} from 'blockchain/calls/automationBotAggregator'
+} from 'blockchain/calls/automationBotAggregator.types'
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 
 export type AutomationAddTriggerData =

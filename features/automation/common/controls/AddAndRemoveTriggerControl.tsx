@@ -1,5 +1,5 @@
-import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator'
-import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator'
+import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator.constants'
+import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { useAutomationContext } from 'components/context'
 import { getAutomationFeatureTxHandlers } from 'features/automation/common/state/automationFeatureTxHandlers'

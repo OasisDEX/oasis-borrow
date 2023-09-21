@@ -3,8 +3,8 @@ import type {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
 } from 'blockchain/calls/automationBot.types'
-import type { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
-import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator'
+import type { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator.types'
+import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator.constants'
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { addTransactionMap } from 'features/automation/common/txDefinitions'
 import type {

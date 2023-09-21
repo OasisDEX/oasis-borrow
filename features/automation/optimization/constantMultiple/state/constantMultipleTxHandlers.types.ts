@@ -1,6 +1,6 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
-import type { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
+import type { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator.types'
 import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 
 import type { ConstantMultipleFormChange } from './constantMultipleFormChange.types'
