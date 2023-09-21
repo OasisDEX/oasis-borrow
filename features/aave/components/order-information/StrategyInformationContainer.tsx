@@ -77,12 +77,14 @@ export function StrategyInformationContainer({
           balance={balance}
         />
       )}
-      {isMultiplyStrategy(transition) && orderInformationConfig.showFlashloanInformation && (
-        <FlashLoanInformation
-          transactionParameters={transition}
-          networkId={state.context.strategyConfig.networkId}
-        />
-      )}
+      {isMultiplyStrategy(transition) &&
+        orderInformationConfig.showFlashloanInformation &&
+        transition.flashloan.token.symbol !== '' && (
+          <FlashLoanInformation
+            transactionParameters={transition}
+            networkId={state.context.strategyConfig.networkId}
+          />
+        )}
       {simulationHasSwap && balance && (
         <PriceImpact
           {...state.context}
