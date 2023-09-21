@@ -70,6 +70,7 @@ export function createDPMAccountStateMachine(
     {
       predictableActionArguments: true,
       preserveActionOrder: true,
+      //eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./createDPMAccountStateMachine.typegen').Typegen0,
       id: 'createDPMAccount',
       initial: 'idle',

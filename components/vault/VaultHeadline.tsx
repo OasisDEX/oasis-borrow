@@ -1,6 +1,6 @@
 import { Heading } from '@theme-ui/components'
-import type { ProtocolLabelProps } from 'components/ProtocolLabel'
 import { ProtocolLabel } from 'components/ProtocolLabel'
+import type { ProtocolLabelProps } from 'components/ProtocolLabel.types'
 import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
 import {

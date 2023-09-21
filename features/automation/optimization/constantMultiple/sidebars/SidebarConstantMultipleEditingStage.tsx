@@ -20,8 +20,8 @@ import {
   sidebarAutomationFeatureCopyMap,
 } from 'features/automation/common/consts'
 import { automationInputsAnalytics } from 'features/automation/common/helpers/automationInputsAnalytics'
-import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers/calculateCollRatioFromMultiple'
 import { automationMultipleRangeSliderAnalytics } from 'features/automation/common/helpers/automationMultipleRangeSliderAnalytics'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers/calculateCollRatioFromMultiple'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'

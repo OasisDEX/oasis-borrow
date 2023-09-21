@@ -1,5 +1,5 @@
 import type { NetworkNames } from 'blockchain/networks'
-import type { PromoCardProps } from 'components/PromoCard'
+import type { PromoCardProps } from 'components/PromoCard.types'
 import type { ProductHubItem } from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import type { NextApiRequest } from 'next'

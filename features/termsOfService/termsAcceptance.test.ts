@@ -4,8 +4,8 @@ import { mapValues } from 'lodash'
 import { NEVER, Observable, of, throwError } from 'rxjs'
 import type Web3 from 'web3'
 
-import type { TermsAcceptanceState } from './termsAcceptance'
 import { createTermsAcceptance$ } from './termsAcceptance'
+import type { TermsAcceptanceState } from './termsAcceptance.types'
 
 interface PipelineInput {
   web3Context$: Observable<Web3Context>

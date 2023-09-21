@@ -93,6 +93,7 @@ export function createAllowanceStateMachine(
 ) {
   return createMachine(
     {
+      //eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./createAllowanceStateMachine.typegen').Typegen0,
       preserveActionOrder: true,
       predictableActionArguments: true,

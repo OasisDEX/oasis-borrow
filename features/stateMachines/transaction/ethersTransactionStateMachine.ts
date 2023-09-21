@@ -33,6 +33,7 @@ export function createEthersTransactionStateMachine<TParameters, TResult = unkno
       id: 'ethers-transaction',
       predictableActionArguments: true,
       preserveActionOrder: true,
+      //eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./ethersTransactionStateMachine.typegen').Typegen0,
       context: {
         etherscanUrl: '',

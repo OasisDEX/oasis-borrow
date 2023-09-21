@@ -40,8 +40,8 @@ import { createProxyConsumed$, createReadPositionCreatedEvents$ } from 'features
 import type { AccountDetails } from 'features/account/AccountData'
 import { createAccountData } from 'features/account/AccountData'
 import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
-import type { UserReferralState } from 'features/referralOverview/user'
 import { createUserReferral$ } from 'features/referralOverview/user'
+import type { UserReferralState } from 'features/referralOverview/user.types'
 import {
   getReferralRewardsFromApi$,
   getReferralsFromApi$,

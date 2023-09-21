@@ -1,5 +1,5 @@
 import type { Protocol } from '@prisma/client'
-import type { ProtocolLabelProps } from 'components/ProtocolLabel'
+import type { ProtocolLabelProps } from 'components/ProtocolLabel.types'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { useAaveContext } from 'features/aave'
 import { createFollowButton } from 'features/aave/helpers/createFollowButton'

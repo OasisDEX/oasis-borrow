@@ -10,7 +10,7 @@ import { rollDownTopBannerAnimation } from 'theme/animations'
 import { AppLink } from './Links'
 import { WithArrow } from './WithArrow'
 
-export const TopBanner = () => {
+export default function TopBanner() {
   const { topBanner } = getAppConfig('parameters')
   const [topBannerClosed, setTopBannerClosed] = useLocalStorage(
     `TopBanner_${topBanner.name}_closed`,

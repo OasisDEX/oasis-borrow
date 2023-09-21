@@ -54,6 +54,7 @@ export function createTransactionStateMachine<T extends TxMeta, TResult = unknow
       id: 'transaction',
       predictableActionArguments: true,
       preserveActionOrder: true,
+      //eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./transactionStateMachine.typegen').Typegen0,
       context: {
         transactionDef,
@@ -218,6 +219,7 @@ export type TransactionStateMachine<T extends TxMeta, TResult = unknown> = Retur
 >
 
 type MissingTransactionServices = Exclude<
+  //eslint-disable-next-line @typescript-eslint/consistent-type-imports
   import('./transactionStateMachine.typegen').Typegen0['missingImplementations']['services'],
   'startTransaction'
 >

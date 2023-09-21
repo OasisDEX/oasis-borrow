@@ -1,6 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
-import type { ApproveData } from 'blockchain/calls/erc20.types'
 import { approve } from 'blockchain/calls/erc20'
+import type { ApproveData } from 'blockchain/calls/erc20.types'
 import type { CreateDsProxyData } from 'blockchain/calls/proxy'
 import { createDsProxy } from 'blockchain/calls/proxy'
 import type {

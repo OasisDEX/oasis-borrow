@@ -1,9 +1,9 @@
-import type { Context, ContextConnected } from 'blockchain/network.types'
 import {
   createContext$,
   createContextConnected$,
   createWeb3ContextConnected$,
 } from 'blockchain/network'
+import type { Context, ContextConnected } from 'blockchain/network.types'
 import { networksById } from 'blockchain/networks'
 import type { ContractDesc } from 'features/web3Context'
 import { contract } from 'features/web3Context'

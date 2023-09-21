@@ -1,6 +1,4 @@
 import { CacheProvider, Global } from '@emotion/core'
-// @ts-ignore
-import { MDXProvider } from '@mdx-js/react'
 import { Web3OnboardProvider } from '@web3-onboard/react'
 import type { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
@@ -19,14 +17,13 @@ import {
   NotificationSocketProvider,
 } from 'components/context'
 import { configContext, ConfigContextProvider } from 'components/context/ConfigContextProvider'
-import type { SavedSettings } from 'components/CookieBanner'
-import { CookieBanner } from 'components/CookieBanner'
+import type { SavedSettings } from 'components/CookieBanner.types'
+import { CookieBannerDynamic } from 'components/CookieBannerDynamic'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import type { MarketingLayoutProps } from 'components/layouts'
 import { AppLayout } from 'components/layouts'
-import { CustomMDXLink } from 'components/Links'
 import { SharedUIProvider } from 'components/SharedUIProvider'
-import { TopBanner } from 'components/TopBanner'
+import { TopBannerDynamic } from 'components/TopBannerDynamic'
 import { cache } from 'emotion'
 import { initWeb3OnBoard, Web3OnBoardConnectorProvider } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -40,8 +37,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef } from 'react'
 import { theme } from 'theme'
-// @ts-ignore
-import { components, ThemeProvider } from 'theme-ui'
+import { ThemeProvider } from 'theme-ui'
 import { web3OnboardStyles } from 'theme/web3OnboardStyles'
 import Web3 from 'web3'
 
@@ -182,45 +178,43 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
       </Head>
       <ThemeProvider theme={theme}>
         <CacheProvider value={cache}>
-          <MDXProvider components={{ ...components, a: CustomMDXLink }}>
-            <Global styles={globalStyles} />
-            <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
-              <ConfigContextProvider>
-                <DeferedContextProvider context={configContext}>
-                  <MainContextProvider>
-                    <DeferedContextProvider context={mainContext}>
-                      <ModalProvider>
-                        <Web3OnBoardConnectorProvider>
-                          <Web3ReactProvider {...{ getLibrary }}>
-                            <HeadTags />
-                            {seoTags}
-                            <SetupWeb3Context>
-                              <NotificationSocketProvider>
-                                <SharedUIProvider>
-                                  <TopBanner />
-                                  <AccountContextProvider>
-                                    <DeferedContextProvider context={accountContext}>
-                                      <Layout {...layoutProps}>
-                                        <Component {...pageProps} />
-                                        <CookieBanner
-                                          setValue={cookiesSetValue}
-                                          value={cookiesValue}
-                                        />
-                                      </Layout>
-                                    </DeferedContextProvider>
-                                  </AccountContextProvider>
-                                </SharedUIProvider>
-                              </NotificationSocketProvider>
-                            </SetupWeb3Context>
-                          </Web3ReactProvider>
-                        </Web3OnBoardConnectorProvider>
-                      </ModalProvider>
-                    </DeferedContextProvider>
-                  </MainContextProvider>
-                </DeferedContextProvider>
-              </ConfigContextProvider>
-            </Web3OnboardProvider>
-          </MDXProvider>
+          <Global styles={globalStyles} />
+          <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
+            <ConfigContextProvider>
+              <DeferedContextProvider context={configContext}>
+                <MainContextProvider>
+                  <DeferedContextProvider context={mainContext}>
+                    <ModalProvider>
+                      <Web3OnBoardConnectorProvider>
+                        <Web3ReactProvider {...{ getLibrary }}>
+                          <HeadTags />
+                          {seoTags}
+                          <SetupWeb3Context>
+                            <NotificationSocketProvider>
+                              <SharedUIProvider>
+                                <TopBannerDynamic />
+                                <AccountContextProvider>
+                                  <DeferedContextProvider context={accountContext}>
+                                    <Layout {...layoutProps}>
+                                      <Component {...pageProps} />
+                                      <CookieBannerDynamic
+                                        setValue={cookiesSetValue}
+                                        value={cookiesValue}
+                                      />
+                                    </Layout>
+                                  </DeferedContextProvider>
+                                </AccountContextProvider>
+                              </SharedUIProvider>
+                            </NotificationSocketProvider>
+                          </SetupWeb3Context>
+                        </Web3ReactProvider>
+                      </Web3OnBoardConnectorProvider>
+                    </ModalProvider>
+                  </DeferedContextProvider>
+                </MainContextProvider>
+              </DeferedContextProvider>
+            </ConfigContextProvider>
+          </Web3OnboardProvider>
         </CacheProvider>
       </ThemeProvider>
     </>

@@ -23,7 +23,7 @@ import { Box, Button, Flex, Image, Text } from 'theme-ui'
 
 import type { UpsertUser } from './FeesView'
 import { ReferralLayout } from './ReferralLayout'
-import type { UserReferralState } from './user'
+import type { UserReferralState } from './user.types'
 import { createUserUsingApi$ } from './userApi'
 
 interface Props {

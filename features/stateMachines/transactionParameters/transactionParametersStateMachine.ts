@@ -94,6 +94,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         networkId: networkId,
         runWithEthers: runWithEthers,
       },
+      //eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./transactionParametersStateMachine.typegen').Typegen0,
       schema: {
         context: {} as TransactionParametersStateMachineContext<T>,

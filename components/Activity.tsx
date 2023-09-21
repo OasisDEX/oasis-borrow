@@ -12,8 +12,6 @@ interface ActivityItemProps {
   componentRight?: JSX.Element
 }
 
-export const ACTIVITY_ITEMS_INCREMENT = 5
-
 export function ActivityItem({
   timestamp,
   label,

@@ -14,8 +14,8 @@ import type {
   AutomationRemoveTriggerTxDef,
 } from 'features/automation/common/txDefinitions.types'
 import type { AutomationPublishType } from 'features/automation/common/types'
-import type { AutomationTxData } from 'helpers/context/types'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { AutomationTxData } from 'helpers/context/types'
 import { handleTransaction } from 'helpers/handleTransaction'
 import type { UIChanges } from 'helpers/uiChanges.types'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'

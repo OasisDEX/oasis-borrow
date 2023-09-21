@@ -10,7 +10,7 @@ import { FeesView } from './FeesView'
 import { ReferralLanding } from './ReferralLanding'
 import { ReferralLayout } from './ReferralLayout'
 import { ReferralsView } from './ReferralsView'
-import type { UserReferralState } from './user'
+import type { UserReferralState } from './user.types'
 
 interface Props {
   context: Context

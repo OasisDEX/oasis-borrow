@@ -1,9 +1,9 @@
 import { TriggerType } from '@oasisdex/automation'
 import type BigNumber from 'bignumber.js'
-import type { Context } from 'blockchain/network.types'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { Tickers } from 'blockchain/prices.types'
+import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
+import type { Tickers } from 'blockchain/prices.types'
 import { isProductContextAvailable, useProductContext } from 'components/context'
 import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import {

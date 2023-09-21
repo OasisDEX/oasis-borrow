@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
 import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
+import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
 
 interface GetConstantMultipleMultipliersProps {
   ilk: string

@@ -169,8 +169,8 @@ import {
 
 import { refreshInterval } from './constants'
 import type { MainContext } from './MainContext.types'
-import type { ProtocolsServices } from './types'
 import type { TxHelpers } from './TxHelpers'
+import type { ProtocolsServices } from './types'
 import curry from 'ramda/src/curry'
 
 export function setupProductContext(

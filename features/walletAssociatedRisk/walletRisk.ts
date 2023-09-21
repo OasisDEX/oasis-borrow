@@ -1,5 +1,5 @@
 import { jwtAuthGetToken } from 'features/shared/jwt'
-import type { TermsAcceptanceState } from 'features/termsOfService/termsAcceptance'
+import type { TermsAcceptanceState } from 'features/termsOfService/termsAcceptance.types'
 import type { Web3Context } from 'features/web3Context'
 import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
