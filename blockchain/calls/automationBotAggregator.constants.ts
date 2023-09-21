@@ -4,14 +4,14 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
 import type { DsProxy } from 'types/web3-v1-contracts'
 
-import type {
-  AutomationBotAddAggregatorTriggerData,
-  AutomationBotRemoveTriggersData,
-} from './automationBotAggregator.types'
 import {
   getAddAutomationAggregatotTriggerCallData,
   getRemoveAutomationBotAggregatorTriggersCallData,
 } from './automationBotAggregator'
+import type {
+  AutomationBotAddAggregatorTriggerData,
+  AutomationBotRemoveTriggersData,
+} from './automationBotAggregator.types'
 
 export const addAutomationBotAggregatorTrigger: TransactionDef<AutomationBotAddAggregatorTriggerData> =
   {

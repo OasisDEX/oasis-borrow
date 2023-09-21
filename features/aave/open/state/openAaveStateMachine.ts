@@ -24,11 +24,11 @@ import {
   ProductType,
   ProxyType,
 } from 'features/aave/types'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
 } from 'features/automation/common/txDefinitions.types'
-import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
 import {
   extractStopLossDataInput,

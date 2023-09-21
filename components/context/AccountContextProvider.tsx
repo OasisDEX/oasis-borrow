@@ -48,11 +48,11 @@ import {
   getUserFromApi$,
 } from 'features/referralOverview/userApi'
 import { createUserSettings$ } from 'features/userSettings/userSettings'
+import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import {
   checkUserSettingsLocalStorage$,
   saveUserSettingsLocalStorage$,
 } from 'features/userSettings/userSettingsLocal'
-import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { bigNumberTostring } from 'helpers/bigNumberToString'
 import type { DepreciatedServices } from 'helpers/context/types'
 import { ilkUrnAddressToString } from 'helpers/ilkUrnAddressToString'

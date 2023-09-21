@@ -7,7 +7,7 @@ import { SidebarVaultStopLossStage } from 'components/vault/sidebar/SidebarVault
 import { openVaultWithStopLossAnalytics } from 'features/automation/common/helpers'
 import { getDataForStopLoss } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
-import type { OpenMultiplyVaultState } from '../pipes/openMultiplyVault.types'
+import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import { SidebarOpenMultiplyVaultEditingState } from 'features/multiply/open/sidebars/SidebarOpenMultiplyVaultEditingState'
 import { SidebarOpenMultiplyVaultOpenStage } from 'features/multiply/open/sidebars/SidebarOpenMultiplyVaultOpenStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'

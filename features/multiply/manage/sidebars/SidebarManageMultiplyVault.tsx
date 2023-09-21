@@ -5,7 +5,7 @@ import { SidebarAutomationVaultCloseTriggered } from 'components/vault/sidebar/S
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { getAutomationThatClosedVault } from 'features/automation/common/helpers'
-import type { ManageMultiplyVaultState } from '../pipes/ManageMultiplyVaultState.types'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { SidebarManageMultiplyVaultManageStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultManageStage'
 import { SidebarManageMultiplyVaultTransitionStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultTransitionStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'

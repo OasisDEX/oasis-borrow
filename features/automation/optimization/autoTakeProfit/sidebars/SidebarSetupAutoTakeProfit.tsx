@@ -19,8 +19,8 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoTakeProfitInfoSectionControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitInfoSectionControl'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
 import { SidebarAutoTakeProfitRemovalEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitRemovalEditingStage'
-import type { AutoTakeProfitFormChange } from '../state/autoTakeProfitFormChange.types'
 import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
+import type { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
 import {
   errorsAutoTakeProfitValidation,
   warningsAutoTakeProfitValidation,
