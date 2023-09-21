@@ -128,7 +128,14 @@ export const getAjnaPositionAggregatedData$ = ({
 }): Observable<AjnaPositionAggregatedDataResponse> => {
   const { proxy } = dpmPositionData
 
-  return from(getAjnaPositionAggregatedData(proxy, networkId)).pipe(
+  return from(
+    getAjnaPositionAggregatedData(
+      proxy,
+      networkId,
+      dpmPositionData.collateralTokenAddress,
+      dpmPositionData.quoteTokenAddress,
+    ),
+  ).pipe(
     map(({ auctions, history }) => ({
       auction: parseAggregatedDataAuction({ auctions, dpmPositionData, history, position }),
       history: parseAggregatedDataHistory({ dpmPositionData, history }),

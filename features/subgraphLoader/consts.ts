@@ -56,7 +56,7 @@ export const subgraphsRecord: SubgraphsRecord = {
 
 export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   getAjnaPositionAggregatedData: gql`
-    query getAccount($dpmProxyAddress: ID!) {
+    query getAccount($dpmProxyAddress: ID!, $collateralAddress: String!, $quoteAddress: String!) {
       auctions(where: { account_: { id: $dpmProxyAddress } }) {
         inLiquidation
         alreadyTaken
@@ -64,7 +64,13 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         debtToCover
         collateral
       }
-      borrowerEvents(where: { account_: { id: $dpmProxyAddress } }) {
+      borrowerEvents(
+        where: {
+          account_: { id: $dpmProxyAddress }
+          collateralToken_: { address: $collateralAddress }
+          debtToken_: { address: $quoteAddress }
+        }
+      ) {
         id
         kind
         timestamp
@@ -77,7 +83,13 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           id
         }
       }
-      oasisEvents(where: { account_: { id: $dpmProxyAddress } }) {
+      oasisEvents(
+        where: {
+          account_: { id: $dpmProxyAddress }
+          collateralToken_: { address: $collateralAddress }
+          debtToken_: { address: $quoteAddress }
+        }
+      ) {
         depositTransfers {
           amount
         }
