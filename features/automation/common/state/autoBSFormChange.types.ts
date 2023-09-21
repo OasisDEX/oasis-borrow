@@ -1,7 +1,8 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
-import type { AutomationFormType } from 'features/automation/common/state/automationFeatureChange'
 import type { TxError } from 'helpers/types'
+
+import type { AutomationFormType } from './automationFeatureChange.types'
 
 export type AutoBSTriggerResetData = Pick<
   AutoBSFormChange,

@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { Context, EveryBlockFunction$ } from 'blockchain/network'
+import type { Context, EveryBlockFunction$ } from 'blockchain/network.types'
 import type { DsrEvent } from 'features/dsr/helpers/dsrHistory'
 import type { DsrPot, DsrPotKind } from 'features/dsr/helpers/dsrPot'
 import { dsrPot$ } from 'features/dsr/helpers/dsrPot'

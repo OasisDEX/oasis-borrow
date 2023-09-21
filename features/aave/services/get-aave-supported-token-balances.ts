@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { tokenBalance } from 'blockchain/better-calls/erc20'
 import type { NetworkIds } from 'blockchain/networks'
-import type { TokenBalances } from 'blockchain/tokens'
+import type { TokenBalances } from 'blockchain/tokens.types'
 import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'

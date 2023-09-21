@@ -1,5 +1,5 @@
 import { NetworkIds } from 'blockchain/networks'
-import type { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import type { AjnaProduct } from 'features/ajna/common/types'

@@ -1,6 +1,5 @@
 import type { UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import type { Context } from 'blockchain/network'
 import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
@@ -16,7 +15,8 @@ import type { CallObservable } from './calls/observe'
 import type { vatGem, vatUrns } from './calls/vat'
 import type { VaultResolve } from './calls/vaultResolver'
 import type { IlkData } from './ilks.types'
-import type { OraclePriceData, OraclePriceDataArgs } from './prices'
+import type { Context } from './network.types'
+import type { OraclePriceData, OraclePriceDataArgs } from './prices.types'
 import { buildPosition } from './vault.maths'
 import type {
   CdpIdsResolver,

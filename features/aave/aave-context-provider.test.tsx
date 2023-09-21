@@ -9,7 +9,7 @@ import {
   productContext,
 } from 'components/context'
 import type { ProductContext } from 'helpers/context/ProductContext.types'
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
 

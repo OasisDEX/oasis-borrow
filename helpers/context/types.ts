@@ -30,7 +30,7 @@ import type {
   ReclaimData,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import type { NetworkIds } from 'blockchain/networks'
-import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import type { LendingProtocol } from 'lendingProtocols'
 import type { AaveLikeServices } from 'lendingProtocols/aave-like-common'
 import type { getAaveV2Services } from 'lendingProtocols/aave-v2'

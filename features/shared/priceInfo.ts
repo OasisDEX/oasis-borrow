@@ -1,4 +1,4 @@
-import type { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
+import type { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices.types'
 import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'

@@ -1,6 +1,5 @@
 // tslint:disable:no-console
 import type BigNumber from 'bignumber.js'
-import type { ethers } from 'ethers'
 import type {
   ContractDesc,
   Web3Context,
@@ -9,7 +8,7 @@ import type {
 } from 'features/web3Context'
 import { contract } from 'features/web3Context'
 import type { Observable } from 'rxjs'
-import { bindNodeCallback, combineLatest, concat, interval } from 'rxjs'
+import { bindNodeCallback, combineLatest, concat } from 'rxjs'
 import {
   catchError,
   distinctUntilChanged,
@@ -18,43 +17,13 @@ import {
   map,
   shareReplay,
   skip,
-  startWith,
   switchMap,
 } from 'rxjs/operators'
 import Web3 from 'web3'
 
-import type { NetworkConfig } from './networks'
+import { every5Seconds$ } from './network.constants'
+import type { Context, ContextConnected, EveryBlockFunction$ } from './network.types'
 import { getNetworkRpcEndpoint, NetworkIds, networksById } from './networks'
-
-export const every1Seconds$ = interval(1000).pipe(startWith(0))
-export const every3Seconds$ = interval(3000).pipe(startWith(0))
-export const every5Seconds$ = interval(5000).pipe(startWith(0))
-export const every10Seconds$ = interval(10000).pipe(startWith(0))
-
-interface WithContractMethod {
-  contract: <T>(desc: ContractDesc) => T
-
-  /**
-   * @deprecated user `networkById[networkId].readProvider` instead. This is set only for mainnet
-   */
-  rpcProvider: ethers.providers.StaticJsonRpcProvider
-}
-
-interface WithWeb3ProviderGetPastLogs {
-  web3ProviderGetPastLogs: Web3
-}
-
-export type ContextConnectedReadOnly = NetworkConfig &
-  Web3ContextConnectedReadonly &
-  WithContractMethod &
-  WithWeb3ProviderGetPastLogs & { account: undefined }
-
-export type ContextConnected = NetworkConfig &
-  Web3ContextConnected &
-  WithContractMethod &
-  WithWeb3ProviderGetPastLogs
-
-export type Context = ContextConnected | ContextConnectedReadOnly
 
 export function createContext$(
   web3ContextConnected$: Observable<Web3ContextConnected | Web3ContextConnectedReadonly>,
@@ -84,11 +53,6 @@ export function createContextConnected$(
     shareReplay(1),
   )
 }
-
-export type EveryBlockFunction$ = <O>(
-  o$: Observable<O>,
-  compare?: (x: O, y: O) => boolean,
-) => Observable<O>
 
 export function compareBigNumber(a1: BigNumber, a2: BigNumber): boolean {
   return a1.comparedTo(a2) === 0

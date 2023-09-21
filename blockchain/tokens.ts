@@ -8,9 +8,10 @@ import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operator
 import type { tokenAllowance, tokenBalance, tokenBalanceFromAddress } from './calls/erc20'
 import { maxUint256 } from './calls/erc20'
 import type { CallObservable } from './calls/observe'
-import type { Context } from './network'
+import type { Context } from './network.types'
 import { NetworkIds } from './networks'
-import type { OraclePriceData, OraclePriceDataArgs } from './prices'
+import type { OraclePriceData, OraclePriceDataArgs } from './prices.types'
+import type { TokenBalances } from './tokens.types'
 
 export function createBalance$(
   updateInterval$: Observable<any>,
@@ -76,8 +77,6 @@ export function createAaveCollateralTokens$(context$: Observable<Context>): Obse
     }),
   )
 }
-
-export type TokenBalances = Record<string, { balance: BigNumber; price: BigNumber }>
 
 export function createAccountBalance$(
   tokenBalance$: (token: string, address: string) => Observable<BigNumber>,

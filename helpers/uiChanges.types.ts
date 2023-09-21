@@ -5,7 +5,7 @@ import type {
 import type {
   AutomationChangeFeature,
   AutomationChangeFeatureAction,
-} from 'features/automation/common/state/automationFeatureChange'
+} from 'features/automation/common/state/automationFeatureChange.types'
 import type {
   AutoTakeProfitFormChange,
   AutoTakeProfitFormChangeAction,

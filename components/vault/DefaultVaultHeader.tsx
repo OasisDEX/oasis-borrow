@@ -2,7 +2,7 @@ import type BigNumber from 'bignumber.js'
 import type { IlkData } from 'blockchain/ilks.types'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 

@@ -1,4 +1,4 @@
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { useAccountContext, useMainContext } from 'components/context'
 import { getAddress } from 'ethers/lib/utils'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'

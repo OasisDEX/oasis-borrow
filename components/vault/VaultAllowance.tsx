@@ -7,7 +7,7 @@ import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMu
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import type { CommonVaultState } from 'helpers/types/CommonVaultState'
+import type { CommonVaultState } from 'helpers/types/CommonVaultState.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'

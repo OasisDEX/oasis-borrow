@@ -1,5 +1,5 @@
 import type { NetworkConfigHexId } from 'blockchain/networks'
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 
 import { Connection } from './Connection'

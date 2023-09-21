@@ -1,8 +1,8 @@
-import type { PropsWithChildren } from 'react'
+import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 import { Heading } from 'theme-ui'
 
-export function AssetsTableHeading({ children }: PropsWithChildren<{}>) {
+export function AssetsTableHeading({ children }: WithChildren) {
   return (
     <Heading
       as="h3"

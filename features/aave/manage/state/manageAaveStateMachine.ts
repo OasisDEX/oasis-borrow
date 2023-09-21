@@ -10,7 +10,7 @@ import {
   callOperationExecutorWithDpmProxy,
   callOperationExecutorWithDsProxy,
 } from 'blockchain/calls/operationExecutor'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { ethNullAddress } from 'blockchain/networks'
 import {
   loadStrategyFromTokens,

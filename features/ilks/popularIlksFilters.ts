@@ -1,4 +1,4 @@
-import type { CoinTag } from 'blockchain/tokensMetadata'
+import type { CoinTag } from 'blockchain/TokenConfig'
 import { getToken } from 'blockchain/tokensMetadata'
 import { compareBigNumber } from 'helpers/compare'
 import type { Change, Direction } from 'helpers/form'

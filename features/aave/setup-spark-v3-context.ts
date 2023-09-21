@@ -1,7 +1,7 @@
 import type { NetworkNames } from 'blockchain/networks'
 import { networksByName } from 'blockchain/networks'
 import { ensureIsSupportedSparkV3NetworkId } from 'blockchain/spark-v3'
-import type { TokenBalances } from 'blockchain/tokens'
+import type { TokenBalances } from 'blockchain/tokens.types'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import type { AccountContext } from 'components/context'
 import dayjs from 'dayjs'

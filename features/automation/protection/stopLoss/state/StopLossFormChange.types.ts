@@ -1,6 +1,6 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
-import type { AutomationFormType } from 'features/automation/common/state/automationFeatureChange'
+import type { AutomationFormType } from 'features/automation/common/state/automationFeatureChange.types'
 import type { TxError } from 'helpers/types'
 
 export type StopLossResetData = Pick<

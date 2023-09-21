@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useMainnetEnsName, useMainnetEnsNames } from 'blockchain/ens'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { NetworkHexIds } from 'blockchain/networks'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'

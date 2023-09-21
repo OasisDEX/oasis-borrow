@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import type { Vault } from 'blockchain/vaults.types'
 import type { PositionCreated } from 'features/aave/services'
 import type { Web3Context } from 'features/web3Context'

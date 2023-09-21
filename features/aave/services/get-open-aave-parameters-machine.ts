@@ -7,7 +7,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import type { TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 import type { TxHelpers } from 'helpers/context/types'
-import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import type { Observable } from 'rxjs'
 
 export function getOpenAaveParametersMachine(

@@ -1,4 +1,4 @@
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { ilksNotSupportedOnGoerli } from 'blockchain/tokens/mainnet'
 import type { ProductCategory } from 'config/product-categories'
 import { getProductCategoryUrl } from 'config/product-categories'

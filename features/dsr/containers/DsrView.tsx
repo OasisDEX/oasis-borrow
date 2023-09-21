@@ -1,5 +1,5 @@
 import type { BigNumber } from 'bignumber.js'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { TabBar } from 'components/TabBar'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
 import { VaultHeadline } from 'components/vault/VaultHeadline'

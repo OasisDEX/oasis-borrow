@@ -1,6 +1,6 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import type { GasPriceParams } from 'blockchain/prices'
+import type { GasPriceParams } from 'blockchain/prices.types'
 import { Banner } from 'components/Banner'
 import { bannerGradientPresets } from 'components/Banner.constants'
 import { DetailsSection } from 'components/DetailsSection'

@@ -1,4 +1,4 @@
-import type { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ethers } from 'ethers'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import type { PositionCreated } from 'features/aave/services'

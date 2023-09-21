@@ -5,7 +5,7 @@ import type {
   DsrDepositState,
   DsrSidebarTabOptions,
 } from 'features/dsr/helpers/dsrDeposit.types'
-import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import type { ChangeEvent } from 'react'
 
 export interface DsrSidebarProps {

@@ -1,4 +1,4 @@
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import type { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import type { VaultWithHistory } from 'features/vaultHistory/vaultsHistory.types'
 import type { Observable } from 'rxjs'

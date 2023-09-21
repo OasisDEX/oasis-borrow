@@ -1,6 +1,6 @@
 import { setupProductContext } from 'helpers/context/ProductContext'
 import type { ProductContext } from 'helpers/context/ProductContext.types'
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 
 import { useAccountContext } from './AccountContextProvider'

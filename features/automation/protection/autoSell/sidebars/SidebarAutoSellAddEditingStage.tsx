@@ -23,7 +23,7 @@ import {
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
 import { AUTO_SELL_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
 import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'

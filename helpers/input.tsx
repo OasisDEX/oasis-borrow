@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import type { TokenConfig } from 'blockchain/tokensMetadata'
+import type { TokenConfig } from 'blockchain/TokenConfig'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'

@@ -15,7 +15,7 @@ import type { PriceInfo } from 'features/shared/priceInfo.types'
 import type { OpenVaultTransactionChange } from 'features/shared/transactions'
 import type { OpenVaultTransitionChange } from 'features/vaultTransitions/openVaultTransitions'
 import type { TxError } from 'helpers/types'
-import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 
 import type { ExchangeQuoteChanges } from './openMultiplyQuote.types'
 import type { OpenMultiplyVaultCalculations } from './openMultiplyVaultCalculations.types'

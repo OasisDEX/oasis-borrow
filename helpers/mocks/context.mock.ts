@@ -1,4 +1,4 @@
-import type { Context, ContextConnected } from 'blockchain/network'
+import type { Context, ContextConnected } from 'blockchain/network.types'
 import {
   createContext$,
   createContextConnected$,

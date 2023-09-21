@@ -26,7 +26,7 @@ import {
   calculateMultipleFromTargetCollRatio,
 } from 'features/automation/common/helpers'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
 import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'

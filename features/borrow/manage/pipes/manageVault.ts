@@ -5,7 +5,7 @@ import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLog
 import type { MakerVaultType } from 'blockchain/calls/vaultResolver'
 import { createIlkDataChange$ } from 'blockchain/ilks'
 import type { IlkData } from 'blockchain/ilks.types'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { createVaultChange$ } from 'blockchain/vaults'
 import type { Vault } from 'blockchain/vaults.types'
 import { createAutomationTriggersChange$ } from 'features/automation/api/automationTriggersData'

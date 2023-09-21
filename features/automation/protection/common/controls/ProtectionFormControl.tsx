@@ -3,8 +3,8 @@ import {
   getAvailableAutomation,
   getShouldRemoveAllowance,
 } from 'features/automation/common/helpers'
-import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
+import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoSellFormControl } from 'features/automation/protection/autoSell/controls/AutoSellFormControl'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'

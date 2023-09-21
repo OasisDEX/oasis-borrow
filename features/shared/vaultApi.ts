@@ -1,6 +1,6 @@
 import type { Vault, VaultType as VaultTypeDB } from '@prisma/client'
 import type BigNumber from 'bignumber.js'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import type { NetworkIds } from 'blockchain/networks'
 import type { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'

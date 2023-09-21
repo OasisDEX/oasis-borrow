@@ -2,7 +2,7 @@ import type {
   AutomationOptimizationFeatures,
   AutomationProtectionFeatures,
   AutomationTypes,
-} from 'features/automation/common/state/automationFeatureChange'
+} from 'features/automation/common/state/automationFeatureChange.types'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { VaultProtocol } from 'helpers/getVaultProtocol'
 

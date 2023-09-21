@@ -5,8 +5,8 @@ import { getStateUnpacker } from 'helpers/testHelpers'
 import type { Observable } from 'rxjs'
 import { of, throwError } from 'rxjs'
 
-import type { OraclePriceData } from './prices'
 import { createOraclePriceData$, createTokenPriceInUSD$ } from './prices'
+import type { OraclePriceData } from './prices.types'
 
 describe('createTokenPriceInUSD$', () => {
   const tokenTickers$ = of({

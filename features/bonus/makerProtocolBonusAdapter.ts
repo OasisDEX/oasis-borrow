@@ -6,7 +6,7 @@ import type { ClaimRewardData } from 'blockchain/calls/proxyActions/adapters/Pro
 import type { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { amountFromPrecision, amountFromRay, amountToRay } from 'blockchain/utils'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'

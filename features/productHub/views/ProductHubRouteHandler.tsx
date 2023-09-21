@@ -5,7 +5,7 @@ import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { getAppConfig } from 'helpers/config'
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import type { GetStaticPaths } from 'next'
 import React from 'react'
 

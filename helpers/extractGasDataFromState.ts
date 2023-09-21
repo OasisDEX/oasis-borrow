@@ -1,4 +1,4 @@
-import type { HasGasEstimation } from './types/HasGasEstimation'
+import type { HasGasEstimation } from './types/HasGasEstimation.types'
 
 export function extractGasDataFromState(state: HasGasEstimation) {
   return {

@@ -13,7 +13,7 @@ import { adjustMultiplyVault, closeVaultCall } from 'blockchain/calls/proxyActio
 import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { checkIfGnosisSafe } from 'helpers/checkIfGnosisSafe'

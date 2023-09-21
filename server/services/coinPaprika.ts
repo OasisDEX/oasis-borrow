@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { tokens } from 'blockchain/tokensMetadata'
+import { tokens } from 'blockchain/token-metadata-list/tokens'
 import type { PriceServiceResponse } from 'helpers/types'
 
 interface CoinPaprikaApiResponse {

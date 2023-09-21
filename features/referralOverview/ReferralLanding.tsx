@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import {
   DeferedContextProvider,
   tosContext,

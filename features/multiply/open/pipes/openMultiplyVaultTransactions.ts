@@ -6,7 +6,7 @@ import type { OpenMultiplyData } from 'blockchain/calls/proxyActions/proxyAction
 import { openMultiplyVault } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { VaultType } from 'features/generalManageVault/vaultType.types'

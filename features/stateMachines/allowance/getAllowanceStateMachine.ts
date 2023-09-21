@@ -1,5 +1,5 @@
 import { approve } from 'blockchain/calls/erc20'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import type { CommonTransactionServices } from 'features/stateMachines/transaction'
 import {
   createTransactionStateMachine,

@@ -1,6 +1,5 @@
 import { createSend } from '@oasisdex/transactions'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { ContextConnected } from 'blockchain/network'
 import {
   createAccount$,
   createContext$,
@@ -9,6 +8,7 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { createGasPrice$ } from 'blockchain/prices'
 import { createWeb3Context$ } from 'features/web3Context'

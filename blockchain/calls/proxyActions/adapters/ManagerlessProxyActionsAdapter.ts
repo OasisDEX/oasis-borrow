@@ -1,5 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
 import type { ContractDesc } from 'features/web3Context'

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { Context } from 'blockchain/network.types'
+import { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { IRiskRatio } from '@oasisdex/dma-library'
 import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'

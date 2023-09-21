@@ -2,7 +2,7 @@
 import type BigNumber from 'bignumber.js'
 import type { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance.types'
 import type { Change, Changes } from 'helpers/form'
-import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 
 export type DsrSidebarTabOptions = 'deposit' | 'withdraw' | 'convert'
 

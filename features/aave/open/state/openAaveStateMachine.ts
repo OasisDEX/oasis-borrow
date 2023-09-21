@@ -12,7 +12,7 @@ import {
   callOperationExecutorWithDsProxy,
 } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { ethNullAddress } from 'blockchain/networks'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'

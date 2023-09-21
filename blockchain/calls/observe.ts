@@ -1,4 +1,4 @@
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { isEqual, memoize } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'

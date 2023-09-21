@@ -2,7 +2,7 @@ import type { TxMeta, TxState } from '@oasisdex/transactions'
 import { TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import type { BigNumber } from 'bignumber.js'
-import type { GasPriceParams, Tickers } from 'blockchain/prices'
+import type { GasPriceParams, Tickers } from 'blockchain/prices.types'
 import { MODAL_CONTAINER_TREZOR_METAMASK_EIP1559 } from 'components/Modal'
 import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
@@ -11,8 +11,8 @@ import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/oper
 import type { OmitProperties, ValueOf } from 'ts-essentials'
 
 import type { TxHelpers, TxHelpers$ } from './context/types'
-import type { HasGasEstimation } from './types/HasGasEstimation'
-import { GasEstimationStatus } from './types/HasGasEstimation'
+import type { HasGasEstimation } from './types/HasGasEstimation.types'
+import { GasEstimationStatus } from './types/HasGasEstimation.types'
 import type { ErrorTxState } from '@oasisdex/transactions/lib/src/types'
 
 export enum FormStage {

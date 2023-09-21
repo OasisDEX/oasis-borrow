@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import type { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import type { Context } from './network'
+import type { Context } from './network.types'
 import { getNetworkRpcEndpoint, NetworkIds } from './networks'
 
 export function resolveENSName$(context$: Observable<Context>, address: string) {

@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 import type { SxStyleProp } from 'theme-ui'
 import { Box, Card, Heading, Text } from 'theme-ui'

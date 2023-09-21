@@ -1,7 +1,7 @@
 import type { Tracker } from 'analytics/analytics'
 import { INPUT_DEBOUNCE_TIME } from 'analytics/analytics'
 import type BigNumber from 'bignumber.js'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { networkSetById } from 'blockchain/networks'
 import type { AccountDetails } from 'features/account/AccountData'
 import { formatOazoFee } from 'features/multiply/manage/utils'

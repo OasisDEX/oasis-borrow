@@ -2,7 +2,7 @@ import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
-import type { Tickers } from 'blockchain/prices'
+import type { Tickers } from 'blockchain/prices.types'
 import { getTokenPrice } from 'blockchain/prices'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import {

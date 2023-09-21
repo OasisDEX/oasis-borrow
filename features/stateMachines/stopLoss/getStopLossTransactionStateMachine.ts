@@ -1,5 +1,5 @@
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,

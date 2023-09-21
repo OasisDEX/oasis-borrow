@@ -1,5 +1,5 @@
 import type { BigNumber } from 'bignumber.js'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import type { Vault } from 'blockchain/vaults.types'
 import dayjs from 'dayjs'
 import type { PriceInfo } from 'features/shared/priceInfo.types'

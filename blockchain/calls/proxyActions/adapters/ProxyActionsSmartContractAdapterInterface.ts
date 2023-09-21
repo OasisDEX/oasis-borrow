@@ -1,6 +1,6 @@
 import type { BigNumber } from 'bignumber.js'
 import type { TxMetaKind } from 'blockchain/calls/txMeta'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import type {
   NonPayableTransactionObject,
   PayableTransactionObject,

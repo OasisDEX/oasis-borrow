@@ -4,7 +4,7 @@ import type { Observable } from 'rxjs'
 import { of, throwError } from 'rxjs'
 
 import { getTotalValueLocked$ } from './collateral'
-import type { OraclePriceData, OraclePriceDataArgs } from './prices'
+import type { OraclePriceData, OraclePriceDataArgs } from './prices.types'
 
 describe('getTotalValueLocked$', () => {
   it('should return collateral times current price from oracle', () => {

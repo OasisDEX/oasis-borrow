@@ -1,5 +1,5 @@
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
-import type { TokenBalances } from 'blockchain/tokens'
+import type { TokenBalances } from 'blockchain/tokens.types'
 import type { AccountContext } from 'components/context'
 import dayjs from 'dayjs'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'

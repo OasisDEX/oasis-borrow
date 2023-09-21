@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
+import type { Context } from 'blockchain/network.types'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { Context } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import type { ContractDesc } from 'features/web3Context'

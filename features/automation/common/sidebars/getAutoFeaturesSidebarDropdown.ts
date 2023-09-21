@@ -1,11 +1,11 @@
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import { getAvailableAutomation } from 'features/automation/common/helpers'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import type {
   AutomationOptimizationFeatures,
   AutomationProtectionFeatures,
-} from 'features/automation/common/state/automationFeatureChange'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
+} from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { uiChanges } from 'helpers/uiChanges'

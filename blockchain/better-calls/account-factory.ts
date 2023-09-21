@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkIds } from 'blockchain/networks'
 import { networkSetById } from 'blockchain/networks'
-import type { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import type { ethers } from 'ethers'
 import { AccountFactory__factory } from 'types/ethers-contracts'
 

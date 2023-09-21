@@ -14,7 +14,7 @@ import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/Aa
 import type { Simulation } from 'features/aave/open/services'
 import type { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import type { FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'

@@ -1,4 +1,4 @@
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 
 import { DeferedContextProvider } from './DeferedContextProvider'

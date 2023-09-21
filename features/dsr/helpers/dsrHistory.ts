@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { getNetworkRpcEndpoint, NetworkIds } from 'blockchain/networks'
 import { funcSigTopic } from 'blockchain/utils'
 import { gql, GraphQLClient } from 'graphql-request'

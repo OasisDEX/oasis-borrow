@@ -1,7 +1,7 @@
 import { nullAddress } from '@oasisdex/utils'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'

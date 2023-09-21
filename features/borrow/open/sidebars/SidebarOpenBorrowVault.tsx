@@ -1,4 +1,4 @@
-import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
+import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata.constants'
 import { AutomationContextProvider, useAccountContext } from 'components/context'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'

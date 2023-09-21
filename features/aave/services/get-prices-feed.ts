@@ -1,4 +1,4 @@
-import type { Tickers } from 'blockchain/prices'
+import type { Tickers } from 'blockchain/prices.types'
 import type { BaseAaveEvent } from 'features/aave/types'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'

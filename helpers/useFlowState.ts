@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
-import type { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { useMainContext, useProductContext } from 'components/context'
 import { getPositionCreatedEventForProxyAddress } from 'features/aave/services'
 import { useEffect, useState } from 'react'

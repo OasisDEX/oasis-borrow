@@ -1,6 +1,6 @@
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { Trans, useTranslation } from 'next-i18next'
 import type { ReactElement } from 'react'
 import React, { useState } from 'react'

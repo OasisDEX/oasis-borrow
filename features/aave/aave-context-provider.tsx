@@ -1,6 +1,6 @@
 import { NetworkNames } from 'blockchain/networks'
 import { useAccountContext, useMainContext, useProductContext } from 'components/context'
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import React, { useContext, useEffect, useState } from 'react'

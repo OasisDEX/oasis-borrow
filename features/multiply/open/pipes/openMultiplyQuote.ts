@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { every5Seconds$ } from 'blockchain/network'
+import { every5Seconds$ } from 'blockchain/network.constants'
 import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { compareBigNumber } from 'helpers/compareBigNumber'
 import type { Observable } from 'rxjs'

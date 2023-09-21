@@ -1,4 +1,4 @@
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import type { LinkProps } from 'next/dist/client/link'
 import Link from 'next/link'
 import React from 'react'

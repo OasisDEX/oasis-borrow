@@ -12,7 +12,7 @@ import {
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { getBrowserName } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { uiChanges } from 'helpers/uiChanges'
 import getConfig from 'next/config'
 import React, { createContext, useContext, useEffect, useState } from 'react'

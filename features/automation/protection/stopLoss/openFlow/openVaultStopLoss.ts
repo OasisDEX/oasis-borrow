@@ -3,9 +3,9 @@ import { addAutomationBotTrigger } from 'blockchain/calls/automationBot.constant
 import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator.constants'
 import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator.types'
 import type { IlkData } from 'blockchain/ilks.types'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { emptyNetworkConfig } from 'blockchain/networks'
-import type { Tickers } from 'blockchain/prices'
+import type { Tickers } from 'blockchain/prices.types'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import type { AutomationPositionData } from 'components/context'
 import {

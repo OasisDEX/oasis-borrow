@@ -9,7 +9,7 @@ import {
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
 import type { WalletRiskResponse } from 'features/walletAssociatedRisk/walletRiskApi'
 import type { DepreciatedServices } from 'helpers/context/types'
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 import type { Observable } from 'rxjs'
 

@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { Tickers } from 'blockchain/prices'
+import type { Tickers } from 'blockchain/prices.types'
 import { tokenList } from 'components/swapWidget/tokenList'
 import { zero } from 'helpers/zero'
 import { isEqual, uniq } from 'lodash'

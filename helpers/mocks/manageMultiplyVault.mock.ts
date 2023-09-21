@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import type { IlkData } from 'blockchain/ilks.types'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import type { Vault } from 'blockchain/vaults.types'
 import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'

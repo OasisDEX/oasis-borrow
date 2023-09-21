@@ -3,8 +3,8 @@ import {
   getAvailableAutomation,
   getShouldRemoveAllowance,
 } from 'features/automation/common/helpers'
-import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
+import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoBuyFormControl } from 'features/automation/optimization/autoBuy/controls/AutoBuyFormControl'
 import { AutoTakeProfitFormControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitFormControl'

@@ -1,4 +1,4 @@
-import type { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import type { PositionId } from 'features/aave/types'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'

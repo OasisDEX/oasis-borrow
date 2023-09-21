@@ -1,4 +1,4 @@
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import type {
   NonPayableTransactionObject,
   PayableTransactionObject,

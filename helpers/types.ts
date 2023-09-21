@@ -1,11 +1,3 @@
-import type { TFunction } from 'next-i18next'
-import type { ParsedUrlQuery } from 'querystring'
-import type { AbiInput, AbiItem } from 'web3-utils'
-
-export type WithChildren = { children?: any }
-export type WithTranslation = { t: TFunction }
-export type WithQuery = { query?: ParsedUrlQuery }
-export type WithReadonlyAccount = { readonlyAccount?: boolean }
 type Shift<A extends Array<any>> = ((...args: A) => void) extends (
   ...args: [A[0], ...infer R]
 ) => void
@@ -43,13 +35,6 @@ export type FixedSizeArray<T, N extends number> = N extends 0
 export type TxError = {
   name: string
   message?: string
-}
-
-export type Abi = Omit<AbiItem, 'type' | 'stateMutability' | 'inputs'> & {
-  internalType?: string
-  type: string // 'function' | 'constructor' | 'event' | 'fallback'
-  stateMutability?: string // 'pure' | 'view' | 'nonpayable' | 'payable'
-  inputs?: (AbiInput & { internalType?: string })[]
 }
 
 export type Unbox<T> = T extends Promise<infer U> ? U : T extends Array<infer Y> ? Y : never

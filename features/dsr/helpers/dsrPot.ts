@@ -1,7 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
-import type { Context, EveryBlockFunction$ } from 'blockchain/network'
+import type { Context, EveryBlockFunction$ } from 'blockchain/network.types'
 import { SECONDS_PER_YEAR } from 'components/constants'
 import { RAY, WAD } from 'features/dsr/utils/constants'
 import { createProxyAddress$ } from 'features/dsr/utils/proxy'

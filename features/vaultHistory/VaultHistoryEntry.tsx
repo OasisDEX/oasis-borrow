@@ -17,7 +17,7 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { interpolate } from 'helpers/interpolate'
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'

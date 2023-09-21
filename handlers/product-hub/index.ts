@@ -1,7 +1,7 @@
 import type { Prisma, PrismaPromise, Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { networks } from 'blockchain/networks'
-import type { Tickers } from 'blockchain/prices'
+import type { Tickers } from 'blockchain/prices.types'
 import type { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
 import { checkIfAllHandlersExist, filterTableData, measureTime } from 'handlers/product-hub/helpers'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'

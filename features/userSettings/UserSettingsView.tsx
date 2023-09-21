@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { BlockNativeAvatar } from 'components/BlockNativeAvatar'
 import { useAccountContext, useMainContext, useNotificationSocket } from 'components/context'
 import { AppLink } from 'components/Links'

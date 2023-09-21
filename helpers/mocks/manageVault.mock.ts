@@ -4,7 +4,7 @@ import { CharteredDssProxyActionsContractAdapter } from 'blockchain/calls/proxyA
 import { StandardDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import type { IlkData } from 'blockchain/ilks.types'
 import type { InstiVault } from 'blockchain/instiVault.types'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import type { Vault } from 'blockchain/vaults.types'
 import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import { InstitutionalBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'

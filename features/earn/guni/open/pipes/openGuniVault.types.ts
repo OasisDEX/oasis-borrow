@@ -11,7 +11,7 @@ import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import type { TxStage } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import type { ProxyChanges, ProxyStages, ProxyState } from 'features/proxy/proxy.types'
 import type { TxError } from 'helpers/types'
-import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 
 import type { EnvironmentChange, EnvironmentState } from './enviroment'
 import type { EditingStage, FormChanges, FormFunctions, FormState } from './guniForm'

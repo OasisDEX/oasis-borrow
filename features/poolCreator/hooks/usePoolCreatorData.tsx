@@ -3,7 +3,7 @@ import { getAjnaPoolInterestRateBoundaries } from 'blockchain/calls/ajnaErc20Poo
 import { deployAjnaPool } from 'blockchain/calls/ajnaErc20PoolFactory.constants'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { IdentifiedTokens } from 'blockchain/identifyTokens'
+import type { IdentifiedTokens } from 'blockchain/identifyTokens.types'
 import { NetworkIds } from 'blockchain/networks'
 import { amountToWad } from 'blockchain/utils'
 import type CancelablePromise from 'cancelable-promise'

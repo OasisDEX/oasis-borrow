@@ -9,8 +9,8 @@ import type { vatGem, vatUrns } from './calls/vat'
 import type { VaultResolve } from './calls/vaultResolver'
 import type { IlkData } from './ilks.types'
 import type { CharterStreamFactory, InstiVault } from './instiVault.types'
-import type { Context } from './network'
-import type { OraclePriceData, OraclePriceDataArgs } from './prices'
+import type { Context } from './network.types'
+import type { OraclePriceData, OraclePriceDataArgs } from './prices.types'
 import { buildPosition, collateralPriceAtRatio } from './vault.maths'
 
 export function createInstiVault$(

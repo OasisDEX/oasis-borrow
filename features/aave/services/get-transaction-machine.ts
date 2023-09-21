@@ -1,6 +1,6 @@
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import type { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import type { CommonTransactionServices } from 'features/stateMachines/transaction'
 import {
   createTransactionStateMachine,

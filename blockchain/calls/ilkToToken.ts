@@ -1,6 +1,6 @@
 import * as mcdGemJoinAbi from 'blockchain/abi/mcd-gem-join.json'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
 import type { Observable } from 'rxjs'
 import { defer } from 'rxjs'

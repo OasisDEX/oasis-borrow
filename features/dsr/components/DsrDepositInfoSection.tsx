@@ -3,7 +3,7 @@ import { InfoSection } from 'components/infoSection/InfoSection'
 import { getEstimatedGasFeeTextOld } from 'components/vault/VaultChangesInformation'
 import type { DsrSidebarTabOptions } from 'features/dsr/helpers/dsrDeposit.types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 

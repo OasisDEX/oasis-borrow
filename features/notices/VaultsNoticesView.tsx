@@ -19,7 +19,7 @@ import {
 } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import type { TranslateStringType } from 'helpers/translateStringType'
-import type { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'

@@ -1,16 +1,13 @@
 import type { Tokens } from '@prisma/client'
 import { extendTokensContracts, getNetworkContracts } from 'blockchain/contracts'
-import type { Context } from 'blockchain/network'
-import type { SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
 import { getToken, getTokenGuarded } from 'blockchain/tokensMetadata'
 import { uniq } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, from, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
-export interface IdentifiedTokens {
-  [key: string]: SimplifiedTokenConfig
-}
+import type { IdentifiedTokens } from './identifyTokens.types'
+import type { Context } from './network.types'
 
 function reduceIdentifiedTokens(
   total: IdentifiedTokens,

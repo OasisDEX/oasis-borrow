@@ -1,4 +1,4 @@
-import type { Abi } from 'helpers/types'
+import type { Abi } from 'helpers/types/Abi.types'
 import type Web3 from 'web3'
 import type { AbiItem } from 'web3-utils'
 

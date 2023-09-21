@@ -6,7 +6,7 @@ import { combineLatest } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { getNetworkContracts } from './contracts'
-import type { Context } from './network'
+import type { Context } from './network.types'
 import { NetworkIds } from './networks'
 
 function filterSupportedIlksOnNetwork(joins: Record<string, string>, ilks: string[]): string[] {

@@ -12,7 +12,7 @@ import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import type { TxError } from 'helpers/types'
-import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 
 import type { MainAction } from './types/MainAction.types'
 import type {

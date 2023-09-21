@@ -1,5 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import type { ContractDesc } from 'features/web3Context'
 import type { DssProxyActionsCropjoin } from 'types/web3-v1-contracts'

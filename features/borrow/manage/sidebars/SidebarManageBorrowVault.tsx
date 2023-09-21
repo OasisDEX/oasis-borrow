@@ -1,5 +1,6 @@
 import { trackingEvents } from 'analytics/analytics'
-import { ALLOWED_MULTIPLY_TOKENS, getToken, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
+import { getToken } from 'blockchain/tokensMetadata'
+import { ALLOWED_MULTIPLY_TOKENS, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata.constants'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { SidebarAutomationVaultCloseTriggered } from 'components/vault/sidebar/SidebarAutomationVaultCloseTriggered'

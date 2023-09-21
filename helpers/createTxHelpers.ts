@@ -5,8 +5,8 @@ import {
   createSendWithGasConstraints,
   estimateGas,
 } from 'blockchain/calls/callsHelpers'
-import type { ContextConnected } from 'blockchain/network'
-import type { GasPriceParams } from 'blockchain/prices'
+import type { ContextConnected } from 'blockchain/network.types'
+import type { GasPriceParams } from 'blockchain/prices.types'
 import { getGasMultiplier } from 'helpers/getGasMultiplier'
 import type { Observable } from 'rxjs'
 import { filter, map } from 'rxjs/operators'

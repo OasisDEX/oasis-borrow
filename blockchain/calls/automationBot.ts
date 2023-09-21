@@ -1,6 +1,6 @@
 import { TriggerGroupType } from '@oasisdex/automation'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import type { AutomationBot, AutomationBotV2 } from 'types/web3-v1-contracts'
 
