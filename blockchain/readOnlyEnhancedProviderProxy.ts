@@ -1,7 +1,7 @@
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import type { JSONRPCRequestPayload } from 'ethereum-types'
 import { providers } from 'ethers'
-import _ from 'lodash'
+import { includes } from 'lodash'
 import type { JsonRpcResponse } from 'web3-core-helpers'
 
 import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
@@ -50,7 +50,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
         ) => {
           const readOnlyProvider = await getReadOnlyProviderAsync(chainIdPromise)
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
-          const provider = _.includes(READ_ONLY_RPC_CALLS, payload.method)
+          const provider = includes(READ_ONLY_RPC_CALLS, payload.method)
             ? readOnlyProvider
             : rpcProvider
           try {
@@ -64,7 +64,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
         return async (payload: JSONRPCRequestPayload) => {
           const readOnlyProvider = await getReadOnlyProviderAsync(chainIdPromise)
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
-          const provider = _.includes(READ_ONLY_RPC_CALLS, payload.method)
+          const provider = includes(READ_ONLY_RPC_CALLS, payload.method)
             ? readOnlyProvider
             : rpcProvider
 

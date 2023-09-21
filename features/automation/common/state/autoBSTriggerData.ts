@@ -11,7 +11,7 @@ import {
   DEFAULT_MAX_BASE_FEE_IN_GWEI,
   maxUint256,
 } from 'features/automation/common/consts'
-import { getTriggersByType } from 'features/automation/common/helpers'
+import { getTriggersByType } from 'features/automation/common/helpers/getTriggersByType'
 import type { AutoBSTriggerTypes } from 'features/automation/common/types'
 import { zero } from 'helpers/zero'
 

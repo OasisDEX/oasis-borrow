@@ -7,7 +7,7 @@ import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInfor
 import { WithArrow } from 'components/WithArrow'
 import dayjs from 'dayjs'
 import { maxUint32, maxUint256 } from 'features/automation/common/consts'
-import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
+import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
 import type { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents.types'
 import {
   formatAddress,

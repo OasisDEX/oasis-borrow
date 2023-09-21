@@ -1,4 +1,4 @@
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { useMainContext, useProductContext } from 'components/context'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'

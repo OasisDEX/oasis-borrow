@@ -1,5 +1,5 @@
-import type { Tracker } from 'analytics/analytics'
 import { INPUT_DEBOUNCE_TIME } from 'analytics/analytics'
+import type { Tracker } from 'analytics/trackingEvents'
 import { MixpanelPages } from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import type { Context } from 'blockchain/network.types'

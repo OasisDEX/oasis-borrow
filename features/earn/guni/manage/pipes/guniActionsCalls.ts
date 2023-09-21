@@ -13,7 +13,7 @@ import type { ManageChange } from 'features/multiply/manage/pipes/manageMultiply
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'

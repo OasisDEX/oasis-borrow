@@ -17,7 +17,8 @@ import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
-import type { TxData, TxHelpers$ } from './types'
+import type { TxData } from './TxData'
+import type { TxHelpers$ } from './TxHelpers'
 
 export function setupMainContext() {
   console.info('Main context setup')

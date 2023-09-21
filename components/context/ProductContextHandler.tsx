@@ -1,3 +1,4 @@
+import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
 import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 
@@ -10,7 +11,9 @@ export const ProductContextHandler = ({ children }: WithChildren) => {
   return (
     <FunctionalContextHandler>
       <ProductContextProvider>
-        <DeferedContextProvider context={productContext}>{children}</DeferedContextProvider>
+        <WithFollowVaults>
+          <DeferedContextProvider context={productContext}>{children}</DeferedContextProvider>
+        </WithFollowVaults>
       </ProductContextProvider>
     </FunctionalContextHandler>
   )

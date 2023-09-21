@@ -5,7 +5,7 @@ import type { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot
 import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
 import type { AddStopLossChange } from 'features/shared/transactions'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { transactionToX } from 'helpers/form'
 import { of } from 'rxjs'
 

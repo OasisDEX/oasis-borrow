@@ -1,4 +1,4 @@
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import type { BigNumber } from 'bignumber.js'
 import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { zero } from 'helpers/zero'

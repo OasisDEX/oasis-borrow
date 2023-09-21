@@ -9,10 +9,8 @@ import type { NetworkIds } from 'blockchain/networks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE } from 'features/automation/common/consts'
-import {
-  getShouldRemoveAllowance,
-  isSupportedAaveAutomationTokenPair,
-} from 'features/automation/common/helpers'
+import { getShouldRemoveAllowance } from 'features/automation/common/helpers/getShouldRemoveAllowance'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
 import {
   hasInsufficientEthFundsForTx,
   hasMoreDebtThanMaxForStopLoss,

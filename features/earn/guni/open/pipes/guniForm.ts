@@ -4,7 +4,7 @@ import type { BigNumber } from 'bignumber.js'
 import { defaultAllowanceState } from 'features/allowance/allowance.constants'
 import { defaultProxyStage } from 'features/proxy/proxy.constants'
 import type { BalanceInfo } from 'features/shared/balanceInfo.types'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { zero } from 'helpers/zero'
 
 import type { EnvironmentState } from './enviroment'

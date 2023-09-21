@@ -1,6 +1,6 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import type { Context } from 'blockchain/network.types'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
 

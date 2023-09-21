@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { MixpanelCommonAnalyticsSections, MixpanelNotificationsEventIds } from 'analytics/types'
 import { useNotificationSocket } from 'components/context'
 import type { LegacyRef } from 'react'

@@ -1,10 +1,8 @@
 import { TriggerType } from '@oasisdex/automation'
 import type BigNumber from 'bignumber.js'
-import {
-  prepareAutoBSSliderDefaults,
-  resolveMaxBuyOrMinSellPrice,
-  resolveWithThreshold,
-} from 'features/automation/common/helpers'
+import { prepareAutoBSSliderDefaults } from 'features/automation/common/helpers/prepareAutoBSSliderDefaults'
+import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers/resolveMaxBuyOrMinSellPrice'
+import { resolveWithThreshold } from 'features/automation/common/helpers/resolveWithThreshold'
 import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useEffect } from 'react'

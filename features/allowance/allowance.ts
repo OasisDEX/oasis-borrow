@@ -1,6 +1,6 @@
 import type { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
-import type { TxHelpers } from 'helpers/context/types'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 
 import type {
   AllowanceChanges,

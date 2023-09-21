@@ -6,7 +6,7 @@ import type {
 } from 'blockchain/calls/automationBot.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
-import { getTriggersByType } from 'features/automation/common/helpers'
+import { getTriggersByType } from 'features/automation/common/helpers/getTriggersByType'
 import type { TriggerDataType } from 'features/automation/common/TriggerDataType'
 import { maxCoverage } from 'features/automation/protection/stopLoss/constants'
 

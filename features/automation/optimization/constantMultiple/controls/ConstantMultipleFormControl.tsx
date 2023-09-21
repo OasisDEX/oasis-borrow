@@ -1,11 +1,9 @@
 import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
-import {
-  calculateMultipleFromTargetCollRatio,
-  resolveMaxBuyPriceAnalytics,
-  resolveMinSellPriceAnalytics,
-} from 'features/automation/common/helpers'
+import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
+import { resolveMaxBuyPriceAnalytics } from 'features/automation/common/helpers/resolveMaxBuyPriceAnalytics'
+import { resolveMinSellPriceAnalytics } from 'features/automation/common/helpers/resolveMinSellPriceAnalytics'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupConstantMultiple } from 'features/automation/optimization/constantMultiple/sidebars/SidebarSetupConstantMultiple'
@@ -13,7 +11,7 @@ import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/
 import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
 import { getConstantMultipleStatus } from 'features/automation/optimization/constantMultiple/state/constantMultipleStatus'
 import { getConstantMultipleTxHandlers } from 'features/automation/optimization/constantMultiple/state/constantMultipleTxHandlers'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 

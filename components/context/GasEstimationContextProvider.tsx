@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { TransactionDef } from 'blockchain/calls/callsHelpers'
-import type { TxData } from 'helpers/context/types'
+import type { TxData } from 'helpers/context/TxData'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate.constants'
 import type { TxPayloadChange } from 'helpers/gasEstimate.types'
 import { useObservable } from 'helpers/observableHook'

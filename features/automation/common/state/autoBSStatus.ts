@@ -1,11 +1,9 @@
 import type BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import {
-  checkIfIsDisabledAutoBS,
-  checkIfIsEditingAutoBS,
-  getAutoBSVaultChange,
-  prepareAutoBSResetData,
-} from 'features/automation/common/helpers'
+import { checkIfIsDisabledAutoBS } from 'features/automation/common/helpers/checkIfIsDisabledAutoBS'
+import { checkIfIsEditingAutoBS } from 'features/automation/common/helpers/checkIfIsEditingAutoBS'
+import { getAutoBSVaultChange } from 'features/automation/common/helpers/getAutoBSVaultChange'
+import { prepareAutoBSResetData } from 'features/automation/common/helpers/prepareAutoBSResetData'
 import type {
   AutomationBSPublishType,
   SidebarAutomationStages,

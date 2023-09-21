@@ -10,7 +10,7 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
-import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
+import { getShouldRemoveAllowance } from 'features/automation/common/helpers/getShouldRemoveAllowance'
 import {
   hasInsufficientEthFundsForTx,
   hasMoreDebtThanMaxForStopLoss,

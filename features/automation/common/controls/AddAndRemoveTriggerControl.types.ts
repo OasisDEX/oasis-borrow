@@ -11,7 +11,7 @@ import type {
 import type { AutomationContracts } from 'features/automation/metadata/types'
 import type { AutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
 import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import type { ReactElement } from 'react'
 
 export interface AddAndRemoveTxHandler {

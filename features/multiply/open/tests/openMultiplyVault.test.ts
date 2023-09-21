@@ -3,7 +3,7 @@
 import type { TxMeta } from '@oasisdex/transactions'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { mockOpenMultiplyVault } from 'helpers/mocks/openMultiplyVault.mock'
 import { mockTxState } from 'helpers/mocks/txHelpers.mock'

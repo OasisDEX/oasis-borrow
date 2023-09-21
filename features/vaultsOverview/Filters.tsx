@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import type { MixpanelPages } from 'analytics/types'
 import { type CoinTag, COIN_TAGS } from 'blockchain/TokenConfig'
 import { useTranslation } from 'next-i18next'

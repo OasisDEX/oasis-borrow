@@ -1,4 +1,4 @@
-import type { Tracker } from 'analytics/analytics'
+import type { Tracker } from 'analytics/trackingEvents'
 import BigNumber from 'bignumber.js'
 import type { Context } from 'blockchain/network.types'
 import { networkSetById } from 'blockchain/networks'

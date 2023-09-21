@@ -9,7 +9,8 @@ import {
   createTransactionStateMachine,
   startTransactionService,
 } from 'features/stateMachines/transaction'
-import type { AutomationTxData, TxHelpers } from 'helpers/context/types'
+import type { AutomationTxData } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import type { Observable } from 'rxjs'
 
 export function getStopLossTransactionStateMachine(

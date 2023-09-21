@@ -1,4 +1,4 @@
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import type { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { MixpanelCommonAnalyticsSections } from 'analytics/types'
 import BigNumber from 'bignumber.js'
@@ -16,7 +16,7 @@ import type {
 } from 'features/automation/common/types'
 import type { AutomationContracts } from 'features/automation/metadata/types'
 import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { uiChanges } from 'helpers/uiChanges'
 
 export interface AutomationTxHandlerAnalytics {

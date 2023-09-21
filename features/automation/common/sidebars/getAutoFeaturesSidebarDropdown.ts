@@ -1,6 +1,6 @@
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
-import { getAvailableAutomation } from 'features/automation/common/helpers'
+import { getAvailableAutomation } from 'features/automation/common/helpers/getAvailableAutomation'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import type {
   AutomationOptimizationFeatures,

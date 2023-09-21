@@ -1,4 +1,4 @@
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { useMainContext, useProductContext } from 'components/context'
 import {

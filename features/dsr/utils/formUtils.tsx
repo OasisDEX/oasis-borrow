@@ -1,4 +1,4 @@
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { MixpanelEventTypes } from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import type { ManualChange } from 'features/dsr/helpers/dsrDeposit.types'

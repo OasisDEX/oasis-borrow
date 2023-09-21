@@ -1,4 +1,4 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import { prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggersData'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'

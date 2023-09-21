@@ -12,7 +12,7 @@ import { SidebarSetupStopLoss } from 'features/automation/protection/stopLoss/si
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
 import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { getStopLossTxHandlers } from 'features/automation/protection/stopLoss/state/stopLossTxHandlers'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 

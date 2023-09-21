@@ -1,4 +1,4 @@
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import {
   MixpanelAutomationEventIds,
   MixpanelCommonAnalyticsSections,
@@ -19,12 +19,10 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   sidebarAutomationFeatureCopyMap,
 } from 'features/automation/common/consts'
-import {
-  automationInputsAnalytics,
-  automationMultipleRangeSliderAnalytics,
-  calculateCollRatioFromMultiple,
-  calculateMultipleFromTargetCollRatio,
-} from 'features/automation/common/helpers'
+import { automationInputsAnalytics } from 'features/automation/common/helpers/automationInputsAnalytics'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers/calculateCollRatioFromMultiple'
+import { automationMultipleRangeSliderAnalytics } from 'features/automation/common/helpers/automationMultipleRangeSliderAnalytics'
+import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import { AutomationFeatures } from 'features/automation/common/types'

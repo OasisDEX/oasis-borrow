@@ -1,4 +1,4 @@
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { useMainContext, useProductContext } from 'components/context'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'

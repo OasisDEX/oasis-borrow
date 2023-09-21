@@ -13,7 +13,7 @@ import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import type { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
 import { isAllowanceNeeded, ProductType, ProxyType } from 'features/aave/types'
-import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { AllowanceView } from 'features/stateMachines/allowance'

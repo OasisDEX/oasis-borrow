@@ -1,4 +1,4 @@
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { AppLink } from 'components/Links'
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { WithArrow } from 'components/WithArrow'

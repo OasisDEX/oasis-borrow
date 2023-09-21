@@ -9,7 +9,7 @@ import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { IStrategyConfig } from 'features/aave/types/strategy-config'
-import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
 import { getAppConfig } from 'helpers/config'
 import type {
   AaveLikeReserveConfigurationData,

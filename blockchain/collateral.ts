@@ -6,7 +6,7 @@ import { map, switchMap } from 'rxjs/operators'
 import type { CollateralLocked, TotalValueLocked } from './collateral.types'
 import { getNetworkContracts } from './contracts'
 import type { ContextConnected } from './network.types'
-import { NetworkIds } from './networks/'
+import { NetworkIds } from './networks'
 import type { OraclePriceData, OraclePriceDataArgs } from './prices.types'
 
 export function getCollateralLocked$(

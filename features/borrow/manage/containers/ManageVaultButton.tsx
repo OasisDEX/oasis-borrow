@@ -1,4 +1,4 @@
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { ALLOWED_MULTIPLY_TOKENS, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata.constants'
 import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import { useTranslation } from 'next-i18next'

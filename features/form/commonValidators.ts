@@ -1,5 +1,5 @@
 import type { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import { AutomationKinds } from 'features/automation/common/types'
 import { mapAutomationEvents } from 'features/vaultHistory/vaultHistory'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'

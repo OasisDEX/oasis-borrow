@@ -1,5 +1,5 @@
-import type { Tracker } from 'analytics/analytics'
 import { INPUT_DEBOUNCE_TIME } from 'analytics/analytics'
+import type { Tracker } from 'analytics/trackingEvents'
 import type BigNumber from 'bignumber.js'
 import type { Context } from 'blockchain/network.types'
 import { networkSetById } from 'blockchain/networks'

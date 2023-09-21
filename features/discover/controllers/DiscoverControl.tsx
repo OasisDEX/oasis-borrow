@@ -1,5 +1,5 @@
 import type { MixpanelUserContext } from 'analytics/analytics'
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { getDiscoverData } from 'features/discover/api'

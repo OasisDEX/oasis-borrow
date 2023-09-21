@@ -1,4 +1,4 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 
 import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
 import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'

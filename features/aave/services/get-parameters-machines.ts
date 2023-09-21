@@ -10,7 +10,7 @@ import {
 } from 'actions/aave-like'
 import type { NetworkIds } from 'blockchain/networks'
 import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import type { Observable } from 'rxjs'
 

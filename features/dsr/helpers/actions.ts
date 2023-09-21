@@ -10,7 +10,7 @@ import {
   savingsDaiDeposit,
 } from 'features/dsr/helpers/potCalls'
 import type { DsrWithdrawChange } from 'features/dsr/pipes/dsrWithdraw'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { transactionToX } from 'helpers/form'
 import { roundDown, roundHalfUp } from 'helpers/rounding'
 import { zero } from 'helpers/zero'

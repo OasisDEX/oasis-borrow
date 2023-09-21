@@ -1,5 +1,5 @@
 import type { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import { zero } from 'helpers/zero'
 
 import type { MutableManageMultiplyVaultState } from './MutableManageMultiplyVaultState.types'

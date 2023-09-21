@@ -1,4 +1,4 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 
 import type { MutableManageVaultState } from './manageVault.types'
 import type {

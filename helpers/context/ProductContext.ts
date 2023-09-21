@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react'
-import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { BigNumber } from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { charterNib, charterPeace, charterUline } from 'blockchain/calls/charter'
@@ -169,7 +169,8 @@ import {
 
 import { refreshInterval } from './constants'
 import type { MainContext } from './MainContext.types'
-import type { ProtocolsServices, TxHelpers } from './types'
+import type { ProtocolsServices } from './types'
+import type { TxHelpers } from './TxHelpers'
 import curry from 'ramda/src/curry'
 
 export function setupProductContext(

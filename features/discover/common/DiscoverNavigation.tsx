@@ -1,5 +1,5 @@
 import type { MixpanelUserContext } from 'analytics/analytics'
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { GenericSelect } from 'components/GenericSelect'
 import { AppLink } from 'components/Links'
 import type { DiscoverPageMeta } from 'features/discover/meta'

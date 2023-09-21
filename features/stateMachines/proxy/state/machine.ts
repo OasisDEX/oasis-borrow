@@ -1,6 +1,6 @@
 import type { ContextConnected } from 'blockchain/network.types'
 import { allDefined } from 'helpers/allDefined'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
 import type { Observable } from 'rxjs'

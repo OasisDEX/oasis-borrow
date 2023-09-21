@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import { ensureTokensExist, getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, networkSetById } from 'blockchain/networks'
 import { amountFromWei, amountToWei } from 'blockchain/utils'

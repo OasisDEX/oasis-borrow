@@ -20,7 +20,7 @@ import type {
   TransactionStateMachineResultEvents,
 } from 'features/stateMachines/transaction'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
 import { isEqual } from 'lodash'

@@ -6,7 +6,7 @@ import { bindNodeCallback, combineLatest, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import type { tokenAllowance, tokenBalance, tokenBalanceFromAddress } from './calls/erc20'
-import { maxUint256 } from './calls/erc20'
+import { maxUint256 } from './calls/erc20.constants'
 import type { CallObservable } from './calls/observe'
 import type { Context } from './network.types'
 import { NetworkIds } from './networks'

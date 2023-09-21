@@ -1,4 +1,4 @@
-import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers/calculateCollRatioFromMultiple'
 
 import type {
   ConstantMultipleChangeAction,

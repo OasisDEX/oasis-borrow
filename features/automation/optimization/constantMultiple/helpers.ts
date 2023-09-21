@@ -4,12 +4,10 @@ import {
   DEFAULT_AUTO_BS_MAX_SLIDER_VALUE,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
 } from 'features/automation/common/consts'
-import {
-  calculateCollRatioFromMultiple,
-  calculateMultipleFromTargetCollRatio,
-  getAutoBSVaultChange,
-  resolveMaxBuyOrMinSellPrice,
-} from 'features/automation/common/helpers'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers/calculateCollRatioFromMultiple'
+import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
+import { getAutoBSVaultChange } from 'features/automation/common/helpers/getAutoBSVaultChange'
+import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers/resolveMaxBuyOrMinSellPrice'
 import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 import type { SidebarAutomationStages } from 'features/automation/common/types'
 import { getAutoSellMinMaxValues } from 'features/automation/protection/autoSell/helpers'

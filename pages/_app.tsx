@@ -5,9 +5,9 @@ import { Web3OnboardProvider } from '@web3-onboard/react'
 import type { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
 import { adRollPixelScript } from 'analytics/adroll'
-import { trackingEvents } from 'analytics/analytics'
 import { COOKIE_NAMES_LOCASTORAGE_KEY } from 'analytics/common'
 import { mixpanelInit } from 'analytics/mixpanel'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import {
@@ -28,7 +28,6 @@ import { CustomMDXLink } from 'components/Links'
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { TopBanner } from 'components/TopBanner'
 import { cache } from 'emotion'
-import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
 import { initWeb3OnBoard, Web3OnBoardConnectorProvider } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { FTPolar } from 'helpers/fonts'
@@ -198,20 +197,18 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                             <SetupWeb3Context>
                               <NotificationSocketProvider>
                                 <SharedUIProvider>
-                                  <WithFollowVaults>
-                                    <TopBanner />
-                                    <AccountContextProvider>
-                                      <DeferedContextProvider context={accountContext}>
-                                        <Layout {...layoutProps}>
-                                          <Component {...pageProps} />
-                                          <CookieBanner
-                                            setValue={cookiesSetValue}
-                                            value={cookiesValue}
-                                          />
-                                        </Layout>
-                                      </DeferedContextProvider>
-                                    </AccountContextProvider>
-                                  </WithFollowVaults>
+                                  <TopBanner />
+                                  <AccountContextProvider>
+                                    <DeferedContextProvider context={accountContext}>
+                                      <Layout {...layoutProps}>
+                                        <Component {...pageProps} />
+                                        <CookieBanner
+                                          setValue={cookiesSetValue}
+                                          value={cookiesValue}
+                                        />
+                                      </Layout>
+                                    </DeferedContextProvider>
+                                  </AccountContextProvider>
                                 </SharedUIProvider>
                               </NotificationSocketProvider>
                             </SetupWeb3Context>

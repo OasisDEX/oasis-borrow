@@ -1,5 +1,5 @@
 import { TxStatus } from '@oasisdex/transactions'
-import type { ApproveData } from 'blockchain/calls/erc20'
+import type { ApproveData } from 'blockchain/calls/erc20.types'
 import { approve } from 'blockchain/calls/erc20'
 import type { CreateDsProxyData } from 'blockchain/calls/proxy'
 import { createDsProxy } from 'blockchain/calls/proxy'
@@ -13,7 +13,8 @@ import type {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
 } from 'features/borrow/manage/pipes/manageVault.types'
-import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { AddGasEstimationFunction } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'

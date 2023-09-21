@@ -1,7 +1,7 @@
 import type { Route } from '@lifi/sdk'
 import type { RouteExecutionUpdate } from '@lifi/widget'
 import { useWidgetEvents, WidgetEvent } from '@lifi/widget'
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { MixpanelSwapWidgetEvents } from 'analytics/types'
 import { useEffect } from 'react'
 

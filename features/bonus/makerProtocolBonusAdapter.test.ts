@@ -6,7 +6,7 @@ import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLog
 import type { VaultResolve } from 'blockchain/calls/vaultResolver'
 import { createMockVaultResolver$ } from 'blockchain/calls/vaultResolver.mock'
 import type { ContextConnected } from 'blockchain/network.types'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { protoTxHelpers } from 'helpers/protoTxHelpers'
 import { getStateUnpacker } from 'helpers/testHelpers'

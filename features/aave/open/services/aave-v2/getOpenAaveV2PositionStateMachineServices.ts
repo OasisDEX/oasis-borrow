@@ -18,7 +18,7 @@ import type { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { allDefined } from 'helpers/allDefined'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import type {
   AaveLikeProtocolData,
   AaveLikeReserveConfigurationData,

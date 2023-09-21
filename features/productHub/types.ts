@@ -1,5 +1,5 @@
 import type { NetworkNames } from 'blockchain/networks'
-import type { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
+import type { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip.types'
 import type { PromoCardProps } from 'components/PromoCard'
 import type { LendingProtocol } from 'lendingProtocols'
 

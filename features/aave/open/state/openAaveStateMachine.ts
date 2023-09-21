@@ -1,7 +1,7 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import type { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave-like'
 import type { OpenAaveParameters } from 'actions/aave-like/types'
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import type BigNumber from 'bignumber.js'
 import type { AaveV2ReserveConfigurationData } from 'blockchain/aave'
 import { addAutomationBotTriggerV2 } from 'blockchain/calls/automationBot.constants'
@@ -24,7 +24,7 @@ import {
   ProductType,
   ProxyType,
 } from 'features/aave/types'
-import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
 import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,

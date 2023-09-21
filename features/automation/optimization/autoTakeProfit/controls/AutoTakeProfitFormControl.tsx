@@ -9,7 +9,7 @@ import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/a
 import type { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
 import { getAutoTakeProfitStatus } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitStatus'
 import { getAutoTakeProfitTxHandlers } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTxHandlers'
-import type { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 

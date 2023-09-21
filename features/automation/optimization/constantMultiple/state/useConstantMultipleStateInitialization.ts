@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers/calculateCollRatioFromMultiple'
 import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 import {
   getConstantMultipleMultipliers,

@@ -11,7 +11,8 @@ import { getGasMultiplier } from 'helpers/getGasMultiplier'
 import type { Observable } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
-import type { TxData, TxHelpers$ } from './context/types'
+import type { TxData } from './context/TxData'
+import type { TxHelpers$ } from './context/TxHelpers'
 
 export function createTxHelpers$(
   context$: Observable<ContextConnected>,

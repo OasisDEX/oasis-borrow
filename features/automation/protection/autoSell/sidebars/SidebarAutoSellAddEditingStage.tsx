@@ -14,12 +14,10 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   sidebarAutomationFeatureCopyMap,
 } from 'features/automation/common/consts'
-import {
-  adjustDefaultValuesIfOutsideSlider,
-  automationInputsAnalytics,
-  automationMultipleRangeSliderAnalytics,
-  prepareAutoBSResetData,
-} from 'features/automation/common/helpers'
+import { adjustDefaultValuesIfOutsideSlider } from 'features/automation/common/helpers/adjustDefaultValuesIfOutsideSlider'
+import { automationInputsAnalytics } from 'features/automation/common/helpers/automationInputsAnalytics'
+import { automationMultipleRangeSliderAnalytics } from 'features/automation/common/helpers/automationMultipleRangeSliderAnalytics'
+import { prepareAutoBSResetData } from 'features/automation/common/helpers/prepareAutoBSResetData'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
 import { AUTO_SELL_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
 import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'

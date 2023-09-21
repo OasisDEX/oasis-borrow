@@ -1,11 +1,9 @@
 import { TriggerType } from '@oasisdex/automation'
 import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
-import {
-  calculateCollRatioFromMultiple,
-  calculateMultipleFromTargetCollRatio,
-  resolveMaxBuyOrMinSellPrice,
-  resolveWithThreshold,
-} from 'features/automation/common/helpers'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers/calculateCollRatioFromMultiple'
+import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
+import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers/resolveMaxBuyOrMinSellPrice'
+import { resolveWithThreshold } from 'features/automation/common/helpers/resolveWithThreshold'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { zero } from 'helpers/zero'
 

@@ -2,8 +2,8 @@ import type { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { createIlkDataChange$ } from 'blockchain/ilks'
 import type { IlkData } from 'blockchain/ilks.types'
-import type { ContextConnected } from 'blockchain/network.types'
 import { compareBigNumber } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
@@ -24,7 +24,8 @@ import { priceInfoChange$ } from 'features/shared/priceInfo'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
 import { slippageChange$ } from 'features/userSettings/userSettings'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
-import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { AddGasEstimationFunction } from 'helpers/context/types'
 import { GUNI_SLIPPAGE, OAZO_LOWER_FEE } from 'helpers/multiply/calculations.constants'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { combineTransitions } from 'helpers/pipelines/combineTransitions'
@@ -44,7 +45,6 @@ import {
 } from 'rxjs/internal/operators'
 import { withLatestFrom } from 'rxjs/operators'
 
-import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions.constants'
 import { applyEnvironment } from './enviroment'
 import {
   addFormTransitions,
@@ -67,6 +67,7 @@ import {
   applyGuniOpenVaultConditions,
   applyGuniOpenVaultStageCategorisation,
 } from './openGuniVaultConditions'
+import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions.constants'
 import curry from 'ramda/src/curry'
 
 function applyOpenGuniVaultInjectedOverride(state: OpenGuniVaultState, change: OpenGuniChanges) {
