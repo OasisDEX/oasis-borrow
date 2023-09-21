@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { EventTypes, trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/analytics'
+import { MixpanelEventTypes } from 'analytics/types'
 import type BigNumber from 'bignumber.js'
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network'
 import { getNetworkById, NetworkIds } from 'blockchain/networks'
-import type { AddGasEstimationFunction, TxHelpers } from 'components/ProductContext'
 import type { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance.types'
 import { setDsrAllowance } from 'features/allowance/setAllowance'
 import { createProxy } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
@@ -16,6 +16,7 @@ import type { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { applyDsrAllowanceChanges } from 'features/dsr/utils/applyDsrAllowance'
 import type { Dsr } from 'features/dsr/utils/createDsr'
 import { applyProxyChanges } from 'features/proxy/proxy'
+import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import type { ApplyChange, Change, Changes } from 'helpers/form'
 import { applyChange } from 'helpers/form'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
@@ -220,7 +221,7 @@ function addTransitions(
   }
 
   if (state.stage === 'depositSuccess' || state.stage === 'withdrawSuccess') {
-    trackingEvents.daiSavingsRate(EventTypes.ButtonClick, {
+    trackingEvents.daiSavingsRate(MixpanelEventTypes.ButtonClick, {
       depositAmount: state.amount?.toNumber(),
       txHash: state.depositTxHash,
       network: getNetworkById(chainId).name,
