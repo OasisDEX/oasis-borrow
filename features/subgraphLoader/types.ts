@@ -10,7 +10,11 @@ import { ClaimedReferralRewards } from 'features/referralOverview/getClaimedRefe
 export type Subgraphs = {
   Ajna: {
     getAjnaEarnPositionData: { dpmProxyAddress: string; poolAddress: string }
-    getAjnaPositionAggregatedData: { dpmProxyAddress: string }
+    getAjnaPositionAggregatedData: {
+      dpmProxyAddress: string
+      collateralAddress: string
+      quoteAddress: string
+    }
     getAjnaPoolAddress: { collateralAddress: string; quoteAddress: string }
     getAjnaPoolData: { poolAddress: string }
     getAjnaCumulatives: { dpmProxyAddress: string; poolAddress: string }
