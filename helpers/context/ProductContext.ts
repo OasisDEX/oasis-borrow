@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/react'
+import { setUser } from '@sentry/react'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { trackingEvents } from 'analytics/trackingEvents'
 import { BigNumber } from 'bignumber.js'
@@ -226,7 +226,7 @@ export function setupProductContext(
     )
     .subscribe(({ account, networkName, connectionKind, method, walletLabel }) => {
       if (account) {
-        Sentry.setUser({ id: account, walletLabel: walletLabel })
+        setUser({ id: account, walletLabel: walletLabel })
         mixpanelIdentify(account, { walletType: connectionKind, walletLabel: walletLabel })
         trackingEvents.accountChange(account, networkName, connectionKind, method, walletLabel)
       }

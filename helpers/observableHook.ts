@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/react'
+import { captureException } from '@sentry/react'
 import { useEffect, useState } from 'react'
 import type { Observable } from 'rxjs'
 
@@ -6,9 +6,9 @@ export type Unpack<T extends Observable<any>> = T extends Observable<infer U> ? 
 
 function raiseObservableErrorInSentry(e: any) {
   if (e instanceof Error) {
-    Sentry.captureException(e)
+    captureException(e)
   } else {
-    Sentry.captureException(new Error(JSON.stringify(e)))
+    captureException(new Error(JSON.stringify(e)))
   }
 }
 
