@@ -17,7 +17,7 @@ import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
-import type { DepreciatedServices, TxData, TxHelpers$ } from './types'
+import type { TxData, TxHelpers$ } from './types'
 
 export function setupMainContext() {
   console.info('Main context setup')
@@ -72,5 +72,3 @@ export function setupMainContext() {
     web3ContextConnected$,
   }
 }
-
-export type MainContext = ReturnType<typeof setupMainContext> & DepreciatedServices

@@ -4,7 +4,7 @@ import type { TxHelpers } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
 
-import { defaultMutableManageMultiplyVaultState } from './manageMultiplyVault'
+import { defaultMutableManageMultiplyVaultState } from './manageMultiplyVault.constants'
 import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations.constants'
 import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
 import { defaultManageMultiplyVaultConditions } from './manageMultiplyVaultConditions.constants'

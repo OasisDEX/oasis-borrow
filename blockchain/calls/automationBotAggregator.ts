@@ -1,7 +1,7 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { ContextConnected } from 'blockchain/network'
 import { NetworkIds } from 'blockchain/networks'
-import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
+import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization.constants'
 import type { AutomationBotAggregator } from 'types/web3-v1-contracts'
 
 import type {

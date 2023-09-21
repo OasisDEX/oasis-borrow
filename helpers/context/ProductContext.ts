@@ -167,8 +167,8 @@ import {
 } from 'rxjs/operators'
 
 import { refreshInterval } from './constants'
-import type { MainContext } from './MainContext'
-import type { DepreciatedServices, ProtocolsServices, TxHelpers } from './types'
+import type { MainContext } from './MainContext.types'
+import type { ProtocolsServices, TxHelpers } from './types'
 import curry from 'ramda/src/curry'
 
 export function setupProductContext(
@@ -1133,5 +1133,3 @@ export function setupProductContext(
     yieldsChange$,
   }
 }
-
-export type ProductContext = ReturnType<typeof setupProductContext> & DepreciatedServices

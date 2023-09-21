@@ -5,7 +5,7 @@ import {
   DetailsSectionContentCardWrapper,
 } from 'components/DetailsSectionContentCard'
 import { DsrSimulationSection } from 'features/dsr/components/DsrSimulationSection'
-import type { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
+import type { DsrSidebarTabOptions } from 'features/dsr/helpers/dsrDeposit.types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'

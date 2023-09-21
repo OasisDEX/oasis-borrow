@@ -7,20 +7,18 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network'
 import { getNetworkById, NetworkIds } from 'blockchain/networks'
-import type { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance.types'
 import { setDsrAllowance } from 'features/allowance/setAllowance'
 import { createProxy } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
 import { convertDsr, depositDsr, withdrawDsr } from 'features/dsr/helpers/actions'
+import type { DsrSidebarTabOptions } from 'features/dsr/helpers/dsrDeposit.types'
 import type { DaiDepositChange } from 'features/dsr/pipes/dsrWithdraw'
-import type { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { applyDsrAllowanceChanges } from 'features/dsr/utils/applyDsrAllowance'
 import type { Dsr } from 'features/dsr/utils/createDsr'
 import { applyProxyChanges } from 'features/proxy/proxy'
 import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
-import type { ApplyChange, Change, Changes } from 'helpers/form'
+import type { ApplyChange } from 'helpers/form'
 import { applyChange } from 'helpers/form'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
-import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
@@ -28,78 +26,15 @@ import type { Observable } from 'rxjs'
 import { combineLatest, merge, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
+import type {
+  DaiBalanceChange,
+  DsrCreationChange,
+  DsrDepositMessage,
+  DsrDepositState,
+  SDaiBalanceChange,
+  WalletAddressChange,
+} from './dsrDeposit.types'
 import { exit, join, savingsDaiConvert, savingsDaiDeposit } from './potCalls'
-
-export type DsrDepositStage =
-  | 'editing'
-  | 'depositWaiting4Confirmation'
-  | 'depositWaiting4Approval'
-  | 'depositInProgress'
-  | 'depositFiasco'
-  | 'depositSuccess'
-  | 'withdrawWaiting4Confirmation'
-  | 'withdrawWaiting4Approval'
-  | 'withdrawInProgress'
-  | 'withdrawFiasco'
-  | 'withdrawSuccess'
-  | 'allowanceWaitingForConfirmation'
-  | 'allowanceWaitingForApproval'
-  | 'allowanceInProgress'
-  | 'allowanceFailure'
-  | 'allowanceSuccess'
-  | 'proxyWaitingForConfirmation'
-  | 'proxyWaitingForApproval'
-  | 'proxyInProgress'
-  | 'proxyFailure'
-  | 'proxySuccess'
-
-type DsrDepositMessage = {
-  kind: 'amountIsEmpty' | 'amountBiggerThanBalance' | 'amountBiggerThanDeposit'
-}
-export interface DsrDepositState extends HasGasEstimation {
-  stage: DsrDepositStage
-  proxyAddress: string
-  walletAddress: string
-  allowanceTxHash?: string
-  depositTxHash?: string
-  withdrawTxHash?: string
-  proxyTxHash?: string
-  daiBalance: BigNumber
-  sDaiBalance: BigNumber
-  allowance?: BigNumber
-  daiWalletAllowance?: BigNumber
-  amount?: BigNumber
-  depositAmount?: BigNumber
-  messages: DsrDepositMessage[]
-  change: (change: ManualChange | CheckboxChange) => void
-  reset?: () => void
-  proceed?: () => void
-  setAllowance?: () => void
-  deposit?: () => void
-  back?: () => void
-  proxyProceed?: () => void
-  proxyBack?: () => void
-  selectedAllowanceRadio?: SelectedDaiAllowanceRadio
-  operation: DsrSidebarTabOptions
-  operationChange: (operation: DsrSidebarTabOptions) => void
-  withdraw?: () => void
-  convert?: () => void
-  daiDeposit: BigNumber
-  progress?: () => void
-  potDsr: BigNumber
-  token: string
-  proxyConfirmations?: number
-  allowanceAmount?: BigNumber
-  netValue?: BigNumber
-  isMintingSDai: boolean
-}
-
-export type ManualChange = Change<DsrDepositState, 'amount'>
-export type DaiBalanceChange = Change<DsrDepositState, 'daiBalance'>
-export type SDaiBalanceChange = Change<DsrDepositState, 'sDaiBalance'>
-export type DsrCreationChange = Changes<DsrDepositState>
-export type CheckboxChange = Changes<DsrDepositState, 'isMintingSDai'>
-export type WalletAddressChange = Changes<DsrDepositState, 'walletAddress'>
 
 export function applyOther(state: DsrDepositState, change) {
   if (change.kind === 'progressAllowance') {

@@ -1,5 +1,4 @@
 import type { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { createIlkDataChange$ } from 'blockchain/ilks'
 import type { IlkData } from 'blockchain/ilks.types'
@@ -24,7 +23,6 @@ import { createHistoryChange$ } from 'features/vaultHistory/vaultHistory'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import type { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation'
-import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { curry } from 'lodash'
 import type { Observable } from 'rxjs'
@@ -38,6 +36,7 @@ import {
   createExchangeChange$,
   createInitialQuoteChange,
 } from './manageMultiplyQuote'
+import { defaultMutableManageMultiplyVaultState } from './manageMultiplyVault.constants'
 import { applyManageVaultAllowance } from './manageMultiplyVaultAllowances'
 import { applyManageVaultCalculations } from './manageMultiplyVaultCalculations'
 import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations.constants'
@@ -279,25 +278,6 @@ function addTransitions(
   }
 
   return state
-}
-
-export function defaultMutableManageMultiplyVaultState(
-  lockedCollateral?: BigNumber,
-): MutableManageMultiplyVaultState {
-  const hasZeroCollateral = lockedCollateral?.eq(zero)
-
-  return {
-    stage: hasZeroCollateral ? 'otherActions' : 'adjustPosition',
-    originalEditingStage: hasZeroCollateral ? 'otherActions' : 'adjustPosition',
-    collateralAllowanceAmount: maxUint256,
-    daiAllowanceAmount: maxUint256,
-    selectedCollateralAllowanceRadio: 'unlimited',
-    selectedDaiAllowanceRadio: 'unlimited',
-    showSliderController: false,
-    closeVaultTo: 'collateral',
-    mainAction: 'buy',
-    otherAction: 'depositCollateral',
-  }
 }
 
 export function createManageMultiplyVault$(

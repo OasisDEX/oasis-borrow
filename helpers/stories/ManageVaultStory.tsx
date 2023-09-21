@@ -6,7 +6,7 @@ import { defaultMutableManageVaultState } from 'features/borrow/manage/pipes/man
 import type { MutableManageVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
-import type { ProductContext } from 'helpers/context/ProductContext'
+import type { ProductContext } from 'helpers/context/ProductContext.types'
 import type { MockManageVaultProps } from 'helpers/mocks/manageVault.mock'
 import { MOCK_VAULT_ID, mockManageVault$ } from 'helpers/mocks/manageVault.mock'
 import { memoize } from 'lodash'

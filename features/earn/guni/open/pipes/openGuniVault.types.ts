@@ -15,7 +15,7 @@ import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
 
 import type { EnvironmentChange, EnvironmentState } from './enviroment'
 import type { EditingStage, FormChanges, FormFunctions, FormState } from './guniForm'
-import type { GuniOpenMultiplyVaultConditions } from './openGuniVaultConditions'
+import type { GuniOpenMultiplyVaultConditions } from './openGuniVaultConditions.types'
 
 export type InjectChange = {
   kind: 'injectStateOverride'

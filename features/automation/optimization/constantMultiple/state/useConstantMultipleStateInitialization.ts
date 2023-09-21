@@ -17,10 +17,6 @@ import { useEffect } from 'react'
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from './constantMultipleFormChange.constants'
 import type { ConstantMultipleTriggerData } from './constantMultipleTriggerData.types'
 
-export const CONSTANT_MULTIPLE_GROUP_TYPE = 1
-
-export const DEFAULT_TARGET_OFFSET = 10
-
 export function useConstantMultipleStateInitialization({
   debt,
   ilk,

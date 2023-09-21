@@ -1,5 +1,5 @@
-import type { MainContext } from 'helpers/context/MainContext'
 import { setupMainContext } from 'helpers/context/MainContext'
+import type { MainContext } from 'helpers/context/MainContext.types'
 import type { WithChildren } from 'helpers/types'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 

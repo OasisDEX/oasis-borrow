@@ -1,5 +1,5 @@
-import type { ProductContext } from 'helpers/context/ProductContext'
 import { setupProductContext } from 'helpers/context/ProductContext'
+import type { ProductContext } from 'helpers/context/ProductContext.types'
 import type { WithChildren } from 'helpers/types'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 

@@ -44,6 +44,7 @@ import {
 } from 'rxjs/internal/operators'
 import { withLatestFrom } from 'rxjs/operators'
 
+import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions.constants'
 import { applyEnvironment } from './enviroment'
 import {
   addFormTransitions,
@@ -65,7 +66,6 @@ import type {
 import {
   applyGuniOpenVaultConditions,
   applyGuniOpenVaultStageCategorisation,
-  defaultGuniOpenMultiplyVaultConditions,
 } from './openGuniVaultConditions'
 import curry from 'ramda/src/curry'
 

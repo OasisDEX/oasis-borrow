@@ -7,7 +7,6 @@ import {
   resolveWithThreshold,
 } from 'features/automation/common/helpers'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
-import { DEFAULT_TARGET_OFFSET } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
 import { zero } from 'helpers/zero'
 
 import { defaultConstantMultipleData } from './constantMultipleTriggerData.constants'
@@ -16,6 +15,7 @@ import type {
   ConstantMultipleTriggerData,
   PrepareConstantMultipleResetDataProps,
 } from './constantMultipleTriggerData.types'
+import { DEFAULT_TARGET_OFFSET } from './useConstantMultipleStateInitialization.constants'
 
 function mapConstantMultipleTriggerData(
   constantMultipleAggregatedTriggers: ConstantMultipleAggregatedTriggers,

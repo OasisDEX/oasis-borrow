@@ -1,46 +1,18 @@
-import type BigNumber from 'bignumber.js'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
-import type { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance.types'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { getIsAllowanceStage } from 'features/allowance/allowance'
 import { DsrEditing } from 'features/dsr/containers/DsrEditing'
-import type { DsrDepositStage, DsrDepositState } from 'features/dsr/helpers/dsrDeposit'
 import { DsrSidebarCreation } from 'features/dsr/sidebar/DsrSidebarCreation'
 import { createPrimaryButtonLabel, isDsrButtonDisabled } from 'features/dsr/utils/helpers'
 import { isProxyStage } from 'features/proxy/proxy'
-import type { HasGasEstimation } from 'helpers/types/HasGasEstimation'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { ChangeEvent } from 'react'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
-export type DsrSidebarTabOptions = 'deposit' | 'withdraw' | 'convert'
-
-interface DsrSidebarProps {
-  activeTab: DsrSidebarTabOptions
-  daiBalance: BigNumber
-  sDaiBalance: BigNumber
-  onDepositAmountChange: (e: ChangeEvent<HTMLInputElement>) => void
-  depositInputValue?: BigNumber
-  withDrawInputValue?: BigNumber
-  onPrimaryButtonClick?: () => void
-  stage: DsrDepositStage
-  proxyAddress?: string
-  daiAllowance?: BigNumber
-  daiWalletAllowance?: BigNumber
-  isLoading: boolean
-  isOwner: boolean
-  dsrDepositState: DsrDepositState
-  operationChange: (operation: DsrSidebarTabOptions) => void
-  netValue: BigNumber
-  gasData: HasGasEstimation
-  validationMessages: string[]
-  selectedAllowanceRadio?: SelectedDaiAllowanceRadio
-  allowanceAmount?: BigNumber
-}
+import type { DsrSidebarProps } from './DsrSideBar.types'
 
 export function DsrSideBar({
   activeTab,

@@ -3,7 +3,8 @@ import type BigNumber from 'bignumber.js'
 import type { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { prepareAddAutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
+
+import { CONSTANT_MULTIPLE_GROUP_TYPE } from './useConstantMultipleStateInitialization.constants'
 
 export function prepareAddConstantMultipleTriggerData({
   id,

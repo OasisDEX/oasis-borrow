@@ -10,7 +10,7 @@ import { zero } from 'helpers/zero'
 import type { EnvironmentState } from './enviroment'
 import type { TxStateDependencies } from './guniActionsCalls'
 import { openGuniVault } from './guniActionsCalls'
-import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions'
+import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions.constants'
 
 export type EditingStage = 'editing'
 export type DepositChange = { kind: 'depositAmount'; depositAmount?: BigNumber }

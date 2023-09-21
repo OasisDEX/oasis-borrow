@@ -1,8 +1,11 @@
 import type { BigNumber } from 'bignumber.js'
 import { getIsAllowanceStage } from 'features/allowance/allowance'
-import type { DsrDepositStage, DsrDepositState } from 'features/dsr/helpers/dsrDeposit'
+import type {
+  DsrDepositStage,
+  DsrDepositState,
+  DsrSidebarTabOptions,
+} from 'features/dsr/helpers/dsrDeposit.types'
 import type { DsrWithdrawStage } from 'features/dsr/pipes/dsrWithdraw'
-import type { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { zero } from 'helpers/zero'
 
 // TODO: Move this to translations and add withdraw logic
