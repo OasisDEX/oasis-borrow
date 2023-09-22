@@ -33,7 +33,7 @@ import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { handleNumericInput } from 'helpers/input'
 import {
   extractConstantMultipleCommonErrors,
@@ -113,7 +113,7 @@ export function SidebarConstantMultipleEditingStage({
   })
 
   const isVaultEmpty = debt.isZero()
-  const { ConstantMultipleReadOnly: constantMultipleReadOnlyEnabled } = getAppConfig('features')
+  const { ConstantMultipleReadOnly: constantMultipleReadOnlyEnabled } = useAppConfig('features')
 
   if (constantMultipleReadOnlyEnabled && !isVaultEmpty) {
     return (

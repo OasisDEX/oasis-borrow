@@ -20,7 +20,7 @@ import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiply
 import { getDsrValue, getFundingCost, getProtection } from 'features/vaultsOverview/helpers'
 import type { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
 import type { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
-import { getAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import {
   formatAddress,
   formatCryptoBalance,
@@ -78,7 +78,7 @@ export interface PositionTableEarnRow extends PositionTableRow {
 
 const isAutomationEnabledProtocol = (protocol: LendingProtocol, network: NetworkNames) => {
   const { AaveV3Protection: aaveProtection, SparkProtocolStopLoss: sparkProtection } =
-    getAppConfig('features')
+    getLocalAppConfig('features')
 
   return {
     [LendingProtocol.Maker]: network === NetworkNames.ethereumMainnet,

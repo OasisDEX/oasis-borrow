@@ -2,7 +2,7 @@ import { trackingEvents } from 'analytics/trackingEvents'
 import { useMainContext, useProductContext } from 'components/context'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import type { Observable } from 'rxjs'
@@ -28,7 +28,7 @@ export function ManageMultiplyVaultContainer({
     ilkData,
   } = manageVault
   const { t } = useTranslation()
-  const { StopLossRead: stopLossReadEnabled } = getAppConfig('features')
+  const { StopLossRead: stopLossReadEnabled } = useAppConfig('features')
 
   useEffect(() => {
     const { token } = manageVault.vault
