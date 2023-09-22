@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { allDefined } from 'helpers/allDefined'
-import { LiquidationCallEvent as AaveLiquidationCallEventV2 } from 'types/ethers-contracts/AaveV2LendingPool'
-import { LiquidationCallEvent as AaveLiquidationCallEventV3 } from 'types/ethers-contracts/AaveV3Pool'
-import { LiquidationCallEvent as SparkLiquidationCallEventV3 } from 'types/ethers-contracts/SparkV3Pool'
+import type { LiquidationCallEvent as AaveLiquidationCallEventV2 } from 'types/ethers-contracts/AaveV2LendingPool'
+import type { LiquidationCallEvent as AaveLiquidationCallEventV3 } from 'types/ethers-contracts/AaveV3Pool'
+import type { LiquidationCallEvent as SparkLiquidationCallEventV3 } from 'types/ethers-contracts/SparkV3Pool'
 
 export function getLiquidatedHeaderNotice(isPositionController: boolean) {
   return isPositionController

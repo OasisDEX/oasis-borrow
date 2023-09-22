@@ -1,17 +1,15 @@
-import { AutomationEventIds, Pages } from 'analytics/analytics'
+import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { CloseVaultToEnum } from 'features/automation/common/consts'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupAutoTakeProfit } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarSetupAutoTakeProfit'
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
-  AutoTakeProfitFormChange,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
+import type { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
 import { getAutoTakeProfitStatus } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitStatus'
 import { getAutoTakeProfitTxHandlers } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTxHandlers'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -79,11 +77,11 @@ export function AutoTakeProfitFormControl({
       txHelpers={txHelpers}
       analytics={{
         id: {
-          add: AutomationEventIds.AddTakeProfit,
-          edit: AutomationEventIds.EditTakeProfit,
-          remove: AutomationEventIds.RemoveTakeProfit,
+          add: MixpanelAutomationEventIds.AddTakeProfit,
+          edit: MixpanelAutomationEventIds.EditTakeProfit,
+          remove: MixpanelAutomationEventIds.RemoveTakeProfit,
         },
-        page: Pages.TakeProfit,
+        page: MixpanelPages.TakeProfit,
         additionalParams: {
           triggerValue: autoTakeProfitState.executionPrice.toString(),
           closeTo: autoTakeProfitState.toCollateral

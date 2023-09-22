@@ -1,17 +1,20 @@
-import { NetworkNames, networksByName } from 'blockchain/networks'
+import type { NetworkNames } from 'blockchain/networks'
+import { networksByName } from 'blockchain/networks'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { loadStrategyFromTokens } from 'features/aave'
-import { getLastCreatedPositionForProxy, PositionCreated } from 'features/aave/services'
-import { IStrategyConfig, PositionId } from 'features/aave/types'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import type { PositionCreated } from 'features/aave/services'
+import { getLastCreatedPositionForProxy } from 'features/aave/services'
+import type { IStrategyConfig, PositionId } from 'features/aave/types'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { productToVaultType } from 'helpers/productToVaultType'
 import { LendingProtocol } from 'lendingProtocols'
-import { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
+import type { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
 import { isEqual } from 'lodash'
-import { combineLatest, iif, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, iif, of } from 'rxjs'
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
-import { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
+import type { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
 
 export function getStrategyConfig$(
   proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,

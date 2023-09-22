@@ -1,12 +1,13 @@
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { DefinitionList } from 'components/DefinitionList'
 import { DetailsSection } from 'components/DetailsSection'
 import { PositionHistoryItem } from 'components/history/PositionHistoryItem'
-import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import { AaveHistoryEvent } from 'features/ajna/history/types'
+import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import type { AaveHistoryEvent } from 'features/ajna/history/types'
 import { useTranslation } from 'next-i18next'
-import React, { FC } from 'react'
+import type { FC } from 'react'
+import React from 'react'
 
 interface PositionHistoryProps {
   collateralToken: string

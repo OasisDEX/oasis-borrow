@@ -1,10 +1,8 @@
-import { Protocol, UsersWhoFollowVaults } from '@prisma/client'
+import type { Protocol, UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
-import {
-  FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
-  FollowedVaultsLimitReachedChange,
-} from 'features/follow/common/followedVaultsLimitReached'
+import type { FollowedVaultsLimitReachedChange } from 'features/follow/common/followedVaultsLimitReached'
+import { FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE } from 'features/follow/common/followedVaultsLimitReached'
 import { FollowButton } from 'features/follow/view/FollowButton'
 import { accountIsConnectedValidator } from 'features/form/commonValidators'
 import {
@@ -16,7 +14,7 @@ import { jwtAuthGetToken } from 'features/shared/jwt'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect, useState } from 'react'
-import { SxStyleProp } from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui'
 
 export type FollowButtonControlProps = {
   chainId: number

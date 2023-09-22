@@ -1,22 +1,21 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import {
   DEFAULT_AUTO_BS_MAX_SLIDER_VALUE,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
 } from 'features/automation/common/consts'
-import {
-  calculateCollRatioFromMultiple,
-  calculateMultipleFromTargetCollRatio,
-  getAutoBSVaultChange,
-  resolveMaxBuyOrMinSellPrice,
-} from 'features/automation/common/helpers'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { SidebarAutomationStages } from 'features/automation/common/types'
-import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers/calculateCollRatioFromMultiple'
+import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
+import { getAutoBSVaultChange } from 'features/automation/common/helpers/getAutoBSVaultChange'
+import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers/resolveMaxBuyOrMinSellPrice'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import type { SidebarAutomationStages } from 'features/automation/common/types'
 import { getAutoSellMinMaxValues } from 'features/automation/protection/autoSell/helpers'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
+import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+
+import type { ConstantMultipleFormChange } from './state/constantMultipleFormChange.types'
+import type { ConstantMultipleTriggerData } from './state/constantMultipleTriggerData.types'
 
 export function getConstantMutliplyMinMaxValues({
   liquidationRatio,

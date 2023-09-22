@@ -1,9 +1,6 @@
-import BigNumber from 'bignumber.js'
-import {
-  ChangeVariantType,
-  ContentCardProps,
-  DetailsSectionContentCard,
-} from 'components/DetailsSectionContentCard'
+import type BigNumber from 'bignumber.js'
+import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
+import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { formatAmount } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'

@@ -1,14 +1,19 @@
-import { INPUT_DEBOUNCE_TIME, Tracker } from 'analytics/analytics'
-import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import { INPUT_DEBOUNCE_TIME } from 'analytics/analytics'
+import type { Tracker } from 'analytics/trackingEvents'
+import type BigNumber from 'bignumber.js'
+import type { Context } from 'blockchain/network.types'
 import { networkSetById } from 'blockchain/networks'
-import { AccountDetails } from 'features/account/AccountData'
+import type { AccountDetails } from 'features/account/AccountData'
 import { formatOazoFee } from 'features/multiply/manage/utils'
 import { isEqual } from 'lodash'
-import { combineLatest, merge, Observable, zip } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, merge, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
-import { MutableOpenMultiplyVaultState, OpenMultiplyVaultState } from './openMultiplyVault'
+import type {
+  MutableOpenMultiplyVaultState,
+  OpenMultiplyVaultState,
+} from './openMultiplyVault.types'
 
 type DepositAmountChange = {
   kind: 'depositAmountChange'

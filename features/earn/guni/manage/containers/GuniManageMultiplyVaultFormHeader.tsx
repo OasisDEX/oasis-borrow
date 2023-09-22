@@ -1,5 +1,5 @@
 import { ManageVaultHeaderAllowance } from 'components/vault/commonMultiply/ManageVaultHeaderAllowance'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import React from 'react'
 import { Box } from 'theme-ui'
 

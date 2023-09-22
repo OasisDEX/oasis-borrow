@@ -1,6 +1,7 @@
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
-import { Container, Flex, SxStyleProp } from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui'
+import { Container, Flex } from 'theme-ui'
 
 export interface BasicLayoutProps extends WithChildren {
   header: JSX.Element

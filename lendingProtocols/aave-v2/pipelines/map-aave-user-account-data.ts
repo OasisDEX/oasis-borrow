@@ -1,5 +1,5 @@
 import { getAaveV2UserAccountData } from 'blockchain/aave'
-import {
+import type {
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common/aave-like-user-account-data'

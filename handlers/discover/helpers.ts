@@ -1,15 +1,15 @@
-import {
+import type {
   HighestMultiplyPnl,
   HighestRiskPositions,
   LargestDebt,
   MostYieldEarned,
-  Prisma,
 } from '@prisma/client'
-import {
+import { Prisma } from '@prisma/client'
+import type {
   DiscoverTableColRatioRowData,
   DiscoverTableStatusRowDataApi,
-  DiscoverTableVaultStatus,
 } from 'features/discover/types'
+import { DiscoverTableVaultStatus } from 'features/discover/types'
 
 type OmitNonDecimal<T> = { [K in keyof T]: T[K] extends Prisma.Decimal ? K : never }[keyof T]
 type DiscoverLite = OmitNonDecimal<HighestMultiplyPnl | MostYieldEarned>

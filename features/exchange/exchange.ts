@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { ContractDesc } from 'features/web3Context'
-import { Observable, of } from 'rxjs'
+import type { ContractDesc } from 'features/web3Context'
+import type { Observable } from 'rxjs'
+import { of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'
-import { Dictionary } from 'ts-essentials'
+import type { Dictionary } from 'ts-essentials'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 

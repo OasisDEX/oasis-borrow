@@ -1,18 +1,16 @@
 import { TriggerType } from '@oasisdex/automation'
-import { AutomationEventIds, Pages } from 'analytics/analytics'
+import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
-import { resolveMaxBuyPriceAnalytics } from 'features/automation/common/helpers'
-import {
-  AUTO_BUY_FORM_CHANGE,
-  AutoBSFormChange,
-} from 'features/automation/common/state/autoBSFormChange'
+import { resolveMaxBuyPriceAnalytics } from 'features/automation/common/helpers/resolveMaxBuyPriceAnalytics'
+import { AUTO_BUY_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
+import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
 import { getAutoBSStatus } from 'features/automation/common/state/autoBSStatus'
 import { getAutoBSTxHandlers } from 'features/automation/common/state/autoBSTxHandlers'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/autoBuy/sidebars/SidebarSetupAutoBuy'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -83,11 +81,11 @@ export function AutoBuyFormControl({
       txHelpers={txHelpers}
       analytics={{
         id: {
-          add: AutomationEventIds.AddAutoBuy,
-          edit: AutomationEventIds.EditAutoBuy,
-          remove: AutomationEventIds.RemoveAutoBuy,
+          add: MixpanelAutomationEventIds.AddAutoBuy,
+          edit: MixpanelAutomationEventIds.EditAutoBuy,
+          remove: MixpanelAutomationEventIds.RemoveAutoBuy,
         },
-        page: Pages.AutoBuy,
+        page: MixpanelPages.AutoBuy,
         additionalParams: {
           triggerBuyValue: autoBuyState.execCollRatio.toString(),
           targetValue: autoBuyState.targetCollRatio.toString(),

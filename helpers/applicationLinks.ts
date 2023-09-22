@@ -122,4 +122,5 @@ export const EXTERNAL_LINKS = {
   WONDERWALL: 'https://www.youtube.com/embed/6hzrDeceEKc',
   LIDO_FI_STETH_LIQUIDITY:
     'https://blog.lido.fi/providing-steth-liquidity-via-curve-to-receive-rewards',
+  INTER_FONT: 'https://rsms.me/inter/inter.css',
 }

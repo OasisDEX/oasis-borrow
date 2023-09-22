@@ -5,11 +5,11 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getAppConfig } from 'helpers/config'
-import { HasGasEstimation } from 'helpers/context/types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Image, Text } from 'theme-ui'

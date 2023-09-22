@@ -1,5 +1,5 @@
 import { AppLink } from 'components/Links'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from 'theme-ui'

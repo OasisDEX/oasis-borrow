@@ -1,12 +1,8 @@
 import { NavigationMenuDropdown } from 'components/navigation/NavigationMenuDropdown'
-import {
-  NavigationMenuLink,
-  NavigationMenuPanelLinkType,
-} from 'components/navigation/NavigationMenuLink'
-import {
-  NavigationMenuPanel,
-  NavigationMenuPanelType,
-} from 'components/navigation/NavigationMenuPanel'
+import type { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
+import { NavigationMenuLink } from 'components/navigation/NavigationMenuLink'
+import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
+import { NavigationMenuPanel } from 'components/navigation/NavigationMenuPanel'
 import React, { useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 

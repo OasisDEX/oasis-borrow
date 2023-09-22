@@ -1,4 +1,4 @@
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { useMainContext, useProductContext } from 'components/context'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
 import { useWalletManagement } from 'features/web3OnBoard'

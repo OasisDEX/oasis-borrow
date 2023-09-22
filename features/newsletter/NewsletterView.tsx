@@ -1,15 +1,17 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { isMainContextAvailable } from 'components/context'
 import { AppLink } from 'components/Links'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { FormEvent, useEffect, useState } from 'react'
+import type { FormEvent } from 'react'
+import React, { useEffect, useState } from 'react'
 import { GRADIENTS } from 'theme'
 import { Box, Button, Flex, Grid, Heading, Input, Text } from 'theme-ui'
 
-import { createNewsletter$, NewsletterMessage, NewsletterState } from './newsletter'
-import { NewsletterResponseMessage } from './newsletterApi'
+import type { NewsletterMessage, NewsletterState } from './newsletter'
+import { createNewsletter$ } from './newsletter'
+import type { NewsletterResponseMessage } from './newsletterApi'
 
 export const NEWSLETTER_FORM_ERROR: {
   [key in NewsletterMessage | NewsletterResponseMessage]: string

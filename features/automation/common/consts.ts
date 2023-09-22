@@ -2,7 +2,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { AutomationFeatures, AutomationKinds } from 'features/automation/common/types'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
-import { FixedSizeArray } from 'helpers/types'
+import type { FixedSizeArray } from 'helpers/types'
 import { one } from 'helpers/zero'
 
 export const closeVaultOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']

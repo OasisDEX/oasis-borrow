@@ -1,7 +1,9 @@
-import { isNetworkHexIdSupported, NetworkConfigHexId, networkSetByHexId } from 'blockchain/networks'
+import type { NetworkConfigHexId } from 'blockchain/networks'
+import { isNetworkHexIdSupported, networkSetByHexId } from 'blockchain/networks'
 
 import { ensureCorrectState } from './ensure-correct-state'
-import { WalletManagementState, WalletManagementStateStatus } from './wallet-management-state'
+import type { WalletManagementState } from './wallet-management-state'
+import { WalletManagementStateStatus } from './wallet-management-state'
 
 export function canTransitWithNetworkHexId(
   hexId: NetworkConfigHexId | undefined,

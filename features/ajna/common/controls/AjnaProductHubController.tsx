@@ -1,6 +1,6 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
-import { ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { getAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'

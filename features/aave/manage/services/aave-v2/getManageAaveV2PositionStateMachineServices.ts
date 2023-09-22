@@ -1,27 +1,29 @@
-import BigNumber from 'bignumber.js'
-import { createExecuteTransaction, DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
+import type BigNumber from 'bignumber.js'
+import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
+import { createExecuteTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
-import { Tickers } from 'blockchain/prices'
-import { TokenBalances } from 'blockchain/tokens'
-import { ProxiesRelatedWithPosition } from 'features/aave/helpers'
-import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
+import type { Context } from 'blockchain/network.types'
+import type { Tickers } from 'blockchain/prices.types'
+import type { TokenBalances } from 'blockchain/tokens.types'
+import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import type { ManageAaveStateMachineServices } from 'features/aave/manage/state'
 import { getPricesFeed$ } from 'features/aave/services'
-import {
-  contextToEthersTransactions,
+import type {
   IStrategyConfig,
   IStrategyInfo,
   StrategyTokenAllowance,
   StrategyTokenBalance,
 } from 'features/aave/types'
-import { PositionId } from 'features/aave/types/position-id'
+import { contextToEthersTransactions } from 'features/aave/types'
+import type { PositionId } from 'features/aave/types/position-id'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
-import { UserSettingsState } from 'features/userSettings/userSettings'
+import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { allDefined } from 'helpers/allDefined'
-import { TxHelpers } from 'helpers/context/types'
-import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 import { interpret } from 'xstate'
 

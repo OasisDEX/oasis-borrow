@@ -1,7 +1,7 @@
-import { NetworkNames } from 'blockchain/networks'
-import { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
-import { PromoCardProps } from 'components/PromoCard'
-import { LendingProtocol } from 'lendingProtocols'
+import type { NetworkNames } from 'blockchain/networks'
+import type { AssetsTableTooltipProps } from 'components/assetsTable/cellComponents/AssetsTableTooltip.types'
+import type { PromoCardProps } from 'components/PromoCard.types'
+import type { LendingProtocol } from 'lendingProtocols'
 
 export type ProductHubMultiplyStrategyType = 'long' | 'short'
 export type ProductHubManagementType = 'active' | 'passive'

@@ -6,7 +6,7 @@ import { ProductHubTableController } from 'features/productHub/controls/ProductH
 import { matchRowsByFilters, matchRowsByNL, parseRows } from 'features/productHub/helpers'
 import { sortByDefault } from 'features/productHub/helpers/sortByDefault'
 import { useProductHubBanner } from 'features/productHub/hooks/useProductHubBanner'
-import {
+import type {
   ProductHubFilters,
   ProductHubItem,
   ProductHubProductType,
@@ -15,7 +15,8 @@ import {
 import { useWalletManagement } from 'features/web3OnBoard'
 import { getAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
-import React, { FC, useMemo } from 'react'
+import type { FC } from 'react'
+import React, { useMemo } from 'react'
 
 interface ProductHubContentControllerProps {
   initialNetwork?: ProductHubSupportedNetworks[]

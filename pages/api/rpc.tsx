@@ -1,6 +1,6 @@
 import { NetworkNames } from 'blockchain/networks'
 import * as ethers from 'ethers'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 export function getRpcNode(network: NetworkNames): string | undefined {
   switch (network) {

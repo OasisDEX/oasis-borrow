@@ -1,5 +1,6 @@
-import { WithChildren } from 'helpers/types'
-import React, { createContext, ReactNode, useContext, useState } from 'react'
+import type { WithChildren } from 'helpers/types/With.types'
+import type { ReactNode } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 
 interface SharedUIState {
   vaultFormToggleTitle?: string

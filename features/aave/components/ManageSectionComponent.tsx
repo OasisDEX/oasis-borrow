@@ -1,9 +1,9 @@
 import { useActor } from '@xstate/react'
 import { useSimulationYields } from 'features/aave/hooks'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
-import { IStrategyConfig } from 'features/aave/types'
+import type { IStrategyConfig } from 'features/aave/types'
 import { AppSpinner } from 'helpers/AppSpinner'
-import {
+import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveData,
 } from 'lendingProtocols/aave-like-common'

@@ -1,10 +1,10 @@
-import BigNumber from 'bignumber.js'
-import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { Dsr } from 'features/dsr/utils/createDsr'
-import { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
-import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
+import type BigNumber from 'bignumber.js'
+import type { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
+import type { Dsr } from 'features/dsr/utils/createDsr'
+import type { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
+import type { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
 import { zero } from 'helpers/zero'
 
 export const positionsTableTooltips = [

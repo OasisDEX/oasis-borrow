@@ -1,18 +1,19 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
-import { NetworkIds } from 'blockchain/networks'
+import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import type { NetworkIds } from 'blockchain/networks'
 import dayjs from 'dayjs'
-import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
-import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import {
+import type { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
+import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import type {
   AjnaPositionAggregatedDataAuctions,
   AjnaPositionCumulatives,
-  getAjnaPositionAggregatedData,
 } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
+import { getAjnaPositionAggregatedData } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { mapAjnaBorrowishEvents } from 'features/ajna/positions/common/helpers/mapBorrowishEvents'
 import { mapAjnaEarnEvents } from 'features/ajna/positions/common/helpers/mapEarnEvents'
-import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
+import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { zero } from 'helpers/zero'
-import { from, Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { from } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 import { timeAgo } from 'utils'
 

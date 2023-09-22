@@ -1,10 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
-import {
-  ChangeVariantType,
-  ContentCardProps,
-  DetailsSectionContentCard,
-} from 'components/DetailsSectionContentCard'
+import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
+import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { StopLossBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossBannerControl'
 import { getAppConfig } from 'helpers/config'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'

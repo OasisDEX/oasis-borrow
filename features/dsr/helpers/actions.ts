@@ -1,24 +1,24 @@
 import BigNumber from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { RAY, WAD } from 'components/constants'
-import { DsrCreationChange, DsrDepositState } from 'features/dsr/helpers/dsrDeposit'
+import type { DsrExitAllData, DsrExitData, DsrJoinData } from 'features/dsr/helpers/potCalls'
 import {
-  DsrExitAllData,
-  DsrExitData,
-  DsrJoinData,
   exit,
   exitAll,
   join,
   savingsDaiConvert,
   savingsDaiDeposit,
 } from 'features/dsr/helpers/potCalls'
-import { DsrWithdrawChange } from 'features/dsr/pipes/dsrWithdraw'
-import { TxHelpers } from 'helpers/context/types'
+import type { DsrWithdrawChange } from 'features/dsr/pipes/dsrWithdraw'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { transactionToX } from 'helpers/form'
 import { roundDown, roundHalfUp } from 'helpers/rounding'
 import { zero } from 'helpers/zero'
-import { Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
+
+import type { DsrCreationChange, DsrDepositState } from './dsrDeposit.types'
 
 export function depositDsr(
   txHelpers$: Observable<TxHelpers>,

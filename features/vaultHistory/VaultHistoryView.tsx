@@ -8,7 +8,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Heading } from 'theme-ui'
 
-import { mapAutomationEvents, splitEvents, VaultHistoryEvent } from './vaultHistory'
+import { mapAutomationEvents, splitEvents } from './vaultHistory'
+import type { VaultHistoryEvent } from './vaultHistory.types'
 import { VaultHistoryEntry } from './VaultHistoryEntry'
 
 export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryEvent[] }) {
