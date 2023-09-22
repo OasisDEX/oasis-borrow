@@ -6,12 +6,12 @@ import {
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
 import { AutoSellDetailsLayout } from 'features/automation/protection/autoSell/controls/AutoSellDetailsLayout'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
 export function AutoSellDetailsControl() {
-  const { ReadOnlyBasicBS: readOnlyAutoBSEnabled } = getAppConfig('features')
+  const { ReadOnlyBasicBS: readOnlyAutoBSEnabled } = useAppConfig('features')
   const {
     positionData: { debt, lockedCollateral },
     triggerData: { autoSellTriggerData },

@@ -32,7 +32,7 @@ import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { handleNumericInput } from 'helpers/input'
 import { uiChanges } from 'helpers/uiChanges'
 import { useHash } from 'helpers/useHash'
@@ -70,7 +70,7 @@ export function SidebarAutoBuyEditingStage({
   } = useAutomationContext()
   const [, setHash] = useHash()
   const { t } = useTranslation()
-  const { ReadOnlyBasicBS: readOnlyAutoBSEnabled } = getAppConfig('features')
+  const { ReadOnlyBasicBS: readOnlyAutoBSEnabled } = useAppConfig('features')
   const isVaultEmpty = debt.isZero()
   const executionPrice = collateralPriceAtRatio({
     colRatio: autoBuyState.execCollRatio.div(100),

@@ -6,7 +6,7 @@ import {
   VaultDetailsCardModal,
 } from 'components/vault/VaultDetails'
 import { StopLossBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossBannerControl'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
@@ -29,7 +29,7 @@ function VaultDetailsLiquidationModal({
   isStopLossEnabled,
 }: ModalProps<LiquidationProps>) {
   const { t } = useTranslation()
-  const { StopLossRead: stopLossReadEnabled } = getAppConfig('features')
+  const { StopLossRead: stopLossReadEnabled } = useAppConfig('features')
 
   return !stopLossReadEnabled ? (
     <VaultDetailsCardModal close={close}>
@@ -107,7 +107,7 @@ export function VaultDetailsCardLiquidationPrice({
   const {
     triggerData: { stopLossTriggerData },
   } = useAutomationContext()
-  const { StopLossRead: stopLossReadEnabled } = getAppConfig('features')
+  const { StopLossRead: stopLossReadEnabled } = useAppConfig('features')
 
   const cardDetailsData = {
     title: t('system.liquidation-price'),

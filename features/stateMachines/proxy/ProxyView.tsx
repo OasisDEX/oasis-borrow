@@ -8,7 +8,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -30,7 +30,7 @@ interface ProxyViewStateProps {
 
 function ProxyInfoStateView({ state, send, steps }: ProxyViewStateProps) {
   const { t } = useTranslation()
-  const { ProxyCreationDisabled: isProxyCreationDisabled } = getAppConfig('features')
+  const { ProxyCreationDisabled: isProxyCreationDisabled } = useAppConfig('features')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('vault-form.header.proxy'),

@@ -6,7 +6,7 @@ import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
   AutoTakeProfitFormChange,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -14,7 +14,7 @@ import { AutoTakeProfitDetailsLayout } from './AutoTakeProfitDetailsLayout'
 
 export function AutoTakeProfitDetailsControl() {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
-  const { ReadOnlyAutoTakeProfit: readOnlyAutoTakeProfitEnabled } = getAppConfig('features')
+  const { ReadOnlyAutoTakeProfit: readOnlyAutoTakeProfitEnabled } = useAppConfig('features')
   const {
     environmentData: { ethMarketPrice },
     positionData: { id, ilk, debt, debtOffset, positionRatio, lockedCollateral, token },

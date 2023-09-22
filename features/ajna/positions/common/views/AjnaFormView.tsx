@@ -21,7 +21,7 @@ import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
 import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
 import { useConnection } from 'features/web3OnBoard'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
@@ -45,7 +45,7 @@ export function AjnaFormView({
     AjnaSafetySwitch: ajnaSafetySwitchOn,
     AjnaSuppressValidation: ajnaSuppressValidationEnabled,
     AjnaReusableDPM: ajnaReusableDPMEnabled,
-  } = getAppConfig('features')
+  } = useAppConfig('features')
 
   const { t } = useTranslation()
   const { context$ } = useMainContext()

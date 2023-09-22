@@ -6,12 +6,12 @@ import {
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
 import { AutoBuyDetailsLayout } from 'features/automation/optimization/autoBuy/controls/AutoBuyDetailsLayout'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
 export function AutoBuyDetailsControl() {
-  const { ReadOnlyBasicBS: readOnlyAutoBSEnabled } = getAppConfig('features')
+  const { ReadOnlyBasicBS: readOnlyAutoBSEnabled } = useAppConfig('features')
 
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
   const {

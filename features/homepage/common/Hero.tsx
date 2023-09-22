@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { useConnection } from 'features/web3OnBoard'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { scrollTo } from 'helpers/scrollTo'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -36,7 +36,7 @@ export function Hero({
   }
 }) {
   const { t } = useTranslation()
-  const { Referrals: referralsEnabled } = getAppConfig('features')
+  const { Referrals: referralsEnabled } = useAppConfig('features')
   const { connecting, connect } = useConnection()
 
   return (

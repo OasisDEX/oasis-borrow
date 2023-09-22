@@ -19,7 +19,7 @@ import { SidebarAdjustStopLossEditingStage } from 'features/automation/protectio
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTomfoolery } from 'helpers/useTomfoolery'
 import { zero } from 'helpers/zero'
@@ -293,7 +293,7 @@ function EditingStateViewSidebarPrimaryButton({
 > {
   const { t } = useTranslation()
 
-  const { ProxyCreationDisabled: isProxyCreationDisabled } = getAppConfig('features')
+  const { ProxyCreationDisabled: isProxyCreationDisabled } = useAppConfig('features')
 
   const hasProxy =
     state.context.strategyConfig.proxyType === ProxyType.DpmProxy

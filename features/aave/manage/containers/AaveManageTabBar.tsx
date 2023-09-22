@@ -10,7 +10,7 @@ import { useManageAaveStateMachineContext } from 'features/aave/manage/container
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveData,
@@ -31,7 +31,7 @@ export function AaveManageTabBar({
   aaveReserveDataDebtToken,
 }: AaveManageTabBarProps) {
   const { t } = useTranslation()
-  const { AaveV3Protection: aaveProtection, AaveV3History: aaveHistory } = getAppConfig('features')
+  const { AaveV3Protection: aaveProtection, AaveV3History: aaveHistory } = useAppConfig('features')
   const {
     automationTriggersData: { isAutomationDataLoaded },
     triggerData: { stopLossTriggerData },

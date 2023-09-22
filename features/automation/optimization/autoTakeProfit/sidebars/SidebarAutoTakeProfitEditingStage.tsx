@@ -23,7 +23,7 @@ import { prepareAutoTakeProfitResetData } from 'features/automation/optimization
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { uiChanges } from 'helpers/uiChanges'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { useTranslation } from 'next-i18next'
@@ -48,7 +48,7 @@ export function SidebarAutoTakeProfitEditingStage({
   warnings,
 }: SidebarAutoTakeProfitEditingStageProps) {
   const { t } = useTranslation()
-  const { ReadOnlyAutoTakeProfit: readOnlyAutoTakeProfitEnabled } = getAppConfig('features')
+  const { ReadOnlyAutoTakeProfit: readOnlyAutoTakeProfitEnabled } = useAppConfig('features')
 
   const {
     positionData: { ilk, id, positionRatio, debt, debtFloor, token },

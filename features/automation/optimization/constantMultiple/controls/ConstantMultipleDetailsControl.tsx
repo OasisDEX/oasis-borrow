@@ -8,7 +8,7 @@ import {
   ConstantMultipleFormChange,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import {
   calculatePNLFromAddConstantMultipleEvent,
   calculateTotalCostOfConstantMultiple,
@@ -23,7 +23,7 @@ interface ConstantMultipleDetailsControlProps {
 export function ConstantMultipleDetailsControl({
   vaultHistory,
 }: ConstantMultipleDetailsControlProps) {
-  const { ConstantMultipleReadOnly: constantMultipleReadOnlyEnabled } = getAppConfig('features')
+  const { ConstantMultipleReadOnly: constantMultipleReadOnlyEnabled } = useAppConfig('features')
 
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
     CONSTANT_MULTIPLE_FORM_CHANGE,

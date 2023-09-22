@@ -12,7 +12,7 @@ import {
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { AppSpinner } from 'helpers/AppSpinner'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -49,7 +49,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
   } = props
   const { t } = useTranslation()
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-  const { StopLossWrite: stopLossWriteEnabled } = getAppConfig('features')
+  const { StopLossWrite: stopLossWriteEnabled } = useAppConfig('features')
 
   const dynamicStopLossPrice =
     afterLiquidationPrice && liquidationRatio

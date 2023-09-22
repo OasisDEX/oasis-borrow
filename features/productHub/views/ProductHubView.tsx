@@ -16,7 +16,7 @@ import {
 } from 'features/productHub/types'
 import { PromoCardsCollection } from 'handlers/product-hub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { FC, Fragment, ReactNode, useMemo, useState } from 'react'
@@ -46,7 +46,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   limitRows,
 }) => {
   const { t } = useTranslation()
-  const { AjnaSafetySwitch } = getAppConfig('features')
+  const { AjnaSafetySwitch } = useAppConfig('features')
   const { data } = useProductHubData({
     protocols: [
       !AjnaSafetySwitch && LendingProtocol.Ajna,
