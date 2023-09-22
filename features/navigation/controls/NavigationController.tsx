@@ -22,10 +22,6 @@ export function NavigationController() {
     <>
       <Navigation
         links={[
-          {
-            label: 'Use Cases',
-            link: '#',
-          },
           ...(isConnected && !isViewBelowXl
             ? [
                 {
@@ -247,6 +243,33 @@ export function NavigationController() {
                     url: INTERNAL_LINKS.ajnaPoolFinder,
                   },
                   tight: true,
+                },
+              ],
+            },
+            {
+              label: t('nav.use-cases'),
+              lists: [
+                {
+                  items: [
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'Get Liquidity Without Selling Your Crypto',
+                    },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'Amplify Exposure to your Crypto with downside protection',
+                    },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'Maximize Earnings on your Crypto Assets',
+                    },
+                  ],
                 },
               ],
             },

@@ -62,14 +62,15 @@ export function NavigationMenuDropdown({
       >
         <Flex
           sx={{
-            width: '100%',
             justifyContent: 'center',
-            transform: isPanelOpen ? 'translateY(0)' : 'translateY(-5px)',
-            transition: 'transform 200ms',
+            width: '100%',
+            p: 3,
             borderRadius: 'mediumLarge',
             bg: 'neutral10',
             boxShadow: 'buttonMenu',
             overflow: 'hidden',
+            transform: isPanelOpen ? 'translateY(0)' : 'translateY(-5px)',
+            transition: 'transform 200ms',
             pointerEvents: isPanelOpen ? 'auto' : 'none',
           }}
         >

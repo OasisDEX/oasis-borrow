@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import type {
   NavigationMenuPanelIcon,
-  NavigationMenuPanelType,
+NavigationMenuPanelType,
 } from 'components/navigation/NavigationMenuPanel'
 import { WithArrow } from 'components/WithArrow'
 import React from 'react'
@@ -40,9 +40,11 @@ export function NavigationMenuDropdownContent({ lists }: NavigationMenuDropdownC
         flexDirection: 'column',
         rowGap: 3,
         listStyle: 'none',
-        width: '310px',
-        m: 0,
-        p: 3,
+        width: '294px',
+        ml: 0,
+        mr: 3,
+        pl: 0,
+        pr: 3,
         borderRight: '1px solid',
         borderColor: 'neutral20',
       }}
