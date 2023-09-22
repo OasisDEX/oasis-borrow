@@ -1,7 +1,9 @@
+import { getToken } from 'blockchain/tokensMetadata'
 import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
 import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
 import { SwapWidgetShowHide } from 'components/swapWidget/SwapWidgetShowHide'
 import { NavigationActionsController } from 'features/navigation/controls/NavigationActionsController'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getAppConfig } from 'helpers/config'
 import { useAccount } from 'helpers/useAccount'
 import { LendingProtocol } from 'lendingProtocols'
@@ -20,10 +22,6 @@ export function NavigationController() {
     <>
       <Navigation
         links={[
-          {
-            label: 'Tokens',
-            link: '#',
-          },
           {
             label: 'Use Cases',
             link: '#',
@@ -140,6 +138,115 @@ export function NavigationController() {
                       ),
                     },
                   ],
+                },
+              ],
+            },
+            {
+              label: t('nav.tokens'),
+              lists: [
+                {
+                  header: t('nav.tokens-popular'),
+                  items: [
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'ETH',
+                      icon: {
+                        source: getToken('ETH').iconCircle,
+                        position: 'title',
+                        type: 'icon',
+                      },
+                    },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'stETH',
+                      icon: {
+                        source: getToken('STETH').iconCircle,
+                        position: 'title',
+                        type: 'icon',
+                      },
+                    },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'rETH',
+                      icon: {
+                        source: getToken('RETH').iconCircle,
+                        position: 'title',
+                        type: 'icon',
+                      },
+                    },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'cbETH',
+                      icon: {
+                        source: getToken('CBETH').iconCircle,
+                        position: 'title',
+                        type: 'icon',
+                      },
+                    },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'DAI',
+                      icon: {
+                        source: getToken('DAI').iconCircle,
+                        position: 'title',
+                        type: 'icon',
+                      },
+                    },
+                  ],
+                  tight: true,
+                },
+                {
+                  header: t('nav.tokens-new'),
+                  items: [
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'sDAI',
+                      icon: {
+                        source: getToken('SDAI').iconCircle,
+                        position: 'title',
+                        type: 'icon',
+                      },
+                    },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'GHO',
+                      icon: {
+                        source: getToken('GHO').iconCircle,
+                        position: 'title',
+                        type: 'icon',
+                      },
+                    },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'TBTC',
+                      icon: {
+                        source: getToken('TBTC').iconCircle,
+                        position: 'title',
+                        type: 'icon',
+                      },
+                    },
+                  ],
+                  link: {
+                    label: t('nav.tokens-link'),
+                    url: INTERNAL_LINKS.ajnaPoolFinder,
+                  },
+                  tight: true,
                 },
               ],
             },

@@ -17,12 +17,13 @@ export interface NavigationMenuPanelLink {
 }
 
 export interface NavigationMenuPanelIcon {
-  type?: 'icon' | 'image'
+  type: 'icon' | 'image' | 'token'
   source: string
-  position?: 'global' | 'title'
+  position: 'global' | 'title'
 }
 
 export interface NavigationMenuPanelList {
+  header?: string
   items: {
     description?: ReactNode
     icon?: NavigationMenuPanelIcon
@@ -35,6 +36,7 @@ export interface NavigationMenuPanelList {
     label: string
     url: string
   }
+  tight?: boolean
 }
 
 export interface NavigationMenuPanelType {

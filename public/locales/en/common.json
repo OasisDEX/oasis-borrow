@@ -910,7 +910,11 @@
     "security": "Security",
     "swap-and-bridge": "Swap & Bridge",
     "team": "Team",
-    "terms": "Terms"
+    "terms": "Terms",
+    "tokens": "Tokens",
+    "tokens-new": "New & Noteworthy",
+    "tokens-popular": "Popular Tokens",
+    "tokens-link": "Search custom pools"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
