@@ -1,7 +1,7 @@
 import { AppSpinner } from 'helpers/AppSpinner'
 import { checkedToggleDataIcon, notCheckedToggleDataIcon } from 'helpers/icons'
 import React, { useCallback, useEffect, useState } from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Input } from 'theme-ui'
 
 interface ToggleProps {
@@ -9,7 +9,7 @@ interface ToggleProps {
   onChange: (checked: boolean) => void
   isLoading?: boolean
   withLoading?: boolean
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
 }
 
 export function Toggle({ isChecked, onChange, isLoading, withLoading, sx }: ToggleProps) {
@@ -30,7 +30,7 @@ export function Toggle({ isChecked, onChange, isLoading, withLoading, sx }: Togg
   }, [isChecked, toggle, clicked])
 
   const isToggleLoading = toggle !== isChecked || isLoading
-  const iconsCommonSx: SxStyleProp = {
+  const iconsCommonSx: ThemeUIStyleObject = {
     position: 'absolute',
     top: 0,
     right: 0,

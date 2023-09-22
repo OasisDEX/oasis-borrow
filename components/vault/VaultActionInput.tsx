@@ -153,7 +153,7 @@ export function VaultActionInput({
         cursor: disabled ? 'not-allowed' : 'default',
         transition: 'opacity 200ms',
         ...(collapsed && {
-          variant: 'styles.collapsedContentContainer',
+          variant: 'collapsedContentContainer',
         }),
       }}
     >

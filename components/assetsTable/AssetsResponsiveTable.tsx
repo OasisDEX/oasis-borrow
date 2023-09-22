@@ -10,7 +10,7 @@ export function AssetsResponsiveTable({
   tooltips = [],
   ...rest
 }: AssetsTableProps) {
-  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
+  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints![2]})`)
 
   return isSmallerScreen ? (
     <AssetsCards {...rest} />

@@ -1,6 +1,6 @@
 import { random } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import type { SxProps } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Container, Grid, Image } from 'theme-ui'
 import { fadeInAnimationMobile } from 'theme/animations'
 
@@ -10,9 +10,9 @@ export type ImagesSliderProps = {
     imgAlt?: string
     url?: string
   }[]
-  wrapperSx?: SxProps['sx']
-  gridSx?: SxProps['sx']
-  itemSx?: SxProps['sx']
+  wrapperSx?: ThemeUIStyleObject
+  gridSx?: ThemeUIStyleObject
+  itemSx?: ThemeUIStyleObject
 }
 
 export const ImagesSlider = ({ items = [], wrapperSx, gridSx, itemSx }: ImagesSliderProps) => {

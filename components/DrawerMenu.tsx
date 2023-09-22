@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
-import type { SxProps } from 'theme-ui'
+import type { SxProp } from 'theme-ui'
 import { Box } from 'theme-ui'
 
 export type DrawerMenuProps = {
@@ -10,7 +10,7 @@ export type DrawerMenuProps = {
   onClose: () => void
   overlay?: boolean
   position?: 'left' | 'right'
-  sxOverride?: Partial<SxProps['sx']>
+  sxOverride?: Partial<SxProp['sx']>
 }
 
 export const DrawerMenu = ({

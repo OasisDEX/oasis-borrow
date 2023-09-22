@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Trans } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Grid, Text } from 'theme-ui'
 
 interface IListWithIconProps {
@@ -12,9 +12,9 @@ interface IListWithIconProps {
   iconSize?: number | string | number[]
   textVariant?: string
   iconColor?: string
-  listStyle?: SxStyleProp
-  itemStyle?: SxStyleProp
-  iconStyle?: SxStyleProp
+  listStyle?: ThemeUIStyleObject
+  itemStyle?: ThemeUIStyleObject
+  iconStyle?: ThemeUIStyleObject
   components?: { [key: number]: ReactNode }
 }
 

@@ -5,7 +5,7 @@ import { type CoinTag, COIN_TAGS } from 'blockchain/TokenConfig'
 import { useTranslation } from 'next-i18next'
 import React, { memo, useCallback } from 'react'
 import ReactSelect from 'react-select'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Flex, Input } from 'theme-ui'
 
 interface FiltersProps {
@@ -16,7 +16,7 @@ interface FiltersProps {
   page: MixpanelPages.LandingPage | MixpanelPages.OpenVaultOverview | MixpanelPages.VaultsOverview
   tagFilter: CoinTag | undefined
   searchPlaceholder: string
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   multiply?: boolean
 }
 

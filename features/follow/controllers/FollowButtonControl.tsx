@@ -14,13 +14,13 @@ import { jwtAuthGetToken } from 'features/shared/jwt'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect, useState } from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 
 export type FollowButtonControlProps = {
   chainId: number
   followerAddress: string
   short?: boolean
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   vaultId: BigNumber
   protocol: Protocol
 }

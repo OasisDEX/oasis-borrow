@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { theme } from 'theme'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Card, Spinner, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
@@ -12,7 +12,7 @@ interface FollowButtonProps {
   isFollowing: boolean
   isProcessing: boolean
   short?: boolean
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   isWalletConnected?: boolean
 }
 
@@ -27,7 +27,7 @@ export function FollowButton({
 }: FollowButtonProps) {
   const { t } = useTranslation()
   const [isHovering, setIsHovering] = useState(false)
-  const isShort = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`) || short
+  const isShort = useMediaQuery(`(max-width: ${theme.breakpoints![2]})`) || short
 
   const handleMouseOver = () => {
     setIsHovering(true)

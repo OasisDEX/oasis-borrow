@@ -1,12 +1,12 @@
 import React from 'react'
-import type { SxProps } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box } from 'theme-ui'
 
 export interface ExpandablePlusProps {
   color?: string
   isOpen: boolean
   size?: number
-  sx?: SxProps
+  sx?: ThemeUIStyleObject
 }
 
 export function ExpandablePlus({

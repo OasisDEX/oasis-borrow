@@ -7,7 +7,7 @@ import type { WithChildren } from 'helpers/types/With.types'
 import { zero } from 'helpers/zero'
 import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxProps } from 'theme-ui'
+import type { SxProp } from 'theme-ui'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export type CollRatioColor = 'primary100' | 'critical100' | 'warning100' | 'success100'
@@ -73,7 +73,7 @@ export function VaultDetailsAfterPill({
   children,
   afterPillColors,
   sx = {},
-}: WithChildren & AfterPillProps & SxProps) {
+}: WithChildren & AfterPillProps & SxProp) {
   return (
     <Card
       sx={{

@@ -7,7 +7,7 @@ export function useBreakpointIndex() {
 
   useEffect(() => {
     function getIndex() {
-      return breakpoints.filter((bp) => window.matchMedia(`screen and (min-width: ${bp})`).matches)
+      return breakpoints!.filter((bp) => window.matchMedia(`screen and (min-width: ${bp})`).matches)
         .length
     }
 

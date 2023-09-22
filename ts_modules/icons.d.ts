@@ -7,6 +7,7 @@ declare module '@makerdao/dai-ui-icons' {
     width?: string | number
     height?: string | number
     fill?: string
+    sx?: import('theme-ui').ThemeUIStyleObject
     onClick?(): void
   }>
 
@@ -21,6 +22,7 @@ declare module '@makerdao/dai-ui-icons-branding' {
     width?: string | number
     height?: string | number
     fill?: string
+    sx?: import('theme-ui').ThemeUIStyleObject
     onClick?(): void
   }>
 

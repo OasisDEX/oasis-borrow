@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Card, Heading, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
@@ -32,7 +32,7 @@ function CardWrapper({
 }: {
   backgroundImage: string
   backgroundGradient: string
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
 } & WithChildren) {
   return (
     <Card
@@ -58,7 +58,7 @@ type InfoCardProps = {
   links: Array<{ href: string; text: string }>
   backgroundImage: string
   backgroundGradient: string
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
 }
 
 export function InfoCard(props: InfoCardProps) {

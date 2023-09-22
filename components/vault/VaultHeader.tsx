@@ -7,7 +7,7 @@ import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 
 import { VaultHeaderContainer } from './VaultHeaderContainer'
 
@@ -21,7 +21,7 @@ export function VaultIlkDetailsItem({
   value: string
   tooltipContent: string
   styles?: {
-    tooltip?: SxStyleProp
+    tooltip?: ThemeUIStyleObject
   }
 }) {
   const { tooltipOpen, setTooltipOpen } = useTooltip()

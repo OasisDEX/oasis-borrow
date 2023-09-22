@@ -37,7 +37,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef } from 'react'
 import { theme } from 'theme'
-import { ThemeProvider } from 'theme-ui'
+import { ThemeUIProvider } from 'theme-ui'
 import { web3OnboardStyles } from 'theme/web3OnboardStyles'
 import Web3 from 'web3'
 
@@ -176,7 +176,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <ThemeProvider theme={theme}>
+      <ThemeUIProvider theme={theme}>
         <CacheProvider value={cache}>
           <Global styles={globalStyles} />
           <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
@@ -216,7 +216,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
             </ConfigContextProvider>
           </Web3OnboardProvider>
         </CacheProvider>
-      </ThemeProvider>
+      </ThemeUIProvider>
     </>
   )
 }

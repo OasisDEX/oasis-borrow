@@ -173,7 +173,7 @@ export function VaultDetailsNetValueModal({
         <Box>{`$${formatAmount(netValueUSD, 'USD')}`}</Box>
       </Grid>
 
-      <Divider variant="styles.hrVaultFormBottom" />
+      <Divider variant="hrVaultFormBottom" />
       <Grid gap={2} columns={[1, 2, 3]}>
         <Box>{t('manage-multiply-vault.card.gas-fees')}</Box>
         <Box></Box>

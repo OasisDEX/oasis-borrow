@@ -1,6 +1,6 @@
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 
-export function getAjnaWithArrowColorScheme(): SxStyleProp {
+export function getAjnaWithArrowColorScheme(): ThemeUIStyleObject {
   return {
     color: 'interactive100',
     transition: 'color 200ms',

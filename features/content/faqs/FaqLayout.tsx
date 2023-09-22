@@ -4,7 +4,7 @@ import type { WithChildren } from 'helpers/types/With.types'
 import { Trans, useTranslation } from 'next-i18next'
 import type { ReactElement } from 'react'
 import React, { useState } from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Grid, Link, Text } from 'theme-ui'
 
 function getHeadingId(text: string) {
@@ -44,12 +44,15 @@ export function FaqLayout({
   }
 
   const quoteColors = ['success100', 'interactive100', 'primary60']
-  const quoteColorsSx = quoteColors.reduce((obj: Record<string, SxStyleProp>, color, index) => {
-    obj[`:nth-of-type(${quoteColors.length}n-${quoteColors.length - index - 1})`] = {
-      borderColor: color,
-    }
-    return obj
-  }, {})
+  const quoteColorsSx = quoteColors.reduce(
+    (obj: Record<string, ThemeUIStyleObject>, color, index) => {
+      obj[`:nth-of-type(${quoteColors.length}n-${quoteColors.length - index - 1})`] = {
+        borderColor: color,
+      }
+      return obj
+    },
+    {},
+  )
 
   return (
     <Box>
@@ -73,7 +76,15 @@ export function FaqLayout({
           </Link>
         ))}
       </Grid>
-      <Box variant="separator" sx={{ my: 4 }} />
+      <Box
+        sx={{
+          my: 4,
+          borderTop: '1px solid',
+          borderColor: 'neutral20',
+          height: '1px',
+          width: '100%',
+        }}
+      />
       <Box
         sx={{
           blockquote: {

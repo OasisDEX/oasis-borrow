@@ -3,12 +3,12 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { tokensBySymbol } from 'blockchain/tokensMetadata.constants'
 import { GenericTokenIcon } from 'components/GenericTokenIcon'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Flex } from 'theme-ui'
 
 interface TokensGroupProps {
   forceSize?: number
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   tokens: string[]
 }
 

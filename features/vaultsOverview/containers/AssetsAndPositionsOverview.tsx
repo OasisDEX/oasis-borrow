@@ -1,5 +1,4 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import type { SystemStyleObject } from '@styled-system/css'
 import type BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useProductContext } from 'components/context'
@@ -24,7 +23,7 @@ import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Card, Flex, Grid, Heading, Image, Link, Text } from 'theme-ui'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 
@@ -143,7 +142,7 @@ function AssetRow(props: PositionView) {
 }
 
 function LinkedRow(props: PositionView) {
-  const [menuPosition, setMenuPosition] = useState<SxStyleProp | undefined>(undefined)
+  const [menuPosition, setMenuPosition] = useState<ThemeUIStyleObject | undefined>(undefined)
 
   if (props.url) {
     return (
@@ -218,7 +217,7 @@ function MenuRow(props: AssetAction & { close: () => void }) {
 
 function Menu(props: {
   close: () => void
-  sx?: SystemStyleObject
+  sx?: ThemeUIStyleObject
   assetActions: Array<AssetAction>
 }) {
   const componentRef = useOutsideElementClickHandler(props.close)

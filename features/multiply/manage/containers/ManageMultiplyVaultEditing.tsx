@@ -253,7 +253,7 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
     <Grid
       gap={2}
       sx={{
-        variant: collapsed ? 'styles.collapsedContentContainer' : '',
+        variant: collapsed ? 'collapsedContentContainer' : '',
       }}
     >
       <Box>

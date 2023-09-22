@@ -1,7 +1,7 @@
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import type { ReactNode } from 'react'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Card } from 'theme-ui'
 
 export function useTooltip() {
@@ -25,7 +25,7 @@ export function useTooltip() {
   return { tooltipOpen, setTooltipOpen }
 }
 
-export function Tooltip({ children, sx }: { children: ReactNode; sx?: SxStyleProp }) {
+export function Tooltip({ children, sx }: { children: ReactNode; sx?: ThemeUIStyleObject }) {
   return (
     <Card
       sx={{
@@ -42,8 +42,8 @@ interface StatefulTooltipProps {
   inline?: boolean
   tooltip: ReactNode
   children: ReactNode
-  tooltipSx?: SxStyleProp
-  containerSx?: SxStyleProp
+  tooltipSx?: ThemeUIStyleObject
+  containerSx?: ThemeUIStyleObject
 }
 
 export function StatefulTooltip({

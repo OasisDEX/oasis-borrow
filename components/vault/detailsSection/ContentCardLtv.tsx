@@ -21,11 +21,11 @@ const getLTVRatioColor = (ratio: BigNumber) => {
 
   switch (true) {
     case ratio.isLessThanOrEqualTo(critical):
-      return colors.critical10
+      return colors?.critical10
     case ratio.isLessThanOrEqualTo(warning):
-      return colors.warning10
+      return colors?.warning10
     default:
-      return colors.success10
+      return colors?.success10
   }
 }
 
@@ -177,10 +177,9 @@ export function ContentCardLtv({
         : t('manage-earn-vault.liquidation-threshold', {
             percentage: formatted.liquidationThreshold,
           }),
-    customBackground:
-      afterLoanToValue && !liquidationThreshold.eq(zero)
-        ? getLTVRatioColor(liquidationThreshold.minus(loanToValue).times(100))
-        : 'transparent',
+    customBackground: (afterLoanToValue && !liquidationThreshold.eq(zero)
+      ? getLTVRatioColor(liquidationThreshold.minus(loanToValue).times(100))
+      : 'transparent') as string,
     modal: <ContentCardLtvModal {...contentCardModalSettings} />,
   }
 

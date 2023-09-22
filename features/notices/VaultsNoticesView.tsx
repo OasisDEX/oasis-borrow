@@ -25,7 +25,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 import { useTheme } from 'theme/useThemeUI'
 import type { LiquidationCallEvent as AaveLiquidationCallEventV2 } from 'types/ethers-contracts/AaveV2LendingPool'
@@ -41,7 +41,7 @@ type VaultNoticeProps = {
   withClose?: boolean
 }
 
-function StatusFrame({ children, sx }: WithChildren & { sx?: SxStyleProp }) {
+function StatusFrame({ children, sx }: WithChildren & { sx?: ThemeUIStyleObject }) {
   return (
     <Flex
       sx={{

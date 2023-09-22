@@ -1,5 +1,4 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import type { SystemStyleObject } from '@styled-system/css'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { ModalProps } from 'helpers/modalHook'
@@ -7,6 +6,7 @@ import { useModal } from 'helpers/modalHook'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import type { PropsWithChildren, ReactNode } from 'react'
 import React, { useState } from 'react'
+import type { ThemeUIStyleObject } from 'theme-ui';
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
@@ -37,7 +37,7 @@ export interface ContentCardProps {
   change?: DetailsSectionContentCardChangePillProps
   changeTooltip?: ReactNode
   customBackground?: string
-  customUnitStyle?: SystemStyleObject
+  customUnitStyle?: ThemeUIStyleObject
   customValueColor?: string
   extra?: ReactNode
   footnote?: string | [string, string, string]

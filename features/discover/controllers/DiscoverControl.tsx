@@ -25,7 +25,7 @@ interface DiscoverControlProps {
 
 export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
   const { i18n } = useTranslation()
-  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
+  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints![2]})`)
   const anchor = useRef<HTMLDivElement>(null)
   const { banner: rawBanner, endpoint, filters } = keyBy(discoverPagesMeta, 'kind')[kind]
   const [settings, setSettings] = useState<DiscoverFiltersSettings>(

@@ -152,7 +152,7 @@ export function FeesView({ userReferral }: Props) {
             </Button>
           </Flex>
         </Grid>{' '}
-        <Divider variant="styles.hrVaultFormTop" sx={{ my: '13px', py: 0 }} />
+        <Divider variant="hrVaultFormTop" sx={{ my: '13px', py: 0 }} />
         <Flex
           sx={{
             flexDirection: 'column',

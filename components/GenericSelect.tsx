@@ -1,5 +1,4 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import type { SystemStyleObject } from '@styled-system/css'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
@@ -8,7 +7,7 @@ import { keyBy } from 'lodash'
 import React, { useState } from 'react'
 import ReactSelect, { components } from 'react-select'
 import { theme } from 'theme'
-import type { SxProps } from 'theme-ui'
+import type { SxProp, ThemeUIStyleObject } from 'theme-ui'
 import { Box, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
@@ -31,7 +30,7 @@ export interface GenericSelectProps {
   customStyles?: ReactSelectSimplifiedStyles
   defaultValue?: GenericSelectOption
   expandableArrowSize?: number
-  expandableArrowSx?: SystemStyleObject & SxProps
+  expandableArrowSx?: SxProp
   iconSize?: number
   isDisabled?: boolean
   isSearchable?: boolean
@@ -39,7 +38,7 @@ export interface GenericSelectProps {
   onChange?: (value: GenericSelectOption) => void
   options: GenericSelectOption[]
   placeholder?: string
-  wrapperSx?: SystemStyleObject & SxProps
+  wrapperSx?: ThemeUIStyleObject
 }
 
 export function GenericSelect({

@@ -1,12 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
-import type { SxProps } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, IconButton } from 'theme-ui'
 
 type Closable = {
   close: React.MouseEventHandler<any>
-  sx?: SxProps
+  sx?: ThemeUIStyleObject
   withClose?: boolean
 }
 

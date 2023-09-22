@@ -6,7 +6,7 @@ import { scrollTo } from 'helpers/scrollTo'
 import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Button, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export function Hero({
@@ -22,7 +22,7 @@ export function Hero({
   },
   secondaryButton,
 }: {
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   isConnected: boolean
   heading: string
   headingWidth?: string

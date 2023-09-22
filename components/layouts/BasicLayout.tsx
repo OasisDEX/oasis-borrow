@@ -1,12 +1,12 @@
 import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Container, Flex } from 'theme-ui'
 
 export interface BasicLayoutProps extends WithChildren {
   header: JSX.Element
   footer?: JSX.Element
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   variant?: string
   bg: JSX.Element | null
 }

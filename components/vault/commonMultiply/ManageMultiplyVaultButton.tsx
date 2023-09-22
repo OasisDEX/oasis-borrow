@@ -208,7 +208,7 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
       </Button>
       {canRegress && (
         <>
-          <Divider variant="styles.hrVaultFormBottom" />
+          <Divider variant="hrVaultFormBottom" />
           <Button
             variant="textualSmall"
             onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
@@ -227,7 +227,7 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
         (stage === 'adjustPosition' ||
           (stage === 'otherActions' && otherAction !== 'closeVault')) && (
           <>
-            <Divider variant="styles.hrVaultFormBottom" />
+            <Divider variant="hrVaultFormBottom" />
             <Button onClick={handleClose} sx={{ cursor: 'pointer' }} variant="textualSmall">
               Close this vault
             </Button>

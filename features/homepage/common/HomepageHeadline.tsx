@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Text } from 'theme-ui'
 
 type HomePageHeadlineProps = {
@@ -10,7 +10,7 @@ type HomePageHeadlineProps = {
   maxWidth?: string
   ctaOnClick?: () => void
   ctaLabel?: TranslateStringType
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
 }
 
 export const HomepageHeadline = ({

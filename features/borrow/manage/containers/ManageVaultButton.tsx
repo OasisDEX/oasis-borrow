@@ -217,7 +217,7 @@ export function ManageVaultButton(props: ManageStandardBorrowVaultState) {
       </Button>
       {canRegress && (
         <>
-          <Divider variant="styles.hrVaultFormBottom" />
+          <Divider variant="hrVaultFormBottom" />
           <Button
             variant="textualSmall"
             onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {

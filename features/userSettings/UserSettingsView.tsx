@@ -21,7 +21,7 @@ import Link from 'next/link'
 import type { ChangeEvent } from 'react'
 import React, { useCallback, useRef, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Card, Flex, Grid, Heading, Link as ThemeLink, Text, Textarea } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
@@ -66,12 +66,12 @@ function SlippageOptionButton({
   )
 }
 
-const validationMessageStyles: SxStyleProp = {
+const validationMessageStyles: ThemeUIStyleObject = {
   fontWeight: 'semiBold',
   fontSize: 2,
 }
 
-const saveStatusMessageStyles: SxStyleProp = {
+const saveStatusMessageStyles: ThemeUIStyleObject = {
   fontWeight: 'semiBold',
   fontSize: 2,
   textAlign: 'center',
@@ -307,7 +307,7 @@ function WalletInfo() {
   )
 }
 
-export function UserSettings({ sx }: { sx?: SxStyleProp }) {
+export function UserSettings({ sx }: { sx?: ThemeUIStyleObject }) {
   const { t } = useTranslation()
   const { socket } = useNotificationSocket()
   const { disconnect } = useWalletManagement()
@@ -327,7 +327,16 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
         {t('user-settings.slippage-limit.preset-title')}
       </Heading>
       <SlippageSettingsForm />
-      <Box variant="separator" sx={{ mt: '16px', mb: '24px' }} />
+      <Box
+        sx={{
+          mt: '16px',
+          mb: '24px',
+          borderTop: '1px solid',
+          borderColor: 'neutral20',
+          height: '1px',
+          width: '100%',
+        }}
+      />
       <Button
         variant="textual"
         sx={{

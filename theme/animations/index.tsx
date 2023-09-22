@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 
 import { fadeIn, rollDownTopBanner, rollDownTopBannerMobile, slideIn } from './keyframes'
 
@@ -37,7 +37,7 @@ export const fadeInAnimationMobile = {
   animationFillMode: 'forwards',
 }
 
-export function fadeInAnimationDelay(delaySeconds: number): SxStyleProp {
+export function fadeInAnimationDelay(delaySeconds: number): ThemeUIStyleObject {
   return {
     ...fadeInAnimation,
     animationDelay: `${delaySeconds}s`,

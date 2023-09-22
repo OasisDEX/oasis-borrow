@@ -22,6 +22,7 @@ import {
   Heading,
   IconButton,
   Text,
+  ThemeUIStyleObject,
 } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
@@ -29,7 +30,7 @@ import { AppLink } from './Links'
 import curry from 'ramda/src/curry'
 
 interface ModalCloseIconProps extends ModalProps<WithChildren> {
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   size?: number
   color?: string
 }
@@ -139,7 +140,7 @@ function ModalWrapper({
 }: WithChildren & {
   close: () => void
   id?: string
-  sxWrapper?: SxStyleProp
+  sxWrapper?: ThemeUIStyleObject
   omitHTMLOverflow?: boolean
 }) {
   useEffect(() => {
@@ -308,7 +309,7 @@ export function MobileSidePanelClose({
           size={3}
         />
       </Box>
-      <Divider variant="styles.hrVaultFormTop" sx={{ mt: 0, pt: 0 }} />
+      <Divider variant="hrVaultFormTop" sx={{ mt: 0, pt: 0 }} />
     </Box>
   ) : null
 }
