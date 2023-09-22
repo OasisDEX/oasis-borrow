@@ -1,41 +1,37 @@
-import { IRiskRatio } from '@oasisdex/dma-library'
+import type { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { getNetworkById, NetworkIds } from 'blockchain/networks'
-import { Tickers } from 'blockchain/prices'
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { Tickers } from 'blockchain/prices.types'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { amountFromPrecision } from 'blockchain/utils'
-import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
+import type { VaultWithType, VaultWithValue } from 'blockchain/vaults.types'
 import { ethers } from 'ethers'
 import { isAddress } from 'ethers/lib/utils'
 import { loadStrategyFromTokens } from 'features/aave'
-import { PositionCreated } from 'features/aave/services'
+import type { PositionCreated } from 'features/aave/services'
 import { calculateLiquidationPrice } from 'features/aave/services/calculate-liquidation-price'
-import { IStrategyConfig, StrategyType } from 'features/aave/types'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import {
-  extractStopLossData,
-  StopLossTriggerData,
-} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { ApiVault, ApiVaultsParams } from 'features/shared/vaultApi'
+import type { IStrategyConfig } from 'features/aave/types'
+import { StrategyType } from 'features/aave/types'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
+import type { ApiVault, ApiVaultsParams } from 'features/shared/vaultApi'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveLikeUrlSlug, mapAaveProtocol } from 'helpers/getAaveLikeStrategyUrl'
 import { productToVaultType } from 'helpers/productToVaultType'
 import { zero } from 'helpers/zero'
-import {
-  AaveLikeLendingProtocol,
-  checkIfAave,
-  checkIfSpark,
-  LendingProtocol,
-} from 'lendingProtocols'
-import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
-import { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
+import { checkIfAave, checkIfSpark, LendingProtocol } from 'lendingProtocols'
+import type { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
+import type { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
 import { memoize } from 'lodash'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
-import { Position } from './positionsOverviewSummary'
+import type { Position } from './positionsOverviewSummary'
 
 type CreatePositionEnvironmentPropsType = {
   tickerPrices$: (tokens: string[]) => Observable<Tickers>

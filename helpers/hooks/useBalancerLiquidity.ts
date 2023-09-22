@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { tokenBalance } from 'blockchain/better-calls/erc20'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { useEffect, useState } from 'react'
 
 type BalancerLiquidityProps = {

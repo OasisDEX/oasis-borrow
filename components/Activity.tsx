@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
 
 interface ActivityItemProps {
@@ -10,8 +11,6 @@ interface ActivityItemProps {
   iconColor?: string
   componentRight?: JSX.Element
 }
-
-export const ACTIVITY_ITEMS_INCREMENT = 5
 
 export function ActivityItem({
   timestamp,

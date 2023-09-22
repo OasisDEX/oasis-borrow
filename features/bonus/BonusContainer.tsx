@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { Banner } from 'components/Banner'
 import { useProductContext } from 'components/context'
 import { AppLink } from 'components/Links'

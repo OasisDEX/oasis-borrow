@@ -1,6 +1,6 @@
-import { IPosition } from '@oasisdex/dma-library'
+import type { IPosition } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 
 import { calculateLiquidationPrice } from './calculate-liquidation-price'
 

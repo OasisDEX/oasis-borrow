@@ -1,11 +1,12 @@
 import { NetworkNames } from 'blockchain/networks'
-import { PositionCreated } from 'features/aave/services'
-import { PositionId } from 'features/aave/types/position-id'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
-import { Observable, of } from 'rxjs'
+import type { PositionCreated } from 'features/aave/services'
+import type { PositionId } from 'features/aave/types/position-id'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
+import type { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
+import type { Observable } from 'rxjs'
+import { of } from 'rxjs'
 
-import { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
+import type { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from './getStrategyConfig'
 
 describe('getStrategyConfig', () => {

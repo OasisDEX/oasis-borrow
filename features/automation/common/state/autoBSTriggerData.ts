@@ -1,37 +1,21 @@
-import { Result } from '@ethersproject/abi'
+import type { Result } from '@ethersproject/abi'
 import { CommandContractType, encodeTriggerDataByType, TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
-import {
+import type {
   AutomationBaseTriggerData,
   AutomationBotAddTriggerData,
-} from 'blockchain/calls/automationBot'
+} from 'blockchain/calls/automationBot.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   DEFAULT_DEVIATION,
   DEFAULT_MAX_BASE_FEE_IN_GWEI,
   maxUint256,
 } from 'features/automation/common/consts'
-import { getTriggersByType } from 'features/automation/common/helpers'
-import { AutoBSTriggerTypes } from 'features/automation/common/types'
+import { getTriggersByType } from 'features/automation/common/helpers/getTriggersByType'
+import type { AutoBSTriggerTypes } from 'features/automation/common/types'
 import { zero } from 'helpers/zero'
 
-export interface AutoBSTriggerData {
-  triggerId: BigNumber
-  execCollRatio: BigNumber
-  targetCollRatio: BigNumber
-  maxBuyOrMinSellPrice: BigNumber
-  continuous: boolean
-  deviation: BigNumber
-  maxBaseFeeInGwei: BigNumber
-  isTriggerEnabled: boolean
-}
-
-interface ExtractAutoBSDataProps {
-  triggersData: TriggersData
-  triggerType: TriggerType
-  isInGroup?: boolean
-}
+import type { AutoBSTriggerData, ExtractAutoBSDataProps } from './autoBSTriggerData.types'
 
 function mapAutoBSTriggerData(autoBSTriggers: { triggerId: number; result: Result }[]) {
   return autoBSTriggers.map((trigger) => {

@@ -1,7 +1,8 @@
 import { BigNumber } from 'bignumber.js'
-import { BalanceInfo } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { zero } from 'helpers/zero'
-import { Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { of } from 'rxjs'
 
 export interface MockBalanceInfoProps {
   _balance$?: Observable<BalanceInfo>

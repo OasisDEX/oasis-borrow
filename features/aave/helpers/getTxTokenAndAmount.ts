@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
-import { BaseAaveContext } from 'features/aave/types'
+import type { BaseAaveContext } from 'features/aave/types'
 import { zero } from 'helpers/zero'
 
 export function getTxTokenAndAmount(context: BaseAaveContext) {

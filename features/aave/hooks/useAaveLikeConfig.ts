@@ -1,6 +1,6 @@
 import { useAppConfig } from 'helpers/config'
 import { useMemo } from 'react'
-import { AppConfigType } from 'types/config'
+import type { AppConfigType } from 'types/config'
 
 const checkTypes = (
   config: AppConfigType['parameters']['aaveLike'],

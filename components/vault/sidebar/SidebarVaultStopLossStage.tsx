@@ -1,6 +1,6 @@
 import { StopLossTwoTxRequirement } from 'features/aave/components'
-import { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
-import { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault'
+import type { OpenVaultStage } from 'features/borrow/open/pipes/openVault.types'
+import type { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
 import { Flex, Image } from 'theme-ui'

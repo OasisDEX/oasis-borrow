@@ -1,5 +1,5 @@
-import { trackingEvents } from 'analytics/analytics'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { trackingEvents } from 'analytics/trackingEvents'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'

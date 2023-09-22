@@ -1,4 +1,4 @@
-import { IMultiplyStrategy } from '@oasisdex/dma-library'
+import type { IMultiplyStrategy } from '@oasisdex/dma-library'
 import { NetworkIds } from 'blockchain/networks'
 import { amountFromWei } from 'blockchain/utils'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'

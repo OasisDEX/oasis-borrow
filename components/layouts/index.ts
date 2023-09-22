@@ -1,8 +1,10 @@
 import { AppLayout } from './AppLayout'
 import { marketingBackgrounds } from './backgrounds'
-import { BasicLayout, BasicLayoutProps } from './BasicLayout'
+import type { BasicLayoutProps } from './BasicLayout'
+import { BasicLayout } from './BasicLayout'
 import { LandingPageLayout } from './LandingPageLayout'
-import { MarketingLayout, MarketingLayoutProps } from './MarketingLayout'
+import { MarketingLayout } from './MarketingLayout'
+import type { MarketingLayoutProps } from './MarketingLayout.types'
 import { ProductPagesLayout } from './ProductPagesLayout'
 import { WithAnnouncementLandingLayout, WithAnnouncementLayout } from './WithAnnouncementLayout'
 

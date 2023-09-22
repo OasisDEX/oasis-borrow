@@ -1,8 +1,9 @@
 import { ADDRESSES } from '@oasisdex/addresses'
 import BigNumber from 'bignumber.js'
-import { AaveV2UserConfigurationsParameters } from 'blockchain/aave'
+import type { AaveV2UserConfigurationsParameters } from 'blockchain/aave'
 import { curry } from 'ramda'
-import { combineLatest, Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 const { mainnet } = ADDRESSES

@@ -8,16 +8,17 @@ import {
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
-import { UserReferralState } from 'features/referralOverview/user'
+import type { UserReferralState } from 'features/referralOverview/user.types'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
-import React, { ReactNode, useState } from 'react'
+import type { ReactNode } from 'react'
+import React, { useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Label, Text } from 'theme-ui'
 import { fadeIn } from 'theme/animations'
 
-import { TermsAcceptanceStage, TermsAcceptanceState } from './termsAcceptance'
+import type { TermsAcceptanceStage, TermsAcceptanceState } from './termsAcceptance.types'
 
 interface WithTermsOfServiceProps {
   children: ReactNode

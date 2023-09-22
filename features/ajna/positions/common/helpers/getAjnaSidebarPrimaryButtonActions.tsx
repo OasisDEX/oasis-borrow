@@ -1,4 +1,4 @@
-import { AjnaFlow } from 'features/ajna/common/types'
+import type { AjnaFlow } from 'features/ajna/common/types'
 
 export function getAjnaSidebarPrimaryButtonActions({
   currentStep,

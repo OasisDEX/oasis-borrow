@@ -1,7 +1,7 @@
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
 import { WithArrow } from 'components/WithArrow'
-import { AjnaProduct } from 'features/ajna/common/types'
+import type { AjnaProduct } from 'features/ajna/common/types'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'

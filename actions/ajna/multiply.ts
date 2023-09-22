@@ -1,15 +1,9 @@
-import {
-  AjnaCommonDependencies,
-  AjnaCommonPayload,
-  AjnaPool,
-  normalizeValue,
-  RiskRatio,
-  strategies,
-} from '@oasisdex/dma-library'
+import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaPool } from '@oasisdex/dma-library'
+import { normalizeValue, RiskRatio, strategies } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
 import { getOneInchCall } from 'helpers/swap'
 
 const DEFAULT_LTV_ON_NEW_POOL = new BigNumber(0.05)

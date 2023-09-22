@@ -9,7 +9,7 @@ import { useLocalStorage } from 'helpers/useLocalStorage'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 
-export function ReferralHandler() {
+export default function ReferralHandler() {
   const { query, isReady } = useRouter()
   const { context$ } = useMainContext()
   const { userReferral$ } = useAccountContext()

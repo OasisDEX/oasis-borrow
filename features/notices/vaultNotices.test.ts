@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import dayjs from 'dayjs'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
 import { mockVault$ } from 'helpers/mocks/vaults.mock'

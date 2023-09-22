@@ -1,58 +1,8 @@
-import { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
-import {
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
+import type {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
-} from 'features/borrow/manage/pipes/manageVault'
-
-export const allowanceDefaults: Partial<ManageStandardBorrowVaultState> = {
-  collateralAllowanceAmount: maxUint256,
-  daiAllowanceAmount: maxUint256,
-}
-
-interface DaiAllowanceChange {
-  kind: 'daiAllowance'
-  daiAllowanceAmount?: BigNumber
-}
-
-interface DaiAllowanceUnlimitedChange {
-  kind: 'daiAllowanceUnlimited'
-}
-
-interface DaiAllowancePaybackChange {
-  kind: 'daiAllowanceAsPaybackAmount'
-}
-
-interface DaiAllowanceReset {
-  kind: 'daiAllowanceReset'
-}
-
-interface CollateralAllowanceChange {
-  kind: 'collateralAllowance'
-  collateralAllowanceAmount?: BigNumber
-}
-
-interface CollateralAllowanceUnlimitedChange {
-  kind: 'collateralAllowanceUnlimited'
-}
-
-interface CollateralAllowanceDepositChange {
-  kind: 'collateralAllowanceAsDepositAmount'
-}
-
-interface CollateralAllowanceReset {
-  kind: 'collateralAllowanceReset'
-}
-
-export type ManageVaultAllowanceChange =
-  | DaiAllowanceChange
-  | DaiAllowanceUnlimitedChange
-  | DaiAllowancePaybackChange
-  | DaiAllowanceReset
-  | CollateralAllowanceChange
-  | CollateralAllowanceUnlimitedChange
-  | CollateralAllowanceDepositChange
-  | CollateralAllowanceReset
+} from 'features/borrow/manage/pipes/manageVault.types'
 
 export function applyManageVaultAllowance<VaultState extends ManageStandardBorrowVaultState>(
   change: ManageVaultChange,

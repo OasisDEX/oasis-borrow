@@ -1,22 +1,17 @@
 import { CommandContractType, encodeTriggerDataByType, TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
-import {
+import type {
   AutomationBaseTriggerData,
   AutomationBotAddTriggerData,
-} from 'blockchain/calls/automationBot'
+} from 'blockchain/calls/automationBot.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
-import { getTriggersByType, TriggerDataType } from 'features/automation/common/helpers'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
+import { getTriggersByType } from 'features/automation/common/helpers/getTriggersByType'
+import type { TriggerDataType } from 'features/automation/common/TriggerDataType'
 import { maxCoverage } from 'features/automation/protection/stopLoss/constants'
-import { zero } from 'helpers/zero'
 
-export interface StopLossTriggerData {
-  isStopLossEnabled: boolean
-  stopLossLevel: BigNumber
-  isToCollateral: boolean
-  triggerId: BigNumber
-  executionParams: string
-}
+import { defaultStopLossData } from './stopLossTriggerData.constants'
+import type { StopLossTriggerData } from './stopLossTriggerData.types'
 
 function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataType[]) {
   const mappedStopLossTriggers = stopLossTriggersData.map((trigger) => {
@@ -61,14 +56,6 @@ function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataTy
     return acc.stopLossLevel.gt(obj.stopLossLevel) ? acc : obj
   })
 }
-
-export const defaultStopLossData = {
-  isStopLossEnabled: false,
-  stopLossLevel: zero,
-  triggerId: zero,
-  isToCollateral: false,
-  executionParams: '0x',
-} as StopLossTriggerData
 
 export function extractStopLossData(
   data: TriggersData,

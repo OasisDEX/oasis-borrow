@@ -1,5 +1,6 @@
-import BigNumber from 'bignumber.js'
-import { combineLatest, Observable, of } from 'rxjs'
+import type BigNumber from 'bignumber.js'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import { calculateDsrBalance } from './dsrPot'

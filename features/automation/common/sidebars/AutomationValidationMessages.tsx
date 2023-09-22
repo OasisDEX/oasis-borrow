@@ -1,4 +1,5 @@
-import { ValidationMessages, ValidationMessagesInput } from 'components/ValidationMessages'
+import type { ValidationMessagesInput } from 'components/ValidationMessages'
+import { ValidationMessages } from 'components/ValidationMessages'
 import React from 'react'
 
 export function AutomationValidationMessages({

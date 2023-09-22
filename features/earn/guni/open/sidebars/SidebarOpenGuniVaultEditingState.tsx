@@ -2,7 +2,7 @@ import { FieldDepositDai } from 'components/vault/sidebar/SidebarFields'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { GuniOpenMultiplyVaultChangesInformation } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultChangesInformation'
-import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault.types'
 import {
   extractCommonErrors,
   extractCommonWarnings,

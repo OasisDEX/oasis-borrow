@@ -1,29 +1,4 @@
-import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import { AutomationFormType } from 'features/automation/common/state/automationFeatureChange'
-import { TxError } from 'helpers/types'
-
-export const STOP_LOSS_FORM_CHANGE = 'STOP_LOSS_FORM_CHANGE'
-export type StopLossResetData = Pick<
-  StopLossFormChange,
-  'stopLossLevel' | 'collateralActive' | 'txDetails'
->
-
-export type StopLossFormChangeAction =
-  | { type: 'stop-loss-level'; stopLossLevel: BigNumber }
-  | { type: 'close-type'; toCollateral: boolean }
-  | { type: 'current-form'; currentForm: AutomationFormType }
-  | { type: 'is-awaiting-confirmation'; isAwaitingConfirmation: boolean }
-  | { type: 'reset'; resetData: StopLossResetData }
-  | {
-      type: 'tx-details'
-      txDetails: {
-        txStatus?: TxStatus
-        txError?: TxError
-        txHash?: string
-        txCost?: BigNumber
-      }
-    }
+import type { StopLossFormChange, StopLossFormChangeAction } from './StopLossFormChange.types'
 
 export function formChangeReducer(
   state: StopLossFormChange,
@@ -44,19 +19,5 @@ export function formChangeReducer(
       return { ...state, txDetails: action.txDetails }
     default:
       return state
-  }
-}
-
-export interface StopLossFormChange {
-  stopLossLevel: BigNumber
-  collateralActive: boolean
-  currentForm: AutomationFormType
-  isAwaitingConfirmation: boolean
-  resetData: StopLossResetData
-  txDetails?: {
-    txStatus?: TxStatus
-    txError?: TxError
-    txHash?: string
-    txCost?: BigNumber
   }
 }

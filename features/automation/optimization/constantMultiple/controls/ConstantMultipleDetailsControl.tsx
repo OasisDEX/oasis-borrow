@@ -1,13 +1,11 @@
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { useAutomationContext } from 'components/context'
-import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
+import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
 import { ConstantMultipleDetailsLayout } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleDetailsLayout'
 import { checkIfIsEditingConstantMultiple } from 'features/automation/optimization/constantMultiple/helpers'
-import {
-  CONSTANT_MULTIPLE_FORM_CHANGE,
-  ConstantMultipleFormChange,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
+import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { useAppConfig } from 'helpers/config'
 import {
   calculatePNLFromAddConstantMultipleEvent,

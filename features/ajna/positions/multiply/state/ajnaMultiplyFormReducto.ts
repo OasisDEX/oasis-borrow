@@ -1,71 +1,7 @@
-import BigNumber from 'bignumber.js'
-import { ethers } from 'ethers'
-import { AjnaCloseTo, AjnaMultiplyAction, AjnaMultiplyPanel } from 'features/ajna/common/types'
-import {
-  AjnaFormActionsReset,
-  AjnaFormActionsUpdateDeposit,
-  AjnaFormActionsUpdateDpm,
-  AjnaFormActionsUpdateGenerate,
-  AjnaFormActionsUpdatePayback,
-  AjnaFormActionsUpdatePaybackMax,
-  AjnaFormActionsUpdateWithdraw,
-  AjnaUpdateLoanToValue,
-} from 'features/ajna/positions/common/state/ajnaFormReductoActions'
-import { ReductoActions, useReducto } from 'helpers/useReducto'
+import { useReducto } from 'helpers/useReducto'
 
-export interface AjnaMultiplyFormState {
-  action?: AjnaMultiplyAction
-  dpmAddress: string
-  depositAmount?: BigNumber
-  depositAmountUSD?: BigNumber
-  generateAmount?: BigNumber
-  generateAmountUSD?: BigNumber
-  paybackAmount?: BigNumber
-  paybackAmountUSD?: BigNumber
-  paybackAmountMax: boolean
-  withdrawAmount?: BigNumber
-  withdrawAmountUSD?: BigNumber
-  loanToValue?: BigNumber
-  closeTo: AjnaCloseTo
-  uiDropdown: AjnaMultiplyPanel
-  uiPill: Exclude<
-    AjnaMultiplyAction,
-    'adjust' | 'open-multiply' | 'switch-multiply' | 'close-multiply'
-  >
-}
-
-export type AjnaMultiplyFormAction = ReductoActions<
-  AjnaMultiplyFormState,
-  | AjnaFormActionsUpdateDeposit
-  | AjnaFormActionsUpdateGenerate
-  | AjnaFormActionsUpdatePayback
-  | AjnaFormActionsUpdatePaybackMax
-  | AjnaFormActionsUpdateWithdraw
-  | AjnaFormActionsUpdateDpm
-  | AjnaFormActionsReset
-  | AjnaUpdateLoanToValue
->
-
-export const ajnaMultiplyReset = {
-  depositAmount: undefined,
-  depositAmountUSD: undefined,
-  generateAmount: undefined,
-  generateAmountUSD: undefined,
-  paybackAmount: undefined,
-  paybackAmountUSD: undefined,
-  paybackAmountMax: false,
-  withdrawAmount: undefined,
-  withdrawAmountUSD: undefined,
-  loanToValue: undefined,
-}
-
-export const ajnaMultiplyDefault: AjnaMultiplyFormState = {
-  ...ajnaMultiplyReset,
-  closeTo: 'collateral',
-  dpmAddress: ethers.constants.AddressZero,
-  uiDropdown: 'adjust',
-  uiPill: 'deposit-collateral-multiply',
-}
+import { ajnaMultiplyDefault, ajnaMultiplyReset } from './ajnaMultiplyFormReducto.constants'
+import type { AjnaMultiplyFormAction, AjnaMultiplyFormState } from './ajnaMultiplyFormReducto.types'
 
 export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyFormState>) {
   const { dispatch, state, updateState } = useReducto<

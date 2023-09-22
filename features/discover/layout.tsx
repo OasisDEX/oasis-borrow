@@ -1,7 +1,7 @@
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 
 export const DiscoverPageLayout = ({ children }: WithChildren) => <AppLayout>{children}</AppLayout>

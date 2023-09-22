@@ -1,5 +1,5 @@
 import { cacheObject } from 'helpers/api/cacheObject'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import { getOasisStats } from 'server/services/getOasisStats'
 
 const getStats = cacheObject(getOasisStats, 12 * 60 * 60, 'oasis-stats')

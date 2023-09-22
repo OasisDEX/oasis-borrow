@@ -1,5 +1,5 @@
 import { memoize } from 'lodash'
-import Web3 from 'web3'
+import type Web3 from 'web3'
 export interface ContractDesc {
   abi: any
   address: string

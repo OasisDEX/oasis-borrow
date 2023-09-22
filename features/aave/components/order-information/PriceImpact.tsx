@@ -1,7 +1,7 @@
-import { IMultiplyStrategy } from '@oasisdex/dma-library'
+import type { IMultiplyStrategy } from '@oasisdex/dma-library'
 import { Text } from '@theme-ui/components'
 import { swapCall } from 'actions/aave-like'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import {
   ensureGivenTokensExist,
   ensurePropertiesExist,
@@ -9,7 +9,8 @@ import {
 } from 'blockchain/contracts'
 import { amountFromWei, amountToWei } from 'blockchain/utils'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
-import { IStrategyConfig, StrategyType } from 'features/aave/types/strategy-config'
+import type { IStrategyConfig } from 'features/aave/types/strategy-config'
+import { StrategyType } from 'features/aave/types/strategy-config'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'

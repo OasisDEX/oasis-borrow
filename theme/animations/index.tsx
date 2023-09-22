@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import { SxStyleProp } from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui'
 
 import { fadeIn, rollDownTopBanner, rollDownTopBannerMobile, slideIn } from './keyframes'
 

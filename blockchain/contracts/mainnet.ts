@@ -62,9 +62,9 @@ import {
   tokensMainnet,
 } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey, mainnetCacheUrl } from 'config/runtimeConfig'
-import { Optional } from 'helpers/types'
+import type { Optional } from 'helpers/types'
 
-import { OptionalContracts } from './optional-contracts'
+import type { OptionalContracts } from './optional-contracts'
 
 const { mainnet } = ADDRESSES
 

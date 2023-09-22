@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { getActionUrl } from 'features/productHub/helpers'
-import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubItem } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 
 function sortByProductValue(
   param: keyof ProductHubItem,

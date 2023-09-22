@@ -1,5 +1,5 @@
 import { ajnaFormExternalSteps, ajnaFormStepsWithTransaction } from 'features/ajna/common/consts'
-import { AjnaFlow, AjnaSidebarStep } from 'features/ajna/common/types'
+import type { AjnaFlow, AjnaSidebarStep } from 'features/ajna/common/types'
 
 export interface GeneralStepManager {
   currentStep: AjnaSidebarStep

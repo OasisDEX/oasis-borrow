@@ -1,9 +1,9 @@
 import { useAutomationContext } from 'components/context'
-import { getAvailableAutomation } from 'features/automation/common/helpers'
+import { getAvailableAutomation } from 'features/automation/common/helpers/getAvailableAutomation'
 import { AutoBuyDetailsControl } from 'features/automation/optimization/autoBuy/controls/AutoBuyDetailsControl'
 import { AutoTakeProfitDetailsControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitDetailsControl'
 import { ConstantMultipleDetailsControl } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleDetailsControl'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import React from 'react'
 
 interface OptimizationDetailsControlProps {

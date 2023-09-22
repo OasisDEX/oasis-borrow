@@ -1,22 +1,16 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAutomationContext, useMainContext } from 'components/context'
 import { AppLink } from 'components/Links'
-import {
-  AUTO_BUY_FORM_CHANGE,
-  AutoBSFormChange,
-} from 'features/automation/common/state/autoBSFormChange'
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
-  AutoTakeProfitFormChange,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import { AUTO_BUY_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
+import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
+import type { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
 import { OptimizationDetailsControl } from 'features/automation/optimization/common/controls/OptimizationDetailsControl'
 import { OptimizationFormControl } from 'features/automation/optimization/common/controls/OptimizationFormControl'
-import {
-  CONSTANT_MULTIPLE_FORM_CHANGE,
-  ConstantMultipleFormChange,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
+import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useAppConfig } from 'helpers/config'

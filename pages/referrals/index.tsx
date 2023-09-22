@@ -4,7 +4,7 @@ import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts'
 import { ReferralLandingSummary } from 'features/referralOverview/ReferralLanding'
 import { useAppConfig } from 'helpers/config'
-import { GetServerSidePropsContext } from 'next'
+import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 

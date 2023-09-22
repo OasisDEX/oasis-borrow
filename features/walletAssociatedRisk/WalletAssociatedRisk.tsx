@@ -2,7 +2,8 @@ import { useTOSContext } from 'components/context'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import getConfig from 'next/config'
-import React, { ReactNode, useEffect } from 'react'
+import type { ReactNode } from 'react'
+import React, { useEffect } from 'react'
 
 interface WithWalletAssociatedRiskProps {
   children: ReactNode

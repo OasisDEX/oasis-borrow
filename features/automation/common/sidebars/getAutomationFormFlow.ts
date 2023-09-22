@@ -1,5 +1,5 @@
 import { sidebarAutomationFlowSuffix } from 'features/automation/common/consts'
-import { AutomationFeatures, SidebarAutomationFlow } from 'features/automation/common/types'
+import type { AutomationFeatures, SidebarAutomationFlow } from 'features/automation/common/types'
 
 export function getAutomationFormFlow({
   feature,

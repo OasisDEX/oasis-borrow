@@ -1,5 +1,5 @@
-import { WeeklyClaim } from '@prisma/client'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { WeeklyClaim } from '@prisma/client'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 
 type paramsSchema = {

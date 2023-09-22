@@ -314,9 +314,6 @@ export const oasisBaseTheme = {
       px: '16px',
     },
   },
-  metadata: {
-    fontLinkHref: 'https://rsms.me/inter/inter.css',
-  },
   cards: {
     primary: {
       border: '1px solid',
