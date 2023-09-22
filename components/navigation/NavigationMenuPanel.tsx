@@ -16,14 +16,16 @@ export interface NavigationMenuPanelLink {
   footnote?: ReactNode
 }
 
+export interface NavigationMenuPanelIcon {
+  type?: 'icon' | 'image'
+  source: string
+  position?: 'global' | 'title'
+}
+
 export interface NavigationMenuPanelList {
   items: {
-    description?: string
-    icon?: {
-      type?: 'icon' | 'image'
-      source: string
-      position?: 'global' | 'title'
-    }
+    description?: ReactNode
+    icon?: NavigationMenuPanelIcon
     list: Omit<NavigationMenuPanelList, 'items.list'>
     hoverColor?: string
     tags?: string[]
