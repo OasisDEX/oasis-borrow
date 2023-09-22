@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import ReactSelect from 'react-select'
-import { oasisBaseTheme } from 'theme'
+import { theme } from 'theme'
 import { Box, Card, Flex, Grid, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
@@ -22,7 +22,7 @@ export function DetailsSectionContentTable({ headers, rows, footnote }: ContentT
   const defaultMobileHeader = mobileHeaders[0]
   const [selectedMobileHeader, setSelectedMobileHeader] =
     useState<TableHeaderOption>(defaultMobileHeader)
-  const isMobileView = useMediaQuery(`(max-width: ${oasisBaseTheme?.breakpoints[0]})`)
+  const isMobileView = useMediaQuery(`(max-width: ${theme?.breakpoints[0]})`)
 
   const selectedMobileHeaderIndex = headers.indexOf(selectedMobileHeader.label || '')
   const visibleMobileRow = rows.map((row) =>

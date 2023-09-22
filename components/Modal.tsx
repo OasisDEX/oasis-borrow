@@ -10,7 +10,7 @@ import type { ReactNode } from 'react'
 import React, { useCallback, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { TRANSITIONS } from 'theme'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import {
   Box,
   Button,
@@ -22,7 +22,6 @@ import {
   Heading,
   IconButton,
   Text,
-  ThemeUIStyleObject,
 } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 

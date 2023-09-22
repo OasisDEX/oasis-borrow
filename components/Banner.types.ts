@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { SxProps } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 
 export type BannerGradientPresetsArray = { [key: string]: [string, string] }
 type BannerButtonProps = {
@@ -19,5 +19,5 @@ export type BannerProps = {
     backgroundColorEnd?: string
     spacing?: string | number
   }
-  sx?: SxProps
+  sx?: ThemeUIStyleObject
 }

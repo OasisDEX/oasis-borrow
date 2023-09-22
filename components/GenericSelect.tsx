@@ -7,7 +7,7 @@ import { keyBy } from 'lodash'
 import React, { useState } from 'react'
 import ReactSelect, { components } from 'react-select'
 import { theme } from 'theme'
-import type { SxProp, ThemeUIStyleObject } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
@@ -30,7 +30,7 @@ export interface GenericSelectProps {
   customStyles?: ReactSelectSimplifiedStyles
   defaultValue?: GenericSelectOption
   expandableArrowSize?: number
-  expandableArrowSx?: SxProp
+  expandableArrowSx?: ThemeUIStyleObject
   iconSize?: number
   isDisabled?: boolean
   isSearchable?: boolean
