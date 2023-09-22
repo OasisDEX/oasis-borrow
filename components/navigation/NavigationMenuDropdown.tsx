@@ -30,16 +30,12 @@ export function NavigationMenuDropdown({
   panels,
 }: NavigationMenuDropdownProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const [width, setWidth] = useState<number>(0)
   const [height, setHeight] = useState<number>(0)
 
   const labelsMap = panels.map((panel) => panel.label)
 
   useEffect(() => {
-    if (ref.current) {
-      setWidth(ref.current.offsetWidth)
-      setHeight(ref.current.offsetHeight)
-    }
+    if (ref.current) setHeight(ref.current.offsetHeight)
   }, [currentPanel, isPanelOpen])
 
   return (
@@ -59,17 +55,17 @@ export function NavigationMenuDropdown({
         sx={{
           position: 'absolute',
           top: '100%',
-          left: '-100%',
-          right: '-100%',
-          justifyContent: 'center',
-          transform: isPanelOpen ? 'translateY(0)' : 'translateY(-5px)',
-          transition: 'transform 200ms',
-          pointerEvents: 'none',
+          left: 0,
+          right: 0,
+          pt: '18px',
         }}
       >
         <Flex
           sx={{
-            position: 'relative',
+            width: '100%',
+            justifyContent: 'center',
+            transform: isPanelOpen ? 'translateY(0)' : 'translateY(-5px)',
+            transition: 'transform 200ms',
             p: 4,
             borderRadius: 'large',
             bg: 'neutral10',
@@ -80,32 +76,33 @@ export function NavigationMenuDropdown({
         >
           <Flex
             sx={{
+              position: 'relative',
               flexDirection: 'column',
-              ...(width > 0 && { width }),
+              width: '100%',
               ...(height > 0 && { height }),
               ...(isPanelSwitched && { transition: 'width 200ms, height 200ms' }),
             }}
           >
             {panels.map(({ label, ...panel }, i) => (
-              <Flex key={i} sx={{ ml: '-100%', transform: 'translateX(50%)' }}>
-                <Flex
-                  sx={{
-                    position: 'absolute',
-                    flexDirection: 'column',
-                    rowGap: 4,
-                    opacity: currentPanel === label ? 1 : 0,
-                    pointerEvents: isPanelOpen && currentPanel === label ? 'auto' : 'none',
-                    ...(isPanelSwitched && { transition: 'opacity 200ms, transform 200ms' }),
-                    transform: `translateX(${getDropdownTranslation(
-                      labelsMap,
-                      label,
-                      currentPanel,
-                    )})`,
-                  }}
-                  {...(currentPanel === label && { ref })}
-                >
-                  <NavigationMenuDropdownContent label={label} {...panel} />
-                </Flex>
+              <Flex
+                key={i}
+                sx={{
+                  position: 'absolute',
+                  flexDirection: 'column',
+                  rowGap: 4,
+                  width: '100%',
+                  opacity: currentPanel === label ? 1 : 0,
+                  pointerEvents: isPanelOpen && currentPanel === label ? 'auto' : 'none',
+                  ...(isPanelSwitched && { transition: 'opacity 200ms, transform 200ms' }),
+                  transform: `translateX(${getDropdownTranslation(
+                    labelsMap,
+                    label,
+                    currentPanel,
+                  )})`,
+                }}
+                {...(currentPanel === label && { ref })}
+              >
+                <NavigationMenuDropdownContent label={label} {...panel} />
               </Flex>
             ))}
           </Flex>

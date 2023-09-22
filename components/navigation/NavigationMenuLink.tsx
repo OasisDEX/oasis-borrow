@@ -35,7 +35,6 @@ export function NavigationMenuLink({
     <Box
       as="li"
       sx={{
-        p: 1,
         flexShrink: 0,
       }}
       onMouseEnter={onMouseEnter}

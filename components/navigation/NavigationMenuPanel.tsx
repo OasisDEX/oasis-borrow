@@ -63,7 +63,6 @@ export function NavigationMenuPanel({
     <Box
       as="li"
       sx={{
-        p: 1,
         flexShrink: 0,
         cursor: 'default',
       }}

@@ -36,10 +36,9 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
           as="ul"
           sx={{
             listStyle: 'none',
-            columnGap: '40px',
+            columnGap: '48px',
             justifyContent: 'center',
-            px: '20px',
-            py: 1,
+            px: 5,
           }}
         >
           {panels?.map((panel) => (
