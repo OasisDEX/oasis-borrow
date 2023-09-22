@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
-import { getLocalAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { toggleArrayItem } from 'helpers/toggleArrayItem'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
@@ -161,8 +161,10 @@ export function GenericMultiselect({
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const outsideRef = useOutsideElementClickHandler(() => setIsOpen(false))
   const scrollRef = useRef<HTMLDivElement>(null)
+  const features = useAppConfig('features')
+
   const optionsFeatureFlagsArray = options.map((option) =>
-    option.featureFlag ? getLocalAppConfig('features')[option.featureFlag] : true,
+    option.featureFlag ? features[option.featureFlag] : true,
   )
 
   useEffect(() => {
