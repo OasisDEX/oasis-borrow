@@ -7,6 +7,7 @@ export interface NavigationMenuPanelAsset {
   token: string
   link: string
 }
+
 export interface NavigationMenuPanelLink {
   icon: string
   title: string
@@ -14,16 +15,30 @@ export interface NavigationMenuPanelLink {
   hash?: string
   footnote?: ReactNode
 }
-export interface NavigationMenuPanelType {
-  description: string
-  label: string
-  learn?: {
+
+export interface NavigationMenuPanelList {
+  items: {
+    description?: string
+    icon?: {
+      type?: 'icon' | 'image'
+      source: string
+      position?: 'global' | 'title'
+    }
+    list: Omit<NavigationMenuPanelList, 'items.list'>
+    hoverColor?: string
+    tags?: string[]
+    title: string
+  }[]
+  link?: {
     label: string
-    link: string
+    url: string
   }
-  link?: string
-  links: NavigationMenuPanelLink[]
-  otherAssets?: NavigationMenuPanelAsset[]
+}
+
+export interface NavigationMenuPanelType {
+  label: string
+  lists: NavigationMenuPanelList[]
+  url?: string
 }
 type NavigationMenuPanelProps = NavigationMenuPanelType & {
   currentPanel?: string
@@ -56,7 +71,7 @@ function NavigationMenuPanelLabel({
 export function NavigationMenuPanel({
   currentPanel,
   label,
-  link,
+  url,
   isPanelOpen,
   onMouseEnter,
 }: NavigationMenuPanelProps) {
@@ -73,8 +88,8 @@ export function NavigationMenuPanel({
         onMouseEnter(target.offsetLeft + target.offsetWidth / 2)
       }}
     >
-      {link ? (
-        <AppLink href={link}>
+      {url ? (
+        <AppLink href={url}>
           <NavigationMenuPanelLabel
             currentPanel={currentPanel}
             label={label}

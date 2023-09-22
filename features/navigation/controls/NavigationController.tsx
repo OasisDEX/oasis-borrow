@@ -4,10 +4,12 @@ import { SwapWidgetShowHide } from 'components/swapWidget/SwapWidgetShowHide'
 import { NavigationActionsController } from 'features/navigation/controls/NavigationActionsController'
 import { getAppConfig } from 'helpers/config'
 import { useAccount } from 'helpers/useAccount'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 
 export function NavigationController() {
+  const { t } = useTranslation()
   const { NewNavigation: isNewNavigationEnabled } = getAppConfig('features')
   const { isConnected, walletAddress } = useAccount()
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3] - 1}px)`)
@@ -16,6 +18,18 @@ export function NavigationController() {
     <>
       <Navigation
         links={[
+          {
+            label: 'Protocols',
+            link: '#',
+          },
+          {
+            label: 'Tokens',
+            link: '#',
+          },
+          {
+            label: 'Use Cases',
+            link: '#',
+          },
           ...(isConnected && !isViewBelowXl
             ? [
                 {
@@ -28,70 +42,39 @@ export function NavigationController() {
         {...(isNewNavigationEnabled && {
           panels: [
             {
-              description: 'Lorem ipsum',
-              label: 'Label',
-              learn: {
-                label: 'Learn label',
-                link: '#learn',
-              },
-              links: [
+              label: t('nav.products'),
+              lists: [
                 {
-                  icon: '',
-                  title: 'title',
-                  link: '#link',
-                  footnote: <>footnote</>,
-                },
-                {
-                  icon: '',
-                  title: 'title',
-                  link: '#link',
-                  footnote: <>footnote</>,
-                },
-                {
-                  icon: '',
-                  title: 'title',
-                  link: '#link',
-                  footnote: <>footnote</>,
-                },
-                {
-                  icon: '',
-                  title: 'title',
-                  link: '#link',
-                  footnote: <>footnote</>,
-                },
-              ],
-              otherAssets: [
-                {
-                  token: 'ETH',
-                  link: '#token',
-                },
-              ],
-            },
-            {
-              description: 'Lorem ipsum',
-              label: 'Label 2',
-              learn: {
-                label: 'Learn label',
-                link: '#learn',
-              },
-              links: [
-                {
-                  icon: '',
-                  title: 'title',
-                  link: '#link',
-                  footnote: <>footnote</>,
-                },
-                {
-                  icon: '',
-                  title: 'title',
-                  link: '#link',
-                  footnote: <>footnote</>,
-                },
-              ],
-              otherAssets: [
-                {
-                  token: 'ETH',
-                  link: '#token',
+                  items: [
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: t('nav.earn'),
+                      description: t('nav.products-earn'),
+                    },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: t('nav.multiply'),
+                      description: t('nav.products-multiply'),
+                    },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: t('nav.borrow'),
+                      description: t('nav.products-borrow'),
+                    },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: t('nav.swap-and-bridge'),
+                      description: t('nav.products-swap-and-bridge'),
+                    },
+                  ],
                 },
               ],
             },
