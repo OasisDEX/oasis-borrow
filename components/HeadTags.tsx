@@ -1,18 +1,14 @@
-import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getRandomString } from 'helpers/getRandomString'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import React from 'react'
-import { useTheme } from 'theme/useThemeUI'
 
 export function HeadTags() {
-  const { theme } = useTheme()
-  const fontLinkHref = theme.metadata && theme.metadata.fontLinkHref
-
   return (
     <Head>
-      {fontLinkHref && <link href={fontLinkHref} rel="stylesheet" />}
+      <link href={EXTERNAL_LINKS.INTER_FONT} rel="stylesheet" />
       <link rel="shortcut icon" href={staticFilesRuntimeUrl('/static/favicon.ico')} />
     </Head>
   )

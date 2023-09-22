@@ -1,27 +1,12 @@
 import { CommandContractType, TriggerType } from '@oasisdex/automation'
 import { amountFromWei } from '@oasisdex/utils'
-import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { OpenAaveContext } from 'features/aave/open/state'
+import type { OpenAaveContext } from 'features/aave/open/state'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 
-interface AaveStopLossDataInput {
-  collateralToken: string
-  debtToken: string
-  positionRatio: BigNumber
-  liquidationPrice: BigNumber
-  debt: BigNumber
-  lockedCollateral: BigNumber
-  proxyAddress?: string
-  liquidationPenalty: BigNumber
-  liquidationRatio: BigNumber
-  debtTokenAddress: string
-  collateralTokenAddress: string
-  stopLossLevel: BigNumber
-  collateralActive: boolean
-}
+import type { AaveStopLossDataInput } from './helpers.types'
 
 export function extractStopLossDataInput(context: OpenAaveContext): AaveStopLossDataInput {
   const collateralToken = context.tokens.collateral

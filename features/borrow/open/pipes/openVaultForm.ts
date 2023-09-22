@@ -1,8 +1,4 @@
-import { OpenVaultChange, OpenVaultState } from './openVault'
-
-export type OpenVaultFormChange = {
-  kind: 'toggleGenerateOption'
-}
+import type { OpenVaultChange, OpenVaultState } from './openVault.types'
 
 export function applyOpenVaultForm(state: OpenVaultState, change: OpenVaultChange): OpenVaultState {
   if (change.kind === 'toggleGenerateOption' && state.depositAmount) {

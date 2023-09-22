@@ -1,6 +1,6 @@
 import { configFetcherBackend } from 'handlers/config'
 import { configCacheTime } from 'helpers/config'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   const config = await configFetcherBackend()

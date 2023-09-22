@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Swap } from '@oasisdex/dma-library'
+import type { Swap } from '@oasisdex/dma-library'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
 import { amountFromWei } from 'blockchain/utils'
 import {
@@ -7,8 +7,8 @@ import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { HasGasEstimation } from 'helpers/context/types'
 import { formatAmount } from 'helpers/formatters/format'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

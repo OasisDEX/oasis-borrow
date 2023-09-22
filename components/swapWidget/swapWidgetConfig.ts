@@ -1,4 +1,4 @@
-import { WidgetConfig } from '@lifi/widget'
+import type { WidgetConfig } from '@lifi/widget'
 import { enableNetworksSet } from 'blockchain/networks'
 import { theme } from 'theme'
 

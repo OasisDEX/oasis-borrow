@@ -1,5 +1,5 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
-import { AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
+import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import type { AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
 import { zero } from 'helpers/zero'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'

@@ -1,16 +1,16 @@
-import { AutomationBotV2AddTriggerData } from 'blockchain/calls/automationBot'
-import { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import {
+import type { AutomationBotV2AddTriggerData } from 'blockchain/calls/automationBot.types'
+import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator.types'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type {
   AutomationCommonData,
   AutomationContextProviderProps,
   AutomationPositionData,
 } from 'components/context'
-import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
-import { AutomationContracts, StopLossMetadata } from 'features/automation/metadata/types'
-import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { VaultProtocol } from 'helpers/getVaultProtocol'
+import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
+import type { AutomationContracts, StopLossMetadata } from 'features/automation/metadata/types'
+import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
+import type { VaultType } from 'features/generalManageVault/vaultType.types'
+import type { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
 
 /*

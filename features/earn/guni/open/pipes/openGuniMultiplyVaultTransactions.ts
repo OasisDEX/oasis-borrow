@@ -1,12 +1,13 @@
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { openGuniMultiplyVault } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
-import { OAZO_LOWER_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { AddGasEstimationFunction } from 'helpers/context/types'
+import { OAZO_LOWER_FEE, SLIPPAGE } from 'helpers/multiply/calculations.constants'
 import { one, zero } from 'helpers/zero'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 
-import { OpenGuniVaultState } from './openGuniVault'
+import type { OpenGuniVaultState } from './openGuniVault.types'
 
 export function applyGuniEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,

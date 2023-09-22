@@ -1,10 +1,10 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { NetworkHexIds } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { steps } from 'features/ajna/common/consts'
-import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
+import type { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaBorrowPositionController } from 'features/ajna/positions/borrow/controls/AjnaBorrowPositionController'
 import { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import { AjnaGeneralContextProvider } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -12,7 +12,7 @@ import { AjnaProductContextProvider } from 'features/ajna/positions/common/conte
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import { useAjnaData } from 'features/ajna/positions/common/hooks/useAjnaData'
 import { useAjnaRedirect } from 'features/ajna/positions/common/hooks/useAjnaRedirect'
-import {
+import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'

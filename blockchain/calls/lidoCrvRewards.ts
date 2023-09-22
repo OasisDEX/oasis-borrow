@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { LidoCrvLiquidityFarmingReward } from 'types/web3-v1-contracts'
+import type { LidoCrvLiquidityFarmingReward } from 'types/web3-v1-contracts'
 
-import { CallDef } from './callsHelpers'
+import type { CallDef } from './callsHelpers'
 
 export const crvLdoRewardsEarned: CallDef<string, BigNumber> = {
   call: (_, { contract, chainId }) => {

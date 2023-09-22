@@ -1,14 +1,17 @@
-import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { TxMeta, TxState } from '@oasisdex/transactions'
+import { TxStatus } from '@oasisdex/transactions'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context, ContextConnected } from 'blockchain/network'
+import type { Context, ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { transactionToX } from 'helpers/form'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/internal/operators'
 import { first, map, switchMap } from 'rxjs/operators'
-import { AnyEventObject, assign, createMachine, sendParent } from 'xstate'
+import type { AnyEventObject } from 'xstate'
+import { assign, createMachine, sendParent } from 'xstate'
 
 type BaseTransactionStateMachineContext = {
   txHash?: string
@@ -51,6 +54,7 @@ export function createTransactionStateMachine<T extends TxMeta, TResult = unknow
       id: 'transaction',
       predictableActionArguments: true,
       preserveActionOrder: true,
+      //eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./transactionStateMachine.typegen').Typegen0,
       context: {
         transactionDef,
@@ -215,6 +219,7 @@ export type TransactionStateMachine<T extends TxMeta, TResult = unknown> = Retur
 >
 
 type MissingTransactionServices = Exclude<
+  //eslint-disable-next-line @typescript-eslint/consistent-type-imports
   import('./transactionStateMachine.typegen').Typegen0['missingImplementations']['services'],
   'startTransaction'
 >

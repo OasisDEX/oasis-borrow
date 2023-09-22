@@ -1,14 +1,14 @@
 import { useActor } from '@xstate/react'
 import { useAaveContext } from 'features/aave'
 import { AaveManageTabBar } from 'features/aave/manage/containers/AaveManageTabBar'
-import { IStrategyConfig } from 'features/aave/types/strategy-config'
+import type { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { AaveAutomationContext } from 'features/automation/contexts/AaveAutomationContext'
 import { AavePositionNoticesView } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import {
+import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveData,
 } from 'lendingProtocols/aave-like-common'

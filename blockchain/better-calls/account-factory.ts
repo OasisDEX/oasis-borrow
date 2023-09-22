@@ -1,12 +1,13 @@
 import BigNumber from 'bignumber.js'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds, networkSetById } from 'blockchain/networks'
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { ethers } from 'ethers'
+import type { NetworkIds } from 'blockchain/networks'
+import { networkSetById } from 'blockchain/networks'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
+import type { ethers } from 'ethers'
 import { AccountFactory__factory } from 'types/ethers-contracts'
 
 import { GasMultiplier } from './utils'
-import { EstimatedGasResult } from './utils/types'
+import type { EstimatedGasResult } from './utils/types'
 
 export interface CreateAccountParameters {
   networkId: NetworkIds

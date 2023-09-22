@@ -1,12 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Text } from '@theme-ui/components'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { Tooltip, useTooltip } from 'components/Tooltip'
-import { PriceInfo } from 'features/shared/priceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo.types'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
-import { SxStyleProp } from 'theme-ui'
+import type { ReactNode } from 'react'
+import React from 'react'
+import type { SxStyleProp } from 'theme-ui'
 
 import { VaultHeaderContainer } from './VaultHeaderContainer'
 

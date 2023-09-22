@@ -1,16 +1,11 @@
-import {
-  AjnaCommonDependencies,
-  AjnaCommonPayload,
-  AjnaPosition,
-  RiskRatio,
-  strategies,
-} from '@oasisdex/dma-library'
-import { BigNumber } from 'bignumber.js'
+import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaPosition } from '@oasisdex/dma-library'
+import { RiskRatio, strategies } from '@oasisdex/dma-library'
+import type { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { AjnaGenericPosition } from 'features/ajna/common/types'
-import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
-import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import type { AjnaGenericPosition } from 'features/ajna/common/types'
+import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
+import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
 import { getOneInchCall } from 'helpers/swap'
 import { zero } from 'helpers/zero'
 

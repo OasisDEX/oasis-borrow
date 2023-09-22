@@ -1,67 +1,7 @@
-import BigNumber from 'bignumber.js'
-import { ethers } from 'ethers'
-import { AjnaBorrowAction, AjnaBorrowPanel, AjnaCloseTo } from 'features/ajna/common/types'
-import {
-  AjnaFormActionsReset,
-  AjnaFormActionsUpdateDeposit,
-  AjnaFormActionsUpdateDpm,
-  AjnaFormActionsUpdateGenerate,
-  AjnaFormActionsUpdatePayback,
-  AjnaFormActionsUpdatePaybackMax,
-  AjnaFormActionsUpdateWithdraw,
-  AjnaUpdateLoanToValue,
-} from 'features/ajna/positions/common/state/ajnaFormReductoActions'
-import { ReductoActions, useReducto } from 'helpers/useReducto'
+import { useReducto } from 'helpers/useReducto'
 
-export interface AjnaBorrowFormState {
-  action?: AjnaBorrowAction
-  dpmAddress: string
-  depositAmount?: BigNumber
-  depositAmountUSD?: BigNumber
-  generateAmount?: BigNumber
-  generateAmountUSD?: BigNumber
-  paybackAmount?: BigNumber
-  paybackAmountUSD?: BigNumber
-  paybackAmountMax: boolean
-  withdrawAmount?: BigNumber
-  withdrawAmountUSD?: BigNumber
-  loanToValue?: BigNumber
-  closeTo: AjnaCloseTo
-  uiDropdown: AjnaBorrowPanel
-  uiPill: Exclude<AjnaBorrowAction, 'open-borrow'>
-}
-
-export type AjnaBorrowFormAction = ReductoActions<
-  AjnaBorrowFormState,
-  | AjnaFormActionsUpdateDeposit
-  | AjnaFormActionsUpdateGenerate
-  | AjnaFormActionsUpdatePayback
-  | AjnaFormActionsUpdatePaybackMax
-  | AjnaFormActionsUpdateWithdraw
-  | AjnaFormActionsUpdateDpm
-  | AjnaFormActionsReset
-  | AjnaUpdateLoanToValue
->
-
-export const ajnaBorrowReset = {
-  depositAmount: undefined,
-  depositAmountUSD: undefined,
-  generateAmount: undefined,
-  generateAmountUSD: undefined,
-  paybackAmount: undefined,
-  paybackAmountUSD: undefined,
-  paybackAmountMax: false,
-  withdrawAmount: undefined,
-  withdrawAmountUSD: undefined,
-}
-
-export const ajnaBorrowDefault: AjnaBorrowFormState = {
-  ...ajnaBorrowReset,
-  dpmAddress: ethers.constants.AddressZero,
-  uiDropdown: 'collateral',
-  uiPill: 'deposit-borrow',
-  closeTo: 'collateral',
-}
+import { ajnaBorrowDefault, ajnaBorrowReset } from './ajnaBorrowFormReducto.constants'
+import type { AjnaBorrowFormAction, AjnaBorrowFormState } from './ajnaBorrowFormReducto.types'
 
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
   const { dispatch, state, updateState } = useReducto<AjnaBorrowFormState, AjnaBorrowFormAction>({

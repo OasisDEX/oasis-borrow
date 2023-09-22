@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { AllNetworksContractsType, getNetworkContracts } from 'blockchain/contracts'
+import type { AllNetworksContractsType } from 'blockchain/contracts'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
-import { SparkV3ReserveDataParameters } from 'blockchain/spark-v3/spark-v3-pool-data-provider'
-import { SparkV3SupportedNetwork } from 'blockchain/spark-v3/spark-v3-supported-network'
-import { ethers } from 'ethers'
+import type { SparkV3ReserveDataParameters } from 'blockchain/spark-v3/spark-v3-pool-data-provider'
+import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3/spark-v3-supported-network'
+import type { ethers } from 'ethers'
 
 export type Factory<T> = {
   connect: (address: string, rpcProvider: ethers.providers.Provider) => T

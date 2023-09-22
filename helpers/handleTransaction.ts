@@ -1,7 +1,8 @@
-import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
+import type { TxMeta, TxState } from '@oasisdex/transactions'
+import { TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { TxError } from 'helpers/types'
+import type { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 
 export interface TxDetails {

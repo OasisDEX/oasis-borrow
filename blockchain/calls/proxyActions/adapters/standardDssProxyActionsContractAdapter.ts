@@ -1,22 +1,22 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
-import { DssProxyActions } from 'types/web3-v1-contracts'
-import {
+import type { DssProxyActions } from 'types/web3-v1-contracts'
+import type {
   NonPayableTransactionObject,
   PayableTransactionObject,
 } from 'types/web3-v1-contracts/types'
 import Web3 from 'web3'
 
-import {
+import type {
   ClaimRewardData,
   DepositAndGenerateData,
   OpenData,
-  ProxyActionsAdapterType,
   ProxyActionsSmartContractAdapterInterface,
   WithdrawAndPaybackData,
 } from './ProxyActionsSmartContractAdapterInterface'
+import { ProxyActionsAdapterType } from './ProxyActionsSmartContractAdapterInterface'
 
 export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAdapterInterface = {
   AdapterType: ProxyActionsAdapterType.STANDARD,

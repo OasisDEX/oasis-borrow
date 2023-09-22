@@ -1,9 +1,10 @@
-import BigNumber from 'bignumber.js'
-import { IlkData, IlkDataList } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
-import { TokenBalances } from 'blockchain/tokens'
+import type BigNumber from 'bignumber.js'
+import type { IlkData, IlkDataList } from 'blockchain/ilks.types'
+import type { Context } from 'blockchain/network.types'
+import type { TokenBalances } from 'blockchain/tokens.types'
 import isEqual from 'lodash/isEqual'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 export interface IlkWithBalance extends IlkData {

@@ -1,4 +1,4 @@
-import { AppConfigType, FeaturesEnum } from 'types/config'
+import type { AppConfigType, FeaturesEnum } from 'types/config'
 
 export type ConfiguredFeatures = Record<FeaturesEnum, boolean>
 export type ConfiguredAppParameters = AppConfigType['parameters']

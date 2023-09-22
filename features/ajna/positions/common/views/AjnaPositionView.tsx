@@ -1,6 +1,6 @@
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
-import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
+import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
@@ -8,7 +8,8 @@ import { getAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import React from 'react'
 import { Box, Container } from 'theme-ui'
 
 interface AjnaPositionViewProps {

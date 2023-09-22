@@ -1,3 +1,4 @@
+import type { NetworkNames } from 'blockchain/networks'
 import {
   enableNetworksSet,
   filterNetworksAccordingToSavedNetwork,
@@ -6,7 +7,6 @@ import {
   isTestnetEnabled,
   isTestnetNetworkHexId,
   NetworkIdToNetworkHexIds,
-  NetworkNames,
   networkSetByHexId,
 } from 'blockchain/networks'
 import { useConnection, useWalletManagement } from 'features/web3OnBoard'

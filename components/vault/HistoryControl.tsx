@@ -1,9 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
-import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
+import type { LendingProtocol } from 'lendingProtocols'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 

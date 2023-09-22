@@ -1,12 +1,12 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
+import type { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
-import { Sender, StateFrom } from 'xstate'
+import type { Sender, StateFrom } from 'xstate'
 
 export interface OpenAaveEditingStateProps {
   state: StateFrom<OpenAaveStateMachine>

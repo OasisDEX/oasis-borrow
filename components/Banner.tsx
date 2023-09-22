@@ -1,36 +1,9 @@
 import { AppSpinner } from 'helpers/AppSpinner'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import React, { ReactNode } from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
+import React from 'react'
+import { Box, Button, Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
-type BannerGradientPresetsArray = { [key: string]: [string, string] }
-export const bannerGradientPresets: BannerGradientPresetsArray = {
-  autoBuy: ['#e0e7ff', '#fae2fc'],
-  autoSell: ['#fef1e1', '#fef5d6'],
-  constantMultiply: ['#ffdde7', '#ffe7f5'],
-  stopLoss: ['#ffeaea', '#fff5ea'],
-  autoTakeProfit: ['#ffe6f5', '#fff2f6'],
-}
-
-type BannerButtonProps = {
-  disabled?: boolean
-  isLoading?: boolean
-  text?: string | ReactNode
-  action: (() => void) | undefined
-}
-
-export type BannerProps = {
-  title: string | ReactNode
-  description: ReactNode | ReactNode[]
-  button?: BannerButtonProps
-  image?: {
-    src: string
-    backgroundColor?: string
-    backgroundColorEnd?: string
-    spacing?: string | number
-  }
-  sx?: SxProps
-}
+import type { BannerProps } from './Banner.types'
 
 export function Banner({ title, description, button, image, sx }: BannerProps) {
   const descriptionsArray = Array.isArray(description) ? description : [description]

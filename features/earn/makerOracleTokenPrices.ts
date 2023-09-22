@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import dayjs from 'dayjs'
 import { gql, GraphQLClient } from 'graphql-request'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 import { first, map, switchMap } from 'rxjs/operators'
 
 const makerOraclePrice = gql`

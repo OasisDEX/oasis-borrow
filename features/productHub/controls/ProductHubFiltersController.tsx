@@ -10,18 +10,19 @@ import {
   productHubStrategyFilter,
   productHubTestNetworkFilter,
 } from 'features/productHub/meta'
-import {
+import type {
   ProductHubFilters,
   ProductHubItem,
   ProductHubMultiplyStrategyType,
-  ProductHubProductType,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard'
-import { LendingProtocol } from 'lendingProtocols'
+import type { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useMemo } from 'react'
+import type { FC } from 'react'
+import React, { useMemo } from 'react'
 import { theme } from 'theme'
 import { Box } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'

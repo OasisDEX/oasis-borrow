@@ -8,7 +8,7 @@ import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSli
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { OpenMultiplyVaultChangesInformation } from 'features/multiply/open/containers/OpenMultiplyVaultChangesInformation'
-import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import React from 'react'
 import { Grid } from 'theme-ui'

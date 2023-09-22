@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 import { useLegacyDefaultChain } from './use-legacy-default-chain'
-import { WalletManagementState } from './wallet-state'
+import type { WalletManagementState } from './wallet-state'
 
 /*
  * I don't like this solution,

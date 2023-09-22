@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useEventCallback, useEventListener } from 'usehooks-ts'
 
 export function getStorageValue<V>(

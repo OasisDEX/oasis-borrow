@@ -1,5 +1,5 @@
 import { Modal } from 'components/Modal'
-import { ModalProps } from 'helpers/modalHook'
+import type { ModalProps } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
