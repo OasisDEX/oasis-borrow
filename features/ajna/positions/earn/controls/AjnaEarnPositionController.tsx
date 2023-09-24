@@ -4,7 +4,7 @@ import { AjnaPositionHistoryController } from 'features/ajna/positions/common/co
 import { AjnaPositionView } from 'features/ajna/positions/common/views/AjnaPositionView'
 import { AjnaEarnFormController } from 'features/ajna/positions/earn/controls/AjnaEarnFormController'
 import { AjnaEarnOverviewController } from 'features/ajna/positions/earn/controls/AjnaEarnOverviewController'
-import en from 'features/content/faqs/ajna/earn/en.mdx'
+import en from 'features/content/faqs/ajna/earn/en'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import React from 'react'
 import { useTranslation } from 'react-i18next'

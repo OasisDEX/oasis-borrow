@@ -3,7 +3,7 @@ import { AjnaBorrowOverviewController } from 'features/ajna/positions/borrow/con
 import { AjnaFaqController } from 'features/ajna/positions/common/controls/AjnaFaqController'
 import { AjnaPositionHistoryController } from 'features/ajna/positions/common/controls/AjnaPositionHistoryController'
 import { AjnaPositionView } from 'features/ajna/positions/common/views/AjnaPositionView'
-import en from 'features/content/faqs/ajna/borrow/en.mdx'
+import en from 'features/content/faqs/ajna/borrow/en'
 import React from 'react'
 import { Grid } from 'theme-ui'
 

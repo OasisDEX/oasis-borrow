@@ -1,9 +1,3 @@
-const withMDX = require('@next/mdx')({
-  extension: /\.(md|mdx)$/,
-  options: {
-    providerImportSource: '@mdx-js/react',
-  },
-})
 const TerserPlugin = require('terser-webpack-plugin')
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
@@ -28,7 +22,7 @@ const baseConfig = {
   },
   basePath,
   productionBrowserSourceMaps: true,
-  pageExtensions: ['mdx', 'tsx', 'ts'],
+  pageExtensions: ['tsx', 'ts'],
   publicRuntimeConfig: publicRuntimeConfig,
   webpack: function (config, { isServer, dev }) {
     config.module.rules.push({
@@ -163,7 +157,7 @@ const baseConfig = {
   },
 }
 
-module.exports = withBundleAnalyzer(withMDX(baseConfig))
+module.exports = withBundleAnalyzer(baseConfig)
 
 if (process.env.SENTRY_AUTH_TOKEN !== undefined && process.env.SENTRY_AUTH_TOKEN !== '') {
   module.exports = withSentryConfig(

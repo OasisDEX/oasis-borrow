@@ -3,7 +3,7 @@ import { AjnaPositionHistoryController } from 'features/ajna/positions/common/co
 import { AjnaPositionView } from 'features/ajna/positions/common/views/AjnaPositionView'
 import { AjnaMultiplyFormController } from 'features/ajna/positions/multiply/controls/AjnaMultiplyFormController'
 import { AjnaMultiplyOverviewController } from 'features/ajna/positions/multiply/controls/AjnaMultiplyOverviewController'
-import en from 'features/content/faqs/ajna/multiply/en.mdx'
+import en from 'features/content/faqs/ajna/multiply/en'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
