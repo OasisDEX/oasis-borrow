@@ -54,7 +54,7 @@ export const spark_circle_color = {
         <clipPath id="F" key="F">
           <rect width="1046" height="1046" rx="97" fill="#fff" key="q0LVuFQKyT1" />
         </clipPath>
-        <linearGradient id="G" key="G" gradientUnits="userSpaceOnUse" key="728nYxSNNbO" />
+        <linearGradient id="G" gradientUnits="userSpaceOnUse" key="728nYxSNNbO" />
       </defs>
     </>
   ),

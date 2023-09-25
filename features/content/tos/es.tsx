@@ -570,7 +570,7 @@ export default () => (
     <Heading as="h3">11.6. Normas de los JAMS</Heading>
     <Text variant="paragraph1">
       Las normas e información adicional sobre los JAMS están disponibles en el sitio web de JAMS en{' '}
-      <AppLink href="http://www.jamsadr.com/">http://www.jamsadr.com/</AppLink>, y pueden
+      <AppLink href="https://www.jamsadr.com/">https://www.jamsadr.com/</AppLink>, y pueden
       actualizarse periódicamente. Al aceptar el cumplimiento del presente Acuerdo, usted también:
       (a) reconoce y acepta que ha leído y entendido las reglas JAMS; o (b) renuncia a su
       oportunidad de leer las reglas JAMS y cualquier reclamación en cuanto a que las reglas JAMS

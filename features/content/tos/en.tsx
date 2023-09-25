@@ -934,10 +934,10 @@ export default () => (
     <Heading as="h3">12.7. Rules of the LCIA</Heading>
     <Text variant="paragraph1">
       The rules of, and additional information about, the LCIA are available on the LCIA website at{' '}
-      <AppLink href="http://www.lcia.org">http://www.lcia.org</AppLink>, as may be updated from time
-      to time. By agreeing to be bound by this Agreement, you either: (a) acknowledge and agree that
-      you have read and understand the LCIA Rules; or (b) waive your opportunity to read the LCIA
-      Rules and any claim that the LCIA rules are unfair or should not apply for any reason.
+      <AppLink href="https://www.lcia.org">https://www.lcia.org</AppLink>, as may be updated from
+      time to time. By agreeing to be bound by this Agreement, you either: (a) acknowledge and agree
+      that you have read and understand the LCIA Rules; or (b) waive your opportunity to read the
+      LCIA Rules and any claim that the LCIA rules are unfair or should not apply for any reason.
     </Text>
     <Heading as="h3">12.8. Governing law</Heading>
     <Text variant="paragraph1">
