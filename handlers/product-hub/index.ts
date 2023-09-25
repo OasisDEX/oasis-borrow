@@ -4,7 +4,6 @@ import { networks } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
 import { checkIfAllHandlersExist, filterTableData, measureTime } from 'handlers/product-hub/helpers'
-import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import type {
   HandleGetProductHubDataProps,
   HandleUpdateProductHubDataProps,
@@ -19,14 +18,12 @@ export async function handleGetProductHubData(
   req: HandleGetProductHubDataProps,
   res: NextApiResponse,
 ) {
-  const { protocols, promoCardsCollection, testnet = false } = req.body
-  if (!protocols || !protocols.length || !promoCardsCollection) {
+  const { protocols, testnet = false } = req.body
+  if (!protocols || !protocols.length) {
     return res.status(400).json({
-      errorMessage:
-        'Missing required parameters (protocols, promoCardsCollection), check error object for more details',
+      errorMessage: 'Missing required parameter (protocols), check error object for more details',
       error: {
         protocols: JSON.stringify(protocols),
-        promoCardsCollection: JSON.stringify(promoCardsCollection),
       },
     })
   }
@@ -50,10 +47,8 @@ export async function handleGetProductHubData(
     })
     .then((rawTable) => {
       const table = rawTable.map(filterTableData) as ProductHubItem[]
-      const promoCards = PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](table)
 
       return res.status(200).json({
-        promoCards,
         table,
       })
     })

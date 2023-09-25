@@ -76,7 +76,6 @@ export type ProductHubPromoCards = {
 }
 
 export interface ProductHubData {
-  promoCards: ProductHubPromoCards
   table: ProductHubItem[]
 }
 

@@ -1,7 +1,9 @@
+import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
 import type { ConfigContext, ConfigResponseType } from 'helpers/config'
 import { configCacheTime, saveConfigToLocalStorage } from 'helpers/config'
 import type { WithChildren } from 'helpers/types/With.types'
-import React, { useEffect, useState } from 'react'
+import { LendingProtocol } from 'lendingProtocols'
+import React, { useContext, useEffect, useState } from 'react'
 import { FeaturesEnum } from 'types/config'
 
 const configFetcher = () =>
@@ -19,10 +21,30 @@ export const emptyConfig = {
   parameters: {},
 } as ConfigResponseType
 
-export const configContext = React.createContext<ConfigContext | undefined>(undefined)
+export const preloadAppDataContext = React.createContext<ConfigContext | undefined>(undefined)
 
-export function ConfigContextProvider({ children }: WithChildren) {
+export function useConfigContext(): ConfigContext {
+  const ac = useContext(preloadAppDataContext)
+  if (!ac) {
+    throw new Error("ConfigContext not available! useConfigContext can't be used serverside")
+  }
+  return ac
+}
+
+export function PreloadAppDataContextProvider({ children }: WithChildren) {
   const [context, setContext] = useState<ConfigContext | undefined>(undefined)
+
+  const [config, setConfig] = useState<ConfigResponseType | undefined>(undefined)
+  const { data: productHub } = useProductHubData({
+    protocols: [
+      LendingProtocol.Ajna,
+      LendingProtocol.AaveV2,
+      LendingProtocol.AaveV3,
+      LendingProtocol.Maker,
+      LendingProtocol.SparkV3,
+    ].filter((p) => p) as LendingProtocol[],
+  })
+
   useEffect(() => {
     const setup = async () => {
       const fetchConfig = async () => {
@@ -32,7 +54,7 @@ export function ConfigContextProvider({ children }: WithChildren) {
           if (!config || config.error) {
             throw new Error(`Error fetching config: ${config.error}`)
           }
-          setContext({ config })
+          setConfig(config)
           saveConfigToLocalStorage(config)
         } catch (error) {
           console.error(`Error fetching config: ${error}`)
@@ -45,5 +67,12 @@ export function ConfigContextProvider({ children }: WithChildren) {
       console.error(`Error setting up config context: ${error}`)
     })
   }, [])
-  return <configContext.Provider value={context}>{children}</configContext.Provider>
+
+  useEffect(() => {
+    if (config && productHub) {
+      setContext({ config, productHub })
+    }
+  }, [config, productHub])
+
+  return <preloadAppDataContext.Provider value={context}>{children}</preloadAppDataContext.Provider>
 }
