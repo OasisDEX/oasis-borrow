@@ -129,8 +129,6 @@ async function makeCall(rpcEndpoint: string, calls: RpcCall[]) {
       },
     })
 
-    console.log('request', [...request.headers])
-
     const response = await fetch(request)
     const json = await response.json()
     return [json]

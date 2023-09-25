@@ -31,7 +31,6 @@ export const supportedIlks = [
   'COMP-A',
   'LRC-A',
   'LINK-A',
-  'BAL-A',
   'YFI-A',
   'GUSD-A',
   'UNI-A',
