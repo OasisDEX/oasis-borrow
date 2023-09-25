@@ -3,7 +3,7 @@ import { useAutomationContext } from 'components/context'
 import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { StopLossBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossBannerControl'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -37,7 +37,7 @@ function ContentCardLiquidationPriceModal({
   isStopLossEnabled,
 }: ContentCardLiquidationPriceModalProps) {
   const { t } = useTranslation()
-  const { StopLossRead: stopLossReadEnabled } = getAppConfig('features')
+  const { StopLossRead: stopLossReadEnabled } = useAppConfig('features')
 
   return (
     <Grid gap={2}>
@@ -84,7 +84,7 @@ export function ContentCardLiquidationPrice({
   vaultId,
 }: ContentCardLiquidationPriceProps) {
   const { t } = useTranslation()
-  const { StopLossRead: stopLossReadEnabled } = getAppConfig('features')
+  const { StopLossRead: stopLossReadEnabled } = useAppConfig('features')
 
   const formatted = {
     liquidationPrice: `$${formatAmount(liquidationPrice, 'USD')}`,

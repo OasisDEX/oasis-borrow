@@ -13,7 +13,7 @@ import type {
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import type { FC } from 'react'
 import React, { useMemo } from 'react'
@@ -40,7 +40,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   limitRows,
 }) => {
   const { AjnaSafetySwitch: ajnaSafetySwitchOn, AjnaPoolFinder: ajnaPoolFinderEnabled } =
-    getAppConfig('features')
+    useAppConfig('features')
 
   const { chainId } = useWalletManagement()
 

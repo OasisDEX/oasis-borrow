@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/trackingEvents'
 import { MixpanelTopBannerEvents } from 'analytics/types'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import React from 'react'
 import { Box } from 'theme-ui'
@@ -11,7 +11,7 @@ import { AppLink } from './Links'
 import { WithArrow } from './WithArrow'
 
 export default function TopBanner() {
-  const { topBanner } = getAppConfig('parameters')
+  const { topBanner } = useAppConfig('parameters')
   const [topBannerClosed, setTopBannerClosed] = useLocalStorage(
     `TopBanner_${topBanner.name}_closed`,
     false,

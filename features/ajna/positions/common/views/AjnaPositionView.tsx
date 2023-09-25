@@ -4,7 +4,7 @@ import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
@@ -27,7 +27,7 @@ export function AjnaPositionView({
 }: AjnaPositionViewProps) {
   const { t } = useTranslation()
   const { contextIsLoaded, walletAddress } = useAccount()
-  const { ProxyReveal: proxyReveal } = getAppConfig('features')
+  const { ProxyReveal: proxyReveal } = useAppConfig('features')
   const {
     environment: {
       collateralPrice,

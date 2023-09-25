@@ -24,7 +24,7 @@ import type { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/
 import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
 import type { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
@@ -163,7 +163,7 @@ export function AjnaProductContextProvider({
   positionHistory,
   positionCumulatives,
 }: PropsWithChildren<AjnaProductDetailsContextProviderProps>) {
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = getAppConfig('features')
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
   const { walletAddress } = useAccount()
   const gasEstimation = useGasEstimationContext()
   const { positionIdFromDpmProxy$ } = useProductContext()

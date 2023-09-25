@@ -197,7 +197,7 @@ export function SidebarAdjustStopLossEditingStage({
             }
             sliderPercentageFill={sliderPercentageFill}
             lastValue={stopLossState.stopLossLevel}
-            maxBoundry={sliderMax.times(2)}
+            maxBoundry={sliderMax}
             minBoundry={sliderMin}
             rightBoundry={rightBoundry}
             leftBoundry={stopLossState.stopLossLevel}
