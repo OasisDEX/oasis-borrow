@@ -52,7 +52,10 @@ export function NavigationController() {
                               tokens: ['DAI'],
                             },
                             description: 'Earn on DAI with the DAI Savings Rate',
-                            tags: ['Maker', 'Ethereum'],
+                            tags: [
+                              ['Maker', lendingProtocolsByName[LendingProtocol.Maker].gradient],
+                              ['Ethereum', networksByName[BaseNetworkNames.Ethereum].gradient],
+                            ],
                             url: '/',
                           },
                           {
@@ -62,7 +65,10 @@ export function NavigationController() {
                               tokens: ['ETH', 'USDC'],
                             },
                             description: 'Lend USDC on AJNA',
-                            tags: ['Ajna', 'Ethereum'],
+                            tags: [
+                              ['Ajna', lendingProtocolsByName[LendingProtocol.Ajna].gradient],
+                              ['Ethereum', networksByName[BaseNetworkNames.Ethereum].gradient],
+                            ],
                             url: '/',
                           },
                           {
@@ -72,7 +78,10 @@ export function NavigationController() {
                               tokens: ['WSTETH', 'ETH'],
                             },
                             description: 'Yield Loop wstETH on AAVE',
-                            tags: ['Aave v3', 'Ethereum'],
+                            tags: [
+                              ['Aave v3', lendingProtocolsByName[LendingProtocol.AaveV3].gradient],
+                              ['Ethereum', networksByName[BaseNetworkNames.Ethereum].gradient],
+                            ],
                             url: '/',
                           },
                         ],
@@ -94,7 +103,10 @@ export function NavigationController() {
                               tokens: ['WSTETH', 'USDC'],
                             },
                             description: 'Increase your exposure against USDC',
-                            tags: ['Ajna', 'Ethereum'],
+                            tags: [
+                              ['Ajna', lendingProtocolsByName[LendingProtocol.Ajna].gradient],
+                              ['Ethereum', networksByName[BaseNetworkNames.Ethereum].gradient],
+                            ],
                             url: '/',
                           },
                           {
@@ -104,7 +116,10 @@ export function NavigationController() {
                               tokens: ['WBTC', 'USDC'],
                             },
                             description: 'Increase your exposure against USDC',
-                            tags: ['Aave v3', 'Optimism'],
+                            tags: [
+                              ['Aave v3', lendingProtocolsByName[LendingProtocol.AaveV3].gradient],
+                              ['Optimism', networksByName[BaseNetworkNames.Optimism].gradient],
+                            ],
                             url: '/',
                           },
                           {
@@ -114,7 +129,10 @@ export function NavigationController() {
                               tokens: ['ETH', 'DAI'],
                             },
                             description: 'Increase your exposure against DAI',
-                            tags: ['Maker', 'Ethereum'],
+                            tags: [
+                              ['Maker', lendingProtocolsByName[LendingProtocol.Maker].gradient],
+                              ['Ethereum', networksByName[BaseNetworkNames.Ethereum].gradient],
+                            ],
                             url: '/',
                           },
                         ],
@@ -136,7 +154,10 @@ export function NavigationController() {
                               tokens: ['ETH', 'DAI'],
                             },
                             description: 'Discover the highest LTVs available',
-                            tags: ['Maker', 'Ethereum'],
+                            tags: [
+                              ['Maker', lendingProtocolsByName[LendingProtocol.Maker].gradient],
+                              ['Ethereum', networksByName[BaseNetworkNames.Ethereum].gradient],
+                            ],
                             url: '/',
                           },
                           {
@@ -146,7 +167,10 @@ export function NavigationController() {
                               tokens: ['WSTETH', 'DAI'],
                             },
                             description: 'Find the lowest rates to borrow',
-                            tags: ['Maker', 'Ethereum'],
+                            tags: [
+                              ['Maker', lendingProtocolsByName[LendingProtocol.Maker].gradient],
+                              ['Ethereum', networksByName[BaseNetworkNames.Ethereum].gradient],
+                            ],
                             url: '/',
                           },
                           {
@@ -156,7 +180,10 @@ export function NavigationController() {
                               tokens: ['ETH', 'USDC'],
                             },
                             description: 'Get paid to borrow',
-                            tags: ['Ajna', 'Ethereum'],
+                            tags: [
+                              ['Ajna', lendingProtocolsByName[LendingProtocol.Ajna].gradient],
+                              ['Ethereum', networksByName[BaseNetworkNames.Ethereum].gradient],
+                            ],
                             url: '/',
                           },
                         ],
@@ -284,7 +311,7 @@ export function NavigationController() {
                         image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
                         position: 'title',
                       },
-                      hoverColor: 'linear-gradient(230deg, #B6509E 15.42%, #2EBAC6 84.42%)',
+                      hoverColor: lendingProtocolsByName[LendingProtocol.AaveV3].gradient,
                       description: t('nav.protocols-aave'),
                     },
                     {
@@ -296,7 +323,7 @@ export function NavigationController() {
                         image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
                         position: 'title',
                       },
-                      hoverColor: 'linear-gradient(90deg, #F154DB 0%, #974EEA 100%)',
+                      hoverColor: lendingProtocolsByName[LendingProtocol.Ajna].gradient,
                       description: (
                         <Trans i18nKey="nav.protocols-ajna" components={{ br: <br /> }} />
                       ),
@@ -310,7 +337,7 @@ export function NavigationController() {
                         image: lendingProtocolsByName[LendingProtocol.Maker].icon,
                         position: 'title',
                       },
-                      hoverColor: 'linear-gradient(135deg, #2DC1B1 0%, #139D8D 100%)',
+                      hoverColor: lendingProtocolsByName[LendingProtocol.Maker].gradient,
                       description: (
                         <Trans i18nKey="nav.protocols-maker" components={{ br: <br /> }} />
                       ),
@@ -324,7 +351,7 @@ export function NavigationController() {
                         image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
                         position: 'title',
                       },
-                      hoverColor: 'linear-gradient(159deg, #F58013 12.26%, #F19D19 86.52%)',
+                      hoverColor: lendingProtocolsByName[LendingProtocol.SparkV3].gradient,
                       description: (
                         <Trans i18nKey="nav.protocols-spark" components={{ br: <br /> }} />
                       ),

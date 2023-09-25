@@ -11,7 +11,7 @@ export function NavigationMenuDropdownContent({
   isPanelActive,
   lists,
 }: NavigationMenuDropdownContentProps) {
-  const [active, setActive] = useState<number>(0)
+  const [selected, setSelected] = useState<number>(0)
 
   return (
     <>
@@ -43,8 +43,9 @@ export function NavigationMenuDropdownContent({
           >
             <NavigationMenuDropdownContentList
               {...item}
-              onSelect={(_active) => {
-                setActive(_active)
+              selected={selected}
+              onSelect={(_selected) => {
+                setSelected(_selected)
               }}
             />
           </Flex>
@@ -59,7 +60,7 @@ export function NavigationMenuDropdownContent({
           width: '100%',
           m: 0,
           p: 0,
-          transform: `translateY(${active * -50}px)`,
+          transform: `translateY(${selected * -50}px)`,
           transition: 'transform 250ms',
         }}
       >
@@ -78,8 +79,8 @@ export function NavigationMenuDropdownContent({
                       rowGap: 3,
                       flexDirection: 'column',
                       width: '100%',
-                      opacity: active === j ? 1 : 0,
-                      pointerEvents: isPanelActive && active === j ? 'auto' : 'none',
+                      opacity: selected === j ? 1 : 0,
+                      pointerEvents: isPanelActive && selected === j ? 'auto' : 'none',
                       transition: 'opacity 250ms',
                       transform: `translateY(${j * 50}px)`,
                     }}

@@ -1,72 +1,13 @@
 import { AppLink } from 'components/Links'
-import { NavigationMenuDropdownContentIcon } from 'components/navigation/NavigationMenuDropdownContentIcon'
+import { NavigationMenuDropdownContentListItem } from 'components/navigation/NavigationMenuDropdownContentListItem'
 import type { NavigationMenuPanelList } from 'components/navigation/NavigationMenuPanel'
 import { WithArrow } from 'components/WithArrow'
 import React, { Fragment } from 'react'
-import type { SxStyleProp } from 'theme-ui'
-import { Box, Flex, Heading, Text } from 'theme-ui'
+import { Box,  Heading } from 'theme-ui'
 
-export type NavigationMenuDropdownContentListItemProps =
-  NavigationMenuPanelList['items'] extends readonly (infer ElementType)[] ? ElementType : never
-
-export type NavigationMenuDropdownContentListProps = NavigationMenuPanelList & {
+type NavigationMenuDropdownContentListProps = NavigationMenuPanelList & {
+  selected?: number
   onSelect?: (active: number) => void
-}
-
-export function NavigationMenuDropdownContentListItem({
-  description,
-  hoverColor,
-  icon,
-  tags,
-  title,
-}: NavigationMenuDropdownContentListItemProps) {
-  return (
-    <Flex sx={{ alignItems: 'center', columnGap: '12px' }}>
-      {icon && icon.position === 'global' && <NavigationMenuDropdownContentIcon {...icon} />}
-      <Box>
-        <Flex sx={{ alignItems: 'center', columnGap: 2 }}>
-          {icon && icon.position === 'title' && <NavigationMenuDropdownContentIcon {...icon} />}
-          <Heading
-            as="h3"
-            variant="boldParagraph3"
-            className="heading"
-            data-value={title}
-            sx={
-              {
-                position: 'relative',
-                color: 'primary100',
-                transition: 'color 200ms',
-                ...(hoverColor && {
-                  '&::after': {
-                    content: 'attr(data-value)',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    opacity: 0,
-                    transition: 'opacity 200ms',
-                    '-webkit-background-clip': 'text',
-                    backgroundImage: hoverColor,
-                  },
-                }),
-              } as SxStyleProp
-            }
-          >
-            {title}
-          </Heading>
-        </Flex>
-        {description && (
-          <Text as="p" variant="paragraph4" sx={{ mt: 1, color: 'neutral80' }}>
-            {description}
-          </Text>
-        )}
-        {tags && (
-          <Text as="p" variant="paragraph4" sx={{ color: 'neutral80' }}>
-            {tags.join(' • ')}
-          </Text>
-        )}
-      </Box>
-    </Flex>
-  )
 }
 
 export function NavigationMenuDropdownContentList({
@@ -74,9 +15,23 @@ export function NavigationMenuDropdownContentList({
   items,
   link,
   tight,
+  selected,
   onSelect,
 }: NavigationMenuDropdownContentListProps) {
-  const innerPadding = {
+  const itemHoverEffect = {
+    backgroundColor: 'neutral30',
+    '.nav-icon': {
+      color: 'neutral10',
+      backgroundColor: 'interactive100',
+    },
+    '.heading-with-effect, .tag-with-effect': {
+      color: 'transparent',
+      '&::after': {
+        opacity: 1,
+      },
+    },
+  }
+  const itemInnerPadding = {
     py: tight ? 2 : '12px',
     px: tight ? 2 : 3,
   }
@@ -112,32 +67,19 @@ export function NavigationMenuDropdownContentList({
               cursor: 'default',
               borderRadius: 'mediumLarge',
               transition: '200ms background-color',
-              '&:hover': {
-                backgroundColor: 'neutral30',
-                '.nav-icon': {
-                  color: 'neutral10',
-                  backgroundColor: 'interactive100',
-                },
-                ...(hoverColor && {
-                  '.heading': {
-                    color: 'transparent',
-                    '&::after': {
-                      opacity: 1,
-                    },
-                  },
-                }),
-              },
+              ...(selected === i && itemHoverEffect),
+              '&:hover': itemHoverEffect,
             }}
             onMouseOver={() => {
               onSelect && onSelect(i)
             }}
           >
             {url ? (
-              <AppLink href={url} sx={{ display: 'block', ...innerPadding }}>
+              <AppLink href={url} sx={{ display: 'block', ...itemInnerPadding }}>
                 <NavigationMenuDropdownContentListItem hoverColor={hoverColor} {...item} />
               </AppLink>
             ) : (
-              <Box sx={{ ...innerPadding }}>
+              <Box sx={{ ...itemInnerPadding }}>
                 <NavigationMenuDropdownContentListItem hoverColor={hoverColor} {...item} />
               </Box>
             )}
