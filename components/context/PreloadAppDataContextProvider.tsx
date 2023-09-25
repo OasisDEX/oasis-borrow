@@ -55,7 +55,7 @@ export function PreloadAppDataContextProvider({ children }: WithChildren) {
         try {
           const response = await configFetcher()
           const configResponse = (await response.json()) as ConfigResponseType
-          if (!config || configResponse.error) {
+          if (!configResponse || configResponse.error) {
             throw new Error(`Error fetching preload app data: ${configResponse.error}`)
           }
           setConfig(configResponse)
