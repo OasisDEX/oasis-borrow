@@ -6,7 +6,7 @@ import { useModal } from 'helpers/modalHook'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import type { PropsWithChildren, ReactNode } from 'react'
 import React, { useState } from 'react'
-import type { ThemeUIStyleObject } from 'theme-ui';
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
