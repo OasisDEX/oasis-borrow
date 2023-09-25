@@ -25,17 +25,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 18
-
+          node-version: 16
       - uses: actions/cache@v3
         id: yarn-cache
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+      - name: Install packages
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn --no-progress --non-interactive --frozen-lockfile
+      - name: Run postinstall
+        if: steps.yarn-cache.outputs.cache-hit == 'true'
+        run: yarn postinstall
 
       - name: Build next.js app
         run: yarn build
