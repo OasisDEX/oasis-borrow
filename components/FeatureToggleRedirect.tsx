@@ -1,5 +1,5 @@
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useRouter } from 'next/router'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
@@ -16,7 +16,7 @@ export function WithFeatureToggleRedirect({
   redirectUrl = INTERNAL_LINKS.homepage,
 }: PropsWithChildren<FeatureToggleRedirectProps>) {
   const { replace } = useRouter()
-  const features = getAppConfig('features')
+  const features = useAppConfig('features')
   const featureEnabled = features[feature]
 
   if (!featureEnabled) void replace(redirectUrl)

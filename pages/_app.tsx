@@ -16,7 +16,10 @@ import {
   MainContextProvider,
   NotificationSocketProvider,
 } from 'components/context'
-import { configContext, ConfigContextProvider } from 'components/context/ConfigContextProvider'
+import {
+  preloadAppDataContext,
+  PreloadAppDataContextProvider,
+} from 'components/context/PreloadAppDataContextProvider'
 import type { SavedSettings } from 'components/CookieBanner.types'
 import { CookieBannerDynamic } from 'components/CookieBannerDynamic'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
@@ -180,8 +183,8 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         <CacheProvider value={cache}>
           <Global styles={globalStyles} />
           <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
-            <ConfigContextProvider>
-              <DeferedContextProvider context={configContext}>
+            <PreloadAppDataContextProvider>
+              <DeferedContextProvider context={preloadAppDataContext}>
                 <MainContextProvider>
                   <DeferedContextProvider context={mainContext}>
                     <ModalProvider>
@@ -213,7 +216,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                   </DeferedContextProvider>
                 </MainContextProvider>
               </DeferedContextProvider>
-            </ConfigContextProvider>
+            </PreloadAppDataContextProvider>
           </Web3OnboardProvider>
         </CacheProvider>
       </ThemeUIProvider>

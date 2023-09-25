@@ -1,3 +1,4 @@
+import type { ProductHubData } from 'features/productHub/types'
 import type { AppConfigType, FeaturesEnum } from 'types/config'
 
 export type ConfiguredFeatures = Record<FeaturesEnum, boolean>
@@ -9,6 +10,7 @@ export type ConfigResponseType = AppConfigType & {
 
 export type ConfigResponseTypeKey = keyof ConfigResponseType
 
-export type ConfigContext = {
+export type PreloadAppDataContext = {
   config: ConfigResponseType
+  productHub: ProductHubData
 }

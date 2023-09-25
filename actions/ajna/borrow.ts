@@ -50,7 +50,7 @@ export const ajnaDepositGenerateBorrow = ({
       position: position as AjnaPosition,
       quoteAmount: generateAmount || zero,
       stamploanEnabled: !!borrowishSimulation?.liquidationPrice.lt(
-        borrowishPosition.liquidationPriceT0Np,
+        borrowishPosition.liquidationPrice,
       ),
     },
     dependencies,
@@ -82,7 +82,7 @@ export const ajnaPaybackWithdrawBorrow = ({
       position: position as AjnaPosition,
       quoteAmount: paybackAmount || zero,
       stamploanEnabled: !!borrowishSimulation?.liquidationPrice.lt(
-        borrowishPosition.liquidationPriceT0Np,
+        borrowishPosition.liquidationPrice,
       ),
     },
     dependencies,

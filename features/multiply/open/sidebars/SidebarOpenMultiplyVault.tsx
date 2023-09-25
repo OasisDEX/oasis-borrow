@@ -16,7 +16,7 @@ import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
 import type { SidebarFlow } from 'features/types/vaults/sidebarLabels'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractPrimaryButtonLabelParams,
@@ -67,7 +67,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
   const { stopLossSidebarProps, automationContextProps } = getDataForStopLoss(props, 'multiply')
-  const { ProxyCreationDisabled: isProxyCreationDisabled } = getAppConfig('features')
+  const { ProxyCreationDisabled: isProxyCreationDisabled } = useAppConfig('features')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token, openFlowWithStopLoss }),

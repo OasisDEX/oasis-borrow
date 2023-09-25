@@ -122,7 +122,7 @@ export function AjnaProductController({
                 dpmPosition,
                 tokenPriceUSD,
                 gasPrice,
-                { auction, history, cumulatives },
+                { auction, history },
                 { slippage },
                 { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
                 tokensIconsData,
@@ -179,7 +179,6 @@ export function AjnaProductController({
                         product={dpmPosition.product}
                         positionAuction={auction as AjnaBorrowishPositionAuction}
                         positionHistory={history}
-                        positionCumulatives={cumulatives}
                       >
                         <AjnaBorrowPositionController />
                       </AjnaProductContextProvider>
@@ -198,7 +197,6 @@ export function AjnaProductController({
                         product={dpmPosition.product}
                         positionAuction={auction as AjnaEarnPositionAuction}
                         positionHistory={history}
-                        positionCumulatives={cumulatives}
                       >
                         <AjnaEarnPositionController />
                       </AjnaProductContextProvider>
@@ -213,7 +211,6 @@ export function AjnaProductController({
                         product={dpmPosition.product}
                         positionAuction={auction as AjnaBorrowishPositionAuction}
                         positionHistory={history}
-                        positionCumulatives={cumulatives}
                       >
                         <AjnaMultiplyPositionController />
                       </AjnaProductContextProvider>

@@ -13,7 +13,7 @@ import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
@@ -128,7 +128,7 @@ export function OptimizationControl({ vaultHistory }: OptimizationControlProps) 
     ReadOnlyBasicBS: readOnlyAutoBSEnabled,
     ConstantMultipleReadOnly: constantMultipleReadOnlyEnabled,
     ReadOnlyAutoTakeProfit: readOnlyAutoTakeProfitEnabled,
-  } = getAppConfig('features')
+  } = useAppConfig('features')
 
   const vaultHasActiveAutoBuyTrigger = autoBuyTriggerData.isTriggerEnabled
   const vaultHasActiveConstantMultipleTrigger = constantMultipleTriggerData.isTriggerEnabled

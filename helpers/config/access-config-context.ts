@@ -1,10 +1,17 @@
 'use client'
-import { configContext, emptyConfig } from 'components/context/ConfigContextProvider'
+import {
+  emptyConfig,
+  preloadAppDataContext,
+} from 'components/context/PreloadAppDataContextProvider'
 import { cleanObjectFromNull, cleanObjectToNull } from 'helpers/clean-object'
-import type { ConfigContext, ConfigResponseType, ConfigResponseTypeKey } from 'helpers/config'
+import type {
+  ConfigResponseType,
+  ConfigResponseTypeKey,
+  PreloadAppDataContext,
+} from 'helpers/config'
 import { configLSKey } from 'helpers/config'
 import { merge } from 'lodash'
-import { useContext as accessContext } from 'react'
+import { useContext } from 'react'
 
 import { configLSOverridesKey } from './constants'
 
@@ -14,18 +21,24 @@ import { configLSOverridesKey } from './constants'
  * @param configKey
  * @returns ConfigResponseType[T] or empty config
  */
-export function getAppConfig<T extends ConfigResponseTypeKey>(configKey: T): ConfigResponseType[T] {
+export function useAppConfig<T extends ConfigResponseTypeKey>(configKey: T): ConfigResponseType[T] {
   try {
-    let ac = accessContext(configContext)
+    const ac = useContext(preloadAppDataContext)
     if (!ac) {
       throw new Error("ConfigContext not available! getAppConfig can't be used serverside")
     }
+
+    let justConfig = { config: { ...ac.config } }
+
     if (window.localStorage) {
-      ac = merge(ac, {
+      justConfig = merge<
+        Pick<PreloadAppDataContext, 'config'>,
+        Pick<PreloadAppDataContext, 'config'>
+      >(justConfig, {
         config: loadConfigFromLocalStorage(),
-      } as ConfigContext)
+      })
     }
-    return ac.config[configKey] || emptyConfig[configKey]
+    return justConfig.config[configKey] || emptyConfig[configKey]
   } catch (error) {
     console.error(`getAppConfig: Error getting config value for ${configKey}`)
     return emptyConfig[configKey]

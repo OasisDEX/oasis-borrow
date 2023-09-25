@@ -21,6 +21,8 @@ const publicRuntimeConfig = {
   discoverProxyUrl: process.env.DISCOVER_PROXY_URL,
   ajnaSubgraphUrl: process.env.AJNA_SUBGRAPH_URL,
   ajnaSubgraphUrlGoerli: process.env.AJNA_SUBGRAPH_URL_GOERLI,
+  ajnaSubgraphV2Url: process.env.AJNA_SUBGRAPH_V2_URL,
+  ajnaSubgraphV2UrlGoerli: process.env.AJNA_SUBGRAPH_V2_URL_GOERLI,
   aaveSubgraphUrl: process.env.AAVE_SUBGRAPH_URL,
   aaveSubgraphUrlOptimism: process.env.AAVE_OPTIMISM_SUBGRAPH_URL,
   referralSubgraphUrl: process.env.REFERRAL_SUBGRAPH_URL,
