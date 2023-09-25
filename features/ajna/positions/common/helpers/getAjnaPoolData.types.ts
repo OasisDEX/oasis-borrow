@@ -26,4 +26,7 @@ export interface AjnaPoolDataResponse {
   lendApr: string
   borrowApr: string
   buckets: Bucket[]
+  loansCount: string
+  totalAuctionsInPool: string
+  t0debt: string
 }
