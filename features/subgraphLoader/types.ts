@@ -9,10 +9,15 @@ import type { ClaimedReferralRewards } from 'features/referralOverview/getClaime
 
 export type Subgraphs = {
   Ajna: {
-    getAjnaEarnPositionData: { dpmProxyAddress: string }
-    getAjnaPositionAggregatedData: { dpmProxyAddress: string }
+    getAjnaEarnPositionData: { dpmProxyAddress: string; poolAddress: string }
+    getAjnaPositionAggregatedData: {
+      dpmProxyAddress: string
+      collateralAddress: string
+      quoteAddress: string
+    }
     getAjnaPoolAddress: { collateralAddress: string; quoteAddress: string }
     getAjnaPoolData: { poolAddress: string }
+    getAjnaCumulatives: { dpmProxyAddress: string; poolAddress: string }
     getAjnaPoolsData: {}
     getAjnaClaimedRewards: { walletAddress: string }
     searchAjnaPool: { collateralAddress: string[]; poolAddress: string[]; quoteAddress: string[] }
@@ -37,14 +42,6 @@ export type SubgraphBaseResponse<R> = {
 export type SubgraphsResponses = {
   Ajna: {
     getAjnaPositionAggregatedData: SubgraphBaseResponse<{
-      account: {
-        cumulativeDeposit: number
-        cumulativeFees: number
-        cumulativeWithdraw: number
-        earnCumulativeFeesInQuoteToken: number
-        earnCumulativeQuoteTokenDeposit: number
-        earnCumulativeQuoteTokenWithdraw: number
-      }
       auctions: {
         alreadyTaken: boolean
         collateral: number
@@ -64,19 +61,33 @@ export type SubgraphsResponses = {
     getAjnaPoolData: SubgraphBaseResponse<{
       pool: AjnaPoolDataResponse
     }>
+    getAjnaCumulatives: SubgraphBaseResponse<{
+      account: {
+        earnPositions: {
+          earnCumulativeFeesInQuoteToken: number
+          earnCumulativeQuoteTokenDeposit: number
+          earnCumulativeQuoteTokenWithdraw: number
+        }[]
+        borrowPositions: {
+          borrowCumulativeDepositUSD: number
+          borrowCumulativeFeesUSD: number
+          borrowCumulativeWithdrawUSD: number
+        }[]
+      }
+    }>
     getAjnaPoolsData: SubgraphBaseResponse<{
       pools: AjnaPoolsDataResponse[]
     }>
     getAjnaEarnPositionData: SubgraphBaseResponse<{
       account: {
         earnPositions: {
-          lps: number
-          index: number
-          account: {
-            earnCumulativeQuoteTokenDeposit: number
-            earnCumulativeFeesInQuoteToken: number
-            earnCumulativeQuoteTokenWithdraw: number
-          }
+          earnCumulativeQuoteTokenDeposit: number
+          earnCumulativeFeesInQuoteToken: number
+          earnCumulativeQuoteTokenWithdraw: number
+          bucketPositions: {
+            lps: number
+            index: number
+          }[]
         }[]
       }
     }>

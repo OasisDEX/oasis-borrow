@@ -3,10 +3,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import dayjs from 'dayjs'
 import type { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import type {
-  AjnaPositionAggregatedDataAuctions,
-  AjnaPositionCumulatives,
-} from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
+import type { AjnaPositionAggregatedDataAuctions } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { getAjnaPositionAggregatedData } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { mapAjnaBorrowishEvents } from 'features/ajna/positions/common/helpers/mapBorrowishEvents'
 import { mapAjnaEarnEvents } from 'features/ajna/positions/common/helpers/mapEarnEvents'
@@ -34,7 +31,6 @@ export type AjnaPositionAuction = AjnaBorrowishPositionAuction | AjnaEarnPositio
 
 interface AjnaPositionAggregatedDataResponse {
   auction: AjnaPositionAuction
-  cumulatives: AjnaPositionCumulatives
   history: AjnaUnifiedHistoryEvent[]
 }
 
@@ -131,10 +127,16 @@ export const getAjnaPositionAggregatedData$ = ({
 }): Observable<AjnaPositionAggregatedDataResponse> => {
   const { proxy } = dpmPositionData
 
-  return from(getAjnaPositionAggregatedData(proxy, networkId)).pipe(
-    map(({ auctions, cumulatives, history }) => ({
+  return from(
+    getAjnaPositionAggregatedData(
+      proxy,
+      networkId,
+      dpmPositionData.collateralTokenAddress,
+      dpmPositionData.quoteTokenAddress,
+    ),
+  ).pipe(
+    map(({ auctions, history }) => ({
       auction: parseAggregatedDataAuction({ auctions, dpmPositionData, history, position }),
-      cumulatives,
       history: parseAggregatedDataHistory({ dpmPositionData, history }),
     })),
     shareReplay(1),

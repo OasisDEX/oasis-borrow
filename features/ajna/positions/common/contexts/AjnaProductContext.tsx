@@ -13,7 +13,6 @@ import type { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/st
 import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
-import type { AjnaPositionCumulatives } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import type {
   AjnaBorrowishPositionAuction,
@@ -37,7 +36,6 @@ interface AjnaProductContextProviderPropsWithBorrow {
   product: 'borrow'
   positionAuction: AjnaBorrowishPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
-  positionCumulatives: AjnaPositionCumulatives
 }
 
 interface AjnaProductContextProviderPropsWithEarn {
@@ -47,7 +45,6 @@ interface AjnaProductContextProviderPropsWithEarn {
   product: 'earn'
   positionAuction: AjnaEarnPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
-  positionCumulatives: AjnaPositionCumulatives
 }
 
 interface AjnaProductContextProviderPropsWithMultiply {
@@ -57,7 +54,6 @@ interface AjnaProductContextProviderPropsWithMultiply {
   product: 'multiply'
   positionAuction: AjnaBorrowishPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
-  positionCumulatives: AjnaPositionCumulatives
 }
 
 type AjnaProductDetailsContextProviderProps =
@@ -85,7 +81,6 @@ interface AjnaProductContextPosition<P, A> {
   setCachedSwap: (swap: SwapData) => void
   positionAuction: A
   history: AjnaUnifiedHistoryEvent[]
-  cumulatives?: AjnaPositionCumulatives
 }
 
 interface AjnaProductContext<P, F, A> {
@@ -161,7 +156,6 @@ export function AjnaProductContextProvider({
   position,
   positionAuction,
   positionHistory,
-  positionCumulatives,
 }: PropsWithChildren<AjnaProductDetailsContextProviderProps>) {
   const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
   const { walletAddress } = useAccount()
@@ -307,7 +301,6 @@ export function AjnaProductContextProvider({
           cached: cachedSwap,
         },
         history: positionHistory,
-        cumulatives: positionCumulatives,
       },
       validation,
       notifications,
