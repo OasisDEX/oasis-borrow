@@ -1,5 +1,5 @@
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
-import type { ConfigResponseType,PreloadAppDataContext } from 'helpers/config'
+import type { ConfigResponseType, PreloadAppDataContext } from 'helpers/config'
 import { configCacheTime, saveConfigToLocalStorage } from 'helpers/config'
 import type { WithChildren } from 'helpers/types/With.types'
 import { LendingProtocol } from 'lendingProtocols'
