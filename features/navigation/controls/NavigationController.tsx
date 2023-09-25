@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { BaseNetworkNames, networksByName } from 'blockchain/networks'
 import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
 import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
@@ -265,6 +264,13 @@ export function NavigationController() {
                 {
                   items: [
                     {
+                      title: 'Aave',
+                      icon: {
+                        image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
+                        position: 'title',
+                      },
+                      hoverColor: lendingProtocolsByName[LendingProtocol.AaveV3].gradient,
+                      description: t('nav.protocols-aave'),
                       list: {
                         items: [
                           {
@@ -286,16 +292,8 @@ export function NavigationController() {
                             url: '/',
                           },
                           {
-                            title: (
-                              <>
-                                <Icon
-                                  name="star"
-                                  size={16}
-                                  sx={{ mr: 1, verticalAlign: 'text-top' }}
-                                />
-                                Amplify sDAI up to 35x.
-                              </>
-                            ),
+                            title: 'Amplify sDAI up to 35x',
+                            promoted: true,
                             description:
                               'Use Summer.fi multiply to increase your exposure to sDAI yield seamlessly.',
                             url: '/',
@@ -306,18 +304,8 @@ export function NavigationController() {
                           url: '/',
                         },
                       },
-                      title: 'Aave',
-                      icon: {
-                        image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
-                        position: 'title',
-                      },
-                      hoverColor: lendingProtocolsByName[LendingProtocol.AaveV3].gradient,
-                      description: t('nav.protocols-aave'),
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'Ajna',
                       icon: {
                         image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
@@ -327,11 +315,41 @@ export function NavigationController() {
                       description: (
                         <Trans i18nKey="nav.protocols-ajna" components={{ br: <br /> }} />
                       ),
+                      list: {
+                        items: [
+                          {
+                            title: t('nav.borrow'),
+                            description:
+                              'Borrow against ETH, WBTC, DAI and any other type of collateral.',
+                            url: '/',
+                          },
+                          {
+                            title: t('nav.multiply'),
+                            description:
+                              'Increase exposure to ETH, WBTC, DAI and more; access top risk management tools.',
+                            url: '/',
+                          },
+                          {
+                            title: t('nav.earn'),
+                            description:
+                              'Earn yield on ETH, WBTC, DAI and more;  get exclusive token rewards.',
+                            url: '/',
+                          },
+                          {
+                            title: 'Amplify sDAI up to 35x',
+                            promoted: true,
+                            description:
+                              'Use Summer.fi multiply to increase your exposure to sDAI yield seamlessly.',
+                            url: '/',
+                          },
+                        ],
+                        link: {
+                          label: t('nav.protocols-more', { protocol: 'Ajna' }),
+                          url: '/',
+                        },
+                      },
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'Maker',
                       icon: {
                         image: lendingProtocolsByName[LendingProtocol.Maker].icon,
@@ -341,11 +359,41 @@ export function NavigationController() {
                       description: (
                         <Trans i18nKey="nav.protocols-maker" components={{ br: <br /> }} />
                       ),
+                      list: {
+                        items: [
+                          {
+                            title: t('nav.borrow'),
+                            description:
+                              'Borrow against ETH, WBTC, DAI and any other type of collateral.',
+                            url: '/',
+                          },
+                          {
+                            title: t('nav.multiply'),
+                            description:
+                              'Increase exposure to ETH, WBTC, DAI and more; access top risk management tools.',
+                            url: '/',
+                          },
+                          {
+                            title: t('nav.earn'),
+                            description:
+                              'Earn yield on ETH, WBTC, DAI and more;  get exclusive token rewards.',
+                            url: '/',
+                          },
+                          {
+                            title: 'Amplify sDAI up to 35x',
+                            promoted: true,
+                            description:
+                              'Use Summer.fi multiply to increase your exposure to sDAI yield seamlessly.',
+                            url: '/',
+                          },
+                        ],
+                        link: {
+                          label: t('nav.protocols-more', { protocol: 'Maker' }),
+                          url: '/',
+                        },
+                      },
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'Spark',
                       icon: {
                         image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
@@ -355,6 +403,39 @@ export function NavigationController() {
                       description: (
                         <Trans i18nKey="nav.protocols-spark" components={{ br: <br /> }} />
                       ),
+                      list: {
+                        items: [
+                          {
+                            title: t('nav.borrow'),
+                            description:
+                              'Borrow against ETH, WBTC, DAI and any other type of collateral.',
+                            url: '/',
+                          },
+                          {
+                            title: t('nav.multiply'),
+                            description:
+                              'Increase exposure to ETH, WBTC, DAI and more; access top risk management tools.',
+                            url: '/',
+                          },
+                          {
+                            title: t('nav.earn'),
+                            description:
+                              'Earn yield on ETH, WBTC, DAI and more;  get exclusive token rewards.',
+                            url: '/',
+                          },
+                          {
+                            title: 'Amplify sDAI up to 35x',
+                            promoted: true,
+                            description:
+                              'Use Summer.fi multiply to increase your exposure to sDAI yield seamlessly.',
+                            url: '/',
+                          },
+                        ],
+                        link: {
+                          label: t('nav.protocols-more', { protocol: 'Spark' }),
+                          url: '/',
+                        },
+                      },
                     },
                   ],
                 },
@@ -416,6 +497,26 @@ export function NavigationController() {
                         position: 'title',
                       },
                     },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'WBTC',
+                      icon: {
+                        tokens: ['WBTC'],
+                        position: 'title',
+                      },
+                    },
+                    {
+                      list: {
+                        items: [],
+                      },
+                      title: 'USDC',
+                      icon: {
+                        tokens: ['USDC'],
+                        position: 'title',
+                      },
+                    },
                   ],
                   tight: true,
                 },
@@ -429,26 +530,6 @@ export function NavigationController() {
                       title: 'sDAI',
                       icon: {
                         tokens: ['SDAI'],
-                        position: 'title',
-                      },
-                    },
-                    {
-                      list: {
-                        items: [],
-                      },
-                      title: 'GHO',
-                      icon: {
-                        tokens: ['GHO'],
-                        position: 'title',
-                      },
-                    },
-                    {
-                      list: {
-                        items: [],
-                      },
-                      title: 'TBTC',
-                      icon: {
-                        tokens: ['TBTC'],
                         position: 'title',
                       },
                     },

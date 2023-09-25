@@ -3,7 +3,7 @@ import { NavigationMenuDropdownContentListItem } from 'components/navigation/Nav
 import type { NavigationMenuPanelList } from 'components/navigation/NavigationMenuPanel'
 import { WithArrow } from 'components/WithArrow'
 import React, { Fragment } from 'react'
-import { Box,  Heading } from 'theme-ui'
+import { Box, Heading } from 'theme-ui'
 
 type NavigationMenuDropdownContentListProps = NavigationMenuPanelList & {
   selected?: number
@@ -20,6 +20,9 @@ export function NavigationMenuDropdownContentList({
 }: NavigationMenuDropdownContentListProps) {
   const itemHoverEffect = {
     backgroundColor: 'neutral30',
+    '.star-with-effect': {
+      color: 'interactive100',
+    },
     '.nav-icon': {
       color: 'neutral10',
       backgroundColor: 'interactive100',

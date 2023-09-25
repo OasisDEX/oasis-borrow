@@ -31,6 +31,7 @@ export interface NavigationMenuPanelList {
     url?: string
     list?: NavigationMenuPanelList
     hoverColor?: string
+    promoted?: boolean
     tags?: ([string, string] | string)[]
     title: ReactNode
   }[]

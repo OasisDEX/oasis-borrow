@@ -1,4 +1,4 @@
-
+import { Icon } from '@makerdao/dai-ui-icons'
 import { NavigationMenuDropdownContentIcon } from 'components/navigation/NavigationMenuDropdownContentIcon'
 import type { NavigationMenuPanelList } from 'components/navigation/NavigationMenuPanel'
 import React from 'react'
@@ -12,6 +12,7 @@ export function NavigationMenuDropdownContentListItem({
   description,
   hoverColor,
   icon,
+  promoted,
   tags,
   title,
 }: NavigationMenuDropdownContentListItemProps) {
@@ -52,6 +53,11 @@ export function NavigationMenuDropdownContentListItem({
               } as SxStyleProp
             }
           >
+            {promoted && (
+              <Box as="span" className="star-with-effect" sx={{ transition: 'color 200ms' }}>
+                <Icon name="star" size={16} sx={{ mr: 1, verticalAlign: 'text-top' }} />
+              </Box>
+            )}
             {title}
           </Heading>
         </Flex>
