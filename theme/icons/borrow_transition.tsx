@@ -69,6 +69,7 @@ export const borrow_transition = {
       <defs>
         <filter
           id="filter0_d_64_43389"
+          key="filter0_d_64_43389"
           x="0"
           y="21"
           width="152"
@@ -96,6 +97,7 @@ export const borrow_transition = {
         </filter>
         <filter
           id="filter1_d_64_43389"
+          key="filter1_d_64_43389"
           x="16.8843"
           y="45.0439"
           width="63.1158"
@@ -123,6 +125,7 @@ export const borrow_transition = {
         </filter>
         <filter
           id="filter2_d_64_43389"
+          key="filter2_d_64_43389"
           x="214"
           y="0"
           width="210.328"
@@ -150,6 +153,7 @@ export const borrow_transition = {
         </filter>
         <filter
           id="filter3_d_64_43389"
+          key="filter3_d_64_43389"
           x="237.433"
           y="23.4326"
           width="69.0746"
@@ -177,6 +181,7 @@ export const borrow_transition = {
         </filter>
         <linearGradient
           id="paint0_linear_64_43389"
+          key="paint0_linear_64_43389"
           x1="181.409"
           y1="183"
           x2="182.322"
@@ -189,6 +194,7 @@ export const borrow_transition = {
         </linearGradient>
         <radialGradient
           id="paint1_radial_64_43389"
+          key="paint1_radial_64_43389"
           cx="0"
           cy="0"
           r="1"
@@ -200,6 +206,7 @@ export const borrow_transition = {
         </radialGradient>
         <radialGradient
           id="paint2_radial_64_43389"
+          key="paint2_radial_64_43389"
           cx="0"
           cy="0"
           r="1"
@@ -211,6 +218,7 @@ export const borrow_transition = {
         </radialGradient>
         <linearGradient
           id="paint3_linear_64_43389"
+          key="paint3_linear_64_43389"
           x1="162"
           y1="114"
           x2="206.568"
@@ -222,6 +230,7 @@ export const borrow_transition = {
         </linearGradient>
         <linearGradient
           id="paint4_linear_64_43389"
+          key="paint4_linear_64_43389"
           x1="75.3982"
           y1="22.876"
           x2="96.6629"
@@ -234,6 +243,7 @@ export const borrow_transition = {
         </linearGradient>
         <linearGradient
           id="paint5_linear_64_43389"
+          key="paint5_linear_64_43389"
           x1="72.4202"
           y1="99.1484"
           x2="79.256"

@@ -1,7 +1,7 @@
 import React from 'react'
 export const omisego_color = {
   path: (
-    <g>
+    <g key="yMvBqhg3O">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

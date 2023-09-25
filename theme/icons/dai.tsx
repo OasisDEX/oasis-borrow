@@ -1,7 +1,7 @@
 import React from 'react'
 export const dai = {
   path: (
-    <g>
+    <g key="rtxVZl_d7">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

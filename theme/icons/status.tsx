@@ -1,7 +1,7 @@
 import React from 'react'
 export const status = {
   path: (
-    <g>
+    <g key="uuWCpDCxn">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

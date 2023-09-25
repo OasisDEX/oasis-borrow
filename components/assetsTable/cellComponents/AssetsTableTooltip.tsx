@@ -1,7 +1,7 @@
 import { Icon } from 'components/Icon'
-import type { IconProps } from 'components/Icon.types'
 import { StatefulTooltip } from 'components/Tooltip'
 import { Translatable } from 'components/Translatable'
+import { productHubIcons } from 'features/productHub/content'
 import React from 'react'
 import { Text } from 'theme-ui'
 
@@ -36,11 +36,7 @@ export function AssetsTableTooltip({
         boxShadow: 'buttonMenu',
       }}
     >
-      <Icon
-        size={16}
-        icon={icon as unknown as IconProps['icon']}
-        color={iconColor || 'interactive100'}
-      />
+      <Icon size={16} icon={productHubIcons[icon]} color={iconColor || 'interactive100'} />
     </StatefulTooltip>
   )
 }

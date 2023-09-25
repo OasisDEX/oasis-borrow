@@ -1,7 +1,7 @@
 import React from 'react'
 export const wbtc = {
   path: (
-    <g>
+    <g key="W-KTO-wnb">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

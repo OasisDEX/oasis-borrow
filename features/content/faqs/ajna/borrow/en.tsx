@@ -21,7 +21,7 @@ export default () => (
       <WithArrow>Read more about borrowing on Ajna</WithArrow>
     </AppLink>
 
-    <Heading variant="h5"> What are the risks?</Heading>
+    <Heading variant="h5">What are the risks?</Heading>
     <Text variant="paragraph1">There are 4 main risks when borrowing in Ajna:</Text>
     <ol>
       <li>
@@ -54,7 +54,7 @@ export default () => (
       <WithArrow>Read more about Ajna Risks</WithArrow>
     </AppLink>
 
-    <Heading variant="h5"> What are the liquidation penalties?</Heading>
+    <Heading variant="h5">What are the liquidation penalties?</Heading>
     <Text variant="paragraph1">There are 2 liquidation penalties:</Text>
     <ol>
       <li>
@@ -69,7 +69,7 @@ export default () => (
       </li>
     </ol>
 
-    <Heading variant="h5"> How is the borrow rate set?</Heading>
+    <Heading variant="h5">How is the borrow rate set?</Heading>
     <Text variant="paragraph1">
       Interest rates are set autonomously based on utilization, with a 12 hours adjustment period.
       On each adjustment period, the interest rate can move at most 10%. This means that if the
@@ -77,7 +77,7 @@ export default () => (
       and the lower limit 1.62%.
     </Text>
 
-    <Heading variant="h5"> What happens if my loan gets liquidated?</Heading>
+    <Heading variant="h5">What happens if my loan gets liquidated?</Heading>
     <Text variant="paragraph1">
       If your loan is scheduled for liquidation, 90 days of interest penalty will be applied first.
       You will have 1 hour to cover your debt or add more collateral. After that time has passed,
@@ -88,7 +88,7 @@ export default () => (
       it. At all times during this process you can repay your debt or add more collateral to
       recollateralize your position.
     </Text>
-    <Heading variant="h5"> What are the token rewards?</Heading>
+    <Heading variant="h5">What are the token rewards?</Heading>
     <Text variant="paragraph1">
       Selected pools receive Summer.fi × Ajna rewards weekly. These rewards incentivize early
       adopters of Ajna who use Summer.fi Smart DeFi Account. It accrues automatically with no
@@ -98,7 +98,7 @@ export default () => (
       <WithArrow>Read more about token rewards</WithArrow>
     </AppLink>
 
-    <Heading variant="h5"> How much does it cost?</Heading>
+    <Heading variant="h5">How much does it cost?</Heading>
     <Text variant="paragraph1">The following costs are associated with borrowing in Ajna:</Text>
     <ol>
       <li>
@@ -125,7 +125,7 @@ export default () => (
       </li>
     </ol>
 
-    <Heading variant="h5"> Is there a minimum or maximum I can borrow?</Heading>
+    <Heading variant="h5">Is there a minimum or maximum I can borrow?</Heading>
     <Text variant="paragraph1">
       The minimum borrow size is 10% of the average loan size. The maximum loan is determined by the
       total liquidity in the pool. When you simulate a new loan, you will be able to see how much

@@ -1,7 +1,7 @@
 import React from 'react'
 export const dai_color = {
   path: (
-    <g>
+    <g key="QoYYp1Yrd">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

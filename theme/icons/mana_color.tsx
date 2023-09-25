@@ -1,7 +1,7 @@
 import React from 'react'
 export const mana_color = {
   path: (
-    <g>
+    <g key="1nF4iNnTb">
       <path
         d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
         fill="url(#mana_paint0_linear)"
@@ -59,6 +59,7 @@ export const mana_color = {
       <defs>
         <linearGradient
           id="mana_paint0_linear"
+          key="mana_paint0_linear"
           x1="19.0711"
           y1="4.92893"
           x2="4.92893"
@@ -70,6 +71,7 @@ export const mana_color = {
         </linearGradient>
         <linearGradient
           id="mana_paint1_linear"
+          key="mana_paint1_linear"
           x1="12.2079"
           y1="8.5"
           x2="12.2079"
@@ -81,6 +83,7 @@ export const mana_color = {
         </linearGradient>
         <linearGradient
           id="mana_paint2_linear"
+          key="mana_paint2_linear"
           x1="17.706"
           y1="12.5"
           x2="17.706"

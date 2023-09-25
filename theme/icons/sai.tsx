@@ -1,7 +1,7 @@
 import React from 'react'
 export const sai = {
   path: (
-    <g>
+    <g key="NxYBwig3w">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

@@ -1,7 +1,7 @@
 import React from 'react'
 export const telegram = {
   path: (
-    <g>
+    <g key="frkuRAZOB">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

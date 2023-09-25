@@ -1,9 +1,33 @@
-const questionMark = {
+import { ajnaSparks, question_o, sparkSparks } from 'theme/icons'
+
+export const productHubIcons = {
+  question_o,
+  ajnaSparks,
+  sparkSparks,
+}
+
+export type ProductHubTooltipType = {
+  content: {
+    title?: {
+      key: string
+    }
+    description: {
+      key: string
+    }
+  }
+  icon: keyof typeof productHubIcons
+  iconColor?: string
+}
+
+const questionMark: {
+  icon: ProductHubTooltipType['icon']
+  iconColor?: ProductHubTooltipType['iconColor']
+} = {
   icon: 'question_o',
   iconColor: 'neutral80',
 }
 
-export const productHubAjnaRewardsTooltip = {
+export const productHubAjnaRewardsTooltip: ProductHubTooltipType = {
   content: {
     title: {
       key: 'ajna.product-hub-tooltips.this-pool-is-earning-ajna-tokens',
@@ -15,7 +39,7 @@ export const productHubAjnaRewardsTooltip = {
   icon: 'ajnaSparks',
 }
 
-export const productHubSparkRewardsTooltip = {
+export const productHubSparkRewardsTooltip: ProductHubTooltipType = {
   content: {
     title: {
       key: 'spark.product-hub-tooltips.elligible-for-spk-airdrop',
@@ -27,7 +51,7 @@ export const productHubSparkRewardsTooltip = {
   icon: 'sparkSparks',
 }
 
-export const productHubEmptyPoolMaxLtvTooltip = {
+export const productHubEmptyPoolMaxLtvTooltip: ProductHubTooltipType = {
   content: {
     description: {
       key: 'ajna.product-hub-tooltips.no-max-ltv',
@@ -36,7 +60,7 @@ export const productHubEmptyPoolMaxLtvTooltip = {
   ...questionMark,
 }
 
-export const productHubEmptyPoolMaxMultipleTooltip = {
+export const productHubEmptyPoolMaxMultipleTooltip: ProductHubTooltipType = {
   content: {
     description: {
       key: 'ajna.product-hub-tooltips.no-max-multiple',
@@ -45,7 +69,7 @@ export const productHubEmptyPoolMaxMultipleTooltip = {
   ...questionMark,
 }
 
-export const productHubEmptyPoolWeeklyApyTooltip = {
+export const productHubEmptyPoolWeeklyApyTooltip: ProductHubTooltipType = {
   content: {
     description: {
       key: 'ajna.product-hub-tooltips.no-weekly-apy',
@@ -54,7 +78,7 @@ export const productHubEmptyPoolWeeklyApyTooltip = {
   ...questionMark,
 }
 
-export const productHubOraclessLtvTooltip = {
+export const productHubOraclessLtvTooltip: ProductHubTooltipType = {
   content: {
     description: {
       key: 'ajna.product-hub-tooltips.oracless-ltv',

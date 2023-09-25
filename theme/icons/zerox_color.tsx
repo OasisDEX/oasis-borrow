@@ -1,7 +1,7 @@
 import React from 'react'
 export const zerox_color = {
   path: (
-    <g>
+    <g key="hO6shxpct">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

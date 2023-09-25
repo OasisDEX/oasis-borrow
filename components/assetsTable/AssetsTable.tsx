@@ -293,7 +293,7 @@ export function AssetsTableDataCell({ label, row }: AssetsTableDataCellProps) {
         p: '14px 12px',
         textAlign: 'right',
         whiteSpace: 'nowrap',
-        '&:first-child': {
+        '&:first-of-type': {
           textAlign: 'left',
         },
       }}

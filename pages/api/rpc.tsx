@@ -129,6 +129,8 @@ async function makeCall(rpcEndpoint: string, calls: RpcCall[]) {
       },
     })
 
+    console.log('request', [...request.headers])
+
     const response = await fetch(request)
     const json = await response.json()
     return [json]
@@ -362,7 +364,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).send(response)
   } catch (error) {
     console.error(`RPC call failed for network and body: ${rpcEndpoint}`, requestBody, error)
-    return res.status(500).send({ error: `RPC call failed.` })
+    return res.status(500).send({ error: `RPC call failed.`, code: error })
   }
 }
 

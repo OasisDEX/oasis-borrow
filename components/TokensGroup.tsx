@@ -34,6 +34,7 @@ export function TokensGroup({ forceSize, sx, tokens }: TokensGroupProps) {
             {Object.keys(tokensBySymbol).includes(token) ? (
               <Icon
                 size={forceSize || (tokens.length > 1 ? defaultMultipleSize : defaultSingleSize)}
+                key={getToken(token).name}
                 icon={getToken(token).iconCircle}
                 sx={{
                   verticalAlign: 'bottom',
@@ -42,6 +43,7 @@ export function TokensGroup({ forceSize, sx, tokens }: TokensGroupProps) {
               />
             ) : (
               <GenericTokenIcon
+                key={token}
                 size={forceSize || (tokens.length > 1 ? defaultMultipleSize : defaultSingleSize)}
                 symbol={token}
               />

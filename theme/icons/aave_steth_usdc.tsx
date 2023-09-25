@@ -41,6 +41,7 @@ export const aave_steth_usdc = {
       <defs>
         <linearGradient
           id="paint0_linear_12228_814"
+          key="paint0_linear_12228_814"
           x1="24.6943"
           y1="5.3532"
           x2="11.3566"
@@ -52,6 +53,7 @@ export const aave_steth_usdc = {
         </linearGradient>
         <linearGradient
           id="paint1_linear_12228_814"
+          key="paint1_linear_12228_814"
           x1="10.6388"
           y1="11.0003"
           x2="27.8899"
@@ -63,6 +65,7 @@ export const aave_steth_usdc = {
         </linearGradient>
         <linearGradient
           id="paint2_linear_12228_814"
+          key="paint2_linear_12228_814"
           x1="5.26249"
           y1="4.58728"
           x2="15.05"

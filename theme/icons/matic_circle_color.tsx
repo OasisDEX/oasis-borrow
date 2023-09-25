@@ -12,6 +12,7 @@ export const matic_circle_color = {
       />
       <linearGradient
         id="matic_paint0_linear"
+        key="matic_paint0_linear"
         x1="7.5"
         y1="6.5"
         x2="22"

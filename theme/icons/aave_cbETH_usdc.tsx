@@ -32,6 +32,7 @@ export const aave_cbETH_usdc = {
       <defs>
         <linearGradient
           id="paint0_linear_12916_917"
+          key="paint0_linear_12916_917"
           x1="3.2554"
           y1="4.22498"
           x2="20.3179"
@@ -43,6 +44,7 @@ export const aave_cbETH_usdc = {
         </linearGradient>
         <linearGradient
           id="paint1_linear_12916_917"
+          key="paint1_linear_12916_917"
           x1="8.81237"
           y1="6.33305"
           x2="20.8049"

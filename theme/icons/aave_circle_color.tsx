@@ -12,6 +12,7 @@ export const aave_circle_color = {
       />
       <linearGradient
         id="aave_paint0_linear"
+        key="aave_paint0_linear"
         x1="25.9429"
         y1="7.6342"
         x2="6.10286"

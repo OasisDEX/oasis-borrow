@@ -1,7 +1,7 @@
 import React from 'react'
 export const coinbase = {
   path: (
-    <g>
+    <g key="idF7xB3Bb">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

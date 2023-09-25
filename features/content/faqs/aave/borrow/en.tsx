@@ -5,7 +5,7 @@ import { Heading, Text } from 'theme-ui'
 
 export default () => (
   <FaqLayout learnMoreUrl={EXTERNAL_LINKS.KB.BORROW}>
-    <Heading as="h1">What is Summer.fi Borrow with Aave?</Heading>
+    <Heading variant="h5">What is Summer.fi Borrow with Aave?</Heading>
     <Text variant="paragraph1">
       Summer.fi borrow with Aave allows you to easily borrow against your crypto collateral. You
       choose a pair with a collateral token and a borrow token, and you enter a deposit amount and
@@ -14,7 +14,7 @@ export default () => (
       you receive some interest, whilst you are paying an interest on the amount borrowed.
     </Text>
 
-    <Heading as="h1">How does it work?</Heading>
+    <Heading variant="h5">How does it work?</Heading>
 
     <Text variant="paragraph1">
       When you open a new position you will select a collateral and an amount to borrow. Thereby
@@ -33,7 +33,7 @@ export default () => (
       wallet.
     </Text>
 
-    <Heading as="h1">What are the risks?</Heading>
+    <Heading variant="h5">What are the risks?</Heading>
 
     <Text variant="paragraph1">
       When borrowing you need to look after your liquidation price & LTV. If your LTV goes above the
@@ -52,7 +52,7 @@ export default () => (
       liquidity pool, these changes could impact your position directly or indirectly.
     </Text>
 
-    <Heading as="h1">
+    <Heading variant="h5">
       What are the differences between supported protocols for Summer.fi Borrow?
     </Heading>
 
@@ -88,7 +88,7 @@ export default () => (
       </AppLink>
     </Text>
 
-    <Heading as="h1">How much does it cost?</Heading>
+    <Heading variant="h5">How much does it cost?</Heading>
     <Text variant="paragraph1">
       Depositing and borrowing actions are completely free of charge!
     </Text>

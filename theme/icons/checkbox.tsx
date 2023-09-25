@@ -11,8 +11,9 @@ export const checkbox = {
         strokeWidth="0.2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        key="VmL9eLSuf"
       />
-      <circle cx="10" cy="10" r="9" stroke="#21C7A9" strokeWidth="2" fill="none" />
+      <circle cx="10" cy="10" r="9" stroke="#21C7A9" strokeWidth="2" fill="none" key="NjFj1-oeao" />
     </>
   ),
   viewBox: '0 0 20 20',
