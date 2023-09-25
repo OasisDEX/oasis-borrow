@@ -56,19 +56,19 @@ export function PreloadAppDataContextProvider({ children }: WithChildren) {
           const response = await configFetcher()
           const configResponse = (await response.json()) as ConfigResponseType
           if (!config || configResponse.error) {
-            throw new Error(`Error fetching config: ${configResponse.error}`)
+            throw new Error(`Error fetching preload app data: ${configResponse.error}`)
           }
           setConfig(configResponse)
           saveConfigToLocalStorage(configResponse)
         } catch (error) {
-          console.error(`Error fetching config: ${error}`)
+          console.error(`Error fetching preload app data context: ${error}`)
         }
       }
       await fetchConfig()
       setInterval(fetchConfig, 1000 * configCacheTime.frontend)
     }
     setup().catch((error) => {
-      console.error(`Error setting up config context: ${error}`)
+      console.error(`Error setting up preload app data context: ${error}`)
     })
   }, [])
 
