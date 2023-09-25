@@ -5,7 +5,7 @@ import { Navigation, navigationBreakpoints } from 'components/navigation/Navigat
 import { SwapWidgetShowHide } from 'components/swapWidget/SwapWidgetShowHide'
 import { NavigationActionsController } from 'features/navigation/controls/NavigationActionsController'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useAccount } from 'helpers/useAccount'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
@@ -16,7 +16,7 @@ import { useMediaQuery } from 'usehooks-ts'
 
 export function NavigationController() {
   const { t } = useTranslation()
-  const { NewNavigation: isNewNavigationEnabled } = getAppConfig('features')
+  const { NewNavigation: isNewNavigationEnabled } = useAppConfig('features')
   const { isConnected, walletAddress } = useAccount()
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3] - 1}px)`)
 
@@ -175,7 +175,7 @@ export function NavigationController() {
                             title: t('nav.swap'),
                             icon: {
                               position: 'global',
-                              icon: 'exchange'
+                              icon: 'exchange',
                             },
                             description: t('nav.swap-description'),
                             url: '/',
@@ -184,7 +184,7 @@ export function NavigationController() {
                             title: t('nav.bridge'),
                             icon: {
                               position: 'global',
-                              icon: 'bridge'
+                              icon: 'bridge',
                             },
                             description: (
                               <>
