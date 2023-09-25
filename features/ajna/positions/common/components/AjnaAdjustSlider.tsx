@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { normalizeValue } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'

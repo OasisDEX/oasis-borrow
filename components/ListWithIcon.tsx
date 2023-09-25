@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { Trans } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'

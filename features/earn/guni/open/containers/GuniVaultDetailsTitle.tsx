@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { formatCryptoBalance } from 'helpers/formatters/format'

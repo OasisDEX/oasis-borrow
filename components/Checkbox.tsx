@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { FC, MouseEventHandler } from 'react'
 import React from 'react'
 import { Flex } from 'theme-ui'

@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
 import dayjs from 'dayjs'

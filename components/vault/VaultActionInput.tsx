@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { FIAT_PRECISION } from 'components/constants'
 import { BigNumberInput } from 'helpers/BigNumberInput'

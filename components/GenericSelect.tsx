@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'

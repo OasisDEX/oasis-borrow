@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { ComponentProps } from 'react'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'

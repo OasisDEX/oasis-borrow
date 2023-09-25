@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
 import type { TranslateStringType } from 'helpers/translateStringType'

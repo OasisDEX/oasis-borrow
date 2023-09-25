@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { BigNumber } from 'bignumber.js'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { VaultErrors } from 'components/vault/VaultErrors'

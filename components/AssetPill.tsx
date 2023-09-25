@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import React from 'react'
 

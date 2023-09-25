@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import React from 'react'
 import { Card, Flex, Text } from 'theme-ui'
 

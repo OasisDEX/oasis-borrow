@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'

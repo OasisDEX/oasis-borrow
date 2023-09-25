@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/trackingEvents'
 import { isMainContextAvailable } from 'components/context'
 import { AppLink } from 'components/Links'

@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { useActor } from '@xstate/react'
 import type BigNumber from 'bignumber.js'
 import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'

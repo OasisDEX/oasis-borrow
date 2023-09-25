@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'

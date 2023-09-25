@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { ReactNode } from 'react'
 import React from 'react'
 import { Flex, Heading } from 'theme-ui'

@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
 import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'

@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import type { PriceInfo } from 'features/shared/priceInfo.types'

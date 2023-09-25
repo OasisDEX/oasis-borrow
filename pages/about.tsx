@@ -1,5 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
+import { Icon } from 'components/Icon'
 import { MarketingLayout } from 'components/layouts'
 import { AppLink } from 'components/Links'
 import type { TeamMember } from 'features/about/about'
@@ -11,6 +11,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
 function AboutPage({ members }: { members: TeamMember[] }) {
   const { t } = useTranslation()
@@ -38,7 +39,7 @@ function AboutPage({ members }: { members: TeamMember[] }) {
         <Text variant="paragraph1" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
           {t('about.careers-link')}
         </Text>
-        <Icon name="arrow_right" size="16px" sx={{ ml: 1 }} />
+        <Icon icon={arrow_right} size="16px" sx={{ ml: 1 }} />
       </AppLink>
       <Box sx={{ mt: 4 }}>
         <Heading variant="header2">{t('about.pics-title')}</Heading>

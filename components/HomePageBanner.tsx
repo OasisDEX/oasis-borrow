@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { useConnection } from 'features/web3OnBoard'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans } from 'next-i18next'

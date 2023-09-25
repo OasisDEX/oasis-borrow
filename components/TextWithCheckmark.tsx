@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'

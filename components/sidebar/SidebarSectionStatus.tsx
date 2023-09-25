@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'

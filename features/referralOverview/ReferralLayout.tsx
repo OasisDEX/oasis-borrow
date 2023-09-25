@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { WithChildren } from 'helpers/types/With.types'

@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { TextWithCheckmark } from 'components/TextWithCheckmark'
 import { ManageVaultCollateralAllowance } from 'components/vault/commonMultiply/ManageVaultCollateralAllowance'
 import { ManageVaultDaiAllowance } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'

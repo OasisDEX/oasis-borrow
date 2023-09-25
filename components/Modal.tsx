@@ -1,5 +1,4 @@
 import { Global } from '@emotion/core'
-import { Icon } from '@makerdao/dai-ui-icons'
 import { useSharedUI } from 'components/SharedUIProvider'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'

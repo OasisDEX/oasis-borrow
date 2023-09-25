@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Text } from '@theme-ui/components'
 import type BigNumber from 'bignumber.js'
 import { Tooltip, useTooltip } from 'components/Tooltip'

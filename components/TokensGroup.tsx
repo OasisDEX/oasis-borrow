@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { tokensBySymbol } from 'blockchain/tokensMetadata.constants'
 import { GenericTokenIcon } from 'components/GenericTokenIcon'

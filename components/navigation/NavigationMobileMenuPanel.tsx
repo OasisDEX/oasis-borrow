@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AssetPill } from 'components/AssetPill'
 import { AppLink } from 'components/Links'

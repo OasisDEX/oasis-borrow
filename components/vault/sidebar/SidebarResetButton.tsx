@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button } from 'theme-ui'

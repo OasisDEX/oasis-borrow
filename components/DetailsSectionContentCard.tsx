@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { ModalProps } from 'helpers/modalHook'

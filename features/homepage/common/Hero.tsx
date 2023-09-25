@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { useConnection } from 'features/web3OnBoard'
 import { getAppConfig } from 'helpers/config'

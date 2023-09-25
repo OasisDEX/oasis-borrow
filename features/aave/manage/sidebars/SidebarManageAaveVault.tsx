@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library'
 import { OPERATION_NAMES } from '@oasisdex/dma-library'
 import { useActor } from '@xstate/react'

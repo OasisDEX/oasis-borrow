@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { Swap } from '@oasisdex/dma-library'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
 import { amountFromWei } from 'blockchain/utils'

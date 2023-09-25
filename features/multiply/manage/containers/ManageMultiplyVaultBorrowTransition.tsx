@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { TextWithCheckmark } from 'components/TextWithCheckmark'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { useTranslation } from 'next-i18next'

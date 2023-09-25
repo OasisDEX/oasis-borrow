@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { MobileSidePanel } from 'components/Modal'
 import React, { useState } from 'react'
 import { Card } from 'theme-ui'

@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
 import { getTokenGuarded } from 'blockchain/tokensMetadata'
 import { GenericTokenIcon } from 'components/GenericTokenIcon'

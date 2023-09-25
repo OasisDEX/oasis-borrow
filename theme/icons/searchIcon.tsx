@@ -1,5 +1,5 @@
 import React from 'react'
-export const search = {
+export const searchIcon = {
   path: (
     <g>
       <path

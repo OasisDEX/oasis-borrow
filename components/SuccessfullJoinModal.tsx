@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { UserReferralState } from 'features/referralOverview/user.types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useRedirect } from 'helpers/useRedirect'

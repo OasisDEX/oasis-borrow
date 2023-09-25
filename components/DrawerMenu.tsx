@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
 import type { SxProp } from 'theme-ui'

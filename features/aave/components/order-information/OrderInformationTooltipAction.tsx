@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { WithChildren } from 'helpers/types/With.types'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import React, { useState } from 'react'

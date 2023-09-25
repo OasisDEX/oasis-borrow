@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'

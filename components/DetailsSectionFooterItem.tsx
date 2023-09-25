@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { VaultDetailsCardModal } from 'components/vault/VaultDetails'
 import type { ModalProps } from 'helpers/modalHook'
 import { useModal } from 'helpers/modalHook'

@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { useMainnetEnsName, useMainnetEnsNames } from 'blockchain/ens'
 import type { Context } from 'blockchain/network.types'
 import { NetworkHexIds } from 'blockchain/networks'

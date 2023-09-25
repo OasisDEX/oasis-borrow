@@ -1,8 +1,8 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import type { ContextConnected } from 'blockchain/network.types'
 import { BlockNativeAvatar } from 'components/BlockNativeAvatar'
 import { useAccountContext, useMainContext, useNotificationSocket } from 'components/context'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import type { AccountDetails } from 'features/account/AccountData'
 import { useWalletManagement } from 'features/web3OnBoard'
@@ -23,6 +23,7 @@ import React, { useCallback, useRef, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Card, Flex, Grid, Heading, Link as ThemeLink, Text, Textarea } from 'theme-ui'
+import { settings } from 'theme/icons'
 import { UnreachableCaseError } from 'ts-essentials'
 
 import { SLIPPAGE_OPTIONS } from './userSettings.constants'
@@ -421,7 +422,7 @@ export function UserSettingsButtonContents({
           size="auto"
           width="16"
           height="16"
-          name="settings"
+          icon={settings}
           sx={{ flexShrink: 0, m: '13px' }}
           color={active ? 'primary100' : 'inherit'}
         />

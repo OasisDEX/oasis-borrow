@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/trackingEvents'
 import { MixpanelTopBannerEvents } from 'analytics/types'
 import { getAppConfig } from 'helpers/config'

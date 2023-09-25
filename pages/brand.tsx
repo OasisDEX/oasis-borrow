@@ -1,5 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
+import { Icon } from 'components/Icon'
 import { MarketingLayout } from 'components/layouts'
 import { AppLink } from 'components/Links'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -8,6 +8,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
+import { arrow_right, close } from 'theme/icons'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -92,7 +93,7 @@ function BrandAssetsPage() {
       >
         {`${t('brand-assets.intro-cta')} ${' '}`}
         <Icon
-          name="arrow_right"
+          icon={arrow_right}
           size="14px"
           sx={{
             ml: 1,
@@ -230,7 +231,7 @@ function BrandAssetsPage() {
             </Box>
             <Text variant="paragraph2" sx={{ color: 'primary100' }}>
               <Icon
-                name="close"
+                icon={close}
                 size="12px"
                 sx={{
                   ml: 1,

@@ -1,5 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
+import { Icon } from 'components/Icon'
 import { MarketingLayout } from 'components/layouts'
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -9,6 +9,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { Fragment } from 'react'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -111,7 +112,7 @@ function SecurityPage() {
                     <AppLink variant="inText" target="_blank" href={link.url}>
                       {link.label}
                       <Icon
-                        name="arrow_right"
+                        icon={arrow_right}
                         size="14px"
                         sx={{
                           ml: 1,

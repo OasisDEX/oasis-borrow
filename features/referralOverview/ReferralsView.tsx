@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { useMainnetEnsName } from 'blockchain/ens'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'

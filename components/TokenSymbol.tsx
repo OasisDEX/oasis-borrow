@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import type { ComponentProps } from 'react'
 import React from 'react'

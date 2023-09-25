@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'

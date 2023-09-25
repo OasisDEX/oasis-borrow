@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'

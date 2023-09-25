@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatPrice } from 'helpers/formatters/format'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'

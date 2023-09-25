@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { StatefulTooltip } from 'components/Tooltip'
 import { Translatable } from 'components/Translatable'
 import React from 'react'

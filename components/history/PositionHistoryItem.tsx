@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { NetworkIds } from 'blockchain/networks'
 import { DefinitionListItem } from 'components/DefinitionList'
 import { PositionHistoryItemDetails } from 'components/history/PositionHistoryItemDetails'

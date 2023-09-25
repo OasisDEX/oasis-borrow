@@ -1,7 +1,7 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import { DefinitionList, DefinitionListItem } from 'components/DefinitionList'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import { WithArrow } from 'components/WithArrow'
@@ -22,6 +22,7 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
+import { chevron_down, chevron_up } from 'theme/icons'
 import type { TranslationType } from 'ts_modules/i18next'
 
 import type { VaultHistoryEvent } from './vaultHistory.types'
@@ -630,7 +631,7 @@ export function VaultHistoryEntry({
           {date.format('MMM DD, YYYY, h:mma')}
         </Text>
         <Icon
-          name={`chevron_${opened ? 'up' : 'down'}`}
+          icon={opened ? chevron_up : chevron_down}
           size="auto"
           width="12px"
           height="7px"

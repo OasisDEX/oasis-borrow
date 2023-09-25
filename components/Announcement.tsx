@@ -1,7 +1,8 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import React, { useLayoutEffect, useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
+import { announcement } from 'theme/icons'
 
+import { Icon } from './Icon'
 import { AppLink } from './Links'
 import { Notice } from './Notice'
 import { WithArrow } from './WithArrow'
@@ -68,7 +69,7 @@ export function Announcement({ discordLink, link, linkText, text, withClose }: A
               justifyContent: 'center',
             }}
           >
-            <Icon name="announcement" size="auto" width="24" height="24" />
+            <Icon icon={announcement} width="24" height="24" />
           </Flex>
         </Box>
         <Box>

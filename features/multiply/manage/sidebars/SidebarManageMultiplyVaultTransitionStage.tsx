@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { ListWithIcon } from 'components/ListWithIcon'
 import type { ManageMultiplyVaultStage } from 'features/multiply/manage/pipes/ManageMultiplyVaultStage.types'
 import { useTranslation } from 'next-i18next'
