@@ -73,16 +73,6 @@ export function HeaderSelector({
       .join(', ')})`
   }, [gradient])
 
-  options.forEach((option) => {
-    option.icon &&
-      console.log(
-        'asdasdasdasdasdasdasd Array.isArray(option.icon) ? option.icon[0] : option.icon',
-        Array.isArray(option.icon) ? option.icon[0] : option.icon,
-      )
-    Array.isArray(option.icon) &&
-      console.log('asdasdasdasdasdasdasd option.icon[1]', option.icon[1])
-  })
-
   return (
     <Box sx={{ display: 'inline-flex', zIndex: 2 }} ref={ref}>
       <Flex
