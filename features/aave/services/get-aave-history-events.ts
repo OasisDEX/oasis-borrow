@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
-import { AaveHistoryEvent } from 'features/ajna/history/types'
+import type { NetworkIds } from 'blockchain/networks'
+import type { AaveHistoryEvent } from 'features/ajna/history/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
 

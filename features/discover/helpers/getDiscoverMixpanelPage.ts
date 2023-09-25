@@ -1,17 +1,17 @@
-import { Pages } from 'analytics/analytics'
+import { MixpanelPages } from 'analytics/types'
 import { DiscoverPages } from 'features/discover/types'
 
-export function getDiscoverMixpanelPage(kind: DiscoverPages): Pages {
+export function getDiscoverMixpanelPage(kind: DiscoverPages): MixpanelPages {
   switch (kind) {
     case DiscoverPages.HIGHEST_RISK_POSITIONS:
-      return Pages.DiscoverHighestRiskPositions
+      return MixpanelPages.DiscoverHighestRiskPositions
     case DiscoverPages.HIGHEST_MULTIPLY_PNL:
-      return Pages.DiscoverHighestMultiplyPnl
+      return MixpanelPages.DiscoverHighestMultiplyPnl
     case DiscoverPages.MOST_YIELD_EARNED:
-      return Pages.DiscoverMostYieldEarned
+      return MixpanelPages.DiscoverMostYieldEarned
     case DiscoverPages.LARGEST_DEBT:
-      return Pages.DiscoverLargestDebt
+      return MixpanelPages.DiscoverLargestDebt
     default:
-      return Pages.DiscoverOasis
+      return MixpanelPages.DiscoverOasis
   }
 }

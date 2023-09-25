@@ -1,14 +1,14 @@
+import { trackingEvents } from 'analytics/trackingEvents'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import { ActionPills } from 'components/ActionPills'
 import { useAutomationContext } from 'components/context'
 import { AppLink } from 'components/Links'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
@@ -19,25 +19,21 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   sidebarAutomationFeatureCopyMap,
 } from 'features/automation/common/consts'
-import {
-  automationInputsAnalytics,
-  automationMultipleRangeSliderAnalytics,
-  calculateCollRatioFromMultiple,
-  calculateMultipleFromTargetCollRatio,
-} from 'features/automation/common/helpers'
+import { automationInputsAnalytics } from 'features/automation/common/helpers/automationInputsAnalytics'
+import { automationMultipleRangeSliderAnalytics } from 'features/automation/common/helpers/automationMultipleRangeSliderAnalytics'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers/calculateCollRatioFromMultiple'
+import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import { AutomationFeatures } from 'features/automation/common/types'
-import {
-  CONSTANT_MULTIPLE_FORM_CHANGE,
-  ConstantMultipleFormChange,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
+import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
 import { prepareConstantMultipleResetData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
+import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { handleNumericInput } from 'helpers/input'
 import {
   extractConstantMultipleCommonErrors,
@@ -117,7 +113,7 @@ export function SidebarConstantMultipleEditingStage({
   })
 
   const isVaultEmpty = debt.isZero()
-  const { ConstantMultipleReadOnly: constantMultipleReadOnlyEnabled } = getAppConfig('features')
+  const { ConstantMultipleReadOnly: constantMultipleReadOnlyEnabled } = useAppConfig('features')
 
   if (constantMultipleReadOnlyEnabled && !isVaultEmpty) {
     return (
@@ -189,9 +185,9 @@ export function SidebarConstantMultipleEditingStage({
               })
 
               trackingEvents.automation.buttonClick(
-                AutomationEventIds.TargetMultiplier,
-                Pages.ConstantMultiple,
-                CommonAnalyticsSections.Form,
+                MixpanelAutomationEventIds.TargetMultiplier,
+                MixpanelPages.ConstantMultiple,
+                MixpanelCommonAnalyticsSections.Form,
                 {
                   vaultId: id.toString(),
                   ilk: ilk,
@@ -362,7 +358,7 @@ export function SidebarConstantMultipleEditingStage({
         }}
         value={constantMultipleState.maxBaseFeeInGwei.toNumber()}
         analytics={{
-          page: Pages.ConstantMultiple,
+          page: MixpanelPages.ConstantMultiple,
           additionalParams: { vaultId: id.toString(), ilk: ilk },
         }}
       />

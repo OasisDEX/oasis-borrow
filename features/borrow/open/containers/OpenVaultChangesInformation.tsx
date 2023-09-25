@@ -8,8 +8,8 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
-import { getAppConfig } from 'helpers/config'
+import type { OpenVaultState } from 'features/borrow/open/pipes/openVault.types'
+import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -32,7 +32,7 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
     visitedStopLossStep,
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-  const { StopLossWrite: stopLossWriteEnabled } = getAppConfig('features')
+  const { StopLossWrite: stopLossWriteEnabled } = useAppConfig('features')
 
   const dynamicStopLossPrice =
     afterLiquidationPrice && liquidationRatio

@@ -2,17 +2,12 @@ import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import {
-  defaultMutableManageMultiplyVaultState,
-  MutableManageMultiplyVaultState,
-} from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { ProductContext } from 'helpers/context/ProductContext'
-import {
-  MOCK_VAULT_ID,
-  mockManageMultiplyVault$,
-  MockManageMultiplyVaultProps,
-} from 'helpers/mocks/manageMultiplyVault.mock'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
+import { defaultMutableManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault.constants'
+import type { MutableManageMultiplyVaultState } from 'features/multiply/manage/pipes/MutableManageMultiplyVaultState.types'
+import type { ProductContext } from 'helpers/context/ProductContext.types'
+import type { MockManageMultiplyVaultProps } from 'helpers/mocks/manageMultiplyVault.mock'
+import { MOCK_VAULT_ID, mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { memoize } from 'lodash'
 import React, { useEffect } from 'react'
 import { EMPTY, from, of } from 'rxjs'

@@ -7,11 +7,8 @@ import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInfor
 import { WithArrow } from 'components/WithArrow'
 import dayjs from 'dayjs'
 import { maxUint32, maxUint256 } from 'features/automation/common/consts'
-import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents'
+import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
+import type { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents.types'
 import {
   formatAddress,
   formatAmount,
@@ -20,14 +17,15 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { interpolate } from 'helpers/interpolate'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
-import { TranslationType } from 'ts_modules/i18next'
+import type { TranslationType } from 'ts_modules/i18next'
 
-import { VaultHistoryEvent } from './vaultHistory'
+import type { VaultHistoryEvent } from './vaultHistory.types'
+import type { AutomationEntryProps } from './VaultHistoryEntry.types'
 
 function resolveTranslationForEventsWithTriggers(event: AutomationEvent) {
   const isGroup = 'groupId' in event && event.groupId
@@ -116,13 +114,6 @@ function resolveMaxGweiAmount(maxBaseFeeInGwei: BigNumber, unlimited: string) {
   return maxBaseFeeInGwei.isEqualTo(maxUint32)
     ? unlimited
     : formatCryptoBalance(maxBaseFeeInGwei) + ' Gwei'
-}
-
-interface AutomationEntryProps {
-  event: AutomationEvent
-  isAddOrRemoveEvent: boolean
-  isUpdateEvent: boolean
-  addOrRemoveTriggersData: (AutoBSTriggerData | StopLossTriggerData | AutoTakeProfitTriggerData)[]
 }
 
 function StandaloneAutomationEntry({

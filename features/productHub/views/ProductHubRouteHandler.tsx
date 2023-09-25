@@ -4,9 +4,9 @@ import { AppLayout } from 'components/layouts'
 import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
-import { getAppConfig } from 'helpers/config'
-import { WithChildren } from 'helpers/types'
-import { GetStaticPaths } from 'next'
+import { useAppConfig } from 'helpers/config'
+import type { WithChildren } from 'helpers/types/With.types'
+import type { GetStaticPaths } from 'next'
 import React from 'react'
 
 function ProductHubRouteHandler({
@@ -16,7 +16,7 @@ function ProductHubRouteHandler({
   product: ProductHubProductType
   token?: string
 }) {
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = getAppConfig('features')
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
 
   return (
     <WithConnection>

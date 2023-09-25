@@ -1,57 +1,17 @@
-import { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
-import { TxHelpers } from 'helpers/context/types'
-import { TxError } from 'helpers/types'
+import type { BigNumber } from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 
+import type {
+  AllowanceChanges,
+  AllowanceConditions,
+  AllowanceFunctions,
+  AllowanceStages,
+  AllowanceState,
+  StateDependencies,
+} from './allowance.types'
+import { ALLOWANCE_STAGES } from './allowance.types'
 import { setAllowance } from './setAllowance'
-
-// TODO: there is inconsistency between open/manage
-// in open there is just one allowance called allowance
-// in manage there are two allowances called daiAllowance and collateralAllowance
-export enum AllowanceOption {
-  UNLIMITED = 'unlimited',
-  DEPOSIT_AMOUNT = 'depositAmount',
-  CUSTOM = 'custom',
-}
-export type AllowanceChanges =
-  | { kind: 'allowanceWaitingForApproval' }
-  | {
-      kind: 'allowanceInProgress'
-      allowanceTxHash: string
-    }
-  | {
-      kind: 'allowanceFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'allowanceSuccess'
-      allowance: BigNumber
-    }
-  | {
-      kind: 'allowance'
-      allowanceAmount?: BigNumber
-    }
-  | { kind: 'allowanceUnlimited' }
-  | {
-      kind: 'allowanceAsDepositAmount'
-    }
-  | {
-      kind: 'allowanceCustom'
-    }
-  | { kind: 'regressAllowance' }
-  | {
-      kind: 'backToEditing'
-    }
-
-export const ALLOWANCE_STAGES = [
-  'allowanceWaitingForConfirmation',
-  'allowanceWaitingForApproval',
-  'allowanceInProgress',
-  'allowanceFailure',
-  'allowanceSuccess',
-] as const
-
-export type AllowanceStages = (typeof ALLOWANCE_STAGES)[number]
 
 export function getIsAllowanceStage(stage: string): stage is AllowanceStages {
   return ALLOWANCE_STAGES.includes(stage as any)
@@ -62,47 +22,6 @@ export function applyIsAllowanceStage<S extends { stage: string }>(state: S): S 
     ...state,
     isAllowanceStage: getIsAllowanceStage(state.stage),
   }
-}
-
-export interface AllowanceState {
-  selectedAllowanceRadio: AllowanceOption
-  allowanceAmount?: BigNumber
-  allowanceTxHash?: string
-  txError?: TxError
-  allowance?: BigNumber
-  isAllowanceStage: boolean
-}
-
-export const defaultAllowanceState: AllowanceState = {
-  selectedAllowanceRadio: AllowanceOption.UNLIMITED,
-  allowanceAmount: maxUint256,
-  isAllowanceStage: false,
-}
-
-export interface AllowanceFunctions {
-  setAllowanceAmountUnlimited?: () => void
-  setAllowanceAmountToDepositAmount?: () => void
-  setAllowanceAmountCustom?: () => void
-  updateAllowanceAmount?: (amount?: BigNumber) => void
-  progress?: () => void
-  regress?: () => void
-}
-
-export interface StateDependencies {
-  stage: string // TODO fix stages
-  token: string
-
-  // TODO: check if switching account this proxy changes
-  proxyAddress?: string
-  allowanceAmount?: BigNumber
-  depositAmount?: BigNumber
-}
-
-export interface AllowanceConditions {
-  customAllowanceAmountEmpty: boolean
-  customAllowanceAmountExceedsMaxUint256: boolean
-  customAllowanceAmountLessThanDepositAmount: boolean
-  insufficientAllowance: boolean
 }
 
 export function applyAllowanceChanges<S extends AllowanceState & StateDependencies>(

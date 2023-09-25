@@ -1,25 +1,9 @@
-import { BigNumber } from 'bignumber.js'
-import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices.types'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
-export interface PriceInfo {
-  currentCollateralPrice: BigNumber
-  currentEthPrice: BigNumber
-  nextCollateralPrice: BigNumber
-  nextEthPrice: BigNumber
-
-  dateLastCollateralPrice?: Date
-  dateNextCollateralPrice?: Date
-  dateLastEthPrice?: Date
-  dateNextEthPrice?: Date
-
-  isStaticCollateralPrice: boolean
-  isStaticEthPrice: boolean
-
-  collateralPricePercentageChange: BigNumber
-  ethPricePercentageChange: BigNumber
-}
+import type { PriceInfo, PriceInfoChange } from './priceInfo.types'
 
 export function createPriceInfo$(
   oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
@@ -88,11 +72,6 @@ export function createPriceInfo$(
     ),
     shareReplay(1),
   )
-}
-
-export interface PriceInfoChange {
-  kind: 'priceInfo'
-  priceInfo: PriceInfo
 }
 
 export function priceInfoChange$(

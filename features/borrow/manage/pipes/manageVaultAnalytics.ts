@@ -1,62 +1,25 @@
-import { INPUT_DEBOUNCE_TIME, Pages, Tracker } from 'analytics/analytics'
+import { INPUT_DEBOUNCE_TIME } from 'analytics/analytics'
+import type { Tracker } from 'analytics/trackingEvents'
+import { MixpanelPages } from 'analytics/types'
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { networkSetById } from 'blockchain/networks'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import { combineLatest, merge, Observable, zip } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, merge, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
-import { ManageStandardBorrowVaultState } from './manageVault'
-
-type GenerateAmountChange = {
-  kind: 'generateAmountChange'
-  value: { amount: BigNumber; setMax: boolean }
-}
-
-type DepositAmountChange = {
-  kind: 'depositAmountChange'
-  value: { amount: BigNumber; setMax: boolean }
-}
-
-type PaybackAmountChange = {
-  kind: 'paybackAmountChange'
-  value: { amount: BigNumber; setMax: boolean }
-}
-
-type WithdrawAmountChange = {
-  kind: 'withdrawAmountChange'
-  value: { amount: BigNumber; setMax: boolean }
-}
-
-type AllowanceChange = {
-  kind: 'collateralAllowanceChange' | 'daiAllowanceChange'
-  value: {
-    type:
-      | Pick<ManageStandardBorrowVaultState, 'selectedDaiAllowanceRadio'>
-      | Pick<ManageStandardBorrowVaultState, 'selectedCollateralAllowanceRadio'>
-    amount: BigNumber
-  }
-}
-
-type ManageVaultConfirm = {
-  kind: 'manageVaultConfirm'
-  value: {
-    ilk: string
-    collateralAmount: BigNumber
-    daiAmount: BigNumber
-  }
-}
-
-type ManageVaultConfirmTransaction = {
-  kind: 'manageVaultConfirmTransaction'
-  value: {
-    ilk: string
-    collateralAmount: BigNumber
-    daiAmount: BigNumber
-    txHash: string
-  }
-}
+import type { ManageStandardBorrowVaultState } from './manageVault.types'
+import type {
+  AllowanceChange,
+  DepositAmountChange,
+  GenerateAmountChange,
+  ManageVaultConfirm,
+  ManageVaultConfirmTransaction,
+  PaybackAmountChange,
+  WithdrawAmountChange,
+} from './manageVaultAnalytics.types'
 
 export function createManageVaultAnalytics$(
   manageVaultState$: Observable<ManageStandardBorrowVaultState>,
@@ -237,7 +200,8 @@ export function createManageVaultAnalytics$(
           merge(manageVaultConfirm, manageVaultConfirmTransaction),
         ).pipe(
           tap((event) => {
-            const page = stage === 'daiEditing' ? Pages.ManageDai : Pages.ManageCollateral
+            const page =
+              stage === 'daiEditing' ? MixpanelPages.ManageDai : MixpanelPages.ManageCollateral
             switch (event.kind) {
               case 'depositAmountChange':
                 tracker.manageVaultDepositAmount(

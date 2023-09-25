@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { WAD_PRECISION } from 'components/constants'
 import { ajnaDefaultPoolRangeMarketPriceOffset } from 'features/ajna/common/consts'
 import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'

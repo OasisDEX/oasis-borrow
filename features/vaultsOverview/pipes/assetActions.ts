@@ -1,15 +1,15 @@
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { ilksNotSupportedOnGoerli } from 'blockchain/tokens/mainnet'
-import { getProductCategoryUrl, ProductCategory } from 'config/product-categories'
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT,
-  SwapWidgetChangeAction,
-} from 'features/swapWidget/SwapWidgetChange'
-import { Web3Context } from 'features/web3Context'
+import type { ProductCategory } from 'config/product-categories'
+import { getProductCategoryUrl } from 'config/product-categories'
+import type { SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChange'
+import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
+import type { Web3Context } from 'features/web3Context'
 import { mapTokenToFilter, supportedEarnIlks } from 'helpers/productCards'
-import { UIChanges } from 'helpers/uiChanges'
+import type { UIChanges } from 'helpers/uiChanges.types'
 import { map as mapLodash, omit, reduce } from 'lodash'
-import { combineLatest, iif, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, iif, of } from 'rxjs'
 import { flatMap, map, startWith, switchMap } from 'rxjs/operators'
 
 export type AssetAction = UrlAssetAction | OnClickAssetAction

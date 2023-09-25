@@ -1,8 +1,8 @@
 import { NetworkNames } from 'blockchain/networks'
 import { getActionUrl } from 'features/productHub/helpers'
-import { ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubProductType } from 'features/productHub/types'
 import { getMaxLtvPill, getUpToYieldExposurePill } from 'handlers/product-hub/promo-cards/parsers'
-import { ParsePromoCardParams } from 'handlers/product-hub/types'
+import type { ParsePromoCardParams } from 'handlers/product-hub/types'
 
 export function getPromoCardsCommonPayload({
   collateralToken,

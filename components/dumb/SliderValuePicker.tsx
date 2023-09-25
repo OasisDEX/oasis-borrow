@@ -1,8 +1,10 @@
 import { Grid, Slider, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import { TranslateStringType } from 'helpers/translateStringType'
-import React, { ReactNode } from 'react'
-import { Flex, SxStyleProp, useThemeUI } from 'theme-ui'
+import type { TranslateStringType } from 'helpers/translateStringType'
+import type { ReactNode } from 'react'
+import React from 'react'
+import type { SxStyleProp } from 'theme-ui'
+import { Flex, useThemeUI } from 'theme-ui'
 
 export interface SliderValuePickerProps {
   sliderPercentageFill?: BigNumber
@@ -94,8 +96,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
         }}
         disabled={props.disabled}
         step={props.step}
-        // min={props.minBoundry?.toNumber()}
-        min={0}
+        min={props.minBoundry?.toNumber()}
         max={props.maxBoundry?.toNumber()}
         value={props.lastValue?.toNumber()}
         onChange={(e) => {

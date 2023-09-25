@@ -1,14 +1,11 @@
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
 import { shareReplay } from 'rxjs/operators'
 
-export interface BalanceInfo {
-  collateralBalance: BigNumber
-  ethBalance: BigNumber
-  daiBalance: BigNumber
-}
+import type { BalanceInfo, BalanceInfoChange } from './balanceInfo.types'
 
 export function createBalanceInfo$(
   balance$: (token: string, address: string) => Observable<BigNumber>,
@@ -51,11 +48,6 @@ export function createBalancesFromAddressArrayInfo$(
     map((balances) => balances),
     shareReplay(1),
   )
-}
-
-export interface BalanceInfoChange {
-  kind: 'balanceInfo'
-  balanceInfo: BalanceInfo
 }
 
 export function balanceInfoChange$(

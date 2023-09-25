@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { AjnaFlow, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
+import type { AjnaFlow, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
 
 export const ajnaProducts: AjnaProduct[] = ['borrow', 'earn', 'multiply']
 

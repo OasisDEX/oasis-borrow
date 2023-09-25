@@ -1,12 +1,11 @@
 import { useAutomationContext } from 'components/context'
-import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
+
+import { STOP_LOSS_FORM_CHANGE } from './StopLossFormChange.constants'
+import type { StopLossFormChange } from './StopLossFormChange.types'
 
 interface GetStopLossTxHandlersParams {
   stopLossState: StopLossFormChange

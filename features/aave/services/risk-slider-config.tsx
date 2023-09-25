@@ -1,6 +1,6 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { AdjustRiskViewConfig } from 'features/aave/components'
+import type { AdjustRiskViewConfig } from 'features/aave/components'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import React from 'react'
 

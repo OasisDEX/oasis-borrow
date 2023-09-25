@@ -1,42 +1,33 @@
-import { AjnaEarnPosition, AjnaPosition, SwapData } from '@oasisdex/dma-library'
-import { AjnaSimulationData } from 'actions/ajna'
+import type { AjnaEarnPosition, SwapData } from '@oasisdex/dma-library'
+import { AjnaPosition } from '@oasisdex/dma-library'
+import type { AjnaSimulationData } from 'actions/ajna'
 import { useGasEstimationContext, useProductContext } from 'components/context'
-import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import { AjnaGenericPosition, AjnaProduct, AjnaValidationItem } from 'features/ajna/common/types'
-import { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import {
-  AjnaBorrowFormState,
-  useAjnaBorrowFormReducto,
-} from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import type {
+  AjnaGenericPosition,
+  AjnaProduct,
+  AjnaValidationItem,
+} from 'features/ajna/common/types'
+import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import type { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
-import { AjnaPositionCumulatives } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
-import {
+import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { getAjnaValidation } from 'features/ajna/positions/common/validation'
-import {
-  AjnaEarnFormState,
-  useAjnaEarnFormReducto,
-} from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
-import {
-  AjnaMultiplyFormState,
-  useAjnaMultiplyFormReducto,
-} from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
-import { getAppConfig } from 'helpers/config'
+import type { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
+import type { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
+import { useAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import React, {
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 interface AjnaProductContextProviderPropsWithBorrow {
   formReducto: typeof useAjnaBorrowFormReducto
@@ -45,7 +36,6 @@ interface AjnaProductContextProviderPropsWithBorrow {
   product: 'borrow'
   positionAuction: AjnaBorrowishPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
-  positionCumulatives: AjnaPositionCumulatives
 }
 
 interface AjnaProductContextProviderPropsWithEarn {
@@ -55,7 +45,6 @@ interface AjnaProductContextProviderPropsWithEarn {
   product: 'earn'
   positionAuction: AjnaEarnPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
-  positionCumulatives: AjnaPositionCumulatives
 }
 
 interface AjnaProductContextProviderPropsWithMultiply {
@@ -65,7 +54,6 @@ interface AjnaProductContextProviderPropsWithMultiply {
   product: 'multiply'
   positionAuction: AjnaBorrowishPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
-  positionCumulatives: AjnaPositionCumulatives
 }
 
 type AjnaProductDetailsContextProviderProps =
@@ -93,7 +81,6 @@ interface AjnaProductContextPosition<P, A> {
   setCachedSwap: (swap: SwapData) => void
   positionAuction: A
   history: AjnaUnifiedHistoryEvent[]
-  cumulatives?: AjnaPositionCumulatives
 }
 
 interface AjnaProductContext<P, F, A> {
@@ -169,9 +156,8 @@ export function AjnaProductContextProvider({
   position,
   positionAuction,
   positionHistory,
-  positionCumulatives,
 }: PropsWithChildren<AjnaProductDetailsContextProviderProps>) {
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = getAppConfig('features')
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
   const { walletAddress } = useAccount()
   const gasEstimation = useGasEstimationContext()
   const { positionIdFromDpmProxy$ } = useProductContext()
@@ -315,7 +301,6 @@ export function AjnaProductContextProvider({
           cached: cachedSwap,
         },
         history: positionHistory,
-        cumulatives: positionCumulatives,
       },
       validation,
       notifications,

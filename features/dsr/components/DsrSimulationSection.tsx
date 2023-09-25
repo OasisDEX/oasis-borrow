@@ -7,7 +7,7 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { SimulateTitle } from 'components/SimulateTitle'
-import { Simulation } from 'features/aave/open/services'
+import type { Simulation } from 'features/aave/open/services'
 import { DsrBanner } from 'features/dsr/components/DsrBanner'
 import { getRate } from 'features/dsr/helpers/dsrPot'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'

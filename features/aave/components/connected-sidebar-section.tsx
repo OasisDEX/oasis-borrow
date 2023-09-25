@@ -1,5 +1,6 @@
-import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { BaseAaveContext } from 'features/aave/types'
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSection } from 'components/sidebar/SidebarSection'
+import type { BaseAaveContext } from 'features/aave/types'
 import React from 'react'
 
 export function ConnectedSidebarSection(props: SidebarSectionProps & { context: BaseAaveContext }) {

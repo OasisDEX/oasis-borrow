@@ -1,11 +1,11 @@
-import BigNumber from 'bignumber.js'
-import {
+import type BigNumber from 'bignumber.js'
+import type {
   PositionHistoryEvent,
   PositionHistoryResponse,
   Trigger,
 } from 'features/positionHistory/types'
 
-import { AjnaUnifiedHistoryEvent } from './ajnaUnifiedHistoryEvent'
+import type { AjnaUnifiedHistoryEvent } from './ajnaUnifiedHistoryEvent'
 
 export interface AjnaHistoryResponse extends PositionHistoryResponse {
   originationFee: string
@@ -24,33 +24,6 @@ export interface AjnaBorrowerEventsResponse {
   auction: {
     id: string
   } | null
-}
-
-export interface AjnaHistoryEvent extends PositionHistoryEvent {
-  originationFee: BigNumber
-  originationFeeInQuoteToken: BigNumber
-  quoteTokensAfter: BigNumber
-  quoteTokensBefore: BigNumber
-  quoteTokensDelta: BigNumber
-  quoteTokensMoved: BigNumber
-  moveQuoteFromPrice: BigNumber
-  moveQuoteToPrice: BigNumber
-  addOrRemovePrice: BigNumber
-  totalFeeInQuoteToken: BigNumber
-}
-
-export type AjnaBorrowerEvent = {
-  id: string
-  kind: string
-  timestamp: number
-  txHash: string
-  settledDebt: BigNumber
-  debtToCover: BigNumber
-  collateralForLiquidation: BigNumber
-  remainingCollateral: BigNumber
-  auction?: {
-    id: string
-  }
 }
 
 // TODO to be removed when implementing aave history, dummy aave history interface

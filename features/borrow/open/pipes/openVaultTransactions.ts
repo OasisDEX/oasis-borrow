@@ -1,19 +1,21 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { createDsProxy } from 'blockchain/calls/proxy'
-import { OpenData } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import type { OpenData } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import type { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { parseVaultIdFromReceiptLogs } from 'features/shared/transactions'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
-import { AddGasEstimationFunction, TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { AddGasEstimationFunction } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { iif, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { iif, of } from 'rxjs'
 
-import { OpenVaultChange, OpenVaultState } from './openVault'
+import type { OpenVaultChange, OpenVaultState } from './openVault.types'
 
 export function applyOpenVaultTransaction(
   state: OpenVaultState,

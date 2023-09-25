@@ -1,17 +1,18 @@
-import { IPosition } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
-import {
+import type { IPosition } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
+import type {
   SparkV3ConfigurationData,
   SparkV3UserReserveData,
   SparkV3UserReserveDataParameters,
 } from 'blockchain/spark-v3'
-import {
+import type {
   AaveLikeProtocolData,
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
-import { combineLatest, Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 
 export type SparkOracleAssetPriceDataType = ({ token }: { token: string }) => Observable<BigNumber>

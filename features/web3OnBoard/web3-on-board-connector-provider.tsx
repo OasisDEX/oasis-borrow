@@ -1,7 +1,8 @@
 import { ConnectorEvent } from '@web3-react/types'
-import { NetworkConfigHexId, NetworkIds } from 'blockchain/networks'
+import type { NetworkConfigHexId } from 'blockchain/networks'
+import { NetworkIds } from 'blockchain/networks'
 import { useModalContext } from 'helpers/modalHook'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { useReducto } from 'helpers/useReducto'
 import React, { createContext, useCallback, useContext, useEffect } from 'react'
 
@@ -11,7 +12,8 @@ import { useBridgeConnector } from './use-bridge-connector'
 import { useChainSetter } from './use-chain-setter'
 import { useNetworkConnector } from './use-network-connector'
 import { useSafetyReload } from './use-safety-reload'
-import { WalletManagementState, WalletStateEvent, walletStateReducer } from './wallet-state'
+import type { WalletManagementState, WalletStateEvent } from './wallet-state'
+import { walletStateReducer } from './wallet-state'
 import {
   areThePageNetworksTheSame,
   WalletManagementStateStatus,

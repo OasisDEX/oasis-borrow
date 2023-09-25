@@ -1,13 +1,13 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Dictionary } from 'ts-essentials'
+import type { Dictionary } from 'ts-essentials'
 
 const ConstantMultipleKBLink = (
   <AppLink sx={{ color: 'warning100' }} href={EXTERNAL_LINKS.KB.WHAT_IS_CONSTANT_MULTIPLE} />

@@ -1,11 +1,11 @@
 import { NetworkIds } from 'blockchain/networks'
-import { getAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 
 const supportedNetworks = [NetworkIds.MAINNET]
 
 const supportedProtocols = [LendingProtocol.AaveV3]
-const { SparkProtocolStopLoss: sparkProtocolStopLossEnabled } = getAppConfig('features')
+const { SparkProtocolStopLoss: sparkProtocolStopLossEnabled } = getLocalAppConfig('features')
 if (sparkProtocolStopLossEnabled) {
   supportedProtocols.push(LendingProtocol.SparkV3)
 }

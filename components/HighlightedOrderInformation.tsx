@@ -1,7 +1,9 @@
 import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
-import React, { ReactNode } from 'react'
-import { SxStyleProp, Text } from 'theme-ui'
+import type { ReactNode } from 'react'
+import React from 'react'
+import type { SxStyleProp } from 'theme-ui'
+import { Text } from 'theme-ui'
 
 interface EstimationOnCloseProps {
   isLoading?: boolean

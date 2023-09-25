@@ -1,5 +1,7 @@
-import React, { ReactNode } from 'react'
-import { Box, SxStyleProp } from 'theme-ui'
+import type { ReactNode } from 'react'
+import React from 'react'
+import type { SxStyleProp } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 interface ListDefinitionProps {
   children: ReactNode

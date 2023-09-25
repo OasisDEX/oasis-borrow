@@ -1,20 +1,19 @@
+import { trackingEvents } from 'analytics/trackingEvents'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
-import { Banner, bannerGradientPresets } from 'components/Banner'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
+import { Banner } from 'components/Banner'
+import { bannerGradientPresets } from 'components/Banner.constants'
 import { useAutomationContext } from 'components/context'
 import { AppLink } from 'components/Links'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { StopLossDetailsLayout } from 'features/automation/protection/stopLoss/controls/StopLossDetailsLayout'
 import { checkIfIsEditingStopLoss } from 'features/automation/protection/stopLoss/helpers'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
+import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -120,9 +119,9 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
                 currentProtectionFeature: AutomationFeatures.STOP_LOSS,
               })
               trackingEvents.automation.buttonClick(
-                AutomationEventIds.SelectStopLoss,
-                Pages.ProtectionTab,
-                CommonAnalyticsSections.Banner,
+                MixpanelAutomationEventIds.SelectStopLoss,
+                MixpanelPages.ProtectionTab,
+                MixpanelCommonAnalyticsSections.Banner,
                 { vaultId: id.toString(), ilk: ilk },
               )
             },

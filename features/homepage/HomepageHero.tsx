@@ -7,7 +7,7 @@ import { Box, Container, Flex, Grid, Text } from 'theme-ui'
 
 import { Hero } from './common/Hero'
 import { HomepagePromoBlock } from './common/HomepagePromoBlock'
-import { OasisStats } from './OasisStats'
+import type { OasisStats } from './OasisStats'
 import { useOasisStats } from './stats'
 
 function StatCell({ label, value }: { label: string; value: string }) {

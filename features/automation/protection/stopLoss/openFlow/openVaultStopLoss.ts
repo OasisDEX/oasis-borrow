@@ -1,51 +1,37 @@
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
-import {
-  AutomationBotRemoveTriggersData,
-  removeAutomationBotAggregatorTriggers,
-} from 'blockchain/calls/automationBotAggregator'
-import { IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot.constants'
+import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator.constants'
+import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator.types'
+import type { IlkData } from 'blockchain/ilks.types'
+import type { Context } from 'blockchain/network.types'
 import { emptyNetworkConfig } from 'blockchain/networks'
-import { Tickers } from 'blockchain/prices'
+import type { Tickers } from 'blockchain/prices.types'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { AutomationPositionData } from 'components/context'
+import type { AutomationPositionData } from 'components/context'
 import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
-import { StopLossMetadata } from 'features/automation/metadata/types'
+import type { StopLossMetadata } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
   getMaxToken,
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
 import { notRequiredStopLossMetadata } from 'features/automation/protection/stopLoss/openFlow/notRequiredProperties'
-import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
-import {
+import type { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
+import type {
   StopLossFormChange,
   StopLossResetData,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+} from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
+import type { PriceInfo } from 'features/shared/priceInfo.types'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
 
-export type OpenVaultStopLossLevelChange = {
-  kind: 'stopLossLevel'
-  level: BigNumber
-}
-
-export type OpenVaultStopLossCloseTypeChange = {
-  kind: 'stopLossCloseType'
-  type: 'dai' | 'collateral'
-}
-
-export type OpenVaultStopLossChanges =
-  | OpenVaultStopLossLevelChange
-  | OpenVaultStopLossCloseTypeChange
+import type { OpenVaultStopLossChanges } from './openVaultStopLoss.types'
 
 export function applyOpenVaultStopLoss<S>(state: S, change: OpenVaultStopLossChanges) {
   if (change.kind === 'stopLossLevel') {
@@ -266,11 +252,3 @@ export function getDataForStopLoss(
 
   return { stopLossSidebarProps, automationContextProps }
 }
-
-export type StopLossOpenFlowStages =
-  | 'stopLossEditing'
-  | 'stopLossTxWaitingForConfirmation'
-  | 'stopLossTxWaitingForApproval'
-  | 'stopLossTxInProgress'
-  | 'stopLossTxFailure'
-  | 'stopLossTxSuccess'

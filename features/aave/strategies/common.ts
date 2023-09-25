@@ -1,5 +1,5 @@
-import { ManagePositionAvailableActions, ProductType, StrategyType } from 'features/aave/types'
-import { FeaturesEnum } from 'types/config'
+import type { ManagePositionAvailableActions, ProductType, StrategyType } from 'features/aave/types'
+import type { FeaturesEnum } from 'types/config'
 
 export type ProductTypeConfig = {
   featureToggle: FeaturesEnum | undefined

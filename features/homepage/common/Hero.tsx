@@ -1,11 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { useConnection } from 'features/web3OnBoard'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { scrollTo } from 'helpers/scrollTo'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
-import { Button, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
+import type { ReactNode } from 'react'
+import React from 'react'
+import type { SxStyleProp } from 'theme-ui'
+import { Button, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export function Hero({
   sx,
@@ -36,7 +38,7 @@ export function Hero({
   }
 }) {
   const { t } = useTranslation()
-  const { Referrals: referralsEnabled } = getAppConfig('features')
+  const { Referrals: referralsEnabled } = useAppConfig('features')
   const { connecting, connect } = useConnection()
 
   return (

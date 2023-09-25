@@ -1,5 +1,6 @@
 import React from 'react'
-import { Box, SxStyleProp, Text } from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui'
+import { Box, Text } from 'theme-ui'
 
 export function WithArrow({
   children,

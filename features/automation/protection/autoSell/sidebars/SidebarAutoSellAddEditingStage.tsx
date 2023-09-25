@@ -1,9 +1,9 @@
-import { Pages } from 'analytics/analytics'
+import { MixpanelPages } from 'analytics/types'
 import { BigNumber } from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { useAutomationContext } from 'components/context'
 import { AppLink } from 'components/Links'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
@@ -14,24 +14,20 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   sidebarAutomationFeatureCopyMap,
 } from 'features/automation/common/consts'
-import {
-  adjustDefaultValuesIfOutsideSlider,
-  automationInputsAnalytics,
-  automationMultipleRangeSliderAnalytics,
-  prepareAutoBSResetData,
-} from 'features/automation/common/helpers'
+import { adjustDefaultValuesIfOutsideSlider } from 'features/automation/common/helpers/adjustDefaultValuesIfOutsideSlider'
+import { automationInputsAnalytics } from 'features/automation/common/helpers/automationInputsAnalytics'
+import { automationMultipleRangeSliderAnalytics } from 'features/automation/common/helpers/automationMultipleRangeSliderAnalytics'
+import { prepareAutoBSResetData } from 'features/automation/common/helpers/prepareAutoBSResetData'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
-import {
-  AUTO_SELL_FORM_CHANGE,
-  AutoBSFormChange,
-} from 'features/automation/common/state/autoBSFormChange'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
+import { AUTO_SELL_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
+import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
+import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { handleNumericInput } from 'helpers/input'
 import { uiChanges } from 'helpers/uiChanges'
 import { useHash } from 'helpers/useHash'
@@ -73,7 +69,7 @@ export function SidebarAutoSellAddEditingStage({
     collateral: lockedCollateral,
     vaultDebt: debt,
   })
-  const { ReadOnlyBasicBS: readOnlyAutoBSEnabled } = getAppConfig('features')
+  const { ReadOnlyBasicBS: readOnlyAutoBSEnabled } = useAppConfig('features')
   const isVaultEmpty = debt.isZero()
 
   const { isStopLossEnabled, stopLossLevel } = stopLossTriggerData
@@ -307,7 +303,7 @@ export function SidebarAutoSellAddEditingStage({
         }}
         value={autoSellState.maxBaseFeeInGwei.toNumber()}
         analytics={{
-          page: Pages.AutoSell,
+          page: MixpanelPages.AutoSell,
           additionalParams: { vaultId: id.toString(), ilk },
         }}
       />

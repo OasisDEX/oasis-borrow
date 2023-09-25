@@ -1,7 +1,8 @@
 import { AaveLikePosition } from '@oasisdex/dma-library'
 import { useInterpret } from '@xstate/react'
-import { OpenAaveStateMachine } from 'features/aave/open/state'
-import { IStrategyConfig, ProxyType } from 'features/aave/types'
+import type { OpenAaveStateMachine } from 'features/aave/open/state'
+import type { IStrategyConfig } from 'features/aave/types'
+import { ProxyType } from 'features/aave/types'
 import { zero } from 'helpers/zero'
 import React from 'react'
 

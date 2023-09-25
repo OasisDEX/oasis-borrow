@@ -1,5 +1,5 @@
-import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
-import { PrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
+import type { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import type { PrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import { UnreachableCaseError } from 'ts-essentials'
 

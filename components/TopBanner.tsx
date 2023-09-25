@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { TopBannerEvents, trackingEvents } from 'analytics/analytics'
-import { getAppConfig } from 'helpers/config'
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelTopBannerEvents } from 'analytics/types'
+import { useAppConfig } from 'helpers/config'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import React from 'react'
 import { Box } from 'theme-ui'
@@ -9,8 +10,8 @@ import { rollDownTopBannerAnimation } from 'theme/animations'
 import { AppLink } from './Links'
 import { WithArrow } from './WithArrow'
 
-export const TopBanner = () => {
-  const { topBanner } = getAppConfig('parameters')
+export default function TopBanner() {
+  const { topBanner } = useAppConfig('parameters')
   const [topBannerClosed, setTopBannerClosed] = useLocalStorage(
     `TopBanner_${topBanner.name}_closed`,
     false,
@@ -33,7 +34,7 @@ export const TopBanner = () => {
         <AppLink
           href={topBanner.url as string}
           onClick={() => {
-            trackingEvents.topBannerEvent(TopBannerEvents.TopBannerClicked, 'rebranding')
+            trackingEvents.topBannerEvent(MixpanelTopBannerEvents.TopBannerClicked, 'rebranding')
           }}
           sx={{ display: 'inline', padding: 3 }}
         >
@@ -56,7 +57,10 @@ export const TopBanner = () => {
             boxSizing: 'content-box',
           }}
           onClick={() => {
-            trackingEvents.topBannerEvent(TopBannerEvents.TopBannerClosed, topBanner.name as string)
+            trackingEvents.topBannerEvent(
+              MixpanelTopBannerEvents.TopBannerClosed,
+              topBanner.name as string,
+            )
             setTopBannerClosed(true)
           }}
         />

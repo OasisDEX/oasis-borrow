@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { SECONDS_PER_YEAR } from 'components/constants'
 import { one } from 'helpers/zero'
 

@@ -1,7 +1,8 @@
-import { Context } from 'blockchain/network'
-import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
-import { VaultWithHistory } from 'features/vaultHistory/vaultsHistory'
-import { combineLatest, Observable } from 'rxjs'
+import type { Context } from 'blockchain/network.types'
+import type { IlkWithBalance } from 'features/ilks/ilksWithBalances'
+import type { VaultWithHistory } from 'features/vaultHistory/vaultsHistory.types'
+import type { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs'
 import { shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'
 

@@ -1,6 +1,6 @@
-import { User, WeeklyClaim } from '@prisma/client'
+import type { User, WeeklyClaim } from '@prisma/client'
 import { of } from 'ramda'
-import { Observable, Subject } from 'rxjs'
+import type { Observable, Subject } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map, startWith, switchMap } from 'rxjs/operators'
 

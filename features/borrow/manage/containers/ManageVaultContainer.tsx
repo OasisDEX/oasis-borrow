@@ -1,13 +1,13 @@
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { useMainContext, useProductContext } from 'components/context'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
 import { SidebarManageBorrowVault } from 'features/borrow/manage/sidebars/SidebarManageBorrowVault'
-import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { uiChanges } from 'helpers/uiChanges'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -29,7 +29,7 @@ export function ManageVaultContainer({
     priceInfo,
   } = manageVault
   const { t } = useTranslation()
-  const { StopLossRead: stopLossReadEnabled } = getAppConfig('features')
+  const { StopLossRead: stopLossReadEnabled } = useAppConfig('features')
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(

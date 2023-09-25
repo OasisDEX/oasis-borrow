@@ -1,4 +1,4 @@
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { useAccountContext, useMainContext } from 'components/context'
 import { getAddress } from 'ethers/lib/utils'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -10,7 +10,7 @@ import { FeesView } from './FeesView'
 import { ReferralLanding } from './ReferralLanding'
 import { ReferralLayout } from './ReferralLayout'
 import { ReferralsView } from './ReferralsView'
-import { UserReferralState } from './user'
+import type { UserReferralState } from './user.types'
 
 interface Props {
   context: Context

@@ -1,21 +1,11 @@
-import BigNumber from 'bignumber.js'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface CancelAutoBSInfoSectionProps {
-  positionRatio: BigNumber
-  liquidationPrice: BigNumber
-  debt: BigNumber
-  title: string
-  targetLabel: string
-  triggerLabel: string
-  autoBSTriggerData: AutoBSTriggerData
-}
+import type { CancelAutoBSInfoSectionProps } from './CancelAutoBSInfoSection.types'
 
 export function CancelAutoBSInfoSection({
   positionRatio,
@@ -28,7 +18,7 @@ export function CancelAutoBSInfoSection({
 }: CancelAutoBSInfoSectionProps) {
   const { t } = useTranslation()
   const isDebtZero = debt.isZero()
-  const { ReadOnlyBasicBS: readOnlyAutoBSEnabled } = getAppConfig('features')
+  const { ReadOnlyBasicBS: readOnlyAutoBSEnabled } = useAppConfig('features')
 
   const liquidationPriceFormatted = formatAmount(liquidationPrice, 'USD')
   const positionRatioFormatted = formatPercent(positionRatio.times(100), {

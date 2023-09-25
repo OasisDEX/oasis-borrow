@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { LendingProtocol } from 'lendingProtocols'
 import { of } from 'rxjs'
