@@ -34,7 +34,7 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
             listStyle: 'none',
             columnGap: '48px',
             justifyContent: 'center',
-            px: 5,
+            px: '80px',
           }}
         >
           {panels?.map((panel) => (

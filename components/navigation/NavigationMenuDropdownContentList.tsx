@@ -8,7 +8,10 @@ import { Box, Flex, Heading, Text } from 'theme-ui'
 
 export type NavigationMenuDropdownContentListItemProps =
   NavigationMenuPanelList['items'] extends readonly (infer ElementType)[] ? ElementType : never
-export type NavigationMenuDropdownContentListProps = NavigationMenuPanelList
+
+export type NavigationMenuDropdownContentListProps = NavigationMenuPanelList & {
+  onSelect?: (active: number) => void
+}
 
 export function NavigationMenuDropdownContentListItem({
   description,
@@ -18,7 +21,7 @@ export function NavigationMenuDropdownContentListItem({
   title,
 }: NavigationMenuDropdownContentListItemProps) {
   return (
-    <Flex sx={{ alignItems: 'center', columnGap: 2 }}>
+    <Flex sx={{ alignItems: 'center', columnGap: '12px' }}>
       {icon && icon.position === 'global' && <NavigationMenuDropdownContentIcon {...icon} />}
       <Box>
         <Flex sx={{ alignItems: 'center', columnGap: 2 }}>
@@ -71,6 +74,7 @@ export function NavigationMenuDropdownContentList({
   items,
   link,
   tight,
+  onSelect,
 }: NavigationMenuDropdownContentListProps) {
   const innerPadding = {
     py: tight ? 2 : '12px',
@@ -100,12 +104,12 @@ export function NavigationMenuDropdownContentList({
           p: 0,
         }}
       >
-        {items.map(({ hoverColor, url, ...item }) => (
+        {items.map(({ hoverColor, url, ...item }, i) => (
           <Box
+            key={i}
             as="li"
             sx={{
               cursor: 'default',
-              backgroundColor: 'neutral10',
               borderRadius: 'mediumLarge',
               transition: '200ms background-color',
               '&:hover': {
@@ -123,6 +127,9 @@ export function NavigationMenuDropdownContentList({
                   },
                 }),
               },
+            }}
+            onMouseOver={() => {
+              onSelect && onSelect(i)
             }}
           >
             {url ? (
