@@ -3,9 +3,7 @@ import type { NetworkIds } from 'blockchain/networks'
 import dayjs from 'dayjs'
 import type { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import type {
-  AjnaPositionAggregatedDataAuctions,
-} from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
+import type { AjnaPositionAggregatedDataAuctions } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { getAjnaPositionAggregatedData } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { mapAjnaBorrowishEvents } from 'features/ajna/positions/common/helpers/mapBorrowishEvents'
 import { mapAjnaEarnEvents } from 'features/ajna/positions/common/helpers/mapEarnEvents'
