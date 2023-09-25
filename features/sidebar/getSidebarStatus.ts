@@ -3,6 +3,7 @@ import type { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import type { SidebarTxData } from 'helpers/extractSidebarHelpers'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
+import { checkmark } from 'theme/icons'
 
 function getSidebarProgressTxInProgressKey({
   flow,
@@ -137,7 +138,7 @@ export function getSidebarStatus({
         {
           text: t('vault-creation-confirmed'),
           type: 'waiting',
-          icon: 'checkmark',
+          icon: checkmark,
           ...txData,
           txHash: openTxHash!,
         },
@@ -155,7 +156,7 @@ export function getSidebarStatus({
         {
           text: t('vault-creation-confirmed'),
           type: 'success',
-          icon: 'checkmark',
+          icon: checkmark,
           ...txData,
           txHash: openTxHash!,
         },

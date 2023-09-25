@@ -1,3 +1,4 @@
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { useConnection } from 'features/web3OnBoard'
 import { getAppConfig } from 'helpers/config'
@@ -7,6 +8,7 @@ import type { ReactNode } from 'react'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Button, Flex, Grid, Heading, Text } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
 export function Hero({
   sx,
@@ -94,7 +96,7 @@ export function Hero({
           >
             {isConnected ? t(primaryButton.translationKey) : t('connect-wallet')}
             <Icon
-              name="arrow_right"
+              icon={arrow_right}
               sx={{
                 ml: 2,
                 position: 'relative',

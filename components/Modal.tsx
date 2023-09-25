@@ -22,8 +22,10 @@ import {
   IconButton,
   Text,
 } from 'theme-ui'
+import { close_squared } from 'theme/icons'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
+import { Icon } from './Icon'
 import { AppLink } from './Links'
 import curry from 'ramda/src/curry'
 
@@ -68,7 +70,7 @@ export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: Mod
         ...sx,
       }}
     >
-      <Icon name="close_squared" size={size} />
+      <Icon icon={close_squared} size={size} />
     </IconButton>
   )
 }
@@ -224,7 +226,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
           mb: 2,
         }}
       >
-        <Icon name="close_squared" color="critical100" size={30} />
+        <Icon icon={close_squared} color="critical100" size={30} />
       </Flex>
       <Text sx={{ fontSize: 5, textAlign: 'center', mt: 3 }}>{t(message)}</Text>
     </Box>

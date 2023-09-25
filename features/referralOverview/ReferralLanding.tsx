@@ -5,6 +5,7 @@ import {
   useAccountContext,
   useMainContext,
 } from 'components/context'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { jwtAuthGetToken } from 'features/shared/jwt'
@@ -19,6 +20,7 @@ import { useRedirect } from 'helpers/useRedirect'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Image, Text } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
 import type { UpsertUser } from './FeesView'
 import { ReferralLayout } from './ReferralLayout'
@@ -140,7 +142,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
           >
             {t('connect-wallet-button')}
             <Icon
-              name="arrow_right"
+              icon={arrow_right}
               sx={{
                 ml: 2,
                 position: 'relative',
@@ -179,7 +181,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
           >
             {t('ref.get-started')}
             <Icon
-              name="arrow_right"
+              icon={arrow_right}
               sx={{
                 ml: 2,
                 position: 'relative',
@@ -209,7 +211,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
           >
             {t('ref.get-started')}
             <Icon
-              name="arrow_right"
+              icon={arrow_right}
               sx={{
                 ml: 2,
                 position: 'relative',

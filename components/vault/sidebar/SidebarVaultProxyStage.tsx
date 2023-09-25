@@ -13,6 +13,7 @@ import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Image, Text } from 'theme-ui'
+import { checkmark } from 'theme/icons'
 
 interface SidebarOpenVaultProxyStageProps {
   stage: SidebarVaultStages
@@ -47,7 +48,7 @@ export function SidebarVaultProxyStage({ stage, gasData }: SidebarOpenVaultProxy
         {isProxyInfoStage ? (
           <>
             <ListWithIcon
-              icon="checkmark"
+              icon={checkmark}
               iconSize="14px"
               iconColor="primary100"
               items={t('proxy-advantages', { returnObjects: true })}

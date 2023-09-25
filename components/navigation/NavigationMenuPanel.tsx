@@ -1,3 +1,4 @@
+import type { IconProps } from 'components/Icon.types'
 import { AppLink } from 'components/Links'
 import type { ReactNode } from 'react'
 import React from 'react'
@@ -8,7 +9,7 @@ export interface NavigationMenuPanelAsset {
   link: string
 }
 export interface NavigationMenuPanelLink {
-  icon: string
+  icon: IconProps['icon']
   title: string
   link: string
   hash?: string

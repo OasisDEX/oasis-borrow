@@ -4,10 +4,12 @@ import type {
   NetworkNames,
 } from 'blockchain/networks'
 import { networks, networksByName, useCustomForkParameter } from 'blockchain/networks'
+import { Icon } from 'components/Icon'
 import { Modal } from 'components/Modal'
 import type { ModalProps } from 'helpers/modalHook'
 import React from 'react'
 import { Box, Button, Flex, IconButton, Image, Input, Text } from 'theme-ui'
+import { close_squared } from 'theme/icons'
 
 export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>) {
   const [forkSettings, setForkSettings] = useCustomForkParameter()
@@ -110,7 +112,7 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
                     },
                   }}
                 >
-                  <Icon name="close_squared" size={14} />
+                  <Icon icon={close_squared} size={14} />
                 </IconButton>
               </Flex>
             )

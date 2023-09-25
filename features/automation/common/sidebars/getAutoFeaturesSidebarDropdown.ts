@@ -10,6 +10,7 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useTranslation } from 'next-i18next'
+import { circle_exchange } from 'theme/icons'
 
 import type {
   GetAutoFeaturesSidebarDropdownItemProps,
@@ -28,7 +29,7 @@ function getAutoFeaturesSidebarDropdownItem({
     label: `${t(isFeatureEnabled ? 'manage' : 'setup')} ${t(translationKey)}`,
     shortLabel: t(translationKey),
     iconShrink: 2,
-    icon: 'circle_exchange',
+    icon: circle_exchange,
     panel,
     action: () => {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {

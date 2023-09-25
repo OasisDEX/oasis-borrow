@@ -1,5 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { AssetPill } from 'components/AssetPill'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { WithArrow } from 'components/WithArrow'
@@ -71,7 +72,7 @@ export function NavigationMenuDropdownContent({
                 },
               }}
             >
-              <Icon size={48} name={icon} sx={{ flexShrink: 0 }} />
+              <Icon size={48} icon={icon} sx={{ flexShrink: 0 }} />
               <Flex sx={{ flexDirection: 'column', ml: 3 }}>
                 <Text
                   as="p"

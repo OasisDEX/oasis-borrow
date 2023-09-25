@@ -4,6 +4,7 @@ import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange
 import { uiChanges } from 'helpers/uiChanges'
 import { useOnboarding } from 'helpers/useOnboarding'
 import React, { useState } from 'react'
+import { exchange } from 'theme/icons'
 
 export function SwapWidgetOrb() {
   const [exchangeOnboarded] = useOnboarding('SwapWidget')
@@ -12,7 +13,7 @@ export function SwapWidgetOrb() {
   return (
     <NavigationOrb
       beacon={!exchangeOnboarded && !exchangeOpened}
-      icon="exchange"
+      icon={exchange}
       iconSize={18}
       onClick={() => {
         setExchangeOpened(true)

@@ -1,6 +1,8 @@
+import { Icon } from 'components/Icon'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
+import { multiply_transition } from 'theme/icons'
 
 export function AjnaBorrowFormContentTransition() {
   const { t } = useTranslation()
@@ -13,7 +15,7 @@ export function AjnaBorrowFormContentTransition() {
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('vault-form.subtext.confirm')}
       </Text>
-      <Icon name="multiply_transition" size="auto" />
+      <Icon icon={multiply_transition} size="auto" />
     </>
   )
 }

@@ -4,6 +4,7 @@ import {
   useMainContext,
   useTOSContext,
 } from 'components/context'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
@@ -16,6 +17,7 @@ import type { ReactNode } from 'react'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Label, Text } from 'theme-ui'
 import { fadeIn } from 'theme/animations'
+import { checkmark } from 'theme/icons'
 
 import type { TermsAcceptanceStage, TermsAcceptanceState } from './termsAcceptance.types'
 
@@ -140,7 +142,7 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
               }}
             >
               {checked && (
-                <Icon sx={{ animation: `${fadeIn} 0.2s` }} name="checkmark" color="success100" />
+                <Icon sx={{ animation: `${fadeIn} 0.2s` }} icon={checkmark} color="success100" />
               )}
             </Flex>
             <Text ml={3} sx={{ flex: 1, fontWeight: '400', fontSize: '14px' }}>

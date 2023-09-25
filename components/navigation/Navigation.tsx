@@ -12,6 +12,7 @@ import { useToggle } from 'helpers/useToggle'
 import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Container, ThemeProvider } from 'theme-ui'
+import { menu } from 'theme/icons'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface NavigationProps {
@@ -60,7 +61,7 @@ export function Navigation({
           {actions}
           {isViewBelowL && (
             <Box ref={ref}>
-              <NavigationOrb icon="menu" iconSize={20} onClick={toggleIsMobileMenuOpen} />
+              <NavigationOrb icon={menu} iconSize={20} onClick={toggleIsMobileMenuOpen} />
               <NavigationMobileMenu
                 close={() => {
                   setIsMobileMenuOpen(false)

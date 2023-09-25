@@ -1,4 +1,5 @@
 import type { AssetsTableBannerProps } from 'components/assetsTable/types'
+import type { IconProps } from 'components/Icon.types'
 import {
   discoverFiltersAssetItems,
   discoverMultipleFilter,
@@ -13,7 +14,7 @@ import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 export interface DiscoverFiltersListOptions {
   label: string
   value: string
-  icon?: string
+  icon?: IconProps['icon']
 }
 export interface DiscoverFiltersListItem {
   label: string

@@ -9,7 +9,7 @@ export interface IconProps extends BoxProps {
     path: JSX.Element
     viewBox?: string
   }
-  width?: number | string
-  height?: number | string
-  size?: number | string
+  width?: number | string | number[]
+  height?: number | string | number[]
+  size?: number | string | number[]
 }

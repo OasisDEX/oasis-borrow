@@ -1,16 +1,17 @@
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
+import { promoCardStar, selectBorrow, selectEarn, selectMultiply } from 'theme/icons'
 
 export const promoCardEarnOnYourAssets = {
-  icon: 'selectEarn',
+  icon: selectEarn,
   title: { key: 'product-hub.promo-cards.earn-on-your-assets' },
   description: { key: 'product-hub.promo-cards.lend-and-stake-to-earn' },
   link: { href: EXTERNAL_LINKS.KB.EARN_DAI_GUNI_MULTIPLY, label: { key: 'Learn more' } },
 }
 
 export const promoCardFullySelfCustodial = {
-  icon: 'promoCardStar',
+  icon: promoCardStar,
   title: { key: 'product-hub.promo-cards.earn-fully-self-custodial' },
   description: { key: 'product-hub.promo-cards.you-always-stay-in-control' },
   link: {
@@ -27,14 +28,14 @@ export const promoCardHowToUseBorrowOnAjna = {
 }
 
 export const promoCardLearnAboutBorrow = {
-  icon: 'selectBorrow',
+  icon: selectBorrow,
   title: { key: 'product-hub.promo-cards.get-liquidity-from-your-assets' },
   description: { key: 'product-hub.promo-cards.learn-how-to-use-borrow-and-get-liquidity' },
   link: { href: EXTERNAL_LINKS.KB.WHAT_IS_BORROW, label: { key: 'Learn more' } },
 }
 
 export const promoCardLearnAboutMultiply = {
-  icon: 'selectMultiply',
+  icon: selectMultiply,
   title: { key: 'product-hub.promo-cards.what-is-multiply' },
   description: {
     key: 'product-hub.promo-cards.increase-or-decrease-the-exposure-to-your-collateral-asset-in-one-transaction',

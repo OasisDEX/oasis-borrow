@@ -9,12 +9,14 @@ import type {
   AssetsTableSortingSettings,
 } from 'components/assetsTable/types'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { Icon } from 'components/Icon'
 import { StatefulTooltip } from 'components/Tooltip'
 import { getRandomString } from 'helpers/getRandomString'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
+import { question_o } from 'theme/icons'
 
 interface AssetsTableHeaderCellProps {
   first: boolean
@@ -220,7 +222,7 @@ export function AssetsTableHeaderCell({
                 lineHeight: 'body',
               }}
             >
-              <Icon name="question_o" size={16} color="neutral80" />
+              <Icon icon={question_o} size={16} color="neutral80" />
             </StatefulTooltip>
           )}
           {isSortable && (

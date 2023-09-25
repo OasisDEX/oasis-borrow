@@ -1,6 +1,8 @@
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import React from 'react'
 import { Button } from 'theme-ui'
+import { share } from 'theme/icons'
 
 interface ShareButtonPropsWithLink {
   hashtags?: never
@@ -72,7 +74,7 @@ export function ShareButton({ link, ...rest }: ShareButtonProps) {
           },
         }}
       >
-        <Icon name="share" size={17} />
+        <Icon icon={share} size={17} />
       </Button>
     </AppLink>
   )

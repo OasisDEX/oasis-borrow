@@ -7,7 +7,9 @@ import type { FC } from 'react'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Heading, Image, Text } from 'theme-ui'
+import { arrow_decrease, arrow_increase } from 'theme/icons'
 
+import { Icon } from './Icon'
 import type { PromoCardProps, PromoCardVariant, PromoCardWrapperProps } from './PromoCard.types'
 
 const pillColors: { [key in PromoCardVariant]: ThemeUIStyleObject } = {
@@ -99,7 +101,7 @@ export const PromoCard: FC<PromoCardProps> = ({
           mb: '12px',
         }}
       >
-        {icon && <Icon name={icon} size={44} />}
+        {icon && <Icon icon={icon} size={44} />}
         {tokens && <TokensGroup tokens={tokens} forceSize={50} />}
         {image && <Image src={image} sx={{ height: '44px' }} />}
       </Flex>
@@ -169,8 +171,8 @@ export const PromoCard: FC<PromoCardProps> = ({
                 <Translatable text={label} />
               </Text>
               <Text as="span" variant="boldParagraph3" sx={dataColors[variant]}>
-                {variant === 'negative' && <Icon name="arrow_decrease" size={12} sx={{ mr: 1 }} />}
-                {variant === 'positive' && <Icon name="arrow_increase" size={12} sx={{ mr: 1 }} />}
+                {variant === 'negative' && <Icon icon={arrow_decrease} size={12} sx={{ mr: 1 }} />}
+                {variant === 'positive' && <Icon icon={arrow_increase} size={12} sx={{ mr: 1 }} />}
                 {value}
               </Text>
             </Flex>

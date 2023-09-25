@@ -2,6 +2,9 @@ import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, IconButton } from 'theme-ui'
+import { close_squared } from 'theme/icons'
+
+import { Icon } from './Icon'
 
 type Closable = {
   close: React.MouseEventHandler<any>
@@ -44,7 +47,7 @@ export function Notice({ children, close, sx, withClose = true }: NoticeProps) {
             },
           }}
         >
-          <Icon name="close_squared" size={14} />
+          <Icon icon={close_squared} size={14} />
         </IconButton>
       )}
       <Box>{children}</Box>

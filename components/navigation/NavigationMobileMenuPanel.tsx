@@ -1,5 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { AssetPill } from 'components/AssetPill'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { mobileLinkSx } from 'components/navigation/common'
 import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
@@ -7,6 +8,7 @@ import { WithArrow } from 'components/WithArrow'
 import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers/getAjnaWithArrowColorScheme'
 import React, { useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
+import { chevron_left, chevron_right } from 'theme/icons'
 
 type NavigationMobileMenuPanelProps = NavigationMenuPanelType & {
   isOpen: boolean
@@ -37,7 +39,7 @@ export function NavigationMobileMenuPanel({
           setIsActive(true)
         }}
       >
-        {label} <Icon name="chevron_right" />
+        {label} <Icon icon={chevron_right} />
       </Button>
       <Box
         sx={{
@@ -65,7 +67,7 @@ export function NavigationMobileMenuPanel({
             setIsActive(false)
           }}
         >
-          <Icon name="chevron_left" /> {label}
+          <Icon icon={chevron_left} /> {label}
         </Button>
         <Text as="p" sx={{ mt: '24px', fontSize: '14px', color: 'neutral80', lineHeight: '22px' }}>
           {description}
@@ -95,7 +97,7 @@ export function NavigationMobileMenuPanel({
                   alignItems: 'flex-start',
                 }}
               >
-                <Icon size={32} name={icon} sx={{ flexShrink: 0, mr: 1 }} />
+                <Icon size={32} icon={icon} sx={{ flexShrink: 0, mr: 1 }} />
                 <Text as="span" sx={{ mt: 1 }}>
                   {title}
                 </Text>

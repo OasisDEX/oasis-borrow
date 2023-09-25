@@ -1,4 +1,5 @@
 import { Flex, Grid, Text } from '@theme-ui/components'
+import { Icon } from 'components/Icon'
 import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationArrow,
@@ -12,6 +13,7 @@ import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/format
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
+import { chevron_down, chevron_up } from 'theme/icons'
 
 export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultState) {
   const [showFees, setShowFees] = useState(false)
@@ -96,7 +98,7 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
             {`${formatAmount(oazoFee, 'USD')} +`}
             <Text ml={1}>{getEstimatedGasFeeTextOld(props, true)}</Text>
             <Icon
-              name={`chevron_${showFees ? 'up' : 'down'}`}
+              icon={showFees ? chevron_up : chevron_down}
               size="auto"
               width="12px"
               sx={{ ml: 2 }}

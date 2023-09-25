@@ -10,6 +10,7 @@ import { AjnaFormContentTransaction } from 'features/ajna/positions/common/sideb
 import { AjnaFormView } from 'features/ajna/positions/common/views/AjnaFormView'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { circle_close, circle_exchange } from 'theme/icons'
 
 export function AjnaBorrowFormController() {
   const { t } = useTranslation()
@@ -64,7 +65,7 @@ export function AjnaBorrowFormController() {
               ? [
                   {
                     label: t('system.actions.borrow.switch-to-multiply'),
-                    icon: 'circle_exchange',
+                    icon: circle_exchange,
                     iconShrink: 2,
                     panel: 'switch',
                     action: () => {
@@ -75,7 +76,7 @@ export function AjnaBorrowFormController() {
                   },
                   {
                     label: t('system.actions.common.close-position'),
-                    icon: 'circle_close',
+                    icon: circle_close,
                     iconShrink: 2,
                     panel: 'close',
                     action: () => {
@@ -89,7 +90,7 @@ export function AjnaBorrowFormController() {
                   //   label: t('system.adjust-position'),
                   //   panel: 'adjust',
                   //   shortLabel: t('adjust'),
-                  //   icon: 'circle_slider',
+                  //   icon: circle_slider,
                   //   iconShrink: 2,
                   //   action: () => {
                   //     dispatch({ type: 'reset' })

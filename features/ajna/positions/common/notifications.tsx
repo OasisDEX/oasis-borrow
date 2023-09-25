@@ -30,6 +30,7 @@ import { one, zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
 import type { Dispatch, FC } from 'react'
 import React from 'react'
+import { coins_cross, liquidation } from 'theme/icons'
 
 interface AjnaLiquidationNotificationWithLinkProps {
   translationKey: string
@@ -101,7 +102,7 @@ const ajnaNotifications: {
         'ajna.position-page.earn.manage.notifications.deposit-is-not-withdrawable.message',
       params: message,
     },
-    icon: 'coins_cross',
+    icon: coins_cross,
     type: 'error',
     closable: true,
     link: {
@@ -117,7 +118,7 @@ const ajnaNotifications: {
     message: {
       translationKey: 'ajna.position-page.earn.manage.notifications.earning-no-apy.message',
     },
-    icon: 'coins_cross',
+    icon: coins_cross,
     type: 'warning',
     closable: true,
     link: {
@@ -133,7 +134,7 @@ const ajnaNotifications: {
       translationKey: 'ajna.position-page.earn.manage.notifications.empty-position.message',
       params: { quoteToken },
     },
-    icon: 'coins_cross',
+    icon: coins_cross,
     type: 'warning',
     closable: true,
   }),
@@ -152,7 +153,7 @@ const ajnaNotifications: {
         />
       ),
     },
-    icon: 'coins_cross',
+    icon: coins_cross,
     type: 'warning',
     closable: true,
   }),
@@ -165,7 +166,7 @@ const ajnaNotifications: {
         <AjnaLiquidationNotificationWithLink translationKey="ajna.position-page.common.notifications.being-liquidated.message" />
       ),
     },
-    icon: 'coins_cross',
+    icon: coins_cross,
     type: 'error',
     closable: true,
   }),
@@ -178,7 +179,7 @@ const ajnaNotifications: {
         <AjnaLiquidationNotificationWithLink translationKey="ajna.position-page.common.notifications.got-liquidated.message" />
       ),
     },
-    icon: 'coins_cross',
+    icon: coins_cross,
     type: 'error',
     closable: true,
   }),
@@ -191,7 +192,7 @@ const ajnaNotifications: {
         <AjnaLiquidationNotificationWithLink translationKey="ajna.position-page.common.notifications.got-partially-liquidated.message" />
       ),
     },
-    icon: 'coins_cross',
+    icon: coins_cross,
     type: 'error',
     closable: true,
   }),
@@ -207,7 +208,7 @@ const ajnaNotifications: {
         />
       ),
     },
-    icon: 'coins_cross',
+    icon: coins_cross,
     type: 'error',
     closable: true,
   }),
@@ -220,7 +221,7 @@ const ajnaNotifications: {
         <AjnaLiquidationNotificationWithLink translationKey="ajna.position-page.earn.manage.notifications.collateral-to-withdraw.message" />
       ),
     },
-    icon: 'coins_cross',
+    icon: coins_cross,
     type: 'error',
     closable: true,
   }),
@@ -241,7 +242,7 @@ const ajnaNotifications: {
         />
       ),
     },
-    icon: 'liquidation',
+    icon: liquidation,
     type: 'error',
   }),
   safetySwichManage: () => ({
@@ -261,7 +262,7 @@ const ajnaNotifications: {
         />
       ),
     },
-    icon: 'liquidation',
+    icon: liquidation,
     type: 'error',
   }),
   nearLup: () => ({
@@ -271,7 +272,7 @@ const ajnaNotifications: {
     message: {
       translationKey: 'ajna.position-page.common.notifications.near-lup.message',
     },
-    icon: 'coins_cross',
+    icon: coins_cross,
     type: 'warning',
     closable: true,
   }),
@@ -282,7 +283,7 @@ const ajnaNotifications: {
     message: {
       translationKey: 'ajna.position-page.common.notifications.above-lup.message',
     },
-    icon: 'coins_cross',
+    icon: coins_cross,
     type: 'error',
     closable: true,
   }),

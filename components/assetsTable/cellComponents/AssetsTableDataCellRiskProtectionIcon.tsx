@@ -1,6 +1,8 @@
+import { Icon } from 'components/Icon'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Flex } from 'theme-ui'
+import { stop_loss_active } from 'theme/icons'
 
 interface AssetsTableDataRiskProtectionIconProps {
   isOwner?: boolean
@@ -20,7 +22,7 @@ export function AssetsTableDataCellRiskProtectionIcon({
         justifyContent: 'flex-end',
       }}
     >
-      <Icon name="stop_loss_active" size={36} />
+      <Icon icon={stop_loss_active} size={36} />
     </Flex>
   ) : (
     <Button

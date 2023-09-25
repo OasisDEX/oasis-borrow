@@ -3,7 +3,9 @@ import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Card, Heading, Text } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
+import { Icon } from './Icon'
 import { AppLink } from './Links'
 
 function CardContent({
@@ -88,7 +90,7 @@ export function InfoCard(props: InfoCardProps) {
             >
               {props.links[0].text}
               <Icon
-                name="arrow_right"
+                icon={arrow_right}
                 size="15px"
                 sx={{ position: 'relative', left: '6px', transition: '0.2s' }}
               />
@@ -115,7 +117,7 @@ export function InfoCard(props: InfoCardProps) {
               >
                 {text}
                 <Icon
-                  name="arrow_right"
+                  icon={arrow_right}
                   size="15px"
                   sx={{ position: 'relative', left: '6px', transition: '0.2s' }}
                 />

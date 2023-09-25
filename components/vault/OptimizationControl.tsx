@@ -1,4 +1,5 @@
 import { useAutomationContext, useMainContext } from 'components/context'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { AUTO_BUY_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
 import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
@@ -18,6 +19,7 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Container } from 'theme-ui'
+import { warning } from 'theme/icons'
 
 import { DefaultVaultLayout } from './DefaultVaultLayout'
 
@@ -38,7 +40,7 @@ function ZeroDebtOptimizationBanner({
 
   return (
     <VaultNotice
-      status={<Icon size="34px" name="warning" />}
+      status={<Icon size="34px" icon={warning} />}
       withClose={false}
       header={useTranslationKeys ? t(header) : header}
       subheader={

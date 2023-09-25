@@ -3,10 +3,14 @@ import type { ReactNode } from 'react'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Grid, Text } from 'theme-ui'
+import { checkbox } from 'theme/icons'
+
+import { Icon } from './Icon'
+import type { IconProps } from './Icon.types'
 
 interface IListWithIconProps {
   items: string[]
-  icon?: string
+  icon?: IconProps['icon']
   withIcon?: boolean
   iconSize?: number | string | number[]
   textVariant?: string
@@ -19,7 +23,7 @@ interface IListWithIconProps {
 
 export function ListWithIcon({
   items,
-  icon = 'checkbox',
+  icon = checkbox,
   withIcon = true,
   iconSize = '20px',
   textVariant = 'paragraph3',
@@ -46,7 +50,7 @@ export function ListWithIcon({
           >
             {withIcon && (
               <Icon
-                name={icon}
+                icon={icon}
                 size={iconSize}
                 color={iconColor}
                 sx={{ position: 'absolute', top: '3px', left: 0, ...iconStyle }}

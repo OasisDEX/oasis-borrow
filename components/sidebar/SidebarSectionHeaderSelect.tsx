@@ -1,4 +1,6 @@
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { Icon } from 'components/Icon'
+import type { IconProps } from 'components/Icon.types'
 import { TokensGroup } from 'components/TokensGroup'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
@@ -8,7 +10,7 @@ import { Box, Button, Text } from 'theme-ui'
 export interface SidebarSectionHeaderSelectItem {
   label: string
   shortLabel?: TranslateStringType
-  icon?: string
+  icon?: IconProps['icon']
   iconShrink?: number
   tokenIcon?: string
   panel?: string
@@ -68,7 +70,7 @@ export function SidebarSectionHeaderSelect({
           <>
             {activeItem?.icon && (
               <Icon
-                name={activeItem?.icon as string}
+                icon={activeItem?.icon}
                 size={!activeItem?.iconShrink ? '32px' : `${32 - activeItem.iconShrink * 2}px`}
                 sx={{
                   verticalAlign: 'text-bottom',

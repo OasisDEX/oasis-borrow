@@ -2,6 +2,9 @@ import type { PropsWithChildren } from 'react'
 import React from 'react'
 import type { SxProp } from 'theme-ui'
 import { Box } from 'theme-ui'
+import { mobile_menu_close } from 'theme/icons'
+
+import { Icon } from './Icon'
 
 export type DrawerMenuProps = {
   mobileCloseOnTop?: boolean
@@ -77,7 +80,7 @@ export const DrawerMenu = ({
           onClick={onClose}
         >
           <Icon
-            name="mobile_menu_close"
+            icon={mobile_menu_close}
             size={[...(mobileCloseOnTop ? [40] : []), 50]}
             sx={{
               p: 1,

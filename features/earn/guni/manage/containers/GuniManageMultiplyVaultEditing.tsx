@@ -4,6 +4,7 @@ import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Divider, Flex, Grid, Text } from 'theme-ui'
+import { dai_circle_color } from 'theme/icons'
 
 import { GuniManageMultiplyVaultChangesInformation } from './GuniManageMultiplyVaultChangesInformation'
 
@@ -27,7 +28,7 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
         <CloseVaultCard
           optionName="dai"
           text="Close to DAI"
-          icon="dai_circle_color"
+          icon={dai_circle_color}
           onClick={() => setCloseVaultTo!('dai')}
           isActive={!closeToCollateral}
         />

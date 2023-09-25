@@ -23,7 +23,7 @@ import React, { useCallback, useRef, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Card, Flex, Grid, Heading, Link as ThemeLink, Text, Textarea } from 'theme-ui'
-import { settings } from 'theme/icons'
+import { chevron_down, chevron_up, dai_color, settings, sign_out } from 'theme/icons'
 import { UnreachableCaseError } from 'ts-essentials'
 
 import { SLIPPAGE_OPTIONS } from './userSettings.constants'
@@ -173,7 +173,7 @@ function SlippageSettingsForm() {
               size="auto"
               width="12"
               height="7"
-              name={customOpened ? 'chevron_up' : 'chevron_down'}
+              icon={customOpened ? chevron_up : chevron_down}
               sx={{ ml: '6px', position: 'relative', top: '1px' }}
             />
           </Flex>
@@ -289,7 +289,7 @@ function WalletInfo() {
 
           {accountData && accountData.daiBalance && (
             <Flex sx={{ alignItems: 'center' }}>
-              <Icon sx={{ zIndex: 1 }} name="dai_color" size={16} />
+              <Icon sx={{ zIndex: 1 }} icon={dai_color} size={16} />
               <Text
                 variant="paragraph4"
                 sx={{
@@ -350,7 +350,7 @@ export function UserSettings({ sx }: { sx?: ThemeUIStyleObject }) {
           await disconnectCallback()
         }}
       >
-        <Icon name="sign_out" color="primary60" size="auto" width={20} />
+        <Icon icon={sign_out} color="primary60" size="auto" width={20} />
         <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'primary60', ml: 2 }}>
           {t('disconnect-wallet')}
         </Text>

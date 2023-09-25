@@ -1,6 +1,9 @@
-import type { ComponentProps } from 'react'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
+import { chevron_down, chevron_up } from 'theme/icons'
+
+import { Icon } from './Icon'
+import type { IconProps } from './Icon.types'
 
 export function ChevronUpDown({
   isUp,
@@ -11,11 +14,11 @@ export function ChevronUpDown({
   isUp: boolean
   variant?: string
   sx?: ThemeUIStyleObject
-} & Omit<ComponentProps<typeof Icon>, 'name'>) {
+} & Omit<IconProps, 'icon'>) {
   return (
     <Icon
       sx={{ variant: `chevronUpDown.${variant}`, ...sx }}
-      name={isUp ? 'chevron_up' : 'chevron_down'}
+      icon={isUp ? chevron_up : chevron_down}
       {...props}
     />
   )

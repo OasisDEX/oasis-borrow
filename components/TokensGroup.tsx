@@ -5,6 +5,8 @@ import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Flex } from 'theme-ui'
 
+import { Icon } from './Icon'
+
 interface TokensGroupProps {
   forceSize?: number
   sx?: ThemeUIStyleObject
@@ -32,7 +34,7 @@ export function TokensGroup({ forceSize, sx, tokens }: TokensGroupProps) {
             {Object.keys(tokensBySymbol).includes(token) ? (
               <Icon
                 size={forceSize || (tokens.length > 1 ? defaultMultipleSize : defaultSingleSize)}
-                name={getToken(token).iconCircle}
+                icon={getToken(token).iconCircle}
                 sx={{
                   verticalAlign: 'bottom',
                   my: tokens.length === 1 ? (forceSize ? 0 : '-4px') : 0,

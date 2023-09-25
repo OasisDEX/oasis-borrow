@@ -14,6 +14,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Image, Text } from 'theme-ui'
+import { checkmark } from 'theme/icons'
 import type { ActorRefFrom, Sender } from 'xstate'
 
 import type { ProxyEvent, ProxyStateMachine, ProxyStateMachineState } from './state'
@@ -48,7 +49,7 @@ function ProxyInfoStateView({ state, send, steps }: ProxyViewStateProps) {
           </Text>
           <>
             <ListWithIcon
-              icon="checkmark"
+              icon={checkmark}
               iconSize="14px"
               iconColor="primary100"
               items={t('proxy-advantages', { returnObjects: true })}

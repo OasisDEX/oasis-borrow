@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { FIAT_PRECISION } from 'components/constants'
+import { Icon } from 'components/Icon'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatBigNumber, formatCryptoBalance } from 'helpers/formatters/format'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
@@ -9,6 +10,7 @@ import type { ChangeEvent } from 'react'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Grid, Text } from 'theme-ui'
+import { exchange, minus, plus } from 'theme/icons'
 
 export type VaultAction =
   | 'Borrow'
@@ -23,7 +25,7 @@ export type VaultAction =
 
 export const PlusIcon = () => (
   <Icon
-    name="plus"
+    icon={plus}
     color="inherit"
     size={20}
     sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 1 }}
@@ -32,7 +34,7 @@ export const PlusIcon = () => (
 
 export const MinusIcon = () => (
   <Icon
-    name="minus"
+    icon={minus}
     color="inherit"
     size={20}
     sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 1 }}
@@ -333,7 +335,7 @@ export function VaultActionInput({
               },
             }}
           >
-            <Icon name="exchange" size={25} />
+            <Icon icon={exchange} size={25} />
           </Box>
         ) : undefined}
       </Grid>

@@ -16,10 +16,10 @@ export const Icon = ({
     <Box
       as="svg"
       sx={{ ...sx, size: size }}
+      // @ts-ignore
       viewBox={icon.viewBox || '0 0 24 24'}
       color={color}
       display="inline-block"
-      verticalAlign="middle"
       focusable={focusable}
       role={role}
       {...rest}

@@ -1,8 +1,10 @@
+import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { theme } from 'theme'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Card, Spinner, Text } from 'theme-ui'
+import { star } from 'theme/icons'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface FollowButtonProps {
@@ -113,7 +115,7 @@ export function FollowButton({
         ) : (
           <Box className="star">
             <Icon
-              name="star"
+              icon={star}
               size={isShort ? 14 : 12}
               sx={{
                 ...(isShort && {

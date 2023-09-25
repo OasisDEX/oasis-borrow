@@ -5,8 +5,11 @@ import type { RefObject } from 'react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
+import { Icon } from './Icon'
+import type { IconProps } from './Icon.types'
+
 export interface HeaderSelectorOption {
-  icon?: string | [string, string]
+  icon?: IconProps['icon'] | IconProps['icon'][]
   title: string
   description?: string
   balance?: string
@@ -229,7 +232,7 @@ export function HeaderSelector({
                       flexShrink: 0,
                       mr: 3,
                     }}
-                    name={Array.isArray(option.icon) ? option.icon[0] : option.icon}
+                    icon={Array.isArray(option.icon) ? option.icon[0] : option.icon}
                   />
                 )}
                 {Array.isArray(option.icon) && (
@@ -244,7 +247,7 @@ export function HeaderSelector({
                       transition: '200ms opacity',
                       transform: 'scale(1.05)',
                     }}
-                    name={option.icon[1]}
+                    icon={option.icon[1]}
                   />
                 )}
                 <Flex sx={{ flexDirection: 'column' }}>

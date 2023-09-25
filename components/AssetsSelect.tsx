@@ -6,6 +6,8 @@ import type { OptionProps, SingleValueProps, ValueType } from 'react-select'
 import ReactSelect from 'react-select'
 import { Box, Flex } from 'theme-ui'
 
+import { Icon } from './Icon'
+import type { IconProps } from './Icon.types'
 import { reactSelectCustomComponents } from './reactSelectCustomComponents'
 
 function OptionWithIcon({ innerProps, isSelected, data }: OptionProps<AssetsSelectOption>) {
@@ -23,7 +25,7 @@ function OptionWithIcon({ innerProps, isSelected, data }: OptionProps<AssetsSele
       }}
     >
       <Flex sx={{ alignItems: 'center', fontWeight: 'semiBold' }}>
-        <Icon name={data.icon} size="32px" sx={{ mr: 2, ml: 2 }} />
+        <Icon icon={data.icon} size="32px" sx={{ mr: 2, ml: 2 }} />
         {data.label}
       </Flex>
     </Box>
@@ -34,7 +36,7 @@ const InputWithIcon = (props: SingleValueProps<AssetsSelectOption>) => {
   const { value } = props.selectProps
   return (
     <Flex sx={{ alignItems: 'center', fontWeight: 'semiBold' }}>
-      <Icon name={`${(value as AssetsSelectOption).icon}`} size="32px" sx={{ mr: 2, ml: 2 }} />
+      <Icon icon={(value as AssetsSelectOption).icon} size="32px" sx={{ mr: 2, ml: 2 }} />
       {(value as AssetsSelectOption).label}
     </Flex>
   )
@@ -42,7 +44,7 @@ const InputWithIcon = (props: SingleValueProps<AssetsSelectOption>) => {
 
 interface AssetsSelectOption {
   label: string
-  icon: string
+  icon: IconProps['icon']
   link: string
 }
 

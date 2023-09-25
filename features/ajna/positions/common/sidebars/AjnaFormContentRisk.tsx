@@ -8,6 +8,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Image, Text } from 'theme-ui'
+import { checkmark } from 'theme/icons'
 
 const LINKS_MAP: { [key in AjnaProduct]: string } = {
   borrow: EXTERNAL_LINKS.DOCS.AJNA.LIQUIDATIONS,
@@ -27,7 +28,7 @@ export function AjnaFormContentRisk() {
         {t('ajna.position-page.common.form.risk.intro')}
       </Text>
       <ListWithIcon
-        icon="checkmark"
+        icon={checkmark}
         iconSize="14px"
         iconColor="primary100"
         items={[

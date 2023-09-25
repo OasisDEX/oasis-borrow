@@ -4,6 +4,10 @@ import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React, { Fragment, useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
+import { close } from 'theme/icons'
+
+import { Icon } from './Icon'
+import type { IconProps } from './Icon.types'
 
 type DetailsSectionNotificationType = 'error' | 'warning' | 'notice'
 
@@ -18,7 +22,7 @@ interface DetailsSectionNotificationWithUrl {
 
 export interface DetailsSectionNotificationItem {
   closable?: boolean
-  icon?: string
+  icon?: IconProps['icon']
   link?: (DetailsSectionNotificationWithAction | DetailsSectionNotificationWithUrl) & {
     translationKey: string
   }
@@ -103,7 +107,7 @@ export function DetailsSectionNotification({
                     bg: 'rgba(255, 255, 255, 0.2)',
                   }}
                 >
-                  <Icon name={icon} size={20} />
+                  <Icon icon={icon} size={20} />
                 </Flex>
               )}
               <Box>
@@ -154,7 +158,7 @@ export function DetailsSectionNotification({
                         setClosedNotifications((prev) => [...prev, i])
                       }}
                     >
-                      <Icon name="close" />
+                      <Icon icon={close} />
                     </Button>
                   )}
                 </Flex>

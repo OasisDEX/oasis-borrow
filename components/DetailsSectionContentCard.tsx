@@ -7,7 +7,9 @@ import type { PropsWithChildren, ReactNode } from 'react'
 import React, { useState } from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Grid, Text } from 'theme-ui'
+import { question_o } from 'theme/icons'
 
+import { Icon } from './Icon'
 import { AppLink } from './Links'
 import type { CollRatioColor } from './vault/VaultDetails'
 import { VaultDetailsCardModal } from './vault/VaultDetails'
@@ -228,7 +230,7 @@ export function DetailsSectionContentCard({
         {modal && (
           <Icon
             color={isHighlighted ? 'primary100' : 'neutral80'}
-            name="question_o"
+            icon={question_o}
             size="auto"
             width="14px"
             height="14px"

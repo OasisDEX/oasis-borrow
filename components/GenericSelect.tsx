@@ -10,6 +10,8 @@ import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
+import { Icon } from './Icon'
+import type { IconProps } from './Icon.types'
 import type { styleFn, Styles } from 'react-select/src/styles'
 
 type ReactSelectCSSProperties = ReturnType<styleFn>
@@ -20,7 +22,7 @@ type ReactSelectSimplifiedStyles = {
 export interface GenericSelectOption {
   label: string
   value: string
-  icon?: string
+  icon?: IconProps['icon']
 }
 export interface GenericSelectProps {
   /**
@@ -224,7 +226,7 @@ export function GenericSelect({
                   <Icon
                     size={iconSize}
                     sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, m: 'auto' }}
-                    name={data.icon}
+                    icon={data.icon}
                   />
                   <Text as="span" sx={{ pl: `${iconSize + 12}px` }}>
                     {children}
@@ -238,7 +240,7 @@ export function GenericSelect({
           Option: ({ children, data, ...props }) => (
             <components.Option data={data} {...props}>
               {data.icon && (
-                <Icon size={iconSize} sx={{ flexShrink: 0, mr: '12px' }} name={data.icon} />
+                <Icon size={iconSize} sx={{ flexShrink: 0, mr: '12px' }} icon={data.icon} />
               )}
               {children}
             </components.Option>

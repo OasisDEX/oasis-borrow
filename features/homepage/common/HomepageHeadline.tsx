@@ -1,7 +1,9 @@
+import { Icon } from 'components/Icon'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Text } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
 type HomePageHeadlineProps = {
   primaryText: string
@@ -44,7 +46,7 @@ export const HomepageHeadline = ({
         >
           {ctaLabel}{' '}
           <Icon
-            name="arrow_right"
+            icon={arrow_right}
             size={14}
             sx={{ ml: 2, position: 'relative', left: 2, transition: '0.2s' }}
           />

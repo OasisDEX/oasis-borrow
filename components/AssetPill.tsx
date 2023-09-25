@@ -1,8 +1,11 @@
 import { AppLink } from 'components/Links'
 import React from 'react'
 
+import { Icon } from './Icon'
+import type { IconProps } from './Icon.types'
+
 interface AssetPillProps {
-  icon: string
+  icon: IconProps['icon']
   label: string
   link: string
 }
@@ -29,7 +32,7 @@ export function AssetPill({ icon, label, link }: AssetPillProps) {
         },
       }}
     >
-      <Icon name={icon} size={20} sx={{ mr: 1 }} />
+      <Icon icon={icon} size={20} sx={{ mr: 1 }} />
       {label}
     </AppLink>
   )

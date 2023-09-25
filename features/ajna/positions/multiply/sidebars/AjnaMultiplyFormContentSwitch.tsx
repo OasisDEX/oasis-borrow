@@ -2,6 +2,7 @@ import { ListWithIcon } from 'components/ListWithIcon'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
+import { checkmark } from 'theme/icons'
 
 export function AjnaMultiplyFormContentSwitch() {
   const { t } = useTranslation()
@@ -12,7 +13,7 @@ export function AjnaMultiplyFormContentSwitch() {
         {t('multiply-to-borrow.title1')}
       </Text>
       <ListWithIcon
-        icon="checkmark"
+        icon={checkmark}
         iconSize="14px"
         iconColor="primary100"
         items={[

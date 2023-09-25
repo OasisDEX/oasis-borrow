@@ -6,9 +6,11 @@ import type { ReactNode } from 'react'
 import React, { useState } from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Grid, Text } from 'theme-ui'
+import { question_o } from 'theme/icons'
 
 import type { DetailsSectionContentCardChangePillProps } from './DetailsSectionContentCard'
 import { DetailsSectionContentCardChangePill } from './DetailsSectionContentCard'
+import { Icon } from './Icon'
 
 interface DetailsSectionFooterItemWrapperProps {
   children: ReactNode
@@ -94,7 +96,7 @@ export function DetailsSectionFooterItem({
         {modal && (
           <Icon
             color={isHighlighted ? 'primary100' : 'neutral80'}
-            name="question_o"
+            icon={question_o}
             size="auto"
             width="14px"
             height="14px"

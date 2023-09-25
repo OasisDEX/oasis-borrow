@@ -1,6 +1,7 @@
 import { useMainnetEnsName, useMainnetEnsNames } from 'blockchain/ens'
 import type { Context } from 'blockchain/network.types'
 import { NetworkHexIds } from 'blockchain/networks'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import { ReferralClaimSwitchNetworkModal } from 'features/referralOverview/referral-claim-switch-network-modal'
@@ -13,6 +14,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Card, Divider, Flex, Grid, Spinner, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
+import { arrow_right, dai_circle_color } from 'theme/icons'
 
 import type { UserReferralState } from './user.types'
 import { ClaimTxnState } from './user.types'
@@ -135,7 +137,7 @@ export function FeesView({ userReferral }: Props) {
                 {userReferral.claimTxnState === ClaimTxnState.PENDING ? (
                   <Spinner size={30} color="main" />
                 ) : (
-                  <Icon name="dai_circle_color" size="32px" />
+                  <Icon icon={dai_circle_color} size="32px" />
                 )}
                 <Text pl="12px" sx={{ whiteSpace: 'nowrap', fontSize: 2 }}>
                   {userReferral.claimTxnState === ClaimTxnState.SUCCEEDED ? t('ref.claimed') : null}
@@ -205,7 +207,7 @@ export function FeesView({ userReferral }: Props) {
                       >
                         {t('ref.etherscan')}
                         <Icon
-                          name="arrow_right"
+                          icon={arrow_right}
                           size="12px"
                           sx={{
                             ml: 1,
@@ -299,7 +301,7 @@ export function FeesView({ userReferral }: Props) {
                       >
                         {t('ref.etherscan')}
                         <Icon
-                          name="arrow_right"
+                          icon={arrow_right}
                           size="12px"
                           sx={{
                             ml: 1,
@@ -334,7 +336,7 @@ export function FeesView({ userReferral }: Props) {
                       >
                         {t('ref.accept-invite')}
                         <Icon
-                          name="arrow_right"
+                          icon={arrow_right}
                           size="12px"
                           sx={{
                             ml: 1,
@@ -366,7 +368,7 @@ export function FeesView({ userReferral }: Props) {
                       >
                         {t('ref.reject-invite')}
                         <Icon
-                          name="arrow_right"
+                          icon={arrow_right}
                           size="12px"
                           sx={{
                             ml: 1,
