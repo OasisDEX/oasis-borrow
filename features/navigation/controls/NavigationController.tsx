@@ -1,3 +1,4 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
 import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
@@ -77,7 +78,45 @@ export function NavigationController() {
                   items: [
                     {
                       list: {
-                        items: [],
+                        items: [
+                          {
+                            title: t('nav.borrow'),
+                            description:
+                              'Borrow against ETH, WBTC, DAI and any other type of collateral.',
+                            url: '/',
+                          },
+                          {
+                            title: t('nav.multiply'),
+                            description:
+                              'Increase exposure to ETH, WBTC, DAI and more; access top risk management tools.',
+                            url: '/',
+                          },
+                          {
+                            title: t('nav.earn'),
+                            description:
+                              'Earn yield on ETH, WBTC, DAI and more;  get exclusive token rewards.',
+                            url: '/',
+                          },
+                          {
+                            title: (
+                              <>
+                                <Icon
+                                  name="star"
+                                  size={16}
+                                  sx={{ mr: 1, verticalAlign: 'text-top' }}
+                                />
+                                Amplify sDAI up to 35x.
+                              </>
+                            ),
+                            description:
+                              'Use Summer.fi multiply to increase your exposure to sDAI yield seamlessly.',
+                            url: '/',
+                          },
+                        ],
+                        link: {
+                          label: t('nav.protocols-more', { protocol: 'Aave' }),
+                          url: '/',
+                        },
                       },
                       title: 'Aave',
                       icon: {

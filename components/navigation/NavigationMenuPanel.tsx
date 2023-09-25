@@ -27,10 +27,11 @@ export interface NavigationMenuPanelList {
   items: {
     description?: ReactNode
     icon?: NavigationMenuPanelIcon
-    list: Omit<NavigationMenuPanelList, 'items.list'>
+    url?: string
+    list?: NavigationMenuPanelList
     hoverColor?: string
     tags?: string[]
-    title: string
+    title: ReactNode
   }[]
   link?: {
     label: string

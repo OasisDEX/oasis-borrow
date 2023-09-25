@@ -88,8 +88,6 @@ export function NavigationMenuDropdown({
                 key={i}
                 sx={{
                   position: 'absolute',
-                  flexDirection: 'column',
-                  rowGap: 4,
                   width: '100%',
                   opacity: currentPanel === label ? 1 : 0,
                   pointerEvents: isPanelOpen && currentPanel === label ? 'auto' : 'none',

@@ -905,6 +905,7 @@
     "protocols-ajna": "Borrow, Multiply and Earn on anything.<br>No governance. No Oracles.",
     "protocols-maker": "Borrow, Multiply and Earn with<br>the Maker Protocol. Builders of DAI.",
     "protocols-spark": "Borrow, Multiply and Earn on Spark.<br>The advanced lending powered by Maker.",
+    "protocols-more": "View everything possible on {{protocol}}",
     "referrals": "Referrals",
     "resources": "Resources",
     "security": "Security",
