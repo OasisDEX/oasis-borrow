@@ -1,29 +1,30 @@
 import BigNumber from 'bignumber.js'
-import { createExecuteTransaction, DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
+import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
+import { createExecuteTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
-import { Tickers } from 'blockchain/prices'
-import { TokenBalances } from 'blockchain/tokens'
-import { getPositionIdFromDpmProxy$, UserDpmAccount } from 'blockchain/userDpmProxies'
-import { OpenAaveStateMachineServices } from 'features/aave/open/state'
+import type { Context } from 'blockchain/network.types'
+import type { Tickers } from 'blockchain/prices.types'
+import type { TokenBalances } from 'blockchain/tokens.types'
+import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
+import type { OpenAaveStateMachineServices } from 'features/aave/open/state'
 import { getPricesFeed$ } from 'features/aave/services'
-import {
-  contextToEthersTransactions,
+import type {
   IStrategyInfo,
-  ProxyType,
   StrategyTokenAllowance,
   StrategyTokenBalance,
 } from 'features/aave/types'
-import { IStrategyConfig } from 'features/aave/types/strategy-config'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import { contextToEthersTransactions, ProxyType } from 'features/aave/types'
+import type { IStrategyConfig } from 'features/aave/types/strategy-config'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
-import { UserSettingsState } from 'features/userSettings/userSettings'
+import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { allDefined } from 'helpers/allDefined'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { LendingProtocol } from 'lendingProtocols'
-import {
+import type {
   AaveLikeProtocolData,
   AaveLikeReserveConfigurationData,
   AaveLikeReserveConfigurationDataParams,
@@ -31,7 +32,8 @@ import {
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
-import { combineLatest, iif, Observable, of, throwError } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, iif, of, throwError } from 'rxjs'
 import { catchError, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 import { interpret } from 'xstate'
 
@@ -235,6 +237,7 @@ export function getOpenAaveV3PositionStateMachineServices(
           : undefined
 
       const proxy = context.userDpmAccount?.proxy
+
       const user = context.userDpmAccount?.user
       if (!proxy) {
         return throwError(new Error('No proxy available - save position unsuccessful'))

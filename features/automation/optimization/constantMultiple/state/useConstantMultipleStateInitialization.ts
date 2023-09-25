@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js'
-import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import type BigNumber from 'bignumber.js'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers/calculateCollRatioFromMultiple'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 import {
   getConstantMultipleMultipliers,
   getDefaultMultiplier,
@@ -9,18 +9,13 @@ import {
   getConstantMutliplyMinMaxValues,
   getEligibleMultipliers,
 } from 'features/automation/optimization/constantMultiple/helpers'
-import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import {
-  ConstantMultipleTriggerData,
-  prepareConstantMultipleResetData,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { prepareConstantMultipleResetData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useEffect } from 'react'
 
-export const CONSTANT_MULTIPLE_GROUP_TYPE = 1
-
-export const DEFAULT_TARGET_OFFSET = 10
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from './constantMultipleFormChange.constants'
+import type { ConstantMultipleTriggerData } from './constantMultipleTriggerData.types'
 
 export function useConstantMultipleStateInitialization({
   debt,

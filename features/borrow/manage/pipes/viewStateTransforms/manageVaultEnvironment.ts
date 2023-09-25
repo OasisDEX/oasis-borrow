@@ -1,21 +1,7 @@
-import { IlkDataChange } from 'blockchain/ilks'
-import { VaultChange } from 'blockchain/vaults'
-import { AutomationTriggersChange } from 'features/automation/api/automationTriggersData'
-import {
+import type {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
-} from 'features/borrow/manage/pipes/manageVault'
-import { BalanceInfoChange } from 'features/shared/balanceInfo'
-import { PriceInfoChange } from 'features/shared/priceInfo'
-import { VaultHistoryChange } from 'features/vaultHistory/vaultHistory'
-
-export type ManageVaultEnvironmentChange =
-  | PriceInfoChange
-  | BalanceInfoChange
-  | IlkDataChange
-  | VaultChange
-  | VaultHistoryChange
-  | AutomationTriggersChange
+} from 'features/borrow/manage/pipes/manageVault.types'
 
 export function applyManageVaultEnvironment<VaultState extends ManageStandardBorrowVaultState>(
   change: ManageVaultChange,

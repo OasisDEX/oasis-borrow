@@ -43,6 +43,7 @@ jobs:
           LATEST_TAG: latest
           ENVIRONMENT_TAG: staging
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          CONFIG_URL: ${{ secrets.CONFIG_URL }}
         run: |
           # Build a docker container and
           # push it to ECR so that it can
@@ -72,6 +73,7 @@ jobs:
                        --build-arg ONE_INCH_API_KEY=${{ secrets.ONE_INCH_API_KEY_STAGING }} \
                        --build-arg ONE_INCH_API_URL=${{ secrets.ONE_INCH_API_URL_STAGING }} \
                        --build-arg REFERRAL_SUBGRAPH_URL=${{ secrets.REFERRAL_SUBGRAPH_URL_STAGING }} \
+                       --build-arg CONFIG_URL=${{ secrets.CONFIG_URL }} \
                        --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \

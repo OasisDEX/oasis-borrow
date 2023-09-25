@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { Dictionary } from 'ts-essentials'
+import type { Dictionary } from 'ts-essentials'
 
 export function useRedirect() {
   const router = useRouter()

@@ -1,6 +1,6 @@
 import { DrawerMenu } from 'components/DrawerMenu'
-import { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
-import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
+import type { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
+import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { NavigationMobileMenuLink } from 'components/navigation/NavigationMobileMenuLink'
 import { NavigationMobileMenuPanel } from 'components/navigation/NavigationMobileMenuPanel'
 import React from 'react'

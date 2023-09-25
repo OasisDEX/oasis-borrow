@@ -4,10 +4,10 @@ import { PageSEOTags } from 'components/HeadTags'
 import { AjnaPoolFinderController } from 'features/ajna/common/controls/AjnaPoolFinderController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { ProductHubProductType } from 'features/productHub/types'
-import { Feature } from 'helpers/config'
-import { GetStaticPaths, GetStaticProps } from 'next'
+import type { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
+import { FeaturesEnum } from 'types/config'
 
 function AjnaPoolFinderPage({ product }: { product: ProductHubProductType }) {
   return (
@@ -18,7 +18,7 @@ function AjnaPoolFinderPage({ product }: { product: ProductHubProductType }) {
         url={`/ajna/pool-finder/${product}`}
       />
       <ProductContextHandler>
-        <WithFeatureToggleRedirect feature={Feature.AjnaPoolFinder}>
+        <WithFeatureToggleRedirect feature={FeaturesEnum.AjnaPoolFinder}>
           <AjnaPoolFinderController product={product} />
         </WithFeatureToggleRedirect>
       </ProductContextHandler>

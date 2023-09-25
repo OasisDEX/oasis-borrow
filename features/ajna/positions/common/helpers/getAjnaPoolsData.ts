@@ -1,45 +1,10 @@
-import { Bucket } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
-import { SubgraphsResponses } from 'features/subgraphLoader/types'
+import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
-export interface AjnaPoolsDataResponse {
-  address: string
-  collateralAddress: string
-  quoteTokenAddress: string
-  debt: string
-  depositSize: string
-  interestRate: string
-  dailyPercentageRate30dAverage: string
-  poolMinDebtAmount: string
-  lup: string
-  lupIndex: string
-  htp: string
-  htpIndex: string
-  lendApr: string
-  borrowApr: string
-  buckets: Bucket[]
-}
-
-export interface AjnaPoolsTableData {
-  address: string
-  collateralAddress: string
-  quoteTokenAddress: string
-  debt: BigNumber
-  depositSize: BigNumber
-  interestRate: BigNumber
-  dailyPercentageRate30dAverage: BigNumber
-  poolMinDebtAmount: BigNumber
-  lowestUtilizedPrice: BigNumber
-  lowestUtilizedPriceIndex: number
-  highestThresholdPrice: BigNumber
-  highestThresholdPriceIndex: number
-  lendApr: BigNumber
-  borrowApr: BigNumber
-  buckets: Bucket[]
-}
+import type { AjnaPoolsTableData } from './getAjnaPoolsData.types'
 
 export const getAjnaPoolsData = async (networkId: NetworkIds): Promise<AjnaPoolsTableData[]> => {
   const { response } = (await loadSubgraph(

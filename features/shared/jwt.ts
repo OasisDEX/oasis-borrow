@@ -1,10 +1,11 @@
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk'
 import { decode } from 'jsonwebtoken'
-import { Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { fromPromise } from 'rxjs/internal-compatibility'
 import { map } from 'rxjs/operators'
-import Web3 from 'web3'
+import type Web3 from 'web3'
 
 const LOCAL_STORAGE_GNOSIS_SAFE_PENDING = 'gnosis-safe-pending'
 

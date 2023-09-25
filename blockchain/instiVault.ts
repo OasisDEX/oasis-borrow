@@ -1,27 +1,17 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import dayjs from 'dayjs'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { shareReplay, switchMap } from 'rxjs/operators'
 
-import { CallObservable } from './calls/observe'
-import { vatGem, vatUrns } from './calls/vat'
-import { VaultResolve } from './calls/vaultResolver'
-import { IlkData } from './ilks'
-import { Context } from './network'
-import { OraclePriceData, OraclePriceDataArgs } from './prices'
+import type { CallObservable } from './calls/observe'
+import type { vatGem, vatUrns } from './calls/vat'
+import type { VaultResolve } from './calls/vaultResolver'
+import type { IlkData } from './ilks.types'
+import type { CharterStreamFactory, InstiVault } from './instiVault.types'
+import type { Context } from './network.types'
+import type { OraclePriceData, OraclePriceDataArgs } from './prices.types'
 import { buildPosition, collateralPriceAtRatio } from './vault.maths'
-import { Vault } from './vaults'
-
-export interface InstiVault extends Vault {
-  originationFeePercent: BigNumber
-  activeCollRatio: BigNumber
-  activeCollRatioPriceUSD: BigNumber
-  termEnd: Date
-  currentFixedFee: BigNumber
-  nextFeeChange: string
-}
-
-type CharterStreamFactory = (args: { ilk: string; usr: string }) => Observable<BigNumber>
 
 export function createInstiVault$(
   vaultResolver$: (cdpId: BigNumber) => Observable<VaultResolve>,

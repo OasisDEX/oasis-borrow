@@ -1,4 +1,4 @@
-import { ManagePositionAvailableActions } from 'features/aave/types'
+import type { ManagePositionAvailableActions } from 'features/aave/types'
 
 export const allActionsAvailableBorrow: ManagePositionAvailableActions[] = [
   'manage-collateral',

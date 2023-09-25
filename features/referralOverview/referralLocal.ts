@@ -1,5 +1,6 @@
 import { isAddress } from 'ethers/lib/utils'
-import { Observable, of, Subject } from 'rxjs'
+import type { Observable, Subject } from 'rxjs'
+import { of } from 'rxjs'
 import { startWith, switchMap } from 'rxjs/operators'
 
 /**

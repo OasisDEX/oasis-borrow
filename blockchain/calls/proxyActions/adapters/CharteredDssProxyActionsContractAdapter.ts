@@ -1,15 +1,13 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
-import { ContractDesc } from 'features/web3Context'
-import { DssProxyActionsCharter } from 'types/web3-v1-contracts'
-import { NonPayableTransactionObject } from 'types/web3-v1-contracts/types'
+import type { ContractDesc } from 'features/web3Context'
+import type { DssProxyActionsCharter } from 'types/web3-v1-contracts'
+import type { NonPayableTransactionObject } from 'types/web3-v1-contracts/types'
 
 import { ManagerlessProxyActionsContractAdapter } from './ManagerlessProxyActionsAdapter'
-import {
-  ClaimRewardData,
-  ProxyActionsAdapterType,
-} from './ProxyActionsSmartContractAdapterInterface'
+import type { ClaimRewardData } from './ProxyActionsSmartContractAdapterInterface'
+import { ProxyActionsAdapterType } from './ProxyActionsSmartContractAdapterInterface'
 
 export class CharteredDssProxyActionsContractAdapter extends ManagerlessProxyActionsContractAdapter<DssProxyActionsCharter> {
   AdapterType = ProxyActionsAdapterType.CHARTER

@@ -1,7 +1,7 @@
 import { useActor } from '@xstate/react'
 import { MessageCard } from 'components/MessageCard'
-import { SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import type { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
 import {
   ConnectedSidebarSection,
   OpenAaveStopLossInformation,
@@ -11,15 +11,15 @@ import {
 import { hasUserInteracted } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
-import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
+import type { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
 import { isAllowanceNeeded, ProductType, ProxyType } from 'features/aave/types'
-import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTomfoolery } from 'helpers/useTomfoolery'
 import { zero } from 'helpers/zero'
@@ -27,7 +27,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
-import { Sender, StateFrom } from 'xstate'
+import type { Sender, StateFrom } from 'xstate'
 
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
 import { SillyVideo } from './SillyVideo'
@@ -293,7 +293,7 @@ function EditingStateViewSidebarPrimaryButton({
 > {
   const { t } = useTranslation()
 
-  const { ProxyCreationDisabled: isProxyCreationDisabled } = getAppConfig('features')
+  const { ProxyCreationDisabled: isProxyCreationDisabled } = useAppConfig('features')
 
   const hasProxy =
     state.context.strategyConfig.proxyType === ProxyType.DpmProxy

@@ -1,7 +1,7 @@
-import { BigNumber } from 'bignumber.js'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ContextConnected } from 'blockchain/network'
-import {
+import type { BigNumber } from 'bignumber.js'
+import type { TxMetaKind } from 'blockchain/calls/txMeta'
+import type { ContextConnected } from 'blockchain/network.types'
+import type {
   NonPayableTransactionObject,
   PayableTransactionObject,
 } from 'types/web3-v1-contracts/types'

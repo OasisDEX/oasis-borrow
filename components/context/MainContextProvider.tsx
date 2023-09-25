@@ -1,5 +1,6 @@
-import { MainContext, setupMainContext } from 'helpers/context/MainContext'
-import { WithChildren } from 'helpers/types'
+import { setupMainContext } from 'helpers/context/MainContext'
+import type { MainContext } from 'helpers/context/MainContext.types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 
 export const mainContext = React.createContext<MainContext | undefined>(undefined)

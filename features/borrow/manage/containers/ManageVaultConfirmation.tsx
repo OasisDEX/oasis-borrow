@@ -1,8 +1,9 @@
 import { Divider } from '@theme-ui/components'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
+import React, { useEffect, useState } from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
 
 import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'

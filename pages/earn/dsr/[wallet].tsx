@@ -8,13 +8,13 @@ import { DsrViewContainer } from 'features/dsr/containers/DsrViewContainer'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
-import { Feature } from 'helpers/config'
 import { LendingProtocolLabel } from 'lendingProtocols'
-import { GetServerSidePropsContext } from 'next'
+import type { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
+import { FeaturesEnum } from 'types/config'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -29,7 +29,7 @@ function Dsr({ walletAddress }: { walletAddress: string }) {
   const { t } = useTranslation()
   return (
     <ProductContextHandler>
-      <WithFeatureToggleRedirect feature={Feature.DaiSavingsRate}>
+      <WithFeatureToggleRedirect feature={FeaturesEnum.DaiSavingsRate}>
         <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
           <WithTermsOfService>
             <WithWalletAssociatedRisk>

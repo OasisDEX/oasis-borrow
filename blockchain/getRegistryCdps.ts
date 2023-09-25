@@ -1,11 +1,12 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import isEqual from 'lodash/isEqual'
 import { of } from 'ramda'
-import { combineLatest, Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { getNetworkContracts } from './contracts'
-import { Context } from './network'
+import type { Context } from './network.types'
 import { NetworkIds } from './networks'
 
 function filterSupportedIlksOnNetwork(joins: Record<string, string>, ilks: string[]): string[] {

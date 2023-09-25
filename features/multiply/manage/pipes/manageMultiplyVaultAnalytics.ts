@@ -1,80 +1,25 @@
-import { Tracker } from 'analytics/analytics'
+import type { Tracker } from 'analytics/trackingEvents'
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { networkSetById } from 'blockchain/networks'
 import { formatOazoFee } from 'features/multiply/manage/utils'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import { merge, Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { merge } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
-import { CloseVaultTo, ManageMultiplyVaultState } from './manageMultiplyVault'
-
-type AdjustPositionConfirm = {
-  kind: 'adjustPositionConfirm'
-  value: {
-    ilk: string
-    multiply: string
-  }
-}
-
-type AdjustPositionConfirmTransaction = {
-  kind: 'adjustPositionConfirmTransaction'
-  value: {
-    ilk: string
-    multiply: string
-    txHash: string
-    oasisFee: string
-  }
-}
-
-type OtherActionsConfirm = {
-  kind: 'otherActionsConfirm'
-  value: {
-    ilk: string
-    collateralAmount: BigNumber
-    daiAmount: BigNumber
-  }
-}
-
-type OtherActionsConfirmTransaction = {
-  kind: 'otherActionsConfirmTransaction'
-  value: {
-    ilk: string
-    collateralAmount: BigNumber
-    daiAmount: BigNumber
-    txHash: string
-    oasisFee: string
-  }
-}
-
-type CloseVaultConfirm = {
-  kind: 'closeVaultConfirm'
-  value: {
-    ilk: string
-    debt: string
-    closeTo: CloseVaultTo
-    txHash: string
-  }
-}
-
-type CloseVaultConfirmTransaction = {
-  kind: 'closeVaultConfirmTransaction'
-  value: {
-    ilk: string
-    debt: string
-    closeTo: CloseVaultTo
-    txHash: string
-    oasisFee: string
-  }
-}
-
-type ManageMultiplyConfirmTransaction =
-  | AdjustPositionConfirmTransaction
-  | OtherActionsConfirmTransaction
-  | CloseVaultConfirmTransaction
-
-type ManageMultiplyConfirm = AdjustPositionConfirm | OtherActionsConfirm | CloseVaultConfirm
+import type {
+  AdjustPositionConfirm,
+  AdjustPositionConfirmTransaction,
+  CloseVaultConfirm,
+  CloseVaultConfirmTransaction,
+  ManageMultiplyConfirm,
+  ManageMultiplyConfirmTransaction,
+  OtherActionsConfirm,
+  OtherActionsConfirmTransaction,
+} from './manageMultiplyVaultAnalytics.types'
+import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
 
 export function createManageMultiplyVaultAnalytics$(
   manageMultiplyVaultState$: Observable<ManageMultiplyVaultState>,

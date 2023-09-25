@@ -1,19 +1,19 @@
 import { TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
-import { Tickers } from 'blockchain/prices'
+import type { Tickers } from 'blockchain/prices.types'
 import { isProductContextAvailable, useProductContext } from 'components/context'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import {
-  AutoBSTriggerData,
   defaultAutoBSData,
   extractAutoBSData,
 } from 'features/automation/common/state/autoBSTriggerData'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 import { useAutoBSstateInitialization } from 'features/automation/common/state/useAutoBSStateInitializator'
 import { initializeMetadata } from 'features/automation/metadata/helpers'
-import {
+import type {
   AutoBSMetadata,
   AutomationDefinitionMetadata,
   AutoTakeProfitMetadata,
@@ -21,28 +21,23 @@ import {
   OverwriteTriggersDefaults,
   StopLossMetadata,
 } from 'features/automation/metadata/types'
-import {
-  AutoTakeProfitTriggerData,
-  defaultAutoTakeProfitData,
-  extractAutoTakeProfitData,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
+import { defaultAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/defaultAutoTakeProfitData'
 import { useAutoTakeProfitStateInitializator } from 'features/automation/optimization/autoTakeProfit/state/useAutoTakeProfitStateInitializator'
-import {
-  ConstantMultipleTriggerData,
-  defaultConstantMultipleData,
-  extractConstantMultipleData,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { extractConstantMultipleData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { defaultConstantMultipleData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData.constants'
+import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData.types'
 import { useConstantMultipleStateInitialization } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
-import {
-  defaultStopLossData,
-  extractStopLossData,
-  StopLossTriggerData,
-} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { defaultStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.constants'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import { useStopLossStateInitialization } from 'features/automation/protection/stopLoss/state/useStopLossStateInitialization'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { VaultProtocol } from 'helpers/getVaultProtocol'
+import type { VaultType } from 'features/generalManageVault/vaultType.types'
+import type { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
-import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
+import type { PropsWithChildren } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 export interface AutomationEnvironmentData {
   canInteract: boolean

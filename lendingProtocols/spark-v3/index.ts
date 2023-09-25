@@ -1,15 +1,15 @@
+import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import * as blockchainCalls from 'blockchain/spark-v3'
-import { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
-import {
+import type {
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
-import { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
+import type { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { makeObservableForNetworkId } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 
 import {
   getReserveConfigurationDataWithEMode$,

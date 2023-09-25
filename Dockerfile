@@ -5,9 +5,13 @@ EXPOSE 3000
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
 COPY ./server/ /usr/src/app/server
+COPY ./scripts/get-config-types.js /usr/src/app/scripts/get-config-types.js
 COPY ./blockchain/abi/*.json /usr/src/app/blockchain/abi/
 
 WORKDIR /usr/src/app
+
+ARG CONFIG_URL=''
+ENV CONFIG_URL=$CONFIG_URL
 
 RUN yarn --no-progress --non-interactive --frozen-lockfile
 

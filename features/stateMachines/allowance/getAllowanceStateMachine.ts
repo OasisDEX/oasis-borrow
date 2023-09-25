@@ -1,14 +1,15 @@
 import { approve } from 'blockchain/calls/erc20'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
+import type { CommonTransactionServices } from 'features/stateMachines/transaction'
 import {
-  CommonTransactionServices,
   createTransactionStateMachine,
   startTransactionService,
 } from 'features/stateMachines/transaction'
-import { TxHelpers } from 'helpers/context/types'
-import { Observable } from 'rxjs'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { Observable } from 'rxjs'
 
-import { AllowanceTxMeta, createAllowanceStateMachine } from './state/createAllowanceStateMachine'
+import type { AllowanceTxMeta } from './state/createAllowanceStateMachine'
+import { createAllowanceStateMachine } from './state/createAllowanceStateMachine'
 
 export function getAllowanceStateMachine(
   txHelpers$: Observable<TxHelpers>,

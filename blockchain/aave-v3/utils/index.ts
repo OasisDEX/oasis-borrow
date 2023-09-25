@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { AaveV3ReserveDataParameters } from 'blockchain/aave-v3/aave-v3-pool-data-provider'
-import { AaveV3SupportedNetwork } from 'blockchain/aave-v3/aave-v3-supported-network'
-import { AllNetworksContractsType, getNetworkContracts } from 'blockchain/contracts'
+import type { AaveV3ReserveDataParameters } from 'blockchain/aave-v3/aave-v3-pool-data-provider'
+import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3/aave-v3-supported-network'
+import type { AllNetworksContractsType } from 'blockchain/contracts'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
-import { ethers } from 'ethers'
+import type { ethers } from 'ethers'
 
 export type Factory<T> = {
   connect: (address: string, rpcProvider: ethers.providers.Provider) => T

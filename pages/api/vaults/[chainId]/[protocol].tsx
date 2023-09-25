@@ -1,5 +1,5 @@
 import { getVaults } from 'handlers/vaults'
-import { NextApiHandler } from 'next'
+import type { NextApiHandler } from 'next'
 
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {

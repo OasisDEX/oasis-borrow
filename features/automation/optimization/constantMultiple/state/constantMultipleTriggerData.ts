@@ -1,56 +1,19 @@
 import { TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
-import { DEFAULT_DEVIATION, DEFAULT_MAX_BASE_FEE_IN_GWEI } from 'features/automation/common/consts'
-import {
-  calculateCollRatioFromMultiple,
-  calculateMultipleFromTargetCollRatio,
-  resolveMaxBuyOrMinSellPrice,
-  resolveWithThreshold,
-} from 'features/automation/common/helpers'
-import {
-  AutoBSTriggerData,
-  extractAutoBSData,
-} from 'features/automation/common/state/autoBSTriggerData'
-import { DEFAULT_TARGET_OFFSET } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers/calculateCollRatioFromMultiple'
+import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
+import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers/resolveMaxBuyOrMinSellPrice'
+import { resolveWithThreshold } from 'features/automation/common/helpers/resolveWithThreshold'
+import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { zero } from 'helpers/zero'
 
-interface ConstantMultipleAggregatedTriggers {
-  [TriggerType.BasicBuy]: AutoBSTriggerData
-  [TriggerType.BasicSell]: AutoBSTriggerData
-}
-
-export interface ConstantMultipleTriggerData {
-  triggersId: [BigNumber, BigNumber]
-  buyExecutionCollRatio: BigNumber
-  sellExecutionCollRatio: BigNumber
-  targetCollRatio: BigNumber
-  maxBuyPrice: BigNumber
-  minSellPrice: BigNumber
-  continuous: boolean
-  deviation: BigNumber
-  maxBaseFeeInGwei: BigNumber
-  isTriggerEnabled: boolean
-}
-
-interface PrepareConstantMultipleResetDataProps {
-  defaultMultiplier: number
-  defaultCollRatio: BigNumber
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-}
-
-export const defaultConstantMultipleData: ConstantMultipleTriggerData = {
-  triggersId: [zero, zero],
-  buyExecutionCollRatio: zero,
-  sellExecutionCollRatio: zero,
-  targetCollRatio: zero,
-  maxBuyPrice: zero,
-  minSellPrice: zero,
-  continuous: false,
-  deviation: DEFAULT_DEVIATION,
-  maxBaseFeeInGwei: DEFAULT_MAX_BASE_FEE_IN_GWEI,
-  isTriggerEnabled: false,
-}
+import { defaultConstantMultipleData } from './constantMultipleTriggerData.constants'
+import type {
+  ConstantMultipleAggregatedTriggers,
+  ConstantMultipleTriggerData,
+  PrepareConstantMultipleResetDataProps,
+} from './constantMultipleTriggerData.types'
+import { DEFAULT_TARGET_OFFSET } from './useConstantMultipleStateInitialization.constants'
 
 function mapConstantMultipleTriggerData(
   constantMultipleAggregatedTriggers: ConstantMultipleAggregatedTriggers,

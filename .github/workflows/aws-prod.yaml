@@ -14,6 +14,7 @@ jobs:
       ECR_REPO_NAME: summer-fi-prod
       SERVICE_NAME: summer-fi-prod
       CLUSTER_NAME: summer-fi-prod
+      CONFIG_URL: ${{ secrets.CONFIG_URL }}
 
     steps:
       - name: Checkout
@@ -72,6 +73,7 @@ jobs:
                        --build-arg ONE_INCH_API_KEY=${{ secrets.ONE_INCH_API_KEY_PROD }} \
                        --build-arg ONE_INCH_API_URL=${{ secrets.ONE_INCH_API_URL_PROD }} \
                        --build-arg REFERRAL_SUBGRAPH_URL=${{ secrets.REFERRAL_SUBGRAPH_URL_PROD }} \
+                       --build-arg CONFIG_URL=${{ secrets.CONFIG_URL }} \
                        --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \

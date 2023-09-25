@@ -1,14 +1,12 @@
-import { TxStatus } from '@oasisdex/transactions'
+import type { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
+import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'

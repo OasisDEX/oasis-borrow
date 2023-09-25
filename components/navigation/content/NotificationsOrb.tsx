@@ -1,7 +1,8 @@
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
 import { NotificationsCenter } from 'components/notifications/NotificationsCenter'
 import { getUnreadNotificationCount } from 'features/notifications/helpers'
-import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import type { NotificationChange } from 'features/notifications/notificationChange'
+import { NOTIFICATION_CHANGE } from 'features/notifications/notificationChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 

@@ -1,7 +1,7 @@
-import Web3 from 'web3'
-import { AbiItem } from 'web3-utils'
+import type Web3 from 'web3'
+import type { AbiItem } from 'web3-utils'
 
-import { ChallengeJWT } from './challenge'
+import type { ChallengeJWT } from './challenge'
 
 export const gnosisAbi: AbiItem[] = [
   {

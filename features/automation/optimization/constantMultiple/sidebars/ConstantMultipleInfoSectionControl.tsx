@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/consts'
 import { AddConstantMultipleInfoSection } from 'features/automation/optimization/constantMultiple/controls/AddConstantMultipleInfoSection'
-import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
 import { zero } from 'helpers/zero'
 import React from 'react'
 

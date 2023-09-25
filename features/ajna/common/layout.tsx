@@ -2,12 +2,13 @@ import { Footer } from 'components/Footer'
 import { PageSEOTags } from 'components/HeadTags'
 import { WithAnnouncementLayout } from 'components/layouts'
 import { AjnaNavigationController } from 'features/navigation/controls/AjnaNavigationController'
-import React, { PropsWithChildren } from 'react'
+import type { WithChildren } from 'helpers/types/With.types'
+import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 import { ThemeProvider } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
-export function AjnaLayout({ children }: PropsWithChildren<{}>) {
+export function AjnaLayout({ children }: WithChildren) {
   return (
     <ThemeProvider theme={ajnaExtensionTheme}>
       <WithAnnouncementLayout

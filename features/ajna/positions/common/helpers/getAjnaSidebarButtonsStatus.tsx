@@ -1,4 +1,4 @@
-import {
+import type {
   AjnaFlow,
   AjnaFormAction,
   AjnaSidebarEditingStep,

@@ -1,9 +1,9 @@
 import { ethers } from 'ethers'
 import { useMemo, useState } from 'react'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { Context } from './network'
+import type { Context } from './network.types'
 import { getNetworkRpcEndpoint, NetworkIds } from './networks'
 
 export function resolveENSName$(context$: Observable<Context>, address: string) {

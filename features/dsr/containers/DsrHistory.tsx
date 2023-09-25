@@ -1,7 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import { DefinitionList } from 'components/DefinitionList'
 import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
-import { DsrEvent } from 'features/dsr/helpers/dsrHistory'
+import type { DsrEvent } from 'features/dsr/helpers/dsrHistory'
 import { VaultHistoryEntry } from 'features/vaultHistory/VaultHistoryEntry'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'

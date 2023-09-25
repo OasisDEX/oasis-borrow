@@ -1,11 +1,12 @@
-import { TriggerType } from '@oasisdex/automation'
-import {
+import type { TriggerType } from '@oasisdex/automation'
+import type { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
+import type { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
+import type { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
+
+import type {
   AUTO_BUY_FORM_CHANGE,
   AUTO_SELL_FORM_CHANGE,
-} from 'features/automation/common/state/autoBSFormChange'
-import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+} from './state/autoBSFormChange.constants'
 
 export enum AutomationFeatures {
   AUTO_BUY = 'autoBuy',

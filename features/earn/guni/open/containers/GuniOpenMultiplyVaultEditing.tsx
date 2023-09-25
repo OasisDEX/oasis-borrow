@@ -1,5 +1,5 @@
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault.types'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

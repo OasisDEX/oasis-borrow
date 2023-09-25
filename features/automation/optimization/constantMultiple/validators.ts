@@ -1,9 +1,10 @@
-import BigNumber from 'bignumber.js'
-import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import type BigNumber from 'bignumber.js'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 import { zero } from 'helpers/zero'
+
+import type { ConstantMultipleFormChange } from './state/constantMultipleFormChange.types'
 
 export function warningsConstantMultipleValidation({
   gasEstimationUsd,

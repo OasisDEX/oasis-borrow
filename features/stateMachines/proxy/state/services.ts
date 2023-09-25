@@ -1,17 +1,18 @@
 /* eslint-disable func-style */
 import { TxStatus } from '@oasisdex/transactions'
-import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
+import type { CreateDsProxyData } from 'blockchain/calls/proxy'
+import { createDsProxy } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { transactionToX } from 'helpers/form'
 import { isEqual } from 'lodash'
 import { of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
-import { ProxyContext, ProxyEvent, ProxyObservableService } from './types'
+import type { ProxyContext, ProxyEvent, ProxyObservableService } from './types'
 
 const createProxy: ProxyObservableService = (
   { dependencies, contextConnected, txHelpers }: ProxyContext,
