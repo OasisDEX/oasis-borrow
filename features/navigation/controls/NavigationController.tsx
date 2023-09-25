@@ -577,22 +577,52 @@ export function NavigationController() {
                 {
                   items: [
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'Get Liquidity Without Selling Your Crypto',
+                      list: {
+                        items: [
+                          {
+                            title: 'Lorem ipsum dolor sit amet',
+                            description:
+                              'Aliquet aliquet dictum ut purus feugiat. At pellentesque blandit et maecenas lacus aliquam risus. Sit sed aliquam vitae pharetra nam et. Quis nec ac arcu augue tellus. Egestas pretium in massa ut eget.',
+                          },
+                        ],
+                        link: {
+                          label: t('read-more'),
+                          url: '/',
+                        },
+                      },
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'Amplify Exposure to your Crypto with downside protection',
+                      list: {
+                        items: [
+                          {
+                            title: 'Fusce mi elit, facilisis eget odio ac',
+                            description:
+                              'Maecenas mollis, elit ut eleifend vulputate, turpis lacus porta sapien, eget tincidunt mi dui et elit. Nunc non arcu in velit commodo dapibus, facilisis interdum odio.',
+                          },
+                        ],
+                        link: {
+                          label: t('read-more'),
+                          url: '/',
+                        },
+                      },
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'Maximize Earnings on your Crypto Assets',
+                      list: {
+                        items: [
+                          {
+                            title: 'In bibendum massa in viverra tempus',
+                            description:
+                              'Nullam vitae efficitur nisl, nec commodo urna. Etiam gravida lobortis libero, et tincidunt ante tincidunt at. Duis tortor turpis, malesuada lobortis risus quis, tempus efficitur risus.',
+                          },
+                        ],
+                        link: {
+                          label: t('read-more'),
+                          url: '/',
+                        },
+                      },
                     },
                   ],
                 },

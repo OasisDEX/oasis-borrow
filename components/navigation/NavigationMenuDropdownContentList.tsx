@@ -69,11 +69,14 @@ export function NavigationMenuDropdownContentList({
             key={i}
             as="li"
             sx={{
-              cursor: 'default',
               borderRadius: 'mediumLarge',
               transition: '200ms background-color',
-              ...(selected?.[0] === parentIndex && selected?.[1] === i && itemHoverEffect),
-              '&:hover': itemHoverEffect,
+              ...(selected?.[0] === parentIndex &&
+                selected?.[1] === i && {
+                  cursor: 'default',
+                  ...itemHoverEffect,
+                }),
+              ...(url && { '&:hover': itemHoverEffect }),
             }}
             onMouseEnter={() => {
               parentIndex !== undefined && onSelect && onSelect([parentIndex, i])
