@@ -1,5 +1,5 @@
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
-import type { ConfigContext, ConfigResponseType } from 'helpers/config'
+import type { ConfigResponseType,PreloadAppDataContext } from 'helpers/config'
 import { configCacheTime, saveConfigToLocalStorage } from 'helpers/config'
 import type { WithChildren } from 'helpers/types/With.types'
 import { LendingProtocol } from 'lendingProtocols'
@@ -21,18 +21,22 @@ export const emptyConfig = {
   parameters: {},
 } as ConfigResponseType
 
-export const preloadAppDataContext = React.createContext<ConfigContext | undefined>(undefined)
+export const preloadAppDataContext = React.createContext<PreloadAppDataContext | undefined>(
+  undefined,
+)
 
-export function useConfigContext(): ConfigContext {
+export function usePreloadAppDataContext(): PreloadAppDataContext {
   const ac = useContext(preloadAppDataContext)
   if (!ac) {
-    throw new Error("ConfigContext not available! useConfigContext can't be used serverside")
+    throw new Error(
+      "PreloadAppDataContext  not available! usePreloadAppDataContext can't be used serverside",
+    )
   }
   return ac
 }
 
 export function PreloadAppDataContextProvider({ children }: WithChildren) {
-  const [context, setContext] = useState<ConfigContext | undefined>(undefined)
+  const [context, setContext] = useState<PreloadAppDataContext | undefined>(undefined)
 
   const [config, setConfig] = useState<ConfigResponseType | undefined>(undefined)
   const { data: productHub } = useProductHubData({

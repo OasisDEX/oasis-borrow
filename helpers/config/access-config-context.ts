@@ -4,7 +4,11 @@ import {
   preloadAppDataContext,
 } from 'components/context/PreloadAppDataContextProvider'
 import { cleanObjectFromNull, cleanObjectToNull } from 'helpers/clean-object'
-import type { ConfigContext, ConfigResponseType, ConfigResponseTypeKey } from 'helpers/config'
+import type {
+  ConfigResponseType,
+  ConfigResponseTypeKey,
+  PreloadAppDataContext,
+} from 'helpers/config'
 import { configLSKey } from 'helpers/config'
 import { merge } from 'lodash'
 import { useContext } from 'react'
@@ -27,7 +31,10 @@ export function useAppConfig<T extends ConfigResponseTypeKey>(configKey: T): Con
     let justConfig = { config: { ...ac.config } }
 
     if (window.localStorage) {
-      justConfig = merge<Pick<ConfigContext, 'config'>, Pick<ConfigContext, 'config'>>(justConfig, {
+      justConfig = merge<
+        Pick<PreloadAppDataContext, 'config'>,
+        Pick<PreloadAppDataContext, 'config'>
+      >(justConfig, {
         config: loadConfigFromLocalStorage(),
       })
     }

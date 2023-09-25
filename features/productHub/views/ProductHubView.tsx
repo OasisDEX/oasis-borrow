@@ -1,4 +1,4 @@
-import { useConfigContext } from 'components/context/PreloadAppDataContextProvider'
+import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
@@ -48,7 +48,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   const { t } = useTranslation()
   const { AjnaSafetySwitch } = useAppConfig('features')
 
-  const { productHub: data } = useConfigContext()
+  const { productHub: data } = usePreloadAppDataContext()
 
   const resolvedData = AjnaSafetySwitch
     ? data.table.filter((item) => item.protocol !== 'ajna')

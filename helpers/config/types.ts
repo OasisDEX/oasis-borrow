@@ -10,7 +10,7 @@ export type ConfigResponseType = AppConfigType & {
 
 export type ConfigResponseTypeKey = keyof ConfigResponseType
 
-export type ConfigContext = {
+export type PreloadAppDataContext = {
   config: ConfigResponseType
   productHub: ProductHubData
 }
