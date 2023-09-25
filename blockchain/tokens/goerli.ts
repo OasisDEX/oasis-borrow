@@ -16,7 +16,6 @@ const { goerli } = ADDRESSES
 export const tokensGoerli = {
   ...getCollateralTokens({ ...goerli.maker.pips, ...goerli.common }, supportedIlks),
   CBETH: contractDesc(erc20, goerli.common.CBETH),
-  CRVV1ETHSTETH: contractDesc(guniToken, goerli.common.CRVV1ETHSTETH),
   DAI: contractDesc(erc20, goerli.common.DAI),
   GHO: contractDesc(erc20, goerli.common.GHO),
   GUNIV3DAIUSDC1: contractDesc(guniToken, goerli.common.GUNIV3DAIUSDC1),

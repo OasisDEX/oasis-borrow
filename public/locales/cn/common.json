@@ -1454,8 +1454,7 @@
     "GUNIV3DAIUSDC2-A": "50x UNI V3 DAI / USDC 0.01% 等级",
     "GUNIV3DAIUSDC1-A": "50x UNI V3 DAI / USDC 0.05% 等级",
     "UNIV2DAIUSDC-A": "UNI V2 DAI / USDC LP",
-    "UNIV2USDCETH-A": "UNI V2 USDC / ETH LP",
-    "CRVV1ETHSTETH-A": "CRV V1 ETH / Staked ETH LP"
+    "UNIV2USDCETH-A": "UNI V2 USDC / ETH LP"
   },
   "learn-more-about": "进一步了解",
   "assets": {

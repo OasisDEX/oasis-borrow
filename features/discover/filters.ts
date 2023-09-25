@@ -1,14 +1,8 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import type { DiscoverFiltersListItem, DiscoverFiltersListOptions } from 'features/discover/meta'
 import { DiscoverFilterType } from 'features/discover/types'
-import { curve_full_circle_color } from 'theme/icons'
 
 export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListOptions } = {
-  crvv1ethsteth: {
-    value: 'CRVV1ETHSTETH',
-    label: 'CURVE LP',
-    icon: curve_full_circle_color,
-  },
   eth: { value: 'ETH', label: 'ETH', icon: getToken('ETH').iconCircle },
   reth: { value: 'RETH', label: 'RETH', icon: getToken('RETH').iconCircle },
   guniv3daiusdc1: {

@@ -49,7 +49,6 @@ export const supportedBorrowIlks = [
   'MATIC-A',
   'UNIV2USDCETH-A',
   'UNIV2DAIUSDC-A',
-  'CRVV1ETHSTETH-A',
   'WSTETH-B',
   'RETH-A',
   'GNO-A',

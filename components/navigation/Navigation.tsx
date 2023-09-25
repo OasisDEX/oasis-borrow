@@ -11,7 +11,7 @@ import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHan
 import { useToggle } from 'helpers/useToggle'
 import type { ReactNode } from 'react'
 import React from 'react'
-import { Box, Container, ThemeProvider } from 'theme-ui'
+import { Box, Container, ThemeUIProvider } from 'theme-ui'
 import { menu } from 'theme/icons'
 import { useMediaQuery } from 'usehooks-ts'
 
@@ -40,7 +40,7 @@ export function Navigation({
   const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2] - 1}px)`)
 
   return (
-    <ThemeProvider theme={{ breakpoints: navigationBreakpointsWithPixels }}>
+    <ThemeUIProvider theme={{ breakpoints: navigationBreakpointsWithPixels }}>
       <Container
         as="header"
         variant="navigation"
@@ -74,6 +74,6 @@ export function Navigation({
           )}
         </NavigationActions>
       </Container>
-    </ThemeProvider>
+    </ThemeUIProvider>
   )
 }

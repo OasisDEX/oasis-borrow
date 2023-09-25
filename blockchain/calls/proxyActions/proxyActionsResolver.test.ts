@@ -6,13 +6,6 @@ import { proxyActionsAdapterResolver$ } from './proxyActionsAdapterResolver'
 
 describe('proxyActionsAdapterResolver', () => {
   describe('crate from ilk (open new vault)', () => {
-    it('returns a cropjoin proxy actions for CRVV1ETHSTETH-A ilk', () => {
-      const adapter$ = proxyActionsAdapterResolver$({ ilk: 'CRVV1ETHSTETH-A' })
-
-      const state = getStateUnpacker(adapter$)
-
-      expect(state().AdapterType).toBe(ProxyActionsAdapterType.CROPJOIN)
-    })
     it('returns default proxy actions for other ilks', () => {
       const adapter$ = proxyActionsAdapterResolver$({ ilk: 'ETH-A' })
 

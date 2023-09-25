@@ -3,7 +3,7 @@ import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Container, Flex, Grid, Text } from 'theme-ui'
+import { Container, Flex, Grid, Text } from 'theme-ui'
 
 import { Hero } from './common/Hero'
 import { HomepagePromoBlock } from './common/HomepagePromoBlock'
@@ -12,7 +12,7 @@ import { useOasisStats } from './stats'
 
 function StatCell({ label, value }: { label: string; value: string }) {
   return (
-    <Box sx={{ mb: [3, 1, 1] }}>
+    <Flex sx={{ my: ['30px', 0], flexDirection: 'column' }}>
       <Text variant="managedVolumeValue" sx={{ textAlign: 'center' }}>
         {value}
       </Text>
@@ -22,7 +22,7 @@ function StatCell({ label, value }: { label: string; value: string }) {
       >
         {label}
       </Text>
-    </Box>
+    </Flex>
   )
 }
 

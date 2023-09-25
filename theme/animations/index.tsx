@@ -5,36 +5,25 @@ import { fadeIn, rollDownTopBanner, rollDownTopBannerMobile, slideIn } from './k
 
 export const slideInAnimation = {
   opacity: 0,
-  animation: slideIn,
-  animationDuration: '0.4s',
-  animationTimingFunction: 'ease-out',
-  animationFillMode: 'forwards',
-  animationDelay: '0.4s',
+  animation: `${slideIn} 0.4s ease-out forwards 0.4s`,
 }
 
 export const fadeInAnimation = {
   opacity: 0,
-  animation: fadeIn,
-  animationDuration: '0.4s',
-  animationTimingFunction: 'ease-out',
-  animationFillMode: 'forwards',
+  animation: `${fadeIn} 0.4s ease-out forwards 0.4s`,
 }
 
 export const rollDownTopBannerAnimation = {
-  animation: [rollDownTopBannerMobile, rollDownTopBanner],
-  animationDuration: ['0.4s', '0.4s'],
-  animationTimingFunction: ['ease-out', 'ease-out'],
-  animationFillMode: ['forwards', 'forwards'],
-  animationDelay: ['3s', '3s'],
+  animation: [
+    `${rollDownTopBannerMobile} 0.4s ease-out forwards 3s`,
+    `${rollDownTopBanner} 0.4s ease-out forwards 3s`,
+  ],
   maxHeight: [0, 'initial'],
 }
 
 export const fadeInAnimationMobile = {
   opacity: [0, 1],
-  animation: [fadeIn, 'none'],
-  animationDuration: '0.4s',
-  animationTimingFunction: 'ease-out',
-  animationFillMode: 'forwards',
+  animation: [`${fadeIn} 0.4s ease-out forwards`, 'none'],
 }
 
 export function fadeInAnimationDelay(delaySeconds: number): ThemeUIStyleObject {

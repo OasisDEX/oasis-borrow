@@ -70,7 +70,6 @@ export const EXTERNAL_LINKS = {
       GUSD: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
       YFI: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
       UNIV2: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
-      CRVV1ETHSTETH: 'https://docs.summer.fi/general/collaterals-supported-in-summer.fi',
     },
     SWAP_FAQ: 'https://docs.summer.fi/general/how-to-swap-and-bridge-using-the-lifi-widget',
     WHAT_IS_SDAI: 'https://docs.summer.fi/products/earn/dai-savings-rate-dsr/whats-sdai',

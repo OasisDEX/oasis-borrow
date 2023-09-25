@@ -117,6 +117,7 @@ export const theme = themeTypeSafe({
       fontSize: '40px',
       letterSpacing: '-0.02em',
       color: 'primary100',
+      display: 'block',
     },
     header3: {
       fontFamily: 'heading',
