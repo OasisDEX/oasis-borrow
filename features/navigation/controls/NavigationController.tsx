@@ -11,7 +11,52 @@ import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Image } from 'theme-ui'
+import type { TranslationType } from 'ts_modules/i18next'
 import { useMediaQuery } from 'usehooks-ts'
+
+function getTempNavTokensNestedListItem(t: TranslationType, token: string) {
+  return {
+    items: [
+      {
+        title: t('nav.borrow'),
+        description: (
+          <Trans
+            i18nKey="nav.tokens-borow"
+            values={{ token, fee: 0.97 }}
+            components={{ em: <em /> }}
+          />
+        ),
+        url: '/',
+      },
+      {
+        title: t('nav.multiply'),
+        description: (
+          <Trans
+            i18nKey="nav.tokens-multiply"
+            values={{ token, maxMultiple: 14 }}
+            components={{ em: <em /> }}
+          />
+        ),
+        url: '/',
+      },
+      {
+        title: t('nav.earn'),
+        description: (
+          <Trans
+            i18nKey="nav.tokens-earn"
+            values={{ token, apyPassive: 4.5, apyActive: 12.71 }}
+            components={{ em: <em /> }}
+          />
+        ),
+        url: '/',
+      },
+    ],
+    link: {
+      label: t('nav.tokens-more', { token }),
+      url: '/',
+    },
+  }
+}
 
 export function NavigationController() {
   const { t } = useTranslation()
@@ -448,74 +493,60 @@ export function NavigationController() {
                   header: t('nav.tokens-popular'),
                   items: [
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'ETH',
                       icon: {
                         tokens: ['ETH'],
                         position: 'title',
                       },
+                      list: getTempNavTokensNestedListItem(t, 'ETH'),
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'stETH',
                       icon: {
                         tokens: ['STETH'],
                         position: 'title',
                       },
+                      list: getTempNavTokensNestedListItem(t, 'stETH'),
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'rETH',
                       icon: {
                         tokens: ['RETH'],
                         position: 'title',
                       },
+                      list: getTempNavTokensNestedListItem(t, 'rETH'),
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'cbETH',
                       icon: {
                         tokens: ['CBETH'],
                         position: 'title',
                       },
+                      list: getTempNavTokensNestedListItem(t, 'cbETH'),
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'DAI',
                       icon: {
                         tokens: ['DAI'],
                         position: 'title',
                       },
+                      list: getTempNavTokensNestedListItem(t, 'DAI'),
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'WBTC',
                       icon: {
                         tokens: ['WBTC'],
                         position: 'title',
                       },
+                      list: getTempNavTokensNestedListItem(t, 'WBTC'),
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'USDC',
                       icon: {
                         tokens: ['USDC'],
                         position: 'title',
                       },
+                      list: getTempNavTokensNestedListItem(t, 'USDC'),
                     },
                   ],
                   tight: true,
@@ -524,14 +555,12 @@ export function NavigationController() {
                   header: t('nav.tokens-new'),
                   items: [
                     {
-                      list: {
-                        items: [],
-                      },
                       title: 'sDAI',
                       icon: {
                         tokens: ['SDAI'],
                         position: 'title',
                       },
+                      list: getTempNavTokensNestedListItem(t, 'sDAI'),
                     },
                   ],
                   link: {

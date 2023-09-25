@@ -6,17 +6,19 @@ import React, { Fragment } from 'react'
 import { Box, Heading } from 'theme-ui'
 
 type NavigationMenuDropdownContentListProps = NavigationMenuPanelList & {
-  selected?: number
-  onSelect?: (active: number) => void
+  parentIndex?: number
+  selected?: [number, number]
+  onSelect?: (selected: [number, number]) => void
 }
 
 export function NavigationMenuDropdownContentList({
   header,
   items,
   link,
-  tight,
-  selected,
   onSelect,
+  parentIndex,
+  selected,
+  tight,
 }: NavigationMenuDropdownContentListProps) {
   const itemHoverEffect = {
     backgroundColor: 'neutral30',
@@ -70,11 +72,11 @@ export function NavigationMenuDropdownContentList({
               cursor: 'default',
               borderRadius: 'mediumLarge',
               transition: '200ms background-color',
-              ...(selected === i && itemHoverEffect),
+              ...(selected?.[0] === parentIndex && selected?.[1] === i && itemHoverEffect),
               '&:hover': itemHoverEffect,
             }}
-            onMouseOver={() => {
-              onSelect && onSelect(i)
+            onMouseEnter={() => {
+              parentIndex !== undefined && onSelect && onSelect([parentIndex, i])
             }}
           >
             {url ? (

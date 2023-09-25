@@ -921,6 +921,12 @@
     "tokens-new": "New & Noteworthy",
     "tokens-popular": "Popular Tokens",
     "tokens-link": "Search custom pools",
+    "tokens-borow": "Borrow stablecoin's or other assets against your {{token}} for as low as <em>{{fee}}%</em>.",
+    "tokens-earn": "Earn up to <em>{{apyPassive}}%</em> on your {{token}} passively or up to <em>{{apyActive}}%</em> on your {{token}} actively.",
+    "tokens-earn-passive": "Earn up to <em>{{apy}}%</em> on your {{token}} passively.",
+    "tokens-earn-active": "Earn up to <em>{{apy}}%</em> on your {{token}} actively.",
+    "tokens-multiply": "Multiply your exposure to {{token}} with up to <em>{{maxMultiple}}x</em> with advanced risk management tools and automation.",
+    "tokens-more": "View all that is possible with your {{token}}",
     "use-cases": "Use Cases"
   },
   "new-to-ethereum": "New to Ethereum? ",

@@ -11,7 +11,7 @@ export function NavigationMenuDropdownContent({
   isPanelActive,
   lists,
 }: NavigationMenuDropdownContentProps) {
-  const [selected, setSelected] = useState<number>(0)
+  const [selected, setSelected] = useState<[number, number]>([0, 0])
 
   return (
     <>
@@ -43,6 +43,7 @@ export function NavigationMenuDropdownContent({
           >
             <NavigationMenuDropdownContentList
               {...item}
+              parentIndex={i}
               selected={selected}
               onSelect={(_selected) => {
                 setSelected(_selected)
@@ -60,7 +61,6 @@ export function NavigationMenuDropdownContent({
           width: '100%',
           m: 0,
           p: 0,
-          transform: `translateY(${selected * -50}px)`,
           transition: 'transform 250ms',
         }}
       >
@@ -79,10 +79,17 @@ export function NavigationMenuDropdownContent({
                       rowGap: 3,
                       flexDirection: 'column',
                       width: '100%',
-                      opacity: selected === j ? 1 : 0,
-                      pointerEvents: isPanelActive && selected === j ? 'auto' : 'none',
-                      transition: 'opacity 250ms',
-                      transform: `translateY(${j * 50}px)`,
+                      opacity: selected[0] === i && selected[1] === j ? 1 : 0,
+                      pointerEvents:
+                        isPanelActive && selected[0] === i && selected[1] === j ? 'auto' : 'none',
+                      transition: 'opacity 250ms, transform 250ms',
+                      transform: `translateY(${
+                        (selected[0] === i && selected[1] < j) || selected[0] < i
+                          ? 50
+                          : (selected[0] === i && selected[1] > j) || selected[0] > i
+                          ? -50
+                          : 0
+                      }px)`,
                     }}
                   >
                     <NavigationMenuDropdownContentList {...list} />

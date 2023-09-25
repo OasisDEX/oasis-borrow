@@ -62,7 +62,11 @@ export function NavigationMenuDropdownContentListItem({
           </Heading>
         </Flex>
         {description && (
-          <Text as="p" variant="paragraph4" sx={{ mt: 1, color: 'neutral80' }}>
+          <Text
+            as="p"
+            variant="paragraph4"
+            sx={{ mt: 1, color: 'neutral80', em: { color: 'primary100', fontStyle: 'normal' } }}
+          >
             {description}
           </Text>
         )}
