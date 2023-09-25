@@ -14,12 +14,13 @@ export function NavigationMenuDropdownContentListItem({
   description,
   hoverColor,
   icon,
+  tags,
   title,
 }: NavigationMenuDropdownContentListItemProps) {
   return (
-    <>
-      <Flex sx={{ alignItems: 'center', columnGap: 2 }}>
-        {icon && icon.position === 'global' && <NavigationMenuDropdownContentIcon {...icon} />}
+    <Flex sx={{ alignItems: 'center', columnGap: 2 }}>
+      {icon && icon.position === 'global' && <NavigationMenuDropdownContentIcon {...icon} />}
+      <Box>
         <Flex sx={{ alignItems: 'center', columnGap: 2 }}>
           {icon && icon.position === 'title' && <NavigationMenuDropdownContentIcon {...icon} />}
           <Heading
@@ -50,13 +51,18 @@ export function NavigationMenuDropdownContentListItem({
             {title}
           </Heading>
         </Flex>
-      </Flex>
-      {description && (
-        <Text as="p" variant="paragraph4" sx={{ mt: 1, color: 'neutral80' }}>
-          {description}
-        </Text>
-      )}
-    </>
+        {description && (
+          <Text as="p" variant="paragraph4" sx={{ mt: 1, color: 'neutral80' }}>
+            {description}
+          </Text>
+        )}
+        {tags && (
+          <Text as="p" variant="paragraph4" sx={{ color: 'neutral80' }}>
+            {tags.join(' • ')}
+          </Text>
+        )}
+      </Box>
+    </Flex>
   )
 }
 
@@ -104,6 +110,10 @@ export function NavigationMenuDropdownContentList({
               transition: '200ms background-color',
               '&:hover': {
                 backgroundColor: 'neutral30',
+                '.nav-icon': {
+                  color: 'neutral10',
+                  backgroundColor: 'interactive100',
+                },
                 ...(hoverColor && {
                   '.heading': {
                     color: 'transparent',

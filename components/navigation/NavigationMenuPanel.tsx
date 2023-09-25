@@ -17,8 +17,9 @@ export interface NavigationMenuPanelLink {
 }
 
 export interface NavigationMenuPanelIcon {
-  type: 'icon' | 'image' | 'token'
-  source: string
+  icon?: string
+  image?: string
+  tokens?: string[]
   position: 'global' | 'title'
 }
 

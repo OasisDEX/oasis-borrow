@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { getToken } from 'blockchain/tokensMetadata'
+import { BaseNetworkNames, networksByName } from 'blockchain/networks'
 import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
 import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
 import { SwapWidgetShowHide } from 'components/swapWidget/SwapWidgetShowHide'
@@ -11,6 +11,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
+import { Box, Flex, Image } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 export function NavigationController() {
@@ -40,32 +41,192 @@ export function NavigationController() {
                 {
                   items: [
                     {
-                      list: {
-                        items: [],
-                      },
                       title: t('nav.earn'),
                       description: t('nav.products-earn'),
+                      list: {
+                        items: [
+                          {
+                            title: 'Earn 5% on your DAI',
+                            icon: {
+                              position: 'global',
+                              tokens: ['DAI'],
+                            },
+                            description: 'Earn on DAI with the DAI Savings Rate',
+                            tags: ['Maker', 'Ethereum'],
+                            url: '/',
+                          },
+                          {
+                            title: 'Earn 0.57% on your USDC',
+                            icon: {
+                              position: 'global',
+                              tokens: ['ETH', 'USDC'],
+                            },
+                            description: 'Lend USDC on AJNA',
+                            tags: ['Ajna', 'Ethereum'],
+                            url: '/',
+                          },
+                          {
+                            title: 'Earn 7.32% on your ETH',
+                            icon: {
+                              position: 'global',
+                              tokens: ['WSTETH', 'ETH'],
+                            },
+                            description: 'Yield Loop wstETH on AAVE',
+                            tags: ['Aave v3', 'Ethereum'],
+                            url: '/',
+                          },
+                        ],
+                        link: {
+                          label: t('nav.products-more', { product: t('nav.earn') }),
+                          url: '/',
+                        },
+                      },
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: t('nav.multiply'),
                       description: t('nav.products-multiply'),
+                      list: {
+                        items: [
+                          {
+                            title: 'Get up to 3.8x on your WSTETH',
+                            icon: {
+                              position: 'global',
+                              tokens: ['WSTETH', 'USDC'],
+                            },
+                            description: 'Increase your exposure against USDC',
+                            tags: ['Ajna', 'Ethereum'],
+                            url: '/',
+                          },
+                          {
+                            title: 'Get up to 3.7x on your WBTC',
+                            icon: {
+                              position: 'global',
+                              tokens: ['WBTC', 'USDC'],
+                            },
+                            description: 'Increase your exposure against USDC',
+                            tags: ['Aave v3', 'Optimism'],
+                            url: '/',
+                          },
+                          {
+                            title: 'Get up to 4.3x on your ETH',
+                            icon: {
+                              position: 'global',
+                              tokens: ['ETH', 'DAI'],
+                            },
+                            description: 'Increase your exposure against DAI',
+                            tags: ['Maker', 'Ethereum'],
+                            url: '/',
+                          },
+                        ],
+                        link: {
+                          label: t('nav.products-more', { product: t('nav.multiply') }),
+                          url: '/',
+                        },
+                      },
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: t('nav.borrow'),
                       description: t('nav.products-borrow'),
+                      list: {
+                        items: [
+                          {
+                            title: 'Borrow up to 80% LTV',
+                            icon: {
+                              position: 'global',
+                              tokens: ['ETH', 'DAI'],
+                            },
+                            description: 'Discover the highest LTVs available',
+                            tags: ['Maker', 'Ethereum'],
+                            url: '/',
+                          },
+                          {
+                            title: 'Borrow against ETH from 2.3% a year',
+                            icon: {
+                              position: 'global',
+                              tokens: ['WSTETH', 'DAI'],
+                            },
+                            description: 'Find the lowest rates to borrow',
+                            tags: ['Maker', 'Ethereum'],
+                            url: '/',
+                          },
+                          {
+                            title: 'Earn rewards while borrowing',
+                            icon: {
+                              position: 'global',
+                              tokens: ['ETH', 'USDC'],
+                            },
+                            description: 'Get paid to borrow',
+                            tags: ['Ajna', 'Ethereum'],
+                            url: '/',
+                          },
+                        ],
+                        link: {
+                          label: t('nav.products-more', { product: t('nav.borrow') }),
+                          url: '/',
+                        },
+                      },
                     },
                     {
-                      list: {
-                        items: [],
-                      },
                       title: t('nav.swap-and-bridge'),
                       description: t('nav.products-swap-and-bridge'),
+                      list: {
+                        items: [
+                          {
+                            title: t('nav.swap'),
+                            icon: {
+                              position: 'global',
+                              icon: 'exchange'
+                            },
+                            description: t('nav.swap-description'),
+                            url: '/',
+                          },
+                          {
+                            title: t('nav.bridge'),
+                            icon: {
+                              position: 'global',
+                              icon: 'bridge'
+                            },
+                            description: (
+                              <>
+                                {t('nav.bridge-description')}
+                                <Flex
+                                  as="ul"
+                                  sx={{
+                                    mt: '14px',
+                                    ml: 0,
+                                    p: 0,
+                                    listStyle: 'none',
+                                    columnGap: '14px',
+                                  }}
+                                >
+                                  <Box as="li">
+                                    <Image
+                                      src={networksByName[BaseNetworkNames.Ethereum].icon}
+                                      width={20}
+                                      sx={{ verticalAlign: 'bottom' }}
+                                    />
+                                  </Box>
+                                  <Box as="li">
+                                    <Image
+                                      src={networksByName[BaseNetworkNames.Optimism].icon}
+                                      width={20}
+                                      sx={{ verticalAlign: 'bottom' }}
+                                    />
+                                  </Box>
+                                  <Box as="li">
+                                    <Image
+                                      src={networksByName[BaseNetworkNames.Arbitrum].icon}
+                                      width={20}
+                                      sx={{ verticalAlign: 'bottom' }}
+                                    />
+                                  </Box>
+                                </Flex>
+                              </>
+                            ),
+                            url: '/',
+                          },
+                        ],
+                      },
                     },
                   ],
                 },
@@ -120,9 +281,8 @@ export function NavigationController() {
                       },
                       title: 'Aave',
                       icon: {
-                        source: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
+                        image: lendingProtocolsByName[LendingProtocol.AaveV3].icon,
                         position: 'title',
-                        type: 'image',
                       },
                       hoverColor: 'linear-gradient(230deg, #B6509E 15.42%, #2EBAC6 84.42%)',
                       description: t('nav.protocols-aave'),
@@ -133,9 +293,8 @@ export function NavigationController() {
                       },
                       title: 'Ajna',
                       icon: {
-                        source: lendingProtocolsByName[LendingProtocol.Ajna].icon,
+                        image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
                         position: 'title',
-                        type: 'image',
                       },
                       hoverColor: 'linear-gradient(90deg, #F154DB 0%, #974EEA 100%)',
                       description: (
@@ -148,9 +307,8 @@ export function NavigationController() {
                       },
                       title: 'Maker',
                       icon: {
-                        source: lendingProtocolsByName[LendingProtocol.Maker].icon,
+                        image: lendingProtocolsByName[LendingProtocol.Maker].icon,
                         position: 'title',
-                        type: 'image',
                       },
                       hoverColor: 'linear-gradient(135deg, #2DC1B1 0%, #139D8D 100%)',
                       description: (
@@ -163,9 +321,8 @@ export function NavigationController() {
                       },
                       title: 'Spark',
                       icon: {
-                        source: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
+                        image: lendingProtocolsByName[LendingProtocol.SparkV3].icon,
                         position: 'title',
-                        type: 'image',
                       },
                       hoverColor: 'linear-gradient(159deg, #F58013 12.26%, #F19D19 86.52%)',
                       description: (
@@ -188,9 +345,8 @@ export function NavigationController() {
                       },
                       title: 'ETH',
                       icon: {
-                        source: getToken('ETH').iconCircle,
+                        tokens: ['ETH'],
                         position: 'title',
-                        type: 'icon',
                       },
                     },
                     {
@@ -199,9 +355,8 @@ export function NavigationController() {
                       },
                       title: 'stETH',
                       icon: {
-                        source: getToken('STETH').iconCircle,
+                        tokens: ['STETH'],
                         position: 'title',
-                        type: 'icon',
                       },
                     },
                     {
@@ -210,9 +365,8 @@ export function NavigationController() {
                       },
                       title: 'rETH',
                       icon: {
-                        source: getToken('RETH').iconCircle,
+                        tokens: ['RETH'],
                         position: 'title',
-                        type: 'icon',
                       },
                     },
                     {
@@ -221,9 +375,8 @@ export function NavigationController() {
                       },
                       title: 'cbETH',
                       icon: {
-                        source: getToken('CBETH').iconCircle,
+                        tokens: ['CBETH'],
                         position: 'title',
-                        type: 'icon',
                       },
                     },
                     {
@@ -232,9 +385,8 @@ export function NavigationController() {
                       },
                       title: 'DAI',
                       icon: {
-                        source: getToken('DAI').iconCircle,
+                        tokens: ['DAI'],
                         position: 'title',
-                        type: 'icon',
                       },
                     },
                   ],
@@ -249,9 +401,8 @@ export function NavigationController() {
                       },
                       title: 'sDAI',
                       icon: {
-                        source: getToken('SDAI').iconCircle,
+                        tokens: ['SDAI'],
                         position: 'title',
-                        type: 'icon',
                       },
                     },
                     {
@@ -260,9 +411,8 @@ export function NavigationController() {
                       },
                       title: 'GHO',
                       icon: {
-                        source: getToken('GHO').iconCircle,
+                        tokens: ['GHO'],
                         position: 'title',
-                        type: 'icon',
                       },
                     },
                     {
@@ -271,9 +421,8 @@ export function NavigationController() {
                       },
                       title: 'TBTC',
                       icon: {
-                        source: getToken('TBTC').iconCircle,
+                        tokens: ['TBTC'],
                         position: 'title',
-                        type: 'icon',
                       },
                     },
                   ],

@@ -1,28 +1,51 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import type { NavigationMenuPanelIcon } from 'components/navigation/NavigationMenuPanel'
+import { TokensGroup } from 'components/TokensGroup'
 import React from 'react'
 import { Flex, Image } from 'theme-ui'
 
 export type NavigationMenuDropdownContentIconProps = NavigationMenuPanelIcon
 
 export function NavigationMenuDropdownContentIcon({
-  source,
-  // position,
-  type,
+  icon,
+  image,
+  position,
+  tokens,
 }: NavigationMenuDropdownContentIconProps) {
+  const isGlobal = position === 'global'
+
   return (
     <Flex
       sx={{
         flexShrink: 0,
         alignItems: 'center',
         justifyContent: 'center',
-        width: '32px',
-        height: '32px',
+        width: isGlobal ? '40px' : '32px',
+        height: isGlobal ? '40px' : '32px',
       }}
     >
-      {/* <Box sx={{ flexShrink: 0, my: '-4px', mr: '12px', ...(image && { p: '3px' }) }}> */}
-      {type === 'icon' && <Icon size={30} name={source} />}
-      {type === 'image' && <Image src={source} width={26} />}
+      {icon && (
+        <Flex
+          className="nav-icon"
+          sx={{
+            flexShrink: 0,
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '34px',
+            height: '34px',
+            borderRadius: 'ellipse',
+            color: 'neutral80',
+            backgroundColor: 'neutral30',
+            transition: '200ms color, 200ms background-color',
+          }}
+        >
+          <Icon name={icon} size={20} />
+        </Flex>
+      )}
+      {image && <Image src={image} width={26} />}
+      {tokens && (
+        <TokensGroup tokens={tokens} forceSize={isGlobal && tokens.length === 1 ? 40 : 30} />
+      )}
     </Flex>
   )
 }
