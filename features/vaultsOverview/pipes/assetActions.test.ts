@@ -3,6 +3,7 @@ import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import type { UIChanges } from 'helpers/uiChanges.types'
 import { of } from 'rxjs'
+import { collateral, copy, exchange } from 'theme/icons'
 
 import { createAssetActions$, isOnClickAction, isUrlAction } from './assetActions'
 
@@ -58,7 +59,7 @@ describe('asset actions', () => {
     const borrowAction = state()[1]
     assertAssetAction(isUrlAction(borrowAction), 'borrow action is not url asset action')
     expect(borrowAction.text).toBe('Borrow')
-    expect(borrowAction.icon).toBe('collateral')
+    expect(borrowAction.icon).toBe(collateral)
     expect(borrowAction.path).toBe('/borrow')
   })
 
@@ -87,13 +88,13 @@ describe('asset actions', () => {
     const borrowAction = state()[1]
     assertAssetAction(isUrlAction(borrowAction), 'borrow action is not url asset action')
     expect(borrowAction.text).toBe('Borrow')
-    expect(borrowAction.icon).toBe('collateral')
+    expect(borrowAction.icon).toBe(collateral)
     expect(borrowAction.path).toBe('/borrow')
 
     const multiplyAction = state()[2]
     assertAssetAction(isUrlAction(multiplyAction), 'borrow action is not url asset action')
     expect(multiplyAction.text).toBe('Multiply')
-    expect(multiplyAction.icon).toBe('copy')
+    expect(multiplyAction.icon).toBe(copy)
     expect(multiplyAction.path).toBe('/multiply')
   })
 
@@ -119,7 +120,7 @@ describe('asset actions', () => {
     const swapAction = state()[0]
     assertAssetAction(isOnClickAction(swapAction), 'swap action is not onclick asset action')
     expect(swapAction.text).toBe('Swap')
-    expect(swapAction.icon).toBe('exchange')
+    expect(swapAction.icon).toBe(exchange)
     expect(swapAction.onClick).toBeDefined()
   })
 })
