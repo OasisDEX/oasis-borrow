@@ -17,6 +17,8 @@ import {
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 
+import { EarnStrategies } from '.prisma/client'
+
 export function parsePoolResponse(
   chainId: NetworkIds,
   identifiedTokens: IdentifiedTokens,
@@ -70,7 +72,8 @@ export function parsePoolResponse(
             weeklyNetApy,
           }),
           liquidity,
-          earnStrategy: `${collateralToken}/${quoteToken} LP`,
+          earnStrategy: EarnStrategies.liquidity_provision,
+          earnStrategyDescription: `${collateralToken}/${quoteToken} LP`,
           fee,
           managementType: 'active',
           collateralAddress: collateralAddress,

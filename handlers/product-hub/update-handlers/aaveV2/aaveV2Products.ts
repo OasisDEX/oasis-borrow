@@ -3,6 +3,8 @@ import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
+import { EarnStrategies } from '.prisma/client'
+
 export const aaveV2ProductHubProducts: ProductHubItemWithoutAddress[] = [
   {
     product: [ProductHubProductType.Multiply],
@@ -45,7 +47,8 @@ export const aaveV2ProductHubProducts: ProductHubItemWithoutAddress[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV2,
     label: 'STETH/ETH',
-    earnStrategy: 'STETH/ETH Yield Loop',
+    earnStrategy: EarnStrategies.yield_loop,
+    earnStrategyDescription: 'STETH/ETH Yield Loop',
     managementType: 'active',
   },
 ]

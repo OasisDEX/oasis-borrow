@@ -2,6 +2,8 @@ import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
+import { EarnStrategies } from '.prisma/client'
+
 // network is added in the handler
 export const makerProductHubProducts: Omit<ProductHubItemWithoutAddress, 'network'>[] = [
   {
@@ -107,6 +109,7 @@ export const makerProductHubProducts: Omit<ProductHubItemWithoutAddress, 'networ
     protocol: LendingProtocol.Maker,
     label: 'DSR',
     managementType: 'passive',
-    earnStrategy: 'DAI Savings Rate',
+    earnStrategy: EarnStrategies.other,
+    earnStrategyDescription: 'DAI Savings Rate',
   },
 ]

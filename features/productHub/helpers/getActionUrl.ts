@@ -6,6 +6,8 @@ import { ProductHubProductType } from 'features/productHub/types'
 import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 
+import { EarnStrategies } from '.prisma/client'
+
 export const getAaveLikeViewStrategyUrl = ({
   aaveLikeProduct,
   bypassFeatureFlag,
@@ -67,7 +69,7 @@ export function getActionUrl({
         chainId,
       })
       const productInUrl =
-        isEarnProduct && earnStrategy?.includes('Yield Loop')
+        isEarnProduct && earnStrategy?.includes(EarnStrategies.yield_loop)
           ? ProductHubProductType.Multiply
           : product
       const tokensInUrl = isOracless

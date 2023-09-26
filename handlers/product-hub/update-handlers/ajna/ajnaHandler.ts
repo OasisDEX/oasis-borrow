@@ -29,6 +29,8 @@ import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 
+import { EarnStrategies } from '.prisma/client'
+
 async function getAjnaPoolData(
   networkId: NetworkIds.MAINNET | NetworkIds.GOERLI,
   tickers: Tickers,
@@ -156,6 +158,7 @@ async function getAjnaPoolData(
                 // }),
                 primaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 secondaryTokenAddress: quoteTokenAddress.toLowerCase(),
+                hasRewards: isPoolWithRewards({ collateralToken, quoteToken }),
                 tooltips: {
                   ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
                     fee: productHubAjnaRewardsTooltip,
@@ -185,7 +188,8 @@ async function getAjnaPoolData(
                 protocol,
                 secondaryToken: collateralToken,
                 ...getTokenGroup(collateralToken, 'secondary'),
-                earnStrategy: earnLPStrategy,
+                earnStrategy: EarnStrategies.liquidity_provision,
+                earnStrategyDescription: earnLPStrategy,
                 liquidity,
                 managementType,
                 ...(isPoolNotEmpty && {
@@ -194,6 +198,7 @@ async function getAjnaPoolData(
                 reverseTokens: true,
                 primaryTokenAddress: quoteTokenAddress.toLowerCase(),
                 secondaryTokenAddress: collateralTokenAddress.toLowerCase(),
+                hasRewards: isPoolWithRewards({ collateralToken, quoteToken }),
                 tooltips: {
                   ...(isPoolNotEmpty &&
                     isPoolWithRewards({ collateralToken, quoteToken }) && {

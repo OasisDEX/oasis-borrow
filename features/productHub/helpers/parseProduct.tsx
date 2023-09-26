@@ -20,7 +20,7 @@ const yieldLoopStables = [
 
 export function parseProduct(
   {
-    earnStrategy,
+    earnStrategyDescription,
     fee: feeString,
     liquidity: liquidityString,
     managementType,
@@ -122,7 +122,7 @@ export function parseProduct(
       return {
         strategy: (
           <>
-            {earnStrategy || <AssetsTableDataCellInactive />}
+            {earnStrategyDescription || <AssetsTableDataCellInactive />}
             {tooltips?.earnStrategy && <AssetsTableTooltip {...tooltips.earnStrategy} />}
           </>
         ),
@@ -140,7 +140,7 @@ export function parseProduct(
           sortable: weeklyNetApy?.toNumber() || 0,
           value: (
             <>
-              {earnStrategy && yieldLoopStables.includes(earnStrategy) ? (
+              {earnStrategyDescription && yieldLoopStables.includes(earnStrategyDescription) ? (
                 <AppLink href="https://dune.com/Lucianken/aave-v3-sdai-yield-multiple">
                   <WithArrow>APY</WithArrow>
                 </AppLink>
