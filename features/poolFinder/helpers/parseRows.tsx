@@ -22,6 +22,7 @@ export function parseRows(
       collateralAddress,
       collateralToken,
       earnStrategy,
+      earnStrategyDescription,
       fee,
       liquidity,
       managementType,
@@ -51,6 +52,7 @@ export function parseRows(
       ...parseProduct(
         {
           earnStrategy,
+          earnStrategyDescription,
           fee,
           label,
           liquidity,
