@@ -42,5 +42,4 @@ export const swapWidgetConfig: WidgetConfig = {
   bridges: {
     deny: ['polygon', 'omni', 'gnosis', 'hyphen', 'multichain'],
   },
-  fee: 0.002,
 }
