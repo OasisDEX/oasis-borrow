@@ -156,6 +156,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           tokensReserveConfigurationData.find((data) => data[primaryToken]),
         )[primaryToken]
         const tokensAddresses = getNetworkContracts(NetworkIds.MAINNET).tokens
+        // rewards are available for the ETH-like/DAI pairs
+        const hasRewards = primaryTokenGroup === 'ETH' && secondaryToken === 'DAI'
 
         return {
           ...product,
@@ -169,13 +171,10 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           liquidity: liquidity.toString(),
           fee: fee.toString(),
           tooltips: {
-            fee:
-              // rewards are available for the ETHlike/DAI pairs
-              primaryTokenGroup === 'ETH' && secondaryToken === 'DAI'
-                ? productHubSparkRewardsTooltip
-                : undefined,
+            fee: hasRewards ? productHubSparkRewardsTooltip : undefined,
           },
           weeklyNetApy: weeklyNetApy?.[label] ? weeklyNetApy[label]?.toString() : undefined,
+          hasRewards,
         }
       }),
       warnings: [],
