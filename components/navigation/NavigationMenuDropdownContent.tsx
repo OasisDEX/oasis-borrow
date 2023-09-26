@@ -1,17 +1,25 @@
 import { NavigationMenuDropdownContentList } from 'components/navigation/NavigationMenuDropdownContentList'
 import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { Flex } from 'theme-ui'
 
 export type NavigationMenuDropdownContentProps = NavigationMenuPanelType & {
+  currentPanel: string
   isPanelActive: boolean
+  isPanelOpen: boolean
 }
 
 export function NavigationMenuDropdownContent({
+  currentPanel,
   isPanelActive,
+  isPanelOpen,
   lists,
 }: NavigationMenuDropdownContentProps) {
   const [selected, setSelected] = useState<[number, number]>([0, 0])
+
+  useEffect(() => {
+    setSelected([0, 0])
+  }, [currentPanel, isPanelOpen])
 
   return (
     <>

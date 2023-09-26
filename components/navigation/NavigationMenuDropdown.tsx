@@ -101,7 +101,9 @@ export function NavigationMenuDropdown({
                 {...(currentPanel === label && { ref })}
               >
                 <NavigationMenuDropdownContent
+                  currentPanel={currentPanel}
                   isPanelActive={isPanelOpen && currentPanel === label}
+                  isPanelOpen={isPanelOpen}
                   label={label}
                   {...panel}
                 />
