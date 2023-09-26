@@ -1,6 +1,6 @@
-import { GUNI_MAX_SLIPPAGE } from 'helpers/multiply/calculations'
+import { GUNI_MAX_SLIPPAGE } from 'helpers/multiply/calculations.constants'
 
-import { ManageEarnVaultState } from './manageGuniVault'
+import type { ManageEarnVaultState } from './manageGuniVault.types'
 
 // this method extends / overwrites applyManageVaultConditions
 export function applyGuniManageVaultConditions(state: ManageEarnVaultState): ManageEarnVaultState {

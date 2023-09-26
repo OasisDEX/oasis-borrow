@@ -1338,7 +1338,7 @@ export const tokenIcons = {
             gradientUnits="userSpaceOnUse"
           >
             <stop stopColor="#4CAF50" />
-            <stop offset="1" stop-color="#8BC34A" />
+            <stop offset="1" stopColor="#8BC34A" />
           </linearGradient>
           <clipPath id="clip0_13483_663">
             <rect width="26" height="26" fill="white" transform="translate(3 3)" />

@@ -1,14 +1,17 @@
-import { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library'
+import type { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
-import { getSlippage, ProductType, StrategyTokenBalance } from 'features/aave/types'
-import { IStrategyConfig } from 'features/aave/types/strategy-config'
-import { UserSettingsState } from 'features/userSettings/userSettings'
-import { HasGasEstimation } from 'helpers/context/types'
+import { useAaveLikeConfig } from 'features/aave/hooks'
+import type { StrategyTokenBalance } from 'features/aave/types'
+import { getSlippage, ProductType } from 'features/aave/types'
+import type { IStrategyConfig } from 'features/aave/types/strategy-config'
+import type { UserSettingsState } from 'features/userSettings/userSettings.types'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { FeesInformation } from './FeesInformation'
+import { FlashLoanInformation } from './FlashLoanInformation'
 import { LtvInformation } from './LtvInformation'
 import { MultiplyInformation } from './MultiplyInformation'
 import {
@@ -47,11 +50,17 @@ function transitionHasSwap(
   )
 }
 
+function isMultiplyStrategy(transition?: IStrategy): transition is IMultiplyStrategy {
+  return !!transition && (transition as IMultiplyStrategy).flashloan !== undefined
+}
+
 export function StrategyInformationContainer({
   state,
   changeSlippageSource,
 }: OpenAaveInformationContainerProps) {
   const { t } = useTranslation()
+
+  const { orderInformation: orderInformationConfig } = useAaveLikeConfig()
 
   const { transition, currentPosition, balance, strategyConfig } = state.context
 
@@ -67,6 +76,12 @@ export function StrategyInformationContainer({
           {...state.context}
           transactionParameters={transition}
           balance={balance}
+        />
+      )}
+      {isMultiplyStrategy(transition) && orderInformationConfig.showFlashloanInformation && (
+        <FlashLoanInformation
+          transactionParameters={transition}
+          networkId={state.context.strategyConfig.networkId}
         />
       )}
       {simulationHasSwap && balance && (

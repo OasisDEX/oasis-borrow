@@ -6,8 +6,8 @@ import type {
   InitOptions as OriginalInitOptions,
   TFunction as OriginalTFunction,
 } from 'i18next'
-import engLocales from 'public/locales/en/common.json'
-import { ReportNamespaces } from 'react-i18next';
+import type engLocales from 'public/locales/en/common.json'
+import type { ReportNamespaces } from 'react-i18next';
 
 type AcceptAnyString<T> = T | (string & Record<never, never>);
 

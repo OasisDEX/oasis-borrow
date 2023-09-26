@@ -1,8 +1,8 @@
-import { IPosition } from '@oasisdex/dma-library'
+import type { IPosition } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'
-import BigNumber from 'bignumber.js'
-import { NaNIsZero } from 'helpers/nanIsZero'
-import { one, zero } from 'helpers/zero'
+import type BigNumber from 'bignumber.js'
+
+import { calculateLiquidationPrice } from './calculate-liquidation-price'
 
 export function calculateViewValuesForPosition(
   position: IPosition,
@@ -28,13 +28,23 @@ export function calculateViewValuesForPosition(
 
   const totalExposure = collateral
 
-  const liquidationPriceInDebt = NaNIsZero(
-    debt.div(collateral.times(position.category.liquidationThreshold)),
-  )
+  const { liquidationPriceInDebt, liquidationPriceInCollateral } = calculateLiquidationPrice({
+    collateral: {
+      ...position.collateral,
+    },
+    debt: {
+      ...position.debt,
+    },
+    liquidationRatio: position.category.liquidationThreshold,
+  })
 
-  const liquidationPriceInCollateral = liquidationPriceInDebt.isZero()
-    ? zero
-    : NaNIsZero(one.div(liquidationPriceInDebt))
+  // const liquidationPriceInDebt = NaNIsZero(
+  //   debt.div(collateral.times(position.category.liquidationThreshold)),
+  // )
+  //
+  // const liquidationPriceInCollateral = liquidationPriceInDebt.isZero()
+  //   ? zero
+  //   : NaNIsZero(one.div(liquidationPriceInDebt))
 
   const costOfBorrowingDebt = debtVariableBorrowRate.times(debt).times(debtTokenPrice)
   const profitFromProvidingCollateral = collateralLiquidityRate

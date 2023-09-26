@@ -1,4 +1,4 @@
-import { WidgetConfig } from '@lifi/widget'
+import type { WidgetConfig } from '@lifi/widget'
 import { enableNetworksSet } from 'blockchain/networks'
 import { theme } from 'theme'
 
@@ -42,4 +42,5 @@ export const swapWidgetConfig: WidgetConfig = {
   bridges: {
     deny: ['polygon', 'omni', 'gnosis', 'hyphen', 'multichain'],
   },
+  fee: 0.002,
 }

@@ -19,12 +19,12 @@ import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSli
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import {
   otherActionsCollateralPanel,
   otherActionsDaiPanel,
 } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
-import { MAX_COLL_RATIO } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
+import { MAX_COLL_RATIO } from 'features/multiply/open/pipes/openMultiplyVaultCalculations.constants'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { zero } from 'helpers/zero'

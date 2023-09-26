@@ -1,11 +1,7 @@
-import {
-  AjnaCommonDependencies,
-  AjnaCommonPayload,
-  AjnaPosition,
-  strategies,
-} from '@oasisdex/dma-library'
-import { AjnaGenericPosition } from 'features/ajna/common/types'
-import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
+import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaPosition } from '@oasisdex/dma-library'
+import { strategies } from '@oasisdex/dma-library'
+import type { AjnaGenericPosition } from 'features/ajna/common/types'
+import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
 import { zero } from 'helpers/zero'
 
 export const ajnaOpenBorrow = ({
@@ -54,7 +50,7 @@ export const ajnaDepositGenerateBorrow = ({
       position: position as AjnaPosition,
       quoteAmount: generateAmount || zero,
       stamploanEnabled: !!borrowishSimulation?.liquidationPrice.lt(
-        borrowishPosition.liquidationPriceT0Np,
+        borrowishPosition.liquidationPrice,
       ),
     },
     dependencies,
@@ -86,7 +82,7 @@ export const ajnaPaybackWithdrawBorrow = ({
       position: position as AjnaPosition,
       quoteAmount: paybackAmount || zero,
       stamploanEnabled: !!borrowishSimulation?.liquidationPrice.lt(
-        borrowishPosition.liquidationPriceT0Np,
+        borrowishPosition.liquidationPrice,
       ),
     },
     dependencies,

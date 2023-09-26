@@ -10,15 +10,15 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { useAppConfig } from 'helpers/config'
 import {
   formatAmount,
   formatCryptoBalance,
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
@@ -49,7 +49,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
   } = props
   const { t } = useTranslation()
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+  const { StopLossWrite: stopLossWriteEnabled } = useAppConfig('features')
 
   const dynamicStopLossPrice =
     afterLiquidationPrice && liquidationRatio

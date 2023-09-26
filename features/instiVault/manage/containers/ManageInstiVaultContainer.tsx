@@ -1,4 +1,4 @@
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { useMainContext, useProductContext } from 'components/context'
 import {
@@ -7,7 +7,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
-import { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import type { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter.types'
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'

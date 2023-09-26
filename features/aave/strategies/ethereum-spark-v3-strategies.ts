@@ -8,21 +8,18 @@ import {
   DebtInput,
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
-import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
+import type { IStrategyConfig } from 'features/aave/types'
+import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { SparkBorrowFaq } from 'features/content/faqs/spark/borrow'
 import { SparkEarnFaqV3 } from 'features/content/faqs/spark/earn'
 import { SparkMultiplyFaq } from 'features/content/faqs/spark/multiply'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
+import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
 import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
-import {
-  hasBorrowProductType,
-  hasEarnProductType,
-  hasMultiplyProductType,
-  TokenPairConfig,
-} from './common'
+import type { TokenPairConfig } from './common'
+import { hasBorrowProductType, hasEarnProductType, hasMultiplyProductType } from './common'
 
 const availableTokenPairs: TokenPairConfig[] = [
   {
@@ -31,20 +28,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocolMultiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocolMultiply',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocolBorrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocolBorrow',
+            featureToggle: undefined,
           },
         ],
       },
@@ -56,20 +53,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocolMultiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocolMultiply',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocolBorrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocolBorrow',
+            featureToggle: undefined,
           },
         ],
       },
@@ -81,20 +78,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocolMultiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocolMultiply',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocolBorrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocolBorrow',
+            featureToggle: undefined,
           },
         ],
       },
@@ -103,23 +100,23 @@ const availableTokenPairs: TokenPairConfig[] = [
   {
     collateral: 'SDAI',
     debt: 'ETH',
-    strategyType: StrategyType.Long,
+    strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: 'SparkProtocolMultiply',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: 'SparkProtocolMultiply',
+            featureToggle: undefined,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: 'SparkProtocolBorrow',
+        featureToggle: undefined,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
-            featureToggle: 'SparkProtocolBorrow',
+            featureToggle: undefined,
           },
         ],
       },
@@ -131,7 +128,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: 'SparkProtocolEarn',
+        featureToggle: undefined,
         additionalManageActions: [],
       },
     },
@@ -142,7 +139,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: 'SparkProtocolEarn',
+        featureToggle: undefined,
         additionalManageActions: [],
       },
     },
@@ -186,7 +183,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Borrow.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getFeatureToggle(featureToggle)
+                featureToggle === undefined || getLocalAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
@@ -233,7 +230,7 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Multiply.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getFeatureToggle(featureToggle)
+                featureToggle === undefined || getLocalAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []
@@ -281,7 +278,7 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
           config.productTypes.Earn.additionalManageActions
             ?.filter(({ featureToggle }) => {
               const isFeatureEnabled =
-                featureToggle === undefined || getFeatureToggle(featureToggle)
+                featureToggle === undefined || getLocalAppConfig('features')[featureToggle]
               return isFeatureEnabled
             })
             .map(({ action }) => action) ?? []

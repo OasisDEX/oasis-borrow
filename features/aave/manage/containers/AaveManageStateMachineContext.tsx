@@ -1,7 +1,8 @@
 import { useInterpret } from '@xstate/react'
-import { ManageAaveStateMachine } from 'features/aave/manage/state'
-import { IStrategyConfig, PositionId, ProxyType } from 'features/aave/types'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import type { ManageAaveStateMachine } from 'features/aave/manage/state'
+import type { IStrategyConfig, PositionId } from 'features/aave/types'
+import { ProxyType } from 'features/aave/types'
+import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { env } from 'process'
 import React from 'react'
 

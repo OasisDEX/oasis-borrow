@@ -1,40 +1,37 @@
-import { IRiskRatio } from '@oasisdex/dma-library'
+import type { IRiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { getNetworkById, NetworkIds } from 'blockchain/networks'
-import { Tickers } from 'blockchain/prices'
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { Tickers } from 'blockchain/prices.types'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { amountFromPrecision } from 'blockchain/utils'
-import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
+import type { VaultWithType, VaultWithValue } from 'blockchain/vaults.types'
 import { ethers } from 'ethers'
 import { isAddress } from 'ethers/lib/utils'
 import { loadStrategyFromTokens } from 'features/aave'
-import { PositionCreated } from 'features/aave/services'
-import { IStrategyConfig } from 'features/aave/types'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import {
-  extractStopLossData,
-  StopLossTriggerData,
-} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { ApiVault, ApiVaultsParams } from 'features/shared/vaultApi'
+import type { PositionCreated } from 'features/aave/services'
+import { calculateLiquidationPrice } from 'features/aave/services/calculate-liquidation-price'
+import type { IStrategyConfig } from 'features/aave/types'
+import { StrategyType } from 'features/aave/types'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
+import type { ApiVault, ApiVaultsParams } from 'features/shared/vaultApi'
 import { formatAddress } from 'helpers/formatters/format'
 import { mapAaveLikeUrlSlug, mapAaveProtocol } from 'helpers/getAaveLikeStrategyUrl'
 import { productToVaultType } from 'helpers/productToVaultType'
 import { zero } from 'helpers/zero'
-import {
-  AaveLikeLendingProtocol,
-  checkIfAave,
-  checkIfSpark,
-  LendingProtocol,
-} from 'lendingProtocols'
-import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
-import { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
+import { checkIfAave, checkIfSpark, LendingProtocol } from 'lendingProtocols'
+import type { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
+import type { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
 import { memoize } from 'lodash'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
-import { Position } from './positionsOverviewSummary'
+import type { Position } from './positionsOverviewSummary'
 
 type CreatePositionEnvironmentPropsType = {
   tickerPrices$: (tokens: string[]) => Observable<Tickers>
@@ -82,6 +79,7 @@ export type AaveLikePosition = Position & {
   debt: BigNumber
   netValue: BigNumber
   liquidationPrice: BigNumber
+  liquidationPriceToken: string
   variableBorrowRate: BigNumber
   fundingCost: BigNumber
   lockedCollateral: BigNumber
@@ -106,26 +104,39 @@ export function createPositions$(
   aaveV2MainnetPositions$: (address: string) => Observable<Position[]>,
   aaveV3MainnetPositions$: (address: string) => Observable<Position[]>,
   optimismPositions$: (address: string) => Observable<Position[]>,
+  arbitrumPositions$: (address: string) => Observable<Position[]>,
+
   address: string,
 ): Observable<Position[]> {
   const _makerPositions$ = makerPositions$(address)
   const _aaveV2Positions$ = aaveV2MainnetPositions$(address)
   const _aaveV3Positions$ = aaveV3MainnetPositions$(address)
   const _optimismPositions$ = optimismPositions$(address)
+  const _arbitrumPositions$ = arbitrumPositions$(address)
   return combineLatest(
     _makerPositions$,
     _aaveV2Positions$,
     _aaveV3Positions$,
     _optimismPositions$,
+    _arbitrumPositions$,
   ).pipe(
-    map(([makerPositions, aaveV2Positions, aaveV3MainnetPositions, optimismPositions]) => {
-      return [
-        ...makerPositions,
-        ...aaveV2Positions,
-        ...aaveV3MainnetPositions,
-        ...optimismPositions,
-      ]
-    }),
+    map(
+      ([
+        makerPositions,
+        aaveV2Positions,
+        aaveV3MainnetPositions,
+        optimismPositions,
+        arbitrumPositions,
+      ]) => {
+        return [
+          ...makerPositions,
+          ...aaveV2Positions,
+          ...aaveV3MainnetPositions,
+          ...optimismPositions,
+          ...arbitrumPositions,
+        ]
+      },
+    ),
   )
 }
 
@@ -246,6 +257,7 @@ function buildAaveViewModel(
           riskRatio: position.riskRatio,
           debt: debtNotWei,
           liquidationPrice,
+          liquidationPriceToken: debtToken,
           fundingCost,
           variableBorrowRate,
           contentsUsd: netValueUsd,
@@ -321,9 +333,19 @@ function buildAaveLikeV3OnlyViewModel(
           .times(oracleCollateralTokenPriceInEth)
           .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
 
-        const liquidationPrice = !isDebtZero
-          ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
-          : zero
+        const { liquidationPriceInCollateral, liquidationPriceInDebt } = calculateLiquidationPrice({
+          collateral: position.collateral,
+          debt: position.debt,
+          liquidationRatio: position.category.liquidationThreshold,
+        })
+
+        const liquidationPrice =
+          strategyConfig.strategyType === StrategyType.Long
+            ? liquidationPriceInDebt
+            : liquidationPriceInCollateral
+
+        const liquidationPriceToken =
+          strategyConfig.strategyType === StrategyType.Long ? debtToken : collateralToken
 
         const variableBorrowRate = preparedAaveReserve.variableBorrowRate
 
@@ -370,6 +392,7 @@ function buildAaveLikeV3OnlyViewModel(
           riskRatio: position.riskRatio,
           debt: debtNotWei,
           liquidationPrice,
+          liquidationPriceToken,
           fundingCost,
           contentsUsd: netValueUsd,
           isOwner,

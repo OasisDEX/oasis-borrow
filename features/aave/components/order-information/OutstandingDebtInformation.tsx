@@ -1,4 +1,4 @@
-import { IPosition } from '@oasisdex/dma-library'
+import type { IPosition } from '@oasisdex/dma-library'
 import { Flex } from '@theme-ui/components'
 import { amountFromWei } from 'blockchain/utils'
 import {

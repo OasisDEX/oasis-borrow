@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import {
   customAllowanceAmountEmptyValidator,
@@ -7,20 +6,14 @@ import {
   ethFundsForTxValidator,
   ledgerWalletContractDataDisabledValidator,
 } from 'features/form/commonValidators'
-import { SLIPPAGE_DEFAULT, SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
+import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings.constants'
 import { isNullish } from 'helpers/functions'
-import { GUNI_MAX_SLIPPAGE, GUNI_SLIPPAGE } from 'helpers/multiply/calculations'
+import { GUNI_MAX_SLIPPAGE, GUNI_SLIPPAGE } from 'helpers/multiply/calculations.constants'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import { OpenGuniVaultState, Stage } from './openGuniVault'
-
-const defaultOpenVaultStageCategories = {
-  isEditingStage: false,
-  isProxyStage: false,
-  isAllowanceStage: false,
-  isOpenStage: false,
-}
+import type { OpenGuniVaultState, Stage } from './openGuniVault.types'
+import { defaultOpenVaultStageCategories } from './openGuniVaultConditions.constants'
 
 export function applyGuniOpenVaultStageCategorisation(state: OpenGuniVaultState) {
   const { stage, depositAmount, allowance } = state
@@ -79,68 +72,6 @@ export function applyGuniOpenVaultStageCategorisation(state: OpenGuniVaultState)
     default:
       throw new UnreachableCaseError(stage)
   }
-}
-
-export interface GuniOpenMultiplyVaultConditions {
-  isEditingStage: boolean
-  isProxyStage: boolean
-  isAllowanceStage: boolean
-  isOpenStage: boolean
-
-  inputAmountsEmpty: boolean
-
-  generateAmountLessThanDebtFloor: boolean
-  generateAmountMoreThanMaxFlashAmount: boolean
-  generateAmountExceedsDebtCeiling: boolean
-  depositAmountExceedsCollateralBalance: boolean
-  ledgerWalletContractDataDisabled: boolean
-
-  customAllowanceAmountEmpty: boolean
-  customAllowanceAmountExceedsMaxUint256: boolean
-  customAllowanceAmountLessThanDepositAmount: boolean
-  insufficientAllowance: boolean
-  potentialGenerateAmountLessThanDebtFloor: boolean
-
-  isLoadingStage: boolean
-  isSuccessStage: boolean
-  canProgress: boolean
-  canRegress: boolean
-  isExchangeLoading: boolean
-
-  highSlippage: boolean
-  customSlippageOverridden: boolean
-  customSlippage: BigNumber
-
-  insufficientEthFundsForTx: boolean
-}
-
-export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultConditions = {
-  ...defaultOpenVaultStageCategories,
-  inputAmountsEmpty: true,
-
-  generateAmountLessThanDebtFloor: false,
-  generateAmountMoreThanMaxFlashAmount: false,
-  generateAmountExceedsDebtCeiling: false,
-  depositAmountExceedsCollateralBalance: false,
-  ledgerWalletContractDataDisabled: false,
-
-  customAllowanceAmountEmpty: false,
-  customAllowanceAmountExceedsMaxUint256: false,
-  customAllowanceAmountLessThanDepositAmount: false,
-  insufficientAllowance: false,
-  potentialGenerateAmountLessThanDebtFloor: false,
-
-  isLoadingStage: false,
-  isSuccessStage: false,
-  canProgress: false,
-  canRegress: false,
-  isExchangeLoading: false,
-
-  highSlippage: false,
-  customSlippageOverridden: false,
-  customSlippage: SLIPPAGE_DEFAULT,
-
-  insufficientEthFundsForTx: false,
 }
 
 export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGuniVaultState {

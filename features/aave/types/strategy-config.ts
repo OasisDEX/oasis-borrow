@@ -1,7 +1,6 @@
 import { NetworkConfigHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { IPosition, IRiskRatio } from '@oasisdex/dma-library'
 import { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
-import { Feature } from 'helpers/useFeatureToggle'
 import BigNumber from 'bignumber.js'
 
 import { AaveManageComponentProps, ManageSectionComponentProps, ViewPositionSectionComponentProps } from '../components'
@@ -10,6 +9,8 @@ import { PositionId } from './position-id'
 import { BaseViewProps } from './base-aave-context'
 import { BaseAaveEvent } from './base-aave-event'
 import { ProductType } from './is-supported-product-type'
+import { FeaturesEnum } from 'types/config'
+
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element
 type ManageAaveHeader = (props: ManageAaveHeaderProps) => JSX.Element
@@ -87,7 +88,7 @@ export interface IStrategyConfig {
   }
   type: ProductType
   protocol: AaveLendingProtocol | SparkLendingProtocol
-  featureToggle?: Feature
+  featureToggle?: FeaturesEnum
   defaultSlippage?: BigNumber
   executeTransactionWith: 'web3' | 'ethers'
   strategyType: StrategyType

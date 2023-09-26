@@ -1,7 +1,7 @@
-import { Tokens } from '@prisma/client'
+import type { Tokens } from '@prisma/client'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import { getContractNetworkByWalletNetwork, NetworkIds, networkSetById } from 'blockchain/networks'
-import { ContractDesc } from 'features/web3Context'
+import type { ContractDesc } from 'features/web3Context'
 
 import { arbitrumContracts } from './arbitrum'
 import { goerliContracts } from './goerli'

@@ -1,14 +1,12 @@
-import {
+import type {
   AjnaCommonDependencies,
   AjnaCommonPayload,
   AjnaEarnPosition,
-  strategies,
 } from '@oasisdex/dma-library'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
-import { AjnaGenericPosition } from 'features/ajna/common/types'
+import { strategies } from '@oasisdex/dma-library'
+import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
-import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
+import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
 import { zero } from 'helpers/zero'
 
 export const ajnaOpenEarn = ({
@@ -22,20 +20,17 @@ export const ajnaOpenEarn = ({
   dependencies: AjnaCommonDependencies
   chainId: number
 }) => {
-  const { price, depositAmount, isStakingNft } = state
+  const { price, depositAmount } = state
 
   return strategies.ajna.earn.open(
     {
       ...commonPayload,
       price: price!,
       quoteAmount: depositAmount!,
-      isStakingNft: !!isStakingNft,
     },
     {
       ...dependencies,
       getEarnData: getAjnaEarnData(chainId),
-      rewardsManagerAddress: getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaRewardsManager
-        .address,
     },
   )
 }
@@ -51,7 +46,7 @@ export const ajnaDepositEarn = ({
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
 }) => {
-  const { price, depositAmount, isStakingNft } = state
+  const { price, depositAmount } = state
 
   return strategies.ajna.earn.depositAndAdjust(
     {
@@ -60,7 +55,6 @@ export const ajnaDepositEarn = ({
       collateralAmount: zero,
       quoteAmount: depositAmount || zero,
       position: position as AjnaEarnPosition,
-      isStakingNft: !!isStakingNft,
     },
     dependencies,
   )
@@ -77,7 +71,7 @@ export const ajnaWithdrawEarn = ({
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
 }) => {
-  const { price, withdrawAmount, isStakingNft } = state
+  const { price, withdrawAmount } = state
 
   return strategies.ajna.earn.withdrawAndAdjust(
     {
@@ -86,7 +80,6 @@ export const ajnaWithdrawEarn = ({
       collateralAmount: zero,
       quoteAmount: withdrawAmount || zero,
       position: position as AjnaEarnPosition,
-      isStakingNft: !!isStakingNft,
     },
     dependencies,
   )
@@ -103,7 +96,7 @@ export const ajnaClaimEarn = ({
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
 }) => {
-  const { price, isStakingNft } = state
+  const { price } = state
 
   return strategies.ajna.earn.claimCollateral(
     {
@@ -112,7 +105,6 @@ export const ajnaClaimEarn = ({
       collateralAmount: zero,
       quoteAmount: zero,
       position: position as AjnaEarnPosition,
-      isStakingNft: !!isStakingNft,
     },
     dependencies,
   )

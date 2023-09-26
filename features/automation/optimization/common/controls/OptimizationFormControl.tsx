@@ -1,18 +1,14 @@
 import { useAutomationContext } from 'components/context'
-import {
-  getAvailableAutomation,
-  getShouldRemoveAllowance,
-} from 'features/automation/common/helpers'
-import {
-  AUTOMATION_CHANGE_FEATURE,
-  AutomationChangeFeature,
-} from 'features/automation/common/state/automationFeatureChange'
+import { getAvailableAutomation } from 'features/automation/common/helpers/getAvailableAutomation'
+import { getShouldRemoveAllowance } from 'features/automation/common/helpers/getShouldRemoveAllowance'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
+import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoBuyFormControl } from 'features/automation/optimization/autoBuy/controls/AutoBuyFormControl'
 import { AutoTakeProfitFormControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitFormControl'
 import { getActiveOptimizationFeature } from 'features/automation/optimization/common/helpers'
 import { ConstantMultipleFormControl } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleFormControl'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'

@@ -26,7 +26,7 @@ import {
   parseMakerEarnPositionRows,
   parseMakerMultiplyPositionRows,
 } from 'features/vaultsOverview/parsers'
-import { PositionsList } from 'features/vaultsOverview/vaultsOverview'
+import type { PositionsList } from 'features/vaultsOverview/vaultsOverview'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAddress } from 'helpers/formatters/format'

@@ -1,23 +1,25 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { IMultiplyStrategy, IPosition, IStrategy, OPERATION_NAMES } from '@oasisdex/dma-library'
+import type { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library'
+import { OPERATION_NAMES } from '@oasisdex/dma-library'
 import { useActor } from '@xstate/react'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
 import { useAutomationContext } from 'components/context'
-import { SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
-import { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import { Skeleton } from 'components/Skeleton'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { ConnectedSidebarSection, StrategyInformationContainer } from 'features/aave/components'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
-import {
+import type {
   ManageAaveContext,
   ManageAaveEvent,
   ManageAaveStateMachineState,
 } from 'features/aave/manage/state'
-import { ManagePositionAvailableActions, ProductType } from 'features/aave/types'
+import type { ManagePositionAvailableActions } from 'features/aave/types'
+import { ProductType } from 'features/aave/types'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
 import { formatCryptoBalance } from 'helpers/formatters/format'
@@ -29,7 +31,8 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
-import { Sender } from 'xstate'
+import { match } from 'ts-pattern'
+import type { Sender } from 'xstate'
 
 import { GetReviewingSidebarProps } from './GetReviewingSidebarProps'
 import { ManageAaveReviewingStateView } from './ManageAaveReviewingStateView'
@@ -479,15 +482,17 @@ export function SidebarManageAaveVault() {
 
   const AdjustRisk = state.context.strategyConfig.viewComponents.adjustRiskInput
 
+  const title = match<ProductType, string>(state.context.strategyConfig.type)
+    .with(ProductType.Earn, () => t('manage-earn.aave.vault-form.manage-title'))
+    .with(ProductType.Multiply, () => t('manage-multiply.sidebar.title'))
+    .with(ProductType.Borrow, () => t('manage-borrow.sidebar.title'))
+    .exhaustive()
+
   switch (true) {
     case state.matches('frontend.editing'):
       return (
         <ConnectedSidebarSection
-          title={
-            state.context.strategyConfig.type === 'Earn'
-              ? t('manage-earn.aave.vault-form.manage-title')
-              : t('manage-multiply.sidebar.title')
-          }
+          title={title}
           content={
             <Grid gap={3}>
               <AdjustRisk

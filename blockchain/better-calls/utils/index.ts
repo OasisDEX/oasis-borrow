@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
-import { ethers } from 'ethers'
+import type { NetworkIds } from 'blockchain/networks'
+import type { ethers } from 'ethers'
 
 export interface BaseCallParameters {
   networkId: NetworkIds

@@ -6,11 +6,11 @@ import {
   discoverPageSeoTags,
 } from 'features/discover/layout'
 import { discoverPagesMeta } from 'features/discover/meta'
-import { DiscoverPages } from 'features/discover/types'
+import type { DiscoverPages } from 'features/discover/types'
 import { DiscoverView } from 'features/discover/views/DiscoverView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
-import { GetStaticPaths, GetStaticProps } from 'next'
+import type { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 

@@ -1,24 +1,12 @@
-import {
-  AutomationEventIds,
-  AutomationEventsAdditionalParams,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelAutomationEventIds, MixpanelCommonAnalyticsSections } from 'analytics/types'
 import { ActionPills } from 'components/ActionPills'
 import { Item } from 'components/infoSection/Item'
 import { maxUint32 } from 'features/automation/common/consts'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 
-interface MaxGasPriceSectionProps {
-  onChange: (item: number) => void
-  value: number
-  analytics: {
-    page: Pages
-    additionalParams: Pick<AutomationEventsAdditionalParams, 'vaultId' | 'ilk'>
-  }
-}
+import type { MaxGasPriceSectionProps } from './MaxGasPriceSection.types'
 
 export function MaxGasPriceSection({ onChange, value, analytics }: MaxGasPriceSectionProps) {
   const { t } = useTranslation()
@@ -28,9 +16,9 @@ export function MaxGasPriceSection({ onChange, value, analytics }: MaxGasPriceSe
       onChange(item)
 
       trackingEvents.automation.buttonClick(
-        AutomationEventIds.MaxGasFee,
+        MixpanelAutomationEventIds.MaxGasFee,
         analytics.page,
-        CommonAnalyticsSections.Form,
+        MixpanelCommonAnalyticsSections.Form,
         {
           ...analytics.additionalParams,
           maxGasFee: item.toString(),

@@ -1,16 +1,7 @@
 import { throttle } from 'lodash'
-import React, {
-  ChangeEvent,
-  MouseEvent,
-  ReactNode,
-  RefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
-import { OasisTheme } from 'theme'
+import type { ChangeEvent, MouseEvent, ReactNode, RefObject } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type { OasisTheme } from 'theme'
 import { Box, Flex, Grid, Slider, Text } from 'theme-ui'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 import { useTheme } from 'theme/useThemeUI'

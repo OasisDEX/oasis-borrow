@@ -1,8 +1,8 @@
 import { extractLendingProtocolFromPositionCreatedEvent } from 'features/aave/services'
 import { AJNA_BORROWISH_PRODUCTS } from 'features/ajna/common/consts'
-import { AjnaProduct } from 'features/ajna/common/types'
+import type { AjnaProduct } from 'features/ajna/common/types'
 import { LendingProtocol } from 'lendingProtocols'
-import { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
+import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 interface AjnaFlowStateFilterParams {
   collateralAddress: string

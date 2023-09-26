@@ -1,4 +1,4 @@
-import { AutomationOptimizationFeatures } from 'features/automation/common/state/automationFeatureChange'
+import type { AutomationOptimizationFeatures } from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
 
 export function getActiveOptimizationFeature({

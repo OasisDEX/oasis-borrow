@@ -1,4 +1,4 @@
-import { Unbox } from 'helpers/types'
+import type { Unbox } from 'helpers/types'
 import keyBy from 'lodash/keyBy'
 
 export const ASSETS_PAGES = [

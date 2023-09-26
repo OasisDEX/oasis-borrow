@@ -1,18 +1,16 @@
 import { TriggerType } from '@oasisdex/automation'
-import { AutomationEventIds, Pages } from 'analytics/analytics'
+import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
-import { resolveMinSellPriceAnalytics } from 'features/automation/common/helpers'
-import {
-  AUTO_SELL_FORM_CHANGE,
-  AutoBSFormChange,
-} from 'features/automation/common/state/autoBSFormChange'
+import { resolveMinSellPriceAnalytics } from 'features/automation/common/helpers/resolveMinSellPriceAnalytics'
+import { AUTO_SELL_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
+import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
 import { getAutoBSStatus } from 'features/automation/common/state/autoBSStatus'
 import { getAutoBSTxHandlers } from 'features/automation/common/state/autoBSTxHandlers'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupAutoSell } from 'features/automation/protection/autoSell/sidebars/SidebarSetupAutoSell'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -91,11 +89,11 @@ export function AutoSellFormControl({
       txHelpers={txHelpers}
       analytics={{
         id: {
-          add: AutomationEventIds.AddAutoSell,
-          edit: AutomationEventIds.EditAutoSell,
-          remove: AutomationEventIds.RemoveAutoSell,
+          add: MixpanelAutomationEventIds.AddAutoSell,
+          edit: MixpanelAutomationEventIds.EditAutoSell,
+          remove: MixpanelAutomationEventIds.RemoveAutoSell,
         },
-        page: Pages.AutoSell,
+        page: MixpanelPages.AutoSell,
         additionalParams: {
           triggerSellValue: autoSellState.execCollRatio.toString(),
           targetValue: autoSellState.targetCollRatio.toString(),

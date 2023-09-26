@@ -1,15 +1,18 @@
-import {
+import type {
   AdjustAaveParameters,
   CloseAaveParameters,
+  ManageAaveParameters,
+} from 'actions/aave-like'
+import {
   getAdjustPositionParameters,
   getCloseAaveParameters,
   getManagePositionParameters,
-  ManageAaveParameters,
 } from 'actions/aave-like'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
-import { HasGasEstimation, TxHelpers } from 'helpers/context/types'
-import { Observable } from 'rxjs'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
+import type { Observable } from 'rxjs'
 
 export function getCloseAaveParametersMachine(
   txHelpers$: Observable<TxHelpers>,

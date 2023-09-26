@@ -4,10 +4,10 @@ import { InfoCard } from 'components/InfoCard'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { useAppConfig } from 'helpers/config'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { scrollTo } from 'helpers/scrollTo'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
@@ -16,8 +16,8 @@ import { slideInAnimation } from 'theme/animations'
 import { HomepageHeadline } from './common/HomepageHeadline'
 import { HomepagePromoBlock } from './common/HomepagePromoBlock'
 import { partnerLogosConfig } from './helpers/constants'
-import { OasisStats } from './OasisStats'
-import { ReferralHandler } from './ReferralHandler'
+import type { OasisStats } from './OasisStats'
+import { ReferralHandlerDynamic } from './ReferralHandlerDynamic'
 import { useOasisStats } from './stats'
 
 function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
@@ -73,7 +73,7 @@ function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
 }
 
 export function HomepageView() {
-  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
   const { t } = useTranslation()
   const { data: oasisStats } = useOasisStats()
 
@@ -87,7 +87,7 @@ export function HomepageView() {
         animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
-      <ReferralHandler />
+      <ReferralHandlerDynamic />
       <ImagesSlider items={partnerLogosConfig} />
       <Text variant="header2" sx={{ textAlign: 'center', mt: 7, mb: 6 }}>
         {t('landing.why-oasis.main-header')}

@@ -1,17 +1,13 @@
-import BigNumber from 'bignumber.js'
-import {
-  ChangeVariantType,
-  ContentCardProps,
-  DetailsSectionContentCard,
-} from 'components/DetailsSectionContentCard'
+import type BigNumber from 'bignumber.js'
+import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
+import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentCardMaxLendingLTVProps {
   maxLendingPercentage: BigNumber
-  price: BigNumber
   quoteToken: string
   collateralToken: string
   afterMaxLendingPercentage?: BigNumber
@@ -21,7 +17,6 @@ interface ContentCardMaxLendingLTVProps {
 
 export function ContentCardMaxLendingLTV({
   maxLendingPercentage,
-  price,
   quoteToken,
   collateralToken,
   isLoading,
@@ -46,7 +41,6 @@ export function ContentCardMaxLendingLTV({
         `${formatted.afterMaxLendingPercentage} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     },
-    footnote: `${formatCryptoBalance(price)} ${quoteToken}`,
     modal: (
       <AjnaDetailsSectionContentSimpleModal
         title={t('ajna.position-page.earn.manage.overview.max-lending-ltv')}

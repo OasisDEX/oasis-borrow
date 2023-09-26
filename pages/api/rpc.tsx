@@ -1,5 +1,5 @@
 import { NetworkNames } from 'blockchain/networks'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 const rpcBase = `${process.env.API_GATEWAY}/prod/rpc/`
 

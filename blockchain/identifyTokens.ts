@@ -1,14 +1,13 @@
-import { Tokens } from '@prisma/client'
+import type { Tokens } from '@prisma/client'
 import { extendTokensContracts, getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
-import { getToken, getTokenGuarded, SimplifiedTokenConfig } from 'blockchain/tokensMetadata'
+import { getToken, getTokenGuarded } from 'blockchain/tokensMetadata'
 import { uniq } from 'lodash'
-import { combineLatest, from, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, from, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
-export interface IdentifiedTokens {
-  [key: string]: SimplifiedTokenConfig
-}
+import type { IdentifiedTokens } from './identifyTokens.types'
+import type { Context } from './network.types'
 
 function reduceIdentifiedTokens(
   total: IdentifiedTokens,
@@ -42,12 +41,15 @@ export const identifyTokens$ = (
 
         const localTokens = uniq(
           Object.keys(tokensContracts)
-            .filter(
-              (token) =>
+            .filter((token) => {
+              if (tokensContracts[token] === undefined) return false
+
+              return (
                 tokensAddresses
                   .map((address) => address.toLowerCase())
-                  .includes(tokensContracts[token].address.toLowerCase()) && getTokenGuarded(token),
-            )
+                  .includes(tokensContracts[token].address.toLowerCase()) && getTokenGuarded(token)
+              )
+            })
             .map((token) => (token === 'WETH' ? 'ETH' : token)),
         )
         localTokensAddresses = localTokens.map((token) =>

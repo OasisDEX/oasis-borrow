@@ -1,22 +1,24 @@
 import { views } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
-import { Tickers } from 'blockchain/prices'
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
-import { PositionCreated } from 'features/aave/services'
+import type { Tickers } from 'blockchain/prices.types'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
+import type { PositionCreated } from 'features/aave/services'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
+import type { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
+import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAjnaCumulatives'
 import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
-import { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
+import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { isEqual, uniq } from 'lodash'
-import { combineLatest, iif, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, iif, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
 export interface AjnaPositionDetails {
@@ -39,7 +41,7 @@ export function getAjnaPosition$(
   ).pipe(
     switchMap(async ([context]) => {
       if (protocol.toLowerCase() !== LendingProtocol.Ajna) return null
-      const { ajnaPoolPairs, ajnaPoolInfo, ajnaRewardsManager } = getNetworkContracts(
+      const { ajnaPoolPairs, ajnaPoolInfo } = getNetworkContracts(
         NetworkIds.MAINNET,
         context.chainId,
       )
@@ -57,9 +59,9 @@ export function getAjnaPosition$(
 
       const commonDependency = {
         poolInfoAddress: ajnaPoolInfo.address,
-        rewardsManagerAddress: ajnaRewardsManager.address,
         provider: getRpcProvider(context.chainId),
         getPoolData: getAjnaPoolData(context.chainId),
+        getCumulatives: getAjnaCumulatives(context.chainId),
       }
 
       switch (product as AjnaProduct) {

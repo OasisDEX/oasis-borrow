@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import {
   customAllowanceAmountEmptyValidator,
   customAllowanceAmountExceedsMaxUint256Validator,
@@ -16,16 +16,8 @@ import { getTotalStepsForOpenVaultFlow } from 'helpers/totalSteps'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import { OpenVaultStage, OpenVaultState } from './openVault'
-
-const defaultOpenVaultStageCategories = {
-  isEditingStage: false,
-  isStopLossEditingStage: false,
-  isProxyStage: false,
-  isAllowanceStage: false,
-  isOpenStage: false,
-  isAddStopLossStage: false,
-}
+import type { OpenVaultStage, OpenVaultState } from './openVault.types'
+import { defaultOpenVaultStageCategories } from './openVaultConditions.constants'
 
 export function calculateInitialTotalSteps(
   proxyAddress: string | undefined,
@@ -150,96 +142,6 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
     default:
       throw new UnreachableCaseError(stage)
   }
-}
-
-export interface OpenVaultConditions {
-  isEditingStage: boolean
-  isStopLossEditingStage: boolean
-  isProxyStage: boolean
-  isAllowanceStage: boolean
-  isOpenStage: boolean
-  isAddStopLossStage: boolean
-  withProxyStep: boolean
-  withAllowanceStep: boolean
-
-  inputAmountsEmpty: boolean
-
-  vaultWillBeAtRiskLevelWarning: boolean
-  vaultWillBeAtRiskLevelDanger: boolean
-  vaultWillBeUnderCollateralized: boolean
-
-  vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
-  vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
-  vaultWillBeUnderCollateralizedAtNextPrice: boolean
-  potentialGenerateAmountLessThanDebtFloor: boolean
-
-  depositingAllEthBalance: boolean
-  depositAmountExceedsCollateralBalance: boolean
-  generateAmountExceedsDaiYieldFromDepositingCollateral: boolean
-  generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice: boolean
-  generateAmountExceedsDebtCeiling: boolean
-  generateAmountLessThanDebtFloor: boolean
-  ledgerWalletContractDataDisabled: boolean
-
-  customAllowanceAmountEmpty: boolean
-  customAllowanceAmountExceedsMaxUint256: boolean
-  customAllowanceAmountLessThanDepositAmount: boolean
-  insufficientAllowance: boolean
-
-  isLoadingStage: boolean
-  isSuccessStage: boolean
-  isStopLossSuccessStage: boolean
-  openFlowWithStopLoss: boolean
-  canProgress: boolean
-  canRegress: boolean
-
-  potentialInsufficientEthFundsForTx: boolean
-  insufficientEthFundsForTx: boolean
-  stopLossOnNearLiquidationRatio: boolean
-  stopLossHigherThanCurrentOrNext: boolean
-  currentCollRatioCloseToStopLoss: boolean
-}
-
-export const defaultOpenVaultConditions: OpenVaultConditions = {
-  ...defaultOpenVaultStageCategories,
-  inputAmountsEmpty: true,
-
-  vaultWillBeAtRiskLevelWarning: false,
-  vaultWillBeAtRiskLevelDanger: false,
-  vaultWillBeUnderCollateralized: false,
-
-  vaultWillBeAtRiskLevelWarningAtNextPrice: false,
-  vaultWillBeAtRiskLevelDangerAtNextPrice: false,
-  vaultWillBeUnderCollateralizedAtNextPrice: false,
-  potentialGenerateAmountLessThanDebtFloor: false,
-
-  depositingAllEthBalance: false,
-  depositAmountExceedsCollateralBalance: false,
-  generateAmountExceedsDaiYieldFromDepositingCollateral: false,
-  generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice: false,
-  generateAmountExceedsDebtCeiling: false,
-  generateAmountLessThanDebtFloor: false,
-  ledgerWalletContractDataDisabled: false,
-
-  customAllowanceAmountEmpty: false,
-  customAllowanceAmountExceedsMaxUint256: false,
-  customAllowanceAmountLessThanDepositAmount: false,
-  insufficientAllowance: false,
-
-  isLoadingStage: false,
-  isSuccessStage: false,
-  isStopLossSuccessStage: false,
-  openFlowWithStopLoss: false,
-  canProgress: false,
-  canRegress: false,
-  withProxyStep: false,
-  withAllowanceStep: false,
-
-  potentialInsufficientEthFundsForTx: false,
-  insufficientEthFundsForTx: false,
-  stopLossOnNearLiquidationRatio: false,
-  stopLossHigherThanCurrentOrNext: false,
-  currentCollRatioCloseToStopLoss: false,
 }
 
 export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState {

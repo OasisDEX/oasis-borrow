@@ -1,4 +1,4 @@
-import { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
+import type { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { ChainlinkPriceOracle__factory, GasPriceOracle__factory } from 'types/ethers-contracts'

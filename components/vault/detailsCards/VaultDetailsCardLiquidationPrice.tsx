@@ -1,14 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
-import {
-  AfterPillProps,
-  VaultDetailsCard,
-  VaultDetailsCardModal,
-} from 'components/vault/VaultDetails'
+import type { AfterPillProps } from 'components/vault/VaultDetails'
+import { VaultDetailsCard, VaultDetailsCardModal } from 'components/vault/VaultDetails'
 import { StopLossBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossBannerControl'
+import { useAppConfig } from 'helpers/config'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { ModalProps, useModal } from 'helpers/modalHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import type { ModalProps } from 'helpers/modalHook'
+import { useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -29,7 +27,7 @@ function VaultDetailsLiquidationModal({
   isStopLossEnabled,
 }: ModalProps<LiquidationProps>) {
   const { t } = useTranslation()
-  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
+  const { StopLossRead: stopLossReadEnabled } = useAppConfig('features')
 
   return !stopLossReadEnabled ? (
     <VaultDetailsCardModal close={close}>
@@ -107,7 +105,7 @@ export function VaultDetailsCardLiquidationPrice({
   const {
     triggerData: { stopLossTriggerData },
   } = useAutomationContext()
-  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
+  const { StopLossRead: stopLossReadEnabled } = useAppConfig('features')
 
   const cardDetailsData = {
     title: t('system.liquidation-price'),

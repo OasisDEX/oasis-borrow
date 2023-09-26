@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { ContractDesc } from 'features/web3Context'
-import { Observable, of } from 'rxjs'
+import type { ContractDesc } from 'features/web3Context'
+import type { Observable } from 'rxjs'
+import { of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'
-import { Dictionary } from 'ts-essentials'
+import type { Dictionary } from 'ts-essentials'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
@@ -203,6 +204,55 @@ export const OPTIMIMS_DEFAULT_PROCOTOLS = [
   'OPTIMISM_WOOFI_V2',
   'OPTIMISM_TRIDENT',
   'OPTIMISM_MUMMY_FINANCE',
+]
+
+export const ARBITRUM_DEFAULT_LIQUIDITY_PROVIDERS = [
+  // 'ARBITRUM_BALANCER_V2', - We can't use balancer due to reentrancy issues
+  'ARBITRUM_ONE_INCH_LIMIT_ORDER',
+  'ARBITRUM_ONE_INCH_LIMIT_ORDER_V2',
+  'ARBITRUM_ONE_INCH_LIMIT_ORDER_V3',
+  'ARBITRUM_DODO',
+  'ARBITRUM_DODO_V2',
+  'ARBITRUM_SUSHISWAP',
+  'ARBITRUM_DXSWAP',
+  'ARBITRUM_UNISWAP_V3',
+  'ARBITRUM_CURVE',
+  'ARBITRUM_CURVE_V2',
+  'ARBITRUM_GMX',
+  'ARBITRUM_SYNAPSE',
+  'ARBITRUM_PMM5',
+  'ARBITRUM_SADDLE',
+  'ARBITRUM_KYBERSWAP_ELASTIC',
+  'ARBITRUM_KYBER_DMM_STATIC',
+  'ARBITRUM_AAVE_V3',
+  'ARBITRUM_ELK',
+  'ARBITRUM_WOOFI_V2',
+  'ARBITRUM_CAMELOT',
+  'ARBITRUM_TRADERJOE',
+  'ARBITRUM_TRADERJOE_V2',
+  'ARBITRUM_SWAPFISH',
+  'ARBITRUM_ZYBER',
+  'ARBITRUM_ZYBER_STABLE',
+  'ARBITRUM_SOLIDLIZARD',
+  'ARBITRUM_ZYBER_V3',
+  'ARBITRUM_MYCELIUM',
+  'ARBITRUM_TRIDENT',
+  'ARBITRUM_SHELL_OCEAN',
+  'ARBITRUM_RAMSES',
+  'ARBITRUM_TRADERJOE_V2_1',
+  'ARBITRUM_NOMISWAPEPCS',
+  'ARBITRUM_CAMELOT_V3',
+  'ARBITRUM_WOMBATSWAP',
+  'ARBITRUM_CHRONOS',
+  'ARBITRUM_LIGHTER',
+  'ARBITRUM_ARBIDEX',
+  'ARBITRUM_ARBIDEX_V3',
+  'ARBSWAP',
+  'ARBSWAP_STABLE',
+  'ARBITRUM_SUSHISWAP_V3',
+  'ARBITRUM_RAMSES_V2',
+  'ARBITRUM_LEVEL_FINANCE',
+  'ARBITRUM_CHRONOS_V3',
 ]
 
 export function getQuote$(

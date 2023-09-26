@@ -1,21 +1,13 @@
-import BigNumber from 'bignumber.js'
-import { combineLatest, Observable } from 'rxjs'
+import type BigNumber from 'bignumber.js'
+import type { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
+import type { CollateralLocked, TotalValueLocked } from './collateral.types'
 import { getNetworkContracts } from './contracts'
-import { ContextConnected } from './network'
-import { NetworkIds } from './networks/'
-import { OraclePriceData, OraclePriceDataArgs } from './prices'
-
-export interface CollateralLocked {
-  ilk: string
-  token: string
-  collateral: BigNumber
-}
-
-export interface TotalValueLocked {
-  value: BigNumber
-}
+import type { ContextConnected } from './network.types'
+import { NetworkIds } from './networks'
+import type { OraclePriceData, OraclePriceDataArgs } from './prices.types'
 
 export function getCollateralLocked$(
   context$: Observable<ContextConnected>,

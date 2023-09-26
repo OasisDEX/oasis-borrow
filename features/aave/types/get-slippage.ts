@@ -1,4 +1,4 @@
-import { SLIPPAGE_DEFAULT } from 'features/userSettings/userSettings'
+import { SLIPPAGE_DEFAULT } from 'features/userSettings/userSettings.constants'
 import { BaseAaveContext } from './base-aave-context'
 
 export function getSlippage(

@@ -1,6 +1,8 @@
 import { isTouchDevice } from 'helpers/isTouchDevice'
-import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import { Box, Card, SxStyleProp } from 'theme-ui'
+import type { ReactNode } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import type { SxStyleProp } from 'theme-ui'
+import { Box, Card } from 'theme-ui'
 
 export function useTooltip() {
   const [tooltipOpen, setTooltipOpen] = useState(false)

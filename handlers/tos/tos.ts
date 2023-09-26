@@ -1,4 +1,4 @@
-import { PrismaClient, TosApproval } from '@prisma/client'
+import type { PrismaClient, TosApproval } from '@prisma/client'
 
 export async function selecTosForAddress(
   prisma: PrismaClient,

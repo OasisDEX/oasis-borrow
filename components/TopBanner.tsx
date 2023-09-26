@@ -1,14 +1,22 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { TopBannerEvents, trackingEvents } from 'analytics/analytics'
-import { WithChildren } from 'helpers/types'
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelTopBannerEvents } from 'analytics/types'
+import { useAppConfig } from 'helpers/config'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import React from 'react'
 import { Box } from 'theme-ui'
 import { rollDownTopBannerAnimation } from 'theme/animations'
 
-export const TopBanner = ({ name, children }: { name: string } & WithChildren) => {
-  const [topBannerClosed, setTopBannerClosed] = useLocalStorage(`TopBanner_${name}_closed`, false)
-  return topBannerClosed ? null : (
+import { AppLink } from './Links'
+import { WithArrow } from './WithArrow'
+
+export default function TopBanner() {
+  const { topBanner } = useAppConfig('parameters')
+  const [topBannerClosed, setTopBannerClosed] = useLocalStorage(
+    `TopBanner_${topBanner.name}_closed`,
+    false,
+  )
+  return topBannerClosed || !topBanner.name ? null : (
     <>
       <Box
         sx={{
@@ -23,7 +31,21 @@ export const TopBanner = ({ name, children }: { name: string } & WithChildren) =
           ...rollDownTopBannerAnimation,
         }}
       >
-        {children}
+        <AppLink
+          href={topBanner.url as string}
+          onClick={() => {
+            trackingEvents.topBannerEvent(MixpanelTopBannerEvents.TopBannerClicked, 'rebranding')
+          }}
+          sx={{ display: 'inline', padding: 3 }}
+        >
+          <WithArrow variant="boldParagraph2" sx={{ fontSize: '16px', display: 'inline' }}>
+            <Icon
+              name="loudspeaker"
+              sx={{ mr: 2, position: 'relative', top: '2px', transition: '0.2s transform' }}
+            />
+            {topBanner.message}
+          </WithArrow>
+        </AppLink>
         <Icon
           name="close"
           sx={{
@@ -35,7 +57,10 @@ export const TopBanner = ({ name, children }: { name: string } & WithChildren) =
             boxSizing: 'content-box',
           }}
           onClick={() => {
-            trackingEvents.topBannerEvent(TopBannerEvents.TopBannerClosed, name)
+            trackingEvents.topBannerEvent(
+              MixpanelTopBannerEvents.TopBannerClosed,
+              topBanner.name as string,
+            )
             setTopBannerClosed(true)
           }}
         />

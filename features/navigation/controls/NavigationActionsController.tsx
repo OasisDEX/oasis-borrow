@@ -6,7 +6,6 @@ import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobi
 import { navigationBreakpoints } from 'components/navigation/Navigation'
 import { NavigationNetworkSwitcherOrb } from 'components/navigation/NavigationNetworkSwitcher'
 import { ConnectButton } from 'features/web3OnBoard'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 
@@ -19,8 +18,6 @@ export function NavigationActionsController({ isConnected }: NavigationActionsCo
   const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2] - 1}px)`)
   const isViewBelowM = useMediaQuery(`(max-width: ${navigationBreakpoints[1] - 1}px)`)
 
-  const useNetworkSwitcher = useFeatureToggle('UseNetworkSwitcher')
-
   return (
     <>
       {isConnected ? (
@@ -28,12 +25,12 @@ export function NavigationActionsController({ isConnected }: NavigationActionsCo
           {isViewBelowXl && <SwapWidgetOrb />}
           {isViewBelowXl && <MyPositionsOrb />}
           <NotificationsOrb />
-          {useNetworkSwitcher && <NavigationNetworkSwitcherOrb />}
+          {<NavigationNetworkSwitcherOrb />}
           {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
         </>
       ) : (
         <>
-          {useNetworkSwitcher && <NavigationNetworkSwitcherOrb />}
+          {<NavigationNetworkSwitcherOrb />}
           {!isViewBelowL && <ConnectButton />}
         </>
       )}

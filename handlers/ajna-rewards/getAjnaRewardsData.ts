@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { zero } from 'helpers/zero'
-import { NextApiRequest } from 'next'
+import type { NextApiRequest } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 

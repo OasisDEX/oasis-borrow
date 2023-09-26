@@ -1,7 +1,7 @@
-import {
+import type {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
-} from 'features/borrow/manage/pipes/manageVault'
+} from 'features/borrow/manage/pipes/manageVault.types'
 
 export function applyManageVaultInjectedOverride<VaultState extends ManageStandardBorrowVaultState>(
   change: ManageVaultChange,

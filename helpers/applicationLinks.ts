@@ -85,7 +85,6 @@ export const EXTERNAL_LINKS = {
     MULTIPLY_FOR_AAVE: 'https://blog.summer.fi/introducing-oasis-multiply-for-aave',
     DSR_RATE_HIKE: 'https://blog.summer.fi/dsr-rate-hike/',
     MAKER_STABILITY_FEE_CHANGES: 'https://blog.summer.fi/major-stability-fee-changes/',
-    REBRANDING: 'https://blog.summer.fi/oasis-app-rebrands-to-summer-fi/',
   },
   DOCS: {
     AJNA: {
@@ -123,4 +122,5 @@ export const EXTERNAL_LINKS = {
   WONDERWALL: 'https://www.youtube.com/embed/6hzrDeceEKc',
   LIDO_FI_STETH_LIQUIDITY:
     'https://blog.lido.fi/providing-steth-liquidity-via-curve-to-receive-rewards',
+  INTER_FONT: 'https://rsms.me/inter/inter.css',
 }

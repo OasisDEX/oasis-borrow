@@ -1,27 +1,31 @@
-import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
+import type { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
+import { MixpanelCommonAnalyticsSections } from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import {
   addAutomationTrigger,
   removeAutomationTrigger,
 } from 'features/automation/api/automationTxHandlers'
-import {
+import type {
   AutomationAddTriggerData,
   AutomationRemoveTriggerData,
-} from 'features/automation/common/txDefinitions'
-import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
-import { AutomationContracts } from 'features/automation/metadata/types'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { TxHelpers } from 'helpers/context/types'
+} from 'features/automation/common/txDefinitions.types'
+import type {
+  AutomationPublishType,
+  SidebarAutomationStages,
+} from 'features/automation/common/types'
+import type { AutomationContracts } from 'features/automation/metadata/types'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { uiChanges } from 'helpers/uiChanges'
 
 export interface AutomationTxHandlerAnalytics {
-  id: { add: AutomationEventIds; edit: AutomationEventIds; remove: AutomationEventIds }
-  page: Pages
+  id: {
+    add: MixpanelAutomationEventIds
+    edit: MixpanelAutomationEventIds
+    remove: MixpanelAutomationEventIds
+  }
+  page: MixpanelPages
   additionalParams: {
     triggerValue?: string
     triggerBuyValue?: string
@@ -34,6 +38,7 @@ export interface AutomationTxHandlerAnalytics {
     closeTo?: CloseVaultTo
   }
 }
+
 interface TxHandlerParams {
   callOnSuccess?: () => void
 }
@@ -120,7 +125,7 @@ export function getAutomationFeatureTxHandlers({
           trackingEvents.automation.buttonClick(
             triggerEnabled ? analytics.id.edit : analytics.id.add,
             analytics.page,
-            CommonAnalyticsSections.Form,
+            MixpanelCommonAnalyticsSections.Form,
             { ...analyticsAdditionalParams, ...analytics.additionalParams },
           )
         }
@@ -137,7 +142,7 @@ export function getAutomationFeatureTxHandlers({
           trackingEvents.automation.buttonClick(
             analytics.id.remove,
             analytics.page,
-            CommonAnalyticsSections.Form,
+            MixpanelCommonAnalyticsSections.Form,
             {
               ...analyticsAdditionalParams,
               ...analytics.additionalParams,

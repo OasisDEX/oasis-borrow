@@ -1,37 +1,30 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { GasPriceParams } from 'blockchain/prices'
-import { Banner, bannerGradientPresets } from 'components/Banner'
+import type { GasPriceParams } from 'blockchain/prices.types'
+import { Banner } from 'components/Banner'
+import { bannerGradientPresets } from 'components/Banner.constants'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
-import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
-import {
-  calculateBreakeven,
-  calculateEarnings,
-  Yield,
-  YieldPeriod,
-} from 'helpers/earn/calculations'
+import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault.types'
+import type { Yield } from 'helpers/earn/calculations'
+import { calculateBreakeven, calculateEarnings, YieldPeriod } from 'helpers/earn/calculations'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
+import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations.constants'
 import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box } from 'theme-ui'
 
+import { EarnSimulateViewMode } from './GuniOpenMultiplyVaultDetails.types'
 import { GuniVaultDetailsTitle } from './GuniVaultDetailsTitle'
 
 const examplePosition = {
   usdcSwapAmount: new BigNumber(3_750_000),
   gasUsed: new BigNumber(1_400_000),
   depositAmount: new BigNumber(150_000),
-}
-
-export enum EarnSimulateViewMode {
-  Simulate = 'simulate',
-  FAQ = 'position-info',
 }
 
 function calculateEntryFees(

@@ -1,6 +1,6 @@
-import { IStrategy } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
-import { UserInput } from 'features/aave/types'
+import type { IStrategy } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
+import type { UserInput } from 'features/aave/types'
 import { allDefined } from 'helpers/allDefined'
 
 import { zero } from './zero'

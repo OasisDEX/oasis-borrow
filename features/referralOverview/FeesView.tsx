@@ -1,11 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useMainnetEnsName, useMainnetEnsNames } from 'blockchain/ens'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { NetworkHexIds } from 'blockchain/networks'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import { ReferralClaimSwitchNetworkModal } from 'features/referralOverview/referral-claim-switch-network-modal'
-import { ClaimTxnState, UserReferralState } from 'features/referralOverview/user'
 import { createUserUsingApi$ } from 'features/referralOverview/userApi'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { useWalletManagement } from 'features/web3OnBoard'
@@ -15,6 +14,9 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Card, Divider, Flex, Grid, Spinner, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
+
+import type { UserReferralState } from './user.types'
+import { ClaimTxnState } from './user.types'
 
 interface Props {
   context: Context

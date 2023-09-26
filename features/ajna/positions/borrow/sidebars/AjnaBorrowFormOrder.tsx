@@ -34,8 +34,8 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   const originationFee = getOriginationFee(positionData, simulationData)
 
   const liquidationPrice = isShort
-    ? normalizeValue(one.div(positionData.liquidationPriceT0Np))
-    : positionData.liquidationPriceT0Np
+    ? normalizeValue(one.div(positionData.liquidationPrice))
+    : positionData.liquidationPrice
   const afterLiquidationPrice =
     simulationData?.liquidationPrice &&
     (isShort

@@ -1,8 +1,7 @@
 import { ADDRESSES } from '@oasisdex/addresses'
 import * as erc20 from 'blockchain/abi/erc20.json'
-import * as guniToken from 'blockchain/abi/guni-token.json'
 import { contractDesc } from 'blockchain/networks'
-import { ContractDesc } from 'features/web3Context'
+import type { ContractDesc } from 'features/web3Context'
 
 export const AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET = 4365693
 export const ACCOUNT_GUARD_GENESIS_OPTIMISM_MAINNET = 84955123
@@ -12,16 +11,12 @@ const { optimism } = ADDRESSES
 
 export const tokensOptimism = {
   CBETH: contractDesc(erc20, optimism.common.CBETH),
-  CRVV1ETHSTETH: contractDesc(guniToken, optimism.common.CRVV1ETHSTETH),
   DAI: contractDesc(erc20, optimism.common.DAI),
   ETH: contractDesc(erc20, optimism.common.WETH),
   FRAX: contractDesc(erc20, optimism.common.FRAX),
   GHO: contractDesc(erc20, optimism.common.GHO),
-  GUNIV3DAIUSDC1: contractDesc(guniToken, optimism.common.GUNIV3DAIUSDC1),
-  GUNIV3DAIUSDC2: contractDesc(guniToken, optimism.common.GUNIV3DAIUSDC2),
   LDO: contractDesc(erc20, optimism.common.LDO),
   LUSD: contractDesc(erc20, optimism.common.LUSD),
-  MKR: contractDesc(erc20, optimism.maker.common.McdGov),
   RETH: contractDesc(erc20, optimism.common.RETH),
   RENBTC: contractDesc(erc20, optimism.common.RENBTC),
   SDAI: contractDesc(erc20, optimism.common.SDAI),

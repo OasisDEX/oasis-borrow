@@ -1,19 +1,19 @@
-import BigNumber from 'bignumber.js'
-import { AutomationContext } from 'components/context'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import {
+import type BigNumber from 'bignumber.js'
+import type { AutomationContext } from 'components/context'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
   AutomationRemoveTriggerData,
   AutomationRemoveTriggerTxDef,
-} from 'features/automation/common/txDefinitions'
-import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import {
+} from 'features/automation/common/txDefinitions.types'
+import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
+import type { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData.types'
+import type {
   StopLossFormChange,
   StopLossResetData,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+} from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 
 export type ContextWithoutMetadata = Omit<AutomationContext, 'metadata'>
 
@@ -31,9 +31,11 @@ export interface AutomationMetadataValidationParams<T> {
   gasEstimationUsd?: BigNumber
   state: T
 }
+
 export interface AutomationMetadataValidationResult {
   [key: string]: boolean | undefined
 }
+
 export type AutomationMetadataValidationMethod<T> = (
   params: AutomationMetadataValidationParams<T>,
 ) => AutomationMetadataValidationResult
@@ -82,7 +84,9 @@ type AutomationCommonMetadata<T> = {
 
 // TODO: add AutomationCommonMetadata types to all metadata features during their implementation
 export interface AutoBSMetadata {}
+
 export interface AutoTakeProfitMetadata {}
+
 export interface ConstantMultipleMetadata {}
 
 export interface AutomationContracts {

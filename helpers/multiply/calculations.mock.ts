@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { one, zero } from 'helpers/zero'
 
 // based on https://docs.google.com/spreadsheets/d/144cmXYXe89tzjUOrgj8eK7B2pU2WSQBdZr6s1GeXnms/edit#gid=0

@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
+import { useAppConfig } from 'helpers/config'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -20,7 +20,7 @@ export function CancelAutoTakeProfitInfoSection({
   debt,
 }: CancelAutoTakeProfitInfoSectionProps) {
   const { t } = useTranslation()
-  const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
+  const { ReadOnlyAutoTakeProfit: readOnlyAutoTakeProfitEnabled } = useAppConfig('features')
 
   const isDebtZero = debt.isZero()
 

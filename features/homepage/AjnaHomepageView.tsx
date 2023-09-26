@@ -8,9 +8,9 @@ import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { useConnection } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { useAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -48,8 +48,8 @@ export const benefitCardsAnja = [
 ]
 
 export function AjnaHomepageView() {
-  const ajnaSafetySwitchOn = useFeatureToggle('AjnaSafetySwitch')
-  const ajnaPoolFinderEnabled = useFeatureToggle('AjnaPoolFinder')
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn, AjnaPoolFinder: ajnaPoolFinderEnabled } =
+    useAppConfig('features')
 
   const { t } = useTranslation()
   const { context$ } = useMainContext()

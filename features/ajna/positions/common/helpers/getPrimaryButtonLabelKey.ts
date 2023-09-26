@@ -1,10 +1,10 @@
-import {
+import type {
   AjnaFlow,
-  AjnaFormState,
   AjnaGenericPosition,
   AjnaProduct,
   AjnaSidebarStep,
 } from 'features/ajna/common/types'
+import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
 import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
 
 interface GetPrimaryButtonLabelKeyParams {
@@ -37,8 +37,6 @@ export function getPrimaryButtonLabelKey({
   switch (currentStep) {
     case 'risk':
       return 'i-understand'
-    case 'nft':
-      return 'confirm'
     case 'transaction':
       if (isTxSuccess && flow === 'open') return 'system.go-to-position'
       else if (isTxSuccess && flow === 'manage') return 'continue'

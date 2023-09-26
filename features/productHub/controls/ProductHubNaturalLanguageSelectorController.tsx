@@ -1,9 +1,11 @@
-import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
+import type { HeaderSelectorOption } from 'components/HeaderSelector'
+import { HeaderSelector } from 'components/HeaderSelector'
 import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
-import { ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubProductType } from 'features/productHub/types'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { FC, useEffect, useRef, useState } from 'react'
+import type { FC } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Box, Heading } from 'theme-ui'
 
 interface ProductHubNaturalLanguageSelectorControllerProps {
