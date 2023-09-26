@@ -68,7 +68,7 @@ export function getActionUrl({
         chainId,
       })
       const productInUrl =
-        isEarnProduct && earnStrategy?.includes(EarnStrategies.yield_loop)
+        isEarnProduct && earnStrategy === EarnStrategies.yield_loop
           ? ProductHubProductType.Multiply
           : product
       const tokensInUrl = isOracless
