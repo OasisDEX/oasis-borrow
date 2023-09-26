@@ -16,6 +16,8 @@ import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Image } from 'theme-ui'
+import { exchange } from 'theme/icons'
+import { bridge } from 'theme/icons/bridge'
 import type { TranslationType } from 'ts_modules/i18next'
 import { useMediaQuery } from 'usehooks-ts'
 
@@ -279,7 +281,7 @@ export function NavigationController() {
                             title: t('nav.swap'),
                             icon: {
                               position: 'global',
-                              icon: 'exchange',
+                              icon: exchange,
                             },
                             description: t('nav.swap-description'),
                             url: '/',
@@ -288,7 +290,7 @@ export function NavigationController() {
                             title: t('nav.bridge'),
                             icon: {
                               position: 'global',
-                              icon: 'bridge',
+                              icon: bridge,
                             },
                             description: (
                               <>
