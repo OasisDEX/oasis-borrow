@@ -30,7 +30,6 @@ import { TopBannerDynamic } from 'components/TopBannerDynamic'
 import { cache } from 'emotion'
 import { initWeb3OnBoard, Web3OnBoardConnectorProvider } from 'features/web3OnBoard'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { FTPolar } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { appWithTranslation } from 'next-i18next'
@@ -80,7 +79,6 @@ const globalStyles = `
   input[type=number] {
     -moz-appearance: textfield;
   }
-  ${FTPolar.style.fontFamily}
 `
 
 // extending Component with static properties that can be attached to it

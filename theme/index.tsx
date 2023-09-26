@@ -1,4 +1,4 @@
-import { FTPolar } from 'helpers/fonts'
+import { FTPolar, Inter } from 'helpers/fonts'
 import type { Theme } from 'theme-ui'
 
 import { fadeInAnimation } from './animations'
@@ -71,7 +71,7 @@ export const theme = themeTypeSafe({
     },
   },
   fonts: {
-    body: '"Inter", "Helvetica Neue", sans-serif',
+    body: `${Inter.style.fontFamily}, "Helvetica Neue", sans-serif`,
     heading: `${FTPolar.style.fontFamily}, "Helvetica Neue", sans-serif`,
     monospace: 'monospace',
   },

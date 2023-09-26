@@ -13,3 +13,21 @@ export const FTPolar = localFont({
   ],
   display: 'block',
 })
+
+export const Inter = localFont({
+  src: [
+    {
+      path: '../public/static/fonts/Inter/Inter-Bold.woff2',
+      weight: '700',
+    },
+    {
+      path: '../public/static/fonts/Inter/Inter-SemiBold.woff2',
+      weight: '600',
+    },
+    {
+      path: '../public/static/fonts/Inter/Inter-Regular.woff2',
+      weight: '400',
+    },
+  ],
+  display: 'block',
+})
