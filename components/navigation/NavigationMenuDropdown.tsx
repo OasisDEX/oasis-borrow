@@ -58,6 +58,8 @@ export function NavigationMenuDropdown({
           top: '100%',
           left: 0,
           right: 0,
+          width: '680px',
+          mx: 'auto',
           pt: '18px',
         }}
       >
