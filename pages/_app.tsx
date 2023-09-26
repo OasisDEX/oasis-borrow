@@ -22,7 +22,7 @@ import {
 } from 'components/context/PreloadAppDataContextProvider'
 import type { SavedSettings } from 'components/CookieBanner.types'
 import { CookieBannerDynamic } from 'components/CookieBannerDynamic'
-import { HeadTags, PageSEOTags } from 'components/HeadTags'
+import { PageSEOTags } from 'components/HeadTags'
 import type { MarketingLayoutProps } from 'components/layouts'
 import { AppLayout } from 'components/layouts'
 import { SharedUIProvider } from 'components/SharedUIProvider'
@@ -180,7 +180,6 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                     <ModalProvider>
                       <Web3OnBoardConnectorProvider>
                         <Web3ReactProvider {...{ getLibrary }}>
-                          <HeadTags />
                           {seoTags}
                           <SetupWeb3Context>
                             <NotificationSocketProvider>

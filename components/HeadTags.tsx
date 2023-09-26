@@ -1,18 +1,9 @@
-import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getRandomString } from 'helpers/getRandomString'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import React from 'react'
-
-export function HeadTags() {
-  return (
-    <Head>
-      <link href={EXTERNAL_LINKS.INTER_FONT} rel="stylesheet" />
-      <link rel="shortcut icon" href={staticFilesRuntimeUrl('/static/favicon.ico')} />
-    </Head>
-  )
-}
 
 interface SEOTagsType {
   title: string
@@ -65,12 +56,12 @@ export function PageSEOTags({
   return (
     <Head>
       <title>{tabTitle}</title>
-      <meta property="og:title" content={t(title)!} />
-      <meta property="twitter:title" content={t(title)!} />
+      <meta property="og:title" content={t(title)} />
+      <meta property="twitter:title" content={t(title)} />
 
-      <meta name="description" content={t(description)!} />
-      <meta property="og:description" content={t(description)!} />
-      <meta property="twitter:description" content={t(description)!} />
+      <meta name="description" content={t(description)} />
+      <meta property="og:description" content={t(description)} />
+      <meta property="twitter:description" content={t(description)} />
 
       <meta name="robots" content="index, follow" />
       <meta
