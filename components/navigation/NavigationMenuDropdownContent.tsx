@@ -1,31 +1,41 @@
 import { NavigationMenuDropdownContentList } from 'components/navigation/NavigationMenuDropdownContentList'
 import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { Flex } from 'theme-ui'
 
 export type NavigationMenuDropdownContentProps = NavigationMenuPanelType & {
   currentPanel: string
   isPanelActive: boolean
   isPanelOpen: boolean
+  onChange: (height: number) => void
+  onSelect: () => void
 }
 
 export function NavigationMenuDropdownContent({
   currentPanel,
   isPanelActive,
   isPanelOpen,
+  label,
   lists,
+  onChange,
+  onSelect,
 }: NavigationMenuDropdownContentProps) {
+  const ref = useRef<HTMLDivElement>(null)
   const [selected, setSelected] = useState<[number, number]>([0, 0])
 
   useEffect(() => {
     setSelected([0, 0])
   }, [currentPanel, isPanelOpen])
+  useEffect(() => {
+    if (currentPanel === label && ref.current) onChange(ref.current.offsetHeight)
+  }, [currentPanel, selected])
 
   return (
     <>
       <Flex
         as="ul"
         sx={{
+          position: 'relative',
           flexDirection: 'column',
           flexShrink: 0,
           rowGap: 2,
@@ -35,8 +45,17 @@ export function NavigationMenuDropdownContent({
           mr: 3,
           pl: 0,
           pr: 3,
-          borderRight: '1px solid',
-          borderColor: 'neutral20',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            width: '1px',
+            height: `${ref.current?.offsetHeight}px`,
+            minHeight: '100%',
+            left: '100%',
+            top: 0,
+            backgroundColor: 'neutral20',
+            transition: 'height 200ms',
+          },
         }}
       >
         {lists.map((item, i) => (
@@ -55,6 +74,7 @@ export function NavigationMenuDropdownContent({
               selected={selected}
               onSelect={(_selected) => {
                 setSelected(_selected)
+                onSelect()
               }}
             />
           </Flex>
@@ -99,6 +119,7 @@ export function NavigationMenuDropdownContent({
                           : 0
                       }px)`,
                     }}
+                    {...(selected[0] === i && selected[1] === j && { ref })}
                   >
                     <NavigationMenuDropdownContentList {...list} />
                   </Flex>

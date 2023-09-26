@@ -30,13 +30,14 @@ export function NavigationMenuDropdown({
   panels,
 }: NavigationMenuDropdownProps) {
   const ref = useRef<HTMLDivElement>(null)
+  const [isListSwitched, setIsListSwitched] = useState<boolean>(false)
   const [height, setHeight] = useState<number>(0)
 
   const labelsMap = panels.map((panel) => panel.label)
 
   useEffect(() => {
-    if (ref.current) setHeight(ref.current.offsetHeight)
-  }, [currentPanel, isPanelOpen])
+    if (!isPanelOpen) setIsListSwitched(false)
+  }, [isPanelOpen])
 
   return (
     <Flex
@@ -80,7 +81,7 @@ export function NavigationMenuDropdown({
               flexDirection: 'column',
               width: '100%',
               ...(height > 0 && { height }),
-              ...(isPanelSwitched && { transition: 'width 200ms, height 200ms' }),
+              ...((isPanelSwitched || isListSwitched) && { transition: 'height 200ms' }),
             }}
           >
             {panels.map(({ label, ...panel }, i) => (
@@ -105,6 +106,12 @@ export function NavigationMenuDropdown({
                   isPanelActive={isPanelOpen && currentPanel === label}
                   isPanelOpen={isPanelOpen}
                   label={label}
+                  onChange={(_height) => {
+                    if (ref.current) setHeight(Math.max(_height, ref.current.offsetHeight))
+                  }}
+                  onSelect={() => {
+                    setIsListSwitched(true)
+                  }}
                   {...panel}
                 />
               </Flex>
