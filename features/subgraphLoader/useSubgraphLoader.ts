@@ -22,7 +22,7 @@ export async function loadSubgraph<
   networkId: NetworkIds,
   params: P = {} as P,
 ): Promise<SubgraphsResponses[S][keyof SubgraphsResponses[S]]> {
-  const response = await fetch(`http://localhost:3000/api/subgraph`, {
+  const response = await fetch(`/api/subgraph`, {
     method: 'POST',
     body: JSON.stringify({
       subgraph,
