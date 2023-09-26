@@ -1,9 +1,8 @@
+import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
 import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
-
-import { EarnStrategies } from '.prisma/client'
 
 export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
   {

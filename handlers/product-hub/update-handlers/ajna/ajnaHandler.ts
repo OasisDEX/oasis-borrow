@@ -1,4 +1,5 @@
 import { getPoolLiquidity } from '@oasisdex/dma-library'
+import { EarnStrategies } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
@@ -28,8 +29,6 @@ import type {
 import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
-
-import { EarnStrategies } from '.prisma/client'
 
 async function getAjnaPoolData(
   networkId: NetworkIds.MAINNET | NetworkIds.GOERLI,

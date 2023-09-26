@@ -1,4 +1,5 @@
 import { getPoolLiquidity } from '@oasisdex/dma-library'
+import { EarnStrategies } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import type { IdentifiedTokens } from 'blockchain/identifyTokens.types'
 import type { NetworkIds } from 'blockchain/networks'
@@ -16,8 +17,6 @@ import {
 } from 'features/productHub/content'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
-
-import { EarnStrategies } from '.prisma/client'
 
 export function parsePoolResponse(
   chainId: NetworkIds,

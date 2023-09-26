@@ -1,3 +1,4 @@
+import { EarnStrategies } from '@prisma/client'
 import type { NetworkIds } from 'blockchain/networks'
 import { strategies as aaveStrategyList } from 'features/aave'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
@@ -5,8 +6,6 @@ import type { ProductHubItem } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
-
-import { EarnStrategies } from '.prisma/client'
 
 export const getAaveLikeViewStrategyUrl = ({
   aaveLikeProduct,

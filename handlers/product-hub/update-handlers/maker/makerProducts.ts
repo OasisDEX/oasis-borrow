@@ -1,8 +1,7 @@
+import { EarnStrategies } from '@prisma/client'
 import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
-
-import { EarnStrategies } from '.prisma/client'
 
 // network is added in the handler
 export const makerProductHubProducts: Omit<ProductHubItemWithoutAddress, 'network'>[] = [

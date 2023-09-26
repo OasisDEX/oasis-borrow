@@ -1,10 +1,10 @@
+import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
 import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 import type { AaveProductHubItemSeed } from './aave-product-hub-item-seed'
-import { EarnStrategies } from '.prisma/client'
 
 const aaveSeed: AaveProductHubItemSeed[] = [
   {
