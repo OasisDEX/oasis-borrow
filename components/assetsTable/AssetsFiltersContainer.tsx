@@ -14,7 +14,7 @@ export function AssetsFiltersContainer({
   children,
   isSticky = false,
 }: PropsWithChildren<AssetsFiltersContainerProps>) {
-  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints![2]})`)
+  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
 
   return (
     <Box

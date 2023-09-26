@@ -28,7 +28,7 @@ export function FollowButton({
 }: FollowButtonProps) {
   const { t } = useTranslation()
   const [isHovering, setIsHovering] = useState(false)
-  const isShort = useMediaQuery(`(max-width: ${theme.breakpoints![2]})`) || short
+  const isShort = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`) || short
 
   const handleMouseOver = () => {
     setIsHovering(true)

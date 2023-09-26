@@ -94,6 +94,7 @@ function ContentCardLtvModal({
               i18nKey="aave-position-modal.ltv.fourth-description-line"
               components={[
                 <Text
+                  key="goToProtection"
                   as="span"
                   variant="boldParagraph3"
                   onClick={goToProtection}
@@ -177,9 +178,10 @@ export function ContentCardLtv({
         : t('manage-earn-vault.liquidation-threshold', {
             percentage: formatted.liquidationThreshold,
           }),
-    customBackground: (afterLoanToValue && !liquidationThreshold.eq(zero)
-      ? getLTVRatioColor(liquidationThreshold.minus(loanToValue).times(100))
-      : 'transparent') as string,
+    customBackground:
+      afterLoanToValue && !liquidationThreshold.eq(zero)
+        ? getLTVRatioColor(liquidationThreshold.minus(loanToValue).times(100))
+        : 'transparent',
     modal: <ContentCardLtvModal {...contentCardModalSettings} />,
   }
 

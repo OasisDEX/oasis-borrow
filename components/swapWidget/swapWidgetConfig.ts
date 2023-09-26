@@ -27,7 +27,7 @@ export const swapWidgetConfig: WidgetConfig = {
         paper: colors?.neutral10 as string | undefined,
       },
       primary: {
-        main: colors?.primary100 as string,
+        main: colors?.primary100,
       },
     },
     shape: {

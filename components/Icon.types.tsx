@@ -1,4 +1,4 @@
-import type { BoxProps, ThemeUIStyleObject } from 'theme-ui'
+import type { BoxProps, ThemeUICSSObject, ThemeUIStyleObject } from 'theme-ui'
 
 export interface IconProps extends BoxProps {
   color?: string
@@ -9,7 +9,7 @@ export interface IconProps extends BoxProps {
     path: JSX.Element
     viewBox?: string
   }
-  width?: number | string | number[]
-  height?: number | string | number[]
-  size?: number | string | number[]
+  width?: ThemeUICSSObject['width']
+  height?: ThemeUICSSObject['width']
+  size?: ThemeUICSSObject['width']
 }

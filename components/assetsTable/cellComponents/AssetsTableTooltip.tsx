@@ -36,7 +36,7 @@ export function AssetsTableTooltip({
         boxShadow: 'buttonMenu',
       }}
     >
-      <Icon size={16} icon={productHubIcons[icon]} color={iconColor || 'interactive100'} />
+      <Icon size={16} icon={productHubIcons[icon]} color={iconColor ?? 'interactive100'} />
     </StatefulTooltip>
   )
 }

@@ -48,7 +48,7 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
 }) => {
   const { t } = useTranslation()
   const { chainId } = useWalletManagement()
-  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints![2]})`)
+  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
   const isTestnet = isTestnetNetworkId(chainId)
 
   const debtTokens = useMemo(

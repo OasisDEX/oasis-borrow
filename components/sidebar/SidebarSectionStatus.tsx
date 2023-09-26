@@ -51,7 +51,7 @@ export function SidebarSectionStatus({
     waiting: {
       bg: 'secondary60',
       color: 'neutral80',
-      icon: <Icon icon={icon || clock} size={20} color="neutral80" />,
+      icon: <Icon icon={icon ?? clock} size={20} color="neutral80" />,
       opacity: 0.5,
     },
   }
