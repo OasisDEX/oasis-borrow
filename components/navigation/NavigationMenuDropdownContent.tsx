@@ -92,42 +92,44 @@ export function NavigationMenuDropdownContent({
           transition: 'transform 250ms',
         }}
       >
-        {lists.map(({ items }, i) => (
-          <Fragment key={i}>
-            {items.map(({ list }, j) => (
-              <>
-                {list && (
-                  <Flex
-                    key={`${i}-${j}`}
-                    as="li"
-                    sx={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      rowGap: 3,
-                      flexDirection: 'column',
-                      width: '100%',
-                      opacity: selected[0] === i && selected[1] === j ? 1 : 0,
-                      pointerEvents:
-                        isPanelActive && selected[0] === i && selected[1] === j ? 'auto' : 'none',
-                      transition: 'opacity 250ms, transform 250ms',
-                      transform: `translateY(${
-                        (selected[0] === i && selected[1] < j) || selected[0] < i
-                          ? 50
-                          : (selected[0] === i && selected[1] > j) || selected[0] > i
-                          ? -50
-                          : 0
-                      }px)`,
-                    }}
-                    {...(selected[0] === i && selected[1] === j && { ref })}
-                  >
-                    <NavigationMenuDropdownContentList {...list} />
-                  </Flex>
-                )}
-              </>
-            ))}
-          </Fragment>
-        ))}
+        {lists
+          .filter(({ items }) => items.filter(({ list }) => list !== undefined))
+          .map(({ items }, i) => (
+            <Fragment key={i}>
+              {items.map(({ list }, j) => (
+                <>
+                  {list && (
+                    <Flex
+                      key={`${i}-${j}`}
+                      as="li"
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        rowGap: 3,
+                        flexDirection: 'column',
+                        width: '100%',
+                        opacity: selected[0] === i && selected[1] === j ? 1 : 0,
+                        pointerEvents:
+                          isPanelActive && selected[0] === i && selected[1] === j ? 'auto' : 'none',
+                        transition: 'opacity 250ms, transform 250ms',
+                        transform: `translateY(${
+                          (selected[0] === i && selected[1] < j) || selected[0] < i
+                            ? 50
+                            : (selected[0] === i && selected[1] > j) || selected[0] > i
+                            ? -50
+                            : 0
+                        }px)`,
+                      }}
+                      {...(selected[0] === i && selected[1] === j && { ref })}
+                    >
+                      <NavigationMenuDropdownContentList {...list} />
+                    </Flex>
+                  )}
+                </>
+              ))}
+            </Fragment>
+          ))}
       </Flex>
     </>
   )
