@@ -1,4 +1,3 @@
-import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
@@ -13,7 +12,11 @@ import {
   getMaxToken,
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
-import { extractStopLossDataInput } from 'features/automation/protection/stopLoss/openFlow/helpers'
+import {
+  extractStopLossDataInput,
+  getAaveLikeCommandContractType,
+  getAaveLikeStopLossTriggerType,
+} from 'features/automation/protection/stopLoss/openFlow/helpers'
 import {
   notRequiredAaveTranslations,
   notRequiredAutomationContext,
@@ -51,10 +54,12 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
   } = extractStopLossDataInput(context)
 
   function preparedAddStopLossTriggerData(stopLossValue: BigNumber) {
+    const commandContractType = getAaveLikeCommandContractType(context.strategyConfig.protocol)
     return {
       ...prepareStopLossTriggerDataV2(
+        commandContractType,
         proxyAddress!,
-        TriggerType.AaveStopLossToDebtV2,
+        getAaveLikeStopLossTriggerType(context.strategyConfig.protocol),
         collateralActive,
         stopLossValue,
         debtTokenAddress!,

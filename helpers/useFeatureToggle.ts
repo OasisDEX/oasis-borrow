@@ -1,4 +1,5 @@
 import { mapValues } from 'lodash'
+
 export const FT_LOCAL_STORAGE_KEY = 'features'
 
 type ConfiguredFeatures = Record<Feature, boolean>
@@ -47,6 +48,7 @@ export type Feature =
   | 'SparkProtocolBorrow'
   | 'SparkProtocolMultiply'
   | 'SparkProtocolSDAIETH'
+  | 'SparkProtocolStopLoss'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -92,6 +94,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   SparkProtocolBorrow: true,
   SparkProtocolMultiply: true,
   SparkProtocolSDAIETH: false,
+  SparkProtocolStopLoss: false,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {
