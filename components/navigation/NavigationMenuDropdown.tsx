@@ -60,7 +60,7 @@ export function NavigationMenuDropdown({
           right: 0,
           width: '680px',
           mx: 'auto',
-          pt: '18px',
+          pt: '10px',
         }}
       >
         <Flex

@@ -24,7 +24,12 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
 
   return (
     <Flex
-      sx={{ alignItems: 'center', height: '100%', zIndex: 2 }}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        zIndex: 2,
+      }}
       onMouseLeave={() => closeDropdown()}
     >
       {((links && links.length > 0) || (panels && panels.length > 0)) && (
@@ -32,7 +37,7 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
           as="ul"
           sx={{
             listStyle: 'none',
-            columnGap: '48px',
+            columnGap: [4, null, null, '40px', '48px'],
             justifyContent: 'center',
             p: 0,
           }}

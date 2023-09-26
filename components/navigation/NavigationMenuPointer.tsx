@@ -18,7 +18,7 @@ export function NavigationMenuPointer({
         position: 'absolute',
         top: '100%',
         left: '-7px',
-        mt: '11px',
+        mt: '3px',
         transform: isPanelOpen ? 'translateY(0)' : 'translateY(20px)',
         transition: 'transform 200ms',
         zIndex: 2,
