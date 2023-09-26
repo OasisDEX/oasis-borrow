@@ -2080,23 +2080,6 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.0.0"
 
-"@makerdao/dai-ui-icons-branding@^0.0.66":
-  version "0.0.66"
-  resolved "https://registry.npmjs.org/@makerdao/dai-ui-icons-branding/-/dai-ui-icons-branding-0.0.66.tgz#e895b8fddb1162e97dc67222f6389d6f07fdd401"
-  integrity sha512-6qGxA6QaKamT15btGNJRcHBphXMH2mfl+TchmRRvAstQI0YvNL8uaMVEpOMiNtnZxRyaQHect4XF8ZOEPG1C6Q==
-
-"@makerdao/dai-ui-icons@^0.0.59":
-  version "0.0.59"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-ui-icons/-/dai-ui-icons-0.0.59.tgz#ee9d7174565ca7a15797954d4fac1e18c2f49618"
-  integrity sha512-QWeNUihCzFREqNADh1MZ3/QLucMnOfTdT1XWZUHFB8vXvNJCzzGxchqImYqCFzSsJP2U994wFD19G21vgg1xIQ==
-
-"@makerdao/dai-ui-theme-casual@^0.0.60":
-  version "0.0.60"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-ui-theme-casual/-/dai-ui-theme-casual-0.0.60.tgz#5554648f68a41f1c160ef7e14f52ff662ad35d31"
-  integrity sha512-WkX++x+08v1uRU/CoSTc66v71mT2+fcRUlWG996uAprZur3ck5bErVKPcvLmV/AWXPcAGwmqiw5EtozIUfaRYQ==
-  dependencies:
-    "@theme-ui/color" "^0.3.1"
-
 "@metamask/detect-provider@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/detect-provider/-/detect-provider-2.0.0.tgz#4bc2795e5e6f7d8b84b2e845058d2f222c99917d"
@@ -3408,14 +3391,6 @@
     "@theme-ui/css" "^0.16.1"
     deepmerge "^4.2.2"
 
-"@theme-ui/color@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@theme-ui/color/-/color-0.3.1.tgz#fceffc0be305ad6ca6be9755ac9cafc955b1e6f5"
-  integrity sha512-Bgew6etspp087AdrKuMpcWjIQDQ8UTp28wtHCXgi1Ip5ClFn9i91DvaKgqXk9UwQJFL/IwydX8Bks/+u9tf0WA==
-  dependencies:
-    "@theme-ui/css" "^0.3.1"
-    polished "^3.4.1"
-
 "@theme-ui/components@^0.16.1":
   version "0.16.1"
   resolved "https://registry.yarnpkg.com/@theme-ui/components/-/components-0.16.1.tgz#14f677313f5117876048951fd3cc915a23a11978"
@@ -3442,11 +3417,6 @@
   integrity sha512-8TO2DbiqPrRyTlGRIElDak/p0M4ykyd8LkeavyOF/sTE9s93AwyFcle6KYYMEULrJP49SyYiEvTif7J7Z50DhA==
   dependencies:
     csstype "^3.0.10"
-
-"@theme-ui/css@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@theme-ui/css/-/css-0.3.1.tgz#b85c7e8fae948dc0de65aa30b853368993e25cb3"
-  integrity sha512-QB2/fZBpo4inaLHL3OrB8NOBgNfwnj8GtHzXWHb9iQSRjmtNX8zPXBe32jLT7qQP0+y8JxPT4YChZIkm5ZyIdg==
 
 "@theme-ui/global@^0.16.1":
   version "0.16.1"
@@ -13430,13 +13400,6 @@ pngjs@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-5.0.0.tgz#e79dd2b215767fd9c04561c01236df960bce7fbb"
   integrity sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==
-
-polished@^3.4.1:
-  version "3.6.4"
-  resolved "https://registry.yarnpkg.com/polished/-/polished-3.6.4.tgz#cec6bc0fbffc5d6ce5799c85bcc1bca5e63f1dee"
-  integrity sha512-21moJXCm/7EvjeKQz5w89QDDKNPCoimc83CqwZZGJluFdMXsFlMQl9lPA/OMRkoceZ19kU0anKlMgZmY7LJSJw==
-  dependencies:
-    "@babel/runtime" "^7.9.2"
 
 postcss@8.4.14:
   version "8.4.14"
