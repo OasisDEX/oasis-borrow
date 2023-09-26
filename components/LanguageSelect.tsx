@@ -1,8 +1,9 @@
-import { InitOptions } from 'i18next'
+import type { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useMemo } from 'react'
-import ReactSelect, { Props as SelectProps } from 'react-select'
+import type { Props as SelectProps } from 'react-select'
+import ReactSelect from 'react-select'
 
 import { reactSelectCustomComponents } from './reactSelectCustomComponents'
 

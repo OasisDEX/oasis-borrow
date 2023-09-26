@@ -1,4 +1,4 @@
-import { AaveLikeStrategyAddresses } from '@oasisdex/dma-library'
+import type { AaveLikeStrategyAddresses } from '@oasisdex/dma-library'
 import {
   ensureChainlinkTokenPairsExist,
   ensureContractsExist,
@@ -7,7 +7,8 @@ import {
   getNetworkContracts,
 } from 'blockchain/contracts'
 import { ethNullAddress, NetworkIds } from 'blockchain/networks'
-import { AaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 
 export function getAddresses(
   networkId: NetworkIds,

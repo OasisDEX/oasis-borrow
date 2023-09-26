@@ -1,11 +1,10 @@
 import { Announcement } from 'components/Announcement'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { useCoolMode } from 'helpers/sweet/useCoolMode'
-import React, { Ref } from 'react'
+import React from 'react'
 import { Container, Flex } from 'theme-ui'
 import { Background } from 'theme/Background'
 
-import { BasicLayoutProps } from './BasicLayout'
+import type { BasicLayoutProps } from './BasicLayout'
 
 interface WithAnnouncementLayoutProps extends BasicLayoutProps {
   showAnnouncement: boolean
@@ -19,8 +18,6 @@ export function WithAnnouncementLandingLayout({
   sx,
   variant,
 }: Omit<WithAnnouncementLayoutProps, 'bg'>) {
-  const ref = useCoolMode()
-
   return (
     <Flex
       sx={{
@@ -29,7 +26,6 @@ export function WithAnnouncementLandingLayout({
         minHeight: '100%',
         ...sx,
       }}
-      ref={ref as Ref<HTMLDivElement>}
     >
       <Background wrapper>{header}</Background>
       {showAnnouncement && (
@@ -42,7 +38,7 @@ export function WithAnnouncementLandingLayout({
           />
         </Container>
       )}
-      <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
+      <Container variant={variant ?? 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
       </Container>
       {footer}
@@ -59,8 +55,6 @@ export function WithAnnouncementLayout({
   variant,
   bg,
 }: WithAnnouncementLayoutProps) {
-  const ref = useCoolMode()
-
   return (
     <Flex
       sx={{
@@ -69,7 +63,6 @@ export function WithAnnouncementLayout({
         minHeight: '100%',
         ...sx,
       }}
-      ref={ref as Ref<HTMLDivElement>}
     >
       {bg}
       {header}
@@ -83,7 +76,7 @@ export function WithAnnouncementLayout({
           />
         </Container>
       )}
-      <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
+      <Container variant={variant ?? 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
       </Container>
       {footer}

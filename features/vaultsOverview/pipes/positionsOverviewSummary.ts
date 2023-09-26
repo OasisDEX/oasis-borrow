@@ -1,12 +1,13 @@
-import BigNumber from 'bignumber.js'
-import { Tickers } from 'blockchain/prices'
+import type BigNumber from 'bignumber.js'
+import type { Tickers } from 'blockchain/prices.types'
 import { tokenList } from 'components/swapWidget/tokenList'
 import { zero } from 'helpers/zero'
 import { isEqual, uniq } from 'lodash'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { debounceTime, distinctUntilChanged, map, shareReplay } from 'rxjs/operators'
 
-import { AssetAction } from './assetActions'
+import type { AssetAction } from './assetActions'
 
 export type PositionView = {
   token: string

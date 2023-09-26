@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { NetworkNames } from 'blockchain/networks'
-import { PromoCardProps } from 'components/PromoCard'
+import type { PromoCardProps } from 'components/PromoCard.types'
 import { getActionUrl } from 'features/productHub/helpers'
-import { ProductHubItem } from 'features/productHub/types'
+import type { ProductHubItem } from 'features/productHub/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 

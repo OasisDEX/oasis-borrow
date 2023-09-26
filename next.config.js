@@ -157,7 +157,7 @@ const baseConfig = {
       },
     ]
   },
-  transpilePackages: ['@lifi/widget', '@lifi/wallet-management'],
+  transpilePackages: ['@lifi/widget', '@lifi/wallet-management', 'ramda'],
   experimental: {
     largePageDataBytes: 256 * 1024, // 256 KB. The default one is 128 KB, but we have a lot of that kind of errors, so we increase it.
   },
@@ -165,7 +165,7 @@ const baseConfig = {
 
 module.exports = withBundleAnalyzer(withMDX(baseConfig))
 
-if (process.env.SENTRY_AUTH_TOKEN !== undefined) {
+if (process.env.SENTRY_AUTH_TOKEN !== undefined && process.env.SENTRY_AUTH_TOKEN !== '') {
   module.exports = withSentryConfig(
     module.exports,
     {

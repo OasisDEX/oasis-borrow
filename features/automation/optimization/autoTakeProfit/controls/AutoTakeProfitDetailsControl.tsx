@@ -2,19 +2,17 @@ import { ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { useAutomationContext } from 'components/context'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 import { checkIfIsEditingAutoTakeProfit } from 'features/automation/optimization/autoTakeProfit/helpers'
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
-  AutoTakeProfitFormChange,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
+import type { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
+import { useAppConfig } from 'helpers/config'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
 import { AutoTakeProfitDetailsLayout } from './AutoTakeProfitDetailsLayout'
 
 export function AutoTakeProfitDetailsControl() {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
-  const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
+  const { ReadOnlyAutoTakeProfit: readOnlyAutoTakeProfitEnabled } = useAppConfig('features')
   const {
     environmentData: { ethMarketPrice },
     positionData: { id, ilk, debt, debtOffset, positionRatio, lockedCollateral, token },

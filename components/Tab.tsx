@@ -1,4 +1,4 @@
-import { TranslateStringType } from 'helpers/translateStringType'
+import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import { Button } from 'theme-ui'
 

@@ -8,6 +8,7 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
+import { FeaturesEnum } from 'types/config'
 
 function AjnaPoolCreatorPage() {
   return (
@@ -21,7 +22,7 @@ function AjnaPoolCreatorPage() {
         <WithConnection>
           <WithTermsOfService>
             <WithWalletAssociatedRisk>
-              <WithFeatureToggleRedirect feature="AjnaPoolFinder">
+              <WithFeatureToggleRedirect feature={FeaturesEnum.AjnaPoolFinder}>
                 <AjnaPoolCreatorController />
               </WithFeatureToggleRedirect>
             </WithWalletAssociatedRisk>

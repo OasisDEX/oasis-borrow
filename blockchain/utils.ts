@@ -1,7 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { RAD, RAD_PRECISION, RAY, RAY_PRECISION, WAD } from 'components/constants'
 import padEnd from 'lodash/padEnd'
-import ethAbi, { AbiCoder } from 'web3-eth-abi'
+import type { AbiCoder } from 'web3-eth-abi'
+import ethAbi from 'web3-eth-abi'
 
 import { getToken } from './tokensMetadata'
 

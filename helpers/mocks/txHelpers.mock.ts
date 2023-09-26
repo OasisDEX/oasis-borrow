@@ -1,5 +1,7 @@
-import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
-import { Observable, of } from 'rxjs'
+import type { TxMeta, TxState } from '@oasisdex/transactions'
+import { TxStatus } from '@oasisdex/transactions'
+import type { Observable } from 'rxjs'
+import { of } from 'rxjs'
 
 export function mockTxState<T extends TxMeta>(
   meta: T,

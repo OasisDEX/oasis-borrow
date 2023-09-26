@@ -1,6 +1,6 @@
-import * as Sentry from '@sentry/react'
-import { trackingEvents } from 'analytics/analytics'
+import { setUser } from '@sentry/react'
 import { mixpanelIdentify } from 'analytics/mixpanel'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { BigNumber } from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { charterNib, charterPeace, charterUline } from 'blockchain/calls/charter'
@@ -33,10 +33,13 @@ import { vatIlk } from 'blockchain/calls/vat'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
 import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
-import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
-import { every10Seconds$ } from 'blockchain/network'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
-import { createOraclePriceData$, createTokenPriceInUSD$, tokenPrices$ } from 'blockchain/prices'
+import { createInstiVault$ } from 'blockchain/instiVault'
+import type { InstiVault } from 'blockchain/instiVault.types'
+import { every10Seconds$ } from 'blockchain/network.constants'
+import type { NetworkNames } from 'blockchain/networks'
+import { NetworkIds } from 'blockchain/networks'
+import { createOraclePriceData$, createTokenPriceInUSD$ } from 'blockchain/prices'
+import { tokenPrices$ } from 'blockchain/prices.constants'
 import {
   createAccountBalance$,
   createAllowance$,
@@ -50,8 +53,9 @@ import {
   getUserDpmProxies$,
   getUserDpmProxy$,
 } from 'blockchain/userDpmProxies'
-import { createVaultsFromIds$, decorateVaultsWithValue$, Vault } from 'blockchain/vaults'
-import { AccountContext } from 'components/context'
+import { createVaultsFromIds$, decorateVaultsWithValue$ } from 'blockchain/vaults'
+import type { Vault } from 'blockchain/vaults.types'
+import type { AccountContext } from 'components/context'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
@@ -60,35 +64,27 @@ import {
   createReadPositionCreatedEvents$,
   getLastCreatedPositionForProxy$,
 } from 'features/aave/services'
-import { PositionId } from 'features/aave/types/position-id'
+import type { PositionId } from 'features/aave/types/position-id'
 import {
   getAjnaPosition$,
   getAjnaPositionsWithDetails$,
 } from 'features/ajna/positions/common/observables/getAjnaPosition'
+import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import {
-  DpmPositionData,
   getDpmPositionData$,
   getDpmPositionDataV2$,
 } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import {
-  createAutomationTriggersData,
-  TriggersData,
-} from 'features/automation/api/automationTriggersData'
-import {
-  MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
-  MultiplyPillChange,
-} from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
+import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
+import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
+import type { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
 import { createBonusPipe$ } from 'features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from 'features/bonus/makerProtocolBonusAdapter'
-import {
-  InstitutionalBorrowManageAdapter,
-  ManageInstiVaultState,
-} from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import { InstitutionalBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import type { ManageInstiVaultState } from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter.types'
 import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
-import {
-  createManageVault$,
-  ManageStandardBorrowVaultState,
-} from 'features/borrow/manage/pipes/manageVault'
+import { createManageVault$ } from 'features/borrow/manage/pipes/manageVault'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
 import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
@@ -107,21 +103,22 @@ import {
   createMakerOracleTokenPrices$,
   createMakerOracleTokenPricesForDates$,
 } from 'features/earn/makerOracleTokenPrices'
-import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
+import type { ExchangeAction, ExchangeType } from 'features/exchange/exchange'
+import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { followedVaults$ } from 'features/follow/api'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import {
-  BalanceInfo,
   createBalanceInfo$,
   createBalancesArrayInfo$,
   createBalancesFromAddressArrayInfo$,
 } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, getApiVaults, saveVaultUsingApi$ } from 'features/shared/vaultApi'
@@ -135,8 +132,8 @@ import { transactionContextService } from 'features/stateMachines/transaction'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
+import type { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
 import {
-  AaveLikePosition,
   createAaveV2Position$,
   createAaveV3DpmPosition$,
   createMakerPositions$,
@@ -150,6 +147,7 @@ import { bigNumberTostring } from 'helpers/bigNumberToString'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation } from 'helpers/form'
 import { supportedBorrowIlks, supportedEarnIlks, supportedMultiplyIlks } from 'helpers/productCards'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -158,7 +156,8 @@ import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { getSparkV3Services } from 'lendingProtocols/spark-v3'
 import { isEqual, memoize } from 'lodash'
 import { equals } from 'ramda'
-import { combineLatest, defer, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, defer, of } from 'rxjs'
 import {
   distinctUntilChanged,
   distinctUntilKeyChanged,
@@ -169,8 +168,9 @@ import {
 } from 'rxjs/operators'
 
 import { refreshInterval } from './constants'
-import { MainContext } from './MainContext'
-import { DepreciatedServices, HasGasEstimation, ProtocolsServices, TxHelpers } from './types'
+import type { MainContext } from './MainContext.types'
+import type { TxHelpers } from './TxHelpers'
+import type { ProtocolsServices } from './types'
 import curry from 'ramda/src/curry'
 
 export function setupProductContext(
@@ -226,7 +226,7 @@ export function setupProductContext(
     )
     .subscribe(({ account, networkName, connectionKind, method, walletLabel }) => {
       if (account) {
-        Sentry.setUser({ id: account, walletLabel: walletLabel })
+        setUser({ id: account, walletLabel: walletLabel })
         mixpanelIdentify(account, { walletType: connectionKind, walletLabel: walletLabel })
         trackingEvents.accountChange(account, networkName, connectionKind, method, walletLabel)
       }
@@ -1135,5 +1135,3 @@ export function setupProductContext(
     yieldsChange$,
   }
 }
-
-export type ProductContext = ReturnType<typeof setupProductContext> & DepreciatedServices

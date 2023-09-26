@@ -1,5 +1,6 @@
-import { AjnaBorrowerEvent, AjnaHistoryEvent } from 'features/ajna/history/types'
 import { zero } from 'helpers/zero'
+
+import type { AjnaBorrowerEvent, AjnaHistoryEvent } from './types/AjnaHistoryEvent.types'
 
 export const ajnaUnifiedHistoryItem = {
   depositAmount: zero,

@@ -61,7 +61,7 @@ export function AjnaAdjustSlider({ disabled = false }: AjnaAdjustSliderProps) {
 
   const percentage = resolvedValue.minus(min).div(max.minus(min)).times(100)
   const ltv = position.riskRatio.loanToValue
-  const liquidationPrice = simulation?.liquidationPrice || position.liquidationPriceT0Np
+  const liquidationPrice = simulation?.liquidationPrice || position.liquidationPrice
 
   const changeVariant = getBorrowishChangeVariant({ simulation, isOracless: false })
 

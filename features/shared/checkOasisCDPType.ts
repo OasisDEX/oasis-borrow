@@ -1,7 +1,8 @@
-import BigNumber from 'bignumber.js'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { LendingProtocol } from 'lendingProtocols'
-import { combineLatest, Observable } from 'rxjs'
+import type BigNumber from 'bignumber.js'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
+import type { LendingProtocol } from 'lendingProtocols'
+import type { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export type CDPIdToTypeMapping = {

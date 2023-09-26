@@ -1,12 +1,16 @@
-import { IPosition } from '@oasisdex/dma-library'
-import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave-like'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { IPosition } from '@oasisdex/dma-library'
+import type {
+  AdjustAaveParameters,
+  CloseAaveParameters,
+  ManageAaveParameters,
+} from 'actions/aave-like'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import {
   callOperationExecutorWithDpmProxy,
   callOperationExecutorWithDsProxy,
-  OperationExecutorTxMeta,
 } from 'blockchain/calls/operationExecutor'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { ethNullAddress } from 'blockchain/networks'
 import {
   loadStrategyFromTokens,
@@ -15,33 +19,36 @@ import {
 } from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers'
 import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
-import {
+import type {
   BaseAaveContext,
   BaseAaveEvent,
-  contextToTransactionParameters,
-  getSlippage,
-  isAllowanceNeeded,
   IStrategyConfig,
   ManageTokenInput,
   ProductType,
-  ProxyType,
   RefTransactionMachine,
 } from 'features/aave/types'
-import { PositionId } from 'features/aave/types/position-id'
-import { AaveHistoryEvent } from 'features/ajna/history/types'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { AllowanceStateMachine } from 'features/stateMachines/allowance'
-import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import {
+  contextToTransactionParameters,
+  getSlippage,
+  isAllowanceNeeded,
+  ProxyType,
+} from 'features/aave/types'
+import type { PositionId } from 'features/aave/types/position-id'
+import type { AaveHistoryEvent } from 'features/ajna/history/types'
+import type { VaultType } from 'features/generalManageVault/vaultType.types'
+import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
+import type { TransactionStateMachine } from 'features/stateMachines/transaction'
+import type {
   TransactionParametersStateMachine,
   TransactionParametersStateMachineEvent,
 } from 'features/stateMachines/transactionParameters'
 import { allDefined } from 'helpers/allDefined'
 import { productToVaultType } from 'helpers/productToVaultType'
 import { zero } from 'helpers/zero'
-import { ActorRefFrom, assign, createMachine, send, sendTo, spawn, StateFrom } from 'xstate'
+import type { ActorRefFrom, StateFrom } from 'xstate'
+import { assign, createMachine, send, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
-import { MachineOptionsFrom } from 'xstate/lib/types'
+import type { MachineOptionsFrom } from 'xstate/lib/types'
 
 type ActorFromTransactionParametersStateMachine =
   | ActorRefFrom<TransactionParametersStateMachine<CloseAaveParameters>>
@@ -111,6 +118,7 @@ export function createManageAaveStateMachine(
   /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOhgBdyCoAFAe1lyrvwBF1z0yxLqaAnOgA8AngEEIEfnFgBiCCzAkCANzoBrJRQHDxk6bHhIQABwZNcLRKCGIAbABYAnCQCsDgBxOHAdg8OARncAJicAGhARRGDPEgBmAAYnOI84gLiUgKdgnwBfXIi0LDxCUgoqfFpzZjYOLnLqMXQVMHpGGvlFZXw1TW5yJpa2iytjM3bLfGsQWwQAhITXEicnBICfDOyEuLtgiKiEV22SXdc-VyOEhxiHfMKMHAJiEkgLStkAZQBRABUAfQAQmIADJiAByAGEvtNxiMpsZZkFgh54g5XE4jikMtsfPtEIEfCRPHENg44pd3AE7iAio9Si8IG8oLIwV8ABr-D4-L40GHVSbTWZ2HwuZxxVYrZLrBwOPEIZJLAIedbBIIJUIZOLU2klZ6vCrMiHAgDy3z+NFNAEkfpbjWC+RNRjZEOknAESAFgq47AEAnYEj4fD6AnL-YTkeiAmi4sEch5gtqHrrSNIVLgwAB3ags9mc7m8sb8p0zfF+okeeNpJyBnzojxynxkkheBwJDx2RIkrK3Ao0pNPFNgNOZ7NAiEAaT+P2Nfy+rGtlrBAHEHXDBYgUii7EdvWda44PLjIi7PXYSF6Y2k7B2smdE8UByRU+ms+8fgAlcEfMQQm1281iJ+ACyvxfO+Hx-O+XxQpaABqc6rjU64IMESTLCSyJtqEqR+nK6SBCQ6oBm20rItW950s85BCJa+A6FABhyD8bJ-B8ACqEJQh8HyIQKCKIK4ezHnMZIogsCxOMqboONeFHJiQ1EAGLoLgAA2ACu0iyFBH4AJq8cWiIXMskrKsKbr+q4cRyhiRKSiKuwJB2CpyY+z4jpUEKqeY7xGlay4AcBoHgZB0FfHBCGFo68LOnMFzujuyTbB22ypHhAbun6Ti7NG4peHkvY6m5Q4vtQXk+cyrIcqx+YGTFJZzFkmVkY4CzosSeFxDJzZnE56SCes26ufS7mvlA5WMO8Y6TtOs7zjay51chKrBPEQTKj4qqHsE1nCXYHgJOh6TksEPpJKd+S9vgdAQHA0xFfSDSVMMNTsJw-QGjoogSFIMhLfxKFnMsvgpB2PhtsldhyjtZ6JMkklnDkZEJoV-aPTwn1FrU71PVAgytFj-2xYeDhuEkh5ZMG7hHgcF4nNcGyqr60lksNzy4y9kxvegRMNTtcTAxs7YkhDOxQ8Jfqk3DeXeMqKQFfcD70vq1C84iMarWS1yodGzjbKGorJMKtZBlG6IK32SvPKNqtRWuANZIddgrGsKS+JtAb1sJqwC-t6xWfGwphmzpDUbR9GMWr9jpCQgZkosKzitcu0HJ47pkr68xRl4Cwo4rlGh0IylqZpYBRwg1w2Yd4kLKb27IvGIcKUIHzqZgmB-XbSEAzEq2Nqqpt+OkoRCQcUYxoRCyZ2LudNzbnneZNUDl-hZ4+H6-oyeqSXiwch5iVW2zIo4kkhyvXsHAAtKtRwdrGVz+DKXo9vkQA */
   return createMachine(
     {
+      //eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./manageAaveStateMachine.typegen').Typegen0,
       schema: {
         context: {} as ManageAaveContext,

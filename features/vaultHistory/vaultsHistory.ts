@@ -1,25 +1,20 @@
 import { TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
-import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
-import {
-  AutoBSTriggerData,
-  extractAutoBSData,
-} from 'features/automation/common/state/autoBSTriggerData'
-import {
-  extractStopLossData,
-  StopLossTriggerData,
-} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { VaultWithType, VaultWithValue } from 'blockchain/vaults.types'
+import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
+import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { gql, GraphQLClient } from 'graphql-request'
 import { isEqual, memoize } from 'lodash'
-import { combineLatest, from, Observable, timer } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, from, timer } from 'rxjs'
 import { distinctUntilChanged, shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'
 
 import { fetchWithOperationId, flatEvents } from './vaultHistory'
-import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
+import type { CacheResult, VaultWithHistory } from './vaultsHistory.types'
 
 const query = gql`
   query vaultsMultiplyHistories($urns: [String!], $cdpIds: [BigFloat!]) {
@@ -77,19 +72,6 @@ const query = gql`
   }
 `
 
-interface ActiveTrigger {
-  cdpId: string
-  triggerId: number
-  commandAddress: string
-  triggerData: string
-}
-
-interface CacheResult {
-  events: ReturnedEvent[]
-  automationEvents: ReturnedAutomationEvent[]
-  activeTriggers: ActiveTrigger[]
-}
-
 async function getDataFromCache(
   client: GraphQLClient,
   urns: string[],
@@ -105,12 +87,6 @@ async function getDataFromCache(
     automationEvents: data.allTriggerEvents.nodes,
     activeTriggers: data.allActiveTriggers.nodes,
   }
-}
-
-export type VaultWithHistory = VaultWithValue<VaultWithType> & {
-  history: VaultEvent[]
-  stopLossData: StopLossTriggerData
-  autoSellData: AutoBSTriggerData
 }
 
 function mapToVaultWithHistory(

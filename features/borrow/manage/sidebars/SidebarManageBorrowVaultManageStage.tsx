@@ -1,6 +1,6 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Text } from 'theme-ui'

@@ -1,5 +1,5 @@
-import BigNumber from 'bignumber.js'
-import { ChangeVariantType } from 'components/DetailsSectionContentCard'
+import type BigNumber from 'bignumber.js'
+import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
 import { formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'

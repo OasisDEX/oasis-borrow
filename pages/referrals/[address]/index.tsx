@@ -2,8 +2,8 @@ import { WithConnection } from 'components/connectWallet'
 import { FunctionalContextHandler } from 'components/context'
 import { AppLayout } from 'components/layouts'
 import { ReferralsSummary } from 'features/referralOverview/ReferralOverviewView'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { GetServerSidePropsContext } from 'next'
+import { useAppConfig } from 'helpers/config'
+import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
@@ -17,7 +17,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 export default function ReferralsPage({ address }: { address: string }) {
-  const referralsEnabled = useFeatureToggle('Referrals')
+  const { Referrals: referralsEnabled } = useAppConfig('features')
   return address ? (
     <FunctionalContextHandler>
       <WithConnection>

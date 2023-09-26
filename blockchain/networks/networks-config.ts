@@ -1,3 +1,4 @@
+'use client'
 import { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
 import {
   arbitrumGoerliRpc,
@@ -10,11 +11,10 @@ import {
   polygonMumbaiRpc,
 } from 'config/rpcConfig'
 import { mainnetCacheUrl } from 'config/runtimeConfig'
-import { ethers } from 'ethers'
-import { ContractDesc } from 'features/web3Context'
+import type { ethers } from 'ethers'
+import type { ContractDesc } from 'features/web3Context'
 import { GraphQLClient } from 'graphql-request'
-import { Abi } from 'helpers/types'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
+import type { Abi } from 'helpers/types/Abi.types'
 import { keyBy, memoize } from 'lodash'
 import { env } from 'process'
 import arbitrumMainnetBadge from 'public/static/img/network_icons/arbitrum_badge_mainnet.svg'
@@ -28,7 +28,8 @@ import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.
 
 import { NetworkHexIds } from './network-hex-ids'
 import { NetworkIds } from './network-ids'
-import { NetworkLabelType, NetworkNames } from './network-names'
+import type { NetworkLabelType } from './network-names'
+import { NetworkNames } from './network-names'
 
 export type NetworkConfigHexId = `0x${number | string}`
 
@@ -146,7 +147,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   icon: arbitrumMainnetIcon as string,
   badge: arbitrumMainnetBadge as string,
   testnet: false,
-  isEnabled: () => getFeatureToggle('UseNetworkSwitcherArbitrum'),
+  isEnabled: () => true,
   token: 'ETH',
   rpcUrl: arbitrumMainnetRpc,
   getReadProvider: memoize(
@@ -179,7 +180,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   icon: arbitrumMainnetIcon as string,
   badge: arbitrumMainnetBadge as string,
   testnet: true,
-  isEnabled: () => getFeatureToggle('UseNetworkSwitcherArbitrum'),
+  isEnabled: () => true,
   token: 'AGOR',
   rpcUrl: arbitrumGoerliRpc,
   getReadProvider: memoize(
@@ -251,7 +252,7 @@ const optimismMainnetConfig: NetworkConfig = {
   icon: optimismMainnetIcon as string,
   badge: optimismMainnetBadge as string,
   testnet: false,
-  isEnabled: () => getFeatureToggle('UseNetworkSwitcherOptimism'),
+  isEnabled: () => true,
   token: 'ETH',
   rpcUrl: optimismMainnetRpc,
   getReadProvider: memoize(
@@ -284,7 +285,7 @@ const optimismGoerliConfig: NetworkConfig = {
   icon: optimismMainnetIcon as string,
   badge: optimismMainnetBadge as string,
   testnet: true,
-  isEnabled: () => getFeatureToggle('UseNetworkSwitcherOptimism'),
+  isEnabled: () => true,
   token: 'ETH',
   rpcUrl: optimismGoerliRpc,
   getReadProvider: () => undefined,

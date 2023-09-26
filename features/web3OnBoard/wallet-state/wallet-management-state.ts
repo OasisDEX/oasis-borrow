@@ -1,6 +1,7 @@
-import { NetworkConnector } from '@web3-react/network-connector'
-import { NetworkConfigHexId, NetworkHexIds, NetworkIds } from 'blockchain/networks'
-import { BridgeConnector } from 'features/web3OnBoard/bridge-connector'
+import type { NetworkConnector } from '@web3-react/network-connector'
+import type { NetworkConfigHexId, NetworkIds } from 'blockchain/networks'
+import { NetworkHexIds } from 'blockchain/networks'
+import type { BridgeConnector } from 'features/web3OnBoard/bridge-connector'
 
 export enum WalletManagementStateStatus {
   connecting = 'connecting',

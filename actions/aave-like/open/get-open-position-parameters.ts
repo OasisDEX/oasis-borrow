@@ -1,14 +1,16 @@
-import { IMultiplyStrategy, IRiskRatio, strategies, Tokens } from '@oasisdex/dma-library'
+import type { IMultiplyStrategy, IRiskRatio, Tokens } from '@oasisdex/dma-library'
+import { strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { assertProtocol } from 'actions/aave-like/guards'
 import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
-import { OpenMultiplyAaveParameters } from 'actions/aave-like/types'
-import BigNumber from 'bignumber.js'
+import type { OpenMultiplyAaveParameters } from 'actions/aave-like/types'
+import type BigNumber from 'bignumber.js'
 import { ethNullAddress, getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { ProxyType } from 'features/aave/types'
-import { AaveLendingProtocol, AaveLikeLendingProtocol, LendingProtocol } from 'lendingProtocols'
+import type { AaveLendingProtocol, AaveLikeLendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 
 async function openPosition(
   slippage: BigNumber,
@@ -78,6 +80,15 @@ async function openPosition(
         ...sharedDependencies,
         addresses: aavev3Addresses,
         getSwapData: swapCall(aavev3Addresses, networkId),
+      }
+      if (networkId === NetworkIds.OPTIMISMMAINNET) {
+        args.flashloan = {
+          token: {
+            symbol: 'WETH',
+            address: aavev3Addresses.tokens['WETH'],
+            precision: 18,
+          },
+        }
       }
       return await strategies.aave.multiply.v3.open(args, dependenciesAaveV3)
     case LendingProtocol.SparkV3:

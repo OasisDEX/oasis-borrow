@@ -1,33 +1,19 @@
 import { CommandContractType, encodeTriggerDataByType, TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
-import {
+import type {
   AutomationBaseTriggerData,
   AutomationBotAddTriggerData,
-} from 'blockchain/calls/automationBot'
+} from 'blockchain/calls/automationBot.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
-import { getTriggersByType } from 'features/automation/common/helpers'
-import {
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
+import { getTriggersByType } from 'features/automation/common/helpers/getTriggersByType'
+
+import type {
   AutoTakeProfitFormChange,
   AutoTakeProfitResetData,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import { zero } from 'helpers/zero'
-
-export interface AutoTakeProfitTriggerData {
-  executionPrice: BigNumber
-  isToCollateral: boolean
-  isTriggerEnabled: boolean
-  maxBaseFeeInGwei: BigNumber
-  triggerId: BigNumber
-}
-
-export const defaultAutoTakeProfitData: AutoTakeProfitTriggerData = {
-  executionPrice: zero,
-  isToCollateral: true,
-  isTriggerEnabled: false,
-  maxBaseFeeInGwei: zero,
-  triggerId: zero,
-}
+} from './autoTakeProfitFormChange.types'
+import type { AutoTakeProfitTriggerData } from './autoTakeProfitTriggerData.types'
+import { defaultAutoTakeProfitData } from './defaultAutoTakeProfitData'
 
 export function extractAutoTakeProfitData(data: TriggersData): AutoTakeProfitTriggerData {
   if (data.triggers && data.triggers.length > 0) {

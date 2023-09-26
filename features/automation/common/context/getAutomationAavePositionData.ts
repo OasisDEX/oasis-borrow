@@ -2,15 +2,11 @@ import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { AutomationPositionData } from 'components/context'
-import { AaveManageVaultState } from 'features/automation/contexts/AaveAutomationContext'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import type { AutomationPositionData } from 'components/context'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { zero } from 'helpers/zero'
 
-interface GetAutomationAavePositionDataParams {
-  aaveManageVault: AaveManageVaultState
-  vaultType?: VaultType
-}
+import type { GetAutomationAavePositionDataParams } from './getAutomationAavePositionData.types'
 
 export function getAutomationAavePositionData({
   aaveManageVault,

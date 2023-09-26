@@ -1,14 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import {
+import type {
   CustomForkParameterFieldsType,
   CustomForkParameterType,
   NetworkNames,
-  networks,
-  networksByName,
-  useCustomForkParameter,
 } from 'blockchain/networks'
+import { networks, networksByName, useCustomForkParameter } from 'blockchain/networks'
 import { Modal } from 'components/Modal'
-import { ModalProps } from 'helpers/modalHook'
+import type { ModalProps } from 'helpers/modalHook'
 import React from 'react'
 import { Box, Button, Flex, IconButton, Image, Input, Text } from 'theme-ui'
 

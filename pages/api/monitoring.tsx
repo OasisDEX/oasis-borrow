@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 
 import { sentryBaseConfig } from './../../sentry.base.config'
 const handler: NextApiHandler = async (req, res) => {

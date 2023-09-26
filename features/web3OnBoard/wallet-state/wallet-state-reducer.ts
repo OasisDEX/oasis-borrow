@@ -1,4 +1,4 @@
-import { Reducer } from 'react'
+import type { Reducer } from 'react'
 import { match } from 'ts-pattern'
 
 import { connectedWalletStateReducer } from './connected-wallet-state-reducer'
@@ -7,8 +7,9 @@ import { disconnectedWalletStateReducer } from './disconnected-wallet-state-redu
 import { disconnectingWalletStateReducer } from './disconnecting-wallet-state-reducer'
 import { settingChainWalletStateReducer } from './setting-chain-wallet-state-reducer'
 import { unsupportedNetworkWalletStateReducer } from './unsupported-network-wallet-state-reducer'
-import { WalletManagementState, WalletManagementStateStatus } from './wallet-management-state'
-import { WalletStateEvent } from './wallet-state-event'
+import type { WalletManagementState } from './wallet-management-state'
+import { WalletManagementStateStatus } from './wallet-management-state'
+import type { WalletStateEvent } from './wallet-state-event'
 
 export const walletStateReducer: Reducer<WalletManagementState, WalletStateEvent> = (
   state: WalletManagementState,

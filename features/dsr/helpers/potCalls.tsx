@@ -1,12 +1,12 @@
 import { amountToWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
-import { CallDef, TransactionDef } from 'blockchain/calls/callsHelpers'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
+import type { CallDef, TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { DsProxy, DssProxyActionsDsr, McdPot, SavingsDai } from 'types/web3-v1-contracts'
+import type { DsProxy, DssProxyActionsDsr, McdPot, SavingsDai } from 'types/web3-v1-contracts'
 
 export const pie: CallDef<string, BigNumber> = {
   call: (_, { contract, chainId }) =>

@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 
 interface AjnaEarnWithdrawMaxParams {
   quoteTokenAmount: BigNumber
@@ -6,5 +6,5 @@ interface AjnaEarnWithdrawMaxParams {
 }
 
 export function getAjnaEarnWithdrawMax({ quoteTokenAmount, digits }: AjnaEarnWithdrawMaxParams) {
-  return quoteTokenAmount.decimalPlaces(digits, BigNumber.ROUND_UP)
+  return quoteTokenAmount.decimalPlaces(digits)
 }

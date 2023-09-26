@@ -1,13 +1,15 @@
-import { IStrategy, strategies } from '@oasisdex/dma-library'
+import type { IStrategy } from '@oasisdex/dma-library'
+import { strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { getCurrentPositionLibCallData, networkIdToLibraryNetwork } from 'actions/aave-like/helpers'
-import { ManageAaveParameters } from 'actions/aave-like/types'
-import BigNumber from 'bignumber.js'
+import type { ManageAaveParameters } from 'actions/aave-like/types'
+import type BigNumber from 'bignumber.js'
 import { getRpcProvider } from 'blockchain/networks'
 import { amountToWei } from 'blockchain/utils'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { zero } from 'helpers/zero'
-import { AaveLendingProtocol, LendingProtocol } from 'lendingProtocols'
+import type { AaveLendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 
 function getTokensInBaseUnit({
   manageTokenInput,

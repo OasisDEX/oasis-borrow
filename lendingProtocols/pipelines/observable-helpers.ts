@@ -1,6 +1,7 @@
 import { NetworkIds } from 'blockchain/networks'
 import { isEqual, memoize } from 'lodash'
-import { EMPTY, Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { EMPTY } from 'rxjs'
 import { catchError, distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
 export function defaultResolver<Args>(args: Args): string {

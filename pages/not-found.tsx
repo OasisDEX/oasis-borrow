@@ -1,7 +1,7 @@
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/layouts'
 import { AppLink } from 'components/Links'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'

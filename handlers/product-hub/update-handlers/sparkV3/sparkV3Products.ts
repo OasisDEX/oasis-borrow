@@ -1,5 +1,6 @@
 import { NetworkNames } from 'blockchain/networks'
-import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
@@ -48,8 +49,8 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.SparkV3,
     label: 'SDAI/ETH',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long SDAI',
+    multiplyStrategyType: 'short',
+    multiplyStrategy: 'Short ETH',
   },
   {
     product: [ProductHubProductType.Borrow],

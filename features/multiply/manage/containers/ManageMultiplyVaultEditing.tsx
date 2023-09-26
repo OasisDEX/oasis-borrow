@@ -4,15 +4,11 @@ import { ChevronUpDown } from 'components/ChevronUpDown'
 import { CloseVaultCard } from 'components/vault/CloseVaultCard'
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import {
-  MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
-  MultiplyPillChange,
-} from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
-import {
-  ManageMultiplyVaultState,
-  OtherAction,
-} from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { MAX_COLL_RATIO } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
+import type { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
+import { MAX_COLL_RATIO } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations.constants'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
+import type { OtherAction } from 'features/multiply/manage/pipes/OtherAction.types'
 import {
   formatAmount,
   formatCryptoBalance,

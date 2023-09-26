@@ -1,38 +1,10 @@
-import { Bucket, GetPoolData } from '@oasisdex/dma-library'
+import type { GetPoolData } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { ajnaLastIndexBucketPrice } from 'features/ajna/common/consts'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
-
-export interface AjnaPoolDataResponse {
-  address: string
-  collateralAddress: string
-  quoteTokenAddress: string
-  htp: string
-  hpb: string
-  lup: string
-  htpIndex: string
-  hpbIndex: string
-  lupIndex: string
-  momp: string
-  debt: string
-  depositSize: string
-  interestRate: string
-  apr30dAverage: string
-  dailyPercentageRate30dAverage: string
-  monthlyPercentageRate30dAverage: string
-  poolMinDebtAmount: string
-  poolCollateralization: string
-  poolActualUtilization: string
-  poolTargetUtilization: string
-  currentBurnEpoch: string
-  pendingInflator: string
-  lendApr: string
-  borrowApr: string
-  buckets: Bucket[]
-}
 
 export const getAjnaPoolData: (networkId: NetworkIds) => GetPoolData =
   (networkId) => async (poolAddress: string) => {
@@ -67,6 +39,9 @@ export const getAjnaPoolData: (networkId: NetworkIds) => GetPoolData =
         buckets,
         lendApr,
         borrowApr,
+        loansCount,
+        totalAuctionsInPool,
+        t0debt,
       } = response.pool
 
       const htpBigNumber = new BigNumber(htp)
@@ -125,6 +100,9 @@ export const getAjnaPoolData: (networkId: NetworkIds) => GetPoolData =
           collateral: new BigNumber(bucket.collateral).shiftedBy(NEGATIVE_WAD_PRECISION),
           bucketLPs: new BigNumber(bucket.bucketLPs),
         })),
+        loansCount: new BigNumber(loansCount),
+        totalAuctionsInPool: new BigNumber(totalAuctionsInPool),
+        t0debt: new BigNumber(t0debt).shiftedBy(NEGATIVE_WAD_PRECISION),
       }
     }
 

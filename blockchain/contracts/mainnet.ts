@@ -11,11 +11,10 @@ import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.js
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
 import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
-import * as ajnaRewardsClaimer from 'blockchain/abi/ajna-rewards-claimer.json'
-import * as ajnaRewardsManager from 'blockchain/abi/ajna-rewards-manager.json'
 import * as automationBotAggregator from 'blockchain/abi/automation-bot-aggregator.json'
 import * as automationBotV2 from 'blockchain/abi/automation-bot-v2.json'
 import * as automationBot from 'blockchain/abi/automation-bot.json'
+import * as balancerVault from 'blockchain/abi/balancer-vault.json'
 import * as cdpRegistry from 'blockchain/abi/cdp-registry.json'
 import * as chainLinkPriceOracle from 'blockchain/abi/chainlink-price-oracle.json'
 import * as dsProxyFactory from 'blockchain/abi/ds-proxy-factory.json'
@@ -63,9 +62,9 @@ import {
   tokensMainnet,
 } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey, mainnetCacheUrl } from 'config/runtimeConfig'
-import { Optional } from 'helpers/types'
+import type { Optional } from 'helpers/types'
 
-import { OptionalContracts } from './optional-contracts'
+import type { OptionalContracts } from './optional-contracts'
 
 const { mainnet } = ADDRESSES
 
@@ -207,10 +206,8 @@ export const mainnetContracts = {
     'YIELDBTC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDBTCWBTC),
     'YIELDETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDETHETH),
   },
-  ajnaRewardsManager: contractDesc(ajnaRewardsManager, mainnet.ajna.AjnaRewardsManager),
-  // TODO update address
-  ajnaRewardsClaimer: contractDesc(ajnaRewardsClaimer, mainnet.ajna.AjnaRewardsClaimer),
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, mainnet.ajna.ERC20PoolFactory),
+  balancerVault: contractDesc(balancerVault, mainnet.common.BalancerVault),
   // not contracts
   cacheApi: mainnetCacheUrl,
   safeConfirmations: 10,

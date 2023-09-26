@@ -1,5 +1,6 @@
 import { NetworkNames } from 'blockchain/networks'
-import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddress[] = [
@@ -55,7 +56,7 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'CBETH/ETH',
-    earnStrategy: 'RETH/ETH Yield Loop',
+    earnStrategy: 'CBETH/ETH Yield Loop',
     managementType: 'active',
   },
   {
@@ -419,5 +420,16 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     label: 'SDAI/FRAX',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
+  },
+  {
+    product: [ProductHubProductType.Earn],
+    primaryToken: 'SDAI',
+    primaryTokenGroup: 'DAI',
+    secondaryToken: 'DAI',
+    network: NetworkNames.ethereumMainnet,
+    protocol: LendingProtocol.AaveV3,
+    label: 'SDAI/DAI',
+    earnStrategy: 'SDAI/DAI Yield Loop',
+    managementType: 'active',
   },
 ]

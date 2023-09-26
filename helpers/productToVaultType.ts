@@ -1,4 +1,4 @@
-import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 
 export function productToVaultType(
   productType: 'Borrow' | 'Multiply' | 'Earn',

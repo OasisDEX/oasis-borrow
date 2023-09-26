@@ -1,20 +1,21 @@
-import { TxState } from '@oasisdex/transactions'
-import { createAccount, CreateDPMAccount } from 'blockchain/calls/accountFactory'
+import type { TxState } from '@oasisdex/transactions'
+import { createAccount } from 'blockchain/calls/accountFactory'
+import type { CreateDPMAccount } from 'blockchain/calls/accountFactory.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ethers } from 'ethers'
+import type { CommonTransactionServices } from 'features/stateMachines/transaction'
 import {
-  CommonTransactionServices,
   createTransactionStateMachine,
   startTransactionService,
 } from 'features/stateMachines/transaction'
-import { TxHelpers } from 'helpers/context/types'
-import { Observable } from 'rxjs'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { Observable } from 'rxjs'
 
-import { SuccessTxState } from '@oasisdex/transactions/lib/src/types'
+import type { SuccessTxState } from '@oasisdex/transactions/lib/src/types'
 
 export function getCreateDPMAccountTransactionMachine(
   txHelpers$: Observable<TxHelpers>,

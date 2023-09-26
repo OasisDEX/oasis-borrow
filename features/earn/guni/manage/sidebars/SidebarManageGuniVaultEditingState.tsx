@@ -2,7 +2,7 @@ import { HighlightedOrderInformation } from 'components/HighlightedOrderInformat
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { GuniManageMultiplyVaultChangesInformation } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultChangesInformation'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { Trans, useTranslation } from 'next-i18next'

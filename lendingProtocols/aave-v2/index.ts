@@ -1,13 +1,13 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import * as blockchainCalls from 'blockchain/aave'
-import {
+import type {
   AaveLikeReserveConfigurationDataParams,
   AaveLikeServices,
 } from 'lendingProtocols/aave-like-common'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { makeObservable, makeOneObservable } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 
 import * as pipelines from './pipelines'
 import curry from 'ramda/src/curry'

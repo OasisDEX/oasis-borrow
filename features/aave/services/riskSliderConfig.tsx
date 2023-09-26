@@ -1,6 +1,7 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { AdjustRiskViewConfig, richFormattedBoundary } from 'features/aave/components'
+import type { AdjustRiskViewConfig } from 'features/aave/components'
+import { richFormattedBoundary } from 'features/aave/components'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatBigNumber } from 'helpers/formatters/format'
 

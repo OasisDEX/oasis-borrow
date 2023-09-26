@@ -1,5 +1,5 @@
-import { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
-import { TxDetails } from 'helpers/handleTransaction'
+import type { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
+import type { TxDetails } from 'helpers/handleTransaction'
 
 export function getAjnaSidebarTransactionStatus({
   etherscan = '',

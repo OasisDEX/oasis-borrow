@@ -1,5 +1,5 @@
 import { handleGetProductHubData, updateProductHubData } from 'handlers/product-hub'
-import { NextApiHandler } from 'next'
+import type { NextApiHandler } from 'next'
 
 const handler: NextApiHandler = (req, res) => {
   switch (req.method) {

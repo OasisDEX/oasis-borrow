@@ -8,12 +8,12 @@ import {
   MainContextProvider,
   productContext,
 } from 'components/context'
-import { ProductContext } from 'helpers/context/ProductContext'
-import { WithChildren } from 'helpers/types'
+import type { ProductContext } from 'helpers/context/ProductContext.types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
 
-import { AaveContext } from './aave-context'
+import type { AaveContext } from './aave-context'
 import { aaveContext, AaveContextProvider, useAaveContext } from './aave-context-provider'
 import * as setupAaveV2ContextModule from './setup-aave-v2-context'
 

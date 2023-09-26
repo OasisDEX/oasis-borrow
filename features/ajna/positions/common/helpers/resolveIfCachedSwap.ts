@@ -1,4 +1,4 @@
-import { SwapData } from '@oasisdex/dma-library'
+import type { SwapData } from '@oasisdex/dma-library'
 
 interface ResolveIfCachedSwapParams {
   cached: boolean

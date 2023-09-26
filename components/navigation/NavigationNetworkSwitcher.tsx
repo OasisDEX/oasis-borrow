@@ -1,3 +1,4 @@
+import type { NetworkNames } from 'blockchain/networks'
 import {
   enableNetworksSet,
   filterNetworksAccordingToSavedNetwork,
@@ -6,13 +7,12 @@ import {
   isTestnetEnabled,
   isTestnetNetworkHexId,
   NetworkIdToNetworkHexIds,
-  NetworkNames,
   networkSetByHexId,
 } from 'blockchain/networks'
 import { useConnection, useWalletManagement } from 'features/web3OnBoard'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
+import { useAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useState } from 'react'
 import { Box, Button } from 'theme-ui'
 
@@ -36,9 +36,7 @@ export function NavigationNetworkSwitcherOrb() {
   const connectedChain = wallet?.chainHexId
   const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
   const { openModal } = useModalContext()
-
-  const useTestnets = useFeatureToggle('UseNetworkSwitcherTestnets')
-  const useForks = useFeatureToggle('UseNetworkSwitcherForks')
+  const { UseNetworkSwitcherTestnets, UseNetworkSwitcherForks } = useAppConfig('features')
 
   const [currentHoverNetworkName, setCurrentHoverNetworkName] = useState<NetworkNames | undefined>(
     currentNetworkName,
@@ -79,7 +77,7 @@ export function NavigationNetworkSwitcherOrb() {
             <L2BeatSection />
             {(connectedChain || isTestnetEnabled()) && (
               <>
-                {useTestnets && (
+                {UseNetworkSwitcherTestnets && (
                   <Button
                     variant="bean"
                     sx={{ fontSize: 2 }}
@@ -101,7 +99,7 @@ export function NavigationNetworkSwitcherOrb() {
                   </Button>
                 )}
 
-                {useForks && (
+                {UseNetworkSwitcherForks && (
                   <Button
                     variant="bean"
                     sx={{ fontSize: 2 }}

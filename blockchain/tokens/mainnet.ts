@@ -4,7 +4,7 @@ import * as guniToken from 'blockchain/abi/guni-token.json'
 import * as savingsDai from 'blockchain/abi/savings-dai.json'
 import { getCollateralTokens } from 'blockchain/addresses/addressesUtils'
 import { contractDesc } from 'blockchain/networks'
-import { ContractDesc } from 'features/web3Context'
+import type { ContractDesc } from 'features/web3Context'
 
 const { mainnet } = ADDRESSES
 

@@ -3,8 +3,8 @@ import { TOSContextProvider } from 'components/context'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts'
 import { ReferralLandingSummary } from 'features/referralOverview/ReferralLanding'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { GetServerSidePropsContext } from 'next'
+import { useAppConfig } from 'helpers/config'
+import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
@@ -17,7 +17,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 function ReferralsPage() {
-  const referralsEnabled = useFeatureToggle('Referrals')
+  const { Referrals: referralsEnabled } = useAppConfig('features')
 
   return (
     <TOSContextProvider>
