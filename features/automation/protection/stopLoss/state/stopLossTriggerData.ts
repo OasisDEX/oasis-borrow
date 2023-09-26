@@ -7,7 +7,7 @@ import {
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import { getTriggersByType, TriggerDataType } from 'features/automation/common/helpers'
-import { maxCoverage } from 'features/automation/protection/stopLoss/constants'
+import { maxCoverage, maxCoverageSpark } from 'features/automation/protection/stopLoss/constants'
 import { zero } from 'helpers/zero'
 
 export interface StopLossTriggerData {
@@ -142,10 +142,17 @@ export function prepareStopLossTriggerDataV2(
   debtTokenAddress: string,
   tokenAddress: string,
 ) {
+  let _maxCoverage = maxCoverage // maxCoverage, equals to 1500 USDC
+  if (
+    triggerType === TriggerType.SparkStopLossToDebtV2 ||
+    TriggerType.SparkStopLossToCollateralV2
+  ) {
+    _maxCoverage = maxCoverageSpark // maxCoverage, equals to 1500 DAI
+  }
   const triggerData = encodeTriggerDataByType(CommandContractType.AaveStopLossCommandV2, [
     owner, // proxy
     triggerType, // triggerType
-    maxCoverage, // maxCoverage, equals to 1500 USDC
+    _maxCoverage,
     debtTokenAddress, // debtToken
     tokenAddress, // collateralToken
     stopLossLevel.times(10 ** 2).toString(), // stop loss level
