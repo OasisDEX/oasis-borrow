@@ -2,7 +2,7 @@ import { AppLink } from 'components/Links'
 import { NavigationMenuDropdownContentListItem } from 'components/navigation/NavigationMenuDropdownContentListItem'
 import type { NavigationMenuPanelList } from 'components/navigation/NavigationMenuPanel'
 import { WithArrow } from 'components/WithArrow'
-import React, { Fragment } from 'react'
+import React from 'react'
 import { Box, Heading } from 'theme-ui'
 
 type NavigationMenuDropdownContentListProps = NavigationMenuPanelList & {
