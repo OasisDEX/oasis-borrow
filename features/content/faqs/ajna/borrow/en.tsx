@@ -2,6 +2,7 @@ import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { FaqLayout } from 'features/content/faqs/FaqLayout'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import React from 'react'
 import { Heading, Text } from 'theme-ui'
 
 export default () => (

@@ -1,4 +1,5 @@
 import { AppLink } from 'components/Links'
+import React from 'react'
 import { Heading, Text } from 'theme-ui'
 
 export default () => (

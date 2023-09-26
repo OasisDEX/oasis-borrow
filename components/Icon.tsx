@@ -17,7 +17,7 @@ export const Icon = ({
       as="svg"
       sx={{ ...sx, size: size }}
       // @ts-ignore
-      viewBox={icon.viewBox || '0 0 24 24'}
+      viewBox={icon.viewBox ?? '0 0 24 24'}
       color={color}
       display="inline-block"
       focusable={focusable}

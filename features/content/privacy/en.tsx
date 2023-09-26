@@ -1,3 +1,4 @@
+import React from 'react'
 import { Heading, Text } from 'theme-ui'
 
 export default () => (
