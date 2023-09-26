@@ -1,4 +1,6 @@
 const HttpBackend = require('i18next-http-backend/cjs')
+const HMRPlugin =
+  process.env.NODE_ENV !== 'production' ? require('i18next-hmr/plugin').HMRPlugin : undefined
 
 module.exports = {
   i18n: {
@@ -12,5 +14,12 @@ module.exports = {
         },
       }
     : {}),
-  use: typeof window !== 'undefined' ? [HttpBackend] : [],
+  serializeConfig: false,
+  reloadOnPrerender: process.env.NODE_ENV === 'development',
+  use:
+    process.env.NODE_ENV !== 'production'
+      ? typeof window !== 'undefined'
+        ? [HttpBackend, new HMRPlugin({ webpack: { client: true } })]
+        : [new HMRPlugin({ webpack: { server: true } })]
+      : [],
 }

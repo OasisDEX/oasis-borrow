@@ -196,7 +196,7 @@
     "ethereum-types": "^3.3.3",
     "ethers": "5.7.0",
     "express": "^4.17.3",
-    "i18next-hmr": "^1.11.0",
+    "i18next-hmr": "^3.0.3",
     "i18next-http-backend": "^1.4.0",
     "jest": "^29.7.0",
     "jest-canvas-mock": "^2.5.0",

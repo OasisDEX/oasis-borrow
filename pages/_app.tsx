@@ -33,7 +33,7 @@ import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { FTPolar } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
 import { useLocalStorage } from 'helpers/useLocalStorage'
-import { appWithTranslation, i18n } from 'next-i18next'
+import { appWithTranslation } from 'next-i18next'
 import nextI18NextConfig from 'next-i18next.config.js'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
@@ -43,16 +43,6 @@ import { theme } from 'theme'
 import { ThemeUIProvider } from 'theme-ui'
 import { web3OnboardStyles } from 'theme/web3OnboardStyles'
 import Web3 from 'web3'
-
-if (process.env.NODE_ENV !== 'production') {
-  if (typeof window !== 'undefined') {
-    const { applyClientHMR } = require('i18next-hmr/client')
-    applyClientHMR(() => i18n)
-  } else {
-    const { applyServerHMR } = require('i18next-hmr/server')
-    applyServerHMR(() => i18n)
-  }
-}
 
 function getLibrary(provider: any, connector: AbstractConnector | undefined): Web3 {
   const chainIdPromise = connector!.getChainId()

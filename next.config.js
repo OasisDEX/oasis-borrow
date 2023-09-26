@@ -83,7 +83,7 @@ const baseConfig = {
       )
     }
     if (dev) {
-      const { I18NextHMRPlugin } = require('i18next-hmr/plugin')
+      const { I18NextHMRPlugin } = require('i18next-hmr/webpack')
       config.plugins.push(
         new I18NextHMRPlugin({
           localesDir: path.resolve('./public/locales'),
