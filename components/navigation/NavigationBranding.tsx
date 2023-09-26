@@ -37,6 +37,7 @@ export function NavigationBranding({
         display: 'flex',
         flexShrink: 0,
         alignItems: 'center',
+        mr: 'auto',
         columnGap: 2,
       }}
     >
