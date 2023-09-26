@@ -123,7 +123,9 @@ export function parseProduct(
         strategy: (
           <>
             {earnStrategyDescription || <AssetsTableDataCellInactive />}
-            {tooltips?.earnStrategy && <AssetsTableTooltip {...tooltips.earnStrategy} />}
+            {tooltips?.earnStrategyDescription && (
+              <AssetsTableTooltip {...tooltips.earnStrategyDescription} />
+            )}
           </>
         ),
         management: (
