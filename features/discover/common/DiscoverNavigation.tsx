@@ -113,7 +113,7 @@ export function DiscoverNavigationItem({
             cx="16.5"
             cy="16"
             r="16"
-            fill={isActive || isMouseOver ? iconColor : (theme.colors.neutral80 as string)}
+            fill={isActive || isMouseOver ? iconColor : theme.colors.neutral80}
             style={{ transition: '200ms fill' }}
           />
           {iconContent}
