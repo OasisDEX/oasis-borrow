@@ -37,6 +37,7 @@ import nextI18NextConfig from 'next-i18next.config.js'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import Script from 'next/script'
 import React, { useEffect, useRef } from 'react'
 import { theme } from 'theme'
 import { ThemeUIProvider } from 'theme-ui'
@@ -159,10 +160,10 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     <>
       <Head>
         {process.env.NODE_ENV !== 'production' && (
-          <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
+          <Script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
         {cookiesValue?.enabledCookies?.marketing && (
-          <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />
+          <Script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />
         )}
 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
