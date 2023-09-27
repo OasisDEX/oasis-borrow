@@ -142,7 +142,7 @@ export function prepareStopLossTriggerDataV2(
   let _maxCoverage = maxCoverage // maxCoverage, equals to 1500 USDC
   if (
     triggerType === TriggerType.SparkStopLossToDebtV2 ||
-    TriggerType.SparkStopLossToCollateralV2
+    triggerType === TriggerType.SparkStopLossToCollateralV2
   ) {
     _maxCoverage = maxCoverageSpark // maxCoverage, equals to 1500 DAI
   }
