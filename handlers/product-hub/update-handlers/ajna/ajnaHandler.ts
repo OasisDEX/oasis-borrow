@@ -1,4 +1,5 @@
 import { getPoolLiquidity } from '@oasisdex/dma-library'
+import { EarnStrategies } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
@@ -156,6 +157,7 @@ async function getAjnaPoolData(
                 // }),
                 primaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 secondaryTokenAddress: quoteTokenAddress.toLowerCase(),
+                hasRewards: isPoolWithRewards({ collateralToken, quoteToken }),
                 tooltips: {
                   ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
                     fee: productHubAjnaRewardsTooltip,
@@ -185,7 +187,8 @@ async function getAjnaPoolData(
                 protocol,
                 secondaryToken: collateralToken,
                 ...getTokenGroup(collateralToken, 'secondary'),
-                earnStrategy: earnLPStrategy,
+                earnStrategy: EarnStrategies.liquidity_provision,
+                earnStrategyDescription: earnLPStrategy,
                 liquidity,
                 managementType,
                 ...(isPoolNotEmpty && {
@@ -194,6 +197,7 @@ async function getAjnaPoolData(
                 reverseTokens: true,
                 primaryTokenAddress: quoteTokenAddress.toLowerCase(),
                 secondaryTokenAddress: collateralTokenAddress.toLowerCase(),
+                hasRewards: isPoolWithRewards({ collateralToken, quoteToken }),
                 tooltips: {
                   ...(isPoolNotEmpty &&
                     isPoolWithRewards({ collateralToken, quoteToken }) && {

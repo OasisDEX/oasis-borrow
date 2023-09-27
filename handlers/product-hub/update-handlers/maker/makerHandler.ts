@@ -132,6 +132,7 @@ async function getMakerData(
                 .decimalPlaces(5, BigNumber.ROUND_UP)
                 .minus(1)
                 .toString(),
+              hasRewards: false,
             }
           }
           const ilk = getIlk(label)
@@ -149,6 +150,7 @@ async function getMakerData(
             fee: fee.toString(),
             maxMultiply: maxMultiple.toString(),
             maxLtv: maxLtv.toString(),
+            hasRewards: false,
           }
         })
         .filter(Boolean) as ProductHubItem[],
