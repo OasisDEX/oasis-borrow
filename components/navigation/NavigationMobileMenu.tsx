@@ -28,6 +28,7 @@ export function NavigationMobileMenu({ close, isOpen, links, panels }: Navigatio
       closeButton={false}
       sxOverride={{
         width: ['100%', '368px'],
+        pb: 0,
       }}
     >
       <Flex sx={{ flexDirection: 'column', height: '100%' }}>
@@ -88,7 +89,7 @@ export function NavigationMobileMenu({ close, isOpen, links, panels }: Navigatio
               flexDirection: 'column',
               rowGap: '24px',
               height: '100%',
-              mt: 3,
+              pt: 3,
               px: 0,
               listStyle: 'none',
               overflowY: 'auto',
