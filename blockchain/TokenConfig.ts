@@ -16,8 +16,6 @@ export interface TokenConfig {
   coinpaprikaFallbackTicker?: string
   tags: CoinTag[]
   color: string
-  bannerIcon: string
-  bannerGif: string
   token0?: string
   token1?: string
   coinbaseTicker?: string

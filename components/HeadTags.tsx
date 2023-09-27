@@ -27,23 +27,23 @@ export function PageSEOTags({
   titleParams,
   description,
   url = INTERNAL_LINKS.homepage,
-  ogImage = 'og_default.png',
-  twitterImage = 'twitter_preview_default.png',
+  ogImage = 'og_default.jpg',
+  twitterImage = 'twitter_preview_default.jpg',
 }: SEOTagsType) {
   const { t } = useTranslation()
 
   const OGImages = {
     [INTERNAL_LINKS.borrow]: {
-      ogImage: 'og_borrow.png',
-      twitterImage: 'twitter_preview_borrow.png',
+      ogImage: 'og_borrow.jpg',
+      twitterImage: 'twitter_preview_borrow.jpg',
     },
     [INTERNAL_LINKS.multiply]: {
-      ogImage: 'og_multiply.png',
-      twitterImage: 'twitter_preview_multiply.png',
+      ogImage: 'og_multiply.jpg',
+      twitterImage: 'twitter_preview_multiply.jpg',
     },
     [INTERNAL_LINKS.earn]: {
-      ogImage: 'og_earn.png',
-      twitterImage: 'twitter_preview_earn.png',
+      ogImage: 'og_earn.jpg',
+      twitterImage: 'twitter_preview_earn.jpg',
     },
   }[url] || {
     ogImage,
