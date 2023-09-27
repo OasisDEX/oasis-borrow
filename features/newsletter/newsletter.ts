@@ -1,30 +1,12 @@
 import { EMAIL_REGEX } from 'helpers/constants'
-import type { Change, Changes } from 'helpers/form'
 import { applyChange } from 'helpers/form'
 import { curry } from 'lodash'
 import type { Observable } from 'rxjs'
 import { merge, Subject } from 'rxjs'
 import { map, scan, shareReplay, startWith } from 'rxjs/operators'
 
-import type { NewsletterResponseMessage } from './newsletterApi'
+import type { NewsletterChange, NewsletterMessage, NewsletterState } from './newsletter.types'
 import { newsletterApi$ } from './newsletterApi'
-
-export type NewsletterStage = 'editing' | 'inProgress' | 'success' | 'error'
-
-export type NewsletterMessage = 'emailIsInvalid'
-
-type NewsletterChange = Changes<NewsletterState>
-
-type ManualChange = Change<NewsletterState, 'email'> | Change<NewsletterState, 'messageResponse'>
-
-export interface NewsletterState {
-  email: string
-  messages: NewsletterMessage[]
-  stage: NewsletterStage
-  change: (change: ManualChange) => void
-  submit?: () => void
-  messageResponse?: NewsletterResponseMessage
-}
 
 const initialState: Omit<NewsletterState, 'change' | 'submit'> = {
   email: '',

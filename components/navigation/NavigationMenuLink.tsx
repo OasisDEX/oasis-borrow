@@ -1,28 +1,9 @@
 import { AppLink } from 'components/Links'
 import { useRouter } from 'next/router'
-import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
 
-interface NavigationMenuPanelLinkWithUrl {
-  link: string
-  onClick?: never
-}
-
-interface NavigationMenuPanelLinkWithAction {
-  link?: never
-  onClick: () => void
-}
-
-export type NavigationMenuPanelLinkType = (
-  | NavigationMenuPanelLinkWithUrl
-  | NavigationMenuPanelLinkWithAction
-) & {
-  label: ReactNode
-}
-type NavigationMenuPanelLinkProps = NavigationMenuPanelLinkType & {
-  onMouseEnter(): void
-}
+import type { NavigationMenuPanelLinkProps } from './Navigation.types'
 
 export function NavigationMenuLink({
   label,

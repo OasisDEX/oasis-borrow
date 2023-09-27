@@ -1,8 +1,9 @@
 import { Icon } from 'components/Icon'
-import type { NavigationMenuPanelIcon } from 'components/navigation/NavigationMenuPanel'
 import { TokensGroup } from 'components/TokensGroup'
 import React from 'react'
 import { Flex, Image } from 'theme-ui'
+
+import type { NavigationMenuPanelIcon } from './Navigation.types'
 
 export type NavigationMenuDropdownContentIconProps = NavigationMenuPanelIcon
 

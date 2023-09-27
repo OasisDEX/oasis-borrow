@@ -1,10 +1,11 @@
 import { Icon } from 'components/Icon'
 import { NavigationMenuDropdownContentIcon } from 'components/navigation/NavigationMenuDropdownContentIcon'
-import type { NavigationMenuPanelList } from 'components/navigation/NavigationMenuPanel'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Heading, Text } from 'theme-ui'
 import { star } from 'theme/icons'
+
+import type { NavigationMenuPanelList } from './Navigation.types'
 
 type NavigationMenuDropdownContentListItemProps =
   NavigationMenuPanelList['items'] extends readonly (infer ElementType)[] ? ElementType : never

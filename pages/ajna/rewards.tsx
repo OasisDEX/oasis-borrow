@@ -9,19 +9,20 @@ import React from 'react'
 
 function AjnaRewardsPage() {
   return (
-    <FunctionalContextHandler>
-      <WithConnection>
-        <WithTermsOfService>
-          <WithWalletAssociatedRisk>
-            <AjnaRewardsController />
-          </WithWalletAssociatedRisk>
-        </WithTermsOfService>
-      </WithConnection>
-    </FunctionalContextHandler>
+    <AjnaLayout>
+      <FunctionalContextHandler>
+        <WithConnection>
+          <WithTermsOfService>
+            <WithWalletAssociatedRisk>
+              <AjnaRewardsController />
+            </WithWalletAssociatedRisk>
+          </WithTermsOfService>
+        </WithConnection>
+      </FunctionalContextHandler>
+    </AjnaLayout>
   )
 }
 
-AjnaRewardsPage.layout = AjnaLayout
 AjnaRewardsPage.seoTags = ajnaPageSeoTags
 
 export default AjnaRewardsPage

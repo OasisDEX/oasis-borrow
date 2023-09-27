@@ -12,7 +12,7 @@ import { FeaturesEnum } from 'types/config'
 
 function AjnaPoolCreatorPage() {
   return (
-    <>
+    <AjnaLayout>
       <PageSEOTags
         title="seo.ajnaPoolCreator.title"
         description="seo.ajnaPoolCreator.description"
@@ -29,11 +29,10 @@ function AjnaPoolCreatorPage() {
           </WithTermsOfService>
         </WithConnection>
       </ProductContextHandler>
-    </>
+    </AjnaLayout>
   )
 }
 
-AjnaPoolCreatorPage.layout = AjnaLayout
 AjnaPoolCreatorPage.seoTags = ajnaPageSeoTags
 
 export default AjnaPoolCreatorPage

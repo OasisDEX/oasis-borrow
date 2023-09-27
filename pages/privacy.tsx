@@ -1,5 +1,5 @@
 import { PageSEONoFollow } from 'components/HeadTags'
-import { MarketingLayout } from 'components/layouts'
+import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { currentContent } from 'features/content'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -13,17 +13,11 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 
 function PrivacyPage() {
   return (
-    <>
+    <MarketingLayout topBackground="lighter" variant="termsContainer">
       <PageSEONoFollow />
       <Box sx={{ width: '100%' }}>{currentContent.privacy.content}</Box>
-    </>
+    </MarketingLayout>
   )
-}
-
-PrivacyPage.layout = MarketingLayout
-PrivacyPage.layoutProps = {
-  topBackground: 'lighter',
-  variant: 'termsContainer',
 }
 
 export default PrivacyPage

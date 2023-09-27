@@ -3,18 +3,7 @@ import { of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map, startWith } from 'rxjs/operators'
 
-import type { NewsletterStage } from './newsletter'
-
-export type NewsletterData = {
-  email: string
-}
-
-export type NewsletterResponseMessage = 'emailAlreadyExists' | 'emailPending' | 'unknown'
-
-export interface NewsletterResponse {
-  status: NewsletterStage
-  message?: NewsletterResponseMessage
-}
+import type { NewsletterData, NewsletterResponse, NewsletterStage } from './newsletter.types'
 
 export function newsletterApi$(data: NewsletterData): Observable<NewsletterResponse> {
   return ajax

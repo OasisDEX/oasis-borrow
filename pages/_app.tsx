@@ -23,8 +23,6 @@ import {
 import type { SavedSettings } from 'components/CookieBanner.types'
 import { CookieBannerDynamic } from 'components/CookieBannerDynamic'
 import { PageSEOTags } from 'components/HeadTags'
-import type { MarketingLayoutProps } from 'components/layouts'
-import { AppLayout } from 'components/layouts'
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { TopBannerDynamic } from 'components/TopBannerDynamic'
 import { cache } from 'emotion'
@@ -87,8 +85,6 @@ const globalStyles = `
 interface CustomAppProps {
   Component: {
     theme?: string
-    layoutProps?: MarketingLayoutProps
-    layout?: (props: MarketingLayoutProps) => JSX.Element
     seoTags?: JSX.Element
   }
 }
@@ -104,15 +100,12 @@ const noOverlayWorkaroundScript = `
   })
 `
 
-function App({ Component, pageProps }: AppProps & CustomAppProps) {
+function App({ Component }: AppProps & CustomAppProps) {
   const [cookiesValue, cookiesSetValue] = useLocalStorage(
     COOKIE_NAMES_LOCASTORAGE_KEY,
     {} as SavedSettings,
   )
   const mount = useRef(false)
-  const Layout = Component.layout || AppLayout
-
-  const layoutProps = Component.layoutProps
   const router = useRouter()
 
   const seoTags = Component.seoTags || (
@@ -186,13 +179,11 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                                 <TopBannerDynamic />
                                 <AccountContextProvider>
                                   <DeferedContextProvider context={accountContext}>
-                                    <Layout {...layoutProps}>
-                                      <Component {...pageProps} />
-                                      <CookieBannerDynamic
-                                        setValue={cookiesSetValue}
-                                        value={cookiesValue}
-                                      />
-                                    </Layout>
+                                    <Component />
+                                    <CookieBannerDynamic
+                                      setValue={cookiesSetValue}
+                                      value={cookiesValue}
+                                    />
                                   </DeferedContextProvider>
                                 </AccountContextProvider>
                               </SharedUIProvider>

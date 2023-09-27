@@ -6,13 +6,14 @@ import React from 'react'
 
 function AjnaLandingPage() {
   return (
-    <WithConnection>
-      <AjnaHomepageView />
-    </WithConnection>
+    <AjnaLayout>
+      <WithConnection>
+        <AjnaHomepageView />
+      </WithConnection>
+    </AjnaLayout>
   )
 }
 
-AjnaLandingPage.layout = AjnaLayout
 AjnaLandingPage.seoTags = ajnaPageSeoTags
 
 export default AjnaLandingPage

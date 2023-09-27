@@ -1,5 +1,6 @@
 import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
-import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
+import { Navigation } from 'components/navigation/Navigation'
+import { navigationBreakpoints } from 'components/navigation/Navigation.constants'
 import { SwapWidgetShowHide } from 'components/swapWidget/SwapWidgetShowHide'
 import { NavigationActionsController } from 'features/navigation/controls/NavigationActionsController'
 import type { SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChange'

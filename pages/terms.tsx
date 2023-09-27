@@ -1,5 +1,5 @@
 import { PageSEONoFollow } from 'components/HeadTags'
-import { MarketingLayout } from 'components/layouts'
+import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { currentContent } from 'features/content'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -13,18 +13,11 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 
 function TermsPage() {
   return (
-    <>
+    <MarketingLayout topBackground="lighter" variant="termsContainer">
       <PageSEONoFollow />
       <Box sx={{ width: '100%', position: 'relative' }}>{currentContent.tos.content}</Box>
-    </>
+    </MarketingLayout>
   )
 }
-
-TermsPage.layout = MarketingLayout
-TermsPage.layoutProps = {
-  topBackground: 'lighter',
-  variant: 'termsContainer',
-}
-TermsPage.theme = 'Landing'
 
 export default TermsPage

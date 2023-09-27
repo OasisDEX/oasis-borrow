@@ -3,7 +3,7 @@ import { NotificationsOrb } from 'components/navigation/content/NotificationsOrb
 import { SwapWidgetOrb } from 'components/navigation/content/SwapWidgetOrb'
 import { WalletOrb } from 'components/navigation/content/WalletOrb'
 import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
-import { navigationBreakpoints } from 'components/navigation/Navigation'
+import { navigationBreakpoints } from 'components/navigation/Navigation.constants'
 import { NavigationNetworkSwitcherOrb } from 'components/navigation/NavigationNetworkSwitcher'
 import { ConnectButton } from 'features/web3OnBoard'
 import React from 'react'

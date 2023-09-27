@@ -20,21 +20,22 @@ interface AjnaPositionPageProps {
 
 function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPositionPageProps) {
   return (
-    <ProductContextHandler>
-      <GasEstimationContextProvider>
-        <AjnaProductController
-          collateralToken={collateralToken}
-          flow={id ? 'manage' : 'open'}
-          id={id}
-          product={product}
-          quoteToken={quoteToken}
-        />
-      </GasEstimationContextProvider>
-    </ProductContextHandler>
+    <AjnaLayout>
+      <ProductContextHandler>
+        <GasEstimationContextProvider>
+          <AjnaProductController
+            collateralToken={collateralToken}
+            flow={id ? 'manage' : 'open'}
+            id={id}
+            product={product}
+            quoteToken={quoteToken}
+          />
+        </GasEstimationContextProvider>
+      </ProductContextHandler>
+    </AjnaLayout>
   )
 }
 
-AjnaPositionPage.layout = AjnaLayout
 AjnaPositionPage.seoTags = ajnaPageSeoTags
 
 export default AjnaPositionPage

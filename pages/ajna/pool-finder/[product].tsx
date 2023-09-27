@@ -11,7 +11,7 @@ import { FeaturesEnum } from 'types/config'
 
 function AjnaPoolFinderPage({ product }: { product: ProductHubProductType }) {
   return (
-    <>
+    <AjnaLayout>
       <PageSEOTags
         title="seo.ajnaPoolFinder.title"
         description="seo.ajna.description"
@@ -22,11 +22,10 @@ function AjnaPoolFinderPage({ product }: { product: ProductHubProductType }) {
           <AjnaPoolFinderController product={product} />
         </WithFeatureToggleRedirect>
       </ProductContextHandler>
-    </>
+    </AjnaLayout>
   )
 }
 
-AjnaPoolFinderPage.layout = AjnaLayout
 AjnaPoolFinderPage.seoTags = ajnaPageSeoTags
 
 export default AjnaPoolFinderPage

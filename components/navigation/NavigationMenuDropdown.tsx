@@ -1,8 +1,9 @@
 import { NavigationMenuDropdownContent } from 'components/navigation/NavigationMenuDropdownContent'
-import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { NavigationMenuPointer } from 'components/navigation/NavigationMenuPointer'
 import React, { useEffect, useRef, useState } from 'react'
 import { Flex } from 'theme-ui'
+
+import type { NavigationMenuPanelType } from './Navigation.types'
 
 export interface NavigationMenuDropdownProps {
   arrowPosition: number

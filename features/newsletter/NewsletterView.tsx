@@ -10,9 +10,12 @@ import { GRADIENTS } from 'theme'
 import { Box, Button, Flex, Grid, Heading, Input, Text } from 'theme-ui'
 import { arrow_right, checkmark } from 'theme/icons'
 
-import type { NewsletterMessage, NewsletterState } from './newsletter'
 import { createNewsletter$ } from './newsletter'
-import type { NewsletterResponseMessage } from './newsletterApi'
+import type {
+  NewsletterMessage,
+  NewsletterResponseMessage,
+  NewsletterState,
+} from './newsletter.types'
 
 export const NEWSLETTER_FORM_ERROR: {
   [key in NewsletterMessage | NewsletterResponseMessage]: string

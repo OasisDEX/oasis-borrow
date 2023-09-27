@@ -12,15 +12,16 @@ interface AjnaManagePositionPageProps {
 
 function AjnaManagePositionPage({ id }: AjnaManagePositionPageProps) {
   return (
-    <ProductContextHandler>
-      <GasEstimationContextProvider>
-        <AjnaProductController id={id} flow="manage" />
-      </GasEstimationContextProvider>
-    </ProductContextHandler>
+    <AjnaLayout>
+      <ProductContextHandler>
+        <GasEstimationContextProvider>
+          <AjnaProductController id={id} flow="manage" />
+        </GasEstimationContextProvider>
+      </ProductContextHandler>
+    </AjnaLayout>
   )
 }
 
-AjnaManagePositionPage.layout = AjnaLayout
 AjnaManagePositionPage.seoTags = ajnaPageSeoTags
 
 export default AjnaManagePositionPage

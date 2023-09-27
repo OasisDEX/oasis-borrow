@@ -1,10 +1,10 @@
 import { DrawerMenu } from 'components/DrawerMenu'
-import type { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
-import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { NavigationMobileMenuLink } from 'components/navigation/NavigationMobileMenuLink'
 import { NavigationMobileMenuPanel } from 'components/navigation/NavigationMobileMenuPanel'
 import React from 'react'
 import { Box } from 'theme-ui'
+
+import type { NavigationMenuPanelLinkType, NavigationMenuPanelType } from './Navigation.types'
 
 interface NavigationMobileMenuProps {
   close: () => void

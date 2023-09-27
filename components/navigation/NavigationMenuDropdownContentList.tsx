@@ -1,9 +1,10 @@
 import { AppLink } from 'components/Links'
 import { NavigationMenuDropdownContentListItem } from 'components/navigation/NavigationMenuDropdownContentListItem'
-import type { NavigationMenuPanelList } from 'components/navigation/NavigationMenuPanel'
 import { WithArrow } from 'components/WithArrow'
 import React from 'react'
 import { Box, Heading } from 'theme-ui'
+
+import type { NavigationMenuPanelList } from './Navigation.types'
 
 type NavigationMenuDropdownContentListProps = NavigationMenuPanelList & {
   parentIndex?: number

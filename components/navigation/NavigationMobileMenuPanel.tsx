@@ -1,9 +1,10 @@
 import { Icon } from 'components/Icon'
 import { mobileLinkSx } from 'components/navigation/common'
-import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import React, { useEffect, useState } from 'react'
 import { Box, Button } from 'theme-ui'
 import { chevron_left, chevron_right } from 'theme/icons'
+
+import type { NavigationMenuPanelType } from './Navigation.types'
 
 type NavigationMobileMenuPanelProps = NavigationMenuPanelType & {
   isOpen: boolean

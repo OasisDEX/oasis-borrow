@@ -16,7 +16,7 @@ function AjnaProductSlugPage({
   token?: string
 }) {
   return (
-    <>
+    <AjnaLayout>
       <PageSEOTags
         title="seo.ajnaProductPage.title"
         titleParams={{ product: upperFirst(product) }}
@@ -24,11 +24,10 @@ function AjnaProductSlugPage({
         url={`/ajna/${product}${token ? `/${token}` : ''}`}
       />
       <AjnaProductHubController product={product} token={token} />
-    </>
+    </AjnaLayout>
   )
 }
 
-AjnaProductSlugPage.layout = AjnaLayout
 AjnaProductSlugPage.seoTags = ajnaPageSeoTags
 
 export default AjnaProductSlugPage
