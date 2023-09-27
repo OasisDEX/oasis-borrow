@@ -143,7 +143,7 @@ function SocialWithLogo() {
     <Grid gap={3}>
       <Image
         src={staticFilesRuntimeUrl('/static/img/logos/logo_dark.svg')}
-        sx={{ height: '34px', position: 'relative', top: '-2px' }}
+        sx={{ height: '34px', width: '150px', position: 'relative', top: '-2px' }}
       />
       <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
         <AppLink href={EXTERNAL_LINKS.TWITTER}>

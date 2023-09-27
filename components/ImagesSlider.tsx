@@ -9,6 +9,8 @@ export type ImagesSliderProps = {
     imgSrc: string
     imgAlt?: string
     url?: string
+    width?: string
+    height?: string
   }[]
   wrapperSx?: ThemeUIStyleObject
   gridSx?: ThemeUIStyleObject
@@ -42,7 +44,8 @@ export const ImagesSlider = ({ items = [], wrapperSx, gridSx, itemSx }: ImagesSl
           <Image
             sx={{
               display: [index === activeItemIndex ? 'block' : 'none', 'block'],
-              width: ['60%', 'auto'],
+              width: ['60%', item.width ? item.width : 'auto'],
+              height: [null, item.height ? item.height : 'auto'],
               cursor: item.url ? 'pointer' : 'default',
               ...fadeInAnimationMobile,
               ...itemSx,

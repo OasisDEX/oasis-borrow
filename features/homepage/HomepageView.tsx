@@ -128,6 +128,8 @@ export function HomepageView() {
             <Image
               src={staticFilesRuntimeUrl('/static/img/homepage/peace_of_mind.svg')}
               sx={{
+                width: ['100%', '528px'],
+                height: ['100%', '208px'],
                 my: 3,
                 userSelect: 'none',
                 pointerEvents: 'none',
@@ -153,6 +155,8 @@ export function HomepageView() {
             <Image
               src={staticFilesRuntimeUrl('/static/img/homepage/no_hassle.svg')}
               sx={{
+                width: ['100%', '528px'],
+                height: ['100%', '208px'],
                 my: 3,
                 userSelect: 'none',
                 pointerEvents: 'none',
