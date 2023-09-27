@@ -8,7 +8,7 @@ import { Box, Heading } from 'theme-ui'
 type NavigationMenuDropdownContentListProps = NavigationMenuPanelList & {
   parentIndex?: number
   selected?: [number, number]
-  onClick?: () => void
+  onClick?: (selected: [number, number]) => void
   onSelect?: (selected: [number, number]) => void
 }
 
@@ -84,7 +84,7 @@ export function NavigationMenuDropdownContentList({
               }),
             }}
             onClick={() => {
-              onClick && onClick()
+              onClick && onClick([parentIndex ?? 0, i])
             }}
             onMouseEnter={() => {
               parentIndex !== undefined && onSelect && onSelect([parentIndex, i])

@@ -5,7 +5,8 @@ import type { NavigationMenuPanelType } from 'components/navigation/NavigationMe
 import { NavigationMobileMenuLink } from 'components/navigation/NavigationMobileMenuLink'
 import { NavigationMobileMenuPanel } from 'components/navigation/NavigationMobileMenuPanel'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import React from 'react'
+import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
 import { Flex, Image } from 'theme-ui'
 
 interface NavigationMobileMenuProps {
@@ -16,6 +17,9 @@ interface NavigationMobileMenuProps {
 }
 
 export function NavigationMobileMenu({ close, isOpen, links, panels }: NavigationMobileMenuProps) {
+  const { t } = useTranslation()
+  const [openNestedMenu, setOpenNestedMenu] = useState<[string, number, number]>()
+
   return (
     <DrawerMenu
       isOpen={isOpen}
@@ -26,7 +30,7 @@ export function NavigationMobileMenu({ close, isOpen, links, panels }: Navigatio
         width: ['100%', '368px'],
       }}
     >
-      <Flex sx={{ flexDirection: 'column', height: '100%', }}>
+      <Flex sx={{ flexDirection: 'column', height: '100%' }}>
         <Flex
           sx={{
             justifyContent: 'space-between',
@@ -36,7 +40,27 @@ export function NavigationMobileMenu({ close, isOpen, links, panels }: Navigatio
             borderBottomColor: 'neutral20',
           }}
         >
-          <Image sx={{ width: 4 }} src={staticFilesRuntimeUrl('/static/img/logos/dot_color.svg')} />
+          {openNestedMenu ? (
+            <Flex
+              as="span"
+              variant="text.boldParagraph3"
+              sx={{
+                alignItems: 'center',
+                lineHeight: '28px',
+                color: 'primary100',
+                cursor: 'pointer',
+              }}
+              onClick={() => setOpenNestedMenu(undefined)}
+            >
+              <Icon name="arrow_left" size={16} sx={{ mr: 2 }} />
+              {t('back')}
+            </Flex>
+          ) : (
+            <Image
+              sx={{ height: '28px' }}
+              src={staticFilesRuntimeUrl('/static/img/logos/dot_color.svg')}
+            />
+          )}
           <Flex
             sx={{
               justifyContent: 'center',
@@ -49,7 +73,10 @@ export function NavigationMobileMenu({ close, isOpen, links, panels }: Navigatio
                 color: 'primary100',
               },
             }}
-            onClick={close}
+            onClick={() => {
+              setOpenNestedMenu(undefined)
+              close()
+            }}
           >
             <Icon name="close" size={16} />
           </Flex>
@@ -61,14 +88,20 @@ export function NavigationMobileMenu({ close, isOpen, links, panels }: Navigatio
               flexDirection: 'column',
               rowGap: '24px',
               height: '100%',
-              py: 3,
+              mt: 3,
               px: 0,
               listStyle: 'none',
               overflowY: 'auto',
             }}
           >
             {panels?.map((panel) => (
-              <NavigationMobileMenuPanel key={`panel-${panel.label}`} isOpen={isOpen} {...panel} />
+              <NavigationMobileMenuPanel
+                key={`panel-${panel.label}`}
+                isOpen={isOpen}
+                onOpenNestedMenu={setOpenNestedMenu}
+                openNestedMenu={openNestedMenu}
+                {...panel}
+              />
             ))}
             {links?.map((link) => (
               <NavigationMobileMenuLink key={`link-${link.label}`} {...link} />
