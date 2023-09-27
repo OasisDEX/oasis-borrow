@@ -1,3 +1,4 @@
+import { EarnStrategies } from '@prisma/client'
 import type { NetworkIds } from 'blockchain/networks'
 import { strategies as aaveStrategyList } from 'features/aave'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
@@ -67,7 +68,7 @@ export function getActionUrl({
         chainId,
       })
       const productInUrl =
-        isEarnProduct && earnStrategy?.includes('Yield Loop')
+        isEarnProduct && earnStrategy === EarnStrategies.yield_loop
           ? ProductHubProductType.Multiply
           : product
       const tokensInUrl = isOracless

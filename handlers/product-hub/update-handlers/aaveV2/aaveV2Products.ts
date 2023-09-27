@@ -1,3 +1,4 @@
+import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
 import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
@@ -45,7 +46,8 @@ export const aaveV2ProductHubProducts: ProductHubItemWithoutAddress[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV2,
     label: 'STETH/ETH',
-    earnStrategy: 'STETH/ETH Yield Loop',
+    earnStrategy: EarnStrategies.yield_loop,
+    earnStrategyDescription: 'STETH/ETH Yield Loop',
     managementType: 'active',
   },
 ]

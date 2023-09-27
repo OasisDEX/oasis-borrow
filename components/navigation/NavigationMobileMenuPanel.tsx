@@ -1,26 +1,21 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { getToken } from 'blockchain/tokensMetadata'
-import { AssetPill } from 'components/AssetPill'
-import { AppLink } from 'components/Links'
 import { mobileLinkSx } from 'components/navigation/common'
 import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
-import { WithArrow } from 'components/WithArrow'
-import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers/getAjnaWithArrowColorScheme'
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Flex, Text } from 'theme-ui'
+import { Box, Button } from 'theme-ui'
 
 type NavigationMobileMenuPanelProps = NavigationMenuPanelType & {
   isOpen: boolean
 }
 
 export function NavigationMobileMenuPanel({
-  description,
+  // description,
   label,
-  links,
-  learn,
+  // links,
+  // learn,
   isOpen,
-  otherAssets,
-}: NavigationMobileMenuPanelProps) {
+}: // otherAssets,
+NavigationMobileMenuPanelProps) {
   const [isActive, setIsActive] = useState<boolean>(false)
 
   useEffect(() => {
@@ -68,7 +63,7 @@ export function NavigationMobileMenuPanel({
         >
           <Icon name="chevron_left" /> {label}
         </Button>
-        <Text as="p" sx={{ mt: '24px', fontSize: '14px', color: 'neutral80', lineHeight: '22px' }}>
+        {/* <Text as="p" sx={{ mt: '24px', fontSize: '14px', color: 'neutral80', lineHeight: '22px' }}>
           {description}
         </Text>
         {learn && (
@@ -77,7 +72,7 @@ export function NavigationMobileMenuPanel({
               {learn.label}
             </WithArrow>
           </AppLink>
-        )}
+        )} */}
         <Box
           as="ul"
           sx={{
@@ -86,7 +81,7 @@ export function NavigationMobileMenuPanel({
             p: '0',
           }}
         >
-          {links.map(({ icon, link, title, hash }, i) => (
+          {/* {links.map(({ icon, link, title, hash }, i) => (
             <Flex key={i} as="li">
               <AppLink
                 href={link}
@@ -102,9 +97,9 @@ export function NavigationMobileMenuPanel({
                 </Text>
               </AppLink>
             </Flex>
-          ))}
+          ))} */}
         </Box>
-        {otherAssets && otherAssets?.length > 0 && (
+        {/* {otherAssets && otherAssets?.length > 0 && (
           <Flex
             as="ul"
             sx={{
@@ -125,7 +120,7 @@ export function NavigationMobileMenuPanel({
               </Box>
             ))}
           </Flex>
-        )}
+        )} */}
       </Box>
     </Box>
   )
