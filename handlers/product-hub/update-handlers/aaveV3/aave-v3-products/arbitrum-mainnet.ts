@@ -1,8 +1,10 @@
+import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
-import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
-import { AaveProductHubItemSeed } from './aave-product-hub-item-seed'
+import type { AaveProductHubItemSeed } from './aave-product-hub-item-seed'
 
 const aaveSeed: AaveProductHubItemSeed[] = [
   {
@@ -131,7 +133,8 @@ const earnProducts = aaveSeed
       label: `${strategy.collateral.toUpperCase()}/${strategy.debt.toUpperCase()}`,
       network: NetworkNames.arbitrumMainnet,
       protocol: LendingProtocol.AaveV3,
-      earnStrategy: `${strategy.collateral}/${strategy.debt} Yield Loop`,
+      earnStrategyDescription: `${strategy.collateral}/${strategy.debt} Yield Loop`,
+      earnStrategy: EarnStrategies.yield_loop,
       managementType: 'active',
     }
   })

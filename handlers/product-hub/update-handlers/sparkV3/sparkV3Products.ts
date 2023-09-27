@@ -1,5 +1,7 @@
+import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
-import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
@@ -100,7 +102,8 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.SparkV3,
     label: 'WSTETH/ETH',
-    earnStrategy: 'WSTETH/ETH Yield Loop',
+    earnStrategy: EarnStrategies.yield_loop,
+    earnStrategyDescription: 'WSTETH/ETH Yield Loop',
     managementType: 'active',
   },
   {
@@ -112,7 +115,8 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.SparkV3,
     label: 'RETH/ETH',
-    earnStrategy: 'RETH/ETH Yield Loop',
+    earnStrategy: EarnStrategies.yield_loop,
+    earnStrategyDescription: 'RETH/ETH Yield Loop',
     managementType: 'active',
   },
 ]

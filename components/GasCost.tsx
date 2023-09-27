@@ -1,11 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppSpinner } from 'helpers/AppSpinner'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/context/types'
 import { formatPrice } from 'helpers/formatters/format'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
+import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Text } from 'theme-ui'
-import { TranslationType } from 'ts_modules/i18next'
+import type { TranslationType } from 'ts_modules/i18next'
 
 import { Tooltip, useTooltip } from './Tooltip'
 

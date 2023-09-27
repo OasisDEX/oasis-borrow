@@ -1,11 +1,11 @@
-import { IPosition } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
+import type { IPosition } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
-import { calculateViewValuesForPosition } from 'features/aave/services'
+import type { calculateViewValuesForPosition } from 'features/aave/services'
 import { StrategyType } from 'features/aave/types'
 import { formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import {
+import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveData,
 } from 'lendingProtocols/aave-like-common'

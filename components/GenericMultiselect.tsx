@@ -1,14 +1,15 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { toggleArrayItem } from 'helpers/toggleArrayItem'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode, useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Box, Flex, Image, Text } from 'theme-ui'
-import { FeaturesEnum } from 'types/config'
+import type { FeaturesEnum } from 'types/config'
 
 export interface GenericMultiselectOption {
   icon?: string
@@ -160,8 +161,10 @@ export function GenericMultiselect({
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const outsideRef = useOutsideElementClickHandler(() => setIsOpen(false))
   const scrollRef = useRef<HTMLDivElement>(null)
+  const features = useAppConfig('features')
+
   const optionsFeatureFlagsArray = options.map((option) =>
-    option.featureFlag ? getAppConfig('features')[option.featureFlag] : true,
+    option.featureFlag ? features[option.featureFlag] : true,
   )
 
   useEffect(() => {

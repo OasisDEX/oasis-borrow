@@ -3,7 +3,8 @@ import { NetworkIds } from 'blockchain/networks'
 import { one } from 'helpers/zero'
 import { SparkV3Oracle__factory } from 'types/ethers-contracts'
 
-import { BaseParameters, getNetworkMapping, wethToEthAddress } from './utils'
+import type { BaseParameters } from './utils'
+import { getNetworkMapping, wethToEthAddress } from './utils'
 
 export interface SparkV3AssetsPricesParameters extends BaseParameters {
   tokens: string[]

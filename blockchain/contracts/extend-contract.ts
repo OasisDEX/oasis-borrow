@@ -1,6 +1,6 @@
-import { BaseContract, ethers } from 'ethers'
-import { ContractDesc } from 'features/web3Context'
-import { TypedEvent, TypedEventFilter } from 'types/ethers-contracts/common'
+import type { BaseContract, ethers } from 'ethers'
+import type { ContractDesc } from 'features/web3Context'
+import type { TypedEvent, TypedEventFilter } from 'types/ethers-contracts/common'
 
 type GetLogsDelegate = <TEvent extends TypedEvent<any, any>>(
   topic: TypedEventFilter<TEvent>,

@@ -1,30 +1,31 @@
-import { AjnaEarnPosition } from '@oasisdex/dma-library'
-import { AjnaSimulationValidationItem } from 'actions/ajna/types'
-import BigNumber from 'bignumber.js'
+import type { AjnaEarnPosition } from '@oasisdex/dma-library'
+import type { AjnaSimulationValidationItem } from 'actions/ajna/types'
+import type BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
-import {
+import type {
   AjnaFlow,
-  AjnaFormState,
   AjnaGenericPosition,
   AjnaProduct,
   AjnaSidebarStep,
   AjnaValidationItem,
 } from 'features/ajna/common/types'
-import { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
-import {
+import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
+import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
+import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
   AjnaPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
-import { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
-import { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
+import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { TxError } from 'helpers/types'
+import type { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
-import React, { FC } from 'react'
+import type { FC } from 'react'
+import React from 'react'
 
 interface AjnaValidationWithLinkProps {
   name: string

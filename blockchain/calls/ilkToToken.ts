@@ -1,12 +1,14 @@
 import * as mcdGemJoinAbi from 'blockchain/abi/mcd-gem-join.json'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
-import { defer, Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { defer } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
-import { McdGemJoin } from 'types/web3-v1-contracts'
+import type { McdGemJoin } from 'types/web3-v1-contracts'
 
-import { call, CallDef } from './callsHelpers'
+import type { CallDef } from './callsHelpers'
+import { call } from './callsHelpers'
 
 export const ilkTokenAddress: CallDef<string, string> = {
   call: (ilk, { contract, chainId }) => {

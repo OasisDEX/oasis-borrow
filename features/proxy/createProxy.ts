@@ -1,12 +1,14 @@
 import { TxStatus } from '@oasisdex/transactions'
-import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
+import type { CreateDsProxyData } from 'blockchain/calls/proxy'
+import { createDsProxy } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { transactionToX } from 'helpers/form'
-import { iif, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { iif, of } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
 
-import { ProxyChanges } from './proxy'
+import type { ProxyChanges } from './proxy.types'
 
 export function createProxy(
   { sendWithGasEstimation }: TxHelpers,

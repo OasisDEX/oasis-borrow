@@ -1,6 +1,6 @@
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useMemo } from 'react'
-import { AppConfigType } from 'types/config'
+import type { AppConfigType } from 'types/config'
 
 const checkTypes = (
   config: AppConfigType['parameters']['aaveLike'],
@@ -15,8 +15,9 @@ const checkTypes = (
 }
 
 export const useAaveLikeConfig = () => {
+  const { aaveLike } = useAppConfig('parameters')
+
   const result = useMemo(() => {
-    const { aaveLike } = getAppConfig('parameters')
     if (!checkTypes(aaveLike)) {
       console.error('useAaveLieConfig: Invalid config', aaveLike)
       return {
@@ -26,7 +27,7 @@ export const useAaveLikeConfig = () => {
       }
     }
     return aaveLike
-  }, [])
+  }, [aaveLike])
 
   return result
 }

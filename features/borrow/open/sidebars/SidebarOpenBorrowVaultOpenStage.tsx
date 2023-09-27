@@ -1,7 +1,7 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { StopLossTwoTxRequirement } from 'features/aave/components'
 import { OpenVaultChangesInformation } from 'features/borrow/open/containers/OpenVaultChangesInformation'
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import type { OpenVaultState } from 'features/borrow/open/pipes/openVault.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'

@@ -1,11 +1,13 @@
 import { AppLink } from 'components/Links'
-import React, { ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import React from 'react'
 import { Box, Text } from 'theme-ui'
 
 export interface NavigationMenuPanelAsset {
   token: string
   link: string
 }
+
 export interface NavigationMenuPanelLink {
   icon: string
   title: string
@@ -13,16 +15,37 @@ export interface NavigationMenuPanelLink {
   hash?: string
   footnote?: ReactNode
 }
-export interface NavigationMenuPanelType {
-  description: string
-  label: string
-  learn?: {
+
+export interface NavigationMenuPanelIcon {
+  icon?: string
+  image?: string
+  tokens?: string[]
+  position: 'global' | 'title'
+}
+
+export interface NavigationMenuPanelList {
+  header?: string
+  items: {
+    description?: ReactNode
+    icon?: NavigationMenuPanelIcon
+    url?: string
+    list?: NavigationMenuPanelList
+    hoverColor?: string
+    promoted?: boolean
+    tags?: ([string, string] | string)[]
+    title: ReactNode
+  }[]
+  link?: {
     label: string
-    link: string
+    url: string
   }
-  link?: string
-  links: NavigationMenuPanelLink[]
-  otherAssets?: NavigationMenuPanelAsset[]
+  tight?: boolean
+}
+
+export interface NavigationMenuPanelType {
+  label: string
+  lists: NavigationMenuPanelList[]
+  url?: string
 }
 type NavigationMenuPanelProps = NavigationMenuPanelType & {
   currentPanel?: string
@@ -55,7 +78,7 @@ function NavigationMenuPanelLabel({
 export function NavigationMenuPanel({
   currentPanel,
   label,
-  link,
+  url,
   isPanelOpen,
   onMouseEnter,
 }: NavigationMenuPanelProps) {
@@ -63,7 +86,6 @@ export function NavigationMenuPanel({
     <Box
       as="li"
       sx={{
-        p: 1,
         flexShrink: 0,
         cursor: 'default',
       }}
@@ -73,8 +95,8 @@ export function NavigationMenuPanel({
         onMouseEnter(target.offsetLeft + target.offsetWidth / 2)
       }}
     >
-      {link ? (
-        <AppLink href={link}>
+      {url ? (
+        <AppLink href={url}>
           <NavigationMenuPanelLabel
             currentPanel={currentPanel}
             label={label}

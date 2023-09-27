@@ -1,6 +1,6 @@
-import { NetworkIds } from 'blockchain/networks'
-import { SparkV3UserAccountData, SparkV3UserAccountDataParameters } from 'blockchain/spark-v3'
-import {
+import type { NetworkIds } from 'blockchain/networks'
+import type { SparkV3UserAccountData, SparkV3UserAccountDataParameters } from 'blockchain/spark-v3'
+import type {
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common/aave-like-user-account-data'

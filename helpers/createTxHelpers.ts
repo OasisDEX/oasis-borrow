@@ -1,17 +1,18 @@
-import { SendFunction } from '@oasisdex/transactions'
+import type { SendFunction } from '@oasisdex/transactions'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
   createSendTransaction,
   createSendWithGasConstraints,
   estimateGas,
-  TransactionDef,
 } from 'blockchain/calls/callsHelpers'
-import { ContextConnected } from 'blockchain/network'
-import { GasPriceParams } from 'blockchain/prices'
+import type { ContextConnected } from 'blockchain/network.types'
+import type { GasPriceParams } from 'blockchain/prices.types'
 import { getGasMultiplier } from 'helpers/getGasMultiplier'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
-import { TxData, TxHelpers$ } from './context/types'
+import type { TxData } from './context/TxData'
+import type { TxHelpers$ } from './context/TxHelpers'
 
 export function createTxHelpers$(
   context$: Observable<ContextConnected>,

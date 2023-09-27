@@ -1,21 +1,5 @@
-import { IlkDataChange } from 'blockchain/ilks'
-import { VaultChange } from 'blockchain/vaults'
-import { AutomationTriggersChange } from 'features/automation/api/automationTriggersData'
-import { BalanceInfoChange } from 'features/shared/balanceInfo'
-import { PriceInfoChange } from 'features/shared/priceInfo'
-import { SlippageChange } from 'features/userSettings/userSettings'
-import { VaultHistoryChange } from 'features/vaultHistory/vaultHistory'
-
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
-
-export type ManageVaultEnvironmentChange =
-  | PriceInfoChange
-  | BalanceInfoChange
-  | IlkDataChange
-  | VaultChange
-  | VaultHistoryChange
-  | SlippageChange
-  | AutomationTriggersChange
+import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
+import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
 
 export function applyManageVaultEnvironment<VS extends ManageMultiplyVaultState>(
   change: ManageMultiplyVaultChange,

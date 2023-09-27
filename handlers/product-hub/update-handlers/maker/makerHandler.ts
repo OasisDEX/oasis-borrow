@@ -5,13 +5,14 @@ import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds, networksById } from 'blockchain/networks'
-import { getTokenPrice, Tickers } from 'blockchain/prices'
+import { getTokenPrice } from 'blockchain/prices'
+import type { Tickers } from 'blockchain/prices.types'
 import { amountFromRad, amountFromRay } from 'blockchain/utils'
 import { RAY, SECONDS_PER_YEAR } from 'components/constants'
-import { BigNumberish } from 'ethers'
+import type { BigNumberish } from 'ethers'
 import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
-import { ProductHubItem, ProductHubSupportedNetworks } from 'features/productHub/types'
-import {
+import type { ProductHubItem, ProductHubSupportedNetworks } from 'features/productHub/types'
+import type {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
 } from 'handlers/product-hub/types'
@@ -131,6 +132,7 @@ async function getMakerData(
                 .decimalPlaces(5, BigNumber.ROUND_UP)
                 .minus(1)
                 .toString(),
+              hasRewards: false,
             }
           }
           const ilk = getIlk(label)
@@ -148,6 +150,7 @@ async function getMakerData(
             fee: fee.toString(),
             maxMultiply: maxMultiple.toString(),
             maxLtv: maxLtv.toString(),
+            hasRewards: false,
           }
         })
         .filter(Boolean) as ProductHubItem[],

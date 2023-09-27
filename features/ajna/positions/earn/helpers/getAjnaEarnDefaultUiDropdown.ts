@@ -1,4 +1,4 @@
-import { AjnaEarnPosition } from '@oasisdex/dma-library'
+import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { zero } from 'helpers/zero'
 
 export const getAjnaEarnDefaultUiDropdown = (ajnaPosition: AjnaEarnPosition) =>

@@ -2,8 +2,9 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { useMainContext } from 'components/context'
 import { FlowSidebar } from 'components/FlowSidebar'
-import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSection } from 'components/sidebar/SidebarSection'
+import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ethers } from 'ethers'
 import { AjnaDupePositionModal } from 'features/ajna/positions/common/components/AjnaDupePositionModal'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
@@ -21,14 +22,15 @@ import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers
 import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
 import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
 import { useConnection } from 'features/web3OnBoard'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { PropsWithChildren, useEffect, useState } from 'react'
+import type { PropsWithChildren } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 interface AjnaFormViewProps {
@@ -45,7 +47,7 @@ export function AjnaFormView({
     AjnaSafetySwitch: ajnaSafetySwitchOn,
     AjnaSuppressValidation: ajnaSuppressValidationEnabled,
     AjnaReusableDPM: ajnaReusableDPMEnabled,
-  } = getAppConfig('features')
+  } = useAppConfig('features')
 
   const { t } = useTranslation()
   const { context$ } = useMainContext()

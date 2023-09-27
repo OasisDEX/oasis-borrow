@@ -1,8 +1,8 @@
-import { NetworkNames } from 'blockchain/networks'
-import { PromoCardProps } from 'components/PromoCard'
-import { ProductHubItem } from 'features/productHub/types'
-import { LendingProtocol } from 'lendingProtocols'
-import { NextApiRequest } from 'next'
+import type { NetworkNames } from 'blockchain/networks'
+import type { PromoCardProps } from 'components/PromoCard.types'
+import type { ProductHubItem } from 'features/productHub/types'
+import type { LendingProtocol } from 'lendingProtocols'
+import type { NextApiRequest } from 'next'
 
 export type PromoCardsCollection = 'Home' | 'HomeWithAjna' | 'AjnaLP'
 

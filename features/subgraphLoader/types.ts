@@ -1,18 +1,23 @@
-import { NetworkIds } from 'blockchain/networks'
-import { AjnaBorrowerEventsResponse, AjnaHistoryResponse } from 'features/ajna/history/types'
-import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
-import { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
-import { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjnaRewards'
-import { SearchAjnaPoolResponse } from 'features/ajna/positions/common/helpers/searchAjnaPool'
-import { AavePositionHistoryResponse } from 'features/positionHistory/types'
-import { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards'
+import type { NetworkIds } from 'blockchain/networks'
+import type { AjnaBorrowerEventsResponse, AjnaHistoryResponse } from 'features/ajna/history/types'
+import type { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData.types'
+import type { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsData.types'
+import type { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjnaRewards.types'
+import type { SearchAjnaPoolResponse } from 'features/ajna/positions/common/helpers/searchAjnaPool.types'
+import type { AavePositionHistoryResponse } from 'features/positionHistory/types'
+import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'
 
 export type Subgraphs = {
   Ajna: {
-    getAjnaEarnPositionData: { dpmProxyAddress: string }
-    getAjnaPositionAggregatedData: { dpmProxyAddress: string }
+    getAjnaEarnPositionData: { dpmProxyAddress: string; poolAddress: string }
+    getAjnaPositionAggregatedData: {
+      dpmProxyAddress: string
+      collateralAddress: string
+      quoteAddress: string
+    }
     getAjnaPoolAddress: { collateralAddress: string; quoteAddress: string }
     getAjnaPoolData: { poolAddress: string }
+    getAjnaCumulatives: { dpmProxyAddress: string; poolAddress: string }
     getAjnaPoolsData: {}
     getAjnaClaimedRewards: { walletAddress: string }
     searchAjnaPool: { collateralAddress: string[]; poolAddress: string[]; quoteAddress: string[] }
@@ -37,14 +42,6 @@ export type SubgraphBaseResponse<R> = {
 export type SubgraphsResponses = {
   Ajna: {
     getAjnaPositionAggregatedData: SubgraphBaseResponse<{
-      account: {
-        cumulativeDeposit: number
-        cumulativeFees: number
-        cumulativeWithdraw: number
-        earnCumulativeFeesInQuoteToken: number
-        earnCumulativeQuoteTokenDeposit: number
-        earnCumulativeQuoteTokenWithdraw: number
-      }
       auctions: {
         alreadyTaken: boolean
         collateral: number
@@ -64,19 +61,33 @@ export type SubgraphsResponses = {
     getAjnaPoolData: SubgraphBaseResponse<{
       pool: AjnaPoolDataResponse
     }>
+    getAjnaCumulatives: SubgraphBaseResponse<{
+      account: {
+        earnPositions: {
+          earnCumulativeFeesInQuoteToken: number
+          earnCumulativeQuoteTokenDeposit: number
+          earnCumulativeQuoteTokenWithdraw: number
+        }[]
+        borrowPositions: {
+          borrowCumulativeDepositUSD: number
+          borrowCumulativeFeesUSD: number
+          borrowCumulativeWithdrawUSD: number
+        }[]
+      }
+    }>
     getAjnaPoolsData: SubgraphBaseResponse<{
       pools: AjnaPoolsDataResponse[]
     }>
     getAjnaEarnPositionData: SubgraphBaseResponse<{
       account: {
         earnPositions: {
-          lps: number
-          index: number
-          account: {
-            earnCumulativeQuoteTokenDeposit: number
-            earnCumulativeFeesInQuoteToken: number
-            earnCumulativeQuoteTokenWithdraw: number
-          }
+          earnCumulativeQuoteTokenDeposit: number
+          earnCumulativeFeesInQuoteToken: number
+          earnCumulativeQuoteTokenWithdraw: number
+          bucketPositions: {
+            lps: number
+            index: number
+          }[]
         }[]
       }
     }>

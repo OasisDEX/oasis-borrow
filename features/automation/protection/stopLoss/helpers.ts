@@ -1,5 +1,5 @@
-import BigNumber from 'bignumber.js'
-import { SidebarAutomationStages } from 'features/automation/common/types'
+import type BigNumber from 'bignumber.js'
+import type { SidebarAutomationStages } from 'features/automation/common/types'
 import { one, zero } from 'helpers/zero'
 
 export function checkIfIsEditingStopLoss({

@@ -1,4 +1,4 @@
-import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 
 export function apply(fn: Function, handler: NextApiHandler) {
   return async function (req: NextApiRequest, res: NextApiResponse) {

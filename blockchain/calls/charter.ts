@@ -2,10 +2,10 @@ import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { RAD, RAY, WAD } from 'components/constants'
-import { DssCharter } from 'types/web3-v1-contracts'
+import type { DssCharter } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
 
-import { CallDef } from './callsHelpers'
+import type { CallDef } from './callsHelpers'
 
 export const charterNib: CallDef<{ ilk: string; usr: string }, BigNumber> = {
   call: (_, { contract, chainId }) =>

@@ -56,9 +56,10 @@ import {
   tokensOptimism,
 } from 'blockchain/tokens/optimism'
 import { etherscanAPIKey } from 'config/runtimeConfig'
-import { ContractDesc } from 'features/web3Context'
+import type { ContractDesc } from 'features/web3Context'
 
-import { mainnetContracts, MainnetContractsWithOptional } from './mainnet'
+import type { MainnetContractsWithOptional } from './mainnet'
+import { mainnetContracts } from './mainnet'
 
 const { optimism } = ADDRESSES
 

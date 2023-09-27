@@ -1,10 +1,11 @@
-import { ethers } from 'ethers'
-import {
+import type { ethers } from 'ethers'
+import type {
   Web3Context,
   Web3ContextConnected,
   Web3ContextConnectedReadonly,
 } from 'features/web3Context'
-import { Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { of } from 'rxjs'
 import Web3 from 'web3'
 
 const mockWeb3ContextNotConnected: Web3Context = {

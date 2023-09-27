@@ -1,3 +1,4 @@
+import type { NetworkNames } from 'blockchain/networks'
 import {
   enableNetworksSet,
   filterNetworksAccordingToSavedNetwork,
@@ -6,12 +7,11 @@ import {
   isTestnetEnabled,
   isTestnetNetworkHexId,
   NetworkIdToNetworkHexIds,
-  NetworkNames,
   networkSetByHexId,
 } from 'blockchain/networks'
 import { useConnection, useWalletManagement } from 'features/web3OnBoard'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
 import React, { useState } from 'react'
 import { Box, Button } from 'theme-ui'
@@ -36,7 +36,7 @@ export function NavigationNetworkSwitcherOrb() {
   const connectedChain = wallet?.chainHexId
   const currentNetworkName = connectedChain ? networkSetByHexId[connectedChain]?.name : undefined
   const { openModal } = useModalContext()
-  const { UseNetworkSwitcherTestnets, UseNetworkSwitcherForks } = getAppConfig('features')
+  const { UseNetworkSwitcherTestnets, UseNetworkSwitcherForks } = useAppConfig('features')
 
   const [currentHoverNetworkName, setCurrentHoverNetworkName] = useState<NetworkNames | undefined>(
     currentNetworkName,

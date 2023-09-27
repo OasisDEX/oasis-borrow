@@ -1,14 +1,18 @@
-import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave-like'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
-import {
-  createManageAaveStateMachine,
+import type {
+  AdjustAaveParameters,
+  CloseAaveParameters,
+  ManageAaveParameters,
+} from 'actions/aave-like'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
+import type {
   ManageAaveStateMachine,
   ManageAaveStateMachineServices,
 } from 'features/aave/manage/state'
-import { AllowanceStateMachine } from 'features/stateMachines/allowance'
-import { TransactionStateMachine } from 'features/stateMachines/transaction'
-import { TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
+import { createManageAaveStateMachine } from 'features/aave/manage/state'
+import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
+import type { TransactionStateMachine } from 'features/stateMachines/transaction'
+import type { TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 
 export function getManageAaveStateMachine(
   services: ManageAaveStateMachineServices,

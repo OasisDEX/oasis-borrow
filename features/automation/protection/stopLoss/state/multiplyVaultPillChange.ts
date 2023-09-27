@@ -1,15 +1,4 @@
-import { OtherAction } from 'features/multiply/manage/pipes/manageMultiplyVault'
-
-export const MULTIPLY_VAULT_PILL_CHANGE_SUBJECT = 'MultiplyPillChange'
-
-export type MultiplyPillChangeAction = {
-  type: 'change-multiply-pill'
-  currentStage: OtherAction
-}
-
-export interface MultiplyPillChange {
-  currentStage: OtherAction
-}
+import type { MultiplyPillChange, MultiplyPillChangeAction } from './multiplyVaultPillChange.types'
 
 export function multiplyPillChangeReducer(
   state: MultiplyPillChange,

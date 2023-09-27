@@ -1,13 +1,11 @@
 import { isProductContextAvailable, productContext } from 'components/context'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
-import {
-  defaultMutableOpenMultiplyVaultState,
-  MutableOpenMultiplyVaultState,
-} from 'features/multiply/open/pipes/openMultiplyVault'
-import { ProductContext } from 'helpers/context/ProductContext'
+import { defaultMutableOpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault.constants'
+import type { MutableOpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault.types'
+import type { ProductContext } from 'helpers/context/ProductContext.types'
 import { mockGuniOpenEarnVault } from 'helpers/mocks/guniOpenEarnVault.mock'
-import { MockOpenMultiplyVaultProps } from 'helpers/mocks/openMultiplyVault.mock'
+import type { MockOpenMultiplyVaultProps } from 'helpers/mocks/openMultiplyVault.mock'
 import React, { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
