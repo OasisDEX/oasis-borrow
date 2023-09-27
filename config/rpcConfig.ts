@@ -1,14 +1,23 @@
 import { NetworkNames } from 'blockchain/networks/network-names'
 import { clientId } from 'helpers/clientId'
+import { getLocalAppConfig } from 'helpers/config'
 
 import { infuraProjectId } from './runtimeConfig'
 
+const { UseRpcGateway } = getLocalAppConfig('features')
+
 function getRpc(network: NetworkNames): string {
+  let rpcUrl: string
   try {
-    return `${window?.location.origin}/api/rpc?network=${network}&clientId=${clientId}`
-  } catch {
-    return `https://${network}.infura.io/v3/${infuraProjectId}`
+    if (!UseRpcGateway) {
+      rpcUrl = `${window?.location.origin}/api/rpc?network=${network}&clientId=${clientId}`
+    } else {
+      rpcUrl = `${window?.location.origin}/api/rpcGateway?network=${network}&clientId=${clientId}`
+    }
+  } catch (error) {
+    rpcUrl = `https://${network}.infura.io/v3/${infuraProjectId}`
   }
+  return rpcUrl
 }
 
 export const mainnetRpc = getRpc(NetworkNames.ethereumMainnet)
