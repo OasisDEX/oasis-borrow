@@ -7,7 +7,7 @@ import type { WithChildren } from 'helpers/types/With.types'
 import { Trans, useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React, { useCallback, useEffect, useState } from 'react'
-import ReactDOM from 'react-dom'
+import { createPortal } from 'react-dom'
 import { TRANSITIONS } from 'theme'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import {
@@ -236,7 +236,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
 export function MobileSidePanelPortal({ children }: WithChildren) {
   const onMobile = useOnMobile()
 
-  return onMobile && document.body ? ReactDOM.createPortal(children, document.body) : children
+  return onMobile && document.body ? createPortal(children, document.body) : children
 }
 
 export function MobileSidePanel({

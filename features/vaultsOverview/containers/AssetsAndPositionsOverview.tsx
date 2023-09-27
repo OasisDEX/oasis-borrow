@@ -22,7 +22,7 @@ import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHan
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
+import { createPortal } from 'react-dom'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Card, Flex, Grid, Heading, Image, Link, Text } from 'theme-ui'
 import { arrow_right, dots_v } from 'theme/icons'
@@ -166,7 +166,7 @@ function LinkedRow(props: PositionView) {
       >
         {menuPosition &&
           props.actions &&
-          ReactDOM.createPortal(
+          createPortal(
             <Menu
               sx={menuPosition}
               close={() => {
