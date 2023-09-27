@@ -3,7 +3,6 @@ import { useProductContext } from 'components/context'
 import { getAddress } from 'ethers/lib/utils'
 import { AssetsAndPositionsOverview } from 'features/vaultsOverview/containers/AssetsAndPositionsOverview'
 import { ConnectWalletPrompt } from 'features/vaultsOverview/containers/ConnectWalletPrompt'
-import { FollowedTable } from 'features/vaultsOverview/containers/FollowedTable'
 import { PositionsTable } from 'features/vaultsOverview/containers/PositionsTable'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
@@ -52,7 +51,6 @@ export function VaultsOverviewView({ address }: { address: string }) {
         ownersPositionsListData={ownersPositionsListData}
         ownersPositionsListError={ownersPositionsListError}
       />
-      <FollowedTable address={address} />
       <ConnectWalletPrompt />
     </Grid>
   )
