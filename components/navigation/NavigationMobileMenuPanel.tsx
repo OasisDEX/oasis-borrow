@@ -1,8 +1,10 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { mobileLinkSx } from 'components/navigation/common'
+import { NavigationMenuDropdownContentList } from 'components/navigation/NavigationMenuDropdownContentList'
 import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
-import React, { useEffect, useState } from 'react'
-import { Box, Button } from 'theme-ui'
+import { useToggle } from 'helpers/useToggle'
+import React, { useEffect } from 'react'
+import { Box, Button, Flex } from 'theme-ui'
 
 type NavigationMobileMenuPanelProps = NavigationMenuPanelType & {
   isOpen: boolean
@@ -13,29 +15,58 @@ export function NavigationMobileMenuPanel({
   label,
   // links,
   // learn,
+  lists,
   isOpen,
-}: // otherAssets,
-NavigationMobileMenuPanelProps) {
-  const [isActive, setIsActive] = useState<boolean>(false)
+}: NavigationMobileMenuPanelProps) {
+  const [isAccordionOpen, toggleIsAccordionOpen, setIsAccordionOpen] = useToggle(false)
 
   useEffect(() => {
-    if (!isOpen) setIsActive(false)
+    if (!isOpen) setIsAccordionOpen(false)
   }, [isOpen])
 
   return (
     <Box key={`link-${label}`} as="li">
       <Button
         sx={{
-          ...mobileLinkSx,
+          ...mobileLinkSx(isAccordionOpen),
           cursor: 'pointer',
         }}
         onClick={() => {
-          setIsActive(true)
+          toggleIsAccordionOpen()
         }}
       >
-        {label} <Icon name="chevron_right" />
+        {label}{' '}
+        <ExpandableArrow direction={isAccordionOpen ? 'up' : 'down'} size={13} color="primary60" />
       </Button>
-      <Box
+      {isAccordionOpen && (
+        <Box
+          as="ul"
+          sx={{
+            pt: 3,
+            pl: 0,
+            listStyle: 'none',
+          }}
+        >
+          {lists.map((item, i) => (
+            <Flex
+              key={i}
+              as="li"
+              sx={{
+                rowGap: 3,
+                flexDirection: 'column',
+              }}
+            >
+              <NavigationMenuDropdownContentList
+                onClick={() => {
+                  alert(label)
+                }}
+                {...item}
+              />
+            </Flex>
+          ))}
+        </Box>
+      )}
+      {/* <Box
         sx={{
           position: 'fixed',
           top: 0,
@@ -63,7 +94,7 @@ NavigationMobileMenuPanelProps) {
         >
           <Icon name="chevron_left" /> {label}
         </Button>
-        {/* <Text as="p" sx={{ mt: '24px', fontSize: '14px', color: 'neutral80', lineHeight: '22px' }}>
+        <Text as="p" sx={{ mt: '24px', fontSize: '14px', color: 'neutral80', lineHeight: '22px' }}>
           {description}
         </Text>
         {learn && (
@@ -72,7 +103,7 @@ NavigationMobileMenuPanelProps) {
               {learn.label}
             </WithArrow>
           </AppLink>
-        )} */}
+        )}
         <Box
           as="ul"
           sx={{
@@ -81,7 +112,7 @@ NavigationMobileMenuPanelProps) {
             p: '0',
           }}
         >
-          {/* {links.map(({ icon, link, title, hash }, i) => (
+          {links.map(({ icon, link, title, hash }, i) => (
             <Flex key={i} as="li">
               <AppLink
                 href={link}
@@ -97,9 +128,9 @@ NavigationMobileMenuPanelProps) {
                 </Text>
               </AppLink>
             </Flex>
-          ))} */}
+          ))}
         </Box>
-        {/* {otherAssets && otherAssets?.length > 0 && (
+        {otherAssets && otherAssets?.length > 0 && (
           <Flex
             as="ul"
             sx={{
@@ -120,8 +151,8 @@ NavigationMobileMenuPanelProps) {
               </Box>
             ))}
           </Flex>
-        )} */}
-      </Box>
+        )}
+      </Box> */}
     </Box>
   )
 }
