@@ -1,6 +1,9 @@
 import { NetworkNames } from 'blockchain/networks'
+import { getRemoteConfigWithCache } from 'helpers/config'
+import { type ConfigResponseType, configCacheTime } from 'helpers/config'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import getConfig from 'next/config'
+import type { AppConfigType } from 'types/config'
 
 const rpcGatewayUrl = getConfig()?.publicRuntimeConfig?.rpcGatewayUrl
 
@@ -8,20 +11,31 @@ if (!rpcGatewayUrl) {
   throw new Error('RPC Gateway URL is not defined')
 }
 
-const rpcBase = `${rpcGatewayUrl}/rpc/`
+const rpcBase = `${rpcGatewayUrl}`
 
 /**
  * Returns the RPC node for the given network.
  * @param network - The name of the network.
+ * @param rpcConfig - The RPC config.
  * @returns The RPC node URL or undefined if the network is not supported.
  */
-export function getRpcNode(network: NetworkNames): string | undefined {
+export function getRpcNode(
+  network: NetworkNames,
+  rpcConfig: AppConfigType['rpcConfig'],
+): string | undefined {
   const supportedNetworks = Object.values(NetworkNames)
   if (!supportedNetworks.includes(network)) {
     console.warn(`Network: ${network} is not supported. Returning BadRequest`)
     return undefined
   }
-  return `${rpcBase}/?network=${network}`
+  return (
+    `${rpcBase}/${rpcConfig.stage}/?` +
+    `network=${network}&` +
+    `skipCache=${rpcConfig.skipCache}&` +
+    `skipMulticall=${rpcConfig.skipMulticall}&` +
+    `skipGraph=${rpcConfig.skipGraph}&` +
+    `source=${rpcConfig.source}`
+  )
 }
 
 /**
@@ -41,9 +55,16 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     res.status(400).send({ error: 'Missing network query' })
     return
   }
+  const appConfig: ConfigResponseType = await getRemoteConfigWithCache(
+    1000 * configCacheTime.backend,
+  )
 
   const network = networkQuery.toString() as NetworkNames
-  const rpcUrl = getRpcNode(network)
+  const rpcUrl = getRpcNode(network, appConfig.rpcConfig)
+  if (!rpcUrl) {
+    res.status(400).send({ error: 'Invalid network' })
+    return
+  }
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -54,12 +75,12 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   if (typeof req.body !== 'string') {
     req.body = JSON.stringify(req.body)
   }
-  const request = new Request(rpcUrl!, {
+  const request = new Request(rpcUrl, {
     method: req.method,
     body: req.body,
     headers: {
       ...config.headers,
-      'Content-Length': JSON.stringify(req.body).length.toString(),
+      'Content-Length': req.body.length.toString(),
     },
   })
   const response = await fetch(request)
