@@ -102,16 +102,11 @@ export const getNavProductsPanel = ({
             list: {
               items: [
                 ...productMultiplyNavItems.map((item) => ({
-                  title: item.maxMultiply
-                    ? t('nav.multiply-get-up-to', {
-                        maxMultiply: item.maxMultiply.toFixed(2),
-                        collateralToken: item.collateralToken,
-                        debtToken: item.debtToken,
-                      })
-                    : t('nav.multiply-exposure', {
-                        collateralToken: item.collateralToken,
-                        debtToken: item.debtToken,
-                      }),
+                  title: t(item.maxMultiply ? 'nav.multiply-get-up-to' : 'nav.multiply-exposure', {
+                    maxMultiply: item.maxMultiply?.toFixed(2),
+                    collateralToken: item.collateralToken,
+                    debtToken: item.debtToken,
+                  }),
                   icon: getNavIconConfig({
                     tokens: [item.collateralToken, item.debtToken],
                     position: 'global',
