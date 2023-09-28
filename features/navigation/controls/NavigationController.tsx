@@ -3,10 +3,10 @@ import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
 import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
 import { SwapWidgetShowHide } from 'components/swapWidget/SwapWidgetShowHide'
 import { NavigationActionsController } from 'features/navigation/controls/NavigationActionsController'
-import { getNavProductsPanel } from 'features/navigation/getNavProductsPanel'
-import { getNavProtocolsPanel } from 'features/navigation/getNavProtocolsPanel'
-import { getNavTokensPanel } from 'features/navigation/getNavTokensPanel'
-import { getNavUseCasesPanel } from 'features/navigation/getNavUseCasesPanel'
+import { getNavProductsPanel } from 'features/navigation/panels/getNavProductsPanel'
+import { getNavProtocolsPanel } from 'features/navigation/panels/getNavProtocolsPanel'
+import { getNavTokensPanel } from 'features/navigation/panels/getNavTokensPanel'
+import { getNavUseCasesPanel } from 'features/navigation/panels/getNavUseCasesPanel'
 import {
   type SwapWidgetChangeAction,
   SWAP_WIDGET_CHANGE_SUBJECT,
@@ -32,20 +32,19 @@ export function NavigationController() {
 
   const { AjnaSafetySwitch } = useAppConfig('features')
 
-  const resolvedData = AjnaSafetySwitch
-    ? productHub.table.filter((item) => item.protocol !== 'ajna')
-    : productHub.table
+  const productHubItems = productHub.table
 
-  const promoCardsData = PROMO_CARD_COLLECTIONS_PARSERS['HomeWithAjna'](resolvedData)
+  const promoCardsData =
+    PROMO_CARD_COLLECTIONS_PARSERS[AjnaSafetySwitch ? 'Home' : 'HomeWithAjna'](productHubItems)
 
   const navProductsPanel = useMemo(
-    () => getNavProductsPanel({ t, productHubItems: resolvedData, promoCardsData }),
-    [t, resolvedData, promoCardsData],
+    () => getNavProductsPanel({ t, productHubItems, promoCardsData }),
+    [t, productHubItems, promoCardsData],
   )
   const navProtocolsPanel = useMemo(() => getNavProtocolsPanel({ t, navigation }), [t, navigation])
   const navTokensPanel = useMemo(
-    () => getNavTokensPanel({ t, navigation, productHubItems: resolvedData }),
-    [t, navigation, resolvedData],
+    () => getNavTokensPanel({ t, navigation, productHubItems }),
+    [t, navigation, productHubItems],
   )
   const navUseCasesPanel = useMemo(() => getNavUseCasesPanel({ t }), [t])
 

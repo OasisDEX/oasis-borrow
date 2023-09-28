@@ -19,6 +19,7 @@ import { getTokenGroup } from 'handlers/product-hub/helpers'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { uiChanges } from 'helpers/uiChanges'
+import { zero } from 'helpers/zero'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { capitalize } from 'lodash'
 import React from 'react'
@@ -54,9 +55,9 @@ export const getNavProductsPanel = ({
             list: {
               items: [
                 ...productEarnNavItems.map((item) => ({
-                  title: t('nav.earn-on-your', {
+                  title: t(item.weeklyNetApy ? 'nav.earn-on-your' : 'nav.earn-on-your-simple', {
                     token: item.reverseTokens ? item.primaryToken : item.secondaryToken,
-                    apy: formatDecimalAsPercent(item.weeklyNetApy),
+                    apy: formatDecimalAsPercent(item.weeklyNetApy || zero),
                   }),
 
                   icon: getNavIconConfig({

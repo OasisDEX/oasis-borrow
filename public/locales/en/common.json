@@ -902,6 +902,7 @@
     "products-earn": "Earn the best yields on your favourite crypto assets, from trusted protocols.",
     "products-multiply": "Get increased exposure to your most valued crypto assets in one transaction.",
     "earn-on-your": "Earn {{apy}} on your {{token}}",
+    "earn-on-your-simple": "Earn on your {{token}}",
     "earn-on-other-strategy": "Earn on your {{token}} with {{earnStrategyDescription}}",
     "earn-on-yield-loop-strategy": "Yield Loop {{token}} on {{protocol}}",
     "earn-on-liquidity-provision-strategy": "Lend {{token}} on {{protocol}}",

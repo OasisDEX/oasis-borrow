@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { ProductHubItem, ProductHubPromoCards } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
-import { zero } from 'helpers/zero'
 
 export const getProductEarnNavItems = (
   promoCards: ProductHubPromoCards,
@@ -25,7 +24,7 @@ export const getProductEarnNavItems = (
   })
 
   return data.map((item) => ({
-    weeklyNetApy: new BigNumber(item.weeklyNetApy || zero),
+    weeklyNetApy: item.weeklyNetApy ? new BigNumber(item.weeklyNetApy) : undefined,
     primaryToken: item.primaryToken,
     secondaryToken: item.secondaryToken,
     protocol: item.protocol,
