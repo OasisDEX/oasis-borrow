@@ -123,6 +123,9 @@ async function getAjnaPoolData(
           const managementType = 'active'
           const weeklyNetApy = lendApr.toString()
 
+          const primaryTokenGroup = getTokenGroup(collateralToken)
+          const secondaryTokenGroup = getTokenGroup(quoteToken)
+
           return {
             table: [
               ...v.table,
@@ -130,7 +133,7 @@ async function getAjnaPoolData(
                 label,
                 network,
                 primaryToken: collateralToken,
-                ...getTokenGroup(collateralToken, 'primary'),
+                ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
                 product: [
                   ProductHubProductType.Borrow,
                   ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
@@ -138,7 +141,7 @@ async function getAjnaPoolData(
                 ],
                 protocol,
                 secondaryToken: quoteToken,
-                ...getTokenGroup(quoteToken, 'secondary'),
+                ...(secondaryTokenGroup !== quoteToken && { secondaryTokenGroup }),
                 fee,
                 liquidity,
                 ...(isPoolNotEmpty &&
@@ -182,11 +185,11 @@ async function getAjnaPoolData(
                 label,
                 network,
                 primaryToken: quoteToken,
-                ...getTokenGroup(quoteToken, 'primary'),
+                ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
                 product: [ProductHubProductType.Earn],
                 protocol,
                 secondaryToken: collateralToken,
-                ...getTokenGroup(collateralToken, 'secondary'),
+                ...(secondaryTokenGroup !== quoteToken && { secondaryTokenGroup }),
                 earnStrategy: EarnStrategies.liquidity_provision,
                 earnStrategyDescription: earnLPStrategy,
                 liquidity,

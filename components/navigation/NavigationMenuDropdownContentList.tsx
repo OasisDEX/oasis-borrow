@@ -66,7 +66,7 @@ export function NavigationMenuDropdownContentList({
           p: 0,
         }}
       >
-        {items.map(({ hoverColor, url, ...item }, i) => (
+        {items.map(({ hoverColor, url, callback, ...item }, i) => (
           <Box
             key={i}
             as="li"
@@ -78,7 +78,7 @@ export function NavigationMenuDropdownContentList({
                   cursor: 'default',
                   ...itemHoverEffect,
                 }),
-              ...((url || onClick) && {
+              ...((url || onClick || callback) && {
                 cursor: 'pointer',
                 '&:hover': itemHoverEffect,
               }),
@@ -95,7 +95,7 @@ export function NavigationMenuDropdownContentList({
                 <NavigationMenuDropdownContentListItem hoverColor={hoverColor} {...item} />
               </AppLink>
             ) : (
-              <Box sx={{ ...itemInnerPadding }}>
+              <Box sx={{ ...itemInnerPadding }} onClick={callback}>
                 <NavigationMenuDropdownContentListItem hoverColor={hoverColor} {...item} />
               </Box>
             )}
