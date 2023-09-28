@@ -58,8 +58,10 @@ function oncePipe$<O>(o$: Observable<O>, compare?: (x: O, y: O) => boolean) {
   )
 }
 
+const oneTime$ = of(0)
+
 export function useOwnerPositions(
-  { chainContext$, context$, once$, onEveryBlock$, oracleContext$ }: MainContext,
+  { chainContext$, context$, once$, oracleContext$ }: MainContext,
   {
     ilkToToken$,
     mainnetDpmProxies$,
@@ -82,6 +84,14 @@ export function useOwnerPositions(
     (wallet, protocol) => `${wallet}-${protocol}`,
   )
 
+  const mainnetAaveV2PositionCreatedEvents$ = memoize((walletAddress: string) => {
+    return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.AaveV2)
+  })
+
+  const mainnetAaveV3PositionCreatedEvents$ = memoize((walletAddress: string) => {
+    return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.AaveV3)
+  })
+
   const mainnetSparkV3PositionCreatedEvents$ = memoize((walletAddress: string) => {
     return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.SparkV3)
   })
@@ -99,48 +109,29 @@ export function useOwnerPositions(
   )
 
   const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
+    curry(createAutomationTriggersData)(chainContext$, oneTime$, proxiesRelatedWithPosition$),
   )
 
   // protocols
   const aaveV2Services = getAaveV2Services({
-    refresh$: onEveryBlock$,
+    refresh$: oneTime$,
   })
 
   const aaveV3Services = getAaveV3Services({
-    refresh$: onEveryBlock$,
+    refresh$: oneTime$,
     networkId: NetworkIds.MAINNET,
   })
   const aaveV3OptimismServices = getAaveV3Services({
-    refresh$: onEveryBlock$,
+    refresh$: oneTime$,
     networkId: NetworkIds.OPTIMISMMAINNET,
   })
   const aaveV3ArbitrumServices = getAaveV3Services({
-    refresh$: onEveryBlock$,
+    refresh$: oneTime$,
     networkId: NetworkIds.ARBITRUMMAINNET,
   })
   const sparkV3Services = getSparkV3Services({
-    refresh$: onEveryBlock$,
+    refresh$: oneTime$,
     networkId: NetworkIds.MAINNET,
-  })
-
-  const sparkMainnetSparkV3Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
-    memoize(
-      curry(createSparkV3DpmPosition$)(
-        context$,
-        mainnetDpmProxies$,
-        tokenPriceUSDStatic$,
-        mainnetSparkV3PositionCreatedEvents$,
-        getApiVaults,
-        automationTriggersData$,
-        sparkV3Services,
-        NetworkIds.MAINNET,
-      ),
-      (wallet) => wallet,
-    )
-
-  const mainnetAaveV2PositionCreatedEvents$ = memoize((walletAddress: string) => {
-    return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.AaveV2)
   })
 
   const mainnetAaveV2Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
@@ -159,10 +150,6 @@ export function useOwnerPositions(
         aaveV2Services,
       ),
     )
-
-  const mainnetAaveV3PositionCreatedEvents$ = memoize((walletAddress: string) => {
-    return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.AaveV3)
-  })
 
   const aaveMainnetAaveV3Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
     memoize(
@@ -207,6 +194,21 @@ export function useOwnerPositions(
     (wallet) => wallet,
   )
 
+  const sparkMainnetSparkV3Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
+    memoize(
+      curry(createSparkV3DpmPosition$)(
+        context$,
+        mainnetDpmProxies$,
+        tokenPriceUSDStatic$,
+        mainnetSparkV3PositionCreatedEvents$,
+        getApiVaults,
+        automationTriggersData$,
+        sparkV3Services,
+        NetworkIds.MAINNET,
+      ),
+      (wallet) => wallet,
+    )
+
   const aaveLikePositions$ = memoize((walletAddress: string) => {
     return combineLatest([
       mainnetAaveV2Positions$(walletAddress),
@@ -234,6 +236,22 @@ export function useOwnerPositions(
       ),
     )
   })
+
+  const userDpmProxies$ = curry(getUserDpmProxies$)(context$)
+
+  const readPositionCreatedEvents$ = memoize(
+    curry(createReadPositionCreatedEvents$)(context$, userDpmProxies$),
+  )
+
+  const ajnaPositions$ = memoize(
+    curry(getAjnaPositionsWithDetails$)(
+      context$,
+      userDpmProxies$,
+      readPositionCreatedEvents$,
+      tokenPriceUSDStatic$,
+    ),
+    (walletAddress: string) => walletAddress,
+  )
 
   const exchangeQuote$ = memoize(
     (
@@ -271,13 +289,6 @@ export function useOwnerPositions(
   const jugIlksLean$ = observe(once$, chainContext$, jugIlk)
   const dogIlksLean$ = observe(once$, chainContext$, dogIlk)
 
-  const ilkDataLean$ = memoize(
-    curry(createIlkData$)(vatIlksLean$, spotIlksLean$, jugIlksLean$, dogIlksLean$, ilkToToken$),
-  )
-  const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(chainContext$)
-
-  const ilkDataList$ = createIlkDataList$(ilkDataLean$, ilksSupportedOnNetwork$)
-
   const tokenBalanceLean$ = observe(once$, context$, tokenBalance)
 
   const balanceLean$ = memoize(
@@ -303,6 +314,13 @@ export function useOwnerPositions(
     },
   )
 
+  const ilkDataLean$ = memoize(
+    curry(createIlkData$)(vatIlksLean$, spotIlksLean$, jugIlksLean$, dogIlksLean$, ilkToToken$),
+  )
+  const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(chainContext$)
+
+  const ilkDataList$ = createIlkDataList$(ilkDataLean$, ilksSupportedOnNetwork$)
+
   const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
 
   const accountBalances$ = curry(createAccountBalance$)(
@@ -317,22 +335,6 @@ export function useOwnerPositions(
     curry(createMakerPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
   )
 
-  const userDpmProxies$ = curry(getUserDpmProxies$)(context$)
-
-  const readPositionCreatedEvents$ = memoize(
-    curry(createReadPositionCreatedEvents$)(context$, userDpmProxies$),
-  )
-
-  const ajnaPositions$ = memoize(
-    curry(getAjnaPositionsWithDetails$)(
-      context$,
-      userDpmProxies$,
-      readPositionCreatedEvents$,
-      tokenPriceUSDStatic$,
-    ),
-    (walletAddress: string) => walletAddress,
-  )
-
   const proxyAddressDsrObservable$ = memoize(
     (addressFromUrl: string) =>
       context$.pipe(
@@ -344,7 +346,7 @@ export function useOwnerPositions(
 
   const dsrHistory$ = memoize(
     (addressFromUrl: string) =>
-      combineLatest(context$, proxyAddressDsrObservable$(addressFromUrl), onEveryBlock$).pipe(
+      combineLatest(context$, proxyAddressDsrObservable$(addressFromUrl), oneTime$).pipe(
         switchMap(([context, proxyAddress, _]) => {
           return proxyAddress ? defer(() => createDsrHistory$(context, proxyAddress)) : of([])
         }),
@@ -368,7 +370,7 @@ export function useOwnerPositions(
       createDsr$(
         context$,
         oncePipe$,
-        onEveryBlock$,
+        oneTime$,
         dsrHistory$(addressFromUrl),
         potDsr$,
         potChi$,
