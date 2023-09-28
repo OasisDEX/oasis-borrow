@@ -1,10 +1,11 @@
 import { EarnStrategies } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import { BaseNetworkNames, networksByName } from 'blockchain/networks'
+import { networksByName } from 'blockchain/networks'
 import type {
   NavigationMenuPanelListTags,
   NavigationMenuPanelType,
 } from 'components/navigation/NavigationMenuPanel'
+import { NavigationBridgeDescription } from 'features/navigation/components/NavigationBridgeDescription'
 import {
   getNavIconConfig,
   getProductBorrowNavItems,
@@ -21,7 +22,6 @@ import { uiChanges } from 'helpers/uiChanges'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { capitalize } from 'lodash'
 import React from 'react'
-import { Box, Flex, Image } from 'theme-ui'
 import type { TranslationType } from 'ts_modules/i18next'
 
 export const getNavProductsPanel = ({
@@ -241,43 +241,7 @@ export const getNavProductsPanel = ({
                     position: 'global',
                     icon: 'bridge',
                   },
-                  description: (
-                    <>
-                      {t('nav.bridge-description')}
-                      <Flex
-                        as="ul"
-                        sx={{
-                          mt: '14px',
-                          ml: 0,
-                          p: 0,
-                          listStyle: 'none',
-                          columnGap: '14px',
-                        }}
-                      >
-                        <Box as="li">
-                          <Image
-                            src={networksByName[BaseNetworkNames.Ethereum].icon}
-                            width={20}
-                            sx={{ verticalAlign: 'bottom' }}
-                          />
-                        </Box>
-                        <Box as="li">
-                          <Image
-                            src={networksByName[BaseNetworkNames.Optimism].icon}
-                            width={20}
-                            sx={{ verticalAlign: 'bottom' }}
-                          />
-                        </Box>
-                        <Box as="li">
-                          <Image
-                            src={networksByName[BaseNetworkNames.Arbitrum].icon}
-                            width={20}
-                            sx={{ verticalAlign: 'bottom' }}
-                          />
-                        </Box>
-                      </Flex>
-                    </>
-                  ),
+                  description: <NavigationBridgeDescription />,
                   callback: swapCallback,
                 },
               ],
