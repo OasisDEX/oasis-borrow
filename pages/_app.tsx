@@ -100,7 +100,7 @@ const noOverlayWorkaroundScript = `
   })
 `
 
-function App({ Component }: AppProps & CustomAppProps) {
+function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const [cookiesValue, cookiesSetValue] = useLocalStorage(
     COOKIE_NAMES_LOCASTORAGE_KEY,
     {} as SavedSettings,
@@ -179,7 +179,7 @@ function App({ Component }: AppProps & CustomAppProps) {
                                 <TopBannerDynamic />
                                 <AccountContextProvider>
                                   <DeferedContextProvider context={accountContext}>
-                                    <Component />
+                                    <Component {...pageProps} />
                                     <CookieBannerDynamic
                                       setValue={cookiesSetValue}
                                       value={cookiesValue}

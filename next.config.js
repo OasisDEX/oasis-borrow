@@ -44,19 +44,23 @@ const baseConfig = {
       minimize: !dev,
       minimizer: [
         new TerserPlugin({
+          minify: TerserPlugin.swcMinify,
           // TODO: Figure out how to disable mangling partially without breaking the aplication.
           // To test if your changes break the app or no - go to /owner/<address> page for an account that has some vaults and see if they are displayed.
           terserOptions: {
             mangle: false,
+            compress: {
+              dead_code: false,
+            },
           },
         }),
       ],
-      splitChunks:
-        !isServer && !dev
-          ? {
-              chunks: 'all',
-            }
-          : {},
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          ...config.optimization.splitChunks.cacheGroups,
+        },
+      },
     }
 
     if (!isServer) {

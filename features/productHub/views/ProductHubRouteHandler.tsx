@@ -8,13 +8,9 @@ import { useAppConfig } from 'helpers/config'
 import type { GetStaticPaths } from 'next'
 import React from 'react'
 
-function ProductHubRouteHandler({
-  product,
-  token,
-}: {
-  product: ProductHubProductType
-  token?: string
-}) {
+import type { ProductHubRouteHandlerProps } from './ProductHubRouteHandler.types'
+
+function ProductHubRouteHandler({ product, token }: ProductHubRouteHandlerProps) {
   const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
 
   return (

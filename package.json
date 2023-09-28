@@ -147,6 +147,7 @@
     "@ethersproject/providers": "5.7.0",
     "@inrupt/jest-jsdom-polyfills": "^2.4.0",
     "@next/bundle-analyzer": "^13.5.3",
+    "@swc/core": "^1.3.90",
     "@testing-library/jest-dom": "^6.1.3",
     "@testing-library/react": "^14.0.0",
     "@typechain/ethers-v5": "^10.2.0",
