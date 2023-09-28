@@ -40,7 +40,7 @@ import { getSparkV3Services } from 'lendingProtocols/spark-v3'
 import { memoize } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, defer, of } from 'rxjs'
-import { map, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import {
   createAaveV2Position$,
@@ -51,8 +51,15 @@ import { createMakerPositionsList$ } from './pipes/positionsList'
 import { createPositionsList$ } from './vaultsOverview'
 import curry from 'ramda/src/curry'
 
+function oncePipe$<O>(o$: Observable<O>, compare?: (x: O, y: O) => boolean) {
+  return of(undefined).pipe(
+    switchMap(() => o$),
+    distinctUntilChanged(compare),
+  )
+}
+
 export function useOwnerPositions(
-  { chainContext$, context$, everyBlock$, once$, onEveryBlock$, oracleContext$ }: MainContext,
+  { chainContext$, context$, once$, onEveryBlock$, oracleContext$ }: MainContext,
   {
     ilkToToken$,
     mainnetDpmProxies$,
@@ -329,7 +336,7 @@ export function useOwnerPositions(
   const proxyAddressDsrObservable$ = memoize(
     (addressFromUrl: string) =>
       context$.pipe(
-        switchMap((context) => everyBlock$(createDsrProxyAddress$(context, addressFromUrl))),
+        switchMap((context) => oncePipe$(createDsrProxyAddress$(context, addressFromUrl))),
         shareReplay(1),
       ),
     (item) => item,
@@ -347,12 +354,12 @@ export function useOwnerPositions(
 
   const potDsr$ = context$.pipe(
     switchMap((context) => {
-      return everyBlock$(defer(() => call(context, dsr)()))
+      return oncePipe$(defer(() => call(context, dsr)()))
     }),
   )
   const potChi$ = context$.pipe(
     switchMap((context) => {
-      return everyBlock$(defer(() => call(context, chi)()))
+      return oncePipe$(defer(() => call(context, chi)()))
     }),
   )
 
@@ -360,7 +367,7 @@ export function useOwnerPositions(
     (addressFromUrl: string) =>
       createDsr$(
         context$,
-        everyBlock$,
+        oncePipe$,
         onEveryBlock$,
         dsrHistory$(addressFromUrl),
         potDsr$,
