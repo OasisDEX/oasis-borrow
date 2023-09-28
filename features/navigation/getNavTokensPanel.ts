@@ -9,6 +9,24 @@ import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { TranslationType } from 'ts_modules/i18next'
 import type { AppConfigType } from 'types/config'
 
+const mapNavigationTokens = ({
+  navigation,
+  type,
+  productHubItems,
+  t,
+}: {
+  navigation: AppConfigType['navigation']
+  type: 'new' | 'popular'
+  productHubItems: ProductHubItem[]
+  t: TranslationType
+}) => [
+  ...navigation.tokens[type].map((token) => ({
+    title: token,
+    icon: getNavIconConfig({ tokens: [token], position: 'title' }),
+    list: getNavTokensNestedListItem(t, token, getNavTokensDataPerToken(token, productHubItems)),
+  })),
+]
+
 export const getNavTokensPanel = ({
   t,
   navigation,
@@ -22,32 +40,12 @@ export const getNavTokensPanel = ({
   lists: [
     {
       header: t('nav.tokens-popular'),
-      items: [
-        ...navigation.tokens.popular.map((token) => ({
-          title: token,
-          icon: getNavIconConfig({ tokens: [token], position: 'title' }),
-          list: getNavTokensNestedListItem(
-            t,
-            token,
-            getNavTokensDataPerToken(token, productHubItems),
-          ),
-        })),
-      ],
+      items: mapNavigationTokens({ navigation, type: 'popular', productHubItems, t }),
       tight: true,
     },
     {
       header: t('nav.tokens-new'),
-      items: [
-        ...navigation.tokens.new.map((token) => ({
-          title: token,
-          icon: getNavIconConfig({ tokens: [token], position: 'title' }),
-          list: getNavTokensNestedListItem(
-            t,
-            token,
-            getNavTokensDataPerToken(token, productHubItems),
-          ),
-        })),
-      ],
+      items: mapNavigationTokens({ navigation, type: 'new', productHubItems, t }),
       link: {
         label: t('nav.tokens-link'),
         url: INTERNAL_LINKS.ajnaPoolFinder,
