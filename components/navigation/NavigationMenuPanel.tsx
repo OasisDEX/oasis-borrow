@@ -36,6 +36,7 @@ export interface NavigationMenuPanelList {
     promoted?: boolean
     tags?: NavigationMenuPanelListTags
     title: ReactNode
+    callback?: () => void
   }[]
   link?: {
     label: string

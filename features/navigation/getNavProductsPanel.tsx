@@ -12,9 +12,12 @@ import {
   getProductMultiplyNavItems,
 } from 'features/navigation/helpers'
 import type { ProductHubItem, ProductHubPromoCards } from 'features/productHub/types'
+import type { SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChange'
+import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import { uiChanges } from 'helpers/uiChanges'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { capitalize } from 'lodash'
 import React from 'react'
@@ -34,6 +37,11 @@ export const getNavProductsPanel = ({
 
   const productEarnNavItems = getProductEarnNavItems(promoCardsData, productHubItems)
   const productBorrowNavItems = getProductBorrowNavItems(productHubItems)
+
+  const swapCallback = () =>
+    uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
+      type: 'open',
+    })
 
   return {
     label: t('nav.products'),
@@ -225,7 +233,7 @@ export const getNavProductsPanel = ({
                     icon: 'exchange',
                   },
                   description: t('nav.swap-description'),
-                  url: '/',
+                  callback: swapCallback,
                 },
                 {
                   title: t('nav.bridge'),
@@ -270,7 +278,7 @@ export const getNavProductsPanel = ({
                       </Flex>
                     </>
                   ),
-                  url: '/',
+                  callback: swapCallback,
                 },
               ],
             },
