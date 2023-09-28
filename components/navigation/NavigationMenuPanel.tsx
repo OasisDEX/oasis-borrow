@@ -23,6 +23,8 @@ export interface NavigationMenuPanelIcon {
   position: 'global' | 'title'
 }
 
+export type NavigationMenuPanelListTags = ([string, string] | string)[]
+
 export interface NavigationMenuPanelList {
   header?: string
   items: {
@@ -32,7 +34,7 @@ export interface NavigationMenuPanelList {
     list?: NavigationMenuPanelList
     hoverColor?: string
     promoted?: boolean
-    tags?: ([string, string] | string)[]
+    tags?: NavigationMenuPanelListTags
     title: ReactNode
   }[]
   link?: {
