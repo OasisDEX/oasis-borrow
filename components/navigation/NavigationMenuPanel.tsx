@@ -25,19 +25,21 @@ export interface NavigationMenuPanelIcon {
 
 export type NavigationMenuPanelListTags = ([string, string] | string)[]
 
+export interface NavigationMenuPanelListItem {
+  description?: ReactNode
+  icon?: NavigationMenuPanelIcon
+  url?: string
+  list?: NavigationMenuPanelList
+  hoverColor?: string
+  promoted?: boolean
+  tags?: NavigationMenuPanelListTags
+  title: ReactNode
+  callback?: () => void
+}
+
 export interface NavigationMenuPanelList {
   header?: string
-  items: {
-    description?: ReactNode
-    icon?: NavigationMenuPanelIcon
-    url?: string
-    list?: NavigationMenuPanelList
-    hoverColor?: string
-    promoted?: boolean
-    tags?: NavigationMenuPanelListTags
-    title: ReactNode
-    callback?: () => void
-  }[]
+  items: NavigationMenuPanelListItem[]
   link?: {
     label: string
     url: string

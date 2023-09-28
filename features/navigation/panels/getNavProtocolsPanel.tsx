@@ -1,11 +1,17 @@
-import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
+import type {
+  NavigationMenuPanelListItem,
+  NavigationMenuPanelType,
+} from 'components/navigation/NavigationMenuPanel'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { Trans } from 'next-i18next'
 import React from 'react'
 import type { TranslationType } from 'ts_modules/i18next'
 import type { AppConfigType } from 'types/config'
+
+const { AjnaSafetySwitch } = getLocalAppConfig('features')
 
 export const getNavProtocolsPanel = ({
   t,
@@ -62,50 +68,54 @@ export const getNavProtocolsPanel = ({
             },
           },
         },
-        {
-          title: 'Ajna',
-          icon: {
-            image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
-            position: 'title',
-          },
-          hoverColor: lendingProtocolsByName[LendingProtocol.Ajna].gradient,
-          description: <Trans i18nKey="nav.protocols-ajna" components={{ br: <br /> }} />,
-          list: {
-            items: [
+        ...(AjnaSafetySwitch
+          ? []
+          : ([
               {
-                title: t('nav.borrow'),
-                description: t('nav.borrow-against', {
-                  tokens: navigation.protocols.ajna.borrow.tokens.join(', '),
-                }),
-                url: `${INTERNAL_LINKS.borrow}`,
+                title: 'Ajna',
+                icon: {
+                  image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
+                  position: 'title',
+                },
+                hoverColor: lendingProtocolsByName[LendingProtocol.Ajna].gradient,
+                description: <Trans i18nKey="nav.protocols-ajna" components={{ br: <br /> }} />,
+                list: {
+                  items: [
+                    {
+                      title: t('nav.borrow'),
+                      description: t('nav.borrow-against', {
+                        tokens: navigation.protocols.ajna.borrow.tokens.join(', '),
+                      }),
+                      url: `${INTERNAL_LINKS.borrow}`,
+                    },
+                    {
+                      title: t('nav.multiply'),
+                      description: t('nav.increase-exposure', {
+                        tokens: navigation.protocols.ajna.multiply.tokens.join(', '),
+                      }),
+                      url: `${INTERNAL_LINKS.multiply}`,
+                    },
+                    {
+                      title: t('nav.earn'),
+                      description: t('nav.earn-yield', {
+                        tokens: navigation.protocols.ajna.earn.tokens.join(', '),
+                      }),
+                      url: `${INTERNAL_LINKS.earn}`,
+                    },
+                    {
+                      title: navigation.protocols.ajna.extra.title,
+                      promoted: true,
+                      description: navigation.protocols.ajna.extra.description,
+                      url: navigation.protocols.ajna.extra.url,
+                    },
+                  ],
+                  link: {
+                    label: t('nav.protocols-more', { protocol: 'Ajna' }),
+                    url: '/',
+                  },
+                },
               },
-              {
-                title: t('nav.multiply'),
-                description: t('nav.increase-exposure', {
-                  tokens: navigation.protocols.ajna.multiply.tokens.join(', '),
-                }),
-                url: `${INTERNAL_LINKS.multiply}`,
-              },
-              {
-                title: t('nav.earn'),
-                description: t('nav.earn-yield', {
-                  tokens: navigation.protocols.ajna.earn.tokens.join(', '),
-                }),
-                url: `${INTERNAL_LINKS.earn}`,
-              },
-              {
-                title: navigation.protocols.ajna.extra.title,
-                promoted: true,
-                description: navigation.protocols.ajna.extra.description,
-                url: navigation.protocols.ajna.extra.url,
-              },
-            ],
-            link: {
-              label: t('nav.protocols-more', { protocol: 'Ajna' }),
-              url: '/',
-            },
-          },
-        },
+            ] as NavigationMenuPanelListItem[])),
         {
           title: 'Maker',
           icon: {
