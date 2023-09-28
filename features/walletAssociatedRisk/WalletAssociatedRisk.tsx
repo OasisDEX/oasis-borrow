@@ -1,4 +1,4 @@
-import { useTOSContext } from 'components/context'
+import { useTOSContext } from 'components/context/TOSContextProvider'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'
 import getConfig from 'next/config'

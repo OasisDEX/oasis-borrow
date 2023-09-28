@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { GasEstimation } from 'components/GasEstimation'
 import { MessageCard } from 'components/MessageCard'
 import {

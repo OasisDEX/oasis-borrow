@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { AutomationContext } from 'components/context'
+import type { AutomationContext } from 'components/context/AutomationContextProvider'
 import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 import type {
   AutomationAddTriggerData,

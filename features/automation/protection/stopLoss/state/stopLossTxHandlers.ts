@@ -1,4 +1,4 @@
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'

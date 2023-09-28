@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import type { ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'

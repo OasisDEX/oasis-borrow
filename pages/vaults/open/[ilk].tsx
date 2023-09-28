@@ -1,6 +1,6 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
-import { ProductContextHandler } from 'components/context'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'

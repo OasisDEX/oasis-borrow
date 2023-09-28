@@ -1,4 +1,4 @@
-import { useNotificationSocket } from 'components/context'
+import { useNotificationSocket } from 'components/context/NotificationSocketProvider'
 import { NotificationPreferenceCard } from 'components/notifications/NotificationPreferenceCard'
 import { NotificationsChangeEmailButton } from 'components/notifications/NotificationsChangeEmailButton'
 import { NotificationsSetupSuccess } from 'components/notifications/NotificationsEmailSetupSuccess'

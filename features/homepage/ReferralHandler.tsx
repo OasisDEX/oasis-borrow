@@ -1,5 +1,6 @@
 import { ensNameToAddressMainnet } from 'blockchain/ens'
-import { useAccountContext, useMainContext } from 'components/context'
+import { useAccountContext } from 'components/context/AccountContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { isAddress } from 'ethers/lib/utils'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'

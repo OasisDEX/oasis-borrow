@@ -1,7 +1,8 @@
 import type { AjnaEarnPosition, SwapData } from '@oasisdex/dma-library'
 import { AjnaPosition } from '@oasisdex/dma-library'
 import type { AjnaSimulationData } from 'actions/ajna'
-import { useGasEstimationContext, useProductContext } from 'components/context'
+import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import type {
   AjnaGenericPosition,

@@ -1,4 +1,5 @@
-import { useAutomationContext, useMainContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { AUTO_SELL_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'

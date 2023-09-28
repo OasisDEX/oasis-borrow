@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { Banner } from 'components/Banner'
-import { useProductContext } from 'components/context'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'

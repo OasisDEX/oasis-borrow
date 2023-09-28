@@ -1,6 +1,6 @@
 import { trackingEvents } from 'analytics/trackingEvents'
 import { MixpanelCommonAnalyticsSections, MixpanelNotificationsEventIds } from 'analytics/types'
-import { useNotificationSocket } from 'components/context'
+import { useNotificationSocket } from 'components/context/NotificationSocketProvider'
 import { NotificationCardsWrapper } from 'components/notifications/NotificationCardsWrapper'
 import { NotificationsCenterContent } from 'components/notifications/NotificationsCenterContent'
 import { NotificationsCenterHeader } from 'components/notifications/NotificationsCenterHeader'

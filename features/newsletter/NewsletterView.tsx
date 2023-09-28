@@ -1,5 +1,5 @@
 import { trackingEvents } from 'analytics/trackingEvents'
-import { isMainContextAvailable } from 'components/context'
+import { isMainContextAvailable } from 'components/context/MainContextProvider'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { AppSpinner } from 'helpers/AppSpinner'

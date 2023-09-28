@@ -1,4 +1,3 @@
-import { PWATags } from 'components/HeadTags'
 import { extractCritical } from 'emotion-server'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import type { DocumentContext } from 'next/document'
@@ -28,7 +27,6 @@ export default class MyDocument extends Document<Document> {
       <Html>
         <Head>
           <link rel="shortcut icon" href={staticFilesRuntimeUrl('/static/favicon.ico')} />
-          <PWATags />
         </Head>
         <body>
           <Main />

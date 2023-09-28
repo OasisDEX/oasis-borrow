@@ -1,7 +1,7 @@
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableHeading } from 'components/assetsTable/AssetsTableHeading'
-import { useProductContext } from 'components/context'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
 import { PositionTableEmptyState } from 'features/vaultsOverview/components/PositionTableEmptyState'

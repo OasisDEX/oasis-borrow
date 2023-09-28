@@ -6,7 +6,7 @@ import {
 } from 'analytics/types'
 import { Banner } from 'components/Banner'
 import { bannerGradientPresets } from 'components/Banner.constants'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { AppLink } from 'components/Links'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
 import { AutomationFeatures } from 'features/automation/common/types'

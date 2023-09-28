@@ -1,5 +1,5 @@
 import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
 import { resolveMaxBuyPriceAnalytics } from 'features/automation/common/helpers/resolveMaxBuyPriceAnalytics'

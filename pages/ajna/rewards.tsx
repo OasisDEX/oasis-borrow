@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
-import { FunctionalContextHandler } from 'components/context'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
 import { AjnaRewardsController } from 'features/ajna/common/controls/AjnaRewardsController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'

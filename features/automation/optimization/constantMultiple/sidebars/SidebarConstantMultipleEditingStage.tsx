@@ -6,7 +6,7 @@ import {
 } from 'analytics/types'
 import BigNumber from 'bignumber.js'
 import { ActionPills } from 'components/ActionPills'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { AppLink } from 'components/Links'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'

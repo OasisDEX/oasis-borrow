@@ -1,4 +1,4 @@
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'

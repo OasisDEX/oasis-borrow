@@ -1,7 +1,7 @@
 import { LiFiWalletManagement, supportedWallets } from '@lifi/wallet-management'
 import { LiFiWidget } from '@lifi/widget'
 import { useWallets } from '@web3-onboard/react'
-import { useMainContext } from 'components/context'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { useTrackSwapWidgetEvents } from 'helpers/hooks'
 import { useObservable } from 'helpers/observableHook'
 import { useOnboarding } from 'helpers/useOnboarding'

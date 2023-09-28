@@ -1,6 +1,6 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,

@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
-import { FunctionalContextHandler } from 'components/context'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { discoverPageSeoTags } from 'features/discover/layout'
 import { discoverPagesMeta } from 'features/discover/meta'

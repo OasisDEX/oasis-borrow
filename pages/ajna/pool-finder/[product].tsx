@@ -1,4 +1,4 @@
-import { ProductContextHandler } from 'components/context'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
 import { AjnaPoolFinderController } from 'features/ajna/common/controls/AjnaPoolFinderController'

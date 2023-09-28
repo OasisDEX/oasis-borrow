@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { useProductContext } from 'components/context'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { PieChart } from 'components/dumb/PieChart'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'

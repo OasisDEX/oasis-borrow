@@ -1,5 +1,5 @@
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { checkIfIsEditingAutoBS } from 'features/automation/common/helpers/checkIfIsEditingAutoBS'
 import { AUTO_SELL_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
 import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'

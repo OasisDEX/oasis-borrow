@@ -1,5 +1,6 @@
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
-import { GasEstimationContextProvider, ProductContextHandler } from 'components/context'
+import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaProductController } from 'features/ajna/positions/common/controls/AjnaProductController'
 import type { GetServerSidePropsContext } from 'next'

@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 import React from 'react'
 

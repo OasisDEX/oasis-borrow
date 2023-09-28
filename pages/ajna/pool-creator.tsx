@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
-import { ProductContextHandler } from 'components/context'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
 import { AjnaPoolCreatorController } from 'features/ajna/common/controls/AjnaPoolCreatorController'

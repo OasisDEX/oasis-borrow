@@ -1,5 +1,7 @@
 import { NetworkNames } from 'blockchain/networks'
-import { useAccountContext, useMainContext, useProductContext } from 'components/context'
+import { useAccountContext } from 'components/context/AccountContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import type { WithChildren } from 'helpers/types/With.types'
 import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'

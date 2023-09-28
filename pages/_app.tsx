@@ -8,14 +8,10 @@ import { mixpanelInit } from 'analytics/mixpanel'
 import { trackingEvents } from 'analytics/trackingEvents'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
-import {
-  accountContext,
-  AccountContextProvider,
-  DeferedContextProvider,
-  mainContext,
-  MainContextProvider,
-  NotificationSocketProvider,
-} from 'components/context'
+import { accountContext, AccountContextProvider } from 'components/context/AccountContextProvider'
+import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
+import { mainContext, MainContextProvider } from 'components/context/MainContextProvider'
+import { NotificationSocketProvider } from 'components/context/NotificationSocketProvider'
 import {
   preloadAppDataContext,
   PreloadAppDataContextProvider,

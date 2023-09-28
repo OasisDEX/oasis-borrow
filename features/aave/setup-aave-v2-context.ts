@@ -1,6 +1,6 @@
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import type { TokenBalances } from 'blockchain/tokens.types'
-import type { AccountContext } from 'components/context'
+import type { AccountContext } from 'components/context/AccountContextProvider'
 import dayjs from 'dayjs'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'

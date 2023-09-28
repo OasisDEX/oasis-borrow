@@ -1,6 +1,6 @@
 import { Box, Flex, Text } from '@theme-ui/components'
 import type BigNumber from 'bignumber.js'
-import type { GasEstimationContext } from 'components/context'
+import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { DimmedList } from 'components/DImmedList'
 import { Icon } from 'components/Icon'
 import { InfoSectionLoadingState } from 'components/infoSection/Item'

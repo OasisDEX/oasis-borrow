@@ -5,7 +5,7 @@ import {
   MixpanelPages,
 } from 'analytics/types'
 import type BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { PickCloseState } from 'components/dumb/PickCloseState'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { GasEstimation } from 'components/GasEstimation'

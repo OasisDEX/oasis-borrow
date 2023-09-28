@@ -1,10 +1,8 @@
 import type { Context } from 'blockchain/network.types'
-import {
-  DeferedContextProvider,
-  tosContext,
-  useAccountContext,
-  useMainContext,
-} from 'components/context'
+import { useAccountContext } from 'components/context/AccountContextProvider'
+import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
+import { tosContext } from 'components/context/TOSContextProvider'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'

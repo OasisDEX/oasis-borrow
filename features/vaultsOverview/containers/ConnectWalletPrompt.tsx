@@ -1,4 +1,4 @@
-import { useMainContext } from 'components/context'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { Icon } from 'components/Icon'
 import { useConnection } from 'features/web3OnBoard'
 import { useObservable } from 'helpers/observableHook'

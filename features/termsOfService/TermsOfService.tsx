@@ -1,9 +1,7 @@
-import {
-  FunctionalContextHandler,
-  useAccountContext,
-  useMainContext,
-  useTOSContext,
-} from 'components/context'
+import { useAccountContext } from 'components/context/AccountContextProvider'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
+import { useMainContext } from 'components/context/MainContextProvider'
+import { useTOSContext } from 'components/context/TOSContextProvider'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'

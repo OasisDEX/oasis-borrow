@@ -1,4 +1,5 @@
-import { AutomationContextProvider, useAccountContext } from 'components/context'
+import { useAccountContext } from 'components/context/AccountContextProvider'
+import { AutomationContextProvider } from 'components/context/AutomationContextProvider'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'

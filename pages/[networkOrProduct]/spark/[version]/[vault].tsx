@@ -1,7 +1,7 @@
 import type { NetworkNames } from 'blockchain/networks'
 import { isSupportedNetwork, networksByName } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
-import { ProductContextHandler } from 'components/context'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { getAddress } from 'ethers/lib/utils'

@@ -55,12 +55,15 @@ const baseConfig = {
           },
         }),
       ],
-      splitChunks: {
-        chunks: 'all',
-        cacheGroups: {
-          ...config.optimization.splitChunks.cacheGroups,
-        },
-      },
+      splitChunks:
+        !isServer && !dev
+          ? {
+              chunks: 'all',
+              cacheGroups: {
+                ...config.optimization.splitChunks.cacheGroups,
+              },
+            }
+          : {},
     }
 
     if (!isServer) {
