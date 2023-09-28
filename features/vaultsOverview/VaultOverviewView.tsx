@@ -20,17 +20,13 @@ export function VaultsOverviewView({ address }: { address: string }) {
   // calculating positions
   const mainContext = useMainContext()
   const accountContext = useAccountContext()
-  const { ownersPositionsList$ } = useOwnerPositions(mainContext, accountContext)
+  const { positionsList$ } = useOwnerPositions(mainContext, accountContext)
 
   const checksumAddress = getAddress(address.toLocaleLowerCase())
 
-  const memoizedOwnersPositionList$ = useMemo(
-    () => ownersPositionsList$(checksumAddress),
-    [checksumAddress],
-  )
-  const [ownersPositionsListData, ownersPositionsListError] = useObservable(
-    memoizedOwnersPositionList$,
-  )
+  const memoizedPositionList$ = useMemo(() => positionsList$(checksumAddress), [checksumAddress])
+
+  const [positionsListData, positionsListError] = useObservable(memoizedPositionList$)
 
   const { walletAddress } = useAccount()
   const isOwner = address === walletAddress
@@ -39,8 +35,8 @@ export function VaultsOverviewView({ address }: { address: string }) {
     <Grid sx={{ flex: 1, zIndex: 1, gap: '48px', mt: [0, 4], mb: 5 }} key={address}>
       {ajnaSafetySwitchOn &&
         isOwner &&
-        ownersPositionsListData?.ajnaPositions &&
-        ownersPositionsListData.ajnaPositions.length > 0 && (
+        positionsListData?.ajnaPositions &&
+        positionsListData.ajnaPositions.length > 0 && (
           <Announcement
             text="There has been possible griefing attack vector identified on Ajna Protocol. All Ajna users should close their positions and withdraw their funds. This is not related to any summer.fi contracts, so Maker and Aave users are not affected."
             discordLink={EXTERNAL_LINKS.DISCORD}
@@ -53,8 +49,8 @@ export function VaultsOverviewView({ address }: { address: string }) {
       <AssetsAndPositionsOverview address={address} />
       <PositionsTable
         address={address}
-        ownersPositionsListData={ownersPositionsListData}
-        ownersPositionsListError={ownersPositionsListError}
+        ownersPositionsListData={positionsListData}
+        ownersPositionsListError={positionsListError}
       />
       <ConnectWalletPrompt />
     </Grid>

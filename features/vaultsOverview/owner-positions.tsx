@@ -7,7 +7,9 @@ import { observe } from 'blockchain/calls/observe'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import { spotIlk } from 'blockchain/calls/spot'
 import { vatIlk } from 'blockchain/calls/vat'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
+import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { createOraclePriceData$, createTokenPriceInUSD$ } from 'blockchain/prices'
 import { tokenPrices$ } from 'blockchain/prices.constants'
@@ -15,11 +17,12 @@ import { createAccountBalance$, createBalance$, createCollateralTokens$ } from '
 import { getUserDpmProxies$, getUserDpmProxy$ } from 'blockchain/userDpmProxies'
 import { decorateVaultsWithValue$ } from 'blockchain/vaults'
 import type { AccountContext } from 'components/context'
+import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers'
 import { createReadPositionCreatedEvents$ } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types'
 import { getAjnaPositionsWithDetails$ } from 'features/ajna/positions/common/observables/getAjnaPosition'
-import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
+import { loadTriggerDataFromCache } from 'features/automation/api/automationTriggersData'
 import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import { createDsrHistory$ } from 'features/dsr/helpers/dsrHistory'
 import { chi, dsr } from 'features/dsr/helpers/potCalls'
@@ -39,8 +42,17 @@ import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { getSparkV3Services } from 'lendingProtocols/spark-v3'
 import { memoize } from 'lodash'
 import type { Observable } from 'rxjs'
-import { combineLatest, defer, of } from 'rxjs'
-import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import { combineLatest, defer, interval, of } from 'rxjs'
+import {
+  distinctUntilChanged,
+  map,
+  mergeMap,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  withLatestFrom,
+} from 'rxjs/operators'
 
 import {
   createAaveV2Position$,
@@ -58,7 +70,31 @@ function oncePipe$<O>(o$: Observable<O>, compare?: (x: O, y: O) => boolean) {
   )
 }
 
-const oneTime$ = of(0)
+// need to take at least 3 values with interval becaue automation pipe is becoming stuck on initial load
+const oneTime$ = interval(5000).pipe(startWith(0), take(3))
+
+function createAutomationTriggersData(
+  context$: Observable<Context>,
+  onEveryBlock$: Observable<number>,
+  proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
+  id: BigNumber,
+): Observable<TriggersData> {
+  return oneTime$.pipe(
+    withLatestFrom(context$, proxiesRelatedWithPosition$({ vaultId: id.toNumber() })),
+    mergeMap(([, context, proxies]) => {
+      return loadTriggerDataFromCache({
+        positionId: id.toNumber(),
+        proxyAddress: proxies.dpmProxy?.proxy,
+        cacheApi: getNetworkContracts(NetworkIds.MAINNET, context.chainId).cacheApi,
+        chainId: context.chainId,
+      })
+    }),
+    distinctUntilChanged((s1, s2) => {
+      return JSON.stringify(s1) === JSON.stringify(s2)
+    }),
+    shareReplay(1),
+  )
+}
 
 export function useOwnerPositions(
   { chainContext$, context$, once$, oracleContext$ }: MainContext,
@@ -331,7 +367,7 @@ export function useOwnerPositions(
 
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
-  const positionsList$ = memoize(
+  const makerPositionsList$ = memoize(
     curry(createMakerPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
   )
 
@@ -379,11 +415,11 @@ export function useOwnerPositions(
     (item) => item,
   )
 
-  const ownersPositionsList$ = memoize(
-    curry(createPositionsList$)(positionsList$, aaveLikePositions$, ajnaPositions$, dsr$),
+  const positionsList$ = memoize(
+    curry(createPositionsList$)(makerPositionsList$, aaveLikePositions$, ajnaPositions$, dsr$),
   )
 
   return {
-    ownersPositionsList$: ownersPositionsList$,
+    positionsList$: positionsList$,
   }
 }

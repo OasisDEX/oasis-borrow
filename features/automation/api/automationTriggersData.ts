@@ -17,7 +17,7 @@ import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from
 
 import type { TriggersData } from './automationTriggersData.types'
 
-async function loadTriggerDataFromCache({
+export async function loadTriggerDataFromCache({
   positionId,
   proxyAddress,
   cacheApi,
