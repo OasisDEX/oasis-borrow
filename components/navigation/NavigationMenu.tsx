@@ -4,7 +4,7 @@ import { NavigationMenuLink } from 'components/navigation/NavigationMenuLink'
 import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { NavigationMenuPanel } from 'components/navigation/NavigationMenuPanel'
 import React, { useState } from 'react'
-import { Box, Flex } from 'theme-ui'
+import { Flex } from 'theme-ui'
 
 interface NavigationMenuProps {
   links?: NavigationMenuPanelLinkType[]
@@ -23,8 +23,13 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
   }
 
   return (
-    <Box
-      sx={{ position: ['static', null, null, null, 'relative'], zIndex: 2 }}
+    <Flex
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        zIndex: 2,
+      }}
       onMouseLeave={() => closeDropdown()}
     >
       {((links && links.length > 0) || (panels && panels.length > 0)) && (
@@ -32,9 +37,9 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
           as="ul"
           sx={{
             listStyle: 'none',
-            columnGap: '48px',
+            columnGap: [4, null, null, '40px', '48px'],
             justifyContent: 'center',
-            px: '80px',
+            p: 0,
           }}
         >
           {panels?.map((panel) => (
@@ -69,6 +74,6 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
           panels={panels}
         />
       )}
-    </Box>
+    </Flex>
   )
 }
