@@ -8,6 +8,7 @@ import { Box, Heading } from 'theme-ui'
 type NavigationMenuDropdownContentListProps = NavigationMenuPanelList & {
   parentIndex?: number
   selected?: [number, number]
+  onClick?: (selected: [number, number]) => void
   onSelect?: (selected: [number, number]) => void
 }
 
@@ -15,6 +16,7 @@ export function NavigationMenuDropdownContentList({
   header,
   items,
   link,
+  onClick,
   onSelect,
   parentIndex,
   selected,
@@ -38,7 +40,7 @@ export function NavigationMenuDropdownContentList({
   }
   const itemInnerPadding = {
     py: tight ? 2 : '12px',
-    px: tight ? 2 : 3,
+    px: 3,
   }
 
   return (
@@ -47,7 +49,7 @@ export function NavigationMenuDropdownContentList({
         <Heading
           variant="paragraph4"
           sx={{
-            mx: tight ? 2 : 3,
+            mx: 3,
             mt: 2,
             mb: '-8px',
             color: 'neutral80',
@@ -76,7 +78,13 @@ export function NavigationMenuDropdownContentList({
                   cursor: 'default',
                   ...itemHoverEffect,
                 }),
-              ...((url || callback) && { '&:hover': itemHoverEffect }),
+              ...((url || onClick || callback) && {
+                cursor: 'pointer',
+                '&:hover': itemHoverEffect,
+              }),
+            }}
+            onClick={() => {
+              onClick && onClick([parentIndex ?? 0, i])
             }}
             onMouseEnter={() => {
               parentIndex !== undefined && onSelect && onSelect([parentIndex, i])
@@ -87,7 +95,7 @@ export function NavigationMenuDropdownContentList({
                 <NavigationMenuDropdownContentListItem hoverColor={hoverColor} {...item} />
               </AppLink>
             ) : (
-              <Box sx={{ ...itemInnerPadding, cursor: 'pointer' }} onClick={callback}>
+              <Box sx={{ ...itemInnerPadding }} onClick={callback}>
                 <NavigationMenuDropdownContentListItem hoverColor={hoverColor} {...item} />
               </Box>
             )}
@@ -98,7 +106,7 @@ export function NavigationMenuDropdownContentList({
         <AppLink
           href={link.url}
           sx={{
-            ml: tight ? 2 : 3,
+            ml: 3,
             mr: 'auto',
             display: 'inline-block',
           }}
