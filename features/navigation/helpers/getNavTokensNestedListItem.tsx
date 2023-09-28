@@ -84,7 +84,7 @@ export const getNavTokensNestedListItem = (
     ],
     link: {
       label: t('nav.tokens-more', { token }),
-      url: '/',
+      url: `${INTERNAL_LINKS.earn}/${getTokenGroup(token)}`,
     },
   }
 }
