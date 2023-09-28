@@ -1,5 +1,5 @@
 import { useTOSContext } from 'components/context/TOSContextProvider'
-import { useWalletManagement } from 'features/web3OnBoard'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { useObservable } from 'helpers/observableHook'
 import getConfig from 'next/config'
 import type { ReactNode } from 'react'

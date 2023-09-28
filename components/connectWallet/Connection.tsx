@@ -1,5 +1,5 @@
 import type { NetworkConfigHexId } from 'blockchain/networks'
-import { useConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard/useConnection'
 import type { WithChildren } from 'helpers/types/With.types'
 import { useEffect } from 'react'
 

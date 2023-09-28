@@ -5,7 +5,7 @@ import { WalletOrb } from 'components/navigation/content/WalletOrb'
 import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { navigationBreakpoints } from 'components/navigation/Navigation.constants'
 import { NavigationNetworkSwitcherOrb } from 'components/navigation/NavigationNetworkSwitcher'
-import { ConnectButton } from 'features/web3OnBoard'
+import { ConnectButton } from 'features/web3OnBoard/connect-button'
 import React from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 

@@ -1,6 +1,6 @@
 import { Global } from '@emotion/core'
 import { useSharedUI } from 'components/SharedUIProvider'
-import { useWalletManagement } from 'features/web3OnBoard'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { ModalProps } from 'helpers/modalHook'
 import type { WithChildren } from 'helpers/types/With.types'

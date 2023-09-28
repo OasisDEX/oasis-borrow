@@ -9,7 +9,7 @@ import {
   NetworkIdToNetworkHexIds,
   networkSetByHexId,
 } from 'blockchain/networks'
-import { useConnection, useWalletManagement } from 'features/web3OnBoard'
+import { useConnection, useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'

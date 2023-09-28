@@ -6,7 +6,7 @@ import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveS
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { AjnaRewardCard } from 'features/ajna/common/components/AjnaRewardCard'
 import { useAjnaRewards } from 'features/ajna/rewards/useAjnaRewards'
-import { useConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'

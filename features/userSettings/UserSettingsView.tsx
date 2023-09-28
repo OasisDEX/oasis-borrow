@@ -7,7 +7,7 @@ import { useNotificationSocket } from 'components/context/NotificationSocketProv
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import type { AccountDetails } from 'features/account/AccountData'
-import { useWalletManagement } from 'features/web3OnBoard'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'

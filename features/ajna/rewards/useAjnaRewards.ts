@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import type { Rewards } from 'features/ajna/common/components/AjnaRewardCard'
 import { getAjnaRewards } from 'features/ajna/positions/common/helpers/getAjnaRewards'
-import { useWalletManagement } from 'features/web3OnBoard'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { getAjnaRewardsData } from 'handlers/ajna-rewards/getAjnaRewardsData'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'

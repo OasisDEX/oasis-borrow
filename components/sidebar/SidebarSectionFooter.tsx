@@ -1,5 +1,5 @@
 import type { NetworkConfigHexId } from 'blockchain/networks'
-import { useConnection, useWalletManagement } from 'features/web3OnBoard'
+import { useConnection, useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'

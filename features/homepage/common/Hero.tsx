@@ -1,6 +1,6 @@
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
-import { useConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useAppConfig } from 'helpers/config'
 import { scrollTo } from 'helpers/scrollTo'
 import { useTranslation } from 'next-i18next'

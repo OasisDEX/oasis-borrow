@@ -2,7 +2,7 @@ import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountViewConsumed } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
-import { useConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard/useConnection'
 import { allDefined } from 'helpers/allDefined'
 import { callBackIfDefined } from 'helpers/callBackIfDefined'
 import type {

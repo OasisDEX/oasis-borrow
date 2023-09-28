@@ -1,6 +1,6 @@
 import { useMainContext } from 'components/context/MainContextProvider'
 import { Icon } from 'components/Icon'
-import { useConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
