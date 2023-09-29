@@ -59,7 +59,9 @@ export function NavigationMenuDropdown({
           top: '100%',
           left: 0,
           right: 0,
-          pt: '18px',
+          width: '680px',
+          mx: 'auto',
+          pt: '10px',
         }}
       >
         <Flex

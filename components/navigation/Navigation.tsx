@@ -33,7 +33,7 @@ export function Navigation({
         sx={{
           position: 'relative',
           display: 'grid',
-          gridTemplateColumns: ['auto auto', null, null, '1fr auto 1fr'],
+          gridTemplateColumns: ['auto auto', null, null, 'auto auto auto', '1fr auto 1fr'],
           alignItems: 'center',
           mt: '24px',
           mb: '64px',

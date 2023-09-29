@@ -162,6 +162,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         <CacheProvider value={cache}>
           <Global styles={globalStyles} />
           <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
+            {seoTags}
             <PreloadAppDataContextProvider>
               <DeferedContextProvider context={preloadAppDataContext}>
                 <MainContextProvider>
@@ -169,7 +170,6 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                     <ModalProvider>
                       <Web3OnBoardConnectorProvider>
                         <Web3ReactProvider {...{ getLibrary }}>
-                          {seoTags}
                           <SetupWeb3Context>
                             <NotificationSocketProvider>
                               <SharedUIProvider>

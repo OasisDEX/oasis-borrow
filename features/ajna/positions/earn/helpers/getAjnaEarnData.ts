@@ -38,7 +38,7 @@ export const getAjnaEarnData: (networkId: NetworkIds) => GetEarnData =
         ),
       }
 
-      if (!earnPosition) {
+      if (!earnPosition || !earnPosition.bucketPositions.length) {
         return {
           ...defaultResponse,
           ...cumulativeValues,

@@ -15,7 +15,7 @@ export function NavigationMobileMenuLink({ label, link }: NavigationMobileMenuLi
           <AppLink
             href={link}
             sx={{
-              ...mobileLinkSx,
+              ...mobileLinkSx(false),
             }}
           >
             {label}
