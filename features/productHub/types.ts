@@ -97,3 +97,11 @@ export interface ProductHubFilters {
   or: ProductHubFiltersCriteria[]
   and: ProductHubFiltersCriteria
 }
+
+export interface ProductHubQueryString {
+  debtToken?: ProductHubItem['primaryToken'][]
+  network?: ProductHubItem['network'][]
+  protocol?: ProductHubItem['protocol'][]
+  secondaryToken?: ProductHubItem['secondaryToken'][]
+  strategy?: ProductHubItem['multiplyStrategyType'][]
+}

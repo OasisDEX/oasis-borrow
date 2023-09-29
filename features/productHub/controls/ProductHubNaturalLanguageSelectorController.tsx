@@ -1,9 +1,8 @@
 import type { HeaderSelectorOption } from 'components/HeaderSelector'
 import { HeaderSelector } from 'components/HeaderSelector'
-import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
+import { productHubOptionsMap } from 'features/productHub/meta'
 import type { ProductHubProductType } from 'features/productHub/types'
 import { useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
 import type { FC } from 'react'
 import React, { useEffect, useRef, useState } from 'react'
 import { Box, Heading } from 'theme-ui'
@@ -12,13 +11,12 @@ interface ProductHubNaturalLanguageSelectorControllerProps {
   gradient: [string, string, ...string[]]
   product: ProductHubProductType
   token?: string
-  url?: string
   onChange?: (product: ProductHubProductType, token: string) => void
 }
 
 export const ProductHubNaturalLanguageSelectorController: FC<
   ProductHubNaturalLanguageSelectorControllerProps
-> = ({ gradient, product, token, url, onChange }) => {
+> = ({ gradient, product, token, onChange }) => {
   const { t } = useTranslation()
 
   const [overwriteOption, setOverwriteOption] = useState<HeaderSelectorOption>()
@@ -30,7 +28,6 @@ export const ProductHubNaturalLanguageSelectorController: FC<
       .value,
   )
   const ref = useRef<HTMLDivElement>(null)
-  const { push } = useRouter()
 
   useEffect(() => {
     onChange && onChange(selectedProduct, selectedToken)
@@ -48,7 +45,6 @@ export const ProductHubNaturalLanguageSelectorController: FC<
           withHeaders={true}
           onChange={(selected) => {
             const typedValue = selected.value as ProductHubProductType
-            const tokenInUrl = selectedToken !== ALL_ASSETS ? selectedToken : undefined
             const isSwitchingToAllAssets = !Object.values(
               productHubOptionsMap[typedValue].tokens,
             ).some((option) => option.value === selectedToken)
@@ -57,12 +53,6 @@ export const ProductHubNaturalLanguageSelectorController: FC<
             setOverwriteOption(
               isSwitchingToAllAssets ? productHubOptionsMap[typedValue].tokens.all : undefined,
             )
-            if (url)
-              void push(
-                `${url}${selected.value}${
-                  tokenInUrl && !isSwitchingToAllAssets ? `/${selectedToken}` : ''
-                }`,
-              )
           }}
         />
         {t(`product-hub.header.conjunction.${selectedProduct}`)}
@@ -78,10 +68,7 @@ export const ProductHubNaturalLanguageSelectorController: FC<
           parentRef={ref}
           valueAsLabel={true}
           onChange={(selected) => {
-            const tokenInUrl = selected.value !== ALL_ASSETS ? selected.value : undefined
-
             setSelectedToken(selected.value)
-            if (url) void push(`${url}${selectedProduct}${tokenInUrl ? `/${selected.value}` : ''}`)
           }}
         />
       </Heading>
