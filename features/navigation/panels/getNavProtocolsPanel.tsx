@@ -58,7 +58,8 @@ export const getNavProtocolsPanel = ({
             ],
             link: {
               label: t('nav.protocols-more', { protocol: 'Aave' }),
-              url: '/',
+              // TODO filter by protocol
+              url: `${INTERNAL_LINKS.borrow}`,
             },
           },
         },
@@ -99,7 +100,8 @@ export const getNavProtocolsPanel = ({
                   ],
                   link: {
                     label: t('nav.protocols-more', { protocol: 'Ajna' }),
-                    url: '/',
+                    // TODO filter by protocol
+                    url: `${INTERNAL_LINKS.borrow}`,
                   },
                 },
               },
@@ -138,7 +140,8 @@ export const getNavProtocolsPanel = ({
             ],
             link: {
               label: t('nav.protocols-more', { protocol: 'Maker' }),
-              url: '/',
+              // TODO filter by protocol
+              url: `${INTERNAL_LINKS.borrow}`,
             },
           },
         },
@@ -176,7 +179,8 @@ export const getNavProtocolsPanel = ({
             ],
             link: {
               label: t('nav.protocols-more', { protocol: 'Spark' }),
-              url: '/',
+              // TODO filter by protocol
+              url: `${INTERNAL_LINKS.borrow}`,
             },
           },
         },
