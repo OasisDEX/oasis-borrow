@@ -981,6 +981,7 @@ export function setupProductContext(
 
   const ownersPositionsList$ = memoize(
     curry(createPositionsList$)(positionsList$, aaveLikePositions$, ajnaPositions$, dsr$),
+    (walletAddress: string) => walletAddress,
   )
 
   const followedList$ = memoize(
