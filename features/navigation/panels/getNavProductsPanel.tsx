@@ -88,7 +88,7 @@ export const getNavProductsPanel = ({
                     [capitalize(item.protocol), lendingProtocolsByName[item.protocol].gradient],
                     [capitalize(item.network), networksByName[item.network].gradient],
                   ] as NavigationMenuPanelListTags,
-                  url: `${INTERNAL_LINKS.earn}/${item.primaryToken}`,
+                  url: `${INTERNAL_LINKS.earn}/${getTokenGroup(item.primaryToken)}`,
                 })),
               ],
               link: {
@@ -117,7 +117,7 @@ export const getNavProductsPanel = ({
                     [capitalize(item.protocol), lendingProtocolsByName[item.protocol].gradient],
                     [capitalize(item.network), networksByName[item.network].gradient],
                   ] as NavigationMenuPanelListTags,
-                  url: `${INTERNAL_LINKS.multiply}/${item.collateralToken}`,
+                  url: `${INTERNAL_LINKS.multiply}/${getTokenGroup(item.collateralToken)}`,
                 })),
               ],
               link: {
