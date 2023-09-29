@@ -3,6 +3,8 @@ import type { AssetsTableTooltipProps } from 'components/assetsTable/cellCompone
 import type { PromoCardProps } from 'components/PromoCard.types'
 import type { LendingProtocol } from 'lendingProtocols'
 
+import type { EarnStrategies } from '.prisma/client'
+
 export type ProductHubMultiplyStrategyType = 'long' | 'short'
 export type ProductHubManagementType = 'active' | 'passive'
 
@@ -36,7 +38,8 @@ export interface ProductHubItemBasics {
 export interface ProductHubItemDetails {
   weeklyNetApy?: string
   depositToken?: string
-  earnStrategy?: string
+  earnStrategy?: EarnStrategies
+  earnStrategyDescription?: string
   fee?: string
   liquidity?: string
   managementType?: ProductHubManagementType
@@ -45,6 +48,7 @@ export interface ProductHubItemDetails {
   multiplyStrategy?: string
   multiplyStrategyType?: ProductHubMultiplyStrategyType
   reverseTokens?: boolean
+  hasRewards?: boolean
 }
 
 export interface ProductHubItemTooltips {

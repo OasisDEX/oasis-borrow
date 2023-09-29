@@ -1,4 +1,5 @@
 import { getPoolLiquidity } from '@oasisdex/dma-library'
+import { EarnStrategies } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import type { IdentifiedTokens } from 'blockchain/identifyTokens.types'
 import type { NetworkIds } from 'blockchain/networks'
@@ -70,7 +71,8 @@ export function parsePoolResponse(
             weeklyNetApy,
           }),
           liquidity,
-          earnStrategy: `${collateralToken}/${quoteToken} LP`,
+          earnStrategy: EarnStrategies.liquidity_provision,
+          earnStrategyDescription: `${collateralToken}/${quoteToken} LP`,
           fee,
           managementType: 'active',
           collateralAddress: collateralAddress,

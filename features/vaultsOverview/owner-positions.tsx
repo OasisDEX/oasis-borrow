@@ -417,6 +417,7 @@ export function useOwnerPositions(
 
   const positionsList$ = memoize(
     curry(createPositionsList$)(makerPositionsList$, aaveLikePositions$, ajnaPositions$, dsr$),
+    (walletAddress: string) => walletAddress,
   )
 
   return {

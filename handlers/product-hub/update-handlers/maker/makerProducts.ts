@@ -1,3 +1,4 @@
+import { EarnStrategies } from '@prisma/client'
 import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
@@ -107,6 +108,7 @@ export const makerProductHubProducts: Omit<ProductHubItemWithoutAddress, 'networ
     protocol: LendingProtocol.Maker,
     label: 'DSR',
     managementType: 'passive',
-    earnStrategy: 'DAI Savings Rate',
+    earnStrategy: EarnStrategies.other,
+    earnStrategyDescription: 'DAI Savings Rate',
   },
 ]

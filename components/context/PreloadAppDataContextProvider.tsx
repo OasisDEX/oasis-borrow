@@ -1,6 +1,6 @@
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
 import type { ConfigResponseType, PreloadAppDataContext } from 'helpers/config'
-import { configCacheTime, saveConfigToLocalStorage } from 'helpers/config'
+import { configCacheTime, getLocalAppConfig, saveConfigToLocalStorage } from 'helpers/config'
 import type { WithChildren } from 'helpers/types/With.types'
 import { LendingProtocol } from 'lendingProtocols'
 import React, { useContext, useEffect, useState } from 'react'
@@ -37,11 +37,12 @@ export function usePreloadAppDataContext(): PreloadAppDataContext {
 
 export function PreloadAppDataContextProvider({ children }: WithChildren) {
   const [context, setContext] = useState<PreloadAppDataContext | undefined>(undefined)
+  const { AjnaSafetySwitch } = getLocalAppConfig('features')
 
   const [config, setConfig] = useState<ConfigResponseType | undefined>(undefined)
   const { data: productHub } = useProductHubData({
     protocols: [
-      LendingProtocol.Ajna,
+      ...(AjnaSafetySwitch ? [] : [LendingProtocol.Ajna]),
       LendingProtocol.AaveV2,
       LendingProtocol.AaveV3,
       LendingProtocol.Maker,
