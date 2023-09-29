@@ -5,7 +5,7 @@ import { getNetworkById, NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { amountFromPrecision } from 'blockchain/utils'
-import type { VaultWithType, VaultWithValue } from 'blockchain/vaults.types'
+import type { VaultWithType } from 'blockchain/vaults.types'
 import { ethers } from 'ethers'
 import { isAddress } from 'ethers/lib/utils'
 import { loadStrategyFromTokens } from 'features/aave'
@@ -40,38 +40,10 @@ type CreatePositionEnvironmentPropsType = {
   readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>
 }
 
-function makerPositionName(vault: VaultWithType): string {
-  if (isMakerEarnPosition(vault)) {
-    return `${vault.ilk} Summer.fi Earn`
-  } else if (vault.type === 'borrow') {
-    return `${vault.ilk} Summer.fi Borrow`
-  } else {
-    return `${vault.ilk} Summer.fi Multiply`
-  }
-}
-
 export function isMakerEarnPosition(vault: VaultWithType): boolean {
   return (
     vault.type === 'multiply' &&
     (vault.token === 'GUNIV3DAIUSDC1' || vault.token === 'GUNIV3DAIUSDC2')
-  )
-}
-
-export function createMakerPositions$(
-  vaultsWithValue$: (address: string) => Observable<VaultWithValue<VaultWithType>[]>,
-  address: string,
-): Observable<Position[]> {
-  return vaultsWithValue$(address).pipe(
-    map((vaults) => {
-      return vaults.map((vault) => {
-        return {
-          token: vault.token,
-          contentsUsd: vault.value,
-          title: makerPositionName(vault),
-          url: `/ethereum/maker/${vault.id}`,
-        }
-      })
-    }),
   )
 }
 
@@ -97,47 +69,6 @@ export type AaveLikePosition = Position & {
   chainId: NetworkIds
   isAtRiskDanger: boolean
   isAtRiskWarning: boolean
-}
-
-export function createPositions$(
-  makerPositions$: (address: string) => Observable<Position[]>,
-  aaveV2MainnetPositions$: (address: string) => Observable<Position[]>,
-  aaveV3MainnetPositions$: (address: string) => Observable<Position[]>,
-  optimismPositions$: (address: string) => Observable<Position[]>,
-  arbitrumPositions$: (address: string) => Observable<Position[]>,
-
-  address: string,
-): Observable<Position[]> {
-  const _makerPositions$ = makerPositions$(address)
-  const _aaveV2Positions$ = aaveV2MainnetPositions$(address)
-  const _aaveV3Positions$ = aaveV3MainnetPositions$(address)
-  const _optimismPositions$ = optimismPositions$(address)
-  const _arbitrumPositions$ = arbitrumPositions$(address)
-  return combineLatest(
-    _makerPositions$,
-    _aaveV2Positions$,
-    _aaveV3Positions$,
-    _optimismPositions$,
-    _arbitrumPositions$,
-  ).pipe(
-    map(
-      ([
-        makerPositions,
-        aaveV2Positions,
-        aaveV3MainnetPositions,
-        optimismPositions,
-        arbitrumPositions,
-      ]) => {
-        return [
-          ...makerPositions,
-          ...aaveV2Positions,
-          ...aaveV3MainnetPositions,
-          ...optimismPositions,
-          ...arbitrumPositions,
-        ]
-      },
-    ),
-  )
 }
 
 type ProxyAddressesProvider = {

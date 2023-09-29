@@ -131,22 +131,17 @@ import { getGasEstimation$ } from 'features/stateMachines/proxy/pipelines'
 import { transactionContextService } from 'features/stateMachines/transaction'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
-import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
 import type { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
 import {
   createAaveV2Position$,
   createAaveV3DpmPosition$,
-  createMakerPositions$,
-  createPositions$,
   createSparkV3DpmPosition$,
 } from 'features/vaultsOverview/pipes/positions'
 import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
-import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createPositionsList$ } from 'features/vaultsOverview/vaultsOverview'
 import { bigNumberTostring } from 'helpers/bigNumberToString'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation } from 'helpers/form'
-import { supportedBorrowIlks, supportedEarnIlks, supportedMultiplyIlks } from 'helpers/productCards'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
@@ -711,17 +706,6 @@ export function setupProductContext(
     )
   })
 
-  const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
-  const positions$ = memoize(
-    curry(createPositions$)(
-      makerPositions$,
-      mainnetAaveV2Positions$,
-      aaveMainnetAaveV3Positions$,
-      aaveOptimismPositions$,
-      aaveArbitrumPositions$,
-    ),
-  )
-
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
       connectedContext$,
@@ -877,23 +861,6 @@ export function setupProductContext(
 
   const positionsList$ = memoize(
     curry(createMakerPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
-  )
-
-  const assetActions$ = memoize(
-    curry(createAssetActions$)(
-      context$,
-      ilkToToken$,
-      {
-        borrow: supportedBorrowIlks,
-        multiply: supportedMultiplyIlks,
-        earn: supportedEarnIlks,
-      },
-      uiChanges,
-    ),
-  )
-
-  const positionsOverviewSummary$ = memoize(
-    curry(createPositionsOverviewSummary$)(balanceLean$, tokenPriceUSD$, positions$, assetActions$),
   )
 
   const vaultBanners$ = memoize(
@@ -1117,7 +1084,6 @@ export function setupProductContext(
     openVault$,
     ownersPositionsList$,
     positionIdFromDpmProxy$,
-    positionsOverviewSummary$,
     potDsr$,
     potTotalValueLocked$,
     priceInfo$,

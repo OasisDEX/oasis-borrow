@@ -9,6 +9,7 @@ export const configSchema = z.object({
   enableSnowflake: z.boolean().optional(),
   oneInchApiKey: z.string(),
   oneInchApiUrl: z.string(),
+  debankApiKey: z.string(),
 })
 
 export const config = configSchema.parse({
@@ -20,6 +21,7 @@ export const config = configSchema.parse({
   enableSnowflake: JSON.parse(process.env.ENABLE_SNOWFLAKE || 'false'),
   oneInchApiKey: process.env.ONE_INCH_API_KEY,
   oneInchApiUrl: process.env.ONE_INCH_API_URL,
+  debankApiKey: process.env.DEBANK_API_KEY,
 })
 
 export type Config = z.infer<typeof configSchema>

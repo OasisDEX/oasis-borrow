@@ -8,7 +8,7 @@ export function WithErrorHandler({
   error,
   children,
 }: {
-  error: string | string[]
+  error: string | (string | undefined)[] | undefined
   children: React.ReactNode
 }) {
   const openModal = useModal()
@@ -28,7 +28,9 @@ export function WithErrorHandler({
     return <>{children}</>
   }
 
-  function isArrayOfErrorsWithoutUndefinedElements(innerError: any) {
+  function isArrayOfErrorsWithoutUndefinedElements(
+    innerError: string | (string | undefined)[] | undefined,
+  ): innerError is string[] | string {
     return Array.isArray(innerError)
       ? innerError.some((el) => el !== undefined)
       : innerError !== undefined

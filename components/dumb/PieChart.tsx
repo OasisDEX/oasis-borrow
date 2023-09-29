@@ -1,9 +1,8 @@
-import BigNumber from 'bignumber.js'
 import React from 'react'
 
 export type PieChartItem = {
-  value: BigNumber
-  color: string
+  value: number
+  id: string
 }
 
 type Slice = {
@@ -12,20 +11,32 @@ type Slice = {
   color: string
 }
 
+const nameToColor = (id: string) => {
+  return (
+    {
+      aave2: '#5687a3',
+      aave3: '#7d4378',
+      ajna: '#a2118e',
+      makerdao: '#4e978c',
+    }[id] ?? '#6d7b85'
+  )
+}
+
 function getSlices(items: PieChartItem[], circleLength: number): Slice[] {
   const values = items.map((i) => i.value)
-  const totalValue = BigNumber.sum.apply(null, values)
+  const totalValue = values.reduce((a, b) => a + b, 0)
   const slices = []
   let angle = 0
-  for (var i = 0; i < items.length; i++) {
-    const ratio = values[i].dividedBy(totalValue).toNumber()
+  for (let i = 0; i < items.length; i++) {
+    const ratio = values[i] / totalValue
     slices.push({
       length: circleLength * ratio,
       angle,
-      color: items[i].color,
+      color: nameToColor(items[i].id),
     })
     angle += 360 * ratio
   }
+
   return slices
 }
 
