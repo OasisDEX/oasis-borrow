@@ -6,7 +6,7 @@ export const getProductEarnNavItems = (
   promoCards: ProductHubPromoCards,
   productHub: ProductHubItem[],
 ) => {
-  const data: ProductHubItem[] = []
+  const data: (ProductHubItem & { url?: string })[] = []
 
   promoCards.earn.default.forEach((promoCard) => {
     const foundItem = productHub.find(
@@ -20,7 +20,7 @@ export const getProductEarnNavItems = (
         item.protocol === promoCard.protocol.protocol &&
         item.product.includes(ProductHubProductType.Earn),
     )
-    if (foundItem) data.push(foundItem)
+    if (foundItem) data.push({ ...foundItem, url: promoCard.link?.href })
   })
 
   return data.map((item) => ({
@@ -32,5 +32,6 @@ export const getProductEarnNavItems = (
     earnStrategy: item.earnStrategy,
     earnStrategyDescription: item.earnStrategyDescription,
     reverseTokens: item.reverseTokens,
+    url: item.url,
   }))
 }
