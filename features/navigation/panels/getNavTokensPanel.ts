@@ -6,6 +6,7 @@ import {
 } from 'features/navigation/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getLocalAppConfig } from 'helpers/config'
 import type { TranslationType } from 'ts_modules/i18next'
 import type { AppConfigType } from 'types/config'
 
@@ -27,6 +28,8 @@ const mapNavigationTokens = ({
   })),
 ]
 
+const { AjnaSafetySwitch } = getLocalAppConfig('features')
+
 export const getNavTokensPanel = ({
   t,
   navigation,
@@ -46,10 +49,12 @@ export const getNavTokensPanel = ({
     {
       header: t('nav.tokens-new'),
       items: mapNavigationTokens({ navigation, type: 'new', productHubItems, t }),
-      link: {
-        label: t('nav.tokens-link'),
-        url: INTERNAL_LINKS.ajnaPoolFinder,
-      },
+      ...(!AjnaSafetySwitch && {
+        link: {
+          label: t('nav.tokens-link'),
+          url: INTERNAL_LINKS.ajnaPoolFinder,
+        },
+      }),
       tight: true,
     },
   ],
