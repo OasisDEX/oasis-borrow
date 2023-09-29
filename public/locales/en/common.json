@@ -901,6 +901,7 @@
     "products-borrow": "Get liquidity from your crypto assets without selling. ",
     "products-earn": "Earn the best yields on your favourite crypto assets, from trusted protocols.",
     "products-multiply": "Get increased exposure to your most valued crypto assets in one transaction.",
+    "increase-your-exposure-against": "Increase your exposure against {{token}}",
     "earn-on-your": "Earn {{apy}} on your {{token}}",
     "earn-on-your-simple": "Earn on your {{token}}",
     "earn-on-other-strategy": "Earn on your {{token}} with {{earnStrategyDescription}}",
