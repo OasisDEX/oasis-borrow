@@ -112,7 +112,7 @@ export const getNavProductsPanel = ({
                     tokens: [item.collateralToken, item.debtToken],
                     position: 'global',
                   }),
-                  description: `Increase your exposure against ${item.debtToken}`,
+                  description: t('nav.increase-your-exposure-against', { token: item.debtToken }),
                   tags: [
                     [capitalize(item.protocol), lendingProtocolsByName[item.protocol].gradient],
                     [capitalize(item.network), networksByName[item.network].gradient],
