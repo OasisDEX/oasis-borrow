@@ -10,6 +10,7 @@ import {
   compound_circle_color,
   dai,
   dai_circle_color,
+  deprecated_icon,
   ether,
   ether_circle_color,
   frax_circle_color,
@@ -58,6 +59,15 @@ import {
   zerox,
   zerox_circle_color,
 } from 'theme/icons'
+
+const deprecatedTokens = [
+  'UNIV2WBTCETH',
+  'UNIV2LINKETH',
+  'UNIV2UNIETH',
+  'UNIV2WBTCDAI',
+  'UNIV2AAVEETH',
+  'CRVV1ETHSTETH',
+]
 
 export const tokenConfigs: TokenConfig[] = [
   {
@@ -208,6 +218,18 @@ export const tokenConfigs: TokenConfig[] = [
     coinGeckoId: 'polygon',
     background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     tags: [],
+  },
+  {
+    symbol: 'UNIV2DAIETH',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'UNIV2DAIETH',
+    icon: deprecated_icon,
+    iconCircle: deprecated_icon,
+    color: '#ff077d',
+    background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+    tags: ['lp-token'],
   },
   {
     symbol: 'WSTETH',
@@ -615,4 +637,16 @@ export const tokenConfigs: TokenConfig[] = [
     background: '',
     tags: ['stablecoin'],
   },
+  ...deprecatedTokens.map((deprecatedToken) => ({
+    symbol: deprecatedToken,
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: deprecatedToken,
+    icon: deprecated_icon,
+    iconCircle: deprecated_icon,
+    color: '#ff077d',
+    background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+    tags: [],
+  })),
 ]
