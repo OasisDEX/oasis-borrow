@@ -36,23 +36,17 @@ export const getNavProtocolsPanel = ({
             items: [
               {
                 title: t('nav.borrow'),
-                description: t('nav.borrow-against', {
-                  tokens: navigation.protocols.aave.borrow.tokens.join(', '),
-                }),
+                description: navigation.protocols.aave.borrow.description,
                 url: `${INTERNAL_LINKS.borrow}`,
               },
               {
                 title: t('nav.multiply'),
-                description: t('nav.increase-exposure', {
-                  tokens: navigation.protocols.aave.multiply.tokens.join(', '),
-                }),
+                description: navigation.protocols.aave.multiply.description,
                 url: `${INTERNAL_LINKS.multiply}`,
               },
               {
                 title: t('nav.earn'),
-                description: t('nav.earn-yield', {
-                  tokens: navigation.protocols.aave.earn.tokens.join(', '),
-                }),
+                description: navigation.protocols.aave.earn.description,
                 url: `${INTERNAL_LINKS.earn}`,
               },
               {
@@ -83,23 +77,17 @@ export const getNavProtocolsPanel = ({
                   items: [
                     {
                       title: t('nav.borrow'),
-                      description: t('nav.borrow-against', {
-                        tokens: navigation.protocols.ajna.borrow.tokens.join(', '),
-                      }),
+                      description: navigation.protocols.ajna.borrow.description,
                       url: `${INTERNAL_LINKS.borrow}`,
                     },
                     {
                       title: t('nav.multiply'),
-                      description: t('nav.increase-exposure', {
-                        tokens: navigation.protocols.ajna.multiply.tokens.join(', '),
-                      }),
+                      description: navigation.protocols.ajna.multiply.description,
                       url: `${INTERNAL_LINKS.multiply}`,
                     },
                     {
                       title: t('nav.earn'),
-                      description: t('nav.earn-yield', {
-                        tokens: navigation.protocols.ajna.earn.tokens.join(', '),
-                      }),
+                      description: navigation.protocols.ajna.earn.description,
                       url: `${INTERNAL_LINKS.earn}`,
                     },
                     {
@@ -128,23 +116,17 @@ export const getNavProtocolsPanel = ({
             items: [
               {
                 title: t('nav.borrow'),
-                description: t('nav.borrow-against', {
-                  tokens: navigation.protocols.maker.borrow.tokens.join(', '),
-                }),
+                description: navigation.protocols.maker.borrow.description,
                 url: `${INTERNAL_LINKS.borrow}`,
               },
               {
                 title: t('nav.multiply'),
-                description: t('nav.increase-exposure', {
-                  tokens: navigation.protocols.maker.multiply.tokens.join(', '),
-                }),
+                description: navigation.protocols.maker.multiply.description,
                 url: `${INTERNAL_LINKS.multiply}`,
               },
               {
                 title: t('nav.earn'),
-                description: t('nav.earn-yield', {
-                  tokens: navigation.protocols.maker.earn.tokens.join(', '),
-                }),
+                description: navigation.protocols.maker.earn.description,
                 url: `${INTERNAL_LINKS.earn}`,
               },
               {
@@ -172,23 +154,17 @@ export const getNavProtocolsPanel = ({
             items: [
               {
                 title: t('nav.borrow'),
-                description: t('nav.borrow-against', {
-                  tokens: navigation.protocols.spark.borrow.tokens.join(', '),
-                }),
+                description: navigation.protocols.spark.borrow.description,
                 url: `${INTERNAL_LINKS.borrow}`,
               },
               {
                 title: t('nav.multiply'),
-                description: t('nav.increase-exposure', {
-                  tokens: navigation.protocols.spark.multiply.tokens.join(', '),
-                }),
+                description: navigation.protocols.spark.multiply.description,
                 url: `${INTERNAL_LINKS.multiply}`,
               },
               {
                 title: t('nav.earn'),
-                description: t('nav.earn-yield', {
-                  tokens: navigation.protocols.spark.earn.tokens.join(', '),
-                }),
+                description: navigation.protocols.spark.earn.description,
                 url: `${INTERNAL_LINKS.earn}`,
               },
               {
