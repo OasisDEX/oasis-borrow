@@ -15,7 +15,6 @@ import {
 import type { ProductHubItem, ProductHubPromoCards } from 'features/productHub/types'
 import type { SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChange'
 import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
-import { getTokenGroup } from 'handlers/product-hub/helpers'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { uiChanges } from 'helpers/uiChanges'
@@ -90,7 +89,7 @@ export const getNavProductsPanel = ({
                     [capitalize(item.protocol), lendingProtocolsByName[item.protocol].gradient],
                     [capitalize(item.network), networksByName[item.network].gradient],
                   ] as NavigationMenuPanelListTags,
-                  url: `${INTERNAL_LINKS.earn}/${getTokenGroup(item.primaryToken)}`,
+                  url: item.url,
                 })),
               ],
               link: {
@@ -119,7 +118,7 @@ export const getNavProductsPanel = ({
                     [capitalize(item.protocol), lendingProtocolsByName[item.protocol].gradient],
                     [capitalize(item.network), networksByName[item.network].gradient],
                   ] as NavigationMenuPanelListTags,
-                  url: `${INTERNAL_LINKS.multiply}/${getTokenGroup(item.collateralToken)}`,
+                  url: item.url,
                 })),
               ],
               link: {
@@ -157,9 +156,7 @@ export const getNavProductsPanel = ({
                       networksByName[productBorrowNavItems.maxLtv.network].gradient,
                     ],
                   ],
-                  url: `${INTERNAL_LINKS.borrow}/${getTokenGroup(
-                    productBorrowNavItems.maxLtv.primaryToken,
-                  )}`,
+                  url: productBorrowNavItems.maxLtv.url,
                 },
                 {
                   title: t('nav.borrow-lowest-fee', {
@@ -184,9 +181,7 @@ export const getNavProductsPanel = ({
                       networksByName[productBorrowNavItems.fee.network].gradient,
                     ],
                   ],
-                  url: `${INTERNAL_LINKS.borrow}/${getTokenGroup(
-                    productBorrowNavItems.fee.primaryToken,
-                  )}`,
+                  url: productBorrowNavItems.fee.url,
                 },
                 {
                   title: t('nav.earn-rewards-while-borrowing'),
@@ -208,9 +203,7 @@ export const getNavProductsPanel = ({
                       networksByName[productBorrowNavItems.liquidity.network].gradient,
                     ],
                   ],
-                  url: `${INTERNAL_LINKS.borrow}/${getTokenGroup(
-                    productBorrowNavItems.liquidity.primaryToken,
-                  )}`,
+                  url: productBorrowNavItems.liquidity.url,
                 },
               ],
               link: {
