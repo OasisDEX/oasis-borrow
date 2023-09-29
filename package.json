@@ -117,7 +117,7 @@
     "ts-pattern": "4",
     "url-loader": "^4.1.0",
     "usehooks-ts": "^2.9.1",
-    "web3": "1.10.2",
+    "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",
     "xstate": "^4.37.2",
     "zod": "^1.5.0"
