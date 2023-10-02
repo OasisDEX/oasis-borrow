@@ -21,7 +21,7 @@ import type { SxStyleProp } from 'theme-ui'
 import { Box, Card, Flex, Grid, Heading, Image, Link, Text } from 'theme-ui'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 
-import type { PortfolioBalanceResponse } from './usePortfolioBalanceApi'
+import type { PortfolioBalanceApi } from './usePortfolioBalanceApi'
 import { usePortfolioBalanceApi } from './usePortfolioBalanceApi'
 
 function AssetRow({ name: title, proportion, value, actions, url, logo_url: imageSrc }: AssetView) {
@@ -229,17 +229,13 @@ function TotalAssetsContent({ totalValueUsd }: { totalValueUsd: BigNumber }) {
   )
 }
 
-function AssetsAndPositionsView({
-  portfolioBalance,
-}: {
-  portfolioBalance: PortfolioBalanceResponse
-}) {
+function AssetsAndPositionsView({ portfolioBalance }: { portfolioBalance: PortfolioBalanceApi }) {
   const { t } = useTranslation()
   const breakpointIndex = useBreakpointIndex()
 
-  const { sortedProtocolAssets, totalAssetsUsdValue, walletAssetsUsdValue } = portfolioBalance
+  const { protocolAssets, totalAssetsUsdValue, walletAssetsUsdValue } = portfolioBalance
 
-  const topAssets = sortedProtocolAssets.slice(0, 5)
+  const topAssets = protocolAssets.slice(0, 5)
 
   const assetList: AssetView[] = [
     {
