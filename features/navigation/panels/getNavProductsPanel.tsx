@@ -38,9 +38,10 @@ export const getNavProductsPanel = ({
   const productEarnNavItems = getProductEarnNavItems(promoCardsData, productHubItems)
   const productBorrowNavItems = getProductBorrowNavItems(productHubItems)
 
-  const swapCallback = () =>
+  const widgetCallback = (variant: 'swap' | 'bridge') =>
     uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
       type: 'open',
+      variant,
     })
 
   return {
@@ -222,7 +223,7 @@ export const getNavProductsPanel = ({
                     icon: 'exchange',
                   },
                   description: t('nav.swap-description'),
-                  callback: swapCallback,
+                  callback: () => widgetCallback('swap'),
                 },
                 {
                   title: t('nav.bridge'),
@@ -231,7 +232,7 @@ export const getNavProductsPanel = ({
                     icon: 'bridge',
                   },
                   description: <NavigationBridgeDescription />,
-                  callback: swapCallback,
+                  callback: () => widgetCallback('bridge'),
                 },
               ],
             },
