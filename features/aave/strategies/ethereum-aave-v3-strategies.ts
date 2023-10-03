@@ -107,56 +107,6 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
-    collateral: 'DAI',
-    debt: 'ETH',
-    strategyType: StrategyType.Short,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
-  },
-  {
-    collateral: 'DAI',
-    debt: 'WBTC',
-    strategyType: StrategyType.Short,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
-  },
-  {
     collateral: 'ETH',
     debt: 'DAI',
     strategyType: StrategyType.Long,
@@ -281,56 +231,7 @@ const availableTokenPairs: TokenPairConfig[] = [
       },
     },
   },
-  {
-    collateral: 'USDC',
-    debt: 'ETH',
-    strategyType: StrategyType.Short,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
-  },
-  {
-    collateral: 'USDC',
-    debt: 'WBTC',
-    strategyType: StrategyType.Short,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
-  },
+
   {
     collateral: 'WBTC',
     debt: 'DAI',

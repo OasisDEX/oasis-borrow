@@ -98,31 +98,6 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
-    collateral: 'SDAI',
-    debt: 'ETH',
-    strategyType: StrategyType.Short,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
-  },
-  {
     collateral: 'WSTETH',
     debt: 'ETH',
     strategyType: StrategyType.Long,
