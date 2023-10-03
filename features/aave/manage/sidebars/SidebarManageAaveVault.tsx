@@ -76,12 +76,13 @@ export function isLocked(state: ManageAaveStateMachineState) {
     )
       return true
   }
-  if (
-    isAdjusting &&
-    aaveLike.adjustDisabledFor.strategyTypes.includes(strategyConfig.strategyType) &&
-    aaveLike.adjustDisabledFor.collateral.includes(tokens.collateral)
-  ) {
-    return true
+  if (isAdjusting) {
+    if (
+      aaveLike.adjustDisabledFor.strategyTypes.includes(strategyConfig.strategyType) &&
+      aaveLike.adjustDisabledFor.collateral.includes(tokens.collateral)
+    ) {
+      return true
+    }
   }
   return !(allDefined(ownerAddress, web3Context) && ownerAddress === web3Context!.account)
 }
