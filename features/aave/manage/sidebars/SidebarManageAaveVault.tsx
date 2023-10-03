@@ -64,11 +64,12 @@ export function isLoading(state: ManageAaveStateMachineState) {
 }
 
 export function isLocked(state: ManageAaveStateMachineState) {
-  const { ownerAddress, web3Context, tokens, strategyConfig } = state.context
+  const { ownerAddress, web3Context, tokens, strategyConfig, manageTokenInput } = state.context
   const { aaveLike } = getLocalAppConfig('parameters')
   if (
     aaveLike.closeDisabledFor.strategyTypes.includes(strategyConfig.strategyType) &&
-    aaveLike.closeDisabledFor.collateral.includes(tokens.collateral)
+    aaveLike.closeDisabledFor.collateral.includes(tokens.collateral) &&
+    aaveLike.closeDisabledFor.collateral.includes(manageTokenInput?.closingToken || '')
   ) {
     return true
   }
