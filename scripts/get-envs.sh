@@ -1,3 +1,4 @@
+# Script for getting envs required to run the project locally
 # RUN it from root directory of the project or directly from package.json
 # in root use `run get-envs` or `./scripts/get-envs.sh`
 
