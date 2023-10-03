@@ -65,13 +65,24 @@ export function isLoading(state: ManageAaveStateMachineState) {
 
 export function isLocked(state: ManageAaveStateMachineState) {
   const { ownerAddress, web3Context, tokens, strategyConfig, manageTokenInput } = state.context
+  const isClosing = state.matches('frontend.reviewingClosing')
+  const isAdjusting = state.matches('frontend.reviewingAdjusting')
   const { aaveLike } = getLocalAppConfig('parameters')
-  if (
-    aaveLike.closeDisabledFor.strategyTypes.includes(strategyConfig.strategyType) &&
-    aaveLike.closeDisabledFor.collateral.includes(tokens.collateral) &&
-    aaveLike.closeDisabledFor.collateral.includes(manageTokenInput?.closingToken || '')
-  ) {
-    return true
+  if (isClosing) {
+    if (
+      // TODO: find a better way to handle this
+      aaveLike.closeDisabledFor.strategyTypes.includes(strategyConfig.strategyType) &&
+      aaveLike.closeDisabledFor.collateral.includes(manageTokenInput?.closingToken || '')
+    )
+      return true
+  }
+  if (isAdjusting) {
+    if (
+      aaveLike.adjustDisabledFor.strategyTypes.includes(strategyConfig.strategyType) &&
+      aaveLike.adjustDisabledFor.collateral.includes(tokens.collateral)
+    ) {
+      return true
+    }
   }
   return !(allDefined(ownerAddress, web3Context) && ownerAddress === web3Context!.account)
 }
