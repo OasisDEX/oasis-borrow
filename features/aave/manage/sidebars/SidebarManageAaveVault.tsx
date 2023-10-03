@@ -19,7 +19,7 @@ import type {
   ManageAaveStateMachineState,
 } from 'features/aave/manage/state'
 import type { ManagePositionAvailableActions } from 'features/aave/types'
-import { ProductType } from 'features/aave/types'
+import { ProductType, StrategyType } from 'features/aave/types'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
 import { formatCryptoBalance } from 'helpers/formatters/format'
@@ -63,7 +63,10 @@ export function isLoading(state: ManageAaveStateMachineState) {
 }
 
 export function isLocked(state: ManageAaveStateMachineState) {
-  const { ownerAddress, web3Context } = state.context
+  const { ownerAddress, web3Context, tokens, strategyConfig } = state.context
+  if (strategyConfig.strategyType === StrategyType.Short && tokens.collateral === 'DAI') {
+    return false
+  }
   return !(allDefined(ownerAddress, web3Context) && ownerAddress === web3Context!.account)
 }
 
