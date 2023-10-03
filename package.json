@@ -32,6 +32,7 @@
     "xstate:typegen": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" ",
     "xstate:typegen:watch": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" --watch",
     "update-product-hub": "npx ts-node scripts/update-product-hub.ts",
+    "get-envs": "sh ./scripts/get-envs.sh",
     "release": "release-it"
   },
   "dependencies": {
