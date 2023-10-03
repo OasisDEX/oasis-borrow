@@ -70,7 +70,7 @@ export function isLocked(state: ManageAaveStateMachineState) {
     aaveLike.closeDisabledFor.strategyTypes.includes(strategyConfig.strategyType) &&
     aaveLike.closeDisabledFor.collateral.includes(tokens.collateral)
   ) {
-    return false
+    return true
   }
   return !(allDefined(ownerAddress, web3Context) && ownerAddress === web3Context!.account)
 }
