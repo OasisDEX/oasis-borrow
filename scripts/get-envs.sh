@@ -4,11 +4,13 @@
 
 borrowDir=$(basename "$(pwd)")
 cd ..
-if [ ! -d "borrow-envs" ]; then
-  echo "Directory borrow-envs doesn't exist, cloning..."
-  git clone git@github.com:OasisDEX/borrow-envs.git
-fi
-cd borrow-envs
+git clone git@github.com:OasisDEX/borrow-envs.git 'temp-envs'
+cd temp-envs
 echo "Pulling latest changes..."
 git pull
 cp .env ../${borrowDir}/.env
+cd ..
+echo "Cleaning up..."
+rm -rf temp-envs
+echo "Done!"
+
