@@ -37,8 +37,8 @@ export const getProductBorrowNavItems = (
         const accMaxLtvHigherThanCurr =
           acc.maxLtv.value > Number(curr.maxLtv) || Number(curr.maxLtv) > 1
         const accFeeLowerThanCurr = acc.fee.value < Number(curr.fee)
-        const accLiquidityHigherThanCurr =
-          acc.liquidity.value > Number(curr.liquidity) && curr.hasRewards
+        const currLiquidityHigherThanAcc =
+          Number(curr.liquidity) > acc.liquidity.value && curr.hasRewards
 
         return {
           ...acc,
@@ -65,18 +65,18 @@ export const getProductBorrowNavItems = (
               : getActionUrl({ ...curr, product: [ProductHubProductType.Borrow] }),
           },
           liquidity: {
-            value: accLiquidityHigherThanCurr ? acc.liquidity.value : Number(curr.liquidity),
-            protocol: accLiquidityHigherThanCurr ? acc.liquidity.protocol : curr.protocol,
-            primaryToken: accLiquidityHigherThanCurr
-              ? acc.liquidity.primaryToken
-              : curr.primaryToken,
-            secondaryToken: accLiquidityHigherThanCurr
-              ? acc.liquidity.secondaryToken
-              : curr.secondaryToken,
-            network: accLiquidityHigherThanCurr ? acc.liquidity.network : curr.network,
-            url: accLiquidityHigherThanCurr
-              ? acc.liquidity.url
-              : getActionUrl({ ...curr, product: [ProductHubProductType.Borrow] }),
+            value: currLiquidityHigherThanAcc ? Number(curr.liquidity) : acc.liquidity.value,
+            protocol: currLiquidityHigherThanAcc ? curr.protocol : acc.liquidity.protocol,
+            primaryToken: currLiquidityHigherThanAcc
+              ? curr.primaryToken
+              : acc.liquidity.primaryToken,
+            secondaryToken: currLiquidityHigherThanAcc
+              ? curr.secondaryToken
+              : acc.liquidity.secondaryToken,
+            network: currLiquidityHigherThanAcc ? acc.liquidity.network : curr.network,
+            url: currLiquidityHigherThanAcc
+              ? getActionUrl({ ...curr, product: [ProductHubProductType.Borrow] })
+              : acc.liquidity.url,
           },
         }
       },
