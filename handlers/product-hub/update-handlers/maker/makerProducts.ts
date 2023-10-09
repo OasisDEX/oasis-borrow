@@ -93,15 +93,6 @@ export const makerProductHubProducts: Omit<ProductHubItemWithoutAddress, 'networ
     multiplyStrategy: 'Long WBTC',
   },
   {
-    product: [ProductHubProductType.Borrow],
-    primaryToken: 'CRVV1ETHSTETH',
-    secondaryToken: 'DAI',
-    protocol: LendingProtocol.Maker,
-    label: 'CRVV1ETHSTETH-A',
-    multiplyStrategyType: 'long',
-    multiplyStrategy: 'Long CRVV1ETHSTETH',
-  },
-  {
     product: [ProductHubProductType.Earn],
     primaryToken: 'DAI',
     secondaryToken: 'DAI',

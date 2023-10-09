@@ -35,8 +35,7 @@ const PotFactory = McdPot__factory
 // types/ethers-contracts uses ethers.BigNumber, but we need bignumber.js
 const bigNumberify = (val: BigNumberish) => new BigNumber(val.toString())
 
-const getIlk = (label: string) =>
-  ['CRVV1ETHSTETH-A', 'DSR'].includes(label) ? label : label.split('/')[0]
+const getIlk = (label: string) => (['DSR'].includes(label) ? label : label.split('/')[0])
 
 async function getMakerData(
   networkId: NetworkIds.MAINNET | NetworkIds.GOERLI,
@@ -118,10 +117,6 @@ async function getMakerData(
           const primaryTokenAddress = tokensAddresses[primaryToken].address
           const secondaryTokenAddress = tokensAddresses[secondaryToken].address
 
-          if (label === 'CRVV1ETHSTETH-A' && networkId === NetworkIds.GOERLI) {
-            // CRVV1ETHSTETH-A on goerli has some wonky numbers, skipping that
-            return
-          }
           if (label === 'DSR') {
             return {
               ...product,
