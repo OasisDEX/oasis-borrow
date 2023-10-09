@@ -14,6 +14,8 @@ export enum ProductHubProductType {
   Earn = 'earn',
 }
 
+export type ProductHubTokenType = string
+
 export type ProductHubSupportedNetworks =
   | NetworkNames.ethereumMainnet
   | NetworkNames.ethereumGoerli
@@ -25,14 +27,14 @@ export type ProductHubSupportedNetworks =
 export interface ProductHubItemBasics {
   label: string
   network: ProductHubSupportedNetworks
-  primaryToken: string
-  primaryTokenGroup?: string
-  primaryTokenAddress: string
+  primaryToken: ProductHubTokenType
+  primaryTokenGroup?: ProductHubTokenType
+  primaryTokenAddress: ProductHubTokenType
   product: ProductHubProductType[]
   protocol: LendingProtocol
-  secondaryToken: string
-  secondaryTokenGroup?: string
-  secondaryTokenAddress: string
+  secondaryToken: ProductHubTokenType
+  secondaryTokenGroup?: ProductHubTokenType
+  secondaryTokenAddress: ProductHubTokenType
 }
 
 export interface ProductHubItemDetails {
@@ -84,16 +86,24 @@ export interface ProductHubData {
 }
 
 export interface ProductHubFiltersCriteria {
-  network?: ProductHubItem['network'][]
-  primaryToken?: ProductHubItem['primaryToken'][]
-  primaryTokenGroup?: ProductHubItem['primaryTokenGroup'][]
-  protocol?: ProductHubItem['protocol'][]
-  secondaryToken?: ProductHubItem['secondaryToken'][]
-  secondaryTokenGroup?: ProductHubItem['secondaryTokenGroup'][]
-  multiplyStrategyType?: ProductHubItem['multiplyStrategyType'][]
+  network?: ProductHubSupportedNetworks[]
+  primaryToken?: ProductHubTokenType[]
+  primaryTokenGroup?: ProductHubTokenType[]
+  protocol?: LendingProtocol[]
+  secondaryToken?: ProductHubTokenType[]
+  secondaryTokenGroup?: ProductHubTokenType[]
+  multiplyStrategyType?: ProductHubMultiplyStrategyType[]
 }
 
 export interface ProductHubFilters {
   or: ProductHubFiltersCriteria[]
   and: ProductHubFiltersCriteria
+}
+
+export interface ProductHubQueryString {
+  debtToken?: ProductHubTokenType[]
+  network?: ProductHubSupportedNetworks[]
+  protocol?: LendingProtocol[]
+  secondaryToken?: ProductHubTokenType[]
+  strategy?: ProductHubMultiplyStrategyType[]
 }
