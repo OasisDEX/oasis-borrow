@@ -12,6 +12,7 @@ import {
   type SwapWidgetChangeAction,
   SWAP_WIDGET_CHANGE_SUBJECT,
 } from 'features/swapWidget/SwapWidgetChange'
+import { useConnection } from 'features/web3OnBoard'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
@@ -29,6 +30,7 @@ export function NavigationController() {
     config: { navigation },
   } = usePreloadAppDataContext()
   const { isConnected, walletAddress } = useAccount()
+  const { connect } = useConnection()
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3] - 1}px)`)
 
   const { AjnaSafetySwitch } = useAppConfig('features')
@@ -39,8 +41,8 @@ export function NavigationController() {
     PROMO_CARD_COLLECTIONS_PARSERS[AjnaSafetySwitch ? 'Home' : 'HomeWithAjna'](productHubItems)
 
   const navProductsPanel = useMemo(
-    () => getNavProductsPanel({ t, productHubItems, promoCardsData }),
-    [t, productHubItems, promoCardsData],
+    () => getNavProductsPanel({ t, productHubItems, promoCardsData, isConnected, connect }),
+    [t, productHubItems, promoCardsData, isConnected, connect],
   )
   const navProtocolsPanel = useMemo(() => getNavProtocolsPanel({ t, navigation }), [t, navigation])
   const navTokensPanel = useMemo(

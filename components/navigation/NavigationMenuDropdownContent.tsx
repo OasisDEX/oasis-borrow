@@ -98,7 +98,7 @@ export function NavigationMenuDropdownContent({
           .map(({ items }, i) => (
             <Fragment key={i}>
               {items.map(({ list }, j) => (
-                <>
+                <Fragment key={j}>
                   {list && (
                     <Flex
                       key={`${i}-${j}`}
@@ -127,7 +127,7 @@ export function NavigationMenuDropdownContent({
                       <NavigationMenuDropdownContentList {...list} />
                     </Flex>
                   )}
-                </>
+                </Fragment>
               ))}
             </Fragment>
           ))}

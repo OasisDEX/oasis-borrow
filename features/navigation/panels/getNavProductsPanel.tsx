@@ -30,21 +30,27 @@ export const getNavProductsPanel = ({
   t,
   productHubItems,
   promoCardsData,
+  isConnected,
+  connect,
 }: {
   t: TranslationType
   promoCardsData: ProductHubPromoCards
   productHubItems: ProductHubItem[]
+  isConnected: boolean
+  connect: () => void
 }): NavigationMenuPanelType => {
   const productMultiplyNavItems = getProductMultiplyNavItems(promoCardsData, productHubItems)
 
   const productEarnNavItems = getProductEarnNavItems(promoCardsData, productHubItems)
   const productBorrowNavItems = getProductBorrowNavItems(productHubItems)
 
-  const widgetCallback = (variant: 'swap' | 'bridge') =>
+  const widgetCallback = (variant: 'swap' | 'bridge') => {
+    !isConnected && connect()
     uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
       type: 'open',
       variant,
     })
+  }
 
   return {
     label: t('nav.products'),
