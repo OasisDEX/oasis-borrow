@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "10.2.0",
+  "version": "10.3.2",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=16.x <=18.x"
@@ -39,7 +39,7 @@
     "@gnosis.pm/safe-apps-sdk": "^7.7.0",
     "@gnosis.pm/safe-apps-web3-react": "^1.3.0",
     "@lifi/wallet-management": "^2.0.0-beta.7",
-    "@lifi/widget": "^2.0.0-beta.11",
+    "@lifi/widget": "2.4.6",
     "@makerdao/dai-ui-icons": "^0.0.59",
     "@makerdao/dai-ui-icons-branding": "^0.0.66",
     "@makerdao/dai-ui-theme-casual": "^0.0.60",
