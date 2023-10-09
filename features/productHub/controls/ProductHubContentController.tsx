@@ -10,6 +10,7 @@ import type {
   ProductHubFilters,
   ProductHubItem,
   ProductHubProductType,
+  ProductHubQueryString,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
@@ -21,17 +22,19 @@ import React, { useMemo } from 'react'
 interface ProductHubContentControllerProps {
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
+  queryString: ProductHubQueryString
   selectedFilters: ProductHubFilters
   selectedProduct: ProductHubProductType
   selectedToken: string
   tableData: ProductHubItem[]
-  onChange: (selectedFilters: ProductHubFilters) => void
+  onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
   limitRows?: number
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
   initialNetwork = [],
   initialProtocol = [],
+  queryString,
   selectedFilters,
   selectedProduct,
   selectedToken,
@@ -94,6 +97,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
         data={dataMatchedByNL}
         initialNetwork={initialNetwork}
         initialProtocol={initialProtocol}
+        queryString={queryString}
         selectedFilters={selectedFilters}
         selectedProduct={selectedProduct}
         selectedToken={selectedToken}
