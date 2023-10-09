@@ -53,8 +53,8 @@ export const reth_usdc = {
           y2="24.6826"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0666CE" key="ANEje3oQUB" />
-          <stop offset="1" stop-color="#61A9F8" key="fS2i3kCnw1" />
+          <stop stopColor="#0666CE" key="ANEje3oQUB" />
+          <stop offset="1" stopColor="#61A9F8" key="fS2i3kCnw1" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_13323_966"
@@ -65,8 +65,8 @@ export const reth_usdc = {
           y2="24.775"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F75E18" key="UkcVxU1hzJ" />
-          <stop offset="1" stop-color="#F39C74" key="1ZCjpCYooc" />
+          <stop stopColor="#F75E18" key="UkcVxU1hzJ" />
+          <stop offset="1" stopColor="#F39C74" key="1ZCjpCYooc" />
         </linearGradient>
       </defs>
     </svg>

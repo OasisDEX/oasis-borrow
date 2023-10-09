@@ -53,8 +53,8 @@ export const eth_usdc = {
           y2="24.6826"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#0666CE" key="qDywRoh6bw" />
-          <stop offset="1" stop-color="#61A9F8" key="1TsQIJuzvN" />
+          <stop stopColor="#0666CE" key="qDywRoh6bw" />
+          <stop offset="1" stopColor="#61A9F8" key="1TsQIJuzvN" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_13180_1152"
@@ -65,8 +65,8 @@ export const eth_usdc = {
           y2="29.5003"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6580EB" key="SCxP55x9d-" />
-          <stop offset="1" stop-color="#8EA2F2" key="X-MG7ntJnX" />
+          <stop stopColor="#6580EB" key="SCxP55x9d-" />
+          <stop offset="1" stopColor="#8EA2F2" key="X-MG7ntJnX" />
         </linearGradient>
       </defs>
     </svg>

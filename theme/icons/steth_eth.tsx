@@ -29,8 +29,8 @@ export const steth_eth = {
         key="xC9drZEzdH"
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M15.1612 14.5669L12.0042 9.63696L8.84719 14.5669L12.0039 16.4028L15.1612 14.5669ZM12.0042 10.9131L9.81363 14.3338L12.0039 15.6075L14.1948 14.3338L12.0042 10.9131ZM8.33752 15.357L12.0001 17.4864L15.6637 15.357L15.7639 15.5131C16.1933 16.1874 16.4335 16.9647 16.4594 17.7637C16.4854 18.5627 16.2962 19.354 15.9116 20.0548C15.527 20.7556 14.9611 21.3401 14.2732 21.7473C13.5853 22.1545 12.8006 22.3693 12.0012 22.3693C11.2018 22.3693 10.4171 22.1545 9.72913 21.7473C9.0412 21.3401 8.47533 20.7556 8.09073 20.0548C7.70612 19.354 7.51691 18.5627 7.54288 17.7637C7.56886 16.9647 7.80907 16.1874 8.23838 15.5131L8.33752 15.357Z"
         fill="white"
         key="cPWalrsl9U"
@@ -45,8 +45,8 @@ export const steth_eth = {
           y2="29.5003"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6580EB" key="fbSo0lR_yt" />
-          <stop offset="1" stop-color="#8EA2F2" key="1C2KQP8TSf" />
+          <stop stopColor="#6580EB" key="fbSo0lR_yt" />
+          <stop offset="1" stopColor="#8EA2F2" key="1C2KQP8TSf" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_13180_1139"
@@ -57,8 +57,8 @@ export const steth_eth = {
           y2="22.7498"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#00A3FF" key="ueTO508VOX" />
-          <stop offset="1" stop-color="#0B91DD" key="BIz84YxL7f" />
+          <stop stopColor="#00A3FF" key="ueTO508VOX" />
+          <stop offset="1" stopColor="#0B91DD" key="BIz84YxL7f" />
         </linearGradient>
       </defs>
     </svg>

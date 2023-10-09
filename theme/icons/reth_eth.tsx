@@ -54,8 +54,8 @@ export const reth_eth = {
           y2="29.5003"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#6580EB" key="Z_mSPuRoeM" />
-          <stop offset="1" stop-color="#8EA2F2" key="guVjPWoXFO" />
+          <stop stopColor="#6580EB" key="Z_mSPuRoeM" />
+          <stop offset="1" stopColor="#8EA2F2" key="guVjPWoXFO" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_13180_911"
@@ -66,8 +66,8 @@ export const reth_eth = {
           y2="24.775"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F75E18" key="L_be5epkmU" />
-          <stop offset="1" stop-color="#F39C74" key="5HeJz_iceD" />
+          <stop stopColor="#F75E18" key="L_be5epkmU" />
+          <stop offset="1" stopColor="#F39C74" key="5HeJz_iceD" />
         </linearGradient>
       </defs>
     </svg>
