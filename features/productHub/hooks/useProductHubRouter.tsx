@@ -1,11 +1,11 @@
 import { ALL_ASSETS } from 'features/productHub/meta'
-import type { ProductHubQueryString } from 'features/productHub/types'
+import type { ProductHubProductType, ProductHubQueryString } from 'features/productHub/types'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo } from 'react'
 
 interface useProductHubRouterProps {
   queryString: ProductHubQueryString
-  selectedProduct: string
+  selectedProduct: ProductHubProductType
   selectedToken?: string
   url?: string
 }
@@ -28,7 +28,7 @@ export const useProductHubRouter = ({
   )
   const query = useMemo(
     () =>
-      Object.keys(queryString).reduce(
+      Object.keys(queryString).reduce<{ [key in keyof ProductHubQueryString]: string | undefined }>(
         (sum, key) => ({
           ...sum,
           [key]: queryString[key as keyof typeof queryString]?.join(','),
@@ -39,9 +39,6 @@ export const useProductHubRouter = ({
   )
 
   useEffect(() => {
-    void replace({ pathname, query })
-  }, [pathname])
-  useEffect(() => {
     if (url) void replace({ pathname, query }, undefined, { shallow: true })
-  }, [query])
+  }, [pathname, query, url])
 }

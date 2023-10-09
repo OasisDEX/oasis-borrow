@@ -12,10 +12,10 @@ import { useProductHubRouter } from 'features/productHub/hooks/useProductHubRout
 import { ALL_ASSETS } from 'features/productHub/meta'
 import type {
   ProductHubFilters,
-  ProductHubProductType,
   ProductHubQueryString,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import type { PromoCardsCollection } from 'handlers/product-hub/types'
 import type { LendingProtocol } from 'lendingProtocols'
@@ -54,17 +54,19 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   const searchParams = useSearchParams()
 
   const initialQueryString = getInitialQueryString(searchParams)
+  const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
+  const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const defaultFilters = useMemo(
     () =>
       getInitialFilters({
         initialQueryString,
         initialNetwork,
         initialProtocol,
+        selectedProduct,
+        token,
       }),
-    [initialNetwork, initialProtocol, initialQueryString],
+    [initialNetwork, initialProtocol, initialQueryString, selectedProduct, token],
   )
-  const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
-  const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(defaultFilters)
   const [queryString, setQueryString] = useState<ProductHubQueryString>(initialQueryString)
 
@@ -94,7 +96,30 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
           onChange={(_selectedProduct, _selectedToken) => {
             setSelectedProduct(_selectedProduct)
             setSelectedToken(_selectedToken)
-            setSelectedFilters(defaultFilters)
+            setSelectedFilters(
+              getInitialFilters({
+                initialQueryString,
+                initialNetwork,
+                initialProtocol,
+                selectedProduct: _selectedProduct,
+                token,
+              }),
+            )
+            setQueryString(
+              Object.keys(queryString).reduce<ProductHubQueryString>(
+                (sum, key) => ({
+                  ...sum,
+                  ...(!(
+                    (key === 'debtToken' && _selectedProduct !== ProductHubProductType.Borrow) ||
+                    ((key === 'secondaryToken' || key === 'strategy') &&
+                      _selectedProduct !== ProductHubProductType.Multiply)
+                  ) && {
+                    [key]: queryString[key as keyof typeof queryString],
+                  }),
+                }),
+                {},
+              ),
+            )
           }}
         />
         {intro ? (
