@@ -3,8 +3,8 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { CHAIN_LINK_PRECISION } from 'components/constants'
 import { ethers } from 'ethers'
+import { getRpcNode } from 'helpers/getRpcNode'
 import type { PriceServiceResponse } from 'helpers/types'
-import { getRpcNode } from 'pages/api/rpc'
 import { SdaiPriceOracle__factory as SdaiPriceOracleFactory } from 'types/ethers-contracts'
 
 export async function getSDaiOracleTicker(): Promise<PriceServiceResponse> {
