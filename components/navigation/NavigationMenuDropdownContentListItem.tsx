@@ -23,7 +23,7 @@ export function NavigationMenuDropdownContentListItem({
     left: 0,
     opacity: 0,
     transition: 'opacity 200ms',
-    '-webkit-background-clip': 'text',
+    WebkitBackgroundClip: 'text',
   }
 
   return (
@@ -63,7 +63,6 @@ export function NavigationMenuDropdownContentListItem({
         </Flex>
         {description && (
           <Text
-            as="p"
             variant="paragraph4"
             sx={{ mt: 1, color: 'neutral80', em: { color: 'primary100', fontStyle: 'normal' } }}
           >
