@@ -1,20 +1,26 @@
 import React from 'react'
-import { Heading, Text } from 'theme-ui'
+import { Box, Heading, Text } from 'theme-ui'
 
 export default () => (
-  <>
+  <Box
+    sx={{
+      '& > p': {
+        my: 3,
+      },
+    }}
+  >
     <Heading as="h1">Privacy Policy</Heading>
-    <Text variant="paragraph1" sx={{ textDecoration: 'italic' }}>
+    <Text as="p" sx={{ textDecoration: 'italic' }}>
       Last updated: 26 June 2023
     </Text>
-    <Text variant="paragraph1">
+    <Text as="p">
       This Privacy Policy provides our privacy policy regarding the nature, purpose, use, and
       sharing of personal data or other information collected from the users of the summer.fi
       website and other websites which use subdomains of summer.fi (the &quot;Site&quot;). We are
       committed to protecting and respecting your privacy. Please read this carefully as this
       Privacy Policy is legally binding when you use the Site.
     </Text>
-    <Text variant="paragraph1">
+    <Text as="p">
       As used in this Privacy Policy, &quot;we&quot;, &quot;us&quot; or &quot;our&quot; refers to
       Oazo Apps Limited, a company incorporated and registered in England, United Kingdom. You can
       reach us with any requests relating to this Privacy Policy via the contact details provided
@@ -22,7 +28,7 @@ export default () => (
     </Text>
     <Heading as="h2">Data processing in connection with the Site</Heading>
     <Heading as="h3">Public Ethereum Addresses and Email Addresses</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       We use and collect public Ethereum addresses and email addresses to identify and document a
       user’s journey through our products and historical use of the Site and Services, as defined in
       the Terms of Service. We may group and analyse these user journeys and historical usage
@@ -31,25 +37,25 @@ export default () => (
       communicate with individuals regarding their use of the Services, and in other ways related to
       individual use of the Services and the Site.
     </Text>
-    <Text variant="paragraph1">
+    <Text as="p">
       The legal basis for this processing is that it is necessary to fulfil a contract with you, as
       well as our legitimate interests, such as monitoring and improving the Site, and the proper
       protection of the Site against risks.
     </Text>
     <Heading as="h3">Blockchain Data</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       Note that we are not responsible for your use of the Ethereum blockchain and your data
       processed in this decentralized and permissionless network.
     </Text>
     <Heading as="h3">Your inquiries</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       You may contact us by email at the following email address: legal@summer.fi. We use the data
       that you provide in an email to us, which you may give voluntarily, only in order to answer
       your contact question or to reply to your email in the best possible manner.
     </Text>
     <Heading as="h2">Your rights</Heading>
     <Heading as="h3">Right to access</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       As a data subject, you have the right to obtain from us free information about your personal
       data processed at any time and a copy of this information. Furthermore, you will have access
       to the following information: the purposes of the processing; the categories of personal data
@@ -64,14 +70,14 @@ export default () => (
       of such processing for you.
     </Text>
     <Heading as="h3">Right to rectification</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       You have the right to obtain from us, without undue delay, the rectification of inaccurate
       personal data concerning you. Taking into account the purposes of the processing, you shall
       have the right to have incomplete personal data completed, including by means of providing a
       supplementary statement.
     </Text>
     <Heading as="h3">Right to be forgotten</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       You have the right to obtain from us the erasure of personal data concerning you as soon as
       possible, and we shall have the obligation to erase personal data without undue delay where
       required by the law, including when:
@@ -93,7 +99,7 @@ export default () => (
       </li>
     </ul>
     <Heading as="h3">Right to restriction of processing</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       You have the right to obtain from us the restriction of processing where one of the following
       applies:
     </Text>
@@ -113,7 +119,7 @@ export default () => (
       <li>you have objected to processing pursuant to applicable laws.</li>
     </ul>
     <Heading as="h3">Right to object</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       You have the right to object, on grounds relating to your particular situation, at any time,
       to the processing of personal data concerning you. We shall no longer process the personal
       data in the event of the objection unless we can demonstrate reasonable grounds for the
@@ -121,13 +127,13 @@ export default () => (
       establishment, exercise or defense of legal claims.
     </Text>
     <Heading as="h3">Right to withdraw data protection consent</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       You have the right to withdraw your consent to the processing of your personal data at any
       time. The Company, in turn, reserves the right to terminate your access to the Site and
       Services at any time and for any reason.
     </Text>
     <Heading as="h3">International transfers</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       Please note that we are entitled to transfer your personal data may be transferred outside the
       EU/EEA/UK to third parties for the purposes of the data processing and external access by you
       of services provided by those third parties including to jurisdictions not offering the same
@@ -137,11 +143,11 @@ export default () => (
       with applicable laws.
     </Text>
     <Heading as="h3">Data security</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       We use appropriate technical and organizational security measures to protect your personal
       data. Our security measures are continuously improved in line with technological developments.
     </Text>
-    <Text variant="paragraph1">
+    <Text as="p">
       Please note that any data transmission on the Internet (e.g. communication by email) is
       generally not secure and we accept no liability for data transmitted to us via the Internet.
       Unfortunately, absolute protection is not technically possible. This information does not
@@ -149,26 +155,26 @@ export default () => (
       assume no responsibility and liability for these.
     </Text>
     <Heading as="h3">Duration of data processing</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       We will process your personal data only for the period necessary to achieve the purpose of the
       processing, or as required by applicable laws. After the period the personal data will be
       deleted.
     </Text>
     <Heading as="h3">Amendments to this Policy</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       We may amend this Privacy Policy at any time by posting the amended version on the Site
       including the effective date of the amended version. The current version of the Privacy
       Policy, as published on the Site, is applicable.
     </Text>
     <Heading as="h3">Conflict or Inconsistency</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       In the event of any conflict or inconsistency between this Privacy Policy and any non-English
       language translation thereof, the terms and provisions of this Privacy Policy shall control.
     </Text>
     <Heading as="h3">Contact</Heading>
-    <Text variant="paragraph1">
+    <Text as="p">
       Please contact us with questions, comments, or concerns regarding our Privacy Policy as well
       as with any requests at legal@summer.fi.
     </Text>
-  </>
+  </Box>
 )

@@ -1,29 +1,35 @@
 import { AppLink } from 'components/Links'
 import React from 'react'
-import { Heading, Text } from 'theme-ui'
+import { Box, Heading, Text } from 'theme-ui'
 
 export default () => {
   return (
-    <>
+    <Box
+      sx={{
+        '& > p': {
+          my: 3,
+        },
+      }}
+    >
       <Heading as="h1">Cookie Policy</Heading>
-      <Text variant="paragraph1" sx={{ textDecoration: 'italic' }}>
+      <Text as="p" sx={{ textDecoration: 'italic' }}>
         Last updated: 26 June 2023
       </Text>
-      <Text variant="paragraph1">
+      <Text as="p">
         This Policy provides our Cookie Policy regarding the nature, purpose, use, and sharing of
         personal data or other information collected from the users through cookies and other
         tracking technologies on the summer.fi website and other websites which use subdomains of
         summer.fi (the "Site"). We are committed to protecting and respecting your privacy. Please
         read this carefully as this Cookie Policy is legally binding when you use the Site.
       </Text>
-      <Text variant="paragraph1">
+      <Text as="p">
         As used in this Cookie Policy, "we", "us" or "our" refers to Oazo Apps Limited, a company
         incorporated and registered in England, United Kingdom. You can reach us with any requests
         relating to this Cookie Policy via the contact details provided below.
       </Text>
       <Heading as="h2">Data processing in connection with the Site</Heading>
       <Heading as="h3">Use of Cookies and Similar Technologies</Heading>
-      <Text variant="paragraph1">
+      <Text as="p">
         The Site is using cookies. Cookies are small text files that are placed on your computer by
         websites that you visit. They are widely used in order to make websites work, or work more
         efficiently, as well as to provide information to the owners of the site. Cookies are
@@ -35,7 +41,7 @@ export default () => {
         delivering more of the most desired features and information, as well as by resolving access
         difficulties.
       </Text>
-      <Text variant="paragraph1">
+      <Text as="p">
         We use third party service providers, to assist us in better understanding the use of our
         Site. Our service providers will place cookies on the hard drive of your computer (or use
         similar tracking technologies, together: “Cookies”) and will receive information that we
@@ -54,7 +60,7 @@ export default () => {
           <li>Errors.</li>
         </ul>
       </ul>
-      <Text variant="paragraph1">
+      <Text as="p">
         Our service providers analyses this information and provides us with aggregate reports. The
         information and analysis provided by our service providers will be used to assist us in
         better understanding our visitors' interests in our Site and how to better serve those
@@ -66,7 +72,7 @@ export default () => {
       </Text>
       <Heading as="h2">Your rights</Heading>
       <Heading as="h3">Right to access</Heading>
-      <Text variant="paragraph1">
+      <Text as="p">
         As a data subject you have the right to obtain from us free information about your personal
         data processed at any time and a copy of this information. Furthermore, you will have access
         to the following information: the purposes of the processing; the categories of personal
@@ -81,14 +87,14 @@ export default () => {
         consequences of such processing for you.
       </Text>
       <Heading as="h3">Right to rectification</Heading>
-      <Text variant="paragraph1">
+      <Text as="p">
         You have the right to obtain from us, without undue delay, the rectification of inaccurate
         personal data concerning you. Taking into account the purposes of the processing, you shall
         have the right to have incomplete personal data completed, including by means of providing a
         supplementary statement.
       </Text>
       <Heading as="h3">Right to be forgotten</Heading>
-      <Text variant="paragraph1">
+      <Text as="p">
         You have the right to obtain from us the erasure of personal data concerning you as soon as
         possible, and we shall have the obligation to erase personal data without undue delay where
         required by the law, including when:
@@ -110,7 +116,7 @@ export default () => {
         </li>
       </ul>
       <Heading as="h3">Right to restriction of processing</Heading>
-      <Text variant="paragraph1">
+      <Text as="p">
         You have the right to obtain from us the restriction of processing where one of the
         following applies:
       </Text>
@@ -130,7 +136,7 @@ export default () => {
         <li>you have objected to processing pursuant to applicable laws.</li>
       </ul>
       <Heading as="h3">Right to object</Heading>
-      <Text variant="paragraph1">
+      <Text as="p">
         You have the right to object, on grounds relating to your particular situation, at any time,
         to the processing of personal data concerning you. We shall no longer process the personal
         data in the event of the objection, unless we can demonstrate reasonable grounds for the
@@ -138,13 +144,13 @@ export default () => {
         establishment, exercise or defense of legal claims.
       </Text>
       <Heading as="h3">Right to withdraw data protection consent</Heading>
-      <Text variant="paragraph1">
+      <Text as="p">
         You have the right to withdraw your consent to the processing of your personal data at any
         time. The Company, in turn, reserves the right to terminate your access to the Site and
         Services at any time and for any reason.
       </Text>
       <Heading as="h3">International transfers</Heading>
-      <Text variant="paragraph1">
+      <Text as="p">
         Please note that we are entitled to transfer your personal data may be transferred outside
         the EU/EEA/UK to third parties for the purposes of the data processing and external access
         by you of services provided by those third parties including to jurisdictions not offering
@@ -154,11 +160,11 @@ export default () => {
         ensure compliance with applicable laws.
       </Text>
       <Heading as="h3">Data security</Heading>
-      <Text variant="paragraph1">
+      <Text as="p">
         We use appropriate technical and organizational security measures to protect your personal
         data. Our security measures are continuously improved in line with technical developments.
       </Text>
-      <Text variant="paragraph1">
+      <Text as="p">
         Please note that any data transmission on the Internet (e.g. communication by email) is
         generally not secure and we accept no liability for data transmitted to us via the Internet.
         Unfortunately, absolute protection is not technically possible. This information does not
@@ -166,10 +172,8 @@ export default () => {
         assume no responsibility and liability for these
       </Text>
       <Heading as="h3">Third party cookies</Heading>
-      <Text variant="paragraph1">
-        When you use the website, you may also be sent third party cookies
-      </Text>
-      <Text variant="paragraph1">
+      <Text as="p">When you use the website, you may also be sent third party cookies</Text>
+      <Text as="p">
         Our advertisers and service providers may send you cookies. They may use the information
         they obtain from your use of their cookies
       </Text>
@@ -178,26 +182,26 @@ export default () => {
         <li>to build a profile of your web surfing</li>
         <li>to target advertisements which may be of particular interest to you.</li>
       </ul>
-      <Text variant="paragraph1">
+      <Text as="p">
         In addition to the information we provide in this Cookie Policy, you can find out more
         information about your online choices at http://www.youronlinechoices.com/uk/opt-out-help
       </Text>
       <Heading as="h3">How to manage your cookie preferences?</Heading>
-      <Text variant="paragraph1">
+      <Text as="p">
         We have set out below the ways you can manage your cookie preferences across your browser
         and your mobile device:
       </Text>
-      <Text variant="paragraph1" sx={{ textDecoration: 'italic' }}>
+      <Text as="p" sx={{ textDecoration: 'italic' }}>
         Browser Cookies
       </Text>
-      <Text variant="paragraph1">
+      <Text as="p">
         You can prevent storage of cookies on your browser by refusing cookies or by changing your
         browser settings. Most browsers will tell you how to stop accepting new cookies, how to be
         notified when you receive a new cookie, and how to disable existing cookies. Please note
         that when you disable cookies, some features and services on the Site may not function
         properly and may cancel opt-outs that rely on cookies, such as web analytics.
       </Text>
-      <Text variant="paragraph1">
+      <Text as="p">
         You can find out how to manage cookies on popular browsers by following these links:
       </Text>
       <ul>
@@ -228,20 +232,20 @@ export default () => {
           <AppLink href="https://support.apple.com/en-gb/safari">Apple Safari</AppLink>
         </li>
       </ul>
-      <Text variant="paragraph1" sx={{ textDecoration: 'italic' }}>
+      <Text as="p" sx={{ textDecoration: 'italic' }}>
         Mobile Device Cookies
       </Text>
-      <Text variant="paragraph1">
+      <Text as="p">
         On your mobile device, your operating system may provide you with additional options to
         opt-out of interest based advertising or to otherwise reset your mobile identifiers. For
         example, you may use the “Limit Ad Tracking” setting (on iOS devices) or a setting to
         “Opt-out of Interest-Based Ads” (on Android) which allows you to limit the use of
         information about your use of apps for purposes of serving ads targeted to your interests.
       </Text>
-      <Text variant="paragraph1" sx={{ textDecoration: 'italic' }}>
+      <Text as="p" sx={{ textDecoration: 'italic' }}>
         Private Browsing
       </Text>
-      <Text variant="paragraph1">
+      <Text as="p">
         The "Private Browsing" mode, offered today by all browsers, mainly allows you to browse the
         Internet without keeping a history of the pages visited or downloads. As far as cookies are
         concerned, all those recorded during your browsing will be deleted when you close your
@@ -249,10 +253,10 @@ export default () => {
         life span is limited to the duration of your browsing.
       </Text>
       <Heading as="h3">Cookies List</Heading>
-      <Text variant="paragraph1" sx={{ textDecoration: 'italic' }}>
+      <Text as="p" sx={{ textDecoration: 'italic' }}>
         Strictly necessary cookies
       </Text>
-      <Text variant="paragraph1">
+      <Text as="p">
         These cookies are necessary for the operation of the website and cannot be disabled in our
         systems. They are usually set in response to actions you have taken that constitute a
         request for services, such as setting your privacy preferences, logging in or filling in
@@ -261,13 +265,13 @@ export default () => {
         identifying information.
       </Text>
       <table>
-        <th>
-          <td>Cookie subgroup</td>
-          <td>Domain</td>
-          <td>Cookie(s) name</td>
-          <td>Purpose</td>
-          <td>Duration</td>
-        </th>
+        <tr>
+          <th>Cookie subgroup</th>
+          <th>Domain</th>
+          <th>Cookie(s) name</th>
+          <th>Purpose</th>
+          <th>Duration</th>
+        </tr>
         <tr>
           <td>Summer.fi</td>
           <td>First party</td>
@@ -276,10 +280,10 @@ export default () => {
           <td>Session</td>
         </tr>
       </table>
-      <Text variant="paragraph1" sx={{ textDecoration: 'italic' }}>
+      <Text as="p" sx={{ textDecoration: 'italic' }}>
         Performance cookies
       </Text>
-      <Text variant="paragraph1">
+      <Text as="p">
         These cookies allow us to determine the number of visits and sources of traffic, in order to
         measure and improve the performance of our website. They also help us to identify the
         most/least visited pages and to evaluate how visitors navigate the website. All information
@@ -287,13 +291,13 @@ export default () => {
         these cookies, we will not be informed of your visit to our site.
       </Text>
       <table>
-        <th>
-          <td>Cookie subgroup</td>
-          <td>Domain</td>
-          <td>Cookie(s) name</td>
-          <td>Purpose</td>
-          <td>Duration</td>
-        </th>
+        <tr>
+          <th>Cookie subgroup</th>
+          <th>Domain</th>
+          <th>Cookie(s) name</th>
+          <th>Purpose</th>
+          <th>Duration</th>
+        </tr>
         <tr>
           <td>Groove</td>
           <td>Third party</td>
@@ -351,10 +355,10 @@ export default () => {
           <td>12 months</td>
         </tr>
       </table>
-      <Text variant="paragraph1" sx={{ textDecoration: 'italic' }}>
+      <Text as="p" sx={{ textDecoration: 'italic' }}>
         Cookies for targeted advertising
       </Text>
-      <Text variant="paragraph1">
+      <Text as="p">
         These cookies may be set within our website by our advertising partners. They may be used by
         these companies to profile your interests and serve you relevant advertisements on other
         websites. They do not store personal data directly, but are based on the unique
@@ -362,13 +366,13 @@ export default () => {
         advertising will be less targeted.
       </Text>
       <table>
-        <th>
-          <td>Cookie subgroup</td>
-          <td>Domain</td>
-          <td>Cookie(s) name</td>
-          <td>Purpose</td>
-          <td>Duration</td>
-        </th>
+        <tr>
+          <th>Cookie subgroup</th>
+          <th>Domain</th>
+          <th>Cookie(s) name</th>
+          <th>Purpose</th>
+          <th>Duration</th>
+        </tr>
         <tr>
           <td>Adroll</td>
           <td>Third party</td>
@@ -400,6 +404,6 @@ export default () => {
         Please contact us with questions, comments, or concerns regarding our Cookie Policy as well
         as with any requests at legal@summer.fi.
       </Text>
-    </>
+    </Box>
   )
 }

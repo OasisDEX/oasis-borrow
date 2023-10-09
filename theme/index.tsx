@@ -1074,12 +1074,6 @@ export const theme = themeTypeSafe({
       borderBottom: 'lightMuted',
       m: 0,
     },
-    separator: {
-      borderTop: '1px solid',
-      borderColor: 'neutral20',
-      height: '1px',
-      width: '100%',
-    },
     hrVaultFormBottom: {
       borderBottom: 'lightMuted',
       mb: -2,
@@ -1115,6 +1109,14 @@ export const theme = themeTypeSafe({
         position: 'relative',
         top: '1px',
       },
+    },
+  },
+  boxes: {
+    separator: {
+      borderTop: '1px solid',
+      borderColor: 'neutral20',
+      height: '1px',
+      width: '100%',
     },
   },
 })
