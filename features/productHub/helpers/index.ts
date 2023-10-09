@@ -1,6 +1,7 @@
 export * from './getActionUrl'
 export * from './getInitialFilters'
 export * from './getInitialQueryString'
+export * from './getProdutHubLink'
 export * from './getStrippedQueryString'
 export * from './matchRowsByFilters'
 export * from './matchRowsByNL'

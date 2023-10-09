@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import type { NavigationMenuPanelList } from 'components/navigation/Navigation.types'
+import { getProdutHubLink } from 'features/productHub/helpers'
 import { ProductHubProductType } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
-import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { capitalize } from 'lodash'
 import { Trans } from 'next-i18next'
@@ -32,7 +32,10 @@ export const getNavTokensNestedListItem = (
             components={{ em: <em /> }}
           />
         ),
-        url: `${INTERNAL_LINKS.borrow}/${getTokenGroup(token)}`,
+        url: getProdutHubLink({
+          product: ProductHubProductType.Borrow,
+          token: getTokenGroup(token),
+        }),
       },
       {
         title: t('nav.multiply'),
@@ -47,7 +50,10 @@ export const getNavTokensNestedListItem = (
             components={{ em: <em /> }}
           />
         ),
-        url: `${INTERNAL_LINKS.multiply}/${getTokenGroup(token)}`,
+        url: getProdutHubLink({
+          product: ProductHubProductType.Multiply,
+          token: getTokenGroup(token),
+        }),
       },
       {
         title: t('nav.earn'),
@@ -79,12 +85,15 @@ export const getNavTokensNestedListItem = (
             components={{ em: <em /> }}
           />
         ),
-        url: `${INTERNAL_LINKS.earn}/${getTokenGroup(token)}`,
+        url: getProdutHubLink({
+          product: ProductHubProductType.Earn,
+          token: getTokenGroup(token),
+        }),
       },
     ],
-    link: {
-      label: t('nav.tokens-more', { token }),
-      url: `${INTERNAL_LINKS.earn}/${getTokenGroup(token)}`,
-    },
+    // link: {
+    //   label: t('nav.tokens-more', { token }),
+    //   url: `${INTERNAL_LINKS.earn}/${getTokenGroup(token)}`,
+    // },
   }
 }

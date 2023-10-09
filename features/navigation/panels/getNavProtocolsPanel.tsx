@@ -2,6 +2,8 @@ import type {
   NavigationMenuPanelListItem,
   NavigationMenuPanelType,
 } from 'components/navigation/Navigation.types'
+import { getProdutHubLink } from 'features/productHub/helpers'
+import { ProductHubProductType } from 'features/productHub/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
@@ -37,17 +39,26 @@ export const getNavProtocolsPanel = ({
               {
                 title: t('nav.borrow'),
                 description: navigation.protocols.aave.borrow.description,
-                url: `${INTERNAL_LINKS.borrow}`,
+                url: getProdutHubLink({
+                  product: ProductHubProductType.Borrow,
+                  query: { protocol: [LendingProtocol.AaveV2, LendingProtocol.AaveV3] },
+                }),
               },
               {
                 title: t('nav.multiply'),
                 description: navigation.protocols.aave.multiply.description,
-                url: `${INTERNAL_LINKS.multiply}`,
+                url: getProdutHubLink({
+                  product: ProductHubProductType.Multiply,
+                  query: { protocol: [LendingProtocol.AaveV2, LendingProtocol.AaveV3] },
+                }),
               },
               {
                 title: t('nav.earn'),
                 description: navigation.protocols.aave.earn.description,
-                url: `${INTERNAL_LINKS.earn}`,
+                url: getProdutHubLink({
+                  product: ProductHubProductType.Earn,
+                  query: { protocol: [LendingProtocol.AaveV2, LendingProtocol.AaveV3] },
+                }),
               },
               {
                 title: navigation.protocols.aave.extra.title,
@@ -56,11 +67,10 @@ export const getNavProtocolsPanel = ({
                 url: navigation.protocols.aave.extra.url,
               },
             ],
-            link: {
-              label: t('nav.protocols-more', { protocol: 'Aave' }),
-              // TODO filter by protocol
-              url: `${INTERNAL_LINKS.borrow}`,
-            },
+            // link: {
+            //   label: t('nav.protocols-more', { protocol: 'Aave' }),
+            //   url: `${INTERNAL_LINKS.borrow}`,
+            // },
           },
         },
         ...(AjnaSafetySwitch
@@ -79,17 +89,26 @@ export const getNavProtocolsPanel = ({
                     {
                       title: t('nav.borrow'),
                       description: navigation.protocols.ajna.borrow.description,
-                      url: `${INTERNAL_LINKS.borrow}`,
+                      url: getProdutHubLink({
+                        product: ProductHubProductType.Borrow,
+                        query: { protocol: [LendingProtocol.Ajna] },
+                      }),
                     },
                     {
                       title: t('nav.multiply'),
                       description: navigation.protocols.ajna.multiply.description,
-                      url: `${INTERNAL_LINKS.multiply}`,
+                      url: getProdutHubLink({
+                        product: ProductHubProductType.Multiply,
+                        query: { protocol: [LendingProtocol.Ajna] },
+                      }),
                     },
                     {
                       title: t('nav.earn'),
                       description: navigation.protocols.ajna.earn.description,
-                      url: `${INTERNAL_LINKS.earn}`,
+                      url: getProdutHubLink({
+                        product: ProductHubProductType.Earn,
+                        query: { protocol: [LendingProtocol.Ajna] },
+                      }),
                     },
                     {
                       title: navigation.protocols.ajna.extra.title,
@@ -100,8 +119,7 @@ export const getNavProtocolsPanel = ({
                   ],
                   link: {
                     label: t('nav.protocols-more', { protocol: 'Ajna' }),
-                    // TODO filter by protocol
-                    url: `${INTERNAL_LINKS.borrow}`,
+                    url: `${INTERNAL_LINKS.ajna}`,
                   },
                 },
               },
@@ -119,17 +137,26 @@ export const getNavProtocolsPanel = ({
               {
                 title: t('nav.borrow'),
                 description: navigation.protocols.maker.borrow.description,
-                url: `${INTERNAL_LINKS.borrow}`,
+                url: getProdutHubLink({
+                  product: ProductHubProductType.Borrow,
+                  query: { protocol: [LendingProtocol.Maker] },
+                }),
               },
               {
                 title: t('nav.multiply'),
                 description: navigation.protocols.maker.multiply.description,
-                url: `${INTERNAL_LINKS.multiply}`,
+                url: getProdutHubLink({
+                  product: ProductHubProductType.Multiply,
+                  query: { protocol: [LendingProtocol.Maker] },
+                }),
               },
               {
                 title: t('nav.earn'),
                 description: navigation.protocols.maker.earn.description,
-                url: `${INTERNAL_LINKS.earn}`,
+                url: getProdutHubLink({
+                  product: ProductHubProductType.Earn,
+                  query: { protocol: [LendingProtocol.Maker] },
+                }),
               },
               {
                 title: navigation.protocols.maker.extra.title,
@@ -138,11 +165,10 @@ export const getNavProtocolsPanel = ({
                 url: navigation.protocols.maker.extra.url,
               },
             ],
-            link: {
-              label: t('nav.protocols-more', { protocol: 'Maker' }),
-              // TODO filter by protocol
-              url: `${INTERNAL_LINKS.borrow}`,
-            },
+            // link: {
+            //   label: t('nav.protocols-more', { protocol: 'Maker' }),
+            //   url: `${INTERNAL_LINKS.borrow}`,
+            // },
           },
         },
         {
@@ -158,17 +184,26 @@ export const getNavProtocolsPanel = ({
               {
                 title: t('nav.borrow'),
                 description: navigation.protocols.spark.borrow.description,
-                url: `${INTERNAL_LINKS.borrow}`,
+                url: getProdutHubLink({
+                  product: ProductHubProductType.Borrow,
+                  query: { protocol: [LendingProtocol.SparkV3] },
+                }),
               },
               {
                 title: t('nav.multiply'),
                 description: navigation.protocols.spark.multiply.description,
-                url: `${INTERNAL_LINKS.multiply}`,
+                url: getProdutHubLink({
+                  product: ProductHubProductType.Multiply,
+                  query: { protocol: [LendingProtocol.SparkV3] },
+                }),
               },
               {
                 title: t('nav.earn'),
                 description: navigation.protocols.spark.earn.description,
-                url: `${INTERNAL_LINKS.earn}`,
+                url: getProdutHubLink({
+                  product: ProductHubProductType.Earn,
+                  query: { protocol: [LendingProtocol.SparkV3] },
+                }),
               },
               {
                 title: navigation.protocols.spark.extra.title,
@@ -177,11 +212,10 @@ export const getNavProtocolsPanel = ({
                 url: navigation.protocols.spark.extra.url,
               },
             ],
-            link: {
-              label: t('nav.protocols-more', { protocol: 'Spark' }),
-              // TODO filter by protocol
-              url: `${INTERNAL_LINKS.borrow}`,
-            },
+            // link: {
+            //   label: t('nav.protocols-more', { protocol: 'Spark' }),
+            //   url: `${INTERNAL_LINKS.borrow}`,
+            // },
           },
         },
       ],

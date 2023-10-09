@@ -12,10 +12,14 @@ import {
   getProductEarnNavItems,
   getProductMultiplyNavItems,
 } from 'features/navigation/helpers'
-import type { ProductHubItem, ProductHubPromoCards } from 'features/productHub/types'
+import { getProdutHubLink } from 'features/productHub/helpers'
+import {
+  type ProductHubItem,
+  type ProductHubPromoCards,
+  ProductHubProductType,
+} from 'features/productHub/types'
 import type { SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChange'
 import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
-import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
@@ -101,7 +105,9 @@ export const getNavProductsPanel = ({
               ],
               link: {
                 label: t('nav.products-more', { product: t('nav.earn') }),
-                url: INTERNAL_LINKS.earn,
+                url: getProdutHubLink({
+                  product: ProductHubProductType.Earn,
+                }),
               },
             },
           },
@@ -130,7 +136,9 @@ export const getNavProductsPanel = ({
               ],
               link: {
                 label: t('nav.products-more', { product: t('nav.multiply') }),
-                url: INTERNAL_LINKS.multiply,
+                url: getProdutHubLink({
+                  product: ProductHubProductType.Multiply,
+                }),
               },
             },
           },
@@ -215,7 +223,9 @@ export const getNavProductsPanel = ({
               ],
               link: {
                 label: t('nav.products-more', { product: t('nav.borrow') }),
-                url: INTERNAL_LINKS.borrow,
+                url: getProdutHubLink({
+                  product: ProductHubProductType.Borrow,
+                }),
               },
             },
           },
