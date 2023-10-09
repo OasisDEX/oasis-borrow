@@ -33,7 +33,7 @@ import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
 import {
   extractStopLossDataInput,
   getAaveLikeCommandContractType,
-  getAveeStopLossTriggerType,
+  getAaveLikeStopLossTriggerType,
 } from 'features/automation/protection/stopLoss/openFlow/helpers'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
@@ -893,7 +893,7 @@ export function createOpenAaveStateMachine(
               ...prepareStopLossTriggerDataV2(
                 commandContractType,
                 proxyAddress!,
-                getAveeStopLossTriggerType(context.strategyConfig.protocol),
+                getAaveLikeStopLossTriggerType(context.strategyConfig.protocol),
                 false,
                 stopLossLevel,
                 debtTokenAddress!,
