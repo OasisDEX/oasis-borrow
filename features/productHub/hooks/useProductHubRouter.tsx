@@ -3,7 +3,7 @@ import type { ProductHubProductType, ProductHubQueryString } from 'features/prod
 import { useRouter } from 'next/router'
 import { useEffect, useMemo } from 'react'
 
-interface useProductHubRouterProps {
+interface UseProductHubRouterProps {
   queryString: ProductHubQueryString
   selectedProduct: ProductHubProductType
   selectedToken?: string
@@ -15,7 +15,7 @@ export const useProductHubRouter = ({
   selectedProduct,
   selectedToken,
   url,
-}: useProductHubRouterProps) => {
+}: UseProductHubRouterProps) => {
   const { replace } = useRouter()
 
   const tokenInUrl = useMemo(
