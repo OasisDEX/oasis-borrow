@@ -6,6 +6,7 @@ export function getTokenGroup(token: string): string {
     case 'CBETH':
     case 'RETH':
     case 'WSTETH':
+    case 'STETH':
     case 'YIELDETH':
       return 'ETH'
     case 'TBTC':
