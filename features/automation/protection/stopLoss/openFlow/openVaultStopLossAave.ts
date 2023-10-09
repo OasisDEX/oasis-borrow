@@ -15,7 +15,7 @@ import {
 import {
   extractStopLossDataInput,
   getAaveLikeCommandContractType,
-  getAveeStopLossTriggerType,
+  getAaveLikeStopLossTriggerType,
 } from 'features/automation/protection/stopLoss/openFlow/helpers'
 import {
   notRequiredAaveTranslations,
@@ -57,7 +57,7 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
       ...prepareStopLossTriggerDataV2(
         commandContractType,
         proxyAddress!,
-        getAveeStopLossTriggerType(context.strategyConfig.protocol),
+        getAaveLikeStopLossTriggerType(context.strategyConfig.protocol),
         collateralActive,
         stopLossValue,
         debtTokenAddress!,

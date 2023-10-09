@@ -27,7 +27,7 @@ import {
 } from 'features/automation/protection/stopLoss/helpers'
 import {
   getAaveLikeCommandContractType,
-  getAveeStopLossTriggerType,
+  getAaveLikeStopLossTriggerType,
 } from 'features/automation/protection/stopLoss/openFlow/helpers'
 import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
@@ -184,7 +184,7 @@ export function createGetAaveStopLossMetadata(
           const baseTriggerData = prepareStopLossTriggerDataV2(
             getAaveLikeCommandContractType(lendingProtocol),
             owner,
-            getAveeStopLossTriggerType(lendingProtocol),
+            getAaveLikeStopLossTriggerType(lendingProtocol),
             collateralActive,
             stopLossLevel,
             debtTokenAddress!,
