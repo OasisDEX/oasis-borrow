@@ -12,7 +12,7 @@ import {
   type SwapWidgetChangeAction,
   SWAP_WIDGET_CHANGE_SUBJECT,
 } from 'features/swapWidget/SwapWidgetChange'
-import { useConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard/useConnection'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
