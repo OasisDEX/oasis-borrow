@@ -107,7 +107,7 @@ export const EXTERNAL_LINKS = {
       'https://docs.summer.fi/general/get-liquidity-without-selling-your-crypto',
       'https://docs.summer.fi/general/amplify-exposure-to-your-crypto-with-downside-protection',
       'https://docs.summer.fi/general/maximize-earnings-on-your-crypto-assets',
-    ]
+    ],
   },
   LEGACY_APP: 'https://legacy.summer.fi',
   AJNA: {
