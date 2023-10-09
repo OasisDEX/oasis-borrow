@@ -27,6 +27,7 @@ const publicRuntimeConfig = {
   aaveSubgraphUrlOptimism: process.env.AAVE_OPTIMISM_SUBGRAPH_URL,
   referralSubgraphUrl: process.env.REFERRAL_SUBGRAPH_URL,
   configUrl: process.env.CONFIG_URL,
+  rpcGatewayUrl: process.env.RPC_GATEWAY,
 }
 
 module.exports = {
