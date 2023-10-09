@@ -3,7 +3,7 @@ import nextJest from 'next/jest'
 
 const config: Config.InitialOptions = {
   transform: {
-    '\\.(mdx|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
       '<rootDir>/file-transformer.js',
   },
   moduleDirectories: ['node_modules', '<rootDir>'],
@@ -23,7 +23,9 @@ const finalConfig = async (): Promise<Config.InitialOptions> => {
   const nextConfig: Config.InitialOptions = await createJestConfig(config)()
   return {
     ...nextConfig,
-    transformIgnorePatterns: ['/node_modules/(?!(@web3-onboard|nanoid)/)'],
+    transformIgnorePatterns: [
+      '/node_modules/(?!(@web3-onboard|nanoid|ramda|uint8arrays|multiformats|@walletconnect)/)',
+    ],
   }
 }
 

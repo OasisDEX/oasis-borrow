@@ -23,16 +23,16 @@ export const swapWidgetConfig: WidgetConfig = {
   theme: {
     palette: {
       background: {
-        default: colors.neutral10,
-        paper: colors.neutral10,
+        default: colors?.neutral10 as string | undefined,
+        paper: colors?.neutral10 as string | undefined,
       },
       primary: {
-        main: colors.primary100,
+        main: colors?.primary100,
       },
     },
     shape: {
-      borderRadius: radii.medium,
-      borderRadiusSecondary: radii.round,
+      borderRadius: (radii as any)?.medium as string,
+      borderRadiusSecondary: (radii as any)?.round as string,
     },
   },
   hiddenUI: ['walletMenu', 'appearance', 'poweredBy', 'toAddress'],
@@ -42,4 +42,5 @@ export const swapWidgetConfig: WidgetConfig = {
   bridges: {
     deny: ['polygon', 'omni', 'gnosis', 'hyphen', 'multichain'],
   },
+  fee: 0.002,
 }

@@ -1,4 +1,4 @@
-import type { NavigationMenuPanelIcon } from 'components/navigation/NavigationMenuPanel'
+import type { NavigationMenuPanelIcon } from 'components/navigation/Navigation.types'
 
 export const getNavIconConfig = ({
   tokens,

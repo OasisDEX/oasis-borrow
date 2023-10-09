@@ -1,5 +1,5 @@
 import { networkSetById } from 'blockchain/networks'
-import { useWeb3OnBoardConnectorContext } from 'features/web3OnBoard'
+import { useWeb3OnBoardConnectorContext } from 'features/web3OnBoard/web3-on-board-connector-provider'
 import { AppSpinner } from 'helpers/AppSpinner'
 import React, { useEffect, useState } from 'react'
 import { Image } from 'theme-ui'

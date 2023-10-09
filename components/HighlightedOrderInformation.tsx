@@ -2,7 +2,7 @@ import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
 import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Text } from 'theme-ui'
 
 interface EstimationOnCloseProps {
@@ -10,7 +10,7 @@ interface EstimationOnCloseProps {
   label: string
   symbol?: string
   value: ReactNode
-  valueSx?: SxStyleProp
+  valueSx?: ThemeUIStyleObject
 }
 
 export function HighlightedOrderInformation({

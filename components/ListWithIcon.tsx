@@ -1,26 +1,29 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { Trans } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Grid, Text } from 'theme-ui'
+import { checkbox } from 'theme/icons'
+
+import { Icon } from './Icon'
+import type { IconProps } from './Icon.types'
 
 interface IListWithIconProps {
   items: string[]
-  icon?: string
+  icon?: IconProps['icon']
   withIcon?: boolean
   iconSize?: number | string | number[]
   textVariant?: string
   iconColor?: string
-  listStyle?: SxStyleProp
-  itemStyle?: SxStyleProp
-  iconStyle?: SxStyleProp
+  listStyle?: ThemeUIStyleObject
+  itemStyle?: ThemeUIStyleObject
+  iconStyle?: ThemeUIStyleObject
   components?: { [key: number]: ReactNode }
 }
 
 export function ListWithIcon({
   items,
-  icon = 'checkbox',
+  icon = checkbox,
   withIcon = true,
   iconSize = '20px',
   textVariant = 'paragraph3',
@@ -47,7 +50,7 @@ export function ListWithIcon({
           >
             {withIcon && (
               <Icon
-                name={icon}
+                icon={icon}
                 size={iconSize}
                 color={iconColor}
                 sx={{ position: 'absolute', top: '3px', left: 0, ...iconStyle }}

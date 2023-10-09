@@ -13,7 +13,7 @@ import type {
   ProductHubQueryString,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
-import { useWalletManagement } from 'features/web3OnBoard'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { useAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import type { FC } from 'react'

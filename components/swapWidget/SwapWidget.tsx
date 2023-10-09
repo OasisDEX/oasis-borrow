@@ -1,7 +1,7 @@
 import { LiFiWalletManagement, supportedWallets } from '@lifi/wallet-management'
 import { LiFiWidget } from '@lifi/widget'
 import { useWallets } from '@web3-onboard/react'
-import { useMainContext } from 'components/context'
+import { useMainContext } from 'components/context/MainContextProvider'
 import type { SwapWidgetState } from 'features/swapWidget/SwapWidgetChange'
 import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
 import { useTrackSwapWidgetEvents } from 'helpers/hooks'

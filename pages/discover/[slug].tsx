@@ -1,10 +1,7 @@
 import { WithConnection } from 'components/connectWallet'
-import { FunctionalContextHandler } from 'components/context'
-import {
-  DiscoverPageLayout,
-  discoverPageLayoutProps,
-  discoverPageSeoTags,
-} from 'features/discover/layout'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
+import { AppLayout } from 'components/layouts/AppLayout'
+import { discoverPageSeoTags } from 'features/discover/layout'
 import { discoverPagesMeta } from 'features/discover/meta'
 import type { DiscoverPages } from 'features/discover/types'
 import { DiscoverView } from 'features/discover/views/DiscoverView'
@@ -16,20 +13,20 @@ import React from 'react'
 
 function DiscoverPage({ kind }: { kind: DiscoverPages }) {
   return (
-    <FunctionalContextHandler>
-      <WithConnection>
-        <WithTermsOfService>
-          <WithWalletAssociatedRisk>
-            <DiscoverView kind={kind} />
-          </WithWalletAssociatedRisk>
-        </WithTermsOfService>
-      </WithConnection>
-    </FunctionalContextHandler>
+    <AppLayout>
+      <FunctionalContextHandler>
+        <WithConnection>
+          <WithTermsOfService>
+            <WithWalletAssociatedRisk>
+              <DiscoverView kind={kind} />
+            </WithWalletAssociatedRisk>
+          </WithTermsOfService>
+        </WithConnection>
+      </FunctionalContextHandler>
+    </AppLayout>
   )
 }
 
-DiscoverPage.layout = DiscoverPageLayout
-DiscoverPage.layoutProps = discoverPageLayoutProps
 DiscoverPage.seoTags = discoverPageSeoTags
 
 export default DiscoverPage

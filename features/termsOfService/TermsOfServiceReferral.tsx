@@ -1,4 +1,4 @@
-import { useAccountContext } from 'components/context'
+import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 

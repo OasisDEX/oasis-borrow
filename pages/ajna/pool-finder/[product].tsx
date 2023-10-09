@@ -1,4 +1,4 @@
-import { ProductContextHandler } from 'components/context'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
 import { AjnaPoolFinderController } from 'features/ajna/common/controls/AjnaPoolFinderController'
@@ -11,7 +11,7 @@ import { FeaturesEnum } from 'types/config'
 
 function AjnaPoolFinderPage({ product }: { product: ProductHubProductType }) {
   return (
-    <>
+    <AjnaLayout>
       <PageSEOTags
         title="seo.ajnaPoolFinder.title"
         description="seo.ajna.description"
@@ -22,11 +22,10 @@ function AjnaPoolFinderPage({ product }: { product: ProductHubProductType }) {
           <AjnaPoolFinderController product={product} />
         </WithFeatureToggleRedirect>
       </ProductContextHandler>
-    </>
+    </AjnaLayout>
   )
 }
 
-AjnaPoolFinderPage.layout = AjnaLayout
 AjnaPoolFinderPage.seoTags = ajnaPageSeoTags
 
 export default AjnaPoolFinderPage

@@ -1,4 +1,4 @@
-import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
+import type { NavigationMenuPanelType } from 'components/navigation/Navigation.types'
 import {
   getNavIconConfig,
   getNavTokensDataPerToken,

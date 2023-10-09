@@ -1,62 +1,8 @@
 import { AppLink } from 'components/Links'
-import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
 
-export interface NavigationMenuPanelAsset {
-  token: string
-  link: string
-}
-
-export interface NavigationMenuPanelLink {
-  icon: string
-  title: string
-  link: string
-  hash?: string
-  footnote?: ReactNode
-}
-
-export interface NavigationMenuPanelIcon {
-  icon?: string
-  image?: string
-  tokens?: string[]
-  position: 'global' | 'title'
-}
-
-export type NavigationMenuPanelListTags = ([string, string] | string)[]
-
-export interface NavigationMenuPanelListItem {
-  description?: ReactNode
-  icon?: NavigationMenuPanelIcon
-  url?: string
-  list?: NavigationMenuPanelList
-  hoverColor?: string
-  promoted?: boolean
-  tags?: NavigationMenuPanelListTags
-  title: ReactNode
-  callback?: () => void
-}
-
-export interface NavigationMenuPanelList {
-  header?: string
-  items: NavigationMenuPanelListItem[]
-  link?: {
-    label: string
-    url: string
-  }
-  tight?: boolean
-}
-
-export interface NavigationMenuPanelType {
-  label: string
-  lists: NavigationMenuPanelList[]
-  url?: string
-}
-type NavigationMenuPanelProps = NavigationMenuPanelType & {
-  currentPanel?: string
-  isPanelOpen: boolean
-  onMouseEnter(center: number): void
-}
+import type { NavigationMenuPanelProps } from './Navigation.types'
 
 function NavigationMenuPanelLabel({
   currentPanel,

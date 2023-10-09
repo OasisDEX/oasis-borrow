@@ -1,6 +1,6 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
-import { MarketingLayout } from 'components/layouts'
+import { Icon } from 'components/Icon'
+import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { AppLink } from 'components/Links'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useScrollToTop } from 'helpers/useScrollToTop'
@@ -8,6 +8,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
+import { arrow_right, close } from 'theme/icons'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -71,190 +72,187 @@ function BrandAssetsPage() {
   useScrollToTop()
   const { t } = useTranslation()
   return (
-    <Box sx={{ width: '100%', mt: 5, pb: 7 }}>
-      <Heading variant="header2" sx={{ textAlign: 'center', mb: 2 }}>
-        {t('brand-assets.heading')}
-      </Heading>
-      <Text variant="paragraph1" sx={{ color: 'neutral80', textAlign: 'center' }}>
-        {t('brand-assets.intro')}
-      </Text>
-      <AppLink
-        variant="inText"
-        target="_blank"
-        href={brandAssetsZipUrl}
-        sx={{
-          pt: '8px',
-          fontSize: 3,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        {`${t('brand-assets.intro-cta')} ${' '}`}
-        <Icon
-          name="arrow_right"
-          size="14px"
+    <MarketingLayout topBackground="lighter" variant="marketingSmallContainer">
+      <Box sx={{ width: '100%', mt: 5, pb: 7 }}>
+        <Heading variant="header2" sx={{ textAlign: 'center', mb: 2 }}>
+          {t('brand-assets.heading')}
+        </Heading>
+        <Text variant="paragraph1" sx={{ color: 'neutral80', textAlign: 'center' }}>
+          {t('brand-assets.intro')}
+        </Text>
+        <AppLink
+          variant="inText"
+          target="_blank"
+          href={brandAssetsZipUrl}
           sx={{
-            ml: 1,
-            position: 'relative',
+            pt: '8px',
+            fontSize: 3,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
+        >
+          {`${t('brand-assets.intro-cta')} ${' '}`}
+          <Icon
+            icon={arrow_right}
+            size="14px"
+            sx={{
+              ml: 1,
+              position: 'relative',
+            }}
+          />
+        </AppLink>
+        <BlockHeading
+          headingTranslation={t('brand-assets.category.logo.heading')}
+          infoTranslation={t('brand-assets.category.logo.info')}
         />
-      </AppLink>
-      <BlockHeading
-        headingTranslation={t('brand-assets.category.logo.heading')}
-        infoTranslation={t('brand-assets.category.logo.info')}
-      />
-      <Grid sx={twoColumnsLayoutBoxSX}>
-        {assetsList.logos.map((asset) => (
-          <Box
-            key={asset.imageName}
-            sx={{
-              borderRadius: 12,
-              borderColor: 'neutral20',
-              borderStyle: 'solid',
-              borderWidth: 1,
-              backgroundColor: asset.backgroundColor || 'neutral10',
-              backgroundImage: asset.backgroundGradient,
-              display: 'flex',
-              mt: 25,
-            }}
-          >
-            <Image
-              src={staticFilesRuntimeUrl(`/static/img/logos/${asset.imageName}.svg`)}
-              sx={{ height: '45px', margin: '70px auto' }}
-            />
-          </Box>
-        ))}
-      </Grid>
-      <BlockHeading
-        headingTranslation={t('brand-assets.category.dot.heading')}
-        infoTranslation={t('brand-assets.category.dot.info')}
-      />
-      <Grid sx={threeColumnsLayoutBoxSX}>
-        {assetsList.dots.map((dot) => (
-          <Box
-            key={dot.imageName}
-            sx={{
-              borderRadius: 12,
-              borderColor: 'neutral20',
-              borderStyle: 'solid',
-              backgroundColor: dot.backgroundColor || 'neutral10',
-              backgroundImage: dot.backgroundGradient,
-              borderWidth: 1,
-              display: 'flex',
-              mt: 25,
-            }}
-          >
-            <Image
-              src={staticFilesRuntimeUrl(`/static/img/logos/${dot.imageName}.svg`)}
-              sx={{ height: '75px', margin: '30px auto' }}
-            />
-          </Box>
-        ))}
-      </Grid>
-      <BlockHeading
-        headingTranslation={t('brand-assets.category.minimum-size.heading')}
-        infoTranslation={t('brand-assets.category.minimum-size.info')}
-      />
-      <Grid sx={twoColumnsLayoutBoxSX}>
-        {assetsList.minimumSizeList.map((minSizeAsset) => (
-          <Box>
+        <Grid sx={twoColumnsLayoutBoxSX}>
+          {assetsList.logos.map((asset) => (
             <Box
-              bg="neutral30"
-              sx={{
-                borderRadius: 12,
-                display: 'flex',
-                flexDirection: 'column',
-                textAlign: 'center',
-                mt: 25,
-                mb: 3,
-              }}
-            >
-              <Image
-                src={staticFilesRuntimeUrl('/static/img/logos/logo_black.svg')}
-                sx={{
-                  height: '45px',
-                  mt: 80,
-                  mr: 'auto',
-                  mb: 10,
-                  ml: 'auto',
-                  pb: 2,
-                  borderBottomStyle: 'dashed',
-                  borderBottomWidth: 1,
-                  borderBottomColor: 'neutral80',
-                }}
-              />
-              <Text variant="paragraph3" sx={{ color: 'neutral80', mb: 80 }}>
-                {t(`brand-assets.category.minimum-size.${minSizeAsset}-minimum-size`)}
-              </Text>
-            </Box>
-            <Text variant="paragraph2" sx={{ color: 'primary100' }}>
-              {t(`brand-assets.category.minimum-size.${minSizeAsset}`)}
-            </Text>
-            <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
-              {t(`brand-assets.category.minimum-size.${minSizeAsset}-minimum-size`)}{' '}
-              {t('brand-assets.category.minimum-size.width')}
-            </Text>
-          </Box>
-        ))}
-      </Grid>
-      <BlockHeading
-        headingTranslation={t('brand-assets.category.best-practices.heading')}
-        infoTranslation={t('brand-assets.category.best-practices.info')}
-      />
-      <Grid sx={twoColumnsLayoutBoxSX}>
-        {assetsList.incorrectUseCasesMap.map((incorrectUseCase) => (
-          <Box>
-            <Box
-              bg="neutral30"
+              key={asset.imageName}
               sx={{
                 borderRadius: 12,
                 borderColor: 'neutral20',
                 borderStyle: 'solid',
                 borderWidth: 1,
+                backgroundColor: asset.backgroundColor || 'neutral10',
+                backgroundImage: asset.backgroundGradient,
                 display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
                 mt: 25,
-                mb: 3,
-                height: 250,
               }}
             >
               <Image
-                src={staticFilesRuntimeUrl(
-                  `/static/img/logos/incorrect-uses/${incorrectUseCase}.png`,
-                )}
-                sx={{ width: '60%' }}
+                src={staticFilesRuntimeUrl(`/static/img/logos/${asset.imageName}.svg`)}
+                sx={{ height: '45px', margin: '70px auto' }}
               />
             </Box>
-            <Text variant="paragraph2" sx={{ color: 'primary100' }}>
-              <Icon
-                name="close"
-                size="12px"
-                sx={{
-                  ml: 1,
-                  mr: 2,
-                  position: 'relative',
-                  path: {
-                    fill: 'critical100',
-                  },
-                }}
+          ))}
+        </Grid>
+        <BlockHeading
+          headingTranslation={t('brand-assets.category.dot.heading')}
+          infoTranslation={t('brand-assets.category.dot.info')}
+        />
+        <Grid sx={threeColumnsLayoutBoxSX}>
+          {assetsList.dots.map((dot) => (
+            <Box
+              key={dot.imageName}
+              sx={{
+                borderRadius: 12,
+                borderColor: 'neutral20',
+                borderStyle: 'solid',
+                backgroundColor: dot.backgroundColor || 'neutral10',
+                backgroundImage: dot.backgroundGradient,
+                borderWidth: 1,
+                display: 'flex',
+                mt: 25,
+              }}
+            >
+              <Image
+                src={staticFilesRuntimeUrl(`/static/img/logos/${dot.imageName}.svg`)}
+                sx={{ height: '75px', margin: '30px auto' }}
               />
-              {t(`brand-assets.category.best-practices.${incorrectUseCase}`)}
-            </Text>
-          </Box>
-        ))}
-      </Grid>
-    </Box>
+            </Box>
+          ))}
+        </Grid>
+        <BlockHeading
+          headingTranslation={t('brand-assets.category.minimum-size.heading')}
+          infoTranslation={t('brand-assets.category.minimum-size.info')}
+        />
+        <Grid sx={twoColumnsLayoutBoxSX}>
+          {assetsList.minimumSizeList.map((minSizeAsset) => (
+            <Box>
+              <Box
+                bg="neutral30"
+                sx={{
+                  borderRadius: 12,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  textAlign: 'center',
+                  mt: 25,
+                  mb: 3,
+                }}
+              >
+                <Image
+                  src={staticFilesRuntimeUrl('/static/img/logos/logo_black.svg')}
+                  sx={{
+                    height: '45px',
+                    mt: 80,
+                    mr: 'auto',
+                    mb: 10,
+                    ml: 'auto',
+                    pb: 2,
+                    borderBottomStyle: 'dashed',
+                    borderBottomWidth: 1,
+                    borderBottomColor: 'neutral80',
+                  }}
+                />
+                <Text variant="paragraph3" sx={{ color: 'neutral80', mb: 80 }}>
+                  {t(`brand-assets.category.minimum-size.${minSizeAsset}-minimum-size`)}
+                </Text>
+              </Box>
+              <Text variant="paragraph2" sx={{ color: 'primary100' }}>
+                {t(`brand-assets.category.minimum-size.${minSizeAsset}`)}
+              </Text>
+              <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
+                {t(`brand-assets.category.minimum-size.${minSizeAsset}-minimum-size`)}{' '}
+                {t('brand-assets.category.minimum-size.width')}
+              </Text>
+            </Box>
+          ))}
+        </Grid>
+        <BlockHeading
+          headingTranslation={t('brand-assets.category.best-practices.heading')}
+          infoTranslation={t('brand-assets.category.best-practices.info')}
+        />
+        <Grid sx={twoColumnsLayoutBoxSX}>
+          {assetsList.incorrectUseCasesMap.map((incorrectUseCase) => (
+            <Box>
+              <Box
+                bg="neutral30"
+                sx={{
+                  borderRadius: 12,
+                  borderColor: 'neutral20',
+                  borderStyle: 'solid',
+                  borderWidth: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  mt: 25,
+                  mb: 3,
+                  height: 250,
+                }}
+              >
+                <Image
+                  src={staticFilesRuntimeUrl(
+                    `/static/img/logos/incorrect-uses/${incorrectUseCase}.png`,
+                  )}
+                  sx={{ width: '60%' }}
+                />
+              </Box>
+              <Text variant="paragraph2" sx={{ color: 'primary100' }}>
+                <Icon
+                  icon={close}
+                  size="12px"
+                  sx={{
+                    ml: 1,
+                    mr: 2,
+                    position: 'relative',
+                    path: {
+                      fill: 'critical100',
+                    },
+                  }}
+                />
+                {t(`brand-assets.category.best-practices.${incorrectUseCase}`)}
+              </Text>
+            </Box>
+          ))}
+        </Grid>
+      </Box>
+    </MarketingLayout>
   )
 }
 
-BrandAssetsPage.layout = MarketingLayout
-BrandAssetsPage.layoutProps = {
-  topBackground: 'lighter',
-  variant: 'marketingSmallContainer',
-}
 BrandAssetsPage.seoTags = (
   <PageSEOTags
     title="seo.brand-assets.title"
@@ -262,6 +260,5 @@ BrandAssetsPage.seoTags = (
     url="/brand"
   />
 )
-BrandAssetsPage.theme = 'Landing'
 
 export default BrandAssetsPage

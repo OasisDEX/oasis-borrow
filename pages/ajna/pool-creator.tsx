@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet'
-import { ProductContextHandler } from 'components/context'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
 import { AjnaPoolCreatorController } from 'features/ajna/common/controls/AjnaPoolCreatorController'
@@ -12,7 +12,7 @@ import { FeaturesEnum } from 'types/config'
 
 function AjnaPoolCreatorPage() {
   return (
-    <>
+    <AjnaLayout>
       <PageSEOTags
         title="seo.ajnaPoolCreator.title"
         description="seo.ajnaPoolCreator.description"
@@ -29,11 +29,10 @@ function AjnaPoolCreatorPage() {
           </WithTermsOfService>
         </WithConnection>
       </ProductContextHandler>
-    </>
+    </AjnaLayout>
   )
 }
 
-AjnaPoolCreatorPage.layout = AjnaLayout
 AjnaPoolCreatorPage.seoTags = ajnaPageSeoTags
 
 export default AjnaPoolCreatorPage

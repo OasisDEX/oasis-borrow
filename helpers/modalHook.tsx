@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import * as ReactDOM from 'react-dom'
+import { createPortal } from 'react-dom'
 
 export interface WithClose {
   close?: () => void
@@ -62,7 +62,7 @@ export function ModalProvider(props: { children?: React.ReactNode }) {
     >
       {props.children}
       {TheModal &&
-        ReactDOM.createPortal(
+        createPortal(
           <TheModal.modalComponent {...{ close, ...TheModal.modalComponentProps }} />,
           document.body,
         )}

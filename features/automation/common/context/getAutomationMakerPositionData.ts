@@ -1,4 +1,4 @@
-import type { AutomationPositionData } from 'components/context'
+import type { AutomationPositionData } from 'components/context/AutomationContextProvider'
 
 import type { GetAutomationMakerPositionDataParams } from './getAutomationMakerPositionData.types'
 

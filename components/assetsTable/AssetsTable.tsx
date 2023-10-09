@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { AssetsTableBanner } from 'components/assetsTable/AssetsTableBanner'
 import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
 import { sortRows } from 'components/assetsTable/helpers/sortRows'
@@ -10,12 +9,14 @@ import type {
   AssetsTableSortingSettings,
 } from 'components/assetsTable/types'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { Icon } from 'components/Icon'
 import { StatefulTooltip } from 'components/Tooltip'
 import { getRandomString } from 'helpers/getRandomString'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
+import { question_o } from 'theme/icons'
 
 interface AssetsTableHeaderCellProps {
   first: boolean
@@ -221,7 +222,7 @@ export function AssetsTableHeaderCell({
                 lineHeight: 'body',
               }}
             >
-              <Icon name="question_o" size={16} color="neutral80" />
+              <Icon icon={question_o} size={16} color="neutral80" />
             </StatefulTooltip>
           )}
           {isSortable && (
@@ -292,7 +293,7 @@ export function AssetsTableDataCell({ label, row }: AssetsTableDataCellProps) {
         p: '14px 12px',
         textAlign: 'right',
         whiteSpace: 'nowrap',
-        '&:first-child': {
+        '&:first-of-type': {
           textAlign: 'left',
         },
       }}

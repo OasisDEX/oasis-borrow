@@ -1,11 +1,13 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import type { ContextConnected } from 'blockchain/network.types'
 import { BlockNativeAvatar } from 'components/BlockNativeAvatar'
-import { useAccountContext, useMainContext, useNotificationSocket } from 'components/context'
+import { useAccountContext } from 'components/context/AccountContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
+import { useNotificationSocket } from 'components/context/NotificationSocketProvider'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import type { AccountDetails } from 'features/account/AccountData'
-import { useWalletManagement } from 'features/web3OnBoard'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
@@ -21,8 +23,9 @@ import Link from 'next/link'
 import type { ChangeEvent } from 'react'
 import React, { useCallback, useRef, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Card, Flex, Grid, Heading, Link as ThemeLink, Text, Textarea } from 'theme-ui'
+import { chevron_down, chevron_up, dai_color, settings, sign_out } from 'theme/icons'
 import { UnreachableCaseError } from 'ts-essentials'
 
 import { SLIPPAGE_OPTIONS } from './userSettings.constants'
@@ -66,12 +69,12 @@ function SlippageOptionButton({
   )
 }
 
-const validationMessageStyles: SxStyleProp = {
+const validationMessageStyles: ThemeUIStyleObject = {
   fontWeight: 'semiBold',
   fontSize: 2,
 }
 
-const saveStatusMessageStyles: SxStyleProp = {
+const saveStatusMessageStyles: ThemeUIStyleObject = {
   fontWeight: 'semiBold',
   fontSize: 2,
   textAlign: 'center',
@@ -172,7 +175,7 @@ function SlippageSettingsForm() {
               size="auto"
               width="12"
               height="7"
-              name={customOpened ? 'chevron_up' : 'chevron_down'}
+              icon={customOpened ? chevron_up : chevron_down}
               sx={{ ml: '6px', position: 'relative', top: '1px' }}
             />
           </Flex>
@@ -288,7 +291,7 @@ function WalletInfo() {
 
           {accountData && accountData.daiBalance && (
             <Flex sx={{ alignItems: 'center' }}>
-              <Icon sx={{ zIndex: 1 }} name="dai_color" size={16} />
+              <Icon sx={{ zIndex: 1 }} icon={dai_color} size={16} />
               <Text
                 variant="paragraph4"
                 sx={{
@@ -307,7 +310,7 @@ function WalletInfo() {
   )
 }
 
-export function UserSettings({ sx }: { sx?: SxStyleProp }) {
+export function UserSettings({ sx }: { sx?: ThemeUIStyleObject }) {
   const { t } = useTranslation()
   const { socket } = useNotificationSocket()
   const { disconnect } = useWalletManagement()
@@ -327,7 +330,16 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
         {t('user-settings.slippage-limit.preset-title')}
       </Heading>
       <SlippageSettingsForm />
-      <Box variant="separator" sx={{ mt: '16px', mb: '24px' }} />
+      <Box
+        sx={{
+          mt: '16px',
+          mb: '24px',
+          borderTop: '1px solid',
+          borderColor: 'neutral20',
+          height: '1px',
+          width: '100%',
+        }}
+      />
       <Button
         variant="textual"
         sx={{
@@ -340,7 +352,7 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
           await disconnectCallback()
         }}
       >
-        <Icon name="sign_out" color="primary60" size="auto" width={20} />
+        <Icon icon={sign_out} color="primary60" size="auto" width={20} />
         <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'primary60', ml: 2 }}>
           {t('disconnect-wallet')}
         </Text>
@@ -412,7 +424,7 @@ export function UserSettingsButtonContents({
           size="auto"
           width="16"
           height="16"
-          name="settings"
+          icon={settings}
           sx={{ flexShrink: 0, m: '13px' }}
           color={active ? 'primary100' : 'inherit'}
         />

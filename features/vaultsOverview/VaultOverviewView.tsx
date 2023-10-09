@@ -1,5 +1,6 @@
 import { Announcement } from 'components/Announcement'
-import { useAccountContext, useMainContext } from 'components/context'
+import { useAccountContext } from 'components/context/AccountContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { getAddress } from 'ethers/lib/utils'
 import { AssetsAndPositionsOverview } from 'features/vaultsOverview/containers/AssetsAndPositionsOverview'
 import { ConnectWalletPrompt } from 'features/vaultsOverview/containers/ConnectWalletPrompt'

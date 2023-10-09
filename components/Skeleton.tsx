@@ -1,5 +1,5 @@
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Grid } from 'theme-ui'
 
 type SkeletonColorTheme = 'default' | 'dark' | 'positive' | 'negative'
@@ -24,7 +24,7 @@ interface SkeletonProps {
   gap?: string | number
   height?: string | number
   radius?: string
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   width?: string | number
 }
 

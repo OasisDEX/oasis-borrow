@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import type { NavigationMenuPanelList } from 'components/navigation/NavigationMenuPanel'
+import type { NavigationMenuPanelList } from 'components/navigation/Navigation.types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'

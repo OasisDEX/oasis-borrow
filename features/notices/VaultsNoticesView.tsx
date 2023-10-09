@@ -1,9 +1,9 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { useActor } from '@xstate/react'
 import type BigNumber from 'bignumber.js'
 import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'
 import { networksByName } from 'blockchain/networks'
-import { useProductContext } from 'components/context'
+import { useProductContext } from 'components/context/ProductContextProvider'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { Notice } from 'components/Notice'
 import dayjs from 'dayjs'
@@ -25,8 +25,9 @@ import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
+import { bannerWallet, exclamationMark } from 'theme/icons'
 import { useTheme } from 'theme/useThemeUI'
 import type { LiquidationCallEvent as AaveLiquidationCallEventV2 } from 'types/ethers-contracts/AaveV2LendingPool'
 import type { LiquidationCallEvent as AaveLiquidationCallEventV3 } from 'types/ethers-contracts/AaveV3Pool'
@@ -41,7 +42,7 @@ type VaultNoticeProps = {
   withClose?: boolean
 }
 
-function StatusFrame({ children, sx }: WithChildren & { sx?: SxStyleProp }) {
+function StatusFrame({ children, sx }: WithChildren & { sx?: ThemeUIStyleObject }) {
   return (
     <Flex
       sx={{
@@ -160,7 +161,7 @@ export function VaultOwnershipBanner({
     <VaultNotice
       status={
         <StatusFrame>
-          <Icon size="auto" width="24" height="24" name="bannerWallet" />
+          <Icon size="auto" width="24" height="24" icon={bannerWallet} />
         </StatusFrame>
       }
       header={t('vault-notices.ownership.header', { address: formatAddress(controller) })}
@@ -193,7 +194,7 @@ function PositionOwnershipBanner({
     <VaultNotice
       status={
         <StatusFrame>
-          <Icon size="auto" width="24" height="24" name="bannerWallet" />
+          <Icon size="auto" width="24" height="24" icon={bannerWallet} />
         </StatusFrame>
       }
       header={t('vault-notices.position.header', { address: formatAddress(account) })}
@@ -228,7 +229,7 @@ export function VaultOverviewOwnershipNotice({
     <VaultNotice
       status={
         <StatusFrame>
-          <Icon size="auto" width="24" height="24" name="bannerWallet" />
+          <Icon size="auto" width="24" height="24" icon={bannerWallet} />
         </StatusFrame>
       }
       header={t('vaults-overview.banner-header', { address: formatAddress(controller) })}
@@ -252,7 +253,7 @@ function DangerStatusFrame() {
         borderColor: 'critical10',
       }}
     >
-      <Icon size="auto" height="24" width="6" name="exclamationMark" color="critical100" />
+      <Icon size="auto" height="24" width="6" icon={exclamationMark} color="critical100" />
     </StatusFrame>
   )
 }

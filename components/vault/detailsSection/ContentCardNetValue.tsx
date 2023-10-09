@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { useProductContext } from 'components/context'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
@@ -158,7 +158,7 @@ function ContentCardNetValueModal({
         <Box>{netValueUSD}</Box>
       </Grid>
 
-      <Divider variant="styles.hrVaultFormBottom" />
+      <Divider variant="hrVaultFormBottom" />
       <Grid gap={2} columns={[1, 2, 3]}>
         <Box>{t('manage-multiply-vault.card.gas-fees')}</Box>
         <Box />

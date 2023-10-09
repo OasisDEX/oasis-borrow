@@ -1,4 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
+import type { IconProps } from 'components/Icon.types'
 import React from 'react'
 import { Card, Flex, Text } from 'theme-ui'
 
@@ -10,7 +11,7 @@ export function CloseVaultCard({
   isActive,
 }: {
   text: string
-  icon: string
+  icon: IconProps['icon']
   optionName: string
   onClick: (optionName: string) => void
   isActive: boolean
@@ -42,7 +43,7 @@ export function CloseVaultCard({
           flexDirection: ['column', 'row'],
         }}
       >
-        <Icon name={icon} size="auto" width="26px" height="26px" sx={{ mr: [0, 2] }} />
+        <Icon icon={icon} size="auto" width="26px" height="26px" sx={{ mr: [0, 2] }} />
         <Text ml={1}>{text}</Text>
       </Flex>
     </Card>

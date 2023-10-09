@@ -1,9 +1,10 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { TextWithCheckmark } from 'components/TextWithCheckmark'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
+import { borrow_transition } from 'theme/icons'
 
 export function ManageMultiplyVaultBorrowTransition({ stage }: ManageMultiplyVaultState) {
   const { t } = useTranslation()
@@ -17,7 +18,7 @@ export function ManageMultiplyVaultBorrowTransition({ stage }: ManageMultiplyVau
     </Grid>
   ) : (
     <Box>
-      <Icon name="borrow_transition" size="auto" sx={{ fill: 'none' }} />
+      <Icon icon={borrow_transition} size="auto" sx={{ fill: 'none' }} />
     </Box>
   )
 }

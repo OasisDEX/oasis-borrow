@@ -1,38 +1,33 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
-import { AppLayout } from 'components/layouts'
+import { AppLayout } from 'components/layouts/AppLayout'
 import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { useAppConfig } from 'helpers/config'
-import type { WithChildren } from 'helpers/types/With.types'
 import type { GetStaticPaths } from 'next'
 import React from 'react'
 
-function ProductHubRouteHandler({
-  product,
-  token,
-}: {
-  product: ProductHubProductType
-  token?: string
-}) {
+import type { ProductHubRouteHandlerProps } from './ProductHubRouteHandler.types'
+
+function ProductHubRouteHandler({ product, token }: ProductHubRouteHandlerProps) {
   const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
 
   return (
-    <WithConnection>
-      <AnimatedWrapper sx={{ mb: 5 }}>
-        <ProductHubView
-          product={product}
-          promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
-          token={token}
-          url="/"
-        />
-      </AnimatedWrapper>
-    </WithConnection>
+    <AppLayout>
+      <WithConnection>
+        <AnimatedWrapper sx={{ mb: 5 }}>
+          <ProductHubView
+            product={product}
+            promoCardsCollection={ajnaSafetySwitchOn ? 'Home' : 'HomeWithAjna'}
+            token={token}
+            url="/"
+          />
+        </AnimatedWrapper>
+      </WithConnection>
+    </AppLayout>
   )
 }
-
-ProductHubRouteHandler.layout = ({ children }: WithChildren) => <AppLayout>{children}</AppLayout>
 
 export default ProductHubRouteHandler
 

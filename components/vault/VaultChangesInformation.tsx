@@ -1,8 +1,8 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Text } from '@theme-ui/components'
 import type BigNumber from 'bignumber.js'
-import type { GasEstimationContext } from 'components/context'
+import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { DimmedList } from 'components/DImmedList'
+import { Icon } from 'components/Icon'
 import { InfoSectionLoadingState } from 'components/infoSection/Item'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { formatAmount } from 'helpers/formatters/format'
@@ -14,6 +14,7 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React, { useCallback, useMemo } from 'react'
+import { arrow_right_light, question_o } from 'theme/icons'
 
 export function VaultChangesInformationItem({
   label,
@@ -59,7 +60,7 @@ export function VaultChangesInformationItem({
         <Text variant="paragraph4" sx={{ lineHeight: '16px', color: 'inherit' }}>
           {label}
         </Text>
-        {tooltip && <Icon name="question_o" size="20px" sx={{ ml: 1 }} />}
+        {tooltip && <Icon icon={question_o} size="20px" sx={{ ml: 1 }} />}
       </Flex>
       {tooltip && tooltipOpen && (
         <Tooltip sx={{ transform: 'translateY(-100%)', right: ['0px', 'auto'], top: '-5px' }}>
@@ -92,7 +93,7 @@ export function VaultChangesInformationContainer({
 }
 
 export function VaultChangesInformationArrow() {
-  return <Icon name="arrow_right_light" size="auto" width="10px" height="7px" sx={{ mx: 2 }} />
+  return <Icon icon={arrow_right_light} size="auto" width="10px" height="7px" sx={{ mx: 2 }} />
 }
 
 export function EstimationError({ withBrackets }: { withBrackets: boolean }) {

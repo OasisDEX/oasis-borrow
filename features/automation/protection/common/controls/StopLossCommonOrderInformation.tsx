@@ -1,6 +1,6 @@
 import { Box } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
 import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'

@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
+import { searchIcon } from 'theme/icons'
 
 import type { Position, PositionView } from './positionsOverviewSummary'
 import { createPositionsOverviewSummary$ } from './positionsOverviewSummary'
@@ -30,7 +31,7 @@ describe('positionsOverviewSummary', () => {
       walletBalance$,
       tokenPriceUsd$,
       () => of([]),
-      () => of([{ path: 'url', icon: 'icon', text: 'text' }]),
+      () => of([{ path: 'url', icon: searchIcon, text: 'text' }]),
       '0x00',
     )
 
@@ -83,7 +84,7 @@ describe('positionsOverviewSummary', () => {
       walletBalance$,
       tokenPriceUsd$,
       () => of([]),
-      () => of([{ path: 'url', icon: 'icon', text: 'text' }]),
+      () => of([{ path: 'url', icon: searchIcon, text: 'text' }]),
       '0x00',
     )
 
@@ -124,7 +125,7 @@ describe('positionsOverviewSummary', () => {
       walletBalance$,
       tokenPriceUsd$,
       () => of(positions),
-      () => of([{ path: 'url', icon: 'icon', text: 'text' }]),
+      () => of([{ path: 'url', icon: searchIcon, text: 'text' }]),
       '0x00',
     )
 

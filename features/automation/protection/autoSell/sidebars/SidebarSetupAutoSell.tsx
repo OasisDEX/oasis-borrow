@@ -1,5 +1,6 @@
 import type BigNumber from 'bignumber.js'
-import { useAutomationContext, useGasEstimationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { AddAndRemoveTxHandler } from 'features/automation/common/controls/AddAndRemoveTriggerControl.types'

@@ -1,6 +1,6 @@
 import { NetworkHexIds } from 'blockchain/networks'
 import { Modal, ModalCloseIcon } from 'components/Modal'
-import { useConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useModalContext } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'

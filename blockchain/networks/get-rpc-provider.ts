@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { getRpcNode } from 'pages/api/rpc'
+import { getRpcNode } from 'helpers/getRpcNode'
 
 import { networkSetById } from './network-helpers'
 import type { NetworkIds } from './network-ids'

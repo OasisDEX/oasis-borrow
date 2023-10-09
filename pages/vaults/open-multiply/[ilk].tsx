@@ -1,8 +1,8 @@
 import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithWalletConnection } from 'components/connectWallet'
-import { ProductContextHandler } from 'components/context'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/layouts'
+import { AppLayout } from 'components/layouts/AppLayout'
 import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -34,30 +34,30 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
 function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
   return (
-    <ProductContextHandler>
-      <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
-        <WithTermsOfService>
-          <WithWalletAssociatedRisk>
-            <PageSEOTags
-              title="seo.title-product-w-tokens"
-              titleParams={{
-                product: t('seo.multiply.title'),
-                protocol: LendingProtocolLabel.maker,
-                token1: ilk,
-                token2: 'DAI',
-              }}
-              description="seo.multiply.description"
-              url="/multiply"
-            />
-            <OpenMultiplyVaultView ilk={ilk} />
-            <Survey for="multiply" />
-          </WithWalletAssociatedRisk>
-        </WithTermsOfService>
-      </WithWalletConnection>
-    </ProductContextHandler>
+    <AppLayout>
+      <ProductContextHandler>
+        <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
+          <WithTermsOfService>
+            <WithWalletAssociatedRisk>
+              <PageSEOTags
+                title="seo.title-product-w-tokens"
+                titleParams={{
+                  product: t('seo.multiply.title'),
+                  protocol: LendingProtocolLabel.maker,
+                  token1: ilk,
+                  token2: 'DAI',
+                }}
+                description="seo.multiply.description"
+                url="/multiply"
+              />
+              <OpenMultiplyVaultView ilk={ilk} />
+              <Survey for="multiply" />
+            </WithWalletAssociatedRisk>
+          </WithTermsOfService>
+        </WithWalletConnection>
+      </ProductContextHandler>
+    </AppLayout>
   )
 }
-
-OpenVault.layout = AppLayout
 
 export default OpenVault

@@ -1,7 +1,9 @@
-import { FTPolar } from 'helpers/fonts'
+import { FTPolar, Inter } from 'helpers/fonts'
+import type { Theme } from 'theme-ui'
 
 import { fadeInAnimation } from './animations'
-import { icons } from './icons'
+
+const themeTypeSafe = <T extends Theme>(t: T) => t
 
 // Duplication from theme as exporting const from package library is breaking dai-ui website and theme-ui doesn't support yet transitions tokens :(
 // To refactor if they will include this support
@@ -20,9 +22,9 @@ const COLORS = {
   neutral10: '#FFFFFF',
 }
 
-export const oasisBaseTheme = {
+export const theme = themeTypeSafe({
   useBorderBox: true,
-  useBodyStyles: true,
+  useRootStyles: true,
   breakpoints: ['48em', '60em', '68em'],
   colors: {
     // new design system colors
@@ -69,7 +71,7 @@ export const oasisBaseTheme = {
     },
   },
   fonts: {
-    body: '"Inter", "Helvetica Neue", sans-serif',
+    body: `${Inter.style.fontFamily}, "Helvetica Neue", sans-serif`,
     heading: `${FTPolar.style.fontFamily}, "Helvetica Neue", sans-serif`,
     monospace: 'monospace',
   },
@@ -115,6 +117,7 @@ export const oasisBaseTheme = {
       fontSize: '40px',
       letterSpacing: '-0.02em',
       color: 'primary100',
+      display: 'block',
     },
     header3: {
       fontFamily: 'heading',
@@ -240,9 +243,6 @@ export const oasisBaseTheme = {
     elevation: '0px 4px 28px rgba(37, 39, 61, 0.36)',
     userSettingsOptionButton: '0px 2px 4px rgba(0, 0, 0, 0.25)',
     bottomSheet: '0px 4px 28px rgba(37, 39, 61, 0.3)',
-  },
-  gradients: {
-    app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
   },
   layout: {
     container: {
@@ -886,28 +886,6 @@ export const oasisBaseTheme = {
       },
     },
   },
-  icons,
-  radio: {
-    color: 'neutral60',
-    'input:checked ~ &': {
-      color: 'success100',
-    },
-    'input:focus ~ &': {
-      color: 'success100',
-    },
-  },
-  chevronUpDown: {
-    sort: {
-      ml: 1,
-      display: 'flex',
-      width: 1,
-    },
-    select: {
-      ml: 1,
-      position: 'relative',
-      top: '1px',
-    },
-  },
   forms: {
     label: {
       fontSize: 4,
@@ -1042,12 +1020,6 @@ export const oasisBaseTheme = {
       gap: '0px',
     },
   },
-  separator: {
-    borderTop: '1px solid',
-    borderColor: 'neutral20',
-    height: '1px',
-    width: '100%',
-  },
   styles: {
     root: {
       fontFamily: 'body',
@@ -1126,8 +1098,28 @@ export const oasisBaseTheme = {
       borderBottomLeftRadius: 'mediumLarge',
       borderBottomRightRadius: 'mediumLarge',
     },
+    chevronUpDown: {
+      sort: {
+        ml: 1,
+        display: 'flex',
+        width: 1,
+      },
+      select: {
+        ml: 1,
+        position: 'relative',
+        top: '1px',
+      },
+    },
   },
-}
+  boxes: {
+    separator: {
+      borderTop: '1px solid',
+      borderColor: 'neutral20',
+      height: '1px',
+      width: '100%',
+    },
+  },
+})
 
 export const ajnaExtensionTheme = {
   colors: {
@@ -1137,6 +1129,4 @@ export const ajnaExtensionTheme = {
     interactive50: '#d668C6',
   },
 }
-
-export const theme = oasisBaseTheme
-export type OasisTheme = typeof oasisBaseTheme
+export type OasisTheme = typeof theme

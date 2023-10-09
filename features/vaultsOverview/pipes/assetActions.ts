@@ -1,5 +1,6 @@
 import type { ContextConnected } from 'blockchain/network.types'
 import { ilksNotSupportedOnGoerli } from 'blockchain/tokens/mainnet'
+import type { IconProps } from 'components/Icon.types'
 import type { ProductCategory } from 'config/product-categories'
 import { getProductCategoryUrl } from 'config/product-categories'
 import type { SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChange'
@@ -11,6 +12,7 @@ import { map as mapLodash, omit, reduce } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, iif, of } from 'rxjs'
 import { flatMap, map, startWith, switchMap } from 'rxjs/operators'
+import { collateral, copy, exchange, increase } from 'theme/icons'
 
 export type AssetAction = UrlAssetAction | OnClickAssetAction
 
@@ -18,13 +20,13 @@ type UrlAssetAction = {
   path: string
   hash?: string
   text: string
-  icon: string
+  icon: IconProps['icon']
 }
 
 type OnClickAssetAction = {
   onClick: () => void
   text: string
-  icon: string
+  icon: IconProps['icon']
 }
 
 export function isUrlAction(aa: AssetAction): aa is UrlAssetAction {
@@ -53,21 +55,21 @@ function productCategoryToAssetAction(
         path: getProductCategoryUrl('borrow'),
         hash: urlFragment,
         text: 'Borrow',
-        icon: 'collateral',
+        icon: collateral,
       }
     case 'multiply':
       return {
         path: getProductCategoryUrl('multiply'),
         hash: urlFragment,
         text: 'Multiply',
-        icon: 'copy',
+        icon: copy,
       }
     case 'earn':
       return {
         path: getProductCategoryUrl('earn'),
         hash: urlFragment,
         text: 'Earn',
-        icon: 'increase',
+        icon: increase,
       }
     default:
       throw new Error(`no asset action for productCategory ${productCategory}`)
@@ -158,7 +160,7 @@ export function createAssetActions$(
                 })
               },
               text: 'Swap',
-              icon: 'exchange',
+              icon: exchange,
             },
           ]
         : []

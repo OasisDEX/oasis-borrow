@@ -1,31 +1,18 @@
 import { NavigationActions } from 'components/navigation/NavigationActions'
-import type { NavigationBrandingPill } from 'components/navigation/NavigationBranding'
 import { NavigationBranding } from 'components/navigation/NavigationBranding'
 import { NavigationMenu } from 'components/navigation/NavigationMenu'
-import type { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
-import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { NavigationMobileMenu } from 'components/navigation/NavigationMobileMenu'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
-import type { ReactNode } from 'react'
 import React from 'react'
-import { Box, Container, ThemeProvider } from 'theme-ui'
+import { Box, Container, ThemeUIProvider } from 'theme-ui'
+import { menu } from 'theme/icons'
 import { useMediaQuery } from 'usehooks-ts'
 
-interface NavigationProps {
-  actions?: ReactNode
-  brandingLink?: string
-  links?: NavigationMenuPanelLinkType[]
-  panels?: NavigationMenuPanelType[]
-  pill?: NavigationBrandingPill
-}
-
-export const navigationBreakpoints = [531, 744, 1025, 1279]
-export const navigationBreakpointsWithPixels = navigationBreakpoints.map(
-  (breakpoint) => `${breakpoint}px`,
-)
+import { navigationBreakpoints, navigationBreakpointsWithPixels } from './Navigation.constants'
+import type { NavigationProps } from './Navigation.types'
 
 export function Navigation({
   actions,
@@ -39,7 +26,7 @@ export function Navigation({
   const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2] - 1}px)`)
 
   return (
-    <ThemeProvider theme={{ breakpoints: navigationBreakpointsWithPixels }}>
+    <ThemeUIProvider theme={{ breakpoints: navigationBreakpointsWithPixels }}>
       <Container
         as="header"
         variant="navigation"
@@ -59,7 +46,7 @@ export function Navigation({
           {actions}
           {isViewBelowL && (
             <Box ref={ref}>
-              <NavigationOrb icon="menu" iconSize={20} onClick={toggleIsMobileMenuOpen} />
+              <NavigationOrb icon={menu} iconSize={20} onClick={toggleIsMobileMenuOpen} />
               <NavigationMobileMenu
                 close={() => {
                   setIsMobileMenuOpen(false)
@@ -72,6 +59,6 @@ export function Navigation({
           )}
         </NavigationActions>
       </Container>
-    </ThemeProvider>
+    </ThemeUIProvider>
   )
 }

@@ -4,7 +4,8 @@ import type { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import type { Context } from './network.types'
-import { getNetworkRpcEndpoint, NetworkIds } from './networks'
+import { NetworkIds } from './networks'
+import { getNetworkRpcEndpoint } from './networks/get-network-rpc-endpoint'
 
 export function resolveENSName$(context$: Observable<Context>, address: string) {
   return context$.pipe(

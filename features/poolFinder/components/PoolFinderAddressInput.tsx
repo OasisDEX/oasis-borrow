@@ -1,11 +1,12 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import type { FC } from 'react'
 import React from 'react'
 import { Flex, Input, Label } from 'theme-ui'
+import { link } from 'theme/icons'
 
 interface PoolFinderAddressInputProps {
   label: string
@@ -73,7 +74,7 @@ export const PoolFinderAddressInput: FC<PoolFinderAddressInputProps> = ({
             },
           }}
         >
-          <Icon name="link" size={16} color="primary100" sx={{ verticalAlign: 'bottom' }} />
+          <Icon icon={link} size={16} color="primary100" sx={{ verticalAlign: 'bottom' }} />
         </AppLink>
       </Label>
       <Input

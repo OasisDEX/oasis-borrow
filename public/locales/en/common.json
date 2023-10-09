@@ -1929,7 +1929,6 @@
     "GUNIV3DAIUSDC1-A": "50x UNI V3 DAI / USDC 0.05% tier",
     "UNIV2DAIUSDC-A": "UNI V2 DAI / USDC LP",
     "UNIV2USDCETH-A": "UNI V2 USDC / ETH LP",
-    "CRVV1ETHSTETH-A": "CRV V1 ETH / Staked ETH LP",
     "RETH-A": "Rocket Pool ETH"
   },
   "product-page": {

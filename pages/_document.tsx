@@ -1,9 +1,8 @@
-import { PWATags } from 'components/HeadTags'
 import { extractCritical } from 'emotion-server'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import type { DocumentContext } from 'next/document'
 import Document, { Head, Html, Main, NextScript } from 'next/document'
 import React from 'react'
-import { InjectTokenIconsDefs } from 'theme/tokenIcons'
 
 export default class MyDocument extends Document<Document> {
   static async getInitialProps(ctx: DocumentContext) {
@@ -27,10 +26,9 @@ export default class MyDocument extends Document<Document> {
     return (
       <Html>
         <Head>
-          <PWATags />
+          <link rel="shortcut icon" href={staticFilesRuntimeUrl('/static/favicon.ico')} />
         </Head>
         <body>
-          <InjectTokenIconsDefs />
           <Main />
           <NextScript />
         </body>

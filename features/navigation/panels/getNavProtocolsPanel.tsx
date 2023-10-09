@@ -1,7 +1,7 @@
 import type {
   NavigationMenuPanelListItem,
   NavigationMenuPanelType,
-} from 'components/navigation/NavigationMenuPanel'
+} from 'components/navigation/Navigation.types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'

@@ -10,8 +10,6 @@ const tokenKeys = [
   'iconCircle',
   'color',
   'background',
-  'bannerIcon',
-  'bannerGif',
   'tags',
 ]
 

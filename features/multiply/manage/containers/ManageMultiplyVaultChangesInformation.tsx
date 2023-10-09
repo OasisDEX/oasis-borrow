@@ -1,6 +1,6 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { Icon } from 'components/Icon'
 import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationArrow,
@@ -20,6 +20,7 @@ import {
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
+import { chevron_down, chevron_up } from 'theme/icons'
 
 export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
@@ -160,7 +161,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
             {`${formatAmount(fees, 'USD')} +`}
             <Text ml={1}>{getEstimatedGasFeeTextOld(props, true)}</Text>
             <Icon
-              name={`chevron_${showFees ? 'up' : 'down'}`}
+              icon={showFees ? chevron_up : chevron_down}
               size="auto"
               width="12px"
               sx={{ ml: 2 }}

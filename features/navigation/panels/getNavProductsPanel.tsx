@@ -4,7 +4,7 @@ import { networksByName } from 'blockchain/networks'
 import type {
   NavigationMenuPanelListTags,
   NavigationMenuPanelType,
-} from 'components/navigation/NavigationMenuPanel'
+} from 'components/navigation/Navigation.types'
 import { NavigationBridgeDescription } from 'features/navigation/components/NavigationBridgeDescription'
 import {
   getNavIconConfig,
@@ -22,6 +22,8 @@ import { zero } from 'helpers/zero'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { capitalize } from 'lodash'
 import React from 'react'
+import { exchange } from 'theme/icons'
+import { bridge } from 'theme/icons/bridge'
 import type { TranslationType } from 'ts_modules/i18next'
 
 export const getNavProductsPanel = ({
@@ -226,7 +228,7 @@ export const getNavProductsPanel = ({
                   title: t('nav.swap'),
                   icon: {
                     position: 'global',
-                    icon: 'exchange',
+                    icon: exchange,
                   },
                   description: t('nav.swap-description'),
                   callback: () => widgetCallback('swap'),
@@ -235,7 +237,7 @@ export const getNavProductsPanel = ({
                   title: t('nav.bridge'),
                   icon: {
                     position: 'global',
-                    icon: 'bridge',
+                    icon: bridge,
                   },
                   description: <NavigationBridgeDescription />,
                   callback: () => widgetCallback('bridge'),

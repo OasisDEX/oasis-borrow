@@ -1,18 +1,9 @@
-import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { getRandomString } from 'helpers/getRandomString'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import React from 'react'
-
-export function HeadTags() {
-  return (
-    <Head>
-      <link href={EXTERNAL_LINKS.INTER_FONT} rel="stylesheet" />
-      <link rel="shortcut icon" href={staticFilesRuntimeUrl('/static/favicon.ico')} />
-    </Head>
-  )
-}
 
 interface SEOTagsType {
   title: string
@@ -36,23 +27,23 @@ export function PageSEOTags({
   titleParams,
   description,
   url = INTERNAL_LINKS.homepage,
-  ogImage = 'og_default.png',
-  twitterImage = 'twitter_preview_default.png',
+  ogImage = 'og_default.jpg',
+  twitterImage = 'twitter_preview_default.jpg',
 }: SEOTagsType) {
   const { t } = useTranslation()
 
   const OGImages = {
     [INTERNAL_LINKS.borrow]: {
-      ogImage: 'og_borrow.png',
-      twitterImage: 'twitter_preview_borrow.png',
+      ogImage: 'og_borrow.jpg',
+      twitterImage: 'twitter_preview_borrow.jpg',
     },
     [INTERNAL_LINKS.multiply]: {
-      ogImage: 'og_multiply.png',
-      twitterImage: 'twitter_preview_multiply.png',
+      ogImage: 'og_multiply.jpg',
+      twitterImage: 'twitter_preview_multiply.jpg',
     },
     [INTERNAL_LINKS.earn]: {
-      ogImage: 'og_earn.png',
-      twitterImage: 'twitter_preview_earn.png',
+      ogImage: 'og_earn.jpg',
+      twitterImage: 'twitter_preview_earn.jpg',
     },
   }[url] || {
     ogImage,
@@ -65,12 +56,12 @@ export function PageSEOTags({
   return (
     <Head>
       <title>{tabTitle}</title>
-      <meta property="og:title" content={t(title)!} />
-      <meta property="twitter:title" content={t(title)!} />
+      <meta property="og:title" content={t(title)} />
+      <meta property="twitter:title" content={t(title)} />
 
-      <meta name="description" content={t(description)!} />
-      <meta property="og:description" content={t(description)!} />
-      <meta property="twitter:description" content={t(description)!} />
+      <meta name="description" content={t(description)} />
+      <meta property="og:description" content={t(description)} />
+      <meta property="twitter:description" content={t(description)} />
 
       <meta name="robots" content="index, follow" />
       <meta
@@ -113,42 +104,5 @@ export function PageSEOTags({
         content="dapp, dao, maker, protocol, vaults, ethereum, wallet, staking, yield, farming, apy, arbitrage, liquidity, L2, L3, lending, trade, buy, protection, safe, blockchain, best, earn, passive, income, profit, bear, bull, winter, 2023"
       />
     </Head>
-  )
-}
-
-const APP_NAME = 'Summer.fi'
-
-export function PWATags() {
-  return (
-    <>
-      <meta name="application-name" content={APP_NAME} />
-      <meta name="apple-mobile-web-app-capable" content="yes" />
-      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-      <meta name="apple-mobile-web-app-title" content={APP_NAME} />
-
-      <meta name="format-detection" content="telephone=no" />
-      <meta name="mobile-web-app-capable" content="yes" />
-      <meta name="theme-color" content="#FFFFFF" />
-
-      <link rel="manifest" href="/manifest.json" />
-
-      <link
-        rel="apple-touch-icon"
-        sizes="180x180"
-        href={staticFilesRuntimeUrl('/static/icons/apple-touch-icon.png')}
-      />
-      <link
-        rel="icon"
-        type="image/png"
-        sizes="32x32"
-        href={staticFilesRuntimeUrl('/static/icons/favicon-32x32.png')}
-      />
-      <link
-        rel="icon"
-        type="image/png"
-        sizes="16x16"
-        href={staticFilesRuntimeUrl('/static/icons/favicon-16x16.png')}
-      />
-    </>
   )
 }

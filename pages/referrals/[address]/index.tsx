@@ -1,6 +1,6 @@
 import { WithConnection } from 'components/connectWallet'
-import { FunctionalContextHandler } from 'components/context'
-import { AppLayout } from 'components/layouts'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
+import { AppLayout } from 'components/layouts/AppLayout'
 import { ReferralsSummary } from 'features/referralOverview/ReferralOverviewView'
 import { useAppConfig } from 'helpers/config'
 import type { GetServerSidePropsContext } from 'next'
@@ -19,12 +19,12 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 export default function ReferralsPage({ address }: { address: string }) {
   const { Referrals: referralsEnabled } = useAppConfig('features')
   return address ? (
-    <FunctionalContextHandler>
-      <WithConnection>
-        {referralsEnabled ? <ReferralsSummary address={address} /> : null}
-      </WithConnection>
-    </FunctionalContextHandler>
+    <AppLayout>
+      <FunctionalContextHandler>
+        <WithConnection>
+          {referralsEnabled ? <ReferralsSummary address={address} /> : null}
+        </WithConnection>
+      </FunctionalContextHandler>
+    </AppLayout>
   ) : null
 }
-
-ReferralsPage.layout = AppLayout

@@ -1,7 +1,8 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button } from 'theme-ui'
+import { refresh } from 'theme/icons'
 
 interface SidebarResetButtonProps {
   clear: () => void
@@ -28,7 +29,7 @@ export function SidebarResetButton({
           p: 0,
         }}
       >
-        <Icon name="refresh" size={16} sx={{ mr: 2 }} color={color} />
+        <Icon icon={refresh} size={16} sx={{ mr: 2 }} color={color} />
         {t('reset')}
       </Button>
     </Box>

@@ -1,7 +1,8 @@
 import { NavigationMenuDropdownContentList } from 'components/navigation/NavigationMenuDropdownContentList'
-import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { Flex } from 'theme-ui'
+
+import type { NavigationMenuPanelType } from './Navigation.types'
 
 export type NavigationMenuDropdownContentProps = NavigationMenuPanelType & {
   currentPanel: string

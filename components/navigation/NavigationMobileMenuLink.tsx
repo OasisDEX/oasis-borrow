@@ -1,8 +1,9 @@
 import { AppLink } from 'components/Links'
 import { mobileLinkSx } from 'components/navigation/common'
-import type { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
 import React from 'react'
 import { Box } from 'theme-ui'
+
+import type { NavigationMenuPanelLinkType } from './Navigation.types'
 
 type NavigationMobileMenuLinkProps = NavigationMenuPanelLinkType
 

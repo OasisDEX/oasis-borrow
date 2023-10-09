@@ -1,13 +1,14 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { DrawerMenu } from 'components/DrawerMenu'
-import type { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
-import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
+import { Icon } from 'components/Icon'
 import { NavigationMobileMenuLink } from 'components/navigation/NavigationMobileMenuLink'
 import { NavigationMobileMenuPanel } from 'components/navigation/NavigationMobileMenuPanel'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Flex, Image } from 'theme-ui'
+import { arrow_left, close as closeIcon } from 'theme/icons'
+
+import type { NavigationMenuPanelLinkType, NavigationMenuPanelType } from './Navigation.types'
 
 interface NavigationMobileMenuProps {
   close: () => void
@@ -53,7 +54,7 @@ export function NavigationMobileMenu({ close, isOpen, links, panels }: Navigatio
               }}
               onClick={() => setOpenNestedMenu(undefined)}
             >
-              <Icon name="arrow_left" size={16} sx={{ mr: 2 }} />
+              <Icon icon={arrow_left} size={16} sx={{ mr: 2 }} />
               {t('back')}
             </Flex>
           ) : (
@@ -79,7 +80,7 @@ export function NavigationMobileMenu({ close, isOpen, links, panels }: Navigatio
               close()
             }}
           >
-            <Icon name="close" size={16} />
+            <Icon icon={closeIcon} size={16} />
           </Flex>
         </Flex>
         {((links && links.length > 0) || (panels && panels.length > 0)) && (

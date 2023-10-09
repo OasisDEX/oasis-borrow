@@ -1,4 +1,4 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { WithChildren } from 'helpers/types/With.types'
@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Heading, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
+import { arrow_right } from 'theme/icons'
 
 export function ReferralLayout({ children }: WithChildren) {
   const { t } = useTranslation()
@@ -41,7 +42,7 @@ export function ReferralLayout({ children }: WithChildren) {
                 {' '}
                 {t('ref.intro-link')}{' '}
                 <Icon
-                  name="arrow_right"
+                  icon={arrow_right}
                   size="12px"
                   sx={{
                     position: 'relative',
@@ -67,7 +68,7 @@ export function ReferralLayout({ children }: WithChildren) {
             >
               {t('ref.help-link-1')}{' '}
               <Icon
-                name="arrow_right"
+                icon={arrow_right}
                 size="12px"
                 sx={{
                   ml: 1,
@@ -89,7 +90,7 @@ export function ReferralLayout({ children }: WithChildren) {
             >
               {t('ref.help-link-2')}{' '}
               <Icon
-                name="arrow_right"
+                icon={arrow_right}
                 size="12px"
                 sx={{
                   ml: 1,

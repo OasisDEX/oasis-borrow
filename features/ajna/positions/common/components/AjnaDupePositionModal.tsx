@@ -10,7 +10,7 @@ import { startCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
-import { Box, Button, Flex, Heading, Image, Text, ThemeProvider } from 'theme-ui'
+import { Box, Button, Flex, Heading, Image, Text, ThemeUIProvider } from 'theme-ui'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 interface AjnaDupePositionModalProps {
@@ -64,7 +64,7 @@ export function AjnaDupePositionModal({
     : `${t('system.go-to-position')} #${positionIds[0]}`
 
   return (
-    <ThemeProvider theme={ajnaExtensionTheme}>
+    <ThemeUIProvider theme={ajnaExtensionTheme}>
       <Modal sx={{ maxWidth: '445px', mx: 'auto' }} close={closeModal}>
         <Box sx={{ px: 4, pt: 5, pb: '24px' }}>
           <ModalCloseIcon close={closeModal} />
@@ -92,6 +92,6 @@ export function AjnaDupePositionModal({
           </Flex>
         </Box>
       </Modal>
-    </ThemeProvider>
+    </ThemeUIProvider>
   )
 }

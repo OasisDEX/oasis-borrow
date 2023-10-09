@@ -1,6 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { useMainContext } from 'components/context'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { DefinitionList } from 'components/DefinitionList'
 import { useObservable } from 'helpers/observableHook'
 import { flatten } from 'lodash'

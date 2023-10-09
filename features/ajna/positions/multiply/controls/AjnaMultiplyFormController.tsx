@@ -9,6 +9,7 @@ import { AjnaMultiplyFormContentTransition } from 'features/ajna/positions/multi
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { circle_close, circle_exchange, circle_slider } from 'theme/icons'
 
 export function AjnaMultiplyFormController() {
   const { t } = useTranslation()
@@ -35,7 +36,7 @@ export function AjnaMultiplyFormController() {
               label: t('system.adjust-position'),
               panel: 'adjust',
               shortLabel: t('adjust'),
-              icon: 'circle_slider',
+              icon: circle_slider,
               iconShrink: 2,
               action: () => {
                 dispatch({ type: 'reset' })
@@ -73,7 +74,7 @@ export function AjnaMultiplyFormController() {
             },
             {
               label: t('system.actions.multiply.switch-to-borrow'),
-              icon: 'circle_exchange',
+              icon: circle_exchange,
               iconShrink: 2,
               panel: 'switch',
               action: () => {
@@ -84,7 +85,7 @@ export function AjnaMultiplyFormController() {
             },
             {
               label: t('system.actions.common.close-position'),
-              icon: 'circle_close',
+              icon: circle_close,
               iconShrink: 2,
               panel: 'close',
               action: () => {

@@ -1,11 +1,11 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library'
 import { OPERATION_NAMES } from '@oasisdex/dma-library'
 import { useActor } from '@xstate/react'
 import type BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { Icon } from 'components/Icon'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
@@ -32,6 +32,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { circle_close, circle_slider } from 'theme/icons'
 import { match } from 'ts-pattern'
 import type { Sender } from 'xstate'
 
@@ -161,7 +162,7 @@ export function BalanceAfterClose({ state }: ManageAaveStateProps) {
   return (
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Flex>
-        <Icon name={getToken(closingToken).iconCircle} size={22} sx={{ mr: 1 }} />
+        <Icon icon={getToken(closingToken).iconCircle} size={22} sx={{ mr: 1 }} />
         <Text variant="boldParagraph3" sx={{ color: 'neutral80', whiteSpace: 'pre' }}>
           {t('manage-earn.aave.vault-form.token-amount-after-closing', { token: closingToken })}
         </Text>
@@ -389,7 +390,7 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
   const itemPerAction: Record<ManagePositionAvailableActions, SidebarSectionHeaderSelectItem> = {
     adjust: {
       label: t('adjust'),
-      icon: 'circle_slider',
+      icon: circle_slider,
       panel: 'editing',
       action: () => {
         if (!state.matches('frontend.editing')) {
@@ -432,7 +433,7 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
     },
     close: {
       label: t('system.close-position'),
-      icon: 'circle_close',
+      icon: circle_close,
       panel: 'reviewingClosing',
       action: () => {
         if (!state.matches('frontend.reviewingClosing')) {
@@ -442,7 +443,7 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
     },
     'switch-to-borrow': {
       label: t('system.actions.multiply.switch-to-borrow'),
-      icon: 'circle_close',
+      icon: circle_close,
       panel: 'confirmSwitch',
       action: () => {
         send('SWITCH_TO_BORROW')
@@ -450,7 +451,7 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
     },
     'switch-to-multiply': {
       label: t('system.actions.borrow.switch-to-multiply'),
-      icon: 'circle_close',
+      icon: circle_close,
       panel: 'confirmSwitch',
       action: () => {
         send('SWITCH_TO_MULTIPLY')
@@ -458,7 +459,7 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
     },
     'switch-to-earn': {
       label: t('system.actions.borrow.switch-to-earn'),
-      icon: 'circle_close',
+      icon: circle_close,
       panel: 'confirmSwitch',
       action: () => {
         send('SWITCH_TO_EARN')

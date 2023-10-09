@@ -1,5 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import type { SystemStyleObject } from '@styled-system/css'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
@@ -8,10 +6,12 @@ import { keyBy } from 'lodash'
 import React, { useState } from 'react'
 import ReactSelect, { components } from 'react-select'
 import { theme } from 'theme'
-import type { SxProps } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
+import { Icon } from './Icon'
+import type { IconProps } from './Icon.types'
 import type { styleFn, Styles } from 'react-select/src/styles'
 
 type ReactSelectCSSProperties = ReturnType<styleFn>
@@ -22,7 +22,7 @@ type ReactSelectSimplifiedStyles = {
 export interface GenericSelectOption {
   label: string
   value: string
-  icon?: string
+  icon?: IconProps['icon']
 }
 export interface GenericSelectProps {
   /**
@@ -31,7 +31,7 @@ export interface GenericSelectProps {
   customStyles?: ReactSelectSimplifiedStyles
   defaultValue?: GenericSelectOption
   expandableArrowSize?: number
-  expandableArrowSx?: SystemStyleObject & SxProps
+  expandableArrowSx?: ThemeUIStyleObject
   iconSize?: number
   isDisabled?: boolean
   isSearchable?: boolean
@@ -39,7 +39,7 @@ export interface GenericSelectProps {
   onChange?: (value: GenericSelectOption) => void
   options: GenericSelectOption[]
   placeholder?: string
-  wrapperSx?: SystemStyleObject & SxProps
+  wrapperSx?: ThemeUIStyleObject
 }
 
 export function GenericSelect({
@@ -226,7 +226,7 @@ export function GenericSelect({
                   <Icon
                     size={iconSize}
                     sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, m: 'auto' }}
-                    name={data.icon}
+                    icon={data.icon}
                   />
                   <Text as="span" sx={{ pl: `${iconSize + 12}px` }}>
                     {children}
@@ -240,7 +240,7 @@ export function GenericSelect({
           Option: ({ children, data, ...props }) => (
             <components.Option data={data} {...props}>
               {data.icon && (
-                <Icon size={iconSize} sx={{ flexShrink: 0, mr: '12px' }} name={data.icon} />
+                <Icon size={iconSize} sx={{ flexShrink: 0, mr: '12px' }} icon={data.icon} />
               )}
               {children}
             </components.Option>

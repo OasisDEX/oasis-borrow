@@ -19,7 +19,7 @@ import type {
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
-import { useWalletManagement } from 'features/web3OnBoard'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'

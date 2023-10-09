@@ -1,10 +1,8 @@
 import type { ContentType } from '..'
-import en from './en.mdx'
-import es from './es.mdx'
-import pt from './pt.mdx'
+import en from './en'
 
 export const content: ContentType = {
   en,
-  es,
-  pt,
+  es: en,
+  pt: en,
 }

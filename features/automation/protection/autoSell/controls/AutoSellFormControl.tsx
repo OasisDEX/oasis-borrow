@@ -1,6 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { resolveMinSellPriceAnalytics } from 'features/automation/common/helpers/resolveMinSellPriceAnalytics'
 import { AUTO_SELL_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'

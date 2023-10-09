@@ -21,16 +21,14 @@ import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDP
 import { ProxyView } from 'features/stateMachines/proxy'
 import { useAppConfig } from 'helpers/config'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useTomfoolery } from 'helpers/useTomfoolery'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
-import { Box, Flex, Grid, Image, Text } from 'theme-ui'
+import React from 'react'
+import { Box, Flex, Grid, Image } from 'theme-ui'
 import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
 import type { Sender, StateFrom } from 'xstate'
 
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
-import { SillyVideo } from './SillyVideo'
 
 function isLoading(state: StateFrom<OpenAaveStateMachine>) {
   return state.matches('background.loading')
@@ -178,8 +176,6 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
 
 function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
-  const [tomfooleryEnabled, disableTomfoolery] = useTomfoolery()
-  const [pumpTheGas, setPumpTheGas] = useState(false)
 
   const nextStepButton = {
     steps: [state.context.currentStep, state.context.totalSteps] as [number, number],
@@ -196,45 +192,23 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
     ? t(state.context.strategyConfig.viewComponents.sidebarTitle)
     : t('open-vault-two-tx-first-step-title', { type: t('position') })
 
-  const sidebarSectionProps: SidebarSectionProps = tomfooleryEnabled
-    ? {
-        title: t('open-earn.aave.af-title'),
-        content: (
-          <Grid gap={3}>
-            <Text>{t('open-earn.aave.af-description')}</Text>
-            <SillyVideo playVideo={pumpTheGas} onVideoEnd={disableTomfoolery} />
-          </Grid>
-        ),
-        primaryButton: {
-          label: t('open-earn.aave.af-cta-button'),
-          action: () => {
-            setPumpTheGas(true)
-          },
-          isLoading: pumpTheGas,
-          steps: [state.context.currentStep - 0.5, state.context.totalSteps] as [number, number],
-        },
-        secondaryButton: {
-          label: t('open-earn.aave.af-secondary-button'),
-          action: disableTomfoolery,
-        },
-      }
-    : {
-        title: resolvedTitle,
-        content: (
-          <Grid gap={3}>
-            {withStopLoss && <StopLossTwoTxRequirement typeKey="position" />}
-            <StrategyInformationContainer
-              state={state}
-              changeSlippageSource={(from) => {
-                send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
-              }}
-            />
-          </Grid>
-        ),
-        primaryButton: nextStepButton,
-        requireConnection: true,
-        requiredChainHexId: state.context.strategyConfig.networkHexId,
-      }
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: resolvedTitle,
+    content: (
+      <Grid gap={3}>
+        {withStopLoss && <StopLossTwoTxRequirement typeKey="position" />}
+        <StrategyInformationContainer
+          state={state}
+          changeSlippageSource={(from) => {
+            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+          }}
+        />
+      </Grid>
+    ),
+    primaryButton: nextStepButton,
+    requireConnection: true,
+    requiredChainHexId: state.context.strategyConfig.networkHexId,
+  }
 
   return (
     <ConnectedSidebarSection

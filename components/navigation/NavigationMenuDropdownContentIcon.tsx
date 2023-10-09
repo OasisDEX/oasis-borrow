@@ -1,8 +1,9 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import type { NavigationMenuPanelIcon } from 'components/navigation/NavigationMenuPanel'
+import { Icon } from 'components/Icon'
 import { TokensGroup } from 'components/TokensGroup'
 import React from 'react'
 import { Flex, Image } from 'theme-ui'
+
+import type { NavigationMenuPanelIcon } from './Navigation.types'
 
 export type NavigationMenuDropdownContentIconProps = NavigationMenuPanelIcon
 
@@ -39,7 +40,7 @@ export function NavigationMenuDropdownContentIcon({
             transition: '200ms color, 200ms background-color',
           }}
         >
-          <Icon name={icon} size={20} />
+          <Icon icon={icon} size={20} />
         </Flex>
       )}
       {image && <Image src={image} width={26} />}
