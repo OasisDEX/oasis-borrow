@@ -22,6 +22,7 @@ import type { ManagePositionAvailableActions } from 'features/aave/types'
 import { ProductType } from 'features/aave/types'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getAaveLikeOpenStrategyUrl } from 'helpers/getAaveLikeStrategyUrl'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -63,7 +64,26 @@ export function isLoading(state: ManageAaveStateMachineState) {
 }
 
 export function isLocked(state: ManageAaveStateMachineState) {
-  const { ownerAddress, web3Context } = state.context
+  const { ownerAddress, web3Context, tokens, strategyConfig, manageTokenInput } = state.context
+  const isClosing = state.matches('frontend.reviewingClosing')
+  const isAdjusting = state.matches('frontend.reviewingAdjusting')
+  const { aaveLike } = getLocalAppConfig('parameters')
+  if (isClosing) {
+    if (
+      // TODO: find a better way to handle this
+      aaveLike.closeDisabledFor.strategyTypes.includes(strategyConfig.strategyType) &&
+      aaveLike.closeDisabledFor.collateral.includes(manageTokenInput?.closingToken || '')
+    )
+      return true
+  }
+  if (isAdjusting) {
+    if (
+      aaveLike.adjustDisabledFor.strategyTypes.includes(strategyConfig.strategyType) &&
+      aaveLike.adjustDisabledFor.collateral.includes(tokens.collateral)
+    ) {
+      return true
+    }
+  }
   return !(allDefined(ownerAddress, web3Context) && ownerAddress === web3Context!.account)
 }
 

@@ -31,4 +31,4 @@ services:
     volumes:
       - '../.hardhat/cache:/usr/src/mpa/cache'
 volumes:
-  db_data: {}
+  db_data: { }

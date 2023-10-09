@@ -45,7 +45,7 @@ export function extractStopLossDataInput(context: OpenAaveContext): AaveStopLoss
   }
 }
 
-export function getAveeStopLossTriggerType(protocol: LendingProtocol): TriggerType {
+export function getAaveLikeStopLossTriggerType(protocol: LendingProtocol): TriggerType {
   if (!protocol) {
     throw new Error('Protocol is not defined')
   }
