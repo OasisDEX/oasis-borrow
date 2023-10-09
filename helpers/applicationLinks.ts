@@ -103,6 +103,11 @@ export const EXTERNAL_LINKS = {
       HOW_TO_CREATE_A_POOL:
         'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/how-to-create-a-pool-on-ajna',
     },
+    NAVIGATION: [
+      'https://docs.summer.fi/general/get-liquidity-without-selling-your-crypto',
+      'https://docs.summer.fi/general/amplify-exposure-to-your-crypto-with-downside-protection',
+      'https://docs.summer.fi/general/maximize-earnings-on-your-crypto-assets',
+    ]
   },
   LEGACY_APP: 'https://legacy.summer.fi',
   AJNA: {
