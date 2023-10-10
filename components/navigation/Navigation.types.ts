@@ -87,19 +87,21 @@ export interface NavigationMenuPanelList {
   items: NavigationMenuPanelListItem[]
   link?: {
     label: string
+    query?: { [key: string]: string }
     url: string
   }
   tight?: boolean
 }
 export interface NavigationMenuPanelListItem {
   description?: ReactNode
-  icon?: NavigationMenuPanelIcon
-  url?: string
-  list?: NavigationMenuPanelList
   hoverColor?: string
+  icon?: NavigationMenuPanelIcon
+  list?: NavigationMenuPanelList
   promoted?: boolean
+  query?: { [key: string]: string }
   tags?: NavigationMenuPanelListTags
   title: ReactNode
+  url?: string
   callback?: () => void
 }
 export interface NavigationMenuPanelType {

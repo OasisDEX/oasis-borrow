@@ -38,16 +38,31 @@ export const getNavProtocolsPanel = ({
                 title: t('nav.borrow'),
                 description: navigation.protocols.aave.borrow.description,
                 url: `${INTERNAL_LINKS.borrow}`,
+                query: {
+                  protocol: `${lendingProtocolsByName[LendingProtocol.AaveV2].name},${
+                    lendingProtocolsByName[LendingProtocol.AaveV3].name
+                  }`,
+                },
               },
               {
                 title: t('nav.multiply'),
                 description: navigation.protocols.aave.multiply.description,
                 url: `${INTERNAL_LINKS.multiply}`,
+                query: {
+                  protocol: `${lendingProtocolsByName[LendingProtocol.AaveV2].name},${
+                    lendingProtocolsByName[LendingProtocol.AaveV3].name
+                  }`,
+                },
               },
               {
                 title: t('nav.earn'),
                 description: navigation.protocols.aave.earn.description,
                 url: `${INTERNAL_LINKS.earn}`,
+                query: {
+                  protocol: `${lendingProtocolsByName[LendingProtocol.AaveV2].name},${
+                    lendingProtocolsByName[LendingProtocol.AaveV3].name
+                  }`,
+                },
               },
               {
                 title: navigation.protocols.aave.extra.title,
@@ -56,11 +71,10 @@ export const getNavProtocolsPanel = ({
                 url: navigation.protocols.aave.extra.url,
               },
             ],
-            link: {
-              label: t('nav.protocols-more', { protocol: 'Aave' }),
-              // TODO filter by protocol
-              url: `${INTERNAL_LINKS.borrow}`,
-            },
+            // link: {
+            //   label: t('nav.protocols-more', { protocol: 'Aave' }),
+            //   url: `${INTERNAL_LINKS.borrow}`,
+            // },
           },
         },
         ...(AjnaSafetySwitch
@@ -80,16 +94,25 @@ export const getNavProtocolsPanel = ({
                       title: t('nav.borrow'),
                       description: navigation.protocols.ajna.borrow.description,
                       url: `${INTERNAL_LINKS.borrow}`,
+                      query: {
+                        protocol: lendingProtocolsByName[LendingProtocol.Ajna].name,
+                      },
                     },
                     {
                       title: t('nav.multiply'),
                       description: navigation.protocols.ajna.multiply.description,
                       url: `${INTERNAL_LINKS.multiply}`,
+                      query: {
+                        protocol: lendingProtocolsByName[LendingProtocol.Ajna].name,
+                      },
                     },
                     {
                       title: t('nav.earn'),
                       description: navigation.protocols.ajna.earn.description,
                       url: `${INTERNAL_LINKS.earn}`,
+                      query: {
+                        protocol: lendingProtocolsByName[LendingProtocol.Ajna].name,
+                      },
                     },
                     {
                       title: navigation.protocols.ajna.extra.title,
@@ -98,11 +121,10 @@ export const getNavProtocolsPanel = ({
                       url: navigation.protocols.ajna.extra.url,
                     },
                   ],
-                  link: {
-                    label: t('nav.protocols-more', { protocol: 'Ajna' }),
-                    // TODO filter by protocol
-                    url: `${INTERNAL_LINKS.borrow}`,
-                  },
+                  // link: {
+                  //   label: t('nav.protocols-more', { protocol: 'Ajna' }),
+                  //   url: `${INTERNAL_LINKS.borrow}`,
+                  // },
                 },
               },
             ] as NavigationMenuPanelListItem[])),
@@ -120,16 +142,25 @@ export const getNavProtocolsPanel = ({
                 title: t('nav.borrow'),
                 description: navigation.protocols.maker.borrow.description,
                 url: `${INTERNAL_LINKS.borrow}`,
+                query: {
+                  protocol: lendingProtocolsByName[LendingProtocol.Maker].name,
+                },
               },
               {
                 title: t('nav.multiply'),
                 description: navigation.protocols.maker.multiply.description,
                 url: `${INTERNAL_LINKS.multiply}`,
+                query: {
+                  protocol: lendingProtocolsByName[LendingProtocol.Maker].name,
+                },
               },
               {
                 title: t('nav.earn'),
                 description: navigation.protocols.maker.earn.description,
                 url: `${INTERNAL_LINKS.earn}`,
+                query: {
+                  protocol: lendingProtocolsByName[LendingProtocol.Maker].name,
+                },
               },
               {
                 title: navigation.protocols.maker.extra.title,
@@ -138,11 +169,10 @@ export const getNavProtocolsPanel = ({
                 url: navigation.protocols.maker.extra.url,
               },
             ],
-            link: {
-              label: t('nav.protocols-more', { protocol: 'Maker' }),
-              // TODO filter by protocol
-              url: `${INTERNAL_LINKS.borrow}`,
-            },
+            // link: {
+            //   label: t('nav.protocols-more', { protocol: 'Maker' }),
+            //   url: `${INTERNAL_LINKS.borrow}`,
+            // },
           },
         },
         {
@@ -159,16 +189,25 @@ export const getNavProtocolsPanel = ({
                 title: t('nav.borrow'),
                 description: navigation.protocols.spark.borrow.description,
                 url: `${INTERNAL_LINKS.borrow}`,
+                query: {
+                  protocol: lendingProtocolsByName[LendingProtocol.SparkV3].name,
+                },
               },
               {
                 title: t('nav.multiply'),
                 description: navigation.protocols.spark.multiply.description,
                 url: `${INTERNAL_LINKS.multiply}`,
+                query: {
+                  protocol: lendingProtocolsByName[LendingProtocol.SparkV3].name,
+                },
               },
               {
                 title: t('nav.earn'),
                 description: navigation.protocols.spark.earn.description,
                 url: `${INTERNAL_LINKS.earn}`,
+                query: {
+                  protocol: lendingProtocolsByName[LendingProtocol.SparkV3].name,
+                },
               },
               {
                 title: navigation.protocols.spark.extra.title,
@@ -177,11 +216,10 @@ export const getNavProtocolsPanel = ({
                 url: navigation.protocols.spark.extra.url,
               },
             ],
-            link: {
-              label: t('nav.protocols-more', { protocol: 'Spark' }),
-              // TODO filter by protocol
-              url: `${INTERNAL_LINKS.borrow}`,
-            },
+            // link: {
+            //   label: t('nav.protocols-more', { protocol: 'Spark' }),
+            //   url: `${INTERNAL_LINKS.borrow}`,
+            // },
           },
         },
       ],

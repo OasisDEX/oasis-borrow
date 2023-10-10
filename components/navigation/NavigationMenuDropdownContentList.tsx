@@ -67,7 +67,7 @@ export function NavigationMenuDropdownContentList({
           p: 0,
         }}
       >
-        {items.map(({ hoverColor, url, callback, ...item }, i) => (
+        {items.map(({ callback, hoverColor, query, url, ...item }, i) => (
           <Box
             key={i}
             as="li"
@@ -92,7 +92,7 @@ export function NavigationMenuDropdownContentList({
             }}
           >
             {url ? (
-              <AppLink href={url} sx={{ display: 'block', ...itemInnerPadding }}>
+              <AppLink href={url} query={query} sx={{ display: 'block', ...itemInnerPadding }}>
                 <NavigationMenuDropdownContentListItem hoverColor={hoverColor} {...item} />
               </AppLink>
             ) : (
@@ -106,6 +106,7 @@ export function NavigationMenuDropdownContentList({
       {link && (
         <AppLink
           href={link.url}
+          query={link.query}
           sx={{
             ml: 3,
             mr: 'auto',
