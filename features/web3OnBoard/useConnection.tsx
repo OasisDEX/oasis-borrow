@@ -1,4 +1,4 @@
-import { NetworkConfigHexId, NetworkIds } from 'blockchain/networks'
+import type { NetworkConfigHexId, NetworkIds } from 'blockchain/networks'
 
 import { useWeb3OnBoardConnectorContext } from './web3-on-board-connector-provider'
 

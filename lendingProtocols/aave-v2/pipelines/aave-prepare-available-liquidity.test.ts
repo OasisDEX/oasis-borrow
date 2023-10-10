@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import {
+import type {
   AaveV2ReserveDataParameters,
   AaveV2ReserveDataReply,
 } from 'blockchain/aave/aaveV2ProtocolDataProvider'

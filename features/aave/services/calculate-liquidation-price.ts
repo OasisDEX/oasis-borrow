@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { one, zero } from 'helpers/zero'
 

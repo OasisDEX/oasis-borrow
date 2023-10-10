@@ -1,4 +1,4 @@
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { DefinitionList, DefinitionListItem } from 'components/DefinitionList'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'

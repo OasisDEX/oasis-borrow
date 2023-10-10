@@ -1,15 +1,10 @@
 import { Footer } from 'components/Footer'
 import { NavigationController } from 'features/navigation/controls/NavigationController'
-import { WithChildren } from 'helpers/types'
 import React from 'react'
 
 import { marketingBackgrounds } from './backgrounds'
 import { BasicLayout } from './BasicLayout'
-
-export interface MarketingLayoutProps extends WithChildren {
-  variant?: string
-  topBackground?: keyof typeof marketingBackgrounds
-}
+import type { MarketingLayoutProps } from './MarketingLayout.types'
 
 export function MarketingLayout({
   children,

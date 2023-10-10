@@ -1,15 +1,9 @@
 import { TabBar } from 'components/TabBar'
 import { useTranslation } from 'next-i18next'
-import React, { ReactElement, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Box, Card, Grid } from 'theme-ui'
 
-interface OpenMultiplyVaultContainerProps {
-  clear: () => void
-  details: ReactElement
-  form: ReactElement
-  header: ReactElement
-  faq?: ReactElement
-}
+import type { OpenMultiplyVaultContainerProps } from './OpenMultiplyVaultContainer.types'
 
 export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultContainerProps) {
   const { clear, details, form, header, faq } = props

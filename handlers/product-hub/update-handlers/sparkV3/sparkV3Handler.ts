@@ -2,21 +2,25 @@ import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
-import { getTokenPrice, Tickers } from 'blockchain/prices'
+import { getTokenPrice } from 'blockchain/prices'
+import type { Tickers } from 'blockchain/prices.types'
+import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import {
   getSparkV3EModeCategoryForAsset,
   getSparkV3ReserveConfigurationData,
   getSparkV3ReserveData,
-  SparkV3SupportedNetwork,
 } from 'blockchain/spark-v3'
 import { wstethRiskRatio } from 'features/aave/constants'
 import { productHubSparkRewardsTooltip } from 'features/productHub/content'
 import { ProductHubProductType } from 'features/productHub/types'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
-import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
+import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
-import { AaveLikeYieldsResponse, FilterYieldFieldsType } from 'lendingProtocols/aave-like-common'
+import type {
+  AaveLikeYieldsResponse,
+  FilterYieldFieldsType,
+} from 'lendingProtocols/aave-like-common'
 import { memoize } from 'lodash'
 
 import { sparkV3ProductHubProducts } from './sparkV3Products'
@@ -152,6 +156,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           tokensReserveConfigurationData.find((data) => data[primaryToken]),
         )[primaryToken]
         const tokensAddresses = getNetworkContracts(NetworkIds.MAINNET).tokens
+        // rewards are available for the ETH-like/DAI pairs
+        const hasRewards = primaryTokenGroup === 'ETH' && secondaryToken === 'DAI'
 
         return {
           ...product,
@@ -165,13 +171,10 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           liquidity: liquidity.toString(),
           fee: fee.toString(),
           tooltips: {
-            fee:
-              // rewards are available for the ETHlike/DAI pairs
-              primaryTokenGroup === 'ETH' && secondaryToken === 'DAI'
-                ? productHubSparkRewardsTooltip
-                : undefined,
+            fee: hasRewards ? productHubSparkRewardsTooltip : undefined,
           },
           weeklyNetApy: weeklyNetApy?.[label] ? weeklyNetApy[label]?.toString() : undefined,
+          hasRewards,
         }
       }),
       warnings: [],

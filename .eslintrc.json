@@ -47,6 +47,13 @@
     "@typescript-eslint/no-useless-constructor": "error",
     "@typescript-eslint/no-non-null-assertion": "warn",
     "@typescript-eslint/no-shadow": ["warn", { "builtinGlobals": true, "hoist": "all" }],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports",
+        "disallowTypeAnnotations": true
+      }
+    ],
     "accessor-pairs": "error",
     "constructor-super": "error",
     "eqeqeq": [

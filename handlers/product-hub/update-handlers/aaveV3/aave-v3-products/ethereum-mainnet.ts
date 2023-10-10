@@ -1,5 +1,7 @@
+import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
-import { ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddress[] = [
@@ -13,7 +15,8 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'WSTETH/ETH',
-    earnStrategy: 'WSTETH/ETH Yield Loop',
+    earnStrategy: EarnStrategies.yield_loop,
+    earnStrategyDescription: 'WSTETH/ETH Yield Loop',
     managementType: 'active',
   },
   {
@@ -34,7 +37,8 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'RETH/ETH',
-    earnStrategy: 'RETH/ETH Yield Loop',
+    earnStrategy: EarnStrategies.yield_loop,
+    earnStrategyDescription: 'RETH/ETH Yield Loop',
     managementType: 'active',
   },
   {
@@ -55,7 +59,8 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'CBETH/ETH',
-    earnStrategy: 'RETH/ETH Yield Loop',
+    earnStrategy: EarnStrategies.yield_loop,
+    earnStrategyDescription: 'CBETH/ETH Yield Loop',
     managementType: 'active',
   },
   {
@@ -364,7 +369,8 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'SDAI/USDC',
-    earnStrategy: 'SDAI/USDC Yield Loop',
+    earnStrategy: EarnStrategies.yield_loop,
+    earnStrategyDescription: 'SDAI/USDC Yield Loop',
     managementType: 'active',
   },
   {
@@ -385,7 +391,8 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'SDAI/LUSD',
-    earnStrategy: 'SDAI/LUSD Yield Loop',
+    earnStrategy: EarnStrategies.yield_loop,
+    earnStrategyDescription: 'SDAI/LUSD Yield Loop',
     managementType: 'active',
   },
   {
@@ -407,7 +414,8 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'SDAI/FRAX',
-    earnStrategy: 'SDAI/FRAX Yield Loop',
+    earnStrategy: EarnStrategies.yield_loop,
+    earnStrategyDescription: 'SDAI/FRAX Yield Loop',
     managementType: 'active',
   },
   {
@@ -419,5 +427,17 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     label: 'SDAI/FRAX',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
+  },
+  {
+    product: [ProductHubProductType.Earn],
+    primaryToken: 'SDAI',
+    primaryTokenGroup: 'DAI',
+    secondaryToken: 'DAI',
+    network: NetworkNames.ethereumMainnet,
+    protocol: LendingProtocol.AaveV3,
+    label: 'SDAI/DAI',
+    earnStrategy: EarnStrategies.yield_loop,
+    earnStrategyDescription: 'SDAI/DAI Yield Loop',
+    managementType: 'active',
   },
 ]

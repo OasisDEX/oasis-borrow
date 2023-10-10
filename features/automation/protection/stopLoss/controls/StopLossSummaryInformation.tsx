@@ -1,5 +1,5 @@
 import { Text } from '@theme-ui/components'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,

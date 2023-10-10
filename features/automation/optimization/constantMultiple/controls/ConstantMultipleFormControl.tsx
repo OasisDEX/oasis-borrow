@@ -1,21 +1,17 @@
-import { AutomationEventIds, Pages } from 'analytics/analytics'
+import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
-import {
-  calculateMultipleFromTargetCollRatio,
-  resolveMaxBuyPriceAnalytics,
-  resolveMinSellPriceAnalytics,
-} from 'features/automation/common/helpers'
+import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers/calculateMultipleFromTargetCollRatio'
+import { resolveMaxBuyPriceAnalytics } from 'features/automation/common/helpers/resolveMaxBuyPriceAnalytics'
+import { resolveMinSellPriceAnalytics } from 'features/automation/common/helpers/resolveMinSellPriceAnalytics'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupConstantMultiple } from 'features/automation/optimization/constantMultiple/sidebars/SidebarSetupConstantMultiple'
-import {
-  CONSTANT_MULTIPLE_FORM_CHANGE,
-  ConstantMultipleFormChange,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.constants'
+import type { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange.types'
 import { getConstantMultipleStatus } from 'features/automation/optimization/constantMultiple/state/constantMultipleStatus'
 import { getConstantMultipleTxHandlers } from 'features/automation/optimization/constantMultiple/state/constantMultipleTxHandlers'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -101,11 +97,11 @@ export function ConstantMultipleFormControl({
       txHelpers={txHelpers}
       analytics={{
         id: {
-          add: AutomationEventIds.AddConstantMultiple,
-          edit: AutomationEventIds.EditConstantMultiple,
-          remove: AutomationEventIds.RemoveConstantMultiple,
+          add: MixpanelAutomationEventIds.AddConstantMultiple,
+          edit: MixpanelAutomationEventIds.EditConstantMultiple,
+          remove: MixpanelAutomationEventIds.RemoveConstantMultiple,
         },
-        page: Pages.ConstantMultiple,
+        page: MixpanelPages.ConstantMultiple,
         additionalParams: {
           triggerBuyValue: constantMultipleState.buyExecutionCollRatio.toString(),
           triggerSellValue: constantMultipleState.sellExecutionCollRatio.toString(),

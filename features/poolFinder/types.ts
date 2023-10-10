@@ -1,4 +1,6 @@
-import { ProductHubItemTooltips, ProductHubManagementType } from 'features/productHub/types'
+import type { ProductHubItemTooltips, ProductHubManagementType } from 'features/productHub/types'
+
+import type { EarnStrategies } from '.prisma/client'
 
 export interface SearchTokensResponse {
   symbol: string
@@ -14,7 +16,8 @@ export interface PoolFinderFormState {
 export interface OraclessPoolResult extends ProductHubItemTooltips {
   collateralAddress: string
   collateralToken: string
-  earnStrategy?: string
+  earnStrategy?: EarnStrategies
+  earnStrategyDescription?: string
   fee?: string
   liquidity?: string
   managementType?: ProductHubManagementType

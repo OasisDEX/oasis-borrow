@@ -1,17 +1,16 @@
 import { NavigationActions } from 'components/navigation/NavigationActions'
-import {
-  NavigationBranding,
-  NavigationBrandingPill,
-} from 'components/navigation/NavigationBranding'
+import type { NavigationBrandingPill } from 'components/navigation/NavigationBranding'
+import { NavigationBranding } from 'components/navigation/NavigationBranding'
 import { NavigationMenu } from 'components/navigation/NavigationMenu'
-import { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
+import type { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
-import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
+import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { NavigationMobileMenu } from 'components/navigation/NavigationMobileMenu'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
-import React, { ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import React from 'react'
 import { Box, Container, ThemeProvider } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
@@ -47,9 +46,8 @@ export function Navigation({
         sx={{
           position: 'relative',
           display: 'grid',
-          gridTemplateColumns: ['auto auto', null, null, 'auto auto auto', '30% 40% 30%'],
+          gridTemplateColumns: ['auto auto', null, null, 'auto auto auto', '1fr auto 1fr'],
           alignItems: 'center',
-          // justifyContent: 'space-between',
           mt: '24px',
           mb: '64px',
           zIndex: 3,

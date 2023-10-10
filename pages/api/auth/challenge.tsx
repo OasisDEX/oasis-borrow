@@ -1,5 +1,5 @@
 import { makeChallenge } from 'handlers/signature-auth/challenge'
-import { NextApiHandler } from 'next'
+import type { NextApiHandler } from 'next'
 import { config } from 'server/config'
 
 const handler: NextApiHandler = async (req, res) => {

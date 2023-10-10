@@ -1,10 +1,4 @@
-export function getTokenGroup(
-  token: string,
-  type: 'primary' | 'secondary',
-): {
-  primaryTokenGroup?: string
-  secondaryTokenGroup?: string
-} {
+export function getTokenGroup(token: string): string {
   // could be extended with switch case if there is more than one group of tokens
   // for now this simple condition is enough
 
@@ -13,14 +7,14 @@ export function getTokenGroup(
     case 'RETH':
     case 'WSTETH':
     case 'YIELDETH':
-      return { [`${type}TokenGroup`]: 'ETH' }
+      return 'ETH'
     case 'TBTC':
     case 'WBTC':
     case 'YIELDBTC':
-      return { [`${type}TokenGroup`]: 'BTC' }
+      return 'BTC'
     case 'SDAI':
-      return { [`${type}TokenGroup`]: 'DAI' }
+      return 'DAI'
     default:
-      return {}
+      return token
   }
 }

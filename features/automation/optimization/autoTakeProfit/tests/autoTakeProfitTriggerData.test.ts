@@ -1,16 +1,16 @@
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
-import {
+import type {
   AutoTakeProfitFormChange,
   AutoTakeProfitResetData,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
 import {
-  AutoTakeProfitTriggerData,
-  defaultAutoTakeProfitData,
   extractAutoTakeProfitData,
   pickTriggerWithLowestExecutionPrice,
   prepareAutoTakeProfitResetData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import type { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData.types'
+import { defaultAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/defaultAutoTakeProfitData'
 
 import { generateRandomBigNumber } from './utils'
 

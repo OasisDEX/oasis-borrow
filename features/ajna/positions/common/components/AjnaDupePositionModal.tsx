@@ -1,8 +1,8 @@
 import { NetworkIds } from 'blockchain/networks'
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
-import { AjnaProduct } from 'features/ajna/common/types'
+import type { AjnaProduct } from 'features/ajna/common/types'
 import { getOraclessProductUrl } from 'features/poolFinder/helpers'
 import { useModalContext } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 import { Box, Button, Flex, Heading, Image, Text, ThemeProvider } from 'theme-ui'
-import { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
+import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 interface AjnaDupePositionModalProps {
   chainId?: NetworkIds

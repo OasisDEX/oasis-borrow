@@ -1,10 +1,10 @@
-import { trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { useMainContext, useProductContext } from 'components/context'
-import { EarnVaultHeaderProps } from 'features/earn/guni/common/GuniVaultHeader'
-import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
+import type { EarnVaultHeaderProps } from 'features/earn/guni/common/GuniVaultHeader'
+import type { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault.types'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { getAppConfig } from 'helpers/config'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
+import { useAppConfig } from 'helpers/config'
 import React, { useEffect } from 'react'
 import { Box, Grid } from 'theme-ui'
 
@@ -34,7 +34,7 @@ export function ManageEarnVaultContainer({
     ilkData,
   } = manageVault
 
-  const { StopLossRead: stopLossReadEnabled } = getAppConfig('features')
+  const { StopLossRead: stopLossReadEnabled } = useAppConfig('features')
 
   useEffect(() => {
     const subscription = createManageMultiplyVaultAnalytics$(

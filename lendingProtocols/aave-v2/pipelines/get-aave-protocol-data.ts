@@ -1,21 +1,22 @@
-import { IPosition } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
-import { AaveV2ConfigurationData } from 'blockchain/aave/aaveV2LendingPool'
-import {
+import type { IPosition } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
+import type { AaveV2ConfigurationData } from 'blockchain/aave/aaveV2LendingPool'
+import type {
   AaveV2ReserveConfigurationData,
   AaveV2UserReserveData,
   AaveV2UserReserveDataParameters,
 } from 'blockchain/aave/aaveV2ProtocolDataProvider'
-import {
+import type {
   AaveLikeProtocolData,
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
-import { combineLatest, Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 
-import { GetAaveV2OnChainPosition } from './aave-get-on-chain-position'
+import type { GetAaveV2OnChainPosition } from './aave-get-on-chain-position'
 
 export type AaveOracleAssetPriceDataType = ({ token }: { token: string }) => Observable<BigNumber>
 

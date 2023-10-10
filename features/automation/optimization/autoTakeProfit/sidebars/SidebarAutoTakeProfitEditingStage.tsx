@@ -1,12 +1,14 @@
+import { trackingEvents } from 'analytics/trackingEvents'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import { useAutomationContext } from 'components/context'
-import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
-import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import type { PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { PickCloseState } from 'components/dumb/PickCloseState'
+import type { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
@@ -15,15 +17,13 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoTakeProfitInfoSectionControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitInfoSectionControl'
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
-  AutoTakeProfitFormChange,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.constants'
+import type { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange.types'
 import { prepareAutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { uiChanges } from 'helpers/uiChanges'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { useTranslation } from 'next-i18next'
@@ -48,7 +48,7 @@ export function SidebarAutoTakeProfitEditingStage({
   warnings,
 }: SidebarAutoTakeProfitEditingStageProps) {
   const { t } = useTranslation()
-  const { ReadOnlyAutoTakeProfit: readOnlyAutoTakeProfitEnabled } = getAppConfig('features')
+  const { ReadOnlyAutoTakeProfit: readOnlyAutoTakeProfitEnabled } = useAppConfig('features')
 
   const {
     positionData: { ilk, id, positionRatio, debt, debtFloor, token },
@@ -58,9 +58,9 @@ export function SidebarAutoTakeProfitEditingStage({
   useDebouncedCallback(
     (value) =>
       trackingEvents.automation.inputChange(
-        AutomationEventIds.MoveSlider,
-        Pages.TakeProfit,
-        CommonAnalyticsSections.Form,
+        MixpanelAutomationEventIds.MoveSlider,
+        MixpanelPages.TakeProfit,
+        MixpanelCommonAnalyticsSections.Form,
         {
           vaultId: id.toString(),
           ilk: ilk,

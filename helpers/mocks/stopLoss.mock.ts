@@ -1,5 +1,5 @@
 import { NetworkIds } from 'blockchain/networks'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 
 // mock with 300% stop loss level
 export const mockedStopLossTrigger: TriggersData = {

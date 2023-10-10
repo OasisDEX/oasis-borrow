@@ -1,21 +1,21 @@
-import { IRiskRatio } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
-import { NetworkNames } from 'blockchain/networks'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import {
+import type { IRiskRatio } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
+import type { NetworkNames } from 'blockchain/networks'
+import type { VaultType } from 'features/generalManageVault/vaultType.types'
+import type { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
+import type {
   AaveLikeReserveConfigurationData,
   AaveLikeServices,
   AaveLikeYieldsResponse,
   FilterYieldFieldsType,
 } from 'lendingProtocols/aave-like-common'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 
-import { ProxiesRelatedWithPosition } from './helpers'
-import { ManageAaveStateMachine } from './manage/state'
-import { OpenAaveStateMachine } from './open/state'
-import { IStrategyConfig, PositionId } from './types'
+import type { ProxiesRelatedWithPosition } from './helpers'
+import type { ManageAaveStateMachine } from './manage/state'
+import type { OpenAaveStateMachine } from './open/state'
+import type { IStrategyConfig, PositionId } from './types'
 
 type AaveTotalValueLocked = {
   totalValueLocked: BigNumber

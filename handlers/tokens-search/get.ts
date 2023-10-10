@@ -1,6 +1,6 @@
 import { getTokensList } from 'handlers/getTokensList'
 import { cacheObject } from 'helpers/api/cacheObject'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import * as z from 'zod'
 
 const getTokens = cacheObject(getTokensList, 60 * 60, 'tokens-list')

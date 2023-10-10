@@ -1,4 +1,5 @@
-import { Reducer, useReducer } from 'react'
+import type { Reducer } from 'react'
+import { useReducer } from 'react'
 
 interface ReductoPartialUpdateAction<S> {
   type: 'partial-update'

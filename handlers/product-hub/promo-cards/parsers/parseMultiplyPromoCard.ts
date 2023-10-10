@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { PromoCardProps } from 'components/PromoCard'
+import type { PromoCardProps } from 'components/PromoCard.types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { getPromoCardsCommonPayload } from 'handlers/product-hub/promo-cards/parsers'
-import { ParsePromoCardParams } from 'handlers/product-hub/types'
+import type { ParsePromoCardParams } from 'handlers/product-hub/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 
 export function parseMultiplyPromoCard(params: ParsePromoCardParams): PromoCardProps {

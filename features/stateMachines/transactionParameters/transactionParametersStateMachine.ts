@@ -1,16 +1,23 @@
-import { IMultiplyStrategy, IOpenDepositBorrowStrategy, IStrategy } from '@oasisdex/dma-library'
+import type {
+  IMultiplyStrategy,
+  IOpenDepositBorrowStrategy,
+  IStrategy,
+} from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { DpmExecuteParameters, estimateGasOnDpm } from 'blockchain/better-calls/dpm-account'
-import { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
+import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
+import { estimateGasOnDpm } from 'blockchain/better-calls/dpm-account'
+import type { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
 import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ethNullAddress, NetworkIds } from 'blockchain/networks'
 import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
-import { ethers } from 'ethers'
-import { GasEstimationStatus, HasGasEstimation, TxHelpers } from 'helpers/context/types'
+import type { ethers } from 'ethers'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
+import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 import { fromPromise } from 'rxjs/internal-compatibility'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 import { actions, createMachine, sendParent } from 'xstate'
@@ -87,6 +94,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         networkId: networkId,
         runWithEthers: runWithEthers,
       },
+      //eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./transactionParametersStateMachine.typegen').Typegen0,
       schema: {
         context: {} as TransactionParametersStateMachineContext<T>,

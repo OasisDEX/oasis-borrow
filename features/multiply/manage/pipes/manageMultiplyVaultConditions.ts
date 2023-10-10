@@ -31,21 +31,14 @@ import {
   withdrawAmountExceedsFreeCollateralValidator,
   withdrawCollateralOnVaultUnderDebtFloorValidator,
 } from 'features/form/commonValidators'
-import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
+import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings.constants'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import { ManageMultiplyVaultStage, ManageMultiplyVaultState } from './manageMultiplyVault'
-
-const defaultManageVaultStageCategories = {
-  isEditingStage: false,
-  isProxyStage: false,
-  isCollateralAllowanceStage: false,
-  isDaiAllowanceStage: false,
-  isManageStage: false,
-  isBorrowTransitionStage: false,
-}
+import { defaultManageVaultStageCategories } from './manageMultiplyVaultConditions.constants'
+import type { ManageMultiplyVaultStage } from './ManageMultiplyVaultStage.types'
+import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
 
 export function applyManageVaultStageCategorisation<VS extends ManageMultiplyVaultState>(
   state: VS,
@@ -165,156 +158,6 @@ export function applyManageVaultStageCategorisation<VS extends ManageMultiplyVau
     default:
       throw new UnreachableCaseError(stage)
   }
-}
-
-export interface ManageVaultConditions {
-  isEditingStage: boolean
-  isProxyStage: boolean
-  isCollateralAllowanceStage: boolean
-  isDaiAllowanceStage: boolean
-  isManageStage: boolean
-  isBorrowTransitionStage: boolean
-
-  canProgress: boolean
-  canRegress: boolean
-
-  depositAndWithdrawAmountsEmpty: boolean
-  generateAndPaybackAmountsEmpty: boolean
-  inputAmountsEmpty: boolean
-
-  vaultWillBeAtRiskLevelWarning: boolean
-  vaultWillBeAtRiskLevelDanger: boolean
-  vaultWillBeUnderCollateralized: boolean
-
-  vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
-  vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
-  vaultWillBeUnderCollateralizedAtNextPrice: boolean
-  potentialGenerateAmountLessThanDebtFloor: boolean
-  debtIsLessThanDebtFloor: boolean
-
-  accountIsConnected: boolean
-  accountIsController: boolean
-
-  depositingAllEthBalance: boolean
-  depositAmountExceedsCollateralBalance: boolean
-  depositDaiAmountExceedsDaiBalance: boolean
-  withdrawAmountExceedsFreeCollateral: boolean
-  withdrawAmountExceedsFreeCollateralAtNextPrice: boolean
-  generateAmountExceedsDaiYieldFromTotalCollateral: boolean
-  generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice: boolean
-  generateAmountLessThanDebtFloor: boolean
-  generateAmountExceedsDebtCeiling: boolean
-  paybackAmountExceedsVaultDebt: boolean
-  paybackAmountExceedsDaiBalance: boolean
-  generateAmountMoreThanMaxFlashAmount: boolean
-  debtWillBeLessThanDebtFloor: boolean
-  isLoadingStage: boolean
-  isSuccessStage: boolean
-  exchangeDataRequired: boolean
-  shouldShowExchangeError: boolean
-  isExchangeLoading: boolean
-
-  insufficientCollateralAllowance: boolean
-  customCollateralAllowanceAmountEmpty: boolean
-  customCollateralAllowanceAmountExceedsMaxUint256: boolean
-  customCollateralAllowanceAmountLessThanDepositAmount: boolean
-  ledgerWalletContractDataDisabled: boolean
-
-  insufficientDaiAllowance: boolean
-  customDaiAllowanceAmountEmpty: boolean
-  customDaiAllowanceAmountExceedsMaxUint256: boolean
-  customDaiAllowanceAmountLessThanPaybackAmount: boolean
-  withdrawCollateralOnVaultUnderDebtFloor: boolean
-
-  hasToDepositCollateralOnEmptyVault: boolean
-
-  highSlippage: boolean
-  invalidSlippage: boolean
-  stopLossTriggered: boolean
-  autoTakeProfitTriggered: boolean
-  afterCollRatioBelowStopLossRatio: boolean
-  afterCollRatioBelowAutoSellRatio: boolean
-  afterCollRatioAboveAutoBuyRatio: boolean
-  afterCollRatioBelowConstantMultipleSellRatio: boolean
-  afterCollRatioAboveConstantMultipleBuyRatio: boolean
-  takeProfitWillTriggerImmediatelyAfterVaultReopen: boolean
-  existingTakeProfitTriggerAfterVaultReopen: boolean
-
-  potentialInsufficientEthFundsForTx: boolean
-  insufficientEthFundsForTx: boolean
-}
-
-export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
-  ...defaultManageVaultStageCategories,
-  canProgress: false,
-  canRegress: false,
-
-  vaultWillBeAtRiskLevelWarning: false,
-  vaultWillBeAtRiskLevelDanger: false,
-  vaultWillBeUnderCollateralized: false,
-
-  vaultWillBeAtRiskLevelWarningAtNextPrice: false,
-  vaultWillBeAtRiskLevelDangerAtNextPrice: false,
-  vaultWillBeUnderCollateralizedAtNextPrice: false,
-  potentialGenerateAmountLessThanDebtFloor: false,
-  debtIsLessThanDebtFloor: false,
-
-  depositAndWithdrawAmountsEmpty: true,
-  generateAndPaybackAmountsEmpty: true,
-  inputAmountsEmpty: true,
-
-  accountIsConnected: false,
-  accountIsController: false,
-
-  depositingAllEthBalance: false,
-  depositAmountExceedsCollateralBalance: false,
-  depositDaiAmountExceedsDaiBalance: false,
-  withdrawAmountExceedsFreeCollateral: false,
-  withdrawAmountExceedsFreeCollateralAtNextPrice: false,
-  generateAmountExceedsDaiYieldFromTotalCollateral: false,
-  generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice: false,
-  generateAmountLessThanDebtFloor: false,
-  generateAmountExceedsDebtCeiling: false,
-  generateAmountMoreThanMaxFlashAmount: false,
-  paybackAmountExceedsVaultDebt: false,
-  paybackAmountExceedsDaiBalance: false,
-
-  debtWillBeLessThanDebtFloor: false,
-  isLoadingStage: false,
-  isSuccessStage: false,
-  exchangeDataRequired: false, //added
-  shouldShowExchangeError: false, //added
-  isExchangeLoading: false, //added
-
-  insufficientCollateralAllowance: false,
-  customCollateralAllowanceAmountEmpty: false,
-  customCollateralAllowanceAmountExceedsMaxUint256: false,
-  customCollateralAllowanceAmountLessThanDepositAmount: false,
-  ledgerWalletContractDataDisabled: false,
-
-  insufficientDaiAllowance: false,
-  customDaiAllowanceAmountEmpty: false,
-  customDaiAllowanceAmountExceedsMaxUint256: false,
-  customDaiAllowanceAmountLessThanPaybackAmount: false,
-
-  withdrawCollateralOnVaultUnderDebtFloor: false,
-
-  hasToDepositCollateralOnEmptyVault: false,
-
-  highSlippage: false,
-  invalidSlippage: false,
-  stopLossTriggered: false,
-  autoTakeProfitTriggered: false,
-  afterCollRatioBelowStopLossRatio: false,
-  afterCollRatioBelowAutoSellRatio: false,
-  afterCollRatioAboveAutoBuyRatio: false,
-  afterCollRatioBelowConstantMultipleSellRatio: false,
-  afterCollRatioAboveConstantMultipleBuyRatio: false,
-  takeProfitWillTriggerImmediatelyAfterVaultReopen: false,
-  existingTakeProfitTriggerAfterVaultReopen: false,
-
-  potentialInsufficientEthFundsForTx: false,
-  insufficientEthFundsForTx: false,
 }
 
 export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(state: VS): VS {

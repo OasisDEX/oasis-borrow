@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { TxError } from 'helpers/types'
+import type { TxError } from 'helpers/types'
 import Web3 from 'web3'
 
 type ProxyChange =

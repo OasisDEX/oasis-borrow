@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@theme-ui/components'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 
 export function WithVaultFormStepIndicator({

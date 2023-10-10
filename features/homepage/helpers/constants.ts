@@ -1,4 +1,4 @@
-import { ImagesSliderProps } from 'components/ImagesSlider'
+import type { ImagesSliderProps } from 'components/ImagesSlider'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 
 export const partnerLogosConfig: ImagesSliderProps['items'] = [

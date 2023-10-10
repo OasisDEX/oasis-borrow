@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { AssetsTableBanner } from 'components/assetsTable/AssetsTableBanner'
 import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
 import { sortRows } from 'components/assetsTable/helpers/sortRows'
-import {
+import type {
   AssetsTableHeaderTranslationProps,
   AssetsTableProps,
   AssetsTableRowData,

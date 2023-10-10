@@ -228,30 +228,32 @@ model UsersWhoFollowVaults {
 }
 
 model ProductHubItems {
-  id                    String                      @id @default(uuid())
-  label                 String
-  network               NetworkNamesWithTestnets
-  primaryToken          String
-  primaryTokenGroup     String?
-  product               Product[]
-  protocol              Protocol
-  secondaryToken        String
-  secondaryTokenGroup   String?
-  weeklyNetApy          String?
-  depositToken          String?
-  earnStrategy          String?
-  fee                   String?
-  liquidity             String?
-  managementType        ProductHubManagementSimple?
-  maxLtv                String?
-  maxMultiply           String?
-  multiplyStrategy      String?
-  multiplyStrategyType  ProductHubStrategy?
-  reverseTokens         Boolean?
-  updatedAt             DateTime                    @updatedAt
-  tooltips              Json?
-  primaryTokenAddress   String                      @default("0x0000000000000000000000000000000000000000")
-  secondaryTokenAddress String                      @default("0x0000000000000000000000000000000000000000")
+  id                      String                      @id @default(uuid())
+  label                   String
+  network                 NetworkNamesWithTestnets
+  primaryToken            String
+  primaryTokenGroup       String?
+  product                 Product[]
+  protocol                Protocol
+  secondaryToken          String
+  secondaryTokenGroup     String?
+  weeklyNetApy            String?
+  depositToken            String?
+  earnStrategy            EarnStrategies?
+  earnStrategyDescription String?
+  fee                     String?
+  liquidity               String?
+  managementType          ProductHubManagementSimple?
+  maxLtv                  String?
+  maxMultiply             String?
+  multiplyStrategy        String?
+  multiplyStrategyType    ProductHubStrategy?
+  reverseTokens           Boolean?
+  updatedAt               DateTime                    @updatedAt
+  tooltips                Json?
+  primaryTokenAddress     String                      @default("0x0000000000000000000000000000000000000000")
+  secondaryTokenAddress   String                      @default("0x0000000000000000000000000000000000000000")
+  hasRewards              Boolean                     @default(false)
 
   @@unique([label, network, product, protocol, primaryToken, secondaryToken], name: "product_hub_item_id")
   @@map("product_hub_items")
@@ -310,6 +312,14 @@ enum ProductHubManagementSimple {
   passive
 
   @@map("managementTypeSimple")
+}
+
+enum EarnStrategies {
+  liquidity_provision
+  yield_loop
+  other
+
+  @@map("earnStrategies")
 }
 
 enum ProductHubStrategy {

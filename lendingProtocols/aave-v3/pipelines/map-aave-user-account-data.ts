@@ -1,6 +1,6 @@
-import { AaveV3UserAccountData, AaveV3UserAccountDataParameters } from 'blockchain/aave-v3'
-import { NetworkIds } from 'blockchain/networks'
-import {
+import type { AaveV3UserAccountData, AaveV3UserAccountDataParameters } from 'blockchain/aave-v3'
+import type { NetworkIds } from 'blockchain/networks'
+import type {
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common/aave-like-user-account-data'

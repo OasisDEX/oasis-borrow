@@ -1,5 +1,5 @@
-import { SidebarAutomationStages } from 'features/automation/common/types'
-import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import type { SidebarAutomationStages } from 'features/automation/common/types'
+import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 
 interface IsDropdownDisabledParams {
   stage: SidebarVaultStages | SidebarAutomationStages

@@ -1,4 +1,4 @@
-import { AjnaPosition, SwapData } from '@oasisdex/dma-library'
+import type { AjnaPosition, SwapData } from '@oasisdex/dma-library'
 
 export const resolveSwapTokenPrice = ({
   positionData,

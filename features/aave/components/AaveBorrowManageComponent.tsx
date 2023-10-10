@@ -1,13 +1,13 @@
 import { useAaveContext } from 'features/aave'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
-import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 
 import { AaveBorrowPositionData } from './AaveBorrowPositionData'
-import { AaveManageComponentProps } from './AaveMultiplyManageComponent'
+import type { AaveManageComponentProps } from './AaveMultiplyManageComponent'
 
 export function AaveBorrowManageComponent({
   currentPosition,

@@ -1,10 +1,10 @@
-import { IPosition } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
-import { AaveV2UserReserveData } from 'blockchain/aave'
-import { AaveV3UserReserveData } from 'blockchain/aave-v3'
-import { SparkV3UserReserveData } from 'blockchain/spark-v3'
+import type { IPosition } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
+import type { AaveV2UserReserveData } from 'blockchain/aave'
+import type { AaveV3UserReserveData } from 'blockchain/aave-v3'
+import type { SparkV3UserReserveData } from 'blockchain/spark-v3'
 
-import { AaveLikeUserAccountData } from './aave-like-user-account-data'
+import type { AaveLikeUserAccountData } from './aave-like-user-account-data'
 
 type ConfigurationData = string[]
 

@@ -1,37 +1,32 @@
-import { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
+import type { BigNumber } from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
+import { createIlkDataChange$ } from 'blockchain/ilks'
+import type { IlkData } from 'blockchain/ilks.types'
+import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { createVaultChange$, Vault } from 'blockchain/vaults'
-import dayjs, { Dayjs } from 'dayjs'
+import { createVaultChange$ } from 'blockchain/vaults'
+import type { Vault } from 'blockchain/vaults.types'
+import type { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
-import { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
-import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import type { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
+import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { applyExchange } from 'features/multiply/manage/pipes/manageMultiplyQuote'
-import {
-  ManageMultiplyVaultChange,
-  ManageMultiplyVaultState,
-  MutableManageMultiplyVaultState,
-} from 'features/multiply/manage/pipes/manageMultiplyVault'
-import {
-  applyManageVaultCalculations,
-  defaultManageMultiplyVaultCalculations,
-} from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { applyManageVaultCalculations } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { defaultManageMultiplyVaultCalculations } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations.constants'
+import type { ManageMultiplyVaultChange } from 'features/multiply/manage/pipes/ManageMultiplyVaultChange.types'
 import {
   applyManageVaultConditions,
   applyManageVaultStageCategorisation,
-  defaultManageMultiplyVaultConditions,
 } from 'features/multiply/manage/pipes/manageMultiplyVaultConditions'
+import { defaultManageMultiplyVaultConditions } from 'features/multiply/manage/pipes/manageMultiplyVaultConditions.constants'
 import { applyManageVaultEnvironment } from 'features/multiply/manage/pipes/manageMultiplyVaultEnvironment'
-import { manageMultiplyInputsDefaults } from 'features/multiply/manage/pipes/manageMultiplyVaultForm'
-import {
-  applyManageVaultSummary,
-  defaultManageVaultSummary,
-} from 'features/multiply/manage/pipes/manageMultiplyVaultSummary'
+import { manageMultiplyInputsDefaults } from 'features/multiply/manage/pipes/manageMultiplyVaultForm.constants'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
+import { applyManageVaultSummary } from 'features/multiply/manage/pipes/manageMultiplyVaultSummary'
+import { defaultManageVaultSummary } from 'features/multiply/manage/pipes/manageMultiplyVaultSummary.constants'
 import { applyManageVaultTransaction } from 'features/multiply/manage/pipes/manageMultiplyVaultTransactions'
 import { applyManageVaultTransition } from 'features/multiply/manage/pipes/manageMultiplyVaultTransitions'
 import {
@@ -39,17 +34,25 @@ import {
   validateErrors,
   validateWarnings,
 } from 'features/multiply/manage/pipes/manageMultiplyVaultValidations'
-import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
-import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { AddGasEstimationFunction, GasEstimationStatus, TxHelpers } from 'helpers/context/types'
-import { GUNI_SLIPPAGE } from 'helpers/multiply/calculations'
+import type { MutableManageMultiplyVaultState } from 'features/multiply/manage/pipes/MutableManageMultiplyVaultState.types'
+import { balanceInfoChange$ } from 'features/shared/balanceInfo'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
+import { priceInfoChange$ } from 'features/shared/priceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo.types'
+import { createHistoryChange$ } from 'features/vaultHistory/vaultHistory'
+import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { AddGasEstimationFunction } from 'helpers/context/types'
+import { GUNI_SLIPPAGE } from 'helpers/multiply/calculations.constants'
+import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
 import { one } from 'helpers/zero'
 import { curry } from 'lodash'
-import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, merge, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
 import { closeGuniVault } from './guniActionsCalls'
+import type { GuniTxData, GuniTxDataChange, ManageEarnVaultState } from './manageGuniVault.types'
 import { applyGuniCalculations } from './manageGuniVaultCalculations'
 import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
 import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
@@ -77,17 +80,6 @@ function applyManageVaultInjectedOverride(
   }
   return state
 }
-
-export type GuniTxData = {
-  sharedAmount0?: BigNumber
-  sharedAmount1?: BigNumber
-  minToTokenAmount?: BigNumber
-  toTokenAmount?: BigNumber
-  fromTokenAmount?: BigNumber
-  requiredDebt?: BigNumber
-}
-
-type GuniTxDataChange = { kind: 'guniTxData' }
 
 function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(change: Ch, state: S): S {
   if (change.kind === 'guniTxData') {

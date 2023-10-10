@@ -1,9 +1,11 @@
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { ReactElement, useState } from 'react'
-import { Box, Grid, Link, SxStyleProp, Text } from 'theme-ui'
+import type { ReactElement } from 'react'
+import React, { useState } from 'react'
+import type { SxStyleProp } from 'theme-ui'
+import { Box, Grid, Link, Text } from 'theme-ui'
 
 function getHeadingId(text: string) {
   return text.replace(/ /g, '_').toLowerCase()

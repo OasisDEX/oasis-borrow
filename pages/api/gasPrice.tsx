@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 const NodeCache = require('node-cache')
 const cache = new NodeCache({ stdTTL: 9 })

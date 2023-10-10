@@ -6,36 +6,12 @@ import { AjnaHaveSomeQuestions } from 'features/ajna/common/components/AjnaHaveS
 import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
 import { AjnaRewardCard } from 'features/ajna/common/components/AjnaRewardCard'
 import { useAjnaRewards } from 'features/ajna/rewards/useAjnaRewards'
-import { useAjnaUserNfts } from 'features/ajna/rewards/useAjnaUserNfts'
 import { useConnection } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Button, Flex } from 'theme-ui'
-
-const miningRewardsCard = {
-  title: 'ajna.rewards.cards.mining.title',
-  image: '/static/img/ajna-eye-purple.svg',
-  list: [
-    'ajna.rewards.cards.mining.list-1',
-    'ajna.rewards.cards.mining.list-2',
-    'ajna.rewards.cards.mining.list-3',
-  ],
-  // TODO update link once available
-  link: { title: 'ajna.rewards.cards.mining.link', href: EXTERNAL_LINKS.DOCS.AJNA.TOKEN_REWARDS },
-  banner: {
-    title: 'ajna.rewards.cards.mining.banner.title',
-    button: {
-      title: 'ajna.rewards.cards.button',
-    },
-  },
-  ownerPageLink: {
-    title: 'ajna.rewards.cards.earning-across',
-    href: '/owner',
-  },
-  gradient: 'linear-gradient(90deg, #FFEFFD 0%, #F5EDFF 100%), #FFFFFF',
-}
 
 const oasisRewardsCard = {
   title: 'ajna.rewards.cards.token.title',
@@ -62,7 +38,6 @@ const oasisRewardsCard = {
 
 export function AjnaRewardsController() {
   const { t } = useTranslation()
-  const userNftsData = useAjnaUserNfts()
   const userAjnaRewards = useAjnaRewards()
 
   const { isConnected } = useAccount()
@@ -89,38 +64,31 @@ export function AjnaRewardsController() {
           </Button>
         </Flex>
       )}
-      <ProductCardsWrapper gap={24} desktopWidthOfCard={448} sx={{ mt: 5 }}>
-        <AjnaRewardCard
-          key="miningRewards"
-          isLoading={userNftsData.isLoading}
-          notAvailable
-          onBtnClick={userNftsData.handler}
-          rewards={userNftsData.rewards}
-          txStatus={userNftsData.txDetails?.txStatus}
-          {...miningRewardsCard}
-        />
-        <AjnaRewardCard
-          key="oasisRewards"
-          isLoading={userAjnaRewards.isLoading}
-          rewards={userAjnaRewards.rewards}
-          {...oasisRewardsCard}
-          floatingLabel={
-            <FloatingLabel
-              text={t('ajna.rewards.cards.token.floatingLabel')}
-              flexSx={{
-                top: 4,
-                right: ['-17px', '-23px'],
-                background:
-                  'radial-gradient(99% 180% at 11.74% 11.59%, #B67CFF 0%, #878BFC 61.65%, #526EFF 100%)',
-                boxShadow: 'unset',
-              }}
-              textSx={{
-                fontWeight: 'semiBold',
-              }}
-              imageUrl="/static/img/logos/dot_light.svg"
-            />
-          }
-        />
+      <ProductCardsWrapper desktopWidthOfCard={448} sx={{ mt: 5 }}>
+        {[
+          <AjnaRewardCard
+            key="oasisRewards"
+            isLoading={userAjnaRewards.isLoading}
+            rewards={userAjnaRewards.rewards}
+            {...oasisRewardsCard}
+            floatingLabel={
+              <FloatingLabel
+                text={t('ajna.rewards.cards.token.floatingLabel')}
+                flexSx={{
+                  top: 4,
+                  right: ['-17px', '-23px'],
+                  background:
+                    'radial-gradient(99% 180% at 11.74% 11.59%, #B67CFF 0%, #878BFC 61.65%, #526EFF 100%)',
+                  boxShadow: 'unset',
+                }}
+                textSx={{
+                  fontWeight: 'semiBold',
+                }}
+                imageUrl="/static/img/logos/dot_light.svg"
+              />
+            }
+          />,
+        ]}
       </ProductCardsWrapper>
       <AjnaHaveSomeQuestions />
     </AnimatedWrapper>

@@ -1,6 +1,6 @@
-import { BigNumber } from 'bignumber.js'
-import { Context, ContextConnected } from 'blockchain/network'
-import { AccountDetails } from 'features/account/AccountData'
+import type { BigNumber } from 'bignumber.js'
+import type { Context, ContextConnected } from 'blockchain/network.types'
+import type { AccountDetails } from 'features/account/AccountData'
 
 export function isNullish(amount: BigNumber | undefined | null): boolean {
   return !amount || amount.isZero()

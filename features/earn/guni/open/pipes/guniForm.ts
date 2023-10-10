@@ -1,15 +1,16 @@
 // TODO REMOVE NO CHECK
 // @ts-nocheck
-import { BigNumber } from 'bignumber.js'
-import { defaultAllowanceState } from 'features/allowance/allowance'
-import { defaultProxyStage } from 'features/proxy/proxy'
-import { BalanceInfo } from 'features/shared/balanceInfo'
-import { TxHelpers } from 'helpers/context/types'
+import type { BigNumber } from 'bignumber.js'
+import { defaultAllowanceState } from 'features/allowance/allowance.constants'
+import { defaultProxyStage } from 'features/proxy/proxy.constants'
+import type { BalanceInfo } from 'features/shared/balanceInfo.types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { zero } from 'helpers/zero'
 
-import { EnvironmentState } from './enviroment'
-import { openGuniVault, TxStateDependencies } from './guniActionsCalls'
-import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions'
+import type { EnvironmentState } from './enviroment'
+import type { TxStateDependencies } from './guniActionsCalls'
+import { openGuniVault } from './guniActionsCalls'
+import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions.constants'
 
 export type EditingStage = 'editing'
 export type DepositChange = { kind: 'depositAmount'; depositAmount?: BigNumber }

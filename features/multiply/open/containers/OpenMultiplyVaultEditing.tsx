@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'

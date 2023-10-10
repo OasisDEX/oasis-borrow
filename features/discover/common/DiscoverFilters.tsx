@@ -1,6 +1,6 @@
 import { GenericMultiselect } from 'components/GenericMultiselect'
 import { GenericSelect } from 'components/GenericSelect'
-import { DiscoverFiltersListItem } from 'features/discover/meta'
+import type { DiscoverFiltersListItem } from 'features/discover/meta'
 import { DiscoverFilterType } from 'features/discover/types'
 import React from 'react'
 

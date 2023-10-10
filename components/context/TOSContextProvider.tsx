@@ -1,19 +1,17 @@
 import { currentContent } from 'features/content'
 import { jwtAuthSetupToken$ } from 'features/shared/jwt'
-import {
-  createTermsAcceptance$,
-  TermsAcceptanceState,
-} from 'features/termsOfService/termsAcceptance'
+import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
+import type { TermsAcceptanceState } from 'features/termsOfService/termsAcceptance.types'
 import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
-import { WalletRiskResponse } from 'features/walletAssociatedRisk/walletRiskApi'
-import { DepreciatedServices } from 'helpers/context/types'
-import { WithChildren } from 'helpers/types'
+import type { WalletRiskResponse } from 'features/walletAssociatedRisk/walletRiskApi'
+import type { DepreciatedServices } from 'helpers/context/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 
 import { useMainContext } from './MainContextProvider'
 

@@ -1,4 +1,4 @@
-import { PrismaClient, WalletRisk } from '@prisma/client'
+import type { PrismaClient, WalletRisk } from '@prisma/client'
 
 export async function selectRiskForAddress(
   prisma: PrismaClient,

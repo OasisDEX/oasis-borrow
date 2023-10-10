@@ -1,5 +1,6 @@
-import { pillColors } from 'components/assetsTable/cellComponents/AssetsTableDataCellPill'
-import { DiscoverTableStatusRowData, DiscoverTableVaultStatus } from 'features/discover/types'
+import type { pillColors } from 'components/assetsTable/cellComponents/AssetsTableDataCellPill'
+import type { DiscoverTableStatusRowData } from 'features/discover/types'
+import { DiscoverTableVaultStatus } from 'features/discover/types'
 
 const statusColors: { [key in DiscoverTableVaultStatus]: keyof typeof pillColors } = {
   [DiscoverTableVaultStatus.LIQUIDATED]: 'critical',

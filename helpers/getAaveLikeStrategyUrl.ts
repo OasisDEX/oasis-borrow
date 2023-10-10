@@ -1,6 +1,7 @@
-import { NetworkNames } from 'blockchain/networks'
-import { ProductType } from 'features/aave/types'
-import { AaveLendingProtocol, LendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
+import type { NetworkNames } from 'blockchain/networks'
+import type { ProductType } from 'features/aave/types'
+import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 
 type AaveVersionProps = {
   network: NetworkNames

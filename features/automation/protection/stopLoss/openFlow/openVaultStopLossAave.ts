@@ -1,19 +1,22 @@
-import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { AutomationPositionData } from 'components/context'
-import { OpenAaveContext, OpenAaveEvent } from 'features/aave/open/state'
-import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
+import type { AutomationPositionData } from 'components/context'
+import type { OpenAaveContext, OpenAaveEvent } from 'features/aave/open/state'
+import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
-import { StopLossMetadata } from 'features/automation/metadata/types'
+import type { StopLossMetadata } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
   getDynamicStopLossPrice,
   getMaxToken,
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
-import { extractStopLossDataInput } from 'features/automation/protection/stopLoss/openFlow/helpers'
+import {
+  extractStopLossDataInput,
+  getAaveLikeCommandContractType,
+  getAveeStopLossTriggerType,
+} from 'features/automation/protection/stopLoss/openFlow/helpers'
 import {
   notRequiredAaveTranslations,
   notRequiredAutomationContext,
@@ -24,14 +27,12 @@ import {
   notRequiredValidations,
   notRequiredValues,
 } from 'features/automation/protection/stopLoss/openFlow/notRequiredProperties'
-import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
-import { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import {
-  defaultStopLossData,
-  prepareStopLossTriggerDataV2,
-} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
+import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
+import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { defaultStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.constants'
 import { one, zero } from 'helpers/zero'
-import { Sender } from 'xstate'
+import type { Sender } from 'xstate'
 
 export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenAaveEvent>) {
   const {
@@ -51,10 +52,12 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
   } = extractStopLossDataInput(context)
 
   function preparedAddStopLossTriggerData(stopLossValue: BigNumber) {
+    const commandContractType = getAaveLikeCommandContractType(context.strategyConfig.protocol)
     return {
       ...prepareStopLossTriggerDataV2(
+        commandContractType,
         proxyAddress!,
-        TriggerType.AaveStopLossToDebtV2,
+        getAveeStopLossTriggerType(context.strategyConfig.protocol),
         collateralActive,
         stopLossValue,
         debtTokenAddress!,

@@ -1,5 +1,5 @@
-import { TxStatus } from '@oasisdex/transactions'
-import { BigNumber } from 'bignumber.js'
+import type { TxStatus } from '@oasisdex/transactions'
+import type { BigNumber } from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import { Skeleton } from 'components/Skeleton'
 import { WithArrow } from 'components/WithArrow'
@@ -10,7 +10,8 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { FC, ReactNode } from 'react'
+import type { FC, ReactNode } from 'react'
+import React from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 
 interface Link {

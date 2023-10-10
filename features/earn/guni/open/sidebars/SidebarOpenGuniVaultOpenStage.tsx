@@ -1,6 +1,6 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { GuniOpenMultiplyVaultChangesInformation } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultChangesInformation'
-import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'

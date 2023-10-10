@@ -1,17 +1,22 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { PillAccordion } from 'components/PillAccordion'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { AjnaEarnInput } from 'features/ajna/positions/earn/components/AjnaEarnInput'
-import { AJNA_LUP_MOMP_OFFSET, lendingPriceColors } from 'features/ajna/positions/earn/consts'
+import {
+  AJNA_HTP_OFFSET,
+  AJNA_MOMP_OFFSET,
+  lendingPriceColors,
+} from 'features/ajna/positions/earn/consts'
 import { convertSliderThresholds } from 'features/ajna/positions/earn/helpers/convertSliderThresholds'
 import { getMinMaxAndRange } from 'features/ajna/positions/earn/helpers/getMinMaxAndRange'
 import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useEffect, useMemo } from 'react'
+import type { FC } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Box } from 'theme-ui'
 
 interface AjnaEarnSliderProps {
@@ -51,7 +56,8 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
         lowestUtilizedPriceIndex,
         marketPrice: position.marketPrice,
         isOracless,
-        offset: AJNA_LUP_MOMP_OFFSET,
+        mompOffset: AJNA_MOMP_OFFSET,
+        htpOffset: AJNA_HTP_OFFSET,
       }),
     [
       highestThresholdPrice.toString(),

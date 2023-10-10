@@ -1,14 +1,15 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { SystemStyleObject } from '@styled-system/css'
-import BigNumber from 'bignumber.js'
+import type { SystemStyleObject } from '@styled-system/css'
+import type BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useProductContext } from 'components/context'
 import { PieChart } from 'components/dumb/PieChart'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
 import { AssetsAndPositionsOverviewLoadingState } from 'features/vaultsOverview/components/AssetsAndPositionsOverviewLoadingState'
-import { AssetAction, isUrlAction } from 'features/vaultsOverview/pipes/assetActions'
-import {
+import type { AssetAction } from 'features/vaultsOverview/pipes/assetActions'
+import { isUrlAction } from 'features/vaultsOverview/pipes/assetActions'
+import type {
   PositionView,
   TopAssetsAndPositionsViewModal,
 } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
@@ -23,7 +24,8 @@ import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
-import { Box, Card, Flex, Grid, Heading, Image, Link, SxStyleProp, Text } from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Image, Link, Text } from 'theme-ui'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 
 function tokenColor(symbol: string) {

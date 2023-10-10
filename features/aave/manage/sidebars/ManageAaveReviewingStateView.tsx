@@ -1,16 +1,12 @@
-import { SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { ConnectedSidebarSection } from 'features/aave/components'
 import { isAllowanceNeeded } from 'features/aave/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { GetReviewingSidebarProps } from './GetReviewingSidebarProps'
-import {
-  isLocked,
-  ManageAaveStateProps,
-  textButtonReturningToAdjust,
-  WithDropdownConfig,
-} from './SidebarManageAaveVault'
+import type { ManageAaveStateProps, WithDropdownConfig } from './SidebarManageAaveVault'
+import { isLocked, textButtonReturningToAdjust } from './SidebarManageAaveVault'
 
 export function ManageAaveReviewingStateView({
   state,

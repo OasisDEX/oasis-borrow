@@ -1,11 +1,11 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { SidebarAutomationVaultCloseTriggered } from 'components/vault/sidebar/SidebarAutomationVaultCloseTriggered'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
-import { getAutomationThatClosedVault } from 'features/automation/common/helpers'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { getAutomationThatClosedVault } from 'features/automation/common/helpers/getAutomationThatClosedVault'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { SidebarManageMultiplyVaultManageStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultManageStage'
 import { SidebarManageMultiplyVaultTransitionStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultTransitionStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
@@ -14,7 +14,7 @@ import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
-import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import type { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { mapAutomationEvents } from 'features/vaultHistory/vaultHistory'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
@@ -26,6 +26,7 @@ import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 import { SidebarManageMultiplyVaultEditingStage } from './SidebarManageMultiplyVaultEditingStage'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 
 export const otherActionsCollateralPanel = ['depositCollateral', 'withdrawCollateral']
 export const otherActionsDaiPanel = ['depositDai', 'paybackDai', 'withdrawDai']

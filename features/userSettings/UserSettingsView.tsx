@@ -1,10 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { BlockNativeAvatar } from 'components/BlockNativeAvatar'
 import { useAccountContext, useMainContext, useNotificationSocket } from 'components/context'
 import { AppLink } from 'components/Links'
-import { AccountDetails } from 'features/account/AccountData'
+import type { AccountDetails } from 'features/account/AccountData'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { AppSpinner } from 'helpers/AppSpinner'
@@ -18,28 +18,19 @@ import {
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
-import React, { ChangeEvent, useCallback, useRef, useState } from 'react'
+import type { ChangeEvent } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import {
-  Box,
-  Button,
-  Card,
-  Flex,
-  Grid,
-  Heading,
-  Link as ThemeLink,
-  SxStyleProp,
-  Text,
-  Textarea,
-} from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Link as ThemeLink, Text, Textarea } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
-import {
-  SLIPPAGE_OPTIONS,
+import { SLIPPAGE_OPTIONS } from './userSettings.constants'
+import type {
   UserSettingsErrorMessages,
   UserSettingsState,
   UserSettingsWarningMessages,
-} from './userSettings'
+} from './userSettings.types'
 
 function SlippageOptionButton({
   option,

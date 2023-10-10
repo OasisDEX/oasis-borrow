@@ -1,34 +1,14 @@
-import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
-import { maxUint256 } from 'blockchain/calls/erc20'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import {
-  CONSTANT_MULTIPLE_FORM_CHANGE,
-  ConstantMultipleFormChange,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import { prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggersData'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 
-interface GetConstantMultipleTxHandlersParams {
-  autoBuyTriggerData: AutoBSTriggerData
-  autoSellTriggerData: AutoBSTriggerData
-  constantMultipleState: ConstantMultipleFormChange
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-  isAddForm: boolean
-  positionRatio: BigNumber
-  id: BigNumber
-  owner: string
-}
-
-interface ConstantMultipleTxHandlers {
-  addTxData: AutomationBotAddAggregatorTriggerData
-  textButtonHandlerExtension: () => void
-  txStatus?: TxStatus
-}
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from './constantMultipleFormChange.constants'
+import type {
+  ConstantMultipleTxHandlers,
+  GetConstantMultipleTxHandlersParams,
+} from './constantMultipleTxHandlers.types'
 
 export function getConstantMultipleTxHandlers({
   autoBuyTriggerData,

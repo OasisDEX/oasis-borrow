@@ -1,6 +1,6 @@
-import { IStrategy } from '@oasisdex/dma-library'
+import type { IStrategy } from '@oasisdex/dma-library'
 import { amountFromWei } from '@oasisdex/utils'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { useAutomationContext } from 'components/context'
 import { DimmedList } from 'components/DImmedList'

@@ -1,8 +1,7 @@
-import axios, { AxiosResponse } from 'axios'
-import { isTestnetNetworkId } from 'blockchain/networks'
-import { ProductHubData } from 'features/productHub/types'
-import { useWalletManagement } from 'features/web3OnBoard'
-import { ProductHubDataParams, PromoCardsCollection } from 'handlers/product-hub/types'
+import type { AxiosResponse } from 'axios'
+import axios from 'axios'
+import type { ProductHubData } from 'features/productHub/types'
+import type { ProductHubDataParams } from 'handlers/product-hub/types'
 import { useCallback, useEffect, useState } from 'react'
 
 export interface ProductHubDataState {
@@ -12,20 +11,17 @@ export interface ProductHubDataState {
   refetch(): void
 }
 
-type ProductHubDataWithCards = ProductHubDataParams & {
-  promoCardsCollection: PromoCardsCollection
-}
+type ProductHubDataWithCards = ProductHubDataParams
 
-export const useProductHubData = ({
-  protocols,
-  promoCardsCollection,
-}: ProductHubDataWithCards): ProductHubDataState => {
-  const { chainId } = useWalletManagement()
+export const useProductHubData = ({ protocols }: ProductHubDataWithCards): ProductHubDataState => {
   const [state, setState] = useState<ProductHubDataState>({
     isError: false,
     isLoading: true,
     refetch: () => {},
   })
+
+  // Verify whether testnet is currently used
+  const isTestnet = global?.window?.localStorage.getItem('legacy-default-chain') === '5'
 
   const fetchData = useCallback(async (): Promise<void> => {
     setState({
@@ -40,9 +36,8 @@ export const useProductHubData = ({
         responseType: 'json',
         headers: { Accept: 'application/json' },
         data: {
-          protocols,
-          promoCardsCollection,
-          testnet: isTestnetNetworkId(chainId),
+          protocols: protocols.filter((p) => p), // could be false cause of disabled protocols
+          testnet: isTestnet,
         },
       })
       .then(({ data }) => {
@@ -61,7 +56,7 @@ export const useProductHubData = ({
           isLoading: false,
         })
       })
-  }, [protocols.map((p) => p).join('-'), promoCardsCollection])
+  }, [protocols.map((p) => p).join('-')])
 
   useEffect(() => void fetchData(), [fetchData])
 

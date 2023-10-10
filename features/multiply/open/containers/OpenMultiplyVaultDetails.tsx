@@ -9,7 +9,7 @@ import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/Con
 import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
 import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

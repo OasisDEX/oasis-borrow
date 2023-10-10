@@ -1,6 +1,7 @@
-import { ConnectedChain, WalletState } from '@web3-onboard/core'
+import type { ConnectedChain, WalletState } from '@web3-onboard/core'
 import { useConnectWallet, useSetChain } from '@web3-onboard/react'
-import { NetworkConfigHexId, networkSetByHexId, useCustomForkParameter } from 'blockchain/networks'
+import type { NetworkConfigHexId } from 'blockchain/networks'
+import { networkSetByHexId, useCustomForkParameter } from 'blockchain/networks'
 import { useCallback, useEffect } from 'react'
 
 import { addCustomForkToTheWallet } from './injected-wallet-interactions'

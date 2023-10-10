@@ -1,13 +1,14 @@
 import { BaseNetworkNames, NetworkNames, networksByName } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { GenericMultiselectOption } from 'components/GenericMultiselect'
-import { HeaderSelectorOption } from 'components/HeaderSelector'
+import type { GenericMultiselectOption } from 'components/GenericMultiselect'
+import type { HeaderSelectorOption } from 'components/HeaderSelector'
 import { ProductHubProductType } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { Feature, getLocalAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { clone } from 'ramda'
+import { FeaturesEnum } from 'types/config'
 
 export const ALL_ASSETS = 'all assets'
 
@@ -146,7 +147,7 @@ export const productHubOptionsMapBase: {
 
 const productHubOptionsMap = clone(productHubOptionsMapBase)
 
-if (getLocalAppConfig('features')[Feature.AjnaSafetySwitch]) {
+if (getLocalAppConfig('features')[FeaturesEnum.AjnaSafetySwitch]) {
   delete productHubOptionsMap.borrow.tokens.YFI
   delete productHubOptionsMap.borrow.tokens.GHO
   delete productHubOptionsMap.borrow.tokens.WLD

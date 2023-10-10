@@ -5,7 +5,7 @@ import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVa
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { supportedEarnIlks } from 'helpers/productCards'
-import { GetServerSidePropsContext, GetStaticPaths } from 'next'
+import type { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 

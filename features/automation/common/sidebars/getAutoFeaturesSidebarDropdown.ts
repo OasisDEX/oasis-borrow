@@ -1,36 +1,20 @@
-import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
-import { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
-import { getAvailableAutomation } from 'features/automation/common/helpers'
-import {
-  AUTOMATION_CHANGE_FEATURE,
+import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
+import { getAvailableAutomation } from 'features/automation/common/helpers/getAvailableAutomation'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
+import type {
   AutomationOptimizationFeatures,
   AutomationProtectionFeatures,
-  AutomationTypes,
-} from 'features/automation/common/state/automationFeatureChange'
+} from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { VaultProtocol } from 'helpers/getVaultProtocol'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useTranslation } from 'next-i18next'
 
-interface GetAutoFeaturesSidebarDropdownProps {
-  type: AutomationTypes
-  forcePanel: AutomationProtectionFeatures | AutomationOptimizationFeatures
-  vaultType: VaultType
-  protocol: VaultProtocol
-  disabled?: boolean
-  isStopLossEnabled?: boolean
-  isAutoSellEnabled?: boolean
-  isAutoBuyEnabled?: boolean
-  isAutoConstantMultipleEnabled?: boolean
-  isAutoTakeProfitEnabled?: boolean
-}
-interface GetAutoFeaturesSidebarDropdownItemProps {
-  translationKey: string
-  type: AutomationTypes
-  panel: AutomationProtectionFeatures | AutomationOptimizationFeatures
-  isFeatureEnabled?: boolean
-}
+import type {
+  GetAutoFeaturesSidebarDropdownItemProps,
+  GetAutoFeaturesSidebarDropdownProps,
+} from './getAutoFeaturesSidebarDropdown.types'
 
 function getAutoFeaturesSidebarDropdownItem({
   translationKey,

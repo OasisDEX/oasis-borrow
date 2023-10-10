@@ -1,5 +1,6 @@
-import { DiscoverFiltersList } from 'features/discover/meta'
-import { DiscoverFilterType, DiscoverPages } from 'features/discover/types'
+import type { DiscoverFiltersList } from 'features/discover/meta'
+import type { DiscoverPages } from 'features/discover/types'
+import { DiscoverFilterType } from 'features/discover/types'
 
 export function getDefaultSettingsState({
   filters,

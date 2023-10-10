@@ -1,16 +1,16 @@
 /* eslint-disable func-style */
 
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import {
   MAX_DEBT_FOR_SETTING_STOP_LOSS,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
 } from 'features/automation/common/consts'
-import {
+import type {
   AutomationValidationMethodParams,
   AutomationValidationMethodStateResult,
 } from 'features/automation/metadata/types'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
-import { TxError } from 'helpers/types'
+import type { TxError } from 'helpers/types'
 
 // TODO: after redoing all automation validations, this file should be split into: common, protection, optimization and then for each feature
 

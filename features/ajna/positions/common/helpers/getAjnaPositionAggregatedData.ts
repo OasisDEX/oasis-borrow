@@ -1,13 +1,11 @@
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
-import {
-  AjnaUnifiedHistoryEvent,
-  ajnaUnifiedHistoryItem,
-} from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import { ajnaUnifiedHistoryItem } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import { mapAjnaAuctionResponse } from 'features/positionHistory/mapAjnaAuctionResponse'
 import { mapPositionHistoryResponseEvent } from 'features/positionHistory/mapPositionHistoryResponseEvent'
-import { SubgraphsResponses } from 'features/subgraphLoader/types'
+import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface AjnaPositionAggregatedDataAuctions {
@@ -19,27 +17,21 @@ export interface AjnaPositionAggregatedDataAuctions {
   inLiquidation: boolean
 }
 
-export interface AjnaPositionCumulatives {
-  cumulativeDeposit: BigNumber
-  cumulativeFees: BigNumber
-  cumulativeWithdraw: BigNumber
-  earnCumulativeFeesInQuoteToken: BigNumber
-  earnCumulativeQuoteTokenDeposit: BigNumber
-  earnCumulativeQuoteTokenWithdraw: BigNumber
-}
-
 export interface AjnaPositionAggregatedData {
   auctions: AjnaPositionAggregatedDataAuctions[]
-  cumulatives: AjnaPositionCumulatives
   history: AjnaUnifiedHistoryEvent[]
 }
 
 export const getAjnaPositionAggregatedData = async (
   proxy: string,
   networkId: NetworkIds,
+  collateralTokenAddress: string,
+  quoteTokenAddress: string,
 ): Promise<AjnaPositionAggregatedData> => {
   const { response } = (await loadSubgraph('Ajna', 'getAjnaPositionAggregatedData', networkId, {
     dpmProxyAddress: proxy.toLowerCase(),
+    collateralAddress: collateralTokenAddress.toLowerCase(),
+    quoteAddress: quoteTokenAddress.toLowerCase(),
   })) as SubgraphsResponses['Ajna']['getAjnaPositionAggregatedData']
   const errors = []
 
@@ -49,20 +41,6 @@ export const getAjnaPositionAggregatedData = async (
   if (errors.length) throw new Error([`Missing data for ${proxy} proxy:`, ...errors].join('\n'))
 
   return {
-    cumulatives: {
-      cumulativeDeposit: new BigNumber(response.account?.cumulativeDeposit || 0),
-      cumulativeWithdraw: new BigNumber(response.account?.cumulativeWithdraw || 0),
-      cumulativeFees: new BigNumber(response.account?.cumulativeFees || 0),
-      earnCumulativeFeesInQuoteToken: new BigNumber(
-        response.account?.earnCumulativeFeesInQuoteToken || 0,
-      ),
-      earnCumulativeQuoteTokenDeposit: new BigNumber(
-        response.account?.earnCumulativeQuoteTokenDeposit || 0,
-      ),
-      earnCumulativeQuoteTokenWithdraw: new BigNumber(
-        response.account?.earnCumulativeQuoteTokenWithdraw || 0,
-      ),
-    },
     auctions: response.auctions.map(
       ({ alreadyTaken, collateral, debtToCover, endOfGracePeriod, id, inLiquidation }) => ({
         alreadyTaken,

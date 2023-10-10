@@ -1,5 +1,7 @@
+import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
-import { Card, Grid, SxStyleProp, Text } from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui'
+import { Card, Grid, Text } from 'theme-ui'
 
 export function Label({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
   return (
@@ -25,7 +27,7 @@ export function DetailsItem({ label, value }: { label: React.ReactNode; value: R
   )
 }
 
-export function Details({ children }: React.PropsWithChildren<{}>) {
+export function Details({ children }: WithChildren) {
   return (
     <Card bg="neutral30" sx={{ border: 'none' }}>
       <Grid columns={'auto 1fr'} gap={2}>

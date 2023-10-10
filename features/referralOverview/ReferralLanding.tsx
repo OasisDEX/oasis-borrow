@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import {
   DeferedContextProvider,
   tosContext,
@@ -21,9 +21,9 @@ import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Image, Text } from 'theme-ui'
 
-import { UpsertUser } from './FeesView'
+import type { UpsertUser } from './FeesView'
 import { ReferralLayout } from './ReferralLayout'
-import { UserReferralState } from './user'
+import type { UserReferralState } from './user.types'
 import { createUserUsingApi$ } from './userApi'
 
 interface Props {

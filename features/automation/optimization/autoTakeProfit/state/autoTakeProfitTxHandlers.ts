@@ -1,18 +1,15 @@
-import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
+import type { TxStatus } from '@oasisdex/transactions'
+import type BigNumber from 'bignumber.js'
+import type { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot.types'
 import { maxUint32 } from 'features/automation/common/consts'
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
-  AutoTakeProfitFormChange,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import {
-  AutoTakeProfitTriggerData,
-  prepareAddAutoTakeProfitTriggerData,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { prepareAddAutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
+
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from './autoTakeProfitFormChange.constants'
+import type { AutoTakeProfitFormChange } from './autoTakeProfitFormChange.types'
+import type { AutoTakeProfitTriggerData } from './autoTakeProfitTriggerData.types'
 
 interface GetAutoTakeProfitTxHandlersParams {
   id: BigNumber

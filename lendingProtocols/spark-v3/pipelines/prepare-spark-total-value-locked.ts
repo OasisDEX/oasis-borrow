@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { SparkV3ReserveDataReply } from 'blockchain/spark-v3'
-import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
-import { combineLatest, Observable } from 'rxjs'
+import type { SparkV3ReserveDataReply } from 'blockchain/spark-v3'
+import type { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
+import type { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export type PreparedSparkTotalValueLocked = {

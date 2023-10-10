@@ -1,7 +1,7 @@
 import { ManageVaultCollateralAllowance } from 'components/vault/commonMultiply/ManageVaultCollateralAllowance'
 import { ManageVaultDaiAllowance } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { VaultAllowance } from 'components/vault/VaultAllowance'
-import { CommonVaultState } from 'helpers/types'
+import type { CommonVaultState } from 'helpers/types/CommonVaultState.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'

@@ -1,14 +1,11 @@
 import { CacheProvider, Global } from '@emotion/core'
-import { Icon } from '@makerdao/dai-ui-icons'
-// @ts-ignore
-import { MDXProvider } from '@mdx-js/react'
 import { Web3OnboardProvider } from '@web3-onboard/react'
-import { AbstractConnector } from '@web3-react/abstract-connector'
+import type { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
 import { adRollPixelScript } from 'analytics/adroll'
-import { TopBannerEvents, trackingEvents } from 'analytics/analytics'
 import { COOKIE_NAMES_LOCASTORAGE_KEY } from 'analytics/common'
 import { mixpanelInit } from 'analytics/mixpanel'
+import { trackingEvents } from 'analytics/trackingEvents'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import {
@@ -19,31 +16,31 @@ import {
   MainContextProvider,
   NotificationSocketProvider,
 } from 'components/context'
-import { configContext, ConfigContextProvider } from 'components/context/ConfigContextProvider'
-import { CookieBanner, SavedSettings } from 'components/CookieBanner'
+import {
+  preloadAppDataContext,
+  PreloadAppDataContextProvider,
+} from 'components/context/PreloadAppDataContextProvider'
+import type { SavedSettings } from 'components/CookieBanner.types'
+import { CookieBannerDynamic } from 'components/CookieBannerDynamic'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
-import { AppLayout, MarketingLayoutProps } from 'components/layouts'
-import { AppLink, CustomMDXLink } from 'components/Links'
+import type { MarketingLayoutProps } from 'components/layouts'
+import { AppLayout } from 'components/layouts'
 import { SharedUIProvider } from 'components/SharedUIProvider'
-import { TopBanner } from 'components/TopBanner'
-import { WithArrow } from 'components/WithArrow'
+import { TopBannerDynamic } from 'components/TopBannerDynamic'
 import { cache } from 'emotion'
-import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
 import { initWeb3OnBoard, Web3OnBoardConnectorProvider } from 'features/web3OnBoard'
-import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { FTPolar } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
 import { useLocalStorage } from 'helpers/useLocalStorage'
-import { appWithTranslation, i18n, useTranslation } from 'next-i18next'
+import { appWithTranslation, i18n } from 'next-i18next'
 import nextI18NextConfig from 'next-i18next.config.js'
-import { AppProps } from 'next/app'
-import getConfig from 'next/config'
+import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef } from 'react'
 import { theme } from 'theme'
-// @ts-ignore
-import { components, ThemeProvider } from 'theme-ui'
+import { ThemeProvider } from 'theme-ui'
 import { web3OnboardStyles } from 'theme/web3OnboardStyles'
 import Web3 from 'web3'
 
@@ -128,7 +125,6 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
 
   const layoutProps = Component.layoutProps
   const router = useRouter()
-  const { t } = useTranslation()
 
   const seoTags = Component.seoTags || (
     <PageSEOTags
@@ -171,26 +167,6 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     }
   }, [router.events])
 
-  const rebrandingUrl = getConfig()?.publicRuntimeConfig.rebrandingUrl
-
-  const topBannerContent = (
-    <AppLink
-      href={rebrandingUrl || EXTERNAL_LINKS.BLOG.REBRANDING}
-      onClick={() => {
-        trackingEvents.topBannerEvent(TopBannerEvents.TopBannerClicked, 'rebranding')
-      }}
-      sx={{ display: 'inline', padding: 3 }}
-    >
-      <WithArrow variant="boldParagraph2" sx={{ fontSize: '16px', display: 'inline' }}>
-        <Icon
-          name="loudspeaker"
-          sx={{ mr: 2, position: 'relative', top: '2px', transition: '0.2s transform' }}
-        />
-        {t('top-banner.rebranding')}
-      </WithArrow>
-    </AppLink>
-  )
-
   return (
     <>
       <Head>
@@ -205,47 +181,43 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
       </Head>
       <ThemeProvider theme={theme}>
         <CacheProvider value={cache}>
-          <MDXProvider components={{ ...components, a: CustomMDXLink }}>
-            <Global styles={globalStyles} />
-            <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
-              <ConfigContextProvider>
-                <DeferedContextProvider context={configContext}>
-                  <MainContextProvider>
-                    <DeferedContextProvider context={mainContext}>
-                      <ModalProvider>
-                        <Web3OnBoardConnectorProvider>
-                          <Web3ReactProvider {...{ getLibrary }}>
-                            <HeadTags />
-                            {seoTags}
-                            <SetupWeb3Context>
-                              <NotificationSocketProvider>
-                                <SharedUIProvider>
-                                  <WithFollowVaults>
-                                    <TopBanner name="rebranding">{topBannerContent}</TopBanner>
-                                    <AccountContextProvider>
-                                      <DeferedContextProvider context={accountContext}>
-                                        <Layout {...layoutProps}>
-                                          <Component {...pageProps} />
-                                          <CookieBanner
-                                            setValue={cookiesSetValue}
-                                            value={cookiesValue}
-                                          />
-                                        </Layout>
-                                      </DeferedContextProvider>
-                                    </AccountContextProvider>
-                                  </WithFollowVaults>
-                                </SharedUIProvider>
-                              </NotificationSocketProvider>
-                            </SetupWeb3Context>
-                          </Web3ReactProvider>
-                        </Web3OnBoardConnectorProvider>
-                      </ModalProvider>
-                    </DeferedContextProvider>
-                  </MainContextProvider>
-                </DeferedContextProvider>
-              </ConfigContextProvider>
-            </Web3OnboardProvider>
-          </MDXProvider>
+          <Global styles={globalStyles} />
+          <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
+            <PreloadAppDataContextProvider>
+              <DeferedContextProvider context={preloadAppDataContext}>
+                <MainContextProvider>
+                  <DeferedContextProvider context={mainContext}>
+                    <ModalProvider>
+                      <Web3OnBoardConnectorProvider>
+                        <Web3ReactProvider {...{ getLibrary }}>
+                          <HeadTags />
+                          {seoTags}
+                          <SetupWeb3Context>
+                            <NotificationSocketProvider>
+                              <SharedUIProvider>
+                                <TopBannerDynamic />
+                                <AccountContextProvider>
+                                  <DeferedContextProvider context={accountContext}>
+                                    <Layout {...layoutProps}>
+                                      <Component {...pageProps} />
+                                      <CookieBannerDynamic
+                                        setValue={cookiesSetValue}
+                                        value={cookiesValue}
+                                      />
+                                    </Layout>
+                                  </DeferedContextProvider>
+                                </AccountContextProvider>
+                              </SharedUIProvider>
+                            </NotificationSocketProvider>
+                          </SetupWeb3Context>
+                        </Web3ReactProvider>
+                      </Web3OnBoardConnectorProvider>
+                    </ModalProvider>
+                  </DeferedContextProvider>
+                </MainContextProvider>
+              </DeferedContextProvider>
+            </PreloadAppDataContextProvider>
+          </Web3OnboardProvider>
         </CacheProvider>
       </ThemeProvider>
     </>

@@ -11,21 +11,14 @@ import {
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
   vaultWillBeAtRiskLevelWarningValidator,
 } from 'features/form/commonValidators'
-import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
+import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings.constants'
 import { isNullish } from 'helpers/functions'
 import { getTotalStepsForOpenVaultFlow } from 'helpers/totalSteps'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import { OpenMultiplyVaultStage, OpenMultiplyVaultState } from './openMultiplyVault'
-
-const defaultOpenVaultStageCategories = {
-  isEditingStage: false,
-  isStopLossEditingStage: false,
-  isProxyStage: false,
-  isAllowanceStage: false,
-  isOpenStage: false,
-}
+import type { OpenMultiplyVaultStage, OpenMultiplyVaultState } from './openMultiplyVault.types'
+import { defaultOpenVaultStageCategories } from './openMultiplyVaultConditions.constants'
 
 export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState) {
   const {
@@ -127,100 +120,6 @@ export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState)
     default:
       throw new UnreachableCaseError(stage)
   }
-}
-
-export interface OpenMultiplyVaultConditions {
-  isEditingStage: boolean
-  isStopLossEditingStage: boolean
-  isProxyStage: boolean
-  isAllowanceStage: boolean
-  isOpenStage: boolean
-  isAddStopLossStage: boolean
-  withProxyStep: boolean
-  withAllowanceStep: boolean
-
-  inputAmountsEmpty: boolean
-
-  vaultWillBeAtRiskLevelWarning: boolean
-  vaultWillBeAtRiskLevelDanger: boolean
-  vaultWillBeUnderCollateralized: boolean
-
-  vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
-  vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
-  vaultWillBeUnderCollateralizedAtNextPrice: boolean
-  potentialGenerateAmountLessThanDebtFloor: boolean
-
-  depositingAllEthBalance: boolean
-  depositAmountExceedsCollateralBalance: boolean
-  generateAmountExceedsDaiYieldFromDepositingCollateral: boolean
-  generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice: boolean
-  generateAmountExceedsDebtCeiling: boolean
-  generateAmountLessThanDebtFloor: boolean
-  generateAmountMoreThanMaxFlashAmount: boolean
-  ledgerWalletContractDataDisabled: boolean
-
-  customAllowanceAmountEmpty: boolean
-  customAllowanceAmountExceedsMaxUint256: boolean
-  customAllowanceAmountLessThanDepositAmount: boolean
-  insufficientAllowance: boolean
-
-  isLoadingStage: boolean
-  isSuccessStage: boolean
-  canProgress: boolean
-  canRegress: boolean
-  canAdjustRisk: boolean
-  isExchangeLoading: boolean
-
-  highSlippage: boolean
-
-  potentialInsufficientEthFundsForTx: boolean
-  insufficientEthFundsForTx: boolean
-  openFlowWithStopLoss: boolean
-  isStopLossSuccessStage: boolean
-}
-
-export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
-  ...defaultOpenVaultStageCategories,
-  inputAmountsEmpty: true,
-  canAdjustRisk: false,
-
-  vaultWillBeAtRiskLevelWarning: false,
-  vaultWillBeAtRiskLevelDanger: false,
-  vaultWillBeUnderCollateralized: false,
-
-  vaultWillBeAtRiskLevelWarningAtNextPrice: false,
-  vaultWillBeAtRiskLevelDangerAtNextPrice: false,
-  vaultWillBeUnderCollateralizedAtNextPrice: false,
-  potentialGenerateAmountLessThanDebtFloor: false,
-
-  depositingAllEthBalance: false,
-  depositAmountExceedsCollateralBalance: false,
-  generateAmountExceedsDaiYieldFromDepositingCollateral: false,
-  generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice: false,
-  generateAmountExceedsDebtCeiling: false,
-  generateAmountLessThanDebtFloor: false,
-  generateAmountMoreThanMaxFlashAmount: false,
-  ledgerWalletContractDataDisabled: false,
-
-  customAllowanceAmountEmpty: false,
-  customAllowanceAmountExceedsMaxUint256: false,
-  customAllowanceAmountLessThanDepositAmount: false,
-  insufficientAllowance: false,
-
-  isLoadingStage: false,
-  isSuccessStage: false,
-  canProgress: false,
-  canRegress: false,
-  isExchangeLoading: false,
-  withProxyStep: false,
-  withAllowanceStep: false,
-
-  highSlippage: false,
-  potentialInsufficientEthFundsForTx: false,
-  insufficientEthFundsForTx: false,
-  openFlowWithStopLoss: false,
-  isStopLossSuccessStage: false,
-  isAddStopLossStage: false,
 }
 
 export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMultiplyVaultState {

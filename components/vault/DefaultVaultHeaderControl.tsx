@@ -1,5 +1,5 @@
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
+import type { IlkData } from 'blockchain/ilks.types'
+import type { Vault } from 'blockchain/vaults.types'
 import React from 'react'
 
 import { VaultHeaderLayout } from './VaultHeaderLayout'

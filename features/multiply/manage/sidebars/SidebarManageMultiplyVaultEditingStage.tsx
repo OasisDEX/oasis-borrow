@@ -16,9 +16,8 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import {
   otherActionsCollateralPanel,
   otherActionsDaiPanel,
@@ -31,6 +30,7 @@ import { Grid, Text } from 'theme-ui'
 
 import { SidebarManageMultiplyVaultEditingStageClose } from './SidebarManageMultiplyVaultEditingStageClose'
 import { SliderAdjustMultiply } from './SliderAdjustMultiply'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 
 function SidebarManageMultiplyVaultEditingStageDepositCollateral(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()

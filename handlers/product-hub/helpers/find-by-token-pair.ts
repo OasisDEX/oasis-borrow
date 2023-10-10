@@ -1,4 +1,4 @@
-import { ProductHubItem } from 'features/productHub/types'
+import type { ProductHubItem } from 'features/productHub/types'
 
 export function findByTokenPair(products: ProductHubItem[], pool: [string, string]) {
   return products.find(

@@ -1,5 +1,5 @@
-import { UsersWhoFollowVaults } from '@prisma/client'
-import { Observable } from 'rxjs'
+import type { UsersWhoFollowVaults } from '@prisma/client'
+import type { Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { map } from 'rxjs/operators'
 

@@ -1,27 +1,24 @@
-import { Strategy } from '@oasisdex/dma-library'
+import type { Strategy } from '@oasisdex/dma-library'
 import { TxStatus } from '@oasisdex/transactions'
-import { AjnaTxData, getAjnaParameters } from 'actions/ajna'
+import type { AjnaTxData } from 'actions/ajna'
+import { getAjnaParameters } from 'actions/ajna'
 import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getRpcProvider } from 'blockchain/networks'
-import { cancelable, CancelablePromise } from 'cancelable-promise'
+import type { CancelablePromise } from 'cancelable-promise'
+import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
-import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
-import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
+import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate.constants'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { uiChanges } from 'helpers/uiChanges'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
-
-export interface OasisActionCallData extends AjnaTxData {
-  kind: TxMetaKind.libraryCall
-  proxyAddress: string
-}
 
 export function useAjnaTxHandler(): () => void {
   const { txHelpers$, context$ } = useMainContext()

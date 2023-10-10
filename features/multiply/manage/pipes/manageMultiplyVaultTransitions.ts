@@ -1,69 +1,25 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
-import { Context } from 'blockchain/network'
-import { TxHelpers } from 'helpers/context/types'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
+import type { Context } from 'blockchain/network.types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { zero } from 'helpers/zero'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 
+import { defaultMutableManageMultiplyVaultState } from './manageMultiplyVault.constants'
+import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations.constants'
+import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
+import { defaultManageMultiplyVaultConditions } from './manageMultiplyVaultConditions.constants'
+import type { ManageMultiplyVaultEditingStage } from './ManageMultiplyVaultEditingStage.types'
 import {
-  defaultMutableManageMultiplyVaultState,
-  ManageMultiplyVaultChange,
-  ManageMultiplyVaultEditingStage,
-  ManageMultiplyVaultState,
-} from './manageMultiplyVault'
-import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations'
-import { defaultManageMultiplyVaultConditions } from './manageMultiplyVaultConditions'
-import { manageMultiplyInputsDefaults, manageVaultFormDefaults } from './manageMultiplyVaultForm'
+  manageMultiplyInputsDefaults,
+  manageVaultFormDefaults,
+} from './manageMultiplyVaultForm.constants'
+import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
 import {
   adjustPosition,
   closeVault,
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
 } from './manageMultiplyVaultTransactions'
-
-type ManageVaultBorrowTransitionChange =
-  | {
-      kind: 'progressBorrowTransition'
-    }
-  | {
-      kind: 'borrowTransitionInProgress'
-    }
-  | {
-      kind: 'borrowTransitionFailure'
-    }
-  | {
-      kind: 'borrowTransitionSuccess'
-    }
-
-export type ManageVaultTransitionChange =
-  | ManageVaultBorrowTransitionChange
-  | {
-      kind: 'toggleEditing'
-      stage: ManageMultiplyVaultEditingStage
-    }
-  | {
-      kind: 'progressEditing'
-    }
-  | {
-      kind: 'progressProxy'
-    }
-  | {
-      kind: 'progressCollateralAllowance'
-    }
-  | {
-      kind: 'backToEditing'
-    }
-  | {
-      kind: 'resetToEditing'
-    }
-  | {
-      kind: 'regressCollateralAllowance'
-    }
-  | {
-      kind: 'regressDaiAllowance'
-    }
-  | {
-      kind: 'clear'
-    }
 
 export function applyManageVaultTransition<VS extends ManageMultiplyVaultState>(
   change: ManageMultiplyVaultChange,

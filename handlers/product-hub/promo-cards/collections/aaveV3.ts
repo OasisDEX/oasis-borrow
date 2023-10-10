@@ -1,5 +1,6 @@
 import { NetworkNames } from 'blockchain/networks'
-import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubItem } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import { findByTokenPair } from 'handlers/product-hub/helpers'
 import {
   getEarnStakingRewardsPill,

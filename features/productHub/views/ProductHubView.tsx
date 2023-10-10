@@ -1,24 +1,25 @@
+import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
-import { ProductHubLoadingState } from 'features/productHub/components'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import {
   ProductHubNaturalLanguageSelectorController,
   ProductHubPromoCardsController,
 } from 'features/productHub/controls'
 import { ProductHubContentController } from 'features/productHub/controls/ProductHubContentController'
-import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
 import { ALL_ASSETS } from 'features/productHub/meta'
-import {
+import type {
   ProductHubFilters,
   ProductHubProductType,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
-import { PromoCardsCollection } from 'handlers/product-hub/types'
-import { WithLoadingIndicator } from 'helpers/AppSpinner'
-import { LendingProtocol } from 'lendingProtocols'
+import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
+import type { PromoCardsCollection } from 'handlers/product-hub/types'
+import { useAppConfig } from 'helpers/config'
+import type { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
-import React, { FC, Fragment, ReactNode, useMemo, useState } from 'react'
+import type { FC, ReactNode } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 interface ProductHubViewProps {
@@ -45,16 +46,14 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   limitRows,
 }) => {
   const { t } = useTranslation()
-  const { data } = useProductHubData({
-    protocols: [
-      LendingProtocol.Ajna,
-      LendingProtocol.AaveV2,
-      LendingProtocol.AaveV3,
-      LendingProtocol.Maker,
-      LendingProtocol.SparkV3,
-    ],
-    promoCardsCollection,
-  })
+  const { AjnaSafetySwitch } = useAppConfig('features')
+
+  const { productHub: data } = usePreloadAppDataContext()
+
+  const resolvedData = AjnaSafetySwitch
+    ? data.table.filter((item) => item.protocol !== 'ajna')
+    : data.table
+
   const defaultFilters = useMemo(
     () => ({
       or: [],
@@ -98,51 +97,44 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
           <ProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
         )}
       </Box>
-      <WithLoadingIndicator value={[data]} customLoader={<ProductHubLoadingState />}>
-        {([_data]) => (
-          <>
-            <ProductHubPromoCardsController
-              promoCardsData={_data.promoCards}
-              selectedProduct={selectedProduct}
-              selectedToken={selectedToken}
-            />
-            <ProductHubContentController
-              initialNetwork={initialNetwork}
-              initialProtocol={initialProtocol}
-              selectedFilters={selectedFilters}
-              selectedProduct={selectedProduct}
-              selectedToken={selectedToken}
-              tableData={_data.table}
-              onChange={setSelectedFilters}
-              limitRows={limitRows}
-            />
-            {limitRows && limitRows > 0 && (
-              <Flex
-                sx={{
-                  justifyContent: 'center',
-                  py: 4,
-                  borderBottom: '1px solid',
-                  borderBottomColor: 'neutral20',
-                }}
-              >
-                <AppLink
-                  href={
-                    selectedToken === ALL_ASSETS
-                      ? `/${selectedProduct}`
-                      : `/${selectedProduct}/${selectedToken}`
-                  }
-                >
-                  <WithArrow
-                    sx={{ color: 'interactive100', fontWeight: 'regular', fontSize: '16px' }}
-                  >
-                    {t('view-all')}
-                  </WithArrow>
-                </AppLink>
-              </Flex>
-            )}
-          </>
-        )}
-      </WithLoadingIndicator>
+
+      <ProductHubPromoCardsController
+        promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](resolvedData)}
+        selectedProduct={selectedProduct}
+        selectedToken={selectedToken}
+      />
+      <ProductHubContentController
+        initialNetwork={initialNetwork}
+        initialProtocol={initialProtocol}
+        selectedFilters={selectedFilters}
+        selectedProduct={selectedProduct}
+        selectedToken={selectedToken}
+        tableData={resolvedData}
+        onChange={setSelectedFilters}
+        limitRows={limitRows}
+      />
+      {limitRows && limitRows > 0 && (
+        <Flex
+          sx={{
+            justifyContent: 'center',
+            py: 4,
+            borderBottom: '1px solid',
+            borderBottomColor: 'neutral20',
+          }}
+        >
+          <AppLink
+            href={
+              selectedToken === ALL_ASSETS
+                ? `/${selectedProduct}`
+                : `/${selectedProduct}/${selectedToken}`
+            }
+          >
+            <WithArrow sx={{ color: 'interactive100', fontWeight: 'regular', fontSize: '16px' }}>
+              {t('view-all')}
+            </WithArrow>
+          </AppLink>
+        </Flex>
+      )}
     </Fragment>
   )
 }

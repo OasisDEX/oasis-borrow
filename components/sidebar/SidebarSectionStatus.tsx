@@ -1,7 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { TranslateStringType } from 'helpers/translateStringType'
+import type { TranslateStringType } from 'helpers/translateStringType'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import React from 'react'
 import { Box, Card, Flex, Link, Spinner, Text } from 'theme-ui'
 
 type SidebarSectionStatusTypes = 'progress' | 'success' | 'waiting'

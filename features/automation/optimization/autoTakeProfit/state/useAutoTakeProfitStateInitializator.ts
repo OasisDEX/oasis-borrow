@@ -1,10 +1,10 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault.maths'
-import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { uiChanges } from 'helpers/uiChanges'
 import { useEffect } from 'react'
 
-import { AUTO_TAKE_PROFIT_FORM_CHANGE } from './autoTakeProfitFormChange'
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from './autoTakeProfitFormChange.constants'
+import type { AutoTakeProfitTriggerData } from './autoTakeProfitTriggerData.types'
 
 const INITIAL_SELECTED_PRICE_MULTIPLIER = 1.2
 

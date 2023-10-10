@@ -1,9 +1,10 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { tokenBalance } from 'blockchain/better-calls/erc20'
-import { NetworkIds } from 'blockchain/networks'
-import { TokenBalances } from 'blockchain/tokens'
+import type { NetworkIds } from 'blockchain/networks'
+import type { TokenBalances } from 'blockchain/tokens.types'
 import { zero } from 'helpers/zero'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export function getAaveSupportedTokenBalances$(

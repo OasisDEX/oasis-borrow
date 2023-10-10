@@ -1,7 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { TranslateStringType } from 'helpers/translateStringType'
+import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
-import { Box, Button, SxStyleProp, Text } from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui'
+import { Box, Button, Text } from 'theme-ui'
 
 type HomePageHeadlineProps = {
   primaryText: string

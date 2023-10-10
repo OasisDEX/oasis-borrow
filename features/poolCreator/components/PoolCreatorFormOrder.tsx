@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { TokensGroup } from 'components/TokensGroup'
 import { useTranslation } from 'next-i18next'

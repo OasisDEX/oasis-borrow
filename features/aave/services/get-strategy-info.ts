@@ -1,11 +1,12 @@
-import { BigNumber } from 'bignumber.js'
-import { IStrategyInfo } from 'features/aave/types'
-import { IStrategyConfig } from 'features/aave/types/strategy-config'
-import {
+import type { BigNumber } from 'bignumber.js'
+import type { IStrategyInfo } from 'features/aave/types'
+import type { IStrategyConfig } from 'features/aave/types/strategy-config'
+import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveConfigurationDataParams,
 } from 'lendingProtocols/aave-like-common'
-import { combineLatest, Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export function getStrategyInfo$(

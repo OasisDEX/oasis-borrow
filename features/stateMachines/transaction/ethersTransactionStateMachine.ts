@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import type { ethers } from 'ethers'
 import { assign, createMachine } from 'xstate'
 
 export type EthersTransactionStateMachineContext<TParameters, TResult = unknown> = {
@@ -33,6 +33,7 @@ export function createEthersTransactionStateMachine<TParameters, TResult = unkno
       id: 'ethers-transaction',
       predictableActionArguments: true,
       preserveActionOrder: true,
+      //eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./ethersTransactionStateMachine.typegen').Typegen0,
       context: {
         etherscanUrl: '',
@@ -129,6 +130,7 @@ class EthersTransactionStateMachineTypes<T, TResult = unknown> {
   needsConfiguration() {
     return createEthersTransactionStateMachine<T, TResult>()
   }
+
   withConfig() {
     // @ts-ignore
     return createEthersTransactionStateMachine<T, TResult>().withConfig({})

@@ -1,10 +1,10 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import {
   DEFAULT_AUTO_BS_MAX_SLIDER_VALUE,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
 } from 'features/automation/common/consts'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 
 export function getAutoSellMinMaxValues({
   liquidationRatio,

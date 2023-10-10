@@ -1,16 +1,16 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
-import { ContractDesc } from 'features/web3Context'
-import { DssProxyActionsCharter, DssProxyActionsCropjoin } from 'types/web3-v1-contracts'
-import {
+import type { ContractDesc } from 'features/web3Context'
+import type { DssProxyActionsCharter, DssProxyActionsCropjoin } from 'types/web3-v1-contracts'
+import type {
   NonPayableTransactionObject,
   PayableTransactionObject,
 } from 'types/web3-v1-contracts/types'
 import Web3 from 'web3'
 
-import {
+import type {
   ClaimRewardData,
   DepositAndGenerateData,
   OpenData,

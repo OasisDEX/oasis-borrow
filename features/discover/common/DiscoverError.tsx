@@ -1,4 +1,4 @@
-import { DiscoverDataResponseError } from 'features/discover/api'
+import type { DiscoverDataResponseError } from 'features/discover/api'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'

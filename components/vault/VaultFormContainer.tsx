@@ -1,5 +1,5 @@
 import { MobileSidePanel } from 'components/Modal'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 import { Card, Grid } from 'theme-ui'
 

@@ -1,29 +1,23 @@
-import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import {
   addAutomationBotTriggerV2,
-  AutomationBotV2RemoveTriggerData,
   removeAutomationBotTriggerV2,
-} from 'blockchain/calls/automationBot'
+} from 'blockchain/calls/automationBot.constants'
+import type { AutomationBotV2RemoveTriggerData } from 'blockchain/calls/automationBot.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE } from 'features/automation/common/consts'
-import {
-  getShouldRemoveAllowance,
-  isSupportedAaveAutomationTokenPair,
-} from 'features/automation/common/helpers'
+import { getShouldRemoveAllowance } from 'features/automation/common/helpers/getShouldRemoveAllowance'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
 import {
   hasInsufficientEthFundsForTx,
   hasMoreDebtThanMaxForStopLoss,
   hasPotentialInsufficientEthFundsForTx,
 } from 'features/automation/common/validation/validators'
-import {
-  ContextWithoutMetadata,
-  StopLossDetailCards,
-  StopLossMetadata,
-} from 'features/automation/metadata/types'
+import type { ContextWithoutMetadata, StopLossMetadata } from 'features/automation/metadata/types'
+import { StopLossDetailCards } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
   getDynamicStopLossPrice,
@@ -31,12 +25,16 @@ import {
   getSliderPercentageFill,
   getStartingSlRatio,
 } from 'features/automation/protection/stopLoss/helpers'
-import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import {
+  getAaveLikeCommandContractType,
+  getAveeStopLossTriggerType,
+} from 'features/automation/protection/stopLoss/openFlow/helpers'
+import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { getAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
+import type { LendingProtocol } from 'lendingProtocols'
 
 export const aaveOffsets = {
   open: {
@@ -54,7 +52,7 @@ export function createGetAaveStopLossMetadata(
   networkId: NetworkIds,
 ) {
   return function (context: ContextWithoutMetadata): StopLossMetadata {
-    const { AaveV3ProtectionWrite } = getAppConfig('features')
+    const { AaveV3ProtectionWrite } = getLocalAppConfig('features')
     const {
       automationTriggersData,
       triggerData: {
@@ -184,8 +182,9 @@ export function createGetAaveStopLossMetadata(
           }),
         prepareAddStopLossTriggerData: ({ stopLossLevel, collateralActive }) => {
           const baseTriggerData = prepareStopLossTriggerDataV2(
+            getAaveLikeCommandContractType(lendingProtocol),
             owner,
-            TriggerType.AaveStopLossToDebtV2,
+            getAveeStopLossTriggerType(lendingProtocol),
             collateralActive,
             stopLossLevel,
             debtTokenAddress!,

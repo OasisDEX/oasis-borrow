@@ -1,37 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
-import { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
-import { SubgraphsResponses } from 'features/subgraphLoader/types'
+import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
-export type SearchAjnaPoolResponse = Pick<
-  AjnaPoolDataResponse,
-  | 'address'
-  | 'buckets'
-  | 'collateralAddress'
-  | 'debt'
-  | 'interestRate'
-  | 'lendApr'
-  | 'lup'
-  | 'lupIndex'
-  | 'quoteTokenAddress'
->
-
-export interface SearchAjnaPoolData
-  extends Omit<SearchAjnaPoolResponse, 'debt' | 'interestRate' | 'lendApr' | 'lup' | 'lupIndex'> {
-  debt: BigNumber
-  interestRate: BigNumber
-  lendApr: BigNumber
-  lowestUtilizedPrice: BigNumber
-  lowestUtilizedPriceIndex: number
-}
-
-interface SearchAjnaPoolParams {
-  collateralAddress?: string[]
-  poolAddress?: string[]
-  quoteAddress?: string[]
-}
+import type { SearchAjnaPoolData, SearchAjnaPoolParams } from './searchAjnaPool.types'
 
 export const searchAjnaPool = async (
   networkId: NetworkIds,

@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
-import { TranslateStringType } from 'helpers/translateStringType'
+import type { TranslateStringType } from 'helpers/translateStringType'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import React, { useEffect, useState } from 'react'
 import { Box, Button, Text } from 'theme-ui'

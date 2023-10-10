@@ -1,12 +1,12 @@
 import { recoverPersonalSignature } from '@metamask/eth-sig-util'
 import { utils } from 'ethers'
 import jwt from 'jsonwebtoken'
-import { NextApiHandler } from 'next'
+import type { NextApiHandler } from 'next'
 import Web3 from 'web3'
 import * as z from 'zod'
 
 import { checkIfArgentWallet, isValidSignature } from './argent'
-import { ChallengeJWT } from './challenge'
+import type { ChallengeJWT } from './challenge'
 import { checkIfGnosisOwner } from './gnosis'
 
 export interface signInOptions {

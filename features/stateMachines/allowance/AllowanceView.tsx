@@ -2,7 +2,8 @@ import { useActor } from '@xstate/react'
 import { getTokenGuarded } from 'blockchain/tokensMetadata'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { Radio } from 'components/forms/Radio'
-import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -11,9 +12,9 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
-import { ActorRefFrom, Sender, StateFrom } from 'xstate'
+import type { ActorRefFrom, Sender, StateFrom } from 'xstate'
 
-import {
+import type {
   AllowanceStateMachine,
   AllowanceStateMachineEvent,
 } from './state/createAllowanceStateMachine'

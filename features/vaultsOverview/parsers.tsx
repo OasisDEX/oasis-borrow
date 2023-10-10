@@ -1,9 +1,5 @@
-import {
-  AjnaEarnPosition,
-  AjnaPosition,
-  getPoolLiquidity,
-  negativeToZero,
-} from '@oasisdex/dma-library'
+import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import { getPoolLiquidity, negativeToZero } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NetworkNames, networksById } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
@@ -12,19 +8,19 @@ import { AssetsTableDataCellInactive } from 'components/assetsTable/cellComponen
 import { AssetsTableDataCellRiskNoProtectionAvailableIcon } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskNoProtectionAvailableIcon'
 import { AssetsTableDataCellRiskProtectionIcon } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskProtectionIcon'
 import { AssetsTableDataCellRiskRatio } from 'components/assetsTable/cellComponents/AssetsTableDataCellRiskRatio'
-import { AssetsTableRowData } from 'components/assetsTable/types'
+import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
-import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { Dsr } from 'features/dsr/utils/createDsr'
+import type { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
+import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
+import type { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { getDsrValue, getFundingCost, getProtection } from 'features/vaultsOverview/helpers'
-import { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
-import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
-import { getAppConfig } from 'helpers/config'
+import type { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
+import type { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
+import { getLocalAppConfig } from 'helpers/config'
 import {
   formatAddress,
   formatCryptoBalance,
@@ -81,13 +77,15 @@ export interface PositionTableEarnRow extends PositionTableRow {
 }
 
 const isAutomationEnabledProtocol = (protocol: LendingProtocol, network: NetworkNames) => {
-  const { AaveV3Protection: aaveProtection } = getAppConfig('features')
+  const { AaveV3Protection: aaveProtection, SparkProtocolStopLoss: sparkProtection } =
+    getLocalAppConfig('features')
+
   return {
     [LendingProtocol.Maker]: network === NetworkNames.ethereumMainnet,
     [LendingProtocol.AaveV3]: aaveProtection && network === NetworkNames.ethereumMainnet,
     [LendingProtocol.AaveV2]: false,
     [LendingProtocol.Ajna]: false,
-    [LendingProtocol.SparkV3]: false, // TODO: add automation for Spark
+    [LendingProtocol.SparkV3]: sparkProtection && network === NetworkNames.ethereumMainnet,
   }[protocol]
 }
 
@@ -328,7 +326,7 @@ export function parseAjnaMultiplyPositionRows(
       quotePrice,
       collateralPrice,
       debtAmount,
-      liquidationPriceT0Np,
+      liquidationPrice,
       riskRatio,
       pool,
       collateralAmount,
@@ -345,7 +343,7 @@ export function parseAjnaMultiplyPositionRows(
       }),
       icons: [collateralToken, quoteToken],
       id: vaultId.toString(),
-      liquidationPrice: liquidationPriceT0Np,
+      liquidationPrice,
       liquidationPriceToken: `${collateralToken}/${quoteToken}`,
       multiple: riskRatio.multiple,
       netValue,

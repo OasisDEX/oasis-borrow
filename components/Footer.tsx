@@ -11,7 +11,7 @@ import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
 import { ChevronUpDown } from './ChevronUpDown'
-import { SelectComponents } from 'react-select/src/components'
+import type { SelectComponents } from 'react-select/src/components'
 
 const {
   publicRuntimeConfig: { buildHash, buildDate, showBuildInfo },

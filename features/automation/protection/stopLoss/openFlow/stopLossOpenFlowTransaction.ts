@@ -1,13 +1,11 @@
 import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import {
-  addAutomationBotTrigger,
-  AutomationBotAddTriggerData,
-} from 'blockchain/calls/automationBot'
+import type BigNumber from 'bignumber.js'
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot.constants'
+import type { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot.types'
 import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { AddStopLossChange } from 'features/shared/transactions'
-import { TxHelpers } from 'helpers/context/types'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
+import type { AddStopLossChange } from 'features/shared/transactions'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { transactionToX } from 'helpers/form'
 import { of } from 'rxjs'
 

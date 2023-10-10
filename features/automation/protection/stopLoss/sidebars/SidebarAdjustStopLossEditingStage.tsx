@@ -1,10 +1,10 @@
+import { trackingEvents } from 'analytics/trackingEvents'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
-import BigNumber from 'bignumber.js'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
+import type BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/context'
 import { PickCloseState } from 'components/dumb/PickCloseState'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
@@ -23,11 +23,9 @@ import {
 import { AutomationValidationMessages } from 'features/automation/common/sidebars/AutomationValidationMessages'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { StopLossCommonOrderInformation } from 'features/automation/protection/common/controls/StopLossCommonOrderInformation'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
+import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { uiChanges } from 'helpers/uiChanges'
@@ -115,9 +113,9 @@ export function SidebarAdjustStopLossEditingStage({
   useDebouncedCallback(
     (value) =>
       trackingEvents.automation.inputChange(
-        AutomationEventIds.MoveSlider,
-        !id.isZero() ? Pages.StopLoss : Pages.OpenVault,
-        CommonAnalyticsSections.Form,
+        MixpanelAutomationEventIds.MoveSlider,
+        !id.isZero() ? MixpanelPages.StopLoss : MixpanelPages.OpenVault,
+        MixpanelCommonAnalyticsSections.Form,
         {
           vaultId: !id.isZero() ? id.toString() : 'n/a',
           ilk: ilk,
@@ -169,9 +167,9 @@ export function SidebarAdjustStopLossEditingStage({
                   toCollateral: optionName === closeVaultOptions[0],
                 })
                 trackingEvents.automation.buttonClick(
-                  AutomationEventIds.CloseToX,
-                  !id.isZero() ? Pages.StopLoss : Pages.OpenVault,
-                  CommonAnalyticsSections.Form,
+                  MixpanelAutomationEventIds.CloseToX,
+                  !id.isZero() ? MixpanelPages.StopLoss : MixpanelPages.OpenVault,
+                  MixpanelCommonAnalyticsSections.Form,
                   {
                     vaultId: !id.isZero() ? id.toString() : 'n/a',
                     ilk: ilk,

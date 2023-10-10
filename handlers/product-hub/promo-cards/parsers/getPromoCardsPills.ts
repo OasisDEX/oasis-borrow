@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { PromoCardVariant } from 'components/PromoCard'
+import type { PromoCardVariant } from 'components/PromoCard.types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 
 export function getActiveManagementPill() {

@@ -1,4 +1,4 @@
-import { AutomationMetadataValidationResult } from 'features/automation/metadata/types'
+import type { AutomationMetadataValidationResult } from 'features/automation/metadata/types'
 
 export function extractAutomationValidations({
   validations,

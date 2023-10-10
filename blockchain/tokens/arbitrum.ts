@@ -1,7 +1,7 @@
 import { ADDRESSES } from '@oasisdex/addresses'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import { contractDesc } from 'blockchain/networks'
-import { ContractDesc } from 'features/web3Context'
+import type { ContractDesc } from 'features/web3Context'
 
 export const AAVE_V3_POOL_GENESIS_GOERLI = 4365693
 

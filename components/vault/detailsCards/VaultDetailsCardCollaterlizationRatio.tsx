@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
+import type { AfterPillProps } from 'components/vault/VaultDetails'
 import {
-  AfterPillProps,
   getCollRatioColor,
   VaultDetailsCard,
   VaultDetailsCardModal,
 } from 'components/vault/VaultDetails'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { formatPercent } from 'helpers/formatters/format'
-import { ModalProps, useModal } from 'helpers/modalHook'
+import type { ModalProps } from 'helpers/modalHook'
+import { useModal } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'

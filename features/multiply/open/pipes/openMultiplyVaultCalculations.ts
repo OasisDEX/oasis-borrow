@@ -1,80 +1,15 @@
 import { getMultiplyParams } from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
-import { openFlowInitialStopLossLevel } from 'features/automation/common/helpers'
+import { openFlowInitialStopLossLevel } from 'features/automation/common/openFlowInitialStopLossLevel'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations.constants'
 import { one, zero } from 'helpers/zero'
 
-import { OpenMultiplyVaultState } from './openMultiplyVault'
-
-export const MAX_COLL_RATIO = new BigNumber(5)
-
-export interface OpenMultiplyVaultCalculations {
-  afterLiquidationPrice: BigNumber
-  afterBuyingPower: BigNumber
-  afterBuyingPowerUSD: BigNumber
-  afterNetValue: BigNumber
-  afterNetValueUSD: BigNumber
-  buyingCollateral: BigNumber
-  buyingCollateralUSD: BigNumber
-  totalExposure: BigNumber
-  totalExposureUSD?: BigNumber
-  impact: BigNumber
-  multiply: BigNumber
-  afterOutstandingDebt: BigNumber
-  afterCollateralizationRatio: BigNumber
-  afterCollateralizationRatioAtNextPrice: BigNumber
-  txFees: BigNumber
-  maxDepositAmount: BigNumber
-  maxDepositAmountUSD: BigNumber
-  maxGenerateAmount: BigNumber
-  afterCollateralBalance: BigNumber
-  loanFees: BigNumber
-  oazoFee: BigNumber
-  skipFL: boolean
-  maxCollRatio?: BigNumber
-  marketPrice?: BigNumber
-  marketPriceMaxSlippage?: BigNumber
-  daiYieldFromDepositingCollateral: BigNumber
-  daiYieldFromDepositingCollateralAtNextPrice: BigNumber
-  toTokenAmount: BigNumber
-  toTokenAmountUSD: BigNumber
-  fromTokenAmount: BigNumber
-  borrowedDaiAmount: BigNumber
-  oneInchAmount: BigNumber
-}
-
-export const defaultOpenMultiplyVaultStateCalculations: OpenMultiplyVaultCalculations = {
-  afterLiquidationPrice: zero,
-  afterBuyingPower: zero,
-  afterBuyingPowerUSD: zero,
-  afterNetValue: zero,
-  afterNetValueUSD: zero,
-  buyingCollateral: zero,
-  buyingCollateralUSD: zero,
-  totalExposure: zero,
-  impact: zero,
-  multiply: zero,
-  afterOutstandingDebt: zero,
-  txFees: zero,
-  maxDepositAmount: zero,
-  maxDepositAmountUSD: zero,
-  maxGenerateAmount: zero,
-  afterCollateralBalance: zero,
-  afterCollateralizationRatio: zero,
-  afterCollateralizationRatioAtNextPrice: zero,
-  loanFees: zero,
-  oazoFee: zero,
-  skipFL: false,
-  totalExposureUSD: zero,
-  daiYieldFromDepositingCollateral: zero,
-  daiYieldFromDepositingCollateralAtNextPrice: zero,
-  toTokenAmount: zero,
-  toTokenAmountUSD: zero,
-  fromTokenAmount: zero,
-  borrowedDaiAmount: zero,
-  oneInchAmount: zero,
-}
+import type { OpenMultiplyVaultState } from './openMultiplyVault.types'
+import {
+  defaultOpenMultiplyVaultStateCalculations,
+  MAX_COLL_RATIO,
+} from './openMultiplyVaultCalculations.constants'
 
 function getCollRatioByDebt(
   requiredDebt: BigNumber,

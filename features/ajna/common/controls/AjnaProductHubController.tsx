@@ -1,8 +1,8 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
-import { ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
 
@@ -12,7 +12,7 @@ interface AjnaProductHubControllerProps {
 }
 
 export function AjnaProductHubController({ product, token }: AjnaProductHubControllerProps) {
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = getAppConfig('features')
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
 
   return (
     <WithConnection>

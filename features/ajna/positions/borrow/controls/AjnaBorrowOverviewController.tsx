@@ -43,8 +43,8 @@ export function AjnaBorrowOverviewController() {
   } = useAjnaProductContext('borrow')
 
   const liquidationPrice = isShort
-    ? normalizeValue(one.div(position.liquidationPriceT0Np))
-    : position.liquidationPriceT0Np
+    ? normalizeValue(one.div(position.liquidationPrice))
+    : position.liquidationPrice
   const belowCurrentPrice = one.minus(
     isShort
       ? normalizeValue(one.div(position.liquidationToMarketPrice))

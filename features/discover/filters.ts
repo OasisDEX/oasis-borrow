@@ -1,5 +1,5 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { DiscoverFiltersListItem, DiscoverFiltersListOptions } from 'features/discover/meta'
+import type { DiscoverFiltersListItem, DiscoverFiltersListOptions } from 'features/discover/meta'
 import { DiscoverFilterType } from 'features/discover/types'
 
 export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListOptions } = {

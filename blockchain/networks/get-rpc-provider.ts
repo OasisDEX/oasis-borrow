@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import { getRpcNode } from 'pages/api/rpc'
 
 import { networkSetById } from './network-helpers'
-import { NetworkIds } from './network-ids'
+import type { NetworkIds } from './network-ids'
 import { networksById } from './networks-config'
 
 export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider {

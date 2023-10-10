@@ -1,6 +1,6 @@
 import { negativeToZero } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
-import { ChangeVariantType } from 'components/DetailsSectionContentCard'
+import type BigNumber from 'bignumber.js'
+import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
 import { Skeleton } from 'components/Skeleton'
 import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'

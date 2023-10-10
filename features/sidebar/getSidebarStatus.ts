@@ -1,6 +1,6 @@
-import { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
-import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
-import { SidebarTxData } from 'helpers/extractSidebarHelpers'
+import type { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
+import type { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import type { SidebarTxData } from 'helpers/extractSidebarHelpers'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 

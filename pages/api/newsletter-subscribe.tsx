@@ -1,5 +1,5 @@
 // import md5 from 'crypto-js/md5'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 // const AUTHORIZATION_HEADER = `Basic ${Buffer.from(
 //   `apikey:${process.env.MAILCHIMP_API_KEY}`,

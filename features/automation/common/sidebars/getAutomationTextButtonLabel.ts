@@ -1,9 +1,6 @@
 import { useTranslation } from 'next-i18next'
 
-interface GetTextButtonLabelParams {
-  isAddForm: boolean
-  isAwaitingConfirmation?: boolean
-}
+import type { GetTextButtonLabelParams } from './getAutomationTextButtonLabel.types'
 
 export function getAutomationTextButtonLabel({
   isAddForm,

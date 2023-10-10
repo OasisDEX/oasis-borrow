@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { WAD_PRECISION } from 'components/constants'
 import { ajnaDefaultPoolRangeMarketPriceOffset } from 'features/ajna/common/consts'
 import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
@@ -11,7 +11,8 @@ export const getMinMaxAndRange = ({
   mostOptimisticMatchingPrice,
   marketPrice,
   isOracless,
-  offset, // 0 - 1, percentage value
+  mompOffset, // 0 - 1, percentage value
+  htpOffset, // 0 - 1, percentage value
 }: {
   highestThresholdPrice: BigNumber
   lowestUtilizedPrice: BigNumber
@@ -19,7 +20,8 @@ export const getMinMaxAndRange = ({
   mostOptimisticMatchingPrice: BigNumber
   marketPrice: BigNumber
   isOracless: boolean
-  offset: number
+  mompOffset: number
+  htpOffset: number
 }) => {
   // check whether pool contain liquidity and borrowers, if no generate default range from the lowest price to market price
   // for oraceless we don't show slider in this case. so logic is not adjusted for that occasion
@@ -49,7 +51,7 @@ export const getMinMaxAndRange = ({
   const nearHtpMinRange = [lupNearHtpRange[lupNearHtpRange.length - 1]]
 
   while (
-    nearHtpMinRange[nearHtpMinRange.length - 1].gt(nearHtpMinRange[0].times(one.minus(offset)))
+    nearHtpMinRange[nearHtpMinRange.length - 1].gt(nearHtpMinRange[0].times(one.minus(htpOffset)))
   ) {
     nearHtpMinRange.push(nearHtpMinRange[nearHtpMinRange.length - 1].div(1.005))
   }
@@ -64,7 +66,9 @@ export const getMinMaxAndRange = ({
   const nearMompMaxRange = [lupNearMompRange[lupNearMompRange.length - 1]]
 
   while (
-    nearMompMaxRange[nearMompMaxRange.length - 1].lt(nearMompMaxRange[0].times(one.plus(offset)))
+    nearMompMaxRange[nearMompMaxRange.length - 1].lt(
+      nearMompMaxRange[0].times(one.plus(mompOffset)),
+    )
   ) {
     nearMompMaxRange.push(nearMompMaxRange[nearMompMaxRange.length - 1].times(1.005))
   }

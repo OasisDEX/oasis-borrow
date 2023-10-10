@@ -1,5 +1,9 @@
-import { NetworkIds } from 'blockchain/networks'
-import { SubgraphBaseResponse, Subgraphs, SubgraphsResponses } from 'features/subgraphLoader/types'
+import type { NetworkIds } from 'blockchain/networks'
+import type {
+  SubgraphBaseResponse,
+  Subgraphs,
+  SubgraphsResponses,
+} from 'features/subgraphLoader/types'
 import { useEffect, useState } from 'react'
 
 interface UseSubgraphLoader<R> {

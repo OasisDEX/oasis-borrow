@@ -1,10 +1,11 @@
-import BigNumber from 'bignumber.js'
-import { ContextConnected } from 'blockchain/network'
-import { Vault } from 'blockchain/vaults'
-import { PositionCreated } from 'features/aave/services'
-import { Web3Context } from 'features/web3Context'
+import type BigNumber from 'bignumber.js'
+import type { ContextConnected } from 'blockchain/network.types'
+import type { Vault } from 'blockchain/vaults.types'
+import type { PositionCreated } from 'features/aave/services'
+import type { Web3Context } from 'features/web3Context'
 import { startWithDefault } from 'helpers/operators'
-import { combineLatest, Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs'
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
 
 export interface AccountDetails {

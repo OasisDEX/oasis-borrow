@@ -1,29 +1,18 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { jwtAuthGetToken } from 'features/shared/jwt'
-import { LendingProtocol } from 'lendingProtocols'
-import { Observable, of } from 'rxjs'
+import type { LendingProtocol } from 'lendingProtocols'
+import type { Observable } from 'rxjs'
+import { of } from 'rxjs'
 import { catchError, delay, map, startWith } from 'rxjs/operators'
+
+import type { SaveVaultType } from './vaultType.types'
+import { VaultType } from './vaultType.types'
 
 export function checkVaultTypeLocalStorage$(id: BigNumber): Observable<VaultType> {
   const vaultType = localStorage.getItem(`vault-type/${id.toFixed(0)}`) || VaultType.Borrow
 
   return of(vaultType).pipe(delay(500))
 }
-
-export enum VaultType {
-  Borrow = 'borrow',
-  Multiply = 'multiply',
-  Earn = 'earn',
-  Unknown = 'unknown',
-}
-
-export type SaveVaultType = (
-  id: BigNumber,
-  token: string,
-  vaultType: VaultType,
-  chainId: number,
-  protocol: string,
-) => Observable<void>
 
 export function saveVaultTypeForAccount(
   saveVaultType$: SaveVaultType,

@@ -1,9 +1,9 @@
 import { getCloseToCollateralParams, getCloseToDaiParams } from '@oasisdex/multiply'
 import { amountFromWei } from '@oasisdex/utils'
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { useAccountContext, useMainContext } from 'components/context'
 import { AVERAGE_CLOSE_VAULT_COST } from 'features/automation/common/estimations/helpers'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations.constants'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 

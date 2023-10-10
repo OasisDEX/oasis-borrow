@@ -16,6 +16,7 @@ export type LendingProtocolConfig = {
   icon: string
   logo: string
   logoScale: number
+  gradient: string
 }
 
 const aaveV2Config: LendingProtocolConfig = {
@@ -24,6 +25,7 @@ const aaveV2Config: LendingProtocolConfig = {
   icon: aaveIcon as string,
   logo: aaveV2Logo as string,
   logoScale: 1,
+  gradient: 'linear-gradient(230deg, #B6509E 15.42%, #2EBAC6 84.42%)',
 }
 
 const aaveV3Config: LendingProtocolConfig = {
@@ -32,6 +34,7 @@ const aaveV3Config: LendingProtocolConfig = {
   icon: aaveIcon as string,
   logo: aaveV3Logo as string,
   logoScale: 1,
+  gradient: 'linear-gradient(230deg, #B6509E 15.42%, #2EBAC6 84.42%)',
 }
 
 const ajnaConfig: LendingProtocolConfig = {
@@ -40,6 +43,7 @@ const ajnaConfig: LendingProtocolConfig = {
   icon: ajnaIcon as string,
   logo: ajnaLogo as string,
   logoScale: 1.4,
+  gradient: 'linear-gradient(90deg, #F154DB 0%, #974EEA 100%)',
 }
 
 const makerConfig: LendingProtocolConfig = {
@@ -48,6 +52,7 @@ const makerConfig: LendingProtocolConfig = {
   icon: makerIcon as string,
   logo: makerLogo as string,
   logoScale: 1,
+  gradient: 'linear-gradient(135deg, #2DC1B1 0%, #139D8D 100%)',
 }
 
 const sparkConfig: LendingProtocolConfig = {
@@ -56,6 +61,7 @@ const sparkConfig: LendingProtocolConfig = {
   icon: sparkIcon as string,
   logo: sparkLogo as string,
   logoScale: 1.6,
+  gradient: 'linear-gradient(159deg, #F58013 12.26%, #F19D19 86.52%)',
 }
 
 const lendingProtocols = [aaveV2Config, aaveV3Config, ajnaConfig, makerConfig, sparkConfig]

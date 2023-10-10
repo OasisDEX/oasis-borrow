@@ -1,27 +1,30 @@
 import { ensureIsSupportedAaveV3NetworkId } from 'blockchain/aave-v3'
-import { NetworkNames, networksByName } from 'blockchain/networks'
-import { TokenBalances } from 'blockchain/tokens'
+import type { NetworkNames } from 'blockchain/networks'
+import { networksByName } from 'blockchain/networks'
+import type { TokenBalances } from 'blockchain/tokens.types'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
-import { AccountContext } from 'components/context'
+import type { AccountContext } from 'components/context'
 import dayjs from 'dayjs'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
-import { MainContext } from 'helpers/context/MainContext'
-import { ProductContext } from 'helpers/context/ProductContext'
+import type { MainContext } from 'helpers/context/MainContext.types'
+import type { ProductContext } from 'helpers/context/ProductContext.types'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
+import type { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { merge, Observable, of, Subject } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { merge, of, Subject } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
 
-import { AaveContext } from './aave-context'
+import type { AaveContext } from './aave-context'
 import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
-import { getAaveV3StrategyConfig, ProxiesRelatedWithPosition } from './helpers'
+import type { ProxiesRelatedWithPosition } from './helpers'
+import { getAaveV3StrategyConfig } from './helpers'
 import {
   getManageAaveStateMachine,
   getManageAaveV3PositionStateMachineServices,
@@ -37,7 +40,7 @@ import {
   getStrategyInfo$,
 } from './services'
 import { getSupportedTokens } from './strategies'
-import { IStrategyConfig, PositionId } from './types'
+import type { IStrategyConfig, PositionId } from './types'
 
 export type StrategyUpdateParams = {
   positionId: PositionId

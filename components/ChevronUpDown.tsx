@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import React, { ComponentProps } from 'react'
-import { SxStyleProp } from 'theme-ui'
+import type { ComponentProps } from 'react'
+import React from 'react'
+import type { SxStyleProp } from 'theme-ui'
 
 export function ChevronUpDown({
   isUp,

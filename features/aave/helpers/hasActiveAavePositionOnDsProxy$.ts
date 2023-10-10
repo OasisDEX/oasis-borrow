@@ -1,6 +1,7 @@
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { startWithDefault } from 'helpers/operators'
-import { iif, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { iif, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 export function hasActiveAavePositionOnDsProxy$(

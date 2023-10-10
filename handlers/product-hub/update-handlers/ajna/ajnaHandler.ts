@@ -1,14 +1,14 @@
 import { getPoolLiquidity } from '@oasisdex/dma-library'
+import { EarnStrategies } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, networksById } from 'blockchain/networks'
-import { getTokenPrice, Tickers } from 'blockchain/prices'
+import { getTokenPrice } from 'blockchain/prices'
+import type { Tickers } from 'blockchain/prices.types'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import {
-  AjnaPoolsTableData,
-  getAjnaPoolsData,
-} from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
+import { getAjnaPoolsData } from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
+import type { AjnaPoolsTableData } from 'features/ajna/positions/common/helpers/getAjnaPoolsData.types'
 import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
@@ -19,9 +19,10 @@ import {
   productHubEmptyPoolWeeklyApyTooltip,
   productHubOraclessLtvTooltip,
 } from 'features/productHub/content'
-import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
+import type { ProductHubSupportedNetworks } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
-import {
+import type {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
 } from 'handlers/product-hub/types'
@@ -122,6 +123,9 @@ async function getAjnaPoolData(
           const managementType = 'active'
           const weeklyNetApy = lendApr.toString()
 
+          const primaryTokenGroup = getTokenGroup(collateralToken)
+          const secondaryTokenGroup = getTokenGroup(quoteToken)
+
           return {
             table: [
               ...v.table,
@@ -129,7 +133,7 @@ async function getAjnaPoolData(
                 label,
                 network,
                 primaryToken: collateralToken,
-                ...getTokenGroup(collateralToken, 'primary'),
+                ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
                 product: [
                   ProductHubProductType.Borrow,
                   ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
@@ -137,7 +141,7 @@ async function getAjnaPoolData(
                 ],
                 protocol,
                 secondaryToken: quoteToken,
-                ...getTokenGroup(quoteToken, 'secondary'),
+                ...(secondaryTokenGroup !== quoteToken && { secondaryTokenGroup }),
                 fee,
                 liquidity,
                 ...(isPoolNotEmpty &&
@@ -156,6 +160,7 @@ async function getAjnaPoolData(
                 // }),
                 primaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 secondaryTokenAddress: quoteTokenAddress.toLowerCase(),
+                hasRewards: isPoolWithRewards({ collateralToken, quoteToken }),
                 tooltips: {
                   ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
                     fee: productHubAjnaRewardsTooltip,
@@ -180,12 +185,13 @@ async function getAjnaPoolData(
                 label,
                 network,
                 primaryToken: quoteToken,
-                ...getTokenGroup(quoteToken, 'primary'),
+                ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
                 product: [ProductHubProductType.Earn],
                 protocol,
                 secondaryToken: collateralToken,
-                ...getTokenGroup(collateralToken, 'secondary'),
-                earnStrategy: earnLPStrategy,
+                ...(secondaryTokenGroup !== quoteToken && { secondaryTokenGroup }),
+                earnStrategy: EarnStrategies.liquidity_provision,
+                earnStrategyDescription: earnLPStrategy,
                 liquidity,
                 managementType,
                 ...(isPoolNotEmpty && {
@@ -194,6 +200,7 @@ async function getAjnaPoolData(
                 reverseTokens: true,
                 primaryTokenAddress: quoteTokenAddress.toLowerCase(),
                 secondaryTokenAddress: collateralTokenAddress.toLowerCase(),
+                hasRewards: isPoolWithRewards({ collateralToken, quoteToken }),
                 tooltips: {
                   ...(isPoolNotEmpty &&
                     isPoolWithRewards({ collateralToken, quoteToken }) && {

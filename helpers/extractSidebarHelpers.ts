@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js'
-import { AllowanceOption } from 'features/allowance/allowance'
-import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import type BigNumber from 'bignumber.js'
+import type { AllowanceOption } from 'features/allowance/allowance.types'
+import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { pick } from 'ramda'
 
 interface SharedStateExtractions {

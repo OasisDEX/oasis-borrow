@@ -1,7 +1,6 @@
 import { createSend } from '@oasisdex/transactions'
 import { getNetworkContracts } from 'blockchain/contracts'
 import {
-  ContextConnected,
   createAccount$,
   createContext$,
   createContextConnected$,
@@ -9,14 +8,17 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import { createGasPrice$ } from 'blockchain/prices'
 import { createWeb3Context$ } from 'features/web3Context'
 import { createTxHelpers$ } from 'helpers/createTxHelpers'
-import { Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
-import { DepreciatedServices, TxData, TxHelpers$ } from './types'
+import type { TxData } from './TxData'
+import type { TxHelpers$ } from './TxHelpers'
 
 export function setupMainContext() {
   console.info('Main context setup')
@@ -71,5 +73,3 @@ export function setupMainContext() {
     web3ContextConnected$,
   }
 }
-
-export type MainContext = ReturnType<typeof setupMainContext> & DepreciatedServices

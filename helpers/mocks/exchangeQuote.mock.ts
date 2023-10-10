@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
-import { EMPTY, Observable, of } from 'rxjs'
+import type { ExchangeAction, Quote } from 'features/exchange/exchange'
+import type { Observable } from 'rxjs'
+import { EMPTY, of } from 'rxjs'
 
 export interface MockExchangeQuote {
   marketPrice?: BigNumber

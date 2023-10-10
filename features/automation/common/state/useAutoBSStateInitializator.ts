@@ -1,18 +1,14 @@
 import { TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
-import {
-  prepareAutoBSSliderDefaults,
-  resolveMaxBuyOrMinSellPrice,
-  resolveWithThreshold,
-} from 'features/automation/common/helpers'
-import {
-  AUTO_BUY_FORM_CHANGE,
-  AUTO_SELL_FORM_CHANGE,
-} from 'features/automation/common/state/autoBSFormChange'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type BigNumber from 'bignumber.js'
+import { prepareAutoBSSliderDefaults } from 'features/automation/common/helpers/prepareAutoBSSliderDefaults'
+import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers/resolveMaxBuyOrMinSellPrice'
+import { resolveWithThreshold } from 'features/automation/common/helpers/resolveWithThreshold'
+import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useEffect } from 'react'
+
+import { AUTO_BUY_FORM_CHANGE, AUTO_SELL_FORM_CHANGE } from './autoBSFormChange.constants'
+import type { AutoBSTriggerData } from './autoBSTriggerData.types'
 
 export function useAutoBSstateInitialization({
   autoTriggersData,

@@ -1,24 +1,28 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import React, { PropsWithChildren } from 'react'
-import { Box, SxProps } from 'theme-ui'
+import type { PropsWithChildren } from 'react'
+import React from 'react'
+import type { SxProps } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 export type DrawerMenuProps = {
-  mobileCloseOnTop?: boolean
+  closeButton?: boolean
   isOpen: boolean
-  onClose: () => void
+  mobileCloseOnTop?: boolean
   overlay?: boolean
   position?: 'left' | 'right'
   sxOverride?: Partial<SxProps['sx']>
+  onClose: () => void
 }
 
 export const DrawerMenu = ({
   children,
+  closeButton = true,
   isOpen,
-  onClose,
+  mobileCloseOnTop = true,
   overlay = false,
   position = 'left',
   sxOverride = {},
-  mobileCloseOnTop = true,
+  onClose,
 }: PropsWithChildren<DrawerMenuProps>) => {
   const isPositionLeft = position === 'left'
   const isPositionRight = position === 'right'
@@ -33,7 +37,7 @@ export const DrawerMenu = ({
           right: isPositionRight ? 0 : 'auto',
           bottom: 0,
           width: ['100%', 'auto'],
-          minWidth: '400px',
+          minWidth: [0, '400px'],
           p: 3,
           bg: 'neutral10',
           boxShadow: 'buttonMenu',
@@ -57,35 +61,37 @@ export const DrawerMenu = ({
         }}
       >
         {children}
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: [...(mobileCloseOnTop ? ['auto'] : []), 3],
-            top: [...(mobileCloseOnTop ? [3] : []), 'auto'],
-            right: 0,
-            left: [...(mobileCloseOnTop ? [3] : []), 0],
-            width: [...(mobileCloseOnTop ? ['40px'] : []), '58px'],
-            margin: [...(mobileCloseOnTop ? [null] : ['auto']), 'auto'],
-            color: 'neutral80',
-            overflow: 'hidden',
-            cursor: 'pointer',
-            '&:hover': {
-              color: 'primary100',
-            },
-          }}
-          onClick={onClose}
-        >
-          <Icon
-            name="mobile_menu_close"
-            size={[...(mobileCloseOnTop ? [40] : []), 50]}
+        {closeButton && (
+          <Box
             sx={{
-              p: 1,
-              borderRadius: 'circle',
-              bg: 'neutral10',
-              transition: 'color 200ms',
+              position: 'absolute',
+              bottom: [...(mobileCloseOnTop ? ['auto'] : []), 3],
+              top: [...(mobileCloseOnTop ? [3] : []), 'auto'],
+              right: 0,
+              left: [...(mobileCloseOnTop ? [3] : []), 0],
+              width: [...(mobileCloseOnTop ? ['40px'] : []), '58px'],
+              margin: [...(mobileCloseOnTop ? [null] : ['auto']), 'auto'],
+              color: 'neutral80',
+              overflow: 'hidden',
+              cursor: 'pointer',
+              '&:hover': {
+                color: 'primary100',
+              },
             }}
-          />
-        </Box>
+            onClick={onClose}
+          >
+            <Icon
+              name="mobile_menu_close"
+              size={[...(mobileCloseOnTop ? [40] : []), 50]}
+              sx={{
+                p: 1,
+                borderRadius: 'circle',
+                bg: 'neutral10',
+                transition: 'color 200ms',
+              }}
+            />
+          </Box>
+        )}
       </Box>
       {overlay && isOpen && (
         <Box

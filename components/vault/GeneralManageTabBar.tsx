@@ -1,38 +1,25 @@
+import { trackingEvents } from 'analytics/trackingEvents'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { TabBar } from 'components/TabBar'
-import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
-import { TAB_CHANGE_SUBJECT, TabChange } from 'features/generalManageVault/TabChange'
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
+import type { TabChange } from 'features/generalManageVault/TabChange.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 
+import type { GeneralManageTabBarProps } from './GeneralManageTabBar.types'
+import { VaultViewMode } from './GeneralManageTabBar.types'
 import { HistoryControl } from './HistoryControl'
 import { OptimizationControl } from './OptimizationControl'
 import { ProtectionControl } from './ProtectionControl'
 import { VaultInformationControl } from './VaultInformationControl'
-
-export enum VaultViewMode {
-  Overview = 'overview',
-  Protection = 'protection',
-  Optimization = 'optimization',
-  History = 'history',
-  PositionInfo = 'position-info',
-  VaultInfo = 'vault-info',
-}
-
-interface GeneralManageTabBarProps {
-  generalManageVault: GeneralManageVaultState
-  positionInfo?: JSX.Element
-  showAutomationTabs: boolean
-}
 
 export function GeneralManageTabBar({
   generalManageVault,
@@ -98,9 +85,9 @@ export function GeneralManageTabBar({
                 content: <ProtectionControl />,
                 callback: () => {
                   trackingEvents.automation.buttonClick(
-                    AutomationEventIds.SelectProtection,
-                    Pages.VaultsOverview,
-                    CommonAnalyticsSections.HeaderTabs,
+                    MixpanelAutomationEventIds.SelectProtection,
+                    MixpanelPages.VaultsOverview,
+                    MixpanelCommonAnalyticsSections.HeaderTabs,
                     analyticsAdditionalParams,
                   )
                 },
@@ -112,9 +99,9 @@ export function GeneralManageTabBar({
                 content: <OptimizationControl vaultHistory={vaultHistory} />,
                 callback: () => {
                   trackingEvents.automation.buttonClick(
-                    AutomationEventIds.SelectOptimization,
-                    Pages.VaultsOverview,
-                    CommonAnalyticsSections.HeaderTabs,
+                    MixpanelAutomationEventIds.SelectOptimization,
+                    MixpanelPages.VaultsOverview,
+                    MixpanelCommonAnalyticsSections.HeaderTabs,
                     analyticsAdditionalParams,
                   )
                 },

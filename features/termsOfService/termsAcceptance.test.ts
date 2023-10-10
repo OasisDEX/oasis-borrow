@@ -1,10 +1,11 @@
-import { Web3Context } from 'features/web3Context'
+import type { Web3Context } from 'features/web3Context'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { mapValues } from 'lodash'
 import { NEVER, Observable, of, throwError } from 'rxjs'
-import Web3 from 'web3'
+import type Web3 from 'web3'
 
-import { createTermsAcceptance$, TermsAcceptanceState } from './termsAcceptance'
+import { createTermsAcceptance$ } from './termsAcceptance'
+import type { TermsAcceptanceState } from './termsAcceptance.types'
 
 interface PipelineInput {
   web3Context$: Observable<Web3Context>

@@ -1,5 +1,5 @@
-import { Protocol, UsersWhoFollowVaults } from '@prisma/client'
-import BigNumber from 'bignumber.js'
+import type { Protocol, UsersWhoFollowVaults } from '@prisma/client'
+import type BigNumber from 'bignumber.js'
 
 export async function followVaultUsingApi(
   vaultId: BigNumber,

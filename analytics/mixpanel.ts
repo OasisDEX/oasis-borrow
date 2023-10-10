@@ -2,8 +2,8 @@
  * Copyright (C) 2020 Maker Ecosystem Growth Holdings, INC.
  */
 
+import type { Config, Mixpanel } from 'mixpanel-browser'
 import * as mixpanel from 'mixpanel-browser'
-import { Config, Mixpanel } from 'mixpanel-browser'
 import getConfig from 'next/config'
 
 const env =

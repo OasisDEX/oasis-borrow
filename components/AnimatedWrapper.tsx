@@ -1,5 +1,7 @@
-import React, { PropsWithChildren } from 'react'
-import { Box, SxStyleProp } from 'theme-ui'
+import type { PropsWithChildren } from 'react'
+import React from 'react'
+import type { SxStyleProp } from 'theme-ui'
+import { Box } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 
 export function AnimatedWrapper({ children, sx }: PropsWithChildren<{ sx?: SxStyleProp }>) {

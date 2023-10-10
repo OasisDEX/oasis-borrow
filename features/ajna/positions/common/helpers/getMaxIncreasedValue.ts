@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 
 const FEE_FRACTION = 0.05
 const INCREASED_VALUE_PRECISSION = 6

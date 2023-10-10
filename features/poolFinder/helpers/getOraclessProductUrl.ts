@@ -1,6 +1,6 @@
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import { AjnaProduct } from 'features/ajna/common/types'
+import type { AjnaProduct } from 'features/ajna/common/types'
 
 interface GetOraclessUrlParams {
   chainId: NetworkIds

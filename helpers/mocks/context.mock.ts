@@ -1,19 +1,19 @@
 import {
-  Context,
-  ContextConnected,
   createContext$,
   createContextConnected$,
   createWeb3ContextConnected$,
 } from 'blockchain/network'
+import type { Context, ContextConnected } from 'blockchain/network.types'
 import { networksById } from 'blockchain/networks'
-import { contract, ContractDesc } from 'features/web3Context'
+import type { ContractDesc } from 'features/web3Context'
+import { contract } from 'features/web3Context'
 import Web3 from 'web3'
 
+import type { MockWeb3ContextProps } from './web3Context.mock'
 import {
   mockWeb3Context$,
   mockWeb3ContextConnected,
   mockWeb3ContextConnectedReadonly,
-  MockWeb3ContextProps,
 } from './web3Context.mock'
 
 export function mockContext$(props: MockWeb3ContextProps) {

@@ -1,16 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAutomationContext, useMainContext } from 'components/context'
 import { AppLink } from 'components/Links'
-import {
-  AUTO_SELL_FORM_CHANGE,
-  AutoBSFormChange,
-} from 'features/automation/common/state/autoBSFormChange'
+import { AUTO_SELL_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'
+import type { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange.types'
 import { ProtectionDetailsControl } from 'features/automation/protection/common/controls/ProtectionDetailsControl'
 import { ProtectionFormControl } from 'features/automation/protection/common/controls/ProtectionFormControl'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
+import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'

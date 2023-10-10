@@ -1,4 +1,4 @@
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 
 export function checkIfGnosisSafe({ walletLabel, web3 }: Pick<Context, 'walletLabel' | 'web3'>) {
   let isGnosisSafe = false

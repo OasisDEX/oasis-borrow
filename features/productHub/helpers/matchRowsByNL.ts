@@ -1,5 +1,6 @@
 import { ALL_ASSETS } from 'features/productHub/meta'
-import { ProductHubItem, ProductHubProductType } from 'features/productHub/types'
+import type { ProductHubItem } from 'features/productHub/types'
+import { ProductHubProductType } from 'features/productHub/types'
 
 export function matchRowsByNL(
   rows: ProductHubItem[],

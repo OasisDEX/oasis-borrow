@@ -1,13 +1,12 @@
 import { AppLink } from 'components/Links'
-import {
-  SidebarSectionStatus,
-  SidebarSectionStatusProps,
-} from 'components/sidebar/SidebarSectionStatus'
-import { TxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxManager'
+import type { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
+import { SidebarSectionStatus } from 'components/sidebar/SidebarSectionStatus'
+import type { TxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxManager'
 import { useConnection } from 'features/web3OnBoard'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
-import React, { FC } from 'react'
+import type { FC } from 'react'
+import React from 'react'
 import { Button, Flex, Grid, Spinner } from 'theme-ui'
 
 interface PoolCreatorActionControllerProps {

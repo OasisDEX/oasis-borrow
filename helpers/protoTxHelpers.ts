@@ -1,4 +1,4 @@
-import { TxHelpers } from './context/types'
+import type { TxHelpers } from './context/TxHelpers'
 
 export const protoTxHelpers: TxHelpers = {
   send: () => null as any,

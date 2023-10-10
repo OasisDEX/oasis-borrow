@@ -4,7 +4,8 @@ import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { warnIfAddressIsZero } from 'helpers/warnIfAddressIsZero'
 import { SparkV3PoolDataProvider__factory } from 'types/ethers-contracts'
 
-import { BaseParameters, getNetworkMapping, wethToEthAddress } from './utils'
+import type { BaseParameters } from './utils'
+import { getNetworkMapping, wethToEthAddress } from './utils'
 
 export interface SparkV3UserReserveDataParameters extends BaseParameters {
   token: string

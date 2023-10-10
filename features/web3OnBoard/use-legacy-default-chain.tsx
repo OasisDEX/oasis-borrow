@@ -1,6 +1,6 @@
 import { NetworkIds } from 'blockchain/networks'
 import { getStorageValue, useLocalStorage } from 'helpers/useLocalStorage'
-import { Dispatch, SetStateAction } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 
 const localStorageKeyForDefaultChain = 'legacy-default-chain'
 export const getLegacyDefaultChain = (): NetworkIds => {

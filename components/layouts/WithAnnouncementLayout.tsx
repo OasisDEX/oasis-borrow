@@ -4,7 +4,7 @@ import React from 'react'
 import { Container, Flex } from 'theme-ui'
 import { Background } from 'theme/Background'
 
-import { BasicLayoutProps } from './BasicLayout'
+import type { BasicLayoutProps } from './BasicLayout'
 
 interface WithAnnouncementLayoutProps extends BasicLayoutProps {
   showAnnouncement: boolean

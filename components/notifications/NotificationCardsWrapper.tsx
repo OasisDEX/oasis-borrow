@@ -1,9 +1,11 @@
-import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelCommonAnalyticsSections, MixpanelNotificationsEventIds } from 'analytics/types'
 import { useNotificationSocket } from 'components/context'
 import { NotificationCard } from 'components/notifications/NotificationCard'
 import { NotificationsEmptyList } from 'components/notifications/NotificationsEmptyList'
 import { getNotificationTitle } from 'features/notifications/helpers'
-import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import type { NotificationChange } from 'features/notifications/notificationChange'
+import { NOTIFICATION_CHANGE } from 'features/notifications/notificationChange'
 import { NotificationTypes } from 'features/notifications/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
@@ -24,8 +26,8 @@ export function NotificationCardsWrapper() {
       notificationId,
     })
     trackingEvents.notifications.buttonClick(
-      NotificationsEventIds.MarkAsRead,
-      CommonAnalyticsSections.NotificationCenter,
+      MixpanelNotificationsEventIds.MarkAsRead,
+      MixpanelCommonAnalyticsSections.NotificationCenter,
       analyticsData,
     )
   }
@@ -38,8 +40,8 @@ export function NotificationCardsWrapper() {
     })
 
     trackingEvents.notifications.buttonClick(
-      NotificationsEventIds.GoToVault,
-      CommonAnalyticsSections.NotificationCenter,
+      MixpanelNotificationsEventIds.GoToVault,
+      MixpanelCommonAnalyticsSections.NotificationCenter,
       analyticsData,
     )
   }

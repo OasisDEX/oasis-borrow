@@ -1,21 +1,10 @@
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultProxySubtitle } from 'components/vault/VaultProxy'
-import { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Box, Text } from 'theme-ui'
 
-export interface OpenMultiplyVaultTitleProps {
-  isEditingStage: boolean
-  isProxyStage: boolean
-  isAllowanceStage: boolean
-  token: string
-  totalSteps: number
-  currentStep: number
-  stage: OpenMultiplyVaultStage
-  title: string
-  subTitle: ReactNode
-}
+import type { OpenMultiplyVaultTitleProps } from './OpenMultiplyVaultTitle.types'
 
 export function OpenMultiplyVaultTitle({
   isEditingStage,

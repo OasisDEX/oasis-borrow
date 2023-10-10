@@ -1,7 +1,8 @@
 import { useAccountContext, useMainContext } from 'components/context'
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
-import { ContextAccountDetails, getShowHeaderSettings } from 'helpers/functions'
+import type { ContextAccountDetails } from 'helpers/functions'
+import { getShowHeaderSettings } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 

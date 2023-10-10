@@ -8,10 +8,10 @@ import { isAaveHistorySupported } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
-import { IStrategyConfig } from 'features/aave/types/strategy-config'
-import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
-import { getAppConfig } from 'helpers/config'
-import {
+import type { IStrategyConfig } from 'features/aave/types/strategy-config'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
+import { useAppConfig } from 'helpers/config'
+import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveData,
 } from 'lendingProtocols/aave-like-common'
@@ -31,7 +31,7 @@ export function AaveManageTabBar({
   aaveReserveDataDebtToken,
 }: AaveManageTabBarProps) {
   const { t } = useTranslation()
-  const { AaveV3Protection: aaveProtection, AaveV3History: aaveHistory } = getAppConfig('features')
+  const { AaveV3Protection: aaveProtection, AaveV3History: aaveHistory } = useAppConfig('features')
   const {
     automationTriggersData: { isAutomationDataLoaded },
     triggerData: { stopLossTriggerData },

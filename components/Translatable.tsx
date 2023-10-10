@@ -1,16 +1,8 @@
-import React, { FC } from 'react'
+import type { FC } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-export type TranslatableType =
-  | string
-  | {
-      key: string
-      props?: { [key: string]: string }
-    }
-
-export interface TranslatableProps {
-  text: TranslatableType
-}
+import type { TranslatableProps } from './Translatable.types'
 
 export const Translatable: FC<TranslatableProps> = ({ text }) => {
   const { t } = useTranslation()

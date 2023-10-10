@@ -1,6 +1,6 @@
 import { AssetsTableBanner } from 'components/assetsTable/AssetsTableBanner'
 import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
-import {
+import type {
   AssetsTableHeaderTranslationProps,
   AssetsTableProps,
   AssetsTableRowData,

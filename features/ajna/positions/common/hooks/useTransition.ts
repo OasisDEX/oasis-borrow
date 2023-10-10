@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { AjnaFormAction } from 'features/ajna/common/types'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import type { AjnaFormAction } from 'features/ajna/common/types'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { useAccount } from 'helpers/useAccount'
-import { LendingProtocol } from 'lendingProtocols'
+import type { LendingProtocol } from 'lendingProtocols'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 

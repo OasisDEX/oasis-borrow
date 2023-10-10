@@ -1,4 +1,5 @@
-import { Banner, bannerGradientPresets } from 'components/Banner'
+import { Banner } from 'components/Banner'
+import { bannerGradientPresets } from 'components/Banner.constants'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

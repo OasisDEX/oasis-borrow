@@ -1,12 +1,17 @@
 'use client'
-import { configContext, emptyConfig } from 'components/context/ConfigContextProvider'
 import {
-  ConfigContext,
-  configLSKey,
+  emptyConfig,
+  preloadAppDataContext,
+} from 'components/context/PreloadAppDataContextProvider'
+import { cleanObjectFromNull, cleanObjectToNull } from 'helpers/clean-object'
+import type {
   ConfigResponseType,
   ConfigResponseTypeKey,
+  PreloadAppDataContext,
 } from 'helpers/config'
-import { useContext as accessContext } from 'react'
+import { configLSKey } from 'helpers/config'
+import { merge } from 'lodash'
+import { useContext } from 'react'
 
 import { configLSOverridesKey } from './constants'
 
@@ -16,21 +21,24 @@ import { configLSOverridesKey } from './constants'
  * @param configKey
  * @returns ConfigResponseType[T] or empty config
  */
-export function getAppConfig<T extends ConfigResponseTypeKey>(configKey: T): ConfigResponseType[T] {
+export function useAppConfig<T extends ConfigResponseTypeKey>(configKey: T): ConfigResponseType[T] {
   try {
-    let ac = accessContext(configContext)
+    const ac = useContext(preloadAppDataContext)
     if (!ac) {
       throw new Error("ConfigContext not available! getAppConfig can't be used serverside")
     }
+
+    let justConfig = { config: { ...ac.config } }
+
     if (window.localStorage) {
-      ac = {
-        ...ac,
-        ...({
-          config: JSON.parse(localStorage.getItem(configLSOverridesKey) ?? '{}'),
-        } as ConfigContext),
-      }
+      justConfig = merge<
+        Pick<PreloadAppDataContext, 'config'>,
+        Pick<PreloadAppDataContext, 'config'>
+      >(justConfig, {
+        config: loadConfigFromLocalStorage(),
+      })
     }
-    return ac.config[configKey]
+    return justConfig.config[configKey] || emptyConfig[configKey]
   } catch (error) {
     console.error(`getAppConfig: Error getting config value for ${configKey}`)
     return emptyConfig[configKey]
@@ -50,7 +58,7 @@ export function updateConfigOverrides(config: ConfigResponseType): void {
   }
   try {
     const overrideConfig = JSON.parse(overrideConfigRaw)
-    const newOverrideConfig = { ...config, ...overrideConfig }
+    const newOverrideConfig = merge(cleanObjectToNull(config), overrideConfig)
     localStorage.setItem(configLSOverridesKey, JSON.stringify(newOverrideConfig))
   } catch (error) {
     console.error('updateConfigOverrides: Error parsing override config from localStorage', error)
@@ -83,10 +91,10 @@ export function loadConfigFromLocalStorage() {
     return emptyConfig
   }
   try {
-    const config = {
-      ...JSON.parse(configRaw),
-      ...JSON.parse(localStorage.getItem(configLSOverridesKey) ?? '{}'),
-    }
+    const config = merge(
+      JSON.parse(configRaw),
+      cleanObjectFromNull(JSON.parse(localStorage.getItem(configLSOverridesKey) ?? '{}')),
+    )
     return config as ConfigResponseType
   } catch (error) {
     console.error('loadConfigFromLocalStorage: Error parsing config from localStorage', error)

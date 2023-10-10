@@ -1,56 +1,61 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
-import { DogIlk, dogIlk } from 'blockchain/calls/dog'
-import { tokenBalance, TokenBalanceArgs } from 'blockchain/calls/erc20'
-import { getCdps, GetCdpsArgs, GetCdpsResult } from 'blockchain/calls/getCdps'
+import type { DogIlk } from 'blockchain/calls/dog'
+import { dogIlk } from 'blockchain/calls/dog'
+import { tokenBalance } from 'blockchain/calls/erc20'
+import type { TokenBalanceArgs } from 'blockchain/calls/erc20.types'
+import type { GetCdpsArgs, GetCdpsResult } from 'blockchain/calls/getCdps'
+import { getCdps } from 'blockchain/calls/getCdps'
 import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
-import { JugIlk, jugIlk } from 'blockchain/calls/jug'
+import type { JugIlk } from 'blockchain/calls/jug'
+import { jugIlk } from 'blockchain/calls/jug'
 import { observe } from 'blockchain/calls/observe'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import { createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
-import { SpotIlk, spotIlk } from 'blockchain/calls/spot'
-import { Urn, vatGem, VatIlk, vatIlk, vatUrns } from 'blockchain/calls/vat'
+import type { SpotIlk } from 'blockchain/calls/spot'
+import { spotIlk } from 'blockchain/calls/spot'
+import type { Urn, VatIlk } from 'blockchain/calls/vat'
+import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { resolveENSName$ } from 'blockchain/ens'
-import { createIlkData$, IlkData } from 'blockchain/ilks'
+import { createIlkData$ } from 'blockchain/ilks'
+import type { IlkData } from 'blockchain/ilks.types'
 import { NetworkIds } from 'blockchain/networks'
-import { createOraclePriceData$, OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
+import { createOraclePriceData$ } from 'blockchain/prices'
+import type { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices.types'
 import { createBalance$ } from 'blockchain/tokens'
-import { getUserDpmProxies$, UserDpmAccount } from 'blockchain/userDpmProxies'
-import {
-  createStandardCdps$,
-  createVault$,
-  createVaults$,
-  Vault,
-  VaultWithType,
-} from 'blockchain/vaults'
+import { getUserDpmProxies$ } from 'blockchain/userDpmProxies'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
+import { createStandardCdps$, createVault$, createVaults$ } from 'blockchain/vaults'
+import type { Vault, VaultWithType } from 'blockchain/vaults.types'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers'
-import {
-  createProxyConsumed$,
-  createReadPositionCreatedEvents$,
-  PositionCreated,
-} from 'features/aave/services'
-import { AccountDetails, createAccountData } from 'features/account/AccountData'
+import type { PositionCreated } from 'features/aave/services'
+import { createProxyConsumed$, createReadPositionCreatedEvents$ } from 'features/aave/services'
+import type { AccountDetails } from 'features/account/AccountData'
+import { createAccountData } from 'features/account/AccountData'
 import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
-import { createUserReferral$, UserReferralState } from 'features/referralOverview/user'
+import { createUserReferral$ } from 'features/referralOverview/user'
+import type { UserReferralState } from 'features/referralOverview/user.types'
 import {
   getReferralRewardsFromApi$,
   getReferralsFromApi$,
   getUserFromApi$,
 } from 'features/referralOverview/userApi'
-import { createUserSettings$, UserSettingsState } from 'features/userSettings/userSettings'
+import { createUserSettings$ } from 'features/userSettings/userSettings'
+import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import {
   checkUserSettingsLocalStorage$,
   saveUserSettingsLocalStorage$,
 } from 'features/userSettings/userSettingsLocal'
 import { bigNumberTostring } from 'helpers/bigNumberToString'
-import { DepreciatedServices } from 'helpers/context/types'
+import type { DepreciatedServices } from 'helpers/context/types'
 import { ilkUrnAddressToString } from 'helpers/ilkUrnAddressToString'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { memoize } from 'lodash'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { useMainContext } from './MainContextProvider'

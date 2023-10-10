@@ -1,58 +1,15 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
-import { ProtocolLabel, ProtocolLabelProps } from 'components/ProtocolLabel'
+import { ProtocolLabel } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
-import { Translatable, TranslatableType } from 'components/Translatable'
-import React, { FC } from 'react'
-import { Box, Flex, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { Translatable } from 'components/Translatable'
+import type { FC } from 'react'
+import React from 'react'
+import type { SxStyleProp } from 'theme-ui'
+import { Box, Flex, Heading, Image, Text } from 'theme-ui'
 
-export type PromoCardVariant = 'neutral' | 'positive' | 'negative'
-
-export interface PromoCardWrapperProps {
-  link?: string
-}
-
-interface PromoCardPropsWithIcon {
-  icon: string
-  image?: never
-  tokens?: never
-}
-
-interface PromoCardPropsWithImage {
-  icon?: never
-  image: string
-  tokens?: never
-}
-
-interface PromoCardPropsWithTokens {
-  icon?: never
-  image?: never
-  tokens: string[]
-}
-
-export type PromoCardProps = (
-  | PromoCardPropsWithIcon
-  | PromoCardPropsWithImage
-  | PromoCardPropsWithTokens
-) & {
-  title: TranslatableType
-  protocol?: ProtocolLabelProps
-  description?: TranslatableType
-  pills?: {
-    label: TranslatableType
-    variant?: PromoCardVariant
-  }[]
-  link?: {
-    href: string
-    label?: TranslatableType
-  }
-  data?: {
-    label: TranslatableType
-    value: TranslatableType
-    variant?: PromoCardVariant
-  }[]
-}
+import type { PromoCardProps, PromoCardVariant, PromoCardWrapperProps } from './PromoCard.types'
 
 const pillColors: { [key in PromoCardVariant]: SxStyleProp } = {
   negative: { color: 'critical100', borderColor: 'critical100' },

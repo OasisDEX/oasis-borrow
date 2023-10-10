@@ -1,21 +1,21 @@
-import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
+import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata.constants'
 import { AutomationContextProvider, useAccountContext } from 'components/context'
-import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { SidebarVaultStopLossStage } from 'components/vault/sidebar/SidebarVaultStopLossStage'
-import { openVaultWithStopLossAnalytics } from 'features/automation/common/helpers'
+import { openVaultWithStopLossAnalytics } from 'features/automation/common/helpers/openVaultWithStopLossAnalytics'
 import { getDataForStopLoss } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import type { OpenVaultState } from 'features/borrow/open/pipes/openVault.types'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
-import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
-import { getAppConfig } from 'helpers/config'
+import type { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { useAppConfig } from 'helpers/config'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractPrimaryButtonLabelParams,
@@ -29,6 +29,7 @@ import { Grid } from 'theme-ui'
 
 import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
 import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 
 export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const { t } = useTranslation()
@@ -69,7 +70,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
   const { stopLossSidebarProps, automationContextProps } = getDataForStopLoss(props, 'borrow')
-  const { ProxyCreationDisabled: isProxyCreationDisabled } = getAppConfig('features')
+  const { ProxyCreationDisabled: isProxyCreationDisabled } = useAppConfig('features')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token, openFlowWithStopLoss }),

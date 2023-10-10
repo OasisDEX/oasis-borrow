@@ -1,8 +1,9 @@
 import { useActor } from '@xstate/react'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
-import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSection } from 'components/sidebar/SidebarSection'
+import type { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
 import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationContainer,
@@ -13,9 +14,9 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Image, Text } from 'theme-ui'
-import { ActorRefFrom, Sender, StateFrom } from 'xstate'
+import type { ActorRefFrom, Sender, StateFrom } from 'xstate'
 
-import {
+import type {
   DPMAccountStateMachine,
   DPMAccountStateMachineEvents,
 } from './state/createDPMAccountStateMachine'

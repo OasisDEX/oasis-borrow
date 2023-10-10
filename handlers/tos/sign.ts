@@ -1,5 +1,5 @@
 import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 

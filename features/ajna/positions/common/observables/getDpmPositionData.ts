@@ -1,11 +1,12 @@
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ethers } from 'ethers'
-import { ProxiesRelatedWithPosition } from 'features/aave/helpers'
-import { PositionCreated } from 'features/aave/services'
-import { PositionId } from 'features/aave/types'
+import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import type { PositionCreated } from 'features/aave/services'
+import type { PositionId } from 'features/aave/types'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import { isEqual } from 'lodash'
-import { combineLatest, EMPTY, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, EMPTY, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 export interface DpmPositionData extends UserDpmAccount {

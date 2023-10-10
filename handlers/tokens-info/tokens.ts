@@ -1,4 +1,4 @@
-import { Tokens } from '@prisma/client'
+import type { Tokens } from '@prisma/client'
 import erc20 from 'blockchain/abi/erc20.json'
 import { getRpcProvider } from 'blockchain/networks'
 import { ethers } from 'ethers'

@@ -1,6 +1,6 @@
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { isTouchDevice } from 'helpers/isTouchDevice'
-import { TranslateStringType } from 'helpers/translateStringType'
+import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
 

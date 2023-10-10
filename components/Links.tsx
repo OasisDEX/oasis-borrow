@@ -1,20 +1,8 @@
-import { WithChildren } from 'helpers/types'
-import { LinkProps } from 'next/dist/client/link'
-import Link from 'next/link'
 import React from 'react'
-import { Link as ThemeLink, SxStyleProp } from 'theme-ui'
+import { Link as ThemeLink } from 'theme-ui'
 
-export interface AppLinkProps extends WithChildren, LinkProps {
-  disabled?: boolean
-  href: string
-  sx?: SxStyleProp
-  variant?: string
-  internalInNewTab?: boolean
-  withAccountPrefix?: boolean
-  onClick?: React.MouseEventHandler<HTMLAnchorElement>
-  target?: string
-  hash?: string
-}
+import { InternalLink } from './InternalLink'
+import type { AppLinkProps } from './Links.types'
 
 export function getIsInternalLink(href: string) {
   return href.startsWith('/') || href.startsWith('#')
@@ -46,35 +34,4 @@ export function AppLink({
       {children}
     </ThemeLink>
   )
-}
-
-function InternalLink({
-  href,
-  sx,
-  children,
-  internalInNewTab,
-  as,
-  variant,
-  onClick,
-  hash,
-  ...rest
-}: AppLinkProps) {
-  const readOnlyHref = href
-  const readOnlyAs = as
-
-  const actualHref = { pathname: readOnlyHref as string, hash }
-
-  const actualAs = readOnlyAs ? { pathname: readOnlyAs as string } : readOnlyAs
-
-  return (
-    <Link href={actualHref} as={actualAs} passHref {...rest} legacyBehavior>
-      <ThemeLink target={internalInNewTab ? '_blank' : '_self'} {...{ sx, variant, onClick }}>
-        {children}
-      </ThemeLink>
-    </Link>
-  )
-}
-
-export function CustomMDXLink(props: AppLinkProps) {
-  return <AppLink {...props} />
 }

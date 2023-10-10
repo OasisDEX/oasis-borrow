@@ -1,4 +1,4 @@
-import { NetworkConfig } from 'blockchain/networks'
+import type { NetworkConfig } from 'blockchain/networks'
 
 type WindowWithInjectedWallet = {
   ethereum: {

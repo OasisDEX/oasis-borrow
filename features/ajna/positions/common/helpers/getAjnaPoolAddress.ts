@@ -1,5 +1,5 @@
-import { NetworkIds } from 'blockchain/networks'
-import { SubgraphsResponses } from 'features/subgraphLoader/types'
+import type { NetworkIds } from 'blockchain/networks'
+import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 type GetAjnaPoolAddress = (

@@ -1,5 +1,5 @@
-import BigNumber from 'bignumber.js'
-import { ChangeVariantType } from 'components/DetailsSectionContentCard'
+import type BigNumber from 'bignumber.js'
+import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
 import { formatAmount } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'

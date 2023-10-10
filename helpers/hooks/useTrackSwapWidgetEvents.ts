@@ -1,33 +1,34 @@
 import type { Route } from '@lifi/sdk'
 import type { RouteExecutionUpdate } from '@lifi/widget'
 import { useWidgetEvents, WidgetEvent } from '@lifi/widget'
-import { SwapWidgetEvents, trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelSwapWidgetEvents } from 'analytics/types'
 import { useEffect } from 'react'
 
 export const useTrackSwapWidgetEvents = () => {
   const widgetEvents = useWidgetEvents()
 
   const swapWidgetEventHandler =
-    (event: SwapWidgetEvents) => (eventData: Route | RouteExecutionUpdate) => {
+    (event: MixpanelSwapWidgetEvents) => (eventData: Route | RouteExecutionUpdate) => {
       trackingEvents.swapWidgetEvent(event, eventData)
     }
 
   useEffect(() => {
     widgetEvents.on(
       WidgetEvent.RouteExecutionStarted,
-      swapWidgetEventHandler(SwapWidgetEvents.ExecutionCompleted),
+      swapWidgetEventHandler(MixpanelSwapWidgetEvents.ExecutionCompleted),
     )
     widgetEvents.on(
       WidgetEvent.RouteExecutionUpdated,
-      swapWidgetEventHandler(SwapWidgetEvents.ExecutionUpdated),
+      swapWidgetEventHandler(MixpanelSwapWidgetEvents.ExecutionUpdated),
     )
     widgetEvents.on(
       WidgetEvent.RouteExecutionCompleted,
-      swapWidgetEventHandler(SwapWidgetEvents.ExecutionCompleted),
+      swapWidgetEventHandler(MixpanelSwapWidgetEvents.ExecutionCompleted),
     )
     widgetEvents.on(
       WidgetEvent.RouteExecutionFailed,
-      swapWidgetEventHandler(SwapWidgetEvents.ExecutionFailed),
+      swapWidgetEventHandler(MixpanelSwapWidgetEvents.ExecutionFailed),
     )
     return () => widgetEvents.all.clear()
   }, [widgetEvents])

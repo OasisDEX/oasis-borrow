@@ -1,30 +1,28 @@
+import { trackingEvents } from 'analytics/trackingEvents'
 import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
-import BigNumber from 'bignumber.js'
-import { PickCloseStateProps } from 'components/dumb/PickCloseState'
+  MixpanelAutomationEventIds,
+  MixpanelCommonAnalyticsSections,
+  MixpanelPages,
+} from 'analytics/types'
+import type BigNumber from 'bignumber.js'
+import type { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { closeVaultOptions } from 'features/automation/common/consts'
-import { SidebarAutomationStages } from 'features/automation/common/types'
+import type { SidebarAutomationStages } from 'features/automation/common/types'
 import {
   checkIfIsDisabledAutoTakeProfit,
   checkIfIsEditingAutoTakeProfit,
 } from 'features/automation/optimization/autoTakeProfit/helpers'
-import {
-  AutoTakeProfitTriggerData,
-  prepareAutoTakeProfitResetData,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { prepareAutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
 import { uiChanges } from 'helpers/uiChanges'
 
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from './autoTakeProfitFormChange.constants'
+import type {
   AutoTakeProfitFormChange,
   AutoTakeProfitResetData,
-} from './autoTakeProfitFormChange'
+} from './autoTakeProfitFormChange.types'
+import type { AutoTakeProfitTriggerData } from './autoTakeProfitTriggerData.types'
 
 interface GetAutoTakeProfitStatusParams {
   id: BigNumber
@@ -89,9 +87,9 @@ export function getAutoTakeProfitStatus({
       })
 
       trackingEvents.automation.buttonClick(
-        AutomationEventIds.CloseToX,
-        Pages.TakeProfit,
-        CommonAnalyticsSections.Form,
+        MixpanelAutomationEventIds.CloseToX,
+        MixpanelPages.TakeProfit,
+        MixpanelCommonAnalyticsSections.Form,
         {
           vaultId: id.toString(),
           ilk: ilk,

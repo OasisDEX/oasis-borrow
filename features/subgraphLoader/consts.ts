@@ -1,13 +1,13 @@
 import { NetworkIds } from 'blockchain/networks'
-import { SubgraphMethodsRecord, SubgraphsRecord } from 'features/subgraphLoader/types'
+import type { SubgraphMethodsRecord, SubgraphsRecord } from 'features/subgraphLoader/types'
 import { gql } from 'graphql-request'
 import getConfig from 'next/config'
 
 export const subgraphsRecord: SubgraphsRecord = {
   Ajna: {
-    [NetworkIds.MAINNET]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrl,
-    [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrl,
-    [NetworkIds.GOERLI]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrlGoerli,
+    [NetworkIds.MAINNET]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2Url,
+    [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2Url,
+    [NetworkIds.GOERLI]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2UrlGoerli,
     [NetworkIds.ARBITRUMMAINNET]: '',
     [NetworkIds.ARBITRUMGOERLI]: '',
     [NetworkIds.POLYGONMAINNET]: '',
@@ -56,15 +56,7 @@ export const subgraphsRecord: SubgraphsRecord = {
 
 export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   getAjnaPositionAggregatedData: gql`
-    query getAccount($dpmProxyAddress: ID!) {
-      account(id: $dpmProxyAddress) {
-        cumulativeDeposit
-        cumulativeFees
-        cumulativeWithdraw
-        earnCumulativeFeesInQuoteToken
-        earnCumulativeQuoteTokenDeposit
-        earnCumulativeQuoteTokenWithdraw
-      }
+    query getAccount($dpmProxyAddress: ID!, $collateralAddress: String!, $quoteAddress: String!) {
       auctions(where: { account_: { id: $dpmProxyAddress } }) {
         inLiquidation
         alreadyTaken
@@ -72,7 +64,13 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         debtToCover
         collateral
       }
-      borrowerEvents(where: { account_: { id: $dpmProxyAddress } }) {
+      borrowerEvents(
+        where: {
+          account_: { id: $dpmProxyAddress }
+          collateralToken_: { address: $collateralAddress }
+          debtToken_: { address: $quoteAddress }
+        }
+      ) {
         id
         kind
         timestamp
@@ -85,7 +83,13 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           id
         }
       }
-      oasisEvents(where: { account_: { id: $dpmProxyAddress } }) {
+      oasisEvents(
+        where: {
+          account_: { id: $dpmProxyAddress }
+          collateralToken_: { address: $collateralAddress }
+          debtToken_: { address: $quoteAddress }
+        }
+      ) {
         depositTransfers {
           amount
         }
@@ -146,6 +150,22 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getAjnaCumulatives: gql`
+    query getAccount($dpmProxyAddress: ID!, $poolAddress: String!) {
+      account(id: $dpmProxyAddress) {
+        earnPositions(where: { pool: $poolAddress }) {
+          earnCumulativeFeesInQuoteToken
+          earnCumulativeQuoteTokenDeposit
+          earnCumulativeQuoteTokenWithdraw
+        }
+        borrowPositions(where: { pool: $poolAddress }) {
+          borrowCumulativeDepositUSD
+          borrowCumulativeFeesUSD
+          borrowCumulativeWithdrawUSD
+        }
+      }
+    }
+  `,
   getAjnaPoolAddress: gql`
     query getPools($collateralAddress: ID!, $quoteAddress: ID!) {
       pools(where: { collateralAddress: $collateralAddress, quoteTokenAddress: $quoteAddress }) {
@@ -187,6 +207,9 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           collateral
           bucketLPs
         }
+        loansCount
+        totalAuctionsInPool
+        t0debt
       }
     }
   `,
@@ -218,29 +241,20 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     }
   `,
   getAjnaEarnPositionData: gql`
-    query getAccount($dpmProxyAddress: ID!) {
+    query getAccount($dpmProxyAddress: ID!, $poolAddress: String!) {
       account(id: $dpmProxyAddress) {
-        earnPositions {
-          lps
-          index
-          nft {
-            id
-          }
-          account {
-            earnCumulativeFeesInQuoteToken
-            earnCumulativeQuoteTokenDeposit
-            earnCumulativeQuoteTokenWithdraw
+        vaultId
+        address
+        earnPositions(where: { pool: $poolAddress }) {
+          id
+          earnCumulativeFeesInQuoteToken
+          earnCumulativeQuoteTokenDeposit
+          earnCumulativeQuoteTokenWithdraw
+          bucketPositions(where: { lps_gt: 0 }) {
+            lps
+            index
           }
         }
-      }
-    }
-  `,
-  getAjnaEarnPositionNftId: gql`
-    query getNfts($walletAddress: ID!) {
-      nfts(where: { user_: { id: $walletAddress }, staked: true }) {
-        id
-        staked
-        currentReward
       }
     }
   `,

@@ -1,14 +1,10 @@
 import { NavigationMenuDropdown } from 'components/navigation/NavigationMenuDropdown'
-import {
-  NavigationMenuLink,
-  NavigationMenuPanelLinkType,
-} from 'components/navigation/NavigationMenuLink'
-import {
-  NavigationMenuPanel,
-  NavigationMenuPanelType,
-} from 'components/navigation/NavigationMenuPanel'
+import type { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
+import { NavigationMenuLink } from 'components/navigation/NavigationMenuLink'
+import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
+import { NavigationMenuPanel } from 'components/navigation/NavigationMenuPanel'
 import React, { useState } from 'react'
-import { Box, Flex } from 'theme-ui'
+import { Flex } from 'theme-ui'
 
 interface NavigationMenuProps {
   links?: NavigationMenuPanelLinkType[]
@@ -18,7 +14,7 @@ interface NavigationMenuProps {
 export function NavigationMenu({ links, panels }: NavigationMenuProps) {
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false)
   const [isPanelSwitched, setIsPanelSwitched] = useState<boolean>(false)
-  const [currentPanel, setCurrentPanel] = useState<string>(panels?.length ? panels[0].label : '')
+  const [currentPanel, setCurrentPanel] = useState<string>(panels?.[0].label ?? '')
   const [arrowPosition, setArrowPosition] = useState<number>(0)
 
   function closeDropdown() {
@@ -27,8 +23,13 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
   }
 
   return (
-    <Box
-      sx={{ position: ['static', null, null, null, 'relative'], zIndex: 2 }}
+    <Flex
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        zIndex: 2,
+      }}
       onMouseLeave={() => closeDropdown()}
     >
       {((links && links.length > 0) || (panels && panels.length > 0)) && (
@@ -36,10 +37,9 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
           as="ul"
           sx={{
             listStyle: 'none',
-            columnGap: '40px',
+            columnGap: [4, null, null, '40px', '48px'],
             justifyContent: 'center',
-            px: '20px',
-            py: 1,
+            p: 0,
           }}
         >
           {panels?.map((panel) => (
@@ -74,6 +74,6 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
           panels={panels}
         />
       )}
-    </Box>
+    </Flex>
   )
 }

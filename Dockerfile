@@ -5,9 +5,13 @@ EXPOSE 3000
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
 COPY ./server/ /usr/src/app/server
+COPY ./scripts/get-config-types.js /usr/src/app/scripts/get-config-types.js
 COPY ./blockchain/abi/*.json /usr/src/app/blockchain/abi/
 
 WORKDIR /usr/src/app
+
+ARG CONFIG_URL=''
+ENV CONFIG_URL=$CONFIG_URL
 
 RUN yarn --no-progress --non-interactive --frozen-lockfile
 
@@ -16,6 +20,8 @@ ARG COMMIT_SHA='' \
   NOTIFICATIONS_HOST_GOERLI='' \
   AJNA_SUBGRAPH_URL='' \
   AJNA_SUBGRAPH_URL_GOERLI='' \
+  AJNA_SUBGRAPH_V2_URL='' \
+  AJNA_SUBGRAPH_V2_URL_GOERLI='' \
   MIXPANEL_ENV='' \
   MIXPANEL_KEY='' \
   ADROLL_ADV_ID='' \
@@ -38,6 +44,8 @@ ENV COMMIT_SHA=$COMMIT_SHA \
   NOTIFICATIONS_HOST_GOERLI=$NOTIFICATIONS_HOST_GOERLI \
   AJNA_SUBGRAPH_URL=$AJNA_SUBGRAPH_URL \
   AJNA_SUBGRAPH_URL_GOERLI=$AJNA_SUBGRAPH_URL_GOERLI \
+  AJNA_SUBGRAPH_V2_URL=$AJNA_SUBGRAPH_V2_URL \
+  AJNA_SUBGRAPH_V2_URL_GOERLI=$AJNA_SUBGRAPH_V2_URL_GOERLI \
   MIXPANEL_ENV=$MIXPANEL_ENV \
   MIXPANEL_KEY=$MIXPANEL_KEY \
   ADROLL_ADV_ID=$ADROLL_ADV_ID \

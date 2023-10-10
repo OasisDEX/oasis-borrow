@@ -1,30 +1,34 @@
-import { UsersWhoFollowVaults, VaultType } from '@prisma/client'
+import type { UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
-import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
-import { UserSettingsState } from 'features/userSettings/userSettings'
+import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { isEqual } from 'lodash'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
-import { GetCdpsArgs, GetCdpsResult } from './calls/getCdps'
-import { CallObservable } from './calls/observe'
-import { vatGem, vatUrns } from './calls/vat'
-import { MakerVaultType, VaultResolve } from './calls/vaultResolver'
-import { IlkData } from './ilks'
-import { OraclePriceData, OraclePriceDataArgs } from './prices'
+import type { GetCdpsArgs, GetCdpsResult } from './calls/getCdps'
+import type { CallObservable } from './calls/observe'
+import type { vatGem, vatUrns } from './calls/vat'
+import type { VaultResolve } from './calls/vaultResolver'
+import type { IlkData } from './ilks.types'
+import type { Context } from './network.types'
+import type { OraclePriceData, OraclePriceDataArgs } from './prices.types'
 import { buildPosition } from './vault.maths'
+import type {
+  CdpIdsResolver,
+  Vault,
+  VaultChange,
+  VaultWithType,
+  VaultWithValue,
+} from './vaults.types'
 
 BigNumber.config({
   POW_PRECISION: 100,
 })
-
-export interface VaultWithType extends Vault {
-  type: VaultType
-}
 
 export function fetchVaultsType(vaults: Vault[]): Observable<VaultWithType[]> {
   return checkMultipleVaultsFromApi$(
@@ -59,9 +63,6 @@ export function createStandardCdps$(
   )
 }
 
-interface CdpIdsResolver {
-  (address: string): Observable<BigNumber[]>
-}
 export function createVaults$(
   refreshInterval: Observable<number>,
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
@@ -117,7 +118,6 @@ export function createVaultsFromIds$(
   )
 }
 
-export type VaultWithValue<V extends VaultWithType> = V & { value: BigNumber }
 // the value of the position in USD.  collateral prices can come from different places
 // depending on the vault type.
 export function decorateVaultsWithValue$<V extends VaultWithType>(
@@ -162,46 +162,6 @@ export function decorateVaultsWithValue$<V extends VaultWithType>(
       )
     }),
   )
-}
-
-export interface Vault {
-  makerType: MakerVaultType
-  id: BigNumber
-  owner: string
-  controller?: string
-  token: string
-  ilk: string
-  address: string
-  lockedCollateral: BigNumber
-  unlockedCollateral: BigNumber
-  lockedCollateralUSD: BigNumber
-  lockedCollateralUSDAtNextPrice: BigNumber
-  backingCollateral: BigNumber
-  backingCollateralAtNextPrice: BigNumber
-  backingCollateralUSD: BigNumber
-  backingCollateralUSDAtNextPrice: BigNumber
-  freeCollateral: BigNumber
-  freeCollateralAtNextPrice: BigNumber
-  freeCollateralUSD: BigNumber
-  freeCollateralUSDAtNextPrice: BigNumber
-  debt: BigNumber
-  debtOffset: BigNumber
-  normalizedDebt: BigNumber
-  availableDebt: BigNumber
-  availableDebtAtNextPrice: BigNumber
-  collateralizationRatio: BigNumber
-  collateralizationRatioAtNextPrice: BigNumber
-  liquidationPrice: BigNumber
-  daiYieldFromLockedCollateral: BigNumber
-
-  atRiskLevelWarning: boolean
-  atRiskLevelDanger: boolean
-  underCollateralized: boolean
-
-  atRiskLevelWarningAtNextPrice: boolean
-  atRiskLevelDangerAtNextPrice: boolean
-  underCollateralizedAtNextPrice: boolean
-  chainId: number
 }
 
 export function createVault$(
@@ -273,11 +233,6 @@ export function createVault$(
       ),
     ),
   )
-}
-
-export interface VaultChange {
-  kind: 'vault'
-  vault: Vault
 }
 
 export function createVaultChange$(

@@ -1,4 +1,5 @@
-import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import type { NotificationChange } from 'features/notifications/notificationChange'
+import { NOTIFICATION_CHANGE } from 'features/notifications/notificationChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

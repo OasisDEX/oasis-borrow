@@ -1,4 +1,4 @@
-import { NextApiHandler } from 'next'
+import type { NextApiHandler } from 'next'
 import { config } from 'server/config'
 import * as z from 'zod'
 

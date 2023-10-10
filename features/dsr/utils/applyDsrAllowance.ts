@@ -1,5 +1,9 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
-import { AllowanceChanges, AllowanceState, StateDependencies } from 'features/allowance/allowance'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
+import type {
+  AllowanceChanges,
+  AllowanceState,
+  StateDependencies,
+} from 'features/allowance/allowance.types'
 
 export function applyDsrAllowanceChanges<
   S extends AllowanceState & StateDependencies & { isMintingSDai: boolean },

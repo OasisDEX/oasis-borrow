@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { Context } from 'blockchain/network'
-import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { Context } from 'blockchain/network.types'
+import { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { IRiskRatio } from '@oasisdex/dma-library'
 import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
@@ -12,8 +12,8 @@ import {
   StrategyTokenAllowance,
   StrategyTokenBalance,
 } from './base-aave-context'
-import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
-import { UserSettingsState } from 'features/userSettings/userSettings'
+import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
+import { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { ManageDebtActionsEnum } from './manage-debt-actions-enum'
 import { ManageCollateralActionsEnum } from './manage-collateral-actions-enum'
 

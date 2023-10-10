@@ -1,6 +1,6 @@
-import { Abi } from 'helpers/types'
-import Web3 from 'web3'
-import { AbiItem } from 'web3-utils'
+import type { Abi } from 'helpers/types/Abi.types'
+import type Web3 from 'web3'
+import type { AbiItem } from 'web3-utils'
 
 const argentABI: Abi[] = [
   {

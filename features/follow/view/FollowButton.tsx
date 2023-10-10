@@ -2,7 +2,8 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { theme } from 'theme'
-import { Box, Button, Card, Spinner, SxStyleProp, Text } from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui'
+import { Box, Button, Card, Spinner, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface FollowButtonProps {

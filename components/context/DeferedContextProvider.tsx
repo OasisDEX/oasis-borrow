@@ -1,5 +1,5 @@
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React, { useContext } from 'react'
 
 // usable in situations where ProductContext and other context is rendered simultanously:

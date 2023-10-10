@@ -1,20 +1,18 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import {
-  AaveV3SupportedNetwork,
-  getAaveV3ReserveConfigurationData,
-  getAaveV3ReserveData,
-} from 'blockchain/aave-v3'
+import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
+import { getAaveV3ReserveConfigurationData, getAaveV3ReserveData } from 'blockchain/aave-v3'
 import { ensureGivenTokensExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
-import { getTokenPrice, Tickers } from 'blockchain/prices'
+import { getTokenPrice } from 'blockchain/prices'
+import type { Tickers } from 'blockchain/prices.types'
 import dayjs from 'dayjs'
 import { wstethRiskRatio } from 'features/aave/constants'
 import { ProductHubProductType } from 'features/productHub/types'
 import { GraphQLClient } from 'graphql-request'
 import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
-import { ProductHubHandlerResponse } from 'handlers/product-hub/types'
+import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 import { memoize } from 'lodash'
@@ -173,6 +171,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           liquidity: liquidity.toString(),
           fee: fee.toString(),
           weeklyNetApy: flattenYields[`${label}-${network}`]?.toString(),
+          hasRewards: false,
         }
       }),
       warnings: [],

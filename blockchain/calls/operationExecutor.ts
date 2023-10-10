@@ -1,16 +1,16 @@
-import { TxMeta } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
+import type { TxMeta } from '@oasisdex/transactions'
+import type BigNumber from 'bignumber.js'
 import * as accountImplementation from 'blockchain/abi/account-implementation.json'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { contractDesc } from 'blockchain/networks'
 import { amountToWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
-import { AccountImplementation, DsProxy, OperationExecutor } from 'types/web3-v1-contracts'
+import type { AccountImplementation, DsProxy, OperationExecutor } from 'types/web3-v1-contracts'
 
-import { TxMetaKind } from './txMeta'
+import type { TxMetaKind } from './txMeta'
 
 export interface OperationExecutorTxMeta extends TxMeta {
   kind: TxMetaKind.operationExecutor

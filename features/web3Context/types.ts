@@ -1,8 +1,8 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
-import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
-import { ethers } from 'ethers'
-import Web3 from 'web3'
+import type { AbstractConnector } from '@web3-react/abstract-connector'
+import type BigNumber from 'bignumber.js'
+import type { NetworkIds } from 'blockchain/networks'
+import type { ethers } from 'ethers'
+import type Web3 from 'web3'
 
 export type ConnectionKind = 'injected' | 'network'
 

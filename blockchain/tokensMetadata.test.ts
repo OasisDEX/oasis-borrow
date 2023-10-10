@@ -1,4 +1,5 @@
-import { getToken, getTokens, tokens } from './tokensMetadata'
+import { getToken, getTokens } from './tokensMetadata'
+import { tokens } from './tokensMetadata.constants'
 
 const tokenKeys = [
   'symbol',

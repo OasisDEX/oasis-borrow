@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { tokens } from 'blockchain/tokensMetadata'
-import { PriceServiceResponse } from 'helpers/types'
+import { tokens } from 'blockchain/token-metadata-list/tokens'
+import type { PriceServiceResponse } from 'helpers/types'
 
 interface CoinPaprikaApiResponse {
   id: string

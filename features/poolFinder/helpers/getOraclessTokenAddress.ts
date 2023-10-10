@@ -1,5 +1,5 @@
 import { isAddress } from 'ethers/lib/utils'
-import { SearchTokensResponse } from 'features/poolFinder/types'
+import type { SearchTokensResponse } from 'features/poolFinder/types'
 
 interface GetOraclessTokenAddressParams {
   collateralToken: string

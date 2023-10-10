@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { UserReferralState } from 'features/referralOverview/user'
+import type { UserReferralState } from 'features/referralOverview/user.types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'

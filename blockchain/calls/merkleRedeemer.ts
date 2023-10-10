@@ -1,11 +1,11 @@
-import { BigNumber } from 'bignumber.js'
+import type { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { BytesLike } from 'ethers'
-import { MerkleRedeemer } from 'types/web3-v1-contracts'
+import type { BytesLike } from 'ethers'
+import type { MerkleRedeemer } from 'types/web3-v1-contracts'
 
-import { TransactionDef } from './callsHelpers'
-import { TxMetaKind } from './txMeta'
+import type { TransactionDef } from './callsHelpers'
+import type { TxMetaKind } from './txMeta'
 
 export interface CanClaimArgs {
   proof: Array<BytesLike>

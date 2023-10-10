@@ -3,7 +3,8 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
-import React, { FC } from 'react'
+import type { FC } from 'react'
+import React from 'react'
 import { Flex, Input, Label } from 'theme-ui'
 
 interface PoolFinderAddressInputProps {

@@ -9,7 +9,7 @@ import { ContentCardMultiple } from 'components/vault/detailsSection/ContentCard
 import { ContentCardNetAPY } from 'components/vault/detailsSection/ContentCardNetAPY'
 import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
 import { ContentFooterItemsEarn } from 'components/vault/detailsSection/ContentFooterItemsEarn'
-import { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault'
+import type { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box } from 'theme-ui'

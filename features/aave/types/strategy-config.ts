@@ -9,7 +9,7 @@ import { PositionId } from './position-id'
 import { BaseViewProps } from './base-aave-context'
 import { BaseAaveEvent } from './base-aave-event'
 import { ProductType } from './is-supported-product-type'
-import { Feature } from 'helpers/config'
+import { FeaturesEnum } from 'types/config'
 
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element
@@ -88,7 +88,7 @@ export interface IStrategyConfig {
   }
   type: ProductType
   protocol: AaveLendingProtocol | SparkLendingProtocol
-  featureToggle?: Feature
+  featureToggle?: FeaturesEnum
   defaultSlippage?: BigNumber
   executeTransactionWith: 'web3' | 'ethers'
   strategyType: StrategyType

@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
 import { MessageCard } from 'components/MessageCard'
-import { SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { StopLossAaveErrorMessage, StrategyInformationContainer } from 'features/aave/components'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/types'
@@ -14,11 +14,11 @@ import { curry } from 'ramda'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
+import type { ManageAaveStateProps } from './SidebarManageAaveVault'
 import {
   BalanceAfterClose,
   calculateMaxCollateralAmount,
   calculateMaxDebtAmount,
-  ManageAaveStateProps,
 } from './SidebarManageAaveVault'
 
 export function GetReviewingSidebarProps({

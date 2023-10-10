@@ -1,17 +1,17 @@
 import { BigNumber } from 'bignumber.js'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWad, amountToWei } from 'blockchain/utils'
-import { ExchangeAction } from 'features/exchange/exchange'
-import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+import type { ExchangeAction } from 'features/exchange/exchange'
+import type { CloseVaultTo } from 'features/multiply/manage/pipes/CloseVaultTo.types'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations.constants'
 import { one, zero } from 'helpers/zero'
-import {
+import type {
   DsProxy,
   DssGuniProxyActions,
   DssProxyActions,

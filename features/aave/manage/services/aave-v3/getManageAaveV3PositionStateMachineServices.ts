@@ -1,35 +1,38 @@
 import BigNumber from 'bignumber.js'
-import { createExecuteTransaction, DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
+import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
+import { createExecuteTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
-import { NetworkIds } from 'blockchain/networks'
-import { Tickers } from 'blockchain/prices'
-import { TokenBalances } from 'blockchain/tokens'
+import type { Context } from 'blockchain/network.types'
+import type { NetworkIds } from 'blockchain/networks'
+import type { Tickers } from 'blockchain/prices.types'
+import type { TokenBalances } from 'blockchain/tokens.types'
 import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
-import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
-import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
+import type { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
+import type { ManageAaveStateMachineServices } from 'features/aave/manage/state'
 import { getPricesFeed$ } from 'features/aave/services'
-import {
-  contextToEthersTransactions,
+import type {
   IStrategyConfig,
   IStrategyInfo,
   StrategyTokenAllowance,
   StrategyTokenBalance,
 } from 'features/aave/types'
-import { PositionId } from 'features/aave/types/position-id'
-import { AaveHistoryEvent } from 'features/ajna/history/types'
+import { contextToEthersTransactions } from 'features/aave/types'
+import type { PositionId } from 'features/aave/types/position-id'
+import type { AaveHistoryEvent } from 'features/ajna/history/types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
-import { UserSettingsState } from 'features/userSettings/userSettings'
+import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { allDefined } from 'helpers/allDefined'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { productToVaultType } from 'helpers/productToVaultType'
-import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
+import type { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
-import { combineLatest, Observable, of, throwError } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of, throwError } from 'rxjs'
 import { catchError, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
-import { EventObject, interpret } from 'xstate'
+import type { EventObject } from 'xstate'
+import { interpret } from 'xstate'
 
 export function getManageAaveV3PositionStateMachineServices(
   context$: Observable<Context>,

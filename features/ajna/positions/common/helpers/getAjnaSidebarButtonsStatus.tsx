@@ -1,4 +1,4 @@
-import {
+import type {
   AjnaFlow,
   AjnaFormAction,
   AjnaSidebarEditingStep,
@@ -77,11 +77,10 @@ export function getAjnaSidebarButtonsStatus({
         'generate-multiply',
         'deposit-earn',
       ].includes(action as string))
-  const isTextButtonHidden =
-    !(
-      (currentStep === 'transaction' && (!isTxStarted || isTxError)) ||
-      (isTransitionWaitingForApproval && !isTransitionInProgress)
-    ) && currentStep !== 'nft'
+  const isTextButtonHidden = !(
+    (currentStep === 'transaction' && (!isTxStarted || isTxError)) ||
+    (isTransitionWaitingForApproval && !isTransitionInProgress)
+  )
 
   return {
     isPrimaryButtonDisabled,

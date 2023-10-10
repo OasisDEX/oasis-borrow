@@ -1,5 +1,7 @@
-import { TriggerRecord } from 'features/automation/api/automationTriggersData'
-import { gql, GraphQLClient } from 'graphql-request'
+import type { GraphQLClient } from 'graphql-request'
+import { gql } from 'graphql-request'
+
+import type { TriggerRecord } from './automationTriggersData.types'
 
 const query = gql`
   query activeTriggersForVault($vaultId: BigFloat) {

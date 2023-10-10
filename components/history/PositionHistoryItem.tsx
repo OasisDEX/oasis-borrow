@@ -1,13 +1,18 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { DefinitionListItem } from 'components/DefinitionList'
 import { PositionHistoryItemDetails } from 'components/history/PositionHistoryItemDetails'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
-import { AaveHistoryEvent, AjnaBorrowerEvent, AjnaHistoryEvent } from 'features/ajna/history/types'
+import type { AaveHistoryEvent } from 'features/ajna/history/types'
+import type {
+  AjnaBorrowerEvent,
+  AjnaHistoryEvent,
+} from 'features/ajna/history/types/AjnaHistoryEvent.types'
 import { getHistoryEventLabel } from 'features/positionHistory/getHistoryEventLabel'
 import { useTranslation } from 'next-i18next'
-import React, { FC, useState } from 'react'
+import type { FC } from 'react'
+import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
 interface PositionHistoryItemProps {

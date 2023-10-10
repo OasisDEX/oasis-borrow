@@ -1,8 +1,9 @@
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
-import { AssetsTableBannerProps, AssetsTableRowData } from 'components/assetsTable/types'
+import type { AssetsTableBannerProps, AssetsTableRowData } from 'components/assetsTable/types'
 import { useTranslation } from 'next-i18next'
-import React, { FC } from 'react'
+import type { FC } from 'react'
+import React from 'react'
 
 interface ProductHubTableControllerProps {
   banner?: AssetsTableBannerProps

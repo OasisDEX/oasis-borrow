@@ -1,17 +1,13 @@
 import { useAutomationContext } from 'components/context'
-import {
-  getAvailableAutomation,
-  getShouldRemoveAllowance,
-} from 'features/automation/common/helpers'
-import {
-  AUTOMATION_CHANGE_FEATURE,
-  AutomationChangeFeature,
-} from 'features/automation/common/state/automationFeatureChange'
+import { getAvailableAutomation } from 'features/automation/common/helpers/getAvailableAutomation'
+import { getShouldRemoveAllowance } from 'features/automation/common/helpers/getShouldRemoveAllowance'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
+import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoSellFormControl } from 'features/automation/protection/autoSell/controls/AutoSellFormControl'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { StopLossFormControl } from 'features/automation/protection/stopLoss/controls/StopLossFormControl'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { uiChanges } from 'helpers/uiChanges'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'

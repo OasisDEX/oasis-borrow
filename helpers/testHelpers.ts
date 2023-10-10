@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 
 export function getStateUnpacker<D>(o$: Observable<D>): () => D {
   let r: D

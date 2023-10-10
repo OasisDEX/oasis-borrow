@@ -1,14 +1,13 @@
-import { NetworkConfigHexId } from 'blockchain/networks'
+import type { NetworkConfigHexId } from 'blockchain/networks'
 import { useConnection, useWalletManagement } from 'features/web3OnBoard'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
-import {
-  SidebarSectionFooterButton,
-  SidebarSectionFooterButtonProps,
-} from './SidebarSectionFooterButton'
-import { SidebarSectionStatus, SidebarSectionStatusProps } from './SidebarSectionStatus'
+import type { SidebarSectionFooterButtonProps } from './SidebarSectionFooterButton'
+import { SidebarSectionFooterButton } from './SidebarSectionFooterButton'
+import type { SidebarSectionStatusProps } from './SidebarSectionStatus'
+import { SidebarSectionStatus } from './SidebarSectionStatus'
 
 export type SidebarSectionFooterButtonSettings = Omit<SidebarSectionFooterButtonProps, 'variant'>
 

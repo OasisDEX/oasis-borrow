@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { McdOsm } from 'types/web3-v1-contracts'
+import type { McdOsm } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
 
-import { CallDef } from './callsHelpers'
+import type { CallDef } from './callsHelpers'
 
 export const pipZzz: CallDef<string, BigNumber> = {
   call: (token, { contract, chainId }) =>

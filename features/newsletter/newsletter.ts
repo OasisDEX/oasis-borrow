@@ -1,10 +1,13 @@
 import { EMAIL_REGEX } from 'helpers/constants'
-import { applyChange, Change, Changes } from 'helpers/form'
+import type { Change, Changes } from 'helpers/form'
+import { applyChange } from 'helpers/form'
 import { curry } from 'lodash'
-import { merge, Observable, Subject } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { merge, Subject } from 'rxjs'
 import { map, scan, shareReplay, startWith } from 'rxjs/operators'
 
-import { newsletterApi$, NewsletterResponseMessage } from './newsletterApi'
+import type { NewsletterResponseMessage } from './newsletterApi'
+import { newsletterApi$ } from './newsletterApi'
 
 export type NewsletterStage = 'editing' | 'inProgress' | 'success' | 'error'
 

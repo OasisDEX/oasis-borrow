@@ -1,11 +1,12 @@
-import { TranslateStringType } from 'helpers/translateStringType'
+import type { TranslateStringType } from 'helpers/translateStringType'
 import { useHash } from 'helpers/useHash'
 import React, { useEffect } from 'react'
 import ReactSelect from 'react-select'
 import { Box, Flex, Grid } from 'theme-ui'
 
 import { reactSelectCustomComponents } from './reactSelectCustomComponents'
-import { Tab, TabVariant } from './Tab'
+import type { TabVariant } from './Tab'
+import { Tab } from './Tab'
 import { VaultTabTag } from './vault/VaultTabTag'
 
 export type TabSection = {

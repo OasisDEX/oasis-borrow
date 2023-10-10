@@ -5,13 +5,18 @@ import { CreateDPMAccountViewConsumed } from 'features/stateMachines/dpmAccount/
 import { useConnection } from 'features/web3OnBoard'
 import { allDefined } from 'helpers/allDefined'
 import { callBackIfDefined } from 'helpers/callBackIfDefined'
-import { useFlowState, UseFlowStateCBParamsType, UseFlowStateCBType } from 'helpers/useFlowState'
+import type {
+  useFlowState,
+  UseFlowStateCBParamsType,
+  UseFlowStateCBType,
+} from 'helpers/useFlowState'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo } from 'react'
 import { Grid, Text } from 'theme-ui'
 
-import { SidebarSection, SidebarSectionProps } from './sidebar/SidebarSection'
-import { SidebarSectionFooterButtonSettings } from './sidebar/SidebarSectionFooter'
+import type { SidebarSectionProps } from './sidebar/SidebarSection'
+import { SidebarSection } from './sidebar/SidebarSection'
+import type { SidebarSectionFooterButtonSettings } from './sidebar/SidebarSectionFooter'
 
 export type CreateDPMAccountViewProps = {
   noConnectionContent?: JSX.Element

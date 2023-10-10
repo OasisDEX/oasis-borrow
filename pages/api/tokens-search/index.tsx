@@ -1,5 +1,5 @@
 import { get } from 'handlers/tokens-search/get'
-import { NextApiHandler } from 'next'
+import type { NextApiHandler } from 'next'
 
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {

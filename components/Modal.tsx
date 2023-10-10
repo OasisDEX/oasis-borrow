@@ -3,12 +3,14 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { useSharedUI } from 'components/SharedUIProvider'
 import { useWalletManagement } from 'features/web3OnBoard'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { ModalProps } from 'helpers/modalHook'
-import { WithChildren } from 'helpers/types'
+import type { ModalProps } from 'helpers/modalHook'
+import type { WithChildren } from 'helpers/types/With.types'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { TRANSITIONS } from 'theme'
+import type { SxStyleProp } from 'theme-ui'
 import {
   Box,
   Button,
@@ -19,7 +21,6 @@ import {
   Grid,
   Heading,
   IconButton,
-  SxStyleProp,
   Text,
 } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'

@@ -1,4 +1,5 @@
-import React, { FC, ReactNode } from 'react'
+import type { FC, ReactNode } from 'react'
+import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
 export interface DetailsSectionContentSimpleModalProps {

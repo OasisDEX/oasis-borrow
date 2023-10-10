@@ -1,22 +1,17 @@
 import { CommandContractType, encodeTriggerDataByType, TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
-import {
+import type {
   AutomationBaseTriggerData,
   AutomationBotAddTriggerData,
-} from 'blockchain/calls/automationBot'
+} from 'blockchain/calls/automationBot.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TriggersData } from 'features/automation/api/automationTriggersData'
-import { getTriggersByType, TriggerDataType } from 'features/automation/common/helpers'
+import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
+import { getTriggersByType } from 'features/automation/common/helpers/getTriggersByType'
+import type { TriggerDataType } from 'features/automation/common/TriggerDataType'
 import { maxCoverage } from 'features/automation/protection/stopLoss/constants'
-import { zero } from 'helpers/zero'
 
-export interface StopLossTriggerData {
-  isStopLossEnabled: boolean
-  stopLossLevel: BigNumber
-  isToCollateral: boolean
-  triggerId: BigNumber
-  executionParams: string
-}
+import { defaultStopLossData } from './stopLossTriggerData.constants'
+import type { StopLossTriggerData } from './stopLossTriggerData.types'
 
 function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataType[]) {
   const mappedStopLossTriggers = stopLossTriggersData.map((trigger) => {
@@ -27,18 +22,23 @@ function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataTy
     const isAutomationV2Trigger = [
       TriggerType.AaveStopLossToDebtV2,
       TriggerType.AaveStopLossToCollateralV2,
+      TriggerType.SparkStopLossToDebtV2,
+      TriggerType.SparkStopLossToCollateralV2,
     ].includes(triggerTypeAsNumber)
 
     const resolvedDiv = isAutomationV2Trigger ? 10 ** 4 : 100
+
+    const isToCollateral =
+      triggerTypeAsNumber === TriggerType.StopLossToCollateral ||
+      triggerTypeAsNumber === TriggerType.AaveStopLossToCollateralV2 ||
+      triggerTypeAsNumber === TriggerType.SparkStopLossToCollateralV2
 
     return {
       triggerId: new BigNumber(trigger.triggerId),
       isStopLossEnabled: true,
       // here SL is in the following format 1.9 -> 190%, 0.7 -> 70%
       stopLossLevel: new BigNumber((ltv || collRatio).toString()).div(resolvedDiv),
-      isToCollateral:
-        triggerTypeAsNumber === TriggerType.StopLossToCollateral ||
-        triggerTypeAsNumber === TriggerType.AaveStopLossToCollateralV2,
+      isToCollateral,
       executionParams: trigger.executionParams,
       triggerType: triggerTypeAsNumber,
     }
@@ -47,21 +47,15 @@ function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataTy
   return mappedStopLossTriggers.reduce((acc, obj) => {
     if (
       obj.triggerType === TriggerType.AaveStopLossToDebtV2 ||
-      obj.triggerType === TriggerType.AaveStopLossToCollateralV2
+      obj.triggerType === TriggerType.AaveStopLossToCollateralV2 ||
+      obj.triggerType === TriggerType.SparkStopLossToDebtV2 ||
+      obj.triggerType === TriggerType.SparkStopLossToCollateralV2
     ) {
       return acc.stopLossLevel.lt(obj.stopLossLevel) ? acc : obj
     }
     return acc.stopLossLevel.gt(obj.stopLossLevel) ? acc : obj
   })
 }
-
-export const defaultStopLossData = {
-  isStopLossEnabled: false,
-  stopLossLevel: zero,
-  triggerId: zero,
-  isToCollateral: false,
-  executionParams: '0x',
-} as StopLossTriggerData
 
 export function extractStopLossData(
   data: TriggersData,
@@ -76,6 +70,8 @@ export function extractStopLossData(
         TriggerType.StopLossToDai,
         TriggerType.AaveStopLossToDebtV2,
         TriggerType.AaveStopLossToCollateralV2,
+        TriggerType.SparkStopLossToDebtV2,
+        TriggerType.SparkStopLossToCollateralV2,
       ],
       data.chainId,
     )
@@ -135,6 +131,7 @@ export function prepareAddStopLossTriggerData({
 }
 
 export function prepareStopLossTriggerDataV2(
+  commandContractType: CommandContractType,
   owner: string,
   triggerType: TriggerType,
   isCloseToCollateral: boolean,
@@ -142,7 +139,7 @@ export function prepareStopLossTriggerDataV2(
   debtTokenAddress: string,
   tokenAddress: string,
 ) {
-  const triggerData = encodeTriggerDataByType(CommandContractType.AaveStopLossCommandV2, [
+  const triggerData = encodeTriggerDataByType(commandContractType, [
     owner, // proxy
     triggerType, // triggerType
     maxCoverage, // maxCoverage, equals to 1500 USDC

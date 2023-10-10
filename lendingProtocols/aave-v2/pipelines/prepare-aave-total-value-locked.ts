@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { AaveV2ReserveDataReply } from 'blockchain/aave'
-import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
-import { combineLatest, Observable } from 'rxjs'
+import type { AaveV2ReserveDataReply } from 'blockchain/aave'
+import type { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
+import type { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export type PreparedAaveTotalValueLocked = {

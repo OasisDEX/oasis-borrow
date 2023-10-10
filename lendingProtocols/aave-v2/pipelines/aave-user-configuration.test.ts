@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 
-import { AaveUserConfigurationResult, createAaveUserConfiguration } from './aave-user-configuration'
+import type { AaveUserConfigurationResult } from './aave-user-configuration'
+import { createAaveUserConfiguration } from './aave-user-configuration'
 
 // userConfig -> https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool#getuserconfiguration
 // reservesList -> https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool#getreserveslist

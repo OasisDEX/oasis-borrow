@@ -3,10 +3,10 @@ import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { amountFromRad, amountFromRay } from 'blockchain/utils'
-import { Vat } from 'types/web3-v1-contracts'
+import type { Vat } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
 
-import { CallDef } from './callsHelpers'
+import type { CallDef } from './callsHelpers'
 
 export interface VatUrnsArgs {
   ilk: string

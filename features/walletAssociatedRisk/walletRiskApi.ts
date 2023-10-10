@@ -1,5 +1,5 @@
 import { of } from 'ramda'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map } from 'rxjs/operators'
 

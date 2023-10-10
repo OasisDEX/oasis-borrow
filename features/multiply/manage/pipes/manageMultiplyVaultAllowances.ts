@@ -1,61 +1,7 @@
-import { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
-
-export const allowanceDefaults: Partial<ManageMultiplyVaultState> = {
-  collateralAllowanceAmount: maxUint256,
-  daiAllowanceAmount: maxUint256,
-}
-
-interface DaiAllowanceChange {
-  kind: 'daiAllowance'
-  daiAllowanceAmount?: BigNumber
-}
-
-interface DaiAllowanceUnlimitedChange {
-  kind: 'daiAllowanceUnlimited'
-}
-
-interface DaiAllowancePaybackChange {
-  kind: 'daiAllowanceAsPaybackAmount'
-}
-
-interface DaiAllowanceDaiAmountChange {
-  kind: 'daiAllowanceAsDepositDaiAmount'
-}
-
-interface DaiAllowanceReset {
-  kind: 'daiAllowanceReset'
-}
-
-interface CollateralAllowanceChange {
-  kind: 'collateralAllowance'
-  collateralAllowanceAmount?: BigNumber
-}
-
-interface CollateralAllowanceUnlimitedChange {
-  kind: 'collateralAllowanceUnlimited'
-}
-
-interface CollateralAllowanceDepositChange {
-  kind: 'collateralAllowanceAsDepositAmount'
-}
-
-interface CollateralAllowanceReset {
-  kind: 'collateralAllowanceReset'
-}
-
-export type ManageVaultAllowanceChange =
-  | DaiAllowanceChange
-  | DaiAllowanceUnlimitedChange
-  | DaiAllowancePaybackChange
-  | DaiAllowanceDaiAmountChange
-  | DaiAllowanceReset
-  | CollateralAllowanceChange
-  | CollateralAllowanceUnlimitedChange
-  | CollateralAllowanceDepositChange
-  | CollateralAllowanceReset
+import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
+import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
 
 export function applyManageVaultAllowance(
   change: ManageMultiplyVaultChange,

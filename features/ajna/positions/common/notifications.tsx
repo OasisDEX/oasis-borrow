@@ -1,34 +1,35 @@
-import { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
-import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AppLink } from 'components/Links'
 import { LUPPercentageOffset } from 'features/ajna/common/consts'
-import {
+import type {
   AjnaFlow,
   AjnaGenericPosition,
   AjnaProduct,
   AjnaUpdateState,
 } from 'features/ajna/common/types'
-import {
+import type {
   AjnaBorrowFormAction,
   AjnaBorrowFormState,
-} from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
-import {
+} from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
+import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
   AjnaPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
-import {
+import type {
   AjnaEarnFormAction,
   AjnaEarnFormState,
-} from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
-import {
+} from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
+import type {
   AjnaMultiplyFormAction,
   AjnaMultiplyFormState,
-} from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+} from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one, zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
-import React, { Dispatch, FC } from 'react'
+import type { Dispatch, FC } from 'react'
+import React from 'react'
 
 interface AjnaLiquidationNotificationWithLinkProps {
   translationKey: string

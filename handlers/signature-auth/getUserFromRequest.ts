@@ -1,7 +1,7 @@
-import { NextApiRequest } from 'next'
+import type { NextApiRequest } from 'next'
 import { assert } from 'ts-essentials'
 
-import { UserJwtPayload } from './signin'
+import type { UserJwtPayload } from './signin'
 
 export function getUserFromRequest(req: NextApiRequest): UserJwtPayload {
   const user = (req as any).auth as UserJwtPayload

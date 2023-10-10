@@ -1,15 +1,19 @@
-import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
+import type { TxMeta, TxState } from '@oasisdex/transactions'
+import { TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
-import { BigNumber } from 'bignumber.js'
-import { GasPriceParams, Tickers } from 'blockchain/prices'
+import type { BigNumber } from 'bignumber.js'
+import type { GasPriceParams, Tickers } from 'blockchain/prices.types'
 import { MODAL_CONTAINER_TREZOR_METAMASK_EIP1559 } from 'components/Modal'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
-import { OmitProperties, ValueOf } from 'ts-essentials'
+import type { OmitProperties, ValueOf } from 'ts-essentials'
 
-import { GasEstimationStatus, HasGasEstimation, TxHelpers, TxHelpers$ } from './context/types'
-import { ErrorTxState } from '@oasisdex/transactions/lib/src/types'
+import type { TxHelpers, TxHelpers$ } from './context/TxHelpers'
+import type { HasGasEstimation } from './types/HasGasEstimation.types'
+import { GasEstimationStatus } from './types/HasGasEstimation.types'
+import type { ErrorTxState } from '@oasisdex/transactions/lib/src/types'
 
 export enum FormStage {
   idle = 'idle',

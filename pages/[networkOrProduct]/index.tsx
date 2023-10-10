@@ -1,6 +1,6 @@
 import { ProductHubProductType } from 'features/productHub/types'
 import ProductHubRouteHandler from 'features/productHub/views/ProductHubRouteHandler'
-import { GetStaticPaths, GetStaticProps } from 'next'
+import type { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export default ProductHubRouteHandler

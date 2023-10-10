@@ -1,7 +1,8 @@
-import BigNumber from 'bignumber.js'
-import { GetEModeCategoryDataParameters, GetEModeCategoryDataResult } from 'blockchain/aave-v3'
-import { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
-import { combineLatest, Observable, of } from 'rxjs'
+import type BigNumber from 'bignumber.js'
+import type { GetEModeCategoryDataParameters, GetEModeCategoryDataResult } from 'blockchain/aave-v3'
+import type { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 export type GetReserveConfigurationDataWithEModeParameters = {

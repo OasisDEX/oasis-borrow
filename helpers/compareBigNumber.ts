@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 
 export function compareBigNumber(a: BigNumber | undefined, b: BigNumber | undefined) {
   if (a === undefined && b === undefined) {

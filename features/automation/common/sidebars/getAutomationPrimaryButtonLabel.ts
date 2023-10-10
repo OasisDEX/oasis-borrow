@@ -1,5 +1,5 @@
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
-import {
+import type {
   AutomationSidebarCopiesParams,
   SidebarAutomationFlow,
 } from 'features/automation/common/types'

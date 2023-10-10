@@ -8,20 +8,18 @@ import {
   DebtInput,
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
-import { IStrategyConfig, ProductType, ProxyType, StrategyType } from 'features/aave/types'
+import type { IStrategyConfig } from 'features/aave/types'
+import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
-import { Feature, getLocalAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
+import { FeaturesEnum } from 'types/config'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
 import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
-import {
-  hasBorrowProductType,
-  hasEarnProductType,
-  hasMultiplyProductType,
-  TokenPairConfig,
-} from './common'
+import type { TokenPairConfig } from './common'
+import { hasBorrowProductType, hasEarnProductType, hasMultiplyProductType } from './common'
 
 const availableTokenPairs: TokenPairConfig[] = [
   {
@@ -30,7 +28,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -43,7 +41,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -55,7 +53,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -68,7 +66,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -80,7 +78,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -93,7 +91,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -105,7 +103,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -118,7 +116,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -130,7 +128,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -143,7 +141,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -155,7 +153,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -168,7 +166,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -180,7 +178,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -193,7 +191,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -205,7 +203,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -218,7 +216,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -230,20 +228,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: Feature.AaveV3ArbitrumEarn,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumEarn,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-earn',
-            featureToggle: Feature.AaveV3ArbitrumEarn,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumEarn,
           },
         ],
       },
@@ -255,20 +253,20 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Earn]: {
-        featureToggle: Feature.AaveV3ArbitrumEarn,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumEarn,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-earn',
-            featureToggle: Feature.AaveV3ArbitrumEarn,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumEarn,
           },
         ],
       },
@@ -280,7 +278,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -293,7 +291,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -305,7 +303,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -318,7 +316,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -330,7 +328,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -343,7 +341,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },
@@ -355,7 +353,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Borrow]: {
-        featureToggle: Feature.AaveV3ArbitrumBorrow,
+        featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
@@ -368,7 +366,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
-            featureToggle: Feature.AaveV3ArbitrumBorrow,
+            featureToggle: FeaturesEnum.AaveV3ArbitrumBorrow,
           },
         ],
       },

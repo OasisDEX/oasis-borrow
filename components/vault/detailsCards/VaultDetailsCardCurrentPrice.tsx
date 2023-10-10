@@ -4,12 +4,14 @@ import {
   VaultDetailsCard,
   VaultDetailsCardModal,
 } from 'components/vault/VaultDetails'
-import { PriceInfo } from 'features/shared/priceInfo'
+import type { PriceInfo } from 'features/shared/priceInfo.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { ModalProps, useModal } from 'helpers/modalHook'
+import type { ModalProps } from 'helpers/modalHook'
+import { useModal } from 'helpers/modalHook'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import React from 'react'
 import { Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export function VaultDetailsCardCurrentPriceModal({

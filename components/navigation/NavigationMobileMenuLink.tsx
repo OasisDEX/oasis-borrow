@@ -1,6 +1,6 @@
 import { AppLink } from 'components/Links'
 import { mobileLinkSx } from 'components/navigation/common'
-import { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
+import type { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
 import React from 'react'
 import { Box } from 'theme-ui'
 
@@ -14,7 +14,7 @@ export function NavigationMobileMenuLink({ label, link }: NavigationMobileMenuLi
           <AppLink
             href={link}
             sx={{
-              ...mobileLinkSx,
+              ...mobileLinkSx(false),
             }}
           >
             {label}

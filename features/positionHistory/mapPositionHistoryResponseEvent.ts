@@ -1,7 +1,7 @@
 import { ajnaBuckets } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
-import { PositionHistoryResponse } from 'features/positionHistory/types'
+import type { PositionHistoryResponse } from 'features/positionHistory/types'
 import { zero } from 'helpers/zero'
 
 export const mapPositionHistoryResponseEvent = (event: PositionHistoryResponse) => ({

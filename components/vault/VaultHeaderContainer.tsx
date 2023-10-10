@@ -1,5 +1,6 @@
-import { PriceInfo } from 'features/shared/priceInfo'
-import React, { ReactNode } from 'react'
+import type { PriceInfo } from 'features/shared/priceInfo.types'
+import type { ReactNode } from 'react'
+import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
 import { DefaultVaultHeadline } from './DefaultVaultHeadline'

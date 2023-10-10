@@ -1,4 +1,4 @@
-import { AutomationEventIds, Pages } from 'analytics/analytics'
+import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
 import { useAutomationContext } from 'components/context'
 import { CloseVaultToEnum, MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/common/consts'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
@@ -9,12 +9,10 @@ import {
   checkIfIsEditingStopLoss,
 } from 'features/automation/protection/stopLoss/helpers'
 import { SidebarSetupStopLoss } from 'features/automation/protection/stopLoss/sidebars/SidebarSetupStopLoss'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange.constants'
+import type { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { getStopLossTxHandlers } from 'features/automation/protection/stopLoss/state/stopLossTxHandlers'
-import { TxHelpers } from 'helpers/context/types'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -92,11 +90,11 @@ export function StopLossFormControl({
       txHelpers={txHelpers}
       analytics={{
         id: {
-          add: AutomationEventIds.AddStopLoss,
-          edit: AutomationEventIds.EditStopLoss,
-          remove: AutomationEventIds.RemoveStopLoss,
+          add: MixpanelAutomationEventIds.AddStopLoss,
+          edit: MixpanelAutomationEventIds.EditStopLoss,
+          remove: MixpanelAutomationEventIds.RemoveStopLoss,
         },
-        page: Pages.StopLoss,
+        page: MixpanelPages.StopLoss,
         additionalParams: {
           triggerValue: stopLossState.stopLossLevel.toString(),
           closeTo: stopLossState.collateralActive

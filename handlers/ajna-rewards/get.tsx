@@ -1,5 +1,5 @@
 import { getAjnaRewardsData } from 'handlers/ajna-rewards/getAjnaRewardsData'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 export async function get(req: NextApiRequest, res: NextApiResponse) {
   const response = await getAjnaRewardsData(req.query)

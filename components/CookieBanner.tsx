@@ -1,4 +1,6 @@
-import { COOKIE_NAMES, CookieName, manageCookie } from 'analytics/common'
+import type { CookieName } from 'analytics/common'
+import { COOKIE_NAMES } from 'analytics/common'
+import { manageCookie } from 'analytics/manageCookie'
 import { Checkbox } from 'components/Checkbox'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { AppLink } from 'components/Links'
@@ -7,19 +9,13 @@ import { Trans, useTranslation } from 'next-i18next'
 import React, { Fragment, useState } from 'react'
 import { Box, Button, Card, Container, Flex, Grid, Text } from 'theme-ui'
 
-type SelectedCookies = Record<CookieName, boolean>
+import type { CookieBannerProps, SavedSettings, SelectedCookies } from './CookieBanner.types'
 
-export type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies; version: string }
 export function initSelectedCookies(defaultValue: boolean): SelectedCookies {
   return COOKIE_NAMES.reduce((acc, cookieName) => ({ ...acc, [cookieName]: defaultValue }), {})
 }
 
-interface CookieBannerProps {
-  value: SavedSettings
-  setValue: (data: SavedSettings) => void
-}
-
-export function CookieBanner({ value, setValue }: CookieBannerProps) {
+export default function CookieBanner({ value, setValue }: CookieBannerProps) {
   const { t } = useTranslation()
 
   const [showSettings, setShowSettings] = useState(false)

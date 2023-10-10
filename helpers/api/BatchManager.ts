@@ -1,4 +1,4 @@
-import { Network } from '@ethersproject/networks/src.ts/types'
+import type { Network } from '@ethersproject/networks/src.ts/types'
 import crypto from 'crypto'
 import { fetchJson } from 'ethers/lib/utils'
 

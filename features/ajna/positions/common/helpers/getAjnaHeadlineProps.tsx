@@ -1,5 +1,5 @@
 import { NetworkNames } from 'blockchain/networks'
-import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
+import type { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'

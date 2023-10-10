@@ -1,18 +1,21 @@
-import BigNumber from 'bignumber.js'
-import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
-import { Observable } from 'rxjs'
-import { LiquidationCallEvent as AaveV2LiquidationCallEvent } from 'types/ethers-contracts/AaveV2LendingPool'
-import { LiquidationCallEvent as AaveV3LiquidationCallEvent } from 'types/ethers-contracts/AaveV3Pool'
-import { LiquidationCallEvent as SparkV3LiquidationCallEvent } from 'types/ethers-contracts/SparkV3Pool'
+import type BigNumber from 'bignumber.js'
+import type { LendingProtocol } from 'lendingProtocols/LendingProtocol'
+import type { Observable } from 'rxjs'
+import type { LiquidationCallEvent as AaveV2LiquidationCallEvent } from 'types/ethers-contracts/AaveV2LendingPool'
+import type { LiquidationCallEvent as AaveV3LiquidationCallEvent } from 'types/ethers-contracts/AaveV3Pool'
+import type { LiquidationCallEvent as SparkV3LiquidationCallEvent } from 'types/ethers-contracts/SparkV3Pool'
 
-import { AaveLikeProtocolData } from './aave-like-protocol-data'
-import {
+import type { AaveLikeProtocolData } from './aave-like-protocol-data'
+import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveConfigurationDataParams,
 } from './aave-like-reserve-configuration-data'
-import { AaveLikeReserveData } from './aave-like-reserve-data'
-import { AaveLikeUserAccountData, AaveLikeUserAccountDataArgs } from './aave-like-user-account-data'
-import { AaveLikeUserConfigurationResults } from './aave-like-user-configuration'
+import type { AaveLikeReserveData } from './aave-like-reserve-data'
+import type {
+  AaveLikeUserAccountData,
+  AaveLikeUserAccountDataArgs,
+} from './aave-like-user-account-data'
+import type { AaveLikeUserConfigurationResults } from './aave-like-user-configuration'
 
 export interface AaveLikeServices {
   aaveLikeProtocolData$: (

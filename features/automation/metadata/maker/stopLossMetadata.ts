@@ -1,10 +1,8 @@
 /* eslint-disable func-style */
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
-import {
-  AutomationBotRemoveTriggersData,
-  removeAutomationBotAggregatorTriggers,
-} from 'blockchain/calls/automationBotAggregator'
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot.constants'
+import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator.constants'
+import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import {
@@ -12,7 +10,7 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
-import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
+import { getShouldRemoveAllowance } from 'features/automation/common/helpers/getShouldRemoveAllowance'
 import {
   hasInsufficientEthFundsForTx,
   hasMoreDebtThanMaxForStopLoss,
@@ -21,11 +19,8 @@ import {
   isStopLossTriggerCloseToConstantMultipleSellTrigger,
   isStopLossTriggerHigherThanAutoBuyTarget,
 } from 'features/automation/common/validation/validators'
-import {
-  ContextWithoutMetadata,
-  StopLossDetailCards,
-  StopLossMetadata,
-} from 'features/automation/metadata/types'
+import type { ContextWithoutMetadata, StopLossMetadata } from 'features/automation/metadata/types'
+import { StopLossDetailCards } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
   getDynamicStopLossPrice,
@@ -33,9 +28,9 @@ import {
   getSliderPercentageFill,
   getStartingSlRatio,
 } from 'features/automation/protection/stopLoss/helpers'
-import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'
 import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { getAppConfig } from 'helpers/config'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatPercent } from 'helpers/formatters/format'
 
 export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
@@ -116,7 +111,7 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
     triggersId: [triggerId.toNumber()],
     kind: TxMetaKind.removeTriggers,
   }
-  const { StopLossWrite: stopLossWriteEnabled } = getAppConfig('features')
+  const { StopLossWrite: stopLossWriteEnabled } = getLocalAppConfig('features')
 
   return {
     callbacks: {},

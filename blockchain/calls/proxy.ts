@@ -1,10 +1,11 @@
 import { nullAddress } from '@oasisdex/utils'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { Context } from 'blockchain/network'
+import type { Context } from 'blockchain/network.types'
 import { contractDesc, NetworkIds } from 'blockchain/networks'
 import { isEqual } from 'lodash'
-import { combineLatest, defer, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, defer, of } from 'rxjs'
 import {
   catchError,
   distinctUntilChanged,
@@ -13,10 +14,11 @@ import {
   shareReplay,
   switchMap,
 } from 'rxjs/operators'
-import { DsProxy, DsProxyRegistry } from 'types/web3-v1-contracts'
+import type { DsProxy, DsProxyRegistry } from 'types/web3-v1-contracts'
 
-import { call, CallDef, TransactionDef } from './callsHelpers'
-import { TxMetaKind } from './txMeta'
+import type { CallDef, TransactionDef } from './callsHelpers'
+import { call } from './callsHelpers'
+import type { TxMetaKind } from './txMeta'
 
 export const proxyAddress: CallDef<string, string> = {
   call: (_, { chainId, contract }) =>

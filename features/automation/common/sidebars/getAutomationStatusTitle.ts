@@ -1,6 +1,6 @@
-import { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
+import type { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
-import {
+import type {
   AutomationSidebarStatusParams,
   SidebarAutomationFlow,
 } from 'features/automation/common/types'

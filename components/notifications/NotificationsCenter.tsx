@@ -1,11 +1,13 @@
-import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelCommonAnalyticsSections, MixpanelNotificationsEventIds } from 'analytics/types'
 import { useNotificationSocket } from 'components/context'
 import { NotificationCardsWrapper } from 'components/notifications/NotificationCardsWrapper'
 import { NotificationsCenterContent } from 'components/notifications/NotificationsCenterContent'
 import { NotificationsCenterHeader } from 'components/notifications/NotificationsCenterHeader'
 import { NotificationsError } from 'components/notifications/NotificationsError'
 import { NotificationPreferenceCardWrapper } from 'components/notifications/NotificationsPrefrenceCardWrapper'
-import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import type { NotificationChange } from 'features/notifications/notificationChange'
+import { NOTIFICATION_CHANGE } from 'features/notifications/notificationChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { throttle } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -24,8 +26,8 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
 
   const handleScroll = throttle(() => {
     trackingEvents.notifications.scroll(
-      NotificationsEventIds.ScrollNotificationCenter,
-      CommonAnalyticsSections.NotificationCenter,
+      MixpanelNotificationsEventIds.ScrollNotificationCenter,
+      MixpanelCommonAnalyticsSections.NotificationCenter,
       analyticsData,
     )
   }, 500)
@@ -35,8 +37,8 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
       <NotificationsCenterHeader
         onButtonClick={() => {
           trackingEvents.notifications.buttonClick(
-            NotificationsEventIds.NotificationPreferences,
-            CommonAnalyticsSections.NotificationCenter,
+            MixpanelNotificationsEventIds.NotificationPreferences,
+            MixpanelCommonAnalyticsSections.NotificationCenter,
             analyticsData,
           )
           setShowPrefencesTab(!showPreferencesTab)

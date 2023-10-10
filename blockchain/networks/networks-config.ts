@@ -11,10 +11,10 @@ import {
   polygonMumbaiRpc,
 } from 'config/rpcConfig'
 import { mainnetCacheUrl } from 'config/runtimeConfig'
-import { ethers } from 'ethers'
-import { ContractDesc } from 'features/web3Context'
+import type { ethers } from 'ethers'
+import type { ContractDesc } from 'features/web3Context'
 import { GraphQLClient } from 'graphql-request'
-import { Abi } from 'helpers/types'
+import type { Abi } from 'helpers/types/Abi.types'
 import { keyBy, memoize } from 'lodash'
 import { env } from 'process'
 import arbitrumMainnetBadge from 'public/static/img/network_icons/arbitrum_badge_mainnet.svg'
@@ -28,9 +28,14 @@ import polygonMainnetIcon from 'public/static/img/network_icons/polygon_mainnet.
 
 import { NetworkHexIds } from './network-hex-ids'
 import { NetworkIds } from './network-ids'
-import { NetworkLabelType, NetworkNames } from './network-names'
+import type { NetworkLabelType } from './network-names'
+import { NetworkNames } from './network-names'
 
 export type NetworkConfigHexId = `0x${number | string}`
+
+const ethereumMainnetGradient = 'linear-gradient(128deg, #6580EB 23.94%, #8EA2F2 110.63%)'
+const optimismMainnetGradient = 'linear-gradient(135deg, #FF0420 0%, #FF6C7D 100%)'
+const arbitrumMainnetGradient = 'linear-gradient(128deg, #243145 3.74%, #4DA7F8 83.51%)'
 
 export const ethereumMainnetHexId: NetworkConfigHexId = NetworkHexIds.MAINNET
 export const optimismMainnetHexId: NetworkConfigHexId = NetworkHexIds.OPTIMISMMAINNET
@@ -48,6 +53,7 @@ export type NetworkConfig = {
   color: `#${number | string}`
   icon: string
   badge: string
+  gradient: string
   testnet: boolean
   isEnabled: () => boolean
   token: string
@@ -87,6 +93,7 @@ const mainnetConfig: NetworkConfig = {
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
   badge: ethereumMainnetBadge as string,
+  gradient: ethereumMainnetGradient,
   testnet: false,
   isEnabled: () => true,
   rpcUrl: mainnetRpc,
@@ -116,6 +123,7 @@ const goerliConfig: NetworkConfig = {
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
   badge: ethereumMainnetBadge as string,
+  gradient: ethereumMainnetGradient,
   testnet: true,
   isEnabled: () => true,
   rpcUrl: goerliRpc,
@@ -145,6 +153,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   color: '#28a0f0',
   icon: arbitrumMainnetIcon as string,
   badge: arbitrumMainnetBadge as string,
+  gradient: arbitrumMainnetGradient,
   testnet: false,
   isEnabled: () => true,
   token: 'ETH',
@@ -178,6 +187,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   color: '#28a0f0',
   icon: arbitrumMainnetIcon as string,
   badge: arbitrumMainnetBadge as string,
+  gradient: arbitrumMainnetGradient,
   testnet: true,
   isEnabled: () => true,
   token: 'AGOR',
@@ -206,6 +216,7 @@ const polygonMainnetConfig: NetworkConfig = {
   color: '#9866ed',
   icon: polygonMainnetIcon as string,
   badge: polygonMainnetBadge as string,
+  gradient: '',
   testnet: false,
   isEnabled: () => false,
   token: 'ETH',
@@ -228,6 +239,7 @@ const polygonMumbaiConfig: NetworkConfig = {
   color: '#9866ed',
   icon: polygonMainnetIcon as string,
   badge: polygonMainnetBadge as string,
+  gradient: '',
   testnet: true,
   isEnabled: () => false,
   token: 'ETH',
@@ -250,6 +262,7 @@ const optimismMainnetConfig: NetworkConfig = {
   color: '#ff3f49',
   icon: optimismMainnetIcon as string,
   badge: optimismMainnetBadge as string,
+  gradient: optimismMainnetGradient,
   testnet: false,
   isEnabled: () => true,
   token: 'ETH',
@@ -283,6 +296,7 @@ const optimismGoerliConfig: NetworkConfig = {
   color: '#ff3f49',
   icon: optimismMainnetIcon as string,
   badge: optimismMainnetBadge as string,
+  gradient: optimismMainnetGradient,
   testnet: true,
   isEnabled: () => true,
   token: 'ETH',
@@ -301,6 +315,7 @@ export const emptyNetworkConfig: NetworkConfig = {
   color: '#ff',
   icon: 'empty',
   badge: 'empty',
+  gradient: '',
   testnet: false,
   isEnabled: () => true,
   id: NetworkIds.EMPTYNET,
@@ -331,6 +346,7 @@ export const defaultForkSettings: NetworkConfig = {
   color: '#728aee',
   icon: ethereumMainnetIcon as string,
   badge: ethereumMainnetBadge as string,
+  gradient: ethereumMainnetGradient,
   testnet: true,
   isEnabled: () => false,
   token: 'ETH',

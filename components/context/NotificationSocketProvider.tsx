@@ -1,4 +1,4 @@
-import { NotificationsEventAdditionalParams } from 'analytics/analytics'
+import type { MixpanelNotificationsEventAdditionalParams } from 'analytics/types'
 import { NetworkIds } from 'blockchain/networks'
 import {
   firstNotificationsRelevantDate,
@@ -12,17 +12,18 @@ import {
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { getBrowserName } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import { uiChanges } from 'helpers/uiChanges'
 import getConfig from 'next/config'
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import io, { Socket } from 'socket.io-client'
+import type { Socket } from 'socket.io-client'
+import io from 'socket.io-client'
 
 import { isMainContextAvailable, useMainContext } from './MainContextProvider'
 
 interface WebSocket {
   socket?: Socket
-  analyticsData: NotificationsEventAdditionalParams
+  analyticsData: MixpanelNotificationsEventAdditionalParams
 }
 
 export const NotificationSocketContext = createContext<WebSocket | {}>({})

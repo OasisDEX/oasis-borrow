@@ -1,8 +1,10 @@
-import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
+import { trackingEvents } from 'analytics/trackingEvents'
+import { MixpanelCommonAnalyticsSections, MixpanelNotificationsEventIds } from 'analytics/types'
 import { useNotificationSocket } from 'components/context'
 import { NotificationPreferenceCard } from 'components/notifications/NotificationPreferenceCard'
 import { notificationPreferences } from 'features/notifications/consts'
-import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import type { NotificationChange } from 'features/notifications/notificationChange'
+import { NOTIFICATION_CHANGE } from 'features/notifications/notificationChange'
 import {
   NotificationChannelTypes,
   NotificationSubscriptionTypes,
@@ -16,9 +18,9 @@ export function NotificationPreferenceCardWrapper() {
 
   const subscriptionTypeToAnalyticsIdMap = {
     [NotificationSubscriptionTypes.VAULT_ACTION_NOTIFICATIONS]:
-      NotificationsEventIds.VaultActionNotificationSwitch,
+      MixpanelNotificationsEventIds.VaultActionNotificationSwitch,
     [NotificationSubscriptionTypes.VAULT_INFO_NOTIFICATIONS]:
-      NotificationsEventIds.VaultInfoNotificationSwitch,
+      MixpanelNotificationsEventIds.VaultInfoNotificationSwitch,
   }
 
   const account = analyticsData.walletAddress
@@ -51,7 +53,7 @@ export function NotificationPreferenceCardWrapper() {
         })
         trackingEvents.notifications.buttonClick(
           subscriptionTypeToAnalyticsIdMap[subscriptionType],
-          CommonAnalyticsSections.NotificationPreferences,
+          MixpanelCommonAnalyticsSections.NotificationPreferences,
           { ...analyticsData, notificationSwitch: 'on' },
         )
       } else {
@@ -66,7 +68,7 @@ export function NotificationPreferenceCardWrapper() {
 
         trackingEvents.notifications.buttonClick(
           subscriptionTypeToAnalyticsIdMap[subscriptionType],
-          CommonAnalyticsSections.NotificationPreferences,
+          MixpanelCommonAnalyticsSections.NotificationPreferences,
           { ...analyticsData, notificationSwitch: 'off' },
         )
       }

@@ -1,5 +1,6 @@
 import { MinusIcon, PlusIcon } from 'components/vault/VaultActionInput'
-import React, { ReactChild } from 'react'
+import type { ReactChild } from 'react'
+import React from 'react'
 import { Box, Button } from 'theme-ui'
 
 interface OptionalAdjustProps {

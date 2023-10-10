@@ -1,6 +1,6 @@
 import { getRandomString } from 'helpers/getRandomString'
 import jwt from 'jsonwebtoken'
-import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import * as z from 'zod'
 
 export interface ChallengeJWT {

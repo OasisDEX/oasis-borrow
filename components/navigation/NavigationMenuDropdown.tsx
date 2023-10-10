@@ -1,5 +1,5 @@
 import { NavigationMenuDropdownContent } from 'components/navigation/NavigationMenuDropdownContent'
-import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
+import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { NavigationMenuPointer } from 'components/navigation/NavigationMenuPointer'
 import React, { useEffect, useRef, useState } from 'react'
 import { Flex } from 'theme-ui'
@@ -30,17 +30,14 @@ export function NavigationMenuDropdown({
   panels,
 }: NavigationMenuDropdownProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const [width, setWidth] = useState<number>(0)
+  const [isListSwitched, setIsListSwitched] = useState<boolean>(false)
   const [height, setHeight] = useState<number>(0)
 
   const labelsMap = panels.map((panel) => panel.label)
 
   useEffect(() => {
-    if (ref.current) {
-      setWidth(ref.current.offsetWidth)
-      setHeight(ref.current.offsetHeight)
-    }
-  }, [currentPanel, isPanelOpen])
+    if (!isPanelOpen) setIsListSwitched(false)
+  }, [isPanelOpen])
 
   return (
     <Flex
@@ -59,53 +56,66 @@ export function NavigationMenuDropdown({
         sx={{
           position: 'absolute',
           top: '100%',
-          left: '-100%',
-          right: '-100%',
-          justifyContent: 'center',
-          transform: isPanelOpen ? 'translateY(0)' : 'translateY(-5px)',
-          transition: 'transform 200ms',
-          pointerEvents: 'none',
+          left: 0,
+          right: 0,
+          width: '680px',
+          mx: 'auto',
+          pt: '10px',
         }}
       >
         <Flex
           sx={{
-            position: 'relative',
-            p: 4,
-            borderRadius: 'large',
+            justifyContent: 'center',
+            width: '100%',
+            p: 3,
+            borderRadius: 'mediumLarge',
             bg: 'neutral10',
             boxShadow: 'buttonMenu',
             overflow: 'hidden',
+            transform: isPanelOpen ? 'translateY(0)' : 'translateY(-5px)',
+            transition: 'transform 200ms',
             pointerEvents: isPanelOpen ? 'auto' : 'none',
           }}
         >
           <Flex
             sx={{
+              position: 'relative',
               flexDirection: 'column',
-              ...(width > 0 && { width }),
+              width: '100%',
               ...(height > 0 && { height }),
-              ...(isPanelSwitched && { transition: 'width 200ms, height 200ms' }),
+              ...((isPanelSwitched || isListSwitched) && { transition: 'height 200ms' }),
             }}
           >
             {panels.map(({ label, ...panel }, i) => (
-              <Flex key={i} sx={{ ml: '-100%', transform: 'translateX(50%)' }}>
-                <Flex
-                  sx={{
-                    position: 'absolute',
-                    flexDirection: 'column',
-                    rowGap: 4,
-                    opacity: currentPanel === label ? 1 : 0,
-                    pointerEvents: isPanelOpen && currentPanel === label ? 'auto' : 'none',
-                    ...(isPanelSwitched && { transition: 'opacity 200ms, transform 200ms' }),
-                    transform: `translateX(${getDropdownTranslation(
-                      labelsMap,
-                      label,
-                      currentPanel,
-                    )})`,
+              <Flex
+                key={i}
+                sx={{
+                  position: 'absolute',
+                  width: '100%',
+                  opacity: currentPanel === label ? 1 : 0,
+                  pointerEvents: isPanelOpen && currentPanel === label ? 'auto' : 'none',
+                  ...(isPanelSwitched && { transition: 'opacity 200ms, transform 200ms' }),
+                  transform: `translateX(${getDropdownTranslation(
+                    labelsMap,
+                    label,
+                    currentPanel,
+                  )})`,
+                }}
+                {...(currentPanel === label && { ref })}
+              >
+                <NavigationMenuDropdownContent
+                  currentPanel={currentPanel}
+                  isPanelActive={isPanelOpen && currentPanel === label}
+                  isPanelOpen={isPanelOpen}
+                  label={label}
+                  onChange={(_height) => {
+                    if (ref.current) setHeight(Math.max(_height, ref.current.offsetHeight))
                   }}
-                  {...(currentPanel === label && { ref })}
-                >
-                  <NavigationMenuDropdownContent label={label} {...panel} />
-                </Flex>
+                  onSelect={() => {
+                    setIsListSwitched(true)
+                  }}
+                  {...panel}
+                />
               </Flex>
             ))}
           </Flex>

@@ -1,14 +1,10 @@
-import { Chain } from '@web3-onboard/common'
-import { DisconnectOptions, EIP1193Provider, WalletState } from '@web3-onboard/core'
+import type { Chain } from '@web3-onboard/common'
+import type { DisconnectOptions, EIP1193Provider, WalletState } from '@web3-onboard/core'
 import { AbstractConnector } from '@web3-react/abstract-connector'
-import {
-  NetworkConfigHexId,
-  NetworkIds,
-  NetworkNames,
-  networkSetByHexId,
-} from 'blockchain/networks'
+import type { NetworkConfigHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
+import { networkSetByHexId } from 'blockchain/networks'
 import { getAddress, isAddress } from 'ethers/lib/utils'
-import { ConnectionKind } from 'features/web3Context'
+import type { ConnectionKind } from 'features/web3Context'
 
 interface ConnectorUpdate {
   provider?: EIP1193Provider

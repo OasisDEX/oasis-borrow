@@ -1,4 +1,4 @@
-import { AjnaPosition } from '@oasisdex/dma-library'
+import type { AjnaPosition } from '@oasisdex/dma-library'
 import { LTVWarningThreshold } from 'features/ajna/common/consts'
 
 export const getBorrowishChangeVariant = ({

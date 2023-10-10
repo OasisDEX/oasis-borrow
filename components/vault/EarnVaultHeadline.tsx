@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { VaultHeadline, VaultHeadlineProps } from './VaultHeadline'
+import type { VaultHeadlineProps } from './VaultHeadline'
+import { VaultHeadline } from './VaultHeadline'
 
 export function EarnVaultHeadline({
   header,

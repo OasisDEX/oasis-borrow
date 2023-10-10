@@ -1,20 +1,20 @@
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
-import { TokenBalances } from 'blockchain/tokens'
-import { AccountContext } from 'components/context'
+import type { TokenBalances } from 'blockchain/tokens.types'
+import type { AccountContext } from 'components/context'
 import dayjs from 'dayjs'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
-import { MainContext } from 'helpers/context/MainContext'
-import { ProductContext } from 'helpers/context/ProductContext'
+import type { MainContext } from 'helpers/context/MainContext.types'
+import type { ProductContext } from 'helpers/context/ProductContext.types'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable } from 'rxjs'
+import type { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { AaveContext } from './aave-context'
+import type { AaveContext } from './aave-context'
 import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
 import {
   getManageAaveStateMachine,
@@ -30,7 +30,7 @@ import {
   getStrategyInfo$,
 } from './services'
 import { getSupportedTokens } from './strategies'
-import { IStrategyConfig } from './types'
+import type { IStrategyConfig } from './types'
 
 export function setupAaveV2Context(
   mainContext: MainContext,

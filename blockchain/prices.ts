@@ -1,24 +1,23 @@
 import { BigNumber } from 'bignumber.js'
-import { Context } from 'blockchain/network'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import { bindNodeCallback, combineLatest, forkJoin, Observable, of, timer } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { bindNodeCallback, combineLatest, forkJoin, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { distinctUntilChanged, first, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { getNetworkContracts } from './contracts'
+import type { Context } from './network.types'
 import { NetworkIds } from './networks'
+import { DSVALUE_APPROX_SIZE } from './prices.constants'
+import type {
+  GasPrice$,
+  GasPriceParams,
+  OraclePriceData,
+  OraclePriceDataArgs,
+  Tickers,
+} from './prices.types'
 import { getToken } from './tokensMetadata'
-
-export interface Tickers {
-  [label: string]: BigNumber
-}
-export type GasPriceParams = {
-  maxFeePerGas: BigNumber
-  maxPriorityFeePerGas: BigNumber
-}
-
-export type GasPrice$ = Observable<GasPriceParams>
 
 export function createGasPrice$(
   onEveryBlock$: Observable<number>,
@@ -85,20 +84,6 @@ export function createGasPrice$(
   )
 }
 
-export const tokenPrices$: Observable<Tickers> = timer(0, 1000 * 60).pipe(
-  switchMap(() =>
-    ajax({
-      url: `/api/tokensPrices`,
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-      },
-    }),
-  ),
-  map(({ response }) => response),
-  shareReplay(1),
-)
-
 function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefined>) {
   const errorsArray = []
   for (const label of tickerServiceLabels) {
@@ -157,18 +142,6 @@ export function createTokenPriceInUSD$(
   )
 }
 
-export interface OraclePriceData {
-  currentPrice: BigNumber
-  nextPrice: BigNumber
-  currentPriceUpdate?: Date
-  nextPriceUpdate?: Date
-  priceUpdateInterval?: number
-  isStaticPrice: boolean
-  percentageChange: BigNumber
-}
-
-const DSVALUE_APPROX_SIZE = 6000
-
 // All oracle prices are returned as string values which have a precision of
 // 18 decimal places. We need to truncate these to the correct precision
 function transformOraclePrice({
@@ -189,11 +162,6 @@ export function calculatePricePercentageChange(current: BigNumber, next: BigNumb
   const rawPriceChange = current.div(next)
   if (rawPriceChange.isZero()) return zero
   return current.minus(next).div(current).times(-1)
-}
-
-export type OraclePriceDataArgs = {
-  token: string
-  requestedData: Array<keyof OraclePriceData>
 }
 
 export function createOraclePriceData$(

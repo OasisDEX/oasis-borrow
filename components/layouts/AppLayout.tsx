@@ -1,7 +1,7 @@
 import { Footer } from 'components/Footer'
 import { ModalTrezorMetamaskEIP1559 } from 'components/Modal'
 import { NavigationController } from 'features/navigation/controls/NavigationController'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 

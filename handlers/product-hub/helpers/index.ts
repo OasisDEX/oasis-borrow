@@ -2,7 +2,6 @@ export { checkIfAllHandlersExist } from 'handlers/product-hub/helpers/check-if-a
 export { filterTableData } from 'handlers/product-hub/helpers/filter-table-data'
 export { findByIlk } from 'handlers/product-hub/helpers/find-by-ilk'
 export { findByTokenPair } from 'handlers/product-hub/helpers/find-by-token-pair'
-export { getProtocolProducts } from 'handlers/product-hub/helpers/get-protocol-products'
 export { getTokenGroup } from 'handlers/product-hub/helpers/get-token-group'
 export { aaveLikeAprToApy } from 'handlers/product-hub/helpers/aave-like-apr-to-apy'
 export * from 'handlers/product-hub/helpers/constants'

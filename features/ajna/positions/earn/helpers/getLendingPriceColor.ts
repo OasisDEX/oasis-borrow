@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import type BigNumber from 'bignumber.js'
 import { lendingPriceColors } from 'features/ajna/positions/earn/consts'
 
 interface GetLendingPriceColorParams {

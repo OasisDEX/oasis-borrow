@@ -1,10 +1,10 @@
 import { NOTIFICATION_CHANGE } from 'features/notifications/notificationChange'
-import {
+import type {
   NotificationChannels,
   NotificationRaw,
   NotificationSubscription,
 } from 'features/notifications/types'
-import { UIChanges } from 'helpers/uiChanges'
+import type { UIChanges } from 'helpers/uiChanges.types'
 
 export function prepareNotificationMessageHandlers(uiChanges: UIChanges) {
   return {

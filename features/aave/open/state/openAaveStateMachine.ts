@@ -1,61 +1,63 @@
-import { TriggerType } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/dma-library'
-import { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave-like'
-import { OpenAaveParameters } from 'actions/aave-like/types'
-import { trackingEvents } from 'analytics/analytics'
-import BigNumber from 'bignumber.js'
-import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
-import { addAutomationBotTriggerV2 } from 'blockchain/calls/automationBot'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave-like'
+import type { OpenAaveParameters } from 'actions/aave-like/types'
+import { trackingEvents } from 'analytics/trackingEvents'
+import type BigNumber from 'bignumber.js'
+import type { AaveV2ReserveConfigurationData } from 'blockchain/aave'
+import { addAutomationBotTriggerV2 } from 'blockchain/calls/automationBot.constants'
+import type { TransactionDef } from 'blockchain/calls/callsHelpers'
+import type { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import {
   callOperationExecutorWithDpmProxy,
   callOperationExecutorWithDsProxy,
-  OperationExecutorTxMeta,
 } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { ethNullAddress } from 'blockchain/networks'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
+import type { BaseAaveContext, BaseAaveEvent, RefTransactionMachine } from 'features/aave/types'
 import {
-  BaseAaveContext,
-  BaseAaveEvent,
   contextToTransactionParameters,
   getSlippage,
   isAllowanceNeeded,
   ProductType,
   ProxyType,
-  RefTransactionMachine,
 } from 'features/aave/types'
-import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers'
-import {
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
+import type {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
-} from 'features/automation/common/txDefinitions'
+} from 'features/automation/common/txDefinitions.types'
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
-import { extractStopLossDataInput } from 'features/automation/protection/stopLoss/openFlow/helpers'
-import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { AllowanceStateMachine } from 'features/stateMachines/allowance'
-import { createDPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
 import {
+  extractStopLossDataInput,
+  getAaveLikeCommandContractType,
+  getAveeStopLossTriggerType,
+} from 'features/automation/protection/stopLoss/openFlow/helpers'
+import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
+import type { createDPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
+import type {
   DMPAccountStateMachineResultEvents,
   DPMAccountStateMachine,
 } from 'features/stateMachines/dpmAccount/'
-import { ProxyResultEvent, ProxyStateMachine } from 'features/stateMachines/proxy'
-import { TransactionStateMachine } from 'features/stateMachines/transaction'
-import {
+import type { ProxyResultEvent, ProxyStateMachine } from 'features/stateMachines/proxy'
+import type { TransactionStateMachine } from 'features/stateMachines/transaction'
+import type {
   TransactionParametersStateMachine,
   TransactionParametersStateMachineEvent,
 } from 'features/stateMachines/transactionParameters'
 import { allDefined } from 'helpers/allDefined'
 import { canOpenPosition } from 'helpers/canOpenPosition'
-import { getAppConfig } from 'helpers/config'
-import { AutomationTxData } from 'helpers/context/types'
+import { getLocalAppConfig } from 'helpers/config'
+import type { AutomationTxData } from 'helpers/context/types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { ActorRefFrom, assign, createMachine, send, sendTo, spawn } from 'xstate'
+import type { ActorRefFrom } from 'xstate'
+import { assign, createMachine, send, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
-import { MachineOptionsFrom } from 'xstate/lib/types'
+import type { MachineOptionsFrom } from 'xstate/lib/types'
 
 export const totalStepsMap = {
   base: 2,
@@ -111,6 +113,7 @@ export function createOpenAaveStateMachine(
   /** @xstate-layout N4IgpgJg5mDOIC5QHsAOYB2BBAhgNzAGUAXHYsAWRwGMALASwzADoAbZHCRqAYgGEA8gDkhAUT4AVUQBEA+oKFSAGhPkAJLEIDiMgNoAGALqJQqZLHrF6yDCZAAPRAFoAzABZ9zAGxuAjAA4AVgB2N2CATn99F18AGhAAT2d-f19vQJcvQMjfcLcPfwBfQvi0TFwCEjJKGgYmZkhLbmYIMAAjZABXDGpuHntYUnJmHAAzcgAnAApA-X0ASh4y7HwiIZq6RhZGqwwoFvaunu4DYyQQMwsrGztHBBd-L29gwK9fACZ9d+DfOff4pIIJwZYLMQK+F7hQLvFwvLxeIolEDLCprapUTb1HZ9QiiVRYCgCACqilOdkuTRu5zuCOY7mCCNhuQZgUCbgByXebmY73evlec38wWivl8xVK6BWlXWGLq2y4u14YhUskIUgACmTzhTrrZqYhRcF3nSfi4YQ99I8XIEOUC8i5mBCvKa8uF9G9ERLyqsquRZVsGgq+srVGrRJrfGdTOZKXrQHdfNanuFeXyvOEvNa3P9Es4IqC8pngsXWSlWeLkZLUb6NnLA009jwJAAlTSELCSACSwlk6qwrYoeNEzcIsmb4lEnYAanojOSY7rbohhU9-Bb-Hl-N99C9bU4gsahXzfD4XOEYvo3BWUT6ZbUA6gJsh7Ak+BMwGQ+urmwIlABNeRxywKRpC1aMrmsOMHANfQ8mYUIvndI19FFIU918Nx-DBeF8h+S8QUya8q1vdF73qWAwGIRUKE6VgrFQVgWFaDpul6RsBnWEZxjAaZZgWJZiOlUjMRYCiqO4Gi6PoBimMOViTjnbUF0gpcEBhflvBcFwUK3D53g3Pc3GdZg3FmE83BTNwHlmK8kRvIS-TI0TKOo2j6MYngiXVaRgNEVUW18rQAM7IQADEBDAi5lKpeNEE+GJvG+QJUkvN1wmCPdgi3ZgUzNS13RTA8iO9BzawDMTXKkmTPO83zZEHCQsFkELwsinUVP1NTvjSAJYMzTMvi5TLstyz4onTfTwWKqU0UckTmAqiS3OkjzcVUZtO0IABpMdgO7Nroqgu4uWCB1cjPMI2QeKIXGG41RvyiagjFOzBNmsryJcpaqo88c1rHTadtbCR9sU8DY1U94fGNLNj15WEUPZXMgSy+6YU+KGzVMwJpurO95sWvZJPcsAm1bIR2y7Hs+wHIcRzHCdp1nKMoogmLoLUtdQSyIJUmFT4jKRwEnFRnL1PS3JXi5cJcZIua60JqBiZW0mQ388MDrZqDha8HceSNNMIgRXcOcTN4ctmdwdzZDwPll0r-U+8SieW6qACEOx2iQBFkGROxB7RNYhzqze5TNYUeD4D1ePdjcdDcvH0qGM0vF6vRmmtHZYd88HoMAAHdg1EFUw01MHWeD2KEETLTmC5xN7VRnNATNQ8MiiNkISCGIcdekr3qz5gc7zwvGw9vgvZ9v2A60IPF06-xTLBXlTOhyIIhtZGzRyiF3TPRe1yMtPK37zOnKHsBc4LvoAopjsQep-sCTp0dxz4ScZ1A8v2vZhM13Cbw8Jshcl1t8cItouTLzZChVKKETzuHtgPc+xB7CdgwOqJ8UB3ywFgDwCANgWCMDwMgAA1iwYgEwcAYFgDQXUc8OpVw+AlDCAQo5vDdCbQE8IAEMkXtpAI0IZZ9wzvjOsKC0EYOQFguAuCeJPgmMwBiZBRjIAmAAW2YBQqhNDqB0O-odVSGFsw8kvO8Vk6V3SPE3lwnwJo8jFlOomLc7xEFn3mig0KOB6CsE6O+Hg44Wx-nob-RAIQniYUThEHc7xwjnltB8XWddWSnT3rCHCrjREBg8V4nxfjx6T19tIf2IVZ76K1qpU6oJPhugRJbdM0J4koQdPCE8UMrRZSyBk4ScoeDfk7O-V+jNP7BKOogGIxo3i8ndNEzCO50KmW5BZGJkRE7Zg7l0+WWxPK4mbKqPEM9Rx8A0NoZm85ykhxhJ4E8TCMimUlrdZGTgMKwjru6FeBQsimQ2R9Um-0PYABlNDvxGYYtkoIjSZgzBeXSGVHkYShjyN01ooRvHyC44ReNulbO-L+ACWBpDSD+oM9+TMv4sx-qMhAKZPB8mLN8GI6UET+HmbSTCHxQjCicUI9OmLNlMH4MIMQkgZDyGEMoVQRzNA6DJWcyuHNXhpDCM6UUusUxZVhcLDCbITIpliY8Lk+l9C9yRBgZArR4DnHskg+a7BODcFlfPKuTguRYXBOePKnymQaucOmbk0RYRmLZEKV03zB7Yj2MwegEBGIOoYRzcIPUYiZFhBkT4vwHnC0FvBd02ZQh+DdPkXuPK5Y-PrIqA4LFjh7FjSE+4jwTK0rgcGlJQs8z1tCHxTM2RUhTQxSWsNQYI22q4NWpS5yq7giwieeE1SgH9VjhufWKQrJdsXka0N59w1QBrZSz4dIlX10ZayVtdpF1HksVEMxlSN3zUfM+V875PyjvBo602sEAHgjMdEbIrIvjeqBDEzwkKMIbj5OlLKtli0O3PorZWMlI3RrADuyGUK67njMbyDhKq9zaSeDCVkUtk74a8DehWX0XY-VkpWti26x1yuOj3OxvxKkxDeBm5wrJwlhGtE6TCKbSPlXI0rV2jE2AcBHbRl9cbjpQyeFpeGVlXjOiGo8xjbLLQpBPEKcsfboMEyE3BmNdHX0JkiM0pKKULKwX-U4dKDpRrPJ8FkdKAn6jD2vkO8T9rjPSYNFZsEwDVXnthPErCcwXjFjXTECJJHdPWrrO50e+wo1Gak7W5kQGkoC1SLyZlyMIQOiyjXLGZjszfFc9nS+I9vNpcpUY405ioawWCzZ1COVLK9QhMlFFFXNGoPQZg7BFrauGOsvBXkrJerqosrafIngLr+uiV2ncvXsneN8Uhnz6WLKBHglZHLGF0wMi8Lac8u2PDdrmBhDt6KoPxayfYQgnRqDUBkchzq55PBGtMpEPwaTYK2m4TyBEfgQhQiNTEir72nXXW8H4IIHLIginQlDNI56IgpFSuV4ohQgA */
   return createMachine(
     {
+      //eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./openAaveStateMachine.typegen').Typegen0,
       schema: { context: {} as OpenAaveContext, events: {} as OpenAaveEvent },
       preserveActionOrder: true,
@@ -518,7 +521,7 @@ export function createOpenAaveStateMachine(
           hasOpenedPosition,
           transition,
         }) =>
-          getAppConfig('features').AaveV3ProtectionWrite &&
+          getLocalAppConfig('features').AaveV3ProtectionWrite &&
           supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
           strategyConfig.type === ProductType.Multiply &&
           isSupportedAaveAutomationTokenPair(
@@ -566,7 +569,7 @@ export function createOpenAaveStateMachine(
           const allowance = isAllowanceNeeded(context)
           const proxy = !allDefined(context.effectiveProxyAddress)
           const optionalStopLoss =
-            getAppConfig('features').AaveV3ProtectionWrite &&
+            getLocalAppConfig('features').AaveV3ProtectionWrite &&
             supportsAaveStopLoss(
               context.strategyConfig.protocol,
               context.strategyConfig.networkId,
@@ -881,12 +884,16 @@ export function createOpenAaveStateMachine(
             .reserveConfig!.liquidationThreshold.minus(aaveOffsets.open.max)
             .times(100)
 
+          const commandContractType = getAaveLikeCommandContractType(
+            context.strategyConfig.protocol,
+          )
           return {
             stopLossLevel,
             stopLossTxData: {
               ...prepareStopLossTriggerDataV2(
+                commandContractType,
                 proxyAddress!,
-                TriggerType.AaveStopLossToDebtV2,
+                getAveeStopLossTriggerType(context.strategyConfig.protocol),
                 false,
                 stopLossLevel,
                 debtTokenAddress!,

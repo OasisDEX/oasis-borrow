@@ -1,12 +1,12 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { isSupportedNetwork, NetworkIds, NetworkNames } from 'blockchain/networks'
-import { ProductContextHandler } from 'components/context'
+import { GasEstimationContextProvider, ProductContextHandler } from 'components/context'
 import { isAddress } from 'ethers/lib/utils'
 import { ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
-import { AjnaProduct } from 'features/ajna/common/types'
+import type { AjnaProduct } from 'features/ajna/common/types'
 import { AjnaProductController } from 'features/ajna/positions/common/controls/AjnaProductController'
-import { GetServerSidePropsContext } from 'next'
+import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
@@ -21,13 +21,15 @@ interface AjnaPositionPageProps {
 function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPositionPageProps) {
   return (
     <ProductContextHandler>
-      <AjnaProductController
-        collateralToken={collateralToken}
-        flow={id ? 'manage' : 'open'}
-        id={id}
-        product={product}
-        quoteToken={quoteToken}
-      />
+      <GasEstimationContextProvider>
+        <AjnaProductController
+          collateralToken={collateralToken}
+          flow={id ? 'manage' : 'open'}
+          id={id}
+          product={product}
+          quoteToken={quoteToken}
+        />
+      </GasEstimationContextProvider>
     </ProductContextHandler>
   )
 }

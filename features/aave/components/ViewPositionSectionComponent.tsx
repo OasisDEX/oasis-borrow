@@ -1,7 +1,7 @@
-import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
+import type { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { useSimulationYields } from 'features/aave/hooks'
-import { IStrategyConfig } from 'features/aave/types/strategy-config'
-import { AaveLikeProtocolData, AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
+import type { IStrategyConfig } from 'features/aave/types/strategy-config'
+import type { AaveLikeProtocolData, AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import React from 'react'
 
 import { PositionInfoComponent } from './PositionInfoComponent'

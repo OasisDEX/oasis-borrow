@@ -1,4 +1,4 @@
-import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import { SidebarOpenMultiplyVault } from 'features/multiply/open/sidebars/SidebarOpenMultiplyVault'
 import React from 'react'
 

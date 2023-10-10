@@ -1,121 +1,136 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import { getToken } from 'blockchain/tokensMetadata'
-import { AssetPill } from 'components/AssetPill'
-import { AppLink } from 'components/Links'
-import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
-import { WithArrow } from 'components/WithArrow'
-import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers/getAjnaWithArrowColorScheme'
-import { useTranslation } from 'next-i18next'
-import React from 'react'
-import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
+import { NavigationMenuDropdownContentList } from 'components/navigation/NavigationMenuDropdownContentList'
+import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { Flex } from 'theme-ui'
 
-export type NavigationMenuDropdownContentProps = NavigationMenuPanelType
+export type NavigationMenuDropdownContentProps = NavigationMenuPanelType & {
+  currentPanel: string
+  isPanelActive: boolean
+  isPanelOpen: boolean
+  onChange: (height: number) => void
+  onSelect: () => void
+}
 
 export function NavigationMenuDropdownContent({
+  currentPanel,
+  isPanelActive,
+  isPanelOpen,
   label,
-  description,
-  learn,
-  links,
-  otherAssets,
+  lists,
+  onChange,
+  onSelect,
 }: NavigationMenuDropdownContentProps) {
-  const { t } = useTranslation()
+  const ref = useRef<HTMLDivElement>(null)
+  const [selected, setSelected] = useState<[number, number]>([0, 0])
+
+  useEffect(() => {
+    setSelected([0, 0])
+  }, [currentPanel, isPanelOpen])
+  useEffect(() => {
+    if (currentPanel === label && ref.current) onChange(ref.current.offsetHeight)
+  }, [currentPanel, selected])
 
   return (
     <>
-      <Box>
-        <Heading
-          sx={{
-            fontSize: '28px',
-            fontWeight: 'bold',
-            mb: 1,
-            color: 'primary100',
-            letterSpacing: '-0.02em',
-          }}
-        >
-          {label}
-        </Heading>
-        <Flex sx={{ columnGap: 1 }}>
-          <Text as="p" sx={{ fontSize: '14px', color: 'neutral80', lineHeight: '22px' }}>
-            {description}
-          </Text>
-          {learn && (
-            <AppLink href={learn.link}>
-              <WithArrow gap={1} sx={{ display: 'inline-block', ...getAjnaWithArrowColorScheme() }}>
-                {learn.label}
-              </WithArrow>
-            </AppLink>
-          )}
-        </Flex>
-      </Box>
-      <Grid
+      <Flex
         as="ul"
         sx={{
-          gap: 4,
-          gridTemplateColumns: 'repeat( 2, 1fr )',
-          p: '0',
+          position: 'relative',
+          flexDirection: 'column',
+          flexShrink: 0,
+          rowGap: 2,
           listStyle: 'none',
+          width: '294px',
+          ml: 0,
+          mr: 3,
+          pl: 0,
+          pr: 3,
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            width: '1px',
+            height: `${ref.current?.offsetHeight}px`,
+            minHeight: '100%',
+            left: '100%',
+            top: 0,
+            backgroundColor: 'neutral20',
+            transition: 'height 200ms',
+          },
         }}
       >
-        {links.map(({ icon, footnote, link, title, hash }, i) => (
-          <Flex key={i} as="li" sx={{ flexGrow: 1, flexBasis: 0 }}>
-            <AppLink
-              href={link}
-              hash={hash}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                fontWeight: 'regular',
-                '&:hover': {
-                  '.dropdownLinkTitle': {
-                    color: 'neutral80',
-                  },
-                },
-              }}
-            >
-              <Icon size={48} name={icon} sx={{ flexShrink: 0 }} />
-              <Flex sx={{ flexDirection: 'column', ml: 3 }}>
-                <Text
-                  as="p"
-                  className="dropdownLinkTitle"
-                  sx={{
-                    fontSize: 4,
-                    fontWeight: 'semiBold',
-                    color: 'primary100',
-                    transition: 'color 200ms',
-                  }}
-                >
-                  {title}
-                </Text>
-                <Text as="p" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'nowrap' }}>
-                  {footnote}
-                </Text>
-              </Flex>
-            </AppLink>
-          </Flex>
-        ))}
-      </Grid>
-      {otherAssets && otherAssets?.length > 0 && (
-        <Box sx={{ pt: '24px', borderTop: '1px solid', borderColor: 'neutral20' }}>
-          <Heading
-            as="h3"
+        {lists.map((item, i) => (
+          <Flex
+            key={i}
+            as="li"
             sx={{
-              fontSize: '16px',
-              fontWeight: 'semiBold',
-              mb: 3,
-              color: 'primary100',
+              rowGap: 3,
+              flexDirection: 'column',
+              width: '100%',
             }}
           >
-            {t('ajna.navigation.common.other-assets')}
-          </Heading>
-          <Flex as="ul" sx={{ columnGap: 3, rowGap: 2, listStyle: 'none', p: 0 }}>
-            {otherAssets.map(({ link, token }, i) => (
-              <Box key={i} as="li">
-                <AssetPill icon={getToken(token).iconCircle} label={token} link={link} />
-              </Box>
-            ))}
+            <NavigationMenuDropdownContentList
+              {...item}
+              parentIndex={i}
+              selected={selected}
+              onSelect={(_selected) => {
+                setSelected(_selected)
+                onSelect()
+              }}
+            />
           </Flex>
-        </Box>
-      )}
+        ))}
+      </Flex>
+      <Flex
+        as="ul"
+        sx={{
+          position: 'relative',
+          flexDirection: 'column',
+          listStyle: 'none',
+          width: '100%',
+          m: 0,
+          p: 0,
+          transition: 'transform 250ms',
+        }}
+      >
+        {lists
+          .filter(({ items }) => items.filter(({ list }) => list !== undefined))
+          .map(({ items }, i) => (
+            <Fragment key={i}>
+              {items.map(({ list }, j) => (
+                <>
+                  {list && (
+                    <Flex
+                      key={`${i}-${j}`}
+                      as="li"
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        rowGap: 3,
+                        flexDirection: 'column',
+                        width: '100%',
+                        opacity: selected[0] === i && selected[1] === j ? 1 : 0,
+                        pointerEvents:
+                          isPanelActive && selected[0] === i && selected[1] === j ? 'auto' : 'none',
+                        transition: 'opacity 250ms, transform 250ms',
+                        transform: `translateY(${
+                          (selected[0] === i && selected[1] < j) || selected[0] < i
+                            ? 50
+                            : (selected[0] === i && selected[1] > j) || selected[0] > i
+                            ? -50
+                            : 0
+                        }px)`,
+                      }}
+                      {...(selected[0] === i && selected[1] === j && { ref })}
+                    >
+                      <NavigationMenuDropdownContentList {...list} />
+                    </Flex>
+                  )}
+                </>
+              ))}
+            </Fragment>
+          ))}
+      </Flex>
     </>
   )
 }

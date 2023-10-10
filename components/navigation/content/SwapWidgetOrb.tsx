@@ -1,8 +1,6 @@
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT,
-  SwapWidgetChangeAction,
-} from 'features/swapWidget/SwapWidgetChange'
+import type { SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChange'
+import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
 import { uiChanges } from 'helpers/uiChanges'
 import { useOnboarding } from 'helpers/useOnboarding'
 import React, { useState } from 'react'

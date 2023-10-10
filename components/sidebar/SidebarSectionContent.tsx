@@ -1,4 +1,4 @@
-import { getAppConfig } from 'helpers/config'
+import { useAppConfig } from 'helpers/config'
 import React, { Fragment, useRef } from 'react'
 import { theme } from 'theme'
 import { Box } from 'theme-ui'
@@ -14,7 +14,7 @@ export interface SidebarSectionContentProps {
 }
 
 export function SidebarSectionContent({ activePanel, content }: SidebarSectionContentProps) {
-  const { DisableSidebarScroll } = getAppConfig('features')
+  const { DisableSidebarScroll } = useAppConfig('features')
   const ref = useRef<HTMLDivElement>(null)
 
   return (

@@ -1,4 +1,4 @@
-import { EventObject } from 'xstate'
+import type { EventObject } from 'xstate'
 
 /**
  * @see: https://github.com/statelyai/xstate/discussions/1591

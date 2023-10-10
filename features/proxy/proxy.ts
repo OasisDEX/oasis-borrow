@@ -1,38 +1,15 @@
 import { createProxy } from 'features/proxy/createProxy'
-import { TxHelpers } from 'helpers/context/types'
-import { TxError } from 'helpers/types'
-import { Observable } from 'rxjs'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { Observable } from 'rxjs'
 
-export interface ProxyState {
-  proxyTxHash?: string
-  txError?: TxError
-  proxyConfirmations?: number
-  proxyAddress?: string
-  progress?(): void
-  regress?(): void
-  isProxyStage: boolean
-  proxySuccess?: boolean
-}
-
-export const defaultProxyStage: ProxyState = {
-  isProxyStage: false,
-}
-
-interface Dependencies {
-  stage: string
-  token: string
-  safeConfirmations: number
-}
-
-export const PROXY_STAGES = [
-  'proxyWaitingForConfirmation',
-  'proxyWaitingForApproval',
-  'proxyInProgress',
-  'proxyFailure',
-  'proxySuccess',
-] as const
-
-export type ProxyStages = (typeof PROXY_STAGES)[number]
+import type {
+  BackToEditingChange,
+  Dependencies,
+  ProxyChanges,
+  ProxyStages,
+  ProxyState,
+} from './proxy.types'
+import { PROXY_STAGES } from './proxy.types'
 
 export function isProxyStage(stage: string): stage is ProxyStages {
   return PROXY_STAGES.includes(stage as any)
@@ -44,31 +21,6 @@ export function applyIsProxyStage<S extends { stage: string }>(state: S): S {
     isProxyStage: isProxyStage(state.stage),
   }
 }
-export type ProxyChanges =
-  | {
-      kind: 'proxyWaitingForApproval'
-    }
-  | {
-      kind: 'proxyInProgress'
-      proxyTxHash: string
-    }
-  | {
-      kind: 'proxyFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'proxyConfirming'
-      proxyConfirmations?: number
-    }
-  | {
-      kind: 'proxySuccess'
-      proxyAddress: string
-    }
-  | {
-      kind: 'progressProxy'
-    }
-
-type BackToEditingChange = { kind: 'backToEditing' }
 
 export function applyProxyChanges<S extends ProxyState & Dependencies>(
   state: S,

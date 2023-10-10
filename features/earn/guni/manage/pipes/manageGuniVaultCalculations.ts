@@ -6,7 +6,7 @@ import {
 } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 
-import { GuniTxData, ManageEarnVaultState } from './manageGuniVault'
+import type { GuniTxData, ManageEarnVaultState } from './manageGuniVault.types'
 
 // this method extends / overwrites  applyManageVaultCalculations
 export function applyGuniCalculations(state: ManageEarnVaultState & GuniTxData) {

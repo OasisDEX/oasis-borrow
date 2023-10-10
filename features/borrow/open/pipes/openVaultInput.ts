@@ -1,38 +1,7 @@
-import BigNumber from 'bignumber.js'
 import { isNullish } from 'helpers/functions'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 
-import { OpenVaultChange, OpenVaultState } from './openVault'
-
-interface DepositChange {
-  kind: 'deposit'
-  depositAmount?: BigNumber
-}
-
-interface DepositUSDChange {
-  kind: 'depositUSD'
-  depositAmountUSD?: BigNumber
-}
-
-interface DepositMaxChange {
-  kind: 'depositMax'
-}
-
-interface GenerateChange {
-  kind: 'generate'
-  generateAmount?: BigNumber
-}
-
-interface GenerateMaxChange {
-  kind: 'generateMax'
-}
-
-export type OpenVaultInputChange =
-  | DepositChange
-  | DepositUSDChange
-  | DepositMaxChange
-  | GenerateChange
-  | GenerateMaxChange
+import type { OpenVaultChange, OpenVaultState } from './openVault.types'
 
 export function applyOpenVaultInput(
   state: OpenVaultState,

@@ -1,6 +1,7 @@
 import Avatar from 'boring-avatars'
 import React from 'react'
-import { Flex, SxStyleProp, Text } from 'theme-ui'
+import type { SxStyleProp } from 'theme-ui'
+import { Flex, Text } from 'theme-ui'
 
 interface GenericTokenIconProps {
   size: number

@@ -1,4 +1,4 @@
-import { AutomationProtectionFeatures } from 'features/automation/common/state/automationFeatureChange'
+import type { AutomationProtectionFeatures } from 'features/automation/common/state/automationFeatureChange.types'
 import { AutomationFeatures } from 'features/automation/common/types'
 
 export function getActiveProtectionFeature({

@@ -1,15 +1,18 @@
 import BigNumber from 'bignumber.js'
-import { DogIlk, dogIlk } from 'blockchain/calls/dog'
-import { JugIlk, jugIlk } from 'blockchain/calls/jug'
-import { CallObservable } from 'blockchain/calls/observe'
-import { SpotIlk, spotIlk } from 'blockchain/calls/spot'
-import { VatIlk, vatIlk } from 'blockchain/calls/vat'
-import { Context } from 'blockchain/network'
+import type { dogIlk } from 'blockchain/calls/dog'
+import type { jugIlk } from 'blockchain/calls/jug'
+import type { CallObservable } from 'blockchain/calls/observe'
+import type { spotIlk } from 'blockchain/calls/spot'
+import type { vatIlk } from 'blockchain/calls/vat'
 import { one, zero } from 'helpers/zero'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { distinctUntilChanged, map, retry, shareReplay, switchMap } from 'rxjs/operators'
 
 import { getNetworkContracts } from './contracts'
+import { COLLATERALIZATION_DANGER_OFFSET, COLLATERALIZATION_WARNING_OFFSET } from './ilks.constants'
+import type { IlkData, IlkDataChange, IlkDataList } from './ilks.types'
+import type { Context } from './network.types'
 import { NetworkIds } from './networks'
 
 export function createIlksSupportedOnNetwork$(context$: Observable<Context>): Observable<string[]> {
@@ -21,20 +24,6 @@ export function createIlksSupportedOnNetwork$(context$: Observable<Context>): Ob
     ),
   )
 }
-
-interface DerivedIlkData {
-  token: string
-  ilk: string
-  ilkDebt: BigNumber
-  ilkDebtAvailable: BigNumber
-  collateralizationDangerThreshold: BigNumber
-  collateralizationWarningThreshold: BigNumber
-}
-export type IlkData = VatIlk & SpotIlk & JugIlk & DogIlk & DerivedIlkData
-
-// TODO Go in some config somewhere?
-export const COLLATERALIZATION_DANGER_OFFSET = new BigNumber('0.2') // 150% * 1.2 = 180%
-export const COLLATERALIZATION_WARNING_OFFSET = new BigNumber('0.5') // 150% * 1.5 = 225%
 
 export function createIlkData$(
   vatIlks$: CallObservable<typeof vatIlk>,
@@ -97,8 +86,6 @@ export function createIlkData$(
   )
 }
 
-export type IlkDataList = IlkData[]
-
 export function createIlkDataList$(
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilks$: Observable<string[]>,
@@ -109,11 +96,6 @@ export function createIlkDataList$(
     retry(3),
     shareReplay(1),
   )
-}
-
-export interface IlkDataChange {
-  kind: 'ilkData'
-  ilkData: IlkData
 }
 
 export function createIlkDataChange$(

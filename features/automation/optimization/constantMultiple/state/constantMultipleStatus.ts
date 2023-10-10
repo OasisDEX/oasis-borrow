@@ -2,19 +2,18 @@ import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { useMainContext } from 'components/context'
-import { getAutoBSVaultChange } from 'features/automation/common/helpers'
-import { SidebarAutomationStages } from 'features/automation/common/types'
+import { getAutoBSVaultChange } from 'features/automation/common/helpers/getAutoBSVaultChange'
+import type { SidebarAutomationStages } from 'features/automation/common/types'
 import {
   checkIfIsDisabledConstantMultiple,
   checkIfIsEditingConstantMultiple,
 } from 'features/automation/optimization/constantMultiple/helpers'
-import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import {
-  ConstantMultipleTriggerData,
-  prepareConstantMultipleResetData,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { prepareConstantMultipleResetData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { OAZO_FEE } from 'helpers/multiply/calculations.constants'
 import { useObservable } from 'helpers/observableHook'
+
+import type { ConstantMultipleFormChange } from './constantMultipleFormChange.types'
+import type { ConstantMultipleTriggerData } from './constantMultipleTriggerData.types'
 
 interface GetConstantMultipleStatusParams {
   constantMultipleState: ConstantMultipleFormChange

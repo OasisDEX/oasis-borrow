@@ -1,6 +1,6 @@
-import { trackingEvents } from 'analytics/analytics'
-import { BigNumber } from 'bignumber.js'
-import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { trackingEvents } from 'analytics/trackingEvents'
+import type { BigNumber } from 'bignumber.js'
+import type { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 
 interface TrackingEventOpenVaultProps {
   props: {

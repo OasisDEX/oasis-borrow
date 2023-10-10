@@ -1,42 +1,23 @@
 import BigNumber from 'bignumber.js'
 import { curry } from 'lodash'
-import { merge, Observable, of, Subject } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { merge, of, Subject } from 'rxjs'
 import { catchError, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
-type UserSettingsStage = 'editing' | 'inProgress' | 'success' | 'failure'
-
-export type UserSettingsErrorMessages = 'invalidSlippage'
-
-export type UserSettingsWarningMessages = 'highSlippage'
-
-export interface UserSettingsState {
-  stage: UserSettingsStage
-  slippage: BigNumber
-  slippageInput: BigNumber
-  setSlippageInput: (slippageInput: BigNumber) => void
-  saveSettings?: () => void
-  reset: () => void
-  errors: UserSettingsErrorMessages[]
-  warnings: UserSettingsWarningMessages[]
-  canProgress: boolean
-}
-
-type UserSettingsChange =
-  | { kind: 'stage'; stage: UserSettingsStage }
-  | { kind: 'settingsSaved'; slippageInput: BigNumber }
-  | { kind: 'slippageInput'; slippageInput: BigNumber }
-
-export const SLIPPAGE_DEFAULT = new BigNumber(0.005)
-const SLIPPAGE_LOW = new BigNumber(0.005)
-const SLIPPAGE_MEDIUM = new BigNumber(0.01)
-const SLIPPAGE_HIGH = new BigNumber(0.02)
-export const SLIPPAGE_WARNING_THRESHOLD = new BigNumber(0.05)
-const SLIPPAGE_LIMIT_MAX = new BigNumber(0.2)
-const SLIPPAGE_LIMIT_MIN = new BigNumber(0.001)
-
-export const SLIPPAGE_OPTIONS = [SLIPPAGE_LOW, SLIPPAGE_MEDIUM, SLIPPAGE_HIGH]
-
-export type SaveUserSettingsFunction = (slippageInput: BigNumber) => Observable<boolean>
+import {
+  SLIPPAGE_DEFAULT,
+  SLIPPAGE_LIMIT_MAX,
+  SLIPPAGE_LIMIT_MIN,
+  SLIPPAGE_WARNING_THRESHOLD,
+} from './userSettings.constants'
+import type {
+  SaveUserSettingsFunction,
+  SlippageChange,
+  UserSettingsChange,
+  UserSettingsErrorMessages,
+  UserSettingsState,
+  UserSettingsWarningMessages,
+} from './userSettings.types'
 
 function apply(state: UserSettingsState, change: UserSettingsChange): UserSettingsState {
   if (change.kind === 'slippageInput') {
@@ -149,11 +130,6 @@ export function createUserSettings$(
     }),
     shareReplay(1),
   )
-}
-
-export interface SlippageChange {
-  kind: 'slippage'
-  slippage: BigNumber
 }
 
 export function slippageChange$(

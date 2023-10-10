@@ -1,5 +1,5 @@
-import { IPosition, Network, Tokens } from '@oasisdex/dma-library'
-import { getAddresses } from 'actions/aave-like/get-addresses'
+import type { IPosition, Network, Tokens } from '@oasisdex/dma-library'
+import type { getAddresses } from 'actions/aave-like/get-addresses'
 import { NetworkIds } from 'blockchain/networks'
 import { getOneInchCall } from 'helpers/swap'
 

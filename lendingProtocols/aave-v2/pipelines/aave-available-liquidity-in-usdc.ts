@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
-import { AaveV2GetAssetPriceParameters, AaveV2ReserveDataReply } from 'blockchain/aave'
-import { AaveV2ReserveDataParameters } from 'blockchain/aave/aaveV2ProtocolDataProvider'
+import type { AaveV2GetAssetPriceParameters, AaveV2ReserveDataReply } from 'blockchain/aave'
+import type { AaveV2ReserveDataParameters } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { zero } from 'helpers/zero'
-import { combineLatest, Observable, of } from 'rxjs'
+import type { Observable } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 
 export function aaveLikeAvailableLiquidityInUSDC$(

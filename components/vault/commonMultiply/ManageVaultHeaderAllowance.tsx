@@ -1,6 +1,6 @@
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultProxySubtitle } from 'components/vault/VaultProxy'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Text } from 'theme-ui'

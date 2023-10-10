@@ -1,6 +1,6 @@
 import { Footer } from 'components/Footer'
 import { NavigationController } from 'features/navigation/controls/NavigationController'
-import { WithChildren } from 'helpers/types'
+import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 

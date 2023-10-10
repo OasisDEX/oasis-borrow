@@ -2,10 +2,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-interface SidebarAwaitingConfirmationProps {
-  feature: string | JSX.Element
-  children: JSX.Element
-}
+import type { SidebarAwaitingConfirmationProps } from './SidebarAwaitingConfirmation.types'
 
 export function SidebarAwaitingConfirmation({
   feature,

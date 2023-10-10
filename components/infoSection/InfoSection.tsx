@@ -1,7 +1,8 @@
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
-import { Item, ItemProps } from './Item'
+import type { ItemProps } from './Item'
+import { Item } from './Item'
 
 interface InfoSectionProps {
   title: string

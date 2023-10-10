@@ -1,13 +1,15 @@
-import { ContextConnected } from 'blockchain/network'
+import type { ContextConnected } from 'blockchain/network.types'
 import { allDefined } from 'helpers/allDefined'
-import { GasEstimationStatus, HasGasEstimation, TxHelpers } from 'helpers/context/types'
-import { Observable } from 'rxjs'
+import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
+import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
+import type { Observable } from 'rxjs'
 import { nameofFactory } from 'utils'
 import { Machine, sendParent } from 'xstate'
 
 import { actions } from './actions'
 import { services } from './services'
-import { ProxyContext, ProxyEvent, ProxyResultEvent } from './types'
+import type { ProxyContext, ProxyEvent, ProxyResultEvent } from './types'
 
 const nameOfService = nameofFactory<typeof services>()
 const nameOfAction = nameofFactory<typeof actions>()

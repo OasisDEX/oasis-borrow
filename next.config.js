@@ -30,6 +30,10 @@ const baseConfig = {
   productionBrowserSourceMaps: true,
   pageExtensions: ['mdx', 'tsx', 'ts'],
   publicRuntimeConfig: publicRuntimeConfig,
+  sentry: {
+    disableServerWebpackPlugin: true,
+    disableClientWebpackPlugin: true,
+  },
   webpack: function (config, { isServer, dev }) {
     config.module.rules.push({
       test: /\.(svg|png|jpg|gif)$/,
@@ -165,7 +169,7 @@ const baseConfig = {
 
 module.exports = withBundleAnalyzer(withMDX(baseConfig))
 
-if (process.env.SENTRY_AUTH_TOKEN !== undefined) {
+if (process.env.SENTRY_AUTH_TOKEN !== undefined && process.env.SENTRY_AUTH_TOKEN !== '') {
   module.exports = withSentryConfig(
     module.exports,
     {

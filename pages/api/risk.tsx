@@ -1,6 +1,6 @@
 import { getRisk } from 'handlers/risk/get'
 import { apply } from 'helpers/apply'
-import { NextApiHandler } from 'next'
+import type { NextApiHandler } from 'next'
 import { userJwt } from 'server/jwt'
 
 const handler: NextApiHandler = async (req, res) => {
