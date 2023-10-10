@@ -56,17 +56,7 @@ import type { GuniTxData, GuniTxDataChange, ManageEarnVaultState } from './manag
 import { applyGuniCalculations } from './manageGuniVaultCalculations'
 import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
 import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
-
-export type ManageEarnVaultState = ManageMultiplyVaultState & {
-  totalValueLocked?: BigNumber
-  earningsToDate?: BigNumber
-  earningsToDateAfterFees?: BigNumber
-  netAPY?: BigNumber
-  makerOracleTokenPrices: {
-    today: MakerOracleTokenPrice
-    sevenDaysAgo: MakerOracleTokenPrice
-  }
-}
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,
