@@ -5,20 +5,21 @@ import { Link as ThemeLink } from 'theme-ui'
 import type { AppLinkProps } from './Links.types'
 
 export function InternalLink({
-  href,
-  sx,
-  children,
-  internalInNewTab,
   as,
-  variant,
-  onClick,
+  children,
   hash,
+  href,
+  internalInNewTab,
+  onClick,
+  sx,
+  query,
+  variant,
   ...rest
 }: AppLinkProps) {
   const readOnlyHref = href
   const readOnlyAs = as
 
-  const actualHref = { pathname: readOnlyHref as string, hash }
+  const actualHref = { pathname: readOnlyHref as string, hash, query }
 
   const actualAs = readOnlyAs ? { pathname: readOnlyAs as string } : readOnlyAs
 

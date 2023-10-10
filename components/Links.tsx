@@ -9,13 +9,13 @@ export function getIsInternalLink(href: string) {
 }
 
 export function AppLink({
-  href,
   children,
   disabled,
-  sx,
-  variant = 'styles.a',
+  href,
   onClick,
+  sx,
   target,
+  variant = 'styles.a',
   ...rest
 }: AppLinkProps) {
   const isInternalLink = href && getIsInternalLink(href)
