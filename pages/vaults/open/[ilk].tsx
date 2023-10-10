@@ -1,5 +1,3 @@
-import { ethereumMainnetHexId } from 'blockchain/networks'
-import { WithWalletConnection } from 'components/connectWallet'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
@@ -35,24 +33,22 @@ function OpenVault({ ilk }: { ilk: string }) {
   return (
     <AppLayout>
       <ProductContextHandler>
-        <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
-          <WithTermsOfService>
-            <WithWalletAssociatedRisk>
-              <PageSEOTags
-                title="seo.title-product-w-tokens"
-                titleParams={{
-                  product: t('seo.borrow.title'),
-                  protocol: LendingProtocolLabel.maker,
-                  token1: ilk,
-                  token2: 'DAI',
-                }}
-                description="seo.borrow.description"
-                url="/borrow"
-              />
-              <OpenVaultView ilk={ilk} />
-            </WithWalletAssociatedRisk>
-          </WithTermsOfService>
-        </WithWalletConnection>
+        <WithTermsOfService>
+          <WithWalletAssociatedRisk>
+            <PageSEOTags
+              title="seo.title-product-w-tokens"
+              titleParams={{
+                product: t('seo.borrow.title'),
+                protocol: LendingProtocolLabel.maker,
+                token1: ilk,
+                token2: 'DAI',
+              }}
+              description="seo.borrow.description"
+              url="/borrow"
+            />
+            <OpenVaultView ilk={ilk} />
+          </WithWalletAssociatedRisk>
+        </WithTermsOfService>
       </ProductContextHandler>
     </AppLayout>
   )
