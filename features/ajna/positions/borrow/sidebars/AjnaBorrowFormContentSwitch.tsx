@@ -1,5 +1,5 @@
 import { ListWithIcon } from 'components/ListWithIcon'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
@@ -9,7 +9,7 @@ export function AjnaBorrowFormContentSwitch() {
   const { t } = useTranslation()
   const {
     environment: { collateralToken },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
 
   return (
     <>

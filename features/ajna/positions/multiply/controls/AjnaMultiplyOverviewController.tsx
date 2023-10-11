@@ -6,8 +6,8 @@ import { ContentCardLiquidationPrice } from 'features/ajna/positions/common/comp
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
 import { ContentCardNetBorrowCost } from 'features/ajna/positions/common/components/contentCards/ContentCardNetBorrowCost'
 import { ContentCardNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardNetValue'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { ContentFooterItemsMultiply } from 'features/ajna/positions/multiply/components/ContentFooterItemsMultiply'
@@ -30,7 +30,7 @@ export function AjnaMultiplyOverviewController() {
       isShort,
       isProxyWithManyPositions,
     },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
 
   const {
     notifications,

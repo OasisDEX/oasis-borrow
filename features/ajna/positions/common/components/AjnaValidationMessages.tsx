@@ -1,6 +1,6 @@
 import { MessageCard } from 'components/MessageCard'
 import type { AjnaValidationItem } from 'features/ajna/common/types'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -14,7 +14,7 @@ export const AjnaValidationMessages: FC<AjnaValidationMessagesProps> = ({ valida
   const { t } = useTranslation()
   const {
     environment: { collateralToken, quoteToken, product },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
 
   const token = product === 'earn' ? quoteToken : collateralToken
 

@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { resolveLendingPriceIfOutsideRange } from 'features/ajna/positions/earn/helpers/resolveLendingPriceIfOutsideRange'
 import {
   mappedAjnaBuckets,
@@ -95,7 +95,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled }) => {
   const { t } = useTranslation()
   const {
     environment: { isOracless, isShort, priceFormat, quoteToken },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     form: {
       state: { price },

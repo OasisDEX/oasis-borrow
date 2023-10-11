@@ -7,7 +7,7 @@ import type { Tickers } from 'blockchain/prices.types'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import type { PositionCreated } from 'features/aave/services'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import type { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
+import type { AjnaGenericPosition, ProtocolProduct } from 'features/ajna/common/types'
 import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAjnaCumulatives'
 import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
@@ -64,7 +64,7 @@ export function getAjnaPosition$(
         getCumulatives: getAjnaCumulatives(context.chainId),
       }
 
-      switch (product as AjnaProduct) {
+      switch (product as ProtocolProduct) {
         case 'borrow':
         case 'multiply':
           return await views.ajna.getPosition(commonPayload, commonDependency)

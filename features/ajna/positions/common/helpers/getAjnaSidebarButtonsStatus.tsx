@@ -1,8 +1,8 @@
 import type {
-  AjnaFlow,
   AjnaFormAction,
-  AjnaSidebarEditingStep,
-  AjnaSidebarStep,
+  ProtocolFlow,
+  ProtocolSidebarEditingStep,
+  ProtocolSidebarStep,
 } from 'features/ajna/common/types'
 
 export function getAjnaSidebarButtonsStatus({
@@ -27,9 +27,9 @@ export function getAjnaSidebarButtonsStatus({
 }: {
   action?: AjnaFormAction
   ajnaSafetySwitchOn: boolean
-  currentStep: AjnaSidebarStep
-  editingStep: AjnaSidebarEditingStep
-  flow: AjnaFlow
+  currentStep: ProtocolSidebarStep
+  editingStep: ProtocolSidebarEditingStep
+  flow: ProtocolFlow
   hasErrors: boolean
   isAllowanceLoading: boolean
   isFormFrozen: boolean

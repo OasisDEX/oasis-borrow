@@ -1,14 +1,14 @@
 import { NetworkNames } from 'blockchain/networks'
-import type { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
+import type { ProtocolFlow, ProtocolProduct } from 'features/ajna/common/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 
 interface AjnaBorrowHeadlinePropsParams {
   collateralToken?: string
-  flow: AjnaFlow
+  flow: ProtocolFlow
   id?: string
-  product?: AjnaProduct
+  product?: ProtocolProduct
   quoteToken?: string
   collateralAddress?: string
   quoteAddress?: string

@@ -3,10 +3,10 @@ import type BigNumber from 'bignumber.js'
 import type { GasPriceParams } from 'blockchain/prices.types'
 import { isProductContextAvailable } from 'components/context/ProductContextProvider'
 import type {
-  AjnaFlow,
-  AjnaProduct,
-  AjnaSidebarEditingStep,
-  AjnaSidebarStep,
+  ProtocolFlow,
+  ProtocolProduct,
+  ProtocolSidebarEditingStep,
+  ProtocolSidebarStep,
 } from 'features/ajna/common/types'
 import {
   getAjnaEditingStep,
@@ -20,7 +20,7 @@ import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
 import React, { useContext, useEffect, useState } from 'react'
 
-interface AjnaGeneralContextProviderProps {
+interface ProtocolGeneralContextProviderProps {
   collateralAddress: string
   collateralBalance: BigNumber
   collateralDigits: number
@@ -31,11 +31,11 @@ interface AjnaGeneralContextProviderProps {
   dpmProxy?: string
   ethBalance: BigNumber
   ethPrice: BigNumber
-  flow: AjnaFlow
+  flow: ProtocolFlow
   id?: string
   isOracless: boolean
   owner: string
-  product: AjnaProduct
+  product: ProtocolProduct
   quoteAddress: string
   quoteBalance: BigNumber
   quoteDigits: number
@@ -43,33 +43,33 @@ interface AjnaGeneralContextProviderProps {
   quotePrice: BigNumber
   quoteToken: string
   quoteIcon: string
-  steps: AjnaSidebarStep[]
+  steps: ProtocolSidebarStep[]
   gasPrice: GasPriceParams
   slippage: BigNumber
   isProxyWithManyPositions: boolean
 }
 
-type AjnaGeneralContextEnvironment = Omit<AjnaGeneralContextProviderProps, 'steps'> & {
+type ProtocolGeneralContextEnvironment = Omit<ProtocolGeneralContextProviderProps, 'steps'> & {
   isOwner: boolean
   isShort: boolean
   priceFormat: string
 }
 
-interface AjnaGeneralContextSteps {
-  currentStep: AjnaSidebarStep
-  editingStep: AjnaSidebarEditingStep
+interface ProtocolGeneralContextSteps {
+  currentStep: ProtocolSidebarStep
+  editingStep: ProtocolSidebarEditingStep
   isExternalStep: boolean
   isFlowStateReady: boolean
   isStepWithTransaction: boolean
-  steps: AjnaSidebarStep[]
+  steps: ProtocolSidebarStep[]
   txStatus?: TxStatus
   setIsFlowStateReady: Dispatch<SetStateAction<boolean>>
-  setStep: (step: AjnaSidebarStep) => void
+  setStep: (step: ProtocolSidebarStep) => void
   setNextStep: () => void
   setPrevStep: () => void
 }
 
-interface AjnaGeneralContextTx {
+interface ProtocolGeneralContextTx {
   isTxError: boolean
   isTxInProgress: boolean
   isTxStarted: boolean
@@ -79,26 +79,26 @@ interface AjnaGeneralContextTx {
   txDetails?: TxDetails
 }
 
-interface AjnaGeneralContext {
-  environment: AjnaGeneralContextEnvironment
-  steps: AjnaGeneralContextSteps
-  tx: AjnaGeneralContextTx
+interface ProtocolGeneralContext {
+  environment: ProtocolGeneralContextEnvironment
+  steps: ProtocolGeneralContextSteps
+  tx: ProtocolGeneralContextTx
 }
 
-const ajnaGeneralContext = React.createContext<AjnaGeneralContext | undefined>(undefined)
+const protocolGeneralContext = React.createContext<ProtocolGeneralContext | undefined>(undefined)
 
-export function useAjnaGeneralContext(): AjnaGeneralContext {
-  const context = useContext(ajnaGeneralContext)
+export function useProtocolGeneralContext(): ProtocolGeneralContext {
+  const context = useContext(protocolGeneralContext)
 
-  if (!context) throw new Error('AjnaGeneralContext not available!')
+  if (!context) throw new Error('ProtocolGeneralContext not available!')
   return context
 }
 
-export function AjnaGeneralContextProvider({
+export function ProtocolGeneralContextProvider({
   children,
   steps,
   ...props
-}: PropsWithChildren<AjnaGeneralContextProviderProps>) {
+}: PropsWithChildren<ProtocolGeneralContextProviderProps>) {
   if (!isProductContextAvailable()) return null
 
   const {
@@ -112,7 +112,7 @@ export function AjnaGeneralContextProvider({
     isProxyWithManyPositions,
   } = props
   const { walletAddress } = useAccount()
-  const [currentStep, setCurrentStep] = useState<AjnaSidebarStep>(steps[0])
+  const [currentStep, setCurrentStep] = useState<ProtocolSidebarStep>(steps[0])
   const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(false)
   const [txDetails, setTxDetails] = useState<TxDetails>()
   const isShort = isShortPosition({ collateralToken })
@@ -124,7 +124,7 @@ export function AjnaGeneralContextProvider({
     else throw new Error(`A step with index ${i} does not exist in form flow.`)
   }
 
-  const setupStepManager = (): AjnaGeneralContextSteps => {
+  const setupStepManager = (): ProtocolGeneralContextSteps => {
     return {
       currentStep,
       steps,
@@ -141,7 +141,7 @@ export function AjnaGeneralContextProvider({
     }
   }
 
-  const setupTxManager = (): AjnaGeneralContextTx => {
+  const setupTxManager = (): ProtocolGeneralContextTx => {
     return {
       ...getTxStatuses(txDetails?.txStatus),
       setTxDetails,
@@ -149,7 +149,7 @@ export function AjnaGeneralContextProvider({
     }
   }
 
-  const [context, setContext] = useState<AjnaGeneralContext>({
+  const [context, setContext] = useState<ProtocolGeneralContext>({
     environment: {
       ...props,
       isShort,
@@ -187,5 +187,7 @@ export function AjnaGeneralContextProvider({
     slippage,
   ])
 
-  return <ajnaGeneralContext.Provider value={context}>{children}</ajnaGeneralContext.Provider>
+  return (
+    <protocolGeneralContext.Provider value={context}>{children}</protocolGeneralContext.Provider>
+  )
 }

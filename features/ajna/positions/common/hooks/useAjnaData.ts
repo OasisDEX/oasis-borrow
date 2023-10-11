@@ -6,7 +6,7 @@ import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import type { AjnaProduct } from 'features/ajna/common/types'
+import type { ProtocolProduct } from 'features/ajna/common/types'
 import { getAjnaPositionAggregatedData$ } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { getStaticDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
@@ -19,7 +19,7 @@ import { EMPTY } from 'rxjs'
 interface AjnaDataProps {
   collateralToken?: string
   id?: string
-  product?: AjnaProduct
+  product?: ProtocolProduct
   quoteToken?: string
 }
 

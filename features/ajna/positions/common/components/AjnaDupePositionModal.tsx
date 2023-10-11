@@ -2,7 +2,7 @@ import { NetworkIds } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
-import type { AjnaProduct } from 'features/ajna/common/types'
+import type { ProtocolProduct } from 'features/ajna/common/types'
 import { getOraclessProductUrl } from 'features/poolFinder/helpers'
 import { useModalContext } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -19,7 +19,7 @@ interface AjnaDupePositionModalProps {
   collateralToken: string
   dpmAccounts: UserDpmAccount[]
   events: CreatePositionEvent[]
-  product: AjnaProduct
+  product: ProtocolProduct
   quoteAddress: string
   quoteToken: string
   walletAddress?: string

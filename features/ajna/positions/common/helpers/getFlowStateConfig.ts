@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { AjnaFlow } from 'features/ajna/common/types'
+import type { ProtocolFlow } from 'features/ajna/common/types'
 import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
 import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
 import type { UseFlowStateProps } from 'helpers/useFlowState'
@@ -8,7 +8,7 @@ import { zero } from 'helpers/zero'
 interface GetFlowStateConfigParams {
   collateralToken: string
   fee: BigNumber
-  flow: AjnaFlow
+  flow: ProtocolFlow
   quoteToken: string
   state: AjnaFormState
 }

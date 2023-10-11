@@ -1,7 +1,7 @@
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { useAppConfig } from 'helpers/config'
@@ -45,7 +45,7 @@ export function AjnaPositionView({
       collateralIcon,
       quoteIcon,
     },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
 
   return (
     <Container variant="vaultPageContainerStatic">

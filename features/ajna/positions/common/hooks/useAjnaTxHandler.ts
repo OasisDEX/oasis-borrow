@@ -8,8 +8,8 @@ import { getRpcProvider } from 'blockchain/networks'
 import type { CancelablePromise } from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context/MainContextProvider'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
 import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate.constants'
@@ -40,7 +40,7 @@ export function useAjnaTxHandler(): () => void {
       slippage,
     },
     steps: { isExternalStep, currentStep },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     form: { dispatch, state },
     position: {

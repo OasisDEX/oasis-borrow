@@ -1,8 +1,8 @@
 import type BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { PillAccordion } from 'components/PillAccordion'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaEarnInput } from 'features/ajna/positions/earn/components/AjnaEarnInput'
 import {
   AJNA_HTP_OFFSET,
@@ -28,7 +28,7 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
   const { t } = useTranslation()
   const {
     environment: { collateralToken, priceFormat, quoteToken, isShort, isOracless },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     form: {
       state: { price },

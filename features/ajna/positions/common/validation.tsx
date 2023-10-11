@@ -3,11 +3,11 @@ import type { AjnaSimulationValidationItem } from 'actions/ajna/types'
 import type BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import type {
-  AjnaFlow,
   AjnaGenericPosition,
-  AjnaProduct,
-  AjnaSidebarStep,
   AjnaValidationItem,
+  ProtocolFlow,
+  ProtocolProduct,
+  ProtocolSidebarStep,
 } from 'features/ajna/common/types'
 import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
 import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
@@ -73,15 +73,15 @@ const AjnaSafetyOnMessage: FC = () => (
 
 interface GetAjnaBorrowValidationsParams {
   ajnaSafetySwitchOn: boolean
-  flow: AjnaFlow
+  flow: ProtocolFlow
   collateralBalance: BigNumber
   collateralToken: string
   quoteToken: string
-  currentStep: AjnaSidebarStep
+  currentStep: ProtocolSidebarStep
   ethBalance: BigNumber
   ethPrice: BigNumber
   gasEstimationUsd?: BigNumber
-  product: AjnaProduct
+  product: ProtocolProduct
   quoteBalance: BigNumber
   simulationErrors?: AjnaSimulationValidationItem[]
   simulationWarnings?: AjnaSimulationValidationItem[]

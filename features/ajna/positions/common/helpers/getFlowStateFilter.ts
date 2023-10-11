@@ -1,13 +1,13 @@
 import { extractLendingProtocolFromPositionCreatedEvent } from 'features/aave/services'
 import { AJNA_BORROWISH_PRODUCTS } from 'features/ajna/common/consts'
-import type { AjnaProduct } from 'features/ajna/common/types'
+import type { ProtocolProduct } from 'features/ajna/common/types'
 import { LendingProtocol } from 'lendingProtocols'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 interface AjnaFlowStateFilterParams {
   collateralAddress: string
   event: CreatePositionEvent
-  product: AjnaProduct
+  product: ProtocolProduct
   quoteAddress: string
 }
 interface GetAjnaFlowStateFilterParams extends Omit<AjnaFlowStateFilterParams, 'event'> {
@@ -26,7 +26,7 @@ export function ajnaFlowStateFilter({
     quoteAddress.toLocaleLowerCase() === event.args.debtToken.toLowerCase() &&
     (product.toLowerCase() === event.args.positionType.toLowerCase() ||
       (AJNA_BORROWISH_PRODUCTS.includes(product) &&
-        AJNA_BORROWISH_PRODUCTS.includes(event.args.positionType.toLowerCase() as AjnaProduct)))
+        AJNA_BORROWISH_PRODUCTS.includes(event.args.positionType.toLowerCase() as ProtocolProduct)))
   )
 }
 

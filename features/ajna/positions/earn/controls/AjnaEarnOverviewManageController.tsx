@@ -10,8 +10,8 @@ import { ContentCardEarnNetValue } from 'features/ajna/positions/common/componen
 import { ContentCardMaxLendingLTV } from 'features/ajna/positions/common/components/contentCards/ContentCardMaxLendingLTV'
 import { ContentCardPositionLendingPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionLendingPrice'
 import { ContentCardTotalEarnings } from 'features/ajna/positions/common/components/contentCards/ContentCardTotalEarnings'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnManage'
 import { getLendingPriceColor } from 'features/ajna/positions/earn/helpers/getLendingPriceColor'
 import { zero } from 'helpers/zero'
@@ -30,7 +30,7 @@ export function AjnaEarnOverviewManageController() {
       quotePrice,
       quoteToken,
     },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     form: {
       state: { depositAmount, withdrawAmount },

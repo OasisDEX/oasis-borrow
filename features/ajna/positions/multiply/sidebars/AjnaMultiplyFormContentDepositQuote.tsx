@@ -1,6 +1,6 @@
 // import { PillAccordion } from 'components/PillAccordion'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaFormFieldDeposit } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
 // import { AjnaMultiplySlider } from 'features/ajna/positions/multiply/components/AjnaMultiplySlider'
@@ -12,7 +12,7 @@ export function AjnaMultiplyFormContentDepositQuote() {
   // const { t } = useTranslation()
   const {
     environment: { quoteBalance, quotePrice, quoteToken },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     form: {
       dispatch,

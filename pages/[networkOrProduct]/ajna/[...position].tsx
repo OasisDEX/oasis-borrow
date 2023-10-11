@@ -5,7 +5,7 @@ import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { isAddress } from 'ethers/lib/utils'
 import { ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
-import type { AjnaProduct } from 'features/ajna/common/types'
+import type { ProtocolProduct } from 'features/ajna/common/types'
 import { AjnaProductController } from 'features/ajna/positions/common/controls/AjnaProductController'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -14,7 +14,7 @@ import React from 'react'
 interface AjnaPositionPageProps {
   id: string
   pool: string
-  product: AjnaProduct
+  product: ProtocolProduct
   collateralToken: string
   quoteToken: string
 }
@@ -59,7 +59,7 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
   if (
     isSupportedNetwork(network) &&
     network === NetworkNames.ethereumMainnet &&
-    ajnaProducts.includes(product as AjnaProduct) &&
+    ajnaProducts.includes(product as ProtocolProduct) &&
     (supportedPools.includes(`${caseSensitiveCollateralToken}-${caseSensitiveQuoteToken}`) ||
       (isAddress(caseSensitiveCollateralToken) && isAddress(caseSensitiveQuoteToken)))
   ) {

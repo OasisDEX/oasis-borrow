@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import type {
   AjnaFormActionsUpdateDeposit,
   AjnaFormActionsUpdateGenerate,
@@ -52,7 +52,7 @@ export function AjnaFormFieldDeposit({
   const { t } = useTranslation()
   const {
     environment: { isOracless, product },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     form: { dispatch, state },
     validation: { isFormFrozen },
@@ -114,7 +114,7 @@ export function AjnaFormFieldGenerate({
   const { t } = useTranslation()
   const {
     environment: { isOracless, product, quoteDigits, quotePrice, quoteToken },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     form: { dispatch, state },
     validation: { isFormFrozen },
@@ -184,7 +184,7 @@ export function AjnaFormFieldPayback({
   const { t } = useTranslation()
   const {
     environment: { isOracless, quoteDigits, quotePrice, quoteToken, product },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     form: { dispatch, state },
     validation: { isFormFrozen },
@@ -261,7 +261,7 @@ export function AjnaFormFieldWithdraw({
 
   const {
     environment: { isOracless, product },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     form: { dispatch, state },
     validation: { isFormFrozen },

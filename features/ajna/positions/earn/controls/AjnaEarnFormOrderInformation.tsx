@@ -2,8 +2,8 @@ import { normalizeValue } from '@oasisdex/dma-library'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import type { AjnaIsCachedPosition } from 'features/ajna/common/types'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import {
   formatAmount,
@@ -22,7 +22,7 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
     environment: { quoteToken, collateralPrice, quotePrice, isShort, priceFormat, isOracless },
     steps: { isFlowStateReady },
     tx: { txDetails, isTxSuccess },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     position: { cachedPosition, currentPosition, isSimulationLoading },
   } = useAjnaProductContext('earn')

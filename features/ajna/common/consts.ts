@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
-import type { AjnaFlow, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
+import type { ProtocolFlow, ProtocolProduct, ProtocolSidebarStep } from 'features/ajna/common/types'
 
-export const ajnaProducts: AjnaProduct[] = ['borrow', 'earn', 'multiply']
+export const ajnaProducts: ProtocolProduct[] = ['borrow', 'earn', 'multiply']
 
 export const steps: {
-  [ProductKey in AjnaProduct]: {
-    [FlowKey in AjnaFlow]: AjnaSidebarStep[]
+  [ProductKey in ProtocolProduct]: {
+    [FlowKey in ProtocolFlow]: ProtocolSidebarStep[]
   }
 } = {
   borrow: {
@@ -22,8 +22,8 @@ export const steps: {
   },
 }
 
-export const ajnaFormExternalSteps: AjnaSidebarStep[] = ['dpm']
-export const ajnaFormStepsWithTransaction: AjnaSidebarStep[] = ['transaction']
+export const ajnaFormExternalSteps: ProtocolSidebarStep[] = ['dpm']
+export const ajnaFormStepsWithTransaction: ProtocolSidebarStep[] = ['transaction']
 
 export const LTVWarningThreshold = new BigNumber(0.05)
 export const LUPPercentageOffset = new BigNumber(0.05)
@@ -66,4 +66,4 @@ export const AJNA_TOKENS_WITH_MULTIPLY = [
   'YFI',
 ]
 
-export const AJNA_BORROWISH_PRODUCTS: AjnaProduct[] = ['borrow', 'multiply']
+export const AJNA_BORROWISH_PRODUCTS: ProtocolProduct[] = ['borrow', 'multiply']

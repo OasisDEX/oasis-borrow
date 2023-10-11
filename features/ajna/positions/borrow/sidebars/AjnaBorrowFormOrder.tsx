@@ -1,8 +1,8 @@
 import { negativeToZero, normalizeValue } from '@oasisdex/dma-library'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import {
@@ -20,7 +20,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     environment: { collateralToken, isOracless, isShort, priceFormat, quoteToken },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     position: { cachedPosition, currentPosition, isSimulationLoading },
   } = useAjnaProductContext('borrow')

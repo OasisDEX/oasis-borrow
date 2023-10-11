@@ -1,8 +1,8 @@
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
 import { WithArrow } from 'components/WithArrow'
-import type { AjnaProduct } from 'features/ajna/common/types'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import type { ProtocolProduct } from 'features/ajna/common/types'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
@@ -10,7 +10,7 @@ import React from 'react'
 import { Box, Image, Text } from 'theme-ui'
 import { checkmark } from 'theme/icons'
 
-const LINKS_MAP: { [key in AjnaProduct]: string } = {
+const LINKS_MAP: { [key in ProtocolProduct]: string } = {
   borrow: EXTERNAL_LINKS.DOCS.AJNA.LIQUIDATIONS,
   multiply: EXTERNAL_LINKS.DOCS.AJNA.HUB,
   earn: EXTERNAL_LINKS.DOCS.AJNA.RISKS,
@@ -20,7 +20,7 @@ export function AjnaFormContentRisk() {
   const { t } = useTranslation()
   const {
     environment: { isOracless, product },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
 
   return (
     <>

@@ -5,13 +5,13 @@ import type { AllNetworksContractsType } from 'blockchain/contracts'
 import type { AjnaBorrowAction, AjnaEarnAction, AjnaMultiplyAction } from './types/AjnaAction.types'
 
 export type AjnaGenericPosition = AjnaPosition | AjnaEarnPosition
-export type AjnaProduct = 'borrow' | 'earn' | 'multiply'
-export type AjnaFlow = 'open' | 'manage'
+export type ProtocolProduct = 'borrow' | 'earn' | 'multiply'
+export type ProtocolFlow = 'open' | 'manage'
 export type AjnaFormAction = AjnaBorrowAction | AjnaEarnAction | AjnaMultiplyAction
 
-export type AjnaSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction' | 'transition'
+export type ProtocolSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction' | 'transition'
 
-export type AjnaSidebarEditingStep = Extract<AjnaSidebarStep, 'setup' | 'manage'>
+export type ProtocolSidebarEditingStep = Extract<ProtocolSidebarStep, 'setup' | 'manage'>
 
 export type AjnaCloseTo = 'collateral' | 'quote'
 

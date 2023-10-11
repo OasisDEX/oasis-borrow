@@ -1,6 +1,6 @@
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -10,7 +10,7 @@ export const AjnaBorrowOriginationFee = () => {
   const { t } = useTranslation()
   const {
     environment: { isOracless, quoteToken, quotePrice },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     position: {
       currentPosition: { position, simulation },

@@ -1,7 +1,7 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import type { NetworkIds } from 'blockchain/networks'
 import dayjs from 'dayjs'
-import type { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
+import type { AjnaGenericPosition, ProtocolProduct } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import type { AjnaPositionAggregatedDataAuctions } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
 import { getAjnaPositionAggregatedData } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
@@ -45,7 +45,7 @@ function parseAggregatedDataAuction({
   history: AjnaUnifiedHistoryEvent[]
   position: AjnaGenericPosition
 }): AjnaPositionAuction {
-  switch (product as AjnaProduct) {
+  switch (product as ProtocolProduct) {
     case 'borrow':
     case 'multiply': {
       if (!auctions.length) {

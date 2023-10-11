@@ -1,4 +1,4 @@
-import type { AjnaFlow } from 'features/ajna/common/types'
+import type { ProtocolFlow } from 'features/ajna/common/types'
 
 export function getAjnaSidebarPrimaryButtonActions({
   currentStep,
@@ -25,7 +25,7 @@ export function getAjnaSidebarPrimaryButtonActions({
 }: {
   currentStep: string
   editingStep: string
-  flow: AjnaFlow
+  flow: ProtocolFlow
   isStepWithTransaction: boolean
   isTransitionAction: boolean
   isTransitionWaitingForApproval: boolean

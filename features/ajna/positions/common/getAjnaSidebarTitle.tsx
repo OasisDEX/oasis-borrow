@@ -1,5 +1,5 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
-import type { AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
+import type { ProtocolProduct, ProtocolSidebarStep } from 'features/ajna/common/types'
 import { zero } from 'helpers/zero'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -11,8 +11,8 @@ export const getAjnaSidebarTitle = ({
   position,
   isOracless,
 }: {
-  currentStep: AjnaSidebarStep
-  product: AjnaProduct
+  currentStep: ProtocolSidebarStep
+  product: ProtocolProduct
   isFormFrozen: boolean
   position: AjnaPosition | AjnaEarnPosition
   isOracless: boolean

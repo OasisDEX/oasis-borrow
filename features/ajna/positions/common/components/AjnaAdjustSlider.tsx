@@ -3,8 +3,8 @@ import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { Icon } from 'components/Icon'
 import { SkeletonLine } from 'components/Skeleton'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
@@ -26,7 +26,7 @@ export function AjnaAdjustSlider({ disabled = false }: AjnaAdjustSliderProps) {
   const {
     environment: { collateralToken, quoteToken, isShort, product },
     steps: { currentStep },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
 
   if (product === 'earn') {
     throw new Error('AjnaAdjustSlider is not supported for earn')

@@ -1,8 +1,8 @@
 import type {
-  AjnaFlow,
   AjnaGenericPosition,
-  AjnaProduct,
-  AjnaSidebarStep,
+  ProtocolFlow,
+  ProtocolProduct,
+  ProtocolSidebarStep,
 } from 'features/ajna/common/types'
 import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
 import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
@@ -10,14 +10,14 @@ import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsForm
 interface GetPrimaryButtonLabelKeyParams {
   state: AjnaFormState
   position: AjnaGenericPosition
-  currentStep: AjnaSidebarStep
-  flow: AjnaFlow
+  currentStep: ProtocolSidebarStep
+  flow: ProtocolFlow
   hasAllowance: boolean
   hasDpmAddress: boolean
   isTransitionInProgress: boolean
   isTxError: boolean
   isTxSuccess: boolean
-  product: AjnaProduct
+  product: ProtocolProduct
   walletAddress?: string
 }
 

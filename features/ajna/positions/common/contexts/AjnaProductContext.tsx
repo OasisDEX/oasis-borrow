@@ -6,13 +6,13 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import type {
   AjnaGenericPosition,
-  AjnaProduct,
   AjnaValidationItem,
+  ProtocolProduct,
 } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import type { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import type {
@@ -123,7 +123,7 @@ const ajnaMultiplyContext = React.createContext<AjnaProductContextWithMultiply |
   undefined,
 )
 
-type PickProductType<T extends AjnaProduct> = T extends 'borrow'
+type PickProductType<T extends ProtocolProduct> = T extends 'borrow'
   ? AjnaProductContextWithBorrow
   : T extends 'earn'
   ? AjnaProductContextWithEarn
@@ -131,8 +131,8 @@ type PickProductType<T extends AjnaProduct> = T extends 'borrow'
   ? AjnaProductContextWithMultiply
   : never
 
-export function useAjnaProductContext<T extends AjnaProduct>(product: T): PickProductType<T> {
-  const { environment } = useAjnaGeneralContext()
+export function useAjnaProductContext<T extends ProtocolProduct>(product: T): PickProductType<T> {
+  const { environment } = useProtocolGeneralContext()
 
   const context =
     product === 'borrow'
@@ -178,7 +178,7 @@ export function AjnaProductContextProvider({
     },
     steps: { currentStep },
     tx: { txDetails },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   // TODO: find a way to distinguish between the types - there no place for error here except for typescript is too stupid to understand
   // @ts-expect-error
   const form = formReducto(formDefaults)

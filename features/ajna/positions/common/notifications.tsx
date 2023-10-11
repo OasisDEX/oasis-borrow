@@ -3,10 +3,10 @@ import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNo
 import { AppLink } from 'components/Links'
 import { LUPPercentageOffset } from 'features/ajna/common/consts'
 import type {
-  AjnaFlow,
   AjnaGenericPosition,
-  AjnaProduct,
   AjnaUpdateState,
+  ProtocolFlow,
+  ProtocolProduct,
 } from 'features/ajna/common/types'
 import type {
   AjnaBorrowFormAction,
@@ -302,7 +302,7 @@ export function getAjnaNotifications({
   isOracless,
 }: {
   ajnaSafetySwitchOn: boolean
-  flow: AjnaFlow
+  flow: ProtocolFlow
   position: AjnaGenericPosition
   positionAuction: AjnaPositionAuction
   collateralToken: string
@@ -315,7 +315,7 @@ export function getAjnaNotifications({
     | AjnaUpdateState<AjnaBorrowFormState>
     | AjnaUpdateState<AjnaEarnFormState>
     | AjnaUpdateState<AjnaMultiplyFormState>
-  product: AjnaProduct
+  product: ProtocolProduct
   isOracless: boolean
 }) {
   const notifications: DetailsSectionNotificationItem[] = []

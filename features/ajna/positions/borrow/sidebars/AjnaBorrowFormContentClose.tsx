@@ -1,7 +1,7 @@
 import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
@@ -14,7 +14,7 @@ export function AjnaBorrowFormContentClose() {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, collateralPrice, quoteToken, quotePrice },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
 
   const {
     form: {

@@ -1,6 +1,6 @@
 import { PositionHistory } from 'components/history/PositionHistory'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
@@ -19,7 +19,7 @@ export function AjnaPositionHistoryController() {
   const { t } = useTranslation()
   const {
     environment: { isOracless, product, isShort, priceFormat, collateralToken, quoteToken },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
   const {
     position: { history },
   } = useAjnaProductContext(product)

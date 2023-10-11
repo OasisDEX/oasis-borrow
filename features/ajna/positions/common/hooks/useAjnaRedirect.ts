@@ -1,4 +1,4 @@
-import type { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
+import type { AjnaGenericPosition, ProtocolProduct } from 'features/ajna/common/types'
 import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -9,7 +9,7 @@ interface AjnaRedirectProps {
   collateralToken?: string
   dpmPositionData?: DpmPositionData
   id?: string
-  product?: AjnaProduct
+  product?: ProtocolProduct
   quoteToken?: string
 }
 

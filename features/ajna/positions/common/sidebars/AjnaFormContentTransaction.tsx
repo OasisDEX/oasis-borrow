@@ -1,6 +1,6 @@
 import { MessageCard } from 'components/MessageCard'
 import type { AjnaIsCachedPosition } from 'features/ajna/common/types'
-import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
+import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
@@ -19,7 +19,7 @@ export function AjnaFormContentTransaction({
   const {
     environment: { collateralToken, product, quoteToken },
     tx: { isTxStarted, isTxError, isTxWaitingForApproval, isTxInProgress, isTxSuccess },
-  } = useAjnaGeneralContext()
+  } = useProtocolGeneralContext()
 
   return (
     <>

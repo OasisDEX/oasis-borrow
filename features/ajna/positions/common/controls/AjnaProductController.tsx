@@ -4,11 +4,11 @@ import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { steps } from 'features/ajna/common/consts'
-import type { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
+import type { ProtocolFlow, ProtocolProduct } from 'features/ajna/common/types'
 import { AjnaBorrowPositionController } from 'features/ajna/positions/borrow/controls/AjnaBorrowPositionController'
 import { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
-import { AjnaGeneralContextProvider } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { AjnaProductContextProvider } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { ProtocolGeneralContextProvider } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import { useAjnaData } from 'features/ajna/positions/common/hooks/useAjnaData'
 import { useAjnaRedirect } from 'features/ajna/positions/common/hooks/useAjnaRedirect'
@@ -36,8 +36,8 @@ import React from 'react'
 interface AjnaProductControllerProps {
   collateralToken?: string
   id?: string
-  flow: AjnaFlow
-  product?: AjnaProduct
+  flow: ProtocolFlow
+  product?: ProtocolProduct
   quoteToken?: string
 }
 
@@ -106,7 +106,7 @@ export function AjnaProductController({
                   {...getAjnaHeadlineProps({
                     collateralToken: dpmPositionData?.collateralToken,
                     flow,
-                    product: dpmPositionData?.product as AjnaProduct,
+                    product: dpmPositionData?.product as ProtocolProduct,
                     quoteToken: dpmPositionData?.quoteToken,
                     collateralIcon: tokensIconsData?.collateralToken,
                     quoteIcon: tokensIconsData?.quoteToken,
@@ -141,7 +141,7 @@ export function AjnaProductController({
                     description="seo.ajna.description"
                     url={document.location.pathname}
                   />
-                  <AjnaGeneralContextProvider
+                  <ProtocolGeneralContextProvider
                     collateralAddress={dpmPosition.collateralTokenAddress}
                     collateralBalance={collateralBalance}
                     collateralDigits={collateralDigits}
@@ -156,7 +156,7 @@ export function AjnaProductController({
                     id={id}
                     isOracless={!!isOracless}
                     owner={dpmPosition.user}
-                    product={dpmPosition.product as AjnaProduct}
+                    product={dpmPosition.product as ProtocolProduct}
                     quoteAddress={dpmPosition.quoteTokenAddress}
                     quoteBalance={quoteBalance}
                     quoteDigits={quoteDigits}
@@ -164,7 +164,7 @@ export function AjnaProductController({
                     quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                     quoteToken={dpmPosition.quoteToken}
                     quoteIcon={tokensIconsData.quoteToken}
-                    steps={steps[dpmPosition.product as AjnaProduct][flow]}
+                    steps={steps[dpmPosition.product as ProtocolProduct][flow]}
                     gasPrice={gasPrice}
                     slippage={slippage}
                     isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
@@ -215,7 +215,7 @@ export function AjnaProductController({
                         <AjnaMultiplyPositionController />
                       </AjnaProductContextProvider>
                     )}
-                  </AjnaGeneralContextProvider>
+                  </ProtocolGeneralContextProvider>
                 </>
               )}
             </WithLoadingIndicator>
