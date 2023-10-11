@@ -14,10 +14,16 @@ jobs:
       ECR_REPO_NAME: summer-fi-staging
       SERVICE_NAME: summer-fi-staging
       CLUSTER_NAME: summer-fi-staging
+      CONFIG_URL: ${{ secrets.CONFIG_URL }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.12
 
       - name: Extract commit hash
         id: vars
