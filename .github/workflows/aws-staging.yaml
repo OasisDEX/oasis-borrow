@@ -84,10 +84,6 @@ jobs:
           REFERRAL_SUBGRAPH_URL: ${{ secrets.REFERRAL_SUBGRAPH_URL_STAGING }}
         run: yarn build
 
-      - name: Run migrations
-        id: migrate
-        run: yarn migrate
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
