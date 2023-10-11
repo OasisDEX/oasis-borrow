@@ -4,7 +4,7 @@ import type { DefaultErrorResponse } from 'pages/api/types'
 import { config } from 'server/config'
 import * as z from 'zod'
 
-import type { PortfolioBalanceResponse, ProtocolAsset } from './types'
+import type { PortfolioBalanceResponse, ProtocolAsset, WalletAsset } from './types'
 
 const SUPPORTED_CHAIN_IDS = ['eth', 'op', 'arb', 'base']
 
@@ -84,7 +84,7 @@ const getWalletAssetsUsdValue = async (
     SUPPORTED_CHAIN_IDS.map((chainId) =>
       fetch(`${serviceUrl}/user/chain_balance?id=${address}&chain_id=${chainId}`, {
         headers,
-      }).then((_res) => _res.json() as Promise<{ usd_value: number }>),
+      }).then((_res) => _res.json() as Promise<WalletAsset>),
     ),
   )
   const walletAssetsUsdValue = results.reduce((acc, cur) => {

@@ -11,6 +11,10 @@ export type ProtocolAsset = {
   debt_usd_value: number
 }
 
+export type WalletAsset = {
+  usd_value: number
+}
+
 export type PortfolioBalanceResponse = {
   walletAssetsUsdValue: number
   protocolAssetsUsdValue: number
