@@ -1,4 +1,4 @@
-import type { ProtocolFlow } from 'features/ajna/common/types'
+import type { ProtocolFlow } from 'features/unifiedProtocol/types'
 
 export function getAjnaSidebarPrimaryButtonActions({
   currentStep,

@@ -1,6 +1,6 @@
 import { Banner } from 'components/Banner'
 import { AppLink } from 'components/Links'
-import type { ProtocolFlow } from 'features/ajna/common/types'
+import type { ProtocolFlow } from 'features/unifiedProtocol/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useRedirect } from 'helpers/useRedirect'
 import { Trans, useTranslation } from 'next-i18next'

@@ -2,13 +2,7 @@ import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type { AjnaSimulationValidationItem } from 'actions/ajna/types'
 import type BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
-import type {
-  AjnaGenericPosition,
-  AjnaValidationItem,
-  ProtocolFlow,
-  ProtocolProduct,
-  ProtocolSidebarStep,
-} from 'features/ajna/common/types'
+import type { AjnaGenericPosition, AjnaValidationItem } from 'features/ajna/common/types'
 import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
 import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
 import type {
@@ -20,6 +14,11 @@ import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarn
 import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
 import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
+import type {
+  ProtocolFlow,
+  ProtocolProduct,
+  ProtocolSidebarStep,
+} from 'features/unifiedProtocol/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'

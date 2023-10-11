@@ -1,9 +1,9 @@
 import type {
-  AjnaFormAction,
   ProtocolFlow,
+  ProtocolFormAction,
   ProtocolSidebarEditingStep,
   ProtocolSidebarStep,
-} from 'features/ajna/common/types'
+} from 'features/unifiedProtocol/types'
 
 export function getAjnaSidebarButtonsStatus({
   action,
@@ -25,7 +25,7 @@ export function getAjnaSidebarButtonsStatus({
   isTxWaitingForApproval,
   walletAddress,
 }: {
-  action?: AjnaFormAction
+  action?: ProtocolFormAction
   ajnaSafetySwitchOn: boolean
   currentStep: ProtocolSidebarStep
   editingStep: ProtocolSidebarEditingStep

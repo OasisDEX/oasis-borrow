@@ -1,6 +1,4 @@
 import type BigNumber from 'bignumber.js'
-import type { AjnaCloseTo } from 'features/ajna/common/types'
-import type { AjnaMultiplyAction } from 'features/ajna/common/types/AjnaAction.types'
 import type { AjnaMultiplyPanel } from 'features/ajna/common/types/AjnaPanel.types'
 import type {
   AjnaFormActionsReset,
@@ -12,10 +10,14 @@ import type {
   AjnaFormActionsUpdateWithdraw,
   AjnaUpdateLoanToValue,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
+import type {
+  ProtocolMultiplyAction,
+  ProtocolPositionCloseTo,
+} from 'features/unifiedProtocol/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface AjnaMultiplyFormState {
-  action?: AjnaMultiplyAction
+  action?: ProtocolMultiplyAction
   dpmAddress: string
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
@@ -27,10 +29,10 @@ export interface AjnaMultiplyFormState {
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   loanToValue?: BigNumber
-  closeTo: AjnaCloseTo
+  closeTo: ProtocolPositionCloseTo
   uiDropdown: AjnaMultiplyPanel
   uiPill: Exclude<
-    AjnaMultiplyAction,
+    ProtocolMultiplyAction,
     'adjust' | 'open-multiply' | 'switch-multiply' | 'close-multiply'
   >
 }

@@ -4,11 +4,7 @@ import type { AjnaSimulationData } from 'actions/ajna'
 import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import type {
-  AjnaGenericPosition,
-  AjnaValidationItem,
-  ProtocolProduct,
-} from 'features/ajna/common/types'
+import type { AjnaGenericPosition, AjnaValidationItem } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import type { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
 import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
@@ -24,6 +20,7 @@ import type { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/
 import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
 import type { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
 import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
+import type { ProtocolProduct } from 'features/unifiedProtocol/types'
 import { useAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'

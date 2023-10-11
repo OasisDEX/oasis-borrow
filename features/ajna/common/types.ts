@@ -1,37 +1,6 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
-import type BigNumber from 'bignumber.js'
-import type { AllNetworksContractsType } from 'blockchain/contracts'
-
-import type { AjnaBorrowAction, AjnaEarnAction, AjnaMultiplyAction } from './types/AjnaAction.types'
 
 export type AjnaGenericPosition = AjnaPosition | AjnaEarnPosition
-export type ProtocolProduct = 'borrow' | 'earn' | 'multiply'
-export type ProtocolFlow = 'open' | 'manage'
-export type AjnaFormAction = AjnaBorrowAction | AjnaEarnAction | AjnaMultiplyAction
-
-export type ProtocolSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction' | 'transition'
-
-export type ProtocolSidebarEditingStep = Extract<ProtocolSidebarStep, 'setup' | 'manage'>
-
-export type AjnaCloseTo = 'collateral' | 'quote'
-
-export type AjnaPoolPairs = keyof AllNetworksContractsType[1]['ajnaPoolPairs']
-
-export type AjnaPoolData = {
-  [key in AjnaPoolPairs]: {
-    '7DayNetApy': BigNumber
-    '90DayNetApy': BigNumber
-    annualFee: BigNumber
-    liquidityAvailable: BigNumber
-    lowestUtilizedPriceIndex: number
-    maxLtv: BigNumber
-    maxMultiply: BigNumber
-    minLtv: BigNumber
-    minPositionSize: BigNumber
-    tvl: BigNumber
-    with50Tokens: BigNumber
-  }
-}
 
 export type AjnaUpdateState<T> = (key: keyof T, value: T[keyof T]) => void
 

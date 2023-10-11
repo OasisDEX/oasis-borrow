@@ -1,6 +1,6 @@
 import { extractLendingProtocolFromPositionCreatedEvent } from 'features/aave/services'
 import { AJNA_BORROWISH_PRODUCTS } from 'features/ajna/common/consts'
-import type { ProtocolProduct } from 'features/ajna/common/types'
+import type { ProtocolProduct } from 'features/unifiedProtocol/types'
 import { LendingProtocol } from 'lendingProtocols'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 

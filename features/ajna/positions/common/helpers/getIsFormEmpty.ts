@@ -1,15 +1,12 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
-import type {
-  AjnaGenericPosition,
-  ProtocolProduct,
-  ProtocolSidebarStep,
-} from 'features/ajna/common/types'
+import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
 import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
 import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
+import type { ProtocolProduct, ProtocolSidebarStep } from 'features/unifiedProtocol/types'
 
 interface GetIsFormEmptyParams {
   product: ProtocolProduct

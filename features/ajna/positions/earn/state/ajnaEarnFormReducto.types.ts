@@ -1,5 +1,4 @@
 import type BigNumber from 'bignumber.js'
-import type { AjnaEarnAction } from 'features/ajna/common/types/AjnaAction.types'
 import type { AjnaEarnPanel } from 'features/ajna/common/types/AjnaPanel.types'
 import type {
   AjnaFormActionsReset,
@@ -7,10 +6,11 @@ import type {
   AjnaFormActionsUpdateDpm,
   AjnaFormActionsUpdateWithdraw,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
+import type { ProtocolEarnAction } from 'features/unifiedProtocol/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface AjnaEarnFormState {
-  action?: AjnaEarnAction
+  action?: ProtocolEarnAction
   dpmAddress: string
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
@@ -18,7 +18,7 @@ export interface AjnaEarnFormState {
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   uiDropdown: AjnaEarnPanel
-  uiPill: Exclude<AjnaEarnAction, 'open-earn' | 'claim-earn'>
+  uiPill: Exclude<ProtocolEarnAction, 'open-earn' | 'claim-earn'>
 }
 
 export type AjnaEarnFormAction = ReductoActions<

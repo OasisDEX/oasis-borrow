@@ -1,6 +1,4 @@
 import type BigNumber from 'bignumber.js'
-import type { AjnaCloseTo } from 'features/ajna/common/types'
-import type { AjnaBorrowAction } from 'features/ajna/common/types/AjnaAction.types'
 import type { AjnaBorrowPanel } from 'features/ajna/common/types/AjnaPanel.types'
 import type {
   AjnaFormActionsReset,
@@ -12,10 +10,11 @@ import type {
   AjnaFormActionsUpdateWithdraw,
   AjnaUpdateLoanToValue,
 } from 'features/ajna/positions/common/state/ajnaFormReductoActions'
+import type { ProtocolBorrowAction, ProtocolPositionCloseTo } from 'features/unifiedProtocol/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface AjnaBorrowFormState {
-  action?: AjnaBorrowAction
+  action?: ProtocolBorrowAction
   dpmAddress: string
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
@@ -27,9 +26,9 @@ export interface AjnaBorrowFormState {
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   loanToValue?: BigNumber
-  closeTo: AjnaCloseTo
+  closeTo: ProtocolPositionCloseTo
   uiDropdown: AjnaBorrowPanel
-  uiPill: Exclude<AjnaBorrowAction, 'open-borrow'>
+  uiPill: Exclude<ProtocolBorrowAction, 'open-borrow'>
 }
 
 export type AjnaBorrowFormAction = ReductoActions<

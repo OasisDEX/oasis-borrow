@@ -1,11 +1,11 @@
+import type { AjnaGenericPosition } from 'features/ajna/common/types'
+import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
+import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
 import type {
-  AjnaGenericPosition,
   ProtocolFlow,
   ProtocolProduct,
   ProtocolSidebarStep,
-} from 'features/ajna/common/types'
-import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
-import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
+} from 'features/unifiedProtocol/types'
 
 interface GetPrimaryButtonLabelKeyParams {
   state: AjnaFormState

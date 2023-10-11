@@ -1,5 +1,9 @@
 import BigNumber from 'bignumber.js'
-import type { ProtocolFlow, ProtocolProduct, ProtocolSidebarStep } from 'features/ajna/common/types'
+import type {
+  ProtocolFlow,
+  ProtocolProduct,
+  ProtocolSidebarStep,
+} from 'features/unifiedProtocol/types'
 
 export const ajnaProducts: ProtocolProduct[] = ['borrow', 'earn', 'multiply']
 

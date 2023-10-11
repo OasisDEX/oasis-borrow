@@ -1,6 +1,7 @@
-import type { AjnaGenericPosition, ProtocolProduct } from 'features/ajna/common/types'
+import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
+import type { ProtocolProduct } from 'features/unifiedProtocol/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useEffect, useState } from 'react'
 

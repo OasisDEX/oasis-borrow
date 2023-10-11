@@ -2,12 +2,6 @@ import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { GasPriceParams } from 'blockchain/prices.types'
 import { isProductContextAvailable } from 'components/context/ProductContextProvider'
-import type {
-  ProtocolFlow,
-  ProtocolProduct,
-  ProtocolSidebarEditingStep,
-  ProtocolSidebarStep,
-} from 'features/ajna/common/types'
 import {
   getAjnaEditingStep,
   isExternalStep,
@@ -15,6 +9,12 @@ import {
 } from 'features/ajna/positions/common/contexts/ajnaStepManager'
 import { getTxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxManager'
 import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
+import type {
+  ProtocolFlow,
+  ProtocolProduct,
+  ProtocolSidebarEditingStep,
+  ProtocolSidebarStep,
+} from 'features/unifiedProtocol/types'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'

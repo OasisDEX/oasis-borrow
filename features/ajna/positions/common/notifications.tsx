@@ -2,12 +2,7 @@ import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AppLink } from 'components/Links'
 import { LUPPercentageOffset } from 'features/ajna/common/consts'
-import type {
-  AjnaGenericPosition,
-  AjnaUpdateState,
-  ProtocolFlow,
-  ProtocolProduct,
-} from 'features/ajna/common/types'
+import type { AjnaGenericPosition, AjnaUpdateState } from 'features/ajna/common/types'
 import type {
   AjnaBorrowFormAction,
   AjnaBorrowFormState,
@@ -25,6 +20,7 @@ import type {
   AjnaMultiplyFormAction,
   AjnaMultiplyFormState,
 } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
+import type { ProtocolFlow, ProtocolProduct } from 'features/unifiedProtocol/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one, zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
