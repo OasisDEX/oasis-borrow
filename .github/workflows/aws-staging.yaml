@@ -39,9 +39,19 @@ jobs:
         run: |
           echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-      - name: Download dependencies
-        id: download-dependencies
+      - uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install packages
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn --no-progress --non-interactive --frozen-lockfile
+
+      - name: Run postinstall
+        if: steps.yarn-cache.outputs.cache-hit == 'true'
+        run: yarn postinstall
 
       - name: Build standalone app
         id: build-app
