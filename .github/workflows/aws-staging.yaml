@@ -1,20 +1,21 @@
 on:
   push:
     branches:
-      - marcinciarka/leaner-docker-image-pro
+      - dev
 
-name: Deploy to AWS Staging [test]
+name: Build and deploy to AWS Staging
 
 jobs:
   deploy:
-    name: Deploy
+    name: Build and deploy to AWS Staging
     runs-on: ubuntu-latest
     env:
       AWS_REGION: eu-central-1
-      ECR_REPO_NAME: summer-fi-staging
+      ENVIRONMENT_TAG: staging
       SERVICE_NAME: summer-fi-staging
       CLUSTER_NAME: summer-fi-staging
       CONFIG_URL: ${{ secrets.CONFIG_URL }}
+      ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
 
     steps:
       - name: Checkout
@@ -54,8 +55,6 @@ jobs:
         env:
           SHA_TAG: ${{ steps.vars.outputs.sha_short }}
           LATEST_TAG: latest
-          ENVIRONMENT_TAG: staging
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           CONFIG_URL: ${{ secrets.CONFIG_URL }}
           COMMIT_SHA: ${{ steps.vars.outputs.sha_short }}
           NOTIFICATIONS_HOST: ${{ secrets.NOTIFICATIONS_HOST_STAGING }}
@@ -95,36 +94,35 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      # - name: Build runner image
-      #   id: build-image
-      #   env:
-      #     SHA_TAG: ${{ steps.vars.outputs.sha_short }}
-      #     LATEST_TAG: latest
-      #     ENVIRONMENT_TAG: staging
-      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #   run: |
-      #     # Build a docker container and
-      #     # push it to ECR so that it can
-      #     # be deployed to ECS.
-      #     docker build --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
-      #                  -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
-      #                  -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
-      #                  -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
-      #                  .
-      #     docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
+      - name: Build runner image
+        id: build-image
+        env:
+          SHA_TAG: ${{ steps.vars.outputs.sha_short }}
+          LATEST_TAG: latest
+          ECR_REPO_NAME: summer-fi-staging
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
+                       -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
+                       -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
+                       -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
+                       .
+          docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
 
-      # - name: Update ECS service with latest Docker image
-      #   id: service-update
-      #   run: |
-      #     aws ecs update-service --cluster $CLUSTER_NAME --service ${{ env.SERVICE_NAME }} --force-new-deployment --region $AWS_REGION
+      - name: Update ECS service with latest Docker image
+        id: service-update
+        run: |
+          aws ecs update-service --cluster $CLUSTER_NAME --service ${{ env.SERVICE_NAME }} --force-new-deployment --region $AWS_REGION
 
-      # - name: Wait for all services to become stable
-      #   uses: oryanmoshe/ecs-wait-action@v1.3
-      #   with:
-      #     ecs-cluster: ${{ env.CLUSTER_NAME }}
-      #     ecs-services: '["${{ env.SERVICE_NAME }}"]'
+      - name: Wait for all services to become stable
+        uses: oryanmoshe/ecs-wait-action@v1.3
+        with:
+          ecs-cluster: ${{ env.CLUSTER_NAME }}
+          ecs-services: '["${{ env.SERVICE_NAME }}"]'
 
-      # - name: Invalidate CloudFront
-      #   run:
-      #     AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id ${{
-      #     secrets.CF_DIST_ID_STAGING }} --paths "/*"
+      - name: Invalidate CloudFront
+        run:
+          AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id
+          ${{secrets.CF_DIST_ID_STAGING }} --paths "/*"
