@@ -15,6 +15,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
+import ethereumMainnetIcon from 'public/static/img/network_icons/ethereum_mainnet.svg'
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import type { SxStyleProp } from 'theme-ui'
@@ -239,11 +240,11 @@ function AssetsAndPositionsView({ portfolioBalance }: { portfolioBalance: Portfo
 
   const assetList: AssetView[] = [
     {
-      id: '',
+      id: 'wallet-balance',
       value: walletAssetsUsdValue,
       proportion: new BigNumber(walletAssetsUsdValue).div(totalAssetsUsdValue).multipliedBy(100),
       name: `Wallet balance`,
-      logo_url: staticFilesRuntimeUrl('/static/img/wallet.svg'), // TODO: replace with real wallet icon
+      logo_url: ethereumMainnetIcon,
     },
     ...topAssets.map((asset) => ({
       value: asset.net_usd_value || 0,
