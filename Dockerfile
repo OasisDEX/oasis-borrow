@@ -1,20 +1,18 @@
-FROM node:18.12
+FROM node:18.18-alpine AS builder
+WORKDIR /usr/src/app
+RUN apk add --no-cache --virtual python make g++ gcc
 
-EXPOSE 3000
-
-COPY package.json /usr/src/app/package.json
+COPY package.json /usr/src/app/
 COPY yarn.lock /usr/src/app/yarn.lock
 COPY ./server/ /usr/src/app/server
+COPY ./.next/cache/ /usr/src/app/.next/cache
 COPY ./scripts/get-config-types.js /usr/src/app/scripts/get-config-types.js
 COPY ./blockchain/abi/*.json /usr/src/app/blockchain/abi/
 
-WORKDIR /usr/src/app
 
 ARG CONFIG_URL=''
 ENV CONFIG_URL=$CONFIG_URL
-
 RUN yarn --no-progress --non-interactive --frozen-lockfile
-
 ARG COMMIT_SHA='' \
   NOTIFICATIONS_HOST='' \
   NOTIFICATIONS_HOST_GOERLI='' \
@@ -67,9 +65,22 @@ ENV COMMIT_SHA=$COMMIT_SHA \
   REFERRAL_SUBGRAPH_URL=$REFERRAL_SUBGRAPH_URL \
   NODE_OPTIONS=--max-old-space-size=6144
 
+
 COPY . .
+RUN yarn build
+RUN apk del .gyp
 
-RUN chmod +x ./scripts/wait-for-it.sh \
-  && npm run build
 
-CMD [ "npm", "run", "start:prod" ]
+
+FROM node:18.18-alpine AS runner
+EXPOSE 3000
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/app/package.json .
+COPY --from=builder /usr/src/app/yarn.lock .
+COPY --from=builder /usr/src/app/next.config.js .
+COPY --from=builder /usr/src/app/public ./public
+COPY --from=builder /usr/src/app/server/database/migrate.ts ./server/database
+COPY --from=builder /usr/src/app/.next/standalone ./
+COPY --from=builder /usr/src/app/.next/static ./.next/static
+
+CMD [ "yarn", "start:prod" ]
