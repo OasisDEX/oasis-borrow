@@ -15,7 +15,6 @@ jobs:
       SERVICE_NAME: summer-fi-staging
       CLUSTER_NAME: summer-fi-staging
       CONFIG_URL: ${{ secrets.CONFIG_URL }}
-      ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
 
     steps:
       - name: Checkout
@@ -100,6 +99,7 @@ jobs:
           SHA_TAG: ${{ steps.vars.outputs.sha_short }}
           LATEST_TAG: latest
           ECR_REPO_NAME: summer-fi-staging
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           # Build a docker container and
           # push it to ECR so that it can
