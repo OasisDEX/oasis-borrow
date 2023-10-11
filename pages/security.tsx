@@ -74,7 +74,11 @@ function SecurityPage() {
         <Heading variant="header2" sx={{ textAlign: 'center', mb: 2 }}>
           {t('security.heading')}
         </Heading>
-        <Text variant="paragraph1" sx={{ color: 'neutral80', textAlign: 'center', mb: 90 }}>
+        <Text
+          as="p"
+          variant="paragraph1"
+          sx={{ color: 'neutral80', textAlign: 'center', mb: '90px' }}
+        >
           {t('security.intro')}
         </Text>
         <Grid
