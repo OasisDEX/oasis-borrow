@@ -72,6 +72,7 @@
     "core-js": "2",
     "dayjs": "^1.11.9",
     "decimal.js": "^10.2.1",
+    "dotenv": "8.6.0",
     "dotenv-flow": "^3.1.0",
     "emotion": "^10.0.27",
     "emotion-server": "^10.0.27",
