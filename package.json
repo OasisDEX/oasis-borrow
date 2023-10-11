@@ -31,8 +31,7 @@
     "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn typechain:generate && yarn xstate:typegen && yarn get-config-types",
     "xstate:typegen": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" ",
     "xstate:typegen:watch": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" --watch",
-    "update-product-hub": "npx ts-node scripts/update-product-hub.ts",
-    "release": "release-it"
+    "update-product-hub": "npx ts-node scripts/update-product-hub.ts"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
@@ -78,7 +77,6 @@
     "emotion-server": "^10.0.27",
     "eslint-plugin-no-relative-import-paths": "^1.5.2",
     "express-jwt": "^8.4.1",
-    "file-loader": "^6.2.0",
     "graphql": "^15.5.0",
     "graphql-request": "^3.4.0",
     "i18next": "^22.4.2",
@@ -104,7 +102,6 @@
     "react-redux": "8.0.5",
     "react-select": "^3.1.0",
     "react-text-mask": "^5.4.1",
-    "release-it": "^14.12.1",
     "rxjs": "^6.2.0",
     "rxjs-take-while-inclusive": "^2.1.0",
     "sass": "^1.49.4",
@@ -115,7 +112,7 @@
     "theme-ui": "^0.16.1",
     "ts-node": "10.9.1",
     "ts-pattern": "4",
-    "url-loader": "^4.1.0",
+    "url-loader": "^4.1.1",
     "usehooks-ts": "^2.9.1",
     "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",
