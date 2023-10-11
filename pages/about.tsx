@@ -17,7 +17,7 @@ function AboutPage({ members }: { members: TeamMember[] }) {
   const { t } = useTranslation()
 
   return (
-    <MarketingLayout>
+    <MarketingLayout topBackground="lighter">
       <Box sx={{ width: '100%', pb: 6 }}>
         <Box sx={{ mt: 5, pb: 5 }}>
           <Heading
@@ -29,7 +29,7 @@ function AboutPage({ members }: { members: TeamMember[] }) {
           >
             {t('about.heading')}
           </Heading>
-          <Text variant="paragraph2" sx={{ color: 'neutral80' }}>
+          <Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>
             {t('about.description')}
           </Text>
         </Box>
@@ -89,8 +89,10 @@ function PortraitsGrid({ members }: { members: TeamMember[] }) {
             />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <Text sx={{ color: 'primary100', mb: 1 }}>{member.name}</Text>
-            <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
+            <Text as="p" sx={{ color: 'primary100', mb: 1 }}>
+              {member.name}
+            </Text>
+            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
               {member.title}
             </Text>
           </Box>
