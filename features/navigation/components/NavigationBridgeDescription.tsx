@@ -21,7 +21,7 @@ export const NavigationBridgeDescription = () => {
       >
         {[BaseNetworkNames.Ethereum, BaseNetworkNames.Optimism, BaseNetworkNames.Arbitrum].map(
           (network) => (
-            <Box as="li">
+            <Box as="li" key={network}>
               <Image
                 src={networksByName[network].icon}
                 width={20}

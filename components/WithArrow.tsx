@@ -1,5 +1,5 @@
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Text } from 'theme-ui'
 
 export function WithArrow({
@@ -10,7 +10,7 @@ export function WithArrow({
   as,
 }: React.PropsWithChildren<{
   gap?: string | number
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   variant?: string
   as?: React.ElementType
 }>) {

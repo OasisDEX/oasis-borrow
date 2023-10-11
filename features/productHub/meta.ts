@@ -8,6 +8,15 @@ import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { clone } from 'ramda'
+import {
+  btc_circle_color,
+  selectBorrow,
+  selectBorrowActive,
+  selectEarn,
+  selectEarnActive,
+  selectMultiply,
+  selectMultiplyActive,
+} from 'theme/icons'
 import { FeaturesEnum } from 'types/config'
 
 export const ALL_ASSETS = 'all assets'
@@ -35,19 +44,19 @@ export const productHubProductOptions: { [key in ProductHubProductType]: HeaderS
     title: 'Borrow',
     description: 'Borrow against your favorite crypto assets',
     value: 'borrow',
-    icon: ['selectBorrow', 'selectBorrowActive'],
+    icon: [selectBorrow, selectBorrowActive],
   },
   multiply: {
     title: 'Multiply',
     description: 'Increase your exposure to any crypto asset',
     value: 'multiply',
-    icon: ['selectMultiply', 'selectMultiplyActive'],
+    icon: [selectMultiply, selectMultiplyActive],
   },
   earn: {
     title: 'Earn',
     description: 'Earn long term yields to compound your crypto capital',
     value: 'earn',
-    icon: ['selectEarn', 'selectEarnActive'],
+    icon: [selectEarn, selectEarnActive],
   },
 }
 
@@ -66,7 +75,7 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
     title: 'Bitcoin',
     description: 'WBTC/TBTC',
     value: 'BTC',
-    icon: 'btc_circle_color',
+    icon: btc_circle_color,
   },
   USDC: {
     title: 'USDCoin',

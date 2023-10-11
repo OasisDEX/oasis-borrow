@@ -1,8 +1,9 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import type { WithChildren } from 'helpers/types/With.types'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import React, { useState } from 'react'
 import { Box, Flex } from 'theme-ui'
+import { question_o } from 'theme/icons'
 
 export function OrderInformationTooltipAction({ children }: WithChildren) {
   const [isOpen, setIsOpen] = useState(false)
@@ -12,7 +13,7 @@ export function OrderInformationTooltipAction({ children }: WithChildren) {
   return (
     <Flex ref={componentRef} sx={{ position: 'relative' }}>
       <Icon
-        name="question_o"
+        icon={question_o}
         size="20px"
         sx={{ ml: 1 }}
         onClick={() => {

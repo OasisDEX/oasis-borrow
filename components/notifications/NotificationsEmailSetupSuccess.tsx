@@ -1,7 +1,8 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
+import { tick } from 'theme/icons'
 
 export function NotificationsSetupSuccess() {
   const { t } = useTranslation()
@@ -25,7 +26,7 @@ export function NotificationsSetupSuccess() {
           alignItems: 'center',
         }}
       >
-        <Icon name="tick" color="success100" />
+        <Icon icon={tick} color="success100" />
       </Flex>
       <Text
         sx={{

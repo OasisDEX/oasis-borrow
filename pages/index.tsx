@@ -1,6 +1,6 @@
 import { WithConnection } from 'components/connectWallet'
-import { FunctionalContextHandler } from 'components/context'
-import { LandingPageLayout } from 'components/layouts'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
+import { LandingPageLayout } from 'components/layouts/LandingPageLayout'
 import { HomepageView } from 'features/homepage/HomepageView'
 import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -14,16 +14,15 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 
 function LandingPage() {
   return (
-    <FunctionalContextHandler>
-      <WithConnection>
-        <HomepageView />
-        <Survey for="homepage" />
-      </WithConnection>
-    </FunctionalContextHandler>
+    <LandingPageLayout>
+      <FunctionalContextHandler>
+        <WithConnection>
+          <HomepageView />
+          <Survey for="homepage" />
+        </WithConnection>
+      </FunctionalContextHandler>
+    </LandingPageLayout>
   )
 }
-
-LandingPage.layout = LandingPageLayout
-LandingPage.theme = 'Landing'
 
 export default LandingPage

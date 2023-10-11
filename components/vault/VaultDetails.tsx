@@ -1,5 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
+import { Icon } from 'components/Icon'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
 import type { CommonVaultState } from 'helpers/types/CommonVaultState.types'
@@ -7,8 +7,9 @@ import type { WithChildren } from 'helpers/types/With.types'
 import { zero } from 'helpers/zero'
 import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxProps } from 'theme-ui'
+import type { SxProp } from 'theme-ui'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { question_o } from 'theme/icons'
 
 export type CollRatioColor = 'primary100' | 'critical100' | 'warning100' | 'success100'
 
@@ -73,7 +74,7 @@ export function VaultDetailsAfterPill({
   children,
   afterPillColors,
   sx = {},
-}: WithChildren & AfterPillProps & SxProps) {
+}: WithChildren & AfterPillProps & SxProp) {
   return (
     <Card
       sx={{
@@ -147,7 +148,7 @@ export function VaultDetailsCard({
         <Box>
           <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
             <Text variant="paragraph2">{title}</Text>
-            {openModal && <Icon name="question_o" size="auto" width="20px" height="20px" />}
+            {openModal && <Icon icon={question_o} size="auto" width="20px" height="20px" />}
           </Flex>
           <Heading variant="header2" sx={{ mt: openModal ? 0 : 1 }}>
             {value}

@@ -1,11 +1,11 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { IMultiplyStrategy, IPosition, IStrategy } from '@oasisdex/dma-library'
 import { OPERATION_NAMES } from '@oasisdex/dma-library'
 import { useActor } from '@xstate/react'
 import type BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
+import { Icon } from 'components/Icon'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
@@ -22,6 +22,7 @@ import type { ManagePositionAvailableActions } from 'features/aave/types'
 import { ProductType } from 'features/aave/types'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
+import { getLocalAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getAaveLikeOpenStrategyUrl } from 'helpers/getAaveLikeStrategyUrl'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -31,6 +32,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { circle_close, circle_slider } from 'theme/icons'
 import { match } from 'ts-pattern'
 import type { Sender } from 'xstate'
 
@@ -63,7 +65,26 @@ export function isLoading(state: ManageAaveStateMachineState) {
 }
 
 export function isLocked(state: ManageAaveStateMachineState) {
-  const { ownerAddress, web3Context } = state.context
+  const { ownerAddress, web3Context, tokens, strategyConfig, manageTokenInput } = state.context
+  const isClosing = state.matches('frontend.reviewingClosing')
+  const isAdjusting = state.matches('frontend.reviewingAdjusting')
+  const { aaveLike } = getLocalAppConfig('parameters')
+  if (isClosing) {
+    if (
+      // TODO: find a better way to handle this
+      aaveLike.closeDisabledFor.strategyTypes.includes(strategyConfig.strategyType) &&
+      aaveLike.closeDisabledFor.collateral.includes(manageTokenInput?.closingToken || '')
+    )
+      return true
+  }
+  if (isAdjusting) {
+    if (
+      aaveLike.adjustDisabledFor.strategyTypes.includes(strategyConfig.strategyType) &&
+      aaveLike.adjustDisabledFor.collateral.includes(tokens.collateral)
+    ) {
+      return true
+    }
+  }
   return !(allDefined(ownerAddress, web3Context) && ownerAddress === web3Context!.account)
 }
 
@@ -141,7 +162,7 @@ export function BalanceAfterClose({ state }: ManageAaveStateProps) {
   return (
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Flex>
-        <Icon name={getToken(closingToken).iconCircle} size={22} sx={{ mr: 1 }} />
+        <Icon icon={getToken(closingToken).iconCircle} size={22} sx={{ mr: 1 }} />
         <Text variant="boldParagraph3" sx={{ color: 'neutral80', whiteSpace: 'pre' }}>
           {t('manage-earn.aave.vault-form.token-amount-after-closing', { token: closingToken })}
         </Text>
@@ -369,7 +390,7 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
   const itemPerAction: Record<ManagePositionAvailableActions, SidebarSectionHeaderSelectItem> = {
     adjust: {
       label: t('adjust'),
-      icon: 'circle_slider',
+      icon: circle_slider,
       panel: 'editing',
       action: () => {
         if (!state.matches('frontend.editing')) {
@@ -412,7 +433,7 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
     },
     close: {
       label: t('system.close-position'),
-      icon: 'circle_close',
+      icon: circle_close,
       panel: 'reviewingClosing',
       action: () => {
         if (!state.matches('frontend.reviewingClosing')) {
@@ -422,7 +443,7 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
     },
     'switch-to-borrow': {
       label: t('system.actions.multiply.switch-to-borrow'),
-      icon: 'circle_close',
+      icon: circle_close,
       panel: 'confirmSwitch',
       action: () => {
         send('SWITCH_TO_BORROW')
@@ -430,7 +451,7 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
     },
     'switch-to-multiply': {
       label: t('system.actions.borrow.switch-to-multiply'),
-      icon: 'circle_close',
+      icon: circle_close,
       panel: 'confirmSwitch',
       action: () => {
         send('SWITCH_TO_MULTIPLY')
@@ -438,7 +459,7 @@ function getDropdownConfig({ state, send }: ManageAaveStateProps) {
     },
     'switch-to-earn': {
       label: t('system.actions.borrow.switch-to-earn'),
-      icon: 'circle_close',
+      icon: circle_close,
       panel: 'confirmSwitch',
       action: () => {
         send('SWITCH_TO_EARN')

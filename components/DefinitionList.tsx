@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box } from 'theme-ui'
 
 interface ListDefinitionProps {
   children: ReactNode
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   as?: 'ul' | 'ol'
 }
 
@@ -19,7 +19,7 @@ export function DefinitionList({ children, sx, as = 'ul' }: ListDefinitionProps)
 
 interface VaultListItemProps {
   children: ReactNode
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
 }
 
 export function DefinitionListItem({ children, sx }: VaultListItemProps) {

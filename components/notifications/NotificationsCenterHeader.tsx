@@ -1,7 +1,8 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Text } from 'theme-ui'
+import { arrow_left, settings } from 'theme/icons'
 
 interface NotificationsCenterHeaderProps {
   onButtonClick: () => void
@@ -57,7 +58,7 @@ export function NotificationsCenterHeader({
         onClick={onButtonClick}
       >
         <Icon
-          name={showPreferencesTab ? 'arrow_left' : 'settings'}
+          icon={showPreferencesTab ? arrow_left : settings}
           size="auto"
           width={showPreferencesTab ? '20' : '16'}
           color="neutral80"

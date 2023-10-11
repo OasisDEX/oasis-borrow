@@ -1,3 +1,4 @@
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { TranslationType } from 'ts_modules/i18next'
 
 export const getNavUseCasesItems = (t: TranslationType) => {
@@ -9,15 +10,15 @@ export const getNavUseCasesItems = (t: TranslationType) => {
   const linkMap = [
     {
       label: t('read-more'),
-      url: '/',
+      url: EXTERNAL_LINKS.DOCS.NAVIGATION[0],
     },
     {
       label: t('read-more'),
-      url: '/',
+      url: EXTERNAL_LINKS.DOCS.NAVIGATION[1],
     },
     {
       label: t('read-more'),
-      url: '/',
+      url: EXTERNAL_LINKS.DOCS.NAVIGATION[2],
     },
   ]
 

@@ -1,6 +1,6 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/trackingEvents'
-import { isMainContextAvailable } from 'components/context'
+import { isMainContextAvailable } from 'components/context/MainContextProvider'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { Trans, useTranslation } from 'next-i18next'
@@ -8,10 +8,14 @@ import type { FormEvent } from 'react'
 import React, { useEffect, useState } from 'react'
 import { GRADIENTS } from 'theme'
 import { Box, Button, Flex, Grid, Heading, Input, Text } from 'theme-ui'
+import { arrow_right, checkmark } from 'theme/icons'
 
-import type { NewsletterMessage, NewsletterState } from './newsletter'
 import { createNewsletter$ } from './newsletter'
-import type { NewsletterResponseMessage } from './newsletterApi'
+import type {
+  NewsletterMessage,
+  NewsletterResponseMessage,
+  NewsletterState,
+} from './newsletter.types'
 
 export const NEWSLETTER_FORM_ERROR: {
   [key in NewsletterMessage | NewsletterResponseMessage]: string
@@ -48,7 +52,7 @@ function NewsletterFormSuccess({ small }: { small?: boolean }) {
             borderRadius: '50%',
           }}
         >
-          <Icon name="checkmark" color="neutral10" size={small ? 16 : 21} />
+          <Icon icon={checkmark} color="neutral10" size={small ? 16 : 21} />
         </Flex>
         <Box sx={{ flex: 1, ml: 3, textAlign: 'center' }}>
           <Text
@@ -170,7 +174,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
             <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
               <Text mr={1}>{t('newsletter.button')}</Text>
               <Icon
-                name="arrow_right"
+                icon={arrow_right}
                 size="auto"
                 height="14px"
                 sx={{ ml: 1, position: 'relative', transition: 'ease-in-out 0.2s', left: 0 }}

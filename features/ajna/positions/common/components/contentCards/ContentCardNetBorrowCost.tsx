@@ -1,7 +1,7 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
 import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
+import { Icon } from 'components/Icon'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
 import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
@@ -11,6 +11,7 @@ import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
+import { ajnaSparks } from 'theme/icons'
 
 interface ContentCardNetBorrowCostProps {
   isLoading?: boolean
@@ -73,7 +74,7 @@ export function ContentCardNetBorrowCost({
               lineHeight: 'body',
             }}
           >
-            <Icon size={24} name="ajnaSparks" color="interactive100" />
+            <Icon size={24} icon={ajnaSparks} color="interactive100" />
           </StatefulTooltip>
         )}
         {formatted.netBorrowCost}

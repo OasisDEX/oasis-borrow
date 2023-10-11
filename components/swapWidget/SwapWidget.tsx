@@ -1,9 +1,12 @@
 import { LiFiWalletManagement, supportedWallets } from '@lifi/wallet-management'
 import { LiFiWidget } from '@lifi/widget'
 import { useWallets } from '@web3-onboard/react'
-import { useMainContext } from 'components/context'
+import { useMainContext } from 'components/context/MainContextProvider'
+import type { SwapWidgetState } from 'features/swapWidget/SwapWidgetChange'
+import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
 import { useTrackSwapWidgetEvents } from 'helpers/hooks'
 import { useObservable } from 'helpers/observableHook'
+import { uiChanges } from 'helpers/uiChanges'
 import { useOnboarding } from 'helpers/useOnboarding'
 import React, { useEffect, useMemo } from 'react'
 import { Box } from 'theme-ui'
@@ -19,6 +22,10 @@ export function SwapWidget() {
   const activeOnboardWallets = useWallets()
   const liFiWalletManagement = useMemo(() => new LiFiWalletManagement(), [])
   useTrackSwapWidgetEvents()
+
+  const [swapWidgetChange] = useObservable(
+    uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
+  )
 
   const web3Provider =
     web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
@@ -53,7 +60,10 @@ export function SwapWidget() {
       {!isOnboarded ? (
         <SwapWidgetOnboarding />
       ) : (
-        <LiFiWidget integrator={swapWidgetConfig.integrator} config={swapWidgetConfig} />
+        <LiFiWidget
+          integrator={swapWidgetConfig.integrator}
+          config={{ ...swapWidgetConfig, subvariantOptions: swapWidgetChange?.variant }}
+        />
       )}
     </Box>
   )

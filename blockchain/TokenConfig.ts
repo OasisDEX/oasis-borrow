@@ -1,3 +1,4 @@
+import type { IconProps } from 'components/Icon.types'
 import type { ElementOf } from 'ts-essentials'
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
@@ -9,14 +10,12 @@ export interface TokenConfig {
   digits: number
   maxSell?: string
   name: string
-  icon: string
-  iconCircle: string
+  icon: IconProps['icon']
+  iconCircle: IconProps['icon']
   coinpaprikaTicker?: string
   coinpaprikaFallbackTicker?: string
   tags: CoinTag[]
   color: string
-  bannerIcon: string
-  bannerGif: string
   token0?: string
   token1?: string
   coinbaseTicker?: string

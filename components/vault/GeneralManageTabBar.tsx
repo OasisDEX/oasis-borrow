@@ -4,7 +4,7 @@ import {
   MixpanelCommonAnalyticsSections,
   MixpanelPages,
 } from 'analytics/types'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { TabBar } from 'components/TabBar'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'

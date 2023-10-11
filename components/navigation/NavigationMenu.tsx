@@ -1,10 +1,10 @@
 import { NavigationMenuDropdown } from 'components/navigation/NavigationMenuDropdown'
-import type { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
 import { NavigationMenuLink } from 'components/navigation/NavigationMenuLink'
-import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { NavigationMenuPanel } from 'components/navigation/NavigationMenuPanel'
 import React, { useState } from 'react'
 import { Flex } from 'theme-ui'
+
+import type { NavigationMenuPanelLinkType, NavigationMenuPanelType } from './Navigation.types'
 
 interface NavigationMenuProps {
   links?: NavigationMenuPanelLinkType[]

@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
 import dayjs from 'dayjs'
@@ -9,8 +8,10 @@ import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
+import { discord, github, twitter } from 'theme/icons'
 
 import { ChevronUpDown } from './ChevronUpDown'
+import { Icon } from './Icon'
 import type { SelectComponents } from 'react-select/src/components'
 
 const {
@@ -142,17 +143,17 @@ function SocialWithLogo() {
     <Grid gap={3}>
       <Image
         src={staticFilesRuntimeUrl('/static/img/logos/logo_dark.svg')}
-        sx={{ height: '34px', position: 'relative', top: '-2px' }}
+        sx={{ height: '34px', width: '150px', position: 'relative', top: '-2px' }}
       />
       <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
         <AppLink href={EXTERNAL_LINKS.TWITTER}>
-          <Icon name="twitter" size="auto" width="18px" height="16px" />
+          <Icon icon={twitter} size="auto" width="18px" height="16px" />
         </AppLink>
         <AppLink href={EXTERNAL_LINKS.DISCORD} sx={{ mx: 3 }}>
-          <Icon name="discord" size="auto" width="20px" height="23px" />
+          <Icon icon={discord} size="auto" width="20px" height="23px" />
         </AppLink>
         <AppLink href={EXTERNAL_LINKS.GITHUB}>
-          <Icon name="github" size="auto" width="21px" />
+          <Icon icon={github} size="auto" width="21px" />
         </AppLink>
       </Flex>
       <Flex sx={{ justifyContent: ['center', 'flex-start'] }}>

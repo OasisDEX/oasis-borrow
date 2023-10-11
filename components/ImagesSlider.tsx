@@ -1,6 +1,6 @@
 import { random } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import type { SxProps } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Container, Grid, Image } from 'theme-ui'
 import { fadeInAnimationMobile } from 'theme/animations'
 
@@ -9,10 +9,12 @@ export type ImagesSliderProps = {
     imgSrc: string
     imgAlt?: string
     url?: string
+    width?: string
+    height?: string
   }[]
-  wrapperSx?: SxProps['sx']
-  gridSx?: SxProps['sx']
-  itemSx?: SxProps['sx']
+  wrapperSx?: ThemeUIStyleObject
+  gridSx?: ThemeUIStyleObject
+  itemSx?: ThemeUIStyleObject
 }
 
 export const ImagesSlider = ({ items = [], wrapperSx, gridSx, itemSx }: ImagesSliderProps) => {
@@ -42,7 +44,8 @@ export const ImagesSlider = ({ items = [], wrapperSx, gridSx, itemSx }: ImagesSl
           <Image
             sx={{
               display: [index === activeItemIndex ? 'block' : 'none', 'block'],
-              width: ['60%', 'auto'],
+              width: ['60%', item.width ? item.width : 'auto'],
+              height: [null, item.height ? item.height : 'auto'],
               cursor: item.url ? 'pointer' : 'default',
               ...fadeInAnimationMobile,
               ...itemSx,

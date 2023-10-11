@@ -5,7 +5,7 @@ import type {
   AutomationCommonData,
   AutomationContextProviderProps,
   AutomationPositionData,
-} from 'components/context'
+} from 'components/context/AutomationContextProvider'
 import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
 import type { AutomationContracts, StopLossMetadata } from 'features/automation/metadata/types'
 import type { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange.types'

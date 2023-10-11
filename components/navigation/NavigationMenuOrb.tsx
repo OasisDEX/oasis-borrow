@@ -1,4 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
+import type { IconProps } from 'components/Icon.types'
 import { AppLink } from 'components/Links'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
@@ -10,7 +11,7 @@ export interface NavigationMenuOrbProps {
   beacon?: boolean | number
   children?: (isOpen: boolean) => ReactNode
   customIcon?: (isOpen: boolean) => ReactNode
-  icon?: string
+  icon?: IconProps['icon']
   iconSize?: number
   isDisabled?: boolean
   link?: string
@@ -23,7 +24,7 @@ export interface NavigationMenuOrbProps {
 interface NavigationMenuOrbIconProps {
   beacon?: boolean | number
   customIcon?: (isOpen: boolean) => ReactNode
-  icon?: string
+  icon?: IconProps['icon']
   iconSize?: number
   isOpen: boolean
 }
@@ -199,7 +200,7 @@ export function NavigationOrbIcon({
               {beacon}
             </Box>
           )}
-          {icon && <Icon name={icon} size={iconSize} sx={{ transition: 'color 200ms' }} />}
+          {icon && <Icon icon={icon} size={iconSize} sx={{ transition: 'color 200ms' }} />}
         </>
       )}
     </>

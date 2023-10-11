@@ -1,6 +1,6 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { Icon } from 'components/Icon'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
@@ -23,7 +23,7 @@ export function GuniVaultDetailsTitle({ token, depositAmount }: GuniVaultDetails
       }}
     >
       <Icon
-        name={iconCircle}
+        icon={iconCircle}
         size="64px"
         sx={{
           verticalAlign: 'text-bottom',

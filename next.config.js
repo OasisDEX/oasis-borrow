@@ -1,9 +1,3 @@
-const withMDX = require('@next/mdx')({
-  extension: /\.(md|mdx)$/,
-  options: {
-    providerImportSource: '@mdx-js/react',
-  },
-})
 const TerserPlugin = require('terser-webpack-plugin')
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
@@ -28,7 +22,7 @@ const baseConfig = {
   },
   basePath,
   productionBrowserSourceMaps: true,
-  pageExtensions: ['mdx', 'tsx', 'ts'],
+  pageExtensions: ['tsx', 'ts'],
   publicRuntimeConfig: publicRuntimeConfig,
   sentry: {
     disableServerWebpackPlugin: true,
@@ -50,10 +44,14 @@ const baseConfig = {
       minimize: !dev,
       minimizer: [
         new TerserPlugin({
+          minify: TerserPlugin.swcMinify,
           // TODO: Figure out how to disable mangling partially without breaking the aplication.
           // To test if your changes break the app or no - go to /owner/<address> page for an account that has some vaults and see if they are displayed.
           terserOptions: {
             mangle: false,
+            compress: {
+              dead_code: false,
+            },
           },
         }),
       ],
@@ -61,6 +59,9 @@ const baseConfig = {
         !isServer && !dev
           ? {
               chunks: 'all',
+              cacheGroups: {
+                ...config.optimization.splitChunks.cacheGroups,
+              },
             }
           : {},
     }
@@ -89,7 +90,7 @@ const baseConfig = {
       )
     }
     if (dev) {
-      const { I18NextHMRPlugin } = require('i18next-hmr/plugin')
+      const { I18NextHMRPlugin } = require('i18next-hmr/webpack')
       config.plugins.push(
         new I18NextHMRPlugin({
           localesDir: path.resolve('./public/locales'),
@@ -161,13 +162,13 @@ const baseConfig = {
       },
     ]
   },
-  transpilePackages: ['@lifi/widget', '@lifi/wallet-management'],
+  transpilePackages: ['@lifi/widget', '@lifi/wallet-management', 'ramda'],
   experimental: {
     largePageDataBytes: 256 * 1024, // 256 KB. The default one is 128 KB, but we have a lot of that kind of errors, so we increase it.
   },
 }
 
-module.exports = withBundleAnalyzer(withMDX(baseConfig))
+module.exports = withBundleAnalyzer(baseConfig)
 
 if (process.env.SENTRY_AUTH_TOKEN !== undefined && process.env.SENTRY_AUTH_TOKEN !== '') {
   module.exports = withSentryConfig(

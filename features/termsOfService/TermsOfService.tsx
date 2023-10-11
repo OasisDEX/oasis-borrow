@@ -1,15 +1,13 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import {
-  FunctionalContextHandler,
-  useAccountContext,
-  useMainContext,
-  useTOSContext,
-} from 'components/context'
+import { useAccountContext } from 'components/context/AccountContextProvider'
+import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
+import { useMainContext } from 'components/context/MainContextProvider'
+import { useTOSContext } from 'components/context/TOSContextProvider'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import type { UserReferralState } from 'features/referralOverview/user.types'
-import { useWalletManagement } from 'features/web3OnBoard'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
@@ -17,6 +15,7 @@ import type { ReactNode } from 'react'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Label, Text } from 'theme-ui'
 import { fadeIn } from 'theme/animations'
+import { checkmark } from 'theme/icons'
 
 import type { TermsAcceptanceStage, TermsAcceptanceState } from './termsAcceptance.types'
 
@@ -141,7 +140,7 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
               }}
             >
               {checked && (
-                <Icon sx={{ animation: `${fadeIn} 0.2s` }} name="checkmark" color="success100" />
+                <Icon sx={{ animation: `${fadeIn} 0.2s` }} icon={checkmark} color="success100" />
               )}
             </Flex>
             <Text ml={3} sx={{ flex: 1, fontWeight: '400', fontSize: '14px' }}>

@@ -1,14 +1,15 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { tokensBySymbol } from 'blockchain/tokensMetadata.constants'
 import { GenericTokenIcon } from 'components/GenericTokenIcon'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Flex } from 'theme-ui'
+
+import { Icon } from './Icon'
 
 interface TokensGroupProps {
   forceSize?: number
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   tokens: string[]
 }
 
@@ -33,7 +34,8 @@ export function TokensGroup({ forceSize, sx, tokens }: TokensGroupProps) {
             {Object.keys(tokensBySymbol).includes(token) ? (
               <Icon
                 size={forceSize || (tokens.length > 1 ? defaultMultipleSize : defaultSingleSize)}
-                name={getToken(token).iconCircle}
+                key={getToken(token).name}
+                icon={getToken(token).iconCircle}
                 sx={{
                   verticalAlign: 'bottom',
                   my: tokens.length === 1 ? (forceSize ? 0 : '-4px') : 0,
@@ -41,6 +43,7 @@ export function TokensGroup({ forceSize, sx, tokens }: TokensGroupProps) {
               />
             ) : (
               <GenericTokenIcon
+                key={token}
                 size={forceSize || (tokens.length > 1 ? defaultMultipleSize : defaultSingleSize)}
                 symbol={token}
               />

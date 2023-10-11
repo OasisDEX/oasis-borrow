@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/trackingEvents'
 import { MixpanelTopBannerEvents } from 'analytics/types'
 import { useAppConfig } from 'helpers/config'
@@ -6,7 +5,9 @@ import { useLocalStorage } from 'helpers/useLocalStorage'
 import React from 'react'
 import { Box } from 'theme-ui'
 import { rollDownTopBannerAnimation } from 'theme/animations'
+import { close, loudspeaker } from 'theme/icons'
 
+import { Icon } from './Icon'
 import { AppLink } from './Links'
 import { WithArrow } from './WithArrow'
 
@@ -40,14 +41,14 @@ export default function TopBanner() {
         >
           <WithArrow variant="boldParagraph2" sx={{ fontSize: '16px', display: 'inline' }}>
             <Icon
-              name="loudspeaker"
+              icon={loudspeaker}
               sx={{ mr: 2, position: 'relative', top: '2px', transition: '0.2s transform' }}
             />
             {topBanner.message}
           </WithArrow>
         </AppLink>
         <Icon
-          name="close"
+          icon={close}
           sx={{
             position: 'absolute',
             top: '4px',

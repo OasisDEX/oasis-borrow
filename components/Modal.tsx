@@ -1,16 +1,15 @@
 import { Global } from '@emotion/core'
-import { Icon } from '@makerdao/dai-ui-icons'
 import { useSharedUI } from 'components/SharedUIProvider'
-import { useWalletManagement } from 'features/web3OnBoard'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { ModalProps } from 'helpers/modalHook'
 import type { WithChildren } from 'helpers/types/With.types'
 import { Trans, useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React, { useCallback, useEffect, useState } from 'react'
-import ReactDOM from 'react-dom'
+import { createPortal } from 'react-dom'
 import { TRANSITIONS } from 'theme'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import {
   Box,
   Button,
@@ -23,13 +22,15 @@ import {
   IconButton,
   Text,
 } from 'theme-ui'
+import { close_squared } from 'theme/icons'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
+import { Icon } from './Icon'
 import { AppLink } from './Links'
 import curry from 'ramda/src/curry'
 
 interface ModalCloseIconProps extends ModalProps<WithChildren> {
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   size?: number
   color?: string
 }
@@ -69,7 +70,7 @@ export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: Mod
         ...sx,
       }}
     >
-      <Icon name="close_squared" size={size} />
+      <Icon icon={close_squared} size={size} />
     </IconButton>
   )
 }
@@ -139,7 +140,7 @@ function ModalWrapper({
 }: WithChildren & {
   close: () => void
   id?: string
-  sxWrapper?: SxStyleProp
+  sxWrapper?: ThemeUIStyleObject
   omitHTMLOverflow?: boolean
 }) {
   useEffect(() => {
@@ -225,7 +226,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
           mb: 2,
         }}
       >
-        <Icon name="close_squared" color="critical100" size={30} />
+        <Icon icon={close_squared} color="critical100" size={30} />
       </Flex>
       <Text sx={{ fontSize: 5, textAlign: 'center', mt: 3 }}>{t(message)}</Text>
     </Box>
@@ -235,7 +236,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
 export function MobileSidePanelPortal({ children }: WithChildren) {
   const onMobile = useOnMobile()
 
-  return onMobile && document.body ? ReactDOM.createPortal(children, document.body) : children
+  return onMobile && document.body ? createPortal(children, document.body) : children
 }
 
 export function MobileSidePanel({
@@ -308,7 +309,7 @@ export function MobileSidePanelClose({
           size={3}
         />
       </Box>
-      <Divider variant="styles.hrVaultFormTop" sx={{ mt: 0, pt: 0 }} />
+      <Divider variant="hrVaultFormTop" sx={{ mt: 0, pt: 0 }} />
     </Box>
   ) : null
 }

@@ -1,5 +1,7 @@
 import { trackingEvents } from 'analytics/trackingEvents'
-import { useAccountContext, useMainContext, useProductContext } from 'components/context'
+import { useAccountContext } from 'components/context/AccountContextProvider'
+import { useMainContext } from 'components/context/MainContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { OpenMultiplyVaultContainer } from 'components/vault/commonMultiply/OpenMultiplyVaultContainer'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { createOpenMultiplyVaultAnalytics$ } from 'features/multiply/open/pipes/openMultiplyVaultAnalytics'

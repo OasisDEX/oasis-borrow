@@ -1,10 +1,11 @@
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { mobileLinkSx } from 'components/navigation/common'
 import { NavigationMenuDropdownContentList } from 'components/navigation/NavigationMenuDropdownContentList'
-import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { useToggle } from 'helpers/useToggle'
 import React, { Fragment, useEffect } from 'react'
 import { Box, Button, Flex } from 'theme-ui'
+
+import type { NavigationMenuPanelType } from './Navigation.types'
 
 type NavigationMobileMenuPanelProps = NavigationMenuPanelType & {
   isOpen: boolean

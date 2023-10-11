@@ -1,7 +1,7 @@
 import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automationBotAggregator.constants'
 import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator.types'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { getAutomationFeatureTxHandlers } from 'features/automation/common/state/automationFeatureTxHandlers'
 import { addTransactionMap } from 'features/automation/common/txDefinitions'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate.constants'

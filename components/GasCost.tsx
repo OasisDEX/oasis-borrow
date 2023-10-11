@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatPrice } from 'helpers/formatters/format'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
@@ -6,8 +5,10 @@ import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Text } from 'theme-ui'
+import { dai, question_o } from 'theme/icons'
 import type { TranslationType } from 'ts_modules/i18next'
 
+import { Icon } from './Icon'
 import { Tooltip, useTooltip } from './Tooltip'
 
 function getGasText({
@@ -30,7 +31,7 @@ function getGasText({
         <Text sx={{ display: 'inline' }}>{`${formatPrice(gasEstimationEth, 'ETH')} ETH`}</Text>
       ) : gasEstimationDai ? (
         <Flex sx={{ fontSize: 5, alignItems: 'center' }}>
-          <Icon name="dai" size="24px" sx={{ position: 'relative', top: '1px' }} />
+          <Icon icon={dai} size="24px" sx={{ position: 'relative', top: '1px' }} />
           <Text ml={1}>{`~${formatPrice(gasEstimationDai, 'DAI')}`}</Text>
         </Flex>
       ) : (
@@ -52,7 +53,7 @@ export function GasCost({
       <Flex sx={{ mb: 2, alignItems: 'center', position: 'relative' }}>
         <Text sx={{ fontSize: 4, fontWeight: 'semiBold', mr: 2 }}>{t('transaction-fee')}</Text>
         <Icon
-          name="question_o"
+          icon={question_o}
           size="20px"
           sx={{ cursor: 'pointer' }}
           onClick={() => setTooltipOpen(true)}

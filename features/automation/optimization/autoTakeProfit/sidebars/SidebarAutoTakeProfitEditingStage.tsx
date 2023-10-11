@@ -4,7 +4,7 @@ import {
   MixpanelCommonAnalyticsSections,
   MixpanelPages,
 } from 'analytics/types'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import type { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { PickCloseState } from 'components/dumb/PickCloseState'
 import type { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'

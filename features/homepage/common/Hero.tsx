@@ -1,13 +1,14 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
-import { useConnection } from 'features/web3OnBoard'
+import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useAppConfig } from 'helpers/config'
 import { scrollTo } from 'helpers/scrollTo'
 import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Button, Flex, Grid, Heading, Text } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
 export function Hero({
   sx,
@@ -22,7 +23,7 @@ export function Hero({
   },
   secondaryButton,
 }: {
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   isConnected: boolean
   heading: string
   headingWidth?: string
@@ -95,7 +96,7 @@ export function Hero({
           >
             {isConnected ? t(primaryButton.translationKey) : t('connect-wallet')}
             <Icon
-              name="arrow_right"
+              icon={arrow_right}
               sx={{
                 ml: 2,
                 position: 'relative',

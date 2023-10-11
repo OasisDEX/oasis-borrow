@@ -1,7 +1,8 @@
 import { NavigationMenuDropdownContentList } from 'components/navigation/NavigationMenuDropdownContentList'
-import type { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { Flex } from 'theme-ui'
+
+import type { NavigationMenuPanelType } from './Navigation.types'
 
 export type NavigationMenuDropdownContentProps = NavigationMenuPanelType & {
   currentPanel: string
@@ -97,7 +98,7 @@ export function NavigationMenuDropdownContent({
           .map(({ items }, i) => (
             <Fragment key={i}>
               {items.map(({ list }, j) => (
-                <>
+                <Fragment key={j}>
                   {list && (
                     <Flex
                       key={`${i}-${j}`}
@@ -126,7 +127,7 @@ export function NavigationMenuDropdownContent({
                       <NavigationMenuDropdownContentList {...list} />
                     </Flex>
                   )}
-                </>
+                </Fragment>
               ))}
             </Fragment>
           ))}

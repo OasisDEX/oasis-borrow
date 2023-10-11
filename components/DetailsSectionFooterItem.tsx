@@ -1,15 +1,16 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import type { SystemStyleObject } from '@styled-system/css'
 import { VaultDetailsCardModal } from 'components/vault/VaultDetails'
 import type { ModalProps } from 'helpers/modalHook'
 import { useModal } from 'helpers/modalHook'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import type { ReactNode } from 'react'
 import React, { useState } from 'react'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Grid, Text } from 'theme-ui'
+import { question_o } from 'theme/icons'
 
 import type { DetailsSectionContentCardChangePillProps } from './DetailsSectionContentCard'
 import { DetailsSectionContentCardChangePill } from './DetailsSectionContentCard'
+import { Icon } from './Icon'
 
 interface DetailsSectionFooterItemWrapperProps {
   children: ReactNode
@@ -56,7 +57,7 @@ export function DetailsSectionFooterItem({
   change,
   modal,
   sx = {},
-}: DetailsSectionFooterItemProps & { sx?: SystemStyleObject }) {
+}: DetailsSectionFooterItemProps & { sx?: ThemeUIStyleObject }) {
   const openModal = useModal()
   const [isHighlighted, setIsHighlighted] = useState(false)
   const modalHandler = () => {
@@ -95,7 +96,7 @@ export function DetailsSectionFooterItem({
         {modal && (
           <Icon
             color={isHighlighted ? 'primary100' : 'neutral80'}
-            name="question_o"
+            icon={question_o}
             size="auto"
             width="14px"
             height="14px"

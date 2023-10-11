@@ -1,7 +1,8 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { MobileSidePanel } from 'components/Modal'
 import React, { useState } from 'react'
 import { Card } from 'theme-ui'
+import { edit } from 'theme/icons'
 
 import type { SidebarSectionContentProps } from './SidebarSectionContent'
 import { SidebarSectionContent } from './SidebarSectionContent'
@@ -32,7 +33,7 @@ export function SidebarSection({
   )
 
   return (
-    <MobileSidePanel toggleTitle={<Icon name="edit" color="success100" />}>
+    <MobileSidePanel toggleTitle={<Icon icon={edit} color="success100" />}>
       <Card
         sx={{
           position: 'relative',

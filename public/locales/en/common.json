@@ -953,8 +953,8 @@
         "title": "Get Liquidity Without Selling Your Crypto",
         "details": [
           {
-            "title": "Lorem ipsum dolor sit amet",
-            "description": "Aliquet aliquet dictum ut purus feugiat. At pellentesque blandit et maecenas lacus aliquam risus. Sit sed aliquam vitae pharetra nam et. Quis nec ac arcu augue tellus. Egestas pretium in massa ut eget."
+            "title": "Unlock Liquidity to Finance DeFi Opportunities & Real World Purchases",
+            "description": "Unlock value from your existing crypto. Finance tangible real-world assets, like a new home or car. Take advantage of DeFi with your liquidity — whether you're eyeing a trending token or eager to engage with an emerging protocol."
           }
         ]
       },
@@ -962,8 +962,8 @@
         "title": "Amplify Exposure to your Crypto with downside protection",
         "details": [
           {
-            "title": "Fusce mi elit, facilisis eget odio ac",
-            "description": "Maecenas mollis, elit ut eleifend vulputate, turpis lacus porta sapien, eget tincidunt mi dui et elit. Nunc non arcu in velit commodo dapibus, facilisis interdum odio."
+            "title": "Use Your Crypto to Buy More Crypto",
+            "description": "Summer.fi Multiply Vaults make it easy to get increased exposure to your crypto in one transaction. Use your multiply vault flexibly, from conservative to aggressive or manual to automated strategies."
           }
         ]
       },
@@ -971,8 +971,8 @@
         "title": "Maximize Earnings on your Crypto Assets",
         "details": [
           {
-            "title": "In bibendum massa in viverra tempus",
-            "description": "Nullam vitae efficitur nisl, nec commodo urna. Etiam gravida lobortis libero, et tincidunt ante tincidunt at. Duis tortor turpis, malesuada lobortis risus quis, tempus efficitur risus."
+            "title": "Crypto Yield; Passive or Active",
+            "description": "Summer.fi Earn Vaults allow you to tailor your yield strategy to your portfolio. Earn passively on your favourite crypto assets, earn exclusive token rewards or actively manage positions."
           }
         ]
       }
@@ -1929,7 +1929,6 @@
     "GUNIV3DAIUSDC1-A": "50x UNI V3 DAI / USDC 0.05% tier",
     "UNIV2DAIUSDC-A": "UNI V2 DAI / USDC LP",
     "UNIV2USDCETH-A": "UNI V2 USDC / ETH LP",
-    "CRVV1ETHSTETH-A": "CRV V1 ETH / Staked ETH LP",
     "RETH-A": "Rocket Pool ETH"
   },
   "product-page": {

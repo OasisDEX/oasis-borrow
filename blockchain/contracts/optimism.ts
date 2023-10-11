@@ -77,8 +77,7 @@ export const optimismContracts: OptimismContracts = {
       optimism.maker.joins,
       supportedIlks.filter(
         // these are not supported on goerli
-        (ilk) =>
-          !['CRVV1ETHSTETH-A', 'GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A', 'GNO-A'].includes(ilk),
+        (ilk) => !['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A', 'GNO-A'].includes(ilk),
       ),
     ),
   },

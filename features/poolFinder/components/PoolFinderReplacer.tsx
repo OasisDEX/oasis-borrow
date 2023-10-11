@@ -1,7 +1,8 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import type { FC } from 'react'
 import React from 'react'
 import { Button } from 'theme-ui'
+import { refresh } from 'theme/icons'
 
 interface PoolFinderReplacerProps {
   isVisible: boolean
@@ -32,7 +33,7 @@ export const PoolFinderReplacer: FC<PoolFinderReplacerProps> = ({ isVisible, onC
       }}
       onClick={onClick}
     >
-      <Icon name="refresh" size={16} color="primary100" />
+      <Icon icon={refresh} size={16} color="primary100" />
     </Button>
   )
 }

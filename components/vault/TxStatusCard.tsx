@@ -1,7 +1,8 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Flex, Grid, Link, Spinner, Text } from 'theme-ui'
+import { checkmark } from 'theme/icons'
 
 export interface TxStatusCardProgressProps {
   text: string
@@ -43,7 +44,7 @@ export function TxStatusCardSuccess({
   return (
     <Card sx={{ backgroundColor: 'success10', border: 'none', p: 2, borderRadius: 'round' }}>
       <Flex sx={{ alignItems: 'center', p: 1 }}>
-        <Icon name="checkmark" size={20} color="success100" />
+        <Icon icon={checkmark} size={20} color="success100" />
         <Grid pl={2} gap={0}>
           <Text variant="paragraph3" color="success100">
             {text}

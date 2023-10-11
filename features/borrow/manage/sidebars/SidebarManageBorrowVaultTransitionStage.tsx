@@ -1,9 +1,10 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { ListWithIcon } from 'components/ListWithIcon'
 import type { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/types/ManageBorrowVaultStage.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
+import { checkmark, multiply_transition } from 'theme/icons'
 
 export function SidebarManageBorrowVaultTransitionStage({
   stage,
@@ -22,7 +23,7 @@ export function SidebarManageBorrowVaultTransitionStage({
             {t('vault-form.header.multiply-transition', { token })}
           </Text>
           <ListWithIcon
-            icon="checkmark"
+            icon={checkmark}
             iconSize="14px"
             iconColor="primary100"
             items={[
@@ -48,7 +49,7 @@ export function SidebarManageBorrowVaultTransitionStage({
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('vault-form.subtext.confirm')}
           </Text>
-          <Icon name="multiply_transition" size="auto" />
+          <Icon icon={multiply_transition} size="auto" />
         </>
       )}
     </Grid>

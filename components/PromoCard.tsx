@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { Skeleton } from 'components/Skeleton'
@@ -6,25 +5,27 @@ import { TokensGroup } from 'components/TokensGroup'
 import { Translatable } from 'components/Translatable'
 import type { FC } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Heading, Image, Text } from 'theme-ui'
+import { arrow_decrease, arrow_increase } from 'theme/icons'
 
+import { Icon } from './Icon'
 import type { PromoCardProps, PromoCardVariant, PromoCardWrapperProps } from './PromoCard.types'
 
-const pillColors: { [key in PromoCardVariant]: SxStyleProp } = {
+const pillColors: { [key in PromoCardVariant]: ThemeUIStyleObject } = {
   negative: { color: 'critical100', borderColor: 'critical100' },
   positive: { color: 'success100', borderColor: 'success100' },
   neutral: { color: 'neutral80', borderColor: 'neutral20' },
 }
 
-export const dataColors: { [key in PromoCardVariant]: SxStyleProp } = {
+export const dataColors: { [key in PromoCardVariant]: ThemeUIStyleObject } = {
   negative: { color: 'critical100' },
   positive: { color: 'success100' },
   neutral: { color: 'primary100' },
 }
 
 export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, link }) => {
-  const sx: SxStyleProp = {
+  const sx: ThemeUIStyleObject = {
     position: 'relative',
     px: 3,
     py: '24px',
@@ -100,7 +101,7 @@ export const PromoCard: FC<PromoCardProps> = ({
           mb: '12px',
         }}
       >
-        {icon && <Icon name={icon} size={44} />}
+        {icon && <Icon icon={icon} size={44} />}
         {tokens && <TokensGroup tokens={tokens} forceSize={50} />}
         {image && <Image src={image} sx={{ height: '44px' }} />}
       </Flex>
@@ -170,8 +171,8 @@ export const PromoCard: FC<PromoCardProps> = ({
                 <Translatable text={label} />
               </Text>
               <Text as="span" variant="boldParagraph3" sx={dataColors[variant]}>
-                {variant === 'negative' && <Icon name="arrow_decrease" size={12} sx={{ mr: 1 }} />}
-                {variant === 'positive' && <Icon name="arrow_increase" size={12} sx={{ mr: 1 }} />}
+                {variant === 'negative' && <Icon icon={arrow_decrease} size={12} sx={{ mr: 1 }} />}
+                {variant === 'positive' && <Icon icon={arrow_increase} size={12} sx={{ mr: 1 }} />}
                 {value}
               </Text>
             </Flex>

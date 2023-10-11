@@ -1,8 +1,6 @@
-import { ethereumMainnetHexId } from 'blockchain/networks'
-import { WithWalletConnection } from 'components/connectWallet'
-import { ProductContextHandler } from 'components/context'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/layouts'
+import { AppLayout } from 'components/layouts/AppLayout'
 import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
@@ -33,8 +31,8 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
 function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
   return (
-    <ProductContextHandler>
-      <WithWalletConnection chainId={ethereumMainnetHexId} includeTestNet={true}>
+    <AppLayout>
+      <ProductContextHandler>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
             <PageSEOTags
@@ -51,11 +49,9 @@ function OpenVault({ ilk }: { ilk: string }) {
             <OpenVaultView ilk={ilk} />
           </WithWalletAssociatedRisk>
         </WithTermsOfService>
-      </WithWalletConnection>
-    </ProductContextHandler>
+      </ProductContextHandler>
+    </AppLayout>
   )
 }
-
-OpenVault.layout = AppLayout
 
 export default OpenVault

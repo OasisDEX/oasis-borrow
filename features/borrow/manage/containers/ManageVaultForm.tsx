@@ -1,4 +1,4 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { TextWithCheckmark } from 'components/TextWithCheckmark'
 import { ManageVaultCollateralAllowance } from 'components/vault/commonMultiply/ManageVaultCollateralAllowance'
 import { ManageVaultDaiAllowance } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
@@ -15,6 +15,7 @@ import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Divider, Grid, Text } from 'theme-ui'
+import { multiply_transition } from 'theme/icons'
 
 import { ManageVaultButton } from './ManageVaultButton'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
@@ -44,7 +45,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVau
     </Grid>
   ) : (
     <Box>
-      <Icon name="multiply_transition" size="auto" />
+      <Icon icon={multiply_transition} size="auto" />
     </Box>
   )
 }

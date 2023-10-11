@@ -1,12 +1,13 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { Icon } from 'components/Icon'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import type { ReactNode } from 'react'
 import React, { useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
+import { arrow_right_light, question_o } from 'theme/icons'
 
 export type SecondaryVariantType = 'positive' | 'negative' | 'neutral'
 
@@ -127,7 +128,7 @@ export function Item({
                 labelColorPrimary={labelColorPrimary}
                 isHeading={isHeading}
               />
-              {tooltip && <Icon name="question_o" size="16px" sx={{ ml: 1, color: 'neutral80' }} />}
+              {tooltip && <Icon icon={question_o} size="16px" sx={{ ml: 1, color: 'neutral80' }} />}
             </StatefulTooltip>
           ) : (
             <ItemLabel label={label} labelColorPrimary={labelColorPrimary} isHeading={isHeading} />
@@ -149,7 +150,7 @@ export function Item({
               {value && <>{React.isValidElement(value) ? value : `${value}`}</>}
               {change && (
                 <>
-                  <Icon name="arrow_right_light" size="auto" width={10} height={7} sx={{ mx: 2 }} />
+                  <Icon icon={arrow_right_light} size="auto" width={10} height={7} sx={{ mx: 2 }} />
                   {`${change}`}
                 </>
               )}

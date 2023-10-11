@@ -1,7 +1,7 @@
 import { PositionHistory } from 'components/history/PositionHistory'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
-import { useWalletManagement } from 'features/web3OnBoard'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

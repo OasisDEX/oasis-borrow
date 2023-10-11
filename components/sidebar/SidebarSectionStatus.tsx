@@ -1,9 +1,11 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
+import type { IconProps } from 'components/Icon.types'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'
 import { Box, Card, Flex, Link, Spinner, Text } from 'theme-ui'
+import { checkmark, clock } from 'theme/icons'
 
 type SidebarSectionStatusTypes = 'progress' | 'success' | 'waiting'
 
@@ -22,7 +24,7 @@ export interface SidebarSectionStatusProps {
   etherscan: string
   type: SidebarSectionStatusTypes
   description?: TranslateStringType
-  icon?: string
+  icon?: IconProps['icon']
 }
 
 export function SidebarSectionStatus({
@@ -44,12 +46,12 @@ export function SidebarSectionStatus({
     success: {
       bg: 'success10',
       color: 'success100',
-      icon: <Icon name="checkmark" size={20} color="success100" />,
+      icon: <Icon icon={checkmark} size={20} color="success100" />,
     },
     waiting: {
       bg: 'secondary60',
       color: 'neutral80',
-      icon: <Icon name={icon || 'clock'} size={20} color="neutral80" />,
+      icon: <Icon icon={icon ?? clock} size={20} color="neutral80" />,
       opacity: 0.5,
     },
   }

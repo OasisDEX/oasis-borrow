@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Spinner } from 'theme-ui'
 
 // wrapper for <Spinner /> component from theme-ui implemented because <Spinner /> is not mapped to any default variant
@@ -11,7 +11,7 @@ export function AppSpinner({
   size,
 }: {
   variant?: string
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   size?: number
 }) {
   return (

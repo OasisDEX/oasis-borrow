@@ -1,7 +1,9 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { FC, MouseEventHandler } from 'react'
 import React from 'react'
 import { Flex } from 'theme-ui'
+import { checkmark } from 'theme/icons'
+
+import { Icon } from './Icon'
 
 interface CheckboxProps {
   checked: boolean
@@ -23,6 +25,6 @@ export const Checkbox: FC<CheckboxProps> = ({ checked, onClick }) => (
       alignItems: 'center',
     }}
   >
-    {checked && <Icon name="checkmark" color="success100" size="auto" width="12px" />}
+    {checked && <Icon icon={checkmark} color="success100" size="auto" width="12px" />}
   </Flex>
 )

@@ -1,22 +1,12 @@
 import { AppLink } from 'components/Links'
-import { navigationBreakpointsWithPixels } from 'components/navigation/Navigation'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
 import { Box, Image } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
-type NavigationBrandingPillColor = string | [string, string]
-
-export interface NavigationBrandingPill {
-  color: NavigationBrandingPillColor
-  label: string
-}
-
-interface NavigationBrandingProps {
-  link?: string
-  pill?: NavigationBrandingPill
-}
+import { navigationBreakpointsWithPixels } from './Navigation.constants'
+import type { NavigationBrandingPillColor, NavigationBrandingProps } from './Navigation.types'
 
 export function getPillColor(color: NavigationBrandingPillColor) {
   return Array.isArray(color) ? `linear-gradient(90deg, ${color[0]} 0%, ${color[1]} 100%)` : color
@@ -42,7 +32,7 @@ export function NavigationBranding({
       }}
     >
       <Image
-        sx={{ height: '22px' }}
+        sx={{ height: '22px', width: ['25px', '129px'] }}
         src={staticFilesRuntimeUrl(`/static/img/logos/${isViewBelowS ? 'dot' : 'logo'}_dark.svg`)}
       />
       {pill && (

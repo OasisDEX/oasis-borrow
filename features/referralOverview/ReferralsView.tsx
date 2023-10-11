@@ -1,5 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { useMainnetEnsName } from 'blockchain/ens'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import { formatAddress } from 'helpers/formatters/format'
@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useRef, useState } from 'react'
 import { Box, Card, Flex, Text, Textarea } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
+import { checkmark, duplicate } from 'theme/icons'
 
 interface Props {
   address: string
@@ -68,9 +69,9 @@ function ReferralLink({ address }: Props) {
         onClick={() => copyToClipboard()}
       >
         {copied ? (
-          <Icon name="checkmark" sx={{ mr: '8px' }} />
+          <Icon icon={checkmark} sx={{ mr: '8px' }} />
         ) : (
-          <Icon name="duplicate" sx={{ mr: '8px' }} />
+          <Icon icon={duplicate} sx={{ mr: '8px' }} />
         )}{' '}
         {copied ? t('ref.copied') : t('ref.copy')}
       </Text>

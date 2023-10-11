@@ -5,7 +5,7 @@ import { includes } from 'lodash'
 import type { JsonRpcResponse } from 'web3-core-helpers'
 
 import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
-import { getNetworkRpcEndpoint } from './networks'
+import { getNetworkRpcEndpoint } from './networks/get-network-rpc-endpoint'
 
 function fixChainId(chainId: string | number) {
   return Number(chainId).valueOf()

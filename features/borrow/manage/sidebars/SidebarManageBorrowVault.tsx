@@ -24,6 +24,7 @@ import {
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
+import { circle_exchange } from 'theme/icons'
 
 import { SidebarManageBorrowVaultEditingStage } from './SidebarManageBorrowVaultEditingStage'
 import { SidebarManageBorrowVaultManageStage } from './SidebarManageBorrowVaultManageStage'
@@ -125,7 +126,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
         },
         {
           label: t('system.actions.borrow.switch-to-multiply'),
-          icon: 'circle_exchange',
+          icon: circle_exchange,
           iconShrink: 2,
           panel: 'transition',
           action: () => {

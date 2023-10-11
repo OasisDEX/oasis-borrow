@@ -1,6 +1,4 @@
-import { ethereumMainnetHexId } from 'blockchain/networks'
-import { WithWalletConnection } from 'components/connectWallet'
-import { AppLayout } from 'components/layouts'
+import { AppLayout } from 'components/layouts/AppLayout'
 import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -28,15 +26,13 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
 
 function OpenVault({ ilk }: { ilk: string }) {
   return (
-    <WithWalletConnection chainId={ethereumMainnetHexId}>
+    <AppLayout>
       <WithTermsOfService>
         <GuniOpenVaultView ilk={ilk} />
         <Survey for="earn" />
       </WithTermsOfService>
-    </WithWalletConnection>
+    </AppLayout>
   )
 }
-
-OpenVault.layout = AppLayout
 
 export default OpenVault

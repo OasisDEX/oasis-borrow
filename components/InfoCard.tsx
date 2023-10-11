@@ -1,10 +1,11 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Card, Heading, Text } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
+import { Icon } from './Icon'
 import { AppLink } from './Links'
 
 function CardContent({
@@ -18,7 +19,7 @@ function CardContent({
   return (
     <Box sx={{ position: 'relative', zIndex: 2, pb: 4 }}>
       <Heading sx={{ my: 2, fontWeight: 'bold', color: 'primary100' }}>{title}</Heading>
-      <Text sx={{ mb: 3, color: 'neutral80', minHeight: '3em' }}>{subtitle}</Text>
+      <Text sx={{ mb: 3, color: 'neutral80', minHeight: '3em', display: 'block' }}>{subtitle}</Text>
       {children}
     </Box>
   )
@@ -32,7 +33,7 @@ function CardWrapper({
 }: {
   backgroundImage: string
   backgroundGradient: string
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
 } & WithChildren) {
   return (
     <Card
@@ -58,7 +59,7 @@ type InfoCardProps = {
   links: Array<{ href: string; text: string }>
   backgroundImage: string
   backgroundGradient: string
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
 }
 
 export function InfoCard(props: InfoCardProps) {
@@ -89,7 +90,7 @@ export function InfoCard(props: InfoCardProps) {
             >
               {props.links[0].text}
               <Icon
-                name="arrow_right"
+                icon={arrow_right}
                 size="15px"
                 sx={{ position: 'relative', left: '6px', transition: '0.2s' }}
               />
@@ -116,7 +117,7 @@ export function InfoCard(props: InfoCardProps) {
               >
                 {text}
                 <Icon
-                  name="arrow_right"
+                  icon={arrow_right}
                   size="15px"
                   sx={{ position: 'relative', left: '6px', transition: '0.2s' }}
                 />

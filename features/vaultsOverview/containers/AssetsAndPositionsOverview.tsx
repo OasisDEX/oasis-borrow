@@ -1,7 +1,6 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import type { SystemStyleObject } from '@styled-system/css'
 import BigNumber from 'bignumber.js'
 import { PieChart } from 'components/dumb/PieChart'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
 import { AssetsAndPositionsOverviewLoadingState } from 'features/vaultsOverview/components/AssetsAndPositionsOverviewLoadingState'
@@ -17,9 +16,10 @@ import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import ethereumMainnetIcon from 'public/static/img/network_icons/ethereum_mainnet.svg'
 import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
-import type { SxStyleProp } from 'theme-ui'
+import { createPortal } from 'react-dom'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Card, Flex, Grid, Heading, Image, Link, Text } from 'theme-ui'
+import { arrow_right, dots_v } from 'theme/icons'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 
 import type { PortfolioBalanceApi } from './usePortfolioBalanceApi'
@@ -87,14 +87,14 @@ function AssetRow({ name: title, proportion, value, actions, url, logo_url: imag
           (${formatAmount(contentsUsd, 'USD')})
         </Text>
       )}
-      {actions && <Icon name="dots_v" sx={{ fill: '#708390', ml: 'auto', flexShrink: 0 }} />}
-      {url && <Icon name="arrow_right" sx={{ fill: '#708390', ml: 'auto', flexShrink: 0 }} />}
+      {actions && <Icon icon={dots_v} sx={{ fill: '#708390', ml: 'auto', flexShrink: 0 }} />}
+      {url && <Icon icon={arrow_right} sx={{ fill: '#708390', ml: 'auto', flexShrink: 0 }} />}
     </Flex>
   )
 }
 
 function LinkedRow(props: AssetView) {
-  const [menuPosition, setMenuPosition] = useState<SxStyleProp | undefined>(undefined)
+  const [menuPosition, setMenuPosition] = useState<ThemeUIStyleObject | undefined>(undefined)
   const { actions, url } = props
 
   if (url) {
@@ -116,7 +116,7 @@ function LinkedRow(props: AssetView) {
       >
         {menuPosition &&
           actions &&
-          ReactDOM.createPortal(
+          createPortal(
             <Menu
               sx={menuPosition}
               close={() => {
@@ -135,7 +135,7 @@ function LinkedRow(props: AssetView) {
 function MenuRowDisplay({ icon, text }: AssetAction) {
   return (
     <Flex sx={{ color: 'black', alignItems: 'center' }}>
-      <Icon name={icon} sx={{ mr: '15px' }} />
+      <Icon icon={icon} sx={{ mr: '15px' }} />
       <Text variant="paragraph2" sx={{ color: 'black' }}>
         {text}
       </Text>
@@ -175,7 +175,7 @@ function Menu({
   assetActions,
 }: {
   close: () => void
-  sx?: SystemStyleObject
+  sx?: ThemeUIStyleObject
   assetActions: Array<AssetAction>
 }) {
   const componentRef = useOutsideElementClickHandler(close)

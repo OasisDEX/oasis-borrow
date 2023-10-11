@@ -30,15 +30,15 @@ function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
       sx={{ mt: 3, pt: 4 }}
     >
       <Grid columns={['1fr', '1fr 1fr 1fr 1fr']}>
-        <Box sx={{ my: ['30px', 0] }}>
+        <Flex sx={{ my: ['30px', 0], flexDirection: 'column' }}>
           <Text variant="header3" sx={{ textAlign: 'center' }}>
             {oasisStats ? oasisStats.vaultsWithActiveTrigger : '-'}
           </Text>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
             {t('landing.stats.vaults-automated')}
           </Text>
-        </Box>
-        <Box sx={{ my: ['30px', 0] }}>
+        </Flex>
+        <Flex sx={{ my: ['30px', 0], flexDirection: 'column' }}>
           <Text variant="header3" sx={{ textAlign: 'center' }}>
             {oasisStats
               ? `$${formatAsShorthandNumbers(
@@ -50,23 +50,23 @@ function WhyOasisStats({ oasisStats }: { oasisStats?: OasisStats }) {
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
             {t('landing.stats.collateral-automated')}
           </Text>
-        </Box>
-        <Box sx={{ my: ['30px', 0] }}>
+        </Flex>
+        <Flex sx={{ my: ['30px', 0], flexDirection: 'column' }}>
           <Text variant="header3" sx={{ textAlign: 'center' }}>
             {oasisStats ? oasisStats.executedTriggersLast90Days : '-'}
           </Text>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
             {t('landing.stats.actions-executed')}
           </Text>
-        </Box>
-        <Box sx={{ my: ['30px', 0] }}>
+        </Flex>
+        <Flex sx={{ my: ['30px', 0], flexDirection: 'column' }}>
           <Text variant="header3" sx={{ textAlign: 'center' }}>
             {oasisStats ? `${oasisStats.triggersSuccessRate}%` : '-'}
           </Text>
           <Text variant="boldParagraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
             {t('landing.stats.success-rate')}
           </Text>
-        </Box>
+        </Flex>
       </Grid>
     </HomepagePromoBlock.Big>
   )
@@ -128,6 +128,8 @@ export function HomepageView() {
             <Image
               src={staticFilesRuntimeUrl('/static/img/homepage/peace_of_mind.svg')}
               sx={{
+                width: ['100%', '528px'],
+                height: ['100%', '208px'],
                 my: 3,
                 userSelect: 'none',
                 pointerEvents: 'none',
@@ -153,6 +155,8 @@ export function HomepageView() {
             <Image
               src={staticFilesRuntimeUrl('/static/img/homepage/no_hassle.svg')}
               sx={{
+                width: ['100%', '528px'],
+                height: ['100%', '208px'],
                 my: 3,
                 userSelect: 'none',
                 pointerEvents: 'none',
