@@ -31,8 +31,7 @@
     "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn typechain:generate && yarn xstate:typegen && yarn get-config-types",
     "xstate:typegen": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" ",
     "xstate:typegen:watch": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" --watch",
-    "update-product-hub": "npx ts-node scripts/update-product-hub.ts",
-    "release": "release-it"
+    "update-product-hub": "npx ts-node scripts/update-product-hub.ts"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
@@ -103,7 +102,6 @@
     "react-redux": "8.0.5",
     "react-select": "^3.1.0",
     "react-text-mask": "^5.4.1",
-    "release-it": "^16.2.1",
     "rxjs": "^6.2.0",
     "rxjs-take-while-inclusive": "^2.1.0",
     "sass": "^1.49.4",

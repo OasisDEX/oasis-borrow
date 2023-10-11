@@ -66,7 +66,7 @@ jobs:
         run: yarn install --prefer-offline --frozen-lockfile
 
       - name: release version
-        run: npm run release -- ${{ env.RELEASE_TYPE }} --ci
+        run: npx release-it -- ${{ env.RELEASE_TYPE }} --ci
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
       - name: Merge dev -> main
