@@ -19,27 +19,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Use cache
-        uses: jongwooo/next-cache@v1
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_STAGING }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_STAGING }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
       - name: Extract commit hash
         id: vars
         shell: bash
         run: |
           echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-      - uses: actions/cache@v3
+      - name: Use modules cache
+        uses: actions/cache@v3
         id: yarn-cache
         with:
           path: '**/node_modules'
@@ -52,6 +39,9 @@ jobs:
       - name: Run postinstall
         if: steps.yarn-cache.outputs.cache-hit == 'true'
         run: yarn postinstall
+
+      - name: Use next cache
+        uses: jongwooo/next-cache@v1
 
       - name: Build standalone app
         id: build-app
@@ -91,6 +81,17 @@ jobs:
       - name: Run migrations
         id: migrate
         run: yarn migrate
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_STAGING }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_STAGING }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
       # - name: Build runner image
       #   id: build-image
