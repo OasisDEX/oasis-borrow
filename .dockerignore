@@ -4,11 +4,6 @@
 .pre-commit*
 codecov.yml
 node_modules
-!node_modules/ts-node
-!node_modules/pg
-!node_modules/@types/pg
-!node_modules/dotenv
-!node_modules/postgres-migrations
 .env
 .env*.local
 ./server/database/.env
