@@ -121,10 +121,14 @@
     "zod": "^1.5.0"
   },
   "resolutions": {
+    "@ethersproject/abstract-provider": "5.6.0",
+    "@ethersproject/providers": "5.6.2",
+    "@ethersproject/signing-key": "5.6.0",
     "@emotion/react": "11.11.1",
     "acorn": "8.5.0",
     "debug": "4.3.4",
     "ethereumjs-util": "7.1.5",
+    "ethers": "5.6.2",
     "glob": "8.0.3",
     "mime-db": "1.51.0",
     "mime-types": "2.1.34",
