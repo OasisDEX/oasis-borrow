@@ -11,7 +11,7 @@ export const cdpManagerUrns: CallDef<BigNumber, string> = {
     return contract<DssCdpManager>(getNetworkContracts(NetworkIds.MAINNET, chainId).dssCdpManager)
       .methods.urns
   },
-  prepareArgs: (id) => [id],
+  prepareArgs: (id) => [id.toNumber()],
 }
 
 export const cdpManagerIlks: CallDef<BigNumber, string> = {
@@ -19,7 +19,7 @@ export const cdpManagerIlks: CallDef<BigNumber, string> = {
     return contract<DssCdpManager>(getNetworkContracts(NetworkIds.MAINNET, chainId).dssCdpManager)
       .methods.ilks
   },
-  prepareArgs: (id) => [id],
+  prepareArgs: (id) => [id.toNumber()],
   postprocess: (ilk) => Web3.utils.hexToUtf8(ilk),
 }
 
@@ -35,5 +35,5 @@ export const cdpManagerOwner: CallDef<BigNumber, string> = {
   call: (_, { contract, chainId }) =>
     contract<DssCdpManager>(getNetworkContracts(NetworkIds.MAINNET, chainId).dssCdpManager).methods
       .owns,
-  prepareArgs: (id) => [id],
+  prepareArgs: (id) => [id.toNumber()],
 }
