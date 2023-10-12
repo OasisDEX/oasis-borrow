@@ -28,7 +28,9 @@ export interface AjnaPoolDataResponse {
   poolActualUtilization: string
   poolTargetUtilization: string
   currentBurnEpoch: string
-  pendingInflator: string
+  pendingInflator: {
+    pendingInflator: string
+  }
   lendApr: string
   borrowApr: string
   buckets: Bucket[]
@@ -115,7 +117,9 @@ export const getAjnaPoolData: (networkId: NetworkIds) => GetPoolData =
           NEGATIVE_WAD_PRECISION,
         ),
         currentBurnEpoch: new BigNumber(currentBurnEpoch),
-        pendingInflator: new BigNumber(pendingInflator).shiftedBy(NEGATIVE_WAD_PRECISION),
+        pendingInflator: new BigNumber(pendingInflator.pendingInflator).shiftedBy(
+          NEGATIVE_WAD_PRECISION,
+        ),
         lendApr: new BigNumber(lendApr).shiftedBy(NEGATIVE_WAD_PRECISION),
         borrowApr: new BigNumber(borrowApr).shiftedBy(NEGATIVE_WAD_PRECISION),
         buckets: buckets.map((bucket) => ({
