@@ -31,7 +31,7 @@ export default class MyDocument extends Document<Document> {
           <link rel="shortcut icon" href={staticFilesRuntimeUrl('/static/favicon.ico')} />
         </Head>
         <body>
-          <Script strategy="beforeInteractive" >{grooveWidgetScript}</Script>
+          <Script strategy="beforeInteractive">{grooveWidgetScript}</Script>
           <Main />
           <NextScript />
         </body>
