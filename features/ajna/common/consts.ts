@@ -23,7 +23,7 @@ export const steps: {
 }
 
 export const ajnaFormExternalSteps: AjnaSidebarStep[] = ['dpm']
-export const ajnaFormStepsWithTransaction: AjnaSidebarStep[] = ['transaction']
+export const stepsWithTransitions: AjnaSidebarStep[] = ['transaction']
 
 export const LTVWarningThreshold = new BigNumber(0.05)
 export const LUPPercentageOffset = new BigNumber(0.05)

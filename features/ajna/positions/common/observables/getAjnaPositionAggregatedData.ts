@@ -29,7 +29,7 @@ export interface AjnaEarnPositionAuction {
 
 export type AjnaPositionAuction = AjnaBorrowishPositionAuction | AjnaEarnPositionAuction
 
-interface AjnaPositionAggregatedDataResponse {
+export interface AjnaPositionAggregatedDataResponse {
   auction: AjnaPositionAuction
   history: AjnaUnifiedHistoryEvent[]
 }

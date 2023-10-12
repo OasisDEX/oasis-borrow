@@ -1,4 +1,4 @@
-import { ajnaFormExternalSteps, ajnaFormStepsWithTransaction } from 'features/ajna/common/consts'
+import { ajnaFormExternalSteps, stepsWithTransitions } from 'features/ajna/common/consts'
 import type { AjnaFlow, AjnaSidebarStep } from 'features/ajna/common/types'
 
 export interface GeneralStepManager {
@@ -18,7 +18,7 @@ export function isNextStep({
 }
 
 export function isStepWithTransaction({ currentStep }: GeneralStepManager) {
-  return ajnaFormStepsWithTransaction.includes(currentStep)
+  return stepsWithTransitions.includes(currentStep)
 }
 
 export const getAjnaEditingStep = ({ flow }: { flow: AjnaFlow }) => {
