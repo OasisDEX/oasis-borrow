@@ -52,6 +52,7 @@ jobs:
       - name: Build standalone app
         id: build-app
         env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
           SHA_TAG: ${{ steps.vars.outputs.sha_short }}
           LATEST_TAG: latest
           CONFIG_URL: ${{ secrets.CONFIG_URL }}
