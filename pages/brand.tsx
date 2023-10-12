@@ -77,7 +77,7 @@ function BrandAssetsPage() {
         <Heading variant="header2" sx={{ textAlign: 'center', mb: 2 }}>
           {t('brand-assets.heading')}
         </Heading>
-        <Text variant="paragraph1" sx={{ color: 'neutral80', textAlign: 'center' }}>
+        <Text as="p" variant="paragraph1" sx={{ color: 'neutral80', textAlign: 'center' }}>
           {t('brand-assets.intro')}
         </Text>
         <AppLink
