@@ -29,10 +29,7 @@ export async function handleGetProductHubData(
   }
 
   const network = networks
-    .filter(
-      // TODO: remove second check after base is added to PH
-      ({ testnet: isTestnet }) => isTestnet === testnet,
-    )
+    .filter(({ testnet: isTestnet }) => isTestnet === testnet)
     .map(({ name }) => name)
 
   await prisma.productHubItems
