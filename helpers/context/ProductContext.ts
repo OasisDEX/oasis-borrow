@@ -262,6 +262,10 @@ export function setupProductContext(
     refresh$: onEveryBlock$,
     networkId: NetworkIds.ARBITRUMMAINNET,
   })
+  const aaveV3BaseServices = getAaveV3Services({
+    refresh$: onEveryBlock$,
+    networkId: NetworkIds.BASEMAINNET,
+  })
   const sparkV3Services = getSparkV3Services({
     refresh$: onEveryBlock$,
     networkId: NetworkIds.MAINNET,
@@ -929,6 +933,7 @@ export function setupProductContext(
       [NetworkIds.MAINNET]: aaveV3Services,
       [NetworkIds.OPTIMISMMAINNET]: aaveV3OptimismServices,
       [NetworkIds.ARBITRUMMAINNET]: aaveV3ArbitrumServices,
+      [NetworkIds.BASEMAINNET]: aaveV3BaseServices,
     },
     [LendingProtocol.SparkV3]: {
       [NetworkIds.MAINNET]: sparkV3Services,
