@@ -36,9 +36,14 @@ export function OmniKitPositionController() {
         details,
       }}
       isOwner={isOwner}
+      isSetup={isSetup}
       owner={owner}
       tabs={{
-        position: <Grid variant="vaultContainer">test test</Grid>,
+        position: (
+          <Grid variant="vaultContainer">
+            <Grid gap={2}>WIP</Grid>
+          </Grid>
+        ),
         info: <>Info</>,
         history: <>History</>,
       }}

@@ -1,3 +1,4 @@
+import { SwapData } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
@@ -11,6 +12,7 @@ import { getTxStatuses } from 'features/omni-kit/contexts/omniKitTxManager'
 import type {
   OmniKitEditingStep,
   OmniKitHooksGeneratorResponse,
+  OmniKitPosition,
   OmniKitProductType,
   OmniKitSidebarStep,
 } from 'features/omni-kit/types'
@@ -38,6 +40,7 @@ interface OmniKitContextProviderProps {
   isShort: boolean
   network: NetworkNames
   owner: string
+  position: OmniKitPosition
   positionId?: string
   productType: OmniKitProductType
   protocol: LendingProtocol
@@ -52,7 +55,8 @@ interface OmniKitContextProviderProps {
   steps: OmniKitSidebarStep[]
 }
 
-interface OmniKitContextEnvironment extends Omit<OmniKitContextProviderProps, 'steps'> {
+interface OmniKitContextEnvironment
+  extends Omit<OmniKitContextProviderProps, 'position' | 'steps'> {
   isOwner: boolean
   isSetup: boolean
   priceFormat: string
@@ -82,9 +86,28 @@ interface OmniKitContextTx {
   txDetails?: TxDetails
 }
 
+interface OmniKitContextPositionSet<P> {
+  position: P
+  simulation?: P
+}
+
+interface OmniKitContextPosition {
+  cachedPosition?: OmniKitContextPositionSet<OmniKitPosition>
+  cachedSwap?: SwapData
+  currentPosition: OmniKitContextPositionSet<OmniKitPosition>
+  currentSwap?: SwapData
+  isSimulationLoading?: boolean
+  resolvedPositionId?: string
+  setCachedPosition: (positionSet: OmniKitContextPositionSet<OmniKitPosition>) => void
+  setCachedSwap: (swap: SwapData) => void
+  setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
+  setSimulation: Dispatch<SetStateAction<OmniKitPosition | undefined>>
+}
+
 interface OmniKitContext {
   environment: OmniKitContextEnvironment
   hooks: OmniKitHooksGeneratorResponse
+  position: OmniKitContextPosition
   steps: OmniKitContextSteps
   tx: OmniKitContextTx
 }
@@ -162,6 +185,18 @@ export function OmniKitContextProvider({
       slippage,
     },
     hooks,
+    position: {
+      cachedPosition,
+      positionAuction,
+      currentPosition: { position },
+      isSimulationLoading,
+      resolvedId: positionIdFromDpmProxyData,
+      history: positionHistory,
+      setCachedPosition: (positionSet) => setCachedPosition(positionSet),
+      setIsLoadingSimulation,
+      setSimulation,
+      setCachedSwap: (swap) => setCachedSwap(swap),
+    },
     steps: setupStepManager(),
     tx: setupTxManager(),
   })

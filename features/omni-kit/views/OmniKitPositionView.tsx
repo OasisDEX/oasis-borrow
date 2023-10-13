@@ -1,7 +1,7 @@
+import { TabBar } from 'components/TabBar'
 import type { VaultHeadlineProps } from 'components/vault/VaultHeadline'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
-import { useOmniKitContext } from 'features/omni-kit/contexts/OmniKitContext'
 import { useAppConfig } from 'helpers/config'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
@@ -13,11 +13,12 @@ interface OmniKitPositionViewProps {
   dpmProxy?: string
   headline: VaultHeadlineProps
   isOwner: boolean
+  isSetup: boolean
   owner: string
   tabs: {
+    history?: ReactNode
+    info?: ReactNode
     position: ReactNode
-    history: ReactNode
-    info: ReactNode
   }
 }
 
@@ -25,6 +26,7 @@ export function OmniKitPositionView({
   dpmProxy,
   headline,
   isOwner,
+  isSetup,
   owner,
   tabs: { position, history, info },
 }: OmniKitPositionViewProps) {
@@ -48,21 +50,25 @@ export function OmniKitPositionView({
             : undefined
         }
       />
-      {/*
+
       <TabBar
         variant="underline"
         sections={[
           {
-            value: flow === 'manage' ? 'overview' : 'setup',
-            label: t(flow === 'manage' ? 'system.overview' : 'setup'),
+            value: isSetup ? 'setup' : 'overview',
+            label: t(isSetup ? 'setup' : 'system.overview'),
             content: <>{position}</>,
           },
-          {
-            value: 'position-info',
-            label: t('system.position-info'),
-            content: <>{info}</>,
-          },
-          ...(flow === 'manage'
+          ...(info
+            ? [
+                {
+                  value: 'position-info',
+                  label: t('system.position-info'),
+                  content: <>{info}</>,
+                },
+              ]
+            : []),
+          ...(history && !isSetup
             ? [
                 {
                   value: 'history',
@@ -72,7 +78,7 @@ export function OmniKitPositionView({
               ]
             : []),
         ]}
-      /> */}
+      />
     </Container>
   )
 }

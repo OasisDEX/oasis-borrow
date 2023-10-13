@@ -1,6 +1,11 @@
+import type BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import type { LendingProtocol } from 'lendingProtocols'
+
+export interface OmniKitPosition {
+  fee: BigNumber
+}
 
 export enum OmniKitProductType {
   Borrow = 'borrow',
