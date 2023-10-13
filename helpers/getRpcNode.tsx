@@ -21,8 +21,10 @@ export function getRpcNode(network: NetworkNames): string | undefined {
       return !['', undefined].includes(process.env.OPTIMISM_MAINNET_RPC_URL)
         ? `${process.env.OPTIMISM_MAINNET_RPC_URL}`
         : `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-    case NetworkNames.optimismGoerli:
-      return `https://optimism-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+    case NetworkNames.baseMainnet:
+      return `https://base-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+    case NetworkNames.baseGoerli:
+      return `https://base-goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     default:
       console.warn(`Network: ${network} does not have defined a rpc node. Returning BadRequest`)
       return undefined

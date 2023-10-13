@@ -1,6 +1,6 @@
 import type { Prisma, PrismaPromise, Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import { NetworkNames, networks } from 'blockchain/networks'
+import { networks } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
 import { checkIfAllHandlersExist, filterTableData, measureTime } from 'handlers/product-hub/helpers'
@@ -31,7 +31,7 @@ export async function handleGetProductHubData(
   const network = networks
     .filter(
       // TODO: remove second check after base is added to PH
-      ({ name, testnet: isTestnet }) => isTestnet === testnet && name !== NetworkNames.baseMainnet,
+      ({ testnet: isTestnet }) => isTestnet === testnet,
     )
     .map(({ name }) => name)
 

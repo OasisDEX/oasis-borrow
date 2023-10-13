@@ -339,7 +339,11 @@ const baseMainnetConfig: NetworkConfig = {
   getCacheApi: () => undefined,
   getParentNetwork: () => undefined,
   isCustomFork: false,
-  links: [],
+  links: [
+    { label: 'Bridge', openBridgeWidget: true },
+    { label: 'Basescan', url: 'https://basescan.org/' },
+    { label: 'Official Site', url: 'https://base.org/' },
+  ],
 }
 
 const baseGoerliConfig: NetworkConfig = {
