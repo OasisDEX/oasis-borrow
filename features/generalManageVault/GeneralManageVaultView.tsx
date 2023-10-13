@@ -12,6 +12,7 @@ import { Container } from 'theme-ui'
 
 import type { GeneralManageVaultState } from './generalManageVault.types'
 import { VaultType } from './vaultType.types'
+import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
 
 interface GeneralManageVaultViewProps {
   generalManageVault: GeneralManageVaultState
@@ -24,6 +25,17 @@ export function GeneralManageVaultViewAutomation({
 
   switch (vaultType) {
     case VaultType.Borrow:
+      return (
+        <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+          <ManageMultiplyVaultContainer
+            manageVault={generalManageVault.state}
+            header={DefaultVaultHeader}
+            details={ManageVaultDetails}
+            form={SidebarManageMultiplyVault}
+            history={VaultHistoryView}
+          />
+        </Container>
+      )
     case VaultType.Multiply:
       return (
         <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>

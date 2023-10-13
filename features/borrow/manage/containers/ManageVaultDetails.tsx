@@ -29,6 +29,7 @@ import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
+import { bell } from 'theme/icons'
 
 export function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },
@@ -103,7 +104,7 @@ export function ManageVaultDetailsSummary({
 }
 
 export function ManageVaultDetails(
-  props: ManageMultiplyVaultState & { onBannerButtonClickHandler: () => void },
+  props: ManageMultiplyVaultState,
 ) {
   const {
     vault: {
@@ -154,7 +155,7 @@ export function ManageVaultDetails(
   const notifications: DetailsSectionNotificationItem[] = [
     {
       closable: true,
-      icon: 'bell',
+      icon: bell,
       link: {
         translationKey: 'vault-info-messages.risk-management-for-borrow-link',
         url: 'https://blog.summer.fi/new-risk-management-tool',

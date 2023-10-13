@@ -2,7 +2,6 @@ import { trackingEvents } from 'analytics/trackingEvents'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
-import { uiChanges } from 'helpers/uiChanges'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { useAppConfig } from 'helpers/config'
 import { useTranslation } from 'next-i18next'
@@ -14,10 +13,7 @@ import type {
   ManageMultiplyVaultContainerComponents,
   ManageMultiplyVaultContainerProps,
 } from './ManageMultiplyVaultContainer.types'
-import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
-import { VaultViewMode } from '../GeneralManageTabBar.types'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
-import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
+
 
 export function ManageMultiplyVaultContainer({
   manageVault,
@@ -68,23 +64,9 @@ export function ManageMultiplyVaultContainer({
           priceInfo={manageVault.priceInfo}
         />
       )}
-      {/* TODO: propably here */}
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
-          {}
-          {manageVault.vaultType === VaultType.Multiply ? (
-            <Details {...manageVault} />
-          ) : (
-            <ManageVaultDetails
-              {...manageVault}
-              onBannerButtonClickHandler={() => {
-                uiChanges.publish(TAB_CHANGE_SUBJECT, {
-                  type: 'change-tab',
-                  currentMode: VaultViewMode.Protection,
-                })
-              }}
-            />
-          )}
+          <Details {...manageVault} />
           {!stopLossReadEnabled && <History vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
