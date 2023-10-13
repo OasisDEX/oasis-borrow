@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSliders'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { MAX_COLL_RATIO } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
 import React from 'react'
 

@@ -1,6 +1,7 @@
 import { ManageMultiplyVaultContainer } from 'components/vault/commonMultiply/ManageMultiplyVaultContainer'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { ManageEarnVaultContainer } from 'components/vault/earn/ManageEarnVaultContainer'
+import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { SidebarManageGuniVault } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVault'
@@ -12,7 +13,6 @@ import { Container } from 'theme-ui'
 
 import type { GeneralManageVaultState } from './generalManageVault.types'
 import { VaultType } from './vaultType.types'
-import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
 
 interface GeneralManageVaultViewProps {
   generalManageVault: GeneralManageVaultState

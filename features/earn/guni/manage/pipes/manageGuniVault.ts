@@ -13,6 +13,7 @@ import dayjs from 'dayjs'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import type { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
 import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { applyExchange } from 'features/multiply/manage/pipes/manageMultiplyQuote'
 import { applyManageVaultCalculations } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { defaultManageMultiplyVaultCalculations } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations.constants'
@@ -56,7 +57,6 @@ import type { GuniTxData, GuniTxDataChange, ManageEarnVaultState } from './manag
 import { applyGuniCalculations } from './manageGuniVaultCalculations'
 import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
 import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,

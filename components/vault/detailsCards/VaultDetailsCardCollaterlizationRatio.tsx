@@ -5,7 +5,7 @@ import {
   VaultDetailsCard,
   VaultDetailsCardModal,
 } from 'components/vault/VaultDetails'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { formatPercent } from 'helpers/formatters/format'
 import type { ModalProps } from 'helpers/modalHook'
 import { useModal } from 'helpers/modalHook'

@@ -1,10 +1,10 @@
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { zero } from 'helpers/zero'
 
 import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
 import { manageMultiplyInputsDefaults } from './manageMultiplyVaultForm.constants'
 import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
 
 export function applyManageVaultInput(
   change: ManageMultiplyVaultChange,

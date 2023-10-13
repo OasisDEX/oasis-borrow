@@ -4,6 +4,7 @@ import type { IlkData } from 'blockchain/ilks.types'
 import type { Context } from 'blockchain/network.types'
 import type { Vault } from 'blockchain/vaults.types'
 import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import type { BalanceInfo } from 'features/shared/balanceInfo.types'
@@ -31,7 +32,6 @@ import { slippageLimitMock } from './slippageLimit.mock'
 import { mockedEmptyStopLossTrigger } from './stopLoss.mock'
 import type { MockVaultProps } from './vaults.mock'
 import { mockVault$ } from './vaults.mock'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
 
 export const MOCK_VAULT_ID = one
 export const MOCK_CHAIN_ID = new BigNumber(2137)

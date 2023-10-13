@@ -1,4 +1,4 @@
-import { MakerVaultType } from 'blockchain/calls/vaultResolver'
+import type { MakerVaultType } from 'blockchain/calls/vaultResolver'
 import type { Observable } from 'rxjs'
 import { of, throwError } from 'rxjs'
 

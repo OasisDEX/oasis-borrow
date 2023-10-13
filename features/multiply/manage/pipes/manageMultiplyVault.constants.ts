@@ -1,9 +1,9 @@
 import type { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20.constants'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { zero } from 'helpers/zero'
 
 import type { MutableManageMultiplyVaultState } from './MutableManageMultiplyVaultState.types'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
 
 // works as a const pretty much...
 export function defaultMutableManageMultiplyVaultState(

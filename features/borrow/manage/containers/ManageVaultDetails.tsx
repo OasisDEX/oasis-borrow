@@ -6,7 +6,7 @@ import {
   getChangeVariant,
 } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
-import { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { MessageCard } from 'components/MessageCard'
 import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
 import { ContentCardCollateralLocked } from 'components/vault/detailsSection/ContentCardCollateralLocked'

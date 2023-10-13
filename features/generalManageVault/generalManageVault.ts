@@ -5,9 +5,9 @@ import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { LendingProtocol } from 'lendingProtocols'
 import type { Observable } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
-import { VaultType } from './vaultType.types'
 
 import type { GeneralManageVaultState } from './generalManageVault.types'
+import { VaultType } from './vaultType.types'
 
 export function createGeneralManageVault$(
   manageMultiplyVault$: (

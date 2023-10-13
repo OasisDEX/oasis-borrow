@@ -14,7 +14,6 @@ import type {
   ManageMultiplyVaultContainerProps,
 } from './ManageMultiplyVaultContainer.types'
 
-
 export function ManageMultiplyVaultContainer({
   manageVault,
   header: Header,

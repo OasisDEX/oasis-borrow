@@ -6,6 +6,8 @@ import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultAct
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
 import type { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
+import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { MAX_COLL_RATIO } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations.constants'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import type { OtherAction } from 'features/multiply/manage/pipes/OtherAction.types'
@@ -25,8 +27,6 @@ import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from
 import { dai_circle_color } from 'theme/icons'
 
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
-import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
 
 //TODO max buy token, not needed right now but may be useful in near feature according to the designs
 // function BuyTokenInput({

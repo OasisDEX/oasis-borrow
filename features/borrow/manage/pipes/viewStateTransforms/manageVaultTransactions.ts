@@ -13,8 +13,8 @@ import type {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
 } from 'features/borrow/manage/pipes/manageVault.types'
-import { ManageMultiplyVaultChange } from 'features/multiply/manage/pipes/ManageMultiplyVaultChange.types'
-import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
+import type { ManageMultiplyVaultChange } from 'features/multiply/manage/pipes/ManageMultiplyVaultChange.types'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
