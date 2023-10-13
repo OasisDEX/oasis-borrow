@@ -25,6 +25,11 @@ const handler: NextApiHandler<PortfolioBalanceResponse | DefaultErrorResponse> =
   const debankAuthHeaderKey = 'AccessKey'
   const headers = { [debankAuthHeaderKey]: debankApiKey }
 
+  // validate its get request
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed' })
+  }
+
   // validate the query
   try {
     paramsSchema.parse(req.query)
