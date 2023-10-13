@@ -22,10 +22,10 @@ export type VaultHeadlineProps = {
   followButton?: FollowButtonControlProps
   header: ReactNode
   loading?: boolean
+  onClick?: () => void
+  protocol?: ProtocolLabelProps
   shareButton?: boolean
   tokens?: string[]
-  handleClick?: () => void
-  protocol?: ProtocolLabelProps
 }
 
 export function VaultHeadline({
@@ -33,10 +33,10 @@ export function VaultHeadline({
   followButton,
   header,
   loading = false,
+  onClick,
+  protocol,
   shareButton,
   tokens = [],
-  handleClick,
-  protocol,
 }: VaultHeadlineProps) {
   return (
     <Flex
@@ -48,7 +48,7 @@ export function VaultHeadline({
         alignItems: ['flex-start', null, null, 'center'],
         gap: 3,
       }}
-      onClick={handleClick}
+      onClick={onClick}
     >
       <Heading
         as="h1"

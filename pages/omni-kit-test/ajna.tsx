@@ -9,12 +9,13 @@ import React from 'react'
 
 function OmniKitTestPage() {
   const props = {
-    collateralToken: 'WBTC',
+    collateralToken: 'ETH',
+    // collateralToken: 'WBTC',
     network: NetworkNames.ethereumMainnet,
     productType: OmniKitProductType.Borrow,
     protocol: LendingProtocol.Ajna,
     quoteToken: 'DAI',
-    positionId: '909',
+    // positionId: '909',
   }
 
   return (

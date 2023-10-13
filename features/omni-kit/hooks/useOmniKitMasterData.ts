@@ -83,36 +83,27 @@ export function useOmniKitMasterData({
     useMemo(
       () =>
         positionId
-          ? dpmPositionDataV2$(
-              getPositionIdentity(positionId),
-              collateralToken,
-              quoteToken,
-              productType,
-            )
-          : identifiedTokensData
+          ? dpmPositionDataV2$(getPositionIdentity(positionId), collateralToken, quoteToken, productType)
+          : !isOracless && productType && collateralToken && quoteToken
           ? getStaticDpmPositionData$({
-              collateralToken: isOracless
-                ? identifiedTokensData[collateralToken].symbol
-                : collateralToken,
-              collateralTokenAddress: isOracless
-                ? collateralToken
-                : tokensAddresses[collateralToken].address,
+              collateralToken,
+              collateralTokenAddress: tokensAddresses[collateralToken].address,
               product: productType,
               protocol,
-              quoteToken: isOracless ? identifiedTokensData[quoteToken].symbol : quoteToken,
-              quoteTokenAddress: isOracless ? quoteToken : tokensAddresses[quoteToken].address,
+              quoteToken,
+              quoteTokenAddress: tokensAddresses[quoteToken].address,
+            })
+          : isOracless && identifiedTokensData && productType
+          ? getStaticDpmPositionData$({
+              collateralToken: identifiedTokensData[collateralToken].symbol,
+              collateralTokenAddress: collateralToken,
+              product: productType,
+              protocol,
+              quoteToken: identifiedTokensData[quoteToken].symbol,
+              quoteTokenAddress: quoteToken,
             })
           : EMPTY,
-      [
-        positionId,
-        collateralToken,
-        quoteToken,
-        productType,
-        identifiedTokensData,
-        isOracless,
-        tokensAddresses,
-        protocol,
-      ],
+      [collateralToken, identifiedTokensData, isOracless, positionId, productType, quoteToken, tokensAddresses],
     ),
   )
 

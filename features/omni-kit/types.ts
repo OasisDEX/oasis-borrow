@@ -1,4 +1,5 @@
 import type { NetworkNames } from 'blockchain/networks'
+import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import type { LendingProtocol } from 'lendingProtocols'
 
 export enum OmniKitProductType {
@@ -25,4 +26,8 @@ export interface OmniKitProductPageProps {
   productType: OmniKitProductType
   protocol: LendingProtocol
   quoteToken: string
+}
+
+export interface OmniKitHooksGeneratorResponse {
+  useHeadlineDetails: () => HeadlineDetailsProp[]
 }

@@ -81,7 +81,7 @@ export function AjnaPositionView({
               ]
             : []),
         ]}
-        handleClick={
+        onClick={
           proxyReveal
             ? () => console.info(`DPM proxy: ${dpmProxy?.toLowerCase()}, DPM owner: ${owner}`)
             : undefined

@@ -10,6 +10,7 @@ import {
 import { getTxStatuses } from 'features/omni-kit/contexts/omniKitTxManager'
 import type {
   OmniKitEditingStep,
+  OmniKitHooksGeneratorResponse,
   OmniKitProductType,
   OmniKitSidebarStep,
 } from 'features/omni-kit/types'
@@ -19,7 +20,7 @@ import type { LendingProtocol } from 'lendingProtocols'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
 import React, { useContext, useEffect, useState } from 'react'
 
-interface OmniKitGeneralContextProviderProps {
+interface OmniKitContextProviderProps {
   collateralAddress: string
   collateralBalance: BigNumber
   collateralDigits: number
@@ -31,6 +32,7 @@ interface OmniKitGeneralContextProviderProps {
   ethBalance: BigNumber
   ethPrice: BigNumber
   gasPrice: GasPriceParams
+  hooks: OmniKitHooksGeneratorResponse
   isOracless: boolean
   isProxyWithManyPositions: boolean
   isShort: boolean
@@ -50,12 +52,13 @@ interface OmniKitGeneralContextProviderProps {
   steps: OmniKitSidebarStep[]
 }
 
-type OmniKitGeneralContextEnvironment = Omit<OmniKitGeneralContextProviderProps, 'steps'> & {
+interface OmniKitContextEnvironment extends Omit<OmniKitContextProviderProps, 'steps'> {
   isOwner: boolean
+  isSetup: boolean
   priceFormat: string
 }
 
-interface OmniKitGeneralContextSteps {
+interface OmniKitContextSteps {
   currentStep: OmniKitSidebarStep
   editingStep: OmniKitEditingStep
   isExternalStep: boolean
@@ -69,7 +72,7 @@ interface OmniKitGeneralContextSteps {
   txStatus?: TxStatus
 }
 
-interface OmniKitGeneralContextTx {
+interface OmniKitContextTx {
   isTxError: boolean
   isTxInProgress: boolean
   isTxStarted: boolean
@@ -79,29 +82,31 @@ interface OmniKitGeneralContextTx {
   txDetails?: TxDetails
 }
 
-interface OmniKitGeneralContext {
-  environment: OmniKitGeneralContextEnvironment
-  steps: OmniKitGeneralContextSteps
-  tx: OmniKitGeneralContextTx
+interface OmniKitContext {
+  environment: OmniKitContextEnvironment
+  hooks: OmniKitHooksGeneratorResponse
+  steps: OmniKitContextSteps
+  tx: OmniKitContextTx
 }
 
-const omniKitGeneralContext = React.createContext<OmniKitGeneralContext | undefined>(undefined)
+const omniKitContext = React.createContext<OmniKitContext | undefined>(undefined)
 
-export function useOmniKitGeneralContext(): OmniKitGeneralContext {
-  const context = useContext(omniKitGeneralContext)
+export function useOmniKitContext(): OmniKitContext {
+  const context = useContext(omniKitContext)
 
-  if (!context) throw new Error('OmniKitGeneralContext not available!')
+  if (!context) throw new Error('OmniKitContext not available!')
   else return context
 }
 
-export function OmniKitGeneralContextProvider({
+export function OmniKitContextProvider({
   children,
   steps,
   ...props
-}: PropsWithChildren<OmniKitGeneralContextProviderProps>) {
+}: PropsWithChildren<OmniKitContextProviderProps>) {
   const {
     collateralBalance,
     collateralToken,
+    hooks,
     isShort,
     owner,
     positionId,
@@ -123,7 +128,7 @@ export function OmniKitGeneralContextProvider({
     else throw new Error(`A step with index ${i} does not exist in form flow.`)
   }
 
-  const setupStepManager = (): OmniKitGeneralContextSteps => {
+  const setupStepManager = (): OmniKitContextSteps => {
     return {
       currentStep,
       editingStep: getEditingStep({ steps }),
@@ -138,7 +143,7 @@ export function OmniKitGeneralContextProvider({
     }
   }
 
-  const setupTxManager = (): OmniKitGeneralContextTx => {
+  const setupTxManager = (): OmniKitContextTx => {
     return {
       ...getTxStatuses(txDetails?.txStatus),
       setTxDetails,
@@ -146,15 +151,17 @@ export function OmniKitGeneralContextProvider({
     }
   }
 
-  const [context, setContext] = useState<OmniKitGeneralContext>({
+  const [context, setContext] = useState<OmniKitContext>({
     environment: {
       ...props,
       isOwner: owner === walletAddress || positionId === undefined,
+      isSetup: positionId === undefined,
       priceFormat: isShort
         ? `${quoteToken}/${collateralToken}`
         : `${collateralToken}/${quoteToken}`,
       slippage,
     },
+    hooks,
     steps: setupStepManager(),
     tx: setupTxManager(),
   })
@@ -169,19 +176,21 @@ export function OmniKitGeneralContextProvider({
         quoteBalance,
         slippage,
       },
+      hooks,
       steps: setupStepManager(),
       tx: setupTxManager(),
     }))
   }, [
     collateralBalance,
     currentStep,
+    hooks,
     isFlowStateReady,
+    owner,
     quoteBalance,
+    slippage,
     txDetails,
     walletAddress,
-    slippage,
-    owner,
   ])
 
-  return <omniKitGeneralContext.Provider value={context}>{children}</omniKitGeneralContext.Provider>
+  return <omniKitContext.Provider value={context}>{children}</omniKitContext.Provider>
 }

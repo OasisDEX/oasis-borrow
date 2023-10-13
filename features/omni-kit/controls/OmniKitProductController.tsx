@@ -1,13 +1,19 @@
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
-import { OmniKitGeneralContextProvider } from 'features/omni-kit/contexts/OmniKitGeneralContext'
+import { OmniKitContextProvider } from 'features/omni-kit/contexts/OmniKitContext'
+import { OmniKitPositionController } from 'features/omni-kit/controls/OmniKitPositionController'
 import type { OmniKitMasterDataResponse } from 'features/omni-kit/hooks/useOmniKitMasterData'
-import { type OmniKitProductPageProps, OmniKitSidebarStep } from 'features/omni-kit/types'
+import type {
+  OmniKitHooksGeneratorResponse,
+  OmniKitProductPageProps,
+} from 'features/omni-kit/types'
+import { OmniKitSidebarStep } from 'features/omni-kit/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import React from 'react'
 
 interface OmniKitProductControllerProps extends OmniKitProductPageProps {
   errors: any[]
+  hooks?: OmniKitHooksGeneratorResponse
   isLoaded?: boolean
   isOracless?: boolean
   isShort?: boolean
@@ -16,11 +22,13 @@ interface OmniKitProductControllerProps extends OmniKitProductPageProps {
 
 export function OmniKitProductController({
   errors,
+  hooks,
   isLoaded,
   isOracless,
   isShort,
   masterData,
   network,
+  positionId,
   productType,
   protocol,
 }: OmniKitProductControllerProps) {
@@ -44,6 +52,7 @@ export function OmniKitProductController({
             dpmPositionData &&
             ethBalanceData &&
             gasPriceData &&
+            hooks &&
             tokenPriceUSDData &&
             tokensIconsData &&
             tokensPrecisionData &&
@@ -66,40 +75,44 @@ export function OmniKitProductController({
             const { slippage } = userSettingsData
 
             return (
-              <OmniKitGeneralContextProvider
+              <OmniKitContextProvider
                 collateralAddress={collateralTokenAddress}
                 collateralBalance={collateralBalance}
                 collateralDigits={collateralDigits}
+                collateralIcon={collateralTokenIcon}
                 collateralPrecision={collateralPrecision}
                 collateralPrice={tokenPriceUSDData[collateralToken]}
                 collateralToken={collateralToken}
-                collateralIcon={collateralTokenIcon}
+                dpmProxy={proxy}
                 ethBalance={ethBalance}
                 ethPrice={tokenPriceUSDData.ETH}
+                gasPrice={gasPriceData}
+                hooks={hooks}
                 isOracless={!!isOracless}
+                isProxyWithManyPositions={hasMultiplePositions}
+                isShort={!!isShort}
+                network={network}
                 owner={user}
+                positionId={positionId}
+                productType={productType}
+                protocol={protocol}
                 quoteAddress={quoteTokenAddress}
                 quoteBalance={quoteBalance}
                 quoteDigits={quoteDigits}
+                quoteIcon={quoteTokenIcon}
                 quotePrecision={quotePrecision}
                 quotePrice={tokenPriceUSDData[quoteToken]}
                 quoteToken={quoteToken}
-                quoteIcon={quoteTokenIcon}
+                slippage={slippage}
                 steps={[
                   OmniKitSidebarStep.Dpm,
                   OmniKitSidebarStep.Setup,
                   OmniKitSidebarStep.Dpm,
                   OmniKitSidebarStep.Transaction,
                 ]}
-                gasPrice={gasPriceData}
-                slippage={slippage}
-                isProxyWithManyPositions={hasMultiplePositions}
-                isShort={!!isShort}
-                network={network}
-                productType={productType}
-                protocol={protocol}
-                dpmProxy={proxy}
-              />
+              >
+                <OmniKitPositionController />
+              </OmniKitContextProvider>
             )
           } else return <></>
         }}
