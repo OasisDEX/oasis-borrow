@@ -8,5 +8,7 @@ export enum NetworkHexIds {
   POLYGONMUMBAI = '0x13881',
   OPTIMISMMAINNET = '0xa',
   OPTIMISMGOERLI = '0x1a4',
+  BASEMAINNET = '0x2105',
+  BASEGOERLI = '0x14a33',
   EMPTYNET = '0x0',
 }
