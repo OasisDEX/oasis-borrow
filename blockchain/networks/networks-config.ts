@@ -3,6 +3,8 @@ import { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
 import {
   arbitrumGoerliRpc,
   arbitrumMainnetRpc,
+  baseGoerliRpc,
+  baseMainnetRpc,
   goerliRpc,
   mainnetRpc,
   optimismGoerliRpc,
@@ -19,6 +21,8 @@ import { keyBy, memoize } from 'lodash'
 import { env } from 'process'
 import arbitrumMainnetBadge from 'public/static/img/network_icons/arbitrum_badge_mainnet.svg'
 import arbitrumMainnetIcon from 'public/static/img/network_icons/arbitrum_mainnet.svg'
+import baseMainnetBadge from 'public/static/img/network_icons/base_badge_mainnet.svg'
+import baseMainnetIcon from 'public/static/img/network_icons/base_mainnet.svg'
 import ethereumMainnetBadge from 'public/static/img/network_icons/ethereum_badge_mainnet.svg'
 import ethereumMainnetIcon from 'public/static/img/network_icons/ethereum_mainnet.svg'
 import optimismMainnetBadge from 'public/static/img/network_icons/optimism_badge_mainnet.svg'
@@ -36,6 +40,7 @@ export type NetworkConfigHexId = `0x${number | string}`
 const ethereumMainnetGradient = 'linear-gradient(128deg, #6580EB 23.94%, #8EA2F2 110.63%)'
 const optimismMainnetGradient = 'linear-gradient(135deg, #FF0420 0%, #FF6C7D 100%)'
 const arbitrumMainnetGradient = 'linear-gradient(128deg, #243145 3.74%, #4DA7F8 83.51%)'
+const baseMainnetGradient = 'linear-gradient(128deg, #0052ff 3.74%, #6696ff 83.51%)'
 
 export const ethereumMainnetHexId: NetworkConfigHexId = NetworkHexIds.MAINNET
 export const optimismMainnetHexId: NetworkConfigHexId = NetworkHexIds.OPTIMISMMAINNET
@@ -307,6 +312,65 @@ const optimismGoerliConfig: NetworkConfig = {
   isCustomFork: false,
 }
 
+const baseMainnetConfig: NetworkConfig = {
+  id: NetworkIds.BASEMAINNET,
+  hexId: NetworkHexIds.BASEMAINNET,
+  mainnetHexId: NetworkHexIds.BASEMAINNET,
+  testnetHexId: NetworkHexIds.BASEGOERLI,
+  mainnetId: NetworkIds.BASEMAINNET,
+  testnetId: NetworkIds.BASEGOERLI,
+  name: NetworkNames.baseMainnet,
+  label: 'Base',
+  color: '#0052ff',
+  icon: baseMainnetIcon as string,
+  badge: baseMainnetBadge as string,
+  gradient: baseMainnetGradient,
+  testnet: false,
+  isEnabled: () => true,
+  token: 'ETH',
+  rpcUrl: baseMainnetRpc,
+  getReadProvider: memoize(
+    () =>
+      new JsonRpcBatchProvider(baseMainnetRpc, {
+        chainId: NetworkIds.BASEMAINNET,
+        name: NetworkNames.baseMainnet,
+      }),
+  ),
+  getCacheApi: () => undefined,
+  getParentNetwork: () => undefined,
+  isCustomFork: false,
+  links: [],
+}
+
+const baseGoerliConfig: NetworkConfig = {
+  id: NetworkIds.BASEGOERLI,
+  hexId: NetworkHexIds.BASEGOERLI,
+  mainnetHexId: NetworkHexIds.BASEMAINNET,
+  testnetHexId: NetworkHexIds.BASEGOERLI,
+  mainnetId: NetworkIds.BASEMAINNET,
+  testnetId: NetworkIds.BASEGOERLI,
+  name: NetworkNames.baseGoerli,
+  label: 'Base Goerli',
+  color: '#0052ff',
+  icon: baseMainnetIcon as string,
+  badge: baseMainnetBadge as string,
+  gradient: baseMainnetGradient,
+  testnet: true,
+  isEnabled: () => true,
+  token: 'ETH',
+  rpcUrl: baseGoerliRpc,
+  getReadProvider: memoize(
+    () =>
+      new JsonRpcBatchProvider(baseGoerliRpc, {
+        chainId: NetworkIds.BASEGOERLI,
+        name: NetworkNames.baseGoerli,
+      }),
+  ),
+  getParentNetwork: () => undefined,
+  getCacheApi: () => undefined,
+  isCustomFork: false,
+}
+
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const emptyNetworkConfig: NetworkConfig = {
   hexId: NetworkHexIds.EMPTYNET,
@@ -336,6 +400,8 @@ export const L2Networks = [
   polygonMumbaiConfig,
   optimismMainnetConfig,
   optimismGoerliConfig,
+  baseMainnetConfig,
+  baseGoerliConfig,
 ]
 
 export const defaultForkSettings: NetworkConfig = {
