@@ -10,5 +10,7 @@ export const networkTabTitleIconMap: Record<NetworkNames | 'fork', string> = {
   [NetworkNames.optimismGoerli]: '🌲',
   [NetworkNames.polygonMainnet]: '',
   [NetworkNames.polygonMumbai]: '🌲',
+  [NetworkNames.baseMainnet]: '',
+  [NetworkNames.baseGoerli]: '🌲',
   fork: '👷‍♂️ ',
 }
