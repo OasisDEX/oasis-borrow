@@ -29,8 +29,8 @@ export async function handleGetProductHubData(
   }
 
   const network = networks
-    .filter((network) => network.testnet === testnet)
-    .map((network) => network.name)
+    .filter(({ testnet: isTestnet }) => isTestnet === testnet)
+    .map(({ name }) => name)
 
   await prisma.productHubItems
     .findMany({
