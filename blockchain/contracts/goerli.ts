@@ -9,12 +9,10 @@ import * as accountFactory from 'blockchain/abi/account-factory.json'
 import * as accountGuard from 'blockchain/abi/account-guard.json'
 import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.json'
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
-import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
 import * as automationBotAggregator from 'blockchain/abi/automation-bot-aggregator.json'
 import * as automationBotV2 from 'blockchain/abi/automation-bot-v2.json'
 import * as automationBot from 'blockchain/abi/automation-bot.json'
-import * as balancerVault from 'blockchain/abi/balancer-vault.json'
 import * as cdpRegistry from 'blockchain/abi/cdp-registry.json'
 import * as chainLinkPriceOracle from 'blockchain/abi/chainlink-price-oracle.json'
 import * as dsProxyFactory from 'blockchain/abi/ds-proxy-factory.json'
@@ -47,7 +45,7 @@ import {
   getCollaterals,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { contractDesc } from 'blockchain/networks'
+import { contractDesc, contractDescWithoutAbi } from 'blockchain/networks'
 import {
   AAVE_V2_LENDING_POOL_GENESIS_GOERLI,
   AAVE_V3_POOL_GENESIS_GOERLI,
@@ -163,38 +161,38 @@ export const goerliContracts: MainnetContractsWithOptional = {
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, goerli.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, goerli.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
-    'CBETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_CBETHETH),
-    'CBETH-GHO': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_CBETHGHO),
-    'ETH-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ETHDAI),
-    'ETH-GHO': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ETHGHO),
-    'ETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_ETHUSDC),
-    'GHO-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_GHODAI),
-    'RETH-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RETHDAI),
-    'RETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RETHETH),
-    'RETH-GHO': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RETHGHO),
-    'RETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_RETHUSDC),
-    'SDAI-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_SDAIUSDC),
-    'TBTC-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_TBTCUSDC),
-    'TBTC-WBTC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_TBTCWBTC),
-    'USDC-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_USDCETH),
-    'USDC-WBTC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_USDCWBTC),
-    'USDC-WLD': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_USDCWLD),
-    'WBTC-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WBTCDAI),
-    'WBTC-GHO': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WBTCGHO),
-    'WBTC-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WBTCUSDC),
-    'WLD-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WLDUSDC),
-    'WSTETH-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHDAI),
-    'WSTETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHETH),
-    'WSTETH-GHO': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHGHO),
-    'WSTETH-USDC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_WSTETHUSDC),
-    'YFI-DAI': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YFIDAI),
+    'CBETH-ETH': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_CBETHETH),
+    'CBETH-GHO': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_CBETHGHO),
+    'ETH-DAI': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_ETHDAI),
+    'ETH-GHO': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_ETHGHO),
+    'ETH-USDC': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_ETHUSDC),
+    'GHO-DAI': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_GHODAI),
+    'RETH-DAI': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_RETHDAI),
+    'RETH-ETH': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_RETHETH),
+    'RETH-GHO': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_RETHGHO),
+    'RETH-USDC': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_RETHUSDC),
+    'SDAI-USDC': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_SDAIUSDC),
+    'TBTC-USDC': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_TBTCUSDC),
+    'TBTC-WBTC': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_TBTCWBTC),
+    'USDC-ETH': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_USDCETH),
+    'USDC-WBTC': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_USDCWBTC),
+    'USDC-WLD': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_USDCWLD),
+    'WBTC-DAI': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_WBTCDAI),
+    'WBTC-GHO': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_WBTCGHO),
+    'WBTC-USDC': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_WBTCUSDC),
+    'WLD-USDC': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_WLDUSDC),
+    'WSTETH-DAI': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_WSTETHDAI),
+    'WSTETH-ETH': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_WSTETHETH),
+    'WSTETH-GHO': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_WSTETHGHO),
+    'WSTETH-USDC': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_WSTETHUSDC),
+    'YFI-DAI': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_YFIDAI),
   },
   ajnaOraclessPoolPairs: {
-    'YIELDBTC-WBTC': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YIELDBTCWBTC),
-    'YIELDETH-ETH': contractDesc(ajnaPool, goerli.ajna.AjnaPoolPairs_YIELDETHETH),
+    'YIELDBTC-WBTC': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_YIELDBTCWBTC),
+    'YIELDETH-ETH': contractDescWithoutAbi( goerli.ajna.AjnaPoolPairs_YIELDETHETH),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, goerli.ajna.ERC20PoolFactory),
-  balancerVault: contractDesc(balancerVault, goerli.common.BalancerVault),
+  balancerVault: contractDescWithoutAbi( goerli.common.BalancerVault),
   // NOT contracts
   cacheApi: 'https://cache-goerli-staging.staging.summer.fi/api/v1',
   safeConfirmations: 6,

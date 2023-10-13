@@ -80,6 +80,15 @@ export function emptyContractDesc(contractName: string): ContractDesc & { genesi
   return { abi: {}, address: '', genesisBlock: 0 }
 }
 
+/* 
+@dev we use it for convenience, to keep all contracts in the same palce, even if we only require ad address eg balancerVault */
+export function contractDescWithoutAbi(
+  address: string,
+  genesisBlock = 0,
+): ContractDesc & { genesisBlock: number } {
+  return { abi: {}, address, genesisBlock }
+}
+
 const mainnetConfig: NetworkConfig = {
   id: NetworkIds.MAINNET,
   hexId: NetworkHexIds.MAINNET,

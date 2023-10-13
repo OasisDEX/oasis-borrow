@@ -9,12 +9,10 @@ import * as accountFactory from 'blockchain/abi/account-factory.json'
 import * as accountGuard from 'blockchain/abi/account-guard.json'
 import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.json'
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
-import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
 import * as automationBotAggregator from 'blockchain/abi/automation-bot-aggregator.json'
 import * as automationBotV2 from 'blockchain/abi/automation-bot-v2.json'
 import * as automationBot from 'blockchain/abi/automation-bot.json'
-import * as balancerVault from 'blockchain/abi/balancer-vault.json'
 import * as cdpRegistry from 'blockchain/abi/cdp-registry.json'
 import * as chainLinkPriceOracle from 'blockchain/abi/chainlink-price-oracle.json'
 import * as dsProxyFactory from 'blockchain/abi/ds-proxy-factory.json'
@@ -50,7 +48,7 @@ import {
   getCollaterals,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { contractDesc } from 'blockchain/networks'
+import { contractDesc, contractDescWithoutAbi } from 'blockchain/networks'
 import {
   AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
   AAVE_V3_POOL_GENESIS_MAINNET,
@@ -176,38 +174,38 @@ export const mainnetContracts = {
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, mainnet.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, mainnet.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
-    'CBETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_CBETHETH),
-    'CBETH-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_CBETHGHO),
-    'ETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_ETHDAI),
-    'ETH-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_ETHGHO),
-    'ETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_ETHUSDC),
-    'GHO-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_GHODAI),
-    'RETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHDAI),
-    'RETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHETH),
-    'RETH-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHGHO),
-    'RETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RETHUSDC),
-    'SDAI-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_SDAIUSDC),
-    'TBTC-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_TBTCUSDC),
-    'TBTC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_TBTCWBTC),
-    'USDC-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCETH),
-    'USDC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCWBTC),
-    'USDC-WLD': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_USDCWLD),
-    'WBTC-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WBTCDAI),
-    'WBTC-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WBTCGHO),
-    'WBTC-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WBTCUSDC),
-    'WLD-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WLDUSDC),
-    'WSTETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHDAI),
-    'WSTETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHETH),
-    'WSTETH-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHGHO),
-    'WSTETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHUSDC),
-    'YFI-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YFIDAI),
+    'CBETH-ETH': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_CBETHETH),
+    'CBETH-GHO': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_CBETHGHO),
+    'ETH-DAI': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_ETHDAI),
+    'ETH-GHO': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_ETHGHO),
+    'ETH-USDC': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_ETHUSDC),
+    'GHO-DAI': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_GHODAI),
+    'RETH-DAI': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_RETHDAI),
+    'RETH-ETH': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_RETHETH),
+    'RETH-GHO': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_RETHGHO),
+    'RETH-USDC': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_RETHUSDC),
+    'SDAI-USDC': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_SDAIUSDC),
+    'TBTC-USDC': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_TBTCUSDC),
+    'TBTC-WBTC': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_TBTCWBTC),
+    'USDC-ETH': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_USDCETH),
+    'USDC-WBTC': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_USDCWBTC),
+    'USDC-WLD': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_USDCWLD),
+    'WBTC-DAI': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_WBTCDAI),
+    'WBTC-GHO': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_WBTCGHO),
+    'WBTC-USDC': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_WBTCUSDC),
+    'WLD-USDC': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_WLDUSDC),
+    'WSTETH-DAI': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_WSTETHDAI),
+    'WSTETH-ETH': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_WSTETHETH),
+    'WSTETH-GHO': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_WSTETHGHO),
+    'WSTETH-USDC': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_WSTETHUSDC),
+    'YFI-DAI': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_YFIDAI),
   },
   ajnaOraclessPoolPairs: {
-    'YIELDBTC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDBTCWBTC),
-    'YIELDETH-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDETHETH),
+    'YIELDBTC-WBTC': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_YIELDBTCWBTC),
+    'YIELDETH-ETH': contractDescWithoutAbi(mainnet.ajna.AjnaPoolPairs_YIELDETHETH),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, mainnet.ajna.ERC20PoolFactory),
-  balancerVault: contractDesc(balancerVault, mainnet.common.BalancerVault),
+  balancerVault: contractDescWithoutAbi(mainnet.common.BalancerVault),
   // not contracts
   cacheApi: mainnetCacheUrl,
   safeConfirmations: 10,

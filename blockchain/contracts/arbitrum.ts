@@ -8,12 +8,10 @@ import * as accountFactory from 'blockchain/abi/account-factory.json'
 import * as accountGuard from 'blockchain/abi/account-guard.json'
 import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.json'
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
-import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
 import * as automationBotAggregator from 'blockchain/abi/automation-bot-aggregator.json'
 import * as automationBotV2 from 'blockchain/abi/automation-bot-v2.json'
 import * as automationBot from 'blockchain/abi/automation-bot.json'
-import * as balancerVault from 'blockchain/abi/balancer-vault.json'
 import * as cdpRegistry from 'blockchain/abi/cdp-registry.json'
 import * as chainLinkPriceOracle from 'blockchain/abi/chainlink-price-oracle.json'
 import * as dsProxyFactory from 'blockchain/abi/ds-proxy-factory.json'
@@ -46,7 +44,7 @@ import {
   getCollaterals,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { contractDesc, emptyContractDesc } from 'blockchain/networks'
+import { contractDesc, contractDescWithoutAbi, emptyContractDesc } from 'blockchain/networks'
 import { tokensArbitrum } from 'blockchain/tokens/'
 import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/arbitrum'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
@@ -146,38 +144,38 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, arbitrum.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, arbitrum.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
-    'CBETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_CBETHETH),
-    'CBETH-GHO': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_CBETHGHO),
-    'ETH-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_ETHDAI),
-    'ETH-GHO': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_ETHGHO),
-    'ETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_ETHUSDC),
-    'GHO-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_GHODAI),
-    'RETH-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHDAI),
-    'RETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHETH),
-    'RETH-GHO': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHGHO),
-    'RETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHUSDC),
-    'SDAI-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SDAIUSDC),
-    'TBTC-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_TBTCUSDC),
-    'TBTC-WBTC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_TBTCWBTC),
-    'USDC-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_USDCETH),
-    'USDC-WBTC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_USDCWBTC),
-    'USDC-WLD': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_USDCWLD),
-    'WBTC-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WBTCDAI),
-    'WBTC-GHO': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WBTCGHO),
-    'WBTC-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WBTCUSDC),
-    'WLD-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WLDUSDC),
-    'WSTETH-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHDAI),
-    'WSTETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHETH),
-    'WSTETH-GHO': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHGHO),
-    'WSTETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHUSDC),
-    'YFI-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YFIDAI),
+    'CBETH-ETH': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_CBETHETH),
+    'CBETH-GHO': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_CBETHGHO),
+    'ETH-DAI': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_ETHDAI),
+    'ETH-GHO': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_ETHGHO),
+    'ETH-USDC': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_ETHUSDC),
+    'GHO-DAI': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_GHODAI),
+    'RETH-DAI': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_RETHDAI),
+    'RETH-ETH': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_RETHETH),
+    'RETH-GHO': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_RETHGHO),
+    'RETH-USDC': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_RETHUSDC),
+    'SDAI-USDC': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_SDAIUSDC),
+    'TBTC-USDC': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_TBTCUSDC),
+    'TBTC-WBTC': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_TBTCWBTC),
+    'USDC-ETH': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_USDCETH),
+    'USDC-WBTC': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_USDCWBTC),
+    'USDC-WLD': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_USDCWLD),
+    'WBTC-DAI': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_WBTCDAI),
+    'WBTC-GHO': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_WBTCGHO),
+    'WBTC-USDC': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_WBTCUSDC),
+    'WLD-USDC': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_WLDUSDC),
+    'WSTETH-DAI': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_WSTETHDAI),
+    'WSTETH-ETH': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_WSTETHETH),
+    'WSTETH-GHO': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_WSTETHGHO),
+    'WSTETH-USDC': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_WSTETHUSDC),
+    'YFI-DAI': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_YFIDAI),
   },
   ajnaOraclessPoolPairs: {
-    'YIELDBTC-WBTC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YIELDBTCWBTC),
-    'YIELDETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YIELDETHETH),
+    'YIELDBTC-WBTC': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_YIELDBTCWBTC),
+    'YIELDETH-ETH': contractDescWithoutAbi(arbitrum.ajna.AjnaPoolPairs_YIELDETHETH),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, arbitrum.ajna.ERC20PoolFactory),
-  balancerVault: contractDesc(balancerVault, arbitrum.common.BalancerVault),
+  balancerVault: contractDescWithoutAbi(arbitrum.common.BalancerVault),
   // NOT contracts
   cacheApi: 'not-implemented',
   safeConfirmations: 6,
