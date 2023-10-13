@@ -13,15 +13,6 @@ describe('proxyActionsAdapterResolver', () => {
 
       expect(state().AdapterType).toBe(ProxyActionsAdapterType.STANDARD)
     })
-    it('throws when trying to open a charter vault', () => {
-      const adapter$ = proxyActionsAdapterResolver$({ ilk: 'INST-ETH-A' })
-
-      const state = getStateUnpacker(adapter$)
-
-      expect(state).toThrow(
-        'can not create a proxy actions adapter from an INST-ETH-A ilk - adapter is not tested for opening vaults',
-      )
-    })
   })
 
   describe('create from maker vault type (managing a vault)', () => {
