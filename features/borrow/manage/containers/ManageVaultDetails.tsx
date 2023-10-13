@@ -103,9 +103,7 @@ export function ManageVaultDetailsSummary({
   )
 }
 
-export function ManageVaultDetails(
-  props: ManageMultiplyVaultState,
-) {
+export function ManageVaultDetails(props: ManageMultiplyVaultState) {
   const {
     vault: {
       daiYieldFromLockedCollateral,

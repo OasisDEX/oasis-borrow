@@ -140,9 +140,9 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
         },
         {
           label:
-          vaultType === VaultType.Borrow
-            ? t('system.actions.borrow.switch-to-multiply')
-            : t('system.actions.multiply.switch-to-borrow'),
+            vaultType === VaultType.Borrow
+              ? t('system.actions.borrow.switch-to-multiply')
+              : t('system.actions.multiply.switch-to-borrow'),
           icon: circle_exchange,
           iconShrink: 2,
           panel: 'transition',
