@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSliders'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { MAX_COLL_RATIO } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
 import React from 'react'
+import type { ManageMultiplyVaultState } from '../pipes/ManageMultiplyVaultState.types'
+import { MAX_COLL_RATIO } from '../pipes/manageMultiplyVaultCalculations.constants'
 
 export type SliderAdjustMultiplyParams = ManageMultiplyVaultState & {
   collapsed?: boolean

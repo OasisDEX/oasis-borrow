@@ -5,7 +5,7 @@ import type { ManageMultiplyVaultStage } from 'features/multiply/manage/pipes/Ma
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
-import { borrow_transition, checkmark } from 'theme/icons'
+import { borrow_transition, checkmark, multiply_transition } from 'theme/icons'
 
 export function SidebarManageMultiplyVaultTransitionStage({
   stage,
@@ -31,7 +31,7 @@ export function SidebarManageMultiplyVaultTransitionStage({
               {t('vault-form.header.multiply-transition', { token })}
             </Text>
             <ListWithIcon
-              icon="checkmark"
+              icon={checkmark}
               iconSize="14px"
               iconColor="primary100"
               items={[
@@ -57,7 +57,7 @@ export function SidebarManageMultiplyVaultTransitionStage({
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
               {t('vault-form.subtext.confirm')}
             </Text>
-            <Icon name="multiply_transition" size="auto" />
+            <Icon icon={multiply_transition} size="auto" />
           </>
         )}
       </Grid>

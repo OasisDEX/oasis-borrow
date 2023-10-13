@@ -1,6 +1,6 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { useTranslation } from 'next-i18next'

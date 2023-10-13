@@ -1,10 +1,10 @@
 import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
+import type { ManageMultiplyVaultState } from '../pipes/ManageMultiplyVaultState.types'
 
 export function SidebarManageMultiplyVaultEditingStageClose(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
