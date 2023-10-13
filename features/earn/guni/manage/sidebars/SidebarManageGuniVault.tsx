@@ -21,6 +21,7 @@ import {
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
+import { circle_close } from 'theme/icons'
 
 export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
@@ -78,7 +79,7 @@ export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
         },
         {
           label: t('system.actions.common.close-vault'),
-          icon: 'circle_close',
+          icon: circle_close,
           iconShrink: 2,
           panel: 'close',
           action: () => {

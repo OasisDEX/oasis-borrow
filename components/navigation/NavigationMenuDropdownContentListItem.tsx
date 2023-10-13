@@ -1,9 +1,11 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { NavigationMenuDropdownContentIcon } from 'components/navigation/NavigationMenuDropdownContentIcon'
-import type { NavigationMenuPanelList } from 'components/navigation/NavigationMenuPanel'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Heading, Text } from 'theme-ui'
+import { star } from 'theme/icons'
+
+import type { NavigationMenuPanelList } from './Navigation.types'
 
 type NavigationMenuDropdownContentListItemProps =
   NavigationMenuPanelList['items'] extends readonly (infer ElementType)[] ? ElementType : never
@@ -23,7 +25,7 @@ export function NavigationMenuDropdownContentListItem({
     left: 0,
     opacity: 0,
     transition: 'opacity 200ms',
-    '-webkit-background-clip': 'text',
+    WebkitBackgroundClip: 'text',
   }
 
   return (
@@ -50,12 +52,12 @@ export function NavigationMenuDropdownContentListItem({
                     backgroundImage: hoverColor,
                   },
                 }),
-              } as SxStyleProp
+              } as ThemeUIStyleObject
             }
           >
             {promoted && (
               <Box as="span" className="star-with-effect" sx={{ transition: 'color 200ms' }}>
-                <Icon name="star" size={16} sx={{ mr: 1, verticalAlign: 'text-top' }} />
+                <Icon icon={star} size={16} sx={{ mr: 1, verticalAlign: 'text-top' }} />
               </Box>
             )}
             {title}
@@ -63,7 +65,6 @@ export function NavigationMenuDropdownContentListItem({
         </Flex>
         {description && (
           <Text
-            as="p"
             variant="paragraph4"
             sx={{ mt: 1, color: 'neutral80', em: { color: 'primary100', fontStyle: 'normal' } }}
           >
@@ -105,7 +106,7 @@ export function NavigationMenuDropdownContentListItem({
                         backgroundImage: tag[1],
                       },
                     }),
-                  } as SxStyleProp
+                  } as ThemeUIStyleObject
                 }
               >
                 {Array.isArray(tag) ? tag[0] : tag}

@@ -1,9 +1,10 @@
 import { AppLink } from 'components/Links'
 import { NavigationMenuDropdownContentListItem } from 'components/navigation/NavigationMenuDropdownContentListItem'
-import type { NavigationMenuPanelList } from 'components/navigation/NavigationMenuPanel'
 import { WithArrow } from 'components/WithArrow'
 import React from 'react'
 import { Box, Heading } from 'theme-ui'
+
+import type { NavigationMenuPanelList } from './Navigation.types'
 
 type NavigationMenuDropdownContentListProps = NavigationMenuPanelList & {
   parentIndex?: number
@@ -66,7 +67,7 @@ export function NavigationMenuDropdownContentList({
           p: 0,
         }}
       >
-        {items.map(({ hoverColor, url, callback, ...item }, i) => (
+        {items.map(({ callback, hoverColor, query, url, ...item }, i) => (
           <Box
             key={i}
             as="li"
@@ -91,7 +92,7 @@ export function NavigationMenuDropdownContentList({
             }}
           >
             {url ? (
-              <AppLink href={url} sx={{ display: 'block', ...itemInnerPadding }}>
+              <AppLink href={url} query={query} sx={{ display: 'block', ...itemInnerPadding }}>
                 <NavigationMenuDropdownContentListItem hoverColor={hoverColor} {...item} />
               </AppLink>
             ) : (
@@ -105,6 +106,7 @@ export function NavigationMenuDropdownContentList({
       {link && (
         <AppLink
           href={link.url}
+          query={link.query}
           sx={{
             ml: 3,
             mr: 'auto',

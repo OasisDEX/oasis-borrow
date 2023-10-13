@@ -3,11 +3,6 @@ import type { DiscoverFiltersListItem, DiscoverFiltersListOptions } from 'featur
 import { DiscoverFilterType } from 'features/discover/types'
 
 export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListOptions } = {
-  crvv1ethsteth: {
-    value: 'CRVV1ETHSTETH',
-    label: 'CURVE LP',
-    icon: 'curve_full_circle_color',
-  },
   eth: { value: 'ETH', label: 'ETH', icon: getToken('ETH').iconCircle },
   reth: { value: 'RETH', label: 'RETH', icon: getToken('RETH').iconCircle },
   guniv3daiusdc1: {

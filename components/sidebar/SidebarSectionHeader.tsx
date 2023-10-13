@@ -1,4 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
+import type { IconProps } from 'components/Icon.types'
 import type { ReactNode } from 'react'
 import React from 'react'
 import { Flex, Heading } from 'theme-ui'
@@ -8,7 +9,7 @@ import { SidebarSectionHeaderSelect } from './SidebarSectionHeaderSelect'
 
 export interface SidebarSectionHeaderButton {
   label: string
-  icon?: string
+  icon?: IconProps['icon']
   action: () => void
 }
 
@@ -68,7 +69,7 @@ export function SidebarSectionHeader({
           }}
           onClick={headerButton.action}
         >
-          {headerButton.icon && <Icon name={headerButton.icon} size="16px" sx={{ mr: 2 }} />}
+          {headerButton.icon && <Icon icon={headerButton.icon} size="16px" sx={{ mr: 2 }} />}
           {headerButton.label}
         </Flex>
       ) : null}

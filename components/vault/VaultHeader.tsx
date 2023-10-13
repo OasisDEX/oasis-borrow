@@ -1,13 +1,14 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Text } from '@theme-ui/components'
 import type BigNumber from 'bignumber.js'
+import { Icon } from 'components/Icon'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
+import { tooltip } from 'theme/icons'
 
 import { VaultHeaderContainer } from './VaultHeaderContainer'
 
@@ -21,7 +22,7 @@ export function VaultIlkDetailsItem({
   value: string
   tooltipContent: string
   styles?: {
-    tooltip?: SxStyleProp
+    tooltip?: ThemeUIStyleObject
   }
 }) {
   const { tooltipOpen, setTooltipOpen } = useTooltip()
@@ -57,7 +58,7 @@ export function VaultIlkDetailsItem({
         </Text>
         <Flex sx={{ position: 'relative', alignItems: 'center' }}>
           <Flex sx={{ fontSize: '0px' }}>
-            <Icon name="tooltip" color="primary100" size="auto" width="14px" height="14px" />
+            <Icon icon={tooltip} color="primary100" size="auto" width="14px" height="14px" />
           </Flex>
           {tooltipOpen && (
             <Tooltip sx={{ variant: 'cards.tooltipVaultHeader', ...styles?.tooltip }}>

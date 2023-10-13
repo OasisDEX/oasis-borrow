@@ -1,11 +1,12 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { NetworkConfig, NetworkConfigHexId, NetworkNames } from 'blockchain/networks'
+import { Icon } from 'components/Icon'
 import type { SwapWidgetChangeAction, SwapWidgetState } from 'features/swapWidget/SwapWidgetChange'
 import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
 import { useObservable } from 'helpers/observableHook'
 import { uiChanges } from 'helpers/uiChanges'
 import React, { useCallback } from 'react'
 import { Box, Button, Image, Link } from 'theme-ui'
+import { arrow_right_light, tick } from 'theme/icons'
 
 export const NetworkButton = ({
   network,
@@ -115,7 +116,7 @@ export const NetworkButton = ({
               mb: '-3px',
             }}
           >
-            <Icon name="tick" color="interactive100" />
+            <Icon icon={tick} color="interactive100" />
           </Box>
         </Box>
       </Button>
@@ -154,7 +155,7 @@ export const NetworkButton = ({
                 }}
               >
                 {link.label}
-                <Icon name="arrow_right_light" />
+                <Icon icon={arrow_right_light} />
               </Link>
             ))}
           </Box>

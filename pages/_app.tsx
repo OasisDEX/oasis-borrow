@@ -8,51 +8,36 @@ import { mixpanelInit } from 'analytics/mixpanel'
 import { trackingEvents } from 'analytics/trackingEvents'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
-import {
-  accountContext,
-  AccountContextProvider,
-  DeferedContextProvider,
-  mainContext,
-  MainContextProvider,
-  NotificationSocketProvider,
-} from 'components/context'
+import { accountContext, AccountContextProvider } from 'components/context/AccountContextProvider'
+import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
+import { mainContext, MainContextProvider } from 'components/context/MainContextProvider'
+import { NotificationSocketProvider } from 'components/context/NotificationSocketProvider'
 import {
   preloadAppDataContext,
   PreloadAppDataContextProvider,
 } from 'components/context/PreloadAppDataContextProvider'
 import type { SavedSettings } from 'components/CookieBanner.types'
 import { CookieBannerDynamic } from 'components/CookieBannerDynamic'
-import { HeadTags, PageSEOTags } from 'components/HeadTags'
-import type { MarketingLayoutProps } from 'components/layouts'
-import { AppLayout } from 'components/layouts'
+import { PageSEOTags } from 'components/HeadTags'
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { TopBannerDynamic } from 'components/TopBannerDynamic'
 import { cache } from 'emotion'
-import { initWeb3OnBoard, Web3OnBoardConnectorProvider } from 'features/web3OnBoard'
+import { initWeb3OnBoard } from 'features/web3OnBoard/init-web3-on-board'
+import { Web3OnBoardConnectorProvider } from 'features/web3OnBoard/web3-on-board-connector-provider'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import { FTPolar } from 'helpers/fonts'
 import { ModalProvider } from 'helpers/modalHook'
 import { useLocalStorage } from 'helpers/useLocalStorage'
-import { appWithTranslation, i18n } from 'next-i18next'
+import { appWithTranslation } from 'next-i18next'
 import nextI18NextConfig from 'next-i18next.config.js'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import Script from 'next/script'
 import React, { useEffect, useRef } from 'react'
 import { theme } from 'theme'
-import { ThemeProvider } from 'theme-ui'
+import { ThemeUIProvider } from 'theme-ui'
 import { web3OnboardStyles } from 'theme/web3OnboardStyles'
 import Web3 from 'web3'
-
-if (process.env.NODE_ENV !== 'production') {
-  if (typeof window !== 'undefined') {
-    const { applyClientHMR } = require('i18next-hmr/client')
-    applyClientHMR(() => i18n)
-  } else {
-    const { applyServerHMR } = require('i18next-hmr/server')
-    applyServerHMR(() => i18n)
-  }
-}
 
 function getLibrary(provider: any, connector: AbstractConnector | undefined): Web3 {
   const chainIdPromise = connector!.getChainId()
@@ -90,7 +75,6 @@ const globalStyles = `
   input[type=number] {
     -moz-appearance: textfield;
   }
-  ${FTPolar.style.fontFamily}
 `
 
 // extending Component with static properties that can be attached to it
@@ -98,8 +82,6 @@ const globalStyles = `
 interface CustomAppProps {
   Component: {
     theme?: string
-    layoutProps?: MarketingLayoutProps
-    layout?: (props: MarketingLayoutProps) => JSX.Element
     seoTags?: JSX.Element
   }
 }
@@ -121,9 +103,6 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     {} as SavedSettings,
   )
   const mount = useRef(false)
-  const Layout = Component.layout || AppLayout
-
-  const layoutProps = Component.layoutProps
   const router = useRouter()
 
   const seoTags = Component.seoTags || (
@@ -171,18 +150,19 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     <>
       <Head>
         {process.env.NODE_ENV !== 'production' && (
-          <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
+          <Script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
         {cookiesValue?.enabledCookies?.marketing && (
-          <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />
+          <Script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />
         )}
 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <ThemeProvider theme={theme}>
+      <ThemeUIProvider theme={theme}>
         <CacheProvider value={cache}>
           <Global styles={globalStyles} />
           <Web3OnboardProvider web3Onboard={initWeb3OnBoard}>
+            {seoTags}
             <PreloadAppDataContextProvider>
               <DeferedContextProvider context={preloadAppDataContext}>
                 <MainContextProvider>
@@ -190,21 +170,17 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                     <ModalProvider>
                       <Web3OnBoardConnectorProvider>
                         <Web3ReactProvider {...{ getLibrary }}>
-                          <HeadTags />
-                          {seoTags}
                           <SetupWeb3Context>
                             <NotificationSocketProvider>
                               <SharedUIProvider>
                                 <TopBannerDynamic />
                                 <AccountContextProvider>
                                   <DeferedContextProvider context={accountContext}>
-                                    <Layout {...layoutProps}>
-                                      <Component {...pageProps} />
-                                      <CookieBannerDynamic
-                                        setValue={cookiesSetValue}
-                                        value={cookiesValue}
-                                      />
-                                    </Layout>
+                                    <Component {...pageProps} />
+                                    <CookieBannerDynamic
+                                      setValue={cookiesSetValue}
+                                      value={cookiesValue}
+                                    />
                                   </DeferedContextProvider>
                                 </AccountContextProvider>
                               </SharedUIProvider>
@@ -219,7 +195,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
             </PreloadAppDataContextProvider>
           </Web3OnboardProvider>
         </CacheProvider>
-      </ThemeProvider>
+      </ThemeUIProvider>
     </>
   )
 }

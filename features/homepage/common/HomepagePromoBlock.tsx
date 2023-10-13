@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Card, Flex, Image, Text } from 'theme-ui'
+
 type HomepagePromoBlockProps = {
   background: string
   title: string | ReactNode
@@ -9,8 +10,8 @@ type HomepagePromoBlockProps = {
   height?: string | string[]
   image?: string
   bottomTitle?: boolean
-  sx?: SxStyleProp
-  imageSx?: SxStyleProp
+  sx?: ThemeUIStyleObject
+  imageSx?: ThemeUIStyleObject
 }
 
 const HomepagePromoBlock = ({

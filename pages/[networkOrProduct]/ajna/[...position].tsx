@@ -1,6 +1,7 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { isSupportedNetwork, NetworkIds, NetworkNames } from 'blockchain/networks'
-import { GasEstimationContextProvider, ProductContextHandler } from 'components/context'
+import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { isAddress } from 'ethers/lib/utils'
 import { ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
@@ -20,21 +21,22 @@ interface AjnaPositionPageProps {
 
 function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPositionPageProps) {
   return (
-    <ProductContextHandler>
-      <GasEstimationContextProvider>
-        <AjnaProductController
-          collateralToken={collateralToken}
-          flow={id ? 'manage' : 'open'}
-          id={id}
-          product={product}
-          quoteToken={quoteToken}
-        />
-      </GasEstimationContextProvider>
-    </ProductContextHandler>
+    <AjnaLayout>
+      <ProductContextHandler>
+        <GasEstimationContextProvider>
+          <AjnaProductController
+            collateralToken={collateralToken}
+            flow={id ? 'manage' : 'open'}
+            id={id}
+            product={product}
+            quoteToken={quoteToken}
+          />
+        </GasEstimationContextProvider>
+      </ProductContextHandler>
+    </AjnaLayout>
   )
 }
 
-AjnaPositionPage.layout = AjnaLayout
 AjnaPositionPage.seoTags = ajnaPageSeoTags
 
 export default AjnaPositionPage

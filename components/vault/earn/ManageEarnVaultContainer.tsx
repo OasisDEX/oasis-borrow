@@ -1,5 +1,6 @@
 import { trackingEvents } from 'analytics/trackingEvents'
-import { useMainContext, useProductContext } from 'components/context'
+import { useMainContext } from 'components/context/MainContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import type { EarnVaultHeaderProps } from 'features/earn/guni/common/GuniVaultHeader'
 import type { ManageEarnVaultState } from 'features/earn/guni/manage/pipes/manageGuniVault.types'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'

@@ -9,6 +9,7 @@ import { AjnaEarnFormOrder } from 'features/ajna/positions/earn/sidebars/AjnaEar
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { circle_slider } from 'theme/icons'
 
 export function AjnaEarnFormController() {
   const { t } = useTranslation()
@@ -42,7 +43,7 @@ export function AjnaEarnFormController() {
                 label: t('system.adjust-position'),
                 panel: 'adjust',
                 shortLabel: t('adjust'),
-                icon: 'circle_slider',
+                icon: circle_slider,
                 iconShrink: 2,
                 action: () => {
                   dispatch({ type: 'reset' })

@@ -14,9 +14,9 @@ jobs:
   rollback-deployment:
     env:
       AWS_REGION: us-east-1
-      ECR_REPO_NAME: oasis-borrow-prod
-      SERVICE_NAME: oasis-borrow-prod
-      CLUSTER_NAME: oasis-borrow-prod
+      ECR_REPO_NAME: summer-fi-prod
+      SERVICE_NAME: summer-fi-prod
+      CLUSTER_NAME: summer-fi-prod
 
     runs-on: ubuntu-latest
 
@@ -37,8 +37,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.OAZO_PROD_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.OAZO_PROD_AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR

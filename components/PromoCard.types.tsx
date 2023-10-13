@@ -1,3 +1,4 @@
+import type { IconProps } from './Icon.types'
 import type { ProtocolLabelProps } from './ProtocolLabel.types'
 import type { TranslatableType } from './Translatable.types'
 
@@ -7,7 +8,7 @@ export interface PromoCardWrapperProps {
   link?: string
 }
 interface PromoCardPropsWithIcon {
-  icon: string
+  icon: IconProps['icon']
   image?: never
   tokens?: never
 }

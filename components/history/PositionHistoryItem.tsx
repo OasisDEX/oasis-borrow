@@ -1,7 +1,7 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { NetworkIds } from 'blockchain/networks'
 import { DefinitionListItem } from 'components/DefinitionList'
 import { PositionHistoryItemDetails } from 'components/history/PositionHistoryItemDetails'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import type { AaveHistoryEvent } from 'features/ajna/history/types'
@@ -14,6 +14,7 @@ import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
+import { chevron_down, chevron_up } from 'theme/icons'
 
 interface PositionHistoryItemProps {
   collateralToken: string
@@ -72,7 +73,7 @@ export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
           {humanDate}
         </Text>
         <Icon
-          name={`chevron_${opened ? 'up' : 'down'}`}
+          icon={opened ? chevron_up : chevron_down}
           size="auto"
           width="12px"
           height="7px"

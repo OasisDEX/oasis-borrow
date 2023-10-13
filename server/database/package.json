@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@types/pg": "^7.14.3",
+    "dotenv": "8.6.0",
+    "pg": "8.2.1",
+    "postgres-migrations": "4.0.3"
+  }
+}

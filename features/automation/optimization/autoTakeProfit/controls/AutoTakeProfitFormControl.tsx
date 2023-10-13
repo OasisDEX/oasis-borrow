@@ -1,5 +1,5 @@
 import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { CloseVaultToEnum } from 'features/automation/common/consts'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'

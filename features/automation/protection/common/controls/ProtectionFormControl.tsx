@@ -1,4 +1,4 @@
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { getAvailableAutomation } from 'features/automation/common/helpers/getAvailableAutomation'
 import { getShouldRemoveAllowance } from 'features/automation/common/helpers/getShouldRemoveAllowance'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'

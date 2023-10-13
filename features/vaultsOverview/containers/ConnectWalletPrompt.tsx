@@ -1,10 +1,11 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import { useMainContext } from 'components/context'
-import { useConnection } from 'features/web3OnBoard'
+import { useMainContext } from 'components/context/MainContextProvider'
+import { Icon } from 'components/Icon'
+import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Heading } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
 export function ConnectWalletPrompt() {
   const { t } = useTranslation()
@@ -38,7 +39,7 @@ export function ConnectWalletPrompt() {
       >
         {t('connect-wallet')}
         <Icon
-          name="arrow_right"
+          icon={arrow_right}
           sx={{
             left: 2,
             position: 'relative',

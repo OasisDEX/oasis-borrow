@@ -4,7 +4,7 @@ import type { ChainlinkSupportedNetworks } from 'blockchain/calls/chainlink/chai
 import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
-import type { AccountContext } from 'components/context'
+import type { AccountContext } from 'components/context/AccountContextProvider'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
 import { getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
 import { GraphQLClient } from 'graphql-request'

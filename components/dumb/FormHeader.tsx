@@ -18,7 +18,7 @@ export function FormHeader({ header, description, withDivider = false }: FormHea
       <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
         {description}
       </Text>
-      {withDivider && <Divider variant="styles.hrVaultFormBottom" mb={4} mt="24px" />}
+      {withDivider && <Divider variant="hrVaultFormBottom" mb={4} mt="24px" />}
     </Box>
   )
 }

@@ -1,6 +1,7 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { StatefulTooltip } from 'components/Tooltip'
 import { Translatable } from 'components/Translatable'
+import { productHubIcons } from 'features/productHub/content'
 import React from 'react'
 import { Text } from 'theme-ui'
 
@@ -35,7 +36,7 @@ export function AssetsTableTooltip({
         boxShadow: 'buttonMenu',
       }}
     >
-      <Icon size={16} name={icon} color={iconColor || 'interactive100'} />
+      <Icon size={16} icon={productHubIcons[icon]} color={iconColor ?? 'interactive100'} />
     </StatefulTooltip>
   )
 }

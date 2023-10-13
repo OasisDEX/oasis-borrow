@@ -1,12 +1,13 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/trackingEvents'
 import type { MixpanelPages } from 'analytics/types'
 import { type CoinTag, COIN_TAGS } from 'blockchain/TokenConfig'
+import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import React, { memo, useCallback } from 'react'
 import ReactSelect from 'react-select'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Flex, Input } from 'theme-ui'
+import { chevron, searchIcon } from 'theme/icons'
 
 interface FiltersProps {
   onSearch: (search: string) => void
@@ -16,7 +17,7 @@ interface FiltersProps {
   page: MixpanelPages.LandingPage | MixpanelPages.OpenVaultOverview | MixpanelPages.VaultsOverview
   tagFilter: CoinTag | undefined
   searchPlaceholder: string
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
   multiply?: boolean
 }
 
@@ -100,7 +101,7 @@ function Filters_({
                   transition: 'transform 0.2s ease-in-out',
                 }}
               >
-                <Icon name="chevron" />
+                <Icon icon={chevron} />
               </Flex>
             ),
             Control: ({ children, innerProps }) => (
@@ -145,7 +146,7 @@ function Filters_({
             top: '6px',
             ml: 3,
           }}
-          name="search"
+          icon={searchIcon}
           size="4"
         />
         <Input

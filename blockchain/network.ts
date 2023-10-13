@@ -23,7 +23,8 @@ import Web3 from 'web3'
 
 import { every5Seconds$ } from './network.constants'
 import type { Context, ContextConnected, EveryBlockFunction$ } from './network.types'
-import { getNetworkRpcEndpoint, NetworkIds, networksById } from './networks'
+import { NetworkIds, networksById } from './networks'
+import { getNetworkRpcEndpoint } from './networks/get-network-rpc-endpoint'
 
 export function createContext$(
   web3ContextConnected$: Observable<Web3ContextConnected | Web3ContextConnectedReadonly>,

@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { TokensGroup } from 'components/TokensGroup'
 import { useAppConfig } from 'helpers/config'
@@ -9,10 +8,14 @@ import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React, { useEffect, useRef, useState } from 'react'
 import { Box, Flex, Image, Text } from 'theme-ui'
+import { checkmark, clear_selection } from 'theme/icons'
 import type { FeaturesEnum } from 'types/config'
 
+import { Icon } from './Icon'
+import type { IconProps } from './Icon.types'
+
 export interface GenericMultiselectOption {
-  icon?: string
+  icon?: IconProps['icon']
   image?: string
   label: string
   token?: string
@@ -21,7 +24,7 @@ export interface GenericMultiselectOption {
 }
 
 export interface GenericMultiselectProps {
-  icon?: string
+  icon?: IconProps['icon']
   initialValues?: string[]
   label: string
   options: GenericMultiselectOption[]
@@ -34,7 +37,7 @@ function GenericMultiselectIcon({
   label,
   token,
 }: {
-  icon?: string
+  icon?: IconProps['icon']
   image?: string
   label: string
   token?: string
@@ -42,7 +45,7 @@ function GenericMultiselectIcon({
   return (
     <Box sx={{ flexShrink: 0, my: '-4px', mr: '12px', ...(image && { p: '3px' }) }}>
       {token && <TokensGroup tokens={[token]} forceSize={32} />}
-      {icon && <Icon size={32} name={icon} sx={{ verticalAlign: 'bottom' }} />}
+      {icon && <Icon size={32} icon={icon} sx={{ verticalAlign: 'bottom' }} />}
       {image && (
         <Image
           src={image}
@@ -127,7 +130,7 @@ function GenericMultiselectItem({
               opacity: isSelected ? 1 : 0,
               transition: 'opacity 100ms',
             }}
-            name="checkmark"
+            icon={checkmark}
             color="success100"
           />
         </Box>
@@ -135,7 +138,7 @@ function GenericMultiselectItem({
       {isClearing && (
         <Icon
           size={24}
-          name="clear_selection"
+          icon={clear_selection}
           sx={{ mr: 3, opacity: isDisabled ? 0.5 : 1, transition: '200ms opacity' }}
         />
       )}
@@ -177,7 +180,7 @@ export function GenericMultiselect({
       case 0:
         return (
           <>
-            {icon && <Icon name={icon} size={32} sx={{ flexShrink: 0, mr: '12px' }} />}
+            {icon && <Icon icon={icon} size={32} sx={{ flexShrink: 0, mr: '12px' }} />}
             {t('all')} {label.toLowerCase()}
           </>
         )
@@ -198,7 +201,7 @@ export function GenericMultiselect({
       default:
         return (
           <>
-            {icon && <Icon name={icon} size={32} sx={{ flexShrink: 0, mr: '12px' }} />}
+            {icon && <Icon icon={icon} size={32} sx={{ flexShrink: 0, mr: '12px' }} />}
             {t('selected')} {label.toLowerCase()}: {values.length}
           </>
         )

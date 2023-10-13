@@ -28,6 +28,7 @@ const publicRuntimeConfig = {
   referralSubgraphUrl: process.env.REFERRAL_SUBGRAPH_URL,
   configUrl: process.env.CONFIG_URL,
   rpcGatewayUrl: process.env.RPC_GATEWAY,
+  grooveWidgetId: process.env.GROOVE_WIDGET_ID || `27241a63-86b5-47e2-a167-2e2a3e2a621e`,
 }
 
 module.exports = {

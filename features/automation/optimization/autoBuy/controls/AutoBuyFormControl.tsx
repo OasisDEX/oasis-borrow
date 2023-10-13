@@ -1,6 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import { MixpanelAutomationEventIds, MixpanelPages } from 'analytics/types'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { resolveMaxBuyPriceAnalytics } from 'features/automation/common/helpers/resolveMaxBuyPriceAnalytics'
 import { AUTO_BUY_FORM_CHANGE } from 'features/automation/common/state/autoBSFormChange.constants'

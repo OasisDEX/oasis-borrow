@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import type { AutomationPositionData } from 'components/context'
+import type { AutomationPositionData } from 'components/context/AutomationContextProvider'
 import type { OpenAaveContext, OpenAaveEvent } from 'features/aave/open/state'
 import type { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
 import { aaveOffsets } from 'features/automation/metadata/aave/stopLossMetadata'
@@ -15,7 +15,7 @@ import {
 import {
   extractStopLossDataInput,
   getAaveLikeCommandContractType,
-  getAveeStopLossTriggerType,
+  getAaveLikeStopLossTriggerType,
 } from 'features/automation/protection/stopLoss/openFlow/helpers'
 import {
   notRequiredAaveTranslations,
@@ -57,7 +57,7 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
       ...prepareStopLossTriggerDataV2(
         commandContractType,
         proxyAddress!,
-        getAveeStopLossTriggerType(context.strategyConfig.protocol),
+        getAaveLikeStopLossTriggerType(context.strategyConfig.protocol),
         collateralActive,
         stopLossValue,
         debtTokenAddress!,

@@ -1,6 +1,6 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
-import { MarketingLayout } from 'components/layouts'
+import { Icon } from 'components/Icon'
+import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { AppLink } from 'components/Links'
 import type { TeamMember } from 'features/about/about'
 import { getTeamPicsFileNames, parseMemberInfo } from 'features/about/about'
@@ -11,44 +11,46 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
 function AboutPage({ members }: { members: TeamMember[] }) {
   const { t } = useTranslation()
 
   return (
-    <Box sx={{ width: '100%', pb: 6 }}>
-      <Box sx={{ mt: 5, pb: 5 }}>
-        <Heading
-          variant="header1"
-          sx={{
-            textAlign: 'center',
-            mb: 4,
-          }}
+    <MarketingLayout topBackground="lighter">
+      <Box sx={{ width: '100%', pb: 6 }}>
+        <Box sx={{ mt: 5, pb: 5 }}>
+          <Heading
+            variant="header1"
+            sx={{
+              textAlign: 'center',
+              mb: 4,
+            }}
+          >
+            {t('about.heading')}
+          </Heading>
+          <Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>
+            {t('about.description')}
+          </Text>
+        </Box>
+        <AppLink
+          href={EXTERNAL_LINKS.WORKABLE}
+          sx={{ color: 'primary100', display: 'flex', alignItems: 'center', mt: 3 }}
         >
-          {t('about.heading')}
-        </Heading>
-        <Text variant="paragraph2" sx={{ color: 'neutral80' }}>
-          {t('about.description')}
-        </Text>
+          <Text variant="paragraph1" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
+            {t('about.careers-link')}
+          </Text>
+          <Icon icon={arrow_right} size="16px" sx={{ ml: 1 }} />
+        </AppLink>
+        <Box sx={{ mt: 4 }}>
+          <Heading variant="header2">{t('about.pics-title')}</Heading>
+          <PortraitsGrid members={members} />
+        </Box>
       </Box>
-      <AppLink
-        href={EXTERNAL_LINKS.WORKABLE}
-        sx={{ color: 'primary100', display: 'flex', alignItems: 'center', mt: 3 }}
-      >
-        <Text variant="paragraph1" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
-          {t('about.careers-link')}
-        </Text>
-        <Icon name="arrow_right" size="16px" sx={{ ml: 1 }} />
-      </AppLink>
-      <Box sx={{ mt: 4 }}>
-        <Heading variant="header2">{t('about.pics-title')}</Heading>
-        <PortraitsGrid members={members} />
-      </Box>
-    </Box>
+    </MarketingLayout>
   )
 }
 
-AboutPage.layout = MarketingLayout
 AboutPage.seoTags = (
   <PageSEOTags title="seo.about.title" description="seo.about.description" url="/about" />
 )
@@ -87,8 +89,10 @@ function PortraitsGrid({ members }: { members: TeamMember[] }) {
             />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <Text sx={{ color: 'primary100', mb: 1 }}>{member.name}</Text>
-            <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
+            <Text as="p" sx={{ color: 'primary100', mb: 1 }}>
+              {member.name}
+            </Text>
+            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
               {member.title}
             </Text>
           </Box>

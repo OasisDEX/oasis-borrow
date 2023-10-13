@@ -2,7 +2,7 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import type { ReactNode } from 'react'
 import React from 'react'
 import { theme } from 'theme'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Grid } from 'theme-ui'
 import { fadeInAnimationDelay, slideInAnimation } from 'theme/animations'
 
@@ -10,7 +10,7 @@ interface ProductCardWrapperProps {
   children: Array<ReactNode>
   desktopWidthOfCard?: number
   gap?: number
-  sx?: SxStyleProp
+  sx?: ThemeUIStyleObject
 }
 
 export function ProductCardsWrapper({

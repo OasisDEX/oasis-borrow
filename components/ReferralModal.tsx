@@ -1,10 +1,11 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
+import { arrow_right, checkmark } from 'theme/icons'
 
+import { Icon } from './Icon'
 import { AppLink } from './Links'
 import { Modal } from './Modal'
 
@@ -34,16 +35,16 @@ export function ReferralModal({ heading, topButton, bottomButton }: ReferralModa
             {t('ref.modal.body-text')}
           </Text>
           <Text variant="paragraph3" sx={{ color: 'neutral80', my: '8px' }}>
-            <Icon name="checkmark" size="auto" width="14px" color="primary" sx={{ mr: '8px' }} />{' '}
+            <Icon icon={checkmark} size="auto" width="14px" color="primary" sx={{ mr: '8px' }} />{' '}
             <span style={{ fontWeight: 'bold', color: 'primary' }}> {t('ref.modal.p1_1')}</span>
             {t('ref.modal.p1_2')}
           </Text>
           <Text variant="paragraph3" sx={{ color: 'neutral80', my: '8px' }}>
-            <Icon name="checkmark" size="auto" width="14px" color="primary" sx={{ mr: '8px' }} />{' '}
+            <Icon icon={checkmark} size="auto" width="14px" color="primary" sx={{ mr: '8px' }} />{' '}
             {t('ref.modal.p2')}
           </Text>
           <Text variant="paragraph3" sx={{ color: 'neutral80', my: '8px' }}>
-            <Icon name="checkmark" size="auto" width="14px" color="primary" sx={{ mr: '8px' }} />{' '}
+            <Icon icon={checkmark} size="auto" width="14px" color="primary" sx={{ mr: '8px' }} />{' '}
             {t('ref.modal.p3')}
           </Text>
           <Text variant="paragraph3" sx={{ color: 'neutral80', my: '12px' }}>
@@ -85,7 +86,7 @@ export function ReferralModal({ heading, topButton, bottomButton }: ReferralModa
             >
               {topButton.text}
               <Icon
-                name="arrow_right"
+                icon={arrow_right}
                 sx={{
                   ml: 2,
                   position: 'relative',

@@ -5,7 +5,7 @@ export const getProductMultiplyNavItems = (
   promoCards: ProductHubPromoCards,
   productHub: ProductHubItem[],
 ) => {
-  const data: ProductHubItem[] = []
+  const data: (ProductHubItem & { url?: string })[] = []
 
   promoCards.multiply.default.forEach((promoCard) => {
     const foundItem = productHub.find(
@@ -17,7 +17,7 @@ export const getProductMultiplyNavItems = (
         item.product.includes(ProductHubProductType.Multiply),
     )
 
-    if (foundItem) data.push(foundItem)
+    if (foundItem) data.push({ ...foundItem, url: promoCard.link?.href })
   })
 
   return data.map((item) => ({
@@ -26,5 +26,6 @@ export const getProductMultiplyNavItems = (
     debtToken: item.secondaryToken,
     protocol: item.protocol,
     network: item.network,
+    url: item.url,
   }))
 }

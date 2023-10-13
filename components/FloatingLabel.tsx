@@ -1,14 +1,14 @@
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
-import type { SxStyleProp } from 'theme-ui'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Flex, Image, Text } from 'theme-ui'
 
 interface FloatingLabelProps {
   text: string
-  flexSx?: SxStyleProp
-  textSx?: SxStyleProp
+  flexSx?: ThemeUIStyleObject
+  textSx?: ThemeUIStyleObject
   imageUrl?: string
-  imageSx?: SxStyleProp
+  imageSx?: ThemeUIStyleObject
 }
 
 export function FloatingLabel({

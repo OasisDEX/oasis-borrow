@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
 import { getTokenGuarded } from 'blockchain/tokensMetadata'
 import { GenericTokenIcon } from 'components/GenericTokenIcon'
@@ -6,6 +5,8 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
+
+import { Icon } from './Icon'
 
 interface SimulateTitleProps {
   token: string
@@ -28,7 +29,7 @@ export function SimulateTitle({ token, tokenSymbol, depositAmount }: SimulateTit
     >
       {tokenConfig ? (
         <Icon
-          name={tokenConfig.iconCircle}
+          icon={tokenConfig.iconCircle}
           size="64px"
           sx={{
             verticalAlign: 'text-bottom',

@@ -1,7 +1,7 @@
 import { WithConnection } from 'components/connectWallet'
-import { TOSContextProvider } from 'components/context'
+import { TOSContextProvider } from 'components/context/TOSContextProvider'
 import { PageSEOTags } from 'components/HeadTags'
-import { AppLayout } from 'components/layouts'
+import { AppLayout } from 'components/layouts/AppLayout'
 import { ReferralLandingSummary } from 'features/referralOverview/ReferralLanding'
 import { useAppConfig } from 'helpers/config'
 import type { GetServerSidePropsContext } from 'next'
@@ -20,13 +20,14 @@ function ReferralsPage() {
   const { Referrals: referralsEnabled } = useAppConfig('features')
 
   return (
-    <TOSContextProvider>
-      <WithConnection>{referralsEnabled ? <ReferralLandingSummary /> : null}</WithConnection>
-    </TOSContextProvider>
+    <AppLayout>
+      <TOSContextProvider>
+        <WithConnection>{referralsEnabled ? <ReferralLandingSummary /> : null}</WithConnection>
+      </TOSContextProvider>
+    </AppLayout>
   )
 }
 
-ReferralsPage.layout = AppLayout
 ReferralsPage.seoTags = (
   <PageSEOTags
     title="seo.referrals.title"

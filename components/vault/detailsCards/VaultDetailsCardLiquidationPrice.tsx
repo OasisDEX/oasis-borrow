@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import type { AfterPillProps } from 'components/vault/VaultDetails'
 import { VaultDetailsCard, VaultDetailsCardModal } from 'components/vault/VaultDetails'
 import { StopLossBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossBannerControl'

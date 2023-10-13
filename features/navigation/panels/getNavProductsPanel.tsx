@@ -4,7 +4,7 @@ import { networksByName } from 'blockchain/networks'
 import type {
   NavigationMenuPanelListTags,
   NavigationMenuPanelType,
-} from 'components/navigation/NavigationMenuPanel'
+} from 'components/navigation/Navigation.types'
 import { NavigationBridgeDescription } from 'features/navigation/components/NavigationBridgeDescription'
 import {
   getNavIconConfig,
@@ -15,7 +15,6 @@ import {
 import type { ProductHubItem, ProductHubPromoCards } from 'features/productHub/types'
 import type { SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChange'
 import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
-import { getTokenGroup } from 'handlers/product-hub/helpers'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { uiChanges } from 'helpers/uiChanges'
@@ -23,26 +22,35 @@ import { zero } from 'helpers/zero'
 import { lendingProtocolsByName } from 'lendingProtocols/lendingProtocolsConfigs'
 import { capitalize } from 'lodash'
 import React from 'react'
+import { exchange } from 'theme/icons'
+import { bridge } from 'theme/icons/bridge'
 import type { TranslationType } from 'ts_modules/i18next'
 
 export const getNavProductsPanel = ({
   t,
   productHubItems,
   promoCardsData,
+  isConnected,
+  connect,
 }: {
   t: TranslationType
   promoCardsData: ProductHubPromoCards
   productHubItems: ProductHubItem[]
+  isConnected: boolean
+  connect: () => void
 }): NavigationMenuPanelType => {
   const productMultiplyNavItems = getProductMultiplyNavItems(promoCardsData, productHubItems)
 
   const productEarnNavItems = getProductEarnNavItems(promoCardsData, productHubItems)
   const productBorrowNavItems = getProductBorrowNavItems(productHubItems)
 
-  const swapCallback = () =>
+  const widgetCallback = (variant: 'swap' | 'bridge') => {
+    !isConnected && connect()
     uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
       type: 'open',
+      variant,
     })
+  }
 
   return {
     label: t('nav.products'),
@@ -88,7 +96,7 @@ export const getNavProductsPanel = ({
                     [capitalize(item.protocol), lendingProtocolsByName[item.protocol].gradient],
                     [capitalize(item.network), networksByName[item.network].gradient],
                   ] as NavigationMenuPanelListTags,
-                  url: `${INTERNAL_LINKS.earn}/${getTokenGroup(item.primaryToken)}`,
+                  url: item.url,
                 })),
               ],
               link: {
@@ -117,7 +125,7 @@ export const getNavProductsPanel = ({
                     [capitalize(item.protocol), lendingProtocolsByName[item.protocol].gradient],
                     [capitalize(item.network), networksByName[item.network].gradient],
                   ] as NavigationMenuPanelListTags,
-                  url: `${INTERNAL_LINKS.multiply}/${getTokenGroup(item.collateralToken)}`,
+                  url: item.url,
                 })),
               ],
               link: {
@@ -155,9 +163,7 @@ export const getNavProductsPanel = ({
                       networksByName[productBorrowNavItems.maxLtv.network].gradient,
                     ],
                   ],
-                  url: `${INTERNAL_LINKS.borrow}/${getTokenGroup(
-                    productBorrowNavItems.maxLtv.primaryToken,
-                  )}`,
+                  url: productBorrowNavItems.maxLtv.url,
                 },
                 {
                   title: t('nav.borrow-lowest-fee', {
@@ -182,9 +188,7 @@ export const getNavProductsPanel = ({
                       networksByName[productBorrowNavItems.fee.network].gradient,
                     ],
                   ],
-                  url: `${INTERNAL_LINKS.borrow}/${getTokenGroup(
-                    productBorrowNavItems.fee.primaryToken,
-                  )}`,
+                  url: productBorrowNavItems.fee.url,
                 },
                 {
                   title: t('nav.earn-rewards-while-borrowing'),
@@ -206,9 +210,7 @@ export const getNavProductsPanel = ({
                       networksByName[productBorrowNavItems.liquidity.network].gradient,
                     ],
                   ],
-                  url: `${INTERNAL_LINKS.borrow}/${getTokenGroup(
-                    productBorrowNavItems.liquidity.primaryToken,
-                  )}`,
+                  url: productBorrowNavItems.liquidity.url,
                 },
               ],
               link: {
@@ -226,19 +228,19 @@ export const getNavProductsPanel = ({
                   title: t('nav.swap'),
                   icon: {
                     position: 'global',
-                    icon: 'exchange',
+                    icon: exchange,
                   },
                   description: t('nav.swap-description'),
-                  callback: swapCallback,
+                  callback: () => widgetCallback('swap'),
                 },
                 {
                   title: t('nav.bridge'),
                   icon: {
                     position: 'global',
-                    icon: 'bridge',
+                    icon: bridge,
                   },
                   description: <NavigationBridgeDescription />,
-                  callback: swapCallback,
+                  callback: () => widgetCallback('bridge'),
                 },
               ],
             },

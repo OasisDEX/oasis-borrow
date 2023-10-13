@@ -1,11 +1,12 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { UserReferralState } from 'features/referralOverview/user.types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
+import { Icon } from './Icon'
 import { AppLink } from './Links'
 import { Modal } from './Modal'
 
@@ -57,7 +58,7 @@ export function SuccessfulJoinModal({ account, userReferral, heading }: NewRefer
                     }}
                   >
                     {t('ref.modal.go-home')}
-                    <Icon key="arrow" name="arrow_right" sx={{ transition: '0.2s', ml: '4px' }} />
+                    <Icon key="arrow" icon={arrow_right} sx={{ transition: '0.2s', ml: '4px' }} />
                   </Button>
                 </AppLink>
 
@@ -81,7 +82,7 @@ export function SuccessfulJoinModal({ account, userReferral, heading }: NewRefer
                   }}
                 >
                   {t('ref.modal.go-dashboard')}
-                  <Icon key="arrow" name="arrow_right" sx={{ transition: '0.2s', ml: '4px' }} />
+                  <Icon key="arrow" icon={arrow_right} sx={{ transition: '0.2s', ml: '4px' }} />
                 </Button>
               </>
             </Flex>

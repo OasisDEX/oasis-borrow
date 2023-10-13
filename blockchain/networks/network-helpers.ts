@@ -2,6 +2,7 @@ import { keyBy } from 'lodash'
 import { env } from 'process'
 
 import { forkNetworks, forkSettings } from './forks-config'
+import { isForkSetForNetworkId } from './is-fork-set-for-network-id'
 import type { NetworkIds } from './network-ids'
 import type { NetworkConfig, NetworkConfigHexId } from './networks-config'
 import { networks, networksById } from './networks-config'
@@ -35,11 +36,6 @@ export const isTestnetNetworkHexId = (networkHexId: NetworkConfigHexId) => {
     .filter((network) => network.testnet)
     .map((network) => network.hexId)
     .includes(networkHexId)
-}
-
-export const isForkSetForNetworkId = (networkId: NetworkIds) => {
-  const networkName = networksById[networkId]?.name
-  return forkSettings[networkName] !== undefined
 }
 
 const networksWithForksAtTheBeginning: NetworkConfig[] = [...forkNetworks, ...networks]
@@ -137,18 +133,6 @@ export const filterNetworksAccordingToSavedNetwork =
   (customNetworkHexId: NetworkConfigHexId) => (network: NetworkConfig) => {
     return isTestnetNetworkHexId(customNetworkHexId) ? network.testnet : !network.testnet
   }
-
-export function getNetworkRpcEndpoint(networkId: NetworkIds) {
-  const isForkSet = isForkSetForNetworkId(networkId)
-  if (!networksById[networkId]) {
-    throw new Error('Invalid contract chain id provided or not implemented yet')
-  }
-  if (isForkSet) {
-    const networkName = networksById[networkId].name
-    return forkSettings[networkName]!.url
-  }
-  return networksById[networkId].rpcUrl
-}
 
 export function getNetworkById(networkId: NetworkIds) {
   const base = networkSetById[networkId]

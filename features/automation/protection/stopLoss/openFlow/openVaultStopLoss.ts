@@ -7,7 +7,7 @@ import type { Context } from 'blockchain/network.types'
 import { emptyNetworkConfig } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import type { AutomationPositionData } from 'components/context'
+import type { AutomationPositionData } from 'components/context/AutomationContextProvider'
 import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,

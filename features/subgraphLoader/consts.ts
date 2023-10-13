@@ -197,7 +197,9 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         poolActualUtilization
         poolTargetUtilization
         currentBurnEpoch
-        pendingInflator
+        pendingInflator {
+          pendingInflator
+        }
         lendApr
         borrowApr
         buckets {

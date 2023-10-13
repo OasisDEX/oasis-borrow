@@ -1,8 +1,9 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import l2beatLogo from 'public/static/img/l2beat-logo.svg'
 import React, { useState } from 'react'
 import { Box, Image, Link } from 'theme-ui'
+import { arrow_right_light } from 'theme/icons'
 
 export const L2BeatSection = () => {
   const [hover, setHover] = useState<boolean>(false)
@@ -60,7 +61,7 @@ export const L2BeatSection = () => {
           />
           {t('navigation-network.l2beat-title')}
         </Box>
-        {hover && <Icon name="arrow_right_light" />}
+        {hover && <Icon icon={arrow_right_light} />}
       </Link>
       {hover && (
         <Box

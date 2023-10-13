@@ -1,7 +1,7 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { Swap } from '@oasisdex/dma-library'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
 import { amountFromWei } from 'blockchain/utils'
+import { Icon } from 'components/Icon'
 import {
   formatGasEstimationETH,
   getEstimatedGasFeeTextOld,
@@ -12,6 +12,7 @@ import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { chevron_down, chevron_up } from 'theme/icons'
 
 interface FeesInformationProps {
   estimatedGasPrice?: HasGasEstimation
@@ -44,7 +45,7 @@ export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProp
               {getEstimatedGasFeeTextOld(estimatedGasPrice, true, formatGasEstimationETH)}
             </Text>
             <Icon
-              name={`chevron_${showBreakdown ? 'up' : 'down'}`}
+              icon={showBreakdown ? chevron_up : chevron_down}
               size="auto"
               width="12px"
               sx={{ ml: 2 }}

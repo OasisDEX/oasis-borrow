@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { ethereumMainnetHexId, isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
-import { GasEstimationContextProvider, ProductContextHandler } from 'components/context'
-import { AppLayout } from 'components/layouts'
+import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
+import { ProductContextHandler } from 'components/context/ProductContextHandler'
+import { AppLayout } from 'components/layouts/AppLayout'
 import { GeneralManageControl } from 'components/vault/GeneralManageControl'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
@@ -35,20 +36,20 @@ function Vault({ id }: { id: string }) {
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
 
   return (
-    <ProductContextHandler>
-      <GasEstimationContextProvider>
-        <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
-          <WithTermsOfService>
-            <WithWalletAssociatedRisk>
-              {isValidVaultId ? <GeneralManageControl id={vaultId} /> : <NotFoundPage />}
-            </WithWalletAssociatedRisk>
-          </WithTermsOfService>
-        </WithConnection>
-      </GasEstimationContextProvider>
-    </ProductContextHandler>
+    <AppLayout>
+      <ProductContextHandler>
+        <GasEstimationContextProvider>
+          <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
+            <WithTermsOfService>
+              <WithWalletAssociatedRisk>
+                {isValidVaultId ? <GeneralManageControl id={vaultId} /> : <NotFoundPage />}
+              </WithWalletAssociatedRisk>
+            </WithTermsOfService>
+          </WithConnection>
+        </GasEstimationContextProvider>
+      </ProductContextHandler>
+    </AppLayout>
   )
 }
-
-Vault.layout = AppLayout
 
 export default Vault

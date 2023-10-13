@@ -1,5 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { BigNumber } from 'bignumber.js'
+import { Icon } from 'components/Icon'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
@@ -11,6 +11,7 @@ import { useTranslation } from 'next-i18next'
 import type { ChangeEvent } from 'react'
 import React from 'react'
 import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
 type VaultState = OpenMultiplyVaultState | ManageMultiplyVaultState
 
@@ -102,7 +103,7 @@ export function SidebarSliderAdjustMultiply({
                   sx={{ fontWeight: 'semiBold', color: 'primary100' }}
                 >
                   {formatPercent(currentCollaterizationRatio.times(100))}
-                  <Icon name="arrow_right" size="16px" sx={{ ml: 2, mr: 2 }} />
+                  <Icon icon={arrow_right} size="16px" sx={{ ml: 2, mr: 2 }} />
                 </Text>
               </>
             )}

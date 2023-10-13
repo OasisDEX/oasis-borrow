@@ -1,7 +1,6 @@
 import { trackingEvents } from 'analytics/trackingEvents'
-import { useMainContext, useProductContext } from 'components/context'
-import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import { useMainContext } from 'components/context/MainContextProvider'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
 import { uiChanges } from 'helpers/uiChanges'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
@@ -17,6 +16,8 @@ import type {
 } from './ManageMultiplyVaultContainer.types'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange.constants'
 import { VaultViewMode } from '../GeneralManageTabBar.types'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
+import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
 
 export function ManageMultiplyVaultContainer({
   manageVault,
@@ -67,6 +68,7 @@ export function ManageMultiplyVaultContainer({
           priceInfo={manageVault.priceInfo}
         />
       )}
+      {/* TODO: propably here */}
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           {}

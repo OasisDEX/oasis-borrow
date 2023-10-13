@@ -1,7 +1,7 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { normalizeValue } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { Icon } from 'components/Icon'
 import { SkeletonLine } from 'components/Skeleton'
 import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
@@ -11,6 +11,7 @@ import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Flex, Text } from 'theme-ui'
+import { arrow_right } from 'theme/icons'
 
 const min = new BigNumber(0.01)
 const max = new BigNumber(1)
@@ -94,7 +95,7 @@ export function AjnaAdjustSlider({ disabled = false }: AjnaAdjustSliderProps) {
               {formatDecimalAsPercent(ltv)}
               {!ltv.eq(resolvedValue) && (
                 <>
-                  <Icon name="arrow_right" size={14} sx={{ mx: 2 }} />
+                  <Icon icon={arrow_right} size={14} sx={{ mx: 2 }} />
                   <Text
                     as="span"
                     sx={{ color: changeVariant === 'positive' ? 'success100' : 'critical100' }}

@@ -3,6 +3,7 @@ import { useAjnaGeneralContext } from 'features/ajna/positions/common/contexts/A
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
+import { checkmark } from 'theme/icons'
 
 export function AjnaBorrowFormContentSwitch() {
   const { t } = useTranslation()
@@ -16,7 +17,7 @@ export function AjnaBorrowFormContentSwitch() {
         {t('vault-form.header.multiply-transition', { token: collateralToken })}
       </Text>
       <ListWithIcon
-        icon="checkmark"
+        icon={checkmark}
         iconSize="14px"
         iconColor="primary100"
         items={[

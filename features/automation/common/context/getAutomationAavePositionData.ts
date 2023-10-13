@@ -2,7 +2,7 @@ import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import type { AutomationPositionData } from 'components/context'
+import type { AutomationPositionData } from 'components/context/AutomationContextProvider'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { zero } from 'helpers/zero'
 

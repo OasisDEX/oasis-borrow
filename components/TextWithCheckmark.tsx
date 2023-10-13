@@ -1,7 +1,9 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
+import { checkmark } from 'theme/icons'
+
+import { Icon } from './Icon'
 
 export function TextWithCheckmark({ children }: WithChildren) {
   return (
@@ -20,7 +22,7 @@ export function TextWithCheckmark({ children }: WithChildren) {
           flexShrink: 0,
         }}
       >
-        <Icon name="checkmark" size="auto" width="11px" sx={{ position: 'relative', top: '1px' }} />
+        <Icon icon={checkmark} size="auto" width="11px" sx={{ position: 'relative', top: '1px' }} />
       </Flex>
       <Text>{children}</Text>
     </Flex>

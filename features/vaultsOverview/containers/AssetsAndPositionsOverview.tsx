@@ -1,9 +1,8 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import type { SystemStyleObject } from '@styled-system/css'
 import type BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { useProductContext } from 'components/context'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { PieChart } from 'components/dumb/PieChart'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
 import { AssetsAndPositionsOverviewLoadingState } from 'features/vaultsOverview/components/AssetsAndPositionsOverviewLoadingState'
@@ -23,9 +22,10 @@ import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHan
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
-import type { SxStyleProp } from 'theme-ui'
+import { createPortal } from 'react-dom'
+import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Card, Flex, Grid, Heading, Image, Link, Text } from 'theme-ui'
+import { arrow_right, dots_v } from 'theme/icons'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 
 function tokenColor(symbol: string) {
@@ -49,7 +49,7 @@ function AssetRow(props: PositionView) {
         title={`${props.title}  |  We were unable to fetch the price data for this token`}
       >
         <Icon
-          name={getToken(props.token).iconCircle}
+          icon={getToken(props.token).iconCircle}
           size="32px"
           sx={{ verticalAlign: 'sub', flexShrink: 0 }}
         />
@@ -97,7 +97,7 @@ function AssetRow(props: PositionView) {
       }`}
     >
       <Icon
-        name={getToken(props.token).iconCircle}
+        icon={getToken(props.token).iconCircle}
         size="32px"
         sx={{ verticalAlign: 'sub', flexShrink: 0 }}
       />
@@ -136,14 +136,14 @@ function AssetRow(props: PositionView) {
           (${formatAmount(props.contentsUsd, 'USD')})
         </Text>
       )}
-      {props.actions && <Icon name="dots_v" sx={{ fill: '#708390', ml: 'auto', flexShrink: 0 }} />}
-      {props.url && <Icon name="arrow_right" sx={{ fill: '#708390', ml: 'auto', flexShrink: 0 }} />}
+      {props.actions && <Icon icon={dots_v} sx={{ fill: '#708390', ml: 'auto', flexShrink: 0 }} />}
+      {props.url && <Icon icon={arrow_right} sx={{ fill: '#708390', ml: 'auto', flexShrink: 0 }} />}
     </Flex>
   )
 }
 
 function LinkedRow(props: PositionView) {
-  const [menuPosition, setMenuPosition] = useState<SxStyleProp | undefined>(undefined)
+  const [menuPosition, setMenuPosition] = useState<ThemeUIStyleObject | undefined>(undefined)
 
   if (props.url) {
     return (
@@ -166,7 +166,7 @@ function LinkedRow(props: PositionView) {
       >
         {menuPosition &&
           props.actions &&
-          ReactDOM.createPortal(
+          createPortal(
             <Menu
               sx={menuPosition}
               close={() => {
@@ -185,7 +185,7 @@ function LinkedRow(props: PositionView) {
 function MenuRowDisplay(props: AssetAction) {
   return (
     <Flex sx={{ color: 'black', alignItems: 'center' }}>
-      <Icon name={props.icon} sx={{ mr: '15px' }} />
+      <Icon icon={props.icon} sx={{ mr: '15px' }} />
       <Text variant="paragraph2" sx={{ color: 'black' }}>
         {props.text}
       </Text>
@@ -218,7 +218,7 @@ function MenuRow(props: AssetAction & { close: () => void }) {
 
 function Menu(props: {
   close: () => void
-  sx?: SystemStyleObject
+  sx?: ThemeUIStyleObject
   assetActions: Array<AssetAction>
 }) {
   const componentRef = useOutsideElementClickHandler(props.close)

@@ -4,7 +4,6 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
-import { isProductContextAvailable, useProductContext } from 'components/context'
 import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import {
   defaultAutoBSData,
@@ -38,6 +37,8 @@ import type { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
 import type { PropsWithChildren } from 'react'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
+
+import { isProductContextAvailable, useProductContext } from './ProductContextProvider'
 
 export interface AutomationEnvironmentData {
   canInteract: boolean

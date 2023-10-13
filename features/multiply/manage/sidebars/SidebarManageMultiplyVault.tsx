@@ -24,6 +24,7 @@ import {
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
+import { circle_close, circle_exchange, circle_slider } from 'theme/icons'
 
 import { SidebarManageMultiplyVaultEditingStage } from './SidebarManageMultiplyVaultEditingStage'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
@@ -106,7 +107,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
       items: [
         {
           label: t('system.actions.multiply.adjust'),
-          icon: 'circle_slider',
+          icon: circle_slider,
           iconShrink: 2,
           panel: 'adjust',
           action: () => {
@@ -139,10 +140,10 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
         },
         {
           label:
-            vaultType === VaultType.Borrow
-              ? t('system.actions.borrow.switch-to-multiply')
-              : t('system.actions.multiply.switch-to-borrow'),
-          icon: 'circle_exchange',
+          vaultType === VaultType.Borrow
+            ? t('system.actions.borrow.switch-to-multiply')
+            : t('system.actions.multiply.switch-to-borrow'),
+          icon: circle_exchange,
           iconShrink: 2,
           panel: 'transition',
           action: () => {
@@ -152,7 +153,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
         },
         {
           label: t('system.actions.common.close-vault'),
-          icon: 'circle_close',
+          icon: circle_close,
           iconShrink: 2,
           panel: 'close',
           action: () => {

@@ -22,6 +22,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
+import { dai_circle_color } from 'theme/icons'
 
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
@@ -255,7 +256,7 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
     <Grid
       gap={2}
       sx={{
-        variant: collapsed ? 'styles.collapsedContentContainer' : '',
+        variant: collapsed ? 'collapsedContentContainer' : '',
       }}
     >
       <Box>
@@ -481,7 +482,7 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
 
         <CloseVaultCard
           text="Close to DAI"
-          icon="dai_circle_color"
+          icon={dai_circle_color}
           onClick={() => setCloseVaultTo!('dai')}
           isActive={!closeToCollateral}
           optionName={'dai'}

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useProductContext } from 'components/context'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SecondaryVariantType } from 'components/infoSection/Item'

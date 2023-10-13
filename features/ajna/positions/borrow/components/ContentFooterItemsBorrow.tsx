@@ -1,7 +1,7 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import type BigNumber from 'bignumber.js'
 import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
+import { Icon } from 'components/Icon'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
 import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
@@ -11,6 +11,7 @@ import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
+import { ajnaSparks } from 'theme/icons'
 
 interface ContentFooterItemsBorrowProps {
   isLoading?: boolean
@@ -90,7 +91,7 @@ export function ContentFooterItemsBorrow({
                   lineHeight: 'body',
                 }}
               >
-                <Icon size={16} name="ajnaSparks" color="interactive100" />
+                <Icon size={16} icon={ajnaSparks} color="interactive100" />
               </StatefulTooltip>
             )}
             {formatted.cost}

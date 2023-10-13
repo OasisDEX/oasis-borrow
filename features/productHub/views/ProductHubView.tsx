@@ -7,17 +7,24 @@ import {
   ProductHubPromoCardsController,
 } from 'features/productHub/controls'
 import { ProductHubContentController } from 'features/productHub/controls/ProductHubContentController'
+import {
+  getInitialFilters,
+  getInitialQueryString,
+  getStrippedQueryString,
+} from 'features/productHub/helpers'
+import { useProductHubRouter } from 'features/productHub/hooks/useProductHubRouter'
 import { ALL_ASSETS } from 'features/productHub/meta'
 import type {
   ProductHubFilters,
   ProductHubProductType,
+  ProductHubQueryString,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import type { PromoCardsCollection } from 'handlers/product-hub/types'
-import { useAppConfig } from 'helpers/config'
 import type { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
+import { useSearchParams } from 'next/navigation'
 import type { FC, ReactNode } from 'react'
 import React, { Fragment, useMemo, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
@@ -46,27 +53,33 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   limitRows,
 }) => {
   const { t } = useTranslation()
-  const { AjnaSafetySwitch } = useAppConfig('features')
 
   const { productHub: data } = usePreloadAppDataContext()
+  const searchParams = useSearchParams()
 
-  const resolvedData = AjnaSafetySwitch
-    ? data.table.filter((item) => item.protocol !== 'ajna')
-    : data.table
-
-  const defaultFilters = useMemo(
-    () => ({
-      or: [],
-      and: {
-        ...(initialNetwork && { network: initialNetwork }),
-        ...(initialProtocol && { protocol: initialProtocol }),
-      },
-    }),
-    [initialNetwork, initialProtocol],
-  )
+  const initialQueryString = getInitialQueryString(searchParams)
   const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
+  const defaultFilters = useMemo(
+    () =>
+      getInitialFilters({
+        initialQueryString,
+        initialNetwork,
+        initialProtocol,
+        selectedProduct,
+        token,
+      }),
+    [initialNetwork, initialProtocol, initialQueryString, selectedProduct, token],
+  )
   const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(defaultFilters)
+  const [queryString, setQueryString] = useState<ProductHubQueryString>(initialQueryString)
+
+  useProductHubRouter({
+    queryString,
+    selectedProduct,
+    selectedToken,
+    url,
+  })
 
   return (
     <Fragment key={product}>
@@ -84,11 +97,21 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
           gradient={headerGradient}
           product={product}
           token={token}
-          url={url}
           onChange={(_selectedProduct, _selectedToken) => {
             setSelectedProduct(_selectedProduct)
             setSelectedToken(_selectedToken)
-            setSelectedFilters(defaultFilters)
+            setSelectedFilters(
+              getInitialFilters({
+                initialQueryString,
+                initialNetwork,
+                initialProtocol,
+                selectedProduct: _selectedProduct,
+                token,
+              }),
+            )
+            setQueryString(
+              getStrippedQueryString({ selectedProduct: _selectedProduct, queryString }),
+            )
           }}
         />
         {intro ? (
@@ -99,18 +122,22 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
       </Box>
 
       <ProductHubPromoCardsController
-        promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](resolvedData)}
+        promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](data.table)}
         selectedProduct={selectedProduct}
         selectedToken={selectedToken}
       />
       <ProductHubContentController
         initialNetwork={initialNetwork}
         initialProtocol={initialProtocol}
+        queryString={queryString}
         selectedFilters={selectedFilters}
         selectedProduct={selectedProduct}
         selectedToken={selectedToken}
-        tableData={resolvedData}
-        onChange={setSelectedFilters}
+        tableData={data.table}
+        onChange={(_selectedFilters, _queryString) => {
+          setSelectedFilters(_selectedFilters)
+          setQueryString(_queryString)
+        }}
         limitRows={limitRows}
       />
       {limitRows && limitRows > 0 && (

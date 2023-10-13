@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import type { ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
@@ -21,11 +21,11 @@ const getLTVRatioColor = (ratio: BigNumber) => {
 
   switch (true) {
     case ratio.isLessThanOrEqualTo(critical):
-      return colors.critical10
+      return colors?.critical10
     case ratio.isLessThanOrEqualTo(warning):
-      return colors.warning10
+      return colors?.warning10
     default:
-      return colors.success10
+      return colors?.success10
   }
 }
 
@@ -94,6 +94,7 @@ function ContentCardLtvModal({
               i18nKey="aave-position-modal.ltv.fourth-description-line"
               components={[
                 <Text
+                  key="goToProtection"
                   as="span"
                   variant="boldParagraph3"
                   onClick={goToProtection}

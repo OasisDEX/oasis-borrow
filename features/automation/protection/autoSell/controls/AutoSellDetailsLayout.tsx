@@ -7,7 +7,7 @@ import {
 import type BigNumber from 'bignumber.js'
 import { Banner } from 'components/Banner'
 import { bannerGradientPresets } from 'components/Banner.constants'
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AppLink } from 'components/Links'

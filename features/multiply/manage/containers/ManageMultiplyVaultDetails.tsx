@@ -1,4 +1,4 @@
-import { useAutomationContext } from 'components/context'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCardWrapper,
