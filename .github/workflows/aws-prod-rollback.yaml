@@ -14,9 +14,9 @@ jobs:
   rollback-deployment:
     env:
       AWS_REGION: us-east-1
-      ECR_REPO_NAME: oasis-borrow-prod
-      SERVICE_NAME: oasis-borrow-prod
-      CLUSTER_NAME: oasis-borrow-prod
+      ECR_REPO_NAME: summer-fi-prod
+      SERVICE_NAME: summer-fi-prod
+      CLUSTER_NAME: summer-fi-prod
 
     runs-on: ubuntu-latest
 

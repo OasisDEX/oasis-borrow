@@ -5,12 +5,13 @@ import type { ThemeUIStyleObject } from 'theme-ui'
 
 export interface AppLinkProps extends WithChildren, LinkProps {
   disabled?: boolean
-  href: string
-  sx?: ThemeUIStyleObject
-  variant?: string
-  internalInNewTab?: boolean
-  withAccountPrefix?: boolean
-  onClick?: React.MouseEventHandler<HTMLAnchorElement>
-  target?: string
   hash?: string
+  href: string
+  internalInNewTab?: boolean
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>
+  query?: { [key: string]: string }
+  sx?: ThemeUIStyleObject
+  target?: string
+  variant?: string
+  withAccountPrefix?: boolean
 }
