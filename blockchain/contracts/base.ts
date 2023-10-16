@@ -47,8 +47,7 @@ import {
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
 import { contractDesc, emptyContractDesc } from 'blockchain/networks'
-import { tokensArbitrum } from 'blockchain/tokens/'
-import { AAVE_V3_POOL_GENESIS_GOERLI } from 'blockchain/tokens/arbitrum'
+import { tokensBase } from 'blockchain/tokens/base'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import { etherscanAPIKey } from 'config/runtimeConfig'
 
@@ -60,7 +59,7 @@ const { base } = ADDRESSES
 export const baseContracts: MainnetContractsWithOptional = {
   otc: contractDesc(otc, base.common.Otc),
   collaterals: getCollaterals(base.common, supportedIlks),
-  tokens: tokensArbitrum,
+  tokens: tokensBase,
   tokensMainnet: mainnetContracts.tokensMainnet,
   joins: {
     ...getCollateralJoinContracts(
@@ -137,7 +136,7 @@ export const baseContracts: MainnetContractsWithOptional = {
   swapAddress: base.mpa.core.Swap,
   accountFactory: contractDesc(accountFactory, base.mpa.core.AccountFactory),
   accountGuard: contractDesc(accountGuard, base.mpa.core.AccountGuard),
-  aaveV3Pool: contractDesc(aaveV3Pool, base.aave.v3.LendingPool, AAVE_V3_POOL_GENESIS_GOERLI),
+  aaveV3Pool: contractDesc(aaveV3Pool, base.aave.v3.LendingPool),
   aaveV3Oracle: contractDesc(aaveV3Oracle, base.aave.v3.Oracle),
   aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, base.aave.v3.PoolDataProvider),
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, base.ajna.AjnaPoolInfo),
@@ -181,8 +180,8 @@ export const baseContracts: MainnetContractsWithOptional = {
   openVaultSafeConfirmations: 6,
   taxProxyRegistries: [],
   etherscan: {
-    url: 'https://arbiscan.io/',
-    apiUrl: 'https://api.arbiscan.io/api',
+    url: '',
+    apiUrl: '',
     apiKey: etherscanAPIKey || '',
   },
   ethtx: {

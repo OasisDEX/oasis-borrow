@@ -14,6 +14,7 @@ export type ChainlinkSupportedNetworks =
   | NetworkIds.MAINNET
   | NetworkIds.OPTIMISMMAINNET
   | NetworkIds.ARBITRUMMAINNET
+  | NetworkIds.BASEMAINNET
 
 const factory = ChainlinkPriceOracle__factory
 

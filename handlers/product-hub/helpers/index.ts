@@ -1,4 +1,4 @@
-export { checkIfAllHandlersExist } from 'handlers/product-hub/helpers/check-if-all-handlers-exist'
+export { getMissingHandlers } from 'handlers/product-hub/helpers/check-if-all-handlers-exist'
 export { filterTableData } from 'handlers/product-hub/helpers/filter-table-data'
 export { findByIlk } from 'handlers/product-hub/helpers/find-by-ilk'
 export { findByTokenPair } from 'handlers/product-hub/helpers/find-by-token-pair'

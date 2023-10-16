@@ -23,6 +23,8 @@ export type ProductHubSupportedNetworks =
   | NetworkNames.arbitrumGoerli
   | NetworkNames.optimismMainnet
   | NetworkNames.optimismGoerli
+  | NetworkNames.baseMainnet
+  | NetworkNames.baseGoerli
 
 export interface ProductHubItemBasics {
   label: string
