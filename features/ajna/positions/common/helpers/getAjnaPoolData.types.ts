@@ -22,7 +22,9 @@ export interface AjnaPoolDataResponse {
   poolActualUtilization: string
   poolTargetUtilization: string
   currentBurnEpoch: string
-  pendingInflator: string
+  pendingInflator: {
+    pendingInflator: string
+  }
   lendApr: string
   borrowApr: string
   buckets: Bucket[]
