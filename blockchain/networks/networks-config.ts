@@ -16,6 +16,7 @@ import { mainnetCacheUrl } from 'config/runtimeConfig'
 import type { ethers } from 'ethers'
 import type { ContractDesc } from 'features/web3Context'
 import { GraphQLClient } from 'graphql-request'
+import { getLocalAppConfig } from 'helpers/config'
 import type { Abi } from 'helpers/types/Abi.types'
 import { keyBy, memoize } from 'lodash'
 import { env } from 'process'
@@ -326,7 +327,7 @@ const baseMainnetConfig: NetworkConfig = {
   badge: baseMainnetBadge as string,
   gradient: baseMainnetGradient,
   testnet: false,
-  isEnabled: () => true,
+  isEnabled: () => getLocalAppConfig('features').BaseNetworkEnabled,
   token: 'ETH',
   rpcUrl: baseMainnetRpc,
   getReadProvider: memoize(
@@ -360,7 +361,7 @@ const baseGoerliConfig: NetworkConfig = {
   badge: baseMainnetBadge as string,
   gradient: baseMainnetGradient,
   testnet: true,
-  isEnabled: () => true,
+  isEnabled: () => getLocalAppConfig('features').BaseNetworkEnabled,
   token: 'ETH',
   rpcUrl: baseGoerliRpc,
   getReadProvider: memoize(
