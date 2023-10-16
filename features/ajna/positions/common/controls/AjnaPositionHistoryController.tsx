@@ -1,5 +1,5 @@
 import { PositionHistory } from 'components/history/PositionHistory'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -22,7 +22,7 @@ export function AjnaPositionHistoryController() {
   } = useProtocolGeneralContext()
   const {
     position: { history },
-  } = useAjnaProductContext(product)
+  } = useGenericProductContext(product)
 
   const { chainId } = useWalletManagement()
 

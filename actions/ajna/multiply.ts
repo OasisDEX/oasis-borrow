@@ -3,7 +3,7 @@ import { normalizeValue, RiskRatio, strategies } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
+import type { MultiplyFormState } from 'features/ajna/positions/multiply/state/multiplyFormReducto.types'
 import { getOneInchCall } from 'helpers/swap'
 
 const DEFAULT_LTV_ON_NEW_POOL = new BigNumber(0.05)
@@ -19,7 +19,7 @@ export const ajnaOpenMultiply = ({
   pool,
   slippage,
 }: {
-  state: AjnaMultiplyFormState
+  state: MultiplyFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   collateralToken: string

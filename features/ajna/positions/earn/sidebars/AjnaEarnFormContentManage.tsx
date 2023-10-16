@@ -1,5 +1,5 @@
 import { ActionPills } from 'components/ActionPills'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { AjnaEarnFormContentAdjust } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentAdjust'
 import { AjnaEarnFormContentClaimCollateral } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentClaimCollateral'
 import { AjnaEarnFormContentDeposit } from 'features/ajna/positions/earn/sidebars/AjnaEarnFormContentDeposit'
@@ -18,7 +18,7 @@ export function AjnaEarnFormContentManage() {
     position: {
       currentPosition: { position },
     },
-  } = useAjnaProductContext('earn')
+  } = useGenericProductContext('earn')
 
   return (
     <>

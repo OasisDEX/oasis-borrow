@@ -1,7 +1,7 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaFormFieldGenerate } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
@@ -20,7 +20,7 @@ export function AjnaMultiplyFormContentGenerate() {
     position: {
       currentPosition: { position, simulation },
     },
-  } = useAjnaProductContext('multiply')
+  } = useGenericProductContext('multiply')
 
   const debtMin = getAjnaBorrowDebtMin({ digits: getToken(quoteToken).digits, position })
   const debtMax = getAjnaBorrowDebtMax({

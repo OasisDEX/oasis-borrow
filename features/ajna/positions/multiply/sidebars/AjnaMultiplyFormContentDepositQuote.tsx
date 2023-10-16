@@ -1,5 +1,5 @@
 // import { PillAccordion } from 'components/PillAccordion'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaFormFieldDeposit } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
@@ -18,7 +18,7 @@ export function AjnaMultiplyFormContentDepositQuote() {
       dispatch,
       state: { depositAmount },
     },
-  } = useAjnaProductContext('multiply')
+  } = useGenericProductContext('multiply')
 
   return (
     <>

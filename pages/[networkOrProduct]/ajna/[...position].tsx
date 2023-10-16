@@ -5,8 +5,10 @@ import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { isAddress } from 'ethers/lib/utils'
 import { ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
-import { AjnaProductController } from 'features/ajna/positions/common/controls/AjnaProductController'
+import { AjnaProductsController } from 'features/ajna/positions/common/controls/AjnaProductsController'
+import { ProtocolProductController } from 'features/ajna/positions/common/controls/ProtocolProductController'
 import type { ProtocolProduct } from 'features/unifiedProtocol/types'
+import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -24,12 +26,14 @@ function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPosi
     <AjnaLayout>
       <ProductContextHandler>
         <GasEstimationContextProvider>
-          <AjnaProductController
+          <ProtocolProductController
             collateralToken={collateralToken}
             flow={id ? 'manage' : 'open'}
             id={id}
             product={product}
             quoteToken={quoteToken}
+            protocol={LendingProtocol.Ajna}
+            controller={AjnaProductsController}
           />
         </GasEstimationContextProvider>
       </ProductContextHandler>

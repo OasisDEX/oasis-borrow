@@ -1,60 +1,60 @@
-import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { NetworkHexIds } from 'blockchain/networks'
+import type { Tickers } from 'blockchain/prices.types'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { steps } from 'features/ajna/common/consts'
-import { AjnaBorrowPositionController } from 'features/ajna/positions/borrow/controls/AjnaBorrowPositionController'
-import { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
-import { AjnaProductContextProvider } from 'features/ajna/positions/common/contexts/AjnaProductContext'
 import { ProtocolGeneralContextProvider } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
-import { useAjnaData } from 'features/ajna/positions/common/hooks/useAjnaData'
-import { useAjnaRedirect } from 'features/ajna/positions/common/hooks/useAjnaRedirect'
-import type {
-  AjnaBorrowishPositionAuction,
-  AjnaEarnPositionAuction,
-} from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
-import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
-import { getAjnaEarnDefaultAction } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultAction'
-import { getAjnaEarnDefaultUiDropdown } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultUiDropdown'
-import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
-import { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
-import { AjnaMultiplyPositionController } from 'features/ajna/positions/multiply/controls/AjnaMultiplyPositionController'
-import { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
+import { useProtocolData } from 'features/ajna/positions/common/hooks/useProtocolData'
+import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import type { ProtocolFlow, ProtocolProduct } from 'features/unifiedProtocol/types'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { one } from 'helpers/zero'
+import type { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
+import type { FC } from 'react'
 import React from 'react'
 
-interface AjnaProductControllerProps {
+export interface ProductsControllerProps {
+  id?: string
+  product?: ProtocolProduct
+  flow: ProtocolFlow
+  protocol: LendingProtocol
+  dpmPosition: DpmPositionData
+  tokenPriceUSD: Tickers
+  quoteToken?: string
+  collateralToken?: string
+  tokensIcons: any
+}
+
+interface ProtocolProductControllerProps {
+  protocol: LendingProtocol
   collateralToken?: string
   id?: string
   flow: ProtocolFlow
   product?: ProtocolProduct
   quoteToken?: string
+  controller: (params: ProductsControllerProps) => React.ReactNode
 }
 
-export function AjnaProductController({
+export const ProtocolProductController: FC<ProtocolProductControllerProps> = ({
+  protocol,
   collateralToken,
   flow,
   id,
   product,
   quoteToken,
-}: AjnaProductControllerProps) {
+  controller,
+}) => {
   const { t } = useTranslation()
-  const { push } = useRouter()
 
   const {
     data: {
-      ajnaPositionAggregatedData,
-      ajnaPositionData,
       balancesInfoArrayData,
       dpmPositionData,
       ethBalanceData,
@@ -64,24 +64,16 @@ export function AjnaProductController({
       tokensIconsData,
     },
     errors,
-    isOracless,
     tokensPrecision,
-  } = useAjnaData({
+  } = useProtocolData({
     collateralToken,
     id,
     product,
     quoteToken,
-  })
-  const redirect = useAjnaRedirect({
-    ajnaPositionData,
-    collateralToken,
-    dpmPositionData,
-    id,
-    product,
-    quoteToken,
+    protocol,
   })
 
-  if (redirect) void push(redirect)
+  const isOracless = false
 
   return (
     <WithConnection pageChainId={NetworkHexIds.MAINNET} includeTestNet={true}>
@@ -90,13 +82,11 @@ export function AjnaProductController({
           <WithErrorHandler error={errors}>
             <WithLoadingIndicator
               value={[
-                ajnaPositionData,
                 ethBalanceData,
                 balancesInfoArrayData,
                 dpmPositionData,
                 tokenPriceUSDData,
                 gasPriceData,
-                ajnaPositionAggregatedData,
                 userSettingsData,
                 tokensPrecision,
                 tokensIconsData,
@@ -116,16 +106,14 @@ export function AjnaProductController({
               }
             >
               {([
-                ajnaPosition,
                 [ethBalance],
                 [collateralBalance, quoteBalance],
                 dpmPosition,
                 tokenPriceUSD,
                 gasPrice,
-                { auction, history },
                 { slippage },
                 { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
-                tokensIconsData,
+                tokensIcons,
               ]) => (
                 <>
                   <PageSEOTags
@@ -134,7 +122,7 @@ export function AjnaProductController({
                       product: t(`seo.ajnaProductPage.title`, {
                         product: upperFirst(dpmPosition.product),
                       }),
-                      protocol: 'Ajna',
+                      protocol,
                       token1: dpmPosition.collateralToken,
                       token2: dpmPosition.quoteToken,
                     }}
@@ -148,7 +136,7 @@ export function AjnaProductController({
                     collateralPrecision={collateralPrecision}
                     collateralPrice={isOracless ? one : tokenPriceUSD[dpmPosition.collateralToken]}
                     collateralToken={dpmPosition.collateralToken}
-                    collateralIcon={tokensIconsData.collateralToken}
+                    collateralIcon={tokensIcons.collateralToken}
                     {...(flow === 'manage' && { dpmProxy: dpmPosition.proxy })}
                     ethBalance={ethBalance}
                     ethPrice={tokenPriceUSD.ETH}
@@ -163,58 +151,23 @@ export function AjnaProductController({
                     quotePrecision={quotePrecision}
                     quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                     quoteToken={dpmPosition.quoteToken}
-                    quoteIcon={tokensIconsData.quoteToken}
+                    quoteIcon={tokensIcons.quoteToken}
                     steps={steps[dpmPosition.product as ProtocolProduct][flow]}
                     gasPrice={gasPrice}
                     slippage={slippage}
                     isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
                   >
-                    {dpmPosition.product === 'borrow' && (
-                      <AjnaProductContextProvider
-                        formDefaults={{
-                          action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
-                        }}
-                        formReducto={useAjnaBorrowFormReducto}
-                        position={ajnaPosition as AjnaPosition}
-                        product={dpmPosition.product}
-                        positionAuction={auction as AjnaBorrowishPositionAuction}
-                        positionHistory={history}
-                      >
-                        <AjnaBorrowPositionController />
-                      </AjnaProductContextProvider>
-                    )}
-                    {dpmPosition.product === 'earn' && (
-                      <AjnaProductContextProvider
-                        formDefaults={{
-                          action: getAjnaEarnDefaultAction(flow, ajnaPosition as AjnaEarnPosition),
-                          uiDropdown: getAjnaEarnDefaultUiDropdown(
-                            ajnaPosition as AjnaEarnPosition,
-                          ),
-                          price: getEarnDefaultPrice(ajnaPosition as AjnaEarnPosition),
-                        }}
-                        formReducto={useAjnaEarnFormReducto}
-                        position={ajnaPosition as AjnaEarnPosition}
-                        product={dpmPosition.product}
-                        positionAuction={auction as AjnaEarnPositionAuction}
-                        positionHistory={history}
-                      >
-                        <AjnaEarnPositionController />
-                      </AjnaProductContextProvider>
-                    )}
-                    {dpmPosition.product === 'multiply' && (
-                      <AjnaProductContextProvider
-                        formDefaults={{
-                          action: flow === 'open' ? 'open-multiply' : 'adjust',
-                        }}
-                        formReducto={useAjnaMultiplyFormReducto}
-                        position={ajnaPosition as AjnaPosition}
-                        product={dpmPosition.product}
-                        positionAuction={auction as AjnaBorrowishPositionAuction}
-                        positionHistory={history}
-                      >
-                        <AjnaMultiplyPositionController />
-                      </AjnaProductContextProvider>
-                    )}
+                    {controller({
+                      dpmPosition,
+                      product,
+                      tokenPriceUSD,
+                      quoteToken,
+                      collateralToken,
+                      protocol,
+                      id,
+                      flow,
+                      tokensIcons,
+                    })}
                   </ProtocolGeneralContextProvider>
                 </>
               )}

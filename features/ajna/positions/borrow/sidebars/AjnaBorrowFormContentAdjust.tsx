@@ -1,5 +1,5 @@
 import { AjnaAdjustSlider } from 'features/ajna/positions/common/components/AjnaAdjustSlider'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import React from 'react'
 
@@ -13,7 +13,7 @@ export function AjnaBorrowFormContentAdjust() {
     position: {
       currentPosition: { position },
     },
-  } = useAjnaProductContext('borrow')
+  } = useGenericProductContext('borrow')
 
   return (
     <>

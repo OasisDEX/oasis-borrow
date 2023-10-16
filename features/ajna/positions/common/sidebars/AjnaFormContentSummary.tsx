@@ -1,6 +1,6 @@
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { AjnaValidationMessages } from 'features/ajna/positions/common/components/AjnaValidationMessages'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
@@ -19,7 +19,7 @@ export function AjnaFormContentSummary({
   const {
     form: { dispatch },
     validation: { errors, notices, successes, warnings },
-  } = useAjnaProductContext(product)
+  } = useGenericProductContext(product)
 
   return (
     <>

@@ -4,8 +4,8 @@ import type { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
-import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
-import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
+import type { BorrowFormState } from 'features/ajna/positions/borrow/state/borrowFormReducto.types'
+import type { MultiplyFormState } from 'features/ajna/positions/multiply/state/multiplyFormReducto.types'
 import { getOneInchCall } from 'helpers/swap'
 import { zero } from 'helpers/zero'
 
@@ -18,7 +18,7 @@ export const ajnaClose = ({
   collateralToken,
   quoteToken,
 }: {
-  state: AjnaMultiplyFormState | AjnaBorrowFormState
+  state: MultiplyFormState | BorrowFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
@@ -61,7 +61,7 @@ export const ajnaAdjust = ({
   collateralToken,
   quoteToken,
 }: {
-  state: AjnaMultiplyFormState | AjnaBorrowFormState
+  state: MultiplyFormState | BorrowFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition

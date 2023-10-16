@@ -3,7 +3,7 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SecondaryVariantType } from 'components/infoSection/Item'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import { resolveIfCachedSwap } from 'features/ajna/positions/common/helpers/resolveIfCachedSwap'
@@ -34,7 +34,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       state: { action, loanToValue },
     },
     position: { cachedPosition, isSimulationLoading, currentPosition, swap },
-  } = useAjnaProductContext('multiply')
+  } = useGenericProductContext('multiply')
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,

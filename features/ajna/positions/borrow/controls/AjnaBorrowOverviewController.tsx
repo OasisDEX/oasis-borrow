@@ -8,7 +8,7 @@ import { ContentCardLiquidationPrice } from 'features/ajna/positions/common/comp
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
 import { ContentCardPositionDebt } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionDebt'
 import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
@@ -40,7 +40,7 @@ export function AjnaBorrowOverviewController() {
       isSimulationLoading,
       currentPosition: { position, simulation },
     },
-  } = useAjnaProductContext('borrow')
+  } = useGenericProductContext('borrow')
 
   const liquidationPrice = isShort
     ? normalizeValue(one.div(position.liquidationPrice))

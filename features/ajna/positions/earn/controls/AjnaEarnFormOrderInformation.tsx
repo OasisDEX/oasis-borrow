@@ -1,8 +1,8 @@
 import { normalizeValue } from '@oasisdex/dma-library'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import type { AjnaIsCachedPosition } from 'features/ajna/common/types'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import type { IsCachedPosition } from 'features/ajna/common/types'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import {
@@ -15,7 +15,7 @@ import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 
-export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached = false }) => {
+export const AjnaEarnFormOrderInformation: FC<IsCachedPosition> = ({ cached = false }) => {
   const { t } = useTranslation()
 
   const {
@@ -25,7 +25,7 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
   } = useProtocolGeneralContext()
   const {
     position: { cachedPosition, currentPosition, isSimulationLoading },
-  } = useAjnaProductContext('earn')
+  } = useGenericProductContext('earn')
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,

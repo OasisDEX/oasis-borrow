@@ -6,7 +6,7 @@ import type {
 import { strategies } from '@oasisdex/dma-library'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
-import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
+import type { EarnFormState } from 'features/ajna/positions/earn/state/earnFormReducto.types'
 import { zero } from 'helpers/zero'
 
 export const ajnaOpenEarn = ({
@@ -15,7 +15,7 @@ export const ajnaOpenEarn = ({
   dependencies,
   chainId,
 }: {
-  state: AjnaEarnFormState
+  state: EarnFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   chainId: number
@@ -41,7 +41,7 @@ export const ajnaDepositEarn = ({
   dependencies,
   position,
 }: {
-  state: AjnaEarnFormState
+  state: EarnFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
@@ -66,7 +66,7 @@ export const ajnaWithdrawEarn = ({
   dependencies,
   position,
 }: {
-  state: AjnaEarnFormState
+  state: EarnFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
@@ -91,7 +91,7 @@ export const ajnaClaimEarn = ({
   dependencies,
   position,
 }: {
-  state: AjnaEarnFormState
+  state: EarnFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition

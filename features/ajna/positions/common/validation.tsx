@@ -2,17 +2,17 @@ import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type { AjnaSimulationValidationItem } from 'actions/ajna/types'
 import type BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
-import type { AjnaGenericPosition, AjnaValidationItem } from 'features/ajna/common/types'
+import type { AjnaGenericPosition, ValidationItem } from 'features/ajna/common/types'
 import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
-import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
+import type { BorrowFormState } from 'features/ajna/positions/borrow/state/borrowFormReducto.types'
 import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
   AjnaPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
-import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
-import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
+import type { EarnFormState } from 'features/ajna/positions/earn/state/earnFormReducto.types'
+import type { MultiplyFormState } from 'features/ajna/positions/multiply/state/multiplyFormReducto.types'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import type {
   ProtocolFlow,
@@ -104,7 +104,7 @@ const mapSimulationValidation = ({
   collateralToken,
   quoteToken,
   token,
-}: MapSimulationValidationParams): AjnaValidationItem[] =>
+}: MapSimulationValidationParams): ValidationItem[] =>
   items.map((item) => ({
     message: {
       component: (
@@ -130,7 +130,7 @@ function isFormValid({
   switch (product) {
     case 'borrow': {
       const { action, generateAmount, depositAmount, paybackAmount, withdrawAmount, loanToValue } =
-        state as AjnaBorrowFormState
+        state as BorrowFormState
 
       switch (currentStep) {
         case 'setup':
@@ -159,7 +159,7 @@ function isFormValid({
       }
     }
     case 'earn': {
-      const { action, depositAmount, withdrawAmount, price } = state as AjnaEarnFormState
+      const { action, depositAmount, withdrawAmount, price } = state as EarnFormState
       const earnPosition = position as AjnaEarnPosition
       const isEmptyPosition = earnPosition.quoteTokenAmount.isZero() && earnPosition.price.isZero()
 
@@ -193,7 +193,7 @@ function isFormValid({
     }
     case 'multiply':
       const { action, depositAmount, withdrawAmount, loanToValue, paybackAmount, generateAmount } =
-        state as AjnaMultiplyFormState
+        state as MultiplyFormState
 
       switch (currentStep) {
         case 'setup':
@@ -247,15 +247,15 @@ export function getAjnaValidation({
   isFormValid: boolean
   isFormFrozen: boolean
   hasErrors: boolean
-  errors: AjnaValidationItem[]
-  warnings: AjnaValidationItem[]
-  notices: AjnaValidationItem[]
-  successes: AjnaValidationItem[]
+  errors: ValidationItem[]
+  warnings: ValidationItem[]
+  notices: ValidationItem[]
+  successes: ValidationItem[]
 } {
-  const localErrors: AjnaValidationItem[] = []
-  const localWarnings: AjnaValidationItem[] = []
-  const localNotices: AjnaValidationItem[] = []
-  const localSuccesses: AjnaValidationItem[] = []
+  const localErrors: ValidationItem[] = []
+  const localWarnings: ValidationItem[] = []
+  const localNotices: ValidationItem[] = []
+  const localSuccesses: ValidationItem[] = []
   const isEarnProduct = product === 'earn'
   const depositBalance = isEarnProduct ? quoteBalance : collateralBalance
   const token = product === 'earn' ? quoteToken : collateralToken

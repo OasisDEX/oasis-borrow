@@ -1,6 +1,6 @@
 import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormOrder'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
@@ -24,7 +24,7 @@ export function AjnaMultiplyFormContentClose() {
       swap,
       isSimulationLoading,
     },
-  } = useAjnaProductContext('multiply')
+  } = useGenericProductContext('multiply')
   const closeToToken = closeTo === 'collateral' ? collateralToken : quoteToken
 
   const collateralOnClose = swap?.current

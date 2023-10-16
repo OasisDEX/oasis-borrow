@@ -1,8 +1,7 @@
 import { ethers } from 'ethers'
+import type { BorrowFormState } from 'features/ajna/positions/borrow/state/borrowFormReducto.types'
 
-import type { AjnaMultiplyFormState } from './ajnaMultiplyFormReducto.types'
-
-export const ajnaMultiplyReset = {
+export const borrowFormReset = {
   depositAmount: undefined,
   depositAmountUSD: undefined,
   generateAmount: undefined,
@@ -12,13 +11,12 @@ export const ajnaMultiplyReset = {
   paybackAmountMax: false,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
-  loanToValue: undefined,
 }
 
-export const ajnaMultiplyDefault: AjnaMultiplyFormState = {
-  ...ajnaMultiplyReset,
-  closeTo: 'collateral',
+export const borrowFormDefault: BorrowFormState = {
+  ...borrowFormReset,
   dpmAddress: ethers.constants.AddressZero,
-  uiDropdown: 'adjust',
-  uiPill: 'deposit-collateral-multiply',
+  uiDropdown: 'collateral',
+  uiPill: 'deposit-borrow',
+  closeTo: 'collateral',
 }

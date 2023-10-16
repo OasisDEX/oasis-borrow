@@ -2,10 +2,10 @@ import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
-import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
+import type { BorrowFormState } from 'features/ajna/positions/borrow/state/borrowFormReducto.types'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
-import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
-import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
+import type { EarnFormState } from 'features/ajna/positions/earn/state/earnFormReducto.types'
+import type { MultiplyFormState } from 'features/ajna/positions/multiply/state/multiplyFormReducto.types'
 import type { ProtocolProduct, ProtocolSidebarStep } from 'features/unifiedProtocol/types'
 
 interface GetIsFormEmptyParams {
@@ -26,7 +26,7 @@ export function getIsFormEmpty({
   switch (product) {
     case 'borrow': {
       const { depositAmount, generateAmount, paybackAmount, withdrawAmount, action, loanToValue } =
-        state as AjnaBorrowFormState
+        state as BorrowFormState
 
       if (action === 'close-borrow') {
         return false
@@ -35,7 +35,7 @@ export function getIsFormEmpty({
       return !depositAmount && !generateAmount && !paybackAmount && !withdrawAmount && !loanToValue
     }
     case 'earn': {
-      const { depositAmount, withdrawAmount, price } = state as AjnaEarnFormState
+      const { depositAmount, withdrawAmount, price } = state as EarnFormState
 
       switch (currentStep) {
         case 'setup':
@@ -59,7 +59,7 @@ export function getIsFormEmpty({
     }
     case 'multiply':
       const { depositAmount, loanToValue, withdrawAmount, generateAmount, paybackAmount, action } =
-        state as AjnaMultiplyFormState
+        state as MultiplyFormState
 
       switch (currentStep) {
         case 'setup':

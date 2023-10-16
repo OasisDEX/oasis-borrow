@@ -4,22 +4,20 @@ import type { AjnaSimulationData } from 'actions/ajna'
 import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import type { AjnaGenericPosition, AjnaValidationItem } from 'features/ajna/common/types'
+import type { AjnaGenericPosition, ValidationItem } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import type { useAjnaBorrowFormReducto } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto'
-import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
+import type { useBorrowFormReducto } from 'features/ajna/positions/borrow/state/borrowFormReducto'
+import type { BorrowFormState } from 'features/ajna/positions/borrow/state/borrowFormReducto.types'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
-import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
-import { getAjnaValidation } from 'features/ajna/positions/common/validation'
-import type { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
-import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
-import type { useAjnaMultiplyFormReducto } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto'
-import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
+import type { useEarnFormReducto } from 'features/ajna/positions/earn/state/earnFormReducto'
+import type { EarnFormState } from 'features/ajna/positions/earn/state/earnFormReducto.types'
+import type { useMultiplyFormReducto } from 'features/ajna/positions/multiply/state/multiplyFormReducto'
+import type { MultiplyFormState } from 'features/ajna/positions/multiply/state/multiplyFormReducto.types'
 import type { ProtocolProduct } from 'features/unifiedProtocol/types'
 import { useAppConfig } from 'helpers/config'
 import { useObservable } from 'helpers/observableHook'
@@ -27,53 +25,72 @@ import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 
-interface AjnaProductContextProviderPropsWithBorrow {
-  formReducto: typeof useAjnaBorrowFormReducto
-  formDefaults: Partial<AjnaBorrowFormState>
+interface StaticProductMetadata {
+  getValidation: any
+  getNotifications: any
+  customHehe: {
+    zelipapo: string
+    extraInput: React.ReactNode
+  }
+}
+
+type DynamicProductMetadata = (product: ProtocolProduct) => ({
+  txHandler: () => void
+})
+
+interface ProductContextProviderPropsWithBorrow {
+  staticMetadata: StaticProductMetadata
+  dynamicMetadata: DynamicProductMetadata
+  formReducto: typeof useBorrowFormReducto
+  formDefaults: Partial<BorrowFormState>
   position: AjnaPosition
   product: 'borrow'
-  positionAuction: AjnaBorrowishPositionAuction
+  positionAuction: AjnaBorrowishPositionAuction // TODO auctions has to be fully configurable through staticMetadata
   positionHistory: AjnaUnifiedHistoryEvent[]
 }
 
-interface AjnaProductContextProviderPropsWithEarn {
-  formReducto: typeof useAjnaEarnFormReducto
-  formDefaults: Partial<AjnaEarnFormState>
+interface ProductContextProviderPropsWithEarn {
+  staticMetadata: StaticProductMetadata
+  dynamicMetadata: DynamicProductMetadata
+  formReducto: typeof useEarnFormReducto
+  formDefaults: Partial<EarnFormState>
   position: AjnaEarnPosition
   product: 'earn'
   positionAuction: AjnaEarnPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
 }
 
-interface AjnaProductContextProviderPropsWithMultiply {
-  formReducto: typeof useAjnaMultiplyFormReducto
-  formDefaults: Partial<AjnaMultiplyFormState>
+interface ProductContextProviderPropsWithMultiply {
+  staticMetadata: StaticProductMetadata
+  dynamicMetadata: DynamicProductMetadata
+  formReducto: typeof useMultiplyFormReducto
+  formDefaults: Partial<MultiplyFormState>
   position: AjnaPosition
   product: 'multiply'
   positionAuction: AjnaBorrowishPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
 }
 
-type AjnaProductDetailsContextProviderProps =
-  | AjnaProductContextProviderPropsWithBorrow
-  | AjnaProductContextProviderPropsWithEarn
-  | AjnaProductContextProviderPropsWithMultiply
+type ProductDetailsContextProviderProps =
+  | ProductContextProviderPropsWithBorrow
+  | ProductContextProviderPropsWithEarn
+  | ProductContextProviderPropsWithMultiply
 
-interface AjnaPositionSet<P> {
+interface PositionSet<P> {
   position: P
   simulation?: P
 }
 
-interface AjnaProductContextPosition<P, A> {
-  cachedPosition?: AjnaPositionSet<P>
-  currentPosition: AjnaPositionSet<P>
+interface ProductContextPosition<P, A> {
+  cachedPosition?: PositionSet<P>
+  currentPosition: PositionSet<P>
   swap?: {
     current?: SwapData
     cached?: SwapData
   }
   isSimulationLoading?: boolean
   resolvedId?: string
-  setCachedPosition: (positionSet: AjnaPositionSet<AjnaGenericPosition>) => void
+  setCachedPosition: (positionSet: PositionSet<AjnaGenericPosition>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
   setSimulation: Dispatch<SetStateAction<AjnaSimulationData<AjnaGenericPosition> | undefined>>
   setCachedSwap: (swap: SwapData) => void
@@ -81,72 +98,77 @@ interface AjnaProductContextPosition<P, A> {
   history: AjnaUnifiedHistoryEvent[]
 }
 
-interface AjnaProductContext<P, F, A> {
+interface GenericProductContext<P, F, A> {
   form: F
-  position: AjnaProductContextPosition<P, A>
+  position: ProductContextPosition<P, A>
   validation: {
-    errors: AjnaValidationItem[]
+    errors: ValidationItem[]
     hasErrors: boolean
     isFormFrozen: boolean
     isFormValid: boolean
-    notices: AjnaValidationItem[]
-    successes: AjnaValidationItem[]
-    warnings: AjnaValidationItem[]
+    notices: ValidationItem[]
+    successes: ValidationItem[]
+    warnings: ValidationItem[]
   }
   notifications: DetailsSectionNotificationItem[]
+  staticMetadata: StaticProductMetadata
+  dynamicMetadata: DynamicProductMetadata
 }
 
-type AjnaProductContextWithBorrow = AjnaProductContext<
+type ProductContextWithBorrow = GenericProductContext<
   AjnaPosition,
-  ReturnType<typeof useAjnaBorrowFormReducto>,
+  ReturnType<typeof useBorrowFormReducto>,
   AjnaBorrowishPositionAuction
 >
 
-type AjnaProductContextWithEarn = AjnaProductContext<
+type ProductContextWithEarn = GenericProductContext<
   AjnaEarnPosition,
-  ReturnType<typeof useAjnaEarnFormReducto>,
+  ReturnType<typeof useEarnFormReducto>,
   AjnaEarnPositionAuction
 >
 
-type AjnaProductContextWithMultiply = AjnaProductContext<
+type ProductContextWithMultiply = GenericProductContext<
   AjnaPosition,
-  ReturnType<typeof useAjnaMultiplyFormReducto>,
+  ReturnType<typeof useMultiplyFormReducto>,
   AjnaBorrowishPositionAuction
 >
 
-const ajnaBorrowContext = React.createContext<AjnaProductContextWithBorrow | undefined>(undefined)
-const ajnaEarnContext = React.createContext<AjnaProductContextWithEarn | undefined>(undefined)
-const ajnaMultiplyContext = React.createContext<AjnaProductContextWithMultiply | undefined>(
-  undefined,
-)
+const borrowContext = React.createContext<ProductContextWithBorrow | undefined>(undefined)
+const earnContext = React.createContext<ProductContextWithEarn | undefined>(undefined)
+const multiplyContext = React.createContext<ProductContextWithMultiply | undefined>(undefined)
 
 type PickProductType<T extends ProtocolProduct> = T extends 'borrow'
-  ? AjnaProductContextWithBorrow
+  ? ProductContextWithBorrow
   : T extends 'earn'
-  ? AjnaProductContextWithEarn
+  ? ProductContextWithEarn
   : T extends 'multiply'
-  ? AjnaProductContextWithMultiply
+  ? ProductContextWithMultiply
   : never
 
-export function useAjnaProductContext<T extends ProtocolProduct>(product: T): PickProductType<T> {
+export function useGenericProductContext<T extends ProtocolProduct>(
+  product: T,
+): PickProductType<T> {
   const { environment } = useProtocolGeneralContext()
 
   const context =
     product === 'borrow'
-      ? useContext(ajnaBorrowContext)
+      ? useContext(borrowContext)
       : product === 'earn'
-      ? useContext(ajnaEarnContext)
-      : useContext(ajnaMultiplyContext)
+      ? useContext(earnContext)
+      : useContext(multiplyContext)
 
   if (product !== environment.product)
     throw new Error(
-      `AjnaGeneralContext and AjnaProductContext products doesn't match: ${environment.product}/${product}`,
+      `ProtocolGeneralContext and AjnaProductContext products doesn't match: ${environment.product}/${product}`,
     )
   if (!context) throw new Error('AjnaProductContext not available!')
   return context as PickProductType<T>
 }
 
-export function AjnaProductContextProvider({
+export function GenericProductContextProvider({
+  // here we should inject staticMetadata
+  staticMetadata,
+  dynamicMetadata,
   children,
   formDefaults,
   formReducto,
@@ -154,7 +176,7 @@ export function AjnaProductContextProvider({
   position,
   positionAuction,
   positionHistory,
-}: PropsWithChildren<AjnaProductDetailsContextProviderProps>) {
+}: PropsWithChildren<ProductDetailsContextProviderProps>) {
   const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
   const { walletAddress } = useAccount()
   const gasEstimation = useGasEstimationContext()
@@ -185,10 +207,12 @@ export function AjnaProductContextProvider({
     useMemo(() => positionIdFromDpmProxy$(state.dpmAddress), [state.dpmAddress]),
   )
 
-  const [cachedPosition, setCachedPosition] = useState<AjnaPositionSet<typeof position>>()
+  // TODO these could be potentially generalized within single hook
+  const [cachedPosition, setCachedPosition] = useState<PositionSet<typeof position>>()
   const [cachedSwap, setCachedSwap] = useState<SwapData>()
   const [simulation, setSimulation] = useState<AjnaSimulationData<typeof position>>()
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
+  // TODO these could be potentially generalized within single hook
 
   // We need to determine the direction of the swap based on change in position risk
   let isIncreasingPositionRisk = true
@@ -200,7 +224,7 @@ export function AjnaProductContextProvider({
 
   const validation = useMemo(
     () =>
-      getAjnaValidation({
+      staticMetadata.getValidation({
         ajnaSafetySwitchOn,
         flow,
         collateralBalance,
@@ -238,7 +262,7 @@ export function AjnaProductContextProvider({
 
   const notifications = useMemo(
     () =>
-      getAjnaNotifications({
+      staticMetadata.getNotifications({
         ajnaSafetySwitchOn,
         flow,
         position,
@@ -254,8 +278,10 @@ export function AjnaProductContextProvider({
   )
 
   const [context, setContext] = useState<
-    AjnaProductContext<typeof position, typeof form, typeof positionAuction>
+    GenericProductContext<typeof position, typeof form, typeof positionAuction>
   >({
+    staticMetadata,
+    dynamicMetadata,
     form,
     position: {
       cachedPosition,
@@ -279,6 +305,8 @@ export function AjnaProductContextProvider({
 
     setContext((prev) => ({
       ...prev,
+      staticMetadata,
+      dynamicMetadata,
       form,
       position: {
         ...prev.position,
@@ -304,6 +332,8 @@ export function AjnaProductContextProvider({
       notifications,
     }))
   }, [
+    staticMetadata,
+    dynamicMetadata,
     cachedPosition,
     collateralBalance,
     currentStep,
@@ -326,21 +356,21 @@ export function AjnaProductContextProvider({
   switch (product) {
     case 'borrow':
       return (
-        <ajnaBorrowContext.Provider value={context as AjnaProductContextWithBorrow}>
+        <borrowContext.Provider value={context as ProductContextWithBorrow}>
           {children}
-        </ajnaBorrowContext.Provider>
+        </borrowContext.Provider>
       )
     case 'earn':
       return (
-        <ajnaEarnContext.Provider value={context as AjnaProductContextWithEarn}>
+        <earnContext.Provider value={context as ProductContextWithEarn}>
           {children}
-        </ajnaEarnContext.Provider>
+        </earnContext.Provider>
       )
     case 'multiply':
       return (
-        <ajnaMultiplyContext.Provider value={context as AjnaProductContextWithMultiply}>
+        <multiplyContext.Provider value={context as ProductContextWithMultiply}>
           {children}
-        </ajnaMultiplyContext.Provider>
+        </multiplyContext.Provider>
       )
   }
 }

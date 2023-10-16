@@ -10,7 +10,7 @@ import { ContentCardEarnNetValue } from 'features/ajna/positions/common/componen
 import { ContentCardMaxLendingLTV } from 'features/ajna/positions/common/components/contentCards/ContentCardMaxLendingLTV'
 import { ContentCardPositionLendingPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionLendingPrice'
 import { ContentCardTotalEarnings } from 'features/ajna/positions/common/components/contentCards/ContentCardTotalEarnings'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnManage'
 import { getLendingPriceColor } from 'features/ajna/positions/earn/helpers/getLendingPriceColor'
@@ -40,7 +40,7 @@ export function AjnaEarnOverviewManageController() {
       isSimulationLoading,
     },
     notifications,
-  } = useAjnaProductContext('earn')
+  } = useGenericProductContext('earn')
 
   const { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice } = position.pool
 

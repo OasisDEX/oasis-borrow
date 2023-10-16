@@ -1,25 +1,26 @@
+import { borrowFormDefault, borrowFormReset } from 'features/ajna/positions/borrow/state/borrowFormReducto.constants'
+import type { BorrowFormAction, BorrowFormState } from 'features/ajna/positions/borrow/state/borrowFormReducto.types'
 import { useReducto } from 'helpers/useReducto'
 
-import { ajnaMultiplyDefault, ajnaMultiplyReset } from './ajnaMultiplyFormReducto.constants'
-import type { AjnaMultiplyFormAction, AjnaMultiplyFormState } from './ajnaMultiplyFormReducto.types'
-
-export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyFormState>) {
-  const { dispatch, state, updateState } = useReducto<
-    AjnaMultiplyFormState,
-    AjnaMultiplyFormAction
-  >({
+export function useBorrowFormReducto({ ...rest }: Partial<BorrowFormState>) {
+  const { dispatch, state, updateState } = useReducto<BorrowFormState, BorrowFormAction>({
     defaults: {
-      ...ajnaMultiplyDefault,
+      ...borrowFormDefault,
       ...rest,
     },
-    reducer: (state: AjnaMultiplyFormState, action: AjnaMultiplyFormAction) => {
+    reducer: (state: BorrowFormState, action: BorrowFormAction) => {
       switch (action.type) {
         case 'update-deposit':
           return {
             ...state,
             depositAmount: action.depositAmount,
             depositAmountUSD: action.depositAmountUSD,
-            loanToValue: undefined,
+          }
+        case 'update-withdraw':
+          return {
+            ...state,
+            withdrawAmount: action.withdrawAmount,
+            withdrawAmountUSD: action.withdrawAmountUSD,
           }
         case 'update-generate':
           return {
@@ -38,22 +39,13 @@ export function useAjnaMultiplyFormReducto({ ...rest }: Partial<AjnaMultiplyForm
             ...state,
             paybackAmountMax: action.paybackAmountMax,
           }
-        case 'update-withdraw':
-          return {
-            ...state,
-            withdrawAmount: action.withdrawAmount,
-            withdrawAmountUSD: action.withdrawAmountUSD,
-          }
         case 'update-dpm':
           return {
             ...state,
             dpmAddress: action.dpmAddress,
           }
         case 'reset':
-          return {
-            ...state,
-            ...ajnaMultiplyReset,
-          }
+          return { ...state, ...borrowFormReset }
         case 'update-loan-to-value':
           return {
             ...state,

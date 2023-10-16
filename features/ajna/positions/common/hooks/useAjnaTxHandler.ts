@@ -8,7 +8,7 @@ import { getRpcProvider } from 'blockchain/networks'
 import type { CancelablePromise } from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context/MainContextProvider'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
 import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
@@ -52,7 +52,7 @@ export function useAjnaTxHandler(): () => void {
       setSimulation,
     },
     validation: { isFormValid },
-  } = useAjnaProductContext(product)
+  } = useGenericProductContext(product)
 
   const [txData, setTxData] = useState<AjnaTxData>()
   const [cancelablePromise, setCancelablePromise] =

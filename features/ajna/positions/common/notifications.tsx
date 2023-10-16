@@ -4,22 +4,22 @@ import { AppLink } from 'components/Links'
 import { LUPPercentageOffset } from 'features/ajna/common/consts'
 import type { AjnaGenericPosition, AjnaUpdateState } from 'features/ajna/common/types'
 import type {
-  AjnaBorrowFormAction,
-  AjnaBorrowFormState,
-} from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
+  BorrowFormAction,
+  BorrowFormState,
+} from 'features/ajna/positions/borrow/state/borrowFormReducto.types'
 import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
   AjnaPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import type {
-  AjnaEarnFormAction,
-  AjnaEarnFormState,
-} from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
+  EarnFormAction,
+  EarnFormState,
+} from 'features/ajna/positions/earn/state/earnFormReducto.types'
 import type {
-  AjnaMultiplyFormAction,
-  AjnaMultiplyFormState,
-} from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
+  MultiplyFormAction,
+  MultiplyFormState,
+} from 'features/ajna/positions/multiply/state/multiplyFormReducto.types'
 import type { ProtocolFlow, ProtocolProduct } from 'features/unifiedProtocol/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one, zero } from 'helpers/zero'
@@ -304,13 +304,13 @@ export function getAjnaNotifications({
   collateralToken: string
   quoteToken: string
   dispatch:
-    | Dispatch<AjnaBorrowFormAction>
-    | Dispatch<AjnaEarnFormAction>
-    | Dispatch<AjnaMultiplyFormAction>
+    | Dispatch<BorrowFormAction>
+    | Dispatch<EarnFormAction>
+    | Dispatch<MultiplyFormAction>
   updateState:
-    | AjnaUpdateState<AjnaBorrowFormState>
-    | AjnaUpdateState<AjnaEarnFormState>
-    | AjnaUpdateState<AjnaMultiplyFormState>
+    | AjnaUpdateState<BorrowFormState>
+    | AjnaUpdateState<EarnFormState>
+    | AjnaUpdateState<MultiplyFormState>
   product: ProtocolProduct
   isOracless: boolean
 }) {

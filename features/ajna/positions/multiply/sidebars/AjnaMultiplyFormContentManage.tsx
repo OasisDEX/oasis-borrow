@@ -1,5 +1,5 @@
 import { ActionPills } from 'components/ActionPills'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { AjnaMultiplyFormContentAdjust } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentAdjust'
 import { AjnaMultiplyFormContentClose } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentClose'
 import { AjnaMultiplyFormContentDepositCollateral } from 'features/ajna/positions/multiply/sidebars/AjnaMultiplyFormContentDepositCollateral'
@@ -19,7 +19,7 @@ export function AjnaMultiplyFormContentManage() {
       state: { uiDropdown, uiPill },
       updateState,
     },
-  } = useAjnaProductContext('multiply')
+  } = useGenericProductContext('multiply')
 
   return (
     <>

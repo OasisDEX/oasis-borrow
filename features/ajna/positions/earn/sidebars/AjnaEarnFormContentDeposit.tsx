@@ -1,5 +1,5 @@
 import { PillAccordion } from 'components/PillAccordion'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaFormFieldDeposit } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
@@ -24,8 +24,14 @@ export function AjnaEarnFormContentDeposit() {
       },
     },
     validation: { isFormValid },
-  } = useAjnaProductContext('earn')
+    staticMetadata: {
+      customHehe: { extraInput },
+    },
+    dynamicMetadata,
+  } = useGenericProductContext('earn')
 
+  const test = dynamicMetadata('earn')
+  console.log('test', test)
   return (
     <>
       <AjnaFormFieldDeposit
@@ -36,6 +42,7 @@ export function AjnaEarnFormContentDeposit() {
         maxAmount={quoteBalance}
         tokenDigits={quoteDigits}
       />
+      {extraInput}
       <PillAccordion title={t('ajna.position-page.earn.common.form.adjust-lending-price-bucket')}>
         <AjnaEarnSlider
           isDisabled={!depositAmount}

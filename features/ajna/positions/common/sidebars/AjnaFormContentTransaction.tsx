@@ -1,5 +1,5 @@
 import { MessageCard } from 'components/MessageCard'
-import type { AjnaIsCachedPosition } from 'features/ajna/common/types'
+import type { IsCachedPosition } from 'features/ajna/common/types'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -9,7 +9,7 @@ import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
 interface AjnaFormContentTransactionProps {
-  orderInformation: FC<AjnaIsCachedPosition>
+  orderInformation: FC<IsCachedPosition>
 }
 
 export function AjnaFormContentTransaction({

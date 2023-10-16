@@ -1,4 +1,4 @@
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { AjnaFaqController } from 'features/ajna/positions/common/controls/AjnaFaqController'
 import { AjnaPositionHistoryController } from 'features/ajna/positions/common/controls/AjnaPositionHistoryController'
 import { AjnaPositionView } from 'features/ajna/positions/common/views/AjnaPositionView'
@@ -16,7 +16,7 @@ export function AjnaEarnPositionController() {
     position: {
       currentPosition: { position },
     },
-  } = useAjnaProductContext('earn')
+  } = useGenericProductContext('earn')
 
   return (
     <AjnaPositionView

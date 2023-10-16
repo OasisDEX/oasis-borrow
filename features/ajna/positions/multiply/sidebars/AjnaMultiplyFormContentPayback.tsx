@@ -1,6 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { getAjnaBorrowPaybackMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowPaybackMax'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaFormFieldPayback } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
@@ -19,7 +19,7 @@ export function AjnaMultiplyFormContentPayback() {
     position: {
       currentPosition: { position },
     },
-  } = useAjnaProductContext('multiply')
+  } = useGenericProductContext('multiply')
 
   const paybackMax = getAjnaBorrowPaybackMax({
     balance: quoteBalance,

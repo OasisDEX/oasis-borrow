@@ -1,4 +1,4 @@
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
@@ -17,7 +17,7 @@ export function AjnaEarnOverviewController() {
         position: { pool, price },
       },
     },
-  } = useAjnaProductContext('earn')
+  } = useGenericProductContext('earn')
 
   const isPriceBelowLup =
     price.lt(pool.lowestUtilizedPrice) && !pool.lowestUtilizedPriceIndex.isZero()

@@ -4,7 +4,7 @@ import { AjnaBorrowFormContentGenerate } from 'features/ajna/positions/borrow/si
 import { AjnaBorrowFormContentPayback } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentPayback'
 import { AjnaBorrowFormContentSwitch } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentSwitch'
 import { AjnaBorrowFormContentWithdraw } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormContentWithdraw'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -19,7 +19,7 @@ export function AjnaBorrowFormContentManage() {
       state: { uiDropdown, uiPill },
       updateState,
     },
-  } = useAjnaProductContext('borrow')
+  } = useGenericProductContext('borrow')
 
   return (
     <>

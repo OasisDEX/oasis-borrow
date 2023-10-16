@@ -1,7 +1,7 @@
 import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { getAjnaBorrowPaybackMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowPaybackMax'
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import {
@@ -22,7 +22,7 @@ export function AjnaBorrowFormContentPayback() {
     position: {
       currentPosition: { position, simulation },
     },
-  } = useAjnaProductContext('borrow')
+  } = useGenericProductContext('borrow')
 
   const collateralMax = getAjnaBorrowCollateralMax({
     digits: collateralDigits,

@@ -6,7 +6,7 @@ import { ContentCardLiquidationPrice } from 'features/ajna/positions/common/comp
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
 import { ContentCardNetBorrowCost } from 'features/ajna/positions/common/components/contentCards/ContentCardNetBorrowCost'
 import { ContentCardNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardNetValue'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
@@ -38,7 +38,7 @@ export function AjnaMultiplyOverviewController() {
       isSimulationLoading,
       currentPosition: { position, simulation },
     },
-  } = useAjnaProductContext('multiply')
+  } = useGenericProductContext('multiply')
 
   const changeVariant = 'positive'
 

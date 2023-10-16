@@ -12,7 +12,7 @@ import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
-import type { AjnaValidationItem } from 'features/ajna/common/types'
+import type { ValidationItem } from 'features/ajna/common/types'
 import { getTxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxManager'
 import { getAjnaSidebarTransactionStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarTransactionStatus'
 import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
@@ -56,7 +56,7 @@ export function usePoolCreatorData({
   const [boundries, setBoundries] = useState<PoolCreatorBoundries>()
   const [collateralToken, setCollateralToken] = useState<string>('')
   const [quoteToken, setQuoteToken] = useState<string>('')
-  const [errors, setErrors] = useState<AjnaValidationItem[]>([])
+  const [errors, setErrors] = useState<ValidationItem[]>([])
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
@@ -100,7 +100,7 @@ export function usePoolCreatorData({
   const chainId = useMemo(() => context?.chainId, [context?.chainId])
 
   useEffect(() => {
-    const localErrors: AjnaValidationItem[] = []
+    const localErrors: ValidationItem[] = []
 
     if (collateralAddress.length && !isAddress(collateralAddress))
       localErrors.push({
@@ -195,7 +195,7 @@ export function usePoolCreatorData({
                 },
               ])
             } else if (tokensKeys.length < 2) {
-              const identifyingErrors: AjnaValidationItem[] = []
+              const identifyingErrors: ValidationItem[] = []
 
               if (!tokensKeys.includes(collateralAddress.toLowerCase()))
                 identifyingErrors.push({

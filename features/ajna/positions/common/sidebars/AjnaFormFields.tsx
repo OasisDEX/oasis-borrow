@@ -1,14 +1,14 @@
 import type BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import type {
-  AjnaFormActionsUpdateDeposit,
-  AjnaFormActionsUpdateGenerate,
-  AjnaFormActionsUpdatePayback,
-  AjnaFormActionsUpdatePaybackMax,
-  AjnaFormActionsUpdateWithdraw,
-} from 'features/ajna/positions/common/state/ajnaFormReductoActions'
+  FormActionsUpdateDeposit,
+  FormActionsUpdateGenerate,
+  FormActionsUpdatePayback,
+  FormActionsUpdatePaybackMax,
+  FormActionsUpdateWithdraw,
+} from 'features/ajna/positions/common/state/formReductoActions'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -46,7 +46,7 @@ export function AjnaFormFieldDeposit({
   token,
   tokenDigits,
   tokenPrice,
-}: AjnaFormField<AjnaFormActionsUpdateDeposit> &
+}: AjnaFormField<FormActionsUpdateDeposit> &
   AjnaFormFieldWithDefinedToken &
   AjnaFormFieldWithMaxAmount) {
   const { t } = useTranslation()
@@ -56,7 +56,7 @@ export function AjnaFormFieldDeposit({
   const {
     form: { dispatch, state },
     validation: { isFormFrozen },
-  } = useAjnaProductContext(product)
+  } = useGenericProductContext(product)
 
   return 'depositAmount' in state && 'depositAmountUSD' in state ? (
     <VaultActionInput
@@ -108,7 +108,7 @@ export function AjnaFormFieldGenerate({
   minAmount,
   minAmountLabel = 'field-from',
   resetOnClear,
-}: AjnaFormField<AjnaFormActionsUpdateGenerate> &
+}: AjnaFormField<FormActionsUpdateGenerate> &
   AjnaFormFieldWithMinAmount &
   AjnaFormFieldWithMaxAmount) {
   const { t } = useTranslation()
@@ -118,7 +118,7 @@ export function AjnaFormFieldGenerate({
   const {
     form: { dispatch, state },
     validation: { isFormFrozen },
-  } = useAjnaProductContext(product)
+  } = useGenericProductContext(product)
 
   return 'generateAmount' in state && 'generateAmountUSD' in state ? (
     <VaultActionInput
@@ -179,7 +179,7 @@ export function AjnaFormFieldPayback({
   maxAmount,
   maxAmountLabel = 'max',
   resetOnClear,
-}: AjnaFormField<AjnaFormActionsUpdatePayback | AjnaFormActionsUpdatePaybackMax> &
+}: AjnaFormField<FormActionsUpdatePayback | FormActionsUpdatePaybackMax> &
   AjnaFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
@@ -188,7 +188,7 @@ export function AjnaFormFieldPayback({
   const {
     form: { dispatch, state },
     validation: { isFormFrozen },
-  } = useAjnaProductContext(product)
+  } = useGenericProductContext(product)
 
   return 'paybackAmount' in state && 'paybackAmountUSD' in state ? (
     <VaultActionInput
@@ -254,7 +254,7 @@ export function AjnaFormFieldWithdraw({
   token,
   tokenDigits,
   tokenPrice,
-}: AjnaFormField<AjnaFormActionsUpdateWithdraw> &
+}: AjnaFormField<FormActionsUpdateWithdraw> &
   AjnaFormFieldWithDefinedToken &
   AjnaFormFieldWithMaxAmount) {
   const { t } = useTranslation()
@@ -265,7 +265,7 @@ export function AjnaFormFieldWithdraw({
   const {
     form: { dispatch, state },
     validation: { isFormFrozen },
-  } = useAjnaProductContext(product)
+  } = useGenericProductContext(product)
 
   return 'withdrawAmount' in state && 'withdrawAmountUSD' in state ? (
     <VaultActionInput

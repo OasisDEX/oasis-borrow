@@ -1,5 +1,5 @@
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
@@ -15,7 +15,7 @@ export const AjnaBorrowOriginationFee = () => {
     position: {
       currentPosition: { position, simulation },
     },
-  } = useAjnaProductContext('borrow')
+  } = useGenericProductContext('borrow')
   const originationFee = getOriginationFee(position, simulation)
   const originationFeeFormatted = `${formatCryptoBalance(originationFee)} ${quoteToken}`
   const originationFeeFormattedUSD = `($${formatAmount(originationFee.times(quotePrice), 'USD')})`

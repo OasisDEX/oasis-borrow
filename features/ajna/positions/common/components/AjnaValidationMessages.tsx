@@ -1,12 +1,12 @@
 import { MessageCard } from 'components/MessageCard'
-import type { AjnaValidationItem } from 'features/ajna/common/types'
+import type { ValidationItem } from 'features/ajna/common/types'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 
 interface AjnaValidationMessagesProps {
-  validations: AjnaValidationItem[]
+  validations: ValidationItem[]
   type: 'warning' | 'error' | 'notice' | 'success'
 }
 

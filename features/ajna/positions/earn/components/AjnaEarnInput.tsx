@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { resolveLendingPriceIfOutsideRange } from 'features/ajna/positions/earn/helpers/resolveLendingPriceIfOutsideRange'
 import {
@@ -101,7 +101,7 @@ export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled }) => {
       state: { price },
       updateState,
     },
-  } = useAjnaProductContext('earn')
+  } = useGenericProductContext('earn')
   const [isFocus, setIsFocus] = useState<boolean>(false)
   const [manualAmount, setManualAmount] = useState<BigNumber>(price || zero)
 

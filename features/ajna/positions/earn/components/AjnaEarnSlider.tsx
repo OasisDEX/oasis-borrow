@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { PillAccordion } from 'components/PillAccordion'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaEarnInput } from 'features/ajna/positions/earn/components/AjnaEarnInput'
 import {
@@ -38,7 +38,7 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({ isDisabled, nestedManu
       currentPosition: { position },
     },
     validation: { isFormFrozen },
-  } = useAjnaProductContext('earn')
+  } = useGenericProductContext('earn')
 
   const {
     highestThresholdPrice,

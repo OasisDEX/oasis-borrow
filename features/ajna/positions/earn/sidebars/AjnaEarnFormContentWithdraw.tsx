@@ -1,6 +1,6 @@
 import { calculateAjnaMaxLiquidityWithdraw, getPoolLiquidity } from '@oasisdex/dma-library'
 import { PillAccordion } from 'components/PillAccordion'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import { AjnaFormFieldWithdraw } from 'features/ajna/positions/common/sidebars/AjnaFormFields'
@@ -24,7 +24,7 @@ export function AjnaEarnFormContentWithdraw() {
     position: {
       currentPosition: { position, simulation },
     },
-  } = useAjnaProductContext('earn')
+  } = useGenericProductContext('earn')
 
   const withdrawMax = getAjnaEarnWithdrawMax({
     quoteTokenAmount: calculateAjnaMaxLiquidityWithdraw({

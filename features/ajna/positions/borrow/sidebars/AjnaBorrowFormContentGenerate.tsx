@@ -2,7 +2,7 @@ import { AjnaBorrowOriginationFee } from 'features/ajna/positions/borrow/control
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
 import {
@@ -29,7 +29,7 @@ export function AjnaBorrowFormContentGenerate() {
     position: {
       currentPosition: { position, simulation },
     },
-  } = useAjnaProductContext('borrow')
+  } = useGenericProductContext('borrow')
 
   const debtMin = getAjnaBorrowDebtMin({ digits: collateralDigits, position })
   const debtMax = getAjnaBorrowDebtMax({

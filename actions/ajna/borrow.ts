@@ -1,7 +1,7 @@
 import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaPosition } from '@oasisdex/dma-library'
 import { strategies } from '@oasisdex/dma-library'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
-import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
+import type { BorrowFormState } from 'features/ajna/positions/borrow/state/borrowFormReducto.types'
 import { zero } from 'helpers/zero'
 
 export const ajnaOpenBorrow = ({
@@ -9,7 +9,7 @@ export const ajnaOpenBorrow = ({
   commonPayload,
   dependencies,
 }: {
-  state: AjnaBorrowFormState
+  state: BorrowFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
 }) => {
@@ -32,7 +32,7 @@ export const ajnaDepositGenerateBorrow = ({
   position,
   simulation,
 }: {
-  state: Pick<AjnaBorrowFormState, 'depositAmount' | 'generateAmount'>
+  state: Pick<BorrowFormState, 'depositAmount' | 'generateAmount'>
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
@@ -64,7 +64,7 @@ export const ajnaPaybackWithdrawBorrow = ({
   position,
   simulation,
 }: {
-  state: Pick<AjnaBorrowFormState, 'withdrawAmount' | 'paybackAmount'>
+  state: Pick<BorrowFormState, 'withdrawAmount' | 'paybackAmount'>
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition

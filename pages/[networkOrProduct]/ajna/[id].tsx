@@ -2,7 +2,9 @@ import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
-import { AjnaProductController } from 'features/ajna/positions/common/controls/AjnaProductController'
+import { AjnaProductsController } from 'features/ajna/positions/common/controls/AjnaProductsController'
+import { ProtocolProductController } from 'features/ajna/positions/common/controls/ProtocolProductController'
+import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -16,7 +18,12 @@ function AjnaManagePositionPage({ id }: AjnaManagePositionPageProps) {
     <AjnaLayout>
       <ProductContextHandler>
         <GasEstimationContextProvider>
-          <AjnaProductController id={id} flow="manage" />
+          <ProtocolProductController
+            id={id}
+            flow="manage"
+            protocol={LendingProtocol.Ajna}
+            controller={AjnaProductsController}
+          />
         </GasEstimationContextProvider>
       </ProductContextHandler>
     </AjnaLayout>

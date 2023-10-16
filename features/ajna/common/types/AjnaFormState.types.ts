@@ -1,5 +1,5 @@
-import type { AjnaBorrowFormState } from 'features/ajna/positions/borrow/state/ajnaBorrowFormReducto.types'
-import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
-import type { AjnaMultiplyFormState } from 'features/ajna/positions/multiply/state/ajnaMultiplyFormReducto.types'
+import type { BorrowFormState } from 'features/ajna/positions/borrow/state/borrowFormReducto.types'
+import type { EarnFormState } from 'features/ajna/positions/earn/state/earnFormReducto.types'
+import type { MultiplyFormState } from 'features/ajna/positions/multiply/state/multiplyFormReducto.types'
 
-export type AjnaFormState = AjnaBorrowFormState | AjnaEarnFormState | AjnaMultiplyFormState
+export type AjnaFormState = BorrowFormState | EarnFormState | MultiplyFormState

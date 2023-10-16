@@ -1,15 +1,15 @@
+import type { EarnFormAction, EarnFormState } from 'features/ajna/positions/earn/state/earnFormReducto.types'
 import { useReducto } from 'helpers/useReducto'
 
-import { ajnaEarnDefault, ajnaEarnReset } from './ajnaEarnFormReducto.constants'
-import type { AjnaEarnFormAction, AjnaEarnFormState } from './ajnaEarnFormReducto.types'
+import { earnFormDefault, earnFormReset } from './ajnaEarnFormReducto.constants'
 
-export function useAjnaEarnFormReducto({ ...rest }: Partial<AjnaEarnFormState>) {
-  const { dispatch, state, updateState } = useReducto<AjnaEarnFormState, AjnaEarnFormAction>({
+export function useEarnFormReducto({ ...rest }: Partial<EarnFormState>) {
+  const { dispatch, state, updateState } = useReducto<EarnFormState, EarnFormAction>({
     defaults: {
-      ...ajnaEarnDefault,
+      ...earnFormDefault,
       ...rest,
     },
-    reducer: (state: AjnaEarnFormState, action: AjnaEarnFormAction) => {
+    reducer: (state: EarnFormState, action: EarnFormAction) => {
       switch (action.type) {
         case 'update-deposit':
           return {
@@ -29,7 +29,7 @@ export function useAjnaEarnFormReducto({ ...rest }: Partial<AjnaEarnFormState>) 
             dpmAddress: action.dpmAddress,
           }
         case 'reset':
-          return { ...state, ...ajnaEarnReset, price: rest.price }
+          return { ...state, ...earnFormReset, price: rest.price }
         default:
           return state
       }

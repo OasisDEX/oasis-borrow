@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { Icon } from 'components/Icon'
 import { SkeletonLine } from 'components/Skeleton'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -41,7 +41,7 @@ export function AjnaAdjustSlider({ disabled = false }: AjnaAdjustSliderProps) {
       currentPosition: { position, simulation },
       isSimulationLoading,
     },
-  } = useAjnaProductContext(product)
+  } = useGenericProductContext(product)
   const [depositChanged, setDepositChanged] = useState(false)
 
   useEffect(() => {

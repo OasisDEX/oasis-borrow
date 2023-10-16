@@ -7,7 +7,7 @@ import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ethers } from 'ethers'
 import { AjnaDupePositionModal } from 'features/ajna/positions/common/components/AjnaDupePositionModal'
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { getAjnaSidebarTitle } from 'features/ajna/positions/common/getAjnaSidebarTitle'
 import { getAjnaSidebarButtonsStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarButtonsStatus'
@@ -19,7 +19,6 @@ import {
   getAjnaFlowStateFilter,
 } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
 import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers/getPrimaryButtonLabelKey'
-import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
 import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useAppConfig } from 'helpers/config'
@@ -93,11 +92,13 @@ export function AjnaFormView({
       currentPosition: { position },
     },
     validation: { isFormValid, hasErrors, isFormFrozen },
-  } = useAjnaProductContext(product)
+    dynamicMetadata,
+  } = useGenericProductContext(product)
+
+  const { txHandler } = dynamicMetadata(product)
 
   const { connect } = useConnection()
   const { walletAddress } = useAccount()
-  const txHandler = useAjnaTxHandler()
   const { openModal } = useModalContext()
   const [hasDupePosition, setHasDupePosition] = useState<boolean>(false)
 

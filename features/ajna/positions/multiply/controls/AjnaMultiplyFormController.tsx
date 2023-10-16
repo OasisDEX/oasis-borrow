@@ -1,4 +1,4 @@
-import { useAjnaProductContext } from 'features/ajna/positions/common/contexts/AjnaProductContext'
+import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
 import { AjnaFormContentTransaction } from 'features/ajna/positions/common/sidebars/AjnaFormContentTransaction'
@@ -23,7 +23,7 @@ export function AjnaMultiplyFormController() {
       state: { uiDropdown },
       updateState,
     },
-  } = useAjnaProductContext('multiply')
+  } = useGenericProductContext('multiply')
 
   return (
     <AjnaFormView
