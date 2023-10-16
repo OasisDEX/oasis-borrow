@@ -11,7 +11,7 @@ import { useProtocolGeneralContext } from 'features/ajna/positions/common/contex
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { ContentFooterItemsMultiply } from 'features/ajna/positions/multiply/components/ContentFooterItemsMultiply'
-import { one, zero } from 'helpers/zero'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -38,7 +38,9 @@ export function AjnaMultiplyOverviewController() {
       isSimulationLoading,
       currentPosition: { position, simulation },
     },
+    dynamicMetadata,
   } = useGenericProductContext('multiply')
+  const { netBorrowCost, afterBuyingPower, shouldShowDynamicLtv } = dynamicMetadata('borrow')
 
   const changeVariant = 'positive'
 
@@ -54,11 +56,6 @@ export function AjnaMultiplyOverviewController() {
       ? normalizeValue(one.div(position.liquidationToMarketPrice))
       : position.liquidationToMarketPrice,
   )
-
-  const afterBuyingPower =
-    simulation && !simulation.pool.lowestUtilizedPriceIndex.isZero()
-      ? simulation.buyingPower
-      : undefined
 
   return (
     <Grid gap={2}>
@@ -79,7 +76,7 @@ export function AjnaMultiplyOverviewController() {
               isLoading={isSimulationLoading}
               loanToValue={position.riskRatio.loanToValue}
               afterLoanToValue={simulation?.riskRatio.loanToValue}
-              {...(position.pool.lowestUtilizedPriceIndex.gt(zero) && {
+              {...(shouldShowDynamicLtv && {
                 dynamicMaxLtv: position.maxRiskRatio.loanToValue,
               })}
               changeVariant={changeVariant}
@@ -88,7 +85,7 @@ export function AjnaMultiplyOverviewController() {
               collateralToken={collateralToken}
               quoteToken={quoteToken}
               owner={owner}
-              netBorrowCost={position.pool.interestRate}
+              netBorrowCost={netBorrowCost}
               changeVariant={changeVariant}
             />
             <ContentCardNetValue

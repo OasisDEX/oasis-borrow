@@ -1,3 +1,4 @@
+import type { AjnaEarnPosition,AjnaPosition } from '@oasisdex/dma-library';
 import { views } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -23,7 +24,7 @@ import { combineLatest, iif, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
 export interface AjnaPositionDetails {
-  position: AjnaGenericPosition
+  position: AjnaPosition | AjnaEarnPosition
   details: DpmPositionData
 }
 

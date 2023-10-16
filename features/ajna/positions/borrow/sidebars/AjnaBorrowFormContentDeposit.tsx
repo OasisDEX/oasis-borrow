@@ -1,6 +1,3 @@
-import { AjnaBorrowOriginationFee } from 'features/ajna/positions/borrow/controls/AjnaBorrowOriginationFee'
-import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
-import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
 import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
@@ -13,30 +10,18 @@ import React from 'react'
 
 export function AjnaBorrowFormContentDeposit() {
   const {
-    environment: {
-      collateralBalance,
-      collateralDigits,
-      collateralPrice,
-      collateralToken,
-      quoteDigits,
-    },
+    environment: { collateralBalance, collateralDigits, collateralPrice, collateralToken },
   } = useProtocolGeneralContext()
   const {
     form: {
       dispatch,
       state: { depositAmount, generateAmount },
     },
-    position: {
-      currentPosition: { position, simulation },
-    },
+
+    dynamicMetadata,
   } = useGenericProductContext('borrow')
 
-  const debtMin = getAjnaBorrowDebtMin({ digits: quoteDigits, position })
-  const debtMax = getAjnaBorrowDebtMax({
-    digits: quoteDigits,
-    position,
-    simulation,
-  })
+  const { highlighterOrderInformation, debtMin, debtMax } = dynamicMetadata('borrow')
 
   return (
     <>
@@ -49,7 +34,7 @@ export function AjnaBorrowFormContentDeposit() {
         tokenDigits={collateralDigits}
       />
       <AjnaFormFieldGenerate dispatchAmount={dispatch} maxAmount={debtMax} minAmount={debtMin} />
-      {generateAmount && <AjnaBorrowOriginationFee />}
+      {highlighterOrderInformation}
       {(depositAmount || generateAmount) && (
         <AjnaFormContentSummary>
           <AjnaBorrowFormOrder />

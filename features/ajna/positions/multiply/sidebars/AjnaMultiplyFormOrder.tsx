@@ -34,7 +34,10 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       state: { action, loanToValue },
     },
     position: { cachedPosition, isSimulationLoading, currentPosition, swap },
+    dynamicMetadata,
   } = useGenericProductContext('multiply')
+
+  const { shouldShowDynamicLtv } = dynamicMetadata('multiply')
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,
@@ -219,7 +222,7 @@ export function AjnaMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
           change: formatted.afterLoanToValue,
           isLoading,
         },
-        ...(positionData.pool.lowestUtilizedPriceIndex.gt(zero)
+        ...(shouldShowDynamicLtv
           ? [
               {
                 label: t('system.dynamic-max-ltv'),

@@ -1,4 +1,3 @@
-import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { getAjnaBorrowPaybackMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowPaybackMax'
 import { AjnaBorrowFormOrder } from 'features/ajna/positions/borrow/sidebars/AjnaBorrowFormOrder'
 import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
@@ -20,15 +19,13 @@ export function AjnaBorrowFormContentPayback() {
       state: { paybackAmount, withdrawAmount },
     },
     position: {
-      currentPosition: { position, simulation },
+      currentPosition: { position },
     },
+    dynamicMetadata,
   } = useGenericProductContext('borrow')
 
-  const collateralMax = getAjnaBorrowCollateralMax({
-    digits: collateralDigits,
-    position,
-    simulation,
-  })
+  const { collateralMax } = dynamicMetadata('borrow')
+
   const paybackMax = getAjnaBorrowPaybackMax({
     balance: quoteBalance,
     digits: quoteDigits,

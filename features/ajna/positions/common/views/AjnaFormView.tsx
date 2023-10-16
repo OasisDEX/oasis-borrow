@@ -95,7 +95,7 @@ export function AjnaFormView({
     dynamicMetadata,
   } = useGenericProductContext(product)
 
-  const { txHandler } = dynamicMetadata(product)
+  const { txHandler, interestRate } = dynamicMetadata(product)
 
   const { connect } = useConnection()
   const { walletAddress } = useAccount()
@@ -106,7 +106,7 @@ export function AjnaFormView({
     ...(dpmProxy && { existingProxy: dpmProxy }),
     ...getFlowStateConfig({
       collateralToken,
-      fee: position.pool.interestRate,
+      fee: interestRate,
       flow,
       quoteToken,
       state,

@@ -1,16 +1,15 @@
-import { negativeToZero, normalizeValue } from '@oasisdex/dma-library'
+import { normalizeValue } from '@oasisdex/dma-library'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
-import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import {
   formatAmount,
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
-import { one, zero } from 'helpers/zero'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -23,15 +22,17 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   } = useProtocolGeneralContext()
   const {
     position: { cachedPosition, currentPosition, isSimulationLoading },
+    dynamicMetadata,
   } = useGenericProductContext('borrow')
+
+  const { shouldShowDynamicLtv, afterPositionDebt, afterAvailableToBorrow } =
+    dynamicMetadata('borrow')
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,
     cachedPosition,
     currentPosition,
   })
-
-  const originationFee = getOriginationFee(positionData, simulationData)
 
   const liquidationPrice = isShort
     ? normalizeValue(one.div(positionData.liquidationPrice))
@@ -59,9 +60,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
       simulationData?.maxRiskRatio.loanToValue &&
       formatDecimalAsPercent(simulationData.maxRiskRatio.loanToValue),
     debt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
-    afterDebt:
-      simulationData?.debtAmount &&
-      `${formatCryptoBalance(simulationData.debtAmount.plus(originationFee))} ${quoteToken}`,
+    afterDebt: afterPositionDebt && `${formatCryptoBalance(afterPositionDebt)} ${quoteToken}`,
     availableToWithdraw: `${formatCryptoBalance(
       positionData.collateralAvailable,
     )} ${collateralToken}`,
@@ -70,10 +69,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
       `${formatCryptoBalance(simulationData.collateralAvailable)} ${collateralToken}`,
     availableToBorrow: `${formatCryptoBalance(positionData.debtAvailable())} ${quoteToken}`,
     afterAvailableToBorrow:
-      simulationData &&
-      `${formatCryptoBalance(
-        negativeToZero(simulationData.debtAvailable().minus(originationFee)),
-      )} ${quoteToken}`,
+      afterAvailableToBorrow && `${formatCryptoBalance(afterAvailableToBorrow)} ${quoteToken}`,
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
   }
 
@@ -103,7 +99,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           change: formatted.afterLiquidationPrice,
           isLoading,
         },
-        ...(!isOracless && positionData.pool.lowestUtilizedPriceIndex.gt(zero)
+        ...(!isOracless && shouldShowDynamicLtv
           ? [
               {
                 label: t('system.dynamic-max-ltv'),

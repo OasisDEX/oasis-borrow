@@ -1,4 +1,4 @@
-import type { Strategy } from '@oasisdex/dma-library'
+import type { AjnaEarnPosition, AjnaPosition, Strategy } from '@oasisdex/dma-library'
 import { TxStatus } from '@oasisdex/transactions'
 import type { AjnaTxData } from 'actions/ajna'
 import { getAjnaParameters } from 'actions/ajna'
@@ -89,8 +89,8 @@ export function useAjnaTxHandler(): () => void {
             collateralToken,
             context,
             isFormValid,
-            position,
-            simulation,
+            position: position as AjnaPosition | AjnaEarnPosition,
+            simulation: position as AjnaPosition | AjnaEarnPosition,
             quoteAddress,
             quotePrecision,
             quotePrice,

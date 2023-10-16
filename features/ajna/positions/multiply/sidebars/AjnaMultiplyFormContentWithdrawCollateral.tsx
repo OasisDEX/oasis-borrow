@@ -1,5 +1,3 @@
-import { getToken } from 'blockchain/tokensMetadata'
-import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { useGenericProductContext } from 'features/ajna/positions/common/contexts/GenericProductContext'
 import { useProtocolGeneralContext } from 'features/ajna/positions/common/contexts/ProtocolGeneralContext'
 import { AjnaFormContentSummary } from 'features/ajna/positions/common/sidebars/AjnaFormContentSummary'
@@ -8,7 +6,6 @@ import { AjnaMultiplyFormOrder } from 'features/ajna/positions/multiply/sidebars
 import React from 'react'
 
 export function AjnaMultiplyFormContentWithdrawCollateral() {
-  // const { t } = useTranslation()
   const {
     environment: { collateralPrice, collateralToken },
   } = useProtocolGeneralContext()
@@ -17,16 +14,10 @@ export function AjnaMultiplyFormContentWithdrawCollateral() {
       dispatch,
       state: { withdrawAmount },
     },
-    position: {
-      currentPosition: { position, simulation },
-    },
+    dynamicMetadata,
   } = useGenericProductContext('multiply')
 
-  const collateralMax = getAjnaBorrowCollateralMax({
-    digits: getToken(collateralToken).digits,
-    position,
-    simulation,
-  })
+  const { collateralMax } = dynamicMetadata('multiply')
 
   return (
     <>

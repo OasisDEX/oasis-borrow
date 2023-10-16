@@ -1,6 +1,8 @@
 import type {
   AjnaCommonDependencies,
   AjnaCommonPayload,
+  AjnaEarnPosition,
+  AjnaPosition,
   AjnaStrategy,
   Network,
 } from '@oasisdex/dma-library'
@@ -32,8 +34,8 @@ interface AjnaTxHandlerInput {
   collateralToken: string
   context: Context
   isFormValid: boolean
-  position: AjnaGenericPosition
-  simulation?: AjnaGenericPosition
+  position: AjnaPosition | AjnaEarnPosition
+  simulation?: AjnaPosition | AjnaEarnPosition
   quoteAddress: string
   quotePrecision: number
   quotePrice: BigNumber

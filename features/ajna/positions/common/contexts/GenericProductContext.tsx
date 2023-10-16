@@ -1,6 +1,7 @@
-import type { AjnaEarnPosition, SwapData } from '@oasisdex/dma-library'
+import type { AjnaEarnPosition, BorrowishPosition, SwapData } from '@oasisdex/dma-library'
 import { AjnaPosition } from '@oasisdex/dma-library'
 import type { AjnaSimulationData } from 'actions/ajna'
+import type BigNumber from 'bignumber.js'
 import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
@@ -34,16 +35,27 @@ interface StaticProductMetadata {
   }
 }
 
-type DynamicProductMetadata = (product: ProtocolProduct) => ({
+type DynamicProductMetadata = (product: ProtocolProduct) => {
   txHandler: () => void
-})
+  netBorrowCost: BigNumber
+  afterBuyingPower: BigNumber | undefined
+  highlighterOrderInformation: JSX.Element | undefined
+  shouldShowDynamicLtv: boolean
+  debtMin: BigNumber
+  debtMax: BigNumber
+  interestRate: BigNumber
+  afterAvailableToBorrow: BigNumber | undefined
+  afterPositionDebt: BigNumber | undefined
+  extraOverviewCards: JSX.Element[]
+  collateralMax: BigNumber
+}
 
 interface ProductContextProviderPropsWithBorrow {
   staticMetadata: StaticProductMetadata
   dynamicMetadata: DynamicProductMetadata
   formReducto: typeof useBorrowFormReducto
   formDefaults: Partial<BorrowFormState>
-  position: AjnaPosition
+  position: BorrowishPosition
   product: 'borrow'
   positionAuction: AjnaBorrowishPositionAuction // TODO auctions has to be fully configurable through staticMetadata
   positionHistory: AjnaUnifiedHistoryEvent[]
@@ -65,7 +77,7 @@ interface ProductContextProviderPropsWithMultiply {
   dynamicMetadata: DynamicProductMetadata
   formReducto: typeof useMultiplyFormReducto
   formDefaults: Partial<MultiplyFormState>
-  position: AjnaPosition
+  position: BorrowishPosition
   product: 'multiply'
   positionAuction: AjnaBorrowishPositionAuction
   positionHistory: AjnaUnifiedHistoryEvent[]
@@ -115,8 +127,8 @@ interface GenericProductContext<P, F, A> {
   dynamicMetadata: DynamicProductMetadata
 }
 
-type ProductContextWithBorrow = GenericProductContext<
-  AjnaPosition,
+export type ProductContextWithBorrow = GenericProductContext<
+  BorrowishPosition,
   ReturnType<typeof useBorrowFormReducto>,
   AjnaBorrowishPositionAuction
 >
@@ -127,8 +139,8 @@ type ProductContextWithEarn = GenericProductContext<
   AjnaEarnPositionAuction
 >
 
-type ProductContextWithMultiply = GenericProductContext<
-  AjnaPosition,
+export type ProductContextWithMultiply = GenericProductContext<
+  BorrowishPosition,
   ReturnType<typeof useMultiplyFormReducto>,
   AjnaBorrowishPositionAuction
 >

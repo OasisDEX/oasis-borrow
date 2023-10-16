@@ -1,10 +1,10 @@
-import type { AjnaPosition } from '@oasisdex/dma-library'
+import type { BorrowishPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 
 interface AjnaBorrowDebtMaxParams {
   digits: number
-  position: AjnaPosition
-  simulation?: AjnaPosition
+  position: BorrowishPosition
+  simulation?: BorrowishPosition
 }
 
 export function getAjnaBorrowDebtMax({ digits, position, simulation }: AjnaBorrowDebtMaxParams) {

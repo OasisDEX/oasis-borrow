@@ -1,4 +1,4 @@
-import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
+import type { AjnaEarnPosition, BorrowishPosition } from '@oasisdex/dma-library'
 import type { ProtocolProduct, ProtocolSidebarStep } from 'features/unifiedProtocol/types'
 import { zero } from 'helpers/zero'
 import { upperFirst } from 'lodash'
@@ -14,7 +14,7 @@ export const getAjnaSidebarTitle = ({
   currentStep: ProtocolSidebarStep
   product: ProtocolProduct
   isFormFrozen: boolean
-  position: AjnaPosition | AjnaEarnPosition
+  position: BorrowishPosition | AjnaEarnPosition
   isOracless: boolean
 }) => {
   const { t } = useTranslation()
