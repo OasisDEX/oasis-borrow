@@ -11,7 +11,7 @@ import React from 'react'
 import type { TranslationType } from 'ts_modules/i18next'
 import type { AppConfigType } from 'types/config'
 
-const { AjnaSafetySwitch } = getLocalAppConfig('features')
+const { AjnaSafetySwitch, MorphoBlue: MorphoBlueEnabled } = getLocalAppConfig('features')
 
 export const getNavProtocolsPanel = ({
   t,
@@ -31,6 +31,9 @@ export const getNavProtocolsPanel = ({
     },
     maker: {
       protocol: lendingProtocolsByName[LendingProtocol.Maker].name,
+    },
+    morphoBlue: {
+      protocol: lendingProtocolsByName[LendingProtocol.MorphoBlue].name,
     },
     spark: {
       protocol: lendingProtocolsByName[LendingProtocol.SparkV3].name,
@@ -165,6 +168,50 @@ export const getNavProtocolsPanel = ({
               // },
             },
           },
+          ...(MorphoBlueEnabled
+            ? ([
+                {
+                  title: 'Morpho Blue',
+                  icon: {
+                    image: lendingProtocolsByName[LendingProtocol.MorphoBlue].icon,
+                    position: 'title',
+                  },
+                  hoverColor: lendingProtocolsByName[LendingProtocol.MorphoBlue].gradient,
+                  description: <Trans i18nKey="nav.protocols-morpho-blue" components={{ br: <br /> }} />,
+                  list: {
+                    items: [
+                      {
+                        title: t('nav.borrow'),
+                        description: navigation.protocols.morphoBlue.borrow.description,
+                        url: `${INTERNAL_LINKS.borrow}`,
+                        query: query.morphoBlue,
+                      },
+                      {
+                        title: t('nav.multiply'),
+                        description: navigation.protocols.morphoBlue.multiply.description,
+                        url: `${INTERNAL_LINKS.multiply}`,
+                        query: query.morphoBlue,
+                      },
+                      {
+                        title: t('nav.earn'),
+                        description: navigation.protocols.morphoBlue.earn.description,
+                        url: `${INTERNAL_LINKS.earn}`,
+                        query: query.morphoBlue,
+                      },
+                      {
+                        title: navigation.protocols.morphoBlue.extra.title,
+                        promoted: true,
+                        description: navigation.protocols.morphoBlue.extra.description,
+                        url: navigation.protocols.morphoBlue.extra.url,
+                      },
+                    ],
+                    // link: {
+                    //   label: t('nav.protocols-more', { protocol: 'Morpho Blue' }),
+                    // },
+                  },
+                },
+              ] as NavigationMenuPanelListItem[])
+            : []),
           {
             title: 'Spark',
             icon: {
