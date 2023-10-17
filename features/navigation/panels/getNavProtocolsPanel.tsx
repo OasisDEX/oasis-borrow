@@ -177,7 +177,9 @@ export const getNavProtocolsPanel = ({
                     position: 'title',
                   },
                   hoverColor: lendingProtocolsByName[LendingProtocol.MorphoBlue].gradient,
-                  description: <Trans i18nKey="nav.protocols-morpho-blue" components={{ br: <br /> }} />,
+                  description: (
+                    <Trans i18nKey="nav.protocols-morpho-blue" components={{ br: <br /> }} />
+                  ),
                   list: {
                     items: [
                       {
