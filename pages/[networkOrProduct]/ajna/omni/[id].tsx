@@ -4,6 +4,7 @@ import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaOmniProductController } from 'features/omni-kit/controllers/ajna/AjnaOmniProductController'
 import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
+import { useAjnaOmniData } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -23,6 +24,7 @@ function AjnaManagePositionPage({ id }: AjnaManagePositionPageProps) {
             flow="manage"
             protocol={LendingProtocol.Ajna}
             controller={AjnaOmniProductController}
+            protocolHook={useAjnaOmniData}
           />
         </GasEstimationContextProvider>
       </ProductContextHandler>

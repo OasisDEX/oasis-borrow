@@ -1,5 +1,4 @@
 import { NetworkHexIds } from 'blockchain/networks'
-import type { Tickers } from 'blockchain/prices.types'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
@@ -7,6 +6,7 @@ import { steps } from 'features/ajna/common/consts'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { OmniGeneralContextProvider } from 'features/omni-kit/contexts/OmniGeneralContext'
+import type { ProductDataProps } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
 import { useOmniProtocolData } from 'features/omni-kit/hooks/useOmniProtocolData'
 import type { OmniFlow, OmniProduct } from 'features/omni-kit/types/common.types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -21,15 +21,10 @@ import type { FC } from 'react'
 import React from 'react'
 
 export interface ProductsControllerProps {
-  id?: string
-  product?: OmniProduct
   flow: OmniFlow
-  protocol: LendingProtocol
   dpmPosition: DpmPositionData
-  tokenPriceUSD: Tickers
-  quoteToken?: string
-  collateralToken?: string
-  tokensIcons: any
+  aggregatedData: { auction: unknown; history: unknown }
+  positionData: unknown
 }
 
 interface ProtocolProductControllerProps {
@@ -40,6 +35,12 @@ interface ProtocolProductControllerProps {
   product?: OmniProduct
   quoteToken?: string
   controller: (params: ProductsControllerProps) => React.ReactNode
+  protocolHook: (params: ProductDataProps) => {
+    data: { aggregatedData: { auction: unknown; history: unknown }; positionData: unknown }
+    errors: string[]
+    isOracless: boolean
+    redirect: string | undefined
+  }
 }
 
 export const OmniProductController: FC<ProtocolProductControllerProps> = ({
@@ -50,6 +51,7 @@ export const OmniProductController: FC<ProtocolProductControllerProps> = ({
   product,
   quoteToken,
   controller,
+  protocolHook,
 }) => {
   const { t } = useTranslation()
 
@@ -73,6 +75,18 @@ export const OmniProductController: FC<ProtocolProductControllerProps> = ({
     protocol,
   })
 
+  const {
+    data: { aggregatedData, positionData },
+    errors: protocolDataErrors,
+  } = protocolHook({
+    collateralToken,
+    id,
+    product,
+    quoteToken,
+    dpmPositionData,
+    tokenPriceUSDData,
+  })
+
   // TODO we will need isOracless mapping per specific protocol
   const isOracless = false
 
@@ -80,7 +94,7 @@ export const OmniProductController: FC<ProtocolProductControllerProps> = ({
     <WithConnection pageChainId={NetworkHexIds.MAINNET} includeTestNet={true}>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
-          <WithErrorHandler error={errors}>
+          <WithErrorHandler error={[...errors, ...protocolDataErrors]}>
             <WithLoadingIndicator
               value={[
                 ethBalanceData,
@@ -91,6 +105,8 @@ export const OmniProductController: FC<ProtocolProductControllerProps> = ({
                 userSettingsData,
                 tokensPrecision,
                 tokensIconsData,
+                aggregatedData,
+                positionData,
               ]}
               customLoader={
                 <PositionLoadingState
@@ -116,6 +132,8 @@ export const OmniProductController: FC<ProtocolProductControllerProps> = ({
                 { slippage },
                 { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
                 tokensIcons,
+                _aggregatedData,
+                _positionData,
               ]) => (
                 <>
                   <PageSEOTags
@@ -163,14 +181,9 @@ export const OmniProductController: FC<ProtocolProductControllerProps> = ({
                   >
                     {controller({
                       dpmPosition,
-                      product,
-                      tokenPriceUSD,
-                      quoteToken,
-                      collateralToken,
-                      protocol,
-                      id,
                       flow,
-                      tokensIcons,
+                      aggregatedData: _aggregatedData,
+                      positionData: _positionData,
                     })}
                   </OmniGeneralContextProvider>
                 </>

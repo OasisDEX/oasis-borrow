@@ -9,7 +9,6 @@ import type { DpmPositionData } from 'features/ajna/positions/common/observables
 import type { OmniProduct } from 'features/omni-kit/types/common.types'
 import { useObservable } from 'helpers/observableHook'
 import { one } from 'helpers/zero'
-import type { LendingProtocol } from 'lendingProtocols'
 import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
 
@@ -19,9 +18,8 @@ export interface ProductDataProps {
   id?: string
   product?: OmniProduct
   quoteToken?: string
-  protocol: LendingProtocol
-  dpmPositionData: DpmPositionData
-  tokenPriceUSDData: Tickers
+  dpmPositionData?: DpmPositionData
+  tokenPriceUSDData?: Tickers
 }
 
 export function useAjnaOmniData({
@@ -35,8 +33,11 @@ export function useAjnaOmniData({
   const { context$ } = useMainContext()
   const { ajnaPosition$ } = useProductContext()
 
-  const isOracless =
-    collateralToken && quoteToken && isPoolOracless({ collateralToken, quoteToken })
+  const isOracless = !!(
+    collateralToken &&
+    quoteToken &&
+    isPoolOracless({ collateralToken, quoteToken })
+  )
 
   const [context] = useObservable(context$)
 

@@ -2,8 +2,8 @@ import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
 import { getToken } from 'blockchain/tokensMetadata'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
-import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
@@ -11,7 +11,6 @@ import { getAjnaBorrowPaybackMax } from 'features/ajna/positions/borrow/helpers/
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
 import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
-import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
@@ -36,14 +35,11 @@ import {
 import { OmniBorrowPositionController } from 'features/omni-kit/controllers/borrow/OmniBorrowPositionController'
 import type { ProductsControllerProps } from 'features/omni-kit/controllers/common/OmniProductController'
 import { OmniMultiplyPositionController } from 'features/omni-kit/controllers/multiply/OmniMultiplyPositionController'
-import { useAjnaOmniData } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
 import { useAjnaOmniTxHandler } from 'features/omni-kit/hooks/ajna/useAjnaOmniTxHandler'
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniEarnFormReducto } from 'features/omni-kit/state/earn/earnFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
 import type { OmniProduct } from 'features/omni-kit/types/common.types'
-import { WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -172,107 +168,68 @@ const staticMetadata = {
 
 export const AjnaOmniProductController: FC<ProductsControllerProps> = ({
   dpmPosition,
-  product,
   flow,
-  tokenPriceUSD,
-  quoteToken,
-  collateralToken,
-  protocol,
-  tokensIcons,
-  id,
+  aggregatedData: { auction, history },
+  positionData,
 }) => {
-  const {
-    data: { aggregatedData, positionData },
-    errors,
-  } = useAjnaOmniData({
-    collateralToken,
-    id,
-    product,
-    quoteToken,
-    tokenPriceUSDData: tokenPriceUSD,
-    dpmPositionData: dpmPosition,
-    protocol,
-  })
-
   return (
-    <WithErrorHandler error={errors}>
-      <WithLoadingIndicator
-        value={[positionData, aggregatedData]}
-        customLoader={
-          <PositionLoadingState
-            {...getAjnaHeadlineProps({
-              collateralToken: dpmPosition.collateralToken,
-              flow,
-              product: dpmPosition.product as OmniProduct,
-              quoteToken: dpmPosition.quoteToken,
-              collateralIcon: tokensIcons.collateralToken,
-              quoteIcon: tokensIcons.quoteToken,
-              id,
-            })}
-          />
-        }
-      >
-        {([position, { history, auction }]) => (
-          <>
-            {dpmPosition.product === 'borrow' && (
-              <AjnaCustomStateContextProvider>
-                <OmniProductContextProvider
-                  staticMetadata={staticMetadata}
-                  dynamicMetadata={useAjnaMetadata}
-                  formDefaults={{
-                    action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
-                  }}
-                  formReducto={useOmniBorrowFormReducto}
-                  position={position as AjnaPosition}
-                  product={dpmPosition.product}
-                  positionAuction={auction as AjnaBorrowishPositionAuction}
-                  positionHistory={history}
-                >
-                  <OmniBorrowPositionController />
-                </OmniProductContextProvider>
-              </AjnaCustomStateContextProvider>
-            )}
-            {dpmPosition.product === 'earn' && (
-              <AjnaCustomStateContextProvider>
-                <OmniProductContextProvider
-                  staticMetadata={staticMetadata}
-                  dynamicMetadata={useAjnaMetadata}
-                  formDefaults={{
-                    action: getAjnaEarnDefaultAction(flow, position as AjnaEarnPosition),
-                    uiDropdown: getAjnaEarnDefaultUiDropdown(position as AjnaEarnPosition),
-                    price: getEarnDefaultPrice(position as AjnaEarnPosition),
-                  }}
-                  formReducto={useOmniEarnFormReducto}
-                  position={position as AjnaEarnPosition}
-                  product={dpmPosition.product}
-                  positionAuction={auction as AjnaEarnPositionAuction}
-                  positionHistory={history}
-                >
-                  <AjnaEarnPositionController />
-                </OmniProductContextProvider>
-              </AjnaCustomStateContextProvider>
-            )}
-            {dpmPosition.product === 'multiply' && (
-              <AjnaCustomStateContextProvider>
-                <OmniProductContextProvider
-                  staticMetadata={staticMetadata}
-                  dynamicMetadata={useAjnaMetadata}
-                  formDefaults={{
-                    action: flow === 'open' ? 'open-multiply' : 'adjust',
-                  }}
-                  formReducto={useOmniMultiplyFormReducto}
-                  position={position as AjnaPosition}
-                  product={dpmPosition.product}
-                  positionAuction={auction as AjnaBorrowishPositionAuction}
-                  positionHistory={history}
-                >
-                  <OmniMultiplyPositionController />
-                </OmniProductContextProvider>
-              </AjnaCustomStateContextProvider>
-            )}
-          </>
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <>
+      {dpmPosition.product === 'borrow' && (
+        <AjnaCustomStateContextProvider>
+          <OmniProductContextProvider
+            staticMetadata={staticMetadata}
+            dynamicMetadata={useAjnaMetadata}
+            formDefaults={{
+              action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
+            }}
+            formReducto={useOmniBorrowFormReducto}
+            position={positionData as AjnaPosition}
+            product={dpmPosition.product}
+            positionAuction={auction as AjnaBorrowishPositionAuction}
+            positionHistory={history as AjnaUnifiedHistoryEvent[]}
+          >
+            <OmniBorrowPositionController />
+          </OmniProductContextProvider>
+        </AjnaCustomStateContextProvider>
+      )}
+      {dpmPosition.product === 'earn' && (
+        <AjnaCustomStateContextProvider>
+          <OmniProductContextProvider
+            staticMetadata={staticMetadata}
+            dynamicMetadata={useAjnaMetadata}
+            formDefaults={{
+              action: getAjnaEarnDefaultAction(flow, positionData as AjnaEarnPosition),
+              uiDropdown: getAjnaEarnDefaultUiDropdown(positionData as AjnaEarnPosition),
+              price: getEarnDefaultPrice(positionData as AjnaEarnPosition),
+            }}
+            formReducto={useOmniEarnFormReducto}
+            position={positionData as AjnaEarnPosition}
+            product={dpmPosition.product}
+            positionAuction={auction as AjnaEarnPositionAuction}
+            positionHistory={history as AjnaUnifiedHistoryEvent[]}
+          >
+            <AjnaEarnPositionController />
+          </OmniProductContextProvider>
+        </AjnaCustomStateContextProvider>
+      )}
+      {dpmPosition.product === 'multiply' && (
+        <AjnaCustomStateContextProvider>
+          <OmniProductContextProvider
+            staticMetadata={staticMetadata}
+            dynamicMetadata={useAjnaMetadata}
+            formDefaults={{
+              action: flow === 'open' ? 'open-multiply' : 'adjust',
+            }}
+            formReducto={useOmniMultiplyFormReducto}
+            position={positionData as AjnaPosition}
+            product={dpmPosition.product}
+            positionAuction={auction as AjnaBorrowishPositionAuction}
+            positionHistory={history as AjnaUnifiedHistoryEvent[]}
+          >
+            <OmniMultiplyPositionController />
+          </OmniProductContextProvider>
+        </AjnaCustomStateContextProvider>
+      )}
+    </>
   )
 }

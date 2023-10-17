@@ -7,6 +7,7 @@ import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { omniProducts } from 'features/omni-kit/common/consts'
 import { AjnaOmniProductController } from 'features/omni-kit/controllers/ajna/AjnaOmniProductController'
 import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
+import { useAjnaOmniData } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
 import type { OmniProduct } from 'features/omni-kit/types/common.types'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
@@ -34,6 +35,7 @@ function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPosi
             quoteToken={quoteToken}
             protocol={LendingProtocol.Ajna}
             controller={AjnaOmniProductController}
+            protocolHook={useAjnaOmniData}
           />
         </GasEstimationContextProvider>
       </ProductContextHandler>
