@@ -4,16 +4,15 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { AjnaBorrowPositionController } from 'features/ajna/positions/borrow/controls/AjnaBorrowPositionController'
 import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
+import { getAjnaBorrowPaybackMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowPaybackMax'
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
 import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
-import { useAjnaTxHandler } from 'features/ajna/positions/common/hooks/useAjnaTxHandler'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import type {
   AjnaBorrowishPositionAuction,
@@ -32,8 +31,10 @@ import {
   OmniProductContextProvider,
   useOmniProductContext,
 } from 'features/omni-kit/contexts/OmniProductContext'
-import type { ProductsControllerProps } from 'features/omni-kit/controllers/OmniProductController'
+import { OmniBorrowPositionController } from 'features/omni-kit/controllers/borrow/OmniBorrowPositionController'
+import type { ProductsControllerProps } from 'features/omni-kit/controllers/common/OmniProductController'
 import { useAjnaOmniData } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
+import { useAjnaOmniTxHandler } from 'features/omni-kit/hooks/ajna/useAjnaOmniTxHandler'
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniEarnFormReducto } from 'features/omni-kit/state/earn/earnFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
@@ -50,7 +51,15 @@ export const useAjnaMetadata = (product: OmniProduct) => {
   const { t } = useTranslation()
 
   const {
-    environment: { isOracless, quoteToken, quotePrice, priceFormat, collateralToken },
+    environment: {
+      isOracless,
+      quoteToken,
+      quotePrice,
+      priceFormat,
+      collateralToken,
+      quoteBalance,
+      quoteDigits,
+    },
   } = useOmniGeneralContext()
   const productContext = useOmniProductContext(product)
   // TODO customState that we can use for earn or elsewhere
@@ -69,7 +78,7 @@ export const useAjnaMetadata = (product: OmniProduct) => {
   const changeVariant = getBorrowishChangeVariant({ simulation, isOracless })
 
   return {
-    txHandler: useAjnaTxHandler(),
+    txHandler: useAjnaOmniTxHandler(),
     netBorrowCost: position.pool.interestRate,
     afterBuyingPower:
       simulation && !simulation.pool.lowestUtilizedPriceIndex.isZero()
@@ -91,6 +100,7 @@ export const useAjnaMetadata = (product: OmniProduct) => {
       simulation,
     }),
     interestRate: position.pool.interestRate,
+    changeVariant,
     afterAvailableToBorrow:
       simulation && negativeToZero(simulation.debtAvailable().minus(originationFee)),
     afterPositionDebt: simulation?.debtAmount.plus(originationFee),
@@ -125,6 +135,12 @@ export const useAjnaMetadata = (product: OmniProduct) => {
       digits: getToken(collateralToken).digits,
       position,
       simulation,
+    }),
+    // TODO this one probably could be on component level and use BorrowishPosition interface
+    paybackMax: getAjnaBorrowPaybackMax({
+      balance: quoteBalance,
+      digits: quoteDigits,
+      position,
     }),
   }
 }
@@ -204,7 +220,7 @@ export const AjnaOmniProductController: FC<ProductsControllerProps> = ({
                   positionAuction={auction as AjnaBorrowishPositionAuction}
                   positionHistory={history}
                 >
-                  <AjnaBorrowPositionController />
+                  <OmniBorrowPositionController />
                 </OmniProductContextProvider>
               </AjnaCustomStateContextProvider>
             )}

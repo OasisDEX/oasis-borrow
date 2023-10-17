@@ -1,4 +1,7 @@
-import { omniFormExternalSteps, omniFormStepsWithTransaction } from 'features/omni-kit/common/consts'
+import {
+  omniFormExternalSteps,
+  omniFormStepsWithTransaction,
+} from 'features/omni-kit/common/consts'
 import type { OmniFlow, OmniSidebarStep } from 'features/omni-kit/types/common.types'
 
 export interface OmniGeneralStepManager {

@@ -3,7 +3,7 @@ import { GasEstimationContextProvider } from 'components/context/GasEstimationCo
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaOmniProductController } from 'features/omni-kit/controllers/ajna/AjnaOmniProductController'
-import { OmniProductController } from 'features/omni-kit/controllers/OmniProductController'
+import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
