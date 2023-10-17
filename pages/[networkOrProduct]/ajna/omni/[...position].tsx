@@ -3,8 +3,8 @@ import { isSupportedNetwork, NetworkIds, NetworkNames } from 'blockchain/network
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { isAddress } from 'ethers/lib/utils'
-import { ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
+import { omniProducts } from 'features/omni-kit/common/consts'
 import { AjnaOmniProductController } from 'features/omni-kit/controllers/ajna/AjnaOmniProductController'
 import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
 import type { OmniProduct } from 'features/omni-kit/types/common.types'
@@ -63,7 +63,7 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
   if (
     isSupportedNetwork(network) &&
     network === NetworkNames.ethereumMainnet &&
-    ajnaProducts.includes(product as OmniProduct) &&
+    omniProducts.includes(product as OmniProduct) &&
     (supportedPools.includes(`${caseSensitiveCollateralToken}-${caseSensitiveQuoteToken}`) ||
       (isAddress(caseSensitiveCollateralToken) && isAddress(caseSensitiveQuoteToken)))
   ) {
