@@ -1,5 +1,4 @@
 import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
-import { OmniFormContentRisk } from 'features/omni-kit/common/sidebars/OmniFormContentRisk'
 import { OmniFormContentTransaction } from 'features/omni-kit/common/sidebars/OmniFormContentTransaction'
 import { OmniFormView } from 'features/omni-kit/components/OmniFormView'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
@@ -24,7 +23,10 @@ export function OmniBorrowFormController() {
       state: { uiDropdown },
       updateState,
     },
+    dynamicMetadata,
   } = useOmniProductContext('borrow')
+
+  const { riskSidebar } = dynamicMetadata('borrow')
 
   return (
     <OmniFormView
@@ -93,7 +95,7 @@ export function OmniBorrowFormController() {
         },
       })}
     >
-      {currentStep === 'risk' && <OmniFormContentRisk />}
+      {currentStep === 'risk' && riskSidebar}
       {currentStep === 'setup' && <OmniBorrowFormContentDeposit />}
       {currentStep === 'manage' && <OmniBorrowFormContentManage />}
       {currentStep === 'transition' && <OmniBorrowFormContentTransition />}

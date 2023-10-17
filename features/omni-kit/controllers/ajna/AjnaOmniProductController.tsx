@@ -20,6 +20,7 @@ import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
+import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
 import { getAjnaValidation } from 'features/ajna/positions/common/validation'
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
 import { getAjnaEarnDefaultAction } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultAction'
@@ -148,6 +149,7 @@ export const useAjnaMetadata = (product: OmniProduct) => {
     overviewBanner: isPoolWithRewards({ collateralToken, quoteToken }) && (
       <AjnaTokensBannerController flow={flow} />
     ),
+    riskSidebar: <AjnaFormContentRisk />,
   }
 }
 

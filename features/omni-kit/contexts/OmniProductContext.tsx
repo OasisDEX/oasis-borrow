@@ -52,6 +52,7 @@ type DynamicProductMetadata = (product: OmniProduct) => {
   paybackMax: BigNumber
   changeVariant: 'positive' | 'negative'
   overviewBanner: JSX.Element | undefined
+  riskSidebar: JSX.Element
 }
 
 interface ProductContextProviderPropsWithBorrow {

@@ -1,4 +1,3 @@
-import { OmniFormContentRisk } from 'features/omni-kit/common/sidebars/OmniFormContentRisk'
 import { OmniFormContentTransaction } from 'features/omni-kit/common/sidebars/OmniFormContentTransaction'
 import { OmniFormView } from 'features/omni-kit/components/OmniFormView'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
@@ -23,7 +22,10 @@ export function OmniMultiplyFormController() {
       state: { uiDropdown },
       updateState,
     },
+    dynamicMetadata,
   } = useOmniProductContext('multiply')
+
+  const { riskSidebar } = dynamicMetadata('multiply')
 
   return (
     <OmniFormView
@@ -99,7 +101,7 @@ export function OmniMultiplyFormController() {
         },
       })}
     >
-      {currentStep === 'risk' && <OmniFormContentRisk />}
+      {currentStep === 'risk' && riskSidebar}
       {currentStep === 'setup' && <OmniMultiplyFormContentOpen />}
       {currentStep === 'manage' && <OmniMultiplyFormContentManage />}
       {currentStep === 'transition' && <OmniMultiplyFormContentTransition />}

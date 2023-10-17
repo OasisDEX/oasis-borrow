@@ -16,11 +16,11 @@ const min = new BigNumber(0.01)
 const max = new BigNumber(1)
 const openFlowInitialLtv = new BigNumber(0.1)
 
-interface AjnaAdjustSliderProps {
+interface OmniAdjustSliderProps {
   disabled?: boolean
 }
 
-export function OmniAdjustSlider({ disabled = false }: AjnaAdjustSliderProps) {
+export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, quoteToken, isShort, product },
@@ -28,7 +28,7 @@ export function OmniAdjustSlider({ disabled = false }: AjnaAdjustSliderProps) {
   } = useOmniGeneralContext()
 
   if (product === 'earn') {
-    throw new Error('AjnaAdjustSlider is not supported for earn')
+    throw new Error('OmniAdjustSlider is not supported for earn')
   }
 
   const {
