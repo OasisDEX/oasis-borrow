@@ -46,6 +46,7 @@ const baseMainnetGradient = 'linear-gradient(128deg, #0052ff 3.74%, #6696ff 83.5
 export const ethereumMainnetHexId: NetworkConfigHexId = NetworkHexIds.MAINNET
 export const optimismMainnetHexId: NetworkConfigHexId = NetworkHexIds.OPTIMISMMAINNET
 export const arbitrumMainnetHexId: NetworkConfigHexId = NetworkHexIds.ARBITRUMMAINNET
+export const baseMainnetHexId: NetworkConfigHexId = NetworkHexIds.BASEMAINNET
 
 export type NetworkConfig = {
   id: NetworkIds

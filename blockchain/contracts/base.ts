@@ -15,7 +15,6 @@ import * as automationBotV2 from 'blockchain/abi/automation-bot-v2.json'
 import * as automationBot from 'blockchain/abi/automation-bot.json'
 import * as balancerVault from 'blockchain/abi/balancer-vault.json'
 import * as cdpRegistry from 'blockchain/abi/cdp-registry.json'
-import * as chainLinkPriceOracle from 'blockchain/abi/chainlink-price-oracle.json'
 import * as dsProxyFactory from 'blockchain/abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from 'blockchain/abi/ds-proxy-registry.json'
 import * as dssCdpManager from 'blockchain/abi/dss-cdp-manager.json'
@@ -127,8 +126,8 @@ export const baseContracts: MainnetContractsWithOptional = {
   ),
   aaveV2PriceOracle: contractDesc(aaveV2PriceOracle, base.aave.v2.Oracle),
   chainlinkPriceOracle: {
-    USDCUSD: contractDesc(chainLinkPriceOracle, base.common.ChainlinkPriceOracle_USDCUSD),
-    ETHUSD: contractDesc(chainLinkPriceOracle, base.common.ChainlinkPriceOracle_ETHUSD),
+    USDCUSD: emptyContractDesc('chainLinkPriceOracle'),
+    ETHUSD: emptyContractDesc('chainLinkPriceOracle'),
   },
   aaveV2LendingPool: emptyContractDesc('aaveV2LendingPool'),
 
