@@ -1,3 +1,7 @@
+import { OmniBorrowFormState } from 'features/omni-kit/state/borrow/borrowFormReducto.types'
+import { OmniMultiplyFormState } from 'features/omni-kit/state/multiply/multiplyFormReducto.types'
+import { OmniEarnFormState } from 'features/omni-kit/state/earn/earnFormReducto.types'
+
 export type OmniProduct = 'borrow' | 'earn' | 'multiply'
 export type OmniFlow = 'open' | 'manage'
 export type OmniSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction' | 'transition'
@@ -40,3 +44,8 @@ export type OmniMultiplyAction =
   | 'withdraw-multiply'
   | 'switch-multiply'
   | 'close-multiply'
+
+
+export type OmniFormAction = OmniBorrowAction | OmniEarnAction | OmniMultiplyAction
+
+export type OmniFormState = OmniBorrowFormState | OmniMultiplyFormState| OmniEarnFormState

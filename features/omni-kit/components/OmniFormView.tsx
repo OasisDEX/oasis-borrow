@@ -7,17 +7,16 @@ import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ethers } from 'ethers'
 import { AjnaDupePositionModal } from 'features/ajna/positions/common/components/AjnaDupePositionModal'
-import { getAjnaSidebarTitle } from 'features/ajna/positions/common/getAjnaSidebarTitle'
-import { getAjnaSidebarButtonsStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarButtonsStatus'
-import { getAjnaSidebarPrimaryButtonActions } from 'features/ajna/positions/common/helpers/getAjnaSidebarPrimaryButtonActions'
-import { getAjnaSidebarTransactionStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarTransactionStatus'
 import { getFlowStateConfig } from 'features/ajna/positions/common/helpers/getFlowStateConfig'
 import {
   ajnaFlowStateFilter,
   getAjnaFlowStateFilter,
 } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
-import { getPrimaryButtonLabelKey } from 'features/ajna/positions/common/helpers/getPrimaryButtonLabelKey'
 import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
+import { getOmniPrimaryButtonLabelKey } from 'features/omni-kit/common/helpers/getOmniPrimaryButtonLabelKey'
+import { getOmniSidebarButtonsStatus } from 'features/omni-kit/common/helpers/getOmniSidebarButtonsStatus'
+import { getOmniSidebarPrimaryButtonActions } from 'features/omni-kit/common/helpers/getOmniSidebarPrimaryButtonActions'
+import { getOmniSidebarTransactionStatus } from 'features/omni-kit/common/helpers/getOmniSidebarTransactionStatus'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { useConnection } from 'features/web3OnBoard/useConnection'
@@ -96,7 +95,7 @@ export function OmniFormView({
     dynamicMetadata,
   } = useOmniProductContext(product)
 
-  const { txHandler } = dynamicMetadata(product)
+  const { txHandler, interestRate, sidebarTitle } = dynamicMetadata(product)
 
   const { connect } = useConnection()
   const { walletAddress } = useAccount()
@@ -107,7 +106,7 @@ export function OmniFormView({
     ...(dpmProxy && { existingProxy: dpmProxy }),
     ...getFlowStateConfig({
       collateralToken,
-      fee: position.pool.interestRate,
+      fee: interestRate,
       flow,
       quoteToken,
       state,
@@ -162,7 +161,7 @@ export function OmniFormView({
     isPrimaryButtonHidden,
     isPrimaryButtonLoading,
     isTextButtonHidden,
-  } = getAjnaSidebarButtonsStatus({
+  } = getOmniSidebarButtonsStatus({
     action: state.action,
     ajnaSafetySwitchOn,
     currentStep,
@@ -182,7 +181,7 @@ export function OmniFormView({
     isTxWaitingForApproval,
     walletAddress,
   })
-  const primaryButtonLabel = getPrimaryButtonLabelKey({
+  const primaryButtonLabel = getOmniPrimaryButtonLabelKey({
     currentStep,
     flow,
     hasAllowance: flowState.isAllowanceReady,
@@ -195,7 +194,7 @@ export function OmniFormView({
     state,
     walletAddress,
   })
-  const primaryButtonActions = getAjnaSidebarPrimaryButtonActions({
+  const primaryButtonActions = getOmniSidebarPrimaryButtonActions({
     currentStep,
     editingStep,
     flow,
@@ -229,7 +228,7 @@ export function OmniFormView({
     setisTransitionWaitingForApproval(false)
     setStep(editingStep)
   }
-  const status = getAjnaSidebarTransactionStatus({
+  const status = getOmniSidebarTransactionStatus({
     etherscan: context && getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan.url,
     isTxInProgress,
     isTxSuccess,
@@ -242,10 +241,8 @@ export function OmniFormView({
     txDetails,
   })
 
-  const title = getAjnaSidebarTitle({ currentStep, isFormFrozen, product, position, isOracless })
-
   const sidebarSectionProps: SidebarSectionProps = {
-    title,
+    title: sidebarTitle,
     dropdown,
     content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {

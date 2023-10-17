@@ -11,6 +11,7 @@ import { getAjnaBorrowPaybackMax } from 'features/ajna/positions/borrow/helpers/
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
 import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
+import { getAjnaSidebarTitle } from 'features/ajna/positions/common/getAjnaSidebarTitle'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
@@ -60,6 +61,7 @@ export const useAjnaMetadata = (product: OmniProduct) => {
       quoteDigits,
       flow,
     },
+    steps: { currentStep },
   } = useOmniGeneralContext()
   const productContext = useOmniProductContext(product)
   // TODO customState that we can use for earn or elsewhere
@@ -146,6 +148,13 @@ export const useAjnaMetadata = (product: OmniProduct) => {
       <AjnaTokensBannerController flow={flow} />
     ),
     riskSidebar: <AjnaFormContentRisk />,
+    sidebarTitle: getAjnaSidebarTitle({
+      currentStep,
+      isFormFrozen: productContext.validation.isFormFrozen,
+      product,
+      position,
+      isOracless,
+    }),
   }
 }
 
