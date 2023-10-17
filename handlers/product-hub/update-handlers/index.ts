@@ -1,3 +1,4 @@
+import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 import aaveV2Handler from './aaveV2/aaveV2Handler'
@@ -18,5 +19,13 @@ export const PRODUCT_HUB_HANDLERS = {
   [LendingProtocol.AaveV3]: aaveV3Handler,
   [LendingProtocol.Ajna]: ajnaHandler,
   [LendingProtocol.Maker]: makerHandler,
+  [LendingProtocol.MorphoBlue]: () =>
+    // TODO: add Morpho Blue handler
+    new Promise((resolve) => {
+      resolve({
+        table: [],
+        warnings: [],
+      })
+    }) as ProductHubHandlerResponse,
   [LendingProtocol.SparkV3]: sparkV3Handler,
 }
