@@ -31,7 +31,6 @@ export function OmniMultiplyOverviewController() {
   } = useOmniGeneralContext()
 
   const {
-    notifications,
     position: {
       isSimulationLoading,
       currentPosition: { position, simulation },
@@ -39,8 +38,11 @@ export function OmniMultiplyOverviewController() {
     dynamicMetadata,
   } = useOmniProductContext('multiply')
 
-  const { afterBuyingPower, shouldShowDynamicLtv, interestRate, overviewBanner } =
-    dynamicMetadata('multiply')
+  const {
+    values: { afterBuyingPower, shouldShowDynamicLtv, interestRate },
+    elements: { overviewBanner },
+    notifications,
+  } = dynamicMetadata('multiply')
 
   const changeVariant = 'positive'
 

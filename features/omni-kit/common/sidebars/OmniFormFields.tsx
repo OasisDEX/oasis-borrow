@@ -55,8 +55,12 @@ export function OmniFormFieldDeposit({
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
-    validation: { isFormFrozen },
+    dynamicMetadata,
   } = useOmniProductContext(product)
+
+  const {
+    validations: { isFormFrozen },
+  } = dynamicMetadata(product)
 
   return 'depositAmount' in state && 'depositAmountUSD' in state ? (
     <VaultActionInput
@@ -117,8 +121,12 @@ export function OmniFormFieldGenerate({
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
-    validation: { isFormFrozen },
+    dynamicMetadata,
   } = useOmniProductContext(product)
+
+  const {
+    validations: { isFormFrozen },
+  } = dynamicMetadata(product)
 
   return 'generateAmount' in state && 'generateAmountUSD' in state ? (
     <VaultActionInput
@@ -187,8 +195,12 @@ export function OmniFormFieldPayback({
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
-    validation: { isFormFrozen },
+    dynamicMetadata,
   } = useOmniProductContext(product)
+
+  const {
+    validations: { isFormFrozen },
+  } = dynamicMetadata(product)
 
   return 'paybackAmount' in state && 'paybackAmountUSD' in state ? (
     <VaultActionInput
@@ -264,8 +276,12 @@ export function OmniFormFieldWithdraw({
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
-    validation: { isFormFrozen },
+    dynamicMetadata,
   } = useOmniProductContext(product)
+
+  const {
+    validations: { isFormFrozen },
+  } = dynamicMetadata(product)
 
   return 'withdrawAmount' in state && 'withdrawAmountUSD' in state ? (
     <VaultActionInput

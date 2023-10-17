@@ -20,7 +20,9 @@ import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
-export function useAjnaOmniTxHandler(): () => void {
+// TODO ideally this hook shouldn't accept any prop
+// TODO currently it's not possible to access dynamicMetadata at this level due to circular dependency
+export function useAjnaOmniTxHandler({ isFormValid }: { isFormValid: boolean }): () => void {
   const { txHelpers$, context$ } = useMainContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
@@ -51,7 +53,6 @@ export function useAjnaOmniTxHandler(): () => void {
       setIsLoadingSimulation,
       setSimulation,
     },
-    validation: { isFormValid },
   } = useOmniProductContext(product)
 
   const [txData, setTxData] = useState<AjnaTxData>()

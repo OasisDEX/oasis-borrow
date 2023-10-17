@@ -2,7 +2,6 @@ import type { AjnaEarnPosition, BorrowishPosition, SwapData } from '@oasisdex/dm
 import { AjnaPosition } from '@oasisdex/dma-library'
 import type { AjnaSimulationData } from 'actions/ajna'
 import type BigNumber from 'bignumber.js'
-import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
@@ -18,8 +17,11 @@ import type { useOmniEarnFormReducto } from 'features/omni-kit/state/earn/earnFo
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn/earnFormReducto.types'
 import type { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply/multiplyFormReducto.types'
-import type { OmniProduct, OmniValidationItem } from 'features/omni-kit/types/common.types'
-import { useAppConfig } from 'helpers/config'
+import type {
+  OmniProduct,
+  OmniSimulationCommon,
+  OmniValidations,
+} from 'features/omni-kit/types/common.types'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
@@ -27,16 +29,9 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 import { useOmniGeneralContext } from './OmniGeneralContext'
 
-interface StaticProductMetadata {
-  getValidation: any
-  getNotifications: any
-  customHehe: {
-    zelipapo: string
-    extraInput: React.ReactNode
-  }
-}
-
 export type DynamicProductMetadata = (product: OmniProduct) => {
+  validations: OmniValidations
+  notifications: DetailsSectionNotificationItem[]
   handlers: {
     txHandler: () => void
   }
@@ -63,7 +58,6 @@ export type DynamicProductMetadata = (product: OmniProduct) => {
 }
 
 interface ProductContextProviderPropsWithBorrow {
-  staticMetadata: StaticProductMetadata
   dynamicMetadata: DynamicProductMetadata
   formReducto: typeof useOmniBorrowFormReducto
   formDefaults: Partial<OmniBorrowFormState>
@@ -74,7 +68,6 @@ interface ProductContextProviderPropsWithBorrow {
 }
 
 interface ProductContextProviderPropsWithEarn {
-  staticMetadata: StaticProductMetadata
   dynamicMetadata: DynamicProductMetadata
   formReducto: typeof useOmniEarnFormReducto
   formDefaults: Partial<OmniEarnFormState>
@@ -85,7 +78,6 @@ interface ProductContextProviderPropsWithEarn {
 }
 
 interface ProductContextProviderPropsWithMultiply {
-  staticMetadata: StaticProductMetadata
   dynamicMetadata: DynamicProductMetadata
   formReducto: typeof useOmniMultiplyFormReducto
   formDefaults: Partial<OmniMultiplyFormState>
@@ -120,22 +112,12 @@ interface ProductContextPosition<P, A> {
   setCachedSwap: (swap: SwapData) => void
   positionAuction: A
   history: AjnaUnifiedHistoryEvent[]
+  simulationCommon: OmniSimulationCommon
 }
 
 interface GenericProductContext<P, F, A> {
   form: F
   position: ProductContextPosition<P, A>
-  validation: {
-    errors: OmniValidationItem[]
-    hasErrors: boolean
-    isFormFrozen: boolean
-    isFormValid: boolean
-    notices: OmniValidationItem[]
-    successes: OmniValidationItem[]
-    warnings: OmniValidationItem[]
-  }
-  notifications: DetailsSectionNotificationItem[]
-  staticMetadata: StaticProductMetadata
   dynamicMetadata: DynamicProductMetadata
 }
 
@@ -188,8 +170,6 @@ export function useOmniProductContext<T extends OmniProduct>(product: T): PickPr
 }
 
 export function OmniProductContextProvider({
-  // here we should inject staticMetadata
-  staticMetadata,
   dynamicMetadata,
   children,
   formDefaults,
@@ -199,23 +179,17 @@ export function OmniProductContextProvider({
   positionAuction,
   positionHistory,
 }: PropsWithChildren<ProductDetailsContextProviderProps>) {
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
   const { walletAddress } = useAccount()
-  const gasEstimation = useGasEstimationContext()
   const { positionIdFromDpmProxy$ } = useProductContext()
 
   const {
     environment: {
       collateralBalance,
       collateralPrecision,
-      collateralToken,
       ethBalance,
       ethPrice,
-      flow,
       quoteBalance,
       quotePrecision,
-      quoteToken,
-      isOracless,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -243,66 +217,10 @@ export function OmniProductContextProvider({
       position.riskRatio.loanToValue,
     )
   }
-
-  const validation = useMemo(
-    () =>
-      staticMetadata.getValidation({
-        ajnaSafetySwitchOn,
-        flow,
-        collateralBalance,
-        collateralToken,
-        quoteToken,
-        currentStep,
-        ethBalance,
-        ethPrice,
-        gasEstimationUsd: gasEstimation?.usdValue,
-        product,
-        quoteBalance,
-        simulationErrors: simulation?.errors,
-        simulationWarnings: simulation?.warnings,
-        simulationNotices: simulation?.notices,
-        simulationSuccesses: simulation?.successes,
-        state,
-        position,
-        positionAuction,
-        txError: txDetails?.txError,
-      }),
-    [
-      currentStep,
-      collateralBalance.toNumber(),
-      collateralToken,
-      quoteToken,
-      ethBalance.toNumber(),
-      ethPrice.toNumber(),
-      gasEstimation?.usdValue.toNumber(),
-      quoteBalance.toNumber(),
-      simulation?.errors,
-      state,
-      txDetails?.txError,
-    ],
-  )
-
-  const notifications = useMemo(
-    () =>
-      staticMetadata.getNotifications({
-        ajnaSafetySwitchOn,
-        flow,
-        position,
-        positionAuction,
-        product,
-        quoteToken,
-        collateralToken,
-        dispatch: form.dispatch,
-        updateState: form.updateState,
-        isOracless,
-      }),
-    [quoteToken, collateralToken, position],
-  )
-
+  simulation?.errors
   const [context, setContext] = useState<
     GenericProductContext<typeof position, typeof form, typeof positionAuction>
   >({
-    staticMetadata,
     dynamicMetadata,
     form,
     position: {
@@ -312,13 +230,17 @@ export function OmniProductContextProvider({
       isSimulationLoading,
       resolvedId: positionIdFromDpmProxyData,
       history: positionHistory,
+      simulationCommon: {
+        errors: simulation?.errors as OmniSimulationCommon['errors'],
+        warnings: simulation?.warnings as OmniSimulationCommon['warnings'],
+        notices: simulation?.notices as OmniSimulationCommon['notices'],
+        successes: simulation?.successes as OmniSimulationCommon['successes'],
+      },
       setCachedPosition: (positionSet) => setCachedPosition(positionSet),
       setIsLoadingSimulation,
       setSimulation,
       setCachedSwap: (swap) => setCachedSwap(swap),
     },
-    validation,
-    notifications,
   })
 
   useEffect(() => {
@@ -327,7 +249,6 @@ export function OmniProductContextProvider({
 
     setContext((prev) => ({
       ...prev,
-      staticMetadata,
       dynamicMetadata,
       form,
       position: {
@@ -350,11 +271,8 @@ export function OmniProductContextProvider({
         },
         history: positionHistory,
       },
-      validation,
-      notifications,
     }))
   }, [
-    staticMetadata,
     dynamicMetadata,
     cachedPosition,
     collateralBalance,
@@ -368,8 +286,6 @@ export function OmniProductContextProvider({
     quoteBalance,
     simulation,
     txDetails,
-    validation,
-    notifications,
     walletAddress,
     positionHistory,
     cachedSwap,

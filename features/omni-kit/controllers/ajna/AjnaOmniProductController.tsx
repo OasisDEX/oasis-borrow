@@ -13,7 +13,7 @@ import { OmniProductContextProvider } from 'features/omni-kit/contexts/OmniProdu
 import { OmniBorrowPositionController } from 'features/omni-kit/controllers/borrow/OmniBorrowPositionController'
 import type { ProductsControllerProps } from 'features/omni-kit/controllers/common/OmniProductController'
 import { OmniMultiplyPositionController } from 'features/omni-kit/controllers/multiply/OmniMultiplyPositionController'
-import { ajnaStaticMetadata, useAjnaMetadata } from 'features/omni-kit/metadata/useAjnaMetadata'
+import { useAjnaMetadata } from 'features/omni-kit/metadata/useAjnaMetadata'
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniEarnFormReducto } from 'features/omni-kit/state/earn/earnFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
@@ -31,7 +31,6 @@ export const AjnaOmniProductController: FC<ProductsControllerProps> = ({
       {dpmPosition.product === 'borrow' && (
         <AjnaCustomStateContextProvider>
           <OmniProductContextProvider
-            staticMetadata={ajnaStaticMetadata}
             dynamicMetadata={useAjnaMetadata}
             formDefaults={{
               action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
@@ -49,7 +48,6 @@ export const AjnaOmniProductController: FC<ProductsControllerProps> = ({
       {dpmPosition.product === 'earn' && (
         <AjnaCustomStateContextProvider>
           <OmniProductContextProvider
-            staticMetadata={ajnaStaticMetadata}
             dynamicMetadata={useAjnaMetadata}
             formDefaults={{
               action: getAjnaEarnDefaultAction(flow, positionData as AjnaEarnPosition),
@@ -69,7 +67,6 @@ export const AjnaOmniProductController: FC<ProductsControllerProps> = ({
       {dpmPosition.product === 'multiply' && (
         <AjnaCustomStateContextProvider>
           <OmniProductContextProvider
-            staticMetadata={ajnaStaticMetadata}
             dynamicMetadata={useAjnaMetadata}
             formDefaults={{
               action: flow === 'open' ? 'open-multiply' : 'adjust',

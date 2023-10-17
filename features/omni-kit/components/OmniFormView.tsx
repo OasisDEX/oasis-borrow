@@ -91,13 +91,13 @@ export function OmniFormView({
       resolvedId,
       currentPosition: { position },
     },
-    validation: { isFormValid, hasErrors, isFormFrozen },
     dynamicMetadata,
   } = useOmniProductContext(product)
 
   const {
     handlers: { txHandler },
     values: { interestRate, sidebarTitle },
+    validations: { isFormValid, isFormFrozen, hasErrors },
   } = dynamicMetadata(product)
 
   const { connect } = useConnection()

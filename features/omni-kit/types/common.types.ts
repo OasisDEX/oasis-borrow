@@ -1,6 +1,10 @@
 import { OmniBorrowFormState } from 'features/omni-kit/state/borrow/borrowFormReducto.types'
 import { OmniMultiplyFormState } from 'features/omni-kit/state/multiply/multiplyFormReducto.types'
 import { OmniEarnFormState } from 'features/omni-kit/state/earn/earnFormReducto.types'
+import { AjnaGenericPosition } from 'features/ajna/common/types'
+import BigNumber from 'bignumber.js'
+import { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
+import { TxError } from 'helpers/types'
 
 export type OmniProduct = 'borrow' | 'earn' | 'multiply'
 export type OmniFlow = 'open' | 'manage'
@@ -49,3 +53,43 @@ export type OmniMultiplyAction =
 export type OmniFormAction = OmniBorrowAction | OmniEarnAction | OmniMultiplyAction
 
 export type OmniFormState = OmniBorrowFormState | OmniMultiplyFormState| OmniEarnFormState
+
+
+export type OmniValidations = {
+  isFormValid: boolean
+  isFormFrozen: boolean
+  hasErrors: boolean
+  errors: OmniValidationItem[]
+  warnings: OmniValidationItem[]
+  notices: OmniValidationItem[]
+  successes: OmniValidationItem[]
+}
+
+export interface OmniSimulationCommon {
+  errors: { name: string; data?: { [key: string]: string } }[]
+  warnings: { name: string; data?: { [key: string]: string } }[]
+  successes: {name: string, data?: {[key: string]: string}}[]
+  notices: {name: string, data?: {[key: string]: string}}[]
+}
+
+export interface GetOmniBorrowValidationsParams {
+  ajnaSafetySwitchOn: boolean
+  flow: OmniFlow
+  collateralBalance: BigNumber
+  collateralToken: string
+  quoteToken: string
+  currentStep: OmniSidebarStep
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  gasEstimationUsd?: BigNumber
+  product: OmniProduct
+  quoteBalance: BigNumber
+  simulationErrors?: OmniSimulationCommon['errors']
+  simulationWarnings?: OmniSimulationCommon['warnings']
+  simulationNotices?: OmniSimulationCommon['notices']
+  simulationSuccesses?: OmniSimulationCommon['successes']
+  state: OmniFormState
+  position: AjnaGenericPosition
+  positionAuction: AjnaPositionAuction
+  txError?: TxError
+}

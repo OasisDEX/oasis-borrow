@@ -1,16 +1,14 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
 import { getToken } from 'blockchain/tokensMetadata'
+import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
-import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
 import { getAjnaBorrowPaybackMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowPaybackMax'
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
-import {
-  ContentCardThresholdPrice,
-} from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
+import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { getAjnaSidebarTitle } from 'features/ajna/positions/common/getAjnaSidebarTitle'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
@@ -18,11 +16,15 @@ import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOri
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
-import { getAjnaValidation } from 'features/ajna/positions/common/validation'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import type { DynamicProductMetadata, ProductContextWithBorrow } from 'features/omni-kit/contexts/OmniProductContext'
+import type {
+  DynamicProductMetadata,
+  ProductContextWithBorrow,
+} from 'features/omni-kit/contexts/OmniProductContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
+import { getAjnaOmniValidation } from 'features/omni-kit/helpers/ajna/getAjnaOmniValidation'
 import { useAjnaOmniTxHandler } from 'features/omni-kit/hooks/ajna/useAjnaOmniTxHandler'
+import { useAppConfig } from 'helpers/config'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -30,7 +32,8 @@ import React from 'react'
 
 export const useAjnaMetadata: DynamicProductMetadata = (product) => {
   const { t } = useTranslation()
-
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
+  const gasEstimation = useGasEstimationContext()
   const {
     environment: {
       isOracless,
@@ -41,8 +44,12 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
       quoteBalance,
       quoteDigits,
       flow,
+      collateralBalance,
+      ethBalance,
+      ethPrice,
     },
     steps: { currentStep },
+    tx: { txDetails },
   } = useOmniGeneralContext()
   const productContext = useOmniProductContext(product)
   // TODO customState that we can use for earn or elsewhere
@@ -60,9 +67,48 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
   const shouldShowDynamicLtv = position.pool.lowestUtilizedPriceIndex.gt(zero)
   const changeVariant = getBorrowishChangeVariant({ simulation, isOracless })
 
+  const validations = getAjnaOmniValidation({
+    ajnaSafetySwitchOn,
+    flow,
+    collateralBalance,
+    collateralToken,
+    quoteToken,
+    currentStep,
+    ethBalance,
+    ethPrice,
+    gasEstimationUsd: gasEstimation?.usdValue,
+    product,
+    quoteBalance,
+    simulationErrors: productContext.position.simulationCommon?.errors,
+    simulationWarnings: productContext.position.simulationCommon?.warnings,
+    simulationNotices: productContext.position.simulationCommon?.notices,
+    simulationSuccesses: productContext.position.simulationCommon?.successes,
+    // TODO can't be just borrowish
+    state: borrowishContext.form.state,
+    position,
+    positionAuction: productContext.position.positionAuction,
+    txError: txDetails?.txError,
+  })
+
+  const notifications = getAjnaNotifications({
+    ajnaSafetySwitchOn,
+    flow,
+    position,
+    positionAuction: productContext.position.positionAuction,
+    product,
+    quoteToken,
+    collateralToken,
+    // TODO can't be just borrowish
+    dispatch: borrowishContext.form.dispatch,
+    updateState: borrowishContext.form.updateState,
+    isOracless,
+  })
+
   return {
+    notifications,
+    validations,
     handlers: {
-      txHandler: useAjnaOmniTxHandler(),
+      txHandler: useAjnaOmniTxHandler({ isFormValid: validations.isFormValid }),
     },
     values: {
       netBorrowCost: position.pool.interestRate,
@@ -94,7 +140,7 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
       }),
       sidebarTitle: getAjnaSidebarTitle({
         currentStep,
-        isFormFrozen: productContext.validation.isFormFrozen,
+        isFormFrozen: validations.isFormFrozen,
         product,
         position,
         isOracless,
@@ -142,21 +188,4 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
       riskSidebar: <AjnaFormContentRisk />,
     },
   }
-}
-
-// copies, vaalidations, in general things that does not require product context
-export const ajnaStaticMetadata = {
-  getValidation: getAjnaValidation,
-  getNotifications: getAjnaNotifications,
-  customHehe: {
-    zelipapo: 'papo',
-    extraInput: (
-      <VaultActionInput
-        action="deposit"
-        currencyCode="USDC"
-        hasError={false}
-        onChange={() => null}
-      />
-    ),
-  },
 }

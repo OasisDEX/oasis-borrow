@@ -18,8 +18,12 @@ export function OmniFormContentSummary({
   } = useOmniGeneralContext()
   const {
     form: { dispatch },
-    validation: { errors, notices, successes, warnings },
+    dynamicMetadata,
   } = useOmniProductContext(product)
+
+  const {
+    validations: { errors, notices, successes, warnings },
+  } = dynamicMetadata(product)
 
   return (
     <>

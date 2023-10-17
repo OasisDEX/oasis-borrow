@@ -25,8 +25,9 @@ export function OmniBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     dynamicMetadata,
   } = useOmniProductContext('borrow')
 
-  const { shouldShowDynamicLtv, afterPositionDebt, afterAvailableToBorrow } =
-    dynamicMetadata('borrow')
+  const {
+    values: { shouldShowDynamicLtv, afterPositionDebt, afterAvailableToBorrow },
+  } = dynamicMetadata('borrow')
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,
