@@ -5,6 +5,7 @@ import { ALL_ASSETS, productHubOptionsMap } from 'features/productHub/meta'
 import { ProductHubProductType } from 'features/productHub/types'
 import { ProductHubView } from 'features/productHub/views'
 import { useAppConfig } from 'helpers/config'
+import { useScrollToTop } from 'helpers/useScrollToTop'
 import type { GetStaticPaths } from 'next'
 import React from 'react'
 
@@ -12,6 +13,7 @@ import type { ProductHubRouteHandlerProps } from './ProductHubRouteHandler.types
 
 function ProductHubRouteHandler({ product, token }: ProductHubRouteHandlerProps) {
   const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
+  useScrollToTop(product)
 
   return (
     <AppLayout>
