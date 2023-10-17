@@ -36,24 +36,30 @@ interface StaticProductMetadata {
   }
 }
 
-type DynamicProductMetadata = (product: OmniProduct) => {
-  txHandler: () => void
-  netBorrowCost: BigNumber
-  afterBuyingPower: BigNumber | undefined
-  highlighterOrderInformation: JSX.Element | undefined
-  shouldShowDynamicLtv: boolean
-  debtMin: BigNumber
-  debtMax: BigNumber
-  interestRate: BigNumber
-  afterAvailableToBorrow: BigNumber | undefined
-  afterPositionDebt: BigNumber | undefined
-  extraOverviewCards: JSX.Element[]
-  collateralMax: BigNumber
-  paybackMax: BigNumber
-  changeVariant: 'positive' | 'negative'
-  overviewBanner: JSX.Element | undefined
-  riskSidebar: JSX.Element
-  sidebarTitle: string
+export type DynamicProductMetadata = (product: OmniProduct) => {
+  handlers: {
+    txHandler: () => void
+  }
+  values: {
+    debtMin: BigNumber
+    debtMax: BigNumber
+    interestRate: BigNumber
+    afterAvailableToBorrow: BigNumber | undefined
+    afterPositionDebt: BigNumber | undefined
+    netBorrowCost: BigNumber
+    afterBuyingPower: BigNumber | undefined
+    collateralMax: BigNumber
+    paybackMax: BigNumber
+    shouldShowDynamicLtv: boolean
+    changeVariant: 'positive' | 'negative'
+    sidebarTitle: string
+  }
+  elements: {
+    overviewBanner: JSX.Element | undefined
+    riskSidebar: JSX.Element
+    extraOverviewCards: JSX.Element[]
+    highlighterOrderInformation: JSX.Element | undefined
+  }
 }
 
 interface ProductContextProviderPropsWithBorrow {

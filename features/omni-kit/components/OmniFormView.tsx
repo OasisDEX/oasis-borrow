@@ -95,7 +95,10 @@ export function OmniFormView({
     dynamicMetadata,
   } = useOmniProductContext(product)
 
-  const { txHandler, interestRate, sidebarTitle } = dynamicMetadata(product)
+  const {
+    handlers: { txHandler },
+    values: { interestRate, sidebarTitle },
+  } = dynamicMetadata(product)
 
   const { connect } = useConnection()
   const { walletAddress } = useAccount()

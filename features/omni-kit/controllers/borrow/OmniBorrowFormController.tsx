@@ -26,7 +26,9 @@ export function OmniBorrowFormController() {
     dynamicMetadata,
   } = useOmniProductContext('borrow')
 
-  const { riskSidebar } = dynamicMetadata('borrow')
+  const {
+    elements: { riskSidebar },
+  } = dynamicMetadata('borrow')
 
   return (
     <OmniFormView

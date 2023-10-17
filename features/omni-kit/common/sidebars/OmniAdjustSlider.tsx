@@ -43,7 +43,9 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
     dynamicMetadata,
   } = useOmniProductContext(product)
 
-  const { changeVariant } = dynamicMetadata(product)
+  const {
+    values: { changeVariant },
+  } = dynamicMetadata(product)
 
   const [depositChanged, setDepositChanged] = useState(false)
 

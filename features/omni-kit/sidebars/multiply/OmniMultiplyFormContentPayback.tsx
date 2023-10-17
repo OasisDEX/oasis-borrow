@@ -20,7 +20,9 @@ export function OmniMultiplyFormContentPayback() {
     dynamicMetadata,
   } = useOmniProductContext('multiply')
 
-  const { paybackMax } = dynamicMetadata('multiply')
+  const {
+    values: { paybackMax },
+  } = dynamicMetadata('multiply')
 
   return (
     <>

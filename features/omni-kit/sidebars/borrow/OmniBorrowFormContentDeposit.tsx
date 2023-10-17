@@ -21,7 +21,10 @@ export function OmniBorrowFormContentDeposit() {
     dynamicMetadata,
   } = useOmniProductContext('borrow')
 
-  const { debtMax, debtMin, highlighterOrderInformation } = dynamicMetadata('borrow')
+  const {
+    values: { debtMax, debtMin },
+    elements: { highlighterOrderInformation },
+  } = dynamicMetadata('borrow')
 
   return (
     <>

@@ -37,7 +37,9 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     dynamicMetadata,
   } = useOmniProductContext('multiply')
 
-  const { shouldShowDynamicLtv } = dynamicMetadata('multiply')
+  const {
+    values: { shouldShowDynamicLtv },
+  } = dynamicMetadata('multiply')
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,

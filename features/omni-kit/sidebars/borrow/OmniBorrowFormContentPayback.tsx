@@ -23,7 +23,9 @@ export function OmniBorrowFormContentPayback() {
     dynamicMetadata,
   } = useOmniProductContext('borrow')
 
-  const { collateralMax, paybackMax } = dynamicMetadata('borrow')
+  const {
+    values: { collateralMax, paybackMax },
+  } = dynamicMetadata('borrow')
 
   const { debtAmount } = position
 

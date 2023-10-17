@@ -18,7 +18,9 @@ export function OmniMultiplyFormContentWithdrawCollateral() {
     dynamicMetadata,
   } = useOmniProductContext('multiply')
 
-  const { collateralMax } = dynamicMetadata('multiply')
+  const {
+    values: { collateralMax },
+  } = dynamicMetadata('multiply')
 
   return (
     <>

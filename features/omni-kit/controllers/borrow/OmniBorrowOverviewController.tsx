@@ -37,12 +37,8 @@ export function OmniBorrowOverviewController() {
   } = useOmniProductContext('borrow')
 
   const {
-    interestRate,
-    afterPositionDebt,
-    afterAvailableToBorrow,
-    extraOverviewCards,
-    changeVariant,
-    overviewBanner,
+    values: { changeVariant, interestRate, afterPositionDebt, afterAvailableToBorrow },
+    elements: { extraOverviewCards, overviewBanner },
   } = dynamicMetadata('borrow')
 
   const liquidationPrice = isShort

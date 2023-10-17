@@ -25,7 +25,9 @@ export function OmniMultiplyFormController() {
     dynamicMetadata,
   } = useOmniProductContext('multiply')
 
-  const { riskSidebar } = dynamicMetadata('multiply')
+  const {
+    elements: { riskSidebar },
+  } = dynamicMetadata('multiply')
 
   return (
     <OmniFormView

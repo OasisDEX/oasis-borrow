@@ -28,7 +28,10 @@ import { getAjnaEarnDefaultUiDropdown } from 'features/ajna/positions/earn/helpe
 import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
 import { AjnaCustomStateContextProvider } from 'features/omni-kit/contexts/custom/AjnaCustomStateContext'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import type { ProductContextWithBorrow } from 'features/omni-kit/contexts/OmniProductContext'
+import type {
+  DynamicProductMetadata,
+  ProductContextWithBorrow,
+} from 'features/omni-kit/contexts/OmniProductContext'
 import {
   OmniProductContextProvider,
   useOmniProductContext,
@@ -40,14 +43,13 @@ import { useAjnaOmniTxHandler } from 'features/omni-kit/hooks/ajna/useAjnaOmniTx
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniEarnFormReducto } from 'features/omni-kit/state/earn/earnFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
-import type { OmniProduct } from 'features/omni-kit/types/common.types'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 
-export const useAjnaMetadata = (product: OmniProduct) => {
+export const useAjnaMetadata: DynamicProductMetadata = (product) => {
   const { t } = useTranslation()
 
   const {
@@ -80,81 +82,86 @@ export const useAjnaMetadata = (product: OmniProduct) => {
   const changeVariant = getBorrowishChangeVariant({ simulation, isOracless })
 
   return {
-    txHandler: useAjnaOmniTxHandler(),
-    netBorrowCost: position.pool.interestRate,
-    afterBuyingPower:
-      simulation && !simulation.pool.lowestUtilizedPriceIndex.isZero()
-        ? simulation.buyingPower
-        : undefined,
-    highlighterOrderInformation:
-      ['borrow', 'multiply'].includes(product) && borrowishContext.form.state.generateAmount ? (
-        <HighlightedOrderInformation
-          label={t('ajna.position-page.borrow.common.form.origination-fee', { quoteToken })}
-          symbol={quoteToken}
-          value={`${originationFeeFormatted} ${!isOracless ? originationFeeFormattedUSD : ''}`}
-        />
+    handlers: {
+      txHandler: useAjnaOmniTxHandler(),
+    },
+    values: {
+      netBorrowCost: position.pool.interestRate,
+      afterBuyingPower:
+        simulation && !simulation.pool.lowestUtilizedPriceIndex.isZero()
+          ? simulation.buyingPower
+          : undefined,
+      shouldShowDynamicLtv,
+      debtMin: getAjnaBorrowDebtMin({ digits: getToken(quoteToken).digits, position }),
+      debtMax: getAjnaBorrowDebtMax({
+        digits: getToken(quoteToken).precision,
+        position,
+        simulation,
+      }),
+      interestRate: position.pool.interestRate,
+      changeVariant,
+      afterAvailableToBorrow:
+        simulation && negativeToZero(simulation.debtAvailable().minus(originationFee)),
+      afterPositionDebt: simulation?.debtAmount.plus(originationFee),
+      collateralMax: getAjnaBorrowCollateralMax({
+        digits: getToken(collateralToken).digits,
+        position,
+        simulation,
+      }),
+      paybackMax: getAjnaBorrowPaybackMax({
+        balance: quoteBalance,
+        digits: quoteDigits,
+        position,
+      }),
+      sidebarTitle: getAjnaSidebarTitle({
+        currentStep,
+        isFormFrozen: productContext.validation.isFormFrozen,
+        product,
+        position,
+        isOracless,
+      }),
+    },
+    elements: {
+      highlighterOrderInformation:
+        ['borrow', 'multiply'].includes(product) && borrowishContext.form.state.generateAmount ? (
+          <HighlightedOrderInformation
+            label={t('ajna.position-page.borrow.common.form.origination-fee', { quoteToken })}
+            symbol={quoteToken}
+            value={`${originationFeeFormatted} ${!isOracless ? originationFeeFormattedUSD : ''}`}
+          />
+        ) : undefined,
+      extraOverviewCards: [
+        isOracless ? (
+          <ContentCardThresholdPrice
+            isLoading={productContext.position.isSimulationLoading}
+            thresholdPrice={position.thresholdPrice}
+            debtAmount={position.debtAmount}
+            collateralAmount={position.collateralAmount}
+            afterThresholdPrice={simulation?.thresholdPrice}
+            priceFormat={priceFormat}
+            withTooltips
+            changeVariant={changeVariant}
+            {...(shouldShowDynamicLtv && {
+              lup: position.pool.lup,
+            })}
+          />
+        ) : (
+          <ContentCardLoanToValue
+            isLoading={productContext.position.isSimulationLoading}
+            loanToValue={position.riskRatio.loanToValue}
+            afterLoanToValue={simulation?.riskRatio.loanToValue}
+            {...(shouldShowDynamicLtv && {
+              dynamicMaxLtv: position.maxRiskRatio.loanToValue,
+            })}
+            changeVariant={changeVariant}
+          />
+        ),
+      ],
+      overviewBanner: isPoolWithRewards({ collateralToken, quoteToken }) ? (
+        <AjnaTokensBannerController flow={flow} />
       ) : undefined,
-    shouldShowDynamicLtv,
-    debtMin: getAjnaBorrowDebtMin({ digits: getToken(quoteToken).digits, position }),
-    debtMax: getAjnaBorrowDebtMax({
-      digits: getToken(quoteToken).precision,
-      position,
-      simulation,
-    }),
-    interestRate: position.pool.interestRate,
-    changeVariant,
-    afterAvailableToBorrow:
-      simulation && negativeToZero(simulation.debtAvailable().minus(originationFee)),
-    afterPositionDebt: simulation?.debtAmount.plus(originationFee),
-    extraOverviewCards: [
-      isOracless ? (
-        <ContentCardThresholdPrice
-          isLoading={productContext.position.isSimulationLoading}
-          thresholdPrice={position.thresholdPrice}
-          debtAmount={position.debtAmount}
-          collateralAmount={position.collateralAmount}
-          afterThresholdPrice={simulation?.thresholdPrice}
-          priceFormat={priceFormat}
-          withTooltips
-          changeVariant={changeVariant}
-          {...(shouldShowDynamicLtv && {
-            lup: position.pool.lup,
-          })}
-        />
-      ) : (
-        <ContentCardLoanToValue
-          isLoading={productContext.position.isSimulationLoading}
-          loanToValue={position.riskRatio.loanToValue}
-          afterLoanToValue={simulation?.riskRatio.loanToValue}
-          {...(shouldShowDynamicLtv && {
-            dynamicMaxLtv: position.maxRiskRatio.loanToValue,
-          })}
-          changeVariant={changeVariant}
-        />
-      ),
-    ],
-    collateralMax: getAjnaBorrowCollateralMax({
-      digits: getToken(collateralToken).digits,
-      position,
-      simulation,
-    }),
-    // TODO this one probably could be on component level and use BorrowishPosition interface
-    paybackMax: getAjnaBorrowPaybackMax({
-      balance: quoteBalance,
-      digits: quoteDigits,
-      position,
-    }),
-    overviewBanner: isPoolWithRewards({ collateralToken, quoteToken }) && (
-      <AjnaTokensBannerController flow={flow} />
-    ),
-    riskSidebar: <AjnaFormContentRisk />,
-    sidebarTitle: getAjnaSidebarTitle({
-      currentStep,
-      isFormFrozen: productContext.validation.isFormFrozen,
-      product,
-      position,
-      isOracless,
-    }),
+      riskSidebar: <AjnaFormContentRisk />,
+    },
   }
 }
 
