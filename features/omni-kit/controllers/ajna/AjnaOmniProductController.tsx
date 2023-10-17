@@ -10,9 +10,11 @@ import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/get
 import { getAjnaBorrowPaybackMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowPaybackMax'
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
 import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
+import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
+import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import type {
   AjnaBorrowishPositionAuction,
@@ -23,7 +25,6 @@ import { AjnaEarnPositionController } from 'features/ajna/positions/earn/control
 import { getAjnaEarnDefaultAction } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultAction'
 import { getAjnaEarnDefaultUiDropdown } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultUiDropdown'
 import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
-import { AjnaMultiplyPositionController } from 'features/ajna/positions/multiply/controls/AjnaMultiplyPositionController'
 import { AjnaCustomStateContextProvider } from 'features/omni-kit/contexts/custom/AjnaCustomStateContext'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import type { ProductContextWithBorrow } from 'features/omni-kit/contexts/OmniProductContext'
@@ -33,6 +34,7 @@ import {
 } from 'features/omni-kit/contexts/OmniProductContext'
 import { OmniBorrowPositionController } from 'features/omni-kit/controllers/borrow/OmniBorrowPositionController'
 import type { ProductsControllerProps } from 'features/omni-kit/controllers/common/OmniProductController'
+import { OmniMultiplyPositionController } from 'features/omni-kit/controllers/multiply/OmniMultiplyPositionController'
 import { useAjnaOmniData } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
 import { useAjnaOmniTxHandler } from 'features/omni-kit/hooks/ajna/useAjnaOmniTxHandler'
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
@@ -59,6 +61,7 @@ export const useAjnaMetadata = (product: OmniProduct) => {
       collateralToken,
       quoteBalance,
       quoteDigits,
+      flow,
     },
   } = useOmniGeneralContext()
   const productContext = useOmniProductContext(product)
@@ -142,6 +145,9 @@ export const useAjnaMetadata = (product: OmniProduct) => {
       digits: quoteDigits,
       position,
     }),
+    overviewBanner: isPoolWithRewards({ collateralToken, quoteToken }) && (
+      <AjnaTokensBannerController flow={flow} />
+    ),
   }
 }
 
@@ -258,7 +264,7 @@ export const AjnaOmniProductController: FC<ProductsControllerProps> = ({
                   positionAuction={auction as AjnaBorrowishPositionAuction}
                   positionHistory={history}
                 >
-                  <AjnaMultiplyPositionController />
+                  <OmniMultiplyPositionController />
                 </OmniProductContextProvider>
               </AjnaCustomStateContextProvider>
             )}

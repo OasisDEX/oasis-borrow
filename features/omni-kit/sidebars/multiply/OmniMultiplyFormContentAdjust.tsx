@@ -1,10 +1,10 @@
 import { OmniAdjustSlider } from 'features/omni-kit/common/sidebars/OmniAdjustSlider'
 import { OmniFormContentSummary } from 'features/omni-kit/common/sidebars/OmniFormContentSummary'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
-import { OmniBorrowFormOrder } from 'features/omni-kit/sidebars/borrow/OmniBorrowFormOrder'
+import { OmniMultiplyFormOrder } from 'features/omni-kit/sidebars/multiply/OmniMultiplyFormOrder'
 import React from 'react'
 
-export function OmniBorrowFormContentAdjust() {
+export function OmniMultiplyFormContentAdjust() {
   const {
     form: {
       state: { loanToValue },
@@ -12,14 +12,14 @@ export function OmniBorrowFormContentAdjust() {
     position: {
       currentPosition: { position },
     },
-  } = useOmniProductContext('borrow')
+  } = useOmniProductContext('multiply')
 
   return (
     <>
       <OmniAdjustSlider />
       {loanToValue && !position.riskRatio.loanToValue.eq(loanToValue) && (
         <OmniFormContentSummary>
-          <OmniBorrowFormOrder />
+          <OmniMultiplyFormOrder />
         </OmniFormContentSummary>
       )}
     </>

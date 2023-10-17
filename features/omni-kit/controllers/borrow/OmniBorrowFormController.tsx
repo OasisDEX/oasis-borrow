@@ -1,5 +1,4 @@
 import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
-import { OmniBorrowFormOrder } from 'features/omni-kit/common/sidebars/OmniBorrowFormOrder'
 import { OmniFormContentRisk } from 'features/omni-kit/common/sidebars/OmniFormContentRisk'
 import { OmniFormContentTransaction } from 'features/omni-kit/common/sidebars/OmniFormContentTransaction'
 import { OmniFormView } from 'features/omni-kit/components/OmniFormView'
@@ -8,6 +7,7 @@ import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductCon
 import { OmniBorrowFormContentDeposit } from 'features/omni-kit/sidebars/borrow/OmniBorrowFormContentDeposit'
 import { OmniBorrowFormContentManage } from 'features/omni-kit/sidebars/borrow/OmniBorrowFormContentManage'
 import { OmniBorrowFormContentTransition } from 'features/omni-kit/sidebars/borrow/OmniBorrowFormContentTransition'
+import { OmniBorrowFormOrder } from 'features/omni-kit/sidebars/borrow/OmniBorrowFormOrder'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { circle_close, circle_exchange } from 'theme/icons'

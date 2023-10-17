@@ -2,19 +2,18 @@ import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
-import { OmniBorrowFormOrder } from 'features/omni-kit/sidebars/borrow/OmniBorrowFormOrder'
+import { OmniMultiplyFormOrder } from 'features/omni-kit/sidebars/multiply/OmniMultiplyFormOrder'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
 
-export function OmniBorrowFormContentClose() {
+export function OmniMultiplyFormContentClose() {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, collateralPrice, quoteToken, quotePrice },
   } = useOmniGeneralContext()
-
   const {
     form: {
       state: { closeTo },
@@ -25,7 +24,7 @@ export function OmniBorrowFormContentClose() {
       swap,
       isSimulationLoading,
     },
-  } = useOmniProductContext('borrow')
+  } = useOmniProductContext('multiply')
   const closeToToken = closeTo === 'collateral' ? collateralToken : quoteToken
 
   const collateralOnClose = swap?.current
@@ -73,7 +72,7 @@ export function OmniBorrowFormContentClose() {
         value={formatted[closeTo === 'collateral' ? 'collateralOnClose' : 'quoteOnClose']}
         isLoading={isSimulationLoading}
       />
-      <OmniBorrowFormOrder />
+      <OmniMultiplyFormOrder />
     </>
   )
 }

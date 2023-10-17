@@ -1,4 +1,3 @@
-import { OmniBorrowFormOrder } from 'features/omni-kit/common/sidebars/OmniBorrowFormOrder'
 import { OmniFormContentSummary } from 'features/omni-kit/common/sidebars/OmniFormContentSummary'
 import {
   OmniFormFieldPayback,
@@ -6,6 +5,7 @@ import {
 } from 'features/omni-kit/common/sidebars/OmniFormFields'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
+import { OmniBorrowFormOrder } from 'features/omni-kit/sidebars/borrow/OmniBorrowFormOrder'
 import React from 'react'
 
 export function OmniBorrowFormContentPayback() {

@@ -6,8 +6,6 @@ import { ContentFooterItemsBorrow } from 'features/ajna/positions/borrow/compone
 import { ContentCardCollateralLocked } from 'features/ajna/positions/common/components/contentCards/ContentCardCollateralLocked'
 import { ContentCardLiquidationPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardLiquidationPrice'
 import { ContentCardPositionDebt } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionDebt'
-import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
-import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { one } from 'helpers/zero'
@@ -21,7 +19,6 @@ export function OmniBorrowOverviewController() {
     environment: {
       collateralPrice,
       collateralToken,
-      flow,
       isOracless,
       isShort,
       owner,
@@ -45,6 +42,7 @@ export function OmniBorrowOverviewController() {
     afterAvailableToBorrow,
     extraOverviewCards,
     changeVariant,
+    overviewBanner,
   } = dynamicMetadata('borrow')
 
   const liquidationPrice = isShort
@@ -118,10 +116,7 @@ export function OmniBorrowOverviewController() {
           </DetailsSectionFooterItemWrapper>
         }
       />
-      {/* TODO TO BE EXTRACTED to metadata as overview banner or sth */}
-      {isPoolWithRewards({ collateralToken, quoteToken }) && (
-        <AjnaTokensBannerController flow={flow} />
-      )}
+      {overviewBanner}
     </Grid>
   )
 }
