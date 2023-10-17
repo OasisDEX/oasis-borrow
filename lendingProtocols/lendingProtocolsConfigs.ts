@@ -7,6 +7,8 @@ import ajnaIcon from 'public/static/img/protocol_icons/ajna_icon.svg'
 import ajnaLogo from 'public/static/img/protocol_icons/ajna_logo.svg'
 import makerIcon from 'public/static/img/protocol_icons/maker_icon.svg'
 import makerLogo from 'public/static/img/protocol_icons/maker_logo.svg'
+import morphoBlueIcon from 'public/static/img/protocol_icons/morpho_blue_icon.svg'
+import morphoBlueLogo from 'public/static/img/protocol_icons/morpho_blue_logo.svg'
 import sparkIcon from 'public/static/img/protocol_icons/spark_icon.svg'
 import sparkLogo from 'public/static/img/protocol_icons/spark_logo.svg'
 
@@ -55,6 +57,15 @@ const makerConfig: LendingProtocolConfig = {
   gradient: 'linear-gradient(135deg, #2DC1B1 0%, #139D8D 100%)',
 }
 
+const morphoBlueConfig: LendingProtocolConfig = {
+  name: LendingProtocol.MorphoBlue,
+  label: LendingProtocolLabel.morphoblue,
+  icon: morphoBlueIcon as string,
+  logo: morphoBlueLogo as string,
+  logoScale: 1,
+  gradient: 'linear-gradient(90deg, rgba(24,89,242,1) 0%, rgba(0,55,138,1) 100%)',
+}
+
 const sparkConfig: LendingProtocolConfig = {
   name: LendingProtocol.SparkV3,
   label: LendingProtocolLabel.sparkv3,
@@ -64,5 +75,12 @@ const sparkConfig: LendingProtocolConfig = {
   gradient: 'linear-gradient(159deg, #F58013 12.26%, #F19D19 86.52%)',
 }
 
-const lendingProtocols = [aaveV2Config, aaveV3Config, ajnaConfig, makerConfig, sparkConfig]
+const lendingProtocols = [
+  aaveV2Config,
+  aaveV3Config,
+  ajnaConfig,
+  makerConfig,
+  morphoBlueConfig,
+  sparkConfig,
+]
 export const lendingProtocolsByName = keyBy(lendingProtocols, 'name')

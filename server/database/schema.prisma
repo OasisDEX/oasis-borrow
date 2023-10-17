@@ -265,6 +265,7 @@ enum Protocol {
   aavev3
   ajna
   sparkv3
+  morphoblue
 
   @@map("protocol")
 }
