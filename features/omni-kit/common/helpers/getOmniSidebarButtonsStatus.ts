@@ -7,8 +7,7 @@ import type {
 
 export function getOmniSidebarButtonsStatus({
   action,
-
-  ajnaSafetySwitchOn, // TODO it shouldn't be here
+  safetySwitch,
   currentStep,
   editingStep,
   flow,
@@ -27,7 +26,7 @@ export function getOmniSidebarButtonsStatus({
   walletAddress,
 }: {
   action?: OmniFormAction
-  ajnaSafetySwitchOn: boolean
+  safetySwitch: boolean
   currentStep: OmniSidebarStep
   editingStep: OmniSidebarEditingStep
   flow: OmniFlow
@@ -66,8 +65,8 @@ export function getOmniSidebarButtonsStatus({
 
   const isPrimaryButtonHidden =
     !!(walletAddress && !isOwner && currentStep === editingStep) ||
-    (ajnaSafetySwitchOn && flow === 'open' && currentStep !== 'risk') ||
-    (ajnaSafetySwitchOn &&
+    (safetySwitch && flow === 'open' && currentStep !== 'risk') ||
+    (safetySwitch &&
       flow === 'manage' &&
       currentStep !== 'risk' &&
       [

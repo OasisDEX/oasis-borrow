@@ -15,7 +15,6 @@ import { getOmniSidebarTransactionStatus } from 'features/omni-kit/common/helper
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { useConnection } from 'features/web3OnBoard/useConnection'
-import { useAppConfig } from 'helpers/config'
 import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
@@ -36,13 +35,6 @@ export function OmniFormView({
   children,
   txSuccessAction,
 }: PropsWithChildren<AjnaFormViewProps>) {
-  // TODO to be moved to metadata
-  const {
-    AjnaSafetySwitch: ajnaSafetySwitchOn,
-    AjnaSuppressValidation: ajnaSuppressValidationEnabled,
-    AjnaReusableDPM: ajnaReusableDPMEnabled,
-  } = useAppConfig('features')
-
   const { t } = useTranslation()
   const { context$ } = useMainContext()
 
@@ -95,6 +87,7 @@ export function OmniFormView({
     validations: { isFormValid, isFormFrozen, hasErrors },
     filters: { flowStateFilter, consumedProxyFilter },
     elements: { dupeModal },
+    featureToggles: { suppressValidation, safetySwitch, reusableDpm },
   } = dynamicMetadata(product)
 
   const { connect } = useConnection()
@@ -111,7 +104,7 @@ export function OmniFormView({
       quoteToken,
       state,
     }),
-    ...(ajnaReusableDPMEnabled && {
+    ...(reusableDpm && {
       filterConsumedProxy: (events) => events.every(consumedProxyFilter),
       onProxiesAvailable: (events, dpmAccounts) => {
         const filteredEvents = events.filter(flowStateFilter)
@@ -155,7 +148,7 @@ export function OmniFormView({
     isTextButtonHidden,
   } = getOmniSidebarButtonsStatus({
     action: state.action,
-    ajnaSafetySwitchOn,
+    safetySwitch,
     currentStep,
     editingStep,
     flow,
@@ -239,7 +232,7 @@ export function OmniFormView({
     content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {
       label: t(primaryButtonLabel, { token: flowState.token }),
-      disabled: ajnaSuppressValidationEnabled ? false : isPrimaryButtonDisabled,
+      disabled: suppressValidation ? false : isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
       hidden: isPrimaryButtonHidden,
       ...primaryButtonActions,

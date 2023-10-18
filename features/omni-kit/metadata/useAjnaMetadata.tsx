@@ -35,7 +35,11 @@ import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyAction
 
 export const useAjnaMetadata: DynamicProductMetadata = (product) => {
   const { t } = useTranslation()
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
+  const {
+    AjnaSafetySwitch: ajnaSafetySwitchOn,
+    AjnaSuppressValidation: ajnaSuppressValidation,
+    AjnaReusableDPM: ajnaReusableDPMEnabled,
+  } = useAppConfig('features')
   const gasEstimation = useGasEstimationContext()
   const {
     environment: {
@@ -198,6 +202,11 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
       ) : undefined,
       riskSidebar: <AjnaFormContentRisk />,
       dupeModal: OmniDupePositionModal,
+    },
+    featureToggles: {
+      safetySwitch: ajnaSafetySwitchOn,
+      suppressValidation: ajnaSuppressValidation,
+      reusableDpm: ajnaReusableDPMEnabled,
     },
   }
 }

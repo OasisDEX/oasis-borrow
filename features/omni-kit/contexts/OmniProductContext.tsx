@@ -58,6 +58,11 @@ export type DynamicProductMetadata = (product: OmniProduct) => {
     flowStateFilter: (event: CreatePositionEvent) => boolean
     consumedProxyFilter: (event: CreatePositionEvent) => boolean
   }
+  featureToggles: {
+    safetySwitch: boolean
+    suppressValidation: boolean
+    reusableDpm: boolean
+  }
 }
 
 interface ProductContextProviderPropsWithBorrow {
