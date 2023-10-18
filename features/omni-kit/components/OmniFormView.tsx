@@ -7,12 +7,8 @@ import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ethers } from 'ethers'
 import { AjnaDupePositionModal } from 'features/ajna/positions/common/components/AjnaDupePositionModal'
-import { getFlowStateConfig } from 'features/ajna/positions/common/helpers/getFlowStateConfig'
-import {
-  ajnaFlowStateFilter,
-  getAjnaFlowStateFilter,
-} from 'features/ajna/positions/common/helpers/getFlowStateFilter'
 import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
+import { getOmniFlowStateConfig } from 'features/omni-kit/common/helpers/getOmniFlowStateConfig'
 import { getOmniPrimaryButtonLabelKey } from 'features/omni-kit/common/helpers/getOmniPrimaryButtonLabelKey'
 import { getOmniSidebarButtonsStatus } from 'features/omni-kit/common/helpers/getOmniSidebarButtonsStatus'
 import { getOmniSidebarPrimaryButtonActions } from 'features/omni-kit/common/helpers/getOmniSidebarPrimaryButtonActions'
@@ -98,6 +94,7 @@ export function OmniFormView({
     handlers: { txHandler },
     values: { interestRate, sidebarTitle },
     validations: { isFormValid, isFormFrozen, hasErrors },
+    filters: { flowStateFilter, consumedProxyFilter },
   } = dynamicMetadata(product)
 
   const { connect } = useConnection()
@@ -107,7 +104,7 @@ export function OmniFormView({
 
   const flowState = useFlowState({
     ...(dpmProxy && { existingProxy: dpmProxy }),
-    ...getFlowStateConfig({
+    ...getOmniFlowStateConfig({
       collateralToken,
       fee: interestRate,
       flow,
@@ -115,17 +112,9 @@ export function OmniFormView({
       state,
     }),
     ...(ajnaReusableDPMEnabled && {
-      filterConsumedProxy: (events) =>
-        getAjnaFlowStateFilter({
-          collateralAddress,
-          events,
-          product,
-          quoteAddress,
-        }),
+      filterConsumedProxy: (events) => events.every(consumedProxyFilter),
       onProxiesAvailable: (events, dpmAccounts) => {
-        const filteredEvents = events.filter((event) =>
-          ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
-        )
+        const filteredEvents = events.filter(flowStateFilter)
 
         if (!hasDupePosition && filteredEvents.length) {
           setHasDupePosition(true)

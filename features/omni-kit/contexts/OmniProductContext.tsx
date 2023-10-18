@@ -26,6 +26,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
+import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
 import { useOmniGeneralContext } from './OmniGeneralContext'
 
@@ -54,6 +55,10 @@ export type DynamicProductMetadata = (product: OmniProduct) => {
     riskSidebar: JSX.Element
     extraOverviewCards: JSX.Element[]
     highlighterOrderInformation: JSX.Element | undefined
+  }
+  filters: {
+    flowStateFilter: (event: CreatePositionEvent) => boolean
+    consumedProxyFilter: (event: CreatePositionEvent) => boolean
   }
 }
 

@@ -8,19 +8,19 @@ import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/get
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
 import { getAjnaBorrowPaybackMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowPaybackMax'
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
-import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
+import {
+  ContentCardThresholdPrice,
+} from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
 import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { getAjnaSidebarTitle } from 'features/ajna/positions/common/getAjnaSidebarTitle'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
+import { ajnaFlowStateFilter } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import type {
-  DynamicProductMetadata,
-  ProductContextWithBorrow,
-} from 'features/omni-kit/contexts/OmniProductContext'
+import type { DynamicProductMetadata, ProductContextWithBorrow } from 'features/omni-kit/contexts/OmniProductContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { getAjnaOmniValidation } from 'features/omni-kit/helpers/ajna/getAjnaOmniValidation'
 import { useAjnaOmniTxHandler } from 'features/omni-kit/hooks/ajna/useAjnaOmniTxHandler'
@@ -29,6 +29,7 @@ import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export const useAjnaMetadata: DynamicProductMetadata = (product) => {
   const { t } = useTranslation()
@@ -47,6 +48,8 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
       collateralBalance,
       ethBalance,
       ethPrice,
+      collateralAddress,
+      quoteAddress,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -109,6 +112,12 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
     validations,
     handlers: {
       txHandler: useAjnaOmniTxHandler({ isFormValid: validations.isFormValid }),
+    },
+    filters: {
+      flowStateFilter: (event: CreatePositionEvent) =>
+        ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
+      consumedProxyFilter: (event: CreatePositionEvent) =>
+        !ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
     },
     values: {
       netBorrowCost: position.pool.interestRate,
