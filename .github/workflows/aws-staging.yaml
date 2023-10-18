@@ -3,21 +3,84 @@ on:
     branches:
       - dev
 
-name: Deploy to AWS Staging
+name: Build and deploy to AWS Staging
+env:
+  AWS_REGION: eu-central-1
+  ENVIRONMENT_TAG: staging
+  SERVICE_NAME: summer-fi-staging
+  CLUSTER_NAME: summer-fi-staging
+  CONFIG_URL: ${{ secrets.CONFIG_URL }}
 
 jobs:
   deploy:
-    name: Deploy
+    name: Build and deploy to AWS Staging
     runs-on: ubuntu-latest
-    env:
-      AWS_REGION: eu-central-1
-      ECR_REPO_NAME: summer-fi-staging
-      SERVICE_NAME: summer-fi-staging
-      CLUSTER_NAME: summer-fi-staging
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.12
+
+      - name: Extract commit hash
+        id: vars
+        shell: bash
+        run: |
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+      - name: Use modules cache
+        uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install packages
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn --no-progress --non-interactive --frozen-lockfile
+
+      - name: Run postinstall
+        if: steps.yarn-cache.outputs.cache-hit == 'true'
+        run: yarn postinstall
+
+      - name: Use next cache
+        uses: jongwooo/next-cache@v1
+
+      - name: Build standalone app
+        id: build-app
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
+          SHA_TAG: ${{ steps.vars.outputs.sha_short }}
+          LATEST_TAG: latest
+          COMMIT_SHA: ${{ steps.vars.outputs.sha_short }}
+          NOTIFICATIONS_HOST: ${{ secrets.NOTIFICATIONS_HOST_STAGING }}
+          NOTIFICATIONS_HOST_GOERLI: ${{ secrets.NOTIFICATIONS_HOST_STAGING_GOERLI }}
+          AJNA_SUBGRAPH_URL: ${{ secrets.AJNA_SUBGRAPH_URL_STAGING }}
+          AJNA_SUBGRAPH_URL_GOERLI: ${{ secrets.AJNA_SUBGRAPH_URL_GOERLI }}
+          AJNA_SUBGRAPH_V2_URL: ${{ secrets.AJNA_SUBGRAPH_V2_URL_STAGING }}
+          AJNA_SUBGRAPH_V2_URL_GOERLI: ${{ secrets.AJNA_SUBGRAPH_V2_URL_GOERLI }}
+          MIXPANEL_ENV: staging
+          MIXPANEL_KEY: ${{ secrets.MIXPANEL_KEY_STAGING }}
+          ADROLL_ADV_ID: ${{ secrets.ADROLL_ADV_ID_STAGING }}
+          ADROLL_PIX_ID: ${{ secrets.ADROLL_PIX_ID_STAGING }}
+          MAINNET_CACHE_URL: ${{ secrets.MAINNET_CACHE_URL_STAGING }}
+          MAILCHIMP_ENDPOINT: ${{ secrets.MAILCHIMP_ENDPOINT }}
+          MAILCHIMP_API_KEY: ${{ secrets.MAILCHIMP_API_KEY }}
+          INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID_STAGING }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+          BLOCKNATIVE_API_KEY: ${{ secrets.BLOCKNATIVE_API_KEY_STAGING }}
+          SHOW_BUILD_INFO: 1
+          NODE_ENV: production
+          NEXT_PUBLIC_SENTRY_ENV: staging
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          PRODUCT_HUB_KEY: ${{ secrets.PRODUCT_HUB_KEY }}
+          ONE_INCH_API_KEY: ${{ secrets.ONE_INCH_API_KEY_STAGING }}
+          ONE_INCH_API_URL: ${{ secrets.ONE_INCH_API_URL_STAGING }}
+          REFERRAL_SUBGRAPH_URL: ${{ secrets.REFERRAL_SUBGRAPH_URL_STAGING }}
+        run: yarn build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -30,57 +93,28 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Extract commit hash
-        id: vars
-        shell: bash
-        run: |
-          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build runner image
         id: build-image
         env:
           SHA_TAG: ${{ steps.vars.outputs.sha_short }}
           LATEST_TAG: latest
-          ENVIRONMENT_TAG: staging
+          ECR_REPO_NAME: summer-fi-staging
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          CONFIG_URL: ${{ secrets.CONFIG_URL }}
         run: |
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
-          docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
-                       --build-arg NOTIFICATIONS_HOST=${{ secrets.NOTIFICATIONS_HOST_STAGING }} \
-                       --build-arg NOTIFICATIONS_HOST_GOERLI=${{ secrets.NOTIFICATIONS_HOST_STAGING_GOERLI }} \
-                       --build-arg AJNA_SUBGRAPH_URL=${{ secrets.AJNA_SUBGRAPH_URL_STAGING }} \
-                       --build-arg AJNA_SUBGRAPH_URL_GOERLI=${{ secrets.AJNA_SUBGRAPH_URL_GOERLI }} \
-                       --build-arg AJNA_SUBGRAPH_V2_URL=${{ secrets.AJNA_SUBGRAPH_V2_URL_STAGING }} \
-                       --build-arg AJNA_SUBGRAPH_V2_URL_GOERLI=${{ secrets.AJNA_SUBGRAPH_V2_URL_GOERLI }} \
-                       --build-arg MIXPANEL_ENV=staging \
-                       --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_KEY_STAGING }} \
-                       --build-arg ADROLL_ADV_ID=${{ secrets.ADROLL_ADV_ID_STAGING }} \
-                       --build-arg ADROLL_PIX_ID=${{ secrets.ADROLL_PIX_ID_STAGING }} \
-                       --build-arg MAINNET_CACHE_URL=${{ secrets.MAINNET_CACHE_URL_STAGING }} \
-                       --build-arg MAILCHIMP_ENDPOINT=${{ secrets.MAILCHIMP_ENDPOINT }} \
-                       --build-arg MAILCHIMP_API_KEY=${{ secrets.MAILCHIMP_API_KEY }} \
-                       --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID_STAGING }} \
-                       --build-arg ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }} \
-                       --build-arg BLOCKNATIVE_API_KEY=${{ secrets.BLOCKNATIVE_API_KEY_STAGING }} \
-                       --build-arg SHOW_BUILD_INFO=1 \
-                       --build-arg NODE_ENV=production \
-                       --build-arg NEXT_PUBLIC_SENTRY_ENV=staging \
-                       --build-arg SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }} \
-                       --build-arg PRODUCT_HUB_KEY=${{ secrets.PRODUCT_HUB_KEY }} \
-                       --build-arg ONE_INCH_API_KEY=${{ secrets.ONE_INCH_API_KEY_STAGING }} \
-                       --build-arg ONE_INCH_API_URL=${{ secrets.ONE_INCH_API_URL_STAGING }} \
-                       --build-arg REFERRAL_SUBGRAPH_URL=${{ secrets.REFERRAL_SUBGRAPH_URL_STAGING }} \
-                       --build-arg CONFIG_URL=${{ secrets.CONFIG_URL }} \
-                       --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
+          docker build --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
                        .
           docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
-
+  cleanup:
+    name: Cleanup
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    steps:
       - name: Update ECS service with latest Docker image
         id: service-update
         run: |
@@ -94,5 +128,5 @@ jobs:
 
       - name: Invalidate CloudFront
         run:
-          AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id ${{
-          secrets.CF_DIST_ID_STAGING }} --paths "/*"
+          AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id
+          ${{secrets.CF_DIST_ID_STAGING }} --paths "/*"
