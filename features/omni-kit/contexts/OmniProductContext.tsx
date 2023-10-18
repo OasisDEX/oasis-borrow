@@ -4,12 +4,7 @@ import type { AjnaSimulationData } from 'actions/ajna'
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
-import type {
-  AjnaBorrowishPositionAuction,
-  AjnaEarnPositionAuction,
-} from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import type { OmniDupePositionModalProps } from 'features/omni-kit/common/components/OmniDupePositionModal'
 import type { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow/borrowFormReducto.types'
@@ -23,6 +18,7 @@ import type {
   OmniSimulationCommon,
   OmniValidations,
 } from 'features/omni-kit/types/common.types'
+import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
@@ -70,8 +66,8 @@ interface ProductContextProviderPropsWithBorrow {
   formDefaults: Partial<OmniBorrowFormState>
   position: BorrowishPosition
   product: 'borrow'
-  positionAuction: AjnaBorrowishPositionAuction // TODO auctions has to be fully configurable through staticMetadata
-  positionHistory: AjnaUnifiedHistoryEvent[]
+  positionAuction: unknown
+  positionHistory: PositionHistoryEvent[]
 }
 
 interface ProductContextProviderPropsWithEarn {
@@ -80,8 +76,8 @@ interface ProductContextProviderPropsWithEarn {
   formDefaults: Partial<OmniEarnFormState>
   position: AjnaEarnPosition
   product: 'earn'
-  positionAuction: AjnaEarnPositionAuction
-  positionHistory: AjnaUnifiedHistoryEvent[]
+  positionAuction: unknown
+  positionHistory: PositionHistoryEvent[]
 }
 
 interface ProductContextProviderPropsWithMultiply {
@@ -90,8 +86,8 @@ interface ProductContextProviderPropsWithMultiply {
   formDefaults: Partial<OmniMultiplyFormState>
   position: BorrowishPosition
   product: 'multiply'
-  positionAuction: AjnaBorrowishPositionAuction
-  positionHistory: AjnaUnifiedHistoryEvent[]
+  positionAuction: unknown
+  positionHistory: PositionHistoryEvent[]
 }
 
 type ProductDetailsContextProviderProps =
@@ -118,7 +114,7 @@ interface ProductContextPosition<P, A> {
   setSimulation: Dispatch<SetStateAction<AjnaSimulationData<OmniGenericPosition> | undefined>>
   setCachedSwap: (swap: SwapData) => void
   positionAuction: A
-  history: AjnaUnifiedHistoryEvent[]
+  history: PositionHistoryEvent[]
   simulationCommon: OmniSimulationCommon
 }
 
@@ -131,19 +127,19 @@ interface GenericProductContext<P, F, A> {
 export type ProductContextWithBorrow = GenericProductContext<
   BorrowishPosition,
   ReturnType<typeof useOmniBorrowFormReducto>,
-  AjnaBorrowishPositionAuction
+  unknown
 >
 
 type ProductContextWithEarn = GenericProductContext<
   AjnaEarnPosition,
   ReturnType<typeof useOmniEarnFormReducto>,
-  AjnaEarnPositionAuction
+  unknown
 >
 
 export type ProductContextWithMultiply = GenericProductContext<
   BorrowishPosition,
   ReturnType<typeof useOmniMultiplyFormReducto>,
-  AjnaBorrowishPositionAuction
+  unknown
 >
 
 const borrowContext = React.createContext<ProductContextWithBorrow | undefined>(undefined)

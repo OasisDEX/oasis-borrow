@@ -1,11 +1,7 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import type {
-  AjnaBorrowishPositionAuction,
-  AjnaEarnPositionAuction,
-  AjnaPositionAuction,
-} from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
+import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
 import { getAjnaEarnDefaultAction } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultAction'
@@ -48,8 +44,8 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
             formReducto={useOmniBorrowFormReducto}
             position={positionData as AjnaPosition}
             product={dpmPosition.product}
-            positionAuction={auction as AjnaBorrowishPositionAuction}
-            positionHistory={history as AjnaUnifiedHistoryEvent[]}
+            positionAuction={auction}
+            positionHistory={history}
           >
             <OmniBorrowPositionController />
           </OmniProductContextProvider>
@@ -67,8 +63,8 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
             formReducto={useOmniEarnFormReducto}
             position={positionData as AjnaEarnPosition}
             product={dpmPosition.product}
-            positionAuction={auction as AjnaEarnPositionAuction}
-            positionHistory={history as AjnaUnifiedHistoryEvent[]}
+            positionAuction={auction}
+            positionHistory={history}
           >
             <AjnaEarnPositionController />
           </OmniProductContextProvider>
@@ -84,8 +80,8 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
             formReducto={useOmniMultiplyFormReducto}
             position={positionData as AjnaPosition}
             product={dpmPosition.product}
-            positionAuction={auction as AjnaBorrowishPositionAuction}
-            positionHistory={history as AjnaUnifiedHistoryEvent[]}
+            positionAuction={auction}
+            positionHistory={history}
           >
             <OmniMultiplyPositionController />
           </OmniProductContextProvider>
