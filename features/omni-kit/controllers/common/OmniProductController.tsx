@@ -2,8 +2,8 @@ import { NetworkHexIds } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
-import { steps } from 'features/ajna/common/consts'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
+import { omniSteps } from 'features/omni-kit/common/consts'
 import { getOmniHeadlineProps } from 'features/omni-kit/common/helpers/getOmniHeadlineProps'
 import { OmniGeneralContextProvider } from 'features/omni-kit/contexts/OmniGeneralContext'
 import type { ProductDataProps } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
@@ -179,7 +179,7 @@ export const OmniProductController = <A, H, P>({
                     quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                     quoteToken={dpmPosition.quoteToken}
                     quoteIcon={tokensIcons.quoteToken}
-                    steps={steps[dpmPosition.product as OmniProduct][flow]}
+                    steps={omniSteps[dpmPosition.product as OmniProduct][flow]}
                     gasPrice={gasPrice}
                     slippage={slippage}
                     isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
