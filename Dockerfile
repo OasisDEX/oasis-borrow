@@ -9,4 +9,5 @@ COPY package.json yarn.lock next.config.js /app
 COPY public /app/.next/standalone/public
 COPY .next/static /app/.next/standalone/.next/static
 
+RUN yarn migrate
 CMD [ "node", ".next/standalone/server.js" ]
