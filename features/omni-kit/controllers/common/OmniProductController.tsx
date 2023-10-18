@@ -3,8 +3,8 @@ import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { steps } from 'features/ajna/common/consts'
-import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
+import { getOmniHeadlineProps } from 'features/omni-kit/common/helpers/getOmniHeadlineProps'
 import { OmniGeneralContextProvider } from 'features/omni-kit/contexts/OmniGeneralContext'
 import type { ProductDataProps } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
 import { useOmniProtocolData } from 'features/omni-kit/hooks/useOmniProtocolData'
@@ -45,6 +45,7 @@ interface OmniProductControllerProps<A, H, P> {
     productKey: string
     descriptionKey: string
   }
+  headlineKey: string
 }
 
 export const OmniProductController = <A, H, P>({
@@ -58,6 +59,7 @@ export const OmniProductController = <A, H, P>({
   protocolHook,
   isOracless,
   seoTags,
+  headlineKey,
 }: OmniProductControllerProps<A, H, P>) => {
   const { t } = useTranslation()
 
@@ -114,14 +116,15 @@ export const OmniProductController = <A, H, P>({
               ]}
               customLoader={
                 <PositionLoadingState
-                  // TODO remove ajna dependency
-                  {...getAjnaHeadlineProps({
+                  {...getOmniHeadlineProps({
                     collateralToken: dpmPositionData?.collateralToken,
                     flow,
                     product: dpmPositionData?.product as OmniProduct,
                     quoteToken: dpmPositionData?.quoteToken,
                     collateralIcon: tokensIconsData?.collateralToken,
                     quoteIcon: tokensIconsData?.quoteToken,
+                    protocol,
+                    headlineKey,
                     id,
                   })}
                 />

@@ -53,6 +53,7 @@ function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPosi
             protocolHook={useAjnaOmniData}
             isOracless={isOracless}
             seoTags={ajnaSeoTags}
+            headlineKey="ajna.position-page.common.headline"
           />
         </GasEstimationContextProvider>
       </ProductContextHandler>

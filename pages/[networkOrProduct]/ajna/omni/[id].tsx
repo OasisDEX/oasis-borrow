@@ -34,6 +34,7 @@ function AjnaManagePositionPage({ id }: AjnaManagePositionPageProps) {
             controller={AjnaOmniProductController}
             protocolHook={useAjnaOmniData}
             seoTags={ajnaSeoTags}
+            headlineKey="ajna.position-page.common.headline"
           />
         </GasEstimationContextProvider>
       </ProductContextHandler>
