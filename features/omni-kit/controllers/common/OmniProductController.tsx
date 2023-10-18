@@ -19,21 +19,21 @@ import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export interface ProductsControllerProps {
+interface OmniProductsControllerProps<A, H, P> {
   flow: OmniFlow
   dpmPosition: DpmPositionData
-  aggregatedData: { auction: unknown; history: unknown }
-  positionData: unknown
+  aggregatedData: { auction: A; history: H }
+  positionData: P
 }
 
-interface ProtocolProductControllerProps<A, H, P> {
+interface OmniProductControllerProps<A, H, P> {
   protocol: LendingProtocol
   collateralToken?: string
   id?: string
   flow: OmniFlow
   product?: OmniProduct
   quoteToken?: string
-  controller: (params: ProductsControllerProps) => React.ReactNode
+  controller: (params: OmniProductsControllerProps<A, H, P>) => React.ReactNode
   protocolHook: (params: ProductDataProps) => {
     data: { aggregatedData: { auction: A; history: H } | undefined; positionData: P | undefined }
     errors: string[]
@@ -51,7 +51,7 @@ export const OmniProductController = <A, H, P>({
   quoteToken,
   controller,
   protocolHook,
-}: ProtocolProductControllerProps<A, H, P>) => {
+}: OmniProductControllerProps<A, H, P>) => {
   const { t } = useTranslation()
 
   const {
