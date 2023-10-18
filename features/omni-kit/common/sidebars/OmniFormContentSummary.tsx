@@ -1,5 +1,5 @@
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
-import { OmniValidationMessages } from 'features/omni-kit/components/OmniValidationMessages'
+import { OmniValidationMessages } from 'features/omni-kit/common/components/OmniValidationMessages'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import type { PropsWithChildren } from 'react'

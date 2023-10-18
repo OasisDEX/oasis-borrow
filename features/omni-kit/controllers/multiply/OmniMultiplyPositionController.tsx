@@ -1,5 +1,5 @@
 import en from 'features/content/faqs/ajna/multiply/en'
-import { OmniPositionView } from 'features/omni-kit/components/OmniPositionView'
+import { OmniPositionView } from 'features/omni-kit/common/components/OmniPositionView'
 import { OmniFaqController } from 'features/omni-kit/controllers/common/OmniFaqController'
 import { OmniPositionHistoryController } from 'features/omni-kit/controllers/common/OmniPositionHistoryController'
 import { OmniMultiplyFormController } from 'features/omni-kit/controllers/multiply/OmniMultiplyFormController'

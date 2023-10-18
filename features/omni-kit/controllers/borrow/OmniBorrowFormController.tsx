@@ -1,6 +1,6 @@
 import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
+import { OmniFormView } from 'features/omni-kit/common/components/OmniFormView'
 import { OmniFormContentTransaction } from 'features/omni-kit/common/sidebars/OmniFormContentTransaction'
-import { OmniFormView } from 'features/omni-kit/components/OmniFormView'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { OmniBorrowFormContentDeposit } from 'features/omni-kit/sidebars/borrow/OmniBorrowFormContentDeposit'

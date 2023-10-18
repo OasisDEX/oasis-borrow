@@ -6,7 +6,6 @@ import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ethers } from 'ethers'
-import { AjnaDupePositionModal } from 'features/ajna/positions/common/components/AjnaDupePositionModal'
 import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
 import { getOmniFlowStateConfig } from 'features/omni-kit/common/helpers/getOmniFlowStateConfig'
 import { getOmniPrimaryButtonLabelKey } from 'features/omni-kit/common/helpers/getOmniPrimaryButtonLabelKey'
@@ -95,6 +94,7 @@ export function OmniFormView({
     values: { interestRate, sidebarTitle },
     validations: { isFormValid, isFormFrozen, hasErrors },
     filters: { flowStateFilter, consumedProxyFilter },
+    elements: { dupeModal },
   } = dynamicMetadata(product)
 
   const { connect } = useConnection()
@@ -118,7 +118,7 @@ export function OmniFormView({
 
         if (!hasDupePosition && filteredEvents.length) {
           setHasDupePosition(true)
-          openModal(AjnaDupePositionModal, {
+          openModal(dupeModal, {
             chainId: context?.chainId,
             collateralAddress,
             collateralToken,

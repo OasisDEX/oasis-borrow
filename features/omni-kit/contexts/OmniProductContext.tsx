@@ -10,6 +10,7 @@ import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
+import type { OmniDupePositionModalProps } from 'features/omni-kit/common/components/OmniDupePositionModal'
 import type { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow/borrowFormReducto.types'
 import type { useOmniEarnFormReducto } from 'features/omni-kit/state/earn/earnFormReducto'
@@ -55,6 +56,7 @@ export type DynamicProductMetadata = (product: OmniProduct) => {
     riskSidebar: JSX.Element
     extraOverviewCards: JSX.Element[]
     highlighterOrderInformation: JSX.Element | undefined
+    dupeModal: (props: OmniDupePositionModalProps) => JSX.Element
   }
   filters: {
     flowStateFilter: (event: CreatePositionEvent) => boolean

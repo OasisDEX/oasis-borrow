@@ -1,5 +1,5 @@
 import en from 'features/content/faqs/ajna/borrow/en'
-import { OmniPositionView } from 'features/omni-kit/components/OmniPositionView'
+import { OmniPositionView } from 'features/omni-kit/common/components/OmniPositionView'
 import { OmniBorrowFormController } from 'features/omni-kit/controllers/borrow/OmniBorrowFormController'
 import { OmniBorrowOverviewController } from 'features/omni-kit/controllers/borrow/OmniBorrowOverviewController'
 import { OmniFaqController } from 'features/omni-kit/controllers/common/OmniFaqController'
