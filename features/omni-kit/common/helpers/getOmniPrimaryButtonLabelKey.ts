@@ -1,15 +1,15 @@
-import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { getOmniIsFormEmpty } from 'features/omni-kit/common/helpers/getOmniIsFormEmpty'
 import type {
   OmniFlow,
   OmniFormState,
+  OmniGenericPosition,
   OmniProduct,
   OmniSidebarStep,
 } from 'features/omni-kit/types/common.types'
 
 interface GetPrimaryButtonLabelKeyParams {
   state: OmniFormState
-  position: AjnaGenericPosition
+  position: OmniGenericPosition
   currentStep: OmniSidebarStep
   flow: OmniFlow
   hasAllowance: boolean

@@ -17,7 +17,6 @@ import { one } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import type { FC } from 'react'
 import React from 'react'
 
 export interface ProductsControllerProps {
@@ -27,7 +26,7 @@ export interface ProductsControllerProps {
   positionData: unknown
 }
 
-interface ProtocolProductControllerProps {
+interface ProtocolProductControllerProps<A, H, P> {
   protocol: LendingProtocol
   collateralToken?: string
   id?: string
@@ -36,14 +35,14 @@ interface ProtocolProductControllerProps {
   quoteToken?: string
   controller: (params: ProductsControllerProps) => React.ReactNode
   protocolHook: (params: ProductDataProps) => {
-    data: { aggregatedData: { auction: unknown; history: unknown }; positionData: unknown }
+    data: { aggregatedData: { auction: A; history: H } | undefined; positionData: P | undefined }
     errors: string[]
     isOracless: boolean
     redirect: string | undefined
   }
 }
 
-export const OmniProductController: FC<ProtocolProductControllerProps> = ({
+export const OmniProductController = <A, H, P>({
   protocol,
   collateralToken,
   flow,
@@ -52,7 +51,7 @@ export const OmniProductController: FC<ProtocolProductControllerProps> = ({
   quoteToken,
   controller,
   protocolHook,
-}) => {
+}: ProtocolProductControllerProps<A, H, P>) => {
   const { t } = useTranslation()
 
   const {

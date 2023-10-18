@@ -8,8 +8,9 @@ import { getRpcProvider } from 'blockchain/networks'
 import type { CancelablePromise } from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context/MainContextProvider'
-import { getIsFormEmpty } from 'features/ajna/positions/common/helpers/getIsFormEmpty'
+import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
+import { getOmniIsFormEmpty } from 'features/omni-kit/common/helpers/getOmniIsFormEmpty'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate.constants'
@@ -60,7 +61,7 @@ export function useAjnaOmniTxHandler({ isFormValid }: { isFormValid: boolean }):
     useState<CancelablePromise<Strategy<typeof position> | undefined>>()
 
   const { dpmAddress } = state
-  const isFormEmpty = getIsFormEmpty({
+  const isFormEmpty = getOmniIsFormEmpty({
     product,
     state,
     position,
@@ -90,8 +91,8 @@ export function useAjnaOmniTxHandler({ isFormValid }: { isFormValid: boolean }):
             collateralToken,
             context,
             isFormValid,
-            position,
-            simulation,
+            position: position as AjnaGenericPosition,
+            simulation: simulation as AjnaGenericPosition,
             quoteAddress,
             quotePrecision,
             quotePrice,

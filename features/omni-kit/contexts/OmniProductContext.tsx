@@ -4,7 +4,6 @@ import type { AjnaSimulationData } from 'actions/ajna'
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
 import type {
@@ -18,6 +17,7 @@ import type { OmniEarnFormState } from 'features/omni-kit/state/earn/earnFormRed
 import type { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply/multiplyFormReducto.types'
 import type {
+  OmniGenericPosition,
   OmniProduct,
   OmniSimulationCommon,
   OmniValidations,
@@ -106,9 +106,9 @@ interface ProductContextPosition<P, A> {
   }
   isSimulationLoading?: boolean
   resolvedId?: string
-  setCachedPosition: (positionSet: PositionSet<AjnaGenericPosition>) => void
+  setCachedPosition: (positionSet: PositionSet<OmniGenericPosition>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<SetStateAction<AjnaSimulationData<AjnaGenericPosition> | undefined>>
+  setSimulation: Dispatch<SetStateAction<AjnaSimulationData<OmniGenericPosition> | undefined>>
   setCachedSwap: (swap: SwapData) => void
   positionAuction: A
   history: AjnaUnifiedHistoryEvent[]

@@ -1,12 +1,12 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
-import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow/borrowFormReducto.types'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn/earnFormReducto.types'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply/multiplyFormReducto.types'
 import type {
   OmniFormState,
+  OmniGenericPosition,
   OmniProduct,
   OmniSidebarStep,
 } from 'features/omni-kit/types/common.types'
@@ -14,7 +14,7 @@ import type {
 interface GetIsFormEmptyParams {
   product: OmniProduct
   state: OmniFormState
-  position: AjnaGenericPosition
+  position: OmniGenericPosition
   currentStep: OmniSidebarStep
   txStatus?: TxStatus
 }

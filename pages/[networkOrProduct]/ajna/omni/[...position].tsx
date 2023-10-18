@@ -4,6 +4,9 @@ import { GasEstimationContextProvider } from 'components/context/GasEstimationCo
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { isAddress } from 'ethers/lib/utils'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
+import type { AjnaGenericPosition } from 'features/ajna/common/types'
+import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
+import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { omniProducts } from 'features/omni-kit/common/consts'
 import { AjnaOmniProductController } from 'features/omni-kit/controllers/ajna/AjnaOmniProductController'
 import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
@@ -27,7 +30,11 @@ function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPosi
     <AjnaLayout>
       <ProductContextHandler>
         <GasEstimationContextProvider>
-          <OmniProductController
+          <OmniProductController<
+            AjnaPositionAuction,
+            AjnaUnifiedHistoryEvent[],
+            AjnaGenericPosition
+          >
             collateralToken={collateralToken}
             flow={id ? 'manage' : 'open'}
             id={id}

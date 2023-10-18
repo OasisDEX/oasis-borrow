@@ -28,7 +28,6 @@ export function OmniBorrowOverviewController() {
     },
   } = useOmniGeneralContext()
   const {
-    notifications,
     position: {
       isSimulationLoading,
       currentPosition: { position, simulation },
@@ -39,6 +38,7 @@ export function OmniBorrowOverviewController() {
   const {
     values: { changeVariant, interestRate, afterPositionDebt, afterAvailableToBorrow },
     elements: { extraOverviewCards, overviewBanner },
+    notifications,
   } = dynamicMetadata('borrow')
 
   const liquidationPrice = isShort
