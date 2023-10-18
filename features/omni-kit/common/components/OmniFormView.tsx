@@ -183,6 +183,7 @@ export function OmniFormView({
     currentStep,
     editingStep,
     flow,
+    protocol,
     isStepWithTransaction,
     isTransitionAction,
     isTransitionWaitingForApproval,

@@ -1,9 +1,11 @@
 import type { OmniFlow } from 'features/omni-kit/types/common.types'
+import type { LendingProtocol } from 'lendingProtocols'
 
 export function getOmniSidebarPrimaryButtonActions({
   currentStep,
   editingStep,
   flow,
+  protocol,
   isStepWithTransaction,
   isTransitionAction,
   isTransitionWaitingForApproval,
@@ -26,6 +28,7 @@ export function getOmniSidebarPrimaryButtonActions({
   currentStep: string
   editingStep: string
   flow: OmniFlow
+  protocol: LendingProtocol
   isStepWithTransaction: boolean
   isTransitionAction: boolean
   isTransitionWaitingForApproval: boolean
@@ -52,7 +55,7 @@ export function getOmniSidebarPrimaryButtonActions({
       const resolvedCollateralUrl = isOracless ? collateralAddress : collateralToken
       const resolvedQuoteUrl = isOracless ? quoteAddress : quoteToken
       return {
-        url: `/ethereum/ajna/${product}/${resolvedCollateralUrl}-${resolvedQuoteUrl}/${resolvedId}`,
+        url: `/ethereum/${protocol}/${product}/${resolvedCollateralUrl}-${resolvedQuoteUrl}/${resolvedId}`,
       }
     case isStepWithTransaction && isTxSuccess:
       return { action: onUpdated }
