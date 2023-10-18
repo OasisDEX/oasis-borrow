@@ -1,6 +1,7 @@
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
+import { ajnaSeoTags } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
@@ -32,6 +33,7 @@ function AjnaManagePositionPage({ id }: AjnaManagePositionPageProps) {
             protocol={LendingProtocol.Ajna}
             controller={AjnaOmniProductController}
             protocolHook={useAjnaOmniData}
+            seoTags={ajnaSeoTags}
           />
         </GasEstimationContextProvider>
       </ProductContextHandler>

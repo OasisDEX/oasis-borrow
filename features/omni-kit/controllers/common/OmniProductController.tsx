@@ -41,6 +41,10 @@ interface OmniProductControllerProps<A, H, P> {
     redirect: string | undefined
   }
   isOracless?: boolean
+  seoTags: {
+    productKey: string
+    descriptionKey: string
+  }
 }
 
 export const OmniProductController = <A, H, P>({
@@ -53,6 +57,7 @@ export const OmniProductController = <A, H, P>({
   controller,
   protocolHook,
   isOracless,
+  seoTags,
 }: OmniProductControllerProps<A, H, P>) => {
   const { t } = useTranslation()
 
@@ -138,16 +143,14 @@ export const OmniProductController = <A, H, P>({
                   <PageSEOTags
                     title="seo.title-product-w-tokens"
                     titleParams={{
-                      // TODO remove ajna translation dependency
-                      product: t(`seo.ajnaProductPage.title`, {
+                      product: t(seoTags.productKey, {
                         product: upperFirst(dpmPosition.product),
                       }),
                       protocol,
                       token1: dpmPosition.collateralToken,
                       token2: dpmPosition.quoteToken,
                     }}
-                    // TODO remove ajna translation dependency
-                    description="seo.ajna.description"
+                    description={seoTags.descriptionKey}
                     url={document.location.pathname}
                   />
                   <OmniGeneralContextProvider
