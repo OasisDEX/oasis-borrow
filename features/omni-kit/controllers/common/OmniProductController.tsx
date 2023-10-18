@@ -40,6 +40,7 @@ interface OmniProductControllerProps<A, H, P> {
     isOracless: boolean
     redirect: string | undefined
   }
+  isOracless?: boolean
 }
 
 export const OmniProductController = <A, H, P>({
@@ -51,6 +52,7 @@ export const OmniProductController = <A, H, P>({
   quoteToken,
   controller,
   protocolHook,
+  isOracless,
 }: OmniProductControllerProps<A, H, P>) => {
   const { t } = useTranslation()
 
@@ -72,6 +74,7 @@ export const OmniProductController = <A, H, P>({
     product,
     quoteToken,
     protocol,
+    isOracless,
   })
 
   const {
@@ -85,9 +88,6 @@ export const OmniProductController = <A, H, P>({
     dpmPositionData,
     tokenPriceUSDData,
   })
-
-  // TODO we will need isOracless mapping per specific protocol
-  const isOracless = false
 
   return (
     <WithConnection pageChainId={NetworkHexIds.MAINNET} includeTestNet={true}>

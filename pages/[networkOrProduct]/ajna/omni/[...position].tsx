@@ -3,6 +3,7 @@ import { isSupportedNetwork, NetworkIds, NetworkNames } from 'blockchain/network
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { isAddress } from 'ethers/lib/utils'
+import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
@@ -26,6 +27,12 @@ interface AjnaPositionPageProps {
 }
 
 function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPositionPageProps) {
+  const isOracless = !!(
+    collateralToken &&
+    quoteToken &&
+    isPoolOracless({ collateralToken, quoteToken })
+  )
+
   return (
     <AjnaLayout>
       <ProductContextHandler>
@@ -43,6 +50,7 @@ function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPosi
             protocol={LendingProtocol.Ajna}
             controller={AjnaOmniProductController}
             protocolHook={useAjnaOmniData}
+            isOracless={isOracless}
           />
         </GasEstimationContextProvider>
       </ProductContextHandler>

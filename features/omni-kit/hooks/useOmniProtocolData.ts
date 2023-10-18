@@ -5,7 +5,6 @@ import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
-import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { getStaticDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import type { OmniProduct } from 'features/omni-kit/types/common.types'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
@@ -21,6 +20,7 @@ interface OmniProtocolDataProps {
   product?: OmniProduct
   quoteToken?: string
   protocol: LendingProtocol
+  isOracless?: boolean
 }
 
 export function useOmniProtocolData({
@@ -29,6 +29,7 @@ export function useOmniProtocolData({
   product,
   quoteToken,
   protocol,
+  isOracless,
 }: OmniProtocolDataProps) {
   const { walletAddress } = useAccount()
   const { context$, gasPrice$ } = useMainContext()
@@ -41,10 +42,6 @@ export function useOmniProtocolData({
     tokenPriceUSD$,
   } = useProductContext()
 
-  // TODO we will need isOracless mapping per specific protocol
-  const isOracless =
-    collateralToken && quoteToken && isPoolOracless({ collateralToken, quoteToken })
-
   const [context] = useObservable(context$)
   const [userSettingsData, userSettingsError] = useObservable(userSettings$)
   const [gasPriceData, gasPriceError] = useObservable(gasPrice$)
@@ -56,7 +53,10 @@ export function useOmniProtocolData({
 
   const [identifiedTokensData] = useObservable(
     useMemo(
-      () => (isOracless ? identifiedTokens$([collateralToken, quoteToken]) : EMPTY),
+      () =>
+        isOracless && collateralToken && quoteToken
+          ? identifiedTokens$([collateralToken, quoteToken])
+          : EMPTY,
       [isOracless, collateralToken, quoteToken],
     ),
   )
@@ -75,7 +75,7 @@ export function useOmniProtocolData({
               quoteToken,
               quoteTokenAddress: tokensAddresses[quoteToken].address,
             })
-          : isOracless && identifiedTokensData && product
+          : isOracless && identifiedTokensData && product && collateralToken && quoteToken
           ? getStaticDpmPositionData$({
               collateralToken: identifiedTokensData[collateralToken].symbol,
               collateralTokenAddress: collateralToken,
@@ -107,7 +107,7 @@ export function useOmniProtocolData({
               [dpmPositionData.collateralToken, dpmPositionData.quoteToken],
               walletAddress || dpmPositionData.user,
             )
-          : isOracless && dpmPositionData && identifiedTokensData
+          : isOracless && dpmPositionData && identifiedTokensData && collateralToken && quoteToken
           ? balancesFromAddressInfoArray$(
               [
                 {
@@ -151,7 +151,7 @@ export function useOmniProtocolData({
           quoteDigits: getToken(dpmPositionData.quoteToken).digits,
           quotePrecision: getToken(dpmPositionData.quoteToken).precision,
         }
-      : isOracless && identifiedTokensData
+      : isOracless && identifiedTokensData && collateralToken && quoteToken
       ? {
           collateralDigits: DEFAULT_TOKEN_DIGITS,
           collateralPrecision: identifiedTokensData[collateralToken].precision,
