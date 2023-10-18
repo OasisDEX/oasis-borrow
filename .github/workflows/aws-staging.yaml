@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - marcinciarka/leanest-docker-image
+      - dev
 
 name: Build and deploy to AWS Staging
 env:
