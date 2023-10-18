@@ -3,14 +3,14 @@ import { isSupportedNetwork, NetworkIds, NetworkNames } from 'blockchain/network
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { isAddress } from 'ethers/lib/utils'
-import { ajnaSeoTags } from 'features/ajna/common/consts'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
+import { morphoSeoTags } from 'features/morpho/common/consts'
+import { MorphoLayout, morphoPageSeoTags } from 'features/morpho/common/layout'
+import { MorphoOmniProductController } from 'features/morpho/controllers/MorphoOmniProductController'
 import { omniProducts } from 'features/omni-kit/common/consts'
-import { AjnaOmniProductController } from 'features/omni-kit/controllers/ajna/AjnaOmniProductController'
 import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
 import { useAjnaOmniData } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
 import type { OmniProduct } from 'features/omni-kit/types/common.types'
@@ -19,7 +19,7 @@ import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
-interface AjnaPositionPageProps {
+interface MorphoPositionPageProps {
   id: string
   pool: string
   product: OmniProduct
@@ -27,7 +27,7 @@ interface AjnaPositionPageProps {
   quoteToken: string
 }
 
-function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPositionPageProps) {
+function MorphoPositionPage({ id, product, collateralToken, quoteToken }: MorphoPositionPageProps) {
   const isOracless = !!(
     collateralToken &&
     quoteToken &&
@@ -35,7 +35,7 @@ function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPosi
   )
 
   return (
-    <AjnaLayout>
+    <MorphoLayout>
       <ProductContextHandler>
         <GasEstimationContextProvider>
           <OmniProductController<
@@ -48,21 +48,21 @@ function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPosi
             id={id}
             product={product}
             quoteToken={quoteToken}
-            protocol={LendingProtocol.Ajna}
-            controller={AjnaOmniProductController}
+            protocol={LendingProtocol.MorphoBlue}
+            controller={MorphoOmniProductController}
             protocolHook={useAjnaOmniData}
             isOracless={isOracless}
-            seoTags={ajnaSeoTags}
+            seoTags={morphoSeoTags}
           />
         </GasEstimationContextProvider>
       </ProductContextHandler>
-    </AjnaLayout>
+    </MorphoLayout>
   )
 }
 
-AjnaPositionPage.seoTags = ajnaPageSeoTags
+MorphoPositionPage.seoTags = morphoPageSeoTags
 
-export default AjnaPositionPage
+export default MorphoPositionPage
 
 export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
   const network = query.networkOrProduct as string

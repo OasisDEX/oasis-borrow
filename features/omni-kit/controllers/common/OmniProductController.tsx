@@ -45,7 +45,6 @@ interface OmniProductControllerProps<A, H, P> {
     productKey: string
     descriptionKey: string
   }
-  headlineKey: string
 }
 
 export const OmniProductController = <A, H, P>({
@@ -59,7 +58,6 @@ export const OmniProductController = <A, H, P>({
   protocolHook,
   isOracless,
   seoTags,
-  headlineKey,
 }: OmniProductControllerProps<A, H, P>) => {
   const { t } = useTranslation()
 
@@ -124,7 +122,6 @@ export const OmniProductController = <A, H, P>({
                     collateralIcon: tokensIconsData?.collateralToken,
                     quoteIcon: tokensIconsData?.quoteToken,
                     protocol,
-                    headlineKey,
                     id,
                   })}
                 />

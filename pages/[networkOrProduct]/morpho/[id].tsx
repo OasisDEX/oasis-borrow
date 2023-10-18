@@ -1,12 +1,12 @@
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
-import { ajnaSeoTags } from 'features/ajna/common/consts'
-import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
-import { AjnaOmniProductController } from 'features/omni-kit/controllers/ajna/AjnaOmniProductController'
+import { morphoSeoTags } from 'features/morpho/common/consts'
+import { MorphoLayout, morphoPageSeoTags } from 'features/morpho/common/layout'
+import { MorphoOmniProductController } from 'features/morpho/controllers/MorphoOmniProductController'
 import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
 import { useAjnaOmniData } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
 import { LendingProtocol } from 'lendingProtocols'
@@ -20,7 +20,7 @@ interface AjnaManagePositionPageProps {
 
 function AjnaManagePositionPage({ id }: AjnaManagePositionPageProps) {
   return (
-    <AjnaLayout>
+    <MorphoLayout>
       <ProductContextHandler>
         <GasEstimationContextProvider>
           <OmniProductController<
@@ -30,18 +30,18 @@ function AjnaManagePositionPage({ id }: AjnaManagePositionPageProps) {
           >
             id={id}
             flow="manage"
-            protocol={LendingProtocol.Ajna}
-            controller={AjnaOmniProductController}
+            protocol={LendingProtocol.MorphoBlue}
+            controller={MorphoOmniProductController}
             protocolHook={useAjnaOmniData}
-            seoTags={ajnaSeoTags}
+            seoTags={morphoSeoTags}
           />
         </GasEstimationContextProvider>
       </ProductContextHandler>
-    </AjnaLayout>
+    </MorphoLayout>
   )
 }
 
-AjnaManagePositionPage.seoTags = ajnaPageSeoTags
+AjnaManagePositionPage.seoTags = morphoPageSeoTags
 
 export default AjnaManagePositionPage
 

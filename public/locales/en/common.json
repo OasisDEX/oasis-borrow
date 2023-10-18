@@ -1101,6 +1101,13 @@
       "title": "Ajna pool creator - Summer.fi × Ajna",
       "description": "Create any ERC-20 token pool on the Ajna protocol, this will be available straight away on Summer.fi."
     },
+    "morpho": {
+      "title": "Summer.fi × Morpho",
+      "description": "Morpho is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
+    },
+    "morphoProductPage": {
+      "title": "{{product}} - Summer.fi × Morpho"
+    },
     "multiply": {
       "title": "Multiply - Summer.fi",
       "description": "Multiply your exposure to your favorite crypto assets. Browse our featured products or select a asset."

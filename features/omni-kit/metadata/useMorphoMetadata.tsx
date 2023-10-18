@@ -1,25 +1,17 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
+import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
-import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
-import {
-  ContentCardThresholdPrice,
-} from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
-import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { getAjnaSidebarTitle } from 'features/ajna/positions/common/getAjnaSidebarTitle'
 import { getBorrowishChangeVariant } from 'features/ajna/positions/common/helpers/getBorrowishChangeVariant'
 import { ajnaFlowStateFilter } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
-import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
-import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
-import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
-import { OmniDupePositionModal } from 'features/omni-kit/common/components/OmniDupePositionModal'
 import { getOmniBorrowPaybackMax } from 'features/omni-kit/common/helpers/getOmniBorrowPaybackMax'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import type { DynamicProductMetadata, ProductContextWithBorrow } from 'features/omni-kit/contexts/OmniProductContext'
@@ -27,14 +19,11 @@ import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductCon
 import { getAjnaOmniValidation } from 'features/omni-kit/helpers/ajna/getAjnaOmniValidation'
 import { useAjnaOmniTxHandler } from 'features/omni-kit/hooks/ajna/useAjnaOmniTxHandler'
 import { useAppConfig } from 'helpers/config'
-import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
-export const useAjnaMetadata: DynamicProductMetadata = (product) => {
-  const { t } = useTranslation()
+export const useMorphoMetadata: DynamicProductMetadata = (product) => {
   const {
     AjnaSafetySwitch: ajnaSafetySwitchOn,
     AjnaSuppressValidation: ajnaSuppressValidation,
@@ -45,8 +34,6 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
     environment: {
       isOracless,
       quoteToken,
-      quotePrice,
-      priceFormat,
       collateralToken,
       quoteBalance,
       quoteDigits,
@@ -66,10 +53,6 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
 
   const position = productContext.position.currentPosition.position as AjnaPosition
   const simulation = productContext.position.currentPosition.simulation as AjnaPosition
-
-  const originationFee = getOriginationFee(position, simulation)
-  const originationFeeFormatted = `${formatCryptoBalance(originationFee)} ${quoteToken}`
-  const originationFeeFormattedUSD = `($${formatAmount(originationFee.times(quotePrice), 'USD')})`
 
   const borrowishContext = productContext as ProductContextWithBorrow
 
@@ -127,8 +110,8 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
     },
     values: {
       // TODO the same value under different key
-      netBorrowCost: position.pool.interestRate,
-      interestRate: position.pool.interestRate,
+      netBorrowCost: new BigNumber(0.01),
+      interestRate: new BigNumber(0.01),
       afterBuyingPower:
         simulation && !simulation.pool.lowestUtilizedPriceIndex.isZero()
           ? simulation.buyingPower
@@ -141,9 +124,8 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
         simulation,
       }),
       changeVariant,
-      afterAvailableToBorrow:
-        simulation && negativeToZero(simulation.debtAvailable().minus(originationFee)),
-      afterPositionDebt: simulation?.debtAmount.plus(originationFee),
+      afterAvailableToBorrow: simulation && negativeToZero(simulation.debtAvailable()),
+      afterPositionDebt: simulation?.debtAmount,
       collateralMax: getAjnaBorrowCollateralMax({
         digits: getToken(collateralToken).digits,
         position,
@@ -163,46 +145,21 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
       }),
     },
     elements: {
-      highlighterOrderInformation:
-        ['borrow', 'multiply'].includes(product) && borrowishContext.form.state.generateAmount ? (
-          <HighlightedOrderInformation
-            label={t('ajna.position-page.borrow.common.form.origination-fee', { quoteToken })}
-            symbol={quoteToken}
-            value={`${originationFeeFormatted} ${!isOracless ? originationFeeFormattedUSD : ''}`}
-          />
-        ) : undefined,
+      highlighterOrderInformation: undefined,
       extraOverviewCards: [
-        isOracless ? (
-          <ContentCardThresholdPrice
-            isLoading={productContext.position.isSimulationLoading}
-            thresholdPrice={position.thresholdPrice}
-            debtAmount={position.debtAmount}
-            collateralAmount={position.collateralAmount}
-            afterThresholdPrice={simulation?.thresholdPrice}
-            priceFormat={priceFormat}
-            withTooltips
-            changeVariant={changeVariant}
-            {...(shouldShowDynamicLtv && {
-              lup: position.pool.lup,
-            })}
-          />
-        ) : (
-          <ContentCardLoanToValue
-            isLoading={productContext.position.isSimulationLoading}
-            loanToValue={position.riskRatio.loanToValue}
-            afterLoanToValue={simulation?.riskRatio.loanToValue}
-            {...(shouldShowDynamicLtv && {
-              dynamicMaxLtv: position.maxRiskRatio.loanToValue,
-            })}
-            changeVariant={changeVariant}
-          />
-        ),
+        <ContentCardLoanToValue
+          isLoading={productContext.position.isSimulationLoading}
+          loanToValue={position.riskRatio.loanToValue}
+          afterLoanToValue={simulation?.riskRatio.loanToValue}
+          {...(shouldShowDynamicLtv && {
+            dynamicMaxLtv: position.maxRiskRatio.loanToValue,
+          })}
+          changeVariant={changeVariant}
+        />,
       ],
-      overviewBanner: isPoolWithRewards({ collateralToken, quoteToken }) ? (
-        <AjnaTokensBannerController flow={flow} />
-      ) : undefined,
-      riskSidebar: <AjnaFormContentRisk />,
-      dupeModal: OmniDupePositionModal,
+      overviewBanner: undefined,
+      riskSidebar: <>Zeli papo</>,
+      dupeModal: () => <></>,
     },
     featureToggles: {
       safetySwitch: ajnaSafetySwitchOn,

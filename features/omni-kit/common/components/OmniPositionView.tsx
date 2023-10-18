@@ -1,8 +1,8 @@
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
-import { getAjnaHeadlineProps } from 'features/ajna/positions/common/helpers/getAjnaHeadlineProps'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
+import { getOmniHeadlineProps } from 'features/omni-kit/common/helpers/getOmniHeadlineProps'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
@@ -44,6 +44,7 @@ export function OmniPositionView({
       dpmProxy,
       collateralIcon,
       quoteIcon,
+      protocol,
     },
   } = useOmniGeneralContext()
 
@@ -56,7 +57,7 @@ export function OmniPositionView({
       )}
       <VaultHeadline
         header=""
-        {...getAjnaHeadlineProps({
+        {...getOmniHeadlineProps({
           collateralToken,
           flow,
           id,
@@ -64,6 +65,7 @@ export function OmniPositionView({
           quoteToken,
           collateralIcon,
           quoteIcon,
+          protocol,
         })}
         {...(flow === 'manage' && { shareButton: true })}
         details={[

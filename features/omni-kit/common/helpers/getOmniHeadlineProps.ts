@@ -15,7 +15,6 @@ interface OmniHeadlinePropsParams {
   collateralIcon?: string
   quoteIcon?: string
   protocol: LendingProtocol
-  headlineKey: string
 }
 
 export function getOmniHeadlineProps({
@@ -26,7 +25,6 @@ export function getOmniHeadlineProps({
   quoteToken,
   collateralIcon,
   quoteIcon,
-  headlineKey,
   protocol,
 }: OmniHeadlinePropsParams) {
   const { t } = useTranslation()
@@ -36,7 +34,7 @@ export function getOmniHeadlineProps({
       quoteToken &&
       collateralIcon &&
       quoteIcon && {
-        header: t(`${headlineKey}.${flow}`, {
+        header: t(`ajna.position-page.common.headline.${flow}`, {
           collateralToken,
           id,
           product: upperFirst(product),
