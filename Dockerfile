@@ -9,4 +9,4 @@ COPY .next/standalone /app/.next/standalone
 COPY package.json yarn.lock next.config.js /app
 COPY public /app/public
 
-CMD [ "npm", "run", "start:prod" ]
+CMD [ "node", ".next/standalone/server.js" ]
