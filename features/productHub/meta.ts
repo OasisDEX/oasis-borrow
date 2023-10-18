@@ -219,11 +219,6 @@ export const productHubTestNetworkFilter: GenericMultiselectOption[] = [
 
 export const productHubProtocolFilter: GenericMultiselectOption[] = [
   {
-    label: lendingProtocolsByName[LendingProtocol.Maker].label,
-    value: lendingProtocolsByName[LendingProtocol.Maker].name,
-    image: lendingProtocolsByName[LendingProtocol.Maker].icon,
-  },
-  {
     label: lendingProtocolsByName[LendingProtocol.AaveV2].label,
     value: lendingProtocolsByName[LendingProtocol.AaveV2].name,
     image: lendingProtocolsByName[LendingProtocol.AaveV2].icon,
@@ -237,6 +232,17 @@ export const productHubProtocolFilter: GenericMultiselectOption[] = [
     label: lendingProtocolsByName[LendingProtocol.Ajna].label,
     value: lendingProtocolsByName[LendingProtocol.Ajna].name,
     image: lendingProtocolsByName[LendingProtocol.Ajna].icon,
+  },
+  {
+    label: lendingProtocolsByName[LendingProtocol.Maker].label,
+    value: lendingProtocolsByName[LendingProtocol.Maker].name,
+    image: lendingProtocolsByName[LendingProtocol.Maker].icon,
+  },
+  {
+    label: lendingProtocolsByName[LendingProtocol.MorphoBlue].label,
+    value: lendingProtocolsByName[LendingProtocol.MorphoBlue].name,
+    image: lendingProtocolsByName[LendingProtocol.MorphoBlue].icon,
+    featureFlag: FeaturesEnum.MorphoBlue,
   },
   {
     label: lendingProtocolsByName[LendingProtocol.SparkV3].label,
