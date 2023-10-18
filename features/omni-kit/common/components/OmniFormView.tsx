@@ -19,13 +19,12 @@ import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
-import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import type { PropsWithChildren } from 'react'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
-interface AjnaFormViewProps {
+interface OmniFormViewProps {
   dropdown?: SidebarSectionHeaderDropdown
   txSuccessAction?: () => void
 }
@@ -34,7 +33,7 @@ export function OmniFormView({
   dropdown,
   children,
   txSuccessAction,
-}: PropsWithChildren<AjnaFormViewProps>) {
+}: PropsWithChildren<OmniFormViewProps>) {
   const { t } = useTranslation()
   const { context$ } = useMainContext()
 
@@ -51,6 +50,7 @@ export function OmniFormView({
       product,
       quoteAddress,
       quoteToken,
+      protocol,
     },
     steps: {
       currentStep,
@@ -137,7 +137,7 @@ export function OmniFormView({
   } = useProductTypeTransition({
     action: state.action,
     positionId: resolvedId,
-    protocol: LendingProtocol.Ajna,
+    protocol,
     product,
   })
 

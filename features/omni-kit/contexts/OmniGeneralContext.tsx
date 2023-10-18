@@ -17,6 +17,7 @@ import type {
 } from 'features/omni-kit/types/common.types'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { useAccount } from 'helpers/useAccount'
+import type { LendingProtocol } from 'lendingProtocols'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
 import React, { useContext, useEffect, useState } from 'react'
 
@@ -36,6 +37,7 @@ interface OmniGeneralContextProviderProps {
   isOracless: boolean
   owner: string
   product: OmniProduct
+  protocol: LendingProtocol
   quoteAddress: string
   quoteBalance: BigNumber
   quoteDigits: number

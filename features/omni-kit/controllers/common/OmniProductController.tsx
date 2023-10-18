@@ -172,6 +172,7 @@ export const OmniProductController = <A, H, P>({
                     isOracless={!!isOracless}
                     owner={dpmPosition.user}
                     product={dpmPosition.product as OmniProduct}
+                    protocol={protocol}
                     quoteAddress={dpmPosition.quoteTokenAddress}
                     quoteBalance={quoteBalance}
                     quoteDigits={quoteDigits}
