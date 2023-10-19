@@ -22,6 +22,7 @@ permissions:
 
 jobs:
   analyze:
+    name: Bundle Analysis
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -48,6 +49,7 @@ jobs:
 
       - name: Build next.js app
         env:
+          CONFIG_URL: ${{ secrets.CONFIG_URL }}
           NODE_OPTIONS: '--max_old_space_size=4096'
         run: yarn build
 
