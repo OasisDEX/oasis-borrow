@@ -24,6 +24,8 @@ jobs:
   analyze:
     name: Bundle Analysis
     runs-on: ubuntu-latest
+    env:
+      CONFIG_URL: ${{ secrets.CONFIG_URL }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -49,7 +51,6 @@ jobs:
 
       - name: Build next.js app
         env:
-          CONFIG_URL: ${{ secrets.CONFIG_URL }}
           NODE_OPTIONS: '--max_old_space_size=4096'
         run: yarn build
 
