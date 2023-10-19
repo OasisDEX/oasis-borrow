@@ -2990,6 +2990,21 @@
       "elligible-for-spk-airdrop-description": "More information on the Airdrop can be found on the Maker forum"
     }
   },
+  "morpho": {
+    "position-page": {
+      "common": {
+        "form": {
+          "title": {
+            "risk": "Things to know before opening an Morpho position",
+            "setup": "Configure your Morpho {{product}} Position",
+            "manage": "Manage your Morpho {{product}} Position",
+            "transaction": "Confirm your Morpho {{product}} Position",
+            "transition": "Switch your Morpho {{product}} Position"
+          }
+        }
+      }
+    }
+  },
   "product-hub": {
     "header": {
       "i-want-to": "I want to",

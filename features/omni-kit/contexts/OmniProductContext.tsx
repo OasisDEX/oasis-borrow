@@ -46,11 +46,13 @@ export type DynamicProductMetadata = (product: OmniProduct) => {
     shouldShowDynamicLtv: boolean
     changeVariant: 'positive' | 'negative'
     sidebarTitle: string
+    footerColumns: number
   }
   elements: {
     overviewBanner: JSX.Element | undefined
     riskSidebar: JSX.Element
-    extraOverviewCards: JSX.Element[]
+    overviewContent: JSX.Element
+    overviewFooter: JSX.Element
     highlighterOrderInformation: JSX.Element | undefined
     dupeModal: (props: OmniDupePositionModalProps) => JSX.Element
   }

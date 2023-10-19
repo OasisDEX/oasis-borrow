@@ -1,38 +1,34 @@
+import type { MorphoPosition } from '@oasisdex/dma-library'
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
-import type { AjnaGenericPosition } from 'features/ajna/common/types'
-import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { morphoSeoTags } from 'features/morpho/common/consts'
 import { MorphoLayout, morphoPageSeoTags } from 'features/morpho/common/layout'
+import type { MorphoPositionAuction } from 'features/morpho/common/types'
 import { MorphoOmniProductController } from 'features/morpho/controllers/MorphoOmniProductController'
 import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
-import { useAjnaOmniData } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
+import { useMorphoOmniData } from 'features/omni-kit/hooks/morpho/useMorphoOmniData'
+import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
-interface AjnaManagePositionPageProps {
+interface MorphoManagePositionPageProps {
   id: string
 }
 
-function AjnaManagePositionPage({ id }: AjnaManagePositionPageProps) {
+function MorphoManagePositionPage({ id }: MorphoManagePositionPageProps) {
   return (
     <MorphoLayout>
       <ProductContextHandler>
         <GasEstimationContextProvider>
-          <OmniProductController<
-            AjnaPositionAuction,
-            AjnaUnifiedHistoryEvent[],
-            AjnaGenericPosition
-          >
+          <OmniProductController<MorphoPositionAuction, PositionHistoryEvent[], MorphoPosition>
             id={id}
             flow="manage"
             protocol={LendingProtocol.MorphoBlue}
             controller={MorphoOmniProductController}
-            protocolHook={useAjnaOmniData}
+            protocolHook={useMorphoOmniData}
             seoTags={morphoSeoTags}
           />
         </GasEstimationContextProvider>
@@ -41,9 +37,9 @@ function AjnaManagePositionPage({ id }: AjnaManagePositionPageProps) {
   )
 }
 
-AjnaManagePositionPage.seoTags = morphoPageSeoTags
+MorphoManagePositionPage.seoTags = morphoPageSeoTags
 
-export default AjnaManagePositionPage
+export default MorphoManagePositionPage
 
 export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
   const network = query.networkOrProduct as string

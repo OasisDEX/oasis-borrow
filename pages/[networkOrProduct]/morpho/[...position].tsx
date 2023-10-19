@@ -1,19 +1,19 @@
+import type { MorphoPosition } from '@oasisdex/dma-library'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { isSupportedNetwork, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { isAddress } from 'ethers/lib/utils'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import type { AjnaGenericPosition } from 'features/ajna/common/types'
-import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { morphoSeoTags } from 'features/morpho/common/consts'
 import { MorphoLayout, morphoPageSeoTags } from 'features/morpho/common/layout'
+import type { MorphoPositionAuction } from 'features/morpho/common/types'
 import { MorphoOmniProductController } from 'features/morpho/controllers/MorphoOmniProductController'
 import { omniProducts } from 'features/omni-kit/common/consts'
 import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
-import { useAjnaOmniData } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
+import { useMorphoOmniData } from 'features/omni-kit/hooks/morpho/useMorphoOmniData'
 import type { OmniProduct } from 'features/omni-kit/types/common.types'
+import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -38,11 +38,7 @@ function MorphoPositionPage({ id, product, collateralToken, quoteToken }: Morpho
     <MorphoLayout>
       <ProductContextHandler>
         <GasEstimationContextProvider>
-          <OmniProductController<
-            AjnaPositionAuction,
-            AjnaUnifiedHistoryEvent[],
-            AjnaGenericPosition
-          >
+          <OmniProductController<MorphoPositionAuction, PositionHistoryEvent[], MorphoPosition>
             collateralToken={collateralToken}
             flow={id ? 'manage' : 'open'}
             id={id}
@@ -50,7 +46,7 @@ function MorphoPositionPage({ id, product, collateralToken, quoteToken }: Morpho
             quoteToken={quoteToken}
             protocol={LendingProtocol.MorphoBlue}
             controller={MorphoOmniProductController}
-            protocolHook={useAjnaOmniData}
+            protocolHook={useMorphoOmniData}
             isOracless={isOracless}
             seoTags={morphoSeoTags}
           />

@@ -1,23 +1,22 @@
-import type { BorrowishPosition } from '@oasisdex/dma-library'
-import type { AjnaGenericPosition } from 'features/ajna/common/types'
-import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
-import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
+import type { BorrowishPosition, MorphoPosition } from '@oasisdex/dma-library'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
+import type { MorphoPositionAuction } from 'features/morpho/common/types'
 import { OmniProductContextProvider } from 'features/omni-kit/contexts/OmniProductContext'
 import { OmniBorrowPositionController } from 'features/omni-kit/controllers/borrow/OmniBorrowPositionController'
 import { OmniMultiplyPositionController } from 'features/omni-kit/controllers/multiply/OmniMultiplyPositionController'
-import { useMorphoMetadata } from 'features/omni-kit/metadata/useMorphoMetadata'
+import { useMorphoMetadata } from 'features/omni-kit/metadata/morpho/useMorphoMetadata'
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
 import type { OmniFlow } from 'features/omni-kit/types/common.types'
+import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import type { FC } from 'react'
 import React from 'react'
 
 interface MorphoOmniProductControllerProps {
   flow: OmniFlow
   dpmPosition: DpmPositionData
-  aggregatedData: { auction: AjnaPositionAuction; history: AjnaUnifiedHistoryEvent[] }
-  positionData: AjnaGenericPosition
+  aggregatedData: { auction: MorphoPositionAuction; history: PositionHistoryEvent[] }
+  positionData: MorphoPosition
 }
 
 export const MorphoOmniProductController: FC<MorphoOmniProductControllerProps> = ({

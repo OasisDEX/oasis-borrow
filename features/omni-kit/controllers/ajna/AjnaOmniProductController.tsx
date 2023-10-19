@@ -11,7 +11,7 @@ import { AjnaCustomStateContextProvider } from 'features/omni-kit/contexts/custo
 import { OmniProductContextProvider } from 'features/omni-kit/contexts/OmniProductContext'
 import { OmniBorrowPositionController } from 'features/omni-kit/controllers/borrow/OmniBorrowPositionController'
 import { OmniMultiplyPositionController } from 'features/omni-kit/controllers/multiply/OmniMultiplyPositionController'
-import { useAjnaMetadata } from 'features/omni-kit/metadata/useAjnaMetadata'
+import { useAjnaMetadata } from 'features/omni-kit/metadata/ajna/useAjnaMetadata'
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniEarnFormReducto } from 'features/omni-kit/state/earn/earnFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
