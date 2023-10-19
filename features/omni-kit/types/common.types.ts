@@ -95,5 +95,10 @@ export interface GetOmniBorrowValidationsParams {
   txError?: TxError
 }
 
-
 export type OmniGenericPosition = BorrowishPosition | AjnaEarnPosition
+
+export type OmniSteps = {
+  [ProductKey in OmniProduct]: {
+    [FlowKey in OmniFlow]: OmniSidebarStep[]
+  }
+}

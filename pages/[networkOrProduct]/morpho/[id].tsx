@@ -2,7 +2,7 @@ import type { MorphoPosition } from '@oasisdex/dma-library'
 import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
-import { morphoSeoTags } from 'features/morpho/common/consts'
+import { morphoOmniSteps, morphoSeoTags } from 'features/morpho/common/consts'
 import { MorphoLayout, morphoPageSeoTags } from 'features/morpho/common/layout'
 import type { MorphoPositionAuction } from 'features/morpho/common/types'
 import { MorphoProductController } from 'features/morpho/controllers/MorphoProductController'
@@ -30,6 +30,7 @@ function MorphoManagePositionPage({ id }: MorphoManagePositionPageProps) {
             controller={MorphoProductController}
             protocolHook={useMorphoOmniData}
             seoTags={morphoSeoTags}
+            steps={morphoOmniSteps}
           />
         </GasEstimationContextProvider>
       </ProductContextHandler>

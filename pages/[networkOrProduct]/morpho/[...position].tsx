@@ -5,7 +5,7 @@ import { GasEstimationContextProvider } from 'components/context/GasEstimationCo
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { isAddress } from 'ethers/lib/utils'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import { morphoSeoTags } from 'features/morpho/common/consts'
+import { morphoOmniSteps, morphoSeoTags } from 'features/morpho/common/consts'
 import { MorphoLayout, morphoPageSeoTags } from 'features/morpho/common/layout'
 import type { MorphoPositionAuction } from 'features/morpho/common/types'
 import { MorphoProductController } from 'features/morpho/controllers/MorphoProductController'
@@ -49,6 +49,7 @@ function MorphoPositionPage({ id, product, collateralToken, quoteToken }: Morpho
             protocolHook={useMorphoOmniData}
             isOracless={isOracless}
             seoTags={morphoSeoTags}
+            steps={morphoOmniSteps}
           />
         </GasEstimationContextProvider>
       </ProductContextHandler>

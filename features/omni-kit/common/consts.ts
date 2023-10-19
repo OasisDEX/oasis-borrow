@@ -1,14 +1,10 @@
-import type { OmniFlow, OmniProduct, OmniSidebarStep } from 'features/omni-kit/types/common.types'
+import type { OmniProduct, OmniSidebarStep, OmniSteps } from 'features/omni-kit/types/common.types'
 
 export const omniProducts: OmniProduct[] = ['borrow', 'earn', 'multiply']
 export const omniFormExternalSteps: OmniSidebarStep[] = ['dpm']
 export const omniFormStepsWithTransaction: OmniSidebarStep[] = ['transaction']
 
-export const omniSteps: {
-  [ProductKey in OmniProduct]: {
-    [FlowKey in OmniFlow]: OmniSidebarStep[]
-  }
-} = {
+export const omniSteps: OmniSteps = {
   borrow: {
     open: ['risk', 'setup', 'dpm', 'transaction'],
     manage: ['manage', 'dpm', 'transaction', 'transition'],

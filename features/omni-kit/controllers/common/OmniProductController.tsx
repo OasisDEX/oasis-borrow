@@ -3,12 +3,11 @@ import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import { omniSteps } from 'features/omni-kit/common/consts'
 import { getOmniHeadlineProps } from 'features/omni-kit/common/helpers/getOmniHeadlineProps'
 import { OmniGeneralContextProvider } from 'features/omni-kit/contexts/OmniGeneralContext'
 import type { ProductDataProps } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
 import { useOmniProtocolData } from 'features/omni-kit/hooks/useOmniProtocolData'
-import type { OmniFlow, OmniProduct } from 'features/omni-kit/types/common.types'
+import type { OmniFlow, OmniProduct, OmniSteps } from 'features/omni-kit/types/common.types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -45,6 +44,7 @@ interface OmniProductControllerProps<A, H, P> {
     productKey: string
     descriptionKey: string
   }
+  steps: OmniSteps
 }
 
 export const OmniProductController = <A, H, P>({
@@ -58,6 +58,7 @@ export const OmniProductController = <A, H, P>({
   protocolHook,
   isOracless,
   seoTags,
+  steps,
 }: OmniProductControllerProps<A, H, P>) => {
   const { t } = useTranslation()
 
@@ -177,7 +178,7 @@ export const OmniProductController = <A, H, P>({
                     quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                     quoteToken={dpmPosition.quoteToken}
                     quoteIcon={tokensIcons.quoteToken}
-                    steps={omniSteps[dpmPosition.product as OmniProduct][flow]}
+                    steps={steps[dpmPosition.product as OmniProduct][flow]}
                     gasPrice={gasPrice}
                     slippage={slippage}
                     isProxyWithManyPositions={dpmPosition.hasMultiplePositions}

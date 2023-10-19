@@ -9,7 +9,7 @@ import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
-import { omniProducts } from 'features/omni-kit/common/consts'
+import { omniProducts, omniSteps } from 'features/omni-kit/common/consts'
 import { AjnaOmniProductController } from 'features/omni-kit/controllers/ajna/AjnaOmniProductController'
 import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
 import { useAjnaOmniData } from 'features/omni-kit/hooks/ajna/useAjnaOmniData'
@@ -53,6 +53,7 @@ function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPosi
             protocolHook={useAjnaOmniData}
             isOracless={isOracless}
             seoTags={ajnaSeoTags}
+            steps={omniSteps}
           />
         </GasEstimationContextProvider>
       </ProductContextHandler>
