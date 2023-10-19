@@ -81,6 +81,20 @@ async function openPosition(
         addresses: aavev3Addresses,
         getSwapData: swapCall(aavev3Addresses, networkId),
       }
+      
+      if (networkId === NetworkIds.BASEMAINNET) {
+        const tokenAddress = aavev3Addresses.tokens['USDBC']
+        if (tokenAddress === undefined) throw new Error('USDBC address is undefined')
+
+        args.flashloan = {
+          token: {
+            symbol: 'USDBC',
+            address: tokenAddress,
+            precision: 18,
+          },
+        }
+      }
+
       if (networkId === NetworkIds.OPTIMISMMAINNET) {
         args.flashloan = {
           token: {
