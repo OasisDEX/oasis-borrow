@@ -1,13 +1,16 @@
 import type BigNumber from 'bignumber.js'
 import * as blockchainCalls from 'blockchain/aave'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import type {
   AaveLikeReserveConfigurationDataParams,
+  AaveLikeReserveData,
   AaveLikeServices,
 } from 'lendingProtocols/aave-like-common'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { makeObservable, makeOneObservable } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
 import type { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 import * as pipelines from './pipelines'
 import curry from 'ramda/src/curry'
@@ -70,10 +73,32 @@ export function getAaveV2Services({ refresh$ }: AaveV2ServicesDependencies): Aav
     return aaveLikeReserveConfigurationData$({ token: collateralToken })
   }
 
+  const reserveDataWithMissingCaps$ = memoize(
+    (args: { token: string }): Observable<AaveLikeReserveData> => {
+      return getAaveLikeReserveData$(args).pipe(
+        map((reserveData) => {
+          return {
+            ...reserveData,
+            // I set the max values because it doesn't change anything in the UI. I set proper values for Aave v3 and Spark.
+            caps: {
+              borrow: maxUint256,
+              supply: maxUint256,
+            },
+            totalDebt: maxUint256,
+            totalSupply: maxUint256,
+            availableToBorrow: maxUint256,
+            availableToSupply: maxUint256,
+          }
+        }),
+      )
+    },
+    (args: { token: string }) => args.token,
+  )
+
   return {
     protocol: LendingProtocol.AaveV2,
     aaveLikeReserveConfigurationData$: wrapAaveReserveData$,
-    getAaveLikeReserveData$,
+    getAaveLikeReserveData$: reserveDataWithMissingCaps$,
     aaveLikeAvailableLiquidityInUSDC$,
     aaveLikeLiquidations$,
     aaveLikeUserAccountData$,

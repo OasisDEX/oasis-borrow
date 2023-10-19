@@ -19,6 +19,7 @@ import {
   mapAaveUserAccountData$,
   prepareaaveAvailableLiquidityInUSDC$,
 } from './pipelines'
+import { getReserveData } from './pipelines/get-reserve-data'
 
 interface AaveV3ServicesDependencies {
   refresh$: Observable<unknown>
@@ -77,6 +78,13 @@ export function getAaveV3Services({
     blockchainCalls.getAaveV3ReserveData,
     networkId,
     'getAaveLikeReserveData$',
+  )
+
+  const getReserveCaps$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getReserveCaps,
+    networkId,
+    'getReserveCaps$',
   )
 
   const getEModeCategoryData$ = makeObservableForNetworkId(
@@ -146,10 +154,15 @@ export function getAaveV3Services({
       `${args.collateralToken}-${args.debtToken}`,
   )
 
+  const reserveDataWithCaps$ = memoize(
+    curry(getReserveData)(getAaveLikeReserveData$, getReserveCaps$),
+    (args: { token: string }) => args.token,
+  )
+
   return {
     protocol: LendingProtocol.AaveV3,
     aaveLikeReserveConfigurationData$: reserveConfigurationDataWithEMode$,
-    getAaveLikeReserveData$,
+    getAaveLikeReserveData$: reserveDataWithCaps$,
     aaveLikeAvailableLiquidityInUSDC$,
     aaveLikeLiquidations$,
     aaveLikeUserAccountData$,

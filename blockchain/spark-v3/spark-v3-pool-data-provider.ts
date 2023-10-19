@@ -158,6 +158,7 @@ export function getSparkV3EModeCategoryForAsset({
 }: SparkV3EModeForAssetParameters): Promise<BigNumber> {
   const { contract, tokenMappings } = networkMappings[networkId]()
   const address = wethToEthAddress(tokenMappings, token)
+
   warnIfAddressIsZero(
     address,
     networkId,
@@ -166,5 +167,29 @@ export function getSparkV3EModeCategoryForAsset({
   )
   return contract.getReserveEModeCategory(address).then((result) => {
     return new BigNumber(result.toString())
+  })
+}
+
+export interface SparkReserveCapParameters extends BaseParameters {
+  token: string
+}
+
+export interface SparkReserveCap {
+  supply: BigNumber
+  borrow: BigNumber
+}
+
+export function getReserveCaps({
+  token,
+  networkId,
+}: SparkReserveCapParameters): Promise<SparkReserveCap> {
+  const { contract, tokenMappings } = networkMappings[networkId]()
+  const address = wethToEthAddress(tokenMappings, token)
+
+  return contract.getReserveCaps(address).then((result) => {
+    return {
+      supply: new BigNumber(result.supplyCap.toString()),
+      borrow: new BigNumber(result.borrowCap.toString()),
+    }
   })
 }

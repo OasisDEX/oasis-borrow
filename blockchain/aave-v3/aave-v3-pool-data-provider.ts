@@ -181,3 +181,27 @@ export function getAaveV3EModeCategoryForAsset({
     return new BigNumber(result.toString())
   })
 }
+
+export interface AaveV3ReserveCapParameters extends BaseParameters {
+  token: string
+}
+
+export interface AaveV3ReserveCap {
+  supply: BigNumber
+  borrow: BigNumber
+}
+
+export function getReserveCaps({
+  token,
+  networkId,
+}: AaveV3ReserveCapParameters): Promise<AaveV3ReserveCap> {
+  const { contract, tokenMappings } = networkMappings[networkId]()
+  const address = wethToEthAddress(tokenMappings, token)
+
+  return contract.getReserveCaps(address).then((result) => {
+    return {
+      supply: new BigNumber(result.supplyCap.toString()),
+      borrow: new BigNumber(result.borrowCap.toString()),
+    }
+  })
+}

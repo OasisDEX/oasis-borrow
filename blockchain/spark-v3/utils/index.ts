@@ -62,6 +62,10 @@ export function wethToEthAddress<T>(
   tokenMappings: ContractForNetwork<T>['tokenMappings'],
   token: SparkV3ReserveDataParameters['token'],
 ): string {
+  const requestedToken = tokenMappings[token]
+  if (!requestedToken) {
+    throw new Error(`Token ${token} is not supported`)
+  }
   return tokenMappings[token].address === tokenMappings['ETH'].address
     ? tokenMappings['WETH'].address
     : tokenMappings[token].address

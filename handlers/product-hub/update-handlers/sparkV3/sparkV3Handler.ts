@@ -104,6 +104,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
   > = {
     'WSTETH/ETH': emptyYields,
     'RETH/ETH': emptyYields,
+    'SDAI/USDC': emptyYields,
+    'SDAI/USDT': emptyYields,
   }
   // getting the APYs
   const earnProducts = sparkV3ProductHubProducts.filter(({ product }) =>

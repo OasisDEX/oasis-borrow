@@ -144,6 +144,28 @@ const availableTokenPairs: TokenPairConfig[] = [
       },
     },
   },
+  {
+    collateral: 'SDAI',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+        additionalManageActions: [],
+      },
+    },
+  },
+  {
+    collateral: 'SDAI',
+    debt: 'USDT',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+        additionalManageActions: [],
+      },
+    },
+  },
 ]
 
 const borrowStrategies: IStrategyConfig[] = availableTokenPairs

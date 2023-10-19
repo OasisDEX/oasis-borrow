@@ -13,6 +13,7 @@ import type { Observable } from 'rxjs'
 
 import {
   getReserveConfigurationDataWithEMode$,
+  getReserveData,
   getSparkProtocolData$,
   getSparkProxyConfiguration$,
   mapSparkUserAccountData$,
@@ -77,6 +78,13 @@ export function getSparkV3Services({
     blockchainCalls.getSparkV3ReserveData,
     networkId,
     'getAaveLikeReserveData$',
+  )
+
+  const getReserveCaps$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getReserveCaps,
+    networkId,
+    'getReserveCaps$',
   )
 
   const getEModeCategoryData$ = makeObservableForNetworkId(
@@ -146,10 +154,15 @@ export function getSparkV3Services({
       `${args.collateralToken}-${args.debtToken}`,
   )
 
+  const reserveDataWithCaps$ = memoize(
+    curry(getReserveData)(getAaveLikeReserveData$, getReserveCaps$),
+    (args: { token: string }) => args.token,
+  )
+
   return {
     protocol: LendingProtocol.SparkV3,
     aaveLikeReserveConfigurationData$: reserveConfigurationDataWithEMode$,
-    getAaveLikeReserveData$,
+    getAaveLikeReserveData$: reserveDataWithCaps$,
     aaveLikeAvailableLiquidityInUSDC$,
     aaveLikeLiquidations$,
     aaveLikeUserAccountData$,
