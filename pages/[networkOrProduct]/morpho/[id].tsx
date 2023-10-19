@@ -5,7 +5,7 @@ import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { morphoSeoTags } from 'features/morpho/common/consts'
 import { MorphoLayout, morphoPageSeoTags } from 'features/morpho/common/layout'
 import type { MorphoPositionAuction } from 'features/morpho/common/types'
-import { MorphoOmniProductController } from 'features/morpho/controllers/MorphoOmniProductController'
+import { MorphoProductController } from 'features/morpho/controllers/MorphoProductController'
 import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
 import { useMorphoOmniData } from 'features/omni-kit/hooks/morpho/useMorphoOmniData'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
@@ -27,7 +27,7 @@ function MorphoManagePositionPage({ id }: MorphoManagePositionPageProps) {
             id={id}
             flow="manage"
             protocol={LendingProtocol.MorphoBlue}
-            controller={MorphoOmniProductController}
+            controller={MorphoProductController}
             protocolHook={useMorphoOmniData}
             seoTags={morphoSeoTags}
           />

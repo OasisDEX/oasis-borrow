@@ -8,7 +8,7 @@ import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { morphoSeoTags } from 'features/morpho/common/consts'
 import { MorphoLayout, morphoPageSeoTags } from 'features/morpho/common/layout'
 import type { MorphoPositionAuction } from 'features/morpho/common/types'
-import { MorphoOmniProductController } from 'features/morpho/controllers/MorphoOmniProductController'
+import { MorphoProductController } from 'features/morpho/controllers/MorphoProductController'
 import { omniProducts } from 'features/omni-kit/common/consts'
 import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
 import { useMorphoOmniData } from 'features/omni-kit/hooks/morpho/useMorphoOmniData'
@@ -45,7 +45,7 @@ function MorphoPositionPage({ id, product, collateralToken, quoteToken }: Morpho
             product={product}
             quoteToken={quoteToken}
             protocol={LendingProtocol.MorphoBlue}
-            controller={MorphoOmniProductController}
+            controller={MorphoProductController}
             protocolHook={useMorphoOmniData}
             isOracless={isOracless}
             seoTags={morphoSeoTags}

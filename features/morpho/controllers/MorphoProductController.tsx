@@ -12,14 +12,14 @@ import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import type { FC } from 'react'
 import React from 'react'
 
-interface MorphoOmniProductControllerProps {
+interface MorphoProductControllerProps {
   flow: OmniFlow
   dpmPosition: DpmPositionData
   aggregatedData: { auction: MorphoPositionAuction; history: PositionHistoryEvent[] }
   positionData: MorphoPosition
 }
 
-export const MorphoOmniProductController: FC<MorphoOmniProductControllerProps> = ({
+export const MorphoProductController: FC<MorphoProductControllerProps> = ({
   dpmPosition,
   flow,
   aggregatedData: { auction, history },
