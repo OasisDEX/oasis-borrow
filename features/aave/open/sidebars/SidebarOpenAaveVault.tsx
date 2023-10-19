@@ -1,4 +1,5 @@
 import { useActor } from '@xstate/react'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import { MessageCard } from 'components/MessageCard'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
@@ -20,6 +21,7 @@ import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
 import { useAppConfig } from 'helpers/config'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -318,6 +320,11 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
   const amountTooHigh =
     state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
 
+  const maxPossibleSupply =
+    state.context.protocolData?.reserveData.collateral.availableToSupply || maxUint256
+
+  const moreThanPossibleToSupply = state.context.userInput.amount?.gt(maxPossibleSupply) ?? false
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (
@@ -326,6 +333,12 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
         {state.context.tokenBalance && amountTooHigh && (
           <MessageCard
             messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
+            type="error"
+          />
+        )}
+        {moreThanPossibleToSupply && (
+          <MessageCard
+            messages={[`Too much. Max posible supply: ${formatCryptoBalance(maxPossibleSupply)}`]}
             type="error"
           />
         )}

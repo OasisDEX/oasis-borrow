@@ -1,16 +1,8 @@
 import type { IPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { AaveV2ConfigurationData } from 'blockchain/aave/aaveV2LendingPool'
-import type {
-  AaveV2ReserveConfigurationData,
-  AaveV2UserReserveData,
-  AaveV2UserReserveDataParameters,
-} from 'blockchain/aave/aaveV2ProtocolDataProvider'
-import type {
-  AaveLikeProtocolData,
-  AaveLikeUserAccountData,
-  AaveLikeUserAccountDataArgs,
-} from 'lendingProtocols/aave-like-common'
+import type { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
+import type { AaveLikeProtocolData, AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
@@ -33,47 +25,26 @@ export type AaveReserveConfigurationDataType = ({
 }) => Observable<AaveV2ReserveConfigurationData>
 
 export function getAaveProtocolData$(
-  aaveUserReserveData$: (
-    args: AaveV2UserReserveDataParameters,
-  ) => Observable<AaveV2UserReserveData>,
-  aaveLikeUserAccountData$: (
-    args: AaveLikeUserAccountDataArgs,
-  ) => Observable<AaveLikeUserAccountData>,
-  aaveLikeOracleAssetPriceData$: AaveOracleAssetPriceDataType,
-  aaveUserConfiguration$: AaveUserConfigurationType,
-  aaveReservesList$: Observable<AaveV2ConfigurationData>,
+  aaveReserveData$: (args: { token: string }) => Observable<AaveLikeReserveData>,
   aaveOnChainPosition$: (params: GetAaveV2OnChainPosition) => Observable<IPosition>,
   collateralToken: string,
   debtToken: string,
   proxyAddress: string,
 ): Observable<AaveLikeProtocolData> {
   return combineLatest(
-    aaveUserReserveData$({ token: collateralToken, address: proxyAddress }),
-    aaveLikeUserAccountData$({ address: proxyAddress }),
-    aaveLikeOracleAssetPriceData$({ token: collateralToken }),
-    aaveUserConfiguration$({ address: proxyAddress }),
-    aaveReservesList$,
     aaveOnChainPosition$({ collateralToken, debtToken, proxyAddress }),
+    aaveReserveData$({ token: collateralToken }),
+    aaveReserveData$({ token: debtToken }),
   ).pipe(
-    map(
-      ([
-        reserveData,
-        accountData,
-        oraclePrice,
-        aaveUserConfiguration,
-        aaveReservesList,
-        onChainPosition,
-      ]) => {
-        return {
-          positionData: reserveData,
-          accountData: accountData,
-          oraclePrice: oraclePrice,
-          position: onChainPosition,
-          userConfiguration: aaveUserConfiguration,
-          reservesList: aaveReservesList,
-        }
-      },
-    ),
+    map(([onChainPosition, collateralReserveData, debtReserveData]) => {
+      return {
+        position: onChainPosition,
+        reserveData: {
+          collateral: collateralReserveData,
+          debt: debtReserveData,
+        },
+      }
+    }),
     distinctUntilChanged((a, b) => isEqual(a, b)),
   )
 }

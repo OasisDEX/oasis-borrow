@@ -29,7 +29,6 @@ export function getAaveV2Services({ refresh$ }: AaveV2ServicesDependencies): Aav
   const tokenPrices = makeObservable(refresh$, blockchainCalls.getAaveV2AssetsPrices)
   const tokenPriceInEth$ = makeObservable(refresh$, blockchainCalls.getAaveV2OracleAssetPrice)
   const usdcPriceInEth$ = tokenPriceInEth$({ token: 'USDC' })
-  const aaveUserReserveData$ = makeObservable(refresh$, blockchainCalls.getAaveV2UserReserveData)
   const aaveLikeReserveConfigurationData$ = makeObservable(
     refresh$,
     blockchainCalls.getAaveV2ReserveConfigurationData,
@@ -53,26 +52,6 @@ export function getAaveV2Services({ refresh$ }: AaveV2ServicesDependencies): Aav
     ({ token }) => token,
   )
 
-  const aaveLikeProtocolData$ = memoize(
-    curry(pipelines.getAaveProtocolData$)(
-      aaveUserReserveData$,
-      aaveLikeUserAccountData$,
-      tokenPriceInEth$,
-      aaveUserConfiguration$,
-      aaveReservesList$,
-      getAaveOnChainPosition$,
-    ),
-    (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
-  )
-
-  const aaveLikeProxyConfiguration$ = memoize(
-    curry(pipelines.getAaveProxyConfiguration$)(aaveUserConfiguration$, aaveReservesList$),
-  )
-
-  const wrapAaveReserveData$ = ({ collateralToken }: AaveLikeReserveConfigurationDataParams) => {
-    return aaveLikeReserveConfigurationData$({ token: collateralToken })
-  }
-
   const reserveDataWithMissingCaps$ = memoize(
     (args: { token: string }): Observable<AaveLikeReserveData> => {
       return getAaveLikeReserveData$(args).pipe(
@@ -94,6 +73,19 @@ export function getAaveV2Services({ refresh$ }: AaveV2ServicesDependencies): Aav
     },
     (args: { token: string }) => args.token,
   )
+
+  const aaveLikeProtocolData$ = memoize(
+    curry(pipelines.getAaveProtocolData$)(reserveDataWithMissingCaps$, getAaveOnChainPosition$),
+    (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
+  )
+
+  const aaveLikeProxyConfiguration$ = memoize(
+    curry(pipelines.getAaveProxyConfiguration$)(aaveUserConfiguration$, aaveReservesList$),
+  )
+
+  const wrapAaveReserveData$ = ({ collateralToken }: AaveLikeReserveConfigurationDataParams) => {
+    return aaveLikeReserveConfigurationData$({ token: collateralToken })
+  }
 
   return {
     protocol: LendingProtocol.AaveV2,

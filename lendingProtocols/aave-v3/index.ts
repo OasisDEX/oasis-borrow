@@ -16,10 +16,10 @@ import {
   getAaveProtocolData$,
   getAaveProxyConfiguration$,
   getReserveConfigurationDataWithEMode$,
+  getReserveData,
   mapAaveUserAccountData$,
   prepareaaveAvailableLiquidityInUSDC$,
 } from './pipelines'
-import { getReserveData } from './pipelines/get-reserve-data'
 
 interface AaveV3ServicesDependencies {
   refresh$: Observable<unknown>
@@ -102,12 +102,6 @@ export function getAaveV3Services({
     ({ token }) => token,
   )
 
-  const aaveUserReserveData$ = makeObservableForNetworkId(
-    refresh$,
-    blockchainCalls.getAaveV3UserReserveData,
-    networkId,
-    'aaveUserReserveData$',
-  )
   const aaveUserConfiguration$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getAaveV3UserConfigurations,
@@ -128,15 +122,13 @@ export function getAaveV3Services({
     'onChainPosition$',
   )
 
+  const reserveDataWithCaps$ = memoize(
+    curry(getReserveData)(getAaveLikeReserveData$, getReserveCaps$),
+    (args: { token: string }) => args.token,
+  )
+
   const aaveLikeProtocolData$ = memoize(
-    curry(getAaveProtocolData$)(
-      aaveUserReserveData$,
-      aaveLikeUserAccountData$,
-      assetPrice$,
-      aaveUserConfiguration$,
-      aaveReservesList$,
-      onChainPosition$,
-    ),
+    curry(getAaveProtocolData$)(reserveDataWithCaps$, onChainPosition$),
     (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
 
@@ -152,11 +144,6 @@ export function getAaveV3Services({
     ),
     (args: { collateralToken: string; debtToken: string }) =>
       `${args.collateralToken}-${args.debtToken}`,
-  )
-
-  const reserveDataWithCaps$ = memoize(
-    curry(getReserveData)(getAaveLikeReserveData$, getReserveCaps$),
-    (args: { token: string }) => args.token,
   )
 
   return {

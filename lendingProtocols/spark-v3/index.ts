@@ -102,12 +102,6 @@ export function getSparkV3Services({
     ({ token }) => token,
   )
 
-  const aaveUserReserveData$ = makeObservableForNetworkId(
-    refresh$,
-    blockchainCalls.getSparkV3UserReserveData,
-    networkId,
-    'aaveUserReserveData$',
-  )
   const aaveUserConfiguration$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getSparkV3UserConfigurations,
@@ -128,15 +122,13 @@ export function getSparkV3Services({
     'onChainPosition$',
   )
 
+  const reserveDataWithCaps$ = memoize(
+    curry(getReserveData)(getAaveLikeReserveData$, getReserveCaps$),
+    (args: { token: string }) => args.token,
+  )
+
   const aaveLikeProtocolData$ = memoize(
-    curry(getSparkProtocolData$)(
-      aaveUserReserveData$,
-      aaveLikeUserAccountData$,
-      assetPrice$,
-      aaveUserConfiguration$,
-      aaveReservesList$,
-      onChainPosition$,
-    ),
+    curry(getSparkProtocolData$)(reserveDataWithCaps$, onChainPosition$),
     (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
 
@@ -152,11 +144,6 @@ export function getSparkV3Services({
     ),
     (args: { collateralToken: string; debtToken: string }) =>
       `${args.collateralToken}-${args.debtToken}`,
-  )
-
-  const reserveDataWithCaps$ = memoize(
-    curry(getReserveData)(getAaveLikeReserveData$, getReserveCaps$),
-    (args: { token: string }) => args.token,
   )
 
   return {
