@@ -4,6 +4,7 @@ import type {
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
+import { getAaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import type { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { makeObservableForNetworkId } from 'lendingProtocols/pipelines'
@@ -12,7 +13,6 @@ import { curry } from 'ramda'
 import type { Observable } from 'rxjs'
 
 import {
-  getAaveLikeReserveData,
   getAaveProxyConfiguration$,
   getReserveConfigurationDataWithEMode$,
   mapAaveUserAccountData$,
