@@ -32,6 +32,7 @@ export interface SparkV3ReserveDataReply {
   unbacked: BigNumber
   accruedToTreasuryScaled: BigNumber
   totalSpToken: BigNumber
+  totalToken: BigNumber
   totalStableDebt: BigNumber
   totalVariableDebt: BigNumber
   liquidityRate: BigNumber
@@ -120,6 +121,7 @@ export function getSparkV3ReserveData({
       liquidityIndex: new BigNumber(result.liquidityIndex.toString()),
       variableBorrowIndex: new BigNumber(result.variableBorrowIndex.toString()),
       lastUpdateTimestamp: new BigNumber(result.lastUpdateTimestamp.toString()),
+      totalToken: totalSpToken,
       totalSpToken,
       totalStableDebt,
       totalVariableDebt,

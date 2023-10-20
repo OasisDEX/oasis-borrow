@@ -32,6 +32,7 @@ export interface AaveV3ReserveDataReply {
   unbacked: BigNumber
   accruedToTreasuryScaled: BigNumber
   totalAToken: BigNumber
+  totalToken: BigNumber
   totalStableDebt: BigNumber
   totalVariableDebt: BigNumber
   liquidityRate: BigNumber
@@ -133,6 +134,7 @@ export function getAaveV3ReserveData({
       liquidityIndex: new BigNumber(result.liquidityIndex.toString()),
       variableBorrowIndex: new BigNumber(result.variableBorrowIndex.toString()),
       lastUpdateTimestamp: new BigNumber(result.lastUpdateTimestamp.toString()),
+      totalToken: totalAToken,
       totalAToken,
       totalStableDebt,
       totalVariableDebt,
