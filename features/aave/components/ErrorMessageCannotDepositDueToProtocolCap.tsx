@@ -1,3 +1,4 @@
+import { amountFromWei } from 'blockchain/utils'
 import { MessageCard } from 'components/MessageCard'
 import type { BaseAaveContext } from 'features/aave/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
@@ -22,7 +23,10 @@ export function ErrorMessageCannotDepositDueToProtocolCap({
 
   const maxSupply = reserveData.collateral.availableToSupply
   const collateralToken = transition.simulation.position.collateral.symbol
-  const targetPositionCollateral = transition.simulation.delta.collateral
+  const targetPositionCollateral = amountFromWei(
+    transition.simulation.delta.collateral,
+    collateralToken,
+  )
 
   const messages: string[] = []
 
