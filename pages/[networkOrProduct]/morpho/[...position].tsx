@@ -1,15 +1,12 @@
 import type { MorphoPosition } from '@oasisdex/dma-library'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { isSupportedNetwork, NetworkIds, NetworkNames } from 'blockchain/networks'
+import { isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
-import { isAddress } from 'ethers/lib/utils'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import { morphoOmniSteps, morphoSeoTags } from 'features/morpho/common/consts'
+import { morphoOmniSteps, morphoSeoTags, morphoSupportedPairs } from 'features/morpho/common/consts'
 import { MorphoLayout, morphoPageSeoTags } from 'features/morpho/common/layout'
 import type { MorphoPositionAuction } from 'features/morpho/common/types'
 import { MorphoProductController } from 'features/morpho/controllers/MorphoProductController'
-import { omniProducts } from 'features/omni-kit/common/consts'
 import { OmniProductController } from 'features/omni-kit/controllers/common/OmniProductController'
 import { useMorphoOmniData } from 'features/omni-kit/hooks/morpho/useMorphoOmniData'
 import type { OmniProduct } from 'features/omni-kit/types/common.types'
@@ -21,7 +18,6 @@ import React from 'react'
 
 interface MorphoPositionPageProps {
   id: string
-  pool: string
   product: OmniProduct
   collateralToken: string
   quoteToken: string
@@ -63,25 +59,17 @@ export default MorphoPositionPage
 
 export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
   const network = query.networkOrProduct as string
-  const [product, pool, id = null] = query.position as string[]
-  const [collateralToken, quoteToken] = pool.split('-')
-  const caseSensitiveCollateralToken = isAddress(collateralToken)
-    ? collateralToken.toLowerCase()
-    : collateralToken.toUpperCase()
-  const caseSensitiveQuoteToken = isAddress(quoteToken)
-    ? quoteToken.toLowerCase()
-    : quoteToken.toUpperCase()
-  const supportedPools = Object.keys({
-    ...getNetworkContracts(NetworkIds.MAINNET).ajnaPoolPairs,
-    ...getNetworkContracts(NetworkIds.GOERLI).ajnaPoolPairs,
-  })
+  const [product, tokenPair, id = null] = query.position as string[]
+  const [collateralToken, quoteToken] = tokenPair.split('-')
+
+  const caseSensitiveCollateralToken = collateralToken.toUpperCase()
+  const caseSensitiveQuoteToken = quoteToken.toUpperCase()
 
   if (
     isSupportedNetwork(network) &&
     network === NetworkNames.ethereumMainnet &&
-    omniProducts.includes(product as OmniProduct) &&
-    (supportedPools.includes(`${caseSensitiveCollateralToken}-${caseSensitiveQuoteToken}`) ||
-      (isAddress(caseSensitiveCollateralToken) && isAddress(caseSensitiveQuoteToken)))
+    ['borrow', 'multiply'].includes(product as OmniProduct) &&
+    morphoSupportedPairs.includes(`${collateralToken.toUpperCase()}-${quoteToken.toUpperCase()}`)
   ) {
     return {
       props: {
@@ -89,7 +77,6 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
         product,
         collateralToken: caseSensitiveCollateralToken,
         quoteToken: caseSensitiveQuoteToken,
-        pool,
         id,
       },
     }

@@ -23,3 +23,5 @@ export const morphoOmniSteps: {
     manage: ['manage', 'dpm', 'transaction'],
   },
 }
+
+export const morphoSupportedPairs = ['ETH-USDC', 'ETH-DAI', 'WSTETH-USDC']

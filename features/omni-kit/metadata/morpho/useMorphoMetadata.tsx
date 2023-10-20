@@ -13,7 +13,6 @@ import { useAjnaOmniTxHandler } from 'features/omni-kit/hooks/ajna/useAjnaOmniTx
 import { MorphoDetailsSectionContent } from 'features/omni-kit/metadata/morpho/MorphoDetailsSectionContent'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/metadata/morpho/MorphoDetailsSectionFooter'
 import { useAppConfig } from 'helpers/config'
-import { zero } from 'helpers/zero'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
@@ -113,7 +112,8 @@ export const useMorphoMetadata: DynamicProductMetadata = (product) => {
           flow={flow}
           quotePrice={quotePrice}
           collateralPrice={collateralPrice}
-          liquidationPenalty={zero}
+          // TODO to be defined
+          liquidationPenalty={new BigNumber(0.01)}
         />
       ),
       overviewFooter: (

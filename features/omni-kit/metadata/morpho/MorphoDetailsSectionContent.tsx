@@ -58,7 +58,7 @@ export const MorphoDetailsSectionContent: FC<MorphoOmniDetailsSectionContentProp
       <ContentCardLtv
         loanToValue={position.riskRatio.loanToValue}
         // TODO to be defined
-        liquidationThreshold={new BigNumber(0.9)}
+        liquidationThreshold={new BigNumber(0.93)}
         maxLoanToValue={position.maxRiskRatio.loanToValue}
         afterLoanToValue={simulation?.riskRatio.loanToValue}
         automation={{
