@@ -161,6 +161,7 @@ export function setupSparkV3Context(
     unconsumedDpmProxyForConnectedAccount$,
     proxyConsumed$,
     aaveLikeReserveConfigurationData$,
+    getAaveLikeReserveData$,
   )
 
   const manageAaveStateMachineServices = getManageAaveV3PositionStateMachineServices(
@@ -175,6 +176,7 @@ export function setupSparkV3Context(
     // aaveLikeProtocolData$,
     allowanceForAccount$,
     getAaveHistoryEvents,
+    getAaveLikeReserveData$,
   )
 
   const stopLossTransactionStateMachine = getStopLossTransactionStateMachine(

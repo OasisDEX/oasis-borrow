@@ -8,7 +8,7 @@ import type { Tickers } from 'blockchain/prices.types'
 import type { TokenBalances } from 'blockchain/tokens.types'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import type { ManageAaveStateMachineServices } from 'features/aave/manage/state'
-import { getPricesFeed$ } from 'features/aave/services'
+import { getPricesFeed$, xstateReserveDataService } from 'features/aave/services'
 import type {
   IStrategyConfig,
   IStrategyInfo,
@@ -21,6 +21,7 @@ import { createEthersTransactionStateMachine } from 'features/stateMachines/tran
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { allDefined } from 'helpers/allDefined'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
+import type { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
@@ -37,6 +38,7 @@ export function getManageAaveV2PositionStateMachineServices(
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
+  aaveReserveData$: (args: { token: string }) => Observable<AaveLikeReserveData>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -185,5 +187,6 @@ export function getManageAaveV2PositionStateMachineServices(
       // TODO: replace with actual implementation.
       return of({ type: 'SWITCH_SUCCESS' })
     },
+    reserveData$: xstateReserveDataService(aaveReserveData$),
   }
 }

@@ -10,7 +10,7 @@ import type { TokenBalances } from 'blockchain/tokens.types'
 import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import type { ManageAaveStateMachineServices } from 'features/aave/manage/state'
-import { getPricesFeed$ } from 'features/aave/services'
+import { getPricesFeed$, xstateReserveDataService } from 'features/aave/services'
 import type {
   IStrategyConfig,
   IStrategyInfo,
@@ -27,6 +27,7 @@ import type { UserSettingsState } from 'features/userSettings/userSettings.types
 import { allDefined } from 'helpers/allDefined'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { productToVaultType } from 'helpers/productToVaultType'
+import type { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, of, throwError } from 'rxjs'
@@ -45,6 +46,7 @@ export function getManageAaveV3PositionStateMachineServices(
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
   getHistoryEvents: (proxyAccount: string, networkId: NetworkIds) => Promise<AaveHistoryEvent[]>,
+  aaveReserveData$: (args: { token: string }) => Observable<AaveLikeReserveData>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -245,5 +247,6 @@ export function getManageAaveV3PositionStateMachineServices(
         }
       })
     },
+    reserveData$: xstateReserveDataService(aaveReserveData$),
   }
 }

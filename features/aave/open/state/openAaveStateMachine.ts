@@ -160,6 +160,10 @@ export function createOpenAaveStateMachine(
           src: 'aaveReserveConfiguration$',
           id: 'aaveReserveConfiguration$',
         },
+        {
+          src: 'reserveData$',
+          id: 'reserveData$',
+        },
       ],
       id: 'openAaveStateMachine',
       type: 'parallel',
@@ -490,6 +494,9 @@ export function createOpenAaveStateMachine(
           actions: 'updateContext',
         },
         SET_STOP_LOSS_SKIPPED: {
+          actions: 'updateContext',
+        },
+        UPDATE_RESERVE_DATA: {
           actions: 'updateContext',
         },
       },

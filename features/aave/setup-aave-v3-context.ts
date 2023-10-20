@@ -104,7 +104,6 @@ export function setupAaveV3Context(
 
   const {
     aaveLikeUserAccountData$,
-    // aaveLikeProtocolData$,
     aaveLikeReserveConfigurationData$,
     aaveLikeOracleAssetPriceData$,
     getAaveLikeReserveData$,
@@ -158,11 +157,11 @@ export function setupAaveV3Context(
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    // aaveLikeProtocolData$,
     allowanceForAccount$,
     unconsumedDpmProxyForConnectedAccount$,
     proxyConsumed$,
     aaveLikeReserveConfigurationData$,
+    getAaveLikeReserveData$,
   )
 
   const manageAaveStateMachineServices = getManageAaveV3PositionStateMachineServices(
@@ -177,6 +176,7 @@ export function setupAaveV3Context(
     // aaveLikeProtocolData$,
     allowanceForAccount$,
     getAaveHistoryEvents,
+    getAaveLikeReserveData$,
   )
 
   const stopLossTransactionStateMachine = getStopLossTransactionStateMachine(

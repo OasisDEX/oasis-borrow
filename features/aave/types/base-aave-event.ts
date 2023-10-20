@@ -7,7 +7,7 @@ import { TransactionStateMachineResultEvents } from 'features/stateMachines/tran
 import { AllowanceStateMachineResponseEvent } from 'features/stateMachines/allowance'
 import {
   IStrategyInfo, ManageTokenInput,
-  RefTransactionMachine,
+  RefTransactionMachine, ReserveData,
   StrategyTokenAllowance,
   StrategyTokenBalance,
 } from './base-aave-context'
@@ -66,3 +66,4 @@ export type BaseAaveEvent =
   | { type: 'SET_DEBT'; debt?: BigNumber }
   | AaveOpenPositionWithStopLossEvents
   | { type: 'CREATED_MACHINE'; refTransactionMachine: RefTransactionMachine }
+  | { type: 'UPDATE_RESERVE_DATA', reserveData: ReserveData }

@@ -7,7 +7,7 @@ import type { Tickers } from 'blockchain/prices.types'
 import type { TokenBalances } from 'blockchain/tokens.types'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import type { OpenAaveStateMachineServices } from 'features/aave/open/state'
-import { getPricesFeed$ } from 'features/aave/services'
+import { getPricesFeed$, xstateReserveDataService } from 'features/aave/services'
 import type {
   IStrategyInfo,
   StrategyTokenAllowance,
@@ -22,6 +22,7 @@ import type { TxHelpers } from 'helpers/context/TxHelpers'
 import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveConfigurationDataParams,
+  AaveLikeReserveData,
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
@@ -48,6 +49,7 @@ export function getOpenAaveV2PositionStateMachineServices(
   aaveReserveConfiguration$: (
     args: AaveLikeReserveConfigurationDataParams,
   ) => Observable<AaveLikeReserveConfigurationData>,
+  aaveReserveData$: (args: { token: string }) => Observable<AaveLikeReserveData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -200,5 +202,6 @@ export function getOpenAaveV2PositionStateMachineServices(
       // TODO: replace with actual implementation.
       return of({ type: 'SWITCH_SUCCESS' })
     },
+    reserveData$: xstateReserveDataService(aaveReserveData$),
   }
 }

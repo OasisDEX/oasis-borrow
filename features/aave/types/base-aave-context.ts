@@ -15,6 +15,7 @@ import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { EthersTransactionStateMachine, TransactionStateMachine } from 'features/stateMachines/transaction'
 import { zero } from 'helpers/zero'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
+import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 
 export type UserInput = {
   riskRatio?: IRiskRatio
@@ -47,6 +48,11 @@ export type StrategyTokenBalance = {
   collateral: { price: BigNumber; balance: BigNumber }
   debt: { price: BigNumber; balance: BigNumber }
   deposit: { price: BigNumber; balance: BigNumber }
+}
+
+export type ReserveData = {
+  collateral: AaveLikeReserveData
+  debt: AaveLikeReserveData
 }
 
 export type RefTransactionMachine =
@@ -103,6 +109,7 @@ export interface BaseAaveContext {
   stopLossTxData?: AutomationAddTriggerData
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
+  reserveData?: ReserveData
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {

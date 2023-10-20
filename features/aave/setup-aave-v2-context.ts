@@ -135,6 +135,7 @@ export function setupAaveV2Context(
     unconsumedDpmProxyForConnectedAccount$,
     proxyConsumed$,
     aaveLikeReserveConfigurationData$,
+    getAaveLikeReserveData$,
   )
 
   const stopLossTransactionStateMachine = getStopLossTransactionStateMachine(
@@ -154,6 +155,7 @@ export function setupAaveV2Context(
     strategyInfo$,
     // aaveLikeProtocolData$,
     allowanceForAccount$,
+    getAaveLikeReserveData$,
   )
 
   const aaveStateMachine = getOpenAaveStateMachine(

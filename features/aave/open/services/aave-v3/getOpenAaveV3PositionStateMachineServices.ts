@@ -8,7 +8,7 @@ import type { TokenBalances } from 'blockchain/tokens.types'
 import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import type { OpenAaveStateMachineServices } from 'features/aave/open/state'
-import { getPricesFeed$ } from 'features/aave/services'
+import { getPricesFeed$, xstateReserveDataService } from 'features/aave/services'
 import type {
   IStrategyInfo,
   StrategyTokenAllowance,
@@ -27,6 +27,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveConfigurationDataParams,
+  AaveLikeReserveData,
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
@@ -53,6 +54,7 @@ export function getOpenAaveV3PositionStateMachineServices(
   aaveReserveConfiguration$: (
     args: AaveLikeReserveConfigurationDataParams,
   ) => Observable<AaveLikeReserveConfigurationData>,
+  aaveReserveData$: (args: { token: string }) => Observable<AaveLikeReserveData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -248,5 +250,6 @@ export function getOpenAaveV3PositionStateMachineServices(
         }),
       )
     },
+    reserveData$: xstateReserveDataService(aaveReserveData$),
   }
 }

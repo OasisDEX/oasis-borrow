@@ -167,6 +167,10 @@ export function createManageAaveStateMachine(
           src: 'allowance$',
           id: 'allowance$',
         },
+        {
+          src: 'reserveData$',
+          id: 'reserveData$',
+        },
       ],
       id: 'manageAaveStateMachine',
       type: 'parallel',
@@ -614,6 +618,9 @@ export function createManageAaveStateMachine(
           target: 'frontend.switchToEarn',
         },
         HISTORY_UPDATED: {
+          actions: 'updateContext',
+        },
+        UPDATE_RESERVE_DATA: {
           actions: 'updateContext',
         },
       },
