@@ -1,4 +1,5 @@
 import type { AaveV3ReserveCap, AaveV3ReserveDataReply } from 'blockchain/aave-v3'
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import type { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
@@ -21,10 +22,14 @@ export function getReserveData(
         },
         totalDebt: reserveData.totalStableDebt.plus(reserveData.totalVariableDebt),
         totalSupply: reserveData.totalAToken,
-        availableToSupply: reserveCaps.supply.minus(reserveData.totalAToken),
-        availableToBorrow: reserveCaps.borrow.minus(
-          reserveData.totalStableDebt.plus(reserveData.totalVariableDebt),
-        ),
+        availableToSupply: reserveCaps.supply.isZero()
+          ? maxUint256
+          : reserveCaps.supply.minus(reserveData.totalAToken),
+        availableToBorrow: reserveCaps.borrow.isZero()
+          ? reserveData.availableLiquidity
+          : reserveCaps.borrow.minus(
+              reserveData.totalStableDebt.plus(reserveData.totalVariableDebt),
+            ),
       }
     }),
   )

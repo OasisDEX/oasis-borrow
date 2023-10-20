@@ -1,3 +1,4 @@
+import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import type { SparkReserveCap, SparkV3ReserveDataReply } from 'blockchain/spark-v3'
 import type { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import type { Observable } from 'rxjs'
@@ -21,10 +22,14 @@ export function getReserveData(
         },
         totalDebt: reserveData.totalStableDebt.plus(reserveData.totalVariableDebt),
         totalSupply: reserveData.totalSpToken,
-        availableToSupply: reserveCaps.supply.minus(reserveData.totalSpToken),
-        availableToBorrow: reserveCaps.borrow.minus(
-          reserveData.totalStableDebt.plus(reserveData.totalVariableDebt),
-        ),
+        availableToSupply: reserveCaps.supply.isZero()
+          ? maxUint256
+          : reserveCaps.supply.minus(reserveData.totalSpToken),
+        availableToBorrow: reserveCaps.borrow.isZero()
+          ? reserveData.availableLiquidity
+          : reserveCaps.borrow.minus(
+              reserveData.totalStableDebt.plus(reserveData.totalVariableDebt),
+            ),
       }
     }),
   )

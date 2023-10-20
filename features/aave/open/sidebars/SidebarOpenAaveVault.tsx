@@ -4,6 +4,7 @@ import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
 import {
   ConnectedSidebarSection,
+  ErrorMessageCannotDepositDueToProtocolCap,
   OpenAaveStopLossInformation,
   StopLossTwoTxRequirement,
   StrategyInformationContainer,
@@ -318,11 +319,6 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
   const amountTooHigh =
     state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
 
-  // const maxPossibleSupply =
-  //   state.context.protocolData?.reserveData.collateral.availableToSupply || maxUint256
-
-  // const moreThanPossibleToSupply = state.context.userInput.amount?.gt(maxPossibleSupply) ?? false
-
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (
@@ -330,16 +326,12 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
         <SidebarOpenAaveVaultEditingState state={state} send={send} />
         {state.context.tokenBalance && amountTooHigh && (
           <MessageCard
-            messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
+            messages={[t('aave.errors.deposit-amount-exceeds-collateral-balance')]}
             type="error"
+            withBullet={false}
           />
         )}
-        {/*{moreThanPossibleToSupply && (*/}
-        {/*  <MessageCard*/}
-        {/*    messages={[`Too much. Max posible supply: ${formatCryptoBalance(maxPossibleSupply)}`]}*/}
-        {/*    type="error"*/}
-        {/*  />*/}
-        {/*)}*/}
+        <ErrorMessageCannotDepositDueToProtocolCap context={state.context} />
         <SecondaryInputComponent
           state={state}
           send={send}
