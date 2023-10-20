@@ -157,7 +157,7 @@ export function PriceImpact({
       label={t('vault-changes.price-impact', { token: displayToken })}
       value={
         <Text>
-          {formatCryptoBalance(marketPrice)}{' '}
+          {formatCryptoBalance(swapPrice)}{' '}
           <Text as="span" sx={{ color: 'critical100' }}>
             ({formatPercent(priceImpact, { precision: 2 })})
           </Text>
