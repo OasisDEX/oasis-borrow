@@ -17,11 +17,6 @@ export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProp
   const { state, send } = props
   const { t } = useTranslation()
 
-  const depositBalance = state.context.balance?.deposit.balance ?? zero
-
-  console.info(`Current Balances: ${depositBalance.toString()}`)
-  console.info(`Depcecated Balance: ${state.context.tokenBalance?.toString()}`)
-
   return (
     <Grid gap={3}>
       <VaultActionInput
