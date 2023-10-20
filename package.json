@@ -47,7 +47,7 @@
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",
-    "@prisma/client": "^3.14.0",
+    "@prisma/client": "4.8.0",
     "@react-hooks-library/core": "^0.5.1",
     "@sentry/nextjs": "^7.52.1",
     "@typeform/embed-react": "^1.13.0",
@@ -191,9 +191,15 @@
     "jest-environment-jsdom": "^29.5.0",
     "json-to-ts": "^1.7.0",
     "prettier": "^2.2.0",
-    "prisma": "^3.14.0",
+    "prisma": "4.8.0",
     "typechain": "^8.1.1",
     "typescript": "^4.9.5"
+  },
+  "nextBundleAnalysis": {
+    "budget": null,
+    "budgetPercentIncreaseRed": 20,
+    "minimumChangeThreshold": 500,
+    "showDetails": true
   },
   "sideEffects": false
 }
