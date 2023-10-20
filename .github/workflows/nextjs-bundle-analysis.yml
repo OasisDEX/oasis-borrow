@@ -56,7 +56,7 @@ jobs:
           name: bundle
           workflow: nextjs-bundle-analysis.yml
           branch: ${{ github.event.pull_request.base.ref }}
-          path: ${{GITHUB_WORKSPACE}}/.next/analyze/base/bundle
+          path: /home/runner/work/oasis-borrow/oasis-borrow/.next/analyze/base/bundle
 
       - name: Build next.js app
         env:
