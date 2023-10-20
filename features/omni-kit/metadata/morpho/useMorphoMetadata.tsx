@@ -13,6 +13,7 @@ import { useAjnaOmniTxHandler } from 'features/omni-kit/hooks/ajna/useAjnaOmniTx
 import { MorphoDetailsSectionContent } from 'features/omni-kit/metadata/morpho/MorphoDetailsSectionContent'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/metadata/morpho/MorphoDetailsSectionFooter'
 import { useAppConfig } from 'helpers/config'
+import { zero } from 'helpers/zero'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
@@ -31,10 +32,11 @@ export const useMorphoMetadata: DynamicProductMetadata = (product) => {
       collateralAddress,
       quoteAddress,
       collateralToken,
-      priceFormat,
       quoteToken,
       isShort,
       flow,
+      quotePrice,
+      collateralPrice,
     },
     steps: { currentStep },
   } = useOmniGeneralContext()
@@ -101,15 +103,17 @@ export const useMorphoMetadata: DynamicProductMetadata = (product) => {
       overviewContent: (
         <MorphoDetailsSectionContent
           isSimulationLoading={productContext.position.isSimulationLoading}
-          isOracless={isOracless}
           isShort={isShort}
-          priceFormat={priceFormat}
           quoteToken={quoteToken}
+          collateralToken={collateralToken}
           position={position}
           simulation={simulation}
           changeVariant={changeVariant}
           interestRate={interestRate}
           flow={flow}
+          quotePrice={quotePrice}
+          collateralPrice={collateralPrice}
+          liquidationPenalty={zero}
         />
       ),
       overviewFooter: (
