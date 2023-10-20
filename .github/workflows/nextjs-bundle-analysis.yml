@@ -10,6 +10,10 @@ on:
       - dev # change this if your default branch is named differently
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: ./
+
 permissions:
   contents: read # for checkout repository
   actions: read # for fetching base branch bundle stats
@@ -53,7 +57,7 @@ jobs:
           name: bundle
           workflow: nextjs-bundle-analysis.yml
           branch: ${{ github.event.pull_request.base.ref }}
-          path: /home/runner/work/oasis-borrow/oasis-borrow/.next/analyze/base/bundle
+          path: .next/analyze/base/bundle
 
       - name: Build next.js app
         env:
