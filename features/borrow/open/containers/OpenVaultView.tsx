@@ -1,4 +1,6 @@
 import { trackingEvents } from 'analytics/trackingEvents'
+import { NetworkHexIds } from 'blockchain/networks'
+import { WithWalletConnection } from 'components/connectWallet'
 import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
@@ -69,14 +71,16 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
   }, [])
 
   return (
-    <WithErrorHandler error={error}>
-      <WithLoadingIndicator value={openVault}>
-        {(openVault) => (
-          <Container variant="vaultPageContainer">
-            <OpenVaultContainer {...openVault} />
-          </Container>
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <WithWalletConnection chainId={NetworkHexIds.MAINNET}>
+      <WithErrorHandler error={error}>
+        <WithLoadingIndicator value={openVault}>
+          {(_openVault) => (
+            <Container variant="vaultPageContainer">
+              <OpenVaultContainer {..._openVault} />
+            </Container>
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
+    </WithWalletConnection>
   )
 }
