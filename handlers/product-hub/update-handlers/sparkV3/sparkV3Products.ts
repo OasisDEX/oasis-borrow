@@ -129,7 +129,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     protocol: LendingProtocol.SparkV3,
     label: 'SDAI/USDC',
     earnStrategy: EarnStrategies.yield_loop,
-    earnStrategyDescription: 'sDAI/USDC Yield Loop',
+    earnStrategyDescription: 'SDAI/USDC Yield Loop',
     managementType: 'active',
   },
   // {
@@ -142,7 +142,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
   //   protocol: LendingProtocol.SparkV3,
   //   label: 'sDAI/USDT',
   //   earnStrategy: EarnStrategies.yield_loop,
-  //   earnStrategyDescription: 'sDAI/USDT Yield Loop',
+  //   earnStrategyDescription: 'SDAI/USDT Yield Loop',
   //   managementType: 'active',
   // },
 ]
