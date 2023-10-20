@@ -1130,13 +1130,4 @@ export const ajnaExtensionTheme = {
   },
 }
 
-// TODO to be updated
-export const morphoExtensionTheme = {
-  colors: {
-    primary100: '#031371',
-    neutral80: '#6871aa',
-    interactive100: '#c527ae',
-    interactive50: '#d668C6',
-  },
-}
 export type OasisTheme = typeof theme

@@ -59,7 +59,6 @@ export const useMorphoMetadata: DynamicProductMetadata = (product) => {
 
   const notifications: DetailsSectionNotificationItem[] = []
 
-  const afterPositionDebt = simulation?.debtAmount
   const interestRate = new BigNumber(0.01)
 
   return {
@@ -84,7 +83,7 @@ export const useMorphoMetadata: DynamicProductMetadata = (product) => {
       debtMax: new BigNumber(3000),
       changeVariant,
       afterAvailableToBorrow: simulation && negativeToZero(simulation.debtAvailable()),
-      afterPositionDebt,
+      afterPositionDebt: simulation?.debtAmount,
       collateralMax: new BigNumber(50),
       paybackMax: getOmniBorrowPaybackMax({
         balance: quoteBalance,

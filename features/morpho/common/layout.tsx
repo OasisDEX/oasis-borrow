@@ -4,13 +4,13 @@ import { WithAnnouncementLayout } from 'components/layouts/WithAnnouncementLayou
 import { NavigationController } from 'features/navigation/controls/NavigationController'
 import type { WithChildren } from 'helpers/types/With.types'
 import React from 'react'
-import { morphoExtensionTheme } from 'theme'
+import { theme } from 'theme'
 import { ThemeUIProvider } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 export function MorphoLayout({ children }: WithChildren) {
   return (
-    <ThemeUIProvider theme={morphoExtensionTheme}>
+    <ThemeUIProvider theme={theme}>
       <WithAnnouncementLayout
         sx={{ zIndex: 2, position: 'relative' }}
         showAnnouncement={false}
