@@ -7,7 +7,7 @@ on:
   pull_request:
   push:
     branches:
-      - dev # change this if your default branch is named differently
+      - marcinciarka/next-bundle-analyze-workflow-fix
   workflow_dispatch:
 
 defaults:
