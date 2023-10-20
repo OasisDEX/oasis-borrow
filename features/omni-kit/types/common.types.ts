@@ -5,7 +5,7 @@ import { AjnaGenericPosition } from 'features/ajna/common/types'
 import BigNumber from 'bignumber.js'
 import { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { TxError } from 'helpers/types'
-import { AjnaEarnPosition, BorrowishPosition } from '@oasisdex/dma-library'
+import { AjnaEarnPosition, LendingPosition } from '@oasisdex/dma-library'
 
 export type OmniProduct = 'borrow' | 'earn' | 'multiply'
 export type OmniFlow = 'open' | 'manage'
@@ -95,7 +95,7 @@ export interface GetOmniBorrowValidationsParams {
   txError?: TxError
 }
 
-export type OmniGenericPosition = BorrowishPosition | AjnaEarnPosition
+export type OmniGenericPosition = LendingPosition | AjnaEarnPosition
 
 export type OmniSteps = {
   [ProductKey in OmniProduct]: {

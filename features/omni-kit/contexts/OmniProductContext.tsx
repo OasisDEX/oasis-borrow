@@ -1,4 +1,4 @@
-import type { AjnaEarnPosition, BorrowishPosition, SwapData } from '@oasisdex/dma-library'
+import type { AjnaEarnPosition, LendingPosition, SwapData } from '@oasisdex/dma-library'
 import { AjnaPosition } from '@oasisdex/dma-library'
 import type { AjnaSimulationData } from 'actions/ajna'
 import type BigNumber from 'bignumber.js'
@@ -71,7 +71,7 @@ interface ProductContextProviderPropsWithBorrow {
   dynamicMetadata: DynamicProductMetadata
   formReducto: typeof useOmniBorrowFormReducto
   formDefaults: Partial<OmniBorrowFormState>
-  position: BorrowishPosition
+  position: LendingPosition
   product: 'borrow'
   positionAuction: unknown
   positionHistory: PositionHistoryEvent[]
@@ -91,7 +91,7 @@ interface ProductContextProviderPropsWithMultiply {
   dynamicMetadata: DynamicProductMetadata
   formReducto: typeof useOmniMultiplyFormReducto
   formDefaults: Partial<OmniMultiplyFormState>
-  position: BorrowishPosition
+  position: LendingPosition
   product: 'multiply'
   positionAuction: unknown
   positionHistory: PositionHistoryEvent[]
@@ -132,7 +132,7 @@ interface GenericProductContext<P, F, A> {
 }
 
 export type ProductContextWithBorrow = GenericProductContext<
-  BorrowishPosition,
+  LendingPosition,
   ReturnType<typeof useOmniBorrowFormReducto>,
   unknown
 >
@@ -144,7 +144,7 @@ type ProductContextWithEarn = GenericProductContext<
 >
 
 export type ProductContextWithMultiply = GenericProductContext<
-  BorrowishPosition,
+  LendingPosition,
   ReturnType<typeof useOmniMultiplyFormReducto>,
   unknown
 >

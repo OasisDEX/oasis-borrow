@@ -1,4 +1,4 @@
-import type { BorrowishPosition, MorphoPosition } from '@oasisdex/dma-library'
+import type { LendingPosition, MorphoPosition } from '@oasisdex/dma-library'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import type { MorphoPositionAuction } from 'features/morpho/common/types'
 import { OmniProductContextProvider } from 'features/omni-kit/contexts/OmniProductContext'
@@ -34,7 +34,7 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
             action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
           }}
           formReducto={useOmniBorrowFormReducto}
-          position={positionData as BorrowishPosition}
+          position={positionData as LendingPosition}
           product={dpmPosition.product}
           positionAuction={auction}
           positionHistory={history}
@@ -49,7 +49,7 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
             action: flow === 'open' ? 'open-multiply' : 'adjust',
           }}
           formReducto={useOmniMultiplyFormReducto}
-          position={positionData as BorrowishPosition}
+          position={positionData as LendingPosition}
           product={dpmPosition.product}
           positionAuction={auction}
           positionHistory={history}

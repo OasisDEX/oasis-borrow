@@ -1,12 +1,12 @@
-import type { BorrowishPosition, SwapData } from '@oasisdex/dma-library'
+import type { LendingPosition, SwapData } from '@oasisdex/dma-library'
 
 export const resolveSwapTokenPrice = ({
   positionData,
   simulationData,
   swapData,
 }: {
-  positionData: BorrowishPosition
-  simulationData?: BorrowishPosition
+  positionData: LendingPosition
+  simulationData?: LendingPosition
   swapData?: SwapData
 }) => {
   if (!simulationData || !swapData) {

@@ -1,4 +1,4 @@
-import type { BorrowishPosition } from '@oasisdex/dma-library'
+import type { LendingPosition } from '@oasisdex/dma-library'
 import { LTVWarningThreshold } from 'features/ajna/common/consts'
 
 export const getOmniBorrowishChangeVariant = ({
@@ -6,7 +6,7 @@ export const getOmniBorrowishChangeVariant = ({
   simulation,
 }: {
   isOracless: boolean
-  simulation?: BorrowishPosition
+  simulation?: LendingPosition
 }) =>
   simulation
     ? isOracless
