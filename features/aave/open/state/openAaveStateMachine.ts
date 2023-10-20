@@ -153,10 +153,6 @@ export function createOpenAaveStateMachine(
           id: 'getHasOpenedPosition$',
         },
         {
-          src: 'protocolData$',
-          id: 'protocolData$',
-        },
-        {
           src: 'allowance$',
           id: 'allowance$',
         },
@@ -473,9 +469,6 @@ export function createOpenAaveStateMachine(
           actions: 'updateContext',
         },
         UPDATE_META_INFO: {
-          actions: 'updateContext',
-        },
-        UPDATE_PROTOCOL_DATA: {
           actions: 'updateContext',
         },
         UPDATE_ALLOWANCE: {

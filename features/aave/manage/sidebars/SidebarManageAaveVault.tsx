@@ -518,7 +518,7 @@ export function SidebarManageAaveVault() {
             <Grid gap={3}>
               <AdjustRisk
                 state={state}
-                onChainPosition={state.context.protocolData?.position}
+                onChainPosition={state.context.currentPosition}
                 isLoading={loading}
                 send={send}
                 viewLocked={isLocked(state)}

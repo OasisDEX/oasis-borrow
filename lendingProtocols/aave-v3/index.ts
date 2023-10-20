@@ -12,8 +12,6 @@ import { curry } from 'ramda'
 import type { Observable } from 'rxjs'
 
 import {
-  aaveV3OnChainPosition,
-  getAaveProtocolData$,
   getAaveProxyConfiguration$,
   getReserveConfigurationDataWithEMode$,
   getReserveData,
@@ -115,21 +113,9 @@ export function getAaveV3Services({
     'aaveReservesList$',
   )({})
 
-  const onChainPosition$ = makeObservableForNetworkId(
-    refresh$,
-    aaveV3OnChainPosition,
-    networkId,
-    'onChainPosition$',
-  )
-
   const reserveDataWithCaps$ = memoize(
     curry(getReserveData)(getAaveLikeReserveData$, getReserveCaps$),
     (args: { token: string }) => args.token,
-  )
-
-  const aaveLikeProtocolData$ = memoize(
-    curry(getAaveProtocolData$)(reserveDataWithCaps$, onChainPosition$),
-    (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
 
   const aaveLikeProxyConfiguration$ = memoize(
@@ -154,7 +140,6 @@ export function getAaveV3Services({
     aaveLikeLiquidations$,
     aaveLikeUserAccountData$,
     aaveLikeProxyConfiguration$,
-    aaveLikeProtocolData$,
     aaveLikeOracleAssetPriceData$: assetPrice$,
     getAaveLikeAssetsPrices$: assetsPrices$,
   }

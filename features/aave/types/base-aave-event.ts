@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network.types'
 import { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { IRiskRatio } from '@oasisdex/dma-library'
-import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
 import { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
 import { AllowanceStateMachineResponseEvent } from 'features/stateMachines/allowance'
@@ -59,7 +58,6 @@ export type BaseAaveEvent =
   | UpdateDebtActionType
   | UpdateTokenActionValueType
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
-  | { type: 'UPDATE_PROTOCOL_DATA'; protocolData: AaveLikeProtocolData }
   | { type: 'UPDATE_ALLOWANCE'; allowance: StrategyTokenAllowance }
   | { type: 'USE_SLIPPAGE'; getSlippageFrom: 'userSettings' | 'strategyConfig' }
   | TransactionParametersStateMachineResponseEvent

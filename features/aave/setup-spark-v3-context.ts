@@ -104,7 +104,6 @@ export function setupSparkV3Context(
 
   const {
     aaveLikeUserAccountData$,
-    aaveLikeProtocolData$,
     aaveLikeReserveConfigurationData$,
     aaveLikeOracleAssetPriceData$,
     getAaveLikeReserveData$,
@@ -158,7 +157,6 @@ export function setupSparkV3Context(
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    aaveLikeProtocolData$,
     allowanceForAccount$,
     unconsumedDpmProxyForConnectedAccount$,
     proxyConsumed$,
@@ -174,7 +172,7 @@ export function setupSparkV3Context(
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    aaveLikeProtocolData$,
+    // aaveLikeProtocolData$,
     allowanceForAccount$,
     getAaveHistoryEvents,
   )

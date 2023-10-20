@@ -164,10 +164,6 @@ export function createManageAaveStateMachine(
           id: 'currentPosition$',
         },
         {
-          src: 'protocolData$',
-          id: 'protocolData$',
-        },
-        {
           src: 'allowance$',
           id: 'allowance$',
         },
@@ -559,9 +555,6 @@ export function createManageAaveStateMachine(
         },
         POSITION_PROXY_ADDRESS_RECEIVED: {
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'sendHistoryRequest'],
-        },
-        UPDATE_PROTOCOL_DATA: {
-          actions: ['updateContext'],
         },
         UPDATE_ALLOWANCE: {
           actions: 'updateContext',

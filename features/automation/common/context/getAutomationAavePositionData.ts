@@ -17,22 +17,20 @@ export function getAutomationAavePositionData({
     strategyConfig,
     context: {
       tokens: { debt: debtToken, collateral: collateralToken },
-      protocolData,
       proxyAddress,
       positionId: { vaultId },
       web3Context,
+      currentPosition,
     },
   } = aaveManageVault
   const ilkOrToken = strategyConfig.tokens?.collateral!
 
   const {
-    position: {
-      riskRatio: { loanToValue },
-      category: { dustLimit, liquidationThreshold },
-      debt,
-      collateral,
-    },
-  } = protocolData!
+    riskRatio: { loanToValue },
+    category: { dustLimit, liquidationThreshold },
+    debt,
+    collateral,
+  } = currentPosition!
 
   const lockedCollateral = amountFromWei(collateral.amount, collateral.precision)
   const positionDebt = amountFromWei(debt.amount, debt.precision)

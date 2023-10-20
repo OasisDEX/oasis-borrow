@@ -14,7 +14,6 @@ import { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { EthersTransactionStateMachine, TransactionStateMachine } from 'features/stateMachines/transaction'
 import { zero } from 'helpers/zero'
-import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 
 export type UserInput = {
@@ -94,7 +93,6 @@ export interface BaseAaveContext {
   web3Context?: Context
   userSettings?: UserSettingsState
   error?: string | unknown
-  protocolData?: AaveLikeProtocolData
   userDpmAccount?: UserDpmAccount
   effectiveProxyAddress?: string
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>

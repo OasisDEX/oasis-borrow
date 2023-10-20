@@ -64,7 +64,7 @@ export function setupAaveV2Context(
 
   const {
     aaveLikeUserAccountData$,
-    aaveLikeProtocolData$,
+    // aaveLikeProtocolData$,
     aaveLikeReserveConfigurationData$,
     aaveLikeOracleAssetPriceData$,
     getAaveLikeAssetsPrices$,
@@ -130,7 +130,7 @@ export function setupAaveV2Context(
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    aaveLikeProtocolData$,
+    // aaveLikeProtocolData$,
     allowanceForAccount$,
     unconsumedDpmProxyForConnectedAccount$,
     proxyConsumed$,
@@ -152,7 +152,7 @@ export function setupAaveV2Context(
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    aaveLikeProtocolData$,
+    // aaveLikeProtocolData$,
     allowanceForAccount$,
   )
 

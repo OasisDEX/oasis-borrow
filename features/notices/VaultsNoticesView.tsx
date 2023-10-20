@@ -547,7 +547,11 @@ export function AavePositionNoticesView() {
   })
   const [aaveLiquidations] = useObservable(preparedAaveLiquidations$)
 
-  if (!state.context.protocolData || !state.context.proxyAddress || !state.context.ownerAddress) {
+  if (
+    !state.context.currentPosition ||
+    !state.context.proxyAddress ||
+    !state.context.ownerAddress
+  ) {
     return null
   }
 
@@ -556,11 +560,9 @@ export function AavePositionNoticesView() {
       connectedProxyAddress,
       web3Context,
       ownerAddress,
-      protocolData: {
-        position: {
-          category: { maxLoanToValue, liquidationThreshold },
-          riskRatio: { loanToValue },
-        },
+      currentPosition: {
+        category: { maxLoanToValue, liquidationThreshold },
+        riskRatio: { loanToValue },
       },
     },
   } = state

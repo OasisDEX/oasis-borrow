@@ -57,9 +57,4 @@ export type DepreciatedServices = {
   aaveLikeAvailableLiquidityInUSDC$?: ReturnType<
     typeof getAaveV2Services
   >['aaveLikeAvailableLiquidityInUSDC$']
-
-  /**
-   * @deprecated use protocols[LendingProtocols.AaveV2].aaveLikeProtocolData$ instead
-   */
-  aaveLikeProtocolData$?: ReturnType<typeof getAaveV2Services>['aaveLikeProtocolData$']
 }

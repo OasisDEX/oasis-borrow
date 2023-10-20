@@ -25,7 +25,6 @@ import { allDefined } from 'helpers/allDefined'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
 import { LendingProtocol } from 'lendingProtocols'
 import type {
-  AaveLikeProtocolData,
   AaveLikeReserveConfigurationData,
   AaveLikeReserveConfigurationDataParams,
   AaveLikeUserAccountData,
@@ -48,11 +47,6 @@ export function getOpenAaveV3PositionStateMachineServices(
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
-  aaveLikeProtocolData$: (
-    collateralToken: string,
-    debtToken: string,
-    proxyAddress: string,
-  ) => Observable<AaveLikeProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
   userDpmProxy$: Observable<UserDpmAccount | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
@@ -157,19 +151,6 @@ export function getOpenAaveV3PositionStateMachineServices(
           type: 'UPDATE_STRATEGY_INFO',
           strategyInfo,
         })),
-      )
-    },
-    protocolData$: (context) => {
-      return connectedProxy$.pipe(
-        filter((address) => address !== undefined),
-        switchMap((proxyAddress) =>
-          aaveLikeProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
-        ),
-        map((aaveProtocolData) => ({
-          type: 'UPDATE_PROTOCOL_DATA',
-          protocolData: aaveProtocolData,
-        })),
-        distinctUntilChanged((a, b) => isEqual(a, b)),
       )
     },
     allowance$: (context) => {

@@ -39,8 +39,6 @@ export function getAaveV2Services({ refresh$ }: AaveV2ServicesDependencies): Aav
   )
   const aaveReservesList$ = makeOneObservable(refresh$, blockchainCalls.getAaveV2ReservesList)
 
-  const getAaveOnChainPosition$ = makeObservable(refresh$, pipelines.aaveV2OnChainPosition)
-
   const aaveLikeAvailableLiquidityInUSDC$: (
     args: blockchainCalls.AaveV2ReserveDataParameters,
   ) => Observable<BigNumber> = memoize(
@@ -74,11 +72,6 @@ export function getAaveV2Services({ refresh$ }: AaveV2ServicesDependencies): Aav
     (args: { token: string }) => args.token,
   )
 
-  const aaveLikeProtocolData$ = memoize(
-    curry(pipelines.getAaveProtocolData$)(reserveDataWithMissingCaps$, getAaveOnChainPosition$),
-    (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
-  )
-
   const aaveLikeProxyConfiguration$ = memoize(
     curry(pipelines.getAaveProxyConfiguration$)(aaveUserConfiguration$, aaveReservesList$),
   )
@@ -95,7 +88,6 @@ export function getAaveV2Services({ refresh$ }: AaveV2ServicesDependencies): Aav
     aaveLikeLiquidations$,
     aaveLikeUserAccountData$,
     aaveLikeProxyConfiguration$,
-    aaveLikeProtocolData$,
     aaveLikeOracleAssetPriceData$: tokenPriceInEth$,
     getAaveLikeAssetsPrices$: tokenPrices,
   }
