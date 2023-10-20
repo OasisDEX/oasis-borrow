@@ -12,9 +12,9 @@ import { curry } from 'ramda'
 import type { Observable } from 'rxjs'
 
 import {
+  getAaveLikeReserveData,
   getAaveProxyConfiguration$,
   getReserveConfigurationDataWithEMode$,
-  getReserveData,
   mapAaveUserAccountData$,
   prepareaaveAvailableLiquidityInUSDC$,
 } from './pipelines'
@@ -80,7 +80,7 @@ export function getAaveV3Services({
 
   const getReserveCaps$ = makeObservableForNetworkId(
     refresh$,
-    blockchainCalls.getReserveCaps,
+    blockchainCalls.getAaveV3ReserveCaps,
     networkId,
     'getReserveCaps$',
   )
@@ -114,7 +114,7 @@ export function getAaveV3Services({
   )({})
 
   const reserveDataWithCaps$ = memoize(
-    curry(getReserveData)(getAaveLikeReserveData$, getReserveCaps$),
+    curry(getAaveLikeReserveData)(getAaveLikeReserveData$, getReserveCaps$),
     (args: { token: string }) => args.token,
   )
 

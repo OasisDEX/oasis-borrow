@@ -12,8 +12,8 @@ import { curry } from 'ramda'
 import type { Observable } from 'rxjs'
 
 import {
+  getAaveLikeReserveData,
   getReserveConfigurationDataWithEMode$,
-  getReserveData,
   getSparkProxyConfiguration$,
   mapSparkUserAccountData$,
   prepareSparkAvailableLiquidityInUSDC$,
@@ -80,7 +80,7 @@ export function getSparkV3Services({
 
   const getReserveCaps$ = makeObservableForNetworkId(
     refresh$,
-    blockchainCalls.getReserveCaps,
+    blockchainCalls.getSparkV3ReserveCaps,
     networkId,
     'getReserveCaps$',
   )
@@ -114,7 +114,7 @@ export function getSparkV3Services({
   )({})
 
   const reserveDataWithCaps$ = memoize(
-    curry(getReserveData)(getAaveLikeReserveData$, getReserveCaps$),
+    curry(getAaveLikeReserveData)(getAaveLikeReserveData$, getReserveCaps$),
     (args: { token: string }) => args.token,
   )
 

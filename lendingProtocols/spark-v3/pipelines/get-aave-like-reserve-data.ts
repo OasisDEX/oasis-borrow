@@ -5,7 +5,7 @@ import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-export function getReserveData(
+export function getAaveLikeReserveData(
   reserveData$: (args: { token: string }) => Observable<SparkV3ReserveDataReply>,
   reserveCaps$: (args: { token: string }) => Observable<SparkReserveCap>,
   args: { token: string },

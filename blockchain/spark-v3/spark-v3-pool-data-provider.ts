@@ -179,7 +179,7 @@ export interface SparkReserveCap {
   borrow: BigNumber
 }
 
-export function getReserveCaps({
+export function getSparkV3ReserveCaps({
   token,
   networkId,
 }: SparkReserveCapParameters): Promise<SparkReserveCap> {

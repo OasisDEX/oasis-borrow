@@ -191,7 +191,7 @@ export interface AaveV3ReserveCap {
   borrow: BigNumber
 }
 
-export function getReserveCaps({
+export function getAaveV3ReserveCaps({
   token,
   networkId,
 }: AaveV3ReserveCapParameters): Promise<AaveV3ReserveCap> {
