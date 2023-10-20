@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { ethereumMainnetHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
 import {
   AaveBorrowManageComponent,
@@ -144,6 +145,30 @@ const availableTokenPairs: TokenPairConfig[] = [
       },
     },
   },
+  {
+    collateral: 'SDAI',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+        additionalManageActions: [],
+        defaultSlippage: new BigNumber(0.001),
+      },
+    },
+  },
+  {
+    collateral: 'SDAI',
+    debt: 'USDT',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Earn]: {
+        featureToggle: undefined,
+        additionalManageActions: [],
+        defaultSlippage: new BigNumber(0.001),
+      },
+    },
+  },
 ]
 
 const borrowStrategies: IStrategyConfig[] = availableTokenPairs
@@ -285,6 +310,7 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
         return [...allActionsAvailableInMultiply, ...additionalAction]
       },
       executeTransactionWith: 'ethers',
+      defaultSlippage: config.productTypes.Earn.defaultSlippage,
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Earn.featureToggle,
     }

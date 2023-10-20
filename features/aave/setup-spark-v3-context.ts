@@ -104,7 +104,6 @@ export function setupSparkV3Context(
 
   const {
     aaveLikeUserAccountData$,
-    aaveLikeProtocolData$,
     aaveLikeReserveConfigurationData$,
     aaveLikeOracleAssetPriceData$,
     getAaveLikeReserveData$,
@@ -158,11 +157,11 @@ export function setupSparkV3Context(
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    aaveLikeProtocolData$,
     allowanceForAccount$,
     unconsumedDpmProxyForConnectedAccount$,
     proxyConsumed$,
     aaveLikeReserveConfigurationData$,
+    getAaveLikeReserveData$,
   )
 
   const manageAaveStateMachineServices = getManageAaveV3PositionStateMachineServices(
@@ -174,9 +173,10 @@ export function setupSparkV3Context(
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    aaveLikeProtocolData$,
+    // aaveLikeProtocolData$,
     allowanceForAccount$,
     getAaveHistoryEvents,
+    getAaveLikeReserveData$,
   )
 
   const stopLossTransactionStateMachine = getStopLossTransactionStateMachine(

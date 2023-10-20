@@ -1,3 +1,4 @@
+import { getOnChainPosition } from 'actions/aave-like'
 import type BigNumber from 'bignumber.js'
 import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
 import { createExecuteTransaction } from 'blockchain/better-calls/dpm-account'
@@ -7,7 +8,7 @@ import type { Tickers } from 'blockchain/prices.types'
 import type { TokenBalances } from 'blockchain/tokens.types'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import type { ManageAaveStateMachineServices } from 'features/aave/manage/state'
-import { getPricesFeed$ } from 'features/aave/services'
+import { getPricesFeed$, xstateReserveDataService } from 'features/aave/services'
 import type {
   IStrategyConfig,
   IStrategyInfo,
@@ -20,7 +21,7 @@ import { createEthersTransactionStateMachine } from 'features/stateMachines/tran
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { allDefined } from 'helpers/allDefined'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
-import type { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
+import type { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
@@ -36,12 +37,8 @@ export function getManageAaveV2PositionStateMachineServices(
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
-  aaveLikeProtocolData$: (
-    collateralToken: string,
-    debtToken: string,
-    proxyAddress: string,
-  ) => Observable<AaveLikeProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
+  aaveReserveData$: (args: { token: string }) => Observable<AaveLikeReserveData>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -145,24 +142,17 @@ export function getManageAaveV2PositionStateMachineServices(
         map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter((address) => !!address),
         switchMap((proxyAddress) =>
-          aaveLikeProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
+          getOnChainPosition({
+            networkId: context.strategyConfig.networkId,
+            proxyAddress: proxyAddress!,
+            debtToken: context.tokens.debt,
+            protocol: context.strategyConfig.protocol,
+            collateralToken: context.tokens.collateral,
+          }),
         ),
-        map((aaveProtocolData) => ({
+        map((position) => ({
           type: 'CURRENT_POSITION_CHANGED',
-          currentPosition: aaveProtocolData.position,
-        })),
-      )
-    },
-    protocolData$: (context) => {
-      return proxiesRelatedWithPosition$(context.positionId).pipe(
-        map((result) => result.dsProxy || result.dpmProxy?.proxy),
-        filter((address) => !!address),
-        switchMap((proxyAddress) =>
-          aaveLikeProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
-        ),
-        map((aaveProtocolData) => ({
-          type: 'UPDATE_PROTOCOL_DATA',
-          protocolData: aaveProtocolData,
+          currentPosition: position,
         })),
       )
     },
@@ -196,5 +186,6 @@ export function getManageAaveV2PositionStateMachineServices(
       // TODO: replace with actual implementation.
       return of({ type: 'SWITCH_SUCCESS' })
     },
+    reserveData$: xstateReserveDataService(aaveReserveData$),
   }
 }

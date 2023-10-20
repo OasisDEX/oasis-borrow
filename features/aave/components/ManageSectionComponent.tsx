@@ -24,7 +24,7 @@ export function ManageSectionComponent({
 }: ManageSectionComponentProps) {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
-  const { position } = state.context.protocolData || {}
+  const position = state.context.currentPosition
 
   const simulations = useSimulationYields({
     amount: position?.collateral.amount,
