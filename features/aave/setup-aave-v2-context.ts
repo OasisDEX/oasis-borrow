@@ -153,7 +153,6 @@ export function setupAaveV2Context(
     userSettings$,
     tokenPriceUSD$,
     strategyInfo$,
-    // aaveLikeProtocolData$,
     allowanceForAccount$,
     getAaveLikeReserveData$,
   )

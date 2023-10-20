@@ -138,7 +138,6 @@ export function getManageAaveV2PositionStateMachineServices(
       )
     },
     currentPosition$: (context) => {
-      // TODO: Change it to callback.
       return proxiesRelatedWithPosition$(context.positionId).pipe(
         map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter((address) => !!address),
