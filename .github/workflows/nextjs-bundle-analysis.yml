@@ -7,7 +7,7 @@ on:
   pull_request:
   push:
     branches:
-      - marcinciarka/next-bundle-analyze-workflow-fix
+      - marcinciarka/next-bundle-analyze-workflow-fix-2
   workflow_dispatch:
 
 defaults:
