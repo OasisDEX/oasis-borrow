@@ -10,11 +10,6 @@ on:
       - dev # change this if your default branch is named differently
   workflow_dispatch:
 
-defaults:
-  run:
-    # change this if your nextjs app does not live at the root of the repo
-    working-directory: ./
-
 permissions:
   contents: read # for checkout repository
   actions: read # for fetching base branch bundle stats
@@ -24,8 +19,6 @@ jobs:
   analyze:
     name: Bundle Analysis
     runs-on: ubuntu-latest
-    env:
-      CONFIG_URL: ${{ secrets.CONFIG_URL }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -39,10 +32,14 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install packages
+        env:
+          CONFIG_URL: ${{ secrets.CONFIG_URL }}
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn --no-progress --non-interactive --frozen-lockfile
 
       - name: Run postinstall
+        env:
+          CONFIG_URL: ${{ secrets.CONFIG_URL }}
         if: steps.yarn-cache.outputs.cache-hit == 'true'
         run: yarn postinstall
 
@@ -61,6 +58,7 @@ jobs:
       - name: Build next.js app
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
+          CONFIG_URL: ${{ secrets.CONFIG_URL }}
         run: yarn build
 
       - name: Analyze bundle
