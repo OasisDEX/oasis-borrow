@@ -48,7 +48,8 @@ jobs:
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
-          docker build --build-arg COMMIT_SHA='' \
+          docker build -f Dockerfile.production \
+                       --build-arg COMMIT_SHA='' \
                        --build-arg NOTIFICATIONS_HOST=${{ secrets.NOTIFICATIONS_HOST_PROD }} \
                        --build-arg NOTIFICATIONS_HOST_GOERLI=${{ secrets.NOTIFICATIONS_HOST_PROD_GOERLI }} \
                        --build-arg AJNA_SUBGRAPH_URL=${{ secrets.AJNA_SUBGRAPH_URL_PROD }} \
