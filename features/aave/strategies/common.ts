@@ -1,3 +1,4 @@
+import type BigNumber from 'bignumber.js'
 import type { ManagePositionAvailableActions, ProductType, StrategyType } from 'features/aave/types'
 import type { FeaturesEnum } from 'types/config'
 
@@ -7,6 +8,7 @@ export type ProductTypeConfig = {
     action: ManagePositionAvailableActions
     featureToggle: FeaturesEnum | undefined
   }[]
+  defaultSlippage?: BigNumber
 }
 
 export type TokenPairConfig = {

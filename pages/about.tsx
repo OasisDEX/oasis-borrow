@@ -6,6 +6,7 @@ import type { TeamMember } from 'features/about/about'
 import { getTeamPicsFileNames, parseMemberInfo } from 'features/about/about'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useScrollToTop } from 'helpers/useScrollToTop'
 import { sortBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -15,7 +16,7 @@ import { arrow_right } from 'theme/icons'
 
 function AboutPage({ members }: { members: TeamMember[] }) {
   const { t } = useTranslation()
-
+  useScrollToTop()
   return (
     <MarketingLayout topBackground="lighter">
       <Box sx={{ width: '100%', pb: 6 }}>

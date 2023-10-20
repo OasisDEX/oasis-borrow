@@ -4,6 +4,7 @@ import type {
   AaveLikeUserAccountData,
   AaveLikeUserAccountDataArgs,
 } from 'lendingProtocols/aave-like-common'
+import { getAaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import type { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { makeObservableForNetworkId } from 'lendingProtocols/pipelines'
@@ -13,11 +14,9 @@ import type { Observable } from 'rxjs'
 
 import {
   getReserveConfigurationDataWithEMode$,
-  getSparkProtocolData$,
   getSparkProxyConfiguration$,
   mapSparkUserAccountData$,
   prepareSparkAvailableLiquidityInUSDC$,
-  sparkV3OnChainPosition,
 } from './pipelines'
 
 interface SparkV3ServicesDependencies {
@@ -79,6 +78,13 @@ export function getSparkV3Services({
     'getAaveLikeReserveData$',
   )
 
+  const getReserveCaps$ = makeObservableForNetworkId(
+    refresh$,
+    blockchainCalls.getSparkV3ReserveCaps,
+    networkId,
+    'getReserveCaps$',
+  )
+
   const getEModeCategoryData$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getEModeCategoryData,
@@ -94,12 +100,6 @@ export function getSparkV3Services({
     ({ token }) => token,
   )
 
-  const aaveUserReserveData$ = makeObservableForNetworkId(
-    refresh$,
-    blockchainCalls.getSparkV3UserReserveData,
-    networkId,
-    'aaveUserReserveData$',
-  )
   const aaveUserConfiguration$ = makeObservableForNetworkId(
     refresh$,
     blockchainCalls.getSparkV3UserConfigurations,
@@ -113,23 +113,9 @@ export function getSparkV3Services({
     'aaveReservesList$',
   )({})
 
-  const onChainPosition$ = makeObservableForNetworkId(
-    refresh$,
-    sparkV3OnChainPosition,
-    networkId,
-    'onChainPosition$',
-  )
-
-  const aaveLikeProtocolData$ = memoize(
-    curry(getSparkProtocolData$)(
-      aaveUserReserveData$,
-      aaveLikeUserAccountData$,
-      assetPrice$,
-      aaveUserConfiguration$,
-      aaveReservesList$,
-      onChainPosition$,
-    ),
-    (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
+  const reserveDataWithCaps$ = memoize(
+    curry(getAaveLikeReserveData)(getAaveLikeReserveData$, getReserveCaps$),
+    (args: { token: string }) => args.token,
   )
 
   const aaveLikeProxyConfiguration$ = memoize(
@@ -149,12 +135,11 @@ export function getSparkV3Services({
   return {
     protocol: LendingProtocol.SparkV3,
     aaveLikeReserveConfigurationData$: reserveConfigurationDataWithEMode$,
-    getAaveLikeReserveData$,
+    getAaveLikeReserveData$: reserveDataWithCaps$,
     aaveLikeAvailableLiquidityInUSDC$,
     aaveLikeLiquidations$,
     aaveLikeUserAccountData$,
     aaveLikeProxyConfiguration$,
-    aaveLikeProtocolData$,
     aaveLikeOracleAssetPriceData$: assetPrice$,
     getAaveLikeAssetsPrices$: assetsPrices$,
   }

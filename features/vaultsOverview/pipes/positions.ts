@@ -1,4 +1,5 @@
 import type { IRiskRatio } from '@oasisdex/dma-library'
+import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import type { Context } from 'blockchain/network.types'
 import { getNetworkById, NetworkIds } from 'blockchain/networks'
@@ -24,7 +25,6 @@ import { productToVaultType } from 'helpers/productToVaultType'
 import { zero } from 'helpers/zero'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { checkIfAave, checkIfSpark, LendingProtocol } from 'lendingProtocols'
-import type { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import type { AaveLikeServices } from 'lendingProtocols/aave-like-common/aave-like-services'
 import { memoize } from 'lodash'
 import type { Observable } from 'rxjs'
@@ -168,11 +168,13 @@ function buildAaveViewModel(
   const resolvedAaveServices = observables.aaveV2
 
   return combineLatest(
-    resolvedAaveServices.aaveLikeProtocolData$(
-      collateralTokenSymbol,
-      debtTokenSymbol,
-      proxyAddress,
-    ),
+    getOnChainPosition({
+      networkId: NetworkIds.MAINNET,
+      proxyAddress: proxyAddress,
+      collateralToken: collateralTokenSymbol,
+      debtToken: debtTokenSymbol,
+      protocol: LendingProtocol.AaveV2,
+    }),
     resolvedAaveServices.getAaveLikeAssetsPrices$({
       tokens: [collateralTokenSymbol, debtTokenSymbol],
     }),
@@ -185,94 +187,90 @@ function buildAaveViewModel(
       ? of(undefined)
       : observables.automationTriggersData$(new BigNumber(positionId)),
   ).pipe(
-    map(
-      ([protocolData, assetPrices, tickerPrices, preparedAaveReserve, liquidity, triggersData]) => {
-        const { position } = protocolData
-        const isDebtZero = position.debt.amount.isZero()
+    map(([position, assetPrices, tickerPrices, preparedAaveReserve, liquidity, triggersData]) => {
+      const isDebtZero = position.debt.amount.isZero()
 
-        const oracleCollateralTokenPriceInEth = assetPrices[0]
-        const oracleDebtTokenPriceInEth = assetPrices[1]
+      const oracleCollateralTokenPriceInEth = assetPrices[0]
+      const oracleDebtTokenPriceInEth = assetPrices[1]
 
-        const collateralToken = positionCreatedEvent.collateralTokenSymbol
-        const debtToken = positionCreatedEvent.debtTokenSymbol
+      const collateralToken = positionCreatedEvent.collateralTokenSymbol
+      const debtToken = positionCreatedEvent.debtTokenSymbol
 
-        const collateralNotWei = amountFromPrecision(
-          position.collateral.amount,
-          new BigNumber(position.collateral.precision),
-        )
-        const debtNotWei = amountFromPrecision(
-          position.debt.amount,
-          new BigNumber(position.debt.precision),
-        )
+      const collateralNotWei = amountFromPrecision(
+        position.collateral.amount,
+        new BigNumber(position.collateral.precision),
+      )
+      const debtNotWei = amountFromPrecision(
+        position.debt.amount,
+        new BigNumber(position.debt.precision),
+      )
 
-        const netValueInEthAccordingToOracle = collateralNotWei
-          .times(oracleCollateralTokenPriceInEth)
-          .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
+      const netValueInEthAccordingToOracle = collateralNotWei
+        .times(oracleCollateralTokenPriceInEth)
+        .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
 
-        const liquidationPrice = !isDebtZero
-          ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
-          : zero
+      const liquidationPrice = !isDebtZero
+        ? debtNotWei.div(collateralNotWei.times(position.category.liquidationThreshold))
+        : zero
 
-        const variableBorrowRate = preparedAaveReserve.variableBorrowRate
+      const variableBorrowRate = preparedAaveReserve.variableBorrowRate
 
-        const fundingCost = !isDebtZero
-          ? debtNotWei
-              .times(oracleDebtTokenPriceInEth)
-              .div(netValueInEthAccordingToOracle)
-              .multipliedBy(variableBorrowRate)
-              .times(100)
-          : zero
+      const fundingCost = !isDebtZero
+        ? debtNotWei
+            .times(oracleDebtTokenPriceInEth)
+            .div(netValueInEthAccordingToOracle)
+            .multipliedBy(variableBorrowRate)
+            .times(100)
+        : zero
 
-        // Todo: move to lib
-        const netValueInDebtToken = amountFromPrecision(
-          position.collateral.normalisedAmount
-            .times(position.oraclePriceForCollateralDebtExchangeRate)
-            .minus(position.debt.normalisedAmount),
-          new BigNumber(18),
-        )
+      const netValueInDebtToken = amountFromPrecision(
+        position.collateral.normalisedAmount
+          .times(position.oraclePriceForCollateralDebtExchangeRate)
+          .minus(position.debt.normalisedAmount),
+        new BigNumber(18),
+      )
 
-        const netValueUsd = netValueInDebtToken.times(tickerPrices[position.debt.symbol])
+      const netValueUsd = netValueInDebtToken.times(tickerPrices[position.debt.symbol])
 
-        const isOwner = context.status === 'connected' && context.account === walletAddress
+      const isOwner = context.status === 'connected' && context.account === walletAddress
 
-        const title = `${collateralToken}/${debtToken} Aave ${
-          protocol === LendingProtocol.AaveV2 ? 'V2' : 'V3 Mainnet'
-        }`
+      const title = `${collateralToken}/${debtToken} Aave ${
+        protocol === LendingProtocol.AaveV2 ? 'V2' : 'V3 Mainnet'
+      }`
 
-        const { loanToValue } = position.riskRatio
-        const { maxLoanToValue } = position.category
-        const warnignThreshold = maxLoanToValue.minus(maxLoanToValue.times(0.03))
+      const { loanToValue } = position.riskRatio
+      const { maxLoanToValue } = position.category
+      const warnignThreshold = maxLoanToValue.minus(maxLoanToValue.times(0.03))
 
-        const isDanger = loanToValue.gte(maxLoanToValue)
-        const isWarning = loanToValue.gte(warnignThreshold)
+      const isDanger = loanToValue.gte(maxLoanToValue)
+      const isWarning = loanToValue.gte(warnignThreshold)
 
-        return {
-          token: collateralToken,
-          debtToken,
-          title: title,
-          url: `/ethereum/aave/${mapAaveProtocol(protocol)}/${positionId}`, //TODO: Proper network handling
-          id: isAddress(positionId) ? formatAddress(positionId) : positionId,
-          netValue: netValueUsd,
-          multiple: position.riskRatio.multiple,
-          riskRatio: position.riskRatio,
-          debt: debtNotWei,
-          liquidationPrice,
-          liquidationPriceToken: debtToken,
-          fundingCost,
-          variableBorrowRate,
-          contentsUsd: netValueUsd,
-          isOwner,
-          lockedCollateral: collateralNotWei,
-          type: mappymap[positionCreatedEvent.positionType],
-          liquidity: liquidity,
-          stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
-          protocol,
-          chainId,
-          isAtRiskDanger: isDanger,
-          isAtRiskWarning: isWarning,
-        }
-      },
-    ),
+      return {
+        token: collateralToken,
+        debtToken,
+        title: title,
+        url: `/ethereum/aave/${mapAaveProtocol(protocol)}/${positionId}`,
+        id: isAddress(positionId) ? formatAddress(positionId) : positionId,
+        netValue: netValueUsd,
+        multiple: position.riskRatio.multiple,
+        riskRatio: position.riskRatio,
+        debt: debtNotWei,
+        liquidationPrice,
+        liquidationPriceToken: debtToken,
+        fundingCost,
+        variableBorrowRate,
+        contentsUsd: netValueUsd,
+        isOwner,
+        lockedCollateral: collateralNotWei,
+        type: mappymap[positionCreatedEvent.positionType],
+        liquidity: liquidity,
+        stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
+        protocol,
+        chainId,
+        isAtRiskDanger: isDanger,
+        isAtRiskWarning: isWarning,
+      }
+    }),
   )
 }
 
@@ -294,11 +292,13 @@ function buildAaveLikeV3OnlyViewModel(
   }
 
   return combineLatest(
-    services.aaveLikeProtocolData$(
-      strategyConfig.tokens.collateral,
-      strategyConfig.tokens.debt,
-      proxyAddress,
-    ),
+    getOnChainPosition({
+      networkId: chainId,
+      debtToken: debtTokenSymbol,
+      collateralToken: collateralTokenSymbol,
+      proxyAddress: proxyAddress,
+      protocol: protocol,
+    }),
     services.getAaveLikeAssetsPrices$({
       tokens: [collateralTokenSymbol, debtTokenSymbol],
     }),
@@ -309,105 +309,101 @@ function buildAaveLikeV3OnlyViewModel(
     }),
     automationTriggersData$(new BigNumber(positionId)),
   ).pipe(
-    map(
-      ([protocolData, assetPrices, tickerPrices, preparedAaveReserve, liquidity, triggersData]) => {
-        const { position } = protocolData
-        const isDebtZero = position.debt.amount.isZero()
+    map(([position, assetPrices, tickerPrices, preparedAaveReserve, liquidity, triggersData]) => {
+      const isDebtZero = position.debt.amount.isZero()
 
-        const oracleCollateralTokenPriceInEth = assetPrices[0]
-        const oracleDebtTokenPriceInEth = assetPrices[1]
+      const oracleCollateralTokenPriceInEth = assetPrices[0]
+      const oracleDebtTokenPriceInEth = assetPrices[1]
 
-        const collateralToken = positionCreatedEvent.collateralTokenSymbol
-        const debtToken = positionCreatedEvent.debtTokenSymbol
+      const collateralToken = positionCreatedEvent.collateralTokenSymbol
+      const debtToken = positionCreatedEvent.debtTokenSymbol
 
-        const collateralNotWei = amountFromPrecision(
-          position.collateral.amount,
-          new BigNumber(position.collateral.precision),
-        )
-        const debtNotWei = amountFromPrecision(
-          position.debt.amount,
-          new BigNumber(position.debt.precision),
-        )
+      const collateralNotWei = amountFromPrecision(
+        position.collateral.amount,
+        new BigNumber(position.collateral.precision),
+      )
+      const debtNotWei = amountFromPrecision(
+        position.debt.amount,
+        new BigNumber(position.debt.precision),
+      )
 
-        const netValueInEthAccordingToOracle = collateralNotWei
-          .times(oracleCollateralTokenPriceInEth)
-          .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
+      const netValueInEthAccordingToOracle = collateralNotWei
+        .times(oracleCollateralTokenPriceInEth)
+        .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
 
-        const { liquidationPriceInCollateral, liquidationPriceInDebt } = calculateLiquidationPrice({
-          collateral: position.collateral,
-          debt: position.debt,
-          liquidationRatio: position.category.liquidationThreshold,
-        })
+      const { liquidationPriceInCollateral, liquidationPriceInDebt } = calculateLiquidationPrice({
+        collateral: position.collateral,
+        debt: position.debt,
+        liquidationRatio: position.category.liquidationThreshold,
+      })
 
-        const liquidationPrice =
-          strategyConfig.strategyType === StrategyType.Long
-            ? liquidationPriceInDebt
-            : liquidationPriceInCollateral
+      const liquidationPrice =
+        strategyConfig.strategyType === StrategyType.Long
+          ? liquidationPriceInDebt
+          : liquidationPriceInCollateral
 
-        const liquidationPriceToken =
-          strategyConfig.strategyType === StrategyType.Long ? debtToken : collateralToken
+      const liquidationPriceToken =
+        strategyConfig.strategyType === StrategyType.Long ? debtToken : collateralToken
 
-        const variableBorrowRate = preparedAaveReserve.variableBorrowRate
+      const variableBorrowRate = preparedAaveReserve.variableBorrowRate
 
-        const fundingCost = !isDebtZero
-          ? debtNotWei
-              .times(oracleDebtTokenPriceInEth)
-              .div(netValueInEthAccordingToOracle)
-              .multipliedBy(variableBorrowRate)
-              .times(100)
-          : zero
+      const fundingCost = !isDebtZero
+        ? debtNotWei
+            .times(oracleDebtTokenPriceInEth)
+            .div(netValueInEthAccordingToOracle)
+            .multipliedBy(variableBorrowRate)
+            .times(100)
+        : zero
 
-        // Todo: move to lib
-        const netValueInDebtToken = amountFromPrecision(
-          position.collateral.normalisedAmount
-            .times(position.oraclePriceForCollateralDebtExchangeRate)
-            .minus(position.debt.normalisedAmount),
-          new BigNumber(18),
-        )
+      const netValueInDebtToken = amountFromPrecision(
+        position.collateral.normalisedAmount
+          .times(position.oraclePriceForCollateralDebtExchangeRate)
+          .minus(position.debt.normalisedAmount),
+        new BigNumber(18),
+      )
 
-        const netValueUsd = netValueInDebtToken.times(tickerPrices[position.debt.symbol])
+      const netValueUsd = netValueInDebtToken.times(tickerPrices[position.debt.symbol])
 
-        const title = `${collateralToken}/${debtToken} Aave ${
-          protocol === LendingProtocol.AaveV2 ? 'V2' : `V3 ${strategyConfig.network}`
-        }`
+      const title = `${collateralToken}/${debtToken} Aave ${
+        protocol === LendingProtocol.AaveV2 ? 'V2' : `V3 ${strategyConfig.network}`
+      }`
 
-        const { loanToValue } = position.riskRatio
-        const { liquidationThreshold } = position.category
-        const { maxLoanToValue } = position.category
-        const warnignThreshold = maxLoanToValue.minus(maxLoanToValue.times(3))
+      const { loanToValue } = position.riskRatio
+      const { liquidationThreshold } = position.category
+      const { maxLoanToValue } = position.category
+      const warnignThreshold = maxLoanToValue.minus(maxLoanToValue.times(3))
 
-        const isDanger = loanToValue.gte(liquidationThreshold)
-        const isWarning = loanToValue.gte(warnignThreshold)
+      const isDanger = loanToValue.gte(liquidationThreshold)
+      const isWarning = loanToValue.gte(warnignThreshold)
 
-        return {
-          token: collateralToken,
-          debtToken,
-          title: title,
-          url: `/${strategyConfig.network}/${mapAaveLikeUrlSlug(protocol)}/${mapAaveProtocol(
-            protocol,
-          )}/${positionId}`,
-          id: positionId,
-          netValue: netValueUsd,
-          multiple: position.riskRatio.multiple,
-          riskRatio: position.riskRatio,
-          debt: debtNotWei,
-          liquidationPrice,
-          liquidationPriceToken,
-          fundingCost,
-          contentsUsd: netValueUsd,
-          isOwner,
-          lockedCollateral: collateralNotWei,
-          type: mappymap[strategyConfig.type],
-          liquidity: liquidity,
-          stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
+      return {
+        token: collateralToken,
+        debtToken,
+        title: title,
+        url: `/${strategyConfig.network}/${mapAaveLikeUrlSlug(protocol)}/${mapAaveProtocol(
           protocol,
-          chainId,
-          variableBorrowRate,
-          isAtRiskDanger: isDanger,
-          isAtRiskWarning: isWarning,
-        }
-      },
-    ),
+        )}/${positionId}`,
+        id: positionId,
+        netValue: netValueUsd,
+        multiple: position.riskRatio.multiple,
+        riskRatio: position.riskRatio,
+        debt: debtNotWei,
+        liquidationPrice,
+        liquidationPriceToken,
+        fundingCost,
+        contentsUsd: netValueUsd,
+        isOwner,
+        lockedCollateral: collateralNotWei,
+        type: mappymap[strategyConfig.type],
+        liquidity: liquidity,
+        stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
+        protocol,
+        chainId,
+        variableBorrowRate,
+        isAtRiskDanger: isDanger,
+        isAtRiskWarning: isWarning,
+      }
+    }),
   )
 }
 
@@ -417,40 +413,39 @@ type FakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition = PositionCrea
 
 function getStethEthAaveV2DsProxyEarnPosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
-  aaveLikeProtocolData$: (
-    collateralToken: string,
-    debtToken: string,
-    address: string,
-  ) => Observable<AaveLikeProtocolData>,
   walletAddress: string,
 ): Observable<FakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition[]> {
   return proxyAddressesProvider.dsProxy$(walletAddress).pipe(
-    switchMap((dsProxyAddress) => {
+    switchMap(async (dsProxyAddress) => {
       if (!dsProxyAddress) {
-        return of([])
+        return []
       }
 
-      return aaveLikeProtocolData$('STETH', 'ETH', dsProxyAddress).pipe(
-        map((avp) => {
-          if (avp && avp.position.collateral.amount.gt(zero)) {
-            return [
-              {
-                collateralTokenSymbol: 'STETH',
-                debtTokenSymbol: 'ETH',
-                positionType: 'Earn',
-                protocol: LendingProtocol.AaveV2,
-                chainId: NetworkIds.MAINNET,
-                proxyAddress: dsProxyAddress,
-                fakePositionCreatedEvtForDsProxyUsers: true,
-                collateralTokenAddress: ethers.constants.AddressZero,
-                debtTokenAddress: ethers.constants.AddressZero,
-              },
-            ]
-          } else {
-            return []
-          }
-        }),
-      )
+      const stEthPosition = await getOnChainPosition({
+        networkId: NetworkIds.MAINNET,
+        proxyAddress: dsProxyAddress,
+        protocol: LendingProtocol.AaveV2,
+        debtToken: 'ETH',
+        collateralToken: 'STETH',
+      })
+
+      if (stEthPosition.collateral.amount.gt(zero)) {
+        return [
+          {
+            collateralTokenSymbol: 'STETH',
+            debtTokenSymbol: 'ETH',
+            positionType: 'Earn',
+            protocol: LendingProtocol.AaveV2,
+            chainId: NetworkIds.MAINNET,
+            proxyAddress: dsProxyAddress,
+            fakePositionCreatedEvtForDsProxyUsers: true,
+            collateralTokenAddress: ethers.constants.AddressZero,
+            debtTokenAddress: ethers.constants.AddressZero,
+          },
+        ]
+      } else {
+        return []
+      }
     }),
   )
 }
@@ -473,7 +468,7 @@ export function createAaveV2Position$(
             proxyAddressesProvider.userDpmProxies$(walletAddress),
             getStethEthAaveV2DsProxyEarnPosition$(
               proxyAddressesProvider,
-              aaveV2.aaveLikeProtocolData$,
+              // aaveV2.aaveLikeProtocolData$,
               walletAddress,
             ),
           ).pipe(

@@ -852,7 +852,7 @@ export function setupProductContext(
   return {
     aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
     aaveLikeLiquidations$: aaveV2Services.aaveLikeLiquidations$, // @deprecated,
-    aaveLikeProtocolData$: aaveV2Services.aaveLikeProtocolData$,
+    // aaveLikeProtocolData$: aaveV2Services.aaveLikeProtocolData$,
     aaveLikeUserAccountData$: aaveV2Services.aaveLikeUserAccountData$,
     addGasEstimation$,
     ajnaPosition$,

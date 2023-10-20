@@ -3131,6 +3131,16 @@
   "aave": {
     "header": {
       "current-market-price": "Current Market Price"
+    },
+    "errors": {
+      "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet.",
+      "payback-amount-exceeds-debt-token-balance": "You cannot pay back more than the amount of debt token in your wallet.",
+      "deposit-amount-exceeds-supply-cap": "You cannot deposit more than {{cap}} {{token}} due to the maximum supply cap.",
+      "debt-amount-exceeds-borrow-cap": "You cannot borrow more than {{cap}} {{token}} due to the maximum borrowing cap.",
+      "target-ltv-exceeds-supply-cap": "Your target LTV is too high due to the maximum supply cap. You cannot supply more than {{cap}} {{token}}.",
+      "target-ltv-exceeds-borrow-cap": "Your target LTV is too high due to the maximum borrowing cap. You cannot borrow more than {{cap}} {{token}}.",
+      "target-ltv-too-high-due-to-flashloan-liquidity": "Your target LTV is too high due to insuffiecient liquidity in the flashloan pool.",
+      "cannot-close-due-to-flashloan-liquidity": "You cannot close your position due to insufficient liquidity in the pool. Please try again later."
     }
   }
 }

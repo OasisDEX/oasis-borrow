@@ -1,0 +1,92 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
+name: 'Next.js Bundle Analysis'
+
+on:
+  push:
+    branches:
+      - marcinciarka/next-bundle-analyze-workflow-fix-2
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./
+
+permissions:
+  contents: read # for checkout repository
+  actions: read # for fetching base branch bundle stats
+  pull-requests: write # for comments
+
+jobs:
+  analyze:
+    name: Bundle Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.12
+      - name: Use modules cache
+        uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install packages
+        env:
+          CONFIG_URL: ${{ secrets.CONFIG_URL }}
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn --no-progress --non-interactive --frozen-lockfile
+
+      - name: Run postinstall
+        env:
+          CONFIG_URL: ${{ secrets.CONFIG_URL }}
+        if: steps.yarn-cache.outputs.cache-hit == 'true'
+        run: yarn postinstall
+
+      - name: Use next cache
+        uses: jongwooo/next-cache@v1
+
+      - name: Download base branch bundle stats
+        uses: dawidd6/action-download-artifact@v2
+        if: success() && github.event.number
+        with:
+          name: bundle
+          workflow: nextjs-bundle-analysis.yml
+          branch: ${{ github.event.pull_request.base.ref }}
+          path: .next/analyze/base/bundle
+
+      - name: Build next.js app
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
+          CONFIG_URL: ${{ secrets.CONFIG_URL }}
+        run: yarn build
+
+      - name: Analyze bundle
+        run: npx -p nextjs-bundle-analysis report
+
+      - name: Upload bundle
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundle
+          path: .next/analyze/__bundle_analysis.json
+
+      - name: Compare with base branch bundle
+        if: success() && github.event.number
+        run: npx -p nextjs-bundle-analysis compare
+
+      - name: Get Comment Body
+        id: get-comment-body
+        if: success() && github.event.number
+        run: |
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$(cat .next/analyze/__bundle_analysis_comment.txt)" >> $GITHUB_OUTPUT
+          echo EOF >> $GITHUB_OUTPUT
+
+      - name: Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: next-touched-pages
+          message: ${{ steps.get-comment-body.outputs.body }}

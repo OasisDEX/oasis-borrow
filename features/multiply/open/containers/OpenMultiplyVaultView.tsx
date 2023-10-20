@@ -1,4 +1,6 @@
 import { trackingEvents } from 'analytics/trackingEvents'
+import { NetworkHexIds } from 'blockchain/networks'
+import { WithWalletConnection } from 'components/connectWallet'
 import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
@@ -38,24 +40,26 @@ export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
   }, [])
 
   return (
-    <WithErrorHandler error={openVaultError}>
-      <WithLoadingIndicator value={openVault} customLoader={<VaultContainerSpinner />}>
-        {(openVault) => (
-          <Container variant="vaultPageContainer">
-            <OpenMultiplyVaultContainer
-              header={
-                <DefaultVaultHeader
-                  {...openVault}
-                  header={t('vault.open-vault', { ilk: openVault.ilk })}
-                />
-              }
-              details={<OpenMultiplyVaultDetails {...openVault} />}
-              form={<OpenMultiplyVaultForm {...openVault} />}
-              clear={openVault.clear}
-            />
-          </Container>
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <WithWalletConnection chainId={NetworkHexIds.MAINNET}>
+      <WithErrorHandler error={openVaultError}>
+        <WithLoadingIndicator value={openVault} customLoader={<VaultContainerSpinner />}>
+          {(_openVault) => (
+            <Container variant="vaultPageContainer">
+              <OpenMultiplyVaultContainer
+                header={
+                  <DefaultVaultHeader
+                    {..._openVault}
+                    header={t('vault.open-vault', { ilk: _openVault.ilk })}
+                  />
+                }
+                details={<OpenMultiplyVaultDetails {..._openVault} />}
+                form={<OpenMultiplyVaultForm {..._openVault} />}
+                clear={_openVault.clear}
+              />
+            </Container>
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
+    </WithWalletConnection>
   )
 }

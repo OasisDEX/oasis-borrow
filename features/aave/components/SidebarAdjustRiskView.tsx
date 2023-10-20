@@ -15,6 +15,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
 
+import { ErrorMessagesLtvToHighDueToProtocolCaps } from './ErrorMessagesLtvToHighDueToProtocolCaps'
 import { StopLossAaveErrorMessage } from './StopLossAaveErrorMessage'
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
@@ -244,30 +245,33 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
         ) : (
           state.context.transition &&
           hasUserInteracted(state) && (
-            <MessageCard
-              messages={[
-                isWarning
-                  ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
-                      collateralToken,
-                      priceMovement: formatPercent(priceMovementUntilLiquidationPercent, {
-                        precision: 2,
+            <>
+              <MessageCard
+                messages={[
+                  isWarning
+                    ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
+                        collateralToken,
+                        priceMovement: formatPercent(priceMovementUntilLiquidationPercent, {
+                          precision: 2,
+                        }),
+                        debtToken,
+                        liquidationPenalty,
+                        positionType: state.context.strategyConfig.type,
+                      })
+                    : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
+                        collateralToken,
+                        priceMovement: formatPercent(priceMovementUntilLiquidationPercent, {
+                          precision: 2,
+                        }),
+                        debtToken,
+                        liquidationPenalty,
                       }),
-                      debtToken,
-                      liquidationPenalty,
-                      positionType: state.context.strategyConfig.type,
-                    })
-                  : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
-                      collateralToken,
-                      priceMovement: formatPercent(priceMovementUntilLiquidationPercent, {
-                        precision: 2,
-                      }),
-                      debtToken,
-                      liquidationPenalty,
-                    }),
-              ]}
-              withBullet={false}
-              type={isWarning ? 'warning' : 'ok'}
-            />
+                ]}
+                withBullet={false}
+                type={isWarning ? 'warning' : 'ok'}
+              />
+              <ErrorMessagesLtvToHighDueToProtocolCaps context={state.context} />
+            </>
           )
         )}
       </Grid>
