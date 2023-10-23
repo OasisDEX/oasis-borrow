@@ -122,6 +122,8 @@ export type SubgraphsRecord = {
     [NetworkIds.POLYGONMUMBAI]: ''
     [NetworkIds.OPTIMISMMAINNET]: ''
     [NetworkIds.OPTIMISMGOERLI]: ''
+    [NetworkIds.BASEMAINNET]: ''
+    [NetworkIds.BASEGOERLI]: ''
     [NetworkIds.EMPTYNET]: ''
   }
 }

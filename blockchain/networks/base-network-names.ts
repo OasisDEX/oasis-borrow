@@ -6,4 +6,5 @@ export enum BaseNetworkNames {
   Arbitrum = NetworkNames.arbitrumMainnet,
   Polygon = NetworkNames.polygonMainnet,
   Optimism = NetworkNames.optimismMainnet,
+  Base = NetworkNames.baseMainnet,
 }
