@@ -467,6 +467,6 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
       } as SupplyMetadata
     }
     default:
-      throw Error('No metadata availalbe for given product')
+      throw Error('No metadata available for given product')
   }
 }
