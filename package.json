@@ -106,7 +106,7 @@
     "rxjs": "^6.2.0",
     "rxjs-take-while-inclusive": "^2.1.0",
     "sass": "^1.49.4",
-    "snowflake-sdk": "^1.6.10",
+    "snowflake-sdk": "^1.6.21",
     "socket.io": "^4.5.1",
     "terser-webpack-plugin": "^5.3.9",
     "text-mask-addons": "^3.7.2",
