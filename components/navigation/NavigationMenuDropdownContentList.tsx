@@ -1,16 +1,34 @@
 import { AppLink } from 'components/Links'
+import type {
+  NavigationMenuPanelList,
+  NavigationMenuPanelListItem,
+} from 'components/navigation/Navigation.types'
 import { NavigationMenuDropdownContentListItem } from 'components/navigation/NavigationMenuDropdownContentListItem'
 import { WithArrow } from 'components/WithArrow'
 import React from 'react'
 import { Box, Heading } from 'theme-ui'
-
-import type { NavigationMenuPanelList } from './Navigation.types'
 
 type NavigationMenuDropdownContentListProps = NavigationMenuPanelList & {
   parentIndex?: number
   selected?: [number, number]
   onClick?: (selected: [number, number]) => void
   onSelect?: (selected: [number, number]) => void
+}
+
+function forceLinkReload(
+  url: NavigationMenuPanelListItem['url'],
+  query: NavigationMenuPanelListItem['query'],
+) {
+  if (url?.startsWith('/')) {
+    const queryString = query
+      ? Object.keys(query).reduce(
+          (total, key, n) => `${total}${n > 0 ? '&' : ''}${key}=${query[key]}`,
+          '?',
+        )
+      : ''
+
+    location.href = `${url}${queryString}`
+  }
 }
 
 export function NavigationMenuDropdownContentList({
@@ -92,7 +110,12 @@ export function NavigationMenuDropdownContentList({
             }}
           >
             {url ? (
-              <AppLink href={url} query={query} sx={{ display: 'block', ...itemInnerPadding }}>
+              <AppLink
+                href={url}
+                query={query}
+                sx={{ display: 'block', ...itemInnerPadding }}
+                onClick={() => forceLinkReload(url, query)}
+              >
                 <NavigationMenuDropdownContentListItem hoverColor={hoverColor} {...item} />
               </AppLink>
             ) : (
@@ -112,6 +135,7 @@ export function NavigationMenuDropdownContentList({
             mr: 'auto',
             display: 'inline-block',
           }}
+          onClick={() => forceLinkReload(link.url, link.query)}
         >
           <WithArrow
             gap={1}
