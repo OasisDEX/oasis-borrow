@@ -1,9 +1,10 @@
-import { OmniFormView } from 'features/omni-kit/common/components/OmniFormView'
-import { OmniFormContentTransaction } from 'features/omni-kit/common/sidebars/OmniFormContentTransaction'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
-import { OmniEarnFormContentManage } from 'features/omni-kit/sidebars/earn/OmniEarnFormContentManage'
-import { OmniEarnFormContentOpen } from 'features/omni-kit/sidebars/earn/OmniEarnFormContentOpen'
+import { OmniFormContentTransaction } from 'features/omni-kit/components/sidebars'
+import {
+  OmniEarnFormContentManage,
+  OmniEarnFormContentOpen,
+} from 'features/omni-kit/components/sidebars/earn'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniFormView } from 'features/omni-kit/views'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

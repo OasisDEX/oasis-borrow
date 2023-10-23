@@ -1,6 +1,5 @@
 import { ethers } from 'ethers'
-
-import type { OmniBorrowFormState } from './borrowFormReducto.types'
+import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 
 export const omniBorrowFormReset = {
   depositAmount: undefined,

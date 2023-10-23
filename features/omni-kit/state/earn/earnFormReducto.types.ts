@@ -4,8 +4,8 @@ import type {
   FormActionsUpdateDeposit,
   FormActionsUpdateDpm,
   FormActionsUpdateWithdraw,
-} from 'features/omni-kit/common/state/omniFormReductoActions'
-import type { OmniEarnAction, OmniEarnPanel } from 'features/omni-kit/types/common.types'
+} from 'features/omni-kit/state'
+import type { OmniEarnAction, OmniEarnPanel } from 'features/omni-kit/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniEarnFormState {

@@ -1,4 +1,4 @@
-import type { OmniFlow, OmniProduct, OmniSidebarStep } from 'features/omni-kit/types/common.types'
+import type { OmniFlow, OmniProduct, OmniSidebarStep } from 'features/omni-kit/types'
 
 export const morphoSeoTags = {
   productKey: `seo.morphoProductPage.title`,

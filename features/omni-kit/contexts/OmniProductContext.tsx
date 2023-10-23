@@ -7,28 +7,27 @@ import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNo
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
-import type { OmniDupePositionModalProps } from 'features/omni-kit/common/components/OmniDupePositionModal'
-import type { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
-import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow/borrowFormReducto.types'
-import type { useOmniEarnFormReducto } from 'features/omni-kit/state/earn/earnFormReducto'
-import type { OmniEarnFormState } from 'features/omni-kit/state/earn/earnFormReducto.types'
-import type { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
-import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply/multiplyFormReducto.types'
+import type { OmniDupePositionModalProps } from 'features/omni-kit/components'
+import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
+import type { OmniEarnFormState, useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
+import type {
+  OmniMultiplyFormState,
+  useOmniMultiplyFormReducto,
+} from 'features/omni-kit/state/multiply'
 import type {
   OmniGenericPosition,
   OmniIsCachedPosition,
   OmniProduct,
   OmniSimulationCommon,
   OmniValidations,
-} from 'features/omni-kit/types/common.types'
+} from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, FC, PropsWithChildren, SetStateAction } from 'react'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
-
-import { useOmniGeneralContext } from './OmniGeneralContext'
 
 export type LendingMetadata = {
   validations: OmniValidations
@@ -86,7 +85,6 @@ export type SupplyMetadata = {
     headlineDetails: HeadlineDetailsProp[]
     extraDropdownItems: SidebarSectionHeaderSelectItem[]
     earnWithdrawMax: BigNumber
-
   }
   elements: {
     overviewBanner: JSX.Element | undefined
@@ -310,8 +308,8 @@ export function OmniProductContextProvider({
     steps: { currentStep },
     tx: { txDetails },
   } = useOmniGeneralContext()
+  // @ts-ignore
   // TODO: find a way to distinguish between the types - there no place for error here except for typescript is too stupid to understand
-  // @ts-expect-error
   const form = formReducto(formDefaults)
   const { state } = form
 

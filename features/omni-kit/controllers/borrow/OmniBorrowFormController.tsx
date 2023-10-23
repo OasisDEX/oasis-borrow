@@ -1,12 +1,13 @@
 import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
-import { OmniFormView } from 'features/omni-kit/common/components/OmniFormView'
-import { OmniFormContentTransaction } from 'features/omni-kit/common/sidebars/OmniFormContentTransaction'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
-import { OmniBorrowFormContentDeposit } from 'features/omni-kit/sidebars/borrow/OmniBorrowFormContentDeposit'
-import { OmniBorrowFormContentManage } from 'features/omni-kit/sidebars/borrow/OmniBorrowFormContentManage'
-import { OmniBorrowFormContentTransition } from 'features/omni-kit/sidebars/borrow/OmniBorrowFormContentTransition'
-import { OmniBorrowFormOrder } from 'features/omni-kit/sidebars/borrow/OmniBorrowFormOrder'
+import { OmniFormContentTransaction } from 'features/omni-kit/components/sidebars'
+import {
+  OmniBorrowFormContentDeposit,
+  OmniBorrowFormContentManage,
+  OmniBorrowFormContentTransition,
+  OmniBorrowFormOrder,
+} from 'features/omni-kit/components/sidebars/borrow'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniFormView } from 'features/omni-kit/views'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { circle_close, circle_exchange } from 'theme/icons'

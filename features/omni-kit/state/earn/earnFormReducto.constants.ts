@@ -1,6 +1,5 @@
 import { ethers } from 'ethers'
-
-import type { OmniEarnFormState } from './earnFormReducto.types'
+import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 
 export const omniEarnFormReset = {
   depositAmount: undefined,

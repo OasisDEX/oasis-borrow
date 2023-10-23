@@ -1,11 +1,12 @@
-import { OmniFormView } from 'features/omni-kit/common/components/OmniFormView'
-import { OmniFormContentTransaction } from 'features/omni-kit/common/sidebars/OmniFormContentTransaction'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
-import { OmniMultiplyFormContentManage } from 'features/omni-kit/sidebars/multiply/OmniMultiplyFormContentManage'
-import { OmniMultiplyFormContentOpen } from 'features/omni-kit/sidebars/multiply/OmniMultiplyFormContentOpen'
-import { OmniMultiplyFormContentTransition } from 'features/omni-kit/sidebars/multiply/OmniMultiplyFormContentTransition'
-import { OmniMultiplyFormOrder } from 'features/omni-kit/sidebars/multiply/OmniMultiplyFormOrder'
+import { OmniFormContentTransaction } from 'features/omni-kit/components/sidebars'
+import {
+  OmniMultiplyFormContentManage,
+  OmniMultiplyFormContentOpen,
+  OmniMultiplyFormContentTransition,
+  OmniMultiplyFormOrder,
+} from 'features/omni-kit/components/sidebars/multiply'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniFormView } from 'features/omni-kit/views'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { circle_close, circle_exchange, circle_slider } from 'theme/icons'

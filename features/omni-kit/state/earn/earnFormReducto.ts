@@ -1,7 +1,6 @@
+import type { OmniEarnFormAction, OmniEarnFormState } from 'features/omni-kit/state/earn'
+import { omniEarnFormDefault, omniEarnFormReset } from 'features/omni-kit/state/earn'
 import { useReducto } from 'helpers/useReducto'
-
-import { omniEarnFormDefault, omniEarnFormReset } from './earnFormReducto.constants'
-import type { OmniEarnFormAction, OmniEarnFormState } from './earnFormReducto.types'
 
 export function useOmniEarnFormReducto({ ...rest }: Partial<OmniEarnFormState>) {
   const { dispatch, state, updateState } = useReducto<OmniEarnFormState, OmniEarnFormAction>({

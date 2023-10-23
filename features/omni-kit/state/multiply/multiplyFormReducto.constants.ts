@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply/multiplyFormReducto.types'
+import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
 
 export const omniMultiplyFormReset = {
   depositAmount: undefined,

@@ -1,7 +1,21 @@
-import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaStrategy, Network } from '@oasisdex/dma-library'
-import { ajnaDepositGenerateBorrow, ajnaOpenBorrow, ajnaPaybackWithdrawBorrow } from 'actions/ajna/borrow'
+import type {
+  AjnaCommonDependencies,
+  AjnaCommonPayload,
+  AjnaStrategy,
+  Network,
+} from '@oasisdex/dma-library'
+import {
+  ajnaDepositGenerateBorrow,
+  ajnaOpenBorrow,
+  ajnaPaybackWithdrawBorrow,
+} from 'actions/ajna/borrow'
 import { ajnaOpenMultiply } from 'actions/ajna/multiply'
-import { ajnaOmniClaimEarn, ajnaOmniDepositEarn, ajnaOmniOpenEarn, ajnaOmniWithdrawEarn } from 'actions/ajna/omniEarn'
+import {
+  ajnaOmniClaimEarn,
+  ajnaOmniDepositEarn,
+  ajnaOmniOpenEarn,
+  ajnaOmniWithdrawEarn,
+} from 'actions/ajna/omniEarn'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network.types'

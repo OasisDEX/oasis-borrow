@@ -2,19 +2,19 @@ import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { GasPriceParams } from 'blockchain/prices.types'
 import { isProductContextAvailable } from 'components/context/ProductContextProvider'
-import { isShortPosition } from 'features/omni-kit/common/helpers'
 import {
   getOmniEditingStep,
+  getOmniTxStatuses,
   isOmniExternalStep,
   isOmniStepWithTransaction,
-} from 'features/omni-kit/contexts/omniStepManager'
-import { getOmniTxStatuses } from 'features/omni-kit/contexts/omniTxManager'
+} from 'features/omni-kit/contexts'
+import { isShortPosition } from 'features/omni-kit/helpers'
 import type {
   OmniFlow,
   OmniProduct,
   OmniSidebarEditingStep,
   OmniSidebarStep,
-} from 'features/omni-kit/types/common.types'
+} from 'features/omni-kit/types'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { useAccount } from 'helpers/useAccount'
 import type { LendingProtocol } from 'lendingProtocols'

@@ -1,10 +1,9 @@
-import {
-  omniMultiplyFormDefault,
-  omniMultiplyFormReset,
-} from 'features/omni-kit/state/multiply/multiplyFormReducto.constants'
+import type {
+  OmniMultiplyFormAction,
+  OmniMultiplyFormState,
+} from 'features/omni-kit/state/multiply'
+import { omniMultiplyFormDefault, omniMultiplyFormReset } from 'features/omni-kit/state/multiply'
 import { useReducto } from 'helpers/useReducto'
-
-import type { OmniMultiplyFormAction, OmniMultiplyFormState } from './multiplyFormReducto.types'
 
 export function useOmniMultiplyFormReducto({ ...rest }: Partial<OmniMultiplyFormState>) {
   const { dispatch, state, updateState } = useReducto<

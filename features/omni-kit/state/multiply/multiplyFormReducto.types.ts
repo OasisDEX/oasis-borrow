@@ -8,12 +8,8 @@ import type {
   FormActionsUpdatePaybackMax,
   FormActionsUpdateWithdraw,
   UpdateLoanToValue,
-} from 'features/omni-kit/common/state/omniFormReductoActions'
-import type {
-  OmniCloseTo,
-  OmniMultiplyAction,
-  OmniMultiplyPanel,
-} from 'features/omni-kit/types/common.types'
+} from 'features/omni-kit/state'
+import type { OmniCloseTo, OmniMultiplyAction, OmniMultiplyPanel } from 'features/omni-kit/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniMultiplyFormState {

@@ -1,4 +1,4 @@
-import type { OmniProduct, OmniSidebarStep } from 'features/omni-kit/types/common.types'
+import type { OmniProduct, OmniSidebarStep } from 'features/omni-kit/types'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 

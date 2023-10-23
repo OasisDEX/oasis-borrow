@@ -1,4 +1,8 @@
-import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaEarnPosition } from '@oasisdex/dma-library'
+import type {
+  AjnaCommonDependencies,
+  AjnaCommonPayload,
+  AjnaEarnPosition,
+} from '@oasisdex/dma-library'
 import { strategies } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'

@@ -1,10 +1,6 @@
-import {
-  omniBorrowFormDefault,
-  omniBorrowFormReset,
-} from 'features/omni-kit/state/borrow/borrowFormReducto.constants'
+import type { OmniBorrowFormAction, OmniBorrowFormState } from 'features/omni-kit/state/borrow'
+import { omniBorrowFormDefault, omniBorrowFormReset } from 'features/omni-kit/state/borrow'
 import { useReducto } from 'helpers/useReducto'
-
-import type { OmniBorrowFormAction, OmniBorrowFormState } from './borrowFormReducto.types'
 
 export function useOmniBorrowFormReducto({ ...rest }: Partial<OmniBorrowFormState>) {
   const { dispatch, state, updateState } = useReducto<OmniBorrowFormState, OmniBorrowFormAction>({

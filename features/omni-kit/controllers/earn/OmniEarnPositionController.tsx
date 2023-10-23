@@ -1,10 +1,12 @@
 import en from 'features/content/faqs/ajna/earn/en'
-import { OmniPositionView } from 'features/omni-kit/common/components/OmniPositionView'
-import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
-import { OmniFaqController } from 'features/omni-kit/controllers/common/OmniFaqController'
-import { OmniOverviewController } from 'features/omni-kit/controllers/common/OmniOverviewController'
-import { OmniPositionHistoryController } from 'features/omni-kit/controllers/common/OmniPositionHistoryController'
-import { OmniEarnFormController } from 'features/omni-kit/controllers/earn/OmniEarnFormController'
+import { useOmniProductContext } from 'features/omni-kit/contexts'
+import {
+  OmniFaqController,
+  OmniOverviewController,
+  OmniPositionHistoryController,
+} from 'features/omni-kit/controllers'
+import { OmniEarnFormController } from 'features/omni-kit/controllers/earn'
+import { OmniPositionView } from 'features/omni-kit/views'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
