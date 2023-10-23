@@ -137,6 +137,13 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
     isOracless,
   })
 
+  const filters = {
+    flowStateFilter: (event: CreatePositionEvent) =>
+      ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
+    consumedProxyFilter: (event: CreatePositionEvent) =>
+      !ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
+  }
+
   switch (product) {
     case 'borrow':
     case 'multiply':
@@ -175,12 +182,7 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
         handlers: {
           customReset: () => null,
         },
-        filters: {
-          flowStateFilter: (event: CreatePositionEvent) =>
-            ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
-          consumedProxyFilter: (event: CreatePositionEvent) =>
-            !ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
-        },
+        filters,
         values: {
           // TODO the same value under different key
           netBorrowCost: interestRate,
@@ -297,12 +299,7 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
           txSuccessEarnHandler: () => earnContext.form.updateState('uiDropdown', 'adjust'),
           customReset: () => dispatch({ type: 'reset' }),
         },
-        filters: {
-          flowStateFilter: (event: CreatePositionEvent) =>
-            ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
-          consumedProxyFilter: (event: CreatePositionEvent) =>
-            !ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
-        },
+        filters,
         values: {
           interestRate: zero, // TODO it's borrow rate and for earn shouldn't be required
           isFormEmpty: getAjnaOmniEarnIsFomEmpty({
