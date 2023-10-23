@@ -30,7 +30,7 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
     setForkSettings(rest as CustomForkParameterType)
   }
   const saveAndReset = () => {
-    window && window.location.reload() // duh
+    window?.location?.reload() // duh
   }
   const closeProxy = () => {
     saveAndReset()
@@ -67,7 +67,7 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
                   type="text"
                   placeholder={`http://localhost:854${5 + networkIndex}`}
                   onChange={handleForkUpdate('url')(network.name)}
-                  value={forkSettings[network.name]?.url || ''}
+                  value={forkSettings[network.name]?.url ?? ''}
                   sx={{
                     height: '50px',
                     fontSize: 3,
@@ -85,9 +85,9 @@ export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>
                 />
                 <Input
                   type="text"
-                  placeholder={`${2137 + networkIndex}`}
+                  placeholder={network.id.toString()}
                   onChange={handleForkUpdate('id')(network.name)}
-                  value={forkSettings[network.name]?.id || ''}
+                  value={forkSettings[network.name]?.id ?? ''}
                   sx={{
                     height: '50px',
                     fontSize: 3,
