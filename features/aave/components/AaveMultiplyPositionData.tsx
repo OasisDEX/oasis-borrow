@@ -2,10 +2,7 @@ import type { IPosition } from '@oasisdex/dma-library'
 import { getCurrentPositionLibCallData } from 'actions/aave-like/helpers'
 import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
-import {
-  DetailsSectionContentCard,
-  DetailsSectionContentCardWrapper,
-} from 'components/DetailsSectionContentCard'
+import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import {
   DetailsSectionFooterItem,
   DetailsSectionFooterItemWrapper,
@@ -16,8 +13,7 @@ import type { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { displayMultiple } from 'helpers/display-multiple'
-import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
-import { NaNIsZero } from 'helpers/nanIsZero'
+import { formatAmount, formatPrecision } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import type {
   AaveLikeReserveConfigurationData,
@@ -25,8 +21,9 @@ import type {
 } from 'lendingProtocols/aave-like-common'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Grid, Heading, Text } from 'theme-ui'
+import { Grid } from 'theme-ui'
 
+import { CostToBorrowContentCard } from './CostToBorrowContentCard'
 import { LiquidationPriceCard } from './LiquidationPriceCard'
 import { NetValueCard } from './NetValueCard'
 
@@ -76,10 +73,6 @@ export function AaveMultiplyPositionData({
       debtTokenReserveData.variableBorrowRate,
     )
 
-  const netBorrowCostInUSDC = currentPositionThings.debt
-    .times(debtTokenPrice)
-    .times(NaNIsZero(currentPositionThings.netBorrowCostPercentage))
-
   const stopLossTriggered =
     aaveHistory[0] &&
     'eventType' in aaveHistory[0] &&
@@ -114,58 +107,12 @@ export function AaveMultiplyPositionData({
               maxLoanToValue={currentPosition.category.maxLoanToValue}
               isAutomationAvailable={isAutomationAvailable}
             />
-            <DetailsSectionContentCard
-              title={t('system.net-borrow-cost')}
-              value={formatDecimalAsPercent(
-                NaNIsZero(currentPositionThings.netBorrowCostPercentage),
-              )}
-              change={
-                nextPositionThings && {
-                  variant: nextPositionThings.netBorrowCostPercentage.lte(zero)
-                    ? 'positive'
-                    : 'negative',
-                  value: `${formatDecimalAsPercent(
-                    NaNIsZero(nextPositionThings.netBorrowCostPercentage),
-                  )} ${t('after')}`,
-                }
-              }
-              modal={
-                <Grid gap={2}>
-                  <Heading variant="header4">
-                    {t('aave-position-modal.net-borrow-cost.first-header')}
-                  </Heading>
-                  <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
-                    {t('aave-position-modal.net-borrow-cost.first-description-line')}
-                    <Text as="span" variant="boldParagraph3" sx={{ mt: 1 }}>
-                      {t('aave-position-modal.net-borrow-cost.positive-negative-line')}
-                    </Text>
-                  </Text>
-                  <Card as="p" variant="vaultDetailsCardModal">
-                    {formatDecimalAsPercent(
-                      NaNIsZero(currentPositionThings.netBorrowCostPercentage),
-                    )}
-                  </Card>
-                  <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
-                    {t('aave-position-modal.net-borrow-cost.second-description-line')}
-                  </Text>
-                  <Heading variant="header4">
-                    {t('aave-position-modal.net-borrow-cost.second-header', {
-                      debtToken: debtToken.symbol,
-                    })}
-                  </Heading>
-                  <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
-                    {t('aave-position-modal.net-borrow-cost.third-description-line', {
-                      debtToken: debtToken.symbol,
-                    })}
-                    <Text as="span" variant="boldParagraph3" sx={{ mt: 1 }}>
-                      {t('aave-position-modal.net-borrow-cost.positive-negative-line')}
-                    </Text>
-                  </Text>
-                  <Card as="p" variant="vaultDetailsCardModal">
-                    {`${formatPrecision(netBorrowCostInUSDC, 2)} ${debtToken.symbol}`}
-                  </Card>
-                </Grid>
-              }
+            <CostToBorrowContentCard
+              position={currentPosition}
+              currentPositionThings={currentPositionThings}
+              nextPositionThings={nextPositionThings}
+              collateralTokenPrice={collateralTokenPrice}
+              debtTokenPrice={debtTokenPrice}
             />
             <NetValueCard
               strategyType={strategyType}

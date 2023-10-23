@@ -38,14 +38,6 @@ export function calculateViewValuesForPosition(
     liquidationRatio: position.category.liquidationThreshold,
   })
 
-  // const liquidationPriceInDebt = NaNIsZero(
-  //   debt.div(collateral.times(position.category.liquidationThreshold)),
-  // )
-  //
-  // const liquidationPriceInCollateral = liquidationPriceInDebt.isZero()
-  //   ? zero
-  //   : NaNIsZero(one.div(liquidationPriceInDebt))
-
   const costOfBorrowingDebt = debtVariableBorrowRate.times(debt).times(debtTokenPrice)
   const profitFromProvidingCollateral = collateralLiquidityRate
     .times(collateral)
@@ -65,5 +57,7 @@ export function calculateViewValuesForPosition(
     liquidationPriceInDebt,
     liquidationPriceInCollateral,
     netBorrowCostPercentage,
+    collateralLiquidityRate,
+    debtVariableBorrowRate,
   }
 }
