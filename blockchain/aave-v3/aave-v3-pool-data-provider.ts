@@ -74,6 +74,12 @@ const networkMappings = {
       NetworkIds.ARBITRUMMAINNET,
       'aaveV3PoolDataProvider',
     ),
+  [NetworkIds.BASEMAINNET]: () =>
+    getNetworkMapping(
+      AaveV3PoolDataProvider__factory,
+      NetworkIds.BASEMAINNET,
+      'aaveV3PoolDataProvider',
+    ),
 }
 
 export function getAaveV3UserReserveData({

@@ -276,6 +276,7 @@ enum NetworkNames {
   arbitrum
   polygon
   optimism
+  base
 
   @@map("network")
 }
@@ -289,6 +290,8 @@ enum NetworkNamesWithTestnets {
   polygon_mumbai
   optimism
   optimism_goerli
+  base
+  base_goerli
 
   @@map("networkWithTestnets")
 }

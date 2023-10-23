@@ -12,6 +12,7 @@ import type { LendingProtocol } from 'lendingProtocols'
 import { isLendingProtocol } from 'lendingProtocols'
 
 import { arbitrumAaveV3Strategies } from './arbitrum-aave-v3-strategies'
+import { baseAaveV3Strategies } from './base-aave-v3-strategies'
 import { ethereumAaveV2Strategies } from './ethereum-aave-v2-strategies'
 import { ethereumAaveV3Strategies } from './ethereum-aave-v3-strategies'
 import { ethereumSparkV3Strategies } from './ethereum-spark-v3-strategies'
@@ -23,6 +24,7 @@ export const strategies = [
   ...arbitrumAaveV3Strategies,
   ...ethereumAaveV3Strategies,
   ...ethereumSparkV3Strategies,
+  ...baseAaveV3Strategies,
 ]
 
 export function aaveStrategiesList(

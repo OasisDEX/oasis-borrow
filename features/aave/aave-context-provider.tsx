@@ -84,6 +84,14 @@ export function AaveContextProvider({ children }: WithChildren) {
             NetworkNames.arbitrumMainnet,
           ),
         },
+        [NetworkNames.baseMainnet]: {
+          [LendingProtocol.AaveV3]: setupAaveV3Context(
+            mainContext,
+            accountContext,
+            productContext,
+            NetworkNames.baseMainnet,
+          ),
+        },
       })
     }
   }, [accountContext, mainContext, productContext])

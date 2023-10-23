@@ -197,6 +197,12 @@ export const productHubNetworkFilter: GenericMultiselectOption[] = [
     value: networksByName[BaseNetworkNames.Optimism].name,
     image: networksByName[BaseNetworkNames.Optimism].icon,
   },
+  {
+    label: networksByName[BaseNetworkNames.Base].label,
+    value: networksByName[BaseNetworkNames.Base].name,
+    image: networksByName[BaseNetworkNames.Base].icon,
+    featureFlag: FeaturesEnum.BaseNetworkEnabled,
+  },
 ]
 
 export const productHubTestNetworkFilter: GenericMultiselectOption[] = [

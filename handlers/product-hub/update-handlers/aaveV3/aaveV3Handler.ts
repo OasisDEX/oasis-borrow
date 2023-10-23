@@ -25,11 +25,13 @@ type AaveV3Networks =
   | NetworkNames.ethereumMainnet
   | NetworkNames.arbitrumMainnet
   | NetworkNames.optimismMainnet
+  | NetworkNames.baseMainnet
 
 const networkNameToIdMap = {
   [NetworkNames.ethereumMainnet]: NetworkIds.MAINNET,
   [NetworkNames.arbitrumMainnet]: NetworkIds.ARBITRUMMAINNET,
   [NetworkNames.optimismMainnet]: NetworkIds.OPTIMISMMAINNET,
+  [NetworkNames.baseMainnet]: NetworkIds.BASEMAINNET,
 }
 
 const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers) => {
