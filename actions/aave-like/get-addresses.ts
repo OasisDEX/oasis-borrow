@@ -75,11 +75,14 @@ export function getAddresses(
       SDAI: contracts.tokens['SDAI'].address,
       LUSD: contracts.tokens['LUSD'].address,
       FRAX: contracts.tokens['FRAX'].address,
-      USDBC: contracts.tokens['USDBC']?.address, // optional, not available outside of BASE network
-    },
+    } as AaveLikeStrategyAddresses['tokens'],
     chainlinkEthUsdPriceFeed: contracts.chainlinkPriceOracle['ETHUSD'].address,
     operationExecutor: contracts.operationExecutor.address,
     swapAddress: contracts.swapAddress,
+  }
+
+  if (networkId === NetworkIds.BASEMAINNET) {
+    sharedAddresses.tokens.USDBC = contracts.tokens['USDBC'].address
   }
 
   switch (lendingProtocol) {
