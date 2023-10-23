@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -265,6 +266,7 @@ enum Protocol {
   aavev3
   ajna
   sparkv3
+  morphoblue
 
   @@map("protocol")
 }

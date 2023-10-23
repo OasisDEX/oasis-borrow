@@ -37,7 +37,7 @@ function AaveManageContainer({
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
 
-  if (!state.context.protocolData) {
+  if (!state.context.currentPosition) {
     return null
   }
 

@@ -334,6 +334,7 @@ export const tokenConfigs: TokenConfig[] = [
     color: '259c77',
     background: '',
     tags: ['stablecoin'],
+    coinpaprikaTicker: 'usdt-tether',
   },
   {
     symbol: 'COMP',

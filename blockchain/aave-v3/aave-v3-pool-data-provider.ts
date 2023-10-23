@@ -32,6 +32,7 @@ export interface AaveV3ReserveDataReply {
   unbacked: BigNumber
   accruedToTreasuryScaled: BigNumber
   totalAToken: BigNumber
+  totalToken: BigNumber
   totalStableDebt: BigNumber
   totalVariableDebt: BigNumber
   liquidityRate: BigNumber
@@ -139,6 +140,7 @@ export function getAaveV3ReserveData({
       liquidityIndex: new BigNumber(result.liquidityIndex.toString()),
       variableBorrowIndex: new BigNumber(result.variableBorrowIndex.toString()),
       lastUpdateTimestamp: new BigNumber(result.lastUpdateTimestamp.toString()),
+      totalToken: totalAToken,
       totalAToken,
       totalStableDebt,
       totalVariableDebt,
@@ -185,5 +187,29 @@ export function getAaveV3EModeCategoryForAsset({
   )
   return contract.getReserveEModeCategory(address).then((result) => {
     return new BigNumber(result.toString())
+  })
+}
+
+export interface AaveV3ReserveCapParameters extends BaseParameters {
+  token: string
+}
+
+export interface AaveV3ReserveCap {
+  supply: BigNumber
+  borrow: BigNumber
+}
+
+export function getAaveV3ReserveCaps({
+  token,
+  networkId,
+}: AaveV3ReserveCapParameters): Promise<AaveV3ReserveCap> {
+  const { contract, tokenMappings } = networkMappings[networkId]()
+  const address = wethToEthAddress(tokenMappings, token)
+
+  return contract.getReserveCaps(address).then((result) => {
+    return {
+      supply: new BigNumber(result.supplyCap.toString()),
+      borrow: new BigNumber(result.borrowCap.toString()),
+    }
   })
 }

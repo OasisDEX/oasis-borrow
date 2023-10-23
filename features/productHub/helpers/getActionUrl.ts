@@ -100,9 +100,14 @@ export function getActionUrl({
       })
     case LendingProtocol.Maker:
       if (label === 'DSR') return '/earn/dsr/'
+
       const openUrl = product.includes(ProductHubProductType.Multiply) ? 'open-multiply' : 'open'
       const ilkInUrl = label.split('/').length ? label.split('/')[0] : label
+
       return `/vaults/${openUrl}/${ilkInUrl}`
+    case LendingProtocol.MorphoBlue:
+      // TODO: add Morpho Blue handler
+      return '/'
     case LendingProtocol.SparkV3:
       return getAaveLikeViewStrategyUrl({
         version: 'v3',

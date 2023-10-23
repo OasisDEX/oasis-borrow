@@ -81,10 +81,11 @@ const isAutomationEnabledProtocol = (protocol: LendingProtocol, network: Network
     getLocalAppConfig('features')
 
   return {
-    [LendingProtocol.Maker]: network === NetworkNames.ethereumMainnet,
-    [LendingProtocol.AaveV3]: aaveProtection && network === NetworkNames.ethereumMainnet,
     [LendingProtocol.AaveV2]: false,
+    [LendingProtocol.AaveV3]: aaveProtection && network === NetworkNames.ethereumMainnet,
     [LendingProtocol.Ajna]: false,
+    [LendingProtocol.Maker]: network === NetworkNames.ethereumMainnet,
+    [LendingProtocol.MorphoBlue]: false,
     [LendingProtocol.SparkV3]: sparkProtection && network === NetworkNames.ethereumMainnet,
   }[protocol]
 }

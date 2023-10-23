@@ -5,7 +5,6 @@ import type { LiquidationCallEvent as AaveV2LiquidationCallEvent } from 'types/e
 import type { LiquidationCallEvent as AaveV3LiquidationCallEvent } from 'types/ethers-contracts/AaveV3Pool'
 import type { LiquidationCallEvent as SparkV3LiquidationCallEvent } from 'types/ethers-contracts/SparkV3Pool'
 
-import type { AaveLikeProtocolData } from './aave-like-protocol-data'
 import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveConfigurationDataParams,
@@ -18,11 +17,6 @@ import type {
 import type { AaveLikeUserConfigurationResults } from './aave-like-user-configuration'
 
 export interface AaveLikeServices {
-  aaveLikeProtocolData$: (
-    collateralToken: string,
-    debtToken: string,
-    proxyAddress: string,
-  ) => Observable<AaveLikeProtocolData>
   protocol: LendingProtocol
   aaveLikeReserveConfigurationData$: (
     args: AaveLikeReserveConfigurationDataParams,
