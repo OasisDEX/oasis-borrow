@@ -1,3 +1,4 @@
+import { amountFromWei } from 'blockchain/utils'
 import { MessageCard } from 'components/MessageCard'
 import type { BaseAaveContext } from 'features/aave/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
@@ -17,7 +18,7 @@ export function ErrorMessageCannotBorrowDueToProtocolCap({
 
   const maxBorrow = reserveData.debt.availableToBorrow
   const debtToken = transition.simulation.position.debt.symbol
-  const targetPositionDebt = transition.simulation.delta.debt
+  const targetPositionDebt = amountFromWei(transition.simulation.delta.debt, debtToken)
 
   const messages: string[] = []
 
