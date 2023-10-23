@@ -137,23 +137,6 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
     isOracless,
   })
 
-  const isFormEmpty = getOmniIsFormEmpty({
-    product,
-    state: productContext.form.state,
-    earnIsFormEmpty:
-      product === 'earn'
-        ? getAjnaOmniEarnIsFomEmpty({
-            price,
-            position: productContext.position.currentPosition.position as AjnaEarnPosition,
-            currentStep,
-            state: (productContext as ProductContextWithEarn).form.state,
-            txStatus: txDetails?.txStatus,
-          })
-        : false,
-    currentStep,
-    txStatus: txDetails?.txStatus,
-  })
-
   switch (product) {
     case 'borrow':
     case 'multiply':
@@ -178,6 +161,13 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
       const interestRate = position.pool.interestRate
 
       const changeVariant = getOmniBorrowishChangeVariant({ simulation, isOracless })
+
+      const isFormEmpty = getOmniIsFormEmpty({
+        product,
+        state: productContext.form.state,
+        currentStep,
+        txStatus: txDetails?.txStatus,
+      })
 
       return {
         notifications,
@@ -315,7 +305,13 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
         },
         values: {
           interestRate: zero, // TODO it's borrow rate and for earn shouldn't be required
-          isFormEmpty,
+          isFormEmpty: getAjnaOmniEarnIsFomEmpty({
+            price,
+            position: productContext.position.currentPosition.position as AjnaEarnPosition,
+            currentStep,
+            state: (productContext as ProductContextWithEarn).form.state,
+            txStatus: txDetails?.txStatus,
+          }),
           sidebarTitle: getAjnaSidebarTitle({
             currentStep,
             isFormFrozen: validations.isFormFrozen,
