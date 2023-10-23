@@ -1,4 +1,4 @@
-import { ADDRESSES } from '@oasisdex/addresses'
+import { ADDRESS_ZERO, ADDRESSES } from '@oasisdex/addresses'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import * as guniToken from 'blockchain/abi/guni-token.json'
 import * as savingsDai from 'blockchain/abi/savings-dai.json'
@@ -79,6 +79,7 @@ export const tokensMainnet = {
   TBTC: contractDesc(erc20, mainnet.common.TBTC),
   USDC: contractDesc(erc20, mainnet.common.USDC),
   USDP: contractDesc(erc20, mainnet.common.PAXUSD),
+  USDBC: contractDesc(erc20, ADDRESS_ZERO),
   WBTC: contractDesc(erc20, mainnet.common.WBTC),
   WETH: contractDesc(erc20, mainnet.common.WETH),
   WLD: contractDesc(erc20, mainnet.common.WLD),
