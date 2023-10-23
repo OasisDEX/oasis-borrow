@@ -25,7 +25,7 @@ const availableTokenPairs: TokenPairConfig[] = [
   {
     collateral: 'CBETH',
     debt: 'USDBC',
-    strategyType: StrategyType.Short,
+    strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
         featureToggle: FeaturesEnum.BaseNetworkEnabled,
@@ -50,7 +50,7 @@ const availableTokenPairs: TokenPairConfig[] = [
   {
     collateral: 'ETH',
     debt: 'USDBC',
-    strategyType: StrategyType.Short,
+    strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
         featureToggle: FeaturesEnum.BaseNetworkEnabled,
@@ -75,7 +75,7 @@ const availableTokenPairs: TokenPairConfig[] = [
   {
     collateral: 'CBETH',
     debt: 'ETH',
-    strategyType: StrategyType.Long,
+    strategyType: StrategyType.Short,
     productTypes: {
       [ProductType.Earn]: {
         featureToggle: FeaturesEnum.BaseNetworkEnabled,
