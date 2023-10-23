@@ -30,11 +30,10 @@ import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated
 
 import { useOmniGeneralContext } from './OmniGeneralContext'
 
-export type DynamicProductMetadata = (product: OmniProduct) => {
+export type LendingMetadata = {
   validations: OmniValidations
   notifications: DetailsSectionNotificationItem[]
   handlers: {
-    txSuccessEarnHandler: () => void
     customReset: () => void
   }
   values: {
@@ -52,9 +51,6 @@ export type DynamicProductMetadata = (product: OmniProduct) => {
     changeVariant: 'positive' | 'negative'
     sidebarTitle: string
     footerColumns: number
-    headlineDetails: HeadlineDetailsProp[]
-    extraDropdownItems: SidebarSectionHeaderSelectItem[]
-    earnWithdrawMax: BigNumber
   }
   elements: {
     overviewBanner: JSX.Element | undefined
@@ -62,6 +58,41 @@ export type DynamicProductMetadata = (product: OmniProduct) => {
     overviewContent: JSX.Element
     overviewFooter: JSX.Element
     highlighterOrderInformation: JSX.Element | undefined
+    dupeModal: (props: OmniDupePositionModalProps) => JSX.Element
+  }
+  filters: {
+    flowStateFilter: (event: CreatePositionEvent) => boolean
+    consumedProxyFilter: (event: CreatePositionEvent) => boolean
+  }
+  featureToggles: {
+    safetySwitch: boolean
+    suppressValidation: boolean
+    reusableDpm: boolean
+  }
+}
+
+export type SupplyMetadata = {
+  validations: OmniValidations
+  notifications: DetailsSectionNotificationItem[]
+  handlers: {
+    txSuccessEarnHandler: () => void
+    customReset: () => void
+  }
+  values: {
+    interestRate: BigNumber
+    isFormEmpty: boolean
+    sidebarTitle: string
+    footerColumns: number
+    headlineDetails: HeadlineDetailsProp[]
+    extraDropdownItems: SidebarSectionHeaderSelectItem[]
+    earnWithdrawMax: BigNumber
+
+  }
+  elements: {
+    overviewBanner: JSX.Element | undefined
+    riskSidebar: JSX.Element
+    overviewContent: JSX.Element
+    overviewFooter: JSX.Element
     dupeModal: (props: OmniDupePositionModalProps) => JSX.Element
     extraEarnInput: JSX.Element
     extraEarnInputDeposit: JSX.Element
@@ -80,6 +111,67 @@ export type DynamicProductMetadata = (product: OmniProduct) => {
     reusableDpm: boolean
   }
 }
+
+type OmniMetadata<T extends OmniProduct> = T extends 'borrow'
+  ? LendingMetadata
+  : T extends 'multiply'
+  ? LendingMetadata
+  : T extends 'earn'
+  ? SupplyMetadata
+  : never
+
+export type DynamicProductMetadata = <T extends OmniProduct>(product: T) => OmniMetadata<T>
+
+//   {
+//   validations: OmniValidations
+//   notifications: DetailsSectionNotificationItem[]
+//   handlers: {
+//     txSuccessEarnHandler: () => void
+//     customReset: () => void
+//   }
+//   values: {
+//     debtMin: BigNumber
+//     debtMax: BigNumber
+//     interestRate: BigNumber
+//     isFormEmpty: boolean
+//     afterAvailableToBorrow: BigNumber | undefined
+//     afterPositionDebt: BigNumber | undefined
+//     netBorrowCost: BigNumber
+//     afterBuyingPower: BigNumber | undefined
+//     collateralMax: BigNumber
+//     paybackMax: BigNumber
+//     shouldShowDynamicLtv: boolean
+//     changeVariant: 'positive' | 'negative'
+//     sidebarTitle: string
+//     footerColumns: number
+//     headlineDetails: HeadlineDetailsProp[]
+//     extraDropdownItems: SidebarSectionHeaderSelectItem[]
+//     earnWithdrawMax: BigNumber
+//   }
+//   elements: {
+//     overviewBanner: JSX.Element | undefined
+//     riskSidebar: JSX.Element
+//     overviewContent: JSX.Element
+//     overviewFooter: JSX.Element
+//     highlighterOrderInformation: JSX.Element | undefined
+//     dupeModal: (props: OmniDupePositionModalProps) => JSX.Element
+//     extraEarnInput: JSX.Element
+//     extraEarnInputDeposit: JSX.Element
+//     extraEarnInputWithdraw: JSX.Element
+//     earnFormOrder: JSX.Element
+//     earnFormOrderAsElement: FC<OmniIsCachedPosition>
+//     earnExtraUiDropdownContent: JSX.Element
+//   }
+//   filters: {
+//     flowStateFilter: (event: CreatePositionEvent) => boolean
+//     consumedProxyFilter: (event: CreatePositionEvent) => boolean
+//   }
+//   featureToggles: {
+//     safetySwitch: boolean
+//     suppressValidation: boolean
+//     reusableDpm: boolean
+//   }
+// }
 
 interface ProductContextProviderPropsWithBorrow {
   dynamicMetadata: DynamicProductMetadata
