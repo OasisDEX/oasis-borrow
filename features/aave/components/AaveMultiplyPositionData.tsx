@@ -111,7 +111,6 @@ export function AaveMultiplyPositionData({
               position={currentPosition}
               currentPositionThings={currentPositionThings}
               nextPositionThings={nextPositionThings}
-              collateralTokenPrice={collateralTokenPrice}
               debtTokenPrice={debtTokenPrice}
             />
             <NetValueCard

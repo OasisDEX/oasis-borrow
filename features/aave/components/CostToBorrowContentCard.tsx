@@ -18,7 +18,6 @@ export function CostToBorrowContentCard({
   position: IPosition
   currentPositionThings: ReturnType<typeof calculateViewValuesForPosition>
   nextPositionThings: ReturnType<typeof calculateViewValuesForPosition> | undefined
-  collateralTokenPrice: BigNumber
   debtTokenPrice: BigNumber
 }) {
   const { t } = useTranslation()

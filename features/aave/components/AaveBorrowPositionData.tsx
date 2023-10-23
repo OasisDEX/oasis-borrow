@@ -110,7 +110,6 @@ export function AaveBorrowPositionData({
               position={currentPosition}
               currentPositionThings={currentPositionThings}
               nextPositionThings={nextPositionThings}
-              collateralTokenPrice={collateralTokenPrice}
               debtTokenPrice={debtTokenPrice}
             />
             <NetValueCard
