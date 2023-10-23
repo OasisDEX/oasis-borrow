@@ -151,6 +151,9 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
       !ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
   }
 
+  const riskSidebar = <AjnaFormContentRisk />
+  const dupeModal = OmniDupePositionModal
+
   switch (product) {
     case 'borrow':
     case 'multiply':
@@ -275,8 +278,8 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
           overviewBanner: isPoolWithRewards({ collateralToken, quoteToken }) ? (
             <AjnaTokensBannerController flow={flow} />
           ) : undefined,
-          riskSidebar: <AjnaFormContentRisk />,
-          dupeModal: OmniDupePositionModal,
+          riskSidebar,
+          dupeModal,
         },
         featureToggles,
       } as LendingMetadata
@@ -406,8 +409,8 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
           overviewBanner: isPoolWithRewards({ collateralToken, quoteToken }) ? (
             <AjnaTokensBannerController flow={flow} isPriceBelowLup={isPriceBelowLup} />
           ) : undefined,
-          riskSidebar: <AjnaFormContentRisk />,
-          dupeModal: OmniDupePositionModal,
+          riskSidebar,
+          dupeModal,
           extraEarnInput: (
             <AjnaOmniEarnSlider
               isDisabled={
