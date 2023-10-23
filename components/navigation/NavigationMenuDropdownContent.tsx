@@ -9,6 +9,7 @@ export type NavigationMenuDropdownContentProps = NavigationMenuPanelType & {
   isPanelActive: boolean
   isPanelOpen: boolean
   onChange: (height: number) => void
+  onItemClick: () => void
   onSelect: () => void
 }
 
@@ -19,6 +20,7 @@ export function NavigationMenuDropdownContent({
   label,
   lists,
   onChange,
+  onItemClick,
   onSelect,
 }: NavigationMenuDropdownContentProps) {
   const ref = useRef<HTMLDivElement>(null)
@@ -124,7 +126,12 @@ export function NavigationMenuDropdownContent({
                       }}
                       {...(selected[0] === i && selected[1] === j && { ref })}
                     >
-                      <NavigationMenuDropdownContentList {...list} />
+                      <NavigationMenuDropdownContentList
+                        {...list}
+                        onClick={() => {
+                          onItemClick()
+                        }}
+                      />
                     </Flex>
                   )}
                 </Fragment>

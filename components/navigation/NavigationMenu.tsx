@@ -71,6 +71,7 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
           currentPanel={currentPanel}
           isPanelOpen={isPanelOpen}
           isPanelSwitched={isPanelSwitched}
+          onItemClick={() => closeDropdown()}
           panels={panels}
         />
       )}

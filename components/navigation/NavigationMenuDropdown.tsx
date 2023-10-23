@@ -10,6 +10,7 @@ export interface NavigationMenuDropdownProps {
   currentPanel: string
   isPanelOpen: boolean
   isPanelSwitched: boolean
+  onItemClick: () => void
   panels: NavigationMenuPanelType[]
 }
 
@@ -28,6 +29,7 @@ export function NavigationMenuDropdown({
   currentPanel,
   isPanelOpen,
   isPanelSwitched,
+  onItemClick,
   panels,
 }: NavigationMenuDropdownProps) {
   const ref = useRef<HTMLDivElement>(null)
@@ -112,8 +114,9 @@ export function NavigationMenuDropdown({
                   onChange={(_height) => {
                     if (ref.current) setHeight(Math.max(_height, ref.current.offsetHeight))
                   }}
+                  onItemClick={onItemClick}
                   onSelect={() => {
-                    setIsListSwitched(true)
+                    
                   }}
                   {...panel}
                 />
