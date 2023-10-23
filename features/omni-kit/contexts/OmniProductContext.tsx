@@ -110,7 +110,7 @@ export type SupplyMetadata = {
   }
 }
 
-type OmniMetadata<T extends OmniProduct> = T extends 'borrow'
+export type OmniMetadata<T extends OmniProduct> = T extends 'borrow'
   ? LendingMetadata
   : T extends 'multiply'
   ? LendingMetadata
@@ -119,57 +119,6 @@ type OmniMetadata<T extends OmniProduct> = T extends 'borrow'
   : never
 
 export type DynamicProductMetadata = <T extends OmniProduct>(product: T) => OmniMetadata<T>
-
-//   {
-//   validations: OmniValidations
-//   notifications: DetailsSectionNotificationItem[]
-//   handlers: {
-//     txSuccessEarnHandler: () => void
-//     customReset: () => void
-//   }
-//   values: {
-//     debtMin: BigNumber
-//     debtMax: BigNumber
-//     interestRate: BigNumber
-//     isFormEmpty: boolean
-//     afterAvailableToBorrow: BigNumber | undefined
-//     afterPositionDebt: BigNumber | undefined
-//     netBorrowCost: BigNumber
-//     afterBuyingPower: BigNumber | undefined
-//     collateralMax: BigNumber
-//     paybackMax: BigNumber
-//     shouldShowDynamicLtv: boolean
-//     changeVariant: 'positive' | 'negative'
-//     sidebarTitle: string
-//     footerColumns: number
-//     headlineDetails: HeadlineDetailsProp[]
-//     extraDropdownItems: SidebarSectionHeaderSelectItem[]
-//     earnWithdrawMax: BigNumber
-//   }
-//   elements: {
-//     overviewBanner: JSX.Element | undefined
-//     riskSidebar: JSX.Element
-//     overviewContent: JSX.Element
-//     overviewFooter: JSX.Element
-//     highlighterOrderInformation: JSX.Element | undefined
-//     dupeModal: (props: OmniDupePositionModalProps) => JSX.Element
-//     extraEarnInput: JSX.Element
-//     extraEarnInputDeposit: JSX.Element
-//     extraEarnInputWithdraw: JSX.Element
-//     earnFormOrder: JSX.Element
-//     earnFormOrderAsElement: FC<OmniIsCachedPosition>
-//     earnExtraUiDropdownContent: JSX.Element
-//   }
-//   filters: {
-//     flowStateFilter: (event: CreatePositionEvent) => boolean
-//     consumedProxyFilter: (event: CreatePositionEvent) => boolean
-//   }
-//   featureToggles: {
-//     safetySwitch: boolean
-//     suppressValidation: boolean
-//     reusableDpm: boolean
-//   }
-// }
 
 interface ProductContextProviderPropsWithBorrow {
   dynamicMetadata: DynamicProductMetadata
