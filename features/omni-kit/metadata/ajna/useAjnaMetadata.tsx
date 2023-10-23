@@ -169,7 +169,7 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
         'USD',
       )})`
 
-      const borrowishContext = productContext as ProductContextWithBorrow
+      const lendingContext = productContext as ProductContextWithBorrow
       const shouldShowDynamicLtv = position.pool.lowestUtilizedPriceIndex.gt(zero)
 
       const afterPositionDebt = simulation?.debtAmount.plus(originationFee)
@@ -233,8 +233,7 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
         },
         elements: {
           highlighterOrderInformation:
-            ['borrow', 'multiply'].includes(product) &&
-            borrowishContext.form.state.generateAmount ? (
+            ['borrow', 'multiply'].includes(product) && lendingContext.form.state.generateAmount ? (
               <HighlightedOrderInformation
                 label={t('ajna.position-page.borrow.common.form.origination-fee', { quoteToken })}
                 symbol={quoteToken}
