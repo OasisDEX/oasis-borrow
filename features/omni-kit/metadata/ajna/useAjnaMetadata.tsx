@@ -59,6 +59,13 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
     AjnaSuppressValidation: ajnaSuppressValidation,
     AjnaReusableDPM: ajnaReusableDPMEnabled,
   } = useAppConfig('features')
+
+  const featureToggles = {
+    safetySwitch: ajnaSafetySwitchOn,
+    suppressValidation: ajnaSuppressValidation,
+    reusableDpm: ajnaReusableDPMEnabled,
+  }
+
   const gasEstimation = useGasEstimationContext()
   const {
     environment: {
@@ -271,11 +278,7 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
           riskSidebar: <AjnaFormContentRisk />,
           dupeModal: OmniDupePositionModal,
         },
-        featureToggles: {
-          safetySwitch: ajnaSafetySwitchOn,
-          suppressValidation: ajnaSuppressValidation,
-          reusableDpm: ajnaReusableDPMEnabled,
-        },
+        featureToggles,
       } as LendingMetadata
 
     case 'earn': {
@@ -452,11 +455,7 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
             />
           ),
         },
-        featureToggles: {
-          safetySwitch: ajnaSafetySwitchOn,
-          suppressValidation: ajnaSuppressValidation,
-          reusableDpm: ajnaReusableDPMEnabled,
-        },
+        featureToggles,
       } as SupplyMetadata
     }
     default:
