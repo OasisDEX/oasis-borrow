@@ -9,10 +9,12 @@ import { getOmniBorrowPaybackMax } from 'features/omni-kit/common/helpers/getOmn
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import type { DynamicProductMetadata } from 'features/omni-kit/contexts/OmniProductContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
-import { useAjnaOmniTxHandler } from 'features/omni-kit/hooks/ajna/useAjnaOmniTxHandler'
 import { MorphoDetailsSectionContent } from 'features/omni-kit/metadata/morpho/MorphoDetailsSectionContent'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/metadata/morpho/MorphoDetailsSectionFooter'
+import type { OmniIsCachedPosition } from 'features/omni-kit/types/common.types'
 import { useAppConfig } from 'helpers/config'
+import { zero } from 'helpers/zero'
+import type { FC } from 'react'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
@@ -65,7 +67,8 @@ export const useMorphoMetadata: DynamicProductMetadata = (product) => {
     notifications,
     validations,
     handlers: {
-      txHandler: useAjnaOmniTxHandler({ isFormValid: validations.isFormValid }),
+      txSuccessEarnHandler: () => null,
+      customReset: () => null,
     },
     filters: {
       flowStateFilter: (event: CreatePositionEvent) =>
@@ -77,6 +80,7 @@ export const useMorphoMetadata: DynamicProductMetadata = (product) => {
       // TODO the same value under different key
       netBorrowCost: interestRate,
       interestRate,
+      isFormEmpty: false,
       afterBuyingPower: simulation ? simulation.buyingPower : undefined,
       shouldShowDynamicLtv,
       debtMin: new BigNumber(20),
@@ -95,6 +99,9 @@ export const useMorphoMetadata: DynamicProductMetadata = (product) => {
         product,
       }),
       footerColumns: 2,
+      headlineDetails: [],
+      extraDropdownItems: [],
+      earnWithdrawMax: zero,
     },
     elements: {
       highlighterOrderInformation: undefined,
@@ -127,6 +134,12 @@ export const useMorphoMetadata: DynamicProductMetadata = (product) => {
       overviewBanner: undefined,
       riskSidebar: <>Morpho risk sidebar</>,
       dupeModal: () => <>Morpho dupe modal</>,
+      extraEarnInput: <></>,
+      extraEarnInputDeposit: <></>,
+      extraEarnInputWithdraw: <></>,
+      earnFormOrder: <></>,
+      earnFormOrderAsElement: DummyEarnFormAsElement,
+      earnExtraUiDropdownContent: <></>,
     },
     featureToggles: {
       safetySwitch: ajnaSafetySwitchOn,
@@ -135,3 +148,5 @@ export const useMorphoMetadata: DynamicProductMetadata = (product) => {
     },
   }
 }
+
+const DummyEarnFormAsElement: FC<OmniIsCachedPosition> = () => null

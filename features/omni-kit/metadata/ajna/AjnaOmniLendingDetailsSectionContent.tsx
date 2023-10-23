@@ -27,7 +27,7 @@ interface AjnaOmniDetailsSectionContentProps {
   shouldShowDynamicLtv: boolean
 }
 
-export const AjnaOmniDetailsSectionContent: FC<AjnaOmniDetailsSectionContentProps> = ({
+export const AjnaOmniLendingDetailsSectionContent: FC<AjnaOmniDetailsSectionContentProps> = ({
   isSimulationLoading,
   thresholdPrice,
   collateralPrice,

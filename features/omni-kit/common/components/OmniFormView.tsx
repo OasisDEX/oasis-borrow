@@ -27,12 +27,14 @@ import { Grid } from 'theme-ui'
 interface OmniFormViewProps {
   dropdown?: SidebarSectionHeaderDropdown
   txSuccessAction?: () => void
+  txHandler: () => () => void
 }
 
 export function OmniFormView({
   dropdown,
   children,
   txSuccessAction,
+  txHandler: _txHandler,
 }: PropsWithChildren<OmniFormViewProps>) {
   const { t } = useTranslation()
   const { context$ } = useMainContext()
@@ -73,22 +75,19 @@ export function OmniFormView({
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
-    position: {
-      isSimulationLoading,
-      resolvedId,
-      currentPosition: { position },
-    },
+    position: { isSimulationLoading, resolvedId },
     dynamicMetadata,
   } = useOmniProductContext(product)
 
   const {
-    handlers: { txHandler },
-    values: { interestRate, sidebarTitle },
+    values: { interestRate, sidebarTitle, isFormEmpty },
     validations: { isFormValid, isFormFrozen, hasErrors },
     filters: { flowStateFilter, consumedProxyFilter },
     elements: { dupeModal },
     featureToggles: { suppressValidation, safetySwitch, reusableDpm },
   } = dynamicMetadata(product)
+
+  const txHandler = _txHandler()
 
   const { connect } = useConnection()
   const { walletAddress } = useAccount()
@@ -174,10 +173,8 @@ export function OmniFormView({
     isTransitionInProgress,
     isTxError,
     isTxSuccess,
-    position,
-    product,
-    state,
     walletAddress,
+    isFormEmpty,
   })
   const primaryButtonActions = getOmniSidebarPrimaryButtonActions({
     currentStep,

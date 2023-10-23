@@ -13,7 +13,6 @@ export interface OmniEarnFormState {
   dpmAddress: string
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
-  price?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   uiDropdown: OmniEarnPanel

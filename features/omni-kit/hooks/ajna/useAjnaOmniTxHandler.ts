@@ -1,7 +1,7 @@
 import type { Strategy } from '@oasisdex/dma-library'
 import { TxStatus } from '@oasisdex/transactions'
 import type { AjnaTxData } from 'actions/ajna'
-import { getAjnaParameters } from 'actions/ajna'
+import { getAjnaOmniParameters } from 'actions/ajna/getAjnaOmniParameters'
 import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getRpcProvider } from 'blockchain/networks'
@@ -10,7 +10,7 @@ import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context/MainContextProvider'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
-import { getOmniIsFormEmpty } from 'features/omni-kit/common/helpers/getOmniIsFormEmpty'
+import { useAjnaCustomState } from 'features/omni-kit/contexts/custom/AjnaCustomStateContext'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate.constants'
@@ -21,14 +21,12 @@ import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
-// TODO ideally this hook shouldn't accept any prop
-// TODO currently it's not possible to access dynamicMetadata at this level due to circular dependency
-export function useAjnaOmniTxHandler({ isFormValid }: { isFormValid: boolean }): () => void {
+export function useAjnaOmniTxHandler(): () => void {
   const { txHelpers$, context$ } = useMainContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {
-    tx: { setTxDetails, txDetails },
+    tx: { setTxDetails },
     environment: {
       collateralAddress,
       collateralPrecision,
@@ -54,20 +52,23 @@ export function useAjnaOmniTxHandler({ isFormValid }: { isFormValid: boolean }):
       setIsLoadingSimulation,
       setSimulation,
     },
+    dynamicMetadata,
   } = useOmniProductContext(product)
+  const {
+    state: { price },
+    dispatch: customDispatch,
+  } = useAjnaCustomState()
+
+  const {
+    validations: { isFormValid },
+    values: { isFormEmpty },
+  } = dynamicMetadata(product)
 
   const [txData, setTxData] = useState<AjnaTxData>()
   const [cancelablePromise, setCancelablePromise] =
     useState<CancelablePromise<Strategy<typeof position> | undefined>>()
 
   const { dpmAddress } = state
-  const isFormEmpty = getOmniIsFormEmpty({
-    product,
-    state,
-    position,
-    currentStep,
-    txStatus: txDetails?.txStatus,
-  })
 
   useEffect(() => {
     cancelablePromise?.cancel()
@@ -84,7 +85,7 @@ export function useAjnaOmniTxHandler({ isFormValid }: { isFormValid: boolean }):
     () => {
       if (context && !isExternalStep && currentStep !== 'risk' && !isFormEmpty) {
         const promise = cancelable(
-          getAjnaParameters({
+          getAjnaOmniParameters({
             collateralAddress,
             collateralPrecision,
             collateralPrice,
@@ -100,6 +101,7 @@ export function useAjnaOmniTxHandler({ isFormValid }: { isFormValid: boolean }):
             rpcProvider: getRpcProvider(context.chainId),
             slippage,
             state,
+            price,
           }),
         )
         setCancelablePromise(promise)
@@ -127,7 +129,7 @@ export function useAjnaOmniTxHandler({ isFormValid }: { isFormValid: boolean }):
           })
       }
     },
-    [context?.chainId, state, isExternalStep, slippage],
+    [context?.chainId, state, isExternalStep, slippage, price],
     250,
   )
 
@@ -152,7 +154,10 @@ export function useAjnaOmniTxHandler({ isFormValid }: { isFormValid: boolean }):
           swap?.current && setCachedSwap(swap.current)
         }
 
-        if (txState.status === TxStatus.Success) dispatch({ type: 'reset' })
+        if (txState.status === TxStatus.Success) {
+          dispatch({ type: 'reset' })
+          customDispatch({ type: 'reset' })
+        }
         handleTransaction({ txState, ethPrice, setTxDetails })
       })
 }

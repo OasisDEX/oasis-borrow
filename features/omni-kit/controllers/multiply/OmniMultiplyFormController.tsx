@@ -10,7 +10,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { circle_close, circle_exchange, circle_slider } from 'theme/icons'
 
-export function OmniMultiplyFormController() {
+export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () => void }) {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, flow, quoteToken, collateralIcon, quoteIcon },
@@ -102,6 +102,7 @@ export function OmniMultiplyFormController() {
           ],
         },
       })}
+      txHandler={txHandler}
     >
       {currentStep === 'risk' && riskSidebar}
       {currentStep === 'setup' && <OmniMultiplyFormContentOpen />}

@@ -5,10 +5,10 @@ import type {
 import {
   AjnaSafetyOnMessage,
   AjnaValidationWithLink,
-  isFormValid,
   mapSimulationValidation,
 } from 'features/ajna/positions/common/validation'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
+import { isOmniFormValid } from 'features/omni-kit/common/helpers/isOmniFormValid'
 import type {
   GetOmniBorrowValidationsParams,
   OmniValidationItem,
@@ -36,6 +36,7 @@ export function getAjnaOmniValidation({
   txError,
   position,
   positionAuction,
+  earnIsFormValid,
 }: GetOmniBorrowValidationsParams): {
   isFormValid: boolean
   isFormFrozen: boolean
@@ -161,7 +162,7 @@ export function getAjnaOmniValidation({
     product === 'earn' && (positionAuction as AjnaEarnPositionAuction).isBucketFrozen
 
   return {
-    isFormValid: isFormValid({ currentStep, product, state, position }),
+    isFormValid: isOmniFormValid({ currentStep, product, state, earnIsFormValid }),
     hasErrors: errors.length > 0,
     isFormFrozen,
     errors,

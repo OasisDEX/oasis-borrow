@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { circle_close, circle_exchange } from 'theme/icons'
 
-export function OmniBorrowFormController() {
+export function OmniBorrowFormController({ txHandler }: { txHandler: () => () => void }) {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, flow, quoteToken, collateralIcon, quoteIcon },
@@ -96,6 +96,7 @@ export function OmniBorrowFormController() {
           ],
         },
       })}
+      txHandler={txHandler}
     >
       {currentStep === 'risk' && riskSidebar}
       {currentStep === 'setup' && <OmniBorrowFormContentDeposit />}

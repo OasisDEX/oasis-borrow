@@ -1,9 +1,11 @@
-import type { AjnaEarnPosition, LendingPosition, SwapData } from '@oasisdex/dma-library'
+import type { LendingPosition, SupplyPosition, SwapData } from '@oasisdex/dma-library'
 import { AjnaPosition } from '@oasisdex/dma-library'
 import type { AjnaSimulationData } from 'actions/ajna'
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
+import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { formatSwapData } from 'features/ajna/positions/common/helpers/formatSwapData'
 import type { OmniDupePositionModalProps } from 'features/omni-kit/common/components/OmniDupePositionModal'
 import type { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
@@ -14,6 +16,7 @@ import type { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multipl
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply/multiplyFormReducto.types'
 import type {
   OmniGenericPosition,
+  OmniIsCachedPosition,
   OmniProduct,
   OmniSimulationCommon,
   OmniValidations,
@@ -21,7 +24,7 @@ import type {
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
+import type { Dispatch, FC, PropsWithChildren, SetStateAction } from 'react'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
@@ -31,12 +34,14 @@ export type DynamicProductMetadata = (product: OmniProduct) => {
   validations: OmniValidations
   notifications: DetailsSectionNotificationItem[]
   handlers: {
-    txHandler: () => void
+    txSuccessEarnHandler: () => void
+    customReset: () => void
   }
   values: {
     debtMin: BigNumber
     debtMax: BigNumber
     interestRate: BigNumber
+    isFormEmpty: boolean
     afterAvailableToBorrow: BigNumber | undefined
     afterPositionDebt: BigNumber | undefined
     netBorrowCost: BigNumber
@@ -47,6 +52,9 @@ export type DynamicProductMetadata = (product: OmniProduct) => {
     changeVariant: 'positive' | 'negative'
     sidebarTitle: string
     footerColumns: number
+    headlineDetails: HeadlineDetailsProp[]
+    extraDropdownItems: SidebarSectionHeaderSelectItem[]
+    earnWithdrawMax: BigNumber
   }
   elements: {
     overviewBanner: JSX.Element | undefined
@@ -55,6 +63,12 @@ export type DynamicProductMetadata = (product: OmniProduct) => {
     overviewFooter: JSX.Element
     highlighterOrderInformation: JSX.Element | undefined
     dupeModal: (props: OmniDupePositionModalProps) => JSX.Element
+    extraEarnInput: JSX.Element
+    extraEarnInputDeposit: JSX.Element
+    extraEarnInputWithdraw: JSX.Element
+    earnFormOrder: JSX.Element
+    earnFormOrderAsElement: FC<OmniIsCachedPosition>
+    earnExtraUiDropdownContent: JSX.Element
   }
   filters: {
     flowStateFilter: (event: CreatePositionEvent) => boolean
@@ -81,7 +95,7 @@ interface ProductContextProviderPropsWithEarn {
   dynamicMetadata: DynamicProductMetadata
   formReducto: typeof useOmniEarnFormReducto
   formDefaults: Partial<OmniEarnFormState>
-  position: AjnaEarnPosition
+  position: SupplyPosition
   product: 'earn'
   positionAuction: unknown
   positionHistory: PositionHistoryEvent[]
@@ -137,8 +151,8 @@ export type ProductContextWithBorrow = GenericProductContext<
   unknown
 >
 
-type ProductContextWithEarn = GenericProductContext<
-  AjnaEarnPosition,
+export type ProductContextWithEarn = GenericProductContext<
+  SupplyPosition,
   ReturnType<typeof useOmniEarnFormReducto>,
   unknown
 >

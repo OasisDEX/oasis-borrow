@@ -1,16 +1,29 @@
-import type { FC } from 'react'
-import React, { useEffect, useReducer } from 'react'
+import type BigNumber from 'bignumber.js'
+import type { Dispatch, FC } from 'react'
+import React, { useReducer } from 'react'
 
-const ajnaCustomStateContext = React.createContext<{ age: number } | undefined>(undefined)
+interface AjnaCustomState {
+  price?: BigNumber
+}
 
-function reducer(state: { age: number }, action: { type: 'incremented_age' }): { age: number } {
-  if (action.type === 'incremented_age') {
-    return {
-      age: state.age + 1,
+type AjnaCustomActions = { type: 'reset' } | { type: 'price-change'; price?: BigNumber }
+
+const ajnaCustomStateContext = React.createContext<
+  { state: AjnaCustomState; dispatch: Dispatch<AjnaCustomActions> } | undefined
+>(undefined)
+
+const reducer =
+  ({ price }: { price?: BigNumber }) =>
+  (state: AjnaCustomState, action: AjnaCustomActions): AjnaCustomState => {
+    switch (action.type) {
+      case 'reset':
+        return { price }
+      case 'price-change':
+        return { price: action.price }
+      default:
+        return state
     }
   }
-  throw Error('Unknown action.')
-}
 
 export const useAjnaCustomState = () => {
   const context = React.useContext(ajnaCustomStateContext)
@@ -20,14 +33,13 @@ export const useAjnaCustomState = () => {
   return context
 }
 
-export const AjnaCustomStateContextProvider: FC = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, { age: 42 })
+export const AjnaCustomStateContextProvider: FC<{ price?: BigNumber }> = ({ children, price }) => {
+  const initReducer = reducer({ price })
+  const [state, dispatch] = useReducer(initReducer, { price })
 
-  useEffect(() => {
-    const intv = setInterval(() => dispatch({ type: 'incremented_age' }), 5000)
-
-    return () => clearInterval(intv)
-  }, [])
-
-  return <ajnaCustomStateContext.Provider value={state}>{children}</ajnaCustomStateContext.Provider>
+  return (
+    <ajnaCustomStateContext.Provider value={{ state, dispatch }}>
+      {children}
+    </ajnaCustomStateContext.Provider>
+  )
 }

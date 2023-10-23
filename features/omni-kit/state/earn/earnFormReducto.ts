@@ -29,7 +29,7 @@ export function useOmniEarnFormReducto({ ...rest }: Partial<OmniEarnFormState>) 
             dpmAddress: action.dpmAddress,
           }
         case 'reset':
-          return { ...state, ...omniEarnFormReset, price: rest.price }
+          return { ...state, ...omniEarnFormReset }
         default:
           return state
       }

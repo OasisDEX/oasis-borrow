@@ -23,11 +23,19 @@ export function OmniFormContentSummary({
 
   const {
     validations: { errors, notices, successes, warnings },
+    handlers: { customReset },
   } = dynamicMetadata(product)
 
   return (
     <>
-      {showReset && <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />}
+      {showReset && (
+        <SidebarResetButton
+          clear={() => {
+            dispatch({ type: 'reset' })
+            customReset()
+          }}
+        />
+      )}
       <OmniValidationMessages validations={errors} type="error" />
       <OmniValidationMessages validations={warnings} type="warning" />
       <OmniValidationMessages validations={notices} type="notice" />

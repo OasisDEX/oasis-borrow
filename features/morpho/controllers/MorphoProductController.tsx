@@ -1,9 +1,12 @@
-import type { LendingPosition, MorphoPosition } from '@oasisdex/dma-library'
+import type { AjnaEarnPosition, LendingPosition, MorphoPosition } from '@oasisdex/dma-library'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
+import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
 import type { MorphoPositionAuction } from 'features/morpho/common/types'
+import { AjnaCustomStateContextProvider } from 'features/omni-kit/contexts/custom/AjnaCustomStateContext'
 import { OmniProductContextProvider } from 'features/omni-kit/contexts/OmniProductContext'
 import { OmniBorrowPositionController } from 'features/omni-kit/controllers/borrow/OmniBorrowPositionController'
 import { OmniMultiplyPositionController } from 'features/omni-kit/controllers/multiply/OmniMultiplyPositionController'
+import { useAjnaOmniTxHandler } from 'features/omni-kit/hooks/ajna/useAjnaOmniTxHandler'
 import { useMorphoMetadata } from 'features/omni-kit/metadata/morpho/useMorphoMetadata'
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
@@ -26,7 +29,14 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
   positionData,
 }) => {
   return (
-    <>
+    // TO BE REMOVED / REPLACED ONCE morpho tx handler will be ready
+    <AjnaCustomStateContextProvider
+      price={
+        dpmPosition.product === 'earn'
+          ? getEarnDefaultPrice(positionData as unknown as AjnaEarnPosition)
+          : undefined
+      }
+    >
       {dpmPosition.product === 'borrow' && (
         <OmniProductContextProvider
           dynamicMetadata={useMorphoMetadata}
@@ -39,7 +49,7 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
           positionAuction={auction}
           positionHistory={history}
         >
-          <OmniBorrowPositionController />
+          <OmniBorrowPositionController txHandler={useAjnaOmniTxHandler} />
         </OmniProductContextProvider>
       )}
       {dpmPosition.product === 'multiply' && (
@@ -54,9 +64,9 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
           positionAuction={auction}
           positionHistory={history}
         >
-          <OmniMultiplyPositionController />
+          <OmniMultiplyPositionController txHandler={useAjnaOmniTxHandler} />
         </OmniProductContextProvider>
       )}
-    </>
+    </AjnaCustomStateContextProvider>
   )
 }

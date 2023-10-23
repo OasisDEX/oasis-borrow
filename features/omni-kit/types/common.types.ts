@@ -1,11 +1,10 @@
 import { OmniBorrowFormState } from 'features/omni-kit/state/borrow/borrowFormReducto.types'
 import { OmniMultiplyFormState } from 'features/omni-kit/state/multiply/multiplyFormReducto.types'
 import { OmniEarnFormState } from 'features/omni-kit/state/earn/earnFormReducto.types'
-import { AjnaGenericPosition } from 'features/ajna/common/types'
 import BigNumber from 'bignumber.js'
 import { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { TxError } from 'helpers/types'
-import { AjnaEarnPosition, LendingPosition } from '@oasisdex/dma-library'
+import { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
 
 export type OmniProduct = 'borrow' | 'earn' | 'multiply'
 export type OmniFlow = 'open' | 'manage'
@@ -73,6 +72,8 @@ export interface OmniSimulationCommon {
   notices: {name: string, data?: {[key: string]: string}}[]
 }
 
+export type OmniGenericPosition = LendingPosition | SupplyPosition
+
 export interface GetOmniBorrowValidationsParams {
   ajnaSafetySwitchOn: boolean
   flow: OmniFlow
@@ -90,12 +91,11 @@ export interface GetOmniBorrowValidationsParams {
   simulationNotices?: OmniSimulationCommon['notices']
   simulationSuccesses?: OmniSimulationCommon['successes']
   state: OmniFormState
-  position: AjnaGenericPosition
+  position: OmniGenericPosition
   positionAuction: AjnaPositionAuction
   txError?: TxError
+  earnIsFormValid: boolean
 }
-
-export type OmniGenericPosition = LendingPosition | AjnaEarnPosition
 
 export type OmniSteps = {
   [ProductKey in OmniProduct]: {
