@@ -75,7 +75,7 @@ export function getAddresses(
       SDAI: contracts.tokens['SDAI'].address,
       LUSD: contracts.tokens['LUSD'].address,
       FRAX: contracts.tokens['FRAX'].address,
-      USDBC: contracts.tokens['USDBC'].address,
+      USDBC: contracts.tokens['USDBC']?.address, // optional, not available outside of BASE network
     },
     chainlinkEthUsdPriceFeed: contracts.chainlinkPriceOracle['ETHUSD'].address,
     operationExecutor: contracts.operationExecutor.address,
