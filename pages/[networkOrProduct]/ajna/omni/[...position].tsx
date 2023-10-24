@@ -20,14 +20,21 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
 interface AjnaPositionPageProps {
+  collateralToken: string
   id: string
+  networkName: NetworkNames
   pool: string
   product: OmniProduct
-  collateralToken: string
   quoteToken: string
 }
 
-function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPositionPageProps) {
+function AjnaPositionPage({
+  collateralToken,
+  id,
+  networkName,
+  product,
+  quoteToken,
+}: AjnaPositionPageProps) {
   const isOracless = !!(
     collateralToken &&
     quoteToken &&
@@ -44,14 +51,15 @@ function AjnaPositionPage({ id, product, collateralToken, quoteToken }: AjnaPosi
             AjnaGenericPosition
           >
             collateralToken={collateralToken}
+            controller={AjnaOmniProductController}
             flow={id ? 'manage' : 'open'}
             id={id}
-            product={product}
-            quoteToken={quoteToken}
-            protocol={LendingProtocol.Ajna}
-            controller={AjnaOmniProductController}
-            protocolHook={useAjnaOmniData}
             isOracless={isOracless}
+            networkName={networkName}
+            product={product}
+            protocol={LendingProtocol.Ajna}
+            protocolHook={useAjnaOmniData}
+            quoteToken={quoteToken}
             seoTags={ajnaSeoTags}
             steps={omniSteps}
           />
@@ -66,7 +74,7 @@ AjnaPositionPage.seoTags = ajnaPageSeoTags
 export default AjnaPositionPage
 
 export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
-  const network = query.networkOrProduct as string
+  const networkName = query.networkOrProduct as NetworkNames
   const [product, pool, id = null] = query.position as string[]
   const [collateralToken, quoteToken] = pool.split('-')
   const caseSensitiveCollateralToken = isAddress(collateralToken)
@@ -81,8 +89,8 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
   })
 
   if (
-    isSupportedNetwork(network) &&
-    network === NetworkNames.ethereumMainnet &&
+    isSupportedNetwork(networkName) &&
+    networkName === NetworkNames.ethereumMainnet &&
     omniProducts.includes(product as OmniProduct) &&
     (supportedPools.includes(`${caseSensitiveCollateralToken}-${caseSensitiveQuoteToken}`) ||
       (isAddress(caseSensitiveCollateralToken) && isAddress(caseSensitiveQuoteToken)))
@@ -90,11 +98,12 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
     return {
       props: {
         ...(await serverSideTranslations(locale || 'en', ['common'])),
-        product,
         collateralToken: caseSensitiveCollateralToken,
-        quoteToken: caseSensitiveQuoteToken,
-        pool,
         id,
+        networkName,
+        pool,
+        product,
+        quoteToken: caseSensitiveQuoteToken,
       },
     }
   }

@@ -17,9 +17,10 @@ import React from 'react'
 
 interface AjnaManagePositionPageProps {
   id: string
+  networkName: NetworkNames
 }
 
-function AjnaManagePositionPage({ id }: AjnaManagePositionPageProps) {
+function AjnaManagePositionPage({ id, networkName }: AjnaManagePositionPageProps) {
   return (
     <AjnaLayout>
       <ProductContextHandler>
@@ -29,10 +30,11 @@ function AjnaManagePositionPage({ id }: AjnaManagePositionPageProps) {
             AjnaUnifiedHistoryEvent[],
             AjnaGenericPosition
           >
-            id={id}
-            flow="manage"
-            protocol={LendingProtocol.Ajna}
             controller={AjnaOmniProductController}
+            flow="manage"
+            id={id}
+            networkName={networkName}
+            protocol={LendingProtocol.Ajna}
             protocolHook={useAjnaOmniData}
             seoTags={ajnaSeoTags}
             steps={omniSteps}
@@ -48,18 +50,19 @@ AjnaManagePositionPage.seoTags = ajnaPageSeoTags
 export default AjnaManagePositionPage
 
 export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
-  const network = query.networkOrProduct as string
+  const networkName = query.networkOrProduct as NetworkNames
   const id = query.id as string
 
   if (
-    isSupportedNetwork(network) &&
-    network === NetworkNames.ethereumMainnet &&
+    isSupportedNetwork(networkName) &&
+    networkName === NetworkNames.ethereumMainnet &&
     !isNaN(parseInt(id, 10))
   ) {
     return {
       props: {
         ...(await serverSideTranslations(locale || 'en', ['common'])),
         id,
+        networkName,
       },
     }
   }

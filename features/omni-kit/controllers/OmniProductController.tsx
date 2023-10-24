@@ -1,4 +1,4 @@
-import { NetworkHexIds } from 'blockchain/networks'
+import { type NetworkNames,getNetworkByName } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
@@ -19,27 +19,28 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface OmniProductsControllerProps<A, H, P> {
-  flow: OmniFlow
-  dpmPosition: DpmPositionData
   aggregatedData: { auction: A; history: H }
+  dpmPosition: DpmPositionData
+  flow: OmniFlow
   positionData: P
 }
 
 interface OmniProductControllerProps<A, H, P> {
-  protocol: LendingProtocol
   collateralToken?: string
-  id?: string
-  flow: OmniFlow
-  product?: OmniProduct
-  quoteToken?: string
   controller: (params: OmniProductsControllerProps<A, H, P>) => React.ReactNode
+  flow: OmniFlow
+  id?: string
+  isOracless?: boolean
+  networkName: NetworkNames
+  product?: OmniProduct
+  protocol: LendingProtocol
   protocolHook: (params: ProductDataProps) => {
     data: { aggregatedData: { auction: A; history: H } | undefined; positionData: P | undefined }
     errors: string[]
     isOracless: boolean
     redirect: string | undefined
   }
-  isOracless?: boolean
+  quoteToken?: string
   seoTags: {
     productKey: string
     descriptionKey: string
@@ -48,19 +49,22 @@ interface OmniProductControllerProps<A, H, P> {
 }
 
 export const OmniProductController = <A, H, P>({
-  protocol,
   collateralToken,
+  controller,
   flow,
   id,
-  product,
-  quoteToken,
-  controller,
-  protocolHook,
   isOracless,
+  networkName,
+  product,
+  protocol,
+  protocolHook,
+  quoteToken,
   seoTags,
   steps,
 }: OmniProductControllerProps<A, H, P>) => {
   const { t } = useTranslation()
+
+  const network = getNetworkByName(networkName)
 
   const {
     data: {
@@ -69,18 +73,18 @@ export const OmniProductController = <A, H, P>({
       ethBalanceData,
       gasPriceData,
       tokenPriceUSDData,
-      userSettingsData,
       tokensIconsData,
+      userSettingsData,
     },
     errors,
     tokensPrecision,
   } = useOmniProtocolData({
     collateralToken,
     id,
-    product,
-    quoteToken,
-    protocol,
     isOracless,
+    product,
+    protocol,
+    quoteToken,
   })
 
   const {
@@ -88,30 +92,30 @@ export const OmniProductController = <A, H, P>({
     errors: protocolDataErrors,
   } = protocolHook({
     collateralToken,
+    dpmPositionData,
     id,
     product,
     quoteToken,
-    dpmPositionData,
     tokenPriceUSDData,
   })
 
   return (
-    <WithConnection pageChainId={NetworkHexIds.MAINNET} includeTestNet={true}>
+    <WithConnection pageChainId={network.hexId} includeTestNet={true}>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <WithErrorHandler error={[...errors, ...protocolDataErrors]}>
             <WithLoadingIndicator
               value={[
-                ethBalanceData,
+                aggregatedData,
                 balancesInfoArrayData,
                 dpmPositionData,
-                tokenPriceUSDData,
+                ethBalanceData,
                 gasPriceData,
-                userSettingsData,
-                tokensPrecision,
-                tokensIconsData,
-                aggregatedData,
                 positionData,
+                tokenPriceUSDData,
+                tokensIconsData,
+                tokensPrecision,
+                userSettingsData,
               ]}
               customLoader={
                 <PositionLoadingState
@@ -129,16 +133,16 @@ export const OmniProductController = <A, H, P>({
               }
             >
               {([
-                [ethBalance],
+                _aggregatedData,
                 [collateralBalance, quoteBalance],
                 dpmPosition,
-                tokenPriceUSD,
+                [ethBalance],
                 gasPrice,
-                { slippage },
-                { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
-                tokensIcons,
-                _aggregatedData,
                 _positionData,
+                tokenPriceUSD,
+                tokensIcons,
+                { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
+                { slippage },
               ]) => (
                 <>
                   <PageSEOTags
@@ -158,35 +162,36 @@ export const OmniProductController = <A, H, P>({
                     collateralAddress={dpmPosition.collateralTokenAddress}
                     collateralBalance={collateralBalance}
                     collateralDigits={collateralDigits}
+                    collateralIcon={tokensIcons.collateralToken}
                     collateralPrecision={collateralPrecision}
                     collateralPrice={isOracless ? one : tokenPriceUSD[dpmPosition.collateralToken]}
                     collateralToken={dpmPosition.collateralToken}
-                    collateralIcon={tokensIcons.collateralToken}
                     {...(flow === 'manage' && { dpmProxy: dpmPosition.proxy })}
                     ethBalance={ethBalance}
                     ethPrice={tokenPriceUSD.ETH}
                     flow={flow}
+                    gasPrice={gasPrice}
                     id={id}
                     isOracless={!!isOracless}
+                    isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
+                    network={network}
                     owner={dpmPosition.user}
                     product={dpmPosition.product as OmniProduct}
                     protocol={protocol}
                     quoteAddress={dpmPosition.quoteTokenAddress}
                     quoteBalance={quoteBalance}
                     quoteDigits={quoteDigits}
+                    quoteIcon={tokensIcons.quoteToken}
                     quotePrecision={quotePrecision}
                     quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                     quoteToken={dpmPosition.quoteToken}
-                    quoteIcon={tokensIcons.quoteToken}
-                    steps={steps[dpmPosition.product as OmniProduct][flow]}
-                    gasPrice={gasPrice}
                     slippage={slippage}
-                    isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
+                    steps={steps[dpmPosition.product as OmniProduct][flow]}
                   >
                     {controller({
+                      aggregatedData: _aggregatedData,
                       dpmPosition,
                       flow,
-                      aggregatedData: _aggregatedData,
                       positionData: _positionData,
                     })}
                   </OmniGeneralContextProvider>

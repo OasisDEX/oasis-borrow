@@ -1,5 +1,6 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
+import type { NetworkConfig } from 'blockchain/networks'
 import type { GasPriceParams } from 'blockchain/prices.types'
 import { isProductContextAvailable } from 'components/context/ProductContextProvider'
 import {
@@ -25,30 +26,31 @@ interface OmniGeneralContextProviderProps {
   collateralAddress: string
   collateralBalance: BigNumber
   collateralDigits: number
+  collateralIcon: string
   collateralPrecision: number
   collateralPrice: BigNumber
   collateralToken: string
-  collateralIcon: string
   dpmProxy?: string
   ethBalance: BigNumber
   ethPrice: BigNumber
   flow: OmniFlow
+  gasPrice: GasPriceParams
   id?: string
   isOracless: boolean
+  isProxyWithManyPositions: boolean
+  network: NetworkConfig
   owner: string
   product: OmniProduct
   protocol: LendingProtocol
   quoteAddress: string
   quoteBalance: BigNumber
   quoteDigits: number
+  quoteIcon: string
   quotePrecision: number
   quotePrice: BigNumber
   quoteToken: string
-  quoteIcon: string
-  steps: OmniSidebarStep[]
-  gasPrice: GasPriceParams
   slippage: BigNumber
-  isProxyWithManyPositions: boolean
+  steps: OmniSidebarStep[]
 }
 
 type OmniGeneralContextEnvironment = Omit<OmniGeneralContextProviderProps, 'steps'> & {
