@@ -107,18 +107,12 @@ export type SupplyMetadata = {
   }
 }
 
-export type OmniMetadata<T extends OmniProduct> = T extends 'borrow'
-  ? LendingMetadata
-  : T extends 'multiply'
-  ? LendingMetadata
-  : T extends 'earn'
-  ? SupplyMetadata
-  : never
-
-export type DynamicProductMetadata = <T extends OmniProduct>(product: T) => OmniMetadata<T>
+export type GetOmniMetadata = (
+  _: ProductContextWithBorrow | ProductContextWithEarn | ProductContextWithMultiply,
+) => LendingMetadata | SupplyMetadata
 
 interface ProductContextProviderPropsWithBorrow {
-  getDynamicMetadata: (_: ProductContextWithBorrow) => LendingMetadata
+  getDynamicMetadata: GetOmniMetadata
   formReducto: typeof useOmniBorrowFormReducto
   formDefaults: Partial<OmniBorrowFormState>
   position: LendingPosition
@@ -128,7 +122,7 @@ interface ProductContextProviderPropsWithBorrow {
 }
 
 interface ProductContextProviderPropsWithEarn {
-  getDynamicMetadata: (_: ProductContextWithEarn) => SupplyMetadata
+  getDynamicMetadata: GetOmniMetadata
   formReducto: typeof useOmniEarnFormReducto
   formDefaults: Partial<OmniEarnFormState>
   position: SupplyPosition
@@ -138,7 +132,7 @@ interface ProductContextProviderPropsWithEarn {
 }
 
 interface ProductContextProviderPropsWithMultiply {
-  getDynamicMetadata: (_: ProductContextWithMultiply) => LendingMetadata
+  getDynamicMetadata: GetOmniMetadata
   formReducto: typeof useOmniMultiplyFormReducto
   formDefaults: Partial<OmniMultiplyFormState>
   position: LendingPosition
