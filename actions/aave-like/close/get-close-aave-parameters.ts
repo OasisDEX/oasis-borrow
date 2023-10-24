@@ -2,12 +2,13 @@ import type { IMultiplyStrategy } from '@oasisdex/dma-library'
 import { strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import {
+  getAaveV3FlashLoanToken,
   getCurrentPositionLibCallData,
   networkIdToLibraryNetwork,
   swapCall,
 } from 'actions/aave-like/helpers'
 import type { CloseAaveParameters } from 'actions/aave-like/types'
-import { getRpcProvider, NetworkIds } from 'blockchain/networks'
+import { getRpcProvider } from 'blockchain/networks'
 import { ProxyType } from 'features/aave/types'
 import type { AaveLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
@@ -38,6 +39,7 @@ export async function getCloseAaveParameters({
     debtToken,
     collateralToken,
     shouldCloseToCollateral,
+    flashloan: getAaveV3FlashLoanToken(networkId),
   }
 
   const stratDeps: Omit<AaveLikeCloseStrategyDeps, 'addresses' | 'getSwapData'> = {
@@ -61,15 +63,6 @@ export async function getCloseAaveParameters({
       })
     case LendingProtocol.AaveV3:
       const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
-      if (networkId === NetworkIds.OPTIMISMMAINNET) {
-        stratArgs.flashloan = {
-          token: {
-            symbol: 'WETH',
-            address: addressesV3.tokens['WETH'],
-            precision: 18,
-          },
-        }
-      }
       return strategies.aave.multiply.v3.close(stratArgs, {
         ...stratDeps,
         addresses: addressesV3,

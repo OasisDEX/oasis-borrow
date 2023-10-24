@@ -1,7 +1,8 @@
 import type { IPosition, Network, Tokens } from '@oasisdex/dma-library'
-import type { getAddresses } from 'actions/aave-like/get-addresses'
+import { getAddresses } from 'actions/aave-like/get-addresses'
 import { NetworkIds } from 'blockchain/networks'
 import { getOneInchCall } from 'helpers/swap'
+import { LendingProtocol } from 'lendingProtocols'
 
 // enum Network {
 //   MAINNET = "mainnet",
@@ -53,3 +54,30 @@ export const getCurrentPositionLibCallData = (currentPosition: IPosition) => [
     precision: currentPosition.debt.precision,
   },
 ]
+
+export const getAaveV3FlashLoanToken = (networkId: NetworkIds) => {
+  const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
+  if (networkId === NetworkIds.OPTIMISMMAINNET) {
+    const tokenAddress = addressesV3.tokens['WETH']
+    if (tokenAddress === undefined) throw new Error('WETH address is undefined')
+    return {
+      token: {
+        symbol: 'WETH',
+        address: tokenAddress,
+        precision: 18,
+      },
+    }
+  }
+  if (networkId === NetworkIds.BASEMAINNET) {
+    const tokenAddress = addressesV3.tokens['USDBC']
+    if (tokenAddress === undefined) throw new Error('USDBC address is undefined')
+    return {
+      token: {
+        symbol: 'USDBC',
+        address: tokenAddress,
+        precision: 6,
+      },
+    }
+  }
+  return undefined
+}
