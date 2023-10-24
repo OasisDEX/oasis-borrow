@@ -107,9 +107,12 @@ export type SupplyMetadata = {
   }
 }
 
-export type GetOmniMetadata = (
-  _: ProductContextWithBorrow | ProductContextWithEarn | ProductContextWithMultiply,
-) => LendingMetadata | SupplyMetadata
+export type OmniMetadataParams =
+  | Omit<ProductContextWithBorrow, 'dynamicMetadata'>
+  | Omit<ProductContextWithEarn, 'dynamicMetadata'>
+  | Omit<ProductContextWithMultiply, 'dynamicMetadata'>
+
+export type GetOmniMetadata = (_: OmniMetadataParams) => LendingMetadata | SupplyMetadata
 
 interface ProductContextProviderPropsWithBorrow {
   getDynamicMetadata: GetOmniMetadata
@@ -290,10 +293,11 @@ export function OmniProductContextProvider({
         notices: simulation?.notices as OmniSimulationCommon['notices'],
         successes: simulation?.successes as OmniSimulationCommon['successes'],
       },
-      setCachedPosition: (positionSet) => setCachedPosition(positionSet),
+      setCachedPosition: (positionSet: PositionSet<typeof position>) =>
+        setCachedPosition(positionSet),
       setIsLoadingSimulation,
       setSimulation,
-      setCachedSwap: (swap) => setCachedSwap(swap),
+      setCachedSwap: (swap: SwapData) => setCachedSwap(swap),
     },
   }
 
@@ -305,7 +309,7 @@ export function OmniProductContextProvider({
       LendingMetadata | SupplyMetadata
     >
   >({
-    dynamicMetadata: getDynamicMetadata(initContext),
+    dynamicMetadata: getDynamicMetadata(initContext as OmniMetadataParams),
     ...initContext,
   })
 

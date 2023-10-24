@@ -5,12 +5,7 @@ import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNo
 import { ajnaFlowStateFilter } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
 import { getMorphoSidebarTitle } from 'features/morpho/positions/common/getMorphoSidebarTitle'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import type {
-  LendingMetadata,
-  ProductContextWithBorrow,
-  ProductContextWithEarn,
-  ProductContextWithMultiply,
-} from 'features/omni-kit/contexts/OmniProductContext'
+import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts/OmniProductContext'
 import { getOmniBorrowishChangeVariant, getOmniBorrowPaybackMax } from 'features/omni-kit/helpers'
 import {
   MorphoDetailsSectionContent,
@@ -20,9 +15,7 @@ import { useAppConfig } from 'helpers/config'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
-export const useMorphoMetadata = (
-  productContext: ProductContextWithBorrow | ProductContextWithEarn | ProductContextWithMultiply,
-) => {
+export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
   const {
     AjnaSafetySwitch: ajnaSafetySwitchOn,
     AjnaSuppressValidation: ajnaSuppressValidation,
