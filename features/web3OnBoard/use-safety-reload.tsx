@@ -1,7 +1,7 @@
-import { usePrevious } from '@react-hooks-library/core'
 import { NetworkHexIds } from 'blockchain/networks'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { usePrevious } from 'react-use'
 
 import { useLegacyDefaultChain } from './use-legacy-default-chain'
 import type { WalletManagementState } from './wallet-state'

@@ -48,7 +48,6 @@
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",
     "@prisma/client": "4.8.0",
-    "@react-hooks-library/core": "^0.5.1",
     "@sentry/nextjs": "^7.52.1",
     "@typeform/embed-react": "^1.13.0",
     "@web3-onboard/coinbase": "^2.2.5",
