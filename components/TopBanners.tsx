@@ -5,8 +5,8 @@ import { useAppConfig } from 'helpers/config'
 import type { ConfiguredAppParameters } from 'helpers/config/types'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import React from 'react'
-import { useCookie } from 'react-use'
-import { Box } from 'theme-ui'
+import { useCookie, useWindowSize } from 'react-use'
+import { Box, Text } from 'theme-ui'
 import { rollDownTopBannerAnimation } from 'theme/animations'
 import { close, loudspeaker } from 'theme/icons'
 
@@ -18,6 +18,8 @@ type TopBanner = ConfiguredAppParameters['topBanner']
 
 function OneBanner({ banner }: { banner: TopBanner }) {
   const [bannerClosed, setBannerClosed] = useLocalStorage(`TopBanner_${banner.name}_closed`, false)
+
+  const { width } = useWindowSize()
 
   const isClosed = banner.closeable && bannerClosed
   return !banner.enabled || isClosed || !banner.name ? null : (
@@ -37,16 +39,29 @@ function OneBanner({ banner }: { banner: TopBanner }) {
       <AppLink
         href={banner.url as string}
         onClick={() => {
-          trackingEvents.topBannerEvent(MixpanelTopBannerEvents.TopBannerClicked, 'rebranding')
+          trackingEvents.topBannerEvent(MixpanelTopBannerEvents.TopBannerClicked, banner.name)
         }}
-        sx={{ display: 'inline', padding: 3 }}
+        sx={{ display: 'inline-block' }}
       >
-        <WithArrow variant="boldParagraph2" sx={{ fontSize: '16px', display: 'inline' }}>
-          <Icon
-            icon={loudspeaker}
-            sx={{ mr: 2, position: 'relative', top: '2px', transition: '0.2s transform' }}
-          />
-          {banner.message}
+        <WithArrow as={'span'} variant="boldParagraph2">
+          <Text
+            as={'span'}
+            variant="boldParagraph2"
+            sx={{
+              fontSize: '16px',
+              display: 'inline-block',
+              width: `${width - 100}px`,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            <Icon
+              icon={loudspeaker}
+              sx={{ mr: 2, position: 'relative', transition: '0.2s transform' }}
+            />
+            {banner.message}
+          </Text>
         </WithArrow>
       </AppLink>
       {banner.closeable && (
