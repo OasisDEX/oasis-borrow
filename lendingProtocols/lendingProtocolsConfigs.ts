@@ -62,7 +62,7 @@ const morphoBlueConfig: LendingProtocolConfig = {
   label: LendingProtocolLabel.morphoblue,
   icon: morphoBlueIcon as string,
   logo: morphoBlueLogo as string,
-  logoScale: 1,
+  logoScale: 1.4,
   gradient: 'linear-gradient(90deg, rgba(24,89,242,1) 0%, rgba(0,55,138,1) 100%)',
 }
 
