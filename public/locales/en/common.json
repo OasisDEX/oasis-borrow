@@ -835,8 +835,10 @@
     "net-borrow-cost": {
       "first-header": "Cost to borrow %",
       "second-header": "Cost to borrow {{debtToken}}",
+      "borrow-apy": "Borrow APY: {{rate}}",
+      "supply-apy": "Supply APY: {{rate}}",
+      "supply-apy-note": "(Please note that this is only the lending market APY, and any yield from the underlying tokens such as rETH, wstETH or sDAI is not taken into account)",
       "first-description-line": "The cost to borrow is the percentage this position is paying on its net value, using the debt APY minus the APY for the collateral supplied.",
-      "second-description-line": "Debt APY * Total Debt * Debt Price/Collateral Price - Lending APY * Total Collateral * Collateral Price",
       "third-description-line": "The borrow cost expressed in {{debtToken}} amount over one year. This amount is an estimate that changes with the changes in the rates. Your effective real cost will be determined by your PNL.",
       "positive-negative-line": " If the values are positive you are paying to borrow, if negative you are paid to borrow."
     }
@@ -3151,6 +3153,16 @@
   "aave": {
     "header": {
       "current-market-price": "Current Market Price"
+    },
+    "errors": {
+      "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet.",
+      "payback-amount-exceeds-debt-token-balance": "You cannot pay back more than the amount of debt token in your wallet.",
+      "deposit-amount-exceeds-supply-cap": "You cannot deposit more than {{cap}} {{token}} due to the maximum supply cap.",
+      "debt-amount-exceeds-borrow-cap": "You cannot borrow more than {{cap}} {{token}} due to the maximum borrowing cap.",
+      "target-ltv-exceeds-supply-cap": "Your target LTV is too high due to the maximum supply cap. You cannot supply more than {{cap}} {{token}}.",
+      "target-ltv-exceeds-borrow-cap": "Your target LTV is too high due to the maximum borrowing cap. You cannot borrow more than {{cap}} {{token}}.",
+      "target-ltv-too-high-due-to-flashloan-liquidity": "Your target LTV is too high due to insuffiecient liquidity in the flashloan pool.",
+      "cannot-close-due-to-flashloan-liquidity": "You cannot close your position due to insufficient liquidity in the pool. Please try again later."
     }
   }
 }

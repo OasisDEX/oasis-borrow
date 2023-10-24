@@ -1,6 +1,4 @@
 export * from './aave-available-liquidity-in-usdc'
 export * from './aave-user-configuration'
-export * from './get-aave-protocol-data'
 export * from './prepare-aave-total-value-locked'
 export * from './map-aave-user-account-data'
-export * from './aave-get-on-chain-position'

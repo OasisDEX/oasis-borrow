@@ -2,8 +2,9 @@ import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import {
   ARBITRUM_DEFAULT_LIQUIDITY_PROVIDERS,
+  BASE_DEFAULT_LIQUIDITY_PROVIDERS,
   ETHEREUM_MAINNET_DEFAULT_PROTOCOLS,
-  OPTIMIMS_DEFAULT_PROCOTOLS,
+  OPTIMISM_DEFAULT_PROCOTOLS,
 } from 'features/exchange/exchange'
 import { match } from 'ts-pattern'
 
@@ -96,7 +97,7 @@ export function getOneInchCall(
     const resolvedProcotols = match({ protocols, networkId })
       .with(
         { protocols: [], networkId: NetworkIds.OPTIMISMMAINNET },
-        () => OPTIMIMS_DEFAULT_PROCOTOLS,
+        () => OPTIMISM_DEFAULT_PROCOTOLS,
       )
       .with(
         { protocols: [], networkId: NetworkIds.MAINNET },
@@ -105,6 +106,10 @@ export function getOneInchCall(
       .with(
         { protocols: [], networkId: NetworkIds.ARBITRUMMAINNET },
         () => ARBITRUM_DEFAULT_LIQUIDITY_PROVIDERS,
+      )
+      .with(
+        { protocols: [], networkId: NetworkIds.BASEMAINNET },
+        () => BASE_DEFAULT_LIQUIDITY_PROVIDERS,
       )
       .otherwise(() => protocols)
 

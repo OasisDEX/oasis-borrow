@@ -40,6 +40,8 @@ const networkMappings = {
     getNetworkMapping(AaveV3Pool__factory, NetworkIds.OPTIMISMMAINNET, 'aaveV3Pool'),
   [NetworkIds.ARBITRUMMAINNET]: () =>
     getNetworkMapping(AaveV3Pool__factory, NetworkIds.ARBITRUMMAINNET, 'aaveV3Pool'),
+  [NetworkIds.BASEMAINNET]: () =>
+    getNetworkMapping(AaveV3Pool__factory, NetworkIds.BASEMAINNET, 'aaveV3Pool'),
 }
 
 export function getAaveV3UserAccountData({

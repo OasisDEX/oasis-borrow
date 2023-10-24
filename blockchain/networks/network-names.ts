@@ -11,6 +11,9 @@ export enum NetworkNames {
 
   optimismMainnet = 'optimism',
   optimismGoerli = 'optimism_goerli',
+
+  baseMainnet = 'base',
+  baseGoerli = 'base_goerli',
 }
 
 export type NetworkLabelType =
@@ -22,6 +25,8 @@ export type NetworkLabelType =
   | 'Polygon Mumbai'
   | 'Optimism'
   | 'Optimism Goerli'
+  | 'Base'
+  | 'Base Goerli'
 
 export function isSupportedNetwork(value: string): value is NetworkNames {
   return Object.values<string>(NetworkNames).includes(value)

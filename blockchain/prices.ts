@@ -90,7 +90,7 @@ function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefine
     if (label && tickers[label]) {
       return tickers[label]
     }
-    errorsArray.push(label)
+    errorsArray.push({ label, tickerServiceLabels })
   }
 
   throw new Error(`No price data for given token - ${JSON.stringify(errorsArray)}`)

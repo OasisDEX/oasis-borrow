@@ -34,6 +34,7 @@ export type ProtocolsServices = {
     [NetworkIds.MAINNET]: AaveLikeServices
     [NetworkIds.OPTIMISMMAINNET]: AaveLikeServices
     [NetworkIds.ARBITRUMMAINNET]: AaveLikeServices
+    [NetworkIds.BASEMAINNET]: AaveLikeServices
   }
   [LendingProtocol.SparkV3]: {
     [NetworkIds.MAINNET]: AaveLikeServices
@@ -57,9 +58,4 @@ export type DepreciatedServices = {
   aaveLikeAvailableLiquidityInUSDC$?: ReturnType<
     typeof getAaveV2Services
   >['aaveLikeAvailableLiquidityInUSDC$']
-
-  /**
-   * @deprecated use protocols[LendingProtocols.AaveV2].aaveLikeProtocolData$ instead
-   */
-  aaveLikeProtocolData$?: ReturnType<typeof getAaveV2Services>['aaveLikeProtocolData$']
 }

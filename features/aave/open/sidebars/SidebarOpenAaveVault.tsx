@@ -4,6 +4,7 @@ import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
 import {
   ConnectedSidebarSection,
+  ErrorMessageCannotDepositDueToProtocolCap,
   OpenAaveStopLossInformation,
   StopLossTwoTxRequirement,
   StrategyInformationContainer,
@@ -325,10 +326,12 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
         <SidebarOpenAaveVaultEditingState state={state} send={send} />
         {state.context.tokenBalance && amountTooHigh && (
           <MessageCard
-            messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
+            messages={[t('aave.errors.deposit-amount-exceeds-collateral-balance')]}
             type="error"
+            withBullet={false}
           />
         )}
+        <ErrorMessageCannotDepositDueToProtocolCap context={state.context} />
         <SecondaryInputComponent
           state={state}
           send={send}

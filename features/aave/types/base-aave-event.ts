@@ -2,13 +2,12 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network.types'
 import { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { IRiskRatio } from '@oasisdex/dma-library'
-import { AaveLikeProtocolData } from 'lendingProtocols/aave-like-common'
 import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
 import { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
 import { AllowanceStateMachineResponseEvent } from 'features/stateMachines/allowance'
 import {
   IStrategyInfo, ManageTokenInput,
-  RefTransactionMachine,
+  RefTransactionMachine, ReserveData,
   StrategyTokenAllowance,
   StrategyTokenBalance,
 } from './base-aave-context'
@@ -59,7 +58,6 @@ export type BaseAaveEvent =
   | UpdateDebtActionType
   | UpdateTokenActionValueType
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
-  | { type: 'UPDATE_PROTOCOL_DATA'; protocolData: AaveLikeProtocolData }
   | { type: 'UPDATE_ALLOWANCE'; allowance: StrategyTokenAllowance }
   | { type: 'USE_SLIPPAGE'; getSlippageFrom: 'userSettings' | 'strategyConfig' }
   | TransactionParametersStateMachineResponseEvent
@@ -68,3 +66,4 @@ export type BaseAaveEvent =
   | { type: 'SET_DEBT'; debt?: BigNumber }
   | AaveOpenPositionWithStopLossEvents
   | { type: 'CREATED_MACHINE'; refTransactionMachine: RefTransactionMachine }
+  | { type: 'UPDATE_RESERVE_DATA', reserveData: ReserveData }

@@ -334,6 +334,7 @@ export const tokenConfigs: TokenConfig[] = [
     color: '259c77',
     background: '',
     tags: ['stablecoin'],
+    coinpaprikaTicker: 'usdt-tether',
   },
   {
     symbol: 'COMP',
@@ -635,6 +636,20 @@ export const tokenConfigs: TokenConfig[] = [
     iconCircle: spark_circle_color,
     color: '#17438C',
     background: '',
+    tags: ['stablecoin'],
+  },
+  {
+    symbol: 'USDBC',
+    precision: 6,
+    digits: 5,
+    name: 'USD Base Coin',
+    icon: usdc_circle_color,
+    iconCircle: usdc_circle_color,
+    color: '#2775ca',
+    background: '',
+    coinbaseTicker: 'usd-base-coin',
+    coinGeckoTicker: 'bridged-usd-coin-base',
+    coinpaprikaTicker: 'usdbc-usd-base-coin',
     tags: ['stablecoin'],
   },
   ...deprecatedTokens.map((deprecatedToken) => ({

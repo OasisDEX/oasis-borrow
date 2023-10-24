@@ -103,9 +103,11 @@ export function useOwnerPositions(
     mainnetDpmProxies$,
     optimismDpmProxies$,
     arbitrumDpmProxies$,
+    baseDpmProxies$,
     mainnetReadPositionCreatedEvents$,
     optimismReadPositionCreatedEvents$,
     arbitrumReadPositionCreatedEvents$,
+    baseReadPositionCreatedEvents$,
     proxyAddress$,
     userSettings$,
     vaults$,
@@ -164,6 +166,10 @@ export function useOwnerPositions(
   const aaveV3ArbitrumServices = getAaveV3Services({
     refresh$: oneTime$,
     networkId: NetworkIds.ARBITRUMMAINNET,
+  })
+  const aaveV3BaseServices = getAaveV3Services({
+    refresh$: oneTime$,
+    networkId: NetworkIds.BASEMAINNET,
   })
   const sparkV3Services = getSparkV3Services({
     refresh$: oneTime$,
@@ -230,6 +236,20 @@ export function useOwnerPositions(
     (wallet) => wallet,
   )
 
+  const aaveBasePositions$: (walletAddress: string) => Observable<AaveLikePosition[]> = memoize(
+    curry(createAaveV3DpmPosition$)(
+      context$,
+      baseDpmProxies$,
+      tokenPriceUSDStatic$,
+      baseReadPositionCreatedEvents$,
+      getApiVaults,
+      () => of<TriggersData | undefined>(undefined), // Triggers are not supported on base
+      aaveV3BaseServices,
+      NetworkIds.BASEMAINNET,
+    ),
+    (wallet) => wallet,
+  )
+
   const sparkMainnetSparkV3Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
     memoize(
       curry(createSparkV3DpmPosition$)(
@@ -252,6 +272,7 @@ export function useOwnerPositions(
       sparkMainnetSparkV3Positions$(walletAddress),
       aaveOptimismPositions$(walletAddress),
       aaveArbitrumPositions$(walletAddress),
+      aaveBasePositions$(walletAddress),
     ]).pipe(
       map(
         ([
@@ -260,6 +281,7 @@ export function useOwnerPositions(
           mainnetSparkV3Positions,
           optimismAaveV3Positions,
           arbitrumAavePositions,
+          baseAavePositions,
         ]) => {
           return [
             ...mainnetAaveV2Positions,
@@ -267,6 +289,7 @@ export function useOwnerPositions(
             ...mainnetSparkV3Positions,
             ...optimismAaveV3Positions,
             ...arbitrumAavePositions,
+            ...baseAavePositions,
           ]
         },
       ),
