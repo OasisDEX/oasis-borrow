@@ -55,7 +55,13 @@ export const getCurrentPositionLibCallData = (currentPosition: IPosition) => [
   },
 ]
 
-export const getAaveV3FlashLoanToken = (networkId: NetworkIds) => {
+export const getAaveV3FlashLoanToken = (
+  networkId: NetworkIds,
+  lendingProtocol: LendingProtocol,
+) => {
+  if (lendingProtocol !== LendingProtocol.AaveV3) {
+    return undefined
+  }
   const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
   if (networkId === NetworkIds.OPTIMISMMAINNET) {
     const tokenAddress = addressesV3.tokens['WETH']

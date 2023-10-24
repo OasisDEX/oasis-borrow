@@ -43,7 +43,7 @@ export async function getAdjustPositionParameters({
       multiple: riskRatio,
       debtToken: debtToken,
       collateralToken: collateralToken,
-      flashloan: getAaveV3FlashLoanToken(networkId),
+      flashloan: getAaveV3FlashLoanToken(networkId, protocol),
     }
 
     const stratDeps: Omit<AaveLikeAdjustStrategyDeps, 'addresses' | 'getSwapData'> = {
