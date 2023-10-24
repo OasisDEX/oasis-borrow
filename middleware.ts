@@ -11,10 +11,11 @@ export function middleware(request: NextRequest) {
     response.headers.set('Access-Control-Allow-Origin', origin)
   }
 
-  // Get `CloudFront-Viewer-Country` header if exists from request and set it to response
+  // Get `CloudFront-Viewer-Country` header if exists from request and set cookie
   const country = request.headers.get('CloudFront-Viewer-Country')
   if (country) {
-    response.headers.set('CloudFront-Viewer-Country', country)
+    response.cookies.set('country', country)
   }
+
   return response
 }
