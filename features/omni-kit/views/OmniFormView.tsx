@@ -86,7 +86,7 @@ export function OmniFormView({
     filters: { flowStateFilter, consumedProxyFilter },
     elements: { dupeModal },
     featureToggles: { suppressValidation, safetySwitch, reusableDpm },
-  } = dynamicMetadata(product)
+  } = dynamicMetadata
 
   const txHandler = _txHandler()
 

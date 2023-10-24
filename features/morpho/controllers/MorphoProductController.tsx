@@ -39,7 +39,7 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
     >
       {dpmPosition.product === 'borrow' && (
         <OmniProductContextProvider
-          dynamicMetadata={useMorphoMetadata}
+          getDynamicMetadata={useMorphoMetadata}
           formDefaults={{
             action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
           }}
@@ -54,7 +54,7 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
       )}
       {dpmPosition.product === 'multiply' && (
         <OmniProductContextProvider
-          dynamicMetadata={useMorphoMetadata}
+          getDynamicMetadata={useMorphoMetadata}
           formDefaults={{
             action: flow === 'open' ? 'open-multiply' : 'adjust',
           }}

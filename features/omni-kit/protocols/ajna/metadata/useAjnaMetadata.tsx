@@ -24,13 +24,12 @@ import { getAjnaEarnWithdrawMax } from 'features/ajna/positions/earn/helpers/get
 import { OmniDupePositionModal } from 'features/omni-kit/components/OmniDupePositionModal'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import type {
-  DynamicProductMetadata,
   LendingMetadata,
   ProductContextWithBorrow,
   ProductContextWithEarn,
+  ProductContextWithMultiply,
   SupplyMetadata,
 } from 'features/omni-kit/contexts/OmniProductContext'
-import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { getOmniBorrowishChangeVariant, getOmniBorrowPaybackMax } from 'features/omni-kit/helpers'
 import { getOmniIsFormEmpty } from 'features/omni-kit/helpers/getOmniIsFormEmpty'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
@@ -54,9 +53,9 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
-// @ts-ignore
-// TODO there is something wrong with this generic types although it's working well while accessing metadata
-export const useAjnaMetadata: DynamicProductMetadata = (product) => {
+export const useAjnaMetadata = (
+  productContext: ProductContextWithBorrow | ProductContextWithEarn | ProductContextWithMultiply,
+) => {
   const { t } = useTranslation()
   const {
     AjnaSafetySwitch: ajnaSafetySwitchOn,
@@ -91,11 +90,11 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
       owner,
       collateralIcon,
       quotePrecision,
+      product,
     },
     steps: { currentStep },
     tx: { txDetails },
   } = useOmniGeneralContext()
-  const productContext = useOmniProductContext(product)
 
   const {
     state: { price },
@@ -166,7 +165,7 @@ export const useAjnaMetadata: DynamicProductMetadata = (product) => {
         | AjnaPosition
         | undefined
 
-      const originationFee = product === 'earn' ? zero : getOriginationFee(position, simulation)
+      const originationFee = getOriginationFee(position, simulation)
       const originationFeeFormatted = `${formatCryptoBalance(originationFee)} ${quoteToken}`
       const originationFeeFormattedUSD = `($${formatAmount(
         originationFee.times(quotePrice),

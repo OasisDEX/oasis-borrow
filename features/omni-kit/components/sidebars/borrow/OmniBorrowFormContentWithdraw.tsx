@@ -24,7 +24,7 @@ export function OmniBorrowFormContentWithdraw() {
 
   const {
     values: { collateralMax, paybackMax },
-  } = dynamicMetadata('borrow')
+  } = dynamicMetadata
 
   const { debtAmount } = position
 

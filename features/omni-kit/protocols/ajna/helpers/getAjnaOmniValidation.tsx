@@ -9,10 +9,7 @@ import {
 } from 'features/ajna/positions/common/validation'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { isOmniFormValid } from 'features/omni-kit/helpers/isOmniFormValid'
-import type {
-  GetOmniBorrowValidationsParams,
-  OmniValidationItem,
-} from 'features/omni-kit/types'
+import type { GetOmniBorrowValidationsParams, OmniValidationItem } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import React from 'react'
 

@@ -14,7 +14,7 @@ export function OmniEarnFormContentDeposit() {
   const {
     validations: { isFormValid },
     elements: { extraEarnInputDeposit, earnFormOrder },
-  } = dynamicMetadata('earn')
+  } = dynamicMetadata
 
   return (
     <>

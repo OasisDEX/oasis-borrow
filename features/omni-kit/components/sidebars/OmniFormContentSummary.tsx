@@ -24,7 +24,7 @@ export function OmniFormContentSummary({
   const {
     validations: { errors, notices, successes, warnings },
     handlers: { customReset },
-  } = dynamicMetadata(product)
+  } = dynamicMetadata
 
   return (
     <>

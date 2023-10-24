@@ -28,7 +28,7 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
 
   const {
     elements: { riskSidebar },
-  } = dynamicMetadata('multiply')
+  } = dynamicMetadata
 
   return (
     <OmniFormView

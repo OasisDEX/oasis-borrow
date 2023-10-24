@@ -23,7 +23,7 @@ export function OmniEarnFormContentManage() {
 
   const {
     elements: { earnExtraUiDropdownContent },
-  } = dynamicMetadata('earn')
+  } = dynamicMetadata
 
   return (
     <>

@@ -29,7 +29,7 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
 
   const {
     elements: { riskSidebar },
-  } = dynamicMetadata('borrow')
+  } = dynamicMetadata
 
   return (
     <OmniFormView

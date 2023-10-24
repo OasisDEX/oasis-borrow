@@ -18,7 +18,7 @@ export function OmniEarnFormContentWithdraw() {
     validations: { isFormValid },
     elements: { extraEarnInputWithdraw, earnFormOrder },
     values: { earnWithdrawMax },
-  } = dynamicMetadata('earn')
+  } = dynamicMetadata
 
   return (
     <>

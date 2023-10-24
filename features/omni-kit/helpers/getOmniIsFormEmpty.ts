@@ -1,11 +1,7 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
-import type {
-  OmniFormState,
-  OmniProduct,
-  OmniSidebarStep,
-} from 'features/omni-kit/types'
+import type { OmniFormState, OmniProduct, OmniSidebarStep } from 'features/omni-kit/types'
 
 interface GetIsFormEmptyParams {
   product: OmniProduct

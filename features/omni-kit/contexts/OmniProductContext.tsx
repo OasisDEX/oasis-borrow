@@ -121,7 +121,7 @@ export type OmniMetadata<T extends OmniProduct> = T extends 'borrow'
 export type DynamicProductMetadata = <T extends OmniProduct>(product: T) => OmniMetadata<T>
 
 interface ProductContextProviderPropsWithBorrow {
-  dynamicMetadata: DynamicProductMetadata
+  getDynamicMetadata: (_: ProductContextWithBorrow) => LendingMetadata
   formReducto: typeof useOmniBorrowFormReducto
   formDefaults: Partial<OmniBorrowFormState>
   position: LendingPosition
@@ -131,7 +131,7 @@ interface ProductContextProviderPropsWithBorrow {
 }
 
 interface ProductContextProviderPropsWithEarn {
-  dynamicMetadata: DynamicProductMetadata
+  getDynamicMetadata: (_: ProductContextWithEarn) => SupplyMetadata
   formReducto: typeof useOmniEarnFormReducto
   formDefaults: Partial<OmniEarnFormState>
   position: SupplyPosition
@@ -141,7 +141,7 @@ interface ProductContextProviderPropsWithEarn {
 }
 
 interface ProductContextProviderPropsWithMultiply {
-  dynamicMetadata: DynamicProductMetadata
+  getDynamicMetadata: (_: ProductContextWithMultiply) => LendingMetadata
   formReducto: typeof useOmniMultiplyFormReducto
   formDefaults: Partial<OmniMultiplyFormState>
   position: LendingPosition
@@ -178,28 +178,31 @@ interface ProductContextPosition<P, A> {
   simulationCommon: OmniSimulationCommon
 }
 
-interface GenericProductContext<P, F, A> {
+interface GenericProductContext<P, F, A, M> {
   form: F
   position: ProductContextPosition<P, A>
-  dynamicMetadata: DynamicProductMetadata
+  dynamicMetadata: M
 }
 
 export type ProductContextWithBorrow = GenericProductContext<
   LendingPosition,
   ReturnType<typeof useOmniBorrowFormReducto>,
-  unknown
+  unknown,
+  LendingMetadata
 >
 
 export type ProductContextWithEarn = GenericProductContext<
   SupplyPosition,
   ReturnType<typeof useOmniEarnFormReducto>,
-  unknown
+  unknown,
+  SupplyMetadata
 >
 
 export type ProductContextWithMultiply = GenericProductContext<
   LendingPosition,
   ReturnType<typeof useOmniMultiplyFormReducto>,
-  unknown
+  unknown,
+  LendingMetadata
 >
 
 const borrowContext = React.createContext<ProductContextWithBorrow | undefined>(undefined)
@@ -233,7 +236,7 @@ export function useOmniProductContext<T extends OmniProduct>(product: T): PickPr
 }
 
 export function OmniProductContextProvider({
-  dynamicMetadata,
+  getDynamicMetadata,
   children,
   formDefaults,
   formReducto,
@@ -280,11 +283,36 @@ export function OmniProductContextProvider({
       position.riskRatio.loanToValue,
     )
   }
-  simulation?.errors
+
   const [context, setContext] = useState<
-    GenericProductContext<typeof position, typeof form, typeof positionAuction>
+    GenericProductContext<
+      typeof position,
+      typeof form,
+      typeof positionAuction,
+      LendingMetadata | SupplyMetadata
+    >
   >({
-    dynamicMetadata,
+    dynamicMetadata: getDynamicMetadata({
+      form,
+      position: {
+        cachedPosition,
+        positionAuction,
+        currentPosition: { position },
+        isSimulationLoading,
+        resolvedId: positionIdFromDpmProxyData,
+        history: positionHistory,
+        simulationCommon: {
+          errors: simulation?.errors as OmniSimulationCommon['errors'],
+          warnings: simulation?.warnings as OmniSimulationCommon['warnings'],
+          notices: simulation?.notices as OmniSimulationCommon['notices'],
+          successes: simulation?.successes as OmniSimulationCommon['successes'],
+        },
+        setCachedPosition: (positionSet) => setCachedPosition(positionSet),
+        setIsLoadingSimulation,
+        setSimulation,
+        setCachedSwap: (swap) => setCachedSwap(swap),
+      },
+    }),
     form,
     position: {
       cachedPosition,
@@ -312,7 +340,6 @@ export function OmniProductContextProvider({
 
     setContext((prev) => ({
       ...prev,
-      dynamicMetadata,
       form,
       position: {
         ...prev.position,
@@ -336,7 +363,6 @@ export function OmniProductContextProvider({
       },
     }))
   }, [
-    dynamicMetadata,
     cachedPosition,
     collateralBalance,
     currentStep,
@@ -357,19 +383,40 @@ export function OmniProductContextProvider({
   switch (product) {
     case 'borrow':
       return (
-        <borrowContext.Provider value={context as ProductContextWithBorrow}>
+        <borrowContext.Provider
+          value={
+            {
+              ...context,
+              dynamicMetadata: getDynamicMetadata(context as ProductContextWithBorrow),
+            } as ProductContextWithBorrow
+          }
+        >
           {children}
         </borrowContext.Provider>
       )
     case 'earn':
       return (
-        <earnContext.Provider value={context as ProductContextWithEarn}>
+        <earnContext.Provider
+          value={
+            {
+              ...context,
+              dynamicMetadata: getDynamicMetadata(context as ProductContextWithEarn),
+            } as ProductContextWithEarn
+          }
+        >
           {children}
         </earnContext.Provider>
       )
     case 'multiply':
       return (
-        <multiplyContext.Provider value={context as ProductContextWithMultiply}>
+        <multiplyContext.Provider
+          value={
+            {
+              ...context,
+              dynamicMetadata: getDynamicMetadata(context as ProductContextWithMultiply),
+            } as ProductContextWithMultiply
+          }
+        >
           {children}
         </multiplyContext.Provider>
       )

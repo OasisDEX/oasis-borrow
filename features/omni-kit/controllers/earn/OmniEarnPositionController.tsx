@@ -15,7 +15,7 @@ export function OmniEarnPositionController({ txHandler }: { txHandler: () => () 
 
   const {
     values: { headlineDetails },
-  } = dynamicMetadata('earn')
+  } = dynamicMetadata
 
   return (
     <OmniPositionView

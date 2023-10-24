@@ -14,7 +14,7 @@ export function OmniEarnFormContentOpen() {
   const {
     validations: { isFormValid },
     elements: { extraEarnInput, earnFormOrder },
-  } = dynamicMetadata('earn')
+  } = dynamicMetadata
 
   return (
     <>

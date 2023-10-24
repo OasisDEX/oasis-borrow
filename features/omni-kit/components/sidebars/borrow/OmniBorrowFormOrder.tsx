@@ -26,7 +26,7 @@ export function OmniBorrowFormOrder({ cached = false }: { cached?: boolean }) {
 
   const {
     values: { shouldShowDynamicLtv, afterPositionDebt, afterAvailableToBorrow },
-  } = dynamicMetadata('borrow')
+  } = dynamicMetadata
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,

@@ -43,7 +43,7 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
     >
       {dpmPosition.product === 'borrow' && (
         <OmniProductContextProvider
-          dynamicMetadata={useAjnaMetadata}
+          getDynamicMetadata={useAjnaMetadata}
           formDefaults={{
             action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
           }}
@@ -58,7 +58,7 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
       )}
       {dpmPosition.product === 'earn' && (
         <OmniProductContextProvider
-          dynamicMetadata={useAjnaMetadata}
+          getDynamicMetadata={useAjnaMetadata}
           formDefaults={{
             action: getAjnaEarnDefaultAction(flow, positionData as AjnaEarnPosition),
             uiDropdown: getAjnaEarnDefaultUiDropdown(positionData as AjnaEarnPosition),
@@ -74,7 +74,7 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
       )}
       {dpmPosition.product === 'multiply' && (
         <OmniProductContextProvider
-          dynamicMetadata={useAjnaMetadata}
+          getDynamicMetadata={useAjnaMetadata}
           formDefaults={{
             action: flow === 'open' ? 'open-multiply' : 'adjust',
           }}

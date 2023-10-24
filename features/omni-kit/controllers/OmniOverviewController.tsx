@@ -17,7 +17,7 @@ export function OmniOverviewController() {
     values: { footerColumns },
     elements: { overviewContent, overviewBanner, overviewFooter },
     notifications,
-  } = dynamicMetadata(product)
+  } = dynamicMetadata
 
   return (
     <Grid gap={2}>
