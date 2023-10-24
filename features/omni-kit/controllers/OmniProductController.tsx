@@ -121,7 +121,6 @@ export const OmniProductController = <A, H, P>({
                   {...getOmniHeadlineProps({
                     collateralIcon: tokensIconsData?.collateralToken,
                     collateralToken: dpmPositionData?.collateralToken,
-                    flow,
                     positionId,
                     productType: dpmPositionData?.product as OmniProductType,
                     protocol,
@@ -148,9 +147,9 @@ export const OmniProductController = <A, H, P>({
                     title="seo.title-product-w-tokens"
                     titleParams={{
                       product: t(seoTags.productKey, {
-                        product: upperFirst(dpmPosition.product),
+                        productType: upperFirst(dpmPosition.product),
                       }),
-                      protocol,
+                      protocol: upperFirst(protocol),
                       token1: dpmPosition.collateralToken,
                       token2: dpmPosition.quoteToken,
                     }}

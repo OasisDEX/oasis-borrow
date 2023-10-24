@@ -1,5 +1,5 @@
 import { NetworkNames } from 'blockchain/networks'
-import type { OmniFlow, OmniProductType } from 'features/omni-kit/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -8,7 +8,6 @@ interface OmniHeadlinePropsParams {
   collateralAddress?: string
   collateralIcon?: string
   collateralToken?: string
-  flow: OmniFlow
   positionId?: string
   productType?: OmniProductType
   protocol: LendingProtocol
@@ -20,7 +19,6 @@ interface OmniHeadlinePropsParams {
 export function getOmniHeadlineProps({
   collateralIcon,
   collateralToken,
-  flow,
   positionId,
   productType,
   protocol,
@@ -29,17 +27,19 @@ export function getOmniHeadlineProps({
 }: OmniHeadlinePropsParams) {
   const { t } = useTranslation()
 
+  const title = t('omni-kit.headline', {
+    collateralToken,
+    productType: upperFirst(productType),
+    quoteToken,
+  })
+  const id = positionId ? ` #${positionId}` : ''
+
   return {
     ...(collateralToken &&
       quoteToken &&
       collateralIcon &&
       quoteIcon && {
-        header: t(`ajna.position-page.common.headline.${flow}`, {
-          collateralToken,
-          positionId,
-          productType: upperFirst(productType),
-          quoteToken,
-        }),
+        header: `${title}${id}`,
         tokens: [collateralIcon, quoteIcon],
         protocol: {
           network: NetworkNames.ethereumMainnet,

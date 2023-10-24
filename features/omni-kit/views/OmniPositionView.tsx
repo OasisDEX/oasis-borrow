@@ -59,7 +59,6 @@ export function OmniPositionView({
         header=""
         {...getOmniHeadlineProps({
           collateralToken,
-          flow,
           positionId,
           productType,
           quoteToken,

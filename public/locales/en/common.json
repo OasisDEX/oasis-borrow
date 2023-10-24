@@ -2620,6 +2620,9 @@
       "what-is-sdai-conversion": "What is sDAI conversion?"
     }
   },
+  "omni-kit": {
+    "headline": "{{collateralToken}}/{{quoteToken}} {{productType}}"
+  },
   "ajna": {
     "title": "Ajna Website",
     "navigation": {
