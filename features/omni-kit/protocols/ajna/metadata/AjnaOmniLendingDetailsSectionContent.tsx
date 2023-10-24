@@ -1,11 +1,22 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import { ContentCardCollateralLocked } from 'features/ajna/positions/common/components/contentCards/ContentCardCollateralLocked'
-import { ContentCardLiquidationPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardLiquidationPrice'
+import {
+  ContentCardCollateralLocked,
+} from 'features/ajna/positions/common/components/contentCards/ContentCardCollateralLocked'
+import {
+  ContentCardLiquidationPrice,
+} from 'features/ajna/positions/common/components/contentCards/ContentCardLiquidationPrice'
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
+import {
+  ContentCardNetBorrowCost,
+} from 'features/ajna/positions/common/components/contentCards/ContentCardNetBorrowCost'
+import { ContentCardNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardNetValue'
 import { ContentCardPositionDebt } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionDebt'
-import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
+import {
+  ContentCardThresholdPrice,
+} from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
+import type { OmniFlow, OmniProduct } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'
 import React from 'react'
@@ -25,6 +36,10 @@ interface AjnaOmniDetailsSectionContentProps {
   changeVariant: 'positive' | 'negative'
   afterPositionDebt?: BigNumber
   shouldShowDynamicLtv: boolean
+  product: OmniProduct
+  isProxyWithManyPositions: boolean
+  owner: string
+  flow: OmniFlow
 }
 
 export const AjnaOmniLendingDetailsSectionContent: FC<AjnaOmniDetailsSectionContentProps> = ({
@@ -42,6 +57,10 @@ export const AjnaOmniLendingDetailsSectionContent: FC<AjnaOmniDetailsSectionCont
   changeVariant,
   afterPositionDebt,
   shouldShowDynamicLtv,
+  product,
+  isProxyWithManyPositions,
+  owner,
+  flow,
 }) => {
   const liquidationPrice = isShort
     ? normalizeValue(one.div(position.liquidationPrice))
@@ -93,26 +112,57 @@ export const AjnaOmniLendingDetailsSectionContent: FC<AjnaOmniDetailsSectionCont
           changeVariant={changeVariant}
         />
       )}
-      <ContentCardCollateralLocked
-        isLoading={isSimulationLoading}
-        collateralToken={collateralToken}
-        collateralLocked={position.collateralAmount}
-        afterCollateralLocked={simulation?.collateralAmount}
-        changeVariant={changeVariant}
-        {...(!isOracless && {
-          collateralLockedUSD: position.collateralAmount.times(collateralPrice),
-        })}
-      />
-      <ContentCardPositionDebt
-        isLoading={isSimulationLoading}
-        quoteToken={quoteToken}
-        positionDebt={position.debtAmount}
-        afterPositionDebt={afterPositionDebt}
-        changeVariant={changeVariant}
-        {...(!isOracless && {
-          positionDebtUSD: position.debtAmount.times(quotePrice),
-        })}
-      />
+      {product === 'borrow' && (
+        <>
+          <ContentCardCollateralLocked
+            isLoading={isSimulationLoading}
+            collateralToken={collateralToken}
+            collateralLocked={position.collateralAmount}
+            afterCollateralLocked={simulation?.collateralAmount}
+            changeVariant={changeVariant}
+            {...(!isOracless && {
+              collateralLockedUSD: position.collateralAmount.times(collateralPrice),
+            })}
+          />
+          <ContentCardPositionDebt
+            isLoading={isSimulationLoading}
+            quoteToken={quoteToken}
+            positionDebt={position.debtAmount}
+            afterPositionDebt={afterPositionDebt}
+            changeVariant={changeVariant}
+            {...(!isOracless && {
+              positionDebtUSD: position.debtAmount.times(quotePrice),
+            })}
+          />
+        </>
+      )}
+
+      {product === 'multiply' && (
+        <>
+          <ContentCardNetBorrowCost
+            collateralToken={collateralToken}
+            quoteToken={quoteToken}
+            owner={owner}
+            netBorrowCost={position.pool.interestRate}
+            changeVariant={changeVariant}
+          />
+          <ContentCardNetValue
+            isLoading={isSimulationLoading}
+            netValue={position.collateralAmount
+              .times(collateralPrice)
+              .minus(position.debtAmount.times(quotePrice))}
+            afterNetValue={simulation?.collateralAmount
+              .times(collateralPrice)
+              .minus(simulation?.debtAmount.times(quotePrice))}
+            pnl={position.pnl.withoutFees}
+            // For now we need to hide P&L for proxies with many positions
+            // because subgraph doesn't support it yet
+            pnlNotAvailable={isProxyWithManyPositions}
+            showPnl={flow === 'manage'}
+            changeVariant={changeVariant}
+          />
+        </>
+      )}
     </>
   )
 }

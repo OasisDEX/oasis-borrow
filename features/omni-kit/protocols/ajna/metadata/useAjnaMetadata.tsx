@@ -4,7 +4,6 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { PillAccordion } from 'components/PillAccordion'
-import { ContentFooterItemsBorrow } from 'features/ajna/positions/borrow/components/ContentFooterItemsBorrow'
 import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
@@ -44,6 +43,9 @@ import {
 import {
   AjnaOmniLendingDetailsSectionContent,
 } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionContent'
+import {
+  AjnaOmniLendingDetailsSectionFooter,
+} from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionFooter'
 import { getAjnaOmniEarnIsFomEmpty } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFomEmpty'
 import { getAjnaOmniEarnIsFormValid } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFormValid'
 import { useAppConfig } from 'helpers/config'
@@ -89,6 +91,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       collateralIcon,
       quotePrecision,
       product,
+      isProxyWithManyPositions,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -187,6 +190,11 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         txStatus: txDetails?.txStatus,
       })
 
+      const afterBuyingPower =
+        simulation && !simulation.pool.lowestUtilizedPriceIndex.isZero()
+          ? simulation.buyingPower
+          : undefined
+
       return {
         notifications,
         validations,
@@ -199,10 +207,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           netBorrowCost: interestRate,
           interestRate: interestRate,
           isFormEmpty,
-          afterBuyingPower:
-            simulation && !simulation.pool.lowestUtilizedPriceIndex.isZero()
-              ? simulation.buyingPower
-              : undefined,
+          afterBuyingPower,
           shouldShowDynamicLtv,
           debtMin: getAjnaBorrowDebtMin({ digits: getToken(quoteToken).digits, position }),
           debtMax: getAjnaBorrowDebtMax({
@@ -230,7 +235,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             position,
             isOracless,
           }),
-          footerColumns: 3,
+          footerColumns: product === 'borrow' ? 3 : 2,
         },
         elements: {
           highlighterOrderInformation:
@@ -259,20 +264,25 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               changeVariant={changeVariant}
               afterPositionDebt={afterPositionDebt}
               shouldShowDynamicLtv={shouldShowDynamicLtv}
+              product={product}
+              owner={owner}
+              flow={flow}
+              isProxyWithManyPositions={isProxyWithManyPositions}
             />
           ),
           overviewFooter: (
-            <ContentFooterItemsBorrow
-              isLoading={productContext.position.isSimulationLoading}
+            <AjnaOmniLendingDetailsSectionFooter
+              isSimulationLoading={productContext.position.isSimulationLoading}
               collateralToken={collateralToken}
               quoteToken={quoteToken}
-              owner={owner}
-              cost={interestRate}
-              availableToBorrow={position.debtAvailable()}
-              afterAvailableToBorrow={afterAvailableToBorrow}
-              availableToWithdraw={position.collateralAvailable}
-              afterAvailableToWithdraw={simulation?.collateralAvailable}
+              position={position}
+              simulation={simulation}
               changeVariant={changeVariant}
+              afterAvailableToBorrow={afterAvailableToBorrow}
+              afterBuyingPower={afterBuyingPower}
+              product={product}
+              owner={owner}
+              interestRate={interestRate}
             />
           ),
           overviewBanner: isPoolWithRewards({ collateralToken, quoteToken }) ? (
