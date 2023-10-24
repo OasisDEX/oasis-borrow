@@ -104,7 +104,8 @@ jobs:
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
-          docker build --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
+          docker build -f Dockerfile.staging \
+                       --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \

@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { networks } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { ProductHubItem, ProductHubItemWithFlattenTooltip } from 'features/productHub/types'
-import { checkIfAllHandlersExist, filterTableData, measureTime } from 'handlers/product-hub/helpers'
+import { filterTableData, getMissingHandlers, measureTime } from 'handlers/product-hub/helpers'
 import type {
   HandleGetProductHubDataProps,
   HandleUpdateProductHubDataProps,
@@ -29,8 +29,8 @@ export async function handleGetProductHubData(
   }
 
   const network = networks
-    .filter((network) => network.testnet === testnet)
-    .map((network) => network.name)
+    .filter(({ testnet: isTestnet }) => isTestnet === testnet)
+    .map(({ name }) => name)
 
   await prisma.productHubItems
     .findMany({
@@ -89,7 +89,7 @@ export async function updateProductHubData(
       })
     }
     const { protocols, dryRun = false } = body
-    if (!protocols || !protocols.length) {
+    if (!protocols || !Array.isArray(protocols) || protocols.length <= 0) {
       return res.status(400).json({
         errorMessage:
           'Missing required parameters (protocols), check error object for more details',
@@ -99,7 +99,7 @@ export async function updateProductHubData(
         dryRun,
       })
     }
-    const missingHandlers = checkIfAllHandlersExist(protocols)
+    const missingHandlers = getMissingHandlers(protocols)
     if (missingHandlers.length > 0) {
       return res.status(501).json({
         errorMessage: `Handler for protocol "${missingHandlers.join('", "')}" not implemented`,

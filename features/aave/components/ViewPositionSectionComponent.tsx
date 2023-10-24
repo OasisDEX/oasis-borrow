@@ -1,7 +1,8 @@
+import type { IPosition } from '@oasisdex/dma-library'
 import type { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { useSimulationYields } from 'features/aave/hooks'
 import type { IStrategyConfig } from 'features/aave/types/strategy-config'
-import type { AaveLikeProtocolData, AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
+import type { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import React from 'react'
 
 import { PositionInfoComponent } from './PositionInfoComponent'
@@ -9,20 +10,18 @@ import { PositionInfoComponent } from './PositionInfoComponent'
 export type ViewPositionSectionComponentProps = {
   aaveReserveState: AaveV2ReserveConfigurationData
   aaveReserveDataDebtToken: AaveLikeReserveData
-  aaveProtocolData?: AaveLikeProtocolData
+  currentPosition: IPosition
   strategyConfig: IStrategyConfig
 }
 
 export function ViewPositionSectionComponent({
   aaveReserveDataDebtToken,
-  aaveProtocolData,
+  currentPosition,
   strategyConfig,
 }: ViewPositionSectionComponentProps) {
-  const { position } = aaveProtocolData!
-
   const simulations = useSimulationYields({
-    amount: position?.collateral.amount,
-    riskRatio: position?.riskRatio,
+    amount: currentPosition?.collateral.amount,
+    riskRatio: currentPosition?.riskRatio,
     fields: ['7Days'],
     strategy: strategyConfig,
     token: strategyConfig.tokens.deposit,
@@ -32,7 +31,7 @@ export function ViewPositionSectionComponent({
     <PositionInfoComponent
       aaveReserveDataDebtToken={aaveReserveDataDebtToken}
       apy={simulations?.apy}
-      position={position}
+      position={currentPosition}
     />
   )
 }

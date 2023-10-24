@@ -11,6 +11,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { ErrorMessageCannotBorrowDueToProtocolCap } from './ErrorMessageCannotBorrowDueToProtocolCap'
+
 export function DebtInput(props: SecondaryInputProps) {
   const { state, send } = props
 
@@ -63,9 +65,11 @@ export function DebtInput(props: SecondaryInputProps) {
               token: state.context.tokens.debt,
             }),
           ]}
+          withBullet={false}
           type="error"
         />
       )}
+      <ErrorMessageCannotBorrowDueToProtocolCap context={state.context} />
     </Grid>
   )
 }

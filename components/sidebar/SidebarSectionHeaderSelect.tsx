@@ -47,7 +47,7 @@ export function SidebarSectionHeaderSelect({
         position: 'relative',
         flexShrink: 0,
         ml: 2,
-        '&:first-child': {
+        '&:first-of-type': {
           ml: 0,
         },
         opacity: !disabled ? 1 : 0.5,

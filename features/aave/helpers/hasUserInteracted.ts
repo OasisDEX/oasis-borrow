@@ -7,7 +7,7 @@ export function hasUserInteracted(state: { context: BaseAaveContext }) {
   // - there is a simulation in context - meaning riskRatio AND the amount is provided
   return (
     ((state.context.userInput.riskRatio?.loanToValue ||
-      state.context.protocolData?.position.riskRatio.loanToValue) &&
+      state.context.currentPosition?.riskRatio.loanToValue) &&
       state.context.transition?.simulation.position) ||
     (state.context.userInput.amount && state.context.defaultRiskRatio?.multiple)
   )

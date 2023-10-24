@@ -1,0 +1,92 @@
+name: Create modules cache (main)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  search:
+    name: Search for existing cache
+    runs-on: ubuntu-latest
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
+      cache-key: ${{ steps.key.outputs.cache-key }}
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 18.12
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.12
+
+      - name: Generate Cache Key
+        id: key
+        run: |
+          echo "cache-key=${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}" >> $GITHUB_OUTPUT
+
+      - name: Lookup cache
+        id: cache
+        uses: actions/cache/restore@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          lookup-only: true
+  create-cache:
+    name: Create npm cache
+    needs: search
+    runs-on: ubuntu-latest
+    if: ${{ !needs.search.outputs.cache-hit }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 18.12
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.12
+      - name: Check cache
+        uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+      - name: Install packages
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn --no-progress --non-interactive --frozen-lockfile
+  cleanup:
+    name: Cleanup old caches
+    needs: [search]
+    runs-on: ubuntu-latest
+    if: ${{ !needs.search.outputs.cache-hit }}
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Cleanup
+        run: |
+          gh extension install actions/gh-actions-cache
+
+          REPO=${{ github.repository }}
+
+          echo "Fetching list of cache keys..."
+          cacheKeysForPR=$(gh actions-cache list -R $REPO --branch main --key Linux-node | cut -f 1)
+
+          echo "Deleting caches..."
+          for cacheKey in $cacheKeysForPR
+          do
+            # Skip deletion if cache key matches the specified output
+            if [ "$cacheKey" = "${{ needs.search.outputs.cache-key }}" ]; then
+              echo "Skipping deletion for cache key: $cacheKey"
+              continue
+            fi
+
+            echo "Deleting cache: $cacheKey"
+            gh actions-cache delete $cacheKey -R $REPO --branch main --confirm
+          done
+
+          echo "Done"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

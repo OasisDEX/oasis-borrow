@@ -10,14 +10,12 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { ContentCardLiquidationPriceV2 } from 'components/vault/detailsSection/ContentCardLiquidationPriceV2'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
-import { ContentCardNetBorrowCost } from 'components/vault/detailsSection/ContentCardNetBorrowCost'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatPrecision } from 'helpers/formatters/format'
-import { NaNIsZero } from 'helpers/nanIsZero'
 import { zero } from 'helpers/zero'
 import type {
   AaveLikeReserveConfigurationData,
@@ -27,6 +25,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { CostToBorrowContentCard } from './CostToBorrowContentCard'
 import { NetValueCard } from './NetValueCard'
 
 type AaveMultiplyPositionDataProps = {
@@ -80,10 +79,6 @@ export function AaveMultiplyPositionData({
       debtTokenReserveData.variableBorrowRate,
     )
 
-  const netBorrowCostInUSDC = currentPositionThings.debt
-    .times(debtTokenPrice)
-    .times(NaNIsZero(currentPositionThings.netBorrowCostPercentage))
-
   const stopLossTriggered =
     aaveHistory[0] &&
     'eventType' in aaveHistory[0] &&
@@ -124,11 +119,11 @@ export function AaveMultiplyPositionData({
                 isAutomationDataLoaded,
               }}
             />
-            <ContentCardNetBorrowCost
-              netBorrowCostInUSDC={netBorrowCostInUSDC}
-              netBorrowCost={currentPositionThings.netBorrowCostPercentage}
-              afterNextBorrowCost={nextPositionThings?.netBorrowCostPercentage}
-              quoteToken={debtToken.symbol}
+            <CostToBorrowContentCard
+              position={currentPosition}
+              currentPositionThings={currentPositionThings}
+              nextPositionThings={nextPositionThings}
+              debtTokenPrice={debtTokenPrice}
             />
             <NetValueCard
               strategyType={strategyType}

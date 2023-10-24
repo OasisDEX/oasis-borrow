@@ -22,6 +22,8 @@ export function networkIdToLibraryNetwork(networkId: NetworkIds): Network {
       return 'optimism' as Network
     case NetworkIds.ARBITRUMMAINNET:
       return 'arbitrum' as Network
+    case NetworkIds.BASEMAINNET:
+      return 'base' as Network
     default:
       throw new Error(`Can't convert networkId ${networkId} to library network`)
   }
@@ -31,7 +33,11 @@ export function swapCall(
   { swapAddress }: Pick<ReturnType<typeof getAddresses>, 'swapAddress'>,
   network: NetworkIds,
 ) {
-  const oneInchVersion = [NetworkIds.OPTIMISMMAINNET, NetworkIds.ARBITRUMMAINNET].includes(network)
+  const oneInchVersion = [
+    NetworkIds.OPTIMISMMAINNET,
+    NetworkIds.ARBITRUMMAINNET,
+    NetworkIds.BASEMAINNET,
+  ].includes(network)
     ? 'v5.0'
     : 'v4.0'
   return getOneInchCall(swapAddress, network, oneInchVersion)
