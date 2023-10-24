@@ -105,17 +105,19 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
       forcePanel,
       disabled: isDropdownDisabled({ stage, isClosedVaultPanelVisible }),
       items: [
-        ...(vaultType === VaultType.Multiply 
-          ? [{
-          label: t('system.actions.multiply.adjust'),
-          icon: circle_slider,
-          iconShrink: 2,
-          panel: 'adjust',
-          action: () => {
-            toggle!('adjustPosition')
-          },
-        }] 
-        : []),
+        ...(vaultType === VaultType.Multiply
+          ? [
+              {
+                label: t('system.actions.multiply.adjust'),
+                icon: circle_slider,
+                iconShrink: 2,
+                panel: 'adjust',
+                action: () => {
+                  toggle!('adjustPosition')
+                },
+              },
+            ]
+          : []),
         {
           label: t('system.actions.borrow.edit-collateral', { token }),
           shortLabel: token,
@@ -153,17 +155,19 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
             setOtherAction!('depositCollateral')
           },
         },
-        ...(vaultType === VaultType.Borrow 
-          ? [{
-          label: t('system.actions.multiply.adjust'),
-          icon: circle_slider,
-          iconShrink: 2,
-          panel: 'adjust',
-          action: () => {
-            toggle!('adjustPosition')
-          },
-        }] 
-        : []),
+        ...(vaultType === VaultType.Borrow
+          ? [
+              {
+                label: t('system.actions.multiply.adjust'),
+                icon: circle_slider,
+                iconShrink: 2,
+                panel: 'adjust',
+                action: () => {
+                  toggle!('adjustPosition')
+                },
+              },
+            ]
+          : []),
         {
           label: t('system.actions.common.close-vault'),
           icon: circle_close,

@@ -108,16 +108,18 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
           />
         </>
       )}
-      {vaultType === VaultType.Multiply && <VaultChangesInformationItem
-        label={'Multiply'}
-        value={
-          <Flex>
-            {multiply?.toFixed(2)}x
-            <VaultChangesInformationArrow />
-            {isCloseAction ? 'n/a' : `${afterMultiply?.toFixed(2)}x`}
-          </Flex>
-        }
-      />}
+      {vaultType === VaultType.Multiply && (
+        <VaultChangesInformationItem
+          label={'Multiply'}
+          value={
+            <Flex>
+              {multiply?.toFixed(2)}x
+              <VaultChangesInformationArrow />
+              {isCloseAction ? 'n/a' : `${afterMultiply?.toFixed(2)}x`}
+            </Flex>
+          }
+        />
+      )}
       <VaultChangesInformationItem
         label={`${t('system.vault-dai-debt')}`}
         value={
