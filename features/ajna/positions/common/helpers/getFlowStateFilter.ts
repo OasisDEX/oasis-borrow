@@ -7,7 +7,7 @@ import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyAction
 interface AjnaFlowStateFilterParams {
   collateralAddress: string
   event: CreatePositionEvent
-  product: AjnaProduct
+  productType: AjnaProduct
   quoteAddress: string
 }
 interface GetAjnaFlowStateFilterParams extends Omit<AjnaFlowStateFilterParams, 'event'> {
@@ -17,15 +17,15 @@ interface GetAjnaFlowStateFilterParams extends Omit<AjnaFlowStateFilterParams, '
 export function ajnaFlowStateFilter({
   collateralAddress,
   event,
-  product,
+  productType,
   quoteAddress,
 }: AjnaFlowStateFilterParams): boolean {
   return (
     extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.Ajna &&
     collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
     quoteAddress.toLocaleLowerCase() === event.args.debtToken.toLowerCase() &&
-    (product.toLowerCase() === event.args.positionType.toLowerCase() ||
-      (AJNA_BORROWISH_PRODUCTS.includes(product) &&
+    (productType.toLowerCase() === event.args.positionType.toLowerCase() ||
+      (AJNA_BORROWISH_PRODUCTS.includes(productType) &&
         AJNA_BORROWISH_PRODUCTS.includes(event.args.positionType.toLowerCase() as AjnaProduct)))
   )
 }

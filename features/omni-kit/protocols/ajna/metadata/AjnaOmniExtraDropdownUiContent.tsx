@@ -1,6 +1,7 @@
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { AjnaOmniEarnFormContentAdjust } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEanFormContentAdjust'
 import { AjnaOmniEarnFormContentClaimCollateral } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnFormContentClaimCollateral'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
 
@@ -17,7 +18,7 @@ export const AjnaOmniExtraDropdownUiContent: FC<AjnaOmniExtraDropdownUiContentPr
     form: {
       state: { uiDropdown },
     },
-  } = useOmniProductContext('earn')
+  } = useOmniProductContext(OmniProductType.Earn)
 
   return (
     <>

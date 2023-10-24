@@ -12,7 +12,7 @@ import {
 import { isShortPosition } from 'features/omni-kit/helpers'
 import type {
   OmniFlow,
-  OmniProduct,
+  OmniProductType,
   OmniSidebarEditingStep,
   OmniSidebarStep,
 } from 'features/omni-kit/types'
@@ -40,7 +40,7 @@ interface OmniGeneralContextProviderProps {
   isProxyWithManyPositions: boolean
   network: NetworkConfig
   owner: string
-  product: OmniProduct
+  productType: OmniProductType
   protocol: LendingProtocol
   quoteAddress: string
   quoteBalance: BigNumber

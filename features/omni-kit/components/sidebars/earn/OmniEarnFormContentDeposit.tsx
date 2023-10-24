@@ -1,5 +1,6 @@
 import { OmniFormContentSummary, OmniFormFieldDeposit } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import React from 'react'
 
 export function OmniEarnFormContentDeposit() {
@@ -12,7 +13,7 @@ export function OmniEarnFormContentDeposit() {
       validations: { isFormValid },
       elements: { extraEarnInputDeposit, earnFormOrder },
     },
-  } = useOmniProductContext('earn')
+  } = useOmniProductContext(OmniProductType.Earn)
 
   return (
     <>

@@ -1,5 +1,5 @@
 import { NetworkNames } from 'blockchain/networks'
-import type { OmniFlow, OmniProduct } from 'features/omni-kit/types'
+import type { OmniFlow, OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -8,7 +8,7 @@ interface OmniHeadlinePropsParams {
   collateralToken?: string
   flow: OmniFlow
   id?: string
-  product?: OmniProduct
+  productType?: OmniProductType
   quoteToken?: string
   collateralAddress?: string
   quoteAddress?: string
@@ -21,7 +21,7 @@ export function getOmniHeadlineProps({
   collateralToken,
   flow,
   id,
-  product,
+  productType,
   quoteToken,
   collateralIcon,
   quoteIcon,
@@ -37,7 +37,7 @@ export function getOmniHeadlineProps({
         header: t(`ajna.position-page.common.headline.${flow}`, {
           collateralToken,
           id,
-          product: upperFirst(product),
+          productType: upperFirst(productType),
           quoteToken,
         }),
         tokens: [collateralIcon, quoteIcon],

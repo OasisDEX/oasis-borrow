@@ -1,23 +1,24 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
-import type { OmniFormState, OmniProduct, OmniSidebarStep } from 'features/omni-kit/types'
+import type { OmniFormState, OmniSidebarStep } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 
 interface GetIsFormEmptyParams {
-  product: OmniProduct
-  state: OmniFormState
   currentStep: OmniSidebarStep
+  productType: OmniProductType
+  state: OmniFormState
   txStatus?: TxStatus
 }
 
 export function getOmniIsFormEmpty({
-  product,
+  productType,
   state,
   currentStep,
   txStatus,
 }: GetIsFormEmptyParams): boolean {
-  switch (product) {
-    case 'borrow': {
+  switch (productType) {
+    case OmniProductType.Borrow: {
       const { depositAmount, generateAmount, paybackAmount, withdrawAmount, action, loanToValue } =
         state as OmniBorrowFormState
 
@@ -27,7 +28,7 @@ export function getOmniIsFormEmpty({
 
       return !depositAmount && !generateAmount && !paybackAmount && !withdrawAmount && !loanToValue
     }
-    case 'multiply':
+    case OmniProductType.Multiply:
       const { depositAmount, loanToValue, withdrawAmount, generateAmount, paybackAmount, action } =
         state as OmniMultiplyFormState
 
@@ -47,7 +48,7 @@ export function getOmniIsFormEmpty({
         default:
           return true
       }
-    case 'earn':
+    case OmniProductType.Earn:
       throw Error('Earn isFormEmpty has to be handled separately')
   }
 }

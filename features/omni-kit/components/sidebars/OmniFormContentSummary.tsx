@@ -14,7 +14,7 @@ export function OmniFormContentSummary({
   showReset = true,
 }: PropsWithChildren<OmniFormContentSummaryProps>) {
   const {
-    environment: { product },
+    environment: { productType },
   } = useOmniGeneralContext()
   const {
     form: { dispatch },
@@ -22,7 +22,7 @@ export function OmniFormContentSummary({
       validations: { errors, notices, successes, warnings },
       handlers: { customReset },
     },
-  } = useOmniProductContext(product)
+  } = useOmniProductContext(productType)
 
   return (
     <>

@@ -5,6 +5,7 @@ import {
 } from 'features/omni-kit/components/sidebars'
 import { OmniBorrowFormOrder } from 'features/omni-kit/components/sidebars/borrow'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import React from 'react'
 
 export function OmniBorrowFormContentPayback() {
@@ -22,7 +23,7 @@ export function OmniBorrowFormContentPayback() {
     dynamicMetadata: {
       values: { collateralMax, paybackMax },
     },
-  } = useOmniProductContext('borrow')
+  } = useOmniProductContext(OmniProductType.Borrow)
 
   const { debtAmount } = position
 

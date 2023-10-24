@@ -3,6 +3,7 @@ import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -24,7 +25,7 @@ export function OmniBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     dynamicMetadata: {
       values: { shouldShowDynamicLtv, afterPositionDebt, afterAvailableToBorrow },
     },
-  } = useOmniProductContext('borrow')
+  } = useOmniProductContext(OmniProductType.Borrow)
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,

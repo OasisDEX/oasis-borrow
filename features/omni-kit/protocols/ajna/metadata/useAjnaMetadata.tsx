@@ -42,6 +42,7 @@ import { AjnaOmniLendingDetailsSectionContent } from 'features/omni-kit/protocol
 import { AjnaOmniLendingDetailsSectionFooter } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionFooter'
 import { getAjnaOmniEarnIsFomEmpty } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFomEmpty'
 import { getAjnaOmniEarnIsFormValid } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFormValid'
+import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import {
   formatAmount,
@@ -88,7 +89,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       owner,
       collateralIcon,
       quotePrecision,
-      product,
+      productType,
       isProxyWithManyPositions,
     },
     steps: { currentStep },
@@ -110,7 +111,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     ethBalance,
     ethPrice,
     gasEstimationUsd: gasEstimation?.usdValue,
-    product,
+    productType,
     quoteBalance,
     simulationErrors: productContext.position.simulationCommon?.errors,
     simulationWarnings: productContext.position.simulationCommon?.warnings,
@@ -121,7 +122,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
     txError: txDetails?.txError,
     earnIsFormValid:
-      product === 'earn'
+      productType === OmniProductType.Earn
         ? getAjnaOmniEarnIsFormValid({
             price,
             position: productContext.position.currentPosition.position as AjnaEarnPosition,
@@ -137,7 +138,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     // @ts-ignore TODO
     position: productContext.position.currentPosition.position,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
-    product,
+    productType,
     quoteToken,
     collateralToken,
     dispatch: productContext.form.dispatch,
@@ -148,17 +149,17 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
 
   const filters = {
     flowStateFilter: (event: CreatePositionEvent) =>
-      ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
+      ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
     consumedProxyFilter: (event: CreatePositionEvent) =>
-      !ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
+      !ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
   }
 
   const riskSidebar = <AjnaFormContentRisk />
   const dupeModal = OmniDupePositionModal
 
-  switch (product) {
-    case 'borrow':
-    case 'multiply':
+  switch (productType) {
+    case OmniProductType.Borrow:
+    case OmniProductType.Multiply:
       const position = productContext.position.currentPosition.position as AjnaPosition
       const simulation = productContext.position.currentPosition.simulation as
         | AjnaPosition
@@ -182,7 +183,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       const changeVariant = getOmniBorrowishChangeVariant({ simulation, isOracless })
 
       const isFormEmpty = getOmniIsFormEmpty({
-        product,
+        productType,
         state: productContext.form.state,
         currentStep,
         txStatus: txDetails?.txStatus,
@@ -229,23 +230,20 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           sidebarTitle: getAjnaSidebarTitle({
             currentStep,
             isFormFrozen: validations.isFormFrozen,
-            product,
+            productType,
             position,
             isOracless,
           }),
-          footerColumns: product === 'borrow' ? 3 : 2,
+          footerColumns: productType === OmniProductType.Borrow ? 3 : 2,
         },
         elements: {
-          highlighterOrderInformation:
-            ['borrow', 'multiply'].includes(product) && lendingContext.form.state.generateAmount ? (
-              <HighlightedOrderInformation
-                label={t('ajna.position-page.borrow.common.form.origination-fee', { quoteToken })}
-                symbol={quoteToken}
-                value={`${originationFeeFormatted} ${
-                  !isOracless ? originationFeeFormattedUSD : ''
-                }`}
-              />
-            ) : undefined,
+          highlighterOrderInformation: lendingContext.form.state.generateAmount ? (
+            <HighlightedOrderInformation
+              label={t('ajna.position-page.borrow.common.form.origination-fee', { quoteToken })}
+              symbol={quoteToken}
+              value={`${originationFeeFormatted} ${!isOracless ? originationFeeFormattedUSD : ''}`}
+            />
+          ) : undefined,
           overviewContent: (
             <AjnaOmniLendingDetailsSectionContent
               isSimulationLoading={productContext.position.isSimulationLoading}
@@ -262,7 +260,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               changeVariant={changeVariant}
               afterPositionDebt={afterPositionDebt}
               shouldShowDynamicLtv={shouldShowDynamicLtv}
-              product={product}
+              productType={productType}
               owner={owner}
               flow={flow}
               isProxyWithManyPositions={isProxyWithManyPositions}
@@ -278,7 +276,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               changeVariant={changeVariant}
               afterAvailableToBorrow={afterAvailableToBorrow}
               afterBuyingPower={afterBuyingPower}
-              product={product}
+              productType={productType}
               owner={owner}
               interestRate={interestRate}
             />
@@ -292,7 +290,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         featureToggles,
       } as LendingMetadata
 
-    case 'earn': {
+    case OmniProductType.Earn: {
       const earnContext = productContext as ProductContextWithEarn
 
       const earnPosition = productContext.position.currentPosition.position as AjnaEarnPosition
@@ -301,10 +299,8 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         | undefined
 
       const isPriceBelowLup =
-        product === 'earn'
-          ? earnPosition.price.lt(earnPosition.pool.lowestUtilizedPrice) &&
-            !earnPosition.pool.lowestUtilizedPriceIndex.isZero()
-          : false
+        earnPosition.price.lt(earnPosition.pool.lowestUtilizedPrice) &&
+        !earnPosition.pool.lowestUtilizedPriceIndex.isZero()
 
       return {
         notifications,
@@ -326,7 +322,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           sidebarTitle: getAjnaSidebarTitle({
             currentStep,
             isFormFrozen: validations.isFormFrozen,
-            product,
+            productType,
             position: earnPosition,
             isOracless,
           }),
@@ -365,7 +361,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               : []),
           ],
           earnWithdrawMax:
-            product === 'earn'
+            productType === OmniProductType.Earn
               ? getAjnaEarnWithdrawMax({
                   quoteTokenAmount: calculateAjnaMaxLiquidityWithdraw({
                     pool: earnPosition.pool,

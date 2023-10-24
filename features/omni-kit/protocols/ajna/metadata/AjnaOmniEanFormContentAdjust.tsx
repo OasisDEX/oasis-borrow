@@ -4,6 +4,7 @@ import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralCon
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { AjnaOmniEarnFormOrder } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnFormOrder'
 import { AjnaOmniEarnSlider } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnSlider'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
 
@@ -19,7 +20,7 @@ export const AjnaOmniEarnFormContentAdjust: FC<AjnaOmniEarnFormContentAdjustProp
   const {
     environment: { isOracless },
   } = useOmniGeneralContext()
-  const { position } = useOmniProductContext('earn')
+  const { position } = useOmniProductContext(OmniProductType.Earn)
 
   const pool = (position.currentPosition.position as AjnaEarnPosition).pool
 

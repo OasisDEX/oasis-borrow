@@ -6,6 +6,7 @@ import type { AjnaIsCachedPosition } from 'features/ajna/common/types'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
+import { OmniProductType } from 'features/omni-kit/types'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -26,7 +27,7 @@ export const AjnaOmniEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cac
   } = useOmniGeneralContext()
   const {
     position: { cachedPosition, currentPosition, isSimulationLoading },
-  } = useOmniProductContext('earn')
+  } = useOmniProductContext(OmniProductType.Earn)
 
   const { positionData: _positionData, simulationData: _simulationData } = resolveIfCachedPosition({
     cached,

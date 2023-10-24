@@ -2,26 +2,26 @@ import type { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { ContentFooterItemsBorrow } from 'features/ajna/positions/borrow/components/ContentFooterItemsBorrow'
 import { ContentFooterItemsMultiply } from 'features/ajna/positions/multiply/components/ContentFooterItemsMultiply'
-import type { OmniProduct } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
 
 interface AjnaOmniLendingDetailsSectionFooterProps {
-  product: OmniProduct
-  isSimulationLoading?: boolean
-  collateralToken: string
-  quoteToken: string
-  changeVariant: 'positive' | 'negative'
-  owner: string
-  position: AjnaPosition
-  simulation?: AjnaPosition
-  interestRate: BigNumber
   afterAvailableToBorrow?: BigNumber
   afterBuyingPower?: BigNumber
+  changeVariant: 'positive' | 'negative'
+  collateralToken: string
+  interestRate: BigNumber
+  isSimulationLoading?: boolean
+  owner: string
+  position: AjnaPosition
+  productType: OmniProductType
+  quoteToken: string
+  simulation?: AjnaPosition
 }
 
 export const AjnaOmniLendingDetailsSectionFooter: FC<AjnaOmniLendingDetailsSectionFooterProps> = ({
-  product,
+  productType,
   isSimulationLoading,
   collateralToken,
   owner,
@@ -33,7 +33,7 @@ export const AjnaOmniLendingDetailsSectionFooter: FC<AjnaOmniLendingDetailsSecti
   afterAvailableToBorrow,
   afterBuyingPower,
 }) => {
-  return product === 'borrow' ? (
+  return productType === OmniProductType.Borrow ? (
     <ContentFooterItemsBorrow
       isLoading={isSimulationLoading}
       collateralToken={collateralToken}

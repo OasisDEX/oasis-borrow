@@ -8,30 +8,31 @@ import { ContentCardNetBorrowCost } from 'features/ajna/positions/common/compone
 import { ContentCardNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardNetValue'
 import { ContentCardPositionDebt } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionDebt'
 import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
-import type { OmniFlow, OmniProduct } from 'features/omni-kit/types'
+import type { OmniFlow } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'
 import React from 'react'
 
 interface AjnaOmniDetailsSectionContentProps {
-  isSimulationLoading?: boolean
-  thresholdPrice: BigNumber
+  afterPositionDebt?: BigNumber
+  changeVariant: 'positive' | 'negative'
   collateralPrice: BigNumber
   collateralToken: string
+  flow: OmniFlow
   isOracless: boolean
+  isProxyWithManyPositions: boolean
   isShort: boolean
+  isSimulationLoading?: boolean
+  owner: string
+  position: AjnaPosition
   priceFormat: string
+  productType: OmniProductType
   quotePrice: BigNumber
   quoteToken: string
-  position: AjnaPosition
-  simulation?: AjnaPosition
-  changeVariant: 'positive' | 'negative'
-  afterPositionDebt?: BigNumber
   shouldShowDynamicLtv: boolean
-  product: OmniProduct
-  isProxyWithManyPositions: boolean
-  owner: string
-  flow: OmniFlow
+  simulation?: AjnaPosition
+  thresholdPrice: BigNumber
 }
 
 export const AjnaOmniLendingDetailsSectionContent: FC<AjnaOmniDetailsSectionContentProps> = ({
@@ -49,7 +50,7 @@ export const AjnaOmniLendingDetailsSectionContent: FC<AjnaOmniDetailsSectionCont
   changeVariant,
   afterPositionDebt,
   shouldShowDynamicLtv,
-  product,
+  productType,
   isProxyWithManyPositions,
   owner,
   flow,
@@ -104,7 +105,7 @@ export const AjnaOmniLendingDetailsSectionContent: FC<AjnaOmniDetailsSectionCont
           changeVariant={changeVariant}
         />
       )}
-      {product === 'borrow' && (
+      {productType === OmniProductType.Borrow && (
         <>
           <ContentCardCollateralLocked
             isLoading={isSimulationLoading}
@@ -129,7 +130,7 @@ export const AjnaOmniLendingDetailsSectionContent: FC<AjnaOmniDetailsSectionCont
         </>
       )}
 
-      {product === 'multiply' && (
+      {productType === OmniProductType.Multiply && (
         <>
           <ContentCardNetBorrowCost
             collateralToken={collateralToken}

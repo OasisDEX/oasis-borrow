@@ -1,6 +1,6 @@
 import { MessageCard } from 'components/MessageCard'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import type { OmniValidationItem } from 'features/omni-kit/types'
+import { type OmniValidationItem, OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -16,10 +16,10 @@ export const OmniValidationMessagesController: FC<OmniValidationMessagesControll
 }) => {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, product },
+    environment: { collateralToken, quoteToken, productType },
   } = useOmniGeneralContext()
 
-  const token = product === 'earn' ? quoteToken : collateralToken
+  const token = productType === OmniProductType.Earn ? quoteToken : collateralToken
 
   const messagesWithTranslations = validations.map((message) => {
     return (

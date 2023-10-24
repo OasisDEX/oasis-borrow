@@ -6,7 +6,7 @@ import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getStaticDpmPositionData$ } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import type { OmniProduct } from 'features/omni-kit/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
@@ -17,7 +17,7 @@ import { EMPTY } from 'rxjs'
 interface OmniProtocolDataProps {
   collateralToken?: string
   id?: string
-  product?: OmniProduct
+  productType?: OmniProductType
   quoteToken?: string
   protocol: LendingProtocol
   isOracless?: boolean
@@ -26,7 +26,7 @@ interface OmniProtocolDataProps {
 export function useOmniProtocolData({
   collateralToken,
   id,
-  product,
+  productType,
   quoteToken,
   protocol,
   isOracless,
@@ -65,27 +65,35 @@ export function useOmniProtocolData({
     useMemo(
       () =>
         id
-          ? dpmPositionDataV2$(getPositionIdentity(id), collateralToken, quoteToken, product)
-          : !isOracless && product && collateralToken && quoteToken
+          ? dpmPositionDataV2$(getPositionIdentity(id), collateralToken, quoteToken, productType)
+          : !isOracless && productType && collateralToken && quoteToken
           ? getStaticDpmPositionData$({
               collateralToken,
               collateralTokenAddress: tokensAddresses[collateralToken].address,
-              product,
+              product: productType,
               protocol,
               quoteToken,
               quoteTokenAddress: tokensAddresses[quoteToken].address,
             })
-          : isOracless && identifiedTokensData && product && collateralToken && quoteToken
+          : isOracless && identifiedTokensData && productType && collateralToken && quoteToken
           ? getStaticDpmPositionData$({
               collateralToken: identifiedTokensData[collateralToken].symbol,
               collateralTokenAddress: collateralToken,
-              product,
+              product: productType,
               protocol,
               quoteToken: identifiedTokensData[quoteToken].symbol,
               quoteTokenAddress: quoteToken,
             })
           : EMPTY,
-      [isOracless, id, collateralToken, quoteToken, product, identifiedTokensData, tokensAddresses],
+      [
+        isOracless,
+        id,
+        collateralToken,
+        quoteToken,
+        productType,
+        identifiedTokensData,
+        tokensAddresses,
+      ],
     ),
   )
 

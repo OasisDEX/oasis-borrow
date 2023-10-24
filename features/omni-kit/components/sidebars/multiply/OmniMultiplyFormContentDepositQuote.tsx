@@ -1,6 +1,7 @@
 import { OmniFormContentSummary, OmniFormFieldDeposit } from 'features/omni-kit/components/sidebars'
 import { OmniMultiplyFormOrder } from 'features/omni-kit/components/sidebars/multiply'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import React from 'react'
 
 export function OmniMultiplyFormContentDepositQuote() {
@@ -12,7 +13,7 @@ export function OmniMultiplyFormContentDepositQuote() {
       dispatch,
       state: { depositAmount },
     },
-  } = useOmniProductContext('multiply')
+  } = useOmniProductContext(OmniProductType.Multiply)
 
   return (
     <>

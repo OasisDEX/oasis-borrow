@@ -1,20 +1,21 @@
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
-import type { OmniFormState, OmniProduct, OmniSidebarStep } from 'features/omni-kit/types'
+import type { OmniFormState, OmniSidebarStep } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 
 export const isOmniFormValid = ({
   currentStep,
-  product,
+  productType,
   state,
   earnIsFormValid,
 }: {
   currentStep: OmniSidebarStep
-  product: OmniProduct
-  state: OmniFormState
   earnIsFormValid: boolean
+  productType: OmniProductType
+  state: OmniFormState
 }): boolean => {
-  switch (product) {
-    case 'borrow': {
+  switch (productType) {
+    case OmniProductType.Borrow: {
       const { action, generateAmount, depositAmount, paybackAmount, withdrawAmount, loanToValue } =
         state as OmniBorrowFormState
 
@@ -45,7 +46,7 @@ export const isOmniFormValid = ({
       }
     }
 
-    case 'multiply':
+    case OmniProductType.Multiply:
       const { action, depositAmount, withdrawAmount, loanToValue, paybackAmount, generateAmount } =
         state as OmniMultiplyFormState
 
@@ -75,7 +76,7 @@ export const isOmniFormValid = ({
           return true
       }
     // earn can be wild between protocols, that's why we need to handle it through dependency injection
-    case 'earn': {
+    case OmniProductType.Earn: {
       return earnIsFormValid
     }
   }

@@ -9,6 +9,7 @@ import {
   OmniBorrowFormContentWithdraw,
 } from 'features/omni-kit/components/sidebars/borrow'
 import { useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -20,7 +21,7 @@ export function OmniBorrowFormContentManage() {
       state: { uiDropdown, uiPill },
       updateState,
     },
-  } = useOmniProductContext('borrow')
+  } = useOmniProductContext(OmniProductType.Borrow)
 
   return (
     <>

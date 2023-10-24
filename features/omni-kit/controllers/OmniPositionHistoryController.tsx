@@ -9,11 +9,11 @@ import { Flex, Grid, Heading, Image, Text } from 'theme-ui'
 export function OmniPositionHistoryController() {
   const { t } = useTranslation()
   const {
-    environment: { isOracless, product, isShort, priceFormat, collateralToken, quoteToken },
+    environment: { isOracless, productType, isShort, priceFormat, collateralToken, quoteToken },
   } = useOmniGeneralContext()
   const {
     position: { history },
-  } = useOmniProductContext(product)
+  } = useOmniProductContext(productType)
 
   const { chainId } = useWalletManagement()
 

@@ -17,7 +17,7 @@ export function OmniFormContentTransaction({
 }: OmniFormContentTransactionProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, product, quoteToken },
+    environment: { collateralToken, productType, quoteToken },
     tx: { isTxStarted, isTxError, isTxWaitingForApproval, isTxInProgress, isTxSuccess },
   } = useOmniGeneralContext()
 
@@ -29,7 +29,7 @@ export function OmniFormContentTransaction({
             {/* TODO omni translation update */}
             {t(`ajna.position-page.common.form.transaction.confirm`, {
               collateralToken,
-              product: upperFirst(product),
+              productType: upperFirst(productType),
               quoteToken,
             })}
           </Text>

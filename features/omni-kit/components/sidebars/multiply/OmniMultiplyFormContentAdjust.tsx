@@ -1,6 +1,7 @@
 import { OmniAdjustSlider, OmniFormContentSummary } from 'features/omni-kit/components/sidebars'
 import { OmniMultiplyFormOrder } from 'features/omni-kit/components/sidebars/multiply'
 import { useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import React from 'react'
 
 export function OmniMultiplyFormContentAdjust() {
@@ -11,7 +12,7 @@ export function OmniMultiplyFormContentAdjust() {
     position: {
       currentPosition: { position },
     },
-  } = useOmniProductContext('multiply')
+  } = useOmniProductContext(OmniProductType.Multiply)
 
   return (
     <>

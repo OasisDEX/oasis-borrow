@@ -5,6 +5,7 @@ import {
 } from 'features/omni-kit/components/sidebars'
 import { OmniBorrowFormOrder } from 'features/omni-kit/components/sidebars/borrow/OmniBorrowFormOrder'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import React from 'react'
 
 export function OmniBorrowFormContentGenerate() {
@@ -20,7 +21,7 @@ export function OmniBorrowFormContentGenerate() {
       values: { debtMax, debtMin },
       elements: { highlighterOrderInformation },
     },
-  } = useOmniProductContext('borrow')
+  } = useOmniProductContext(OmniProductType.Borrow)
 
   return (
     <>

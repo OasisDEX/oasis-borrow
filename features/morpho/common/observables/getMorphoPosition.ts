@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import type { Context } from 'blockchain/network.types'
 import { getRpcProvider } from 'blockchain/networks'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import type { OmniProduct } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
@@ -39,11 +39,11 @@ export function getMorphoPosition$(
         }),
       }
 
-      switch (product as OmniProduct) {
-        case 'borrow':
-        case 'multiply':
+      switch (product as OmniProductType) {
+        case OmniProductType.Borrow:
+        case OmniProductType.Multiply:
           return await views.morpho.getPosition(commonPayload, commonDependency)
-        case 'earn':
+        case OmniProductType.Earn:
           return null
       }
     }),

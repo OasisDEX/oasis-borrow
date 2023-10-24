@@ -6,6 +6,7 @@ import {
   OmniMultiplyFormOrder,
 } from 'features/omni-kit/components/sidebars/multiply'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import { OmniFormView } from 'features/omni-kit/views'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -26,7 +27,7 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
     dynamicMetadata: {
       elements: { riskSidebar },
     },
-  } = useOmniProductContext('multiply')
+  } = useOmniProductContext(OmniProductType.Multiply)
 
   return (
     <OmniFormView

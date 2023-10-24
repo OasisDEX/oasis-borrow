@@ -12,6 +12,7 @@ import type {
 import { getOmniBorrowishChangeVariant, getOmniBorrowPaybackMax } from 'features/omni-kit/helpers'
 import { MorphoDetailsSectionContent } from 'features/omni-kit/protocols/morpho-blue/metadata/MorphoDetailsSectionContent'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/protocols/morpho-blue/metadata/MorphoDetailsSectionFooter'
+import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
@@ -36,7 +37,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       flow,
       quotePrice,
       collateralPrice,
-      product,
+      productType,
     },
     steps: { currentStep },
   } = useOmniGeneralContext()
@@ -61,9 +62,9 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
 
   const interestRate = new BigNumber(0.01)
 
-  switch (product) {
-    case 'borrow':
-    case 'multiply':
+  switch (productType) {
+    case OmniProductType.Borrow:
+    case OmniProductType.Multiply:
       return {
         notifications,
         validations,
@@ -72,9 +73,9 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         },
         filters: {
           flowStateFilter: (event: CreatePositionEvent) =>
-            ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
+            ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
           consumedProxyFilter: (event: CreatePositionEvent) =>
-            !ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
+            !ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
         },
         values: {
           // TODO the same value under different key
@@ -96,7 +97,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           }),
           sidebarTitle: getMorphoSidebarTitle({
             currentStep,
-            product,
+            productType,
           }),
           footerColumns: 2,
         },
@@ -125,7 +126,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
               simulation={simulation}
               collateralToken={collateralToken}
               quoteToken={quoteToken}
-              product={product}
+              productType={productType}
             />
           ),
           overviewBanner: undefined,
@@ -138,7 +139,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           reusableDpm: ajnaReusableDPMEnabled,
         },
       } as LendingMetadata
-    case 'earn':
+    case OmniProductType.Earn:
     default:
       throw new Error('Morpho does not support Earn')
   }

@@ -7,7 +7,12 @@ import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
 import type { TxError } from 'helpers/types'
 
-export type OmniProduct = 'borrow' | 'earn' | 'multiply'
+export enum OmniProductType {
+  Borrow = 'borrow',
+  Earn = 'earn',
+  Multiply = 'multiply',
+}
+
 export type OmniFlow = 'open' | 'manage'
 export type OmniSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction' | 'transition'
 export type OmniSidebarEditingStep = Extract<OmniSidebarStep, 'setup' | 'manage'>
@@ -50,9 +55,9 @@ export type OmniMultiplyAction =
 
 export interface OmniProductPage {
   collateralToken: string
-  positionId?: string
   networkName: NetworkNames
-  productType: OmniProduct
+  positionId?: string
+  productType: OmniProductType
   quoteToken: string
 }
 
@@ -61,49 +66,49 @@ export type OmniFormAction = OmniBorrowAction | OmniEarnAction | OmniMultiplyAct
 export type OmniFormState = OmniBorrowFormState | OmniMultiplyFormState | OmniEarnFormState
 
 export type OmniValidations = {
-  isFormValid: boolean
-  isFormFrozen: boolean
-  hasErrors: boolean
   errors: OmniValidationItem[]
-  warnings: OmniValidationItem[]
+  hasErrors: boolean
+  isFormFrozen: boolean
+  isFormValid: boolean
   notices: OmniValidationItem[]
   successes: OmniValidationItem[]
+  warnings: OmniValidationItem[]
 }
 
 export interface OmniSimulationCommon {
   errors: { name: string; data?: { [key: string]: string } }[]
-  warnings: { name: string; data?: { [key: string]: string } }[]
-  successes: { name: string; data?: { [key: string]: string } }[]
   notices: { name: string; data?: { [key: string]: string } }[]
+  successes: { name: string; data?: { [key: string]: string } }[]
+  warnings: { name: string; data?: { [key: string]: string } }[]
 }
 
 export type OmniGenericPosition = LendingPosition | SupplyPosition
 
 export interface GetOmniBorrowValidationsParams {
   ajnaSafetySwitchOn: boolean
-  flow: OmniFlow
   collateralBalance: BigNumber
   collateralToken: string
-  quoteToken: string
   currentStep: OmniSidebarStep
+  earnIsFormValid: boolean
   ethBalance: BigNumber
   ethPrice: BigNumber
+  flow: OmniFlow
   gasEstimationUsd?: BigNumber
-  product: OmniProduct
-  quoteBalance: BigNumber
-  simulationErrors?: OmniSimulationCommon['errors']
-  simulationWarnings?: OmniSimulationCommon['warnings']
-  simulationNotices?: OmniSimulationCommon['notices']
-  simulationSuccesses?: OmniSimulationCommon['successes']
-  state: OmniFormState
   position: OmniGenericPosition
   positionAuction: AjnaPositionAuction
+  productType: OmniProductType
+  quoteBalance: BigNumber
+  quoteToken: string
+  simulationErrors?: OmniSimulationCommon['errors']
+  simulationNotices?: OmniSimulationCommon['notices']
+  simulationSuccesses?: OmniSimulationCommon['successes']
+  simulationWarnings?: OmniSimulationCommon['warnings']
+  state: OmniFormState
   txError?: TxError
-  earnIsFormValid: boolean
 }
 
 export type OmniSteps = {
-  [ProductKey in OmniProduct]: {
+  [ProductKey in OmniProductType]: {
     [FlowKey in OmniFlow]: OmniSidebarStep[]
   }
 }

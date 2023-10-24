@@ -2,6 +2,7 @@ import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { OmniMultiplyFormOrder } from 'features/omni-kit/components/sidebars/multiply'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
@@ -23,7 +24,7 @@ export function OmniMultiplyFormContentClose() {
       swap,
       isSimulationLoading,
     },
-  } = useOmniProductContext('multiply')
+  } = useOmniProductContext(OmniProductType.Multiply)
   const closeToToken = closeTo === 'collateral' ? collateralToken : quoteToken
 
   const collateralOnClose = swap?.current

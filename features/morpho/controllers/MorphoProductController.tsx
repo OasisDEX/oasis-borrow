@@ -10,7 +10,7 @@ import { useAjnaOmniTxHandler } from 'features/omni-kit/protocols/ajna/hooks/use
 import { useMorphoMetadata } from 'features/omni-kit/protocols/morpho-blue/metadata/useMorphoMetadata'
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
-import type { OmniFlow } from 'features/omni-kit/types'
+import { type OmniFlow, OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import type { FC } from 'react'
 import React from 'react'
@@ -32,12 +32,12 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
     // TO BE REMOVED / REPLACED ONCE morpho tx handler will be ready
     <AjnaCustomStateContextProvider
       price={
-        dpmPosition.product === 'earn'
+        dpmPosition.product === OmniProductType.Earn
           ? getEarnDefaultPrice(positionData as unknown as AjnaEarnPosition)
           : undefined
       }
     >
-      {dpmPosition.product === 'borrow' && (
+      {dpmPosition.product === OmniProductType.Borrow && (
         <OmniProductContextProvider
           getDynamicMetadata={useMorphoMetadata}
           formDefaults={{
@@ -45,14 +45,14 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
           }}
           formReducto={useOmniBorrowFormReducto}
           position={positionData as LendingPosition}
-          product={dpmPosition.product}
+          productType={dpmPosition.product}
           positionAuction={auction}
           positionHistory={history}
         >
           <OmniBorrowPositionController txHandler={useAjnaOmniTxHandler} />
         </OmniProductContextProvider>
       )}
-      {dpmPosition.product === 'multiply' && (
+      {dpmPosition.product === OmniProductType.Multiply && (
         <OmniProductContextProvider
           getDynamicMetadata={useMorphoMetadata}
           formDefaults={{
@@ -60,7 +60,7 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
           }}
           formReducto={useOmniMultiplyFormReducto}
           position={positionData as LendingPosition}
-          product={dpmPosition.product}
+          productType={dpmPosition.product}
           positionAuction={auction}
           positionHistory={history}
         >

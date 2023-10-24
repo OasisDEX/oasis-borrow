@@ -10,6 +10,7 @@ import {
   OmniMultiplyFormContentWithdrawCollateral,
 } from 'features/omni-kit/components/sidebars/multiply'
 import { useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -21,7 +22,7 @@ export function OmniMultiplyFormContentManage() {
       state: { uiDropdown, uiPill },
       updateState,
     },
-  } = useOmniProductContext('multiply')
+  } = useOmniProductContext(OmniProductType.Multiply)
 
   return (
     <>

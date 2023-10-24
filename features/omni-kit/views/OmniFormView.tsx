@@ -50,7 +50,7 @@ export function OmniFormView({
       flow,
       isOracless,
       isOwner,
-      product,
+      productType,
       quoteAddress,
       quoteToken,
       protocol,
@@ -84,7 +84,7 @@ export function OmniFormView({
       elements: { dupeModal },
       featureToggles: { suppressValidation, safetySwitch, reusableDpm },
     },
-  } = useOmniProductContext(product)
+  } = useOmniProductContext(productType)
 
   const txHandler = _txHandler()
 
@@ -115,7 +115,7 @@ export function OmniFormView({
             collateralToken,
             dpmAccounts,
             events: filteredEvents,
-            product,
+            productType,
             quoteAddress,
             quoteToken,
             walletAddress,
@@ -136,7 +136,7 @@ export function OmniFormView({
     action: state.action,
     positionId: resolvedId,
     protocol,
-    product,
+    productType,
   })
 
   const {
@@ -176,10 +176,12 @@ export function OmniFormView({
     isFormEmpty,
   })
   const primaryButtonActions = getOmniSidebarPrimaryButtonActions({
+    collateralAddress,
+    collateralToken,
     currentStep,
     editingStep,
     flow,
-    protocol,
+    isOracless,
     isStepWithTransaction,
     isTransitionAction,
     isTransitionWaitingForApproval,
@@ -197,14 +199,12 @@ export function OmniFormView({
       setStep(editingStep)
       txSuccessAction && txSuccessAction()
     },
+    productType,
+    protocol,
+    quoteAddress,
+    quoteToken,
     resolvedId,
     walletAddress,
-    product: product.toLowerCase(),
-    isOracless,
-    quoteAddress,
-    collateralAddress,
-    collateralToken,
-    quoteToken,
   })
   const textButtonAction = () => {
     setisTransitionWaitingForApproval(false)

@@ -7,6 +7,7 @@ import {
   OmniBorrowFormOrder,
 } from 'features/omni-kit/components/sidebars/borrow'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import { OmniFormView } from 'features/omni-kit/views'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -27,7 +28,7 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
     dynamicMetadata: {
       elements: { riskSidebar },
     },
-  } = useOmniProductContext('borrow')
+  } = useOmniProductContext(OmniProductType.Borrow)
 
   return (
     <OmniFormView

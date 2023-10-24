@@ -8,7 +8,7 @@ import { Grid } from 'theme-ui'
 
 export function OmniOverviewController() {
   const {
-    environment: { product },
+    environment: { productType },
   } = useOmniGeneralContext()
   const { t } = useTranslation()
   const {
@@ -17,7 +17,7 @@ export function OmniOverviewController() {
       elements: { overviewContent, overviewBanner, overviewFooter },
       notifications,
     },
-  } = useOmniProductContext(product)
+  } = useOmniProductContext(productType)
 
   return (
     <Grid gap={2}>

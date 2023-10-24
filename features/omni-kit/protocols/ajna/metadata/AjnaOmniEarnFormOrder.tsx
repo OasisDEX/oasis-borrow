@@ -1,7 +1,7 @@
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { AjnaOmniClaimCollateralFormOrderInformation } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniClaimCollateralFormOrderInformation'
 import { AjnaOmniEarnFormOrderInformation } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnFormOrderInformation'
-import type { OmniIsCachedPosition } from 'features/omni-kit/types'
+import { OmniProductType, type OmniIsCachedPosition } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
 
@@ -10,7 +10,7 @@ export const AjnaOmniEarnFormOrder: FC<OmniIsCachedPosition> = ({ cached = false
     form: {
       state: { action },
     },
-  } = useOmniProductContext('earn')
+  } = useOmniProductContext(OmniProductType.Earn)
 
   return action === 'claim-earn' ? (
     <AjnaOmniClaimCollateralFormOrderInformation cached={cached} />

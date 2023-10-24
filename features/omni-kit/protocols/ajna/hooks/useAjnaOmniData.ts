@@ -6,7 +6,7 @@ import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { useAjnaRedirect } from 'features/ajna/positions/common/hooks/useAjnaRedirect'
 import { getAjnaPositionAggregatedData$ } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import type { OmniProduct } from 'features/omni-kit/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
 import { one } from 'helpers/zero'
 import { useMemo } from 'react'
@@ -16,7 +16,7 @@ import { EMPTY } from 'rxjs'
 export interface ProductDataProps {
   collateralToken?: string
   id?: string
-  product?: OmniProduct
+  productType?: OmniProductType
   quoteToken?: string
   dpmPositionData?: DpmPositionData
   tokenPriceUSDData?: Tickers
@@ -25,7 +25,7 @@ export interface ProductDataProps {
 export function useAjnaOmniData({
   collateralToken,
   id,
-  product,
+  productType,
   quoteToken,
   dpmPositionData,
   tokenPriceUSDData,
@@ -78,7 +78,7 @@ export function useAjnaOmniData({
     collateralToken,
     dpmPositionData,
     id,
-    product,
+    productType,
     quoteToken,
   })
 

@@ -7,6 +7,7 @@ import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/
 import { resolveIfCachedSwap } from 'features/ajna/positions/common/helpers/resolveIfCachedSwap'
 import { resolveSwapTokenPrice } from 'features/ajna/positions/common/helpers/resolveSwapTokenPrice'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
   formatAmount,
@@ -36,7 +37,7 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     dynamicMetadata: {
       values: { shouldShowDynamicLtv },
     },
-  } = useOmniProductContext('multiply')
+  } = useOmniProductContext(OmniProductType.Multiply)
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,

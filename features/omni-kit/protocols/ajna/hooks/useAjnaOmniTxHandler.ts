@@ -37,7 +37,7 @@ export function useAjnaOmniTxHandler(): () => void {
       quotePrecision,
       quotePrice,
       quoteToken,
-      product,
+      productType,
       slippage,
     },
     steps: { isExternalStep, currentStep },
@@ -56,7 +56,7 @@ export function useAjnaOmniTxHandler(): () => void {
       validations: { isFormValid },
       values: { isFormEmpty },
     },
-  } = useOmniProductContext(product)
+  } = useOmniProductContext(productType)
   const {
     state: { price },
     dispatch: customDispatch,

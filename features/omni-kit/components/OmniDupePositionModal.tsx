@@ -2,7 +2,7 @@ import { NetworkIds } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
-import type { AjnaProduct } from 'features/ajna/common/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { getOraclessProductUrl } from 'features/poolFinder/helpers'
 import { useModalContext } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -19,7 +19,7 @@ export interface OmniDupePositionModalProps {
   collateralToken: string
   dpmAccounts: UserDpmAccount[]
   events: CreatePositionEvent[]
-  product: AjnaProduct
+  productType: OmniProductType
   quoteAddress: string
   quoteToken: string
   walletAddress?: string
@@ -31,7 +31,7 @@ export function OmniDupePositionModal({
   collateralToken,
   dpmAccounts,
   events,
-  product,
+  productType,
   quoteAddress,
   quoteToken,
   walletAddress,
@@ -48,14 +48,14 @@ export function OmniDupePositionModal({
 
   const hasMultiplyPositions = positionIds.length > 1
   const amount = hasMultiplyPositions ? 'plural' : 'singular'
-  const type = product === 'earn' ? 'lender' : 'borrower'
+  const type = productType === OmniProductType.Earn ? 'lender' : 'borrower'
   const primaryLink = hasMultiplyPositions
     ? `/owner/${walletAddress}`
     : `${getOraclessProductUrl({
         chainId,
         collateralAddress,
         collateralToken,
-        product,
+        productType,
         quoteAddress,
         quoteToken,
       })}/${positionIds[0]}`
@@ -73,7 +73,7 @@ export function OmniDupePositionModal({
             <Heading variant="header5" sx={{ pt: 3, pb: 2 }}>
               {t('ajna.position-page.common.dupe-modal.title', {
                 collateralToken,
-                product: startCase(product),
+                productType: startCase(productType),
                 quoteToken,
               })}
             </Heading>

@@ -4,6 +4,7 @@ import {
 } from 'features/omni-kit/components/sidebars'
 import { OmniMultiplyFormOrder } from 'features/omni-kit/components/sidebars/multiply'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import React from 'react'
 
 export function OmniMultiplyFormContentWithdrawCollateral() {
@@ -18,7 +19,7 @@ export function OmniMultiplyFormContentWithdrawCollateral() {
     dynamicMetadata: {
       values: { collateralMax },
     },
-  } = useOmniProductContext('multiply')
+  } = useOmniProductContext(OmniProductType.Multiply)
 
   return (
     <>

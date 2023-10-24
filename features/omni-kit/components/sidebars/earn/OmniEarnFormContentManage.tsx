@@ -4,6 +4,7 @@ import {
   OmniEarnFormContentWithdraw,
 } from 'features/omni-kit/components/sidebars/earn'
 import { useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -21,7 +22,7 @@ export function OmniEarnFormContentManage() {
     dynamicMetadata: {
       elements: { earnExtraUiDropdownContent },
     },
-  } = useOmniProductContext('earn')
+  } = useOmniProductContext(OmniProductType.Earn)
 
   return (
     <>

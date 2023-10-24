@@ -51,14 +51,14 @@ export function OmniFormFieldDeposit({
   OmniFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
-    environment: { isOracless, product },
+    environment: { isOracless, productType },
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
     dynamicMetadata: {
       validations: { isFormFrozen },
     },
-  } = useOmniProductContext(product)
+  } = useOmniProductContext(productType)
 
   return 'depositAmount' in state && 'depositAmountUSD' in state ? (
     <VaultActionInput
@@ -115,14 +115,14 @@ export function OmniFormFieldGenerate({
   OmniFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
-    environment: { isOracless, product, quoteDigits, quotePrice, quoteToken },
+    environment: { isOracless, productType, quoteDigits, quotePrice, quoteToken },
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
     dynamicMetadata: {
       validations: { isFormFrozen },
     },
-  } = useOmniProductContext(product)
+  } = useOmniProductContext(productType)
 
   return 'generateAmount' in state && 'generateAmountUSD' in state ? (
     <VaultActionInput
@@ -187,14 +187,14 @@ export function OmniFormFieldPayback({
   OmniFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
-    environment: { isOracless, quoteDigits, quotePrice, quoteToken, product },
+    environment: { isOracless, quoteDigits, quotePrice, quoteToken, productType },
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
     dynamicMetadata: {
       validations: { isFormFrozen },
     },
-  } = useOmniProductContext(product)
+  } = useOmniProductContext(productType)
 
   return 'paybackAmount' in state && 'paybackAmountUSD' in state ? (
     <VaultActionInput
@@ -266,14 +266,14 @@ export function OmniFormFieldWithdraw({
   const { t } = useTranslation()
 
   const {
-    environment: { isOracless, product },
+    environment: { isOracless, productType },
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
     dynamicMetadata: {
       validations: { isFormFrozen },
     },
-  } = useOmniProductContext(product)
+  } = useOmniProductContext(productType)
 
   return 'withdrawAmount' in state && 'withdrawAmountUSD' in state ? (
     <VaultActionInput

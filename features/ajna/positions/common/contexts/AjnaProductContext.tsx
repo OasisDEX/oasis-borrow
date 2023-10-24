@@ -246,7 +246,7 @@ export function AjnaProductContextProvider({
         flow,
         position,
         positionAuction,
-        product,
+        productType: product,
         quoteToken,
         collateralToken,
         dispatch: form.dispatch,

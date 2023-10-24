@@ -2,6 +2,7 @@ import { ActionPills } from 'components/ActionPills'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { OmniBorrowFormOrder } from 'features/omni-kit/components/sidebars/borrow'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
@@ -24,7 +25,7 @@ export function OmniBorrowFormContentClose() {
       swap,
       isSimulationLoading,
     },
-  } = useOmniProductContext('borrow')
+  } = useOmniProductContext(OmniProductType.Borrow)
   const closeToToken = closeTo === 'collateral' ? collateralToken : quoteToken
 
   const collateralOnClose = swap?.current

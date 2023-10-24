@@ -1,7 +1,7 @@
 import type { Tickers } from 'blockchain/prices.types'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import type { OmniProduct } from 'features/omni-kit/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
 import { one } from 'helpers/zero'
 import { useMemo } from 'react'
@@ -11,7 +11,7 @@ import { EMPTY } from 'rxjs'
 export interface ProductDataProps {
   collateralToken?: string
   id?: string
-  product?: OmniProduct
+  product?: OmniProductType
   quoteToken?: string
   dpmPositionData?: DpmPositionData
   tokenPriceUSDData?: Tickers

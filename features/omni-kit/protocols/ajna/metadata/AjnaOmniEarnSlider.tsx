@@ -14,6 +14,7 @@ import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralCon
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
 import { AjnaOmniEarnInput } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnInput'
+import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -40,7 +41,7 @@ export const AjnaOmniEarnSlider: FC<AjnaEarnSliderProps> = ({
     position: {
       currentPosition: { position: _position },
     },
-  } = useOmniProductContext('earn')
+  } = useOmniProductContext(OmniProductType.Earn)
 
   const {
     state: { price },

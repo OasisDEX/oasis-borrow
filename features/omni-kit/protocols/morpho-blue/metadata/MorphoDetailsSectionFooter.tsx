@@ -1,7 +1,7 @@
 import type { MorphoPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
-import type { OmniProduct } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatPrecision } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -11,9 +11,9 @@ import React from 'react'
 
 interface MorphoDetailsSectionFooterProps {
   collateralToken: string
-  quoteToken: string
   position: MorphoPosition
-  product: OmniProduct
+  productType: OmniProductType
+  quoteToken: string
   simulation?: MorphoPosition
 }
 
@@ -21,7 +21,7 @@ export const MorphoDetailsSectionFooter: FC<MorphoDetailsSectionFooterProps> = (
   position,
   simulation,
   collateralToken,
-  product,
+  productType,
   quoteToken,
 }) => {
   const { t } = useTranslation()
@@ -56,7 +56,7 @@ export const MorphoDetailsSectionFooter: FC<MorphoDetailsSectionFooterProps> = (
           }
         }
       />
-      {product === 'multiply' && (
+      {productType === OmniProductType.Multiply && (
         <>
           <DetailsSectionFooterItem
             sx={{ pr: 3 }}

@@ -5,6 +5,7 @@ import type { AjnaIsCachedPosition } from 'features/ajna/common/types'
 import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
+import { OmniProductType } from 'features/omni-kit/types'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
@@ -20,7 +21,7 @@ export const AjnaOmniClaimCollateralFormOrderInformation: FC<AjnaIsCachedPositio
   } = useOmniGeneralContext()
   const {
     position: { currentPosition, cachedPosition, isSimulationLoading },
-  } = useOmniProductContext('earn')
+  } = useOmniProductContext(OmniProductType.Earn)
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,

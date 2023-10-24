@@ -18,10 +18,10 @@ import type {
 import type {
   OmniGenericPosition,
   OmniIsCachedPosition,
-  OmniProduct,
   OmniSimulationCommon,
   OmniValidations,
 } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
@@ -118,33 +118,33 @@ export type OmniMetadataParams =
 export type GetOmniMetadata = (_: OmniMetadataParams) => LendingMetadata | SupplyMetadata
 
 interface ProductContextProviderPropsWithBorrow {
-  getDynamicMetadata: GetOmniMetadata
-  formReducto: typeof useOmniBorrowFormReducto
   formDefaults: Partial<OmniBorrowFormState>
+  formReducto: typeof useOmniBorrowFormReducto
+  getDynamicMetadata: GetOmniMetadata
   position: LendingPosition
-  product: 'borrow'
   positionAuction: unknown
   positionHistory: PositionHistoryEvent[]
+  productType: OmniProductType.Borrow
 }
 
 interface ProductContextProviderPropsWithEarn {
-  getDynamicMetadata: GetOmniMetadata
-  formReducto: typeof useOmniEarnFormReducto
   formDefaults: Partial<OmniEarnFormState>
+  formReducto: typeof useOmniEarnFormReducto
+  getDynamicMetadata: GetOmniMetadata
   position: SupplyPosition
-  product: 'earn'
   positionAuction: unknown
   positionHistory: PositionHistoryEvent[]
+  productType: OmniProductType.Earn
 }
 
 interface ProductContextProviderPropsWithMultiply {
-  getDynamicMetadata: GetOmniMetadata
-  formReducto: typeof useOmniMultiplyFormReducto
   formDefaults: Partial<OmniMultiplyFormState>
+  formReducto: typeof useOmniMultiplyFormReducto
+  getDynamicMetadata: GetOmniMetadata
   position: LendingPosition
-  product: 'multiply'
   positionAuction: unknown
   positionHistory: PositionHistoryEvent[]
+  productType: OmniProductType.Multiply
 }
 
 type ProductDetailsContextProviderProps =
@@ -206,27 +206,29 @@ const borrowContext = React.createContext<ProductContextWithBorrow | undefined>(
 const earnContext = React.createContext<ProductContextWithEarn | undefined>(undefined)
 const multiplyContext = React.createContext<ProductContextWithMultiply | undefined>(undefined)
 
-type PickProductType<T extends OmniProduct> = T extends 'borrow'
+type PickProductType<T extends OmniProductType> = T extends OmniProductType.Borrow
   ? ProductContextWithBorrow
-  : T extends 'earn'
+  : T extends OmniProductType.Earn
   ? ProductContextWithEarn
-  : T extends 'multiply'
+  : T extends OmniProductType.Multiply
   ? ProductContextWithMultiply
   : never
 
-export function useOmniProductContext<T extends OmniProduct>(product: T): PickProductType<T> {
+export function useOmniProductContext<T extends OmniProductType>(
+  productType: T,
+): PickProductType<T> {
   const { environment } = useOmniGeneralContext()
 
   const context =
-    product === 'borrow'
+    productType === OmniProductType.Borrow
       ? useContext(borrowContext)
-      : product === 'earn'
+      : productType === OmniProductType.Earn
       ? useContext(earnContext)
       : useContext(multiplyContext)
 
-  if (product !== environment.product)
+  if (productType !== environment.productType)
     throw new Error(
-      `ProtocolGeneralContext and AjnaProductContext products doesn't match: ${environment.product}/${product}`,
+      `ProtocolGeneralContext and AjnaProductContext products doesn't match: ${environment.productType}/${productType}`,
     )
   if (!context) throw new Error('AjnaProductContext not available!')
   return context as PickProductType<T>
@@ -237,7 +239,7 @@ export function OmniProductContextProvider({
   children,
   formDefaults,
   formReducto,
-  product,
+  productType,
   position,
   positionAuction,
   positionHistory,
@@ -362,8 +364,8 @@ export function OmniProductContextProvider({
     cachedSwap,
   ])
 
-  switch (product) {
-    case 'borrow':
+  switch (productType) {
+    case OmniProductType.Borrow:
       return (
         <borrowContext.Provider
           value={
@@ -376,7 +378,7 @@ export function OmniProductContextProvider({
           {children}
         </borrowContext.Provider>
       )
-    case 'earn':
+    case OmniProductType.Earn:
       return (
         <earnContext.Provider
           value={
@@ -389,7 +391,7 @@ export function OmniProductContextProvider({
           {children}
         </earnContext.Provider>
       )
-    case 'multiply':
+    case OmniProductType.Multiply:
       return (
         <multiplyContext.Provider
           value={

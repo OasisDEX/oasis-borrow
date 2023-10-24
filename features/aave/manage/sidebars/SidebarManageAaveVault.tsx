@@ -295,7 +295,7 @@ export function ManageAaveSwitchStateView({
       isLoading: false,
       disabled: false,
       label: t('manage-earn.aave.vault-form.confirm-btn'),
-      action: () => send({ type: 'SWITCH_CONFIRMED', productType: productType }),
+      action: () => send({ type: 'SWITCH_CONFIRMED', productType }),
     },
     textButton: textButtonReturningToAdjust({ state, send }).textButton,
   }

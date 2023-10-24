@@ -3,6 +3,7 @@ import {
   OmniFormFieldWithdraw,
 } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import React from 'react'
 
 export function OmniEarnFormContentWithdraw() {
@@ -17,7 +18,7 @@ export function OmniEarnFormContentWithdraw() {
       elements: { extraEarnInputWithdraw, earnFormOrder },
       values: { earnWithdrawMax },
     },
-  } = useOmniProductContext('earn')
+  } = useOmniProductContext(OmniProductType.Earn)
 
   return (
     <>

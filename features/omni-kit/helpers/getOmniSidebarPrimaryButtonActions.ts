@@ -2,10 +2,12 @@ import type { OmniFlow } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 
 export function getOmniSidebarPrimaryButtonActions({
+  collateralAddress,
+  collateralToken,
   currentStep,
   editingStep,
   flow,
-  protocol,
+  isOracless,
   isStepWithTransaction,
   isTransitionAction,
   isTransitionWaitingForApproval,
@@ -16,19 +18,19 @@ export function getOmniSidebarPrimaryButtonActions({
   onSelectTransition,
   onTransition,
   onUpdated,
-  resolvedId,
-  product,
-  collateralToken,
-  quoteToken,
-  walletAddress,
+  productType,
+  protocol,
   quoteAddress,
-  collateralAddress,
-  isOracless,
+  quoteToken,
+  resolvedId,
+  walletAddress,
 }: {
+  collateralAddress: string
+  collateralToken: string
   currentStep: string
   editingStep: string
   flow: OmniFlow
-  protocol: LendingProtocol
+  isOracless: boolean
   isStepWithTransaction: boolean
   isTransitionAction: boolean
   isTransitionWaitingForApproval: boolean
@@ -39,12 +41,10 @@ export function getOmniSidebarPrimaryButtonActions({
   onSelectTransition: () => void
   onTransition: () => void
   onUpdated: () => void
-  product: string
-  collateralToken: string
-  collateralAddress: string
-  quoteToken: string
+  productType: string
+  protocol: LendingProtocol
   quoteAddress: string
-  isOracless: boolean
+  quoteToken: string
   resolvedId?: string
   walletAddress?: string
 }) {
@@ -55,7 +55,7 @@ export function getOmniSidebarPrimaryButtonActions({
       const resolvedCollateralUrl = isOracless ? collateralAddress : collateralToken
       const resolvedQuoteUrl = isOracless ? quoteAddress : quoteToken
       return {
-        url: `/ethereum/${protocol}/${product}/${resolvedCollateralUrl}-${resolvedQuoteUrl}/${resolvedId}`,
+        url: `/ethereum/${protocol}/${productType.toLowerCase()}/${resolvedCollateralUrl}-${resolvedQuoteUrl}/${resolvedId}`,
       }
     case isStepWithTransaction && isTxSuccess:
       return { action: onUpdated }

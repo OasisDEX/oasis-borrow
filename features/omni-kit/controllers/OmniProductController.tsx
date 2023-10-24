@@ -7,7 +7,7 @@ import { OmniGeneralContextProvider } from 'features/omni-kit/contexts'
 import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
 import { useOmniProtocolData } from 'features/omni-kit/hooks'
 import type { ProductDataProps } from 'features/omni-kit/protocols/ajna/hooks/useAjnaOmniData'
-import type { OmniFlow, OmniProduct, OmniSteps } from 'features/omni-kit/types'
+import type { OmniFlow, OmniProductType, OmniSteps } from 'features/omni-kit/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -31,7 +31,7 @@ interface OmniProductControllerProps<A, H, P> {
   isOracless?: boolean
   networkName: NetworkNames
   positionId?: string
-  productType?: OmniProduct
+  productType?: OmniProductType
   protocol: LendingProtocol
   protocolHook: (params: ProductDataProps) => {
     data: { aggregatedData: { auction: A; history: H } | undefined; positionData: P | undefined }
@@ -81,7 +81,7 @@ export const OmniProductController = <A, H, P>({
     collateralToken,
     id: positionId,
     isOracless,
-    product: productType,
+    productType,
     protocol,
     quoteToken,
   })
@@ -93,7 +93,7 @@ export const OmniProductController = <A, H, P>({
     collateralToken,
     dpmPositionData,
     id: positionId,
-    product: productType,
+    productType,
     quoteToken,
     tokenPriceUSDData,
   })
@@ -119,14 +119,14 @@ export const OmniProductController = <A, H, P>({
               customLoader={
                 <PositionLoadingState
                   {...getOmniHeadlineProps({
+                    collateralIcon: tokensIconsData?.collateralToken,
                     collateralToken: dpmPositionData?.collateralToken,
                     flow,
-                    product: dpmPositionData?.product as OmniProduct,
-                    quoteToken: dpmPositionData?.quoteToken,
-                    collateralIcon: tokensIconsData?.collateralToken,
-                    quoteIcon: tokensIconsData?.quoteToken,
-                    protocol,
                     id: positionId,
+                    productType: dpmPositionData?.product as OmniProductType,
+                    protocol,
+                    quoteIcon: tokensIconsData?.quoteToken,
+                    quoteToken: dpmPositionData?.quoteToken,
                   })}
                 />
               }
@@ -175,7 +175,7 @@ export const OmniProductController = <A, H, P>({
                     isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
                     network={network}
                     owner={dpmPosition.user}
-                    product={dpmPosition.product as OmniProduct}
+                    productType={dpmPosition.product as OmniProductType}
                     protocol={protocol}
                     quoteAddress={dpmPosition.quoteTokenAddress}
                     quoteBalance={quoteBalance}
@@ -185,7 +185,7 @@ export const OmniProductController = <A, H, P>({
                     quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                     quoteToken={dpmPosition.quoteToken}
                     slippage={slippage}
-                    steps={steps[dpmPosition.product as OmniProduct][flow]}
+                    steps={steps[dpmPosition.product as OmniProductType][flow]}
                   >
                     {controller({
                       aggregatedData: _aggregatedData,

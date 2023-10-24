@@ -6,16 +6,16 @@ import { useTranslation } from 'next-i18next'
 
 export const getAjnaSidebarTitle = ({
   currentStep,
-  product,
   isFormFrozen,
-  position,
   isOracless,
+  position,
+  productType,
 }: {
   currentStep: AjnaSidebarStep
-  product: AjnaProduct
   isFormFrozen: boolean
-  position: AjnaPosition | AjnaEarnPosition
   isOracless: boolean
+  position: AjnaPosition | AjnaEarnPosition
+  productType: AjnaProduct
 }) => {
   const { t } = useTranslation()
 
@@ -23,10 +23,10 @@ export const getAjnaSidebarTitle = ({
     currentStep === 'risk' && isOracless
       ? t('ajna.position-page.common.form.title.risk-oracless')
       : t(`ajna.position-page.common.form.title.${currentStep}`, {
-          product: upperFirst(product),
+          product: upperFirst(productType),
         })
 
-  switch (product) {
+  switch (productType) {
     case 'borrow':
     case 'multiply':
       return defaultTitle

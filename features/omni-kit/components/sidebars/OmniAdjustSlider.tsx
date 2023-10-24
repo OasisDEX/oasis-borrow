@@ -4,6 +4,7 @@ import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { Icon } from 'components/Icon'
 import { SkeletonLine } from 'components/Skeleton'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -22,11 +23,11 @@ interface OmniAdjustSliderProps {
 export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken, isShort, product },
+    environment: { collateralToken, quoteToken, isShort, productType },
     steps: { currentStep },
   } = useOmniGeneralContext()
 
-  if (product === 'earn') {
+  if (productType === OmniProductType.Earn) {
     throw new Error('OmniAdjustSlider is not supported for earn')
   }
 
@@ -42,7 +43,7 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
     dynamicMetadata: {
       values: { changeVariant },
     },
-  } = useOmniProductContext(product)
+  } = useOmniProductContext(productType)
 
   const [depositChanged, setDepositChanged] = useState(false)
 

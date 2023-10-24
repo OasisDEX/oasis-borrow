@@ -16,7 +16,7 @@ import { useAjnaMetadata } from 'features/omni-kit/protocols/ajna/metadata/useAj
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniEarnFormReducto } from 'features/omni-kit/state/earn/earnFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
-import type { OmniFlow } from 'features/omni-kit/types'
+import { type OmniFlow, OmniProductType } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
 
@@ -36,12 +36,12 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
   return (
     <AjnaCustomStateContextProvider
       price={
-        dpmPosition.product === 'earn'
+        dpmPosition.product === OmniProductType.Earn
           ? getEarnDefaultPrice(positionData as AjnaEarnPosition)
           : undefined
       }
     >
-      {dpmPosition.product === 'borrow' && (
+      {dpmPosition.product === OmniProductType.Borrow && (
         <OmniProductContextProvider
           getDynamicMetadata={useAjnaMetadata}
           formDefaults={{
@@ -49,14 +49,14 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
           }}
           formReducto={useOmniBorrowFormReducto}
           position={positionData as AjnaPosition}
-          product={dpmPosition.product}
+          productType={dpmPosition.product}
           positionAuction={auction}
           positionHistory={history}
         >
           <OmniBorrowPositionController txHandler={useAjnaOmniTxHandler} />
         </OmniProductContextProvider>
       )}
-      {dpmPosition.product === 'earn' && (
+      {dpmPosition.product === OmniProductType.Earn && (
         <OmniProductContextProvider
           getDynamicMetadata={useAjnaMetadata}
           formDefaults={{
@@ -65,14 +65,14 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
           }}
           formReducto={useOmniEarnFormReducto}
           position={positionData as AjnaEarnPosition}
-          product={dpmPosition.product}
+          productType={dpmPosition.product}
           positionAuction={auction}
           positionHistory={history}
         >
           <OmniEarnPositionController txHandler={useAjnaOmniTxHandler} />
         </OmniProductContextProvider>
       )}
-      {dpmPosition.product === 'multiply' && (
+      {dpmPosition.product === OmniProductType.Multiply && (
         <OmniProductContextProvider
           getDynamicMetadata={useAjnaMetadata}
           formDefaults={{
@@ -80,7 +80,7 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
           }}
           formReducto={useOmniMultiplyFormReducto}
           position={positionData as AjnaPosition}
-          product={dpmPosition.product}
+          productType={dpmPosition.product}
           positionAuction={auction}
           positionHistory={history}
         >

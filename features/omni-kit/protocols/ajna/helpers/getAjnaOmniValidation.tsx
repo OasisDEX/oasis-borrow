@@ -9,7 +9,11 @@ import {
 } from 'features/ajna/positions/common/validation'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { isOmniFormValid } from 'features/omni-kit/helpers/isOmniFormValid'
-import type { GetOmniBorrowValidationsParams, OmniValidationItem } from 'features/omni-kit/types'
+import {
+  type GetOmniBorrowValidationsParams,
+  type OmniValidationItem,
+  OmniProductType,
+} from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import React from 'react'
 
@@ -23,7 +27,7 @@ export function getAjnaOmniValidation({
   ethBalance,
   ethPrice,
   gasEstimationUsd,
-  product,
+  productType,
   quoteBalance,
   simulationErrors = [],
   simulationWarnings = [],
@@ -47,9 +51,9 @@ export function getAjnaOmniValidation({
   const localWarnings: OmniValidationItem[] = []
   const localNotices: OmniValidationItem[] = []
   const localSuccesses: OmniValidationItem[] = []
-  const isEarnProduct = product === 'earn'
+  const isEarnProduct = productType === OmniProductType.Earn
   const depositBalance = isEarnProduct ? quoteBalance : collateralBalance
-  const token = product === 'earn' ? quoteToken : collateralToken
+  const token = isEarnProduct ? quoteToken : collateralToken
 
   if (ethFundsForTxValidator({ txError })) {
     localErrors.push({
@@ -67,9 +71,9 @@ export function getAjnaOmniValidation({
   }
 
   if (ajnaSafetySwitchOn && flow === 'manage') {
-    switch (product) {
-      case 'borrow':
-      case 'multiply':
+    switch (productType) {
+      case OmniProductType.Borrow:
+      case OmniProductType.Multiply:
         if (
           'debtAmount' in position &&
           position.debtAmount?.isZero() &&
@@ -84,7 +88,7 @@ export function getAjnaOmniValidation({
         }
 
         break
-      case 'earn':
+      case OmniProductType.Earn:
         if (
           'quoteTokenAmount' in position &&
           position.quoteTokenAmount?.isZero() &&
@@ -117,7 +121,7 @@ export function getAjnaOmniValidation({
     })
   }
 
-  if (['borrow', 'multiply'].includes(product)) {
+  if (productType !== OmniProductType.Earn) {
     const borrowishAuction = positionAuction as AjnaBorrowishPositionAuction
 
     if (borrowishAuction.isDuringGraceTime) {
@@ -156,10 +160,11 @@ export function getAjnaOmniValidation({
   ]
 
   const isFormFrozen =
-    product === 'earn' && (positionAuction as AjnaEarnPositionAuction).isBucketFrozen
+    productType === OmniProductType.Earn &&
+    (positionAuction as AjnaEarnPositionAuction).isBucketFrozen
 
   return {
-    isFormValid: isOmniFormValid({ currentStep, product, state, earnIsFormValid }),
+    isFormValid: isOmniFormValid({ currentStep, productType, state, earnIsFormValid }),
     hasErrors: errors.length > 0,
     isFormFrozen,
     errors,
