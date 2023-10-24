@@ -11,10 +11,7 @@ import type { OmniDupePositionModalProps } from 'features/omni-kit/components'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState, useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
-import type {
-  OmniMultiplyFormState,
-  useOmniMultiplyFormReducto,
-} from 'features/omni-kit/state/multiply'
+import type { OmniMultiplyFormState, useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply'
 import type {
   OmniGenericPosition,
   OmniIsCachedPosition,
@@ -110,18 +107,15 @@ export type SupplyMetadata = {
   }
 }
 
-export type OmniMetadata<T extends OmniProduct> = T extends 'borrow'
-  ? LendingMetadata
-  : T extends 'multiply'
-  ? LendingMetadata
-  : T extends 'earn'
-  ? SupplyMetadata
-  : never
+export type OmniMetadataParams =
+  | Omit<ProductContextWithBorrow, 'dynamicMetadata'>
+  | Omit<ProductContextWithEarn, 'dynamicMetadata'>
+  | Omit<ProductContextWithMultiply, 'dynamicMetadata'>
 
-export type DynamicProductMetadata = <T extends OmniProduct>(product: T) => OmniMetadata<T>
+export type GetOmniMetadata = (_: OmniMetadataParams) => LendingMetadata | SupplyMetadata
 
 interface ProductContextProviderPropsWithBorrow {
-  getDynamicMetadata: (_: ProductContextWithBorrow) => LendingMetadata
+  getDynamicMetadata: GetOmniMetadata
   formReducto: typeof useOmniBorrowFormReducto
   formDefaults: Partial<OmniBorrowFormState>
   position: LendingPosition
@@ -131,7 +125,7 @@ interface ProductContextProviderPropsWithBorrow {
 }
 
 interface ProductContextProviderPropsWithEarn {
-  getDynamicMetadata: (_: ProductContextWithEarn) => SupplyMetadata
+  getDynamicMetadata: GetOmniMetadata
   formReducto: typeof useOmniEarnFormReducto
   formDefaults: Partial<OmniEarnFormState>
   position: SupplyPosition
@@ -141,7 +135,7 @@ interface ProductContextProviderPropsWithEarn {
 }
 
 interface ProductContextProviderPropsWithMultiply {
-  getDynamicMetadata: (_: ProductContextWithMultiply) => LendingMetadata
+  getDynamicMetadata: GetOmniMetadata
   formReducto: typeof useOmniMultiplyFormReducto
   formDefaults: Partial<OmniMultiplyFormState>
   position: LendingPosition
@@ -284,35 +278,7 @@ export function OmniProductContextProvider({
     )
   }
 
-  const [context, setContext] = useState<
-    GenericProductContext<
-      typeof position,
-      typeof form,
-      typeof positionAuction,
-      LendingMetadata | SupplyMetadata
-    >
-  >({
-    dynamicMetadata: getDynamicMetadata({
-      form,
-      position: {
-        cachedPosition,
-        positionAuction,
-        currentPosition: { position },
-        isSimulationLoading,
-        resolvedId: positionIdFromDpmProxyData,
-        history: positionHistory,
-        simulationCommon: {
-          errors: simulation?.errors as OmniSimulationCommon['errors'],
-          warnings: simulation?.warnings as OmniSimulationCommon['warnings'],
-          notices: simulation?.notices as OmniSimulationCommon['notices'],
-          successes: simulation?.successes as OmniSimulationCommon['successes'],
-        },
-        setCachedPosition: (positionSet) => setCachedPosition(positionSet),
-        setIsLoadingSimulation,
-        setSimulation,
-        setCachedSwap: (swap) => setCachedSwap(swap),
-      },
-    }),
+  const initContext = {
     form,
     position: {
       cachedPosition,
@@ -327,11 +293,24 @@ export function OmniProductContextProvider({
         notices: simulation?.notices as OmniSimulationCommon['notices'],
         successes: simulation?.successes as OmniSimulationCommon['successes'],
       },
-      setCachedPosition: (positionSet) => setCachedPosition(positionSet),
+      setCachedPosition: (positionSet: PositionSet<typeof position>) =>
+        setCachedPosition(positionSet),
       setIsLoadingSimulation,
       setSimulation,
-      setCachedSwap: (swap) => setCachedSwap(swap),
+      setCachedSwap: (swap: SwapData) => setCachedSwap(swap),
     },
+  }
+
+  const [context, setContext] = useState<
+    GenericProductContext<
+      typeof position,
+      typeof form,
+      typeof positionAuction,
+      LendingMetadata | SupplyMetadata
+    >
+  >({
+    dynamicMetadata: getDynamicMetadata(initContext as OmniMetadataParams),
+    ...initContext,
   })
 
   useEffect(() => {

@@ -5,21 +5,17 @@ import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNo
 import { ajnaFlowStateFilter } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
 import { getMorphoSidebarTitle } from 'features/morpho/positions/common/getMorphoSidebarTitle'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import type {
-  DynamicProductMetadata,
-  LendingMetadata,
-} from 'features/omni-kit/contexts/OmniProductContext'
-import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
+import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts/OmniProductContext'
 import { getOmniBorrowishChangeVariant, getOmniBorrowPaybackMax } from 'features/omni-kit/helpers'
-import { MorphoDetailsSectionContent } from 'features/omni-kit/protocols/morpho-blue/metadata/MorphoDetailsSectionContent'
+import {
+  MorphoDetailsSectionContent,
+} from 'features/omni-kit/protocols/morpho-blue/metadata/MorphoDetailsSectionContent'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/protocols/morpho-blue/metadata/MorphoDetailsSectionFooter'
 import { useAppConfig } from 'helpers/config'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
-// @ts-ignore
-// TODO there is something wrong with this generic types although it's working well while accessing metadata
-export const useMorphoMetadata: DynamicProductMetadata = (product) => {
+export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
   const {
     AjnaSafetySwitch: ajnaSafetySwitchOn,
     AjnaSuppressValidation: ajnaSuppressValidation,
@@ -39,10 +35,10 @@ export const useMorphoMetadata: DynamicProductMetadata = (product) => {
       flow,
       quotePrice,
       collateralPrice,
+      product,
     },
     steps: { currentStep },
   } = useOmniGeneralContext()
-  const productContext = useOmniProductContext(product)
 
   const position = productContext.position.currentPosition.position as MorphoPosition
   const simulation = productContext.position.currentPosition.simulation as MorphoPosition
