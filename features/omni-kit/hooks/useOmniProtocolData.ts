@@ -16,20 +16,20 @@ import { EMPTY } from 'rxjs'
 
 interface OmniProtocolDataProps {
   collateralToken?: string
-  id?: string
-  productType?: OmniProductType
-  quoteToken?: string
-  protocol: LendingProtocol
   isOracless?: boolean
+  positionId?: string
+  productType?: OmniProductType
+  protocol: LendingProtocol
+  quoteToken?: string
 }
 
 export function useOmniProtocolData({
   collateralToken,
-  id,
-  productType,
-  quoteToken,
-  protocol,
   isOracless,
+  positionId,
+  productType,
+  protocol,
+  quoteToken,
 }: OmniProtocolDataProps) {
   const { walletAddress } = useAccount()
   const { context$, gasPrice$ } = useMainContext()
@@ -64,8 +64,8 @@ export function useOmniProtocolData({
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>
-        id
-          ? dpmPositionDataV2$(getPositionIdentity(id), collateralToken, quoteToken, productType)
+        positionId
+          ? dpmPositionDataV2$(getPositionIdentity(positionId), collateralToken, quoteToken, productType)
           : !isOracless && productType && collateralToken && quoteToken
           ? getStaticDpmPositionData$({
               collateralToken,
@@ -87,7 +87,7 @@ export function useOmniProtocolData({
           : EMPTY,
       [
         isOracless,
-        id,
+        positionId,
         collateralToken,
         quoteToken,
         productType,

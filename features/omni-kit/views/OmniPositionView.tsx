@@ -33,7 +33,7 @@ export function OmniPositionView({
       collateralPrice,
       collateralToken,
       flow,
-      id,
+      positionId,
       isShort,
       isOracless,
       owner,
@@ -60,7 +60,7 @@ export function OmniPositionView({
         {...getOmniHeadlineProps({
           collateralToken,
           flow,
-          id,
+          positionId,
           productType,
           quoteToken,
           collateralIcon,

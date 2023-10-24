@@ -5,27 +5,27 @@ import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 
 interface OmniHeadlinePropsParams {
+  collateralAddress?: string
+  collateralIcon?: string
   collateralToken?: string
   flow: OmniFlow
-  id?: string
+  positionId?: string
   productType?: OmniProductType
-  quoteToken?: string
-  collateralAddress?: string
-  quoteAddress?: string
-  collateralIcon?: string
-  quoteIcon?: string
   protocol: LendingProtocol
+  quoteAddress?: string
+  quoteIcon?: string
+  quoteToken?: string
 }
 
 export function getOmniHeadlineProps({
+  collateralIcon,
   collateralToken,
   flow,
-  id,
+  positionId,
   productType,
-  quoteToken,
-  collateralIcon,
-  quoteIcon,
   protocol,
+  quoteIcon,
+  quoteToken,
 }: OmniHeadlinePropsParams) {
   const { t } = useTranslation()
 
@@ -36,7 +36,7 @@ export function getOmniHeadlineProps({
       quoteIcon && {
         header: t(`ajna.position-page.common.headline.${flow}`, {
           collateralToken,
-          id,
+          positionId,
           productType: upperFirst(productType),
           quoteToken,
         }),

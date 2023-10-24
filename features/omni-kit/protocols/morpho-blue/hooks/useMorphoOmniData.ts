@@ -10,16 +10,16 @@ import { EMPTY } from 'rxjs'
 // TODO this interface won't be protocol specific and could be easily extended with the rest of protocol data
 export interface ProductDataProps {
   collateralToken?: string
-  id?: string
+  dpmPositionData?: DpmPositionData
+  positionId?: string
   product?: OmniProductType
   quoteToken?: string
-  dpmPositionData?: DpmPositionData
   tokenPriceUSDData?: Tickers
 }
 
 export function useMorphoOmniData({
   // collateralToken,
-  // id,
+  // positionId,
   // product,
   // quoteToken,
   dpmPositionData,

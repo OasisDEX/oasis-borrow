@@ -15,19 +15,19 @@ import { EMPTY } from 'rxjs'
 // TODO this interface won't be protocol specific and could be easily extended with the rest of protocol data
 export interface ProductDataProps {
   collateralToken?: string
-  id?: string
+  dpmPositionData?: DpmPositionData
+  positionId?: string
   productType?: OmniProductType
   quoteToken?: string
-  dpmPositionData?: DpmPositionData
   tokenPriceUSDData?: Tickers
 }
 
 export function useAjnaOmniData({
   collateralToken,
-  id,
+  dpmPositionData,
+  positionId,
   productType,
   quoteToken,
-  dpmPositionData,
   tokenPriceUSDData,
 }: ProductDataProps) {
   const { context$ } = useMainContext()
@@ -77,7 +77,7 @@ export function useAjnaOmniData({
     ajnaPositionData,
     collateralToken,
     dpmPositionData,
-    id,
+    positionId,
     productType,
     quoteToken,
   })

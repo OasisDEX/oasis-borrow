@@ -2684,7 +2684,7 @@
       "common": {
         "headline": {
           "open": "{{collateralToken}}/{{quoteToken}} {{productType}} Position",
-          "manage": "{{collateralToken}}/{{quoteToken}} {{productType}} #{{id}}",
+          "manage": "{{collateralToken}}/{{quoteToken}} {{productType}} #{{positionId}}",
           "current-market-price": "Current Market Price"
         },
         "banners": {

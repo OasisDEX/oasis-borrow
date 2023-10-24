@@ -12,6 +12,6 @@ export const getMorphoSidebarTitle = ({
   const { t } = useTranslation()
 
   return t(`morpho.position-page.common.form.title.${currentStep}`, {
-    product: upperFirst(productType),
+    productType: upperFirst(productType),
   })
 }

@@ -23,7 +23,7 @@ export const getAjnaSidebarTitle = ({
     currentStep === 'risk' && isOracless
       ? t('ajna.position-page.common.form.title.risk-oracless')
       : t(`ajna.position-page.common.form.title.${currentStep}`, {
-          product: upperFirst(productType),
+          productType: upperFirst(productType),
         })
 
   switch (productType) {

@@ -35,11 +35,11 @@ interface OmniGeneralContextProviderProps {
   ethPrice: BigNumber
   flow: OmniFlow
   gasPrice: GasPriceParams
-  id?: string
   isOracless: boolean
   isProxyWithManyPositions: boolean
   network: NetworkConfig
   owner: string
+  positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
   quoteAddress: string

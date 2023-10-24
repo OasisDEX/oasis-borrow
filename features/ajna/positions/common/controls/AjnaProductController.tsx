@@ -76,7 +76,7 @@ export function AjnaProductController({
     ajnaPositionData,
     collateralToken,
     dpmPositionData,
-    id,
+    positionId,
     productType: product,
     quoteToken,
   })
