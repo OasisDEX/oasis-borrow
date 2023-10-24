@@ -48,7 +48,7 @@ export function VaultHeadlineDetails({
           margin: 'auto',
           backgroundColor: 'neutral60',
         },
-        ':first-child': {
+        ':first-of-type': {
           ml: 0,
           pl: 0,
           '::before': {

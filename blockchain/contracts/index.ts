@@ -4,6 +4,7 @@ import { getContractNetworkByWalletNetwork, NetworkIds, networkSetById } from 'b
 import type { ContractDesc } from 'features/web3Context'
 
 import { arbitrumContracts } from './arbitrum'
+import { baseContracts } from './base'
 import { goerliContracts } from './goerli'
 import { mainnetContracts } from './mainnet'
 import { optimismContracts } from './optimism'
@@ -19,7 +20,9 @@ export const allNetworksContracts = {
   [NetworkIds.OPTIMISMMAINNET]: optimismContracts,
   // empty contracts config - to be filled
   [NetworkIds.ARBITRUMMAINNET]: arbitrumContracts,
+  [NetworkIds.BASEMAINNET]: baseContracts,
   [NetworkIds.ARBITRUMGOERLI]: {},
+  [NetworkIds.BASEGOERLI]: {},
   [NetworkIds.POLYGONMAINNET]: {},
   [NetworkIds.POLYGONMUMBAI]: {},
   [NetworkIds.OPTIMISMGOERLI]: {},

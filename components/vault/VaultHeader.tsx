@@ -43,7 +43,7 @@ export function VaultIlkDetailsItem({
         alignItems: 'center',
         borderRight: ['none', 'light'],
         cursor: 'pointer',
-        '&:first-child': {
+        '&:first-of-type': {
           pl: 0,
         },
         '&:last-child': {

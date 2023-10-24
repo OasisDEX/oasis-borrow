@@ -1,5 +1,5 @@
-import { usePrevious } from '@react-hooks-library/core'
 import { useEffect } from 'react'
+import { usePrevious } from 'react-use'
 
 import type { WalletManagementState } from './wallet-management-state'
 

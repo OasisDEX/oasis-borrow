@@ -835,8 +835,10 @@
     "net-borrow-cost": {
       "first-header": "Cost to borrow %",
       "second-header": "Cost to borrow {{debtToken}}",
+      "borrow-apy": "Borrow APY: {{rate}}",
+      "supply-apy": "Supply APY: {{rate}}",
+      "supply-apy-note": "(Please note that this is only the lending market APY, and any yield from the underlying tokens such as rETH, wstETH or sDAI is not taken into account)",
       "first-description-line": "The cost to borrow is the percentage this position is paying on its net value, using the debt APY minus the APY for the collateral supplied.",
-      "second-description-line": "Debt APY * Total Debt * Debt Price/Collateral Price - Lending APY * Total Collateral * Collateral Price",
       "third-description-line": "The borrow cost expressed in {{debtToken}} amount over one year. This amount is an estimate that changes with the changes in the rates. Your effective real cost will be determined by your PNL.",
       "positive-negative-line": " If the values are positive you are paying to borrow, if negative you are paid to borrow."
     }
