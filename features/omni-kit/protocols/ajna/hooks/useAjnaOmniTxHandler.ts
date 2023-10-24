@@ -52,17 +52,15 @@ export function useAjnaOmniTxHandler(): () => void {
       setIsLoadingSimulation,
       setSimulation,
     },
-    dynamicMetadata,
+    dynamicMetadata: {
+      validations: { isFormValid },
+      values: { isFormEmpty },
+    },
   } = useOmniProductContext(product)
   const {
     state: { price },
     dispatch: customDispatch,
   } = useAjnaCustomState()
-
-  const {
-    validations: { isFormValid },
-    values: { isFormEmpty },
-  } = dynamicMetadata
 
   const [txData, setTxData] = useState<AjnaTxData>()
   const [cancelablePromise, setCancelablePromise] =

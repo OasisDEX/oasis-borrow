@@ -33,12 +33,10 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
       state: { action, loanToValue },
     },
     position: { cachedPosition, isSimulationLoading, currentPosition, swap },
-    dynamicMetadata,
+    dynamicMetadata: {
+      values: { shouldShowDynamicLtv },
+    },
   } = useOmniProductContext('multiply')
-
-  const {
-    values: { shouldShowDynamicLtv },
-  } = dynamicMetadata
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,

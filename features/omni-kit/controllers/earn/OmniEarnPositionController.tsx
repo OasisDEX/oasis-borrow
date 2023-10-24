@@ -11,11 +11,11 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 export function OmniEarnPositionController({ txHandler }: { txHandler: () => () => void }) {
-  const { dynamicMetadata } = useOmniProductContext('earn')
-
   const {
-    values: { headlineDetails },
-  } = dynamicMetadata
+    dynamicMetadata: {
+      values: { headlineDetails },
+    },
+  } = useOmniProductContext('earn')
 
   return (
     <OmniPositionView

@@ -12,13 +12,12 @@ export function OmniEarnFormContentWithdraw() {
   const {
     form: { dispatch },
 
-    dynamicMetadata,
+    dynamicMetadata: {
+      validations: { isFormValid },
+      elements: { extraEarnInputWithdraw, earnFormOrder },
+      values: { earnWithdrawMax },
+    },
   } = useOmniProductContext('earn')
-  const {
-    validations: { isFormValid },
-    elements: { extraEarnInputWithdraw, earnFormOrder },
-    values: { earnWithdrawMax },
-  } = dynamicMetadata
 
   return (
     <>

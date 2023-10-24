@@ -8,13 +8,11 @@ export function OmniEarnFormContentDeposit() {
   } = useOmniGeneralContext()
   const {
     form: { dispatch },
-    dynamicMetadata,
+    dynamicMetadata: {
+      validations: { isFormValid },
+      elements: { extraEarnInputDeposit, earnFormOrder },
+    },
   } = useOmniProductContext('earn')
-
-  const {
-    validations: { isFormValid },
-    elements: { extraEarnInputDeposit, earnFormOrder },
-  } = dynamicMetadata
 
   return (
     <>

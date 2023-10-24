@@ -11,13 +11,13 @@ export function OmniOverviewController() {
     environment: { product },
   } = useOmniGeneralContext()
   const { t } = useTranslation()
-  const { dynamicMetadata } = useOmniProductContext(product)
-
   const {
-    values: { footerColumns },
-    elements: { overviewContent, overviewBanner, overviewFooter },
-    notifications,
-  } = dynamicMetadata
+    dynamicMetadata: {
+      values: { footerColumns },
+      elements: { overviewContent, overviewBanner, overviewFooter },
+      notifications,
+    },
+  } = useOmniProductContext(product)
 
   return (
     <Grid gap={2}>

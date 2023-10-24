@@ -18,12 +18,10 @@ export function OmniEarnFormContentManage() {
     position: {
       currentPosition: { position },
     },
-    dynamicMetadata,
+    dynamicMetadata: {
+      elements: { earnExtraUiDropdownContent },
+    },
   } = useOmniProductContext('earn')
-
-  const {
-    elements: { earnExtraUiDropdownContent },
-  } = dynamicMetadata
 
   return (
     <>

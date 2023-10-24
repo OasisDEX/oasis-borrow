@@ -77,16 +77,14 @@ export function OmniFormView({
   const {
     form: { dispatch, state },
     position: { isSimulationLoading, resolvedId },
-    dynamicMetadata,
+    dynamicMetadata: {
+      values: { interestRate, sidebarTitle, isFormEmpty },
+      validations: { isFormValid, isFormFrozen, hasErrors },
+      filters: { flowStateFilter, consumedProxyFilter },
+      elements: { dupeModal },
+      featureToggles: { suppressValidation, safetySwitch, reusableDpm },
+    },
   } = useOmniProductContext(product)
-
-  const {
-    values: { interestRate, sidebarTitle, isFormEmpty },
-    validations: { isFormValid, isFormFrozen, hasErrors },
-    filters: { flowStateFilter, consumedProxyFilter },
-    elements: { dupeModal },
-    featureToggles: { suppressValidation, safetySwitch, reusableDpm },
-  } = dynamicMetadata
 
   const txHandler = _txHandler()
 

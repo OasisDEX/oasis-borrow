@@ -24,12 +24,10 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
       state: { uiDropdown },
       updateState,
     },
-    dynamicMetadata,
+    dynamicMetadata: {
+      elements: { riskSidebar },
+    },
   } = useOmniProductContext('borrow')
-
-  const {
-    elements: { riskSidebar },
-  } = dynamicMetadata
 
   return (
     <OmniFormView

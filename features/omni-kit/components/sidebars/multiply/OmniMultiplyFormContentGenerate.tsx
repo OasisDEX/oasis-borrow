@@ -13,12 +13,10 @@ export function OmniMultiplyFormContentGenerate() {
       state: { generateAmount },
     },
 
-    dynamicMetadata,
+    dynamicMetadata: {
+      values: { debtMin, debtMax },
+    },
   } = useOmniProductContext('multiply')
-
-  const {
-    values: { debtMin, debtMax },
-  } = dynamicMetadata
 
   return (
     <>

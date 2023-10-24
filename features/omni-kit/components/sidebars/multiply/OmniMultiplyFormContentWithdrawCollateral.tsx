@@ -15,13 +15,10 @@ export function OmniMultiplyFormContentWithdrawCollateral() {
       dispatch,
       state: { withdrawAmount },
     },
-
-    dynamicMetadata,
+    dynamicMetadata: {
+      values: { collateralMax },
+    },
   } = useOmniProductContext('multiply')
-
-  const {
-    values: { collateralMax },
-  } = dynamicMetadata
 
   return (
     <>
