@@ -159,8 +159,8 @@ export function AccountContextProvider({ children }: WithChildren) {
           arbitrumReadPositionCreatedEvents$(wallet),
           baseReadPositionCreatedEvents$(wallet),
         ]).pipe(
-          map(([mainnetEvents, optimismEvents, arbitrumEvents]) => {
-            return [...mainnetEvents, ...optimismEvents, ...arbitrumEvents]
+          map(([mainnetEvents, optimismEvents, arbitrumEvents, baseEvents]) => {
+            return [...mainnetEvents, ...optimismEvents, ...arbitrumEvents, ...baseEvents]
           }),
         )
 
