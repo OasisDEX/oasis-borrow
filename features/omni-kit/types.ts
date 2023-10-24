@@ -1,5 +1,6 @@
 import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import type { NetworkNames } from 'blockchain/networks'
 import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
@@ -46,6 +47,14 @@ export type OmniMultiplyAction =
   | 'withdraw-multiply'
   | 'switch-multiply'
   | 'close-multiply'
+
+export interface OmniProductPage {
+  collateralToken: string
+  positionId?: string
+  networkName: NetworkNames
+  productType: OmniProduct
+  quoteToken: string
+}
 
 export type OmniFormAction = OmniBorrowAction | OmniEarnAction | OmniMultiplyAction
 

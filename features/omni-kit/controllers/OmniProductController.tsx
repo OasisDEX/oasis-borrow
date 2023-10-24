@@ -1,4 +1,4 @@
-import { type NetworkNames,getNetworkByName } from 'blockchain/networks'
+import { type NetworkNames, getNetworkByName } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
@@ -28,11 +28,10 @@ interface OmniProductsControllerProps<A, H, P> {
 interface OmniProductControllerProps<A, H, P> {
   collateralToken?: string
   controller: (params: OmniProductsControllerProps<A, H, P>) => React.ReactNode
-  flow: OmniFlow
-  id?: string
   isOracless?: boolean
   networkName: NetworkNames
-  product?: OmniProduct
+  positionId?: string
+  productType?: OmniProduct
   protocol: LendingProtocol
   protocolHook: (params: ProductDataProps) => {
     data: { aggregatedData: { auction: A; history: H } | undefined; positionData: P | undefined }
@@ -51,11 +50,10 @@ interface OmniProductControllerProps<A, H, P> {
 export const OmniProductController = <A, H, P>({
   collateralToken,
   controller,
-  flow,
-  id,
-  isOracless,
+  isOracless = false,
   networkName,
-  product,
+  positionId,
+  productType,
   protocol,
   protocolHook,
   quoteToken,
@@ -65,6 +63,7 @@ export const OmniProductController = <A, H, P>({
   const { t } = useTranslation()
 
   const network = getNetworkByName(networkName)
+  const flow = positionId ? 'manage' : 'open'
 
   const {
     data: {
@@ -80,9 +79,9 @@ export const OmniProductController = <A, H, P>({
     tokensPrecision,
   } = useOmniProtocolData({
     collateralToken,
-    id,
+    id: positionId,
     isOracless,
-    product,
+    product: productType,
     protocol,
     quoteToken,
   })
@@ -93,8 +92,8 @@ export const OmniProductController = <A, H, P>({
   } = protocolHook({
     collateralToken,
     dpmPositionData,
-    id,
-    product,
+    id: positionId,
+    product: productType,
     quoteToken,
     tokenPriceUSDData,
   })
@@ -127,7 +126,7 @@ export const OmniProductController = <A, H, P>({
                     collateralIcon: tokensIconsData?.collateralToken,
                     quoteIcon: tokensIconsData?.quoteToken,
                     protocol,
-                    id,
+                    id: positionId,
                   })}
                 />
               }
@@ -171,7 +170,7 @@ export const OmniProductController = <A, H, P>({
                     ethPrice={tokenPriceUSD.ETH}
                     flow={flow}
                     gasPrice={gasPrice}
-                    id={id}
+                    id={positionId}
                     isOracless={!!isOracless}
                     isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
                     network={network}
