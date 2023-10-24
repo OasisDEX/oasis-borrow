@@ -11,10 +11,7 @@ import type { OmniDupePositionModalProps } from 'features/omni-kit/components'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState, useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
-import type {
-  OmniMultiplyFormState,
-  useOmniMultiplyFormReducto,
-} from 'features/omni-kit/state/multiply'
+import type { OmniMultiplyFormState, useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply'
 import type {
   OmniGenericPosition,
   OmniIsCachedPosition,
@@ -284,35 +281,7 @@ export function OmniProductContextProvider({
     )
   }
 
-  const [context, setContext] = useState<
-    GenericProductContext<
-      typeof position,
-      typeof form,
-      typeof positionAuction,
-      LendingMetadata | SupplyMetadata
-    >
-  >({
-    dynamicMetadata: getDynamicMetadata({
-      form,
-      position: {
-        cachedPosition,
-        positionAuction,
-        currentPosition: { position },
-        isSimulationLoading,
-        resolvedId: positionIdFromDpmProxyData,
-        history: positionHistory,
-        simulationCommon: {
-          errors: simulation?.errors as OmniSimulationCommon['errors'],
-          warnings: simulation?.warnings as OmniSimulationCommon['warnings'],
-          notices: simulation?.notices as OmniSimulationCommon['notices'],
-          successes: simulation?.successes as OmniSimulationCommon['successes'],
-        },
-        setCachedPosition: (positionSet) => setCachedPosition(positionSet),
-        setIsLoadingSimulation,
-        setSimulation,
-        setCachedSwap: (swap) => setCachedSwap(swap),
-      },
-    }),
+  const initContext = {
     form,
     position: {
       cachedPosition,
@@ -332,6 +301,18 @@ export function OmniProductContextProvider({
       setSimulation,
       setCachedSwap: (swap) => setCachedSwap(swap),
     },
+  }
+
+  const [context, setContext] = useState<
+    GenericProductContext<
+      typeof position,
+      typeof form,
+      typeof positionAuction,
+      LendingMetadata | SupplyMetadata
+    >
+  >({
+    dynamicMetadata: getDynamicMetadata(initContext),
+    ...initContext,
   })
 
   useEffect(() => {
