@@ -103,6 +103,7 @@
     "react-redux": "8.0.5",
     "react-select": "^3.1.0",
     "react-text-mask": "^5.4.1",
+    "react-use": "^17.4.0",
     "rxjs": "^6.2.0",
     "rxjs-take-while-inclusive": "^2.1.0",
     "sass": "^1.49.4",
