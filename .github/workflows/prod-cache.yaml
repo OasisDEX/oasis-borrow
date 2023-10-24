@@ -84,7 +84,7 @@ jobs:
             fi
 
             echo "Deleting cache: $cacheKey"
-            gh actions-cache delete $cacheKey -R $REPO --branch main --key Linux-node --confirm
+            gh actions-cache delete $cacheKey -R $REPO --branch main --confirm
           done
 
           echo "Done"
