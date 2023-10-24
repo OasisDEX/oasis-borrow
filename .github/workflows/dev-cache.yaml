@@ -72,7 +72,7 @@ jobs:
           REPO=${{ github.repository }}
 
           echo "Fetching list of cache keys..."
-          cacheKeysForPR=$(gh actions-cache list -R $REPO --branch dev | cut -f 1)
+          cacheKeysForPR=$(gh actions-cache list -R $REPO --branch dev --key Linux-node | cut -f 1)
 
           echo "Deleting caches..."
           for cacheKey in $cacheKeysForPR
@@ -84,7 +84,7 @@ jobs:
             fi
 
             echo "Deleting cache: $cacheKey"
-            gh actions-cache delete $cacheKey -R $REPO --branch dev --confirm
+            gh actions-cache delete $cacheKey -R $REPO --branch dev --key Linux-node --confirm
           done
 
           echo "Done"
