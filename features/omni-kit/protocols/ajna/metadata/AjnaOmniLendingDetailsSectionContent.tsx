@@ -1,21 +1,13 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import {
-  ContentCardCollateralLocked,
-} from 'features/ajna/positions/common/components/contentCards/ContentCardCollateralLocked'
-import {
-  ContentCardLiquidationPrice,
-} from 'features/ajna/positions/common/components/contentCards/ContentCardLiquidationPrice'
+import { ContentCardCollateralLocked } from 'features/ajna/positions/common/components/contentCards/ContentCardCollateralLocked'
+import { ContentCardLiquidationPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardLiquidationPrice'
 import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
-import {
-  ContentCardNetBorrowCost,
-} from 'features/ajna/positions/common/components/contentCards/ContentCardNetBorrowCost'
+import { ContentCardNetBorrowCost } from 'features/ajna/positions/common/components/contentCards/ContentCardNetBorrowCost'
 import { ContentCardNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardNetValue'
 import { ContentCardPositionDebt } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionDebt'
-import {
-  ContentCardThresholdPrice,
-} from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
+import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
 import type { OmniFlow, OmniProduct } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'

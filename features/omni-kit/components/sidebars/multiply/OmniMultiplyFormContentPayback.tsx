@@ -15,12 +15,10 @@ export function OmniMultiplyFormContentPayback() {
     position: {
       currentPosition: { position },
     },
-    dynamicMetadata,
+    dynamicMetadata: {
+      values: { paybackMax },
+    },
   } = useOmniProductContext('multiply')
-
-  const {
-    values: { paybackMax },
-  } = dynamicMetadata
 
   return (
     <>

@@ -21,12 +21,10 @@ export function OmniBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   } = useOmniGeneralContext()
   const {
     position: { cachedPosition, currentPosition, isSimulationLoading },
-    dynamicMetadata,
+    dynamicMetadata: {
+      values: { shouldShowDynamicLtv, afterPositionDebt, afterAvailableToBorrow },
+    },
   } = useOmniProductContext('borrow')
-
-  const {
-    values: { shouldShowDynamicLtv, afterPositionDebt, afterAvailableToBorrow },
-  } = dynamicMetadata
 
   const { positionData, simulationData } = resolveIfCachedPosition({
     cached,

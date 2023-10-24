@@ -8,13 +8,11 @@ export function OmniEarnFormContentOpen() {
   } = useOmniGeneralContext()
   const {
     form: { dispatch },
-    dynamicMetadata,
+    dynamicMetadata: {
+      validations: { isFormValid },
+      elements: { extraEarnInput, earnFormOrder },
+    },
   } = useOmniProductContext('earn')
-
-  const {
-    validations: { isFormValid },
-    elements: { extraEarnInput, earnFormOrder },
-  } = dynamicMetadata
 
   return (
     <>

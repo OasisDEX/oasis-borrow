@@ -11,7 +11,10 @@ import type { OmniDupePositionModalProps } from 'features/omni-kit/components'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState, useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
-import type { OmniMultiplyFormState, useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply'
+import type {
+  OmniMultiplyFormState,
+  useOmniMultiplyFormReducto,
+} from 'features/omni-kit/state/multiply'
 import type {
   OmniGenericPosition,
   OmniIsCachedPosition,

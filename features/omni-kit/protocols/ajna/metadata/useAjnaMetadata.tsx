@@ -1,5 +1,9 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
-import { calculateAjnaMaxLiquidityWithdraw, getPoolLiquidity, negativeToZero } from '@oasisdex/dma-library'
+import {
+  calculateAjnaMaxLiquidityWithdraw,
+  getPoolLiquidity,
+  negativeToZero,
+} from '@oasisdex/dma-library'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
@@ -29,27 +33,21 @@ import { getOmniBorrowishChangeVariant, getOmniBorrowPaybackMax } from 'features
 import { getOmniIsFormEmpty } from 'features/omni-kit/helpers/getOmniIsFormEmpty'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
 import { getAjnaOmniValidation } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniValidation'
-import {
-  AjnaOmniEarnDetailsSectionContent,
-} from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnDetailsSectionContent'
-import {
-  AjnaOmniEarnDetailsSectionFooter,
-} from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnDetailsSectionFooter'
+import { AjnaOmniEarnDetailsSectionContent } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnDetailsSectionContent'
+import { AjnaOmniEarnDetailsSectionFooter } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnDetailsSectionFooter'
 import { AjnaOmniEarnFormOrder } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnFormOrder'
 import { AjnaOmniEarnSlider } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnSlider'
-import {
-  AjnaOmniExtraDropdownUiContent,
-} from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniExtraDropdownUiContent'
-import {
-  AjnaOmniLendingDetailsSectionContent,
-} from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionContent'
-import {
-  AjnaOmniLendingDetailsSectionFooter,
-} from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionFooter'
+import { AjnaOmniExtraDropdownUiContent } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniExtraDropdownUiContent'
+import { AjnaOmniLendingDetailsSectionContent } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionContent'
+import { AjnaOmniLendingDetailsSectionFooter } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionFooter'
 import { getAjnaOmniEarnIsFomEmpty } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFomEmpty'
 import { getAjnaOmniEarnIsFormValid } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFormValid'
 import { useAppConfig } from 'helpers/config'
-import { formatAmount, formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  formatAmount,
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+} from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

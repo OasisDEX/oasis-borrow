@@ -28,14 +28,12 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
         simulation,
       },
     },
-    dynamicMetadata,
+    dynamicMetadata: {
+      elements: { riskSidebar, earnFormOrderAsElement },
+      values: { extraDropdownItems },
+      handlers: { txSuccessEarnHandler, customReset },
+    },
   } = useOmniProductContext('earn')
-
-  const {
-    elements: { riskSidebar, earnFormOrderAsElement },
-    values: { extraDropdownItems },
-    handlers: { txSuccessEarnHandler, customReset },
-  } = dynamicMetadata
 
   return (
     <OmniFormView

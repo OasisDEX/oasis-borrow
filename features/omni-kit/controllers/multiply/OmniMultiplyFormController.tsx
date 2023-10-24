@@ -23,12 +23,10 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
       state: { uiDropdown },
       updateState,
     },
-    dynamicMetadata,
+    dynamicMetadata: {
+      elements: { riskSidebar },
+    },
   } = useOmniProductContext('multiply')
-
-  const {
-    elements: { riskSidebar },
-  } = dynamicMetadata
 
   return (
     <OmniFormView
