@@ -283,7 +283,7 @@ export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaul
 
       <VaultErrors {...props} errorMessages={extractCommonErrors(errorMessages)} />
       <VaultWarnings {...props} warningMessages={extractCommonWarnings(warningMessages)} />
-      {vaultType === VaultType.Multiply || stage === 'adjustPosition' ? (
+      {vaultType === VaultType.Multiply || stage === 'adjustPosition' || (stage === 'otherActions' && otherAction === 'closeVault') ? (
         <ManageMultiplyVaultChangesInformation {...props} />
       ) : (
         <ManageVaultChangesInformation {...props} />
