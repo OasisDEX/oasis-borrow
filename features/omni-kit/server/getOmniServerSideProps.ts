@@ -29,7 +29,7 @@ export async function getOmniServerSideProps({
   const omniProductPage = {
     collateralToken: caseSensitiveCollateralToken,
     networkName,
-    positionId,
+    positionId: positionId || undefined,
     productType: castedProductType,
     quoteToken: caseSensitiveQuoteToken,
   }
@@ -44,7 +44,7 @@ export async function getOmniServerSideProps({
         ...(await serverSideTranslations(locale || 'en', ['common'])),
         collateralToken: caseSensitiveCollateralToken,
         networkName,
-        positionId,
+        positionId: positionId || null,
         productType: castedProductType,
         quoteToken: caseSensitiveQuoteToken,
       },
