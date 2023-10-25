@@ -1,6 +1,8 @@
-import type { IPosition, Network, Tokens } from '@oasisdex/dma-library'
+import type { AaveLikeStrategyAddresses, IPosition, Network, Tokens } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { NetworkIds } from 'blockchain/networks'
+import { getToken } from 'blockchain/tokensMetadata'
+import { getLocalAppConfig } from 'helpers/config'
 import { getOneInchCall } from 'helpers/swap'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -62,26 +64,23 @@ export const getAaveV3FlashLoanToken = (
   if (lendingProtocol !== LendingProtocol.AaveV3) {
     return undefined
   }
+  const flashloanTokensConfig = getLocalAppConfig('parameters').aaveLike.flashLoanTokens
+  const aaveV3FlashLoanTokenMap = {
+    [NetworkIds.OPTIMISMMAINNET]: flashloanTokensConfig.OPTIMISMMAINNET,
+    [NetworkIds.BASEMAINNET]: flashloanTokensConfig.BASEMAINNET,
+  } as Record<Partial<NetworkIds>, keyof AaveLikeStrategyAddresses['tokens']>
+  const flashloanToken = aaveV3FlashLoanTokenMap[networkId]
   const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
-  if (networkId === NetworkIds.OPTIMISMMAINNET) {
-    const tokenAddress = addressesV3.tokens['WETH']
-    if (tokenAddress === undefined) throw new Error('WETH address is undefined')
+
+  if (flashloanToken) {
+    const tokenAddress = addressesV3.tokens[flashloanToken]
+    if (tokenAddress === undefined)
+      throw new Error(`Flashloan Token ${flashloanToken} address is undefined`)
     return {
       token: {
-        symbol: 'WETH',
+        symbol: flashloanToken,
         address: tokenAddress,
-        precision: 18,
-      },
-    }
-  }
-  if (networkId === NetworkIds.BASEMAINNET) {
-    const tokenAddress = addressesV3.tokens['USDBC']
-    if (tokenAddress === undefined) throw new Error('USDBC address is undefined')
-    return {
-      token: {
-        symbol: 'USDBC',
-        address: tokenAddress,
-        precision: 6,
+        precision: getToken(flashloanToken).precision,
       },
     }
   }
