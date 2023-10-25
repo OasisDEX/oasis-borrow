@@ -8,6 +8,7 @@ import { SidebarVaultStopLossStage } from 'components/vault/sidebar/SidebarVault
 import { openVaultWithStopLossAnalytics } from 'features/automation/common/helpers/openVaultWithStopLossAnalytics'
 import { getDataForStopLoss } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import { SidebarOpenMultiplyVaultEditingState } from 'features/multiply/open/sidebars/SidebarOpenMultiplyVaultEditingState'
 import { SidebarOpenMultiplyVaultOpenStage } from 'features/multiply/open/sidebars/SidebarOpenMultiplyVaultOpenStage'
@@ -65,7 +66,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
   const firstCDP = isFirstCdp(accountData)
   const gasData = extractGasDataFromState(props)
 
-  const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
+  const primaryButtonLabelParams = extractPrimaryButtonLabelParams({ ...props })
   const sidebarTxData = extractSidebarTxData(props)
   const { stopLossSidebarProps, automationContextProps } = getDataForStopLoss(props, 'multiply')
   const { ProxyCreationDisabled: isProxyCreationDisabled } = useAppConfig('features')
@@ -93,7 +94,11 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
       },
     }),
     primaryButton: {
-      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
+      label: getPrimaryButtonLabel({
+        ...primaryButtonLabelParams,
+        flow,
+        vaultType: VaultType.Multiply,
+      }),
       steps: !isSuccessStage && !isAddStopLossStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress || (isProxyStage && isProxyCreationDisabled),
       isLoading: isLoadingStage,

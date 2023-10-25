@@ -13,8 +13,9 @@ import type {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
 } from 'features/borrow/manage/pipes/manageVault.types'
+import type { ManageMultiplyVaultChange } from 'features/multiply/manage/pipes/ManageMultiplyVaultChange.types'
+import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
-import type { AddGasEstimationFunction } from 'helpers/context/types'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
@@ -340,15 +341,15 @@ export function setCollateralAllowance(
 export function createProxy(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
-  change: (ch: ManageVaultChange) => void,
-  { safeConfirmations }: ManageStandardBorrowVaultState,
+  change: (ch: ManageMultiplyVaultChange) => void,
+  { safeConfirmations }: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy }).pipe(
-          transactionToX<ManageVaultChange, CreateDsProxyData>(
+          transactionToX<ManageMultiplyVaultChange, CreateDsProxyData>(
             { kind: 'proxyWaitingForApproval' },
             (txState) =>
               of({
@@ -385,56 +386,4 @@ export function createProxy(
       ),
     )
     .subscribe((ch) => change(ch))
-}
-
-export function applyEstimateGas(
-  addGasEstimation$: AddGasEstimationFunction,
-  vaultActions: VaultActionsLogicInterface,
-  state: ManageStandardBorrowVaultState,
-): Observable<ManageStandardBorrowVaultState> {
-  return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
-    const {
-      proxyAddress,
-      generateAmount,
-      depositAmount,
-      withdrawAmount,
-      paybackAmount,
-      shouldPaybackAll,
-      vault: { ilk, token, id },
-      isProxyStage,
-    } = state
-
-    if (proxyAddress) {
-      const isDepositAndGenerate = depositAmount || generateAmount
-
-      if (isDepositAndGenerate) {
-        return estimateGas(vaultActions.depositAndGenerate, {
-          kind: TxMetaKind.depositAndGenerate,
-          generateAmount: generateAmount || zero,
-          depositAmount: depositAmount || zero,
-          proxyAddress: proxyAddress!,
-          ilk,
-          token,
-          id,
-        })
-      } else {
-        return estimateGas(vaultActions.withdrawAndPayback, {
-          kind: TxMetaKind.withdrawAndPayback,
-          withdrawAmount: withdrawAmount || zero,
-          paybackAmount: paybackAmount || zero,
-          proxyAddress: proxyAddress!,
-          ilk,
-          token,
-          id,
-          shouldPaybackAll,
-        })
-      }
-    }
-
-    if (isProxyStage) {
-      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
-    }
-
-    return undefined
-  })
 }

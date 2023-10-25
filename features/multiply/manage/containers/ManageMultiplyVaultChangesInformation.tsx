@@ -9,6 +9,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { AppSpinner } from 'helpers/AppSpinner'
 import {
@@ -27,7 +28,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
   const [showFees, setShowFees] = useState(false)
   const {
     vault: { collateralizationRatio, lockedCollateral, debt, token },
-
+    vaultType,
     multiply,
     afterMultiply,
     afterCollateralizationRatio,
@@ -107,16 +108,18 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
           />
         </>
       )}
-      <VaultChangesInformationItem
-        label={'Multiply'}
-        value={
-          <Flex>
-            {multiply?.toFixed(2)}x
-            <VaultChangesInformationArrow />
-            {isCloseAction ? 'n/a' : `${afterMultiply?.toFixed(2)}x`}
-          </Flex>
-        }
-      />
+      {vaultType === VaultType.Multiply && (
+        <VaultChangesInformationItem
+          label={'Multiply'}
+          value={
+            <Flex>
+              {multiply?.toFixed(2)}x
+              <VaultChangesInformationArrow />
+              {isCloseAction ? 'n/a' : `${afterMultiply?.toFixed(2)}x`}
+            </Flex>
+          }
+        />
+      )}
       <VaultChangesInformationItem
         label={`${t('system.vault-dai-debt')}`}
         value={

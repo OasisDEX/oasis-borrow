@@ -630,9 +630,11 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     generateAmountExceedsDaiYieldFromTotalCollateral,
     generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice,
     generateAmountLessThanDebtFloor,
-    generateAmountMoreThanMaxFlashAmount,
     paybackAmountExceedsDaiBalance,
     paybackAmountExceedsVaultDebt,
+
+    generateAmountMoreThanMaxFlashAmount,
+
     ledgerWalletContractDataDisabled,
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
