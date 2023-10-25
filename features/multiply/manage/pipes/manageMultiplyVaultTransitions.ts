@@ -207,7 +207,7 @@ export function applyManageVaultTransition<VS extends ManageMultiplyVaultState>(
   if (change.kind === 'clear') {
     return {
       ...state,
-      ...defaultMutableManageMultiplyVaultState(state.vault.lockedCollateral),
+      ...defaultMutableManageMultiplyVaultState(state.vaultType, state.vault.lockedCollateral),
       ...defaultManageMultiplyVaultCalculations,
       ...defaultManageMultiplyVaultConditions,
       ...manageMultiplyInputsDefaults,

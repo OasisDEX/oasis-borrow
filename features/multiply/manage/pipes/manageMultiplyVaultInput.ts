@@ -1,3 +1,4 @@
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { zero } from 'helpers/zero'
 
@@ -119,6 +120,7 @@ export function applyManageVaultInput(
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
+      generateAmount: state.vaultType === VaultType.Borrow ? state.generateAmount : undefined,
       depositAmount: change.depositAmount,
       depositAmountUSD: change.depositAmount?.times(currentCollateralPrice).dp(currencyDigits),
       showSliderController: false,
@@ -148,6 +150,7 @@ export function applyManageVaultInput(
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
+      generateAmount: state.vaultType === VaultType.Borrow ? state.generateAmount : undefined,
       depositAmountUSD: change.depositAmountUSD,
       depositAmount: change.depositAmountUSD?.div(currentCollateralPrice),
       showSliderController: false,
@@ -160,6 +163,7 @@ export function applyManageVaultInput(
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
+      generateAmount: state.vaultType === VaultType.Borrow ? state.generateAmount : undefined,
       depositAmount: maxDepositAmount,
       depositAmountUSD: maxDepositAmountUSD,
       showSliderController: false,
@@ -182,6 +186,8 @@ export function applyManageVaultInput(
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
+      withdrawAmount: state.vaultType === VaultType.Borrow ? state.withdrawAmount : undefined,
+      withdrawAmountUSD: state.vaultType === VaultType.Borrow ? state.withdrawAmount : undefined,
       paybackAmount: change.paybackAmount,
     }
   }
@@ -192,6 +198,8 @@ export function applyManageVaultInput(
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
+      withdrawAmount: state.vaultType === VaultType.Borrow ? state.withdrawAmount : undefined,
+      withdrawAmountUSD: state.vaultType === VaultType.Borrow ? state.withdrawAmount : undefined,
       paybackAmount: maxPaybackAmount,
     }
   }
@@ -203,6 +211,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       withdrawAmount: change.withdrawAmount,
       withdrawAmountUSD: change.withdrawAmount?.times(priceInfo.currentCollateralPrice),
+      paybackAmount: state.vaultType === VaultType.Borrow ? state.paybackAmount : undefined,
       showSliderController: false,
     }
   }
@@ -214,6 +223,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       withdrawAmountUSD: change.withdrawAmountUSD,
       withdrawAmount: change.withdrawAmountUSD?.div(priceInfo.currentCollateralPrice),
+      paybackAmount: state.vaultType === VaultType.Borrow ? state.paybackAmount : undefined,
       showSliderController: false,
     }
   }
@@ -226,6 +236,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       withdrawAmount: maxWithdrawAmount,
       withdrawAmountUSD: maxWithdrawAmountUSD,
+      paybackAmount: state.vaultType === VaultType.Borrow ? state.paybackAmount : undefined,
       showSliderController: false,
     }
   }
@@ -236,6 +247,8 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       generateAmount: change.generateAmount,
       showSliderController: false,
+      depositAmount: state.vaultType === VaultType.Borrow ? state.depositAmount : undefined,
+      depositAmountUSD: state.vaultType === VaultType.Borrow ? state.depositAmountUSD : undefined,
     }
   }
 
@@ -246,6 +259,8 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       generateAmount: maxGenerateAmount,
       showSliderController: false,
+      depositAmount: state.vaultType === VaultType.Borrow ? state.depositAmount : undefined,
+      depositAmountUSD: state.vaultType === VaultType.Borrow ? state.depositAmountUSD : undefined,
     }
   }
 
