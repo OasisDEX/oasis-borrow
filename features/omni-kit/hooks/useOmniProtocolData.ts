@@ -65,7 +65,12 @@ export function useOmniProtocolData({
     useMemo(
       () =>
         positionId
-          ? dpmPositionDataV2$(getPositionIdentity(positionId), collateralToken, quoteToken, productType)
+          ? dpmPositionDataV2$(
+              getPositionIdentity(positionId),
+              collateralToken,
+              quoteToken,
+              productType,
+            )
           : !isOracless && productType && collateralToken && quoteToken
           ? getStaticDpmPositionData$({
               collateralToken,
