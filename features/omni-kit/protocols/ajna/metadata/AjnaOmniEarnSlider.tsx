@@ -5,14 +5,14 @@ import { PillAccordion } from 'components/PillAccordion'
 import {
   AJNA_HTP_OFFSET,
   AJNA_MOMP_OFFSET,
-  lendingPriceColors,
+  omniLendingPriceColors,
 } from 'features/ajna/positions/earn/consts'
-import { convertSliderThresholds } from 'features/ajna/positions/earn/helpers/convertSliderThresholds'
-import { getMinMaxAndRange } from 'features/ajna/positions/earn/helpers/getMinMaxAndRange'
+import { convertAjnaOmniSliderThresholds } from 'features/ajna/positions/earn/helpers/convertSliderThresholds'
 import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
+import { getAjnaOmniMinMaxAndRange } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniMinMaxAndRange'
 import { AjnaOmniEarnInput } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnInput'
 import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -50,18 +50,12 @@ export const AjnaOmniEarnSlider: FC<AjnaEarnSliderProps> = ({
 
   const position = _position as AjnaEarnPosition
 
-  const {
-    highestThresholdPrice,
-    lowestUtilizedPrice,
-    mostOptimisticMatchingPrice,
-    lowestUtilizedPriceIndex,
-  } = position.pool
+  const { highestThresholdPrice, lowestUtilizedPrice, lowestUtilizedPriceIndex } = position.pool
 
   const { min, max, range } = useMemo(
     () =>
-      getMinMaxAndRange({
+      getAjnaOmniMinMaxAndRange({
         highestThresholdPrice,
-        mostOptimisticMatchingPrice,
         lowestUtilizedPrice,
         lowestUtilizedPriceIndex,
         marketPrice: position.marketPrice,
@@ -71,7 +65,6 @@ export const AjnaOmniEarnSlider: FC<AjnaEarnSliderProps> = ({
       }),
     [
       highestThresholdPrice.toString(),
-      mostOptimisticMatchingPrice.toString(),
       lowestUtilizedPrice.toString(),
       lowestUtilizedPriceIndex.toString(),
       position.marketPrice.toString(),
@@ -95,16 +88,15 @@ export const AjnaOmniEarnSlider: FC<AjnaEarnSliderProps> = ({
     }
   }, [])
 
-  const { htpPercentage, lupPercentage, mompPercentage } = useMemo(
+  const { htpPercentage, lupPercentage } = useMemo(
     () =>
-      convertSliderThresholds({
+      convertAjnaOmniSliderThresholds({
         min,
         max,
         highestThresholdPrice,
         lowestUtilizedPrice,
-        mostOptimisticMatchingPrice,
       }),
-    [min, max, highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice],
+    [min, max, highestThresholdPrice, lowestUtilizedPrice],
   )
 
   const leftBoundry = isShort ? one.div(resolvedValue) : resolvedValue
@@ -135,10 +127,9 @@ export const AjnaOmniEarnSlider: FC<AjnaEarnSliderProps> = ({
           leftBottomLabel={t('safer')}
           rightBottomLabel={t('riskier')}
           colorfulRanges={`linear-gradient(to right,
-        #D3D4D8 0 ${htpPercentage}%,
-        ${lendingPriceColors.belowLup} ${htpPercentage}% ${lupPercentage}%,
-        ${lendingPriceColors.belowMomp} ${lupPercentage}% ${mompPercentage}%,
-        ${lendingPriceColors.aboveMomp} ${mompPercentage}% 100%)`}
+        ${omniLendingPriceColors.belowHtp} 0 ${htpPercentage}%,
+        ${omniLendingPriceColors.belowLup} ${htpPercentage}% ${lupPercentage}%,
+        ${omniLendingPriceColors.aboveLup} ${lupPercentage}% 100%)`}
         />
       )}
       {nestedManualInput ? (

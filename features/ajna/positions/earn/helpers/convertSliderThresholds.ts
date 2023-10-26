@@ -20,3 +20,20 @@ export const convertSliderThresholds = ({
     mompPercentage: convertSliderValuesToPercents(mostOptimisticMatchingPrice, min, max),
   }
 }
+
+export const convertAjnaOmniSliderThresholds = ({
+  min,
+  max,
+  highestThresholdPrice,
+  lowestUtilizedPrice,
+}: {
+  min: BigNumber
+  max: BigNumber
+  highestThresholdPrice: BigNumber
+  lowestUtilizedPrice: BigNumber
+}) => {
+  return {
+    htpPercentage: convertSliderValuesToPercents(highestThresholdPrice, min, max),
+    lupPercentage: convertSliderValuesToPercents(lowestUtilizedPrice, min, max),
+  }
+}
