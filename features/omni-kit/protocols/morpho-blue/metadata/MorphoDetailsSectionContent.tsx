@@ -1,10 +1,12 @@
 import type { MorphoPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { ContentCardLiquidationPriceV2 } from 'components/vault/detailsSection/ContentCardLiquidationPriceV2'
-import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
-import { ContentCardNetBorrowCost } from 'components/vault/detailsSection/ContentCardNetBorrowCost'
-import { ContentCardNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardNetValue'
+import {
+  OmniContentCardLiquidationPrice,
+  OmniContentCardLtv,
+  OmniContentCardNetBorrowCost,
+  OmniContentCardNetValue,
+} from 'features/omni-kit/components/details-section'
 import type { OmniFlow } from 'features/omni-kit/types'
 import { one, zero } from 'helpers/zero'
 import type { FC } from 'react'
@@ -41,7 +43,7 @@ export const MorphoDetailsSectionContent: FC<MorphoOmniDetailsSectionContentProp
 }) => {
   return (
     <>
-      <ContentCardLiquidationPriceV2
+      <OmniContentCardLiquidationPrice
         liquidationPriceInDebt={position.liquidationPrice}
         afterLiquidationPriceInDebt={simulation?.liquidationPrice}
         liquidationPriceInCollateral={normalizeValue(one.div(position.liquidationPrice))}
@@ -55,7 +57,7 @@ export const MorphoDetailsSectionContent: FC<MorphoOmniDetailsSectionContentProp
         isShort={isShort}
         liquidationPenalty={liquidationPenalty}
       />
-      <ContentCardLtv
+      <OmniContentCardLtv
         loanToValue={position.riskRatio.loanToValue}
         // TODO to be defined
         liquidationThreshold={new BigNumber(0.93)}
@@ -66,12 +68,12 @@ export const MorphoDetailsSectionContent: FC<MorphoOmniDetailsSectionContentProp
           isAutomationDataLoaded: false,
         }}
       />
-      <ContentCardNetBorrowCost
+      <OmniContentCardNetBorrowCost
         netBorrowCost={interestRate}
         netBorrowCostInUSDC={zero}
         quoteToken={quoteToken}
       />
-      <ContentCardNetValue
+      <OmniContentCardNetValue
         isLoading={isSimulationLoading}
         netValue={position.netValue}
         afterNetValue={simulation?.netValue}
