@@ -8,6 +8,10 @@ import type { ContractDesc } from 'features/web3Context'
 
 const { mainnet } = ADDRESSES
 
+export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
+
+export const cropJoinIlks = ['CRVV1ETHSTETH-A']
+
 export const supportedIlks = [
   /* export just for test purposes */ 'ETH-A',
   'ETH-B',
@@ -50,6 +54,8 @@ export const supportedIlks = [
   'WSTETH-B',
   'RETH-A',
   'GNO-A',
+  ...charterIlks,
+  ...cropJoinIlks,
 ] as const
 
 export const tokensMainnet = {
@@ -83,7 +89,12 @@ export const tokensMainnet = {
   YIELDETH: contractDesc(erc20, mainnet.common.YIELDETH),
 } as Record<string, ContractDesc>
 
-export const ilksNotSupportedOnGoerli = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'] as const
+export const ilksNotSupportedOnGoerli = [
+  'GUNIV3DAIUSDC1-A',
+  'GUNIV3DAIUSDC2-A',
+  ...charterIlks,
+  ...cropJoinIlks,
+] as const
 
 export const ACCOUNT_GUARD_FACTORY_GENESIS_MAINNET = 16183119
 export const AAVE_V3_POOL_GENESIS_MAINNET = 16291127

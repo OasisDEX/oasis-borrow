@@ -23,6 +23,8 @@ export function isDropdownDisabled({
     case 'daiAllowanceInProgress':
     case 'txInProgress':
     case 'txWaitingForApproval':
+    case 'multiplyTransitionInProgress':
+    case 'multiplyTransitionSuccess':
     case 'borrowTransitionInProgress':
     case 'borrowTransitionSuccess':
     case 'manageInProgress':

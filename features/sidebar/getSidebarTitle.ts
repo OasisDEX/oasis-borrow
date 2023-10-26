@@ -168,8 +168,15 @@ export function getSidebarTitle({
       const txSuccessKey = getSidebarTitleTxSuccessTranslationKey({ flow })
 
       return t(txSuccessKey)
+    case 'collateralEditing':
+    case 'daiEditing':
     case 'adjustPosition':
     case 'otherActions':
+    case 'multiplyTransitionEditing':
+    case 'multiplyTransitionWaitingForConfirmation':
+    case 'multiplyTransitionInProgress':
+    case 'multiplyTransitionFailure':
+    case 'multiplyTransitionSuccess':
     case 'borrowTransitionEditing':
     case 'borrowTransitionWaitingForConfirmation':
     case 'borrowTransitionInProgress':

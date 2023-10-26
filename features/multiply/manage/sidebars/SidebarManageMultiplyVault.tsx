@@ -5,7 +5,6 @@ import { SidebarAutomationVaultCloseTriggered } from 'components/vault/sidebar/S
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { getAutomationThatClosedVault } from 'features/automation/common/helpers/getAutomationThatClosedVault'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { SidebarManageMultiplyVaultManageStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultManageStage'
 import { SidebarManageMultiplyVaultTransitionStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultTransitionStage'
@@ -59,7 +58,6 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
     totalSteps,
     vault: { token },
     vaultHistory,
-    vaultType,
   } = props
 
   const [forcePanel, setForcePanel] = useState<string>()
@@ -105,19 +103,15 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
       forcePanel,
       disabled: isDropdownDisabled({ stage, isClosedVaultPanelVisible }),
       items: [
-        ...(vaultType === VaultType.Multiply
-          ? [
-              {
-                label: t('system.actions.multiply.adjust'),
-                icon: circle_slider,
-                iconShrink: 2,
-                panel: 'adjust',
-                action: () => {
-                  toggle!('adjustPosition')
-                },
-              },
-            ]
-          : []),
+        {
+          label: t('system.actions.multiply.adjust'),
+          icon: circle_slider,
+          iconShrink: 2,
+          panel: 'adjust',
+          action: () => {
+            toggle!('adjustPosition')
+          },
+        },
         {
           label: t('system.actions.borrow.edit-collateral', { token }),
           shortLabel: token,
@@ -135,18 +129,11 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
           panel: 'dai',
           action: () => {
             toggle!('otherActions')
-            if (vaultType === VaultType.Borrow) {
-              setOtherAction!('paybackDai')
-            } else {
-              setOtherAction!('depositDai')
-            }
+            setOtherAction!('depositDai')
           },
         },
         {
-          label:
-            vaultType === VaultType.Borrow
-              ? t('system.actions.borrow.switch-to-multiply')
-              : t('system.actions.multiply.switch-to-borrow'),
+          label: t('system.actions.multiply.switch-to-borrow'),
           icon: circle_exchange,
           iconShrink: 2,
           panel: 'transition',
@@ -155,19 +142,6 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
             setOtherAction!('depositCollateral')
           },
         },
-        ...(vaultType === VaultType.Borrow
-          ? [
-              {
-                label: t('system.actions.multiply.adjust'),
-                icon: circle_slider,
-                iconShrink: 2,
-                panel: 'adjust',
-                action: () => {
-                  toggle!('adjustPosition')
-                },
-              },
-            ]
-          : []),
         {
           label: t('system.actions.common.close-vault'),
           icon: circle_close,
@@ -189,13 +163,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
             {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
               <SidebarVaultAllowanceStage {...props} />
             )}
-            {isBorrowTransitionStage && (
-              <SidebarManageMultiplyVaultTransitionStage
-                stage={stage}
-                vaultType={vaultType}
-                token={token}
-              />
-            )}
+            {isBorrowTransitionStage && <SidebarManageMultiplyVaultTransitionStage stage={stage} />}
             {isManageStage && <SidebarManageMultiplyVaultManageStage {...props} />}
           </>
         ) : (
@@ -207,7 +175,6 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
       label: getPrimaryButtonLabel({
         flow,
         isClosedVaultPanelVisible,
-        vaultType,
         ...primaryButtonLabelParams,
       }),
       disabled: (!canProgress || !accountIsConnected) && !isClosedVaultPanelVisible,

@@ -1262,8 +1262,6 @@
         "buy-coll": "Buy Coll.",
         "reduce-debt": "Reduce Debt",
         "withdraw": "Withdraw",
-        "borrow": "Borrow",
-        "paybck": "Payback",
         "switch-to-borrow": "Switch to Borrow",
         "deposit-collateral": "Deposit collateral",
         "withdraw-collateral": "Withdraw collateral",
@@ -1427,10 +1425,7 @@
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
-    "closing": "To close your vault, a part of your position will be sold to pay back the outstanding debt. The rest of your collateral will be sent to your address.",
-    "risk-management-for-borrow-message": "New ways to manage risk right from your borrow vault.",
-    "risk-management-for-borrow-title": "Enhanced Risk Management for Borrow Vaults",
-    "risk-management-for-borrow-link": "Learn More ->"
+    "closing": "To close your vault, a part of your position will be sold to pay back the outstanding debt. The rest of your collateral will be sent to your address."
   },
   "vault-changes": {
     "order-information": "Order information",
