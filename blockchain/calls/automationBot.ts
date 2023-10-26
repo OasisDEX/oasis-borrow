@@ -1,4 +1,5 @@
 import { TriggerGroupType } from '@oasisdex/automation'
+import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
@@ -36,7 +37,7 @@ export function getAddAutomationV2TriggerCallData(
   ).methods.addTriggers(
     TriggerGroupType.SingleTrigger,
     data.continuous,
-    data.replacedTriggerIds,
+    data.replacedTriggerIds.map((id: BigNumber) => id.toString()),
     data.triggersData,
     data.replacedTriggersData,
     data.triggerTypes,
@@ -51,5 +52,9 @@ export function getRemoveAutomationV2TriggerCallData(
 
   return contract<AutomationBotV2>(
     getNetworkContracts(NetworkIds.MAINNET, chainId).automationBotV2,
-  ).methods.removeTriggers(data.triggersIds, data.triggersData, data.removeAllowance)
+  ).methods.removeTriggers(
+    data.triggersIds.map((id: BigNumber) => id.toString()),
+    data.triggersData,
+    data.removeAllowance,
+  )
 }
