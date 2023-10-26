@@ -11,7 +11,7 @@ import { OpenVaultAnimation } from 'theme/animations'
 export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
-  const { stage, vaultType, otherAction } = props
+  const { stage, vaultType } = props
 
   const [, setVaultChanges] = useState<ManageMultiplyVaultState>(props)
 
@@ -25,7 +25,7 @@ export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVault
     case 'manageSuccess':
       return (
         <>
-          {vaultType === VaultType.Multiply || otherAction === 'closeVault' ? (
+          {vaultType === VaultType.Multiply ? (
             <ManageMultiplyVaultChangesInformation {...props} />
           ) : (
             <ManageVaultChangesInformation {...props} />
@@ -39,7 +39,7 @@ export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVault
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('vault-form.subtext.review-manage')}
           </Text>
-          {vaultType === VaultType.Multiply || stage === 'adjustPosition' || (stage === 'otherActions' && otherAction === 'closeVault') ? (
+          {vaultType === VaultType.Multiply ? (
             <ManageMultiplyVaultChangesInformation {...props} />
           ) : (
             <ManageVaultChangesInformation {...props} />
