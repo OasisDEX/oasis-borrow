@@ -8,12 +8,10 @@ import * as accountFactory from 'blockchain/abi/account-factory.json'
 import * as accountGuard from 'blockchain/abi/account-guard.json'
 import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.json'
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
-import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
 import * as automationBotAggregator from 'blockchain/abi/automation-bot-aggregator.json'
 import * as automationBotV2 from 'blockchain/abi/automation-bot-v2.json'
 import * as automationBot from 'blockchain/abi/automation-bot.json'
-import * as balancerVault from 'blockchain/abi/balancer-vault.json'
 import * as cdpRegistry from 'blockchain/abi/cdp-registry.json'
 import * as chainLinkPriceOracle from 'blockchain/abi/chainlink-price-oracle.json'
 import * as dsProxyFactory from 'blockchain/abi/ds-proxy-factory.json'
@@ -47,7 +45,7 @@ import {
   getCollaterals,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { contractDesc, emptyContractDesc } from 'blockchain/networks'
+import { contractDesc, contractDescWithoutAbi, emptyContractDesc } from 'blockchain/networks'
 import { supportedIlks } from 'blockchain/tokens/mainnet'
 import {
   AAVE_V3_POOL_GENESIS_OPTIMISM_MAINNET,
@@ -168,38 +166,38 @@ export const optimismContracts: OptimismContracts = {
   ajnaPoolInfo: contractDesc(ajnaPoolInfo, optimism.ajna.AjnaPoolInfo),
   ajnaProxyActions: contractDesc(ajnaProxyActions, optimism.ajna.AjnaProxyActions),
   ajnaPoolPairs: {
-    'CBETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_CBETHETH),
-    'CBETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_CBETHGHO),
-    'ETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHDAI),
-    'ETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHGHO),
-    'ETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_ETHUSDC),
-    'GHO-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_GHODAI),
-    'RETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHDAI),
-    'RETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHETH),
-    'RETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHGHO),
-    'RETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHUSDC),
-    'SDAI-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_SDAIUSDC),
-    'TBTC-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_TBTCUSDC),
-    'TBTC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_TBTCWBTC),
-    'USDC-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCETH),
-    'USDC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCWBTC),
-    'USDC-WLD': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_USDCWLD),
-    'WBTC-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCDAI),
-    'WBTC-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCGHO),
-    'WBTC-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WBTCUSDC),
-    'WLD-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WLDUSDC),
-    'WSTETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHDAI),
-    'WSTETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHETH),
-    'WSTETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHGHO),
-    'WSTETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHUSDC),
-    'YFI-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YFIDAI),
+    'CBETH-ETH': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_CBETHETH),
+    'CBETH-GHO': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_CBETHGHO),
+    'ETH-DAI': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_ETHDAI),
+    'ETH-GHO': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_ETHGHO),
+    'ETH-USDC': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_ETHUSDC),
+    'GHO-DAI': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_GHODAI),
+    'RETH-DAI': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_RETHDAI),
+    'RETH-ETH': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_RETHETH),
+    'RETH-GHO': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_RETHGHO),
+    'RETH-USDC': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_RETHUSDC),
+    'SDAI-USDC': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_SDAIUSDC),
+    'TBTC-USDC': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_TBTCUSDC),
+    'TBTC-WBTC': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_TBTCWBTC),
+    'USDC-ETH': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_USDCETH),
+    'USDC-WBTC': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_USDCWBTC),
+    'USDC-WLD': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_USDCWLD),
+    'WBTC-DAI': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_WBTCDAI),
+    'WBTC-GHO': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_WBTCGHO),
+    'WBTC-USDC': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_WBTCUSDC),
+    'WLD-USDC': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_WLDUSDC),
+    'WSTETH-DAI': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_WSTETHDAI),
+    'WSTETH-ETH': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_WSTETHETH),
+    'WSTETH-GHO': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_WSTETHGHO),
+    'WSTETH-USDC': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_WSTETHUSDC),
+    'YFI-DAI': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_YFIDAI),
   },
   ajnaOraclessPoolPairs: {
-    'YIELDBTC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YIELDBTCWBTC),
-    'YIELDETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YIELDETHETH),
+    'YIELDBTC-WBTC': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_YIELDBTCWBTC),
+    'YIELDETH-ETH': contractDescWithoutAbi(optimism.ajna.AjnaPoolPairs_YIELDETHETH),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, optimism.ajna.ERC20PoolFactory),
-  balancerVault: contractDesc(balancerVault, optimism.common.BalancerVault),
+  balancerVault: contractDescWithoutAbi(optimism.common.BalancerVault),
   // NOT contracts
   cacheApi: 'not-implemented',
   safeConfirmations: 6,
