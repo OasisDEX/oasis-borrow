@@ -6,7 +6,6 @@ import type {
 } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import type { ethers } from 'ethers'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
@@ -35,48 +34,48 @@ import {
 } from 'features/omni-kit/types'
 
 interface AjnaTxHandlerInput {
+  chainId: NetworkIds
   collateralAddress: string
   collateralPrecision: number
   collateralPrice: BigNumber
   collateralToken: string
-  context: Context
   isFormValid: boolean
   position: AjnaGenericPosition
-  simulation?: AjnaGenericPosition
+  price?: BigNumber
   quoteAddress: string
   quotePrecision: number
   quotePrice: BigNumber
   quoteToken: string
   rpcProvider: ethers.providers.Provider
+  simulation?: AjnaGenericPosition
   slippage: BigNumber
   state: OmniFormState
-  price?: BigNumber
+  walletAddress?: string
 }
 
 export async function getAjnaOmniParameters({
+  chainId,
   collateralAddress,
   collateralPrecision,
   collateralPrice,
   collateralToken,
-  context,
   isFormValid,
   position,
-  simulation,
+  price,
   quoteAddress,
   quotePrecision,
   quotePrice,
   quoteToken,
   rpcProvider,
+  simulation,
   slippage,
   state,
-  price,
+  walletAddress,
 }: AjnaTxHandlerInput): Promise<AjnaStrategy<AjnaGenericPosition> | undefined> {
   const defaultPromise = Promise.resolve(undefined)
-  const chainId = context.chainId
-  const walletAddress = context.account
 
   const { action, dpmAddress } = state
-  const addressesConfig = getNetworkContracts(NetworkIds.MAINNET, context.chainId)
+  const addressesConfig = getNetworkContracts(NetworkIds.MAINNET, chainId)
   const poolAddress = await getAjnaPoolAddress(collateralAddress, quoteAddress, chainId)
 
   const dependencies: AjnaCommonDependencies = {

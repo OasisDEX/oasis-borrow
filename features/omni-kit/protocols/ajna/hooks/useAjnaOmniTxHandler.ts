@@ -25,6 +25,7 @@ export function useAjnaOmniTxHandler(): () => void {
   const { txHelpers$, context$ } = useMainContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
+
   const {
     tx: { setTxDetails },
     environment: {
@@ -84,11 +85,11 @@ export function useAjnaOmniTxHandler(): () => void {
       if (context && !isExternalStep && currentStep !== 'risk' && !isFormEmpty) {
         const promise = cancelable(
           getAjnaOmniParameters({
+            chainId: context.chainId,
             collateralAddress,
             collateralPrecision,
             collateralPrice,
             collateralToken,
-            context,
             isFormValid,
             position: position as AjnaGenericPosition,
             simulation: simulation as AjnaGenericPosition,
@@ -100,6 +101,7 @@ export function useAjnaOmniTxHandler(): () => void {
             slippage,
             state,
             price,
+            walletAddress: context.account,
           }),
         )
         setCancelablePromise(promise)
