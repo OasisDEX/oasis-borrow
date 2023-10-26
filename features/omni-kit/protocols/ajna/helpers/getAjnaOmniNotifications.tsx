@@ -14,7 +14,8 @@ import type {
   OmniMultiplyFormActions,
   OmniMultiplyFormState,
 } from 'features/omni-kit/state/multiply'
-import type { OmniFlow, OmniProductType } from 'features/omni-kit/types'
+import type { OmniFlow } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one, zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
@@ -319,8 +320,8 @@ export function getAjnaOmniNotifications({
   }
 
   switch (productType) {
-    case 'multiply':
-    case 'borrow':
+    case OmniProductType.Borrow:
+    case OmniProductType.Multiply:
       const borrowishPositionAuction = positionAuction as AjnaBorrowishPositionAuction
       const borrowishPosition = position as AjnaPosition
 
@@ -361,7 +362,7 @@ export function getAjnaOmniNotifications({
       }
 
       break
-    case 'earn': {
+    case OmniProductType.Earn: {
       if (flow === 'manage') {
         const {
           price,
