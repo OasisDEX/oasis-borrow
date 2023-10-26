@@ -1,11 +1,12 @@
 import type { IlkData } from 'blockchain/ilks.types'
+import type { InstiVault } from 'blockchain/instiVault.types'
 import type { Vault } from 'blockchain/vaults.types'
 import React from 'react'
 
 import { VaultHeaderLayout } from './VaultHeaderLayout'
 
 export interface DefaultVaultHeaderControlProps {
-  vault: Vault
+  vault: Vault | InstiVault
   ilkData: IlkData
 }
 

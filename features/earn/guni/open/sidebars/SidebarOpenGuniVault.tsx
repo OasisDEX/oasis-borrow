@@ -6,7 +6,6 @@ import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultPro
 import type { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault.types'
 import { SidebarOpenGuniVaultEditingState } from 'features/earn/guni/open/sidebars/SidebarOpenGuniVaultEditingState'
 import { SidebarOpenGuniVaultOpenStage } from 'features/earn/guni/open/sidebars/SidebarOpenGuniVaultOpenStage'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -64,11 +63,7 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({
-        ...primaryButtonLabelParams,
-        flow,
-        vaultType: VaultType.Earn,
-      }),
+      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress || (isProxyStage && isProxyCreationDisabled),
       isLoading: isLoadingStage,

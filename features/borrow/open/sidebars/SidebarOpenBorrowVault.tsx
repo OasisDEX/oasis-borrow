@@ -10,7 +10,6 @@ import { openVaultWithStopLossAnalytics } from 'features/automation/common/helpe
 import { getDataForStopLoss } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import type { OpenVaultState } from 'features/borrow/open/pipes/openVault.types'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -96,11 +95,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       },
     }),
     primaryButton: {
-      label: getPrimaryButtonLabel({
-        ...primaryButtonLabelParams,
-        flow,
-        vaultType: VaultType.Borrow,
-      }),
+      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       steps: !isSuccessStage && !isAddStopLossStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress || (isProxyStage && isProxyCreationDisabled),
       isLoading: isLoadingStage,

@@ -122,7 +122,7 @@ function addTransitions(
           saveVaultType$,
           state.account as string,
           state.vault.id,
-          state.vaultType === VaultType.Borrow ? VaultType.Multiply : VaultType.Borrow,
+          VaultType.Borrow,
           state.vault.chainId,
           LendingProtocol.Maker,
           () => {
@@ -302,7 +302,6 @@ export function createManageMultiplyVault$(
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   saveVaultType$: SaveVaultType,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
-  vaultType: VaultType,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
@@ -350,10 +349,9 @@ export function createManageMultiplyVault$(
                   )
 
                   const initialState: ManageMultiplyVaultState = {
-                    ...defaultMutableManageMultiplyVaultState(vaultType, vault.lockedCollateral),
+                    ...defaultMutableManageMultiplyVaultState(vault.lockedCollateral),
                     ...defaultManageMultiplyVaultCalculations,
                     ...defaultManageMultiplyVaultConditions,
-                    vaultType,
                     vault,
                     priceInfo,
                     vaultHistory: [],

@@ -5,7 +5,7 @@ import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
-export function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): string {
+function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): string {
   const { t } = useTranslation()
 
   switch (state.stage) {

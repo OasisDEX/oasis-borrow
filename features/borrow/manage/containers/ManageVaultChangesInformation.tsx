@@ -6,7 +6,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -14,7 +14,7 @@ import type { ReactNode } from 'react'
 import React from 'react'
 
 export function ManageVaultChangesInformation(
-  props: ManageMultiplyVaultState & { txnCostDisplay?: ReactNode },
+  props: ManageStandardBorrowVaultState & { txnCostDisplay?: ReactNode },
 ) {
   const { t } = useTranslation()
   const {

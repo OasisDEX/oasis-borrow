@@ -6,8 +6,6 @@ import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultAct
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
 import type { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
-import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { MAX_COLL_RATIO } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations.constants'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import type { OtherAction } from 'features/multiply/manage/pipes/OtherAction.types'
@@ -666,7 +664,7 @@ function OtherActionsForm(props: ManageMultiplyVaultState) {
 }
 
 export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
-  const { stage, inputAmountsEmpty, vaultType } = props
+  const { stage, inputAmountsEmpty } = props
   const [uiState] = useUIChanges<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT)
 
   const effectiveStage = uiState?.currentStage || stage
@@ -681,11 +679,7 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
       {stage === 'adjustPosition' && <AdjustPositionForm {...props} />}
       {stage === 'otherActions' && <OtherActionsForm {...props} />}
       {!inputAmountsEmpty && <Divider />}
-      {vaultType === VaultType.Multiply ? (
-        <ManageMultiplyVaultChangesInformation {...props} />
-      ) : (
-        <ManageVaultChangesInformation {...props} />
-      )}
+      <ManageMultiplyVaultChangesInformation {...props} />
     </Grid>
   )
 }
