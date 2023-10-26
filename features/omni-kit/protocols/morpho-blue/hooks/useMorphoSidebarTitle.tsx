@@ -2,7 +2,7 @@ import type { OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 
-export const getMorphoSidebarTitle = ({
+export const useMorphoSidebarTitle = ({
   currentStep,
   productType,
 }: {

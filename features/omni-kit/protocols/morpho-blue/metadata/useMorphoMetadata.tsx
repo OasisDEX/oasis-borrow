@@ -3,13 +3,13 @@ import { negativeToZero } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { ajnaFlowStateFilter } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
-import { getMorphoSidebarTitle } from 'features/morpho/positions/common/getMorphoSidebarTitle'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import type {
   GetOmniMetadata,
   LendingMetadata,
 } from 'features/omni-kit/contexts/OmniProductContext'
 import { getOmniBorrowishChangeVariant, getOmniBorrowPaybackMax } from 'features/omni-kit/helpers'
+import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks/useMorphoSidebarTitle'
 import { MorphoDetailsSectionContent } from 'features/omni-kit/protocols/morpho-blue/metadata/MorphoDetailsSectionContent'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/protocols/morpho-blue/metadata/MorphoDetailsSectionFooter'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -95,7 +95,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
             digits: quoteDigits,
             position,
           }),
-          sidebarTitle: getMorphoSidebarTitle({
+          sidebarTitle: useMorphoSidebarTitle({
             currentStep,
             productType,
           }),
