@@ -9,7 +9,11 @@ import {
   OmniBorrowFormContentWithdraw,
 } from 'features/omni-kit/components/sidebars/borrow'
 import { useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniBorrowFormAction, OmniProductType } from 'features/omni-kit/types'
+import {
+  OmniBorrowFormAction,
+  OmniProductType,
+  OmniSidebarBorrowPanel,
+} from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -25,7 +29,7 @@ export function OmniBorrowFormContentManage() {
 
   return (
     <>
-      {uiDropdown === 'collateral' && (
+      {uiDropdown === OmniSidebarBorrowPanel.Collateral && (
         <>
           <ActionPills
             active={uiPill}
@@ -54,7 +58,7 @@ export function OmniBorrowFormContentManage() {
           {uiPill === OmniBorrowFormAction.WithdrawBorrow && <OmniBorrowFormContentWithdraw />}
         </>
       )}
-      {uiDropdown === 'quote' && (
+      {uiDropdown === OmniSidebarBorrowPanel.Quote && (
         <>
           <ActionPills
             active={uiPill}
@@ -83,9 +87,9 @@ export function OmniBorrowFormContentManage() {
           {uiPill === OmniBorrowFormAction.PaybackBorrow && <OmniBorrowFormContentPayback />}
         </>
       )}
-      {uiDropdown === 'switch' && <OmniBorrowFormContentSwitch />}
-      {uiDropdown === 'close' && <OmniBorrowFormContentClose />}
-      {uiDropdown === 'adjust' && <OmniBorrowFormContentAdjust />}
+      {uiDropdown === OmniSidebarBorrowPanel.Switch && <OmniBorrowFormContentSwitch />}
+      {uiDropdown === OmniSidebarBorrowPanel.Close && <OmniBorrowFormContentClose />}
+      {uiDropdown === OmniSidebarBorrowPanel.Adjust && <OmniBorrowFormContentAdjust />}
     </>
   )
 }

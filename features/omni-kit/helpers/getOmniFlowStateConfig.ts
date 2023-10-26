@@ -5,6 +5,7 @@ import {
   OmniBorrowFormAction,
   OmniEarnFormAction,
   OmniMultiplyFormAction,
+  OmniSidebarEarnPanel,
 } from 'features/omni-kit/types'
 import type { UseFlowStateProps } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
@@ -34,7 +35,7 @@ export function getOmniFlowStateConfig({
     case OmniEarnFormAction.OpenEarn:
       // THIS CONDITION IS ADDED TO BYPASS DPM & ALLOWANCE FLOW
       // WHILE IN AJNA EARN ADJUST MANAGE VIEW
-      if (state.uiDropdown === 'adjust' && !isOpening) {
+      if (state.uiDropdown === OmniSidebarEarnPanel.Adjust && !isOpening) {
         return {
           amount: zero,
           token: 'ETH',

@@ -3,7 +3,6 @@ import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import { getAjnaEarnDefaultUiDropdown } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultUiDropdown'
 import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
 import { OmniProductContextProvider } from 'features/omni-kit/contexts/OmniProductContext'
 import { OmniBorrowPositionController } from 'features/omni-kit/controllers/borrow/OmniBorrowPositionController'
@@ -11,6 +10,7 @@ import { OmniEarnPositionController } from 'features/omni-kit/controllers/earn/O
 import { OmniMultiplyPositionController } from 'features/omni-kit/controllers/multiply/OmniMultiplyPositionController'
 import { AjnaCustomStateContextProvider } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
 import { getAjnaOmniEarnDefaultAction } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniEarnDefaultAction'
+import { getAjnaOmniEarnDefaultUiDropdown } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniEarnDefaultUiDropdown'
 import { useAjnaOmniTxHandler } from 'features/omni-kit/protocols/ajna/hooks/useAjnaOmniTxHandler'
 import { useAjnaMetadata } from 'features/omni-kit/protocols/ajna/metadata/useAjnaMetadata'
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
@@ -70,7 +70,7 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
           getDynamicMetadata={useAjnaMetadata}
           formDefaults={{
             action: getAjnaOmniEarnDefaultAction(isOpening, positionData as AjnaEarnPosition),
-            uiDropdown: getAjnaEarnDefaultUiDropdown(positionData as AjnaEarnPosition),
+            uiDropdown: getAjnaOmniEarnDefaultUiDropdown(positionData as AjnaEarnPosition),
           }}
           formReducto={useOmniEarnFormReducto}
           position={positionData as AjnaEarnPosition}

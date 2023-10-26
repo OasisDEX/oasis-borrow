@@ -7,7 +7,12 @@ import {
   OmniBorrowFormOrder,
 } from 'features/omni-kit/components/sidebars/borrow'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniBorrowFormAction, OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
+import {
+  OmniBorrowFormAction,
+  OmniProductType,
+  OmniSidebarBorrowPanel,
+  OmniSidebarStep,
+} from 'features/omni-kit/types'
 import { OmniFormView } from 'features/omni-kit/views'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -41,12 +46,12 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
               label: t('system.manage-collateral-token', {
                 token: collateralToken,
               }),
-              panel: 'collateral',
+              panel: OmniSidebarBorrowPanel.Collateral,
               shortLabel: collateralToken,
               tokenIcon: collateralIcon,
               action: () => {
                 dispatch({ type: 'reset' })
-                updateState('uiDropdown', 'collateral')
+                updateState('uiDropdown', OmniSidebarBorrowPanel.Collateral)
                 updateState('uiPill', OmniBorrowFormAction.DepositBorrow)
                 updateState('action', OmniBorrowFormAction.DepositBorrow)
               },
@@ -55,12 +60,12 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
               label: t('system.manage-debt-token', {
                 token: quoteToken,
               }),
-              panel: 'quote',
+              panel: OmniSidebarBorrowPanel.Quote,
               shortLabel: quoteToken,
               tokenIcon: quoteIcon,
               action: () => {
                 dispatch({ type: 'reset' })
-                updateState('uiDropdown', 'quote')
+                updateState('uiDropdown', OmniSidebarBorrowPanel.Quote)
                 updateState('uiPill', OmniBorrowFormAction.GenerateBorrow)
                 updateState('action', OmniBorrowFormAction.GenerateBorrow)
               },
@@ -72,10 +77,10 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
                     label: t('system.actions.borrow.switch-to-multiply'),
                     icon: circle_exchange,
                     iconShrink: 2,
-                    panel: 'switch',
+                    panel: OmniSidebarBorrowPanel.Switch,
                     action: () => {
                       dispatch({ type: 'reset' })
-                      updateState('uiDropdown', 'switch')
+                      updateState('uiDropdown', OmniSidebarBorrowPanel.Switch)
                       updateState('action', OmniBorrowFormAction.SwitchBorrow)
                     },
                   },
@@ -83,10 +88,10 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
                     label: t('system.actions.common.close-position'),
                     icon: circle_close,
                     iconShrink: 2,
-                    panel: 'close',
+                    panel: OmniSidebarBorrowPanel.Close,
                     action: () => {
                       dispatch({ type: 'reset' })
-                      updateState('uiDropdown', 'close')
+                      updateState('uiDropdown', OmniSidebarBorrowPanel.Close)
                       updateState('closeTo', 'collateral')
                       updateState('action', OmniBorrowFormAction.CloseBorrow)
                     },

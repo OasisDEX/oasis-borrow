@@ -4,7 +4,7 @@ import {
   OmniEarnFormContentWithdraw,
 } from 'features/omni-kit/components/sidebars/earn'
 import { useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniEarnFormAction, OmniProductType } from 'features/omni-kit/types'
+import { OmniEarnFormAction, OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -26,7 +26,7 @@ export function OmniEarnFormContentManage() {
 
   return (
     <>
-      {uiDropdown === 'liquidity' && (
+      {uiDropdown === OmniSidebarEarnPanel.Liquidity && (
         <>
           <ActionPills
             active={uiPill}

@@ -5,7 +5,7 @@ import type {
   FormActionsUpdateDpm,
   FormActionsUpdateWithdraw,
 } from 'features/omni-kit/state'
-import type { OmniEarnFormAction, OmniEarnPanel } from 'features/omni-kit/types'
+import type { OmniEarnFormAction, OmniSidebarEarnPanel } from 'features/omni-kit/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniEarnFormState {
@@ -15,7 +15,7 @@ export interface OmniEarnFormState {
   depositAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
-  uiDropdown: OmniEarnPanel
+  uiDropdown: OmniSidebarEarnPanel
   uiPill: Exclude<OmniEarnFormAction, OmniEarnFormAction.OpenEarn | OmniEarnFormAction.ClaimEarn>
 }
 

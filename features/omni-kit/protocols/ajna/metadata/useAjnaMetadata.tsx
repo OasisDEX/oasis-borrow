@@ -43,7 +43,7 @@ import { AjnaOmniLendingDetailsSectionContent } from 'features/omni-kit/protocol
 import { AjnaOmniLendingDetailsSectionFooter } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionFooter'
 import { getAjnaOmniEarnIsFomEmpty } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFomEmpty'
 import { getAjnaOmniEarnIsFormValid } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFormValid'
-import { OmniEarnFormAction, OmniProductType } from 'features/omni-kit/types'
+import { OmniEarnFormAction, OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import {
   formatAmount,
@@ -305,7 +305,8 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         notifications,
         validations,
         handlers: {
-          txSuccessEarnHandler: () => earnContext.form.updateState('uiDropdown', 'adjust'),
+          txSuccessEarnHandler: () =>
+            earnContext.form.updateState('uiDropdown', OmniSidebarEarnPanel.Adjust),
           customReset: () => dispatch({ type: 'reset' }),
         },
         filters,
@@ -351,7 +352,10 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
                     iconShrink: 2,
                     action: () => {
                       earnContext.form.dispatch({ type: 'reset' })
-                      earnContext.form.updateState('uiDropdown', 'claim-collateral')
+                      earnContext.form.updateState(
+                        'uiDropdown',
+                        OmniSidebarEarnPanel.ClaimCollateral,
+                      )
                       earnContext.form.updateState('action', OmniEarnFormAction.ClaimEarn)
                       dispatch({ type: 'reset' })
                     },

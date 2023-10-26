@@ -1,11 +1,10 @@
 import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
-import type BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
-import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
-import type { TxError } from 'helpers/types'
+
+export type OmniGenericPosition = LendingPosition | SupplyPosition
 
 export enum OmniProductType {
   Borrow = 'borrow',
@@ -36,17 +35,31 @@ export type OmniSidebarStepsSet = {
 
 export type OmniCloseTo = 'collateral' | 'quote'
 
-export type OmniValidationItem = {
-  message: { translationKey?: string; component?: JSX.Element; params?: { [key: string]: string } }
-}
-
 export interface OmniIsCachedPosition {
   cached?: boolean
 }
 
-export type OmniBorrowPanel = 'collateral' | 'quote' | 'switch' | 'close' | 'adjust'
-export type OmniEarnPanel = 'adjust' | 'liquidity' | 'claim-collateral'
-export type OmniMultiplyPanel = 'adjust' | 'collateral' | 'quote' | 'switch' | 'close'
+export enum OmniSidebarBorrowPanel {
+  Adjust = 'adjust',
+  Close = 'close',
+  Collateral = 'collateral',
+  Quote = 'quote',
+  Switch = 'switch',
+}
+
+export enum OmniSidebarEarnPanel {
+  Adjust = 'adjust',
+  ClaimCollateral = 'claimCollateral',
+  Liquidity = 'liquidity',
+}
+
+export enum OmniMultiplyPanel {
+  Adjust = 'adjust',
+  Close = 'close',
+  Collateral = 'collateral',
+  Quote = 'quote',
+  Switch = 'switch',
+}
 
 export enum OmniBorrowFormAction {
   AdjustBorrow = 'adjustBorrow',
@@ -79,7 +92,7 @@ export enum OmniMultiplyFormAction {
 }
 
 export type OmniFormAction = OmniBorrowFormAction | OmniEarnFormAction | OmniMultiplyFormAction
-
+export type OmniFormState = OmniBorrowFormState | OmniMultiplyFormState | OmniEarnFormState
 export interface OmniProductPage {
   collateralToken: string
   networkName: NetworkNames
@@ -87,8 +100,6 @@ export interface OmniProductPage {
   productType: OmniProductType
   quoteToken: string
 }
-
-export type OmniFormState = OmniBorrowFormState | OmniMultiplyFormState | OmniEarnFormState
 
 export type OmniValidations = {
   errors: OmniValidationItem[]
@@ -107,27 +118,6 @@ export interface OmniSimulationCommon {
   warnings: { name: string; data?: { [key: string]: string } }[]
 }
 
-export type OmniGenericPosition = LendingPosition | SupplyPosition
-
-export interface GetOmniBorrowValidationsParams {
-  ajnaSafetySwitchOn: boolean
-  collateralBalance: BigNumber
-  collateralToken: string
-  currentStep: OmniSidebarStep
-  earnIsFormValid: boolean
-  ethBalance: BigNumber
-  ethPrice: BigNumber
-  gasEstimationUsd?: BigNumber
-  isOpening: boolean
-  position: OmniGenericPosition
-  positionAuction: AjnaPositionAuction
-  productType: OmniProductType
-  quoteBalance: BigNumber
-  quoteToken: string
-  simulationErrors?: OmniSimulationCommon['errors']
-  simulationNotices?: OmniSimulationCommon['notices']
-  simulationSuccesses?: OmniSimulationCommon['successes']
-  simulationWarnings?: OmniSimulationCommon['warnings']
-  state: OmniFormState
-  txError?: TxError
+export type OmniValidationItem = {
+  message: { translationKey?: string; component?: JSX.Element; params?: { [key: string]: string } }
 }

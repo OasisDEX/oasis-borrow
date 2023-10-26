@@ -1,6 +1,8 @@
+import type BigNumber from 'bignumber.js'
 import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
+  AjnaPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import {
   AjnaSafetyOnMessage,
@@ -9,13 +11,40 @@ import {
 } from 'features/ajna/positions/common/validation'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { isOmniFormValid } from 'features/omni-kit/helpers/isOmniFormValid'
-import {
-  type GetOmniBorrowValidationsParams,
-  type OmniValidationItem,
-  OmniProductType,
+import type {
+  OmniFormState,
+  OmniGenericPosition,
+  OmniSidebarStep,
+  OmniSimulationCommon,
+  OmniValidationItem,
 } from 'features/omni-kit/types'
+import { OmniProductType } from 'features/omni-kit/types'
+import type { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import React from 'react'
+
+interface GetOmniBorrowValidationsParams {
+  ajnaSafetySwitchOn: boolean
+  collateralBalance: BigNumber
+  collateralToken: string
+  currentStep: OmniSidebarStep
+  earnIsFormValid: boolean
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  gasEstimationUsd?: BigNumber
+  isOpening: boolean
+  position: OmniGenericPosition
+  positionAuction: AjnaPositionAuction
+  productType: OmniProductType
+  quoteBalance: BigNumber
+  quoteToken: string
+  simulationErrors?: OmniSimulationCommon['errors']
+  simulationNotices?: OmniSimulationCommon['notices']
+  simulationSuccesses?: OmniSimulationCommon['successes']
+  simulationWarnings?: OmniSimulationCommon['warnings']
+  state: OmniFormState
+  txError?: TxError
+}
 
 interface AjnaOmniValidation {
   isFormValid: boolean

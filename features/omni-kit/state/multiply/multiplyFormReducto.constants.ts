@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
-import { OmniMultiplyFormAction } from 'features/omni-kit/types'
+import { OmniMultiplyFormAction, OmniMultiplyPanel } from 'features/omni-kit/types'
 
 export const omniMultiplyFormReset = {
   depositAmount: undefined,
@@ -19,6 +19,6 @@ export const omniMultiplyFormDefault: OmniMultiplyFormState = {
   ...omniMultiplyFormReset,
   closeTo: 'collateral',
   dpmAddress: ethers.constants.AddressZero,
-  uiDropdown: 'adjust',
+  uiDropdown: OmniMultiplyPanel.Adjust,
   uiPill: OmniMultiplyFormAction.DepositCollateralMultiply,
 }

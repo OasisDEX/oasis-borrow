@@ -10,7 +10,7 @@ import {
   OmniMultiplyFormContentWithdrawCollateral,
 } from 'features/omni-kit/components/sidebars/multiply'
 import { useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniMultiplyFormAction, OmniProductType } from 'features/omni-kit/types'
+import { OmniMultiplyFormAction, OmniMultiplyPanel, OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -26,8 +26,8 @@ export function OmniMultiplyFormContentManage() {
 
   return (
     <>
-      {uiDropdown === 'adjust' && <OmniMultiplyFormContentAdjust />}
-      {uiDropdown === 'collateral' && (
+      {uiDropdown === OmniMultiplyPanel.Adjust && <OmniMultiplyFormContentAdjust />}
+      {uiDropdown === OmniMultiplyPanel.Collateral && (
         <>
           <ActionPills
             active={uiPill}
@@ -60,7 +60,7 @@ export function OmniMultiplyFormContentManage() {
           )}
         </>
       )}
-      {uiDropdown === 'quote' && (
+      {uiDropdown === OmniMultiplyPanel.Quote && (
         <>
           <ActionPills
             active={uiPill}
@@ -94,8 +94,8 @@ export function OmniMultiplyFormContentManage() {
           )}
         </>
       )}
-      {uiDropdown === 'switch' && <OmniMultiplyFormContentSwitch />}
-      {uiDropdown === 'close' && <OmniMultiplyFormContentClose />}
+      {uiDropdown === OmniMultiplyPanel.Switch && <OmniMultiplyFormContentSwitch />}
+      {uiDropdown === OmniMultiplyPanel.Close && <OmniMultiplyFormContentClose />}
     </>
   )
 }

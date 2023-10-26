@@ -4,7 +4,12 @@ import {
   OmniEarnFormContentOpen,
 } from 'features/omni-kit/components/sidebars/earn'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniEarnFormAction, OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
+import {
+  OmniEarnFormAction,
+  OmniProductType,
+  OmniSidebarEarnPanel,
+  OmniSidebarStep,
+} from 'features/omni-kit/types'
 import { OmniFormView } from 'features/omni-kit/views'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -46,29 +51,29 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
             items: [
               {
                 label: t('system.adjust-position'),
-                panel: 'adjust',
+                panel: OmniSidebarEarnPanel.Adjust,
                 shortLabel: t('adjust'),
                 icon: circle_slider,
                 iconShrink: 2,
                 action: () => {
                   dispatch({ type: 'reset' })
                   customReset()
-                  txSuccessEarnHandler()
                   updateState('uiPill', OmniEarnFormAction.DepositEarn)
                   updateState('action', OmniEarnFormAction.DepositEarn)
+                  txSuccessEarnHandler()
                 },
               },
               {
                 label: t('system.manage-liquidity', {
                   token: quoteToken,
                 }),
-                panel: 'liquidity',
+                panel: OmniSidebarEarnPanel.Liquidity,
                 shortLabel: quoteToken,
                 tokenIcon: quoteIcon,
                 action: () => {
                   dispatch({ type: 'reset' })
                   customReset()
-                  updateState('uiDropdown', 'liquidity')
+                  updateState('uiDropdown', OmniSidebarEarnPanel.Liquidity)
                   updateState('uiPill', OmniEarnFormAction.DepositEarn)
                   updateState('action', OmniEarnFormAction.DepositEarn)
                 },

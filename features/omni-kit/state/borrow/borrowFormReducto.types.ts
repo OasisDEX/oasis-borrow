@@ -9,7 +9,7 @@ import type {
   FormActionsUpdateWithdraw,
   UpdateLoanToValue,
 } from 'features/omni-kit/state'
-import type { OmniBorrowFormAction, OmniBorrowPanel, OmniCloseTo } from 'features/omni-kit/types'
+import type { OmniBorrowFormAction, OmniSidebarBorrowPanel, OmniCloseTo } from 'features/omni-kit/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniBorrowFormState {
@@ -26,7 +26,7 @@ export interface OmniBorrowFormState {
   withdrawAmountUSD?: BigNumber
   loanToValue?: BigNumber
   closeTo: OmniCloseTo
-  uiDropdown: OmniBorrowPanel
+  uiDropdown: OmniSidebarBorrowPanel
   uiPill: Exclude<OmniBorrowFormAction, OmniBorrowFormAction.OpenBorrow>
 }
 
