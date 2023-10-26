@@ -1,5 +1,29 @@
-
 import type { LendingProtocol } from 'lendingProtocols'
+
+interface GetOmniSidebarPrimaryButtonActionsParams {
+  collateralAddress: string
+  collateralToken: string
+  currentStep: string
+  editingStep: string
+  isOpening: boolean
+  isOracless: boolean
+  isStepWithTransaction: boolean
+  isTransitionAction: boolean
+  isTransitionWaitingForApproval: boolean
+  isTxSuccess: boolean
+  onConfirmTransition: () => void
+  onDefault: () => void
+  onDisconnected: () => void
+  onSelectTransition: () => void
+  onTransition: () => void
+  onUpdated: () => void
+  productType: string
+  protocol: LendingProtocol
+  quoteAddress: string
+  quoteToken: string
+  resolvedId?: string
+  walletAddress?: string
+}
 
 export function getOmniSidebarPrimaryButtonActions({
   collateralAddress,
@@ -24,30 +48,7 @@ export function getOmniSidebarPrimaryButtonActions({
   quoteToken,
   resolvedId,
   walletAddress,
-}: {
-  collateralAddress: string
-  collateralToken: string
-  currentStep: string
-  editingStep: string
-  isOpening: boolean
-  isOracless: boolean
-  isStepWithTransaction: boolean
-  isTransitionAction: boolean
-  isTransitionWaitingForApproval: boolean
-  isTxSuccess: boolean
-  onConfirmTransition: () => void
-  onDefault: () => void
-  onDisconnected: () => void
-  onSelectTransition: () => void
-  onTransition: () => void
-  onUpdated: () => void
-  productType: string
-  protocol: LendingProtocol
-  quoteAddress: string
-  quoteToken: string
-  resolvedId?: string
-  walletAddress?: string
-}) {
+}: GetOmniSidebarPrimaryButtonActionsParams) {
   switch (true) {
     case !walletAddress && currentStep === editingStep:
       return { action: onDisconnected }

@@ -8,17 +8,19 @@ import {
   OmniSidebarStep,
 } from 'features/omni-kit/types'
 
+interface isOmniFormValidParams {
+  currentStep: OmniSidebarStep
+  earnIsFormValid: boolean
+  productType: OmniProductType
+  state: OmniFormState
+}
+
 export const isOmniFormValid = ({
   currentStep,
   productType,
   state,
   earnIsFormValid,
-}: {
-  currentStep: OmniSidebarStep
-  earnIsFormValid: boolean
-  productType: OmniProductType
-  state: OmniFormState
-}): boolean => {
+}: isOmniFormValidParams): boolean => {
   switch (productType) {
     case OmniProductType.Borrow: {
       const { action, generateAmount, depositAmount, paybackAmount, withdrawAmount, loanToValue } =

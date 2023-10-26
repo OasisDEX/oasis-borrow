@@ -6,6 +6,27 @@ import {
   OmniSidebarStep,
 } from 'features/omni-kit/types'
 
+interface GetOmniSidebarButtonsStatusParams {
+  action?: OmniFormAction
+  currentStep: OmniSidebarStep
+  editingStep: OmniSidebarEditingStep
+  hasErrors: boolean
+  isAllowanceLoading: boolean
+  isFormFrozen: boolean
+  isFormValid: boolean
+  isOpening: boolean
+  isOwner: boolean
+  isSimulationLoading?: boolean
+  isTransitionInProgress: boolean
+  isTransitionWaitingForApproval: boolean
+  isTxError: boolean
+  isTxInProgress: boolean
+  isTxStarted: boolean
+  isTxWaitingForApproval: boolean
+  safetySwitch: boolean
+  walletAddress?: string
+}
+
 export function getOmniSidebarButtonsStatus({
   action,
   currentStep,
@@ -25,26 +46,7 @@ export function getOmniSidebarButtonsStatus({
   isTxWaitingForApproval,
   safetySwitch,
   walletAddress,
-}: {
-  action?: OmniFormAction
-  currentStep: OmniSidebarStep
-  editingStep: OmniSidebarEditingStep
-  hasErrors: boolean
-  isAllowanceLoading: boolean
-  isFormFrozen: boolean
-  isFormValid: boolean
-  isOpening: boolean
-  isOwner: boolean
-  isSimulationLoading?: boolean
-  isTransitionInProgress: boolean
-  isTransitionWaitingForApproval: boolean
-  isTxError: boolean
-  isTxInProgress: boolean
-  isTxStarted: boolean
-  isTxWaitingForApproval: boolean
-  safetySwitch: boolean
-  walletAddress?: string
-}) {
+}: GetOmniSidebarButtonsStatusParams) {
   const isPrimaryButtonDisabled =
     !!walletAddress &&
     (!isFormValid ||

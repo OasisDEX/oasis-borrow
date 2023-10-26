@@ -17,6 +17,16 @@ import {
 import { zero } from 'helpers/zero'
 import React from 'react'
 
+interface AjnaOmniValidation {
+  isFormValid: boolean
+  isFormFrozen: boolean
+  hasErrors: boolean
+  errors: OmniValidationItem[]
+  warnings: OmniValidationItem[]
+  notices: OmniValidationItem[]
+  successes: OmniValidationItem[]
+}
+
 export function getAjnaOmniValidation({
   ajnaSafetySwitchOn,
   collateralBalance,
@@ -38,15 +48,7 @@ export function getAjnaOmniValidation({
   simulationWarnings = [],
   state,
   txError,
-}: GetOmniBorrowValidationsParams): {
-  isFormValid: boolean
-  isFormFrozen: boolean
-  hasErrors: boolean
-  errors: OmniValidationItem[]
-  warnings: OmniValidationItem[]
-  notices: OmniValidationItem[]
-  successes: OmniValidationItem[]
-} {
+}: GetOmniBorrowValidationsParams): AjnaOmniValidation {
   const localErrors: OmniValidationItem[] = []
   const localWarnings: OmniValidationItem[] = []
   const localNotices: OmniValidationItem[] = []

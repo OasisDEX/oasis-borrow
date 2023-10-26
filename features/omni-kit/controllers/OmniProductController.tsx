@@ -78,6 +78,7 @@ export const OmniProductController = <A, H, P>({
     errors,
     tokensPrecision,
   } = useOmniProtocolData({
+    chainId: network.id,
     collateralToken,
     positionId,
     isOracless,
