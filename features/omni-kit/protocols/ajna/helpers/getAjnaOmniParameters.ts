@@ -1,9 +1,5 @@
-import type {
-  AjnaCommonDependencies,
-  AjnaCommonPayload,
-  AjnaStrategy,
-  Network,
-} from '@oasisdex/dma-library'
+import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaStrategy } from '@oasisdex/dma-library'
+import { Network } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
@@ -85,7 +81,7 @@ export async function getAjnaOmniParameters({
     WETH: addressesConfig.tokens.ETH.address,
     getPoolData: getAjnaPoolData(chainId),
     getCumulatives: getAjnaCumulatives(chainId),
-    network: 'mainnet' as Network,
+    network: Network.MAINNET,
   }
 
   const commonPayload: AjnaCommonPayload = {
