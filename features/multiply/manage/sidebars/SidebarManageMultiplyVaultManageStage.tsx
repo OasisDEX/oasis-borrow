@@ -1,6 +1,4 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
-import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { useTranslation } from 'next-i18next'
@@ -11,9 +9,9 @@ import { OpenVaultAnimation } from 'theme/animations'
 export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
-  const { stage, vaultType, otherAction } = props
+  const { stage } = props
 
-  const [, setVaultChanges] = useState<ManageMultiplyVaultState>(props)
+  const [vaultChange, setVaultChanges] = useState<ManageMultiplyVaultState>(props)
 
   useEffect(() => {
     if (props.stage !== 'manageSuccess') setVaultChanges(props)
@@ -25,11 +23,7 @@ export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVault
     case 'manageSuccess':
       return (
         <>
-          {vaultType === VaultType.Multiply || otherAction === 'closeVault' ? (
-            <ManageMultiplyVaultChangesInformation {...props} />
-          ) : (
-            <ManageVaultChangesInformation {...props} />
-          )}
+          <ManageMultiplyVaultChangesInformation {...vaultChange} />
           <VaultChangesWithADelayCard />
         </>
       )
@@ -39,11 +33,7 @@ export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVault
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('vault-form.subtext.review-manage')}
           </Text>
-          {vaultType === VaultType.Multiply || stage === 'adjustPosition' || (stage === 'otherActions' && otherAction === 'closeVault') ? (
-            <ManageMultiplyVaultChangesInformation {...props} />
-          ) : (
-            <ManageVaultChangesInformation {...props} />
-          )}
+          <ManageMultiplyVaultChangesInformation {...props} />
         </>
       )
   }

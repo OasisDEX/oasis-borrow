@@ -6,7 +6,6 @@ import {
   getChangeVariant,
 } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
-import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { MessageCard } from 'components/MessageCard'
 import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
 import { ContentCardCollateralLocked } from 'components/vault/detailsSection/ContentCardCollateralLocked'
@@ -23,13 +22,13 @@ import { vaultIdsThatAutoBuyTriggerShouldBeRecreated } from 'features/automation
 import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitTriggeredBanner'
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
-import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
+import { BonusContainer } from 'features/bonus/BonusContainer'
+import type { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault.types'
 import { useAppConfig } from 'helpers/config'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
-import { bell } from 'theme/icons'
 
 export function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },
@@ -38,7 +37,7 @@ export function ManageVaultDetailsSummary({
   daiYieldFromTotalCollateral,
   afterPillColors,
   showAfterPill,
-}: ManageMultiplyVaultState & AfterPillProps) {
+}: ManageStandardBorrowVaultState & AfterPillProps) {
   const { t } = useTranslation()
   const { symbol } = getToken(token)
 
@@ -103,7 +102,9 @@ export function ManageVaultDetailsSummary({
   )
 }
 
-export function ManageVaultDetails(props: ManageMultiplyVaultState) {
+export function ManageVaultDetails(
+  props: ManageStandardBorrowVaultState & { onBannerButtonClickHandler: () => void },
+) {
   const {
     vault: {
       daiYieldFromLockedCollateral,
@@ -149,24 +150,6 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
     isTriggerEnabled &&
     maxBuyOrMinSellPrice.isZero() &&
     vaultIdsThatAutoBuyTriggerShouldBeRecreated.includes(id.toNumber())
-
-  const notifications: DetailsSectionNotificationItem[] = [
-    {
-      closable: true,
-      icon: bell,
-      link: {
-        translationKey: 'vault-info-messages.risk-management-for-borrow-link',
-        url: 'https://blog.summer.fi/new-risk-management-tool',
-      },
-      title: {
-        translationKey: 'vault-info-messages.risk-management-for-borrow-title',
-      },
-      message: {
-        translationKey: 'vault-info-messages.risk-management-for-borrow-message',
-      },
-      type: 'notice',
-    },
-  ]
 
   return (
     <Grid>
@@ -232,12 +215,12 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
             />
           </DetailsSectionFooterItemWrapper>
         }
-        notifications={notifications}
       />
 
       {stopLossReadEnabled && stopLossWriteEnabled && (
         <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} vaultId={id} />
       )}
+      <BonusContainer cdpId={props.vault.id} />
     </Grid>
   )
 }
