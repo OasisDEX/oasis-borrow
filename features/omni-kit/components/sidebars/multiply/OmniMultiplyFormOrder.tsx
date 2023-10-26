@@ -7,7 +7,11 @@ import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/
 import { resolveIfCachedSwap } from 'features/ajna/positions/common/helpers/resolveIfCachedSwap'
 import { resolveSwapTokenPrice } from 'features/ajna/positions/common/helpers/resolveSwapTokenPrice'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniMultiplyFormAction, OmniProductType } from 'features/omni-kit/types'
+import {
+  OmniBorrowFormAction,
+  OmniMultiplyFormAction,
+  OmniProductType,
+} from 'features/omni-kit/types'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
   formatAmount,
@@ -20,6 +24,22 @@ import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box } from 'theme-ui'
+
+const actionsWithSlippage = [
+  OmniBorrowFormAction.AdjustBorrow,
+  OmniBorrowFormAction.CloseBorrow,
+  OmniMultiplyFormAction.AdjustMultiply,
+  OmniMultiplyFormAction.CloseMultiply,
+  OmniMultiplyFormAction.DepositCollateralMultiply,
+  OmniMultiplyFormAction.DepositQuoteMultiply,
+  OmniMultiplyFormAction.OpenMultiply,
+  OmniMultiplyFormAction.WithdrawMultiply,
+]
+const actionsWithFee = [
+  OmniMultiplyFormAction.AdjustMultiply,
+  OmniMultiplyFormAction.DepositCollateralMultiply,
+  OmniMultiplyFormAction.WithdrawMultiply,
+]
 
 export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
@@ -53,35 +73,18 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
 
   const tokenPrice = resolveSwapTokenPrice({ positionData, simulationData, swapData })
 
-  const withSlippage =
-    action &&
-    [
-      'open-multiply',
-      'adjust',
-      'deposit-collateral-multiply',
-      'deposit-quote-multiply',
-      'withdraw-multiply',
-      'close-multiply',
-      'close-borrow',
-      'adjust-borrow',
-    ].includes(action)
+  const withSlippage = action && actionsWithSlippage.includes(action)
 
   const withBuying =
     action === OmniMultiplyFormAction.OpenMultiply ||
-    ([
-      OmniMultiplyFormAction.AdjustMultiply,
-      OmniMultiplyFormAction.DepositCollateralMultiply,
-      OmniMultiplyFormAction.WithdrawMultiply,
-    ].includes(action as OmniMultiplyFormAction) &&
+    (actionsWithFee.includes(action as OmniMultiplyFormAction) &&
       loanToValue?.gt(positionData.riskRatio.loanToValue))
+
   const withSelling =
     action === OmniMultiplyFormAction.CloseMultiply ||
-    ([
-      OmniMultiplyFormAction.AdjustMultiply,
-      OmniMultiplyFormAction.DepositCollateralMultiply,
-      OmniMultiplyFormAction.WithdrawMultiply,
-    ].includes(action as OmniMultiplyFormAction) &&
+    (actionsWithFee.includes(action as OmniMultiplyFormAction) &&
       loanToValue?.lt(positionData.riskRatio.loanToValue))
+
   const withOasisFee = withBuying || withSelling
 
   const initialQuote$ = exchangeQuote$(

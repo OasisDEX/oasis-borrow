@@ -14,7 +14,7 @@ import type {
   OmniMultiplyFormActions,
   OmniMultiplyFormState,
 } from 'features/omni-kit/state/multiply'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniEarnFormAction, OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one, zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
@@ -377,7 +377,7 @@ export function getAjnaOmniNotifications({
         const moveToAdjust = () => {
           dispatch({ type: 'reset' })
           updateState('uiDropdown', 'adjust')
-          updateState('uiPill', 'deposit-earn')
+          updateState('uiPill', OmniEarnFormAction.DepositEarn)
         }
 
         if (priceAboveMomp && !isOracless) {

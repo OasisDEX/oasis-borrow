@@ -1,5 +1,10 @@
 import type { OmniFormAction, OmniSidebarEditingStep } from 'features/omni-kit/types'
-import { OmniSidebarStep } from 'features/omni-kit/types'
+import {
+  OmniBorrowFormAction,
+  OmniEarnFormAction,
+  OmniMultiplyFormAction,
+  OmniSidebarStep,
+} from 'features/omni-kit/types'
 
 export function getOmniSidebarButtonsStatus({
   action,
@@ -66,13 +71,13 @@ export function getOmniSidebarButtonsStatus({
       !isOpening &&
       currentStep !== OmniSidebarStep.Risk &&
       [
-        'deposit-borrow',
-        'generate-borrow',
-        'adjust',
-        'deposit-collateral-multiply',
-        'generate-multiply',
-        'deposit-earn',
-      ].includes(action as string))
+        OmniBorrowFormAction.DepositBorrow,
+        OmniBorrowFormAction.GenerateBorrow,
+        OmniEarnFormAction.DepositEarn,
+        OmniMultiplyFormAction.AdjustMultiply,
+        OmniMultiplyFormAction.DepositCollateralMultiply,
+        OmniMultiplyFormAction.GenerateMultiply,
+      ].includes(action as OmniFormAction))
   const isTextButtonHidden = !(
     (currentStep === OmniSidebarStep.Transaction && (!isTxStarted || isTxError)) ||
     (isTransitionWaitingForApproval && !isTransitionInProgress)
