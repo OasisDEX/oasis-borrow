@@ -7,7 +7,7 @@ import {
   OmniBorrowFormOrder,
 } from 'features/omni-kit/components/sidebars/borrow'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniBorrowFormAction, OmniProductType } from 'features/omni-kit/types'
+import { OmniBorrowFormAction, OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
 import { OmniFormView } from 'features/omni-kit/views'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -35,7 +35,7 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
       {...(!isOpening && {
         dropdown: {
           forcePanel: uiDropdown,
-          disabled: currentStep !== 'manage',
+          disabled: currentStep !== OmniSidebarStep.Manage,
           items: [
             {
               label: t('system.manage-collateral-token', {
@@ -98,11 +98,11 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
       })}
       txHandler={txHandler}
     >
-      {currentStep === 'risk' && riskSidebar}
-      {currentStep === 'setup' && <OmniBorrowFormContentDeposit />}
-      {currentStep === 'manage' && <OmniBorrowFormContentManage />}
-      {currentStep === 'transition' && <OmniBorrowFormContentTransition />}
-      {currentStep === 'transaction' && (
+      {currentStep === OmniSidebarStep.Risk && riskSidebar}
+      {currentStep === OmniSidebarStep.Setup && <OmniBorrowFormContentDeposit />}
+      {currentStep === OmniSidebarStep.Manage && <OmniBorrowFormContentManage />}
+      {currentStep === OmniSidebarStep.Transition && <OmniBorrowFormContentTransition />}
+      {currentStep === OmniSidebarStep.Transaction && (
         <OmniFormContentTransaction orderInformation={OmniBorrowFormOrder} />
       )}
     </OmniFormView>

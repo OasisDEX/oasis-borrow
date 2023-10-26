@@ -258,7 +258,7 @@ export function OmniFormView({
       {!isExternalStep ? (
         <SidebarSection {...sidebarSectionProps} />
       ) : (
-        <>{currentStep === 'dpm' && <FlowSidebar {...flowState} />}</>
+        <>{currentStep === OmniSidebarStep.Dpm && <FlowSidebar {...flowState} />}</>
       )}
     </>
   )

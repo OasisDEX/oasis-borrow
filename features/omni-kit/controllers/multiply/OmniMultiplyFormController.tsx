@@ -6,7 +6,7 @@ import {
   OmniMultiplyFormOrder,
 } from 'features/omni-kit/components/sidebars/multiply'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniMultiplyFormAction, OmniProductType } from 'features/omni-kit/types'
+import { OmniMultiplyFormAction, OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
 import { OmniFormView } from 'features/omni-kit/views'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -34,7 +34,7 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
       {...(!isOpening && {
         dropdown: {
           forcePanel: uiDropdown,
-          disabled: currentStep !== 'manage',
+          disabled: currentStep !== OmniSidebarStep.Manage,
           items: [
             {
               label: t('system.adjust-position'),
@@ -104,11 +104,11 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
       })}
       txHandler={txHandler}
     >
-      {currentStep === 'risk' && riskSidebar}
-      {currentStep === 'setup' && <OmniMultiplyFormContentOpen />}
-      {currentStep === 'manage' && <OmniMultiplyFormContentManage />}
-      {currentStep === 'transition' && <OmniMultiplyFormContentTransition />}
-      {currentStep === 'transaction' && (
+      {currentStep === OmniSidebarStep.Risk && riskSidebar}
+      {currentStep === OmniSidebarStep.Setup && <OmniMultiplyFormContentOpen />}
+      {currentStep === OmniSidebarStep.Manage && <OmniMultiplyFormContentManage />}
+      {currentStep === OmniSidebarStep.Transition && <OmniMultiplyFormContentTransition />}
+      {currentStep === OmniSidebarStep.Transaction && (
         <OmniFormContentTransaction orderInformation={OmniMultiplyFormOrder} />
       )}
     </OmniFormView>

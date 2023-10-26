@@ -1,11 +1,12 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
-import type { OmniFormState, OmniSidebarStep } from 'features/omni-kit/types'
+import type { OmniFormState } from 'features/omni-kit/types'
 import {
   OmniBorrowFormAction,
   OmniMultiplyFormAction,
   OmniProductType,
+  OmniSidebarStep,
 } from 'features/omni-kit/types'
 
 interface GetIsFormEmptyParams {
@@ -37,12 +38,12 @@ export function getOmniIsFormEmpty({
         state as OmniMultiplyFormState
 
       switch (currentStep) {
-        case 'setup':
+        case OmniSidebarStep.Setup:
           return !depositAmount
-        case 'dpm':
-        case 'transaction':
+        case OmniSidebarStep.Dpm:
+        case OmniSidebarStep.Transaction:
           return txStatus === 'Success'
-        case 'manage':
+        case OmniSidebarStep.Manage:
           if (action === OmniMultiplyFormAction.CloseMultiply) {
             return false
           }

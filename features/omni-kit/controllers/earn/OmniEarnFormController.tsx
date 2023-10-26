@@ -4,7 +4,7 @@ import {
   OmniEarnFormContentOpen,
 } from 'features/omni-kit/components/sidebars/earn'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniEarnFormAction, OmniProductType } from 'features/omni-kit/types'
+import { OmniEarnFormAction, OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
 import { OmniFormView } from 'features/omni-kit/views'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -42,7 +42,7 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
         quoteTokenAmount.gt(zero) && {
           dropdown: {
             forcePanel: uiDropdown,
-            disabled: currentStep !== 'manage',
+            disabled: currentStep !== OmniSidebarStep.Manage,
             items: [
               {
                 label: t('system.adjust-position'),
@@ -86,10 +86,10 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
       }}
       txHandler={txHandler}
     >
-      {currentStep === 'risk' && riskSidebar}
-      {currentStep === 'setup' && <OmniEarnFormContentOpen />}
-      {currentStep === 'manage' && <OmniEarnFormContentManage />}
-      {currentStep === 'transaction' && (
+      {currentStep === OmniSidebarStep.Risk && riskSidebar}
+      {currentStep === OmniSidebarStep.Setup && <OmniEarnFormContentOpen />}
+      {currentStep === OmniSidebarStep.Manage && <OmniEarnFormContentManage />}
+      {currentStep === OmniSidebarStep.Transaction && (
         <OmniFormContentTransaction orderInformation={earnFormOrderAsElement} />
       )}
     </OmniFormView>

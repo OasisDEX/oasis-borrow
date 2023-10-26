@@ -1,10 +1,11 @@
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
-import type { OmniFormState, OmniSidebarStep } from 'features/omni-kit/types'
+import type { OmniFormState } from 'features/omni-kit/types'
 import {
   OmniBorrowFormAction,
   OmniMultiplyFormAction,
   OmniProductType,
+  OmniSidebarStep,
 } from 'features/omni-kit/types'
 
 export const isOmniFormValid = ({
@@ -24,8 +25,8 @@ export const isOmniFormValid = ({
         state as OmniBorrowFormState
 
       switch (currentStep) {
-        case 'setup':
-        case 'manage':
+        case OmniSidebarStep.Setup:
+        case OmniSidebarStep.Manage:
           switch (action) {
             case OmniBorrowFormAction.DepositBorrow:
             case OmniBorrowFormAction.OpenBorrow:
@@ -54,8 +55,8 @@ export const isOmniFormValid = ({
         state as OmniMultiplyFormState
 
       switch (currentStep) {
-        case 'setup':
-        case 'manage':
+        case OmniSidebarStep.Setup:
+        case OmniSidebarStep.Manage:
           switch (action) {
             case OmniMultiplyFormAction.OpenMultiply:
               return !!depositAmount?.gt(0)

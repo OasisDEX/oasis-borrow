@@ -3,7 +3,7 @@ import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn/earnFormReducto.types'
-import type { OmniSidebarStep } from 'features/omni-kit/types'
+import { OmniSidebarStep } from 'features/omni-kit/types'
 
 export const getAjnaOmniEarnIsFomEmpty = ({
   position,
@@ -21,12 +21,12 @@ export const getAjnaOmniEarnIsFomEmpty = ({
   const { depositAmount, withdrawAmount } = state as OmniEarnFormState
 
   switch (currentStep) {
-    case 'setup':
+    case OmniSidebarStep.Setup:
       return !depositAmount && !withdrawAmount
-    case 'dpm':
-    case 'transaction':
+    case OmniSidebarStep.Dpm:
+    case OmniSidebarStep.Transaction:
       return txStatus === 'Success'
-    case 'manage':
+    case OmniSidebarStep.Manage:
       if ((position as AjnaEarnPosition).quoteTokenAmount.isZero()) {
         return !depositAmount && !withdrawAmount
       }

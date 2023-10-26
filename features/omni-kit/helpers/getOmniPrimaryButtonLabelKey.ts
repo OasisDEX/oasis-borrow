@@ -1,4 +1,4 @@
-import type { OmniSidebarStep } from 'features/omni-kit/types'
+import { OmniSidebarStep } from 'features/omni-kit/types'
 
 interface GetPrimaryButtonLabelKeyParams {
   currentStep: OmniSidebarStep
@@ -24,14 +24,14 @@ export function getOmniPrimaryButtonLabelKey({
   walletAddress,
 }: GetPrimaryButtonLabelKeyParams): string {
   switch (currentStep) {
-    case 'risk':
+    case OmniSidebarStep.Risk:
       return 'i-understand'
-    case 'transaction':
+    case OmniSidebarStep.Transaction:
       if (isTxSuccess && isOpening) return 'system.go-to-position'
       else if (isTxSuccess && !isOpening) return 'continue'
       else if (isTxError) return 'retry'
       else return 'confirm'
-    case 'transition':
+    case OmniSidebarStep.Transition:
       if (isTransitionInProgress) return 'borrow-to-multiply.button-progress'
       else return 'confirm'
     default:

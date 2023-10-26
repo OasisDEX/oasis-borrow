@@ -13,6 +13,7 @@ import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralCon
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
 import { getAjnaOmniParameters } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniParameters'
+import { OmniSidebarStep } from 'features/omni-kit/types'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate.constants'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
@@ -82,7 +83,7 @@ export function useAjnaOmniTxHandler(): () => void {
 
   useDebouncedEffect(
     () => {
-      if (context && !isExternalStep && currentStep !== 'risk' && !isFormEmpty) {
+      if (context && !isExternalStep && currentStep !== OmniSidebarStep.Risk && !isFormEmpty) {
         const promise = cancelable(
           getAjnaOmniParameters({
             chainId: context.chainId,
