@@ -1,4 +1,4 @@
-import type { OmniFlow } from 'features/omni-kit/types'
+
 import type { LendingProtocol } from 'lendingProtocols'
 
 export function getOmniSidebarPrimaryButtonActions({
@@ -6,7 +6,7 @@ export function getOmniSidebarPrimaryButtonActions({
   collateralToken,
   currentStep,
   editingStep,
-  flow,
+  isOpening,
   isOracless,
   isStepWithTransaction,
   isTransitionAction,
@@ -29,7 +29,7 @@ export function getOmniSidebarPrimaryButtonActions({
   collateralToken: string
   currentStep: string
   editingStep: string
-  flow: OmniFlow
+  isOpening: boolean
   isOracless: boolean
   isStepWithTransaction: boolean
   isTransitionAction: boolean
@@ -51,7 +51,7 @@ export function getOmniSidebarPrimaryButtonActions({
   switch (true) {
     case !walletAddress && currentStep === editingStep:
       return { action: onDisconnected }
-    case isTxSuccess && flow === 'open':
+    case isTxSuccess && isOpening:
       const resolvedCollateralUrl = isOracless ? collateralAddress : collateralToken
       const resolvedQuoteUrl = isOracless ? quoteAddress : quoteToken
       return {

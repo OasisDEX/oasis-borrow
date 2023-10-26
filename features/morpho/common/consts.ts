@@ -1,26 +1,27 @@
-import type { OmniFlow, OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
+import {
+  omniSidebarManageBorrowishSteps,
+  omniSidebarManageSteps,
+  omniSidebarSetupSteps,
+} from 'features/omni-kit/constants'
+import { type OmniSidebarStepsSet } from 'features/omni-kit/types'
 
 export const morphoSeoTags = {
   productKey: `seo.morphoProductPage.title`,
   descriptionKey: 'seo.morpho.description',
 }
 
-export const morphoOmniSteps: {
-  [ProductKey in OmniProductType]: {
-    [FlowKey in OmniFlow]: OmniSidebarStep[]
-  }
-} = {
+export const morphoOmniSteps: OmniSidebarStepsSet = {
   borrow: {
-    open: ['setup', 'dpm', 'transaction'],
-    manage: ['manage', 'dpm', 'transaction', 'transition'],
+    setup: omniSidebarSetupSteps,
+    manage: omniSidebarManageBorrowishSteps,
   },
   earn: {
-    open: ['setup', 'dpm', 'transaction'],
-    manage: ['manage', 'dpm', 'transaction', 'transition'],
+    setup: omniSidebarSetupSteps,
+    manage: omniSidebarManageSteps,
   },
   multiply: {
-    open: ['setup', 'dpm', 'transaction'],
-    manage: ['manage', 'dpm', 'transaction'],
+    setup: omniSidebarSetupSteps,
+    manage: omniSidebarManageBorrowishSteps,
   },
 }
 

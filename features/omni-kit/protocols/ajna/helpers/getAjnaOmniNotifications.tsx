@@ -14,7 +14,6 @@ import type {
   OmniMultiplyFormActions,
   OmniMultiplyFormState,
 } from 'features/omni-kit/state/multiply'
-import type { OmniFlow } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { one, zero } from 'helpers/zero'
@@ -282,21 +281,21 @@ const ajnaNotifications: {
 
 export function getAjnaOmniNotifications({
   ajnaSafetySwitchOn,
-  flow,
+  collateralToken,
+  dispatch,
+  isOpening,
+  isOracless,
   position,
   positionAuction,
-  collateralToken,
-  quoteToken,
-  dispatch,
-  updateState,
   productType,
-  isOracless,
+  quoteToken,
+  updateState,
 }: {
   ajnaSafetySwitchOn: boolean
-  flow: OmniFlow
+  collateralToken: string
+  isOpening: boolean
   position: AjnaGenericPosition
   positionAuction: AjnaPositionAuction
-  collateralToken: string
   quoteToken: string
   dispatch:
     | Dispatch<OmniBorrowFormActions>
@@ -313,7 +312,7 @@ export function getAjnaOmniNotifications({
 
   if (ajnaSafetySwitchOn) {
     notifications.push(
-      flow === 'open'
+      isOpening
         ? ajnaNotifications.safetySwichOpen(null)
         : ajnaNotifications.safetySwichManage(null),
     )
@@ -363,7 +362,7 @@ export function getAjnaOmniNotifications({
 
       break
     case OmniProductType.Earn: {
-      if (flow === 'manage') {
+      if (!isOpening) {
         const {
           price,
           pool: { highestThresholdPrice, mostOptimisticMatchingPrice },

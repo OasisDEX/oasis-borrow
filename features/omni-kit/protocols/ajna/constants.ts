@@ -1,16 +1,21 @@
-import type { OmniSteps } from 'features/omni-kit/types'
+import {
+  omniSidebarManageBorrowishSteps,
+  omniSidebarManageSteps,
+  omniSidebarSetupSteps,
+} from 'features/omni-kit/constants'
+import { type OmniSidebarStepsSet, OmniSidebarStep } from 'features/omni-kit/types'
 
-export const ajnaOmniSteps: OmniSteps = {
+export const ajnaOmniSteps: OmniSidebarStepsSet = {
   borrow: {
-    open: ['risk', 'setup', 'dpm', 'transaction'],
-    manage: ['manage', 'dpm', 'transaction', 'transition'],
+    setup: [OmniSidebarStep.Risk, ...omniSidebarSetupSteps],
+    manage: omniSidebarManageBorrowishSteps,
   },
   earn: {
-    open: ['risk', 'setup', 'dpm', 'transaction'],
-    manage: ['manage', 'dpm', 'transaction', 'transition'],
+    setup: [OmniSidebarStep.Risk, ...omniSidebarSetupSteps],
+    manage: omniSidebarManageSteps,
   },
   multiply: {
-    open: ['risk', 'setup', 'dpm', 'transaction'],
-    manage: ['manage', 'dpm', 'transaction'],
+    setup: [OmniSidebarStep.Risk, ...omniSidebarSetupSteps],
+    manage: omniSidebarManageBorrowishSteps,
   },
 }

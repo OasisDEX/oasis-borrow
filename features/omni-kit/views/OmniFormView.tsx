@@ -15,6 +15,7 @@ import {
   getOmniSidebarTransactionStatus,
 } from 'features/omni-kit/helpers'
 import { useOmniProductTypeTransition } from 'features/omni-kit/hooks/useOmniTransition'
+import { OmniSidebarStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
@@ -47,7 +48,7 @@ export function OmniFormView({
       collateralAddress,
       collateralToken,
       dpmProxy,
-      flow,
+      isOpening,
       isOracless,
       isOwner,
       productType,
@@ -98,7 +99,7 @@ export function OmniFormView({
     ...getOmniFlowStateConfig({
       collateralToken,
       fee: interestRate,
-      flow,
+      isOpening,
       quoteToken,
       state,
     }),
@@ -146,14 +147,13 @@ export function OmniFormView({
     isTextButtonHidden,
   } = getOmniSidebarButtonsStatus({
     action: state.action,
-    safetySwitch,
     currentStep,
     editingStep,
-    flow,
     hasErrors,
-    isFormFrozen,
     isAllowanceLoading: flowState.isLoading,
+    isFormFrozen,
     isFormValid,
+    isOpening,
     isOwner,
     isSimulationLoading,
     isTransitionInProgress,
@@ -162,25 +162,26 @@ export function OmniFormView({
     isTxInProgress,
     isTxStarted,
     isTxWaitingForApproval,
+    safetySwitch,
     walletAddress,
   })
   const primaryButtonLabel = getOmniPrimaryButtonLabelKey({
     currentStep,
-    flow,
     hasAllowance: flowState.isAllowanceReady,
     hasDpmAddress: flowState.isProxyReady,
+    isFormEmpty,
+    isOpening,
     isTransitionInProgress,
     isTxError,
     isTxSuccess,
     walletAddress,
-    isFormEmpty,
   })
   const primaryButtonActions = getOmniSidebarPrimaryButtonActions({
     collateralAddress,
     collateralToken,
     currentStep,
     editingStep,
-    flow,
+    isOpening,
     isOracless,
     isStepWithTransaction,
     isTransitionAction,
@@ -191,7 +192,7 @@ export function OmniFormView({
     onDisconnected: connect,
     onSelectTransition: txHandler,
     onTransition: () => {
-      setStep('transition')
+      setStep(OmniSidebarStep.Transition)
       setisTransitionWaitingForApproval(true)
     },
     onUpdated: () => {
@@ -216,8 +217,8 @@ export function OmniFormView({
     isTxSuccess,
     text: t(
       isTxSuccess
-        ? `ajna.position-page.common.form.transaction.success-${flow}`
-        : `ajna.position-page.common.form.transaction.progress-${flow}`,
+        ? 'ajna.position-page.common.form.transaction.success'
+        : 'ajna.position-page.common.form.transaction.progress',
       { collateralToken, quoteToken },
     ),
     txDetails,

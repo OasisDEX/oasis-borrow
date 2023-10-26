@@ -3,43 +3,42 @@ import { negativeToZero } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnManage'
 import { ContentFooterItemsEarnOpen } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnOpen'
-import type { OmniFlow } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import type { FC } from 'react'
 import React from 'react'
 
 interface AjnaOmniEarnDetailsSectionFooterProps {
-  flow: OmniFlow
-  quoteToken: string
-  isOracless: boolean
-  position: AjnaEarnPosition
-  simulation?: AjnaEarnPosition
-  isSimulationLoading?: boolean
-  quotePrice: BigNumber
-  collateralToken: string
-  owner: string
   availableToWithdraw: BigNumber
+  collateralToken: string
   depositAmount?: BigNumber
+  isOpening: boolean
+  isOracless: boolean
+  isSimulationLoading?: boolean
+  owner: string
+  position: AjnaEarnPosition
+  quotePrice: BigNumber
+  quoteToken: string
+  simulation?: AjnaEarnPosition
   withdrawAmount?: BigNumber
 }
 
 export const AjnaOmniEarnDetailsSectionFooter: FC<AjnaOmniEarnDetailsSectionFooterProps> = ({
-  flow,
-  quoteToken,
-  isOracless,
-  position,
-  simulation,
-  isSimulationLoading,
-  quotePrice,
-  collateralToken,
-  owner,
   availableToWithdraw,
+  collateralToken,
   depositAmount,
+  isOpening,
+  isOracless,
+  isSimulationLoading,
+  owner,
+  position,
+  quotePrice,
+  quoteToken,
+  simulation,
   withdrawAmount,
 }) => {
   return (
     <>
-      {flow === 'open' && (
+      {isOpening && (
         <ContentFooterItemsEarnOpen
           days={30}
           quoteToken={quoteToken}
@@ -49,7 +48,7 @@ export const AjnaOmniEarnDetailsSectionFooter: FC<AjnaOmniEarnDetailsSectionFoot
           apy={position.pool.apr30dAverage}
         />
       )}
-      {flow === 'manage' && (
+      {!isOpening && (
         <ContentFooterItemsEarnManage
           isLoading={isSimulationLoading}
           collateralToken={collateralToken}

@@ -1,34 +1,34 @@
-import type { OmniFlow, OmniSidebarStep } from 'features/omni-kit/types'
+import type { OmniSidebarStep } from 'features/omni-kit/types'
 
 interface GetPrimaryButtonLabelKeyParams {
   currentStep: OmniSidebarStep
-  flow: OmniFlow
   hasAllowance: boolean
   hasDpmAddress: boolean
+  isFormEmpty: boolean
+  isOpening: boolean
   isTransitionInProgress: boolean
   isTxError: boolean
   isTxSuccess: boolean
-  isFormEmpty: boolean
   walletAddress?: string
 }
 
 export function getOmniPrimaryButtonLabelKey({
   currentStep,
-  flow,
   hasAllowance,
   hasDpmAddress,
+  isFormEmpty,
+  isOpening,
   isTransitionInProgress,
   isTxError,
   isTxSuccess,
   walletAddress,
-  isFormEmpty,
 }: GetPrimaryButtonLabelKeyParams): string {
   switch (currentStep) {
     case 'risk':
       return 'i-understand'
     case 'transaction':
-      if (isTxSuccess && flow === 'open') return 'system.go-to-position'
-      else if (isTxSuccess && flow === 'manage') return 'continue'
+      if (isTxSuccess && isOpening) return 'system.go-to-position'
+      else if (isTxSuccess && !isOpening) return 'continue'
       else if (isTxError) return 'retry'
       else return 'confirm'
     case 'transition':

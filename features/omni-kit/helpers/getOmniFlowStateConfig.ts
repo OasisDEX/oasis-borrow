@@ -1,7 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
 import {
-  type OmniFlow,
   type OmniFormState,
   OmniBorrowFormAction,
   OmniEarnFormAction,
@@ -13,7 +12,7 @@ import { zero } from 'helpers/zero'
 interface GetOmniFlowStateConfigParams {
   collateralToken: string
   fee: BigNumber
-  flow: OmniFlow
+  isOpening: boolean
   quoteToken: string
   state: OmniFormState
 }
@@ -21,7 +20,7 @@ interface GetOmniFlowStateConfigParams {
 export function getOmniFlowStateConfig({
   collateralToken,
   fee,
-  flow,
+  isOpening,
   quoteToken,
   state,
 }: GetOmniFlowStateConfigParams): {
@@ -35,7 +34,7 @@ export function getOmniFlowStateConfig({
     case OmniEarnFormAction.OpenEarn:
       // THIS CONDITION IS ADDED TO BYPASS DPM & ALLOWANCE FLOW
       // WHILE IN AJNA EARN ADJUST MANAGE VIEW
-      if (state.uiDropdown === 'adjust' && flow === 'manage') {
+      if (state.uiDropdown === 'adjust' && !isOpening) {
         return {
           amount: zero,
           token: 'ETH',

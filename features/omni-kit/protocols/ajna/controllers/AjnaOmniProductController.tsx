@@ -3,7 +3,6 @@ import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import { getAjnaEarnDefaultAction } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultAction'
 import { getAjnaEarnDefaultUiDropdown } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultUiDropdown'
 import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
 import { OmniProductContextProvider } from 'features/omni-kit/contexts/OmniProductContext'
@@ -11,13 +10,13 @@ import { OmniBorrowPositionController } from 'features/omni-kit/controllers/borr
 import { OmniEarnPositionController } from 'features/omni-kit/controllers/earn/OmniEarnPositionController'
 import { OmniMultiplyPositionController } from 'features/omni-kit/controllers/multiply/OmniMultiplyPositionController'
 import { AjnaCustomStateContextProvider } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
+import { getAjnaOmniEarnDefaultAction } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniEarnDefaultAction'
 import { useAjnaOmniTxHandler } from 'features/omni-kit/protocols/ajna/hooks/useAjnaOmniTxHandler'
 import { useAjnaMetadata } from 'features/omni-kit/protocols/ajna/metadata/useAjnaMetadata'
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniEarnFormReducto } from 'features/omni-kit/state/earn/earnFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
 import {
-  type OmniFlow,
   OmniBorrowFormAction,
   OmniMultiplyFormAction,
   OmniProductType,
@@ -26,16 +25,19 @@ import type { FC } from 'react'
 import React from 'react'
 
 interface AjnaOmniProductControllerProps {
-  flow: OmniFlow
+  aggregatedData: {
+    auction: AjnaPositionAuction
+    history: AjnaUnifiedHistoryEvent[]
+  }
   dpmPosition: DpmPositionData
-  aggregatedData: { auction: AjnaPositionAuction; history: AjnaUnifiedHistoryEvent[] }
+  isOpening: boolean
   positionData: AjnaGenericPosition
 }
 
 export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
-  dpmPosition,
-  flow,
   aggregatedData: { auction, history },
+  dpmPosition,
+  isOpening,
   positionData,
 }) => {
   return (
@@ -50,10 +52,9 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
         <OmniProductContextProvider
           getDynamicMetadata={useAjnaMetadata}
           formDefaults={{
-            action:
-              flow === 'open'
-                ? OmniBorrowFormAction.OpenBorrow
-                : OmniBorrowFormAction.DepositBorrow,
+            action: isOpening
+              ? OmniBorrowFormAction.OpenBorrow
+              : OmniBorrowFormAction.DepositBorrow,
           }}
           formReducto={useOmniBorrowFormReducto}
           position={positionData as AjnaPosition}
@@ -68,7 +69,7 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
         <OmniProductContextProvider
           getDynamicMetadata={useAjnaMetadata}
           formDefaults={{
-            action: getAjnaEarnDefaultAction(flow, positionData as AjnaEarnPosition),
+            action: getAjnaOmniEarnDefaultAction(isOpening, positionData as AjnaEarnPosition),
             uiDropdown: getAjnaEarnDefaultUiDropdown(positionData as AjnaEarnPosition),
           }}
           formReducto={useOmniEarnFormReducto}
@@ -84,10 +85,9 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
         <OmniProductContextProvider
           getDynamicMetadata={useAjnaMetadata}
           formDefaults={{
-            action:
-              flow === 'open'
-                ? OmniMultiplyFormAction.OpenMultiply
-                : OmniMultiplyFormAction.AdjustMultiply,
+            action: isOpening
+              ? OmniMultiplyFormAction.OpenMultiply
+              : OmniMultiplyFormAction.AdjustMultiply,
           }}
           formReducto={useOmniMultiplyFormReducto}
           position={positionData as AjnaPosition}

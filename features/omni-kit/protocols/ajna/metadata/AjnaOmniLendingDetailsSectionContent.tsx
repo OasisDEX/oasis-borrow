@@ -8,7 +8,6 @@ import { ContentCardNetBorrowCost } from 'features/ajna/positions/common/compone
 import { ContentCardNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardNetValue'
 import { ContentCardPositionDebt } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionDebt'
 import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
-import type { OmniFlow } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'
@@ -19,7 +18,7 @@ interface AjnaOmniDetailsSectionContentProps {
   changeVariant: 'positive' | 'negative'
   collateralPrice: BigNumber
   collateralToken: string
-  flow: OmniFlow
+  isOpening: boolean
   isOracless: boolean
   isProxyWithManyPositions: boolean
   isShort: boolean
@@ -36,24 +35,24 @@ interface AjnaOmniDetailsSectionContentProps {
 }
 
 export const AjnaOmniLendingDetailsSectionContent: FC<AjnaOmniDetailsSectionContentProps> = ({
-  isSimulationLoading,
-  thresholdPrice,
+  afterPositionDebt,
+  changeVariant,
   collateralPrice,
   collateralToken,
+  isOpening,
   isOracless,
+  isProxyWithManyPositions,
   isShort,
+  isSimulationLoading,
+  owner,
+  position,
   priceFormat,
+  productType,
   quotePrice,
   quoteToken,
-  position,
-  simulation,
-  changeVariant,
-  afterPositionDebt,
   shouldShowDynamicLtv,
-  productType,
-  isProxyWithManyPositions,
-  owner,
-  flow,
+  simulation,
+  thresholdPrice,
 }) => {
   const liquidationPrice = isShort
     ? normalizeValue(one.div(position.liquidationPrice))
@@ -151,7 +150,7 @@ export const AjnaOmniLendingDetailsSectionContent: FC<AjnaOmniDetailsSectionCont
             // For now we need to hide P&L for proxies with many positions
             // because subgraph doesn't support it yet
             pnlNotAvailable={isProxyWithManyPositions}
-            showPnl={flow === 'manage'}
+            showPnl={!isOpening}
             changeVariant={changeVariant}
           />
         </>

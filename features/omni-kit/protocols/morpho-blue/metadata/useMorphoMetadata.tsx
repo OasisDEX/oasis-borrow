@@ -26,18 +26,18 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
 
   const {
     environment: {
+      collateralAddress,
+      collateralPrice,
+      collateralToken,
+      isOpening,
       isOracless,
+      isShort,
+      productType,
+      quoteAddress,
       quoteBalance,
       quoteDigits,
-      collateralAddress,
-      quoteAddress,
-      collateralToken,
-      quoteToken,
-      isShort,
-      flow,
       quotePrice,
-      collateralPrice,
-      productType,
+      quoteToken,
     },
     steps: { currentStep },
   } = useOmniGeneralContext()
@@ -105,17 +105,17 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           highlighterOrderInformation: undefined,
           overviewContent: (
             <MorphoDetailsSectionContent
-              isSimulationLoading={productContext.position.isSimulationLoading}
-              isShort={isShort}
-              quoteToken={quoteToken}
-              collateralToken={collateralToken}
-              position={position}
-              simulation={simulation}
               changeVariant={changeVariant}
-              interestRate={interestRate}
-              flow={flow}
-              quotePrice={quotePrice}
               collateralPrice={collateralPrice}
+              collateralToken={collateralToken}
+              interestRate={interestRate}
+              isOpening={isOpening}
+              isShort={isShort}
+              isSimulationLoading={productContext.position.isSimulationLoading}
+              position={position}
+              quotePrice={quotePrice}
+              quoteToken={quoteToken}
+              simulation={simulation}
               // TODO to be defined
               liquidationPenalty={new BigNumber(0.01)}
             />

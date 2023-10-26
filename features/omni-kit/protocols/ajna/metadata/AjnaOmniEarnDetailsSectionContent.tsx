@@ -7,37 +7,36 @@ import { ContentCardPositionLendingPrice } from 'features/ajna/positions/common/
 import { ContentCardTotalEarnings } from 'features/ajna/positions/common/components/contentCards/ContentCardTotalEarnings'
 import { getAjnaSimulationRows } from 'features/ajna/positions/earn/helpers/getAjnaSimulationRows'
 import { getLendingPriceColor } from 'features/ajna/positions/earn/helpers/getLendingPriceColor'
-import type { OmniFlow } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 
 interface AjnaOmniEarnDetailsSectionContentProps {
-  isSimulationLoading?: boolean
   collateralToken: string
+  depositAmount?: BigNumber
+  isOpening: boolean
   isOracless: boolean
   isShort: boolean
+  isSimulationLoading?: boolean
+  position: AjnaEarnPosition
   priceFormat: string
   quotePrice: BigNumber
-  depositAmount?: BigNumber
   quoteToken: string
-  position: AjnaEarnPosition
   simulation?: AjnaEarnPosition
-  flow: OmniFlow
 }
 
 export const AjnaOmniEarnDetailsSectionContent: FC<AjnaOmniEarnDetailsSectionContentProps> = ({
-  isSimulationLoading,
   collateralToken,
+  depositAmount,
+  isOpening,
   isOracless,
   isShort,
+  isSimulationLoading,
+  position,
   priceFormat,
   quotePrice,
   quoteToken,
-  position,
   simulation,
-  flow,
-  depositAmount,
 }) => {
   const { t } = useTranslation()
 
@@ -67,7 +66,7 @@ export const AjnaOmniEarnDetailsSectionContent: FC<AjnaOmniEarnDetailsSectionCon
 
   return (
     <>
-      {flow === 'open' && (
+      {isOpening && (
         <DetailsSectionContentTable
           headers={[
             t('ajna.position-page.earn.open.simulation.duration'),
@@ -78,7 +77,7 @@ export const AjnaOmniEarnDetailsSectionContent: FC<AjnaOmniEarnDetailsSectionCon
           footnote={<>{t('ajna.position-page.earn.open.simulation.disclaimer')}</>}
         />
       )}
-      {flow === 'manage' && (
+      {!isOpening && (
         <>
           <ContentCardTotalEarnings
             quoteToken={quoteToken}

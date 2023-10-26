@@ -13,9 +13,27 @@ export enum OmniProductType {
   Multiply = 'multiply',
 }
 
-export type OmniFlow = 'open' | 'manage'
-export type OmniSidebarStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction' | 'transition'
-export type OmniSidebarEditingStep = Extract<OmniSidebarStep, 'setup' | 'manage'>
+export enum OmniSidebarStep {
+  Dpm = 'dpm',
+  Manage = 'manage',
+  Risk = 'risk',
+  Setup = 'setup',
+  Transaction = 'transaction',
+  Transition = 'transition',
+}
+
+export type OmniSidebarEditingStep = Extract<
+  OmniSidebarStep,
+  OmniSidebarStep.Setup | OmniSidebarStep.Manage
+>
+
+export type OmniSidebarStepsSet = {
+  [ProductKey in OmniProductType]: {
+    setup: OmniSidebarStep[]
+    manage: OmniSidebarStep[]
+  }
+}
+
 export type OmniCloseTo = 'collateral' | 'quote'
 
 export type OmniValidationItem = {
@@ -99,8 +117,8 @@ export interface GetOmniBorrowValidationsParams {
   earnIsFormValid: boolean
   ethBalance: BigNumber
   ethPrice: BigNumber
-  flow: OmniFlow
   gasEstimationUsd?: BigNumber
+  isOpening: boolean
   position: OmniGenericPosition
   positionAuction: AjnaPositionAuction
   productType: OmniProductType
@@ -112,10 +130,4 @@ export interface GetOmniBorrowValidationsParams {
   simulationWarnings?: OmniSimulationCommon['warnings']
   state: OmniFormState
   txError?: TxError
-}
-
-export type OmniSteps = {
-  [ProductKey in OmniProductType]: {
-    [FlowKey in OmniFlow]: OmniSidebarStep[]
-  }
 }

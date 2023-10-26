@@ -30,27 +30,27 @@ export function OmniPositionView({
   const { ProxyReveal: proxyReveal } = useAppConfig('features')
   const {
     environment: {
+      collateralIcon,
       collateralPrice,
       collateralToken,
-      flow,
-      positionId,
-      isShort,
+      dpmProxy,
+      isOpening,
       isOracless,
+      isShort,
       owner,
+      positionId,
       priceFormat,
       productType,
+      protocol,
+      quoteIcon,
       quotePrice,
       quoteToken,
-      dpmProxy,
-      collateralIcon,
-      quoteIcon,
-      protocol,
     },
   } = useOmniGeneralContext()
 
   return (
     <Container variant="vaultPageContainerStatic">
-      {contextIsLoaded && owner !== walletAddress && flow === 'manage' && (
+      {contextIsLoaded && owner !== walletAddress && !isOpening && (
         <Box sx={{ mb: 4 }}>
           <VaultOwnershipBanner controller={owner} account={walletAddress} />
         </Box>
@@ -66,7 +66,7 @@ export function OmniPositionView({
           quoteIcon,
           protocol,
         })}
-        {...(flow === 'manage' && { shareButton: true })}
+        {...(!isOpening && { shareButton: true })}
         details={[
           ...(headlineDetails || []),
           ...(!isOracless
@@ -93,8 +93,8 @@ export function OmniPositionView({
         variant="underline"
         sections={[
           {
-            value: flow === 'manage' ? 'overview' : 'setup',
-            label: t(flow === 'manage' ? 'system.overview' : 'setup'),
+            value: isOpening ? 'setup' : 'overview',
+            label: t(isOpening ? 'setup' : 'system.overview'),
             content: <>{position}</>,
           },
           {
@@ -102,7 +102,7 @@ export function OmniPositionView({
             label: t('system.position-info'),
             content: <>{info}</>,
           },
-          ...(flow === 'manage'
+          ...(!isOpening
             ? [
                 {
                   value: 'history',

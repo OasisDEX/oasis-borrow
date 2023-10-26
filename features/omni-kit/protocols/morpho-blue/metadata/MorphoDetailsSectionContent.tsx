@@ -7,39 +7,38 @@ import {
   OmniContentCardNetBorrowCost,
   OmniContentCardNetValue,
 } from 'features/omni-kit/components/details-section'
-import type { OmniFlow } from 'features/omni-kit/types'
 import { one, zero } from 'helpers/zero'
 import type { FC } from 'react'
 import React from 'react'
 
 interface MorphoOmniDetailsSectionContentProps {
-  quotePrice: BigNumber
-  collateralPrice: BigNumber
-  isSimulationLoading?: boolean
-  isShort: boolean
-  quoteToken: string
-  collateralToken: string
-  position: MorphoPosition
-  simulation?: MorphoPosition
   changeVariant: 'positive' | 'negative'
+  collateralPrice: BigNumber
+  collateralToken: string
   interestRate: BigNumber
-  flow: OmniFlow
+  isOpening: boolean
+  isShort: boolean
+  isSimulationLoading?: boolean
   liquidationPenalty: BigNumber
+  position: MorphoPosition
+  quotePrice: BigNumber
+  quoteToken: string
+  simulation?: MorphoPosition
 }
 
 export const MorphoDetailsSectionContent: FC<MorphoOmniDetailsSectionContentProps> = ({
-  quotePrice,
-  collateralPrice,
-  isSimulationLoading,
-  isShort,
-  quoteToken,
-  collateralToken,
-  position,
-  simulation,
   changeVariant,
+  collateralPrice,
+  collateralToken,
   interestRate,
-  flow,
+  isOpening,
+  isShort,
+  isSimulationLoading,
   liquidationPenalty,
+  position,
+  quotePrice,
+  quoteToken,
+  simulation,
 }) => {
   return (
     <>
@@ -79,7 +78,7 @@ export const MorphoDetailsSectionContent: FC<MorphoOmniDetailsSectionContentProp
         afterNetValue={simulation?.netValue}
         changeVariant={changeVariant}
         pnl={position.pnl.withoutFees}
-        showPnl={flow === 'manage'}
+        showPnl={!isOpening}
       />
     </>
   )

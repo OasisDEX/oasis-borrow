@@ -1,5 +1,5 @@
 import { omniFormExternalSteps, omniFormStepsWithTransaction } from 'features/omni-kit/constants'
-import type { OmniFlow, OmniSidebarStep } from 'features/omni-kit/types'
+import { OmniSidebarStep } from 'features/omni-kit/types'
 
 export interface OmniGeneralStepManager {
   currentStep: OmniSidebarStep
@@ -21,6 +21,6 @@ export function isOmniStepWithTransaction({ currentStep }: OmniGeneralStepManage
   return omniFormStepsWithTransaction.includes(currentStep)
 }
 
-export const getOmniEditingStep = ({ flow }: { flow: OmniFlow }) => {
-  return flow === 'open' ? 'setup' : 'manage'
+export const getOmniEditingStep = (isOpening: boolean) => {
+  return isOpening ? OmniSidebarStep.Setup : OmniSidebarStep.Manage
 }

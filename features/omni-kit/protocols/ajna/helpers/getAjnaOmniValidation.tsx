@@ -19,25 +19,25 @@ import React from 'react'
 
 export function getAjnaOmniValidation({
   ajnaSafetySwitchOn,
-  flow,
   collateralBalance,
   collateralToken,
-  quoteToken,
   currentStep,
+  earnIsFormValid,
   ethBalance,
   ethPrice,
   gasEstimationUsd,
-  productType,
-  quoteBalance,
-  simulationErrors = [],
-  simulationWarnings = [],
-  simulationNotices = [],
-  simulationSuccesses = [],
-  state,
-  txError,
+  isOpening,
   position,
   positionAuction,
-  earnIsFormValid,
+  productType,
+  quoteBalance,
+  quoteToken,
+  simulationErrors = [],
+  simulationNotices = [],
+  simulationSuccesses = [],
+  simulationWarnings = [],
+  state,
+  txError,
 }: GetOmniBorrowValidationsParams): {
   isFormValid: boolean
   isFormFrozen: boolean
@@ -70,7 +70,7 @@ export function getAjnaOmniValidation({
     localErrors.push({ message: { translationKey: 'payback-amount-exceeds-debt-token-balance' } })
   }
 
-  if (ajnaSafetySwitchOn && flow === 'manage') {
+  if (ajnaSafetySwitchOn && !isOpening) {
     switch (productType) {
       case OmniProductType.Borrow:
       case OmniProductType.Multiply:

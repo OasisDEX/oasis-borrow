@@ -11,7 +11,6 @@ import { useMorphoMetadata } from 'features/omni-kit/protocols/morpho-blue/metad
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
 import {
-  type OmniFlow,
   OmniBorrowFormAction,
   OmniMultiplyFormAction,
   OmniProductType,
@@ -21,16 +20,19 @@ import type { FC } from 'react'
 import React from 'react'
 
 interface MorphoProductControllerProps {
-  flow: OmniFlow
+  aggregatedData: {
+    auction: MorphoPositionAuction
+    history: PositionHistoryEvent[]
+  }
   dpmPosition: DpmPositionData
-  aggregatedData: { auction: MorphoPositionAuction; history: PositionHistoryEvent[] }
+  isOpening: boolean
   positionData: MorphoPosition
 }
 
 export const MorphoProductController: FC<MorphoProductControllerProps> = ({
-  dpmPosition,
-  flow,
   aggregatedData: { auction, history },
+  dpmPosition,
+  isOpening,
   positionData,
 }) => {
   return (
@@ -46,10 +48,9 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
         <OmniProductContextProvider
           getDynamicMetadata={useMorphoMetadata}
           formDefaults={{
-            action:
-              flow === 'open'
-                ? OmniBorrowFormAction.OpenBorrow
-                : OmniBorrowFormAction.DepositBorrow,
+            action: isOpening
+              ? OmniBorrowFormAction.OpenBorrow
+              : OmniBorrowFormAction.DepositBorrow,
           }}
           formReducto={useOmniBorrowFormReducto}
           position={positionData as LendingPosition}
@@ -64,10 +65,9 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
         <OmniProductContextProvider
           getDynamicMetadata={useMorphoMetadata}
           formDefaults={{
-            action:
-              flow === 'open'
-                ? OmniMultiplyFormAction.OpenMultiply
-                : OmniMultiplyFormAction.AdjustMultiply,
+            action: isOpening
+              ? OmniMultiplyFormAction.OpenMultiply
+              : OmniMultiplyFormAction.AdjustMultiply,
           }}
           formReducto={useOmniMultiplyFormReducto}
           position={positionData as LendingPosition}

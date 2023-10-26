@@ -14,7 +14,7 @@ import { circle_slider } from 'theme/icons'
 export function OmniEarnFormController({ txHandler }: { txHandler: () => () => void }) {
   const { t } = useTranslation()
   const {
-    environment: { flow, quoteToken, quoteIcon },
+    environment: { isOpening, quoteToken, quoteIcon },
     steps: { currentStep },
   } = useOmniGeneralContext()
   const {
@@ -38,7 +38,7 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
 
   return (
     <OmniFormView
-      {...(flow === 'manage' &&
+      {...(!isOpening &&
         quoteTokenAmount.gt(zero) && {
           dropdown: {
             forcePanel: uiDropdown,

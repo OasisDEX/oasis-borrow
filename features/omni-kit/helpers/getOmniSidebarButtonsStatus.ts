@@ -1,5 +1,4 @@
 import type {
-  OmniFlow,
   OmniFormAction,
   OmniSidebarEditingStep,
   OmniSidebarStep,
@@ -7,14 +6,13 @@ import type {
 
 export function getOmniSidebarButtonsStatus({
   action,
-  safetySwitch,
   currentStep,
   editingStep,
-  flow,
   hasErrors,
-  isFormFrozen,
   isAllowanceLoading,
+  isFormFrozen,
   isFormValid,
+  isOpening,
   isOwner,
   isSimulationLoading,
   isTransitionInProgress,
@@ -23,17 +21,17 @@ export function getOmniSidebarButtonsStatus({
   isTxInProgress,
   isTxStarted,
   isTxWaitingForApproval,
+  safetySwitch,
   walletAddress,
 }: {
   action?: OmniFormAction
-  safetySwitch: boolean
   currentStep: OmniSidebarStep
   editingStep: OmniSidebarEditingStep
-  flow: OmniFlow
   hasErrors: boolean
   isAllowanceLoading: boolean
   isFormFrozen: boolean
   isFormValid: boolean
+  isOpening: boolean
   isOwner: boolean
   isSimulationLoading?: boolean
   isTransitionInProgress: boolean
@@ -42,6 +40,7 @@ export function getOmniSidebarButtonsStatus({
   isTxInProgress: boolean
   isTxStarted: boolean
   isTxWaitingForApproval: boolean
+  safetySwitch: boolean
   walletAddress?: string
 }) {
   const isPrimaryButtonDisabled =
@@ -65,9 +64,9 @@ export function getOmniSidebarButtonsStatus({
 
   const isPrimaryButtonHidden =
     !!(walletAddress && !isOwner && currentStep === editingStep) ||
-    (safetySwitch && flow === 'open' && currentStep !== 'risk') ||
+    (safetySwitch && isOpening && currentStep !== 'risk') ||
     (safetySwitch &&
-      flow === 'manage' &&
+      !isOpening &&
       currentStep !== 'risk' &&
       [
         'deposit-borrow',

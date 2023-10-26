@@ -11,7 +11,6 @@ import {
 } from 'features/omni-kit/contexts'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import type {
-  OmniFlow,
   OmniProductType,
   OmniSidebarEditingStep,
   OmniSidebarStep,
@@ -33,8 +32,8 @@ interface OmniGeneralContextProviderProps {
   dpmProxy?: string
   ethBalance: BigNumber
   ethPrice: BigNumber
-  flow: OmniFlow
   gasPrice: GasPriceParams
+  isOpening: boolean
   isOracless: boolean
   isProxyWithManyPositions: boolean
   network: NetworkConfig
@@ -106,13 +105,13 @@ export function OmniGeneralContextProvider({
   if (!isProductContextAvailable()) return null
 
   const {
-    flow,
     collateralBalance,
     collateralToken,
     quoteBalance,
     quoteToken,
     owner,
     slippage,
+    isOpening,
     isProxyWithManyPositions,
   } = props
   const { walletAddress } = useAccount()
@@ -132,9 +131,7 @@ export function OmniGeneralContextProvider({
     return {
       currentStep,
       steps,
-      editingStep: getOmniEditingStep({
-        flow,
-      }),
+      editingStep: getOmniEditingStep(isOpening),
       isExternalStep: isOmniExternalStep({ currentStep }),
       isFlowStateReady,
       isStepWithTransaction: isOmniStepWithTransaction({ currentStep }),
@@ -161,7 +158,7 @@ export function OmniGeneralContextProvider({
       priceFormat: isShort
         ? `${quoteToken}/${collateralToken}`
         : `${collateralToken}/${quoteToken}`,
-      isOwner: owner === walletAddress || flow === 'open',
+      isOwner: isOpening || owner === walletAddress,
       slippage,
     },
     steps: setupStepManager(),
@@ -173,7 +170,7 @@ export function OmniGeneralContextProvider({
       ...prev,
       environment: {
         ...prev.environment,
-        isOwner: owner === walletAddress || flow === 'open',
+        isOwner: isOpening || owner === walletAddress,
         collateralBalance,
         quoteBalance,
         slippage,

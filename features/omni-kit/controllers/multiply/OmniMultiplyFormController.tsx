@@ -15,7 +15,7 @@ import { circle_close, circle_exchange, circle_slider } from 'theme/icons'
 export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () => void }) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, flow, quoteToken, collateralIcon, quoteIcon },
+    environment: { collateralToken, isOpening, quoteToken, collateralIcon, quoteIcon },
     steps: { currentStep },
   } = useOmniGeneralContext()
   const {
@@ -31,7 +31,7 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
 
   return (
     <OmniFormView
-      {...(flow === 'manage' && {
+      {...(!isOpening && {
         dropdown: {
           forcePanel: uiDropdown,
           disabled: currentStep !== 'manage',

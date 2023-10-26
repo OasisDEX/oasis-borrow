@@ -11,7 +11,6 @@ import { PillAccordion } from 'components/PillAccordion'
 import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
-import { AjnaTokensBannerController } from 'features/ajna/positions/common/controls/AjnaTokensBannerController'
 import { getAjnaSidebarTitle } from 'features/ajna/positions/common/getAjnaSidebarTitle'
 import { ajnaFlowStateFilter } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
@@ -31,6 +30,7 @@ import type {
 import { getOmniBorrowishChangeVariant, getOmniBorrowPaybackMax } from 'features/omni-kit/helpers'
 import { getOmniIsFormEmpty } from 'features/omni-kit/helpers/getOmniIsFormEmpty'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
+import { AjnaOmniTokensBannerController } from 'features/omni-kit/protocols/ajna/controllers/AjnaOmniTokensBannerController'
 import { getAjnaOmniNotifications } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniNotifications'
 import { getAjnaOmniValidation } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniValidation'
 import { AjnaOmniEarnDetailsSectionContent } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnDetailsSectionContent'
@@ -71,26 +71,26 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   const gasEstimation = useGasEstimationContext()
   const {
     environment: {
-      isOracless,
-      quoteToken,
-      quotePrice,
-      priceFormat,
-      collateralToken,
-      quoteBalance,
-      quoteDigits,
-      flow,
+      collateralAddress,
       collateralBalance,
+      collateralIcon,
+      collateralPrice,
+      collateralToken,
       ethBalance,
       ethPrice,
-      collateralAddress,
-      quoteAddress,
-      collateralPrice,
+      isOpening,
+      isOracless,
+      isProxyWithManyPositions,
       isShort,
       owner,
-      collateralIcon,
-      quotePrecision,
+      priceFormat,
       productType,
-      isProxyWithManyPositions,
+      quoteAddress,
+      quoteBalance,
+      quoteDigits,
+      quotePrecision,
+      quotePrice,
+      quoteToken,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -103,23 +103,23 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
 
   const validations = getAjnaOmniValidation({
     ajnaSafetySwitchOn,
-    flow,
     collateralBalance,
     collateralToken,
-    quoteToken,
     currentStep,
     ethBalance,
     ethPrice,
     gasEstimationUsd: gasEstimation?.usdValue,
-    productType,
-    quoteBalance,
-    simulationErrors: productContext.position.simulationCommon?.errors,
-    simulationWarnings: productContext.position.simulationCommon?.warnings,
-    simulationNotices: productContext.position.simulationCommon?.notices,
-    simulationSuccesses: productContext.position.simulationCommon?.successes,
-    state: productContext.form.state,
+    isOpening,
     position: productContext.position.currentPosition.position,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
+    productType,
+    quoteBalance,
+    quoteToken,
+    simulationErrors: productContext.position.simulationCommon?.errors,
+    simulationNotices: productContext.position.simulationCommon?.notices,
+    simulationSuccesses: productContext.position.simulationCommon?.successes,
+    simulationWarnings: productContext.position.simulationCommon?.warnings,
+    state: productContext.form.state,
     txError: txDetails?.txError,
     earnIsFormValid:
       productType === OmniProductType.Earn
@@ -134,7 +134,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
 
   const notifications = getAjnaOmniNotifications({
     ajnaSafetySwitchOn,
-    flow,
+    isOpening,
     // @ts-ignore TODO
     position: productContext.position.currentPosition.position,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
@@ -246,43 +246,43 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           ) : undefined,
           overviewContent: (
             <AjnaOmniLendingDetailsSectionContent
-              isSimulationLoading={productContext.position.isSimulationLoading}
-              thresholdPrice={position.thresholdPrice}
-              collateralToken={collateralToken}
+              afterPositionDebt={afterPositionDebt}
+              changeVariant={changeVariant}
               collateralPrice={collateralPrice}
+              collateralToken={collateralToken}
+              isOpening={isOpening}
               isOracless={isOracless}
+              isProxyWithManyPositions={isProxyWithManyPositions}
               isShort={isShort}
+              isSimulationLoading={productContext.position.isSimulationLoading}
+              owner={owner}
+              position={position}
               priceFormat={priceFormat}
+              productType={productType}
               quotePrice={quotePrice}
               quoteToken={quoteToken}
-              position={position}
-              simulation={simulation}
-              changeVariant={changeVariant}
-              afterPositionDebt={afterPositionDebt}
               shouldShowDynamicLtv={shouldShowDynamicLtv}
-              productType={productType}
-              owner={owner}
-              flow={flow}
-              isProxyWithManyPositions={isProxyWithManyPositions}
+              simulation={simulation}
+              thresholdPrice={position.thresholdPrice}
             />
           ),
           overviewFooter: (
             <AjnaOmniLendingDetailsSectionFooter
-              isSimulationLoading={productContext.position.isSimulationLoading}
-              collateralToken={collateralToken}
-              quoteToken={quoteToken}
-              position={position}
-              simulation={simulation}
-              changeVariant={changeVariant}
               afterAvailableToBorrow={afterAvailableToBorrow}
               afterBuyingPower={afterBuyingPower}
-              productType={productType}
-              owner={owner}
+              changeVariant={changeVariant}
+              collateralToken={collateralToken}
               interestRate={interestRate}
+              isSimulationLoading={productContext.position.isSimulationLoading}
+              owner={owner}
+              position={position}
+              productType={productType}
+              quoteToken={quoteToken}
+              simulation={simulation}
             />
           ),
           overviewBanner: isPoolWithRewards({ collateralToken, quoteToken }) ? (
-            <AjnaTokensBannerController flow={flow} />
+            <AjnaOmniTokensBannerController isOpening={isOpening} />
           ) : undefined,
           riskSidebar,
           dupeModal,
@@ -376,30 +376,30 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         elements: {
           overviewContent: (
             <AjnaOmniEarnDetailsSectionContent
-              isSimulationLoading={productContext.position.isSimulationLoading}
+              collateralToken={collateralToken}
+              depositAmount={earnContext.form.state.depositAmount}
+              isOpening={isOpening}
               isOracless={isOracless}
               isShort={isShort}
+              isSimulationLoading={productContext.position.isSimulationLoading}
+              position={earnPosition}
               priceFormat={priceFormat}
               quotePrice={quotePrice}
               quoteToken={quoteToken}
-              collateralToken={collateralToken}
-              position={earnPosition}
               simulation={earnSimulation}
-              flow={flow}
-              depositAmount={earnContext.form.state.depositAmount}
             />
           ),
           overviewFooter: (
             <AjnaOmniEarnDetailsSectionFooter
-              isSimulationLoading={productContext.position.isSimulationLoading}
+              collateralToken={collateralToken}
+              depositAmount={earnContext.form.state.depositAmount}
+              isOpening={isOpening}
               isOracless={isOracless}
+              isSimulationLoading={productContext.position.isSimulationLoading}
+              position={earnPosition}
               quotePrice={quotePrice}
               quoteToken={quoteToken}
-              collateralToken={collateralToken}
-              position={earnPosition}
               simulation={earnSimulation}
-              flow={flow}
-              depositAmount={earnContext.form.state.depositAmount}
               withdrawAmount={earnContext.form.state.withdrawAmount}
               availableToWithdraw={calculateAjnaMaxLiquidityWithdraw({
                 pool: earnPosition.pool,
@@ -411,7 +411,10 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             />
           ),
           overviewBanner: isPoolWithRewards({ collateralToken, quoteToken }) ? (
-            <AjnaTokensBannerController flow={flow} isPriceBelowLup={isPriceBelowLup} />
+            <AjnaOmniTokensBannerController
+              isOpening={isOpening}
+              isPriceBelowLup={isPriceBelowLup}
+            />
           ) : undefined,
           riskSidebar,
           dupeModal,
