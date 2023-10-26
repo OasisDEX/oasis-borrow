@@ -4,6 +4,7 @@ import {
   type OmniFormAction,
   OmniBorrowFormAction,
   OmniMultiplyFormAction,
+  OmniProductType,
 } from 'features/omni-kit/types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
@@ -31,9 +32,9 @@ export function useOmniProductTypeTransition({
     useState<boolean>(false)
   const [isTransitionInProgress, setIsTransitionInProgress] = useState<boolean>(false)
   const vaultType =
-    productType === 'borrow'
+    productType === OmniProductType.Borrow
       ? VaultType.Multiply
-      : productType === 'multiply'
+      : productType === OmniProductType.Multiply
       ? VaultType.Borrow
       : undefined
 
