@@ -8,6 +8,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { PillAccordion } from 'components/PillAccordion'
+import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
 import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
 import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
@@ -134,17 +135,15 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
 
   const notifications = getAjnaOmniNotifications({
     ajnaSafetySwitchOn,
+    collateralToken,
+    dispatch: productContext.form.dispatch,
     isOpening,
-    // @ts-ignore TODO
-    position: productContext.position.currentPosition.position,
+    isOracless,
+    position: productContext.position.currentPosition.position as AjnaGenericPosition,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
     productType,
     quoteToken,
-    collateralToken,
-    dispatch: productContext.form.dispatch,
-    // @ts-ignore TODO
     updateState: productContext.form.updateState,
-    isOracless,
   })
 
   const filters = {
