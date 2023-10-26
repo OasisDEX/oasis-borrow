@@ -17,18 +17,9 @@ export interface ProductDataProps {
   tokenPriceUSDData?: Tickers
 }
 
-export function useMorphoOmniData({
-  // collateralToken,
-  // positionId,
-  // product,
-  // quoteToken,
-  dpmPositionData,
-  tokenPriceUSDData,
-}: ProductDataProps) {
-  // const { context$ } = useMainContext()
+export function useMorphoOmniData({ dpmPositionData, tokenPriceUSDData }: ProductDataProps) {
   const { morphoPosition$ } = useProductContext()
 
-  // const [context] = useObservable(context$)
   const isOracless = false
   const [morphoPositionData, morphoPositionError] = useObservable(
     useMemo(
