@@ -1,6 +1,7 @@
 import type { NetworkNames } from 'blockchain/networks'
 import { isSupportedNetwork, networksByName } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
+import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
@@ -163,17 +164,19 @@ function Position({
   return (
     <AppLayout>
       <ProductContextHandler>
-        <AaveContextProvider>
-          <WithConnection>
-            <WithTermsOfService>
-              <WithAaveStrategy
-                positionId={{ walletAddress: address, vaultId }}
-                protocol={protocol}
-                network={network}
-              />
-            </WithTermsOfService>
-          </WithConnection>
-        </AaveContextProvider>
+        <GasEstimationContextProvider>
+          <AaveContextProvider>
+            <WithConnection>
+              <WithTermsOfService>
+                <WithAaveStrategy
+                  positionId={{ walletAddress: address, vaultId }}
+                  protocol={protocol}
+                  network={network}
+                />
+              </WithTermsOfService>
+            </WithConnection>
+          </AaveContextProvider>
+        </GasEstimationContextProvider>
       </ProductContextHandler>
     </AppLayout>
   )
