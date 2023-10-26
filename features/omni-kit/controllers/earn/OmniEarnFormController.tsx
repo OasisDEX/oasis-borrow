@@ -4,7 +4,7 @@ import {
   OmniEarnFormContentOpen,
 } from 'features/omni-kit/components/sidebars/earn'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniEarnFormAction, OmniProductType } from 'features/omni-kit/types'
 import { OmniFormView } from 'features/omni-kit/views'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -54,8 +54,8 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
                   dispatch({ type: 'reset' })
                   customReset()
                   txSuccessEarnHandler()
-                  updateState('uiPill', 'deposit-earn')
-                  updateState('action', 'deposit-earn')
+                  updateState('uiPill', OmniEarnFormAction.DepositEarn)
+                  updateState('action', OmniEarnFormAction.DepositEarn)
                 },
               },
               {
@@ -69,8 +69,8 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
                   dispatch({ type: 'reset' })
                   customReset()
                   updateState('uiDropdown', 'liquidity')
-                  updateState('uiPill', 'deposit-earn')
-                  updateState('action', 'deposit-earn')
+                  updateState('uiPill', OmniEarnFormAction.DepositEarn)
+                  updateState('action', OmniEarnFormAction.DepositEarn)
                 },
               },
               ...extraDropdownItems,
@@ -79,8 +79,8 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
         })}
       txSuccessAction={() => {
         if (quoteTokenAmount.isZero() || simulation?.quoteTokenAmount.isZero()) {
-          updateState('uiPill', 'deposit-earn')
-          updateState('action', 'deposit-earn')
+          updateState('uiPill', OmniEarnFormAction.DepositEarn)
+          updateState('action', OmniEarnFormAction.DepositEarn)
           txSuccessEarnHandler()
         }
       }}

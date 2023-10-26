@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
+import { OmniEarnFormAction } from 'features/omni-kit/types'
 
 export const omniEarnFormReset = {
   depositAmount: undefined,
@@ -12,5 +13,5 @@ export const omniEarnFormDefault: OmniEarnFormState = {
   ...omniEarnFormReset,
   dpmAddress: ethers.constants.AddressZero,
   uiDropdown: 'adjust',
-  uiPill: 'deposit-earn',
+  uiPill: OmniEarnFormAction.DepositEarn,
 }

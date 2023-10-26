@@ -1,7 +1,11 @@
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
 import type { OmniFormState, OmniSidebarStep } from 'features/omni-kit/types'
-import { OmniProductType } from 'features/omni-kit/types'
+import {
+  OmniBorrowFormAction,
+  OmniMultiplyFormAction,
+  OmniProductType,
+} from 'features/omni-kit/types'
 
 export const isOmniFormValid = ({
   currentStep,
@@ -23,20 +27,19 @@ export const isOmniFormValid = ({
         case 'setup':
         case 'manage':
           switch (action) {
-            case 'open-borrow':
-            case 'deposit-borrow':
+            case OmniBorrowFormAction.DepositBorrow:
+            case OmniBorrowFormAction.OpenBorrow:
               return !!depositAmount?.gt(0) || !!generateAmount?.gt(0)
-            case 'withdraw-borrow':
+            case OmniBorrowFormAction.WithdrawBorrow:
               return !!withdrawAmount?.gt(0) || !!paybackAmount?.gt(0)
-            case 'generate-borrow':
+            case OmniBorrowFormAction.GenerateBorrow:
               return !!generateAmount?.gt(0) || !!depositAmount?.gt(0)
-            case 'payback-borrow':
+            case OmniBorrowFormAction.PaybackBorrow:
               return !!paybackAmount?.gt(0) || !!withdrawAmount?.gt(0)
-            case 'switch-borrow':
+            case OmniBorrowFormAction.CloseBorrow:
+            case OmniBorrowFormAction.SwitchBorrow:
               return true
-            case 'close-borrow':
-              return true
-            case 'adjust-borrow':
+            case OmniBorrowFormAction.AdjustBorrow:
               return !!loanToValue
             default:
               return false
@@ -54,20 +57,20 @@ export const isOmniFormValid = ({
         case 'setup':
         case 'manage':
           switch (action) {
-            case 'open-multiply':
+            case OmniMultiplyFormAction.OpenMultiply:
               return !!depositAmount?.gt(0)
-            case 'adjust':
+            case OmniMultiplyFormAction.AdjustMultiply:
               return !!loanToValue
-            case 'generate-multiply':
-            case 'deposit-collateral-multiply':
+            case OmniMultiplyFormAction.GenerateMultiply:
+            case OmniMultiplyFormAction.DepositCollateralMultiply:
               return !!depositAmount || !!generateAmount
-            case 'payback-multiply':
-            case 'withdraw-multiply':
+            case OmniMultiplyFormAction.PaybackMultiply:
+            case OmniMultiplyFormAction.WithdrawMultiply:
               return !!withdrawAmount || !!paybackAmount
-            case 'deposit-quote-multiply':
+            case OmniMultiplyFormAction.DepositQuoteMultiply:
               return !!loanToValue && !!depositAmount
-            case 'switch-multiply':
-            case 'close-multiply':
+            case OmniMultiplyFormAction.SwitchMultiply:
+            case OmniMultiplyFormAction.CloseMultiply:
               return true
             default:
               return false

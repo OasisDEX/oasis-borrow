@@ -16,7 +16,12 @@ import { useAjnaMetadata } from 'features/omni-kit/protocols/ajna/metadata/useAj
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniEarnFormReducto } from 'features/omni-kit/state/earn/earnFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
-import { type OmniFlow, OmniProductType } from 'features/omni-kit/types'
+import {
+  type OmniFlow,
+  OmniBorrowFormAction,
+  OmniMultiplyFormAction,
+  OmniProductType,
+} from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
 
@@ -45,7 +50,10 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
         <OmniProductContextProvider
           getDynamicMetadata={useAjnaMetadata}
           formDefaults={{
-            action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
+            action:
+              flow === 'open'
+                ? OmniBorrowFormAction.OpenBorrow
+                : OmniBorrowFormAction.DepositBorrow,
           }}
           formReducto={useOmniBorrowFormReducto}
           position={positionData as AjnaPosition}
@@ -76,7 +84,10 @@ export const AjnaOmniProductController: FC<AjnaOmniProductControllerProps> = ({
         <OmniProductContextProvider
           getDynamicMetadata={useAjnaMetadata}
           formDefaults={{
-            action: flow === 'open' ? 'open-multiply' : 'adjust',
+            action:
+              flow === 'open'
+                ? OmniMultiplyFormAction.OpenMultiply
+                : OmniMultiplyFormAction.AdjustMultiply,
           }}
           formReducto={useOmniMultiplyFormReducto}
           position={positionData as AjnaPosition}

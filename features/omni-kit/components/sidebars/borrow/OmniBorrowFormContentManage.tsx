@@ -9,7 +9,7 @@ import {
   OmniBorrowFormContentWithdraw,
 } from 'features/omni-kit/components/sidebars/borrow'
 import { useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniBorrowFormAction, OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -31,27 +31,27 @@ export function OmniBorrowFormContentManage() {
             active={uiPill}
             items={[
               {
-                id: 'deposit-borrow',
+                id: OmniBorrowFormAction.DepositBorrow,
                 label: t('vault-actions.deposit'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'deposit-borrow')
-                  updateState('action', 'deposit-borrow')
+                  updateState('uiPill', OmniBorrowFormAction.DepositBorrow)
+                  updateState('action', OmniBorrowFormAction.DepositBorrow)
                 },
               },
               {
-                id: 'withdraw-borrow',
+                id: OmniBorrowFormAction.WithdrawBorrow,
                 label: t('vault-actions.withdraw'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'withdraw-borrow')
-                  updateState('action', 'withdraw-borrow')
+                  updateState('uiPill', OmniBorrowFormAction.WithdrawBorrow)
+                  updateState('action', OmniBorrowFormAction.WithdrawBorrow)
                 },
               },
             ]}
           />
-          {uiPill === 'deposit-borrow' && <OmniBorrowFormContentDeposit />}
-          {uiPill === 'withdraw-borrow' && <OmniBorrowFormContentWithdraw />}
+          {uiPill === OmniBorrowFormAction.DepositBorrow && <OmniBorrowFormContentDeposit />}
+          {uiPill === OmniBorrowFormAction.WithdrawBorrow && <OmniBorrowFormContentWithdraw />}
         </>
       )}
       {uiDropdown === 'quote' && (
@@ -60,27 +60,27 @@ export function OmniBorrowFormContentManage() {
             active={uiPill}
             items={[
               {
-                id: 'generate-borrow',
+                id: OmniBorrowFormAction.GenerateBorrow,
                 label: t('vault-actions.borrow'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'generate-borrow')
-                  updateState('action', 'generate-borrow')
+                  updateState('uiPill', OmniBorrowFormAction.GenerateBorrow)
+                  updateState('action', OmniBorrowFormAction.GenerateBorrow)
                 },
               },
               {
-                id: 'payback-borrow',
+                id: OmniBorrowFormAction.PaybackBorrow,
                 label: t('vault-actions.payback'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'payback-borrow')
-                  updateState('action', 'payback-borrow')
+                  updateState('uiPill', OmniBorrowFormAction.PaybackBorrow)
+                  updateState('action', OmniBorrowFormAction.PaybackBorrow)
                 },
               },
             ]}
           />
-          {uiPill === 'generate-borrow' && <OmniBorrowFormContentGenerate />}
-          {uiPill === 'payback-borrow' && <OmniBorrowFormContentPayback />}
+          {uiPill === OmniBorrowFormAction.GenerateBorrow && <OmniBorrowFormContentGenerate />}
+          {uiPill === OmniBorrowFormAction.PaybackBorrow && <OmniBorrowFormContentPayback />}
         </>
       )}
       {uiDropdown === 'switch' && <OmniBorrowFormContentSwitch />}

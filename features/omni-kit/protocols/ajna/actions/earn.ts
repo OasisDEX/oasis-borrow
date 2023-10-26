@@ -7,17 +7,17 @@ import { strategies } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
-import type { AjnaEarnFormState } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto.types'
+import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import { zero } from 'helpers/zero'
 
-export const ajnaOmniOpenEarn = ({
+export const ajnaActionOpenEarn = ({
   state,
   commonPayload,
   dependencies,
   chainId,
   price,
 }: {
-  state: AjnaEarnFormState
+  state: OmniEarnFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   chainId: number
@@ -38,14 +38,14 @@ export const ajnaOmniOpenEarn = ({
   )
 }
 
-export const ajnaOmniDepositEarn = ({
+export const ajnaActionDepositEarn = ({
   state,
   commonPayload,
   dependencies,
   position,
   price,
 }: {
-  state: AjnaEarnFormState
+  state: OmniEarnFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition
@@ -65,14 +65,14 @@ export const ajnaOmniDepositEarn = ({
   )
 }
 
-export const ajnaOmniWithdrawEarn = ({
+export const ajnaActionWithdrawEarn = ({
   state,
   commonPayload,
   dependencies,
   position,
   price,
 }: {
-  state: AjnaEarnFormState
+  state: OmniEarnFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
   position: AjnaGenericPosition

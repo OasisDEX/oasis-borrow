@@ -30,28 +30,37 @@ export type OmniBorrowPanel = 'collateral' | 'quote' | 'switch' | 'close' | 'adj
 export type OmniEarnPanel = 'adjust' | 'liquidity' | 'claim-collateral'
 export type OmniMultiplyPanel = 'adjust' | 'collateral' | 'quote' | 'switch' | 'close'
 
-export type OmniBorrowAction =
-  | 'open-borrow'
-  | 'deposit-borrow'
-  | 'withdraw-borrow'
-  | 'generate-borrow'
-  | 'payback-borrow'
-  | 'switch-borrow'
-  | 'close-borrow'
-  | 'adjust-borrow'
+export enum OmniBorrowFormAction {
+  AdjustBorrow = 'adjustBorrow',
+  CloseBorrow = 'closeBorrow',
+  DepositBorrow = 'depositBorrow',
+  GenerateBorrow = 'generateBorrow',
+  OpenBorrow = 'openBorrow',
+  PaybackBorrow = 'paybackBorrow',
+  SwitchBorrow = 'switchBorrow',
+  WithdrawBorrow = 'withdrawBorrow',
+}
 
-export type OmniEarnAction = 'open-earn' | 'deposit-earn' | 'withdraw-earn' | 'claim-earn'
+export enum OmniEarnFormAction {
+  OpenEarn = 'openEarn',
+  DepositEarn = 'depositEarn',
+  WithdrawEarn = 'withdrawEarn',
+  ClaimEarn = 'claimEarn',
+}
 
-export type OmniMultiplyAction =
-  | 'open-multiply'
-  | 'adjust'
-  | 'deposit-collateral-multiply'
-  | 'deposit-quote-multiply'
-  | 'generate-multiply'
-  | 'payback-multiply'
-  | 'withdraw-multiply'
-  | 'switch-multiply'
-  | 'close-multiply'
+export enum OmniMultiplyFormAction {
+  OpenMultiply = 'openMultiply',
+  AdjustMultiply = 'adjustMultiply',
+  DepositCollateralMultiply = 'depositCollateralMultiply',
+  DepositQuoteMultiply = 'depositQuoteMultiply',
+  GenerateMultiply = 'denerateMultiply',
+  PaybackMultiply = 'paybackMultiply',
+  WithdrawMultiply = 'withdrawMultiply',
+  SwitchMultiply = 'switchMultiply',
+  CloseMultiply = 'closeMultiply',
+}
+
+export type OmniFormAction = OmniBorrowFormAction | OmniEarnFormAction | OmniMultiplyFormAction
 
 export interface OmniProductPage {
   collateralToken: string
@@ -60,8 +69,6 @@ export interface OmniProductPage {
   productType: OmniProductType
   quoteToken: string
 }
-
-export type OmniFormAction = OmniBorrowAction | OmniEarnAction | OmniMultiplyAction
 
 export type OmniFormState = OmniBorrowFormState | OmniMultiplyFormState | OmniEarnFormState
 

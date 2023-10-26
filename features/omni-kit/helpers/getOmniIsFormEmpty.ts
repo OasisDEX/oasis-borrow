@@ -2,7 +2,11 @@ import type { TxStatus } from '@oasisdex/transactions'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
 import type { OmniFormState, OmniSidebarStep } from 'features/omni-kit/types'
-import { OmniProductType } from 'features/omni-kit/types'
+import {
+  OmniBorrowFormAction,
+  OmniMultiplyFormAction,
+  OmniProductType,
+} from 'features/omni-kit/types'
 
 interface GetIsFormEmptyParams {
   currentStep: OmniSidebarStep
@@ -22,7 +26,7 @@ export function getOmniIsFormEmpty({
       const { depositAmount, generateAmount, paybackAmount, withdrawAmount, action, loanToValue } =
         state as OmniBorrowFormState
 
-      if (action === 'close-borrow') {
+      if (action === OmniBorrowFormAction.CloseBorrow) {
         return false
       }
 
@@ -39,7 +43,7 @@ export function getOmniIsFormEmpty({
         case 'transaction':
           return txStatus === 'Success'
         case 'manage':
-          if (action === 'close-multiply') {
+          if (action === OmniMultiplyFormAction.CloseMultiply) {
             return false
           }
           return (

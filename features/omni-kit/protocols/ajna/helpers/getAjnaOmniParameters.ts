@@ -4,31 +4,35 @@ import type {
   AjnaStrategy,
   Network,
 } from '@oasisdex/dma-library'
-import {
-  ajnaDepositGenerateBorrow,
-  ajnaOpenBorrow,
-  ajnaPaybackWithdrawBorrow,
-} from 'actions/ajna/borrow'
-import { ajnaOpenMultiply } from 'actions/ajna/multiply'
-import {
-  ajnaOmniClaimEarn,
-  ajnaOmniDepositEarn,
-  ajnaOmniOpenEarn,
-  ajnaOmniWithdrawEarn,
-} from 'actions/ajna/omniEarn'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
 import type { ethers } from 'ethers'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
-import type { AjnaFormState } from 'features/ajna/common/types/AjnaFormState.types'
 import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAjnaCumulatives'
 import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
-
-import { ajnaAdjust, ajnaClose } from './common'
+import {
+  ajnaActionDepositGenerateBorrow,
+  ajnaActionOpenBorrow,
+  ajnaActionPaybackWithdrawBorrow,
+} from 'features/omni-kit/protocols/ajna/actions/borrow'
+import { ajnaActionAdjust, ajnaActionClose } from 'features/omni-kit/protocols/ajna/actions/common'
+import {
+  ajnaActionDepositEarn,
+  ajnaActionOpenEarn,
+  ajnaActionWithdrawEarn,
+  ajnaOmniClaimEarn,
+} from 'features/omni-kit/protocols/ajna/actions/earn'
+import { ajnaActionOpenMultiply } from 'features/omni-kit/protocols/ajna/actions/multiply'
+import {
+  type OmniFormState,
+  OmniBorrowFormAction,
+  OmniEarnFormAction,
+  OmniMultiplyFormAction,
+} from 'features/omni-kit/types'
 
 interface AjnaTxHandlerInput {
   collateralAddress: string
@@ -45,7 +49,7 @@ interface AjnaTxHandlerInput {
   quoteToken: string
   rpcProvider: ethers.providers.Provider
   slippage: BigNumber
-  state: AjnaFormState
+  state: OmniFormState
   price?: BigNumber
 }
 
@@ -99,16 +103,22 @@ export async function getAjnaOmniParameters({
   }
 
   switch (action) {
-    case 'open-borrow': {
-      return ajnaOpenBorrow({ state, commonPayload, dependencies })
+    case OmniBorrowFormAction.OpenBorrow: {
+      return ajnaActionOpenBorrow({ state, commonPayload, dependencies })
     }
-    case 'deposit-borrow':
-    case 'generate-borrow': {
-      return ajnaDepositGenerateBorrow({ state, commonPayload, dependencies, position, simulation })
+    case OmniBorrowFormAction.DepositBorrow:
+    case OmniBorrowFormAction.GenerateBorrow: {
+      return ajnaActionDepositGenerateBorrow({
+        state,
+        commonPayload,
+        dependencies,
+        position,
+        simulation,
+      })
     }
-    case 'payback-borrow':
-    case 'withdraw-borrow': {
-      return ajnaPaybackWithdrawBorrow({
+    case OmniBorrowFormAction.PaybackBorrow:
+    case OmniBorrowFormAction.WithdrawBorrow: {
+      return ajnaActionPaybackWithdrawBorrow({
         state: {
           ...state,
           paybackAmount:
@@ -123,20 +133,21 @@ export async function getAjnaOmniParameters({
       })
     }
 
-    case 'open-earn': {
-      return ajnaOmniOpenEarn({ state, commonPayload, dependencies, chainId, price })
+    case OmniEarnFormAction.OpenEarn: {
+      return ajnaActionOpenEarn({ state, commonPayload, dependencies, chainId, price })
     }
-    case 'deposit-earn': {
-      return ajnaOmniDepositEarn({ state, commonPayload, dependencies, position, price })
+    case OmniEarnFormAction.DepositEarn: {
+      return ajnaActionDepositEarn({ state, commonPayload, dependencies, position, price })
     }
-    case 'withdraw-earn': {
-      return ajnaOmniWithdrawEarn({ state, commonPayload, dependencies, position, price })
+    case OmniEarnFormAction.WithdrawEarn: {
+      return ajnaActionWithdrawEarn({ state, commonPayload, dependencies, position, price })
     }
-    case 'claim-earn': {
+    case OmniEarnFormAction.ClaimEarn: {
       return ajnaOmniClaimEarn({ commonPayload, dependencies, position, price })
     }
-    case 'open-multiply': {
-      return ajnaOpenMultiply({
+
+    case OmniMultiplyFormAction.OpenMultiply: {
+      return ajnaActionOpenMultiply({
         state,
         commonPayload,
         dependencies,
@@ -148,9 +159,9 @@ export async function getAjnaOmniParameters({
         slippage,
       })
     }
-    case 'adjust-borrow':
-    case 'adjust': {
-      return ajnaAdjust({
+    case OmniBorrowFormAction.AdjustBorrow:
+    case OmniMultiplyFormAction.AdjustMultiply: {
+      return ajnaActionAdjust({
         state,
         commonPayload,
         dependencies,
@@ -160,12 +171,12 @@ export async function getAjnaOmniParameters({
         quoteToken,
       })
     }
-    case 'generate-multiply':
-    case 'deposit-collateral-multiply': {
+    case OmniMultiplyFormAction.GenerateMultiply:
+    case OmniMultiplyFormAction.DepositCollateralMultiply: {
       const { loanToValue } = state
 
       if (loanToValue) {
-        return ajnaAdjust({
+        return ajnaActionAdjust({
           state,
           commonPayload,
           dependencies,
@@ -176,7 +187,7 @@ export async function getAjnaOmniParameters({
         })
       }
 
-      return ajnaDepositGenerateBorrow({
+      return ajnaActionDepositGenerateBorrow({
         state,
         commonPayload,
         dependencies,
@@ -184,8 +195,8 @@ export async function getAjnaOmniParameters({
         simulation,
       })
     }
-    case 'payback-multiply':
-    case 'withdraw-multiply': {
+    case OmniMultiplyFormAction.PaybackMultiply:
+    case OmniMultiplyFormAction.WithdrawMultiply: {
       const { loanToValue } = state
       const resolvedState = {
         ...state,
@@ -196,7 +207,7 @@ export async function getAjnaOmniParameters({
       }
 
       if (loanToValue) {
-        return ajnaAdjust({
+        return ajnaActionAdjust({
           state: resolvedState,
           commonPayload,
           dependencies,
@@ -207,7 +218,7 @@ export async function getAjnaOmniParameters({
         })
       }
 
-      return ajnaPaybackWithdrawBorrow({
+      return ajnaActionPaybackWithdrawBorrow({
         state: resolvedState,
         commonPayload,
         dependencies,
@@ -215,13 +226,13 @@ export async function getAjnaOmniParameters({
         simulation,
       })
     }
-    case 'deposit-quote-multiply': {
+    case OmniMultiplyFormAction.DepositQuoteMultiply: {
       // TODO here handling for complex action once available
       return defaultPromise
     }
-    case 'close-borrow':
-    case 'close-multiply': {
-      return ajnaClose({
+    case OmniBorrowFormAction.CloseBorrow:
+    case OmniMultiplyFormAction.CloseMultiply: {
+      return ajnaActionClose({
         state,
         commonPayload,
         dependencies,

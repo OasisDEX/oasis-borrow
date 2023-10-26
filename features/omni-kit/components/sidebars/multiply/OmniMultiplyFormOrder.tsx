@@ -7,7 +7,7 @@ import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/
 import { resolveIfCachedSwap } from 'features/ajna/positions/common/helpers/resolveIfCachedSwap'
 import { resolveSwapTokenPrice } from 'features/ajna/positions/common/helpers/resolveSwapTokenPrice'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniMultiplyFormAction, OmniProductType } from 'features/omni-kit/types'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
   formatAmount,
@@ -67,12 +67,20 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     ].includes(action)
 
   const withBuying =
-    action === 'open-multiply' ||
-    (['adjust', 'deposit-collateral-multiply', 'withdraw-multiply'].includes(action as string) &&
+    action === OmniMultiplyFormAction.OpenMultiply ||
+    ([
+      OmniMultiplyFormAction.AdjustMultiply,
+      OmniMultiplyFormAction.DepositCollateralMultiply,
+      OmniMultiplyFormAction.WithdrawMultiply,
+    ].includes(action as OmniMultiplyFormAction) &&
       loanToValue?.gt(positionData.riskRatio.loanToValue))
   const withSelling =
-    action === 'close-multiply' ||
-    (['adjust', 'deposit-collateral-multiply', 'withdraw-multiply'].includes(action as string) &&
+    action === OmniMultiplyFormAction.CloseMultiply ||
+    ([
+      OmniMultiplyFormAction.AdjustMultiply,
+      OmniMultiplyFormAction.DepositCollateralMultiply,
+      OmniMultiplyFormAction.WithdrawMultiply,
+    ].includes(action as OmniMultiplyFormAction) &&
       loanToValue?.lt(positionData.riskRatio.loanToValue))
   const withOasisFee = withBuying || withSelling
 

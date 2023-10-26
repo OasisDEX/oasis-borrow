@@ -9,11 +9,15 @@ import type {
   FormActionsUpdateWithdraw,
   UpdateLoanToValue,
 } from 'features/omni-kit/state'
-import type { OmniCloseTo, OmniMultiplyAction, OmniMultiplyPanel } from 'features/omni-kit/types'
+import type {
+  OmniCloseTo,
+  OmniMultiplyFormAction,
+  OmniMultiplyPanel,
+} from 'features/omni-kit/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniMultiplyFormState {
-  action?: OmniMultiplyAction
+  action?: OmniMultiplyFormAction
   dpmAddress: string
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
@@ -28,12 +32,15 @@ export interface OmniMultiplyFormState {
   closeTo: OmniCloseTo
   uiDropdown: OmniMultiplyPanel
   uiPill: Exclude<
-    OmniMultiplyAction,
-    'adjust' | 'open-multiply' | 'switch-multiply' | 'close-multiply'
+    OmniMultiplyFormAction,
+    | OmniMultiplyFormAction.AdjustMultiply
+    | OmniMultiplyFormAction.OpenMultiply
+    | OmniMultiplyFormAction.SwitchMultiply
+    | OmniMultiplyFormAction.CloseMultiply
   >
 }
 
-export type OmniMultiplyFormAction = ReductoActions<
+export type OmniMultiplyFormActions = ReductoActions<
   OmniMultiplyFormState,
   | FormActionsUpdateDeposit
   | FormActionsUpdateGenerate

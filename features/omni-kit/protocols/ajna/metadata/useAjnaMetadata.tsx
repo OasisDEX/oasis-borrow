@@ -16,7 +16,6 @@ import { getAjnaSidebarTitle } from 'features/ajna/positions/common/getAjnaSideb
 import { ajnaFlowStateFilter } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
-import { getAjnaNotifications } from 'features/ajna/positions/common/notifications'
 import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
 import { getAjnaEarnWithdrawMax } from 'features/ajna/positions/earn/helpers/getAjnaEarnWithdrawMax'
@@ -32,6 +31,7 @@ import type {
 import { getOmniBorrowishChangeVariant, getOmniBorrowPaybackMax } from 'features/omni-kit/helpers'
 import { getOmniIsFormEmpty } from 'features/omni-kit/helpers/getOmniIsFormEmpty'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
+import { getAjnaOmniNotifications } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniNotifications'
 import { getAjnaOmniValidation } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniValidation'
 import { AjnaOmniEarnDetailsSectionContent } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnDetailsSectionContent'
 import { AjnaOmniEarnDetailsSectionFooter } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnDetailsSectionFooter'
@@ -42,7 +42,7 @@ import { AjnaOmniLendingDetailsSectionContent } from 'features/omni-kit/protocol
 import { AjnaOmniLendingDetailsSectionFooter } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionFooter'
 import { getAjnaOmniEarnIsFomEmpty } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFomEmpty'
 import { getAjnaOmniEarnIsFormValid } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFormValid'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniEarnFormAction, OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import {
   formatAmount,
@@ -132,7 +132,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         : false,
   })
 
-  const notifications = getAjnaNotifications({
+  const notifications = getAjnaOmniNotifications({
     ajnaSafetySwitchOn,
     flow,
     // @ts-ignore TODO
@@ -353,7 +353,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
                     action: () => {
                       earnContext.form.dispatch({ type: 'reset' })
                       earnContext.form.updateState('uiDropdown', 'claim-collateral')
-                      earnContext.form.updateState('action', 'claim-earn')
+                      earnContext.form.updateState('action', OmniEarnFormAction.ClaimEarn)
                       dispatch({ type: 'reset' })
                     },
                   },

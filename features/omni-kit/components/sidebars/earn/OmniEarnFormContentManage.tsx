@@ -4,7 +4,7 @@ import {
   OmniEarnFormContentWithdraw,
 } from 'features/omni-kit/components/sidebars/earn'
 import { useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniEarnFormAction, OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -32,32 +32,28 @@ export function OmniEarnFormContentManage() {
             active={uiPill}
             items={[
               {
-                id: 'deposit-earn',
+                id: OmniEarnFormAction.DepositEarn,
                 label: t('vault-actions.deposit'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'deposit-earn')
-                  updateState('action', 'deposit-earn')
+                  updateState('uiPill', OmniEarnFormAction.DepositEarn)
+                  updateState('action', OmniEarnFormAction.DepositEarn)
                 },
               },
               {
-                id: 'withdraw-earn',
+                id: OmniEarnFormAction.WithdrawEarn,
                 label: t('vault-actions.withdraw'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'withdraw-earn')
-                  updateState('action', 'withdraw-earn')
+                  updateState('uiPill', OmniEarnFormAction.WithdrawEarn)
+                  updateState('action', OmniEarnFormAction.WithdrawEarn)
                 },
                 disabled: position.quoteTokenAmount.isZero(),
               },
             ]}
           />
-          {
-            {
-              'deposit-earn': <OmniEarnFormContentDeposit />,
-              'withdraw-earn': <OmniEarnFormContentWithdraw />,
-            }[uiPill]
-          }
+          {uiPill === OmniEarnFormAction.DepositEarn && <OmniEarnFormContentDeposit />}
+          {uiPill === OmniEarnFormAction.WithdrawEarn && <OmniEarnFormContentWithdraw />}
         </>
       )}
       {earnExtraUiDropdownContent}

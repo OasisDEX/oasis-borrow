@@ -1,14 +1,14 @@
-import type { OmniEarnFormAction, OmniEarnFormState } from 'features/omni-kit/state/earn'
+import type { OmniEarnFormActions, OmniEarnFormState } from 'features/omni-kit/state/earn'
 import { omniEarnFormDefault, omniEarnFormReset } from 'features/omni-kit/state/earn'
 import { useReducto } from 'helpers/useReducto'
 
 export function useOmniEarnFormReducto({ ...rest }: Partial<OmniEarnFormState>) {
-  const { dispatch, state, updateState } = useReducto<OmniEarnFormState, OmniEarnFormAction>({
+  const { dispatch, state, updateState } = useReducto<OmniEarnFormState, OmniEarnFormActions>({
     defaults: {
       ...omniEarnFormDefault,
       ...rest,
     },
-    reducer: (state: OmniEarnFormState, action: OmniEarnFormAction) => {
+    reducer: (state: OmniEarnFormState, action: OmniEarnFormActions) => {
       switch (action.type) {
         case 'update-deposit':
           return {

@@ -7,7 +7,7 @@ import {
   OmniBorrowFormOrder,
 } from 'features/omni-kit/components/sidebars/borrow'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniBorrowFormAction, OmniProductType } from 'features/omni-kit/types'
 import { OmniFormView } from 'features/omni-kit/views'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -47,8 +47,8 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'collateral')
-                updateState('uiPill', 'deposit-borrow')
-                updateState('action', 'deposit-borrow')
+                updateState('uiPill', OmniBorrowFormAction.DepositBorrow)
+                updateState('action', OmniBorrowFormAction.DepositBorrow)
               },
             },
             {
@@ -61,8 +61,8 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'quote')
-                updateState('uiPill', 'generate-borrow')
-                updateState('action', 'generate-borrow')
+                updateState('uiPill', OmniBorrowFormAction.GenerateBorrow)
+                updateState('action', OmniBorrowFormAction.GenerateBorrow)
               },
             },
             // TODO this should be in metadata man
@@ -76,7 +76,7 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
                     action: () => {
                       dispatch({ type: 'reset' })
                       updateState('uiDropdown', 'switch')
-                      updateState('action', 'switch-borrow')
+                      updateState('action', OmniBorrowFormAction.SwitchBorrow)
                     },
                   },
                   {
@@ -88,7 +88,7 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
                       dispatch({ type: 'reset' })
                       updateState('uiDropdown', 'close')
                       updateState('closeTo', 'collateral')
-                      updateState('action', 'close-borrow')
+                      updateState('action', OmniBorrowFormAction.CloseBorrow)
                     },
                   },
                 ]

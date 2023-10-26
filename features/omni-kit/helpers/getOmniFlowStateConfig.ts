@@ -1,6 +1,12 @@
 import type BigNumber from 'bignumber.js'
 import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
-import type { OmniFlow, OmniFormState } from 'features/omni-kit/types'
+import {
+  type OmniFlow,
+  type OmniFormState,
+  OmniBorrowFormAction,
+  OmniEarnFormAction,
+  OmniMultiplyFormAction,
+} from 'features/omni-kit/types'
 import type { UseFlowStateProps } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
 
@@ -25,8 +31,8 @@ export function getOmniFlowStateConfig({
   const { action } = state
 
   switch (action) {
-    case 'open-earn':
-    case 'deposit-earn':
+    case OmniEarnFormAction.DepositEarn:
+    case OmniEarnFormAction.OpenEarn:
       // THIS CONDITION IS ADDED TO BYPASS DPM & ALLOWANCE FLOW
       // WHILE IN AJNA EARN ADJUST MANAGE VIEW
       if (state.uiDropdown === 'adjust' && flow === 'manage') {
@@ -39,20 +45,21 @@ export function getOmniFlowStateConfig({
         amount: state.depositAmount || zero,
         token: quoteToken,
       }
-    case 'withdraw-earn':
-    case 'claim-earn':
-    case 'adjust':
-    case 'close-multiply':
+
+    case OmniEarnFormAction.ClaimEarn:
+    case OmniEarnFormAction.WithdrawEarn:
+    case OmniMultiplyFormAction.AdjustMultiply:
+    case OmniMultiplyFormAction.CloseMultiply:
       return {
         amount: zero,
         token: 'ETH',
       }
-    case 'open-borrow':
-    case 'deposit-borrow':
-    case 'generate-borrow':
-    case 'generate-multiply':
-    case 'open-multiply':
-    case 'deposit-collateral-multiply':
+    case OmniBorrowFormAction.DepositBorrow:
+    case OmniBorrowFormAction.GenerateBorrow:
+    case OmniBorrowFormAction.OpenBorrow:
+    case OmniMultiplyFormAction.DepositCollateralMultiply:
+    case OmniMultiplyFormAction.GenerateMultiply:
+    case OmniMultiplyFormAction.OpenMultiply:
       if (!state.depositAmount) {
         return {
           amount: zero,
@@ -64,10 +71,10 @@ export function getOmniFlowStateConfig({
         amount: state.depositAmount,
         token: collateralToken,
       }
-    case 'payback-borrow':
-    case 'withdraw-borrow':
-    case 'withdraw-multiply':
-    case 'payback-multiply':
+    case OmniBorrowFormAction.PaybackBorrow:
+    case OmniBorrowFormAction.WithdrawBorrow:
+    case OmniMultiplyFormAction.PaybackMultiply:
+    case OmniMultiplyFormAction.WithdrawMultiply:
       if (!state.paybackAmount) {
         return {
           amount: zero,
@@ -79,7 +86,7 @@ export function getOmniFlowStateConfig({
         amount: getMaxIncreasedValue(state.paybackAmount, fee),
         token: quoteToken,
       }
-    case 'deposit-quote-multiply':
+    case OmniMultiplyFormAction.DepositQuoteMultiply:
       if (!state.depositAmount) {
         return {
           amount: zero,

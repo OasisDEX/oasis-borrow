@@ -2,7 +2,7 @@ import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn/earnFormReducto.types'
-import type { OmniSidebarStep } from 'features/omni-kit/types'
+import { type OmniSidebarStep, OmniEarnFormAction } from 'features/omni-kit/types'
 
 export const getAjnaOmniEarnIsFormValid = ({
   position,
@@ -23,21 +23,21 @@ export const getAjnaOmniEarnIsFormValid = ({
     case 'setup':
     case 'manage':
       switch (action) {
-        case 'open-earn':
+        case OmniEarnFormAction.OpenEarn:
           return !!depositAmount?.gt(0)
-        case 'deposit-earn':
+        case OmniEarnFormAction.DepositEarn:
           if (isEmptyPosition) {
             return !!depositAmount?.gt(0)
           }
 
           return !!depositAmount?.gt(0) || !areEarnPricesEqual(position.price, price)
-        case 'withdraw-earn':
+        case OmniEarnFormAction.WithdrawEarn:
           if (isEmptyPosition) {
             return !!withdrawAmount?.gt(0)
           }
 
           return !!withdrawAmount?.gt(0) || !areEarnPricesEqual(position.price, price)
-        case 'claim-earn': {
+        case OmniEarnFormAction.ClaimEarn: {
           return true
         }
         default:

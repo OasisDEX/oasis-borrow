@@ -1,14 +1,14 @@
-import type { OmniBorrowFormAction, OmniBorrowFormState } from 'features/omni-kit/state/borrow'
+import type { OmniBorrowFormActions, OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import { omniBorrowFormDefault, omniBorrowFormReset } from 'features/omni-kit/state/borrow'
 import { useReducto } from 'helpers/useReducto'
 
 export function useOmniBorrowFormReducto({ ...rest }: Partial<OmniBorrowFormState>) {
-  const { dispatch, state, updateState } = useReducto<OmniBorrowFormState, OmniBorrowFormAction>({
+  const { dispatch, state, updateState } = useReducto<OmniBorrowFormState, OmniBorrowFormActions>({
     defaults: {
       ...omniBorrowFormDefault,
       ...rest,
     },
-    reducer: (state: OmniBorrowFormState, action: OmniBorrowFormAction) => {
+    reducer: (state: OmniBorrowFormState, action: OmniBorrowFormActions) => {
       switch (action.type) {
         case 'update-deposit':
           return {

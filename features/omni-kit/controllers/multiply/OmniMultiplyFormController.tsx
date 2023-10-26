@@ -6,7 +6,7 @@ import {
   OmniMultiplyFormOrder,
 } from 'features/omni-kit/components/sidebars/multiply'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniMultiplyFormAction, OmniProductType } from 'features/omni-kit/types'
 import { OmniFormView } from 'features/omni-kit/views'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -45,7 +45,7 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'adjust')
-                updateState('action', 'adjust')
+                updateState('action', OmniMultiplyFormAction.AdjustMultiply)
               },
             },
             {
@@ -58,8 +58,8 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'collateral')
-                updateState('uiPill', 'deposit-collateral-multiply')
-                updateState('action', 'deposit-collateral-multiply')
+                updateState('uiPill', OmniMultiplyFormAction.DepositCollateralMultiply)
+                updateState('action', OmniMultiplyFormAction.DepositCollateralMultiply)
               },
             },
             {
@@ -72,8 +72,8 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'quote')
-                updateState('uiPill', 'payback-multiply')
-                updateState('action', 'payback-multiply')
+                updateState('uiPill', OmniMultiplyFormAction.PaybackMultiply)
+                updateState('action', OmniMultiplyFormAction.PaybackMultiply)
               },
             },
             {
@@ -84,7 +84,7 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'switch')
-                updateState('action', 'switch-multiply')
+                updateState('action', OmniMultiplyFormAction.SwitchMultiply)
               },
             },
             {
@@ -96,7 +96,7 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'close')
                 updateState('closeTo', 'collateral')
-                updateState('action', 'close-multiply')
+                updateState('action', OmniMultiplyFormAction.CloseMultiply)
               },
             },
           ],

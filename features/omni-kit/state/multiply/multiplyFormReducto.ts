@@ -1,5 +1,5 @@
 import type {
-  OmniMultiplyFormAction,
+  OmniMultiplyFormActions,
   OmniMultiplyFormState,
 } from 'features/omni-kit/state/multiply'
 import { omniMultiplyFormDefault, omniMultiplyFormReset } from 'features/omni-kit/state/multiply'
@@ -8,13 +8,13 @@ import { useReducto } from 'helpers/useReducto'
 export function useOmniMultiplyFormReducto({ ...rest }: Partial<OmniMultiplyFormState>) {
   const { dispatch, state, updateState } = useReducto<
     OmniMultiplyFormState,
-    OmniMultiplyFormAction
+    OmniMultiplyFormActions
   >({
     defaults: {
       ...omniMultiplyFormDefault,
       ...rest,
     },
-    reducer: (state: OmniMultiplyFormState, action: OmniMultiplyFormAction) => {
+    reducer: (state: OmniMultiplyFormState, action: OmniMultiplyFormActions) => {
       switch (action.type) {
         case 'update-deposit':
           return {

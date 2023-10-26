@@ -10,7 +10,12 @@ import { useAjnaOmniTxHandler } from 'features/omni-kit/protocols/ajna/hooks/use
 import { useMorphoMetadata } from 'features/omni-kit/protocols/morpho-blue/metadata/useMorphoMetadata'
 import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow/borrowFormReducto'
 import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply/multiplyFormReducto'
-import { type OmniFlow, OmniProductType } from 'features/omni-kit/types'
+import {
+  type OmniFlow,
+  OmniBorrowFormAction,
+  OmniMultiplyFormAction,
+  OmniProductType,
+} from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import type { FC } from 'react'
 import React from 'react'
@@ -41,7 +46,10 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
         <OmniProductContextProvider
           getDynamicMetadata={useMorphoMetadata}
           formDefaults={{
-            action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
+            action:
+              flow === 'open'
+                ? OmniBorrowFormAction.OpenBorrow
+                : OmniBorrowFormAction.DepositBorrow,
           }}
           formReducto={useOmniBorrowFormReducto}
           position={positionData as LendingPosition}
@@ -56,7 +64,10 @@ export const MorphoProductController: FC<MorphoProductControllerProps> = ({
         <OmniProductContextProvider
           getDynamicMetadata={useMorphoMetadata}
           formDefaults={{
-            action: flow === 'open' ? 'open-multiply' : 'adjust',
+            action:
+              flow === 'open'
+                ? OmniMultiplyFormAction.OpenMultiply
+                : OmniMultiplyFormAction.AdjustMultiply,
           }}
           formReducto={useOmniMultiplyFormReducto}
           position={positionData as LendingPosition}

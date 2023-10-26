@@ -10,7 +10,7 @@ import {
   OmniMultiplyFormContentWithdrawCollateral,
 } from 'features/omni-kit/components/sidebars/multiply'
 import { useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniMultiplyFormAction, OmniProductType } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -33,27 +33,31 @@ export function OmniMultiplyFormContentManage() {
             active={uiPill}
             items={[
               {
-                id: 'deposit-collateral-multiply',
+                id: OmniMultiplyFormAction.DepositCollateralMultiply,
                 label: t('vault-actions.deposit'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'deposit-collateral-multiply')
-                  updateState('action', 'deposit-collateral-multiply')
+                  updateState('uiPill', OmniMultiplyFormAction.DepositCollateralMultiply)
+                  updateState('action', OmniMultiplyFormAction.DepositCollateralMultiply)
                 },
               },
               {
-                id: 'withdraw-multiply',
+                id: OmniMultiplyFormAction.WithdrawMultiply,
                 label: t('vault-actions.withdraw'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'withdraw-multiply')
-                  updateState('action', 'withdraw-multiply')
+                  updateState('uiPill', OmniMultiplyFormAction.WithdrawMultiply)
+                  updateState('action', OmniMultiplyFormAction.WithdrawMultiply)
                 },
               },
             ]}
           />
-          {uiPill === 'deposit-collateral-multiply' && <OmniMultiplyFormContentDepositCollateral />}
-          {uiPill === 'withdraw-multiply' && <OmniMultiplyFormContentWithdrawCollateral />}
+          {uiPill === OmniMultiplyFormAction.DepositCollateralMultiply && (
+            <OmniMultiplyFormContentDepositCollateral />
+          )}
+          {uiPill === OmniMultiplyFormAction.WithdrawMultiply && (
+            <OmniMultiplyFormContentWithdrawCollateral />
+          )}
         </>
       )}
       {uiDropdown === 'quote' && (
@@ -62,28 +66,32 @@ export function OmniMultiplyFormContentManage() {
             active={uiPill}
             items={[
               {
-                id: 'payback-multiply',
+                id: OmniMultiplyFormAction.PaybackMultiply,
                 label: t('system.actions.multiply.reduce-debt'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'payback-multiply')
-                  updateState('action', 'payback-multiply')
+                  updateState('uiPill', OmniMultiplyFormAction.PaybackMultiply)
+                  updateState('action', OmniMultiplyFormAction.PaybackMultiply)
                 },
               },
               {
-                id: 'generate-multiply',
+                id: OmniMultiplyFormAction.GenerateMultiply,
                 label: t('vault-actions.withdraw'),
                 action: () => {
                   dispatch({ type: 'reset' })
-                  updateState('uiPill', 'generate-multiply')
-                  updateState('action', 'generate-multiply')
+                  updateState('uiPill', OmniMultiplyFormAction.GenerateMultiply)
+                  updateState('action', OmniMultiplyFormAction.GenerateMultiply)
                 },
               },
             ]}
           />
-          {uiPill === 'deposit-quote-multiply' && <OmniMultiplyFormContentDepositQuote />}
-          {uiPill === 'payback-multiply' && <OmniMultiplyFormContentPayback />}
-          {uiPill === 'generate-multiply' && <OmniMultiplyFormContentGenerate />}
+          {uiPill === OmniMultiplyFormAction.DepositQuoteMultiply && (
+            <OmniMultiplyFormContentDepositQuote />
+          )}
+          {uiPill === OmniMultiplyFormAction.PaybackMultiply && <OmniMultiplyFormContentPayback />}
+          {uiPill === OmniMultiplyFormAction.GenerateMultiply && (
+            <OmniMultiplyFormContentGenerate />
+          )}
         </>
       )}
       {uiDropdown === 'switch' && <OmniMultiplyFormContentSwitch />}

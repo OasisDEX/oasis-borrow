@@ -1,10 +1,11 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type { AjnaFlow } from 'features/ajna/common/types'
+import { OmniEarnFormAction } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 
 export const getAjnaEarnDefaultAction = (flow: AjnaFlow, ajnaPosition: AjnaEarnPosition) =>
   ajnaPosition.collateralTokenAmount.gt(zero)
-    ? 'claim-earn'
+    ? OmniEarnFormAction.ClaimEarn
     : flow === 'open'
-    ? 'open-earn'
-    : 'deposit-earn'
+    ? OmniEarnFormAction.OpenEarn
+    : OmniEarnFormAction.DepositEarn

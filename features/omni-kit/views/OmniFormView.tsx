@@ -6,7 +6,6 @@ import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ethers } from 'ethers'
-import { useProductTypeTransition } from 'features/ajna/positions/common/hooks/useTransition'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
   getOmniFlowStateConfig,
@@ -15,6 +14,7 @@ import {
   getOmniSidebarPrimaryButtonActions,
   getOmniSidebarTransactionStatus,
 } from 'features/omni-kit/helpers'
+import { useOmniProductTypeTransition } from 'features/omni-kit/hooks/useOmniTransition'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
@@ -132,7 +132,7 @@ export function OmniFormView({
     isTransitionWaitingForApproval,
     setisTransitionWaitingForApproval,
     transitionHandler,
-  } = useProductTypeTransition({
+  } = useOmniProductTypeTransition({
     action: state.action,
     positionId: resolvedId,
     protocol,
