@@ -1,7 +1,10 @@
-import type { IPosition, Network, Tokens } from '@oasisdex/dma-library'
-import type { getAddresses } from 'actions/aave-like/get-addresses'
+import type { AaveLikeStrategyAddresses, IPosition, Network, Tokens } from '@oasisdex/dma-library'
+import { getAddresses } from 'actions/aave-like/get-addresses'
 import { NetworkIds } from 'blockchain/networks'
+import { getToken } from 'blockchain/tokensMetadata'
+import { getLocalAppConfig } from 'helpers/config'
 import { getOneInchCall } from 'helpers/swap'
+import { LendingProtocol } from 'lendingProtocols'
 
 // enum Network {
 //   MAINNET = "mainnet",
@@ -53,3 +56,33 @@ export const getCurrentPositionLibCallData = (currentPosition: IPosition) => [
     precision: currentPosition.debt.precision,
   },
 ]
+
+export const getAaveV3FlashLoanToken = (
+  networkId: NetworkIds,
+  lendingProtocol: LendingProtocol,
+) => {
+  if (lendingProtocol !== LendingProtocol.AaveV3) {
+    return undefined
+  }
+  const flashloanTokensConfig = getLocalAppConfig('parameters').aaveLike.flashLoanTokens
+  const aaveV3FlashLoanTokenMap = {
+    [NetworkIds.OPTIMISMMAINNET]: flashloanTokensConfig.OPTIMISMMAINNET,
+    [NetworkIds.BASEMAINNET]: flashloanTokensConfig.BASEMAINNET,
+  } as Record<Partial<NetworkIds>, keyof AaveLikeStrategyAddresses['tokens']>
+  const flashloanToken = aaveV3FlashLoanTokenMap[networkId]
+  const addressesV3 = getAddresses(networkId, LendingProtocol.AaveV3)
+
+  if (flashloanToken) {
+    const tokenAddress = addressesV3.tokens[flashloanToken]
+    if (tokenAddress === undefined)
+      throw new Error(`Flashloan Token ${flashloanToken} address is undefined`)
+    return {
+      token: {
+        symbol: flashloanToken,
+        address: tokenAddress,
+        precision: getToken(flashloanToken).precision,
+      },
+    }
+  }
+  return undefined
+}

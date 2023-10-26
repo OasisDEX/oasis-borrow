@@ -641,7 +641,7 @@ export const tokenConfigs: TokenConfig[] = [
   {
     symbol: 'USDBC',
     precision: 6,
-    digits: 5,
+    digits: 2,
     name: 'USD Base Coin',
     icon: usdc_circle_color,
     iconCircle: usdc_circle_color,
