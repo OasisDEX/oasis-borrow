@@ -1,4 +1,5 @@
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
+import { getPortfolioLink } from 'helpers/get-portfolio-link'
 import { useAccount } from 'helpers/useAccount'
 import React from 'react'
 import { home } from 'theme/icons'
@@ -10,7 +11,7 @@ export function MyPositionsOrb() {
     <NavigationOrb
       icon={home}
       iconSize={16}
-      link={`/owner/${walletAddress}`}
+      link={getPortfolioLink(walletAddress)}
       {...(!!amountOfPositions && { beacon: amountOfPositions })}
     />
   )

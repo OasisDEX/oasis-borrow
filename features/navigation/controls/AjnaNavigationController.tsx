@@ -6,6 +6,7 @@ import { NavigationActionsController } from 'features/navigation/controls/Naviga
 import type { SwapWidgetChangeAction } from 'features/swapWidget/SwapWidgetChange'
 import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { getPortfolioLink } from 'helpers/get-portfolio-link'
 import { uiChanges } from 'helpers/uiChanges'
 import { useAccount } from 'helpers/useAccount'
 import React from 'react'
@@ -45,7 +46,7 @@ export function AjnaNavigationController() {
 
                 {
                   label: <MyPositionsLink />,
-                  link: `/owner/${walletAddress}`,
+                  link: getPortfolioLink(walletAddress),
                 },
               ]
             : []),

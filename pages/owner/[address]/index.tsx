@@ -5,6 +5,7 @@ import { AppLayout } from 'components/layouts/AppLayout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultOverviewView'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
+import { getPortfolioLink } from 'helpers/get-portfolio-link'
 import type { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -34,7 +35,7 @@ function VaultsSummary({ address }: { address: string }) {
                   token: `${address.slice(0, 7)}...`,
                 }}
                 description="seo.multiply.description"
-                url={`/owner/${address}`}
+                url={getPortfolioLink(address)}
               />
               <VaultsOverviewView address={address} />
             </WithWalletAssociatedRisk>
