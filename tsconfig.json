@@ -5,7 +5,11 @@
     "outDir": "build/dist",
     "module": "esnext",
     "target": "es2017",
-    "lib": ["dom", "es2018", "esnext"],
+    "lib": [
+      "dom",
+      "es2018",
+      "esnext"
+    ],
     "sourceMap": true,
     "allowJs": true,
     "moduleResolution": "node",
@@ -14,14 +18,21 @@
     "noImplicitReturns": true,
     "skipLibCheck": true,
     "paths": {
-      "server/*": ["server/*"]
+      "server/*": [
+        "server/*"
+      ]
     },
     "noEmit": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "**/*.js",
@@ -31,9 +42,16 @@
     "runtimeConfig.js",
     "next-i18next.config.js",
     "middleware.ts",
-    "lambdas/src/shared"
+    "lambdas/src/shared",
+    ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "types", "coverage", "infra", "lambdas"],
+  "exclude": [
+    "node_modules",
+    "types",
+    "coverage",
+    "infra",
+    "lambdas"
+  ],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"

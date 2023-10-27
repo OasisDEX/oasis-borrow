@@ -32,7 +32,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
-          node-version: 18.12
+          node-version: 20.9
       - name: 'Determine Release Type'
         run: |
           if ${{ contains(github.event.inputs.release_type, 'major') }}; then

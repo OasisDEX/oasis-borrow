@@ -1,6 +1,7 @@
-FROM node:18.12
+FROM node:20.9
 
 EXPOSE 3000
+ENV YARN_VERSION=4.0.1
 
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
@@ -13,7 +14,7 @@ WORKDIR /usr/src/app
 ARG CONFIG_URL=''
 ENV CONFIG_URL=$CONFIG_URL
 
-RUN yarn --no-progress --non-interactive --frozen-lockfile
+RUN yarn --immutable
 
 ARG COMMIT_SHA='' \
   NOTIFICATIONS_HOST='' \

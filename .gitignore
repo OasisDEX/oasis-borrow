@@ -40,3 +40,20 @@ next-env.d.ts
 
 # .env
 .env
+
+
+# yarn modern
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+/lambdas/.yarn/*
+!/lambdas/.yarn/cache
+!/lambdas/.yarn/patches
+!/lambdas/.yarn/plugins
+!/lambdas/.yarn/releases
+!/lambdas/.yarn/sdks
+!/lambdas/.yarn/versions
