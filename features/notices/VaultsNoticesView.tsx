@@ -17,6 +17,7 @@ import {
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
+import { getPortfolioLink } from 'helpers/get-portfolio-link'
 import { useObservable } from 'helpers/observableHook'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import type { WithChildren } from 'helpers/types/With.types'
@@ -171,7 +172,7 @@ export function VaultOwnershipBanner({
         ) : (
           <Text as="span">
             {t('vault-notices.ownership.subheader2')}{' '}
-            <AppLink href={`/owner/${account}`} target="_blank" sx={{ fontSize: 3 }}>
+            <AppLink href={getPortfolioLink(account)} target="_blank" sx={{ fontSize: 3 }}>
               {t('here')}
             </AppLink>
           </Text>
@@ -204,7 +205,7 @@ function PositionOwnershipBanner({
         ) : (
           <Text>
             {t('vault-notices.position.subheader2')}{' '}
-            <AppLink href={`/owner/${connectedWalletAddress}`} target="_blank">
+            <AppLink href={getPortfolioLink(connectedWalletAddress)} target="_blank">
               {t('here')}
             </AppLink>
           </Text>
@@ -236,7 +237,7 @@ export function VaultOverviewOwnershipNotice({
       subheader={
         <Text>
           {t('vaults-overview.banner-content')}{' '}
-          <AppLink href={`/owner/${account}`} internalInNewTab={true} sx={{ fontSize: 3 }}>
+          <AppLink href={getPortfolioLink(account)} internalInNewTab={true} sx={{ fontSize: 3 }}>
             {t('here')}
           </AppLink>
         </Text>

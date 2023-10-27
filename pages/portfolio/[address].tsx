@@ -8,7 +8,7 @@ import React, { useEffect } from 'react'
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     props: {
-      ...(await serverSideTranslations(ctx.locale ?? 'en', ['portfolio', 'navigation', 'system'])),
+      ...(await serverSideTranslations(ctx.locale ?? 'en', ['portfolio', 'common'])),
       address: ctx.query?.address ?? null,
     },
   }
