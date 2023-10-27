@@ -8,8 +8,8 @@ interface AjnaRedirectProps {
   ajnaPositionData?: AjnaGenericPosition
   collateralToken?: string
   dpmPositionData?: DpmPositionData
-  id?: string
-  product?: AjnaProduct
+  positionId?: string
+  productType?: AjnaProduct
   quoteToken?: string
 }
 
@@ -17,8 +17,8 @@ export function useAjnaRedirect({
   ajnaPositionData,
   collateralToken,
   dpmPositionData,
-  id,
-  product,
+  positionId,
+  productType,
   quoteToken,
 }: AjnaRedirectProps): string | undefined {
   const [redirectLink, setRedirectLink] = useState<string>()
@@ -29,28 +29,28 @@ export function useAjnaRedirect({
 
   useEffect(() => {
     if (
-      !id &&
+      !positionId &&
       collateralToken &&
       quoteToken &&
-      product === 'multiply' &&
+      productType === 'multiply' &&
       !isPoolSupportingMultiply({ collateralToken, quoteToken })
     )
       setRedirectLink(INTERNAL_LINKS.ajnaMultiply)
-  }, [id, collateralToken, quoteToken, product])
+  }, [positionId, collateralToken, quoteToken, productType])
 
   useEffect(() => {
     if (
-      id &&
+      positionId &&
       dpmPositionData &&
       dpmPositionData.hasMultiplePositions &&
       !collateralToken &&
       !quoteToken &&
-      !product
+      !productType
     )
       setRedirectLink(
-        `/ethereum/ajna/${dpmPositionData.product}/${dpmPositionData.collateralToken}-${dpmPositionData.quoteToken}/${id}`,
+        `/ethereum/ajna/${dpmPositionData.product}/${dpmPositionData.collateralToken}-${dpmPositionData.quoteToken}/${positionId}`,
       )
-  }, [dpmPositionData, id, collateralToken, quoteToken, product])
+  }, [dpmPositionData, positionId, collateralToken, quoteToken, productType])
 
   return redirectLink
 }

@@ -33,6 +33,8 @@ export interface StopLossDetailsLayoutProps {
   afterDynamicStopLossPrice: BigNumber
   ratioParamTranslationKey: string
   stopLossLevelCardFootnoteKey: string
+  isAutomationDataLoaded: boolean
+  isAutomationAvailable: boolean
   detailCards?: StopLossMetadataDetailCards
 }
 
@@ -58,6 +60,8 @@ export function StopLossDetailsLayout({
   ratioParamTranslationKey,
   stopLossLevelCardFootnoteKey,
   detailCards,
+  isAutomationDataLoaded,
+  isAutomationAvailable,
 }: StopLossDetailsLayoutProps) {
   const { t } = useTranslation()
 
@@ -92,7 +96,16 @@ export function StopLossDetailsLayout({
               />
             )}
             {cardsSet.includes(StopLossDetailCards.LOAN_TO_VALUE) && (
-              <ContentCardLtv loanToValue={positionRatio} liquidationThreshold={liquidationRatio} />
+              <ContentCardLtv
+                loanToValue={positionRatio}
+                liquidationThreshold={liquidationRatio}
+                automation={{
+                  stopLossLevel,
+                  isStopLossEnabled,
+                  isAutomationDataLoaded,
+                  isAutomationAvailable,
+                }}
+              />
             )}
             {cardsSet.includes(StopLossDetailCards.DYNAMIC_STOP_PRICE) && (
               <ContentCardDynamicStopPrice

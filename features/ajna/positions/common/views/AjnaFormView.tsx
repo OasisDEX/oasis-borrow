@@ -115,12 +115,12 @@ export function AjnaFormView({
         getAjnaFlowStateFilter({
           collateralAddress,
           events,
-          product,
+          productType: product,
           quoteAddress,
         }),
       onProxiesAvailable: (events, dpmAccounts) => {
         const filteredEvents = events.filter((event) =>
-          ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
+          ajnaFlowStateFilter({ collateralAddress, event, productType: product, quoteAddress }),
         )
 
         if (!hasDupePosition && filteredEvents.length) {
@@ -152,7 +152,7 @@ export function AjnaFormView({
     action: state.action,
     positionId: resolvedId,
     protocol: LendingProtocol.Ajna,
-    product,
+    productType: product,
   })
 
   const {
@@ -240,7 +240,13 @@ export function AjnaFormView({
     txDetails,
   })
 
-  const title = getAjnaSidebarTitle({ currentStep, isFormFrozen, product, position, isOracless })
+  const title = getAjnaSidebarTitle({
+    currentStep,
+    isFormFrozen,
+    productType: product,
+    position,
+    isOracless,
+  })
 
   const sidebarSectionProps: SidebarSectionProps = {
     title,

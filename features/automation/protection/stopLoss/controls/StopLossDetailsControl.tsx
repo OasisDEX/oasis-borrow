@@ -56,6 +56,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
     triggerData: {
       stopLossTriggerData: { isStopLossEnabled, stopLossLevel, isToCollateral },
     },
+    automationTriggersData: { isAutomationDataLoaded },
   } = useAutomationContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
   const afterMaxToken = getMaxToken(stopLossState)
@@ -95,6 +96,8 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
           detailCards={detailCards}
           dynamicStopLossPrice={dynamicStopLossPrice}
           afterDynamicStopLossPrice={afterDynamicStopLossPrice}
+          isAutomationDataLoaded={isAutomationDataLoaded}
+          isAutomationAvailable={true}
         />
       ) : (
         <Banner
