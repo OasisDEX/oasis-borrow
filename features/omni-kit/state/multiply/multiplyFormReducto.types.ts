@@ -13,10 +13,11 @@ import type {
   OmniCloseTo,
   OmniMultiplyFormAction,
   OmniMultiplyPanel,
-} from 'features/omni-kit/types'
+ OmniProductType } from 'features/omni-kit/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniMultiplyFormState {
+  productType: OmniProductType.Multiply
   action?: OmniMultiplyFormAction
   dpmAddress: string
   depositAmount?: BigNumber

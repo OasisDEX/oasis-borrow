@@ -27,7 +27,7 @@ function testIfObjectIsType<T extends StateTypeWrapper>(
   obj: StateTypeWrapperUnguarded,
   productType: OmniProductType,
 ): obj is T {
-  return obj.type === productType
+  return obj.type === productType && obj.state.productType === productType
 }
 
 export function getOmniIsFormEmptyStateGuard(

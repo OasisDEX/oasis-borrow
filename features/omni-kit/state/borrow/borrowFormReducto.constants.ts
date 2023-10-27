@@ -1,6 +1,10 @@
 import { ethers } from 'ethers'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
-import { OmniBorrowFormAction, OmniSidebarBorrowPanel } from 'features/omni-kit/types'
+import {
+  OmniBorrowFormAction,
+  OmniProductType,
+  OmniSidebarBorrowPanel,
+} from 'features/omni-kit/types'
 
 export const omniBorrowFormReset = {
   depositAmount: undefined,
@@ -16,6 +20,7 @@ export const omniBorrowFormReset = {
 
 export const omniBorrowFormDefault: OmniBorrowFormState = {
   ...omniBorrowFormReset,
+  productType: OmniProductType.Borrow,
   dpmAddress: ethers.constants.AddressZero,
   uiDropdown: OmniSidebarBorrowPanel.Collateral,
   uiPill: OmniBorrowFormAction.DepositBorrow,

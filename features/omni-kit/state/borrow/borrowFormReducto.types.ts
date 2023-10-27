@@ -12,11 +12,13 @@ import type {
 import type {
   OmniBorrowFormAction,
   OmniCloseTo,
+  OmniProductType,
   OmniSidebarBorrowPanel,
 } from 'features/omni-kit/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniBorrowFormState {
+  productType: OmniProductType.Borrow
   action?: OmniBorrowFormAction
   dpmAddress: string
   depositAmount?: BigNumber
