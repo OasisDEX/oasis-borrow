@@ -5,10 +5,15 @@ import type {
   FormActionsUpdateDpm,
   FormActionsUpdateWithdraw,
 } from 'features/omni-kit/state'
-import type { OmniEarnFormAction, OmniSidebarEarnPanel } from 'features/omni-kit/types'
+import type {
+  OmniEarnFormAction,
+  OmniProductType,
+  OmniSidebarEarnPanel,
+} from 'features/omni-kit/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniEarnFormState {
+  productType: OmniProductType.Earn
   action?: OmniEarnFormAction
   dpmAddress: string
   depositAmount?: BigNumber
