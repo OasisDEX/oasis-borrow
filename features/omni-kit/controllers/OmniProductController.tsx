@@ -18,23 +18,26 @@ import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface OmniProductsControllerProps<A, H, P> {
-  aggregatedData: { auction: A; history: H }
+interface OmniProductsControllerProps<Auction, History, Position> {
+  aggregatedData: { auction: Auction; history: History }
   dpmPosition: DpmPositionData
   isOpening: boolean
-  positionData: P
+  positionData: Position
 }
 
-interface OmniProductControllerProps<A, H, P> {
+interface OmniProductControllerProps<Auction, History, Position> {
   collateralToken?: string
-  controller: (params: OmniProductsControllerProps<A, H, P>) => React.ReactNode
+  controller: (params: OmniProductsControllerProps<Auction, History, Position>) => React.ReactNode
   isOracless?: boolean
   networkName: NetworkNames
   positionId?: string
   productType?: OmniProductType
   protocol: LendingProtocol
   protocolHook: (params: ProductDataProps) => {
-    data: { aggregatedData: { auction: A; history: H } | undefined; positionData: P | undefined }
+    data: {
+      aggregatedData: { auction: Auction; history: History } | undefined
+      positionData: Position | undefined
+    }
     errors: string[]
     isOracless: boolean
     redirect: string | undefined
@@ -47,7 +50,7 @@ interface OmniProductControllerProps<A, H, P> {
   steps: OmniSidebarStepsSet
 }
 
-export const OmniProductController = <A, H, P>({
+export const OmniProductController = <Auction, History, Position>({
   collateralToken,
   controller,
   isOracless = false,
@@ -59,7 +62,7 @@ export const OmniProductController = <A, H, P>({
   quoteToken,
   seoTags,
   steps,
-}: OmniProductControllerProps<A, H, P>) => {
+}: OmniProductControllerProps<Auction, History, Position>) => {
   const { t } = useTranslation()
 
   const network = getNetworkByName(networkName)
