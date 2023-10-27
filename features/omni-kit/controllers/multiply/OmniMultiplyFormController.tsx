@@ -6,7 +6,12 @@ import {
   OmniMultiplyFormOrder,
 } from 'features/omni-kit/components/sidebars/multiply'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { OmniMultiplyFormAction, OmniMultiplyPanel, OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
+import {
+  OmniMultiplyFormAction,
+  OmniMultiplyPanel,
+  OmniProductType,
+  OmniSidebarStep,
+} from 'features/omni-kit/types'
 import { OmniFormView } from 'features/omni-kit/views'
 import React from 'react'
 import { useTranslation } from 'react-i18next'

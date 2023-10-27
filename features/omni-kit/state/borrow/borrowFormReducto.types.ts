@@ -9,7 +9,11 @@ import type {
   FormActionsUpdateWithdraw,
   UpdateLoanToValue,
 } from 'features/omni-kit/state'
-import type { OmniBorrowFormAction, OmniCloseTo,OmniSidebarBorrowPanel } from 'features/omni-kit/types'
+import type {
+  OmniBorrowFormAction,
+  OmniCloseTo,
+  OmniSidebarBorrowPanel,
+} from 'features/omni-kit/types'
 import type { ReductoActions } from 'helpers/useReducto'
 
 export interface OmniBorrowFormState {
