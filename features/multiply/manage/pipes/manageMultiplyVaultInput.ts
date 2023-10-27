@@ -186,8 +186,8 @@ export function applyManageVaultInput(
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
-      withdrawAmount: state.vaultType === VaultType.Borrow ? state.withdrawAmount : undefined,
-      withdrawAmountUSD: state.vaultType === VaultType.Borrow ? state.withdrawAmount : undefined,
+      withdrawAmount: state.withdrawAmount,
+      withdrawAmountUSD: state.withdrawAmount,
       paybackAmount: change.paybackAmount,
     }
   }
@@ -198,8 +198,8 @@ export function applyManageVaultInput(
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
-      withdrawAmount: state.vaultType === VaultType.Borrow ? state.withdrawAmount : undefined,
-      withdrawAmountUSD: state.vaultType === VaultType.Borrow ? state.withdrawAmount : undefined,
+      withdrawAmount: state.withdrawAmount,
+      withdrawAmountUSD: state.withdrawAmount,
       paybackAmount: maxPaybackAmount,
     }
   }
@@ -211,7 +211,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       withdrawAmount: change.withdrawAmount,
       withdrawAmountUSD: change.withdrawAmount?.times(priceInfo.currentCollateralPrice),
-      paybackAmount: state.vaultType === VaultType.Borrow ? state.paybackAmount : undefined,
+      paybackAmount: state.paybackAmount,
       showSliderController: false,
     }
   }
@@ -223,7 +223,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       withdrawAmountUSD: change.withdrawAmountUSD,
       withdrawAmount: change.withdrawAmountUSD?.div(priceInfo.currentCollateralPrice),
-      paybackAmount: state.vaultType === VaultType.Borrow ? state.paybackAmount : undefined,
+      paybackAmount: state.paybackAmount,
       showSliderController: false,
     }
   }
@@ -236,7 +236,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       withdrawAmount: maxWithdrawAmount,
       withdrawAmountUSD: maxWithdrawAmountUSD,
-      paybackAmount: state.vaultType === VaultType.Borrow ? state.paybackAmount : undefined,
+      paybackAmount: state.paybackAmount,
       showSliderController: false,
     }
   }
