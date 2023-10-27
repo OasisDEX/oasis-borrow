@@ -1,5 +1,6 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
+import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
 import type { OmniFormState } from 'features/omni-kit/types'
 import {
@@ -9,23 +10,66 @@ import {
   OmniSidebarStep,
 } from 'features/omni-kit/types'
 
+type StateTypeWrapper =
+  | { type: OmniProductType.Borrow; state: OmniBorrowFormState }
+  | { type: OmniProductType.Earn; state: OmniEarnFormState }
+  | { type: OmniProductType.Multiply; state: OmniMultiplyFormState }
+
+type StateTypeWrapperUnguarded = { type: OmniProductType; state: OmniFormState }
+
 interface GetIsFormEmptyParams {
   currentStep: OmniSidebarStep
-  productType: OmniProductType
-  state: OmniFormState
+  stateTypeWrapper: StateTypeWrapper
   txStatus?: TxStatus
 }
 
+function testIfObjectIsType<T extends StateTypeWrapper>(
+  obj: StateTypeWrapperUnguarded,
+  productType: OmniProductType,
+): obj is T {
+  return obj.type === productType
+}
+
+export function getOmniIsFormEmptyStateGuard(
+  stateTypeWrapper: StateTypeWrapperUnguarded,
+): StateTypeWrapper {
+  const isEarn = testIfObjectIsType<{ type: OmniProductType.Earn; state: OmniEarnFormState }>(
+    stateTypeWrapper,
+    OmniProductType.Earn,
+  )
+  const isBorrow = testIfObjectIsType<{ type: OmniProductType.Borrow; state: OmniBorrowFormState }>(
+    stateTypeWrapper,
+    OmniProductType.Borrow,
+  )
+  const isMultiply = testIfObjectIsType<{
+    type: OmniProductType.Multiply
+    state: OmniMultiplyFormState
+  }>(stateTypeWrapper, OmniProductType.Multiply)
+
+  if (isEarn) {
+    return stateTypeWrapper
+  }
+
+  if (isBorrow) {
+    return stateTypeWrapper
+  }
+
+  if (isMultiply) {
+    return stateTypeWrapper
+  }
+
+  throw Error('productType/state pair is invalid')
+}
+
 export function getOmniIsFormEmpty({
-  productType,
-  state,
+  stateTypeWrapper,
   currentStep,
   txStatus,
 }: GetIsFormEmptyParams): boolean {
-  switch (productType) {
+  switch (stateTypeWrapper.type) {
     case OmniProductType.Borrow: {
       const { depositAmount, generateAmount, paybackAmount, withdrawAmount, action, loanToValue } =
-        state as OmniBorrowFormState
+        stateTypeWrapper.state
 
       if (action === OmniBorrowFormAction.CloseBorrow) {
         return false
@@ -35,7 +79,7 @@ export function getOmniIsFormEmpty({
     }
     case OmniProductType.Multiply:
       const { depositAmount, loanToValue, withdrawAmount, generateAmount, paybackAmount, action } =
-        state as OmniMultiplyFormState
+        stateTypeWrapper.state
 
       switch (currentStep) {
         case OmniSidebarStep.Setup:

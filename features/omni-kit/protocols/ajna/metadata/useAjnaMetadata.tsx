@@ -17,7 +17,6 @@ import { ajnaFlowStateFilter } from 'features/ajna/positions/common/helpers/getF
 import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
-import { AjnaFormContentRisk } from 'features/ajna/positions/common/sidebars/AjnaFormContentRisk'
 import { getAjnaEarnWithdrawMax } from 'features/ajna/positions/earn/helpers/getAjnaEarnWithdrawMax'
 import { OmniDupePositionModal } from 'features/omni-kit/components/OmniDupePositionModal'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
@@ -28,7 +27,11 @@ import type {
   ProductContextWithEarn,
   SupplyMetadata,
 } from 'features/omni-kit/contexts/OmniProductContext'
-import { getOmniBorrowishChangeVariant, getOmniBorrowPaybackMax } from 'features/omni-kit/helpers'
+import {
+  getOmniBorrowishChangeVariant,
+  getOmniBorrowPaybackMax,
+  getOmniIsFormEmptyStateGuard,
+} from 'features/omni-kit/helpers'
 import { getOmniIsFormEmpty } from 'features/omni-kit/helpers/getOmniIsFormEmpty'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
 import { AjnaOmniTokensBannerController } from 'features/omni-kit/protocols/ajna/controllers/AjnaOmniTokensBannerController'
@@ -39,6 +42,7 @@ import { AjnaOmniEarnDetailsSectionFooter } from 'features/omni-kit/protocols/aj
 import { AjnaOmniEarnFormOrder } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnFormOrder'
 import { AjnaOmniEarnSlider } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnSlider'
 import { AjnaOmniExtraDropdownUiContent } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniExtraDropdownUiContent'
+import { AjnaOmniFormContentRisk } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniFormContentRisk'
 import { AjnaOmniLendingDetailsSectionContent } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionContent'
 import { AjnaOmniLendingDetailsSectionFooter } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionFooter'
 import { getAjnaOmniEarnIsFomEmpty } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFomEmpty'
@@ -153,7 +157,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       !ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
   }
 
-  const riskSidebar = <AjnaFormContentRisk />
+  const riskSidebar = <AjnaOmniFormContentRisk />
   const dupeModal = OmniDupePositionModal
 
   switch (productType) {
@@ -182,8 +186,10 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       const changeVariant = getOmniBorrowishChangeVariant({ simulation, isOracless })
 
       const isFormEmpty = getOmniIsFormEmpty({
-        productType,
-        state: productContext.form.state,
+        stateTypeWrapper: getOmniIsFormEmptyStateGuard({
+          type: productType,
+          state: productContext.form.state,
+        }),
         currentStep,
         txStatus: txDetails?.txStatus,
       })

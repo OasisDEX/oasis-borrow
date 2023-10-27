@@ -2,7 +2,6 @@ import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { NetworkConfig } from 'blockchain/networks'
 import type { GasPriceParams } from 'blockchain/prices.types'
-import { isProductContextAvailable } from 'components/context/ProductContextProvider'
 import {
   getOmniEditingStep,
   getOmniTxStatuses,
@@ -102,8 +101,6 @@ export function OmniGeneralContextProvider({
   steps,
   ...props
 }: PropsWithChildren<OmniGeneralContextProviderProps>) {
-  if (!isProductContextAvailable()) return null
-
   const {
     collateralBalance,
     collateralToken,
