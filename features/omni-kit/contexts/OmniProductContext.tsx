@@ -26,7 +26,7 @@ import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import type { Dispatch, FC, PropsWithChildren, SetStateAction } from 'react'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
 export type LendingMetadata = {
@@ -228,9 +228,9 @@ export function useOmniProductContext<T extends OmniProductType>(
 
   if (productType !== environment.productType)
     throw new Error(
-      `ProtocolGeneralContext and AjnaProductContext products doesn't match: ${environment.productType}/${productType}`,
+      `OmniGeneralContext and OmniProductContext products doesn't match: ${environment.productType}/${productType}`,
     )
-  if (!context) throw new Error('AjnaProductContext not available!')
+  if (!context) throw new Error('OmniProductContext not available!')
   return context as PickProductType<T>
 }
 
@@ -283,50 +283,24 @@ export function OmniProductContextProvider({
     )
   }
 
-  const initContext = {
-    form,
-    position: {
-      cachedPosition,
-      positionAuction,
-      currentPosition: { position },
-      isSimulationLoading,
-      resolvedId: positionIdFromDpmProxyData,
-      history: positionHistory,
-      simulationCommon: {
-        errors: simulation?.errors as OmniSimulationCommon['errors'],
-        warnings: simulation?.warnings as OmniSimulationCommon['warnings'],
-        notices: simulation?.notices as OmniSimulationCommon['notices'],
-        successes: simulation?.successes as OmniSimulationCommon['successes'],
-      },
-      setCachedPosition: (positionSet: PositionSet<typeof position>) =>
-        setCachedPosition(positionSet),
-      setIsLoadingSimulation,
-      setSimulation,
-      setCachedSwap: (swap: SwapData) => setCachedSwap(swap),
-    },
-  }
-
-  const [context, setContext] = useState<
-    GenericProductContext<
-      typeof position,
-      typeof form,
-      typeof positionAuction,
-      LendingMetadata | SupplyMetadata
-    >
-  >({
-    dynamicMetadata: getDynamicMetadata(initContext as OmniMetadataParams),
-    ...initContext,
-  })
-
-  useEffect(() => {
+  const context = useMemo(() => {
     const fromTokenPrecision = isIncreasingPositionRisk ? quotePrecision : collateralPrecision
     const toTokenPrecision = isIncreasingPositionRisk ? collateralPrecision : quotePrecision
 
-    setContext((prev) => ({
-      ...prev,
+    return {
       form,
       position: {
-        ...prev.position,
+        simulationCommon: {
+          errors: simulation?.errors as OmniSimulationCommon['errors'],
+          warnings: simulation?.warnings as OmniSimulationCommon['warnings'],
+          notices: simulation?.notices as OmniSimulationCommon['notices'],
+          successes: simulation?.successes as OmniSimulationCommon['successes'],
+        },
+        setCachedPosition: (positionSet: PositionSet<typeof position>) =>
+          setCachedPosition(positionSet),
+        setIsLoadingSimulation,
+        setSimulation,
+        setCachedSwap: (swap: SwapData) => setCachedSwap(swap),
         cachedPosition,
         currentPosition: {
           position,
@@ -345,7 +319,7 @@ export function OmniProductContextProvider({
         },
         history: positionHistory,
       },
-    }))
+    }
   }, [
     cachedPosition,
     collateralBalance,

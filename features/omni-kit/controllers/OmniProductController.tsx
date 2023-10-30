@@ -66,7 +66,7 @@ export const OmniProductController = <Auction, History, Position>({
   const { t } = useTranslation()
 
   const network = getNetworkByName(networkName)
-  const isOpening = !!positionId
+  const isOpening = !positionId
 
   const {
     data: {

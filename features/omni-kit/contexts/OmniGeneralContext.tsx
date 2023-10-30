@@ -18,7 +18,7 @@ import type { TxDetails } from 'helpers/handleTransaction'
 import { useAccount } from 'helpers/useAccount'
 import type { LendingProtocol } from 'lendingProtocols'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 
 interface OmniGeneralContextProviderProps {
   collateralAddress: string
@@ -147,43 +147,33 @@ export function OmniGeneralContextProvider({
     }
   }
 
-  const [context, setContext] = useState<OmniGeneralContext>({
-    environment: {
-      ...props,
-      isShort,
-      isProxyWithManyPositions,
-      priceFormat: isShort
-        ? `${quoteToken}/${collateralToken}`
-        : `${collateralToken}/${quoteToken}`,
-      isOwner: isOpening || owner === walletAddress,
-      slippage,
-    },
-    steps: setupStepManager(),
-    tx: setupTxManager(),
-  })
-
-  useEffect(() => {
-    setContext((prev) => ({
-      ...prev,
+  const context: OmniGeneralContext = useMemo(
+    () => ({
       environment: {
-        ...prev.environment,
+        ...props,
+        isShort,
+        isProxyWithManyPositions,
+        priceFormat: isShort
+          ? `${quoteToken}/${collateralToken}`
+          : `${collateralToken}/${quoteToken}`,
         isOwner: isOpening || owner === walletAddress,
+        slippage,
         collateralBalance,
         quoteBalance,
-        slippage,
       },
       steps: setupStepManager(),
       tx: setupTxManager(),
-    }))
-  }, [
-    collateralBalance,
-    currentStep,
-    isFlowStateReady,
-    quoteBalance,
-    txDetails,
-    walletAddress,
-    slippage,
-  ])
+    }),
+    [
+      collateralBalance,
+      currentStep,
+      isFlowStateReady,
+      quoteBalance,
+      txDetails,
+      walletAddress,
+      slippage,
+    ],
+  )
 
   return <omniGeneralContext.Provider value={context}>{children}</omniGeneralContext.Provider>
 }
