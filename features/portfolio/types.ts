@@ -1,4 +1,6 @@
 import type { NetworkNames } from 'blockchain/networks'
+import type { ProductType, StrategyType } from 'features/aave/types'
+import type { LendingProtocol } from 'lendingProtocols'
 
 export type DebankTokenReply = {
   id: string
@@ -31,8 +33,50 @@ export type PortfolioAssetsToken = {
   balanceUSD: number
 }
 
+type AutomationType = {
+  enabled: boolean
+  price: number
+}
+
 export type PortfolioAssetsReply = {
   totalUSDAssets: number
   totalUSDAssets24hChange: number
   assets: PortfolioAssetsToken[]
 }
+
+export type PortfolioPosition = {
+  positionId: number
+  type: ProductType
+  network: NetworkNames
+  protocol: LendingProtocol
+  strategyType: StrategyType
+  tokens: {
+    collateral: {
+      symbol: string
+      amount: number
+      amountUSD: number
+    }
+    debt: {
+      symbol: string
+      amount: number
+      amountUSD: number
+    }
+  }
+  liquidationTokenPrice: number
+  currentTokenPrice: number
+  loanToValue: number
+  maxLoanToValue: number
+  collateralizationRatio: number
+  multiple: number
+  maxMultiple: number
+  pnl?: number
+  apy?: number
+  automations: {
+    stopLoss?: AutomationType
+    takeProfit?: AutomationType
+    autoBuy?: AutomationType
+    autoSell?: AutomationType
+  }
+}
+
+export type PortfolioPositionsReply = PortfolioPosition[]
