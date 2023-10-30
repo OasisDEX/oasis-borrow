@@ -15,7 +15,6 @@ module.exports = {
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'es', 'pt', 'cn'],
-    localeDetection: false, // set to false because of recent update https://github.com/vercel/next.js/issues/55648
   },
   ...(windowDefined
     ? {
