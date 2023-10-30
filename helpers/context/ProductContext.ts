@@ -106,10 +106,10 @@ import { followedVaults$ } from 'features/follow/api'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
-import { getMorphoPosition$ } from 'features/morpho/common/observables/getMorphoPosition'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
+import { getMorphoPosition$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import {
   createBalanceInfo$,

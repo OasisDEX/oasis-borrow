@@ -9,7 +9,7 @@ import type {
   LendingMetadata,
 } from 'features/omni-kit/contexts/OmniProductContext'
 import { getOmniBorrowishChangeVariant, getOmniBorrowPaybackMax } from 'features/omni-kit/helpers'
-import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks/useMorphoSidebarTitle'
+import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { MorphoDetailsSectionContent } from 'features/omni-kit/protocols/morpho-blue/metadata/MorphoDetailsSectionContent'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/protocols/morpho-blue/metadata/MorphoDetailsSectionFooter'
 import { OmniProductType } from 'features/omni-kit/types'
