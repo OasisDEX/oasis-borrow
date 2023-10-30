@@ -17,7 +17,6 @@ import type {
   AjnaEarnPositionAuction,
 } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { AjnaEarnPositionController } from 'features/ajna/positions/earn/controls/AjnaEarnPositionController'
-import { getAjnaEarnDefaultAction } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultAction'
 import { getAjnaEarnDefaultUiDropdown } from 'features/ajna/positions/earn/helpers/getAjnaEarnDefaultUiDropdown'
 import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
 import { useAjnaEarnFormReducto } from 'features/ajna/positions/earn/state/ajnaEarnFormReducto'
@@ -27,7 +26,7 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -76,8 +75,8 @@ export function AjnaProductController({
     ajnaPositionData,
     collateralToken,
     dpmPositionData,
-    id,
-    product,
+    positionId: id,
+    productType: product,
     quoteToken,
   })
 
@@ -186,7 +185,11 @@ export function AjnaProductController({
                     {dpmPosition.product === 'earn' && (
                       <AjnaProductContextProvider
                         formDefaults={{
-                          action: getAjnaEarnDefaultAction(flow, ajnaPosition as AjnaEarnPosition),
+                          action: (ajnaPosition as AjnaEarnPosition).collateralTokenAmount.gt(zero)
+                            ? 'claim-earn'
+                            : flow === 'open'
+                            ? 'open-earn'
+                            : 'deposit-earn',
                           uiDropdown: getAjnaEarnDefaultUiDropdown(
                             ajnaPosition as AjnaEarnPosition,
                           ),

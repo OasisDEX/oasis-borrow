@@ -76,6 +76,7 @@ import { followedVaults$ } from 'features/follow/api'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
+import { getMorphoPosition$ } from 'features/morpho/common/observables/getMorphoPosition'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
@@ -850,6 +851,14 @@ export function setupProductContext(
         .toString()}-${collateralAddress}-${quoteAddress}`,
   )
 
+  const morphoPosition$ = memoize(
+    curry(getMorphoPosition$)(context$, onEveryBlock$),
+    (collateralPrice: BigNumber, quotePrice: BigNumber, dpmPositionData: DpmPositionData) =>
+      `${dpmPositionData.vaultId}-${collateralPrice.decimalPlaces(2).toString()}-${quotePrice
+        .decimalPlaces(2)
+        .toString()}`,
+  )
+
   const identifiedTokens$ = memoize(curry(identifyTokens$)(context$, once$), (tokens: string[]) =>
     tokens.join(),
   )
@@ -886,6 +895,7 @@ export function setupProductContext(
     ilks$: ilksSupportedOnNetwork$,
     manageGuniVault$,
     manageMultiplyVault$,
+    morphoPosition$,
     openGuniVault$,
     openMultiplyVault$,
     openVault$,

@@ -1,3 +1,4 @@
+import type { NetworkNames } from 'blockchain/networks/network-names'
 import { keyBy } from 'lodash'
 import { env } from 'process'
 
@@ -51,6 +52,7 @@ const networksSet = networksWithForksAtTheBeginning.reduce((acc, network) => {
 export const enableNetworksSet = networksSet.filter((network) => network.isEnabled())
 export const networkSetByHexId = keyBy(enableNetworksSet, 'hexId')
 export const networkSetById = keyBy(enableNetworksSet, 'id')
+export const networkSetByName = keyBy(enableNetworksSet, 'name')
 
 export const getOppositeNetworkHexIdByHexId = (currentConnectedChainHexId: NetworkConfigHexId) => {
   const networkConfig = networkSetByHexId[currentConnectedChainHexId]
@@ -136,32 +138,39 @@ export const filterNetworksAccordingToSavedNetwork =
 
 export function getNetworkById(networkId: NetworkIds) {
   const base = networkSetById[networkId]
-  if (!base) {
-    throw new Error('Invalid contract chain id provided or not implemented yet')
-  }
+
+  if (!base) throw new Error('Invalid contract chain id provided or not implemented yet')
 
   const parent = base.getParentNetwork()
-  if (parent && base.isCustomFork) {
-    return parent
-  }
+
+  if (parent && base.isCustomFork) return parent
   return base
 }
 
 export function getNetworksHexIdsByHexId(networkHexId: NetworkConfigHexId): NetworkConfigHexId[] {
   const base = networkSetByHexId[networkHexId]
-  if (!base) {
-    throw new Error('Invalid contract chain id provided or not implemented yet')
-  }
+
+  if (!base) throw new Error('Invalid contract chain id provided or not implemented yet')
 
   const testnet = base.testnetHexId
   const mainnet = base.mainnetHexId
-
   const parent = base.getParentNetwork()
-
   const baseHexs = [mainnet, testnet, base.hexId, parent?.hexId].filter(
     (id): id is NetworkConfigHexId => id !== undefined,
   )
+
   return Array.from(new Set(baseHexs))
+}
+
+export function getNetworkByName(networkName: NetworkNames) {
+  const base = networkSetByName[networkName]
+
+  if (!base) throw new Error('Invalid network name provided or not implemented yet')
+
+  const parent = base.getParentNetwork()
+
+  if (parent && base.isCustomFork) return parent
+  return base
 }
 
 export function isNetworkHexIdSupported(networkId: NetworkConfigHexId) {

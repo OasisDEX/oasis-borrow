@@ -34,8 +34,8 @@ export function getAjnaHeadlineProps({
       quoteIcon && {
         header: t(`ajna.position-page.common.headline.${flow}`, {
           collateralToken,
-          id,
-          product: upperFirst(product),
+          positionId: id,
+          productType: upperFirst(product),
           quoteToken,
         }),
         tokens: [collateralIcon, quoteIcon],

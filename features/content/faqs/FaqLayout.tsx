@@ -2,7 +2,7 @@ import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans, useTranslation } from 'next-i18next'
 import type { ReactElement } from 'react'
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Grid, Heading, Link, Text } from 'theme-ui'
 
@@ -50,9 +50,9 @@ export function FaqLayout({ noTitle = false, learnMoreUrl, contents }: FaqLayout
       </Grid>
       <Box sx={{ my: 4, variant: 'boxes.separator' }} />
       <Grid sx={{ py: 1 }}>
-        {contents.map((item) =>
+        {contents.map((item, i) =>
           item.title === sectionId ? (
-            <>
+            <Fragment key={i}>
               <Box
                 sx={{
                   blockquote: {
@@ -74,7 +74,7 @@ export function FaqLayout({ noTitle = false, learnMoreUrl, contents }: FaqLayout
                 </Heading>
                 {item.body}
               </Box>
-            </>
+            </Fragment>
           ) : null,
         )}
       </Grid>

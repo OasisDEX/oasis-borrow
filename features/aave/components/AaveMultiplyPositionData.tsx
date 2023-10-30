@@ -1,15 +1,17 @@
 import type { IPosition } from '@oasisdex/dma-library'
 import { getCurrentPositionLibCallData } from 'actions/aave-like/helpers'
 import BigNumber from 'bignumber.js'
+import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import {
   DetailsSectionFooterItem,
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
+import { ContentCardLiquidationPriceV2 } from 'components/vault/detailsSection/ContentCardLiquidationPriceV2'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import type { StrategyType } from 'features/aave/types'
+import { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { displayMultiple } from 'helpers/display-multiple'
@@ -24,7 +26,6 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { CostToBorrowContentCard } from './CostToBorrowContentCard'
-import { LiquidationPriceCard } from './LiquidationPriceCard'
 import { NetValueCard } from './NetValueCard'
 
 type AaveMultiplyPositionDataProps = {
@@ -54,7 +55,12 @@ export function AaveMultiplyPositionData({
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
-
+  const {
+    triggerData: {
+      stopLossTriggerData: { stopLossLevel, isStopLossEnabled },
+    },
+    automationTriggersData: { isAutomationDataLoaded },
+  } = useAutomationContext()
   const currentPositionThings = calculateViewValuesForPosition(
     currentPosition,
     collateralTokenPrice,
@@ -89,23 +95,29 @@ export function AaveMultiplyPositionData({
         title={t('system.overview')}
         content={
           <DetailsSectionContentCardWrapper>
-            <LiquidationPriceCard
-              currentPositionThings={currentPositionThings}
-              position={currentPosition}
-              strategyType={strategyType}
-              nextPositionThings={nextPositionThings}
-              collateralTokenPrice={collateralTokenPrice}
-              debtTokenPrice={debtTokenPrice}
-              collateralTokenReserveData={collateralTokenReserveData}
-              debtTokenReserveData={debtTokenReserveData}
-              debtTokenReserveConfigurationData={debtTokenReserveConfigurationData}
+            <ContentCardLiquidationPriceV2
+              liquidationPriceInDebt={currentPositionThings.liquidationPriceInDebt}
+              afterLiquidationPriceInDebt={nextPositionThings?.liquidationPriceInDebt}
+              liquidationPriceInCollateral={currentPositionThings.liquidationPriceInCollateral}
+              afterLiquidationPriceInCollateral={nextPositionThings?.liquidationPriceInCollateral}
+              collateralPrice={collateralTokenPrice}
+              quotePrice={debtTokenPrice}
+              collateralToken={currentPosition.collateral.symbol}
+              quoteToken={currentPosition.debt.symbol}
+              isShort={strategyType === StrategyType.Short}
+              liquidationPenalty={debtTokenReserveConfigurationData.liquidationBonus}
             />
             <ContentCardLtv
               loanToValue={currentPosition.riskRatio.loanToValue}
               liquidationThreshold={currentPosition.category.liquidationThreshold}
               afterLoanToValue={nextPosition?.riskRatio.loanToValue}
               maxLoanToValue={currentPosition.category.maxLoanToValue}
-              isAutomationAvailable={isAutomationAvailable}
+              automation={{
+                isAutomationAvailable,
+                stopLossLevel,
+                isStopLossEnabled,
+                isAutomationDataLoaded,
+              }}
             />
             <CostToBorrowContentCard
               position={currentPosition}
