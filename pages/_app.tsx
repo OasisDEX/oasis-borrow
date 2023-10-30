@@ -202,5 +202,10 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
 
 export default appWithTranslation(
   App as React.ComponentType<AppProps> | React.ElementType<AppProps>,
-  nextI18NextConfig,
+  Object.assign(nextI18NextConfig, {
+    i18n: {
+      ...nextI18NextConfig.i18n,
+      localeDetection: false as const, // set to false because of recent update https://github.com/vercel/next.js/issues/55648
+    },
+  }),
 )
