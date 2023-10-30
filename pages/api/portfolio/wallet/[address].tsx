@@ -1,7 +1,6 @@
 import axios from 'axios'
 import type { DebankNetworkNames } from 'blockchain/networks/debank-network-names'
 import { DebankNetworkNameToOurs } from 'blockchain/networks/debank-network-names'
-import { portfolioAPIUrl } from 'features/portfolio/constants'
 import type { DebankTokensReply, PortfolioAssetsReply } from 'features/portfolio/types'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { object, string } from 'zod'
@@ -14,11 +13,17 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'GET':
       const params = portfolioWalletAddressSchema.parse(req.query)
+      if (!process.env.DEBANK_API_URL) {
+        return res.status(500).json({
+          error: 'Missing DEBANK_API_URL env variable',
+        })
+      }
       if (!params.address) {
         return res.status(500).json({
           error: 'Missing address query parameter',
         })
       }
+      const portfolioAPIUrl = new URL(process.env.DEBANK_API_URL)
       const reqUrl = new URL(`/v1/user/all_token_list?id=${params.address}`, portfolioAPIUrl)
       const response = await axios.get<DebankTokensReply>(reqUrl.toString(), {
         headers: {
