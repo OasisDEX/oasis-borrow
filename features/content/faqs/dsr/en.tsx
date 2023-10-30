@@ -110,8 +110,8 @@ export default () => (
         title: 'How to see my sDAI balance in my wallet?',
         body: (
           <Text>
-            If your sDAI balance is not visible in your wallet, you can import the contract. sDAI Contract Address{' '}
-            <AppLink href="https://etherscan.io/token/0x83f20f44975d03b1b09e64809b757c47f942beea" target="_blank">
+            If your sDAI balance is not visible in your wallet, you can import the contract -
+            <AppLink href="https://etherscan.io/token/0x83f20f44975d03b1b09e64809b757c47f942beea" target="_blank">sDAI Contract Address</AppLink>
           </Text>
         ),
       },
