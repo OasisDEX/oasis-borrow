@@ -4,6 +4,7 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { useAppConfig } from 'helpers/config'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import React, { useEffect } from 'react'
@@ -21,6 +22,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const [context] = useObservable(context$)
   const { chainId } = useWalletManagement()
+  const { MakerTenderly } = useAppConfig('features')
 
   const account = context?.status === 'connected' ? context.account : ''
 
@@ -30,7 +32,9 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
     }
   }, [])
 
-  const vaultHistoryCheck = generalManageVaultData?.state.vaultHistory.length || undefined
+  const vaultHistoryCheck = MakerTenderly
+    ? generalManageVaultData?.state.vaultHistory.length
+    : generalManageVaultData?.state.vaultHistory.length || undefined
 
   return (
     <WithErrorHandler error={[generalManageVaultError]}>
