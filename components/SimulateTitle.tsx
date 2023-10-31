@@ -3,6 +3,7 @@ import { getTokenGuarded } from 'blockchain/tokensMetadata'
 import { GenericTokenIcon } from 'components/GenericTokenIcon'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
 
@@ -12,10 +13,17 @@ interface SimulateTitleProps {
   token: string
   tokenSymbol?: string
   depositAmount?: BigNumber
+  description?: string
 }
 
-export function SimulateTitle({ token, tokenSymbol, depositAmount }: SimulateTitleProps) {
+export function SimulateTitle({
+  token,
+  tokenSymbol,
+  depositAmount,
+  description,
+}: SimulateTitleProps) {
   const tokenConfig = getTokenGuarded(token)
+  const { t } = useTranslation()
 
   return (
     <Flex
@@ -58,7 +66,7 @@ export function SimulateTitle({ token, tokenSymbol, depositAmount }: SimulateTit
             fontWeight: 'semiBold',
           }}
         >
-          {`In this position`}
+          {description || t('in-this-position')}
         </Text>
       </Box>
     </Flex>

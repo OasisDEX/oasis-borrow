@@ -18,11 +18,7 @@ import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
-  const {
-    AjnaSafetySwitch: ajnaSafetySwitchOn,
-    AjnaSuppressValidation: ajnaSuppressValidation,
-    AjnaReusableDPM: ajnaReusableDPMEnabled,
-  } = useAppConfig('features')
+  const { MorphoSafetySwitch, MorphoSuppressValidation } = useAppConfig('features')
 
   const {
     environment: {
@@ -134,9 +130,8 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           dupeModal: () => <>Morpho dupe modal</>,
         },
         featureToggles: {
-          safetySwitch: ajnaSafetySwitchOn,
-          suppressValidation: ajnaSuppressValidation,
-          reusableDpm: ajnaReusableDPMEnabled,
+          safetySwitch: MorphoSafetySwitch,
+          suppressValidation: MorphoSuppressValidation,
         },
       } as LendingMetadata
     case OmniProductType.Earn:
