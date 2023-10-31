@@ -121,3 +121,9 @@ export interface OmniSimulationCommon {
 export type OmniValidationItem = {
   message: { translationKey?: string; component?: JSX.Element; params?: { [key: string]: string } }
 }
+
+export interface OmniFormDefaults {
+  borrow: Partial<OmniBorrowFormState>
+  earn: Partial<OmniEarnFormState>
+  multiply: Partial<OmniMultiplyFormState>
+}

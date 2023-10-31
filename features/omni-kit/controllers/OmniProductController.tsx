@@ -1,4 +1,3 @@
-import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
 import { type NetworkNames, getNetworkByName } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
@@ -7,17 +6,15 @@ import type { DpmPositionData } from 'features/ajna/positions/common/observables
 import type { GetOmniMetadata } from 'features/omni-kit/contexts'
 import { OmniGeneralContextProvider, OmniProductContextProvider } from 'features/omni-kit/contexts'
 import { OmniLayoutController } from 'features/omni-kit/controllers'
-import { getOmniFormDefaultParams, getOmniHeadlineProps } from 'features/omni-kit/helpers'
+import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
+import { getOmniProductContextProviderData } from 'features/omni-kit/helpers/getOmniProductContextProviderData'
 import { useOmniProtocolData } from 'features/omni-kit/hooks'
 import type { ProductDataProps } from 'features/omni-kit/protocols/ajna/hooks/useAjnaOmniData'
-import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
-import { useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
-import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
-import { useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
-import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
-import { useOmniMultiplyFormReducto } from 'features/omni-kit/state/multiply'
-import type { OmniSidebarStepsSet } from 'features/omni-kit/types'
-import { OmniProductType } from 'features/omni-kit/types'
+import type {
+  OmniFormDefaults,
+  OmniProductType,
+  OmniSidebarStepsSet,
+} from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
@@ -32,11 +29,7 @@ import React, { type ReactNode } from 'react'
 export interface OmniCustomStateParams<Auction, History, Position> {
   aggregatedData: { auction: Auction; history: History }
   children: (params: {
-    formDefaults?: {
-      borrow: Partial<OmniBorrowFormState>
-      earn: Partial<OmniEarnFormState>
-      multiply: Partial<OmniMultiplyFormState>
-    }
+    formDefaults?: OmniFormDefaults
     useDynamicMetadata: GetOmniMetadata
     useTxHandler: () => () => void
   }) => ReactNode
@@ -234,53 +227,20 @@ export const OmniProductController = <Auction, History, Position>({
                             positionAuction: _aggregatedData.auction,
                             positionHistory: _aggregatedData.history as PositionHistoryEvent[],
                           }
-                          const omniFormDefaultParams = getOmniFormDefaultParams({ isOpening })
+                          const omniProductContextProviderData = getOmniProductContextProviderData({
+                            formDefaults,
+                            isOpening,
+                            positionData: _positionData,
+                            productType: castedProductType,
+                          })
 
                           return (
-                            <>
-                              {castedProductType === OmniProductType.Borrow && (
-                                <OmniProductContextProvider
-                                  {...omniProductContextProviderCommons}
-                                  formDefaults={{
-                                    ...omniFormDefaultParams.borrow,
-                                    ...formDefaults.borrow,
-                                  }}
-                                  formReducto={useOmniBorrowFormReducto}
-                                  position={positionData as LendingPosition}
-                                  productType={castedProductType}
-                                >
-                                  <OmniLayoutController txHandler={useTxHandler} />
-                                </OmniProductContextProvider>
-                              )}
-                              {castedProductType === OmniProductType.Earn && (
-                                <OmniProductContextProvider
-                                  {...omniProductContextProviderCommons}
-                                  formDefaults={{
-                                    ...omniFormDefaultParams.earn,
-                                    ...formDefaults.earn,
-                                  }}
-                                  formReducto={useOmniEarnFormReducto}
-                                  position={positionData as SupplyPosition}
-                                  productType={castedProductType}
-                                >
-                                  <OmniLayoutController txHandler={useTxHandler} />
-                                </OmniProductContextProvider>
-                              )}
-                              {castedProductType === OmniProductType.Multiply && (
-                                <OmniProductContextProvider
-                                  {...omniProductContextProviderCommons}
-                                  formDefaults={{
-                                    ...omniFormDefaultParams.multiply,
-                                    ...formDefaults.multiply,
-                                  }}
-                                  formReducto={useOmniMultiplyFormReducto}
-                                  position={positionData as LendingPosition}
-                                  productType={castedProductType}
-                                >
-                                  <OmniLayoutController txHandler={useTxHandler} />
-                                </OmniProductContextProvider>
-                              )}
-                            </>
+                            <OmniProductContextProvider
+                              {...omniProductContextProviderCommons}
+                              {...omniProductContextProviderData}
+                            >
+                              <OmniLayoutController txHandler={useTxHandler} />
+                            </OmniProductContextProvider>
                           )
                         },
                       })}
