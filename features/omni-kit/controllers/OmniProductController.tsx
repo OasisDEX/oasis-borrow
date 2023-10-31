@@ -146,7 +146,7 @@ export const OmniProductController = <Auction, History, Position>({
                 { collateralDigits, collateralPrecision, quoteDigits, quotePrecision },
                 { slippage },
               ]) => {
-                const productType = dpmPosition.product as OmniProductType
+                const castedProductType = dpmPosition.product as OmniProductType
 
                 return (
                   <>
@@ -154,7 +154,7 @@ export const OmniProductController = <Auction, History, Position>({
                       title="seo.title-product-w-tokens"
                       titleParams={{
                         product: t(seoTags.productKey, {
-                          productType: upperFirst(productType),
+                          productType: upperFirst(castedProductType),
                         }),
                         protocol: upperFirst(protocol),
                         token1: dpmPosition.collateralToken,
@@ -183,7 +183,7 @@ export const OmniProductController = <Auction, History, Position>({
                       network={network}
                       owner={dpmPosition.user}
                       positionId={positionId}
-                      productType={productType}
+                      productType={castedProductType}
                       protocol={protocol}
                       quoteAddress={dpmPosition.quoteTokenAddress}
                       quoteBalance={quoteBalance}
@@ -193,7 +193,7 @@ export const OmniProductController = <Auction, History, Position>({
                       quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                       quoteToken={dpmPosition.quoteToken}
                       slippage={slippage}
-                      steps={steps[productType][isOpening ? 'setup' : 'manage']}
+                      steps={steps[castedProductType][isOpening ? 'setup' : 'manage']}
                     >
                       {controller({
                         aggregatedData: _aggregatedData,
