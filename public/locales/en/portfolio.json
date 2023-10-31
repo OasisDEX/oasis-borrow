@@ -1,5 +1,6 @@
 {
   "portfolio-view": "This is a portfolio view of {{address}}.",
   "wallet-data": "Wallet data:",
-  "positions-data": "Positions data:"
+  "positions-data": "Positions data:",
+  "view-on-etherscan": "View on Etherscan"
 }

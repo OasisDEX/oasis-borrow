@@ -313,6 +313,10 @@ export const theme = themeTypeSafe({
       maxWidth: '1408px',
       px: '16px',
     },
+    portfolio: {
+      maxWidth: '1408px',
+      px: '16px',
+    },
   },
   cards: {
     primary: {
