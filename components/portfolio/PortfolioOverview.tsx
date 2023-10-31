@@ -60,7 +60,14 @@ export const PortfolioOverview = ({
         <PortfolioOverviewItem
           header={tPortfolio('total-supplied')}
           value={
-            <Heading variant="header4">
+            <Heading
+              variant="header4"
+              sx={{
+                backgroundImage: 'linear-gradient(90deg, #007DA3 0%, #E7A77F 50%, #E97047 100%)',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
               ${formatAmount(new BigNumber(overviewData.suppliedUsdValue), 'USD')}
             </Heading>
           }

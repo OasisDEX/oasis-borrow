@@ -41,7 +41,7 @@ export default function PortfolioView({ address }: { address: string }) {
           overviewData={{
             walletBalanceUsdValue: 20859930.02,
             suppliedUsdValue: 1200621,
-            suppliedPercentageChange: -5,
+            suppliedPercentageChange: 10.85,
             borrowedUsdValue: 10000.22,
             borrowedPercentageChange: 0.98,
           }}
