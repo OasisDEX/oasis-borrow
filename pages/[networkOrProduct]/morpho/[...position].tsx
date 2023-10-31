@@ -6,8 +6,8 @@ import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { OmniProductController } from 'features/omni-kit/controllers'
 import { morphoOmniSteps, morphoSeoTags } from 'features/omni-kit/protocols/morpho-blue/constants'
-import { MorphoProductController } from 'features/omni-kit/protocols/morpho-blue/controllers'
 import { useMorphoOmniData } from 'features/omni-kit/protocols/morpho-blue/hooks'
+import { MorphoOmniCustomStateProvider } from 'features/omni-kit/protocols/morpho-blue/state'
 import type { MorphoPositionAuction } from 'features/omni-kit/protocols/morpho-blue/types'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import type { OmniProductPage } from 'features/omni-kit/types'
@@ -36,7 +36,7 @@ function MorphoPositionPage(props: MorphoPositionPageProps) {
           <GasEstimationContextProvider>
             <OmniProductController<MorphoPositionAuction, PositionHistoryEvent[], MorphoPosition>
               {...props}
-              controller={MorphoProductController}
+              customState={MorphoOmniCustomStateProvider}
               protocol={LendingProtocol.MorphoBlue}
               protocolHook={useMorphoOmniData}
               seoTags={morphoSeoTags}

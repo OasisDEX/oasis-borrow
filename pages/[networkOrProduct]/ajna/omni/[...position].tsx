@@ -11,8 +11,8 @@ import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedH
 import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { OmniProductController } from 'features/omni-kit/controllers'
 import { ajnaOmniSteps } from 'features/omni-kit/protocols/ajna/constants'
-import { AjnaOmniProductController } from 'features/omni-kit/protocols/ajna/controllers/AjnaOmniProductController'
 import { useAjnaOmniData } from 'features/omni-kit/protocols/ajna/hooks/useAjnaOmniData'
+import { AjnaOmniCustomStateProvider } from 'features/omni-kit/protocols/ajna/state/AjnaOmniCustomStateProvider'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import type { OmniProductPage } from 'features/omni-kit/types'
 import { LendingProtocol } from 'lendingProtocols'
@@ -39,7 +39,7 @@ function AjnaPositionPage(props: AjnaPositionPageProps) {
             AjnaGenericPosition
           >
             {...props}
-            controller={AjnaOmniProductController}
+            customState={AjnaOmniCustomStateProvider}
             isOracless={isOracless}
             protocol={LendingProtocol.Ajna}
             protocolHook={useAjnaOmniData}
