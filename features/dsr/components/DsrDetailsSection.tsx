@@ -22,7 +22,9 @@ interface CustomOverviewTitleProps {
 const CustomOverviewTitle: FC<CustomOverviewTitleProps> = ({ token, title }) => (
   <DetailsSectionTitle>
     <TokensGroup tokens={[token]} forceSize={32} sx={{ mr: 2, flexShrink: 0 }} />
-    <Heading as="p">{title}</Heading>
+    <Heading as="p" variant="boldParagraph2">
+      {title}
+    </Heading>
   </DetailsSectionTitle>
 )
 
