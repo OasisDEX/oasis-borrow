@@ -1,5 +1,6 @@
 import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
 import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
+import { PortfolioOverview } from 'components/portfolio/PortfolioOverview'
 import type { PortfolioAssetsReply } from 'features/portfolio/types'
 import { useRedirect } from 'helpers/useRedirect'
 import type { GetServerSidePropsContext } from 'next'
@@ -36,6 +37,15 @@ export default function PortfolioView({ address }: { address: string }) {
     <PortfolioLayout>
       <Box sx={{ width: '100%' }}>
         <PortfolioHeader address={address} />
+        <PortfolioOverview
+          overviewData={{
+            walletBalanceUsdValue: 20859930.02,
+            suppliedUsdValue: 1200621,
+            suppliedPercentageChange: -5,
+            borrowedUsdValue: 10000.22,
+            borrowedPercentageChange: 0.98,
+          }}
+        />
         <Flex sx={{ flexDirection: 'column' }}>
           <Box>
             <h3>{tPortfolio('portfolio-view', { address })}</h3>

@@ -1,12 +1,13 @@
 import Avatar from 'boring-avatars'
 import { formatAddress } from 'helpers/formatters/format'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Flex, Text } from 'theme-ui'
 
 export const PortfolioHeader = ({ address }: { address: string }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
   return (
-    <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+    <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 5 }}>
       <Flex sx={{ alignItems: 'center' }}>
         <Avatar
           size={48}
