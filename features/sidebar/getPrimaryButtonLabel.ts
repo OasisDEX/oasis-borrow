@@ -1,3 +1,4 @@
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import type { PrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
@@ -85,7 +86,8 @@ export function getPrimaryButtonLabel({
   flow,
   canTransition = true,
   isClosedVaultPanelVisible = false,
-}: PrimaryButtonLabelParams & { flow: SidebarFlow }): string {
+  vaultType,
+}: PrimaryButtonLabelParams & { flow: SidebarFlow; vaultType: VaultType }): string {
   const { t } = useTranslation()
   const allowanceToken =
     insufficientDaiAllowance || flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
@@ -95,8 +97,6 @@ export function getPrimaryButtonLabel({
   switch (stage) {
     case 'editing':
     case 'stopLossEditing':
-    case 'collateralEditing':
-    case 'daiEditing':
     case 'adjustPosition':
     case 'otherActions':
     case 'manageWaitingForConfirmation':
@@ -107,7 +107,6 @@ export function getPrimaryButtonLabel({
         insufficientAllowance,
         flow,
       })
-
       return t(translationKey, { token: allowanceToken })
     case 'proxyWaitingForConfirmation':
       return t('create-proxy-btn')
@@ -167,29 +166,34 @@ export function getPrimaryButtonLabel({
     case 'manageWaitingForApproval':
     case 'manageInProgress':
       return t('changing-vault')
-    case 'multiplyTransitionEditing':
-      return canTransition
-        ? t('borrow-to-multiply.button-start')
-        : t('borrow-to-multiply.button-not-supported', { token: token?.toUpperCase() })
-    case 'multiplyTransitionWaitingForConfirmation':
-      return t('borrow-to-multiply.button-confirm')
-    case 'multiplyTransitionInProgress':
-      return t('borrow-to-multiply.button-progress')
-    case 'multiplyTransitionFailure':
-      return t('borrow-to-multiply.button-failure')
-    case 'multiplyTransitionSuccess':
-      return t('borrow-to-multiply.button-success')
     case 'borrowTransitionEditing':
+      if (vaultType === VaultType.Borrow) {
+        return canTransition
+          ? t('borrow-to-multiply.button-start')
+          : t('borrow-to-multiply.button-not-supported', { token: token?.toUpperCase() })
+      }
       return canTransition
         ? t('multiply-to-borrow.button-start')
         : t('multiply-to-borrow.button-not-supported', { token: token?.toUpperCase() })
     case 'borrowTransitionWaitingForConfirmation':
+      if (vaultType === VaultType.Borrow) {
+        return t('borrow-to-multiply.button-confirm')
+      }
       return t('multiply-to-borrow.button-confirm')
     case 'borrowTransitionInProgress':
+      if (vaultType === VaultType.Borrow) {
+        return t('borrow-to-multiply.button-progress')
+      }
       return t('multiply-to-borrow.button-progress')
     case 'borrowTransitionFailure':
+      if (vaultType === VaultType.Borrow) {
+        return t('borrow-to-multiply.button-failure')
+      }
       return t('multiply-to-borrow.button-failure')
     case 'borrowTransitionSuccess':
+      if (vaultType === VaultType.Borrow) {
+        return t('borrow-to-multiply.button-success')
+      }
       return t('multiply-to-borrow.button-success')
     default:
       throw new UnreachableCaseError(stage)

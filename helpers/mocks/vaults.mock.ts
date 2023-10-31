@@ -1,8 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { MakerVaultType } from 'blockchain/calls/vaultResolver'
 import type { IlkData } from 'blockchain/ilks.types'
-import { createInstiVault$ } from 'blockchain/instiVault'
-import type { InstiVault } from 'blockchain/instiVault.types'
 import type { OraclePriceData } from 'blockchain/prices.types'
 import { createVault$ } from 'blockchain/vaults'
 import type { Vault } from 'blockchain/vaults.types'
@@ -31,14 +29,6 @@ export interface MockVaultProps {
   id?: BigNumber
 }
 
-interface MockInstiVaultProps {
-  _charterNib$?: Observable<BigNumber>
-  _charterPeace$?: Observable<BigNumber>
-  _charterUline$?: Observable<BigNumber>
-  minActiveColRatio?: BigNumber
-  originationFee?: BigNumber
-}
-
 interface MockVaultOptions {
   atRiskLevelWarning?: boolean
   atRiskLevelDanger?: boolean
@@ -57,24 +47,18 @@ export const defaultCollateral = new BigNumber('500')
 
 type MockVaults = {
   vault$: Observable<Vault>
-  instiVault$: Observable<InstiVault>
 }
 
 export function mockVault$({
   _cdpManagerUrns$,
   _oraclePriceData$,
   _ilkData$,
-  _charterNib$,
-  _charterPeace$,
-  _charterUline$,
   priceInfo,
   id = one,
   debt,
   collateral,
   ilk,
-  minActiveColRatio,
-  originationFee,
-}: MockVaultProps & MockInstiVaultProps = {}): MockVaults {
+}: MockVaultProps = {}): MockVaults {
   const token = ilk ? ilk.split('-')[0] : 'WBTC'
 
   function oraclePriceData$() {
@@ -122,18 +106,6 @@ export function mockVault$({
     )
   }
 
-  function charterNib$() {
-    return originationFee ? of(originationFee) : _charterNib$ || of(new BigNumber('0.01'))
-  }
-
-  function charterPeace$() {
-    return minActiveColRatio ? of(minActiveColRatio) : _charterPeace$ || of(new BigNumber(1))
-  }
-
-  function charterUline$() {
-    return _charterUline$ || of(new BigNumber(1))
-  }
-
   return {
     vault$: createVault$(
       () =>
@@ -153,31 +125,6 @@ export function mockVault$({
         account: defaultController,
         status: 'connected',
       }),
-      id,
-    ),
-    instiVault$: createInstiVault$(
-      () =>
-        of({
-          urnAddress: '0xUrnAddress',
-          controller: '0xVaultController',
-          ilk: ilk || 'WBTC-A',
-          owner: '0xProxyAddress',
-          type: MakerVaultType.STANDARD,
-        }),
-      vatUrns$,
-      vatGem$,
-      ilkData$,
-      oraclePriceData$,
-      mockIlkToToken$,
-      mockContextConnected$({
-        account: defaultController,
-        status: 'connected',
-      }),
-      {
-        nib$: charterNib$,
-        peace$: charterPeace$,
-        uline$: charterUline$,
-      },
       id,
     ),
   }

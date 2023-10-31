@@ -5,6 +5,7 @@ import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaul
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { SidebarManageGuniVaultEditingState } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVaultEditingState'
 import { SidebarManageGuniVaultManageStage } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVaultManageStage'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -98,7 +99,11 @@ export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ flow, ...primaryButtonLabelParams }),
+      label: getPrimaryButtonLabel({
+        flow,
+        ...primaryButtonLabelParams,
+        vaultType: VaultType.Earn,
+      }),
       hidden: stage === 'adjustPosition',
       disabled: !canProgress || !accountIsConnected,
       isLoading: isLoadingStage,
