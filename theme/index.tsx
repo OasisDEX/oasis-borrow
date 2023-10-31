@@ -313,6 +313,10 @@ export const theme = themeTypeSafe({
       maxWidth: '1408px',
       px: '16px',
     },
+    portfolio: {
+      maxWidth: '1408px',
+      px: '16px',
+    },
   },
   cards: {
     primary: {
@@ -1117,6 +1121,45 @@ export const theme = themeTypeSafe({
       borderColor: 'neutral20',
       height: '1px',
       width: '100%',
+    },
+    tagDefault: {
+      variant: 'text.paragraph4',
+      borderRadius: 'round',
+      px: 3,
+      py: 1,
+      display: 'block',
+      whiteSpace: 'nowrap',
+      alignSelf: 'baseline',
+    },
+    tagPrimary: {
+      variant: 'boxes.tagDefault',
+      bg: 'primary100',
+      color: 'neutral10',
+    },
+    tagSecondary: {
+      variant: 'boxes.tagDefault',
+      bg: 'secondary10',
+      color: 'primary30',
+    },
+    tagWarning: {
+      variant: 'boxes.tagDefault',
+      bg: 'warning10',
+      color: 'warning100',
+    },
+    tagCritical: {
+      variant: 'boxes.tagDefault',
+      bg: 'critical10',
+      color: 'critical100',
+    },
+    tagSuccess: {
+      variant: 'boxes.tagDefault',
+      bg: 'success10',
+      color: 'success100',
+    },
+    tagInteractive: {
+      variant: 'boxes.tagDefault',
+      bg: 'interactive10',
+      color: 'interactive100',
     },
   },
 })

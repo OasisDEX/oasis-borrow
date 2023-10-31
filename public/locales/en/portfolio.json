@@ -1,5 +1,12 @@
 {
-  "portfolio-view": "This is a portfolio view of {{address}}.",
   "wallet-data": "Wallet data:",
-  "positions-data": "Positions data:"
+  "positions-data": "Positions data:",
+  "view-on-etherscan": "View on Etherscan",
+  "wallet-balance": "Wallet Balance",
+  "view-assets": "View Assets",
+  "total-supplied": "Total Supplied",
+  "total-borrowed": "Total Borrowed",
+  "available-to-migrate": "Available to Migrate",
+  "coming-soon": "Coming soon",
+  "past-week": "{{percentage}}% Past Week"
 }

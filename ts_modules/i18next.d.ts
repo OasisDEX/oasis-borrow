@@ -6,7 +6,8 @@ import type {
   InitOptions as OriginalInitOptions,
   TFunction as OriginalTFunction,
 } from 'i18next'
-import type engLocales from 'public/locales/en/common.json'
+import type engCommonLocales from 'public/locales/en/common.json'
+import type engPortfolioLocales from 'public/locales/en/portfolio.json'
 import type { ReportNamespaces } from 'react-i18next';
 
 type AcceptAnyString<T> = T | (string & Record<never, never>);
@@ -18,8 +19,9 @@ type PathsToProps<T, V> = T extends V ? "" : {
 type Dot<T extends string, U extends string> =
 "" extends U ? T : `${T}.${U}`
 
-type LanguageDotNotationKeys = AcceptAnyString<PathsToProps<typeof engLocales, string>>
-type TranslationType = (key: LanguageDotNotationKeys, translationData?: Record<string, any>) => string & string[]
+type CommonLanguageDotNotationKeys = AcceptAnyString<PathsToProps<typeof engCommonLocales, string>>
+type PortfolioLanguageDotNotationKeys = AcceptAnyString<PathsToProps<typeof engPortfolioLocales, string>>
+type TranslationType = (key: CommonLanguageDotNotationKeys | PortfolioLanguageDotNotationKeys, translationData?: Record<string, any>) => string & string[]
 declare module 'next-i18next' {
   export function useTranslation(): {
     t: TranslationType
