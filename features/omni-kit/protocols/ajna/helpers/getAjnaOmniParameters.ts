@@ -22,8 +22,8 @@ import {
   ajnaOmniClaimEarn,
 } from 'features/omni-kit/protocols/ajna/actions/earn'
 import { ajnaActionOpenMultiply } from 'features/omni-kit/protocols/ajna/actions/multiply'
+import type { OmniFormState, OmniGenericPosition } from 'features/omni-kit/types'
 import {
-  type OmniFormState,
   OmniBorrowFormAction,
   OmniEarnFormAction,
   OmniMultiplyFormAction,
@@ -67,7 +67,7 @@ export async function getAjnaOmniParameters({
   slippage,
   state,
   walletAddress,
-}: AjnaTxHandlerInput): Promise<AjnaStrategy<AjnaGenericPosition> | undefined> {
+}: AjnaTxHandlerInput): Promise<AjnaStrategy<OmniGenericPosition> | undefined> {
   const defaultPromise = Promise.resolve(undefined)
 
   const { action, dpmAddress } = state
