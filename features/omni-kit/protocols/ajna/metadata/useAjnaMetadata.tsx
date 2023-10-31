@@ -61,16 +61,12 @@ import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyAction
 
 export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   const { t } = useTranslation()
-  const {
-    AjnaSafetySwitch: ajnaSafetySwitchOn,
-    AjnaSuppressValidation: ajnaSuppressValidation,
-    AjnaReusableDPM: ajnaReusableDPMEnabled,
-  } = useAppConfig('features')
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn, AjnaSuppressValidation: ajnaSuppressValidation } =
+    useAppConfig('features')
 
   const featureToggles = {
     safetySwitch: ajnaSafetySwitchOn,
     suppressValidation: ajnaSuppressValidation,
-    reusableDpm: ajnaReusableDPMEnabled,
   }
 
   const gasEstimation = useGasEstimationContext()

@@ -83,7 +83,7 @@ export function OmniFormView({
       validations: { isFormValid, isFormFrozen, hasErrors },
       filters: { flowStateFilter, consumedProxyFilter },
       elements: { dupeModal },
-      featureToggles: { suppressValidation, safetySwitch, reusableDpm },
+      featureToggles: { suppressValidation, safetySwitch },
     },
   } = useOmniProductContext(productType)
 
@@ -103,27 +103,25 @@ export function OmniFormView({
       quoteToken,
       state,
     }),
-    ...(reusableDpm && {
-      filterConsumedProxy: (events) => events.every(consumedProxyFilter),
-      onProxiesAvailable: (events, dpmAccounts) => {
-        const filteredEvents = events.filter(flowStateFilter)
+    filterConsumedProxy: (events) => events.every(consumedProxyFilter),
+    onProxiesAvailable: (events, dpmAccounts) => {
+      const filteredEvents = events.filter(flowStateFilter)
 
-        if (!hasDupePosition && filteredEvents.length) {
-          setHasDupePosition(true)
-          openModal(dupeModal, {
-            chainId: context?.chainId,
-            collateralAddress,
-            collateralToken,
-            dpmAccounts,
-            events: filteredEvents,
-            productType,
-            quoteAddress,
-            quoteToken,
-            walletAddress,
-          })
-        }
-      },
-    }),
+      if (!hasDupePosition && filteredEvents.length) {
+        setHasDupePosition(true)
+        openModal(dupeModal, {
+          chainId: context?.chainId,
+          collateralAddress,
+          collateralToken,
+          dpmAccounts,
+          events: filteredEvents,
+          productType,
+          quoteAddress,
+          quoteToken,
+          walletAddress,
+        })
+      }
+    },
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),
   })
