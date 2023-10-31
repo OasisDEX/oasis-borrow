@@ -23,6 +23,8 @@
   "account-support": "Support",
   "account-terms": "Terms",
   "activity": "Activity",
+  "in-this-position": "In this position",
+  "in-your-wallet": "In your wallet",
   "and": "and",
   "address": "Address",
   "address-invalid": "Address not found",
@@ -2579,9 +2581,12 @@
   "dsr": {
     "details": {
       "overview": "Overview",
+      "dsr-overview": "DAI in the DSR Overview",
+      "sdai-overview": "sDAI in your wallet",
       "total-deposited-dai": "Total Deposited Dai",
       "current-yield": "Current Yield",
-      "current-dai-savings-rate": "Current Dai Savings Rate"
+      "current-dai-savings-rate": "Current Dai Savings Rate",
+      "sdai-balance": "sDAI token balance"
     },
     "titles": {
       "manage": "Manage Your DSR strategy",

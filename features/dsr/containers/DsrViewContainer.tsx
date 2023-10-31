@@ -7,7 +7,7 @@ import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Container } from 'theme-ui'
 
 import { DsrView } from './DsrView'
@@ -22,6 +22,11 @@ export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
   const [depositState, depositStateError] = useObservable(resolvedDsrDeposit$)
   const [context, contextError] = useObservable(context$)
   const [pots, potsError] = useObservable(resolvedDsr$)
+  const { tokenPriceUSD$ } = useProductContext()
+
+  const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['DAI', 'SDAI']), [])
+
+  const [tokenPricesData, tokenPricesError] = useObservable(_tokenPriceUSD$)
 
   const apy = potDsr
     ? getYearlyRate(potDsr || zero)
@@ -32,12 +37,12 @@ export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
 
   return (
     <Container variant="vaultPageContainer">
-      <WithErrorHandler error={[depositStateError, potsError, contextError]}>
+      <WithErrorHandler error={[depositStateError, potsError, contextError, tokenPricesError]}>
         <WithLoadingIndicator
-          value={[depositState, pots, context]}
+          value={[depositState, pots, context, tokenPricesData]}
           customLoader={<VaultContainerSpinner />}
         >
-          {([_depositState, _pots, _context]) => (
+          {([_depositState, _pots, _context, tickers]) => (
             <DsrView
               dsrOverview={_pots.pots.dsr}
               dsrDepositState={_depositState}
@@ -46,6 +51,8 @@ export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
               potTotalValueLocked={potTotalValueLocked}
               apy={apy.times(100)}
               dsr={dsr}
+              sdaiPrice={tickers['SDAI']}
+              daiPrice={tickers['DAI']}
             />
           )}
         </WithLoadingIndicator>
