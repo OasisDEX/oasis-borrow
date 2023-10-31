@@ -1,33 +1,31 @@
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
-import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import {
+  OmniFaqController,
+  OmniHistoryController,
+  OmniOverviewController,
+} from 'features/omni-kit/controllers'
+import { OmniBorrowFormController } from 'features/omni-kit/controllers/borrow'
+import { OmniEarnFormController } from 'features/omni-kit/controllers/earn'
+import { OmniMultiplyFormController } from 'features/omni-kit/controllers/multiply'
 import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
+import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react'
 import React from 'react'
-import { Box, Container } from 'theme-ui'
+import { Box, Container, Grid } from 'theme-ui'
 
-interface OmniPositionViewProps {
-  headlineDetails?: HeadlineDetailsProp[]
-  tabs: {
-    position: ReactNode
-    history: ReactNode
-    info: ReactNode
-  }
-}
-
-export function OmniPositionView({
-  headlineDetails,
-  tabs: { position, history, info },
-}: OmniPositionViewProps) {
-  const { t } = useTranslation()
-  const { contextIsLoaded, walletAddress } = useAccount()
+export function OmniLayoutController({ txHandler }: { txHandler: () => () => void }) {
   const { ProxyReveal: proxyReveal } = useAppConfig('features')
+
+  const { t } = useTranslation()
+
+  const { contextIsLoaded, walletAddress } = useAccount()
+
   const {
     environment: {
       collateralIcon,
@@ -47,6 +45,12 @@ export function OmniPositionView({
       quoteToken,
     },
   } = useOmniGeneralContext()
+  const {
+    dynamicMetadata: {
+      elements: { faq },
+      values: { headlineDetails },
+    },
+  } = useOmniProductContext(productType)
 
   return (
     <Container variant="vaultPageContainerStatic">
@@ -56,26 +60,21 @@ export function OmniPositionView({
         </Box>
       )}
       <VaultHeadline
-        header=""
         {...getOmniHeadlineProps({
+          collateralIcon,
           collateralToken,
           positionId,
           productType,
-          quoteToken,
-          collateralIcon,
-          quoteIcon,
           protocol,
+          quoteIcon,
+          quoteToken,
         })}
-        {...(!isOpening && { shareButton: true })}
         details={[
           ...(headlineDetails || []),
           ...(!isOracless
             ? [
                 {
-                  // TODO to be converted to omni translation
-                  label: t('ajna.position-page.common.headline.current-market-price', {
-                    collateralToken,
-                  }),
+                  label: t('omni-kit.headline.details.current-market-price'),
                   value: `${formatCryptoBalance(
                     isShort ? quotePrice.div(collateralPrice) : collateralPrice.div(quotePrice),
                   )} ${priceFormat}`,
@@ -83,11 +82,10 @@ export function OmniPositionView({
               ]
             : []),
         ]}
-        handleClick={
-          proxyReveal
-            ? () => console.info(`DPM proxy: ${dpmProxy?.toLowerCase()}, DPM owner: ${owner}`)
-            : undefined
-        }
+        handleClick={() => {
+          if (proxyReveal)
+            console.info(`DPM proxy: ${dpmProxy?.toLowerCase()}, DPM owner: ${owner}`)
+        }}
       />
       <TabBar
         variant="underline"
@@ -95,19 +93,32 @@ export function OmniPositionView({
           {
             value: isOpening ? 'setup' : 'overview',
             label: t(isOpening ? 'setup' : 'system.overview'),
-            content: <>{position}</>,
+            content: (
+              <Grid variant="vaultContainer">
+                <OmniOverviewController />
+                {
+                  {
+                    [OmniProductType.Borrow]: <OmniBorrowFormController txHandler={txHandler} />,
+                    [OmniProductType.Earn]: <OmniEarnFormController txHandler={txHandler} />,
+                    [OmniProductType.Multiply]: (
+                      <OmniMultiplyFormController txHandler={txHandler} />
+                    ),
+                  }[productType]
+                }
+              </Grid>
+            ),
           },
           {
             value: 'position-info',
             label: t('system.position-info'),
-            content: <>{info}</>,
+            content: <OmniFaqController content={{ en: faq }} />,
           },
           ...(!isOpening
             ? [
                 {
                   value: 'history',
                   label: t('system.history'),
-                  content: <>{history}</>,
+                  content: <OmniHistoryController />,
                 },
               ]
             : []),

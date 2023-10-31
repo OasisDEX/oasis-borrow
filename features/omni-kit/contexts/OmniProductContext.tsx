@@ -25,7 +25,14 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import type { Dispatch, FC, PropsWithChildren, SetStateAction } from 'react'
+import type {
+  Dispatch,
+  FC,
+  PropsWithChildren,
+  ReactElement,
+  ReactNode,
+  SetStateAction,
+} from 'react'
 import React, { useContext, useMemo, useState } from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
@@ -39,71 +46,67 @@ interface OmniFilters {
   consumedProxyFilter: (event: CreatePositionEvent) => boolean
 }
 
-export type LendingMetadata = {
-  validations: OmniValidations
-  notifications: DetailsSectionNotificationItem[]
-  handlers: {
-    customReset: () => void
-  }
-  values: {
-    debtMin: BigNumber
-    debtMax: BigNumber
-    interestRate: BigNumber
-    isFormEmpty: boolean
-    afterAvailableToBorrow: BigNumber | undefined
-    afterPositionDebt: BigNumber | undefined
-    netBorrowCost: BigNumber
-    afterBuyingPower: BigNumber | undefined
-    collateralMax: BigNumber
-    paybackMax: BigNumber
-    shouldShowDynamicLtv: boolean
-    changeVariant: 'positive' | 'negative'
-    sidebarTitle: string
-    footerColumns: number
-  }
-  elements: {
-    overviewBanner: JSX.Element | undefined
-    riskSidebar: JSX.Element
-    overviewContent: JSX.Element
-    overviewFooter: JSX.Element
-    highlighterOrderInformation: JSX.Element | undefined
-    dupeModal: (props: OmniDupePositionModalProps) => JSX.Element
-  }
-  filters: OmniFilters
+interface CommonMetadata {
   featureToggles: OmniFeatureToggles
+  filters: OmniFilters
+  notifications: DetailsSectionNotificationItem[]
+  validations: OmniValidations
 }
 
-export type SupplyMetadata = {
-  validations: OmniValidations
-  notifications: DetailsSectionNotificationItem[]
-  handlers: {
+interface CommonMetadataHandlers {
+  customReset: () => void
+}
+interface CommonMetadataValues {
+  footerColumns: number
+  headlineDetails?: HeadlineDetailsProp[]
+  interestRate: BigNumber
+  isFormEmpty: boolean
+  sidebarTitle: string
+}
+interface CommonMetadataElements {
+  dupeModal: (props: OmniDupePositionModalProps) => ReactElement
+  faq: ReactNode
+  overviewBanner?: ReactNode
+  overviewContent: ReactNode
+  overviewFooter: ReactNode
+  riskSidebar: ReactNode
+}
+
+export type LendingMetadata = CommonMetadata & {
+  handlers: CommonMetadataHandlers
+  values: CommonMetadataValues & {
+    afterAvailableToBorrow: BigNumber | undefined
+    afterBuyingPower: BigNumber | undefined
+    afterPositionDebt: BigNumber | undefined
+    changeVariant: 'positive' | 'negative'
+    collateralMax: BigNumber
+    debtMax: BigNumber
+    debtMin: BigNumber
+    netBorrowCost: BigNumber
+    paybackMax: BigNumber
+    shouldShowDynamicLtv: boolean
+  }
+  elements: CommonMetadataElements & {
+    highlighterOrderInformation: ReactNode
+  }
+}
+
+export type SupplyMetadata = CommonMetadata & {
+  handlers: CommonMetadataHandlers & {
     txSuccessEarnHandler: () => void
-    customReset: () => void
   }
-  values: {
-    interestRate: BigNumber
-    isFormEmpty: boolean
-    sidebarTitle: string
-    footerColumns: number
-    headlineDetails: HeadlineDetailsProp[]
-    extraDropdownItems: SidebarSectionHeaderSelectItem[]
+  values: CommonMetadataValues & {
     earnWithdrawMax: BigNumber
+    extraDropdownItems: SidebarSectionHeaderSelectItem[]
   }
-  elements: {
-    overviewBanner: JSX.Element | undefined
-    riskSidebar: JSX.Element
-    overviewContent: JSX.Element
-    overviewFooter: JSX.Element
-    dupeModal: (props: OmniDupePositionModalProps) => JSX.Element
-    extraEarnInput: JSX.Element
-    extraEarnInputDeposit: JSX.Element
-    extraEarnInputWithdraw: JSX.Element
-    earnFormOrder: JSX.Element
+  elements: CommonMetadataElements & {
+    earnExtraUiDropdownContent: ReactNode
+    earnFormOrder: ReactNode
     earnFormOrderAsElement: FC<OmniIsCachedPosition>
-    earnExtraUiDropdownContent: JSX.Element
+    extraEarnInput: ReactNode
+    extraEarnInputDeposit: ReactNode
+    extraEarnInputWithdraw: ReactNode
   }
-  filters: OmniFilters
-  featureToggles: OmniFeatureToggles
 }
 
 export type OmniMetadataParams =

@@ -37,7 +37,6 @@ export const AjnaOmniCustomStateProvider: FC<MorphoOmniCustomStateProviderProps>
   }
 
   return (
-    // TO BE REMOVED / REPLACED ONCE morpho tx handler will be ready
     <AjnaCustomStateContextProvider
       price={
         dpmPosition.product === OmniProductType.Earn
