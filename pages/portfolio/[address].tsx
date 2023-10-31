@@ -1,7 +1,7 @@
 import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
 import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
 import { PortfolioOverview } from 'components/portfolio/PortfolioOverview'
-import type { PortfolioAssetsReply } from 'features/portfolio/types'
+import type { PortfolioAssetsReply, PortfolioPositionsReply } from 'features/portfolio/types'
 import { useRedirect } from 'helpers/useRedirect'
 import type { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
@@ -27,7 +27,7 @@ export default function PortfolioView({ address }: { address: string }) {
       replace('/')
     }
   }, [address, replace])
-  const { data: portfolioPositionsData } = useFetch<PortfolioAssetsReply>(
+  const { data: portfolioPositionsData = { positions: [] } } = useFetch<PortfolioPositionsReply>(
     `/api/portfolio/positions/${address}`,
   )
   const { data: portfolioWalletData } = useFetch<PortfolioAssetsReply>(
@@ -47,9 +47,6 @@ export default function PortfolioView({ address }: { address: string }) {
           }}
         />
         <Flex sx={{ flexDirection: 'column' }}>
-          <Box>
-            <h3>{tPortfolio('portfolio-view', { address })}</h3>
-          </Box>
           <Box>
             <h4>{tPortfolio('positions-data')}</h4>
             <pre>{JSON.stringify(portfolioPositionsData, null, 2)}</pre>

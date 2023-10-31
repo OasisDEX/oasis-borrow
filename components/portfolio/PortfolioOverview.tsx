@@ -39,7 +39,9 @@ export const PortfolioOverview = ({
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
   return (
-    <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+    <Flex
+      sx={{ flexDirection: ['column', 'row'], justifyContent: ['flex-start', 'space-between'] }}
+    >
       <Flex sx={{ alignItems: 'flex-start' }}>
         <PortfolioOverviewItem
           header={tPortfolio('wallet-balance')}
@@ -56,7 +58,13 @@ export const PortfolioOverview = ({
           firstInColumn
         />
       </Flex>
-      <Flex sx={{ alignItems: 'flex-start', justifyItems: 'flex-start' }}>
+      <Flex
+        sx={{
+          flexDirection: ['column', 'row'],
+          alignItems: 'flex-start',
+          justifyItems: 'flex-start',
+        }}
+      >
         <PortfolioOverviewItem
           header={tPortfolio('total-supplied')}
           value={

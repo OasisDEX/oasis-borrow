@@ -7,8 +7,14 @@ import { Button, Flex, Text } from 'theme-ui'
 export const PortfolioHeader = ({ address }: { address: string }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
   return (
-    <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 5 }}>
-      <Flex sx={{ alignItems: 'center' }}>
+    <Flex
+      sx={{
+        flexDirection: ['column', 'row'],
+        justifyContent: ['flex-start', 'space-between'],
+        mb: 5,
+      }}
+    >
+      <Flex sx={{ alignItems: 'center', mb: [4, 0] }}>
         <Avatar
           size={48}
           name={address}
@@ -19,7 +25,7 @@ export const PortfolioHeader = ({ address }: { address: string }) => {
           {formatAddress(address, 6)}
         </Text>
       </Flex>
-      <Flex sx={{ justifyContent: 'flex-end' }}>
+      <Flex sx={{ justifyContent: ['flex-start', 'flex-end'] }}>
         <Button variant="secondary">{tPortfolio('view-on-etherscan')}</Button>
       </Flex>
     </Flex>

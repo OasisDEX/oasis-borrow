@@ -13,9 +13,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
   const mockPositionsResponse: {
     status: number
-    response: {
-      positions: PortfolioPositionsReply
-    }
+    response: PortfolioPositionsReply
   } = {
     status: 200,
     response: {
