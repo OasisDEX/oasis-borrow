@@ -46,7 +46,6 @@ export function AjnaFormView({
   const {
     AjnaSafetySwitch: ajnaSafetySwitchOn,
     AjnaSuppressValidation: ajnaSuppressValidationEnabled,
-    AjnaReusableDPM: ajnaReusableDPMEnabled,
   } = useAppConfig('features')
 
   const { t } = useTranslation()
@@ -110,35 +109,33 @@ export function AjnaFormView({
       quoteToken,
       state,
     }),
-    ...(ajnaReusableDPMEnabled && {
-      filterConsumedProxy: (events) =>
-        getAjnaFlowStateFilter({
+    filterConsumedProxy: (events) =>
+      getAjnaFlowStateFilter({
+        collateralAddress,
+        events,
+        productType: product,
+        quoteAddress,
+      }),
+    onProxiesAvailable: (events, dpmAccounts) => {
+      const filteredEvents = events.filter((event) =>
+        ajnaFlowStateFilter({ collateralAddress, event, productType: product, quoteAddress }),
+      )
+
+      if (!hasDupePosition && filteredEvents.length) {
+        setHasDupePosition(true)
+        openModal(AjnaDupePositionModal, {
+          chainId: context?.chainId,
           collateralAddress,
-          events,
+          collateralToken,
+          dpmAccounts,
+          events: filteredEvents,
           product,
           quoteAddress,
-        }),
-      onProxiesAvailable: (events, dpmAccounts) => {
-        const filteredEvents = events.filter((event) =>
-          ajnaFlowStateFilter({ collateralAddress, event, product, quoteAddress }),
-        )
-
-        if (!hasDupePosition && filteredEvents.length) {
-          setHasDupePosition(true)
-          openModal(AjnaDupePositionModal, {
-            chainId: context?.chainId,
-            collateralAddress,
-            collateralToken,
-            dpmAccounts,
-            events: filteredEvents,
-            product,
-            quoteAddress,
-            quoteToken,
-            walletAddress,
-          })
-        }
-      },
-    }),
+          quoteToken,
+          walletAddress,
+        })
+      }
+    },
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),
   })
@@ -152,7 +149,7 @@ export function AjnaFormView({
     action: state.action,
     positionId: resolvedId,
     protocol: LendingProtocol.Ajna,
-    product,
+    productType: product,
   })
 
   const {
@@ -240,7 +237,13 @@ export function AjnaFormView({
     txDetails,
   })
 
-  const title = getAjnaSidebarTitle({ currentStep, isFormFrozen, product, position, isOracless })
+  const title = getAjnaSidebarTitle({
+    currentStep,
+    isFormFrozen,
+    productType: product,
+    position,
+    isOracless,
+  })
 
   const sidebarSectionProps: SidebarSectionProps = {
     title,

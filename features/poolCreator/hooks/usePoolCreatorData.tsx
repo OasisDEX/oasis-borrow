@@ -169,7 +169,7 @@ export function usePoolCreatorData({
                                     collateralAddress,
                                     collateralToken:
                                       identifiedTokens[collateralAddress.toLowerCase()].symbol,
-                                    product: 'borrow',
+                                    productType: 'borrow',
                                     quoteAddress,
                                     quoteToken: identifiedTokens[quoteAddress.toLowerCase()].symbol,
                                   })}
@@ -181,7 +181,7 @@ export function usePoolCreatorData({
                                     collateralAddress,
                                     collateralToken:
                                       identifiedTokens[collateralAddress.toLowerCase()].symbol,
-                                    product: 'earn',
+                                    productType: 'earn',
                                     quoteAddress,
                                     quoteToken: identifiedTokens[quoteAddress.toLowerCase()].symbol,
                                   })}

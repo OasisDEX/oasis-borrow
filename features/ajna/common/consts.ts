@@ -67,3 +67,8 @@ export const AJNA_TOKENS_WITH_MULTIPLY = [
 ]
 
 export const AJNA_BORROWISH_PRODUCTS: AjnaProduct[] = ['borrow', 'multiply']
+
+export const ajnaSeoTags = {
+  productKey: `seo.ajnaProductPage.title`,
+  descriptionKey: 'seo.ajna.description',
+}

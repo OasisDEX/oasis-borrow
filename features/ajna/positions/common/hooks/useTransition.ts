@@ -11,14 +11,14 @@ import { useState } from 'react'
 interface TransitionProps {
   action?: AjnaFormAction
   positionId?: string
-  product?: string
+  productType?: string
   protocol?: LendingProtocol
 }
 
 export function useProductTypeTransition({
   action,
   positionId,
-  product,
+  productType,
   protocol,
 }: TransitionProps) {
   const { reload } = useRouter()
@@ -27,9 +27,9 @@ export function useProductTypeTransition({
     useState<boolean>(false)
   const [isTransitionInProgress, setIsTransitionInProgress] = useState<boolean>(false)
   const vaultType =
-    product === 'borrow'
+    productType === 'borrow'
       ? VaultType.Multiply
-      : product === 'multiply'
+      : productType === 'multiply'
       ? VaultType.Borrow
       : undefined
 

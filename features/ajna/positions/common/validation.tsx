@@ -32,7 +32,7 @@ interface AjnaValidationWithLinkProps {
   values?: { [key: string]: string }
 }
 
-const AjnaValidationWithLink: FC<AjnaValidationWithLinkProps> = ({ name, values }) => {
+export const AjnaValidationWithLink: FC<AjnaValidationWithLinkProps> = ({ name, values }) => {
   const translationKey = `ajna.validations.${name}`
 
   const linkMap: { [key: string]: string } = {
@@ -62,7 +62,7 @@ const AjnaValidationWithLink: FC<AjnaValidationWithLinkProps> = ({ name, values 
   )
 }
 
-const AjnaSafetyOnMessage: FC = () => (
+export const AjnaSafetyOnMessage: FC = () => (
   <Trans
     i18nKey={'ajna.validations.safety-switch-on'}
     components={[
@@ -100,7 +100,7 @@ interface MapSimulationValidationParams {
   token: string
 }
 
-const mapSimulationValidation = ({
+export const mapSimulationValidation = ({
   items,
   collateralToken,
   quoteToken,
@@ -117,7 +117,7 @@ const mapSimulationValidation = ({
     },
   }))
 
-function isFormValid({
+export function isFormValid({
   currentStep,
   product,
   state,

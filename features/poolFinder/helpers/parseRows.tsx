@@ -20,6 +20,7 @@ export function parseRows(
   return rows.map((row) => {
     const {
       collateralAddress,
+      collateralIcon,
       collateralToken,
       earnStrategy,
       earnStrategyDescription,
@@ -28,19 +29,18 @@ export function parseRows(
       managementType,
       maxLtv,
       quoteAddress,
+      quoteIcon,
       quoteToken,
       tooltips,
       weeklyNetApy,
-      collateralIcon,
-      quoteIcon,
     } = row
 
     const label = `${collateralToken}/${quoteToken}`
     const url = getOraclessProductUrl({
       chainId,
-      product,
       collateralAddress,
       collateralToken,
+      productType: product,
       quoteAddress,
       quoteToken,
     })

@@ -79,12 +79,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     productTypes: {
       [ProductType.Earn]: {
         featureToggle: FeaturesEnum.BaseNetworkEnabled,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: FeaturesEnum.BaseNetworkEnabled,
-          },
-        ],
+        additionalManageActions: [],
       },
     },
   },

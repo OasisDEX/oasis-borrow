@@ -39,7 +39,9 @@ export function ManageMultiplyVaultContainer({
       GUNIV3DAIUSDC2: manageGuniVault$(id),
     }
     const subscription = createManageMultiplyVaultAnalytics$(
-      manageVaultMap[token] ? manageVaultMap[token] : manageMultiplyVault$(id),
+      manageVaultMap[token]
+        ? manageVaultMap[token]
+        : manageMultiplyVault$(id, manageVault.vaultType),
       context$,
       trackingEvents,
     ).subscribe()

@@ -1,11 +1,10 @@
 import { ManageMultiplyVaultContainer } from 'components/vault/commonMultiply/ManageMultiplyVaultContainer'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { ManageEarnVaultContainer } from 'components/vault/earn/ManageEarnVaultContainer'
-import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
+import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { SidebarManageGuniVault } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVault'
-import { ManageInstiVaultContainer } from 'features/instiVault/manage/containers/ManageInstiVaultContainer'
 import { ManageMultiplyVaultDetails } from 'features/multiply/manage/containers/ManageMultiplyVaultDetails'
 import { SidebarManageMultiplyVault } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
@@ -28,13 +27,13 @@ export function GeneralManageVaultViewAutomation({
     case VaultType.Borrow:
       return (
         <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-          <ManageVaultContainer manageVault={generalManageVault.state} />
-        </Container>
-      )
-    case VaultType.Insti:
-      return (
-        <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-          <ManageInstiVaultContainer manageVault={generalManageVault.state} />
+          <ManageMultiplyVaultContainer
+            manageVault={generalManageVault.state}
+            header={DefaultVaultHeader}
+            details={ManageVaultDetails}
+            form={SidebarManageMultiplyVault}
+            history={VaultHistoryView}
+          />
         </Container>
       )
     case VaultType.Multiply:

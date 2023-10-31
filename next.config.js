@@ -101,7 +101,10 @@ const baseConfig = {
 
     return config
   },
-  i18n,
+  i18n: Object.assign(i18n, {
+    ...i18n,
+    localeDetection: false, // set to false because of recent update https://github.com/vercel/next.js/issues/55648
+  }),
   async redirects() {
     return [
       {
