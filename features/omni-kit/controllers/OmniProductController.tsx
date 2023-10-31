@@ -6,9 +6,7 @@ import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import type { GetOmniMetadata } from 'features/omni-kit/contexts'
 import { OmniGeneralContextProvider, OmniProductContextProvider } from 'features/omni-kit/contexts'
-import { OmniBorrowPositionController } from 'features/omni-kit/controllers/borrow'
-import { OmniEarnPositionController } from 'features/omni-kit/controllers/earn'
-import { OmniMultiplyPositionController } from 'features/omni-kit/controllers/multiply'
+import { OmniLayoutController } from 'features/omni-kit/controllers'
 import { getOmniFormDefaultParams, getOmniHeadlineProps } from 'features/omni-kit/helpers'
 import { useOmniProtocolData } from 'features/omni-kit/hooks'
 import type { ProductDataProps } from 'features/omni-kit/protocols/ajna/hooks/useAjnaOmniData'
@@ -251,7 +249,7 @@ export const OmniProductController = <Auction, History, Position>({
                                   position={positionData as LendingPosition}
                                   productType={castedProductType}
                                 >
-                                  <OmniBorrowPositionController txHandler={useTxHandler} />
+                                  <OmniLayoutController txHandler={useTxHandler} />
                                 </OmniProductContextProvider>
                               )}
                               {castedProductType === OmniProductType.Earn && (
@@ -265,7 +263,7 @@ export const OmniProductController = <Auction, History, Position>({
                                   position={positionData as SupplyPosition}
                                   productType={castedProductType}
                                 >
-                                  <OmniEarnPositionController txHandler={useTxHandler} />
+                                  <OmniLayoutController txHandler={useTxHandler} />
                                 </OmniProductContextProvider>
                               )}
                               {castedProductType === OmniProductType.Multiply && (
@@ -279,7 +277,7 @@ export const OmniProductController = <Auction, History, Position>({
                                   position={positionData as LendingPosition}
                                   productType={castedProductType}
                                 >
-                                  <OmniMultiplyPositionController txHandler={useTxHandler} />
+                                  <OmniLayoutController txHandler={useTxHandler} />
                                 </OmniProductContextProvider>
                               )}
                             </>

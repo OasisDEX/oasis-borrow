@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
-export function OmniPositionHistoryController() {
+export function OmniHistoryController() {
   const { t } = useTranslation()
   const {
     environment: { isOracless, productType, isShort, priceFormat, collateralToken, quoteToken },

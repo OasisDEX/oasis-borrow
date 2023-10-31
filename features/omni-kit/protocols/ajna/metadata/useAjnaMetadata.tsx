@@ -18,6 +18,9 @@ import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOri
 import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
 import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
 import { getAjnaEarnWithdrawMax } from 'features/ajna/positions/earn/helpers/getAjnaEarnWithdrawMax'
+import faqBorrow from 'features/content/faqs/ajna/borrow/en'
+import faqEarn from 'features/content/faqs/ajna/earn/en'
+import faqMultiply from 'features/content/faqs/ajna/multiply/en'
 import { OmniDupePositionModal } from 'features/omni-kit/components/OmniDupePositionModal'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import type {
@@ -98,8 +101,8 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   } = useOmniGeneralContext()
 
   const {
-    state: { price },
     dispatch,
+    state: { price },
   } = useAjnaCustomState()
 
   const validations = getAjnaOmniValidation({
@@ -147,10 +150,10 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   })
 
   const filters = {
-    flowStateFilter: (event: CreatePositionEvent) =>
-      ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
     consumedProxyFilter: (event: CreatePositionEvent) =>
       !ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
+    flowStateFilter: (event: CreatePositionEvent) =>
+      ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
   }
 
   const riskSidebar = <AjnaOmniFormContentRisk />
@@ -238,6 +241,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           footerColumns: productType === OmniProductType.Borrow ? 3 : 2,
         },
         elements: {
+          faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,
           highlighterOrderInformation: lendingContext.form.state.generateAmount ? (
             <HighlightedOrderInformation
               label={t('ajna.position-page.borrow.common.form.origination-fee', { quoteToken })}
@@ -379,6 +383,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               : zero,
         },
         elements: {
+          faq: faqEarn,
           overviewContent: (
             <AjnaOmniEarnDetailsSectionContent
               collateralToken={collateralToken}
