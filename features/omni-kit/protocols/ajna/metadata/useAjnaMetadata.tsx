@@ -64,13 +64,11 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   const {
     AjnaSafetySwitch: ajnaSafetySwitchOn,
     AjnaSuppressValidation: ajnaSuppressValidation,
-    AjnaReusableDPM: ajnaReusableDPMEnabled,
   } = useAppConfig('features')
 
   const featureToggles = {
     safetySwitch: ajnaSafetySwitchOn,
     suppressValidation: ajnaSuppressValidation,
-    reusableDpm: ajnaReusableDPMEnabled,
   }
 
   const gasEstimation = useGasEstimationContext()
