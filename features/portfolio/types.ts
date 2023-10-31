@@ -41,11 +41,10 @@ export type PortfolioAssetsReply = {
 
 type AutomationType = {
   enabled: boolean
-  price: number
+  price?: number
 }
 
 type DetailsType =
-  | 'liquidationTokenPrice'
   | 'netValue'
   | 'pnl'
   | 'liquidationPrice'
@@ -68,7 +67,7 @@ export type PortfolioPosition = {
   type: ProductType
   network: NetworkNames
   protocol: LendingProtocol
-  strategyType: StrategyType
+  strategyType?: StrategyType
   lendingType?: 'active' | 'passive' | 'loop' | 'staking' | 'pool' // are these all types?
   openDate: number // epoch based on block height timestamp
   availableToMigrate?: boolean
@@ -87,6 +86,7 @@ export type PortfolioPosition = {
   details: {
     type: DetailsType
     value: string
+    accent?: 'positive' | 'negative'
     subvalue?: string
   }[]
   automations: {
