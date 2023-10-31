@@ -25,7 +25,12 @@ export default function PortfolioView({ address }: { address: string }) {
       replace('/')
     }
   }, [address, replace])
-  const { data: portfolioData } = useFetch<PortfolioAssetsReply>(`/api/portfolio/wallet/${address}`)
+  const { data: portfolioPositionsData } = useFetch<PortfolioAssetsReply>(
+    `/api/portfolio/positions/${address}`,
+  )
+  const { data: portfolioWalletData } = useFetch<PortfolioAssetsReply>(
+    `/api/portfolio/wallet/${address}`,
+  )
   return address ? (
     <AppLayout>
       <Flex sx={{ flexDirection: 'column' }}>
@@ -33,7 +38,12 @@ export default function PortfolioView({ address }: { address: string }) {
           <h3>{tPortfolio('portfolio-view', { address })}</h3>
         </Box>
         <Box>
-          <pre>{JSON.stringify(portfolioData, null, 2)}</pre>
+          <h4>{tPortfolio('positions-data')}</h4>
+          <pre>{JSON.stringify(portfolioPositionsData, null, 2)}</pre>
+        </Box>
+        <Box>
+          <h4>{tPortfolio('wallet-data')}</h4>
+          <pre>{JSON.stringify(portfolioWalletData, null, 2)}</pre>
         </Box>
       </Flex>
     </AppLayout>

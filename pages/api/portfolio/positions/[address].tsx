@@ -26,26 +26,75 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
           network: NetworkNames.ethereumMainnet,
           protocol: LendingProtocol.Maker,
           strategyType: StrategyType.Long,
+          openDate: 1697124880,
           tokens: {
-            collateral: {
+            supply: {
               symbol: 'ETH',
               amount: 1,
               amountUSD: 1816.33,
             },
-            debt: {
+            borrow: {
               symbol: 'DAI',
               amount: 1000,
               amountUSD: 1000,
             },
           },
-          liquidationTokenPrice: 1614,
-          currentTokenPrice: 1816.33,
-          loanToValue: 0.5,
-          maxLoanToValue: 0.8,
-          collateralizationRatio: 0.5,
-          multiple: 2,
-          maxMultiple: 2.5,
-          automations: {},
+          details: [
+            {
+              type: 'earnings',
+              value: '1234.56',
+            },
+          ],
+          automations: {
+            stopLoss: {
+              enabled: true,
+              price: 0.8,
+            },
+            autoBuy: {
+              enabled: true,
+              price: 1450,
+            },
+            autoSell: {
+              enabled: true,
+              price: 2100,
+            },
+            takeProfit: {
+              enabled: false,
+              price: 0,
+            },
+          },
+        },
+        {
+          positionId: 12,
+          type: ProductType.Borrow,
+          network: NetworkNames.optimismMainnet,
+          protocol: LendingProtocol.AaveV3,
+          strategyType: StrategyType.Short,
+          openDate: 1696174480,
+          tokens: {
+            supply: {
+              symbol: 'DAI',
+              amount: 390100,
+              amountUSD: 390100,
+            },
+            borrow: {
+              symbol: 'WBTC',
+              amount: 1,
+              amountUSD: 34642.8,
+            },
+          },
+          details: [
+            {
+              type: 'earnings',
+              value: '1234.56',
+            },
+          ],
+          automations: {
+            stopLoss: {
+              enabled: false,
+              price: 0,
+            },
+          },
         },
       ],
     },
