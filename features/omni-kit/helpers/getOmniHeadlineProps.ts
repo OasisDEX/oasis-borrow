@@ -27,7 +27,7 @@ export function getOmniHeadlineProps({
 }: OmniHeadlinePropsParams) {
   const { t } = useTranslation()
 
-  const title = t('omni-kit.headline', {
+  const title = t('omni-kit.headline.title', {
     collateralToken,
     productType: upperFirst(productType),
     quoteToken,
@@ -35,16 +35,15 @@ export function getOmniHeadlineProps({
   const id = positionId ? ` #${positionId}` : ''
 
   return {
-    ...(collateralToken &&
-      quoteToken &&
-      collateralIcon &&
-      quoteIcon && {
-        header: `${title}${id}`,
-        tokens: [collateralIcon, quoteIcon],
-        protocol: {
-          network: NetworkNames.ethereumMainnet,
-          protocol,
-        },
-      }),
+    ...(collateralToken && quoteToken && collateralIcon && quoteIcon
+      ? {
+          header: `${title}${id}`,
+          tokens: [collateralIcon, quoteIcon],
+          protocol: {
+            network: NetworkNames.ethereumMainnet,
+            protocol,
+          },
+        }
+      : { header: '' }),
   }
 }
