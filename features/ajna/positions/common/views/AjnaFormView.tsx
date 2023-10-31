@@ -46,7 +46,6 @@ export function AjnaFormView({
   const {
     AjnaSafetySwitch: ajnaSafetySwitchOn,
     AjnaSuppressValidation: ajnaSuppressValidationEnabled,
-    AjnaReusableDPM: ajnaReusableDPMEnabled,
   } = useAppConfig('features')
 
   const { t } = useTranslation()
@@ -110,35 +109,33 @@ export function AjnaFormView({
       quoteToken,
       state,
     }),
-    ...(ajnaReusableDPMEnabled && {
-      filterConsumedProxy: (events) =>
-        getAjnaFlowStateFilter({
-          collateralAddress,
-          events,
-          productType: product,
-          quoteAddress,
-        }),
-      onProxiesAvailable: (events, dpmAccounts) => {
-        const filteredEvents = events.filter((event) =>
-          ajnaFlowStateFilter({ collateralAddress, event, productType: product, quoteAddress }),
-        )
+    filterConsumedProxy: (events) =>
+      getAjnaFlowStateFilter({
+        collateralAddress,
+        events,
+        productType: product,
+        quoteAddress,
+      }),
+    onProxiesAvailable: (events, dpmAccounts) => {
+      const filteredEvents = events.filter((event) =>
+        ajnaFlowStateFilter({ collateralAddress, event, productType: product, quoteAddress }),
+      )
 
-        if (!hasDupePosition && filteredEvents.length) {
-          setHasDupePosition(true)
-          openModal(AjnaDupePositionModal, {
-            chainId: context?.chainId,
-            collateralAddress,
-            collateralToken,
-            dpmAccounts,
-            events: filteredEvents,
-            product,
-            quoteAddress,
-            quoteToken,
-            walletAddress,
-          })
-        }
-      },
-    }),
+      if (!hasDupePosition && filteredEvents.length) {
+        setHasDupePosition(true)
+        openModal(AjnaDupePositionModal, {
+          chainId: context?.chainId,
+          collateralAddress,
+          collateralToken,
+          dpmAccounts,
+          events: filteredEvents,
+          product,
+          quoteAddress,
+          quoteToken,
+          walletAddress,
+        })
+      }
+    },
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),
   })

@@ -14,6 +14,7 @@ import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Flex } from 'theme-ui'
 
 function mapSimulation(simulation?: Simulation): string[] {
   if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]
@@ -26,9 +27,11 @@ function mapSimulation(simulation?: Simulation): string[] {
 export function DsrSimulationSection({
   userInputAmount,
   dsr,
+  sDaiNetValue,
 }: {
   userInputAmount?: BigNumber
   dsr: BigNumber
+  sDaiNetValue: BigNumber
 }) {
   const { t } = useTranslation()
   const amount = userInputAmount || new BigNumber(150000)
@@ -59,7 +62,23 @@ export function DsrSimulationSection({
   return (
     <>
       <DetailsSection
-        title={<SimulateTitle token="DAI" depositAmount={amount} />}
+        title={
+          <Flex
+            sx={{
+              justifyContent: ['center', sDaiNetValue.gt(zero) ? 'space-between' : 'flex-start'],
+              flexWrap: 'wrap',
+            }}
+          >
+            <SimulateTitle token="DAI" depositAmount={amount} />
+            {sDaiNetValue.gt(zero) && (
+              <SimulateTitle
+                token="SDAI"
+                depositAmount={sDaiNetValue}
+                description={t('in-your-wallet')}
+              />
+            )}
+          </Flex>
+        }
         content={
           <>
             <DetailsSectionContentTable

@@ -29,6 +29,16 @@ import type { Dispatch, FC, PropsWithChildren, SetStateAction } from 'react'
 import React, { useContext, useMemo, useState } from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
+interface OmniFeatureToggles {
+  safetySwitch: boolean
+  suppressValidation: boolean
+}
+
+interface OmniFilters {
+  flowStateFilter: (event: CreatePositionEvent) => boolean
+  consumedProxyFilter: (event: CreatePositionEvent) => boolean
+}
+
 export type LendingMetadata = {
   validations: OmniValidations
   notifications: DetailsSectionNotificationItem[]
@@ -59,15 +69,8 @@ export type LendingMetadata = {
     highlighterOrderInformation: JSX.Element | undefined
     dupeModal: (props: OmniDupePositionModalProps) => JSX.Element
   }
-  filters: {
-    flowStateFilter: (event: CreatePositionEvent) => boolean
-    consumedProxyFilter: (event: CreatePositionEvent) => boolean
-  }
-  featureToggles: {
-    safetySwitch: boolean
-    suppressValidation: boolean
-    reusableDpm: boolean
-  }
+  filters: OmniFilters
+  featureToggles: OmniFeatureToggles
 }
 
 export type SupplyMetadata = {
@@ -99,15 +102,8 @@ export type SupplyMetadata = {
     earnFormOrderAsElement: FC<OmniIsCachedPosition>
     earnExtraUiDropdownContent: JSX.Element
   }
-  filters: {
-    flowStateFilter: (event: CreatePositionEvent) => boolean
-    consumedProxyFilter: (event: CreatePositionEvent) => boolean
-  }
-  featureToggles: {
-    safetySwitch: boolean
-    suppressValidation: boolean
-    reusableDpm: boolean
-  }
+  filters: OmniFilters
+  featureToggles: OmniFeatureToggles
 }
 
 export type OmniMetadataParams =
