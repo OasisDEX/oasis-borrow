@@ -56,7 +56,7 @@ export function AjnaDupePositionModal({
         chainId,
         collateralAddress,
         collateralToken,
-        product,
+        productType: product,
         quoteAddress,
         quoteToken,
       })}/${positionIds[0]}`

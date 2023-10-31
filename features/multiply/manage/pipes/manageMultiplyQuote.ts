@@ -19,10 +19,7 @@ import {
 import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
 import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
 
-export function applyExchange<VS extends ManageMultiplyVaultState>(
-  change: ManageMultiplyVaultChange,
-  state: VS,
-) {
+export function applyExchange(change: ManageMultiplyVaultChange, state: ManageMultiplyVaultState) {
   if (change.kind === 'quoteError' || change.kind === 'swapError') {
     return {
       ...state,

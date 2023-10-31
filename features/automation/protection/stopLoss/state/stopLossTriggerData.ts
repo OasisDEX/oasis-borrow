@@ -146,9 +146,10 @@ export function prepareStopLossTriggerDataV2(
   ) {
     _maxCoverage = maxCoverageSpark // maxCoverage, equals to 1500 DAI
   }
+
   const triggerData = encodeTriggerDataByType(commandContractType, [
     owner, // proxy
-    triggerType, // triggerType
+    triggerType.toString(), // triggerType
     _maxCoverage,
     debtTokenAddress, // debtToken
     tokenAddress, // collateralToken

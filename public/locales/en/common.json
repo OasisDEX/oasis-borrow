@@ -23,6 +23,8 @@
   "account-support": "Support",
   "account-terms": "Terms",
   "activity": "Activity",
+  "in-this-position": "In this position",
+  "in-your-wallet": "In your wallet",
   "and": "and",
   "address": "Address",
   "address-invalid": "Address not found",
@@ -1094,7 +1096,7 @@
       "description": "Ajna is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
     },
     "ajnaProductPage": {
-      "title": "{{product}} - Summer.fi × Ajna"
+      "title": "{{productType}} - Summer.fi × Ajna"
     },
     "ajnaPoolFinder": {
       "title": "Ajna pool finder - Summer.fi × Ajna"
@@ -1102,6 +1104,13 @@
     "ajnaPoolCreator": {
       "title": "Ajna pool creator - Summer.fi × Ajna",
       "description": "Create any ERC-20 token pool on the Ajna protocol, this will be available straight away on Summer.fi."
+    },
+    "morpho": {
+      "title": "Summer.fi × Morpho",
+      "description": "Morpho is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
+    },
+    "morphoProductPage": {
+      "title": "{{productType}} - Summer.fi × Morpho"
     },
     "multiply": {
       "title": "Multiply - Summer.fi",
@@ -1262,6 +1271,8 @@
         "buy-coll": "Buy Coll.",
         "reduce-debt": "Reduce Debt",
         "withdraw": "Withdraw",
+        "borrow": "Borrow",
+        "paybck": "Payback",
         "switch-to-borrow": "Switch to Borrow",
         "deposit-collateral": "Deposit collateral",
         "withdraw-collateral": "Withdraw collateral",
@@ -1425,7 +1436,10 @@
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
-    "closing": "To close your vault, a part of your position will be sold to pay back the outstanding debt. The rest of your collateral will be sent to your address."
+    "closing": "To close your vault, a part of your position will be sold to pay back the outstanding debt. The rest of your collateral will be sent to your address.",
+    "risk-management-for-borrow-message": "New ways to manage risk right from your borrow vault.",
+    "risk-management-for-borrow-title": "Enhanced Risk Management for Borrow Vaults",
+    "risk-management-for-borrow-link": "Learn More ->"
   },
   "vault-changes": {
     "order-information": "Order information",
@@ -2567,9 +2581,12 @@
   "dsr": {
     "details": {
       "overview": "Overview",
+      "dsr-overview": "DAI in the DSR Overview",
+      "sdai-overview": "sDAI in your wallet",
       "total-deposited-dai": "Total Deposited Dai",
       "current-yield": "Current Yield",
-      "current-dai-savings-rate": "Current Dai Savings Rate"
+      "current-dai-savings-rate": "Current Dai Savings Rate",
+      "sdai-balance": "sDAI token balance"
     },
     "titles": {
       "manage": "Manage Your DSR strategy",
@@ -2614,6 +2631,9 @@
       "conversion-desc": "If you are are holding Savings Dai (sDAI) you can convert it back to Dai. Converting back to Dai means you will no longer accrue the Dai Savings Rate on the amount you convert.",
       "what-is-sdai-conversion": "What is sDAI conversion?"
     }
+  },
+  "omni-kit": {
+    "headline": "{{collateralToken}}/{{quoteToken}} {{productType}}"
   },
   "ajna": {
     "title": "Ajna Website",
@@ -2678,8 +2698,8 @@
     "position-page": {
       "common": {
         "headline": {
-          "open": "{{collateralToken}}/{{quoteToken}} {{product}} Position",
-          "manage": "{{collateralToken}}/{{quoteToken}} {{product}} #{{id}}",
+          "open": "{{collateralToken}}/{{quoteToken}} {{productType}} Position",
+          "manage": "{{collateralToken}}/{{quoteToken}} {{productType}} #{{positionId}}",
           "current-market-price": "Current Market Price"
         },
         "banners": {
@@ -2697,10 +2717,10 @@
           "title": {
             "risk": "Things to know before opening an Ajna position",
             "risk-oracless": "This pool is offered with Ajna Lite UI, things to know:",
-            "setup": "Configure your Ajna {{product}} Position",
-            "manage": "Manage your Ajna {{product}} Position",
-            "transaction": "Confirm your Ajna {{product}} Position",
-            "transition": "Switch your Ajna {{product}} Position",
+            "setup": "Configure your Ajna {{productType}} Position",
+            "manage": "Manage your Ajna {{productType}} Position",
+            "transaction": "Confirm your Ajna {{productType}} Position",
+            "transition": "Switch your Ajna {{productType}} Position",
             "position-frozen": "Position Frozen",
             "claim-collateral": "Claim collateral"
           },
@@ -2731,7 +2751,7 @@
             }
           },
           "transaction": {
-            "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} Ajna {{product}} Position.",
+            "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} Ajna {{productType}} Position.",
             "progress-open": "Creating your {{collateralToken}}/{{quoteToken}} Ajna Position",
             "progress-manage": "Updating your {{collateralToken}}/{{quoteToken}} Ajna Position",
             "success-open": "Your {{collateralToken}}/{{quoteToken}} Ajna Position was created",
@@ -2739,7 +2759,7 @@
           }
         },
         "dupe-modal": {
-          "title": "Are you sure you want to open a new {{product}} position in the Ajna {{collateralToken}}/{{quoteToken}} pool?",
+          "title": "Are you sure you want to open a new {{productType}} position in the Ajna {{collateralToken}}/{{quoteToken}} pool?",
           "description-borrower-singular": "You already have borrower position in this pool.",
           "description-borrower-plural": "You already have borrower positions in this pool.",
           "description-lender-singular": "You already have lender position in this pool.",
@@ -2983,6 +3003,21 @@
     "product-hub-tooltips": {
       "elligible-for-spk-airdrop": "Positions on this pair are elligible for the SPK airdrop.",
       "elligible-for-spk-airdrop-description": "More information on the Airdrop can be found on the Maker forum"
+    }
+  },
+  "morpho": {
+    "position-page": {
+      "common": {
+        "form": {
+          "title": {
+            "risk": "Things to know before opening an Morpho position",
+            "setup": "Configure your Morpho {{productType}} Position",
+            "manage": "Manage your Morpho {{productType}} Position",
+            "transaction": "Confirm your Morpho {{productType}} Position",
+            "transition": "Switch your Morpho {{productType}} Position"
+          }
+        }
+      }
     }
   },
   "product-hub": {

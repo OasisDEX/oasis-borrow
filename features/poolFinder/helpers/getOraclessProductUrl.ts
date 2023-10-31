@@ -6,7 +6,7 @@ interface GetOraclessUrlParams {
   chainId: NetworkIds
   collateralAddress: string
   collateralToken: string
-  product: AjnaProduct
+  productType: AjnaProduct
   quoteAddress: string
   quoteToken: string
 }
@@ -15,11 +15,11 @@ export function getOraclessProductUrl({
   chainId,
   collateralAddress,
   collateralToken,
-  product,
+  productType,
   quoteAddress,
   quoteToken,
 }: GetOraclessUrlParams) {
   return !isPoolOracless({ chainId, collateralToken, quoteToken })
-    ? `/ethereum/ajna/${product}/${collateralToken}-${quoteToken}`
-    : `/ethereum/ajna/${product}/${collateralAddress}-${quoteAddress}`
+    ? `/ethereum/ajna/${productType}/${collateralToken}-${quoteToken}`
+    : `/ethereum/ajna/${productType}/${collateralAddress}-${quoteAddress}`
 }

@@ -1129,4 +1129,5 @@ export const ajnaExtensionTheme = {
     interactive50: '#d668C6',
   },
 }
+
 export type OasisTheme = typeof theme

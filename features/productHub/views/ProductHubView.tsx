@@ -1,7 +1,9 @@
+import { getNetworkById, NetworkNames } from 'blockchain/networks'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
+import { ProductHubLoadingState } from 'features/productHub/components/ProductHubLoadingState'
 import {
   ProductHubNaturalLanguageSelectorController,
   ProductHubPromoCardsController,
@@ -20,13 +22,15 @@ import type {
   ProductHubQueryString,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import type { PromoCardsCollection } from 'handlers/product-hub/types'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import type { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import { useSearchParams } from 'next/navigation'
 import type { FC, ReactNode } from 'react'
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 interface ProductHubViewProps {
@@ -57,22 +61,40 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   const { productHub: data } = usePreloadAppDataContext()
   const searchParams = useSearchParams()
 
+  const { connecting, wallet } = useWalletManagement()
+
+  const resolvedInitialNetwork: ProductHubSupportedNetworks[] = useMemo(() => {
+    if (initialNetwork) return initialNetwork
+    else if (wallet?.chainId)
+      return [getNetworkById(wallet.chainId).name as ProductHubSupportedNetworks]
+    else return [NetworkNames.ethereumMainnet as ProductHubSupportedNetworks]
+  }, [initialNetwork, wallet?.chainId])
+
   const initialQueryString = getInitialQueryString(searchParams)
   const [selectedProduct, setSelectedProduct] = useState<ProductHubProductType>(product)
   const [selectedToken, setSelectedToken] = useState<string>(token || ALL_ASSETS)
-  const defaultFilters = useMemo(
-    () =>
-      getInitialFilters({
-        initialQueryString,
-        initialNetwork,
-        initialProtocol,
-        selectedProduct,
-        token,
-      }),
-    [initialNetwork, initialProtocol, initialQueryString, selectedProduct, token],
+  const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(
+    getInitialFilters({
+      initialQueryString,
+      initialNetwork: resolvedInitialNetwork,
+      initialProtocol,
+      selectedProduct,
+      token,
+    }),
   )
-  const [selectedFilters, setSelectedFilters] = useState<ProductHubFilters>(defaultFilters)
   const [queryString, setQueryString] = useState<ProductHubQueryString>(initialQueryString)
+
+  useEffect(() => {
+    if (!queryString.network) {
+      setSelectedFilters({
+        or: selectedFilters.or,
+        and: {
+          ...selectedFilters.and,
+          network: resolvedInitialNetwork,
+        },
+      })
+    }
+  }, [resolvedInitialNetwork])
 
   useProductHubRouter({
     queryString,
@@ -103,7 +125,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
             setSelectedFilters(
               getInitialFilters({
                 initialQueryString,
-                initialNetwork,
+                initialNetwork: resolvedInitialNetwork,
                 initialProtocol,
                 selectedProduct: _selectedProduct,
                 token,
@@ -120,48 +142,58 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
           <ProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
         )}
       </Box>
-
-      <ProductHubPromoCardsController
-        promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](data.table)}
-        selectedProduct={selectedProduct}
-        selectedToken={selectedToken}
-      />
-      <ProductHubContentController
-        initialNetwork={initialNetwork}
-        initialProtocol={initialProtocol}
-        queryString={queryString}
-        selectedFilters={selectedFilters}
-        selectedProduct={selectedProduct}
-        selectedToken={selectedToken}
-        tableData={data.table}
-        onChange={(_selectedFilters, _queryString) => {
-          setSelectedFilters(_selectedFilters)
-          setQueryString(_queryString)
-        }}
-        limitRows={limitRows}
-      />
-      {limitRows && limitRows > 0 && (
-        <Flex
-          sx={{
-            justifyContent: 'center',
-            py: 4,
-            borderBottom: '1px solid',
-            borderBottomColor: 'neutral20',
-          }}
-        >
-          <AppLink
-            href={
-              selectedToken === ALL_ASSETS
-                ? `/${selectedProduct}`
-                : `/${selectedProduct}/${selectedToken}`
-            }
-          >
-            <WithArrow sx={{ color: 'interactive100', fontWeight: 'regular', fontSize: '16px' }}>
-              {t('view-all')}
-            </WithArrow>
-          </AppLink>
-        </Flex>
-      )}
+      <WithLoadingIndicator
+        value={connecting ? [undefined] : [connecting]}
+        customLoader={<ProductHubLoadingState />}
+      >
+        {() => (
+          <>
+            <ProductHubPromoCardsController
+              promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](data.table)}
+              selectedProduct={selectedProduct}
+              selectedToken={selectedToken}
+            />
+            <ProductHubContentController
+              initialNetwork={resolvedInitialNetwork}
+              initialProtocol={initialProtocol}
+              queryString={queryString}
+              selectedFilters={selectedFilters}
+              selectedProduct={selectedProduct}
+              selectedToken={selectedToken}
+              tableData={data.table}
+              onChange={(_selectedFilters, _queryString) => {
+                setSelectedFilters(_selectedFilters)
+                setQueryString(_queryString)
+              }}
+              limitRows={limitRows}
+            />
+            {limitRows && limitRows > 0 && (
+              <Flex
+                sx={{
+                  justifyContent: 'center',
+                  py: 4,
+                  borderBottom: '1px solid',
+                  borderBottomColor: 'neutral20',
+                }}
+              >
+                <AppLink
+                  href={
+                    selectedToken === ALL_ASSETS
+                      ? `/${selectedProduct}`
+                      : `/${selectedProduct}/${selectedToken}`
+                  }
+                >
+                  <WithArrow
+                    sx={{ color: 'interactive100', fontWeight: 'regular', fontSize: '16px' }}
+                  >
+                    {t('view-all')}
+                  </WithArrow>
+                </AppLink>
+              </Flex>
+            )}
+          </>
+        )}
+      </WithLoadingIndicator>
     </Fragment>
   )
 }

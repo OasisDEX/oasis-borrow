@@ -23,7 +23,15 @@ export type GasEstimationContext = {
 
 export const gasEstimationContext = createContext<GasEstimationContext | undefined>(undefined)
 
-export const useGasEstimationContext = () => useContext(gasEstimationContext)
+export const useGasEstimationContext = () => {
+  const gasContext = useContext(gasEstimationContext)
+  if (!gasContext) {
+    throw new Error(
+      "Gas estimation context not available! useGasEstimationContext can't be used serverside",
+    )
+  }
+  return gasContext
+}
 
 /*
   This component is providing data regarding gas based on txData received from uiChanges.

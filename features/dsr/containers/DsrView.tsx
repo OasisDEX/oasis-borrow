@@ -27,6 +27,8 @@ interface DsrViewProps {
   potTotalValueLocked?: BigNumber
   apy: BigNumber
   dsr: BigNumber
+  sdaiPrice: BigNumber
+  daiPrice: BigNumber
 }
 
 const isLoadingCollection = [
@@ -48,6 +50,8 @@ export function DsrView({
   potTotalValueLocked,
   apy,
   dsr,
+  sdaiPrice,
+  daiPrice,
 }: DsrViewProps) {
   const { t } = useTranslation()
   const isLoading = isLoadingCollection.includes(dsrDepositState.stage)
@@ -93,10 +97,13 @@ export function DsrView({
                     apy={apy}
                     dsr={dsr}
                     depositAmount={dsrDepositState.amount}
+                    sDaiBalance={dsrDepositState.sDaiBalance}
                     netValue={netValue}
                     earnings={earnings}
                     operation={dsrDepositState.operation}
                     isMintingSDai={dsrDepositState.isMintingSDai}
+                    sdaiPrice={sdaiPrice}
+                    daiPrice={daiPrice}
                   />
                 </Box>
                 <Box>

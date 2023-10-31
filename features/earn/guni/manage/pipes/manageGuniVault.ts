@@ -13,6 +13,7 @@ import dayjs from 'dayjs'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import type { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
 import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { applyExchange } from 'features/multiply/manage/pipes/manageMultiplyQuote'
 import { applyManageVaultCalculations } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { defaultManageMultiplyVaultCalculations } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations.constants'
@@ -104,7 +105,10 @@ function apply(
   change: ManageMultiplyVaultChange | GuniTxDataChange,
 ): ManageEarnVaultState {
   const s1 = applyExchange(change as ManageMultiplyVaultChange, state)
-  const s2 = applyManageVaultTransition(change as ManageMultiplyVaultChange, s1)
+  const s2 = applyManageVaultTransition(
+    change as ManageMultiplyVaultChange,
+    s1,
+  ) as ManageEarnVaultState
   const s3 = applyManageGuniVaultTransition(change as ManageMultiplyVaultChange, s2)
   const s4 = applyManageVaultTransaction(change as ManageMultiplyVaultChange, s3)
   const s5 = applyManageVaultEnvironment(change as ManageMultiplyVaultChange, s4)
@@ -250,6 +254,7 @@ export function createManageGuniVault$(
                       ...defaultMutableManageMultiplyVaultState,
                       ...defaultManageMultiplyVaultCalculations,
                       ...defaultManageMultiplyVaultConditions,
+                      vaultType: VaultType.Earn,
                       vault,
                       priceInfo,
                       balanceInfo,
