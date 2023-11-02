@@ -13,7 +13,7 @@ const skeletonColorTheme: SkeletonColorThemes = {
   default: ['#e6e9eb', '#f8f7f9'],
   negative: ['#ffeee9', '#fff9f7'],
   positive: ['#e7fcfa', '#f7fefd'],
-  fancy: ['#ccf1fc', '#fcece3'],
+  fancy: ['#ccf1fc', '#fcece3'], // based on the two main summer colors: #007DA3 + #E7A77F
 }
 
 interface SkeletonProps {
