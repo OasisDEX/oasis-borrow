@@ -8,5 +8,12 @@
   "total-borrowed": "Total Borrowed",
   "available-to-migrate": "Available to Migrate",
   "coming-soon": "Coming soon",
-  "past-week": "{{percentage}}% Past Week"
+  "past-week": "{{percentage}}% Past Week",
+  "all-products": "All Products",
+  "borrow": "Borrow",
+  "multiply": "Multiply",
+  "earn": "Earn",
+  "migrate": "Migrate",
+  "net-value": "Net Value",
+  "show-empty-positions": "Show empty positions"
 }

@@ -40,6 +40,7 @@ export interface GenericSelectProps {
   options: GenericSelectOption[]
   placeholder?: string
   wrapperSx?: ThemeUIStyleObject
+  iconPosition?: 'left' | 'right'
 }
 
 export function GenericSelect({
@@ -48,6 +49,7 @@ export function GenericSelect({
   expandableArrowSize = 12,
   expandableArrowSx,
   iconSize = 32,
+  iconPosition = 'left',
   isDisabled = false,
   isSearchable = false,
   name,
@@ -223,14 +225,23 @@ export function GenericSelect({
             <components.SingleValue data={data} {...props}>
               {data.icon ? (
                 <>
-                  <Icon
-                    size={iconSize}
-                    sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, m: 'auto' }}
-                    icon={data.icon}
-                  />
+                  {iconPosition === 'left' && (
+                    <Icon
+                      size={iconSize}
+                      sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, m: 'auto' }}
+                      icon={data.icon}
+                    />
+                  )}
                   <Text as="span" sx={{ pl: `${iconSize + 12}px` }}>
                     {children}
                   </Text>
+                  {iconPosition === 'right' && (
+                    <Icon
+                      size={iconSize}
+                      sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, m: 'auto' }}
+                      icon={data.icon}
+                    />
+                  )}
                 </>
               ) : (
                 children
@@ -239,10 +250,13 @@ export function GenericSelect({
           ),
           Option: ({ children, data, ...props }) => (
             <components.Option data={data} {...props}>
-              {data.icon && (
-                <Icon size={iconSize} sx={{ flexShrink: 0, mr: '12px' }} icon={data.icon} />
+              {data.icon && iconPosition === 'left' && (
+                <Icon size={iconSize} sx={{ flexShrink: 0, mr: '12px' }} icon={data.icon} />,
               )}
               {children}
+              {data.icon && iconPosition === 'right' && (
+                <Icon size={iconSize} sx={{ flexShrink: 0, ml: '12px' }} icon={data.icon} />,
+              )}
             </components.Option>
           ),
         }}

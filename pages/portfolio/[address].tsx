@@ -2,7 +2,7 @@ import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
 import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
 import { PortfolioOverview } from 'components/portfolio/PortfolioOverview'
 import { PortfolioOverviewSkeleton } from 'components/portfolio/PortfolioOverviewSkeleton'
-import { PositionsView } from 'components/portfolio/positions/PositionsView'
+import { PortfolioPositionsView } from 'components/portfolio/positions/PortfolioPositionsView'
 import { WalletView } from 'components/portfolio/wallet/WalletView'
 import { TabBar } from 'components/TabBar'
 import { useRedirect } from 'helpers/useRedirect'
@@ -60,12 +60,11 @@ export default function PortfolioView({ address }: { address: string }) {
         )}
         <TabBar
           variant="underline"
-          useDropdownOnMobile
           sections={[
             {
               value: 'positions',
               label: tPortfolio('positions-tab'),
-              content: <PositionsView address={address} />,
+              content: <PortfolioPositionsView address={address} />,
             },
             {
               value: 'wallet',
