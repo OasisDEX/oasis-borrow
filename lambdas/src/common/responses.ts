@@ -11,6 +11,12 @@ export function createErrorBody(message: string): string {
   return JSON.stringify(errorObject)
 }
 
+export function createHeaders(): Record<string, string | number | boolean> {
+  return {
+    'Access-Control-Allow-Origin': '*',
+  }
+}
+
 export function ResponseOk<T extends Record<string, any>>({
   body,
 }: {
@@ -18,6 +24,7 @@ export function ResponseOk<T extends Record<string, any>>({
 }): APIGatewayProxyResultV2 {
   return {
     statusCode: 200,
+    headers: createHeaders(),
     body: createOkBody(body),
   }
 }
@@ -25,6 +32,7 @@ export function ResponseOk<T extends Record<string, any>>({
 export function ResponseBadRequest(message: string): APIGatewayProxyResultV2 {
   return {
     statusCode: 400,
+    headers: createHeaders(),
     body: createErrorBody(message),
   }
 }
@@ -34,6 +42,7 @@ export function ResponseInternalServerError(
 ): APIGatewayProxyResultV2 {
   return {
     statusCode: 500,
+    headers: createHeaders(),
     body: createErrorBody(message),
   }
 }
