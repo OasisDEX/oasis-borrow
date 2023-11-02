@@ -1,6 +1,6 @@
 import { setupProductContext } from 'helpers/context/ProductContext'
 import type { ProductContext } from 'helpers/context/ProductContext.types'
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 
 import { useAccountContext } from './AccountContextProvider'
@@ -27,7 +27,7 @@ export function useProductContext(): ProductContext {
   on top of that page with isProductContextAvailable.
 */
 
-export function ProductContextProvider({ children }: WithChildren) {
+export function ProductContextProvider({ children }: PropsWithChildren<{}>) {
   const [context, setContext] = useState<ProductContext | undefined>(undefined)
   const mainContext = useMainContext()
   const accountContext = useAccountContext()

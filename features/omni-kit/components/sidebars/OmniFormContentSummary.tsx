@@ -20,7 +20,7 @@ export function OmniFormContentSummary({
     form: { dispatch },
     dynamicMetadata: {
       validations: { errors, notices, successes, warnings },
-      handlers: { customReset },
+      handlers,
     },
   } = useOmniProductContext(productType)
 
@@ -30,7 +30,7 @@ export function OmniFormContentSummary({
         <SidebarResetButton
           clear={() => {
             dispatch({ type: 'reset' })
-            customReset()
+            handlers?.customReset?.()
           }}
         />
       )}

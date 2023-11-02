@@ -1,16 +1,18 @@
 import { isMainContextAvailable, useMainContext } from 'components/context/MainContextProvider'
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 
-function SetupWeb3ContextInternal({ children }: WithChildren) {
+function SetupWeb3ContextInternal({ children }: PropsWithChildren<{}>) {
   const { setupWeb3Context$ } = useMainContext()
   setupWeb3Context$()
-  return children
+
+  return <>{children}</>
 }
 
-export function SetupWeb3Context({ children }: WithChildren) {
+export function SetupWeb3Context({ children }: PropsWithChildren<{}>) {
   if (isMainContextAvailable()) {
     return <SetupWeb3ContextInternal>{children}</SetupWeb3ContextInternal>
   }
-  return children
+
+  return <>{children}</>
 }

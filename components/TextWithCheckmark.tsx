@@ -1,11 +1,11 @@
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
 import { checkmark } from 'theme/icons'
 
 import { Icon } from './Icon'
 
-export function TextWithCheckmark({ children }: WithChildren) {
+export function TextWithCheckmark({ children }: PropsWithChildren<{}>) {
   return (
     <Flex sx={{ alignItems: 'center' }}>
       <Flex

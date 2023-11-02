@@ -1,12 +1,12 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import type { WithChildren } from 'helpers/types/With.types'
 import { useTranslation } from 'next-i18next'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { Box, Heading, Text } from 'theme-ui'
 
-export function DiscoverWrapperWithIntro({ children }: WithChildren) {
+export function DiscoverWrapperWithIntro({ children }: PropsWithChildren<{}>) {
   const { t } = useTranslation()
 
   return (

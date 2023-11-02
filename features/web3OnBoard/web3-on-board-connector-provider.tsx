@@ -2,8 +2,8 @@ import { ConnectorEvent } from '@web3-react/types'
 import type { NetworkConfigHexId } from 'blockchain/networks'
 import { NetworkIds } from 'blockchain/networks'
 import { useModalContext } from 'helpers/modalHook'
-import type { WithChildren } from 'helpers/types/With.types'
 import { useReducto } from 'helpers/useReducto'
+import type { PropsWithChildren } from 'react'
 import React, { createContext, useCallback, useContext, useEffect } from 'react'
 
 import { getNetworksFromPageNetwork } from './get-networks-from-page-network'
@@ -58,7 +58,7 @@ const web3OnBoardConnectorContext = createContext<Web3OnBoardConnectorContext>({
 
 export const useWeb3OnBoardConnectorContext = () => useContext(web3OnBoardConnectorContext)
 
-function InternalProvider({ children }: WithChildren) {
+function InternalProvider({ children }: PropsWithChildren<{}>) {
   const { networkConnector } = useNetworkConnector()
   const { dispatch, state } = useReducto<WalletManagementState, WalletStateEvent>({
     defaults: {
@@ -248,6 +248,6 @@ function InternalProvider({ children }: WithChildren) {
   )
 }
 
-export function Web3OnBoardConnectorProvider({ children }: WithChildren) {
+export function Web3OnBoardConnectorProvider({ children }: PropsWithChildren<{}>) {
   return <InternalProvider>{children}</InternalProvider>
 }

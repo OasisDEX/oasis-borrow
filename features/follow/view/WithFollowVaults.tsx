@@ -1,8 +1,8 @@
 import { useFollowInitialization } from 'features/follow/common/useFollowInitialization'
-import type { WithChildren } from 'helpers/types/With.types'
+import React, { type PropsWithChildren } from 'react'
 
-export function WithFollowVaults({ children }: WithChildren) {
+export function WithFollowVaults({ children }: PropsWithChildren<{}>) {
   useFollowInitialization({ isLimitReached: false })
 
-  return children
+  return <>{children}</>
 }

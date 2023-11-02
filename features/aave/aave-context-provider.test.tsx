@@ -5,8 +5,8 @@ import { DeferedContextProvider } from 'components/context/DeferedContextProvide
 import { mainContext, MainContextProvider } from 'components/context/MainContextProvider'
 import { productContext } from 'components/context/ProductContextProvider'
 import type { ProductContext } from 'helpers/context/ProductContext.types'
-import type { WithChildren } from 'helpers/types/With.types'
 import { LendingProtocol } from 'lendingProtocols'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 
 import type { AaveContext } from './aave-context'
@@ -33,7 +33,7 @@ jest.mock('./setup-spark-v3-context', () => {
 
 describe('AaveContextProvider', () => {
   const context = { protocols: {} } as ProductContext
-  const wrapper = ({ children }: WithChildren) => (
+  const wrapper = ({ children }: PropsWithChildren<{}>) => (
     <MainContextProvider>
       <DeferedContextProvider context={mainContext}>
         <AccountContextProvider>
