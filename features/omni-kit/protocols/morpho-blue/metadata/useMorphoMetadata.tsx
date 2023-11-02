@@ -74,8 +74,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
             !ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
         },
         values: {
-          // TODO the same value under different key
-          netBorrowCost: interestRate,
           interestRate,
           isFormEmpty: false,
           afterBuyingPower: simulation ? simulation.buyingPower : undefined,

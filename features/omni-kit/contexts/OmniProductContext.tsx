@@ -82,7 +82,6 @@ export type LendingMetadata = CommonMetadata & {
     collateralMax: BigNumber
     debtMax: BigNumber
     debtMin: BigNumber
-    netBorrowCost: BigNumber
     paybackMax: BigNumber
     shouldShowDynamicLtv: boolean
   }
