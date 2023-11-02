@@ -2,10 +2,15 @@ import type { IMultiplyStrategy, IRiskRatio, Tokens } from '@oasisdex/dma-librar
 import { strategies } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import { assertProtocol } from 'actions/aave-like/guards'
-import { networkIdToLibraryNetwork, swapCall } from 'actions/aave-like/helpers'
+import {
+  getAaveV3FlashLoanToken,
+  networkIdToLibraryNetwork,
+  swapCall,
+} from 'actions/aave-like/helpers'
 import type { OpenMultiplyAaveParameters } from 'actions/aave-like/types'
 import type BigNumber from 'bignumber.js'
-import { ethNullAddress, getRpcProvider, NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
+import { ethNullAddress, getRpcProvider } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWei } from 'blockchain/utils'
 import { ProxyType } from 'features/aave/types'
@@ -49,6 +54,7 @@ async function openPosition(
     multiple: riskRatio,
     debtToken: debtToken,
     collateralToken: collateralToken,
+    flashloan: getAaveV3FlashLoanToken(networkId, protocol),
     depositedByUser: {
       collateralInWei: depositedByUser.collateralToken?.amountInBaseUnit,
       debtInWei: depositedByUser.debtToken?.amountInBaseUnit,
@@ -80,28 +86,6 @@ async function openPosition(
         ...sharedDependencies,
         addresses: aavev3Addresses,
         getSwapData: swapCall(aavev3Addresses, networkId),
-      }
-
-      if (networkId === NetworkIds.BASEMAINNET) {
-        const tokenAddress = aavev3Addresses.tokens['USDBC']
-        if (tokenAddress === undefined) throw new Error('USDBC address is undefined')
-        args.flashloan = {
-          token: {
-            symbol: 'USDBC',
-            address: tokenAddress,
-            precision: 6,
-          },
-        }
-      }
-
-      if (networkId === NetworkIds.OPTIMISMMAINNET) {
-        args.flashloan = {
-          token: {
-            symbol: 'WETH',
-            address: aavev3Addresses.tokens['WETH'],
-            precision: 18,
-          },
-        }
       }
       return await strategies.aave.multiply.v3.open(args, dependenciesAaveV3)
     case LendingProtocol.SparkV3:

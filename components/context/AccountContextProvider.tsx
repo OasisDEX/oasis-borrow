@@ -1,8 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
-import { charterUrnProxy } from 'blockchain/calls/charter'
-import { cropperUrnProxy } from 'blockchain/calls/cropper'
 import type { DogIlk } from 'blockchain/calls/dog'
 import { dogIlk } from 'blockchain/calls/dog'
 import { tokenBalance } from 'blockchain/calls/erc20'
@@ -19,17 +17,14 @@ import type { SpotIlk } from 'blockchain/calls/spot'
 import { spotIlk } from 'blockchain/calls/spot'
 import type { Urn, VatIlk } from 'blockchain/calls/vat'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
-import type { VaultResolve } from 'blockchain/calls/vaultResolver'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { resolveENSName$ } from 'blockchain/ens'
-import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$ } from 'blockchain/ilks'
 import type { IlkData } from 'blockchain/ilks.types'
 import { NetworkIds } from 'blockchain/networks'
 import { createOraclePriceData$ } from 'blockchain/prices'
 import type { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices.types'
 import { createBalance$ } from 'blockchain/tokens'
-import { charterIlks, cropJoinIlks } from 'blockchain/tokens/mainnet'
 import { getUserDpmProxies$ } from 'blockchain/userDpmProxies'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { createStandardCdps$, createVault$, createVaults$ } from 'blockchain/vaults'
@@ -191,8 +186,6 @@ export function AccountContextProvider({ children }: WithChildren) {
       )
       const cdpRegistryOwns$ = observe(onEveryBlock$, chainContext$, cdpRegistryOwns)
       const cdpRegistryCdps$ = observe(onEveryBlock$, chainContext$, cdpRegistryCdps)
-      const charterUrnProxy$ = observe(onEveryBlock$, context$, charterUrnProxy)
-      const cropperUrnProxy$ = observe(onEveryBlock$, context$, cropperUrnProxy)
       const vatUrns$ = observe(onEveryBlock$, chainContext$, vatUrns, ilkUrnAddressToString)
       const vatGem$ = observe(onEveryBlock$, chainContext$, vatGem, ilkUrnAddressToString)
       const vatIlks$ = observe(onEveryBlock$, chainContext$, vatIlk)
@@ -211,30 +204,10 @@ export function AccountContextProvider({ children }: WithChildren) {
       const urnResolver$ = curry(createVaultResolver$)(
         cdpManagerIlks$,
         cdpManagerUrns$,
-        charterUrnProxy$,
-        cropperUrnProxy$,
-        cdpRegistryOwns$,
         cdpManagerOwner$,
         proxyOwner$,
       )
-      const charterCdps$ = memoize(
-        curry(createGetRegistryCdps$)(
-          onEveryBlock$,
-          chainContext$,
-          cdpRegistryCdps$,
-          proxyAddress$,
-          charterIlks,
-        ),
-      )
-      const cropJoinCdps$ = memoize(
-        curry(createGetRegistryCdps$)(
-          onEveryBlock$,
-          chainContext$,
-          cdpRegistryCdps$,
-          proxyAddress$,
-          cropJoinIlks,
-        ),
-      )
+
       const standardCdps$ = memoize(curry(createStandardCdps$)(proxyAddress$, getCdps$))
       const vault$ = memoize(
         (id: BigNumber) =>
@@ -251,11 +224,7 @@ export function AccountContextProvider({ children }: WithChildren) {
         bigNumberTostring,
       )
       const vaults$ = memoize(
-        curry(createVaults$)(onEveryBlock$, vault$, chainContext$, [
-          charterCdps$,
-          cropJoinCdps$,
-          standardCdps$,
-        ]),
+        curry(createVaults$)(onEveryBlock$, vault$, chainContext$, [standardCdps$]),
       )
       const hasActiveDsProxyAavePosition$ = hasActiveAavePositionOnDsProxy$(
         connectedContext$,
@@ -294,10 +263,6 @@ export function AccountContextProvider({ children }: WithChildren) {
         cdpManagerUrns$,
         cdpRegistryCdps$,
         cdpRegistryOwns$,
-        charterCdps$,
-        charterUrnProxy$,
-        cropJoinCdps$,
-        cropperUrnProxy$,
         dogIlks$,
         ensName$,
         getCdps$,
@@ -357,10 +322,6 @@ export type AccountContext = {
   cdpManagerUrns$: (args: BigNumber) => Observable<string>
   cdpRegistryCdps$: (args: { ilk: string; usr: string }) => Observable<BigNumber | null>
   cdpRegistryOwns$: (args: BigNumber) => Observable<string>
-  charterCdps$: (address: string) => Observable<BigNumber[]>
-  charterUrnProxy$: (args: string) => Observable<string>
-  cropJoinCdps$: (address: string) => Observable<BigNumber[]>
-  cropperUrnProxy$: (args: string) => Observable<string>
   dogIlks$: (args: string) => Observable<DogIlk>
   ensName$: (address: string) => Observable<string | void | null>
   getCdps$: (args: GetCdpsArgs) => Observable<GetCdpsResult>
@@ -387,7 +348,6 @@ export type AccountContext = {
   spotIlks$: (args: string) => Observable<SpotIlk>
   standardCdps$: (address: string) => Observable<BigNumber[]>
   tokenBalance$: (args: TokenBalanceArgs) => Observable<BigNumber>
-  urnResolver$: (cdpId: BigNumber) => Observable<VaultResolve>
   userReferral$: Observable<UserReferralState>
   userSettings$: Observable<UserSettingsState>
   vatGem$: (args: { ilk: string; urnAddress: string }) => Observable<BigNumber>

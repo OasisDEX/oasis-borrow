@@ -1,6 +1,5 @@
 import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
 import type { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault.types'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -17,7 +16,6 @@ export function VaultInformationControl({ generalManageVault }: VaultInformation
     ilkData: { stabilityFee, debtFloor, liquidationPenalty, liquidationRatio },
     vault,
   } = generalManageVault.state
-  const vaultType = generalManageVault.type
 
   const idData = {
     text: t('system.vault-id'),
@@ -44,14 +42,6 @@ export function VaultInformationControl({ generalManageVault }: VaultInformation
     value: `$${formatFiatBalance(debtFloor)}`,
   }
 
-  const originationFeePercentData = {
-    text: t('system.origination-fee'),
-    value:
-      'originationFeePercent' in vault
-        ? formatPercent(vault.originationFeePercent.times(100), { precision: 2 })
-        : '-',
-  }
-
   const defaultItems = [
     idData,
     stabilityFeeData,
@@ -60,12 +50,10 @@ export function VaultInformationControl({ generalManageVault }: VaultInformation
     dustLimitData,
   ]
   const guniItems = [idData, stabilityFeeData, dustLimitData]
-  const instiItems = [...defaultItems, originationFeePercentData]
 
   const isGuniVault = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(vault.ilk)
-  const isInstiVault = vaultType === VaultType.Insti
 
-  const vaultInfoItems = isGuniVault ? guniItems : isInstiVault ? instiItems : defaultItems
+  const vaultInfoItems = isGuniVault ? guniItems : defaultItems
 
   return <DefaultVaultLayout detailsViewControl={<VaultInformation items={vaultInfoItems} />} />
 }

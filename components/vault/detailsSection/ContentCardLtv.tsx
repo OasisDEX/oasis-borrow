@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import type { ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
@@ -132,7 +131,12 @@ interface ContentCardLtvProps {
   liquidationThreshold: BigNumber
   maxLoanToValue?: BigNumber
   afterLoanToValue?: BigNumber
-  isAutomationAvailable?: boolean
+  automation: {
+    isStopLossEnabled: boolean
+    isAutomationDataLoaded: boolean
+    isAutomationAvailable?: boolean
+    stopLossLevel?: BigNumber
+  }
 }
 
 export function ContentCardLtv({
@@ -140,15 +144,11 @@ export function ContentCardLtv({
   liquidationThreshold,
   afterLoanToValue,
   maxLoanToValue,
-  isAutomationAvailable,
+  automation,
 }: ContentCardLtvProps) {
   const { t } = useTranslation()
-  const {
-    triggerData: {
-      stopLossTriggerData: { stopLossLevel, isStopLossEnabled },
-    },
-    automationTriggersData: { isAutomationDataLoaded },
-  } = useAutomationContext()
+  const { stopLossLevel, isStopLossEnabled, isAutomationDataLoaded, isAutomationAvailable } =
+    automation
 
   const formatted = {
     loanToValue: formatDecimalAsPercent(loanToValue),

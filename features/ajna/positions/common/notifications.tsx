@@ -298,7 +298,7 @@ export function getAjnaNotifications({
   quoteToken,
   dispatch,
   updateState,
-  product,
+  productType,
   isOracless,
 }: {
   ajnaSafetySwitchOn: boolean
@@ -315,7 +315,7 @@ export function getAjnaNotifications({
     | AjnaUpdateState<AjnaBorrowFormState>
     | AjnaUpdateState<AjnaEarnFormState>
     | AjnaUpdateState<AjnaMultiplyFormState>
-  product: AjnaProduct
+  productType: AjnaProduct
   isOracless: boolean
 }) {
   const notifications: DetailsSectionNotificationItem[] = []
@@ -328,7 +328,7 @@ export function getAjnaNotifications({
     )
   }
 
-  switch (product) {
+  switch (productType) {
     case 'multiply':
     case 'borrow':
       const borrowishPositionAuction = positionAuction as AjnaBorrowishPositionAuction
