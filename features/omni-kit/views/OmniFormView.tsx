@@ -21,7 +21,6 @@ import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import type { PropsWithChildren } from 'react'
 import React, { useEffect, useState } from 'react'
@@ -99,7 +98,7 @@ export function OmniFormView({
     ...(dpmProxy && { existingProxy: dpmProxy }),
     ...getOmniFlowStateConfig({
       collateralToken,
-      fee: interestRate || zero,
+      fee: interestRate,
       isOpening,
       quoteToken,
       state,
