@@ -2,7 +2,10 @@
   "name": "lambdas",
   "version": "1.0.0",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "zip": "zip -r lambdas.zip dist/*"
   },
   "author": "Piter",
   "license": "ISC",
@@ -10,6 +13,6 @@
     "@types/aws-lambda": "^8.10.76"
   },
   "dependencies": {
-    "typescript": "^4.3.2"
+    "typescript": "^5.2.2"
   }
 }

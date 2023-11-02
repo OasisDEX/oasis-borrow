@@ -1,6 +1,5 @@
 /* eslint-disable no-relative-import-paths/no-relative-import-paths */
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
-const https = require('https')
 
 import { BadRequestResponse, InternalServerErrorResponse, OkResponse } from '../common/responses.js'
 import type { ProtocolAsset, WalletAsset } from './types.js'
@@ -71,7 +70,7 @@ const getWalletAssetsUsdValue = async (
 ): Promise<number> => {
   const results = await Promise.all(
     SUPPORTED_CHAIN_IDS.map((chainId) =>
-      https(`${serviceUrl}/user/chain_balance?id=${address}&chain_id=${chainId}`, {
+      fetch(`${serviceUrl}/user/chain_balance?id=${address}&chain_id=${chainId}`, {
         headers,
       }).then((_res) => _res.json() as Promise<WalletAsset>),
     ),
