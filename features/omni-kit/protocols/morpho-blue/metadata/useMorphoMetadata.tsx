@@ -98,6 +98,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           footerColumns: 2,
         },
         elements: {
+          faq: <></>,
           highlighterOrderInformation: undefined,
           overviewContent: (
             <MorphoDetailsSectionContent

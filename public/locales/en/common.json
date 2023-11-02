@@ -2633,7 +2633,12 @@
     }
   },
   "omni-kit": {
-    "headline": "{{collateralToken}}/{{quoteToken}} {{productType}}"
+    "headline": {
+      "title": "{{collateralToken}}/{{quoteToken}} {{productType}}",
+      "details": {
+        "current-market-price": "Current Market Price"
+      }
+    }
   },
   "ajna": {
     "title": "Ajna Website",
