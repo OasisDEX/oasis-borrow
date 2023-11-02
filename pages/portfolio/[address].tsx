@@ -41,7 +41,7 @@ export default function PortfolioView({ address }: { address: string }) {
           borrowedUsdValue: 10000.22,
           borrowedPercentageChange: 0.98,
         })
-    }, 1500)
+    }, 3500)
     return () => clearTimeout(test)
   }, [overviewData])
   useEffect(() => {

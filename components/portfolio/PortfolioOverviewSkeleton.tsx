@@ -39,7 +39,15 @@ export const PortfolioOverviewSkeleton = () => {
       >
         <PortfolioOverviewItem
           header={tPortfolio('total-supplied')}
-          value={<Skeleton sx={{ mt: 2, height: 4 }} />}
+          value={
+            <Skeleton
+              sx={{
+                mt: 2,
+                height: 4,
+              }}
+              color="fancy"
+            />
+          }
           subValue={<Skeleton sx={{ mt: 2 }} />}
         />
         <PortfolioOverviewItem
