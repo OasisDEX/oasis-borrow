@@ -17,15 +17,12 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const address = ctx.query.address
   const awsInfraUrl = getAwsInfraUrl()
   const awsInfraHeader = getAwsInfraHeader()
-  console.log('=>>>>>>>>>>>>>>>>>>>>>>>>>>>. \n\n\n', address)
-  console.log('address', address)
   const portfolioOverviewData = await fetch(
     `${awsInfraUrl}/portfolio-overview?address=${address}`,
     {
       headers: awsInfraHeader,
     },
   ).then((res) => res.json())
-  console.log('portfolioOverviewData', portfolioOverviewData)
 
   return {
     props: {
@@ -56,7 +53,6 @@ export default function PortfolioView({
   const { data: portfolioWalletData } = useFetch<PortfolioAssetsReply>(
     `/api/portfolio/wallet/${address}`,
   )
-  console.log('portfolioOverviewData', portfolioOverviewData)
   return address ? (
     <PortfolioLayout>
       <Box sx={{ width: '100%' }}>
