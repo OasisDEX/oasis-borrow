@@ -15,5 +15,31 @@
   "earn": "Earn",
   "migrate": "Migrate",
   "net-value": "Net Value",
-  "show-empty-positions": "Show empty positions"
+  "show-empty-positions": "Show empty positions",
+  "automations": "Automations",
+  "days-of-earning": "{{days}} Days of Earning",
+  "automation-details": {
+    "autoBuy": "Auto Buy",
+    "autoSell": "Auto Sell",
+    "takeProfit": "Take Profit",
+    "stopLoss": "Stop Loss"
+  },
+  "position-details": {
+    "netValue": "Net Value",
+    "pnl": "PnL",
+    "liquidationPrice": "Liq. Price",
+    "ltv": "LTV",
+    "multiple": "Multiple",
+    "collateralLocked": "Coll. Locked",
+    "totalDebt": "Total Debt",
+    "borrowRate": "Borrow Rate",
+    "lendingRange": "Lending Range",
+    "earnings": "Earnings",
+    "apy": "Current APY",
+    "90dApy": " 90D APY",
+    "suppliedToken": "Supplied",
+    "suppliedTokenBalance": "Balance of Supplied",
+    "borrowedToken": "Borrowed",
+    "borrowedTokenBalance": "Balance of Borrowed"
+  }
 }

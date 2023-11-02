@@ -44,7 +44,7 @@ type AutomationType = {
   price?: number
 }
 
-type DetailsType =
+export type DetailsType =
   | 'netValue'
   | 'pnl'
   | 'liquidationPrice'
@@ -61,6 +61,13 @@ type DetailsType =
   | 'suppliedTokenBalance'
   | 'borrowedToken'
   | 'borrowedTokenBalance'
+
+export type PositionDetail = {
+  type: DetailsType
+  value: string
+  accent?: 'positive' | 'negative'
+  subvalue?: string
+}
 
 export type PortfolioPosition = {
   positionId: number
@@ -83,12 +90,7 @@ export type PortfolioPosition = {
       amountUSD: number
     }
   }
-  details: {
-    type: DetailsType
-    value: string
-    accent?: 'positive' | 'negative'
-    subvalue?: string
-  }[]
+  details: PositionDetail[]
   automations: {
     stopLoss?: AutomationType
     takeProfit?: AutomationType

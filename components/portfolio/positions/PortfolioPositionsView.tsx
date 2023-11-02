@@ -11,6 +11,8 @@ import { Box, Flex, Grid, Text } from 'theme-ui'
 import { question_o } from 'theme/icons'
 import { useFetch } from 'usehooks-ts'
 
+import { PortfolioPositionBlock } from './PortfolioPositionBlock'
+import { PortfolioPositionBlockSkeleton } from './PortfolioPositionBlockSkeleton'
 import type { PortfolioProductType, PortfolioSortingType } from './types'
 
 type PortfolioPositionsViewFiltersType = {
@@ -21,7 +23,7 @@ type PortfolioPositionsViewFiltersType = {
 
 export const PortfolioPositionsView = ({ address }: { address: string }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const { data: portfolioPositionsData = { positions: [] } } = useFetch<PortfolioPositionsReply>(
+  const { data: portfolioPositionsData } = useFetch<PortfolioPositionsReply>(
     `/api/portfolio/positions/${address}`,
   )
 
@@ -85,23 +87,17 @@ export const PortfolioPositionsView = ({ address }: { address: string }) => {
             />
           </Flex>
         </Flex>
-        <Box>
-          {portfolioPositionsData.positions.map((position) => (
-            <Box
-              key={position.positionId}
-              sx={{
-                height: '300px',
-                border: '1px solid',
-                borderColor: 'neutral20',
-                borderRadius: 'round',
-                mt: 4,
-                overflow: 'hidden',
-                padding: 3,
-              }}
-            >
-              {JSON.stringify(position)}
-            </Box>
-          ))}
+        <Box sx={{ pt: 4 }}>
+          {portfolioPositionsData?.positions
+            ? portfolioPositionsData.positions.map((position) => (
+                <PortfolioPositionBlock
+                  key={`${position.positionId}-${position.protocol}-${position.network}`}
+                  position={position}
+                />
+              ))
+            : Array.from({ length: 3 }).map((_, index) => (
+                <PortfolioPositionBlockSkeleton key={`skeleton-${index}`} />
+              ))}
         </Box>
       </Box>
       <Box>
