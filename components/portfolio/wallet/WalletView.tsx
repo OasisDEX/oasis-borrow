@@ -1,7 +1,9 @@
+import { GenericMultiselect } from 'components/GenericMultiselect'
 import type { PortfolioAssetsReply } from 'features/portfolio/types'
+import { productHubNetworkFilter } from 'features/productHub/meta'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box } from 'theme-ui'
+import { Box, Flex, Grid, Heading } from 'theme-ui'
 import { useFetch } from 'usehooks-ts'
 
 export const WalletView = ({ address }: { address: string }) => {
@@ -9,10 +11,24 @@ export const WalletView = ({ address }: { address: string }) => {
   const { data: portfolioWalletData } = useFetch<PortfolioAssetsReply>(
     `/api/portfolio/wallet/${address}`,
   )
+
   return (
-    <Box>
-      <h4>{tPortfolio('wallet-data')}</h4>
-      <pre>{JSON.stringify(portfolioWalletData, null, 2)}</pre>
-    </Box>
+    <Grid variant="vaultContainer">
+      <Box>
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+          <Heading as="h2" variant="header5">
+            {tPortfolio('summary')}
+          </Heading>
+          <GenericMultiselect
+            sx={{ width: '220px' }}
+            label={tPortfolio('networks')}
+            options={productHubNetworkFilter}
+            onChange={(value) => {
+              console.info(value)
+            }}
+          />
+        </Flex>
+      </Box>
+    </Grid>
   )
 }
