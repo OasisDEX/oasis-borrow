@@ -21,4 +21,6 @@ export type PortfolioOverviewResponse = {
   suppliedPercentageChange: number
   borrowedUsdValue: number
   borrowedPercentageChange: number
+  totalUsdValue: number
+  totalPercentageChange: number
 }

@@ -2,9 +2,8 @@ import type { APIGatewayProxyResultV2 } from 'aws-lambda'
 
 import type { DefaultErrorResponse } from './types'
 
-export function createOkBody(message: string): string {
-  const errorObject: DefaultErrorResponse = { message }
-  return JSON.stringify(errorObject)
+export function createOkBody(obj: Record<string, any>): string {
+  return JSON.stringify(obj)
 }
 
 export function createErrorBody(message: string): string {
@@ -12,21 +11,25 @@ export function createErrorBody(message: string): string {
   return JSON.stringify(errorObject)
 }
 
-export function OkResponse(body: any): APIGatewayProxyResultV2 {
+export function ResponseOk<T extends Record<string, any>>({
+  body,
+}: {
+  body: T
+}): APIGatewayProxyResultV2 {
   return {
     statusCode: 200,
-    body,
+    body: createOkBody(body),
   }
 }
 
-export function BadRequestResponse(message: string): APIGatewayProxyResultV2 {
+export function ResponseBadRequest(message: string): APIGatewayProxyResultV2 {
   return {
     statusCode: 400,
     body: createErrorBody(message),
   }
 }
 
-export function InternalServerErrorResponse(
+export function ResponseInternalServerError(
   message: string = 'Internal server error',
 ): APIGatewayProxyResultV2 {
   return {

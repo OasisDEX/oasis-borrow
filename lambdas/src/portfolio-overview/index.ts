@@ -1,8 +1,9 @@
 /* eslint-disable no-relative-import-paths/no-relative-import-paths */
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 
-import { BadRequestResponse, InternalServerErrorResponse, OkResponse } from '../common/responses.js'
-import type { ProtocolAsset, WalletAsset } from './types.js'
+import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from '../common/responses'
+import { isValidAddress } from '../common/validators'
+import type { PortfolioOverviewResponse, ProtocolAsset, WalletAsset } from './types'
 
 const SUPPORTED_CHAIN_IDS = ['eth', 'op', 'arb', 'base']
 
@@ -22,17 +23,19 @@ const debankAuthHeaderKey = 'AccessKey'
 const headers = { [debankAuthHeaderKey]: debankApiKey }
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
-  let address: string | undefined
-
   // validate the query
   const query = event.queryStringParameters
-  if (query != null) {
-    if (query['address'] && typeof query['address'] === 'string') {
-      address = query['address']
-    }
+  if (query == null) {
+    return ResponseBadRequest('Missing query string')
   }
-  if (address === undefined) {
-    return BadRequestResponse('Missing address query parameter')
+
+  const { address } = query
+
+  if (!address) {
+    return ResponseBadRequest('Missing address')
+  }
+  if (isValidAddress(address)) {
+    return ResponseBadRequest('Invalid address')
   }
 
   try {
@@ -52,15 +55,19 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 
     const borrowedUsdValue: number = walletBalanceUsdValue + suppliedUsdValue
 
-    const json = {
+    const body: PortfolioOverviewResponse = {
       walletBalanceUsdValue,
       suppliedUsdValue,
+      suppliedPercentageChange: -12,
       borrowedUsdValue,
+      borrowedPercentageChange: 9,
+      totalUsdValue: suppliedUsdValue + borrowedUsdValue,
+      totalPercentageChange: 0,
     }
-    return OkResponse(json)
+    return ResponseOk<PortfolioOverviewResponse>({ body })
   } catch (error) {
     console.error(error)
-    return InternalServerErrorResponse()
+    return ResponseInternalServerError()
   }
 }
 

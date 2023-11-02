@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { Flex, Heading, Text } from 'theme-ui'
 
 import { PortfolioOverviewItem } from './PortfolioOverviewItem'
+import type { PortfolioOverviewResponse } from 'lambdas/src/portfolio-overview/types'
 
 function getChangeColor(change: number): string {
   if (change > 0) {
@@ -26,17 +27,7 @@ function getChangeSign(change: number): string {
   return ''
 }
 
-export const PortfolioOverview = ({
-  overviewData,
-}: {
-  overviewData?: {
-    walletBalanceUsdValue: number
-    suppliedUsdValue: number
-    suppliedPercentageChange: number
-    borrowedUsdValue: number
-    borrowedPercentageChange: number
-  }
-}) => {
+export const PortfolioOverview = ({ overviewData }: { overviewData?: PortfolioOverviewResponse }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
   if (!overviewData) {
