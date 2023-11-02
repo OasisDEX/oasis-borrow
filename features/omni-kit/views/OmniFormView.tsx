@@ -21,6 +21,7 @@ import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import type { PropsWithChildren } from 'react'
 import React, { useEffect, useState } from 'react'
@@ -81,7 +82,7 @@ export function OmniFormView({
     dynamicMetadata: {
       values: { interestRate, sidebarTitle, isFormEmpty },
       validations: { isFormValid, isFormFrozen, hasErrors },
-      filters: { flowStateFilter, consumedProxyFilter },
+      filters: { flowStateFilter },
       elements: { dupeModal },
       featureToggles: { suppressValidation, safetySwitch },
     },
@@ -98,12 +99,12 @@ export function OmniFormView({
     ...(dpmProxy && { existingProxy: dpmProxy }),
     ...getOmniFlowStateConfig({
       collateralToken,
-      fee: interestRate,
+      fee: interestRate || zero,
       isOpening,
       quoteToken,
       state,
     }),
-    filterConsumedProxy: (events) => events.every(consumedProxyFilter),
+    filterConsumedProxy: (events) => events.every((event) => !flowStateFilter(event)),
     onProxiesAvailable: (events, dpmAccounts) => {
       const filteredEvents = events.filter(flowStateFilter)
 

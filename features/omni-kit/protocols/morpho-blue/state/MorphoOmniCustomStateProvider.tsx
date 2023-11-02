@@ -3,7 +3,7 @@ import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEar
 import type { OmniCustomStateParams } from 'features/omni-kit/controllers'
 import { AjnaCustomStateContextProvider } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
 import { useAjnaOmniTxHandler } from 'features/omni-kit/protocols/ajna/hooks/useAjnaOmniTxHandler'
-import { useAjnaMetadata } from 'features/omni-kit/protocols/ajna/metadata/useAjnaMetadata'
+import { useMorphoMetadata } from 'features/omni-kit/protocols/morpho-blue/metadata/useMorphoMetadata'
 import type { MorphoPositionAuction } from 'features/omni-kit/protocols/morpho-blue/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
@@ -31,7 +31,7 @@ export const MorphoOmniCustomStateProvider: FC<MorphoOmniCustomStateProviderProp
       }
     >
       {children({
-        useDynamicMetadata: useAjnaMetadata,
+        useDynamicMetadata: useMorphoMetadata,
         useTxHandler: useAjnaOmniTxHandler,
       })}
     </AjnaCustomStateContextProvider>

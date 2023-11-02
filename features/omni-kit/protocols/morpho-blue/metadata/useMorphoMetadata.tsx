@@ -38,12 +38,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
     steps: { currentStep },
   } = useOmniGeneralContext()
 
-  const position = productContext.position.currentPosition.position as MorphoPosition
-  const simulation = productContext.position.currentPosition.simulation as MorphoPosition
-
-  const shouldShowDynamicLtv = true
-  const changeVariant = getOmniBorrowishChangeVariant({ simulation, isOracless })
-
   const validations = {
     isFormValid: true,
     hasErrors: false,
@@ -61,6 +55,14 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
   switch (productType) {
     case OmniProductType.Borrow:
     case OmniProductType.Multiply:
+      const position = productContext.position.currentPosition.position as MorphoPosition
+      const simulation = productContext.position.currentPosition.simulation as
+        | MorphoPosition
+        | undefined
+
+      const changeVariant = getOmniBorrowishChangeVariant({ simulation, isOracless })
+      const shouldShowDynamicLtv = true
+
       return {
         notifications,
         validations,
@@ -70,8 +72,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         filters: {
           flowStateFilter: (event: CreatePositionEvent) =>
             ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
-          consumedProxyFilter: (event: CreatePositionEvent) =>
-            !ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
         },
         values: {
           interestRate,
@@ -124,8 +124,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
               productType={productType}
             />
           ),
-          overviewBanner: undefined,
-          riskSidebar: <>Morpho risk sidebar</>,
           dupeModal: () => <>Morpho dupe modal</>,
         },
         featureToggles: {
