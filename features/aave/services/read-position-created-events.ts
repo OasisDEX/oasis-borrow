@@ -94,6 +94,8 @@ export function extractLendingProtocolFromPositionCreatedEvent(
     case 'Ajna':
     case 'AJNA_RC5':
       return LendingProtocol.Ajna
+    case 'MorphoBlue':
+      return LendingProtocol.MorphoBlue
     default:
       throw new Error(
         `Unrecognised protocol received from positionCreatedChainEvent ${JSON.stringify(

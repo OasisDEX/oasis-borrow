@@ -3,7 +3,7 @@ import {
   omniSidebarManageSteps,
   omniSidebarSetupSteps,
 } from 'features/omni-kit/constants'
-import { type OmniSidebarStepsSet } from 'features/omni-kit/types'
+import { type OmniSidebarStepsSet, OmniProductType } from 'features/omni-kit/types'
 
 export const morphoSeoTags = {
   productKey: `seo.morphoProductPage.title`,
@@ -26,3 +26,5 @@ export const morphoOmniSteps: OmniSidebarStepsSet = {
 }
 
 export const morphoSupportedPairs = ['ETH-USDC', 'ETH-DAI', 'WSTETH-USDC']
+
+export const morphoProducts = [OmniProductType.Borrow, OmniProductType.Multiply]

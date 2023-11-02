@@ -2,13 +2,13 @@ import type { MorphoPosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import { ajnaFlowStateFilter } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import type {
   GetOmniMetadata,
   LendingMetadata,
 } from 'features/omni-kit/contexts/OmniProductContext'
 import { getOmniBorrowishChangeVariant, getOmniBorrowPaybackMax } from 'features/omni-kit/helpers'
+import { morphoFlowStateFilter } from 'features/omni-kit/protocols/morpho-blue/helpers/morphoFlowStateFilter'
 import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { MorphoDetailsSectionContent } from 'features/omni-kit/protocols/morpho-blue/metadata/MorphoDetailsSectionContent'
 import { MorphoDetailsSectionFooter } from 'features/omni-kit/protocols/morpho-blue/metadata/MorphoDetailsSectionFooter'
@@ -71,7 +71,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         },
         filters: {
           flowStateFilter: (event: CreatePositionEvent) =>
-            ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
+            morphoFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
         },
         values: {
           interestRate,
