@@ -48,10 +48,16 @@ export const PortfolioOverview = ({
     >
       <Flex sx={{ alignItems: 'flex-start' }}>
         <PortfolioOverviewItem
-          header={tPortfolio('wallet-balance')}
+          header={tPortfolio('summer-fi-portfolio')}
           value={
             <Heading variant="header4">
-              ${formatAmount(new BigNumber(overviewData.walletBalanceUsdValue), 'USD')}
+              $
+              {formatAmount(
+                new BigNumber(overviewData.suppliedUsdValue).minus(
+                  new BigNumber(overviewData.borrowedUsdValue),
+                ),
+                'USD',
+              )}
             </Heading>
           }
           subValue={
