@@ -43,7 +43,6 @@ interface OmniFeatureToggles {
 
 interface OmniFilters {
   flowStateFilter: (event: CreatePositionEvent) => boolean
-  consumedProxyFilter: (event: CreatePositionEvent) => boolean
 }
 
 interface CommonMetadata {
@@ -54,7 +53,7 @@ interface CommonMetadata {
 }
 
 interface CommonMetadataHandlers {
-  customReset: () => void
+  customReset?: () => void
 }
 interface CommonMetadataValues {
   footerColumns: number
@@ -69,11 +68,11 @@ interface CommonMetadataElements {
   overviewBanner?: ReactNode
   overviewContent: ReactNode
   overviewFooter: ReactNode
-  riskSidebar: ReactNode
+  riskSidebar?: ReactNode
 }
 
 export type LendingMetadata = CommonMetadata & {
-  handlers: CommonMetadataHandlers
+  handlers?: CommonMetadataHandlers
   values: CommonMetadataValues & {
     afterAvailableToBorrow: BigNumber | undefined
     afterBuyingPower: BigNumber | undefined
@@ -96,15 +95,15 @@ export type SupplyMetadata = CommonMetadata & {
   }
   values: CommonMetadataValues & {
     earnWithdrawMax: BigNumber
-    extraDropdownItems: SidebarSectionHeaderSelectItem[]
+    extraDropdownItems?: SidebarSectionHeaderSelectItem[]
   }
   elements: CommonMetadataElements & {
-    earnExtraUiDropdownContent: ReactNode
+    earnExtraUiDropdownContent?: ReactNode
     earnFormOrder: ReactNode
     earnFormOrderAsElement: FC<OmniIsCachedPosition>
-    extraEarnInput: ReactNode
-    extraEarnInputDeposit: ReactNode
-    extraEarnInputWithdraw: ReactNode
+    extraEarnInput?: ReactNode
+    extraEarnInputDeposit?: ReactNode
+    extraEarnInputWithdraw?: ReactNode
   }
 }
 
@@ -150,14 +149,14 @@ type ProductDetailsContextProviderProps =
   | ProductContextProviderPropsWithEarn
   | ProductContextProviderPropsWithMultiply
 
-interface PositionSet<P> {
-  position: P
-  simulation?: P
+interface PositionSet<Position> {
+  position: Position
+  simulation?: Position
 }
 
-interface ProductContextPosition<P, A> {
-  cachedPosition?: PositionSet<P>
-  currentPosition: PositionSet<P>
+interface ProductContextPosition<Position, Auction> {
+  cachedPosition?: PositionSet<Position>
+  currentPosition: PositionSet<Position>
   swap?: {
     current?: SwapData
     cached?: SwapData
@@ -168,15 +167,15 @@ interface ProductContextPosition<P, A> {
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
   setSimulation: Dispatch<SetStateAction<AjnaSimulationData<OmniGenericPosition> | undefined>>
   setCachedSwap: (swap: SwapData) => void
-  positionAuction: A
+  positionAuction: Auction
   history: PositionHistoryEvent[]
   simulationCommon: OmniSimulationCommon
 }
 
-interface GenericProductContext<P, F, A, M> {
-  form: F
-  position: ProductContextPosition<P, A>
-  dynamicMetadata: M
+interface GenericProductContext<Position, Form, Auction, Metadata> {
+  form: Form
+  position: ProductContextPosition<Position, Auction>
+  dynamicMetadata: Metadata
 }
 
 export type ProductContextWithBorrow = GenericProductContext<

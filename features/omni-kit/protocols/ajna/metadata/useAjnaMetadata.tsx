@@ -150,8 +150,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   })
 
   const filters = {
-    consumedProxyFilter: (event: CreatePositionEvent) =>
-      !ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
     flowStateFilter: (event: CreatePositionEvent) =>
       ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
   }
@@ -201,9 +199,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       return {
         notifications,
         validations,
-        handlers: {
-          customReset: () => null,
-        },
         filters,
         values: {
           interestRate,
@@ -315,7 +310,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         },
         filters,
         values: {
-          interestRate: zero, // TODO it's borrow rate and for earn shouldn't be required
+          interestRate: zero,
           isFormEmpty: getAjnaOmniEarnIsFomEmpty({
             price,
             position: productContext.position.currentPosition.position as AjnaEarnPosition,
