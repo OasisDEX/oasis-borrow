@@ -27,7 +27,11 @@ function getChangeSign(change: number): string {
   return ''
 }
 
-export const PortfolioOverview = ({ overviewData }: { overviewData?: PortfolioOverviewResponse }) => {
+export const PortfolioOverview = ({
+  overviewData,
+}: {
+  overviewData?: PortfolioOverviewResponse
+}) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
   if (!overviewData) {

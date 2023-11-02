@@ -1,12 +1,12 @@
 // Copyright (c) HashiCorp, Inc
 // SPDX-License-Identifier: MPL-2.0
-import "cdktf/lib/testing/adapters/jest"; // Load types for expect matchers
+import 'cdktf/lib/testing/adapters/jest' // Load types for expect matchers
 // import { Testing } from "cdktf";
 
-describe("My CDKTF Application", () => {
+describe('My CDKTF Application', () => {
   // The tests below are example tests, you can find more information at
   // https://cdk.tf/testing
-  it.todo("should be tested");
+  it.todo('should be tested')
 
   // // All Unit tests test the synthesised terraform code, it does not create real-world resources
   // describe("Unit testing using assertions", () => {
@@ -86,4 +86,4 @@ describe("My CDKTF Application", () => {
   //     expect(Testing.fullSynth(app)).toPlanSuccessfully();
   //   });
   // });
-});
+})
