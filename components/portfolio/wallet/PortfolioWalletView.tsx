@@ -1,4 +1,5 @@
 import { GenericMultiselect } from 'components/GenericMultiselect'
+import { PortfolioWalletSummary } from 'components/portfolio/wallet/PortfolioWalletSummary'
 import type { PortfolioAssetsReply } from 'features/portfolio/types'
 import { productHubNetworkFilter } from 'features/productHub/meta'
 import React from 'react'
@@ -15,7 +16,7 @@ export const WalletView = ({ address }: { address: string }) => {
   return (
     <Grid variant="vaultContainer">
       <Box>
-        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mb: '24px' }}>
           <Heading as="h2" variant="header5">
             {tPortfolio('summary')}
           </Heading>
@@ -28,6 +29,7 @@ export const WalletView = ({ address }: { address: string }) => {
             }}
           />
         </Flex>
+        <PortfolioWalletSummary totalAssets={20859930.02} totalAssetsChange={1.54} />
         <Heading as="h2" variant="header5">
           {tPortfolio('assets')}
         </Heading>

@@ -1,25 +1,37 @@
+import { type NetworkNames, networksByName } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { tokensBySymbol } from 'blockchain/tokensMetadata.constants'
 import { GenericTokenIcon } from 'components/GenericTokenIcon'
+import { Icon } from 'components/Icon'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
-import { Flex } from 'theme-ui'
-
-import { Icon } from './Icon'
+import { Flex, Image } from 'theme-ui'
 
 interface TokensGroupProps {
   forceSize?: number
+  network?: NetworkNames
   sx?: ThemeUIStyleObject
   tokens: string[]
 }
 
-export function TokensGroup({ forceSize, sx, tokens }: TokensGroupProps) {
+export function TokensGroup({ forceSize, network, sx, tokens }: TokensGroupProps) {
   const defaultSingleSize = 44
   const defaultMultipleSize = 30
+  const networkSize = forceSize ?? (tokens.length > 1 ? defaultSingleSize : defaultMultipleSize)
 
   return (
     <Flex sx={{ alignItems: 'center', position: 'relative', zIndex: 0, ...sx }}>
-      <Flex as="ul" sx={{ m: 0, p: 0, listStyle: 'none' }}>
+      <Flex
+        as="ul"
+        sx={{
+          m: 0,
+          p: 0,
+          listStyle: 'none',
+          ...(network && {
+            pr: `${networkSize * 0.1}px`,
+          }),
+        }}
+      >
         {tokens.map((token, i) => (
           <Flex
             key={i}
@@ -51,6 +63,20 @@ export function TokensGroup({ forceSize, sx, tokens }: TokensGroupProps) {
           </Flex>
         ))}
       </Flex>
+      {network && (
+        <Image
+          src={networksByName[network].icon}
+          alt={networksByName[network].label}
+          sx={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            width: `${networkSize * 0.45}px`,
+            height: `${networkSize * 0.45}px`,
+            zIndex: 2,
+          }}
+        />
+      )}
     </Flex>
   )
 }
