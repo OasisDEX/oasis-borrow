@@ -206,9 +206,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         },
         filters,
         values: {
-          // TODO the same value under different key
-          netBorrowCost: interestRate,
-          interestRate: interestRate,
+          interestRate,
           isFormEmpty,
           afterBuyingPower,
           shouldShowDynamicLtv,
