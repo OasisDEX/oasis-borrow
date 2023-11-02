@@ -29,7 +29,7 @@ function getChangeSign(change: number): string {
 export const PortfolioOverview = ({
   overviewData,
 }: {
-  overviewData: {
+  overviewData?: {
     walletBalanceUsdValue: number
     suppliedUsdValue: number
     suppliedPercentageChange: number
@@ -38,6 +38,11 @@ export const PortfolioOverview = ({
   }
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
+
+  if (!overviewData) {
+    return <>'Loading'</>
+  }
+
   return (
     <Flex
       sx={{ flexDirection: ['column', 'row'], justifyContent: ['flex-start', 'space-between'] }}
