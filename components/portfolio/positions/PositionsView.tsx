@@ -1,4 +1,5 @@
 import type { PortfolioPositionsReply } from 'features/portfolio/types'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box } from 'theme-ui'
 import { useFetch } from 'usehooks-ts'
