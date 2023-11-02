@@ -10,5 +10,6 @@
   "coming-soon": "Coming soon",
   "past-week": "{{percentage}}% Past Week",
   "networks": "Networks",
+  "assets": "Networks",
   "summary": "Summary"
 }

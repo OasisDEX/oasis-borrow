@@ -28,6 +28,12 @@ export const WalletView = ({ address }: { address: string }) => {
             }}
           />
         </Flex>
+        <Heading as="h2" variant="header5">
+          {tPortfolio('assets')}
+        </Heading>
+      </Box>
+      <Box>
+        <pre>{JSON.stringify(portfolioWalletData, null, 2)}</pre>
       </Box>
     </Grid>
   )
