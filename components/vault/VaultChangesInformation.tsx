@@ -9,10 +9,9 @@ import { formatAmount } from 'helpers/formatters/format'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
-import type { WithChildren } from 'helpers/types/With.types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react'
+import type { PropsWithChildren, ReactNode } from 'react'
 import React, { useCallback, useMemo } from 'react'
 import { arrow_right_light, question_o } from 'theme/icons'
 
@@ -79,7 +78,7 @@ export function VaultChangesInformationItem({
 export function VaultChangesInformationContainer({
   title,
   children,
-}: { title: string } & WithChildren) {
+}: PropsWithChildren<{ title: string }>) {
   return (
     <DimmedList>
       <Box as="li" sx={{ listStyle: 'none' }}>

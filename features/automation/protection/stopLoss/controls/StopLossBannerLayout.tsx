@@ -4,9 +4,8 @@ import { VaultDetailsAfterPill } from 'components/vault/VaultDetails'
 import { WithArrow } from 'components/WithArrow'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import type { WithChildren } from 'helpers/types/With.types'
 import { useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react'
+import type { PropsWithChildren, ReactNode } from 'react'
 import React from 'react'
 import { Box, Button, Card, Flex, Grid, Image, Text } from 'theme-ui'
 
@@ -45,7 +44,7 @@ function StopLossBannerSection({
   )
 }
 
-function StopLossBannerSectionCompact({ children }: WithChildren) {
+function StopLossBannerSectionCompact({ children }: PropsWithChildren<{}>) {
   return (
     <Flex
       sx={{

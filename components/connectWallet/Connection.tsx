@@ -1,7 +1,6 @@
 import type { NetworkConfigHexId } from 'blockchain/networks'
 import { useConnection } from 'features/web3OnBoard/useConnection'
-import type { WithChildren } from 'helpers/types/With.types'
-import { useEffect } from 'react'
+import React, { type PropsWithChildren, useEffect } from 'react'
 
 export function Connection({
   children,
@@ -9,12 +8,12 @@ export function Connection({
   chainId,
   pageChainId,
   includeTestNet,
-}: WithChildren & {
+}: PropsWithChildren<{
   walletConnect: boolean
   chainId?: NetworkConfigHexId
   pageChainId?: NetworkConfigHexId
   includeTestNet?: boolean
-}) {
+}>) {
   const { connect, setPageNetworks } = useConnection()
 
   useEffect(() => {}, [pageChainId, setPageNetworks])
@@ -23,5 +22,5 @@ export function Connection({
     if (walletConnect) connect(chainId, includeTestNet)
   }, [walletConnect, chainId, connect, setPageNetworks, pageChainId, includeTestNet])
 
-  return children
+  return <>{children}</>
 }

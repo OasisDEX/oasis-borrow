@@ -2,8 +2,8 @@ import type BigNumber from 'bignumber.js'
 import type { IlkData } from 'blockchain/ilks.types'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import type { WithChildren } from 'helpers/types/With.types'
 import { useTranslation } from 'next-i18next'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 
 import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
@@ -16,7 +16,7 @@ export interface DefaultVaultHeaderProps {
   priceInfo: PriceInfo
 }
 
-export function DefaultVaultHeader(props: DefaultVaultHeaderProps & WithChildren) {
+export function DefaultVaultHeader(props: PropsWithChildren<DefaultVaultHeaderProps>) {
   const {
     ilkData: { liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
     id,

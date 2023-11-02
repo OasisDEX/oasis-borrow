@@ -1,3 +1,4 @@
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { Link as ThemeLink } from 'theme-ui'
 
@@ -17,10 +18,10 @@ export function AppLink({
   target,
   variant = 'styles.a',
   ...rest
-}: AppLinkProps) {
+}: PropsWithChildren<AppLinkProps>) {
   const isInternalLink = href && getIsInternalLink(href)
 
-  if (disabled) return children
+  if (disabled) return <>{children}</>
 
   if (isInternalLink) {
     return <InternalLink {...{ href, sx, variant, onClick, ...rest }}>{children}</InternalLink>
