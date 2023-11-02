@@ -1,6 +1,6 @@
 import { setupMainContext } from 'helpers/context/MainContext'
 import type { MainContext } from 'helpers/context/MainContext.types'
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 
 export const mainContext = React.createContext<MainContext | undefined>(undefined)
@@ -17,7 +17,7 @@ export function useMainContext(): MainContext {
   return ac
 }
 
-export function MainContextProvider({ children }: WithChildren) {
+export function MainContextProvider({ children }: PropsWithChildren<{}>) {
   const [context, setContext] = useState<MainContext | undefined>(undefined)
 
   useEffect(() => {

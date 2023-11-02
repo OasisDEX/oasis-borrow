@@ -19,10 +19,10 @@ import {
 } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import type { TranslateStringType } from 'helpers/translateStringType'
-import type { WithChildren } from 'helpers/types/With.types'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
+import type { PropsWithChildren } from 'react'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import type { ThemeUIStyleObject } from 'theme-ui'
@@ -42,7 +42,7 @@ type VaultNoticeProps = {
   withClose?: boolean
 }
 
-function StatusFrame({ children, sx }: WithChildren & { sx?: ThemeUIStyleObject }) {
+function StatusFrame({ children, sx }: PropsWithChildren<{ sx?: ThemeUIStyleObject }>) {
   return (
     <Flex
       sx={{

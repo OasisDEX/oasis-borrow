@@ -51,8 +51,8 @@ import {
 import { bigNumberTostring } from 'helpers/bigNumberToString'
 import type { DepreciatedServices } from 'helpers/context/types'
 import { ilkUrnAddressToString } from 'helpers/ilkUrnAddressToString'
-import type { WithChildren } from 'helpers/types/With.types'
 import { memoize } from 'lodash'
+import type { PropsWithChildren } from 'react'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
@@ -75,7 +75,7 @@ export function useAccountContext(): AccountContext {
   return ac
 }
 
-export function AccountContextProvider({ children }: WithChildren) {
+export function AccountContextProvider({ children }: PropsWithChildren<{}>) {
   const [context, setContext] = useState<AccountContext | undefined>(undefined)
   const {
     context$,
