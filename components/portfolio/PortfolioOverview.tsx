@@ -40,7 +40,11 @@ export const PortfolioOverview = ({
   const { t: tPortfolio } = useTranslation('portfolio')
   return (
     <Flex
-      sx={{ flexDirection: ['column', 'row'], justifyContent: ['flex-start', 'space-between'] }}
+      sx={{
+        flexDirection: ['column', 'row'],
+        justifyContent: ['flex-start', 'space-between'],
+        mb: 4,
+      }}
     >
       <Flex sx={{ alignItems: 'flex-start' }}>
         <PortfolioOverviewItem

@@ -1,6 +1,6 @@
 {
-  "wallet-data": "Wallet data:",
-  "positions-data": "Positions data:",
+  "positions-tab": "Positions",
+  "wallet-tab": "Wallet",
   "view-on-etherscan": "View on Etherscan",
   "wallet-balance": "Wallet Balance",
   "view-assets": "View Assets",
