@@ -111,7 +111,7 @@ class LambdaStack extends TerraformStack {
 
 const app = new App()
 const stack = new LambdaStack(app, 'lambda-hello-world', {
-  path: '../lambdas/dist/hello-world',
+  path: '../lambdas/dist/portfolio-overview',
   handler: 'index.handler',
   runtime: 'nodejs18.x',
   stageName: 'hello-world',
