@@ -17,28 +17,25 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const address = ctx.query.address
   const awsInfraUrl = getAwsInfraUrl()
   const awsInfraHeader = getAwsInfraHeader()
-  const portfolioOverviewData = await fetch(
-    `${awsInfraUrl}/portfolio-overview?address=${address}`,
-    {
-      headers: awsInfraHeader,
-    },
-  ).then((res) => res.json())
 
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale ?? 'en', ['portfolio', 'common'])),
       address,
-      portfolioOverviewData,
+      awsInfraUrl,
+      awsInfraHeader,
     },
   }
 }
 
 export default function PortfolioView({
   address,
-  portfolioOverviewData,
+  awsInfraUrl,
+  awsInfraHeader,
 }: {
   address: string
-  portfolioOverviewData: PortfolioOverviewResponse
+  awsInfraUrl: string
+  awsInfraHeader: Record<string, string>
 }) {
   const { t: tPortfolio } = useTranslation('portfolio')
   const { replace } = useRedirect()
@@ -53,6 +50,13 @@ export default function PortfolioView({
   const { data: portfolioWalletData } = useFetch<PortfolioAssetsReply>(
     `/api/portfolio/wallet/${address}`,
   )
+  const { data: portfolioOverviewData } = useFetch<PortfolioOverviewResponse>(
+    `${awsInfraUrl}/portfolio-overview?address=${address}`,
+    {
+      headers: awsInfraHeader,
+    },
+  )
+
   return address ? (
     <PortfolioLayout>
       <Box sx={{ width: '100%' }}>
