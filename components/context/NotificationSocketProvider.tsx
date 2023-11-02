@@ -12,9 +12,9 @@ import {
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { getBrowserName } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
-import type { WithChildren } from 'helpers/types/With.types'
 import { uiChanges } from 'helpers/uiChanges'
 import getConfig from 'next/config'
+import type { PropsWithChildren } from 'react'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import type { Socket } from 'socket.io-client'
 import io from 'socket.io-client'
@@ -30,7 +30,7 @@ export const NotificationSocketContext = createContext<WebSocket | {}>({})
 
 export const useNotificationSocket = () => useContext(NotificationSocketContext) as WebSocket
 
-export function NotificationSocketProvider({ children }: WithChildren) {
+export function NotificationSocketProvider({ children }: PropsWithChildren<{}>) {
   if (!isMainContextAvailable()) {
     return null
   }

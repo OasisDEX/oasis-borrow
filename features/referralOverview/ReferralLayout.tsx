@@ -1,14 +1,14 @@
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import type { WithChildren } from 'helpers/types/With.types'
 import { useTranslation } from 'next-i18next'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { Flex, Grid, Heading, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
 import { arrow_right } from 'theme/icons'
 
-export function ReferralLayout({ children }: WithChildren) {
+export function ReferralLayout({ children }: PropsWithChildren<{}>) {
   const { t } = useTranslation()
 
   return (
