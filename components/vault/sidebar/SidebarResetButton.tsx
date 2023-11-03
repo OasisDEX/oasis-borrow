@@ -1,8 +1,8 @@
 import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button } from 'theme-ui'
 import { refresh } from 'theme/icons'
+import { Box, Button } from 'theme-ui'
 
 interface SidebarResetButtonProps {
   clear: () => void

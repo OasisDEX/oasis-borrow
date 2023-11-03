@@ -1,7 +1,7 @@
 import { Skeleton } from 'components/Skeleton'
 import React from 'react'
-import { Box, Flex, Grid } from 'theme-ui'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
+import { Box, Flex, Grid } from 'theme-ui'
 
 export function AssetsAndPositionsOverviewLoadingState() {
   const breakpointIndex = useBreakpointIndex()

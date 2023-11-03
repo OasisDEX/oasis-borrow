@@ -2,9 +2,9 @@ import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { theme } from 'theme'
+import { star } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Card, Spinner, Text } from 'theme-ui'
-import { star } from 'theme/icons'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface FollowButtonProps {

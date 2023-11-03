@@ -6,11 +6,12 @@ import { ProtocolLabel } from 'components/ProtocolLabel'
 import { WithArrow } from 'components/WithArrow'
 import dayjs from 'dayjs'
 import { ProductType } from 'features/aave/types'
-import type { PortfolioPosition } from 'features/portfolio/types'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Text } from 'theme-ui'
+
+import type { PortfolioPosition } from 'lambdas/src/portfolio-positions/types'
 
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')

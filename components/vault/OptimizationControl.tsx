@@ -19,8 +19,8 @@ import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Container } from 'theme-ui'
 import { warning } from 'theme/icons'
+import { Container } from 'theme-ui'
 
 import { DefaultVaultLayout } from './DefaultVaultLayout'
 

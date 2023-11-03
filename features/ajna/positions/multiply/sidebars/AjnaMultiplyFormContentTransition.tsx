@@ -1,8 +1,8 @@
 import { Icon } from 'components/Icon'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Text } from 'theme-ui'
 import { borrow_transition } from 'theme/icons'
+import { Text } from 'theme-ui'
 
 export function AjnaMultiplyFormContentTransition() {
   const { t } = useTranslation()

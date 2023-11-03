@@ -2,9 +2,10 @@ import axios from 'axios'
 import { NetworkNames } from 'blockchain/networks'
 import type { DebankNetworkNames } from 'blockchain/networks/debank-network-names'
 import { DebankNetworkNameToOurs } from 'blockchain/networks/debank-network-names'
-import type { DebankTokensReply, PortfolioAssetsReply } from 'features/portfolio/types'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { object, string } from 'zod'
+
+import type { DebankTokensReply, PortfolioAssetsReply } from 'lambdas/src/portfolio-assets/types'
 
 const portfolioWalletAddressSchema = object({
   address: string(),

@@ -4,13 +4,14 @@ import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { AppLink } from 'components/Links'
 import { getPortfolioChangeColor, getPortfolioTokenProducts } from 'components/portfolio/helpers'
-import type { PortfolioAssetsToken } from 'features/portfolio/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { upperFirst } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Text } from 'theme-ui'
+
+import type { PortfolioAssetsToken } from 'lambdas/src/portfolio-assets/types'
 
 interface PortfolioWalletAssetsProps {
   assets?: PortfolioAssetsToken[]

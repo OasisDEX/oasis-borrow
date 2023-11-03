@@ -9,8 +9,8 @@ import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
-import { Flex, Text } from 'theme-ui'
 import { arrow_right } from 'theme/icons'
+import { Flex, Text } from 'theme-ui'
 
 const min = new BigNumber(0.01)
 const max = new BigNumber(1)

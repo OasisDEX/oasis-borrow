@@ -3,8 +3,8 @@ import type { OpenVaultStage } from 'features/borrow/open/pipes/openVault.types'
 import type { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
-import { Flex, Image } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
+import { Flex, Image } from 'theme-ui'
 
 export function SidebarVaultStopLossStage(props: {
   stage: OpenVaultStage | OpenMultiplyVaultStage

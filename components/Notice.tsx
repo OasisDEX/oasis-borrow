@@ -1,8 +1,8 @@
 import type { PropsWithChildren } from 'react'
 import React from 'react'
+import { close_squared } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, IconButton } from 'theme-ui'
-import { close_squared } from 'theme/icons'
 
 import { Icon } from './Icon'
 

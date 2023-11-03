@@ -10,8 +10,8 @@ import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { theme } from 'theme'
-import { Box, Flex, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
+import { Box, Flex, Text } from 'theme-ui'
 
 interface DiscoverNavigationProps {
   kind: DiscoverPages

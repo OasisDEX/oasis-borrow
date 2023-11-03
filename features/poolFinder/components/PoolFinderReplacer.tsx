@@ -1,8 +1,8 @@
 import { Icon } from 'components/Icon'
 import type { FC } from 'react'
 import React from 'react'
-import { Button } from 'theme-ui'
 import { refresh } from 'theme/icons'
+import { Button } from 'theme-ui'
 
 interface PoolFinderReplacerProps {
   isVisible: boolean

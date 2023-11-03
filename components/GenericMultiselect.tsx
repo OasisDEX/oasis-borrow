@@ -7,9 +7,9 @@ import { useToggle } from 'helpers/useToggle'
 import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React, { useEffect, useRef, useState } from 'react'
-import type { ThemeUIStyleObject } from 'theme-ui';
-import { Box, Flex, Image, Text } from 'theme-ui'
 import { checkmark, clear_selection } from 'theme/icons'
+import type { ThemeUIStyleObject } from 'theme-ui'
+import { Box, Flex, Image, Text } from 'theme-ui'
 import type { FeaturesEnum } from 'types/config'
 
 import { Icon } from './Icon'

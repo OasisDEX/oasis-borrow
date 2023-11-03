@@ -13,8 +13,8 @@ import { getHistoryEventLabel } from 'features/positionHistory/getHistoryEventLa
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React, { useState } from 'react'
-import { Box, Flex, Text } from 'theme-ui'
 import { chevron_down, chevron_up } from 'theme/icons'
+import { Box, Flex, Text } from 'theme-ui'
 
 interface PositionHistoryItemProps {
   collateralToken: string

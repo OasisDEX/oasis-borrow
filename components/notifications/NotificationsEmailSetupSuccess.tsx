@@ -1,8 +1,8 @@
 import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Text } from 'theme-ui'
 import { tick } from 'theme/icons'
+import { Flex, Text } from 'theme-ui'
 
 export function NotificationsSetupSuccess() {
   const { t } = useTranslation()

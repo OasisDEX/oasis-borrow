@@ -1,7 +1,7 @@
 import type { FC, MouseEventHandler } from 'react'
 import React from 'react'
-import { Flex } from 'theme-ui'
 import { checkmark } from 'theme/icons'
+import { Flex } from 'theme-ui'
 
 import { Icon } from './Icon'
 

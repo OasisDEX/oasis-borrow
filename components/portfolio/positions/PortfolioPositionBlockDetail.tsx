@@ -1,12 +1,13 @@
 import { Icon } from 'components/Icon'
 import { getPortfolioAccentColor } from 'components/portfolio/helpers/getPortfolioAccentColor'
 import { StatefulTooltip } from 'components/Tooltip'
-import type { DetailsType, PositionDetail } from 'features/portfolio/types'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Flex, Text } from 'theme-ui'
 import { question_o } from 'theme/icons'
+import { Box, Flex, Text } from 'theme-ui'
+
+import type { DetailsType, PositionDetail } from 'lambdas/src/portfolio-positions/types'
 
 export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetail }) => {
   const { t: tPortfolio } = useTranslation('portfolio')

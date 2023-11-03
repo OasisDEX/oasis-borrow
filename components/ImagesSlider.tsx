@@ -1,8 +1,8 @@
 import { random } from 'lodash'
 import React, { useEffect, useState } from 'react'
+import { fadeInAnimationMobile } from 'theme/animations'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Container, Grid, Image } from 'theme-ui'
-import { fadeInAnimationMobile } from 'theme/animations'
 
 export type ImagesSliderProps = {
   items: {

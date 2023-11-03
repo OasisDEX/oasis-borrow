@@ -5,8 +5,8 @@ import { SWAP_WIDGET_CHANGE_SUBJECT } from 'features/swapWidget/SwapWidgetChange
 import { useObservable } from 'helpers/observableHook'
 import { uiChanges } from 'helpers/uiChanges'
 import React, { useCallback } from 'react'
-import { Box, Button, Image, Link } from 'theme-ui'
 import { arrow_right_light, tick } from 'theme/icons'
+import { Box, Button, Image, Link } from 'theme-ui'
 
 export const NetworkButton = ({
   network,

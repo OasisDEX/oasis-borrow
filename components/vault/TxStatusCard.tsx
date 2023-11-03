@@ -1,8 +1,8 @@
 import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Flex, Grid, Link, Spinner, Text } from 'theme-ui'
 import { checkmark } from 'theme/icons'
+import { Card, Flex, Grid, Link, Spinner, Text } from 'theme-ui'
 
 export interface TxStatusCardProgressProps {
   text: string
