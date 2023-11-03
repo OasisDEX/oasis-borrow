@@ -1,23 +1,22 @@
 import type { GenericSelectOption } from 'components/GenericSelect'
 import { Icon } from 'components/Icon'
+import { PortfolioPositionBlock } from 'components/portfolio/positions/PortfolioPositionBlock'
+import { PortfolioPositionBlockSkeleton } from 'components/portfolio/positions/PortfolioPositionBlockSkeleton'
 import { PortfolioPositionsProductSelect } from 'components/portfolio/positions/PortfolioPositionsProductSelect'
 import { PortfolioPositionsSortingSelect } from 'components/portfolio/positions/PortfolioPositionsSortingSelect'
+import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio/positions/types'
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { PortfolioPositionsReply } from 'features/portfolio/types'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 import { question_o } from 'theme/icons'
 import { useFetch } from 'usehooks-ts'
 
-import { PortfolioPositionBlock } from './PortfolioPositionBlock'
-import { PortfolioPositionBlockSkeleton } from './PortfolioPositionBlockSkeleton'
-import type { PortfolioProductType, PortfolioSortingType } from './types'
-
 type PortfolioPositionsViewFiltersType = {
   showEmptyPositions: boolean
-  product?: PortfolioProductType
+  product?: PortfolioProductType[]
   sorting?: PortfolioSortingType
 }
 
@@ -33,12 +32,54 @@ export const PortfolioPositionsView = ({ address }: { address: string }) => {
 
   const updatePortfolioPositionsFilters =
     (changeType: keyof PortfolioPositionsViewFiltersType) =>
-    (value: GenericSelectOption | boolean) => {
+    (value: GenericSelectOption | boolean | string[]) => {
       setFilterState((prevState) => ({
         ...prevState,
-        [changeType]: typeof value === 'boolean' ? value : value.value,
+        // value is either a GenericSelectOption (with value.value), an array (of products) or a boolean (show empty)
+        [changeType]: Array.isArray(value) || typeof value === 'boolean' ? value : value.value,
       }))
     }
+
+  const filteredAndSortedPositions = useMemo(() => {
+    if (!portfolioPositionsData?.positions) return []
+    // empty positions first
+    const filteredEmptyPositions = portfolioPositionsData.positions.filter(
+      ({ tokens }) => filterState['showEmptyPositions'] || tokens.supply.amountUSD > 0,
+    )
+    // filter by product
+    const noneSelected = [0, undefined].includes(filterState['product']?.length) // none selected = "All products"
+    const allSelected =
+      filterState['product']?.length === Object.values(PortfolioProductType).length // all selected manually
+    const includeMigrated = filterState['product']?.includes(PortfolioProductType.migrate) // include migrated positions
+    const filteredProductPositions = filteredEmptyPositions.filter((position) => {
+      if (noneSelected || allSelected) {
+        return true
+      }
+      return (
+        filterState['product']?.includes(
+          // filter by product type
+          position.type?.toLocaleLowerCase() as PortfolioProductType,
+        ) ||
+        (includeMigrated && position.availableToMigrate) // special case for migration positions
+      )
+    })
+
+    const sortedPositions = filteredProductPositions
+      .toSorted((a, b) => {
+        if (filterState['sorting'] === PortfolioSortingType.netValueAscending) {
+          return a.tokens.supply.amountUSD - b.tokens.supply.amountUSD
+        }
+        return b.tokens.supply.amountUSD - a.tokens.supply.amountUSD
+      })
+      .toSorted((a, b) => {
+        // move migration positions to the bottom
+        if (a.availableToMigrate) return 1
+        if (b.availableToMigrate) return -1
+        return 0
+      })
+
+    return sortedPositions
+  }, [filterState, portfolioPositionsData])
 
   return (
     <Grid variant="vaultContainer">
@@ -68,14 +109,16 @@ export const PortfolioPositionsView = ({ address }: { address: string }) => {
             }}
           >
             <Text variant="paragraph3" sx={{ mr: 3 }}>
-              {tPortfolio('show-empty-positions')}
+              {tPortfolio('show-empty-positions.label')}
             </Text>
             <StatefulTooltip
-              tooltip={<>What do you want to know?</>}
+              tooltip={
+                <Text variant="paragraph4">{tPortfolio('show-empty-positions.tooltip')}</Text>
+              }
               containerSx={{ mr: 2, ml: '-10px' }}
               tooltipSx={{
                 ml: '-75px',
-                width: '150px',
+                width: '300px',
                 borderRadius: 'medium',
               }}
             >
@@ -88,8 +131,8 @@ export const PortfolioPositionsView = ({ address }: { address: string }) => {
           </Flex>
         </Flex>
         <Box sx={{ pt: 4 }}>
-          {portfolioPositionsData?.positions
-            ? portfolioPositionsData.positions.map((position) => (
+          {filteredAndSortedPositions
+            ? filteredAndSortedPositions.map((position) => (
                 <PortfolioPositionBlock
                   key={`${position.positionId}-${position.protocol}-${position.network}`}
                   position={position}

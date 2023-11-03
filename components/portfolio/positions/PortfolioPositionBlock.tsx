@@ -1,5 +1,7 @@
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AppLink } from 'components/Links'
+import { PortfolioPositionAutomationIcons } from 'components/portfolio/positions/PortfolioPositionAutomationIcons'
+import { PortfolioPositionBlockDetail } from 'components/portfolio/positions/PortfolioPositionBlockDetail'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { WithArrow } from 'components/WithArrow'
 import dayjs from 'dayjs'
@@ -9,9 +11,6 @@ import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Text } from 'theme-ui'
-
-import { PortfolioPositionAutomationIcons } from './PortfolioPositionAutomationIcons'
-import { PortfolioPositionBlockDetail } from './PortfolioPositionBlockDetail'
 
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')

@@ -46,6 +46,7 @@ type AutomationType = {
 
 export type DetailsType =
   | 'netValue'
+  | 'netValueEarnActivePassive'
   | 'pnl'
   | 'liquidationPrice'
   | 'ltv'
@@ -71,7 +72,7 @@ export type PositionDetail = {
 
 export type PortfolioPosition = {
   positionId: number
-  type: ProductType
+  type?: ProductType
   network: NetworkNames
   protocol: LendingProtocol
   strategyType?: StrategyType

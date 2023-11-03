@@ -1,21 +1,19 @@
-import { type GenericSelectOption, GenericSelect } from 'components/GenericSelect'
+import { GenericMultiselect } from 'components/GenericMultiselect'
+import { type GenericSelectOption } from 'components/GenericSelect'
+import { PortfolioProductType } from 'components/portfolio/positions/types'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { PortfolioProductType } from './types'
+import { Box } from 'theme-ui'
+import { portfolio_product_dropdown_icon } from 'theme/icons'
 
 export const PortfolioPositionsProductSelect = ({
   onChange,
 }: {
-  onChange: (value: GenericSelectOption) => void
+  onChange: (value: string[]) => void
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
   const productOptionsList: GenericSelectOption[] = [
-    {
-      label: tPortfolio('all-products'),
-      value: PortfolioProductType.allProducts,
-    },
     {
       label: tPortfolio('borrow'),
       value: PortfolioProductType.borrow,
@@ -34,11 +32,13 @@ export const PortfolioPositionsProductSelect = ({
     },
   ]
   return (
-    <GenericSelect
-      wrapperSx={{ minWidth: '148px', mr: 3 }}
-      options={productOptionsList}
-      onChange={onChange}
-      defaultValue={productOptionsList[0]}
-    />
+    <Box sx={{ mr: 3 }}>
+      <GenericMultiselect
+        icon={portfolio_product_dropdown_icon}
+        label="products"
+        options={productOptionsList}
+        onChange={onChange}
+      />
+    </Box>
   )
 }

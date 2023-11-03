@@ -3,6 +3,7 @@ import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import { keyBy } from 'lodash'
+import type { ReactNode } from 'react'
 import React, { useState } from 'react'
 import ReactSelect, { components } from 'react-select'
 import { theme } from 'theme'
@@ -38,9 +39,8 @@ export interface GenericSelectProps {
   name?: string
   onChange?: (value: GenericSelectOption) => void
   options: GenericSelectOption[]
-  placeholder?: string
+  placeholder?: string | ReactNode
   wrapperSx?: ThemeUIStyleObject
-  iconPosition?: 'left' | 'right'
 }
 
 export function GenericSelect({
@@ -49,7 +49,6 @@ export function GenericSelect({
   expandableArrowSize = 12,
   expandableArrowSx,
   iconSize = 32,
-  iconPosition = 'left',
   isDisabled = false,
   isSearchable = false,
   name,
@@ -57,7 +56,7 @@ export function GenericSelect({
   options,
   placeholder,
   wrapperSx,
-}: GenericSelectProps) {
+}: Readonly<GenericSelectProps>) {
   const isMobile = useOnMobile() && isTouchDevice
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
@@ -225,23 +224,14 @@ export function GenericSelect({
             <components.SingleValue data={data} {...props}>
               {data.icon ? (
                 <>
-                  {iconPosition === 'left' && (
-                    <Icon
-                      size={iconSize}
-                      sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, m: 'auto' }}
-                      icon={data.icon}
-                    />
-                  )}
+                  <Icon
+                    size={iconSize}
+                    sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, m: 'auto' }}
+                    icon={data.icon}
+                  />
                   <Text as="span" sx={{ pl: `${iconSize + 12}px` }}>
                     {children}
                   </Text>
-                  {iconPosition === 'right' && (
-                    <Icon
-                      size={iconSize}
-                      sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, m: 'auto' }}
-                      icon={data.icon}
-                    />
-                  )}
                 </>
               ) : (
                 children
@@ -250,13 +240,10 @@ export function GenericSelect({
           ),
           Option: ({ children, data, ...props }) => (
             <components.Option data={data} {...props}>
-              {data.icon && iconPosition === 'left' && (
+              {data.icon && (
                 <Icon size={iconSize} sx={{ flexShrink: 0, mr: '12px' }} icon={data.icon} />
               )}
               {children}
-              {data.icon && iconPosition === 'right' && (
-                <Icon size={iconSize} sx={{ flexShrink: 0, ml: '12px' }} icon={data.icon} />
-              )}
             </components.Option>
           ),
         }}

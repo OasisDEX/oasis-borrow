@@ -1,9 +1,10 @@
 import { type GenericSelectOption, GenericSelect } from 'components/GenericSelect'
+import { Icon } from 'components/Icon'
+import { PortfolioSortingType } from 'components/portfolio/positions/types'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { arrow_down, arrow_up_thin } from 'theme/icons'
-
-import { PortfolioSortingType } from './types'
+import { Box, Text } from 'theme-ui'
+import { arrow_down, arrow_up_thin, portfolio_sort_dropdown_icon } from 'theme/icons'
 
 export const PortfolioPositionsSortingSelect = ({
   onChange,
@@ -26,10 +27,19 @@ export const PortfolioPositionsSortingSelect = ({
   ]
   return (
     <GenericSelect
-      wrapperSx={{ minWidth: '148px' }}
-      iconSize={16}
-      iconPosition="right"
-      placeholder="Sort by"
+      wrapperSx={{ minWidth: '150px' }}
+      iconSize={10}
+      placeholder={
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Icon icon={portfolio_sort_dropdown_icon} size={32} sx={{ mr: 2 }} />
+          <Text>Sort by</Text>
+        </Box>
+      }
       options={sortingOptionsList}
       onChange={onChange}
     />

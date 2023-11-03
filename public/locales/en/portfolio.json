@@ -15,7 +15,10 @@
   "earn": "Earn",
   "migrate": "Migrate",
   "net-value": "Net Value",
-  "show-empty-positions": "Show empty positions",
+  "show-empty-positions": {
+    "label": "Show empty positions",
+    "tooltip": "Positions valued at $0 are hidden by default. Toggle 'Show Empty Positions' to view or use them. You still own these and can utilize them without incurring new position costs."
+  },
   "automations": "Automations",
   "days-of-earning": "{{days}} Days of Earning",
   "view-position": "View Position",
@@ -44,22 +47,16 @@
     "borrowedTokenBalance": "Balance of Borrowed"
   },
   "details-tooltips": {
-    "netValue": "here",
-    "pnl": "here",
-    "liquidationPrice": "here",
-    "ltv": "here",
-    "multiple": "here",
-    "collateralLocked": "here",
-    "totalDebt": "here",
-    "borrowRate": "here",
-    "lendingRange": "here",
-    "earnings": "here",
-    "apy": "here",
-    "90dApy": "here",
-    "suppliedToken": "here",
-    "suppliedTokenBalance": "here",
-    "borrowedToken": "here",
-    "borrowedTokenBalance": "here"
-  },
-  "show-empty-positions-tooltip:": "here"
+    "netValue": "Net Value is the current value of the collateral in your position minus the current debt expressed in USD.",
+    "netValueEarnActivePassive": "Net Value is the total of your initial deposit, plus earnings or additional deposits, minus fees.",
+    "liquidationPrice": "The current price of the collateral, based on the LTV of the position, that, if crossed, would liquidate your position.",
+    "ltv": "The LTV is the Loan to Value of your position, and represents the amount of debt you have, relative to your collateral, as a %. The LTV is used to determine your liquidation price, often expressed as Max LTV.",
+    "multiple": "Multiple indicates how much additional collateral exposure you have in this position, affecting potential gains and losses.",
+    "borrowRate": "Percentage reflecting Borrow (debt) APY minus Supply (collateral) APY. Positive values mean you are paying to borrow; negative means you're earning. Rates are variable.",
+    "lendingRange": "The range reflecting the price you’ve selected to lend your tokens, based on the existing distribution of price buckets.",
+    "apy": "Annualised rate this position is currently earning",
+    "90dApy": "The Annualised rate the position is earning based on the average of the last 90 days",
+    "suppliedTokenBalance": "The total amount of your supplied asset(s), expressed in USD.",
+    "borrowedTokenBalance": "The total amount of your borrowed asset(s), expressed in USD."
+  }
 }
