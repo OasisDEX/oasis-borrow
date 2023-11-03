@@ -80,6 +80,7 @@ jobs:
           ONE_INCH_API_KEY: ${{ secrets.ONE_INCH_API_KEY_STAGING }}
           ONE_INCH_API_URL: ${{ secrets.ONE_INCH_API_URL_STAGING }}
           REFERRAL_SUBGRAPH_URL: ${{ secrets.REFERRAL_SUBGRAPH_URL_STAGING }}
+          AWS_API_GATEWAY_URL: ${{ secrets.AWS_API_GATEWAY_URL }}
         run: yarn build
 
       - name: Configure AWS credentials
