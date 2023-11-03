@@ -1,7 +1,8 @@
+import { NetworkNames } from 'blockchain/networks'
 import { getActionUrl } from 'features/productHub/helpers'
 import type { ProductHubItem, ProductHubSupportedNetworks } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
-import type { LendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 
 type ProductBorrowNavItem = {
   value: number
@@ -22,8 +23,8 @@ const getProductBorrowInitNavItem = (startingValue: number): ProductBorrowNavIte
   value: startingValue,
   primaryToken: '',
   secondaryToken: '',
-  protocol: '' as LendingProtocol,
-  network: '' as ProductHubSupportedNetworks,
+  protocol: LendingProtocol.AaveV3,
+  network: NetworkNames.ethereumMainnet,
   url: '',
 })
 
