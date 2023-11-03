@@ -251,11 +251,11 @@ export function GenericSelect({
           Option: ({ children, data, ...props }) => (
             <components.Option data={data} {...props}>
               {data.icon && iconPosition === 'left' && (
-                <Icon size={iconSize} sx={{ flexShrink: 0, mr: '12px' }} icon={data.icon} />,
+                <Icon size={iconSize} sx={{ flexShrink: 0, mr: '12px' }} icon={data.icon} />
               )}
               {children}
               {data.icon && iconPosition === 'right' && (
-                <Icon size={iconSize} sx={{ flexShrink: 0, ml: '12px' }} icon={data.icon} />,
+                <Icon size={iconSize} sx={{ flexShrink: 0, ml: '12px' }} icon={data.icon} />
               )}
             </components.Option>
           ),

@@ -1,4 +1,5 @@
 import { type GenericSelectOption, GenericSelect } from 'components/GenericSelect'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { arrow_down, arrow_up_thin } from 'theme/icons'
 
