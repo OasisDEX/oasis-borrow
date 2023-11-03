@@ -23,11 +23,19 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "runtimeConfig.js", "next-i18next.config.js", "middleware.ts"],
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "runtimeConfig.js",
+    "next-i18next.config.js",
+    "middleware.ts"
+  ],
   "exclude": ["node_modules", "types", "coverage"],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"
-    },
+    }
   }
 }

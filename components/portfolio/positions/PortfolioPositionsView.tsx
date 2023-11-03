@@ -65,13 +65,13 @@ export const PortfolioPositionsView = ({ address }: { address: string }) => {
     })
 
     const sortedPositions = filteredProductPositions
-      .toSorted((a, b) => {
+      .sort((a, b) => {
         if (filterState['sorting'] === PortfolioSortingType.netValueAscending) {
           return a.tokens.supply.amountUSD - b.tokens.supply.amountUSD
         }
         return b.tokens.supply.amountUSD - a.tokens.supply.amountUSD
       })
-      .toSorted((a, b) => {
+      .sort((a, b) => {
         // move migration positions to the bottom
         if (a.availableToMigrate) return 1
         if (b.availableToMigrate) return -1

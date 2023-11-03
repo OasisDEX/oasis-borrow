@@ -70,7 +70,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         <Flex
           sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}
         >
-          {[ProductType.Borrow, ProductType.Multiply].includes(position.type) && (
+          {position.type && [ProductType.Borrow, ProductType.Multiply].includes(position.type) && (
             <Flex sx={{ flexDirection: 'column' }}>
               <Text variant="paragraph4" color="neutral80" sx={{ mb: 2 }}>
                 {tPortfolio('automations')}
@@ -80,7 +80,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
               </Flex>
             </Flex>
           )}
-          {[ProductType.Earn].includes(position.type) && (
+          {position.type && [ProductType.Earn].includes(position.type) && (
             <Flex sx={{ flexDirection: 'column' }}>
               <Text variant="boldParagraph3" color="neutral80" sx={{ mb: 2 }}>
                 {tPortfolio('days-of-earning', {
