@@ -4,6 +4,7 @@ import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import type { AjnaProduct } from 'features/ajna/common/types'
 import { getOraclessProductUrl } from 'features/poolFinder/helpers'
+import { getPortfolioLink } from 'helpers/get-portfolio-link'
 import { useModalContext } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { startCase } from 'lodash'
@@ -50,7 +51,7 @@ export function AjnaDupePositionModal({
   const amount = hasMultiplyPositions ? 'plural' : 'singular'
   const type = product === 'earn' ? 'lender' : 'borrower'
   const primaryLink = hasMultiplyPositions
-    ? `/owner/${walletAddress}`
+    ? getPortfolioLink(walletAddress)
     : `${getOraclessProductUrl({
         chainId,
         collateralAddress,

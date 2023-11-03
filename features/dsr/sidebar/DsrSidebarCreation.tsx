@@ -7,8 +7,8 @@ import { isProxyStage } from 'features/proxy/proxy'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Image } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
+import { Box, Flex, Image } from 'theme-ui'
 
 function getTxHash(state: DsrDepositState) {
   if (getIsAllowanceStage(state.stage)) {

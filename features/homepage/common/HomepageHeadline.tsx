@@ -1,9 +1,9 @@
 import { Icon } from 'components/Icon'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
+import { arrow_right } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Text } from 'theme-ui'
-import { arrow_right } from 'theme/icons'
 
 type HomePageHeadlineProps = {
   primaryText: string

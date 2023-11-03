@@ -1,8 +1,8 @@
 import { Icon } from 'components/Icon'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Flex } from 'theme-ui'
 import { stop_loss_active } from 'theme/icons'
+import { Button, Flex } from 'theme-ui'
 
 interface AssetsTableDataRiskProtectionIconProps {
   isOwner?: boolean

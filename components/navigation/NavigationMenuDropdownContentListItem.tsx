@@ -1,9 +1,9 @@
 import { Icon } from 'components/Icon'
 import { NavigationMenuDropdownContentIcon } from 'components/navigation/NavigationMenuDropdownContentIcon'
 import React from 'react'
+import { star } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Heading, Text } from 'theme-ui'
-import { star } from 'theme/icons'
 
 import type { NavigationMenuPanelList } from './Navigation.types'
 

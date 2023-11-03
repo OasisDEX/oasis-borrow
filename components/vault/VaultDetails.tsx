@@ -6,9 +6,9 @@ import type { CommonVaultState } from 'helpers/types/CommonVaultState.types'
 import { zero } from 'helpers/zero'
 import type { PropsWithChildren, ReactNode } from 'react'
 import React from 'react'
+import { question_o } from 'theme/icons'
 import type { SxProp } from 'theme-ui'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
-import { question_o } from 'theme/icons'
 
 export type CollRatioColor = 'primary100' | 'critical100' | 'warning100' | 'success100'
 

@@ -6,8 +6,8 @@ import { StatefulTooltip } from 'components/Tooltip'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import type { ReactNode } from 'react'
 import React, { useState } from 'react'
-import { Box, Flex, Grid, Text } from 'theme-ui'
 import { arrow_right_light, question_o } from 'theme/icons'
+import { Box, Flex, Grid, Text } from 'theme-ui'
 
 export type SecondaryVariantType = 'positive' | 'negative' | 'neutral'
 

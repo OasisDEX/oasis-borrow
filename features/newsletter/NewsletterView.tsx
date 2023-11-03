@@ -7,8 +7,8 @@ import { Trans, useTranslation } from 'next-i18next'
 import type { FormEvent } from 'react'
 import React, { useEffect, useState } from 'react'
 import { GRADIENTS } from 'theme'
-import { Box, Button, Flex, Grid, Heading, Input, Text } from 'theme-ui'
 import { arrow_right, checkmark } from 'theme/icons'
+import { Box, Button, Flex, Grid, Heading, Input, Text } from 'theme-ui'
 
 import { createNewsletter$ } from './newsletter'
 import type {

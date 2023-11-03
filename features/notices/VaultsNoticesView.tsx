@@ -17,6 +17,7 @@ import {
   formatCryptoBalance,
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
+import { getPortfolioLink } from 'helpers/get-portfolio-link'
 import { useObservable } from 'helpers/observableHook'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import { zero } from 'helpers/zero'
@@ -25,10 +26,10 @@ import { useTranslation } from 'next-i18next'
 import type { PropsWithChildren } from 'react'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
-import type { ThemeUIStyleObject } from 'theme-ui'
-import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 import { bannerWallet, exclamationMark } from 'theme/icons'
 import { useTheme } from 'theme/useThemeUI'
+import type { ThemeUIStyleObject } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 import type { LiquidationCallEvent as AaveLiquidationCallEventV2 } from 'types/ethers-contracts/AaveV2LendingPool'
 import type { LiquidationCallEvent as AaveLiquidationCallEventV3 } from 'types/ethers-contracts/AaveV3Pool'
 import type { StateFrom } from 'xstate'
@@ -171,7 +172,7 @@ export function VaultOwnershipBanner({
         ) : (
           <Text as="span">
             {t('vault-notices.ownership.subheader2')}{' '}
-            <AppLink href={`/owner/${account}`} target="_blank" sx={{ fontSize: 3 }}>
+            <AppLink href={getPortfolioLink(account)} target="_blank" sx={{ fontSize: 3 }}>
               {t('here')}
             </AppLink>
           </Text>
@@ -204,7 +205,7 @@ function PositionOwnershipBanner({
         ) : (
           <Text>
             {t('vault-notices.position.subheader2')}{' '}
-            <AppLink href={`/owner/${connectedWalletAddress}`} target="_blank">
+            <AppLink href={getPortfolioLink(connectedWalletAddress)} target="_blank">
               {t('here')}
             </AppLink>
           </Text>
@@ -236,7 +237,7 @@ export function VaultOverviewOwnershipNotice({
       subheader={
         <Text>
           {t('vaults-overview.banner-content')}{' '}
-          <AppLink href={`/owner/${account}`} internalInNewTab={true} sx={{ fontSize: 3 }}>
+          <AppLink href={getPortfolioLink(account)} internalInNewTab={true} sx={{ fontSize: 3 }}>
             {t('here')}
           </AppLink>
         </Text>

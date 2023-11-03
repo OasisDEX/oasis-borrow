@@ -3,12 +3,13 @@ import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import { keyBy } from 'lodash'
+import type { ReactNode } from 'react'
 import React, { useState } from 'react'
 import ReactSelect, { components } from 'react-select'
 import { theme } from 'theme'
+import { useOnMobile } from 'theme/useBreakpointIndex'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Text } from 'theme-ui'
-import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { Icon } from './Icon'
 import type { IconProps } from './Icon.types'
@@ -38,7 +39,7 @@ export interface GenericSelectProps {
   name?: string
   onChange?: (value: GenericSelectOption) => void
   options: GenericSelectOption[]
-  placeholder?: string
+  placeholder?: string | ReactNode
   wrapperSx?: ThemeUIStyleObject
 }
 
@@ -55,7 +56,7 @@ export function GenericSelect({
   options,
   placeholder,
   wrapperSx,
-}: GenericSelectProps) {
+}: Readonly<GenericSelectProps>) {
   const isMobile = useOnMobile() && isTouchDevice
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)

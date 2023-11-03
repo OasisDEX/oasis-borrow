@@ -5,8 +5,8 @@ import { AjnaNavigationController } from 'features/navigation/controls/AjnaNavig
 import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
-import { ThemeUIProvider } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
+import { ThemeUIProvider } from 'theme-ui'
 
 export function AjnaLayout({ children }: PropsWithChildren<{}>) {
   return (

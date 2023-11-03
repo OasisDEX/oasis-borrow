@@ -28,8 +28,8 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { one, zero } from 'helpers/zero'
 import { upperFirst } from 'lodash'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface AjnaProductControllerProps {

@@ -13,8 +13,8 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid, Image, Text } from 'theme-ui'
 import { checkmark } from 'theme/icons'
+import { Grid, Image, Text } from 'theme-ui'
 import type { ActorRefFrom, Sender, StateFrom } from 'xstate'
 
 import type {

@@ -1,5 +1,5 @@
 {
-  "ignorePatterns": ["node_modules", "types", "coverage"],
+  "ignorePatterns": ["node_modules", "types", "coverage", "infra", "lambdas"],
   "env": {
     "es6": true
   },
@@ -24,7 +24,7 @@
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
     "import/no-duplicates": "error",
-    "simple-import-sort/sort": [
+    "simple-import-sort/imports": [
       "error",
       {
         "groups": [
@@ -47,6 +47,8 @@
     "@typescript-eslint/no-useless-constructor": "error",
     "@typescript-eslint/no-non-null-assertion": "warn",
     "@typescript-eslint/no-shadow": ["warn", { "builtinGlobals": true, "hoist": "all" }],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
     "@typescript-eslint/consistent-type-imports": [
       "error",
       {

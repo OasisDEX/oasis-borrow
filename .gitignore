@@ -13,6 +13,8 @@ yalc.lock
 .log
 .DS_Store
 .sentryclirc
+*.zip
+artifacts
 
 public/precache.*.*.js
 public/sw.js

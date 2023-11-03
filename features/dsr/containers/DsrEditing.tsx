@@ -12,8 +12,8 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import type { ChangeEvent } from 'react'
 import React, { useMemo } from 'react'
-import { Box, Flex, Image } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { Box, Flex, Image } from 'theme-ui'
 
 interface DsrEditingProps {
   activeTab: DsrSidebarTabOptions

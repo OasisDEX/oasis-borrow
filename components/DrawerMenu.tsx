@@ -1,8 +1,8 @@
 import type { PropsWithChildren } from 'react'
 import React from 'react'
+import { mobile_menu_close } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box } from 'theme-ui'
-import { mobile_menu_close } from 'theme/icons'
 
 import { Icon } from './Icon'
 

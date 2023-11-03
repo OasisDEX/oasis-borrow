@@ -12,8 +12,8 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Image, Text } from 'theme-ui'
 import { checkmark } from 'theme/icons'
+import { Image, Text } from 'theme-ui'
 
 interface SidebarOpenVaultProxyStageProps {
   stage: SidebarVaultStages

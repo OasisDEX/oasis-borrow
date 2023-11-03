@@ -3,7 +3,7 @@ import {
   omniSidebarManageSteps,
   omniSidebarSetupSteps,
 } from 'features/omni-kit/constants'
-import { type OmniSidebarStepsSet, OmniProductType } from 'features/omni-kit/types'
+import { OmniProductType, type OmniSidebarStepsSet } from 'features/omni-kit/types'
 
 export const morphoSeoTags = {
   productKey: `seo.morphoProductPage.title`,

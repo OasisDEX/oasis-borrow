@@ -1,8 +1,8 @@
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import React from 'react'
-import { Button } from 'theme-ui'
 import { share } from 'theme/icons'
+import { Button } from 'theme-ui'
 
 interface ShareButtonPropsWithLink {
   hashtags?: never

@@ -5,8 +5,8 @@ import { NavigationMobileMenuPanel } from 'components/navigation/NavigationMobil
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-import { Flex, Image } from 'theme-ui'
 import { arrow_left, close as closeIcon } from 'theme/icons'
+import { Flex, Image } from 'theme-ui'
 
 import type { NavigationMenuPanelLinkType, NavigationMenuPanelType } from './Navigation.types'
 

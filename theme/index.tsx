@@ -313,6 +313,10 @@ export const theme = themeTypeSafe({
       maxWidth: '1408px',
       px: '16px',
     },
+    portfolio: {
+      maxWidth: '1408px',
+      px: '16px',
+    },
   },
   cards: {
     primary: {
@@ -785,6 +789,28 @@ export const theme = themeTypeSafe({
         cursor: 'not-allowed',
       },
     },
+    tag: {
+      px: '12px',
+      py: '4px',
+      color: 'neutral80',
+      fontFamily: 'body',
+      fontSize: 1,
+      fontWeight: 'semiBold',
+      lineHeight: '20px',
+      backgroundColor: 'transparent',
+      textAlign: 'center',
+      border: '1px solid',
+      borderColor: 'neutral20',
+      borderRadius: 'large',
+      bg: 'neutral10',
+      cursor: 'pointer',
+      '&:hover': {
+        color: 'interactive100',
+        backgroundColor: 'interactive10',
+        borderColor: 'interactive10',
+      },
+      transition: 'color 200ms, border-color 200ms, background-color 200ms',
+    },
   },
   links: {
     unStyled: {
@@ -1019,6 +1045,11 @@ export const theme = themeTypeSafe({
       borderRadius: '2em',
       gap: '0px',
     },
+    portfolio: {
+      gap: [3, null, 4, '48px'],
+      gridTemplateColumns: ['1fr', '3fr minmax(380px, 1fr)'],
+      alignItems: 'flex-start',
+    },
   },
   styles: {
     root: {
@@ -1117,6 +1148,45 @@ export const theme = themeTypeSafe({
       borderColor: 'neutral20',
       height: '1px',
       width: '100%',
+    },
+    tagDefault: {
+      variant: 'text.paragraph4',
+      borderRadius: 'round',
+      px: 3,
+      py: 1,
+      display: 'block',
+      whiteSpace: 'nowrap',
+      alignSelf: 'baseline',
+    },
+    tagPrimary: {
+      variant: 'boxes.tagDefault',
+      bg: 'primary100',
+      color: 'neutral10',
+    },
+    tagSecondary: {
+      variant: 'boxes.tagDefault',
+      bg: 'secondary10',
+      color: 'primary30',
+    },
+    tagWarning: {
+      variant: 'boxes.tagDefault',
+      bg: 'warning10',
+      color: 'warning100',
+    },
+    tagCritical: {
+      variant: 'boxes.tagDefault',
+      bg: 'critical10',
+      color: 'critical100',
+    },
+    tagSuccess: {
+      variant: 'boxes.tagDefault',
+      bg: 'success10',
+      color: 'success100',
+    },
+    tagInteractive: {
+      variant: 'boxes.tagDefault',
+      bg: 'interactive10',
+      color: 'interactive100',
     },
   },
 })

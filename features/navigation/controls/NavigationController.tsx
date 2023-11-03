@@ -9,13 +9,14 @@ import { getNavProtocolsPanel } from 'features/navigation/panels/getNavProtocols
 import { getNavTokensPanel } from 'features/navigation/panels/getNavTokensPanel'
 import { getNavUseCasesPanel } from 'features/navigation/panels/getNavUseCasesPanel'
 import {
-  type SwapWidgetChangeAction,
   SWAP_WIDGET_CHANGE_SUBJECT,
+  type SwapWidgetChangeAction,
 } from 'features/swapWidget/SwapWidgetChange'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
+import { getPortfolioLink } from 'helpers/get-portfolio-link'
 import { uiChanges } from 'helpers/uiChanges'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
@@ -87,7 +88,7 @@ export function NavigationController() {
             ? [
                 {
                   label: <MyPositionsLink />,
-                  link: `/owner/${walletAddress}`,
+                  link: getPortfolioLink(walletAddress),
                 },
               ]
             : []),

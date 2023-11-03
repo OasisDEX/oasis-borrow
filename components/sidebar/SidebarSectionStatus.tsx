@@ -4,8 +4,8 @@ import type { TranslateStringType } from 'helpers/translateStringType'
 import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'
-import { Box, Card, Flex, Link, Spinner, Text } from 'theme-ui'
 import { checkmark, clock } from 'theme/icons'
+import { Box, Card, Flex, Link, Spinner, Text } from 'theme-ui'
 
 type SidebarSectionStatusTypes = 'progress' | 'success' | 'waiting'
 

@@ -1,9 +1,9 @@
 import type BigNumber from 'bignumber.js'
 import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
 import {
-  type OmniFormState,
   OmniBorrowFormAction,
   OmniEarnFormAction,
+  type OmniFormState,
   OmniMultiplyFormAction,
   OmniSidebarEarnPanel,
 } from 'features/omni-kit/types'
