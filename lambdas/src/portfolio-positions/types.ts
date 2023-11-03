@@ -96,6 +96,6 @@ export type PortfolioPosition = {
   }
 }
 
-export type PortfolioPositionsReply = {
+export type PortfolioPositionsResponse = {
   positions: PortfolioPosition[]
 }

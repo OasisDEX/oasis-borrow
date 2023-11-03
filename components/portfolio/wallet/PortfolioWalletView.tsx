@@ -7,17 +7,17 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Grid, Heading } from 'theme-ui'
 
-import type { PortfolioAssetsReply } from 'lambdas/src/portfolio-assets/types'
+import type { PortfolioAssetsResponse } from 'lambdas/src/portfolio-assets/types'
 
 export const PortfolioWalletView = ({
   address,
   fetchData,
 }: {
   address: string
-  fetchData: (address: string) => Promise<PortfolioAssetsReply>
+  fetchData: (address: string) => Promise<PortfolioAssetsResponse>
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const [portfolioWalletData, setPortfolioWalletData] = useState<PortfolioAssetsReply>()
+  const [portfolioWalletData, setPortfolioWalletData] = useState<PortfolioAssetsResponse>()
 
   useEffect(() => {
     void fetchData(address).then((data) => {

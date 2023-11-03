@@ -48,6 +48,6 @@ export type PortfolioAssetsToken = {
   balanceUSD: number
 }
 
-export type PortfolioAssetsReply = {
+export type PortfolioAssetsResponse = {
   assets: PortfolioAssetsToken[]
 }

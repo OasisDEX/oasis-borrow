@@ -3,7 +3,7 @@ import { ProductType, StrategyType } from 'features/aave/types'
 import { LendingProtocol } from 'lendingProtocols'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import type { PortfolioPositionsReply } from 'lambdas/src/portfolio-positions/types'
+import type { PortfolioPositionsResponse } from 'lambdas/src/portfolio-positions/types'
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -14,7 +14,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
   const mockPositionsResponse: {
     status: number
-    response: PortfolioPositionsReply
+    response: PortfolioPositionsResponse
   } = {
     status: 200,
     response: {

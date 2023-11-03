@@ -5,7 +5,7 @@ import { DebankNetworkNameToOurs } from 'blockchain/networks/debank-network-name
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { object, string } from 'zod'
 
-import type { DebankTokensReply, PortfolioAssetsReply } from 'lambdas/src/portfolio-assets/types'
+import type { DebankTokensReply, PortfolioAssetsResponse } from 'lambdas/src/portfolio-assets/types'
 
 const portfolioWalletAddressSchema = object({
   address: string(),
@@ -51,7 +51,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     .filter(({ network }) => Object.values(NetworkNames).includes(network))
     .sort((a, b) => b.balanceUSD - a.balanceUSD)
 
-  const walletAssetsResponse: PortfolioAssetsReply = {
+  const walletAssetsResponse: PortfolioAssetsResponse = {
     assets: preparedTokenData,
   }
 

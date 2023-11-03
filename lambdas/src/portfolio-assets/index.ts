@@ -4,8 +4,8 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda
 import { getDefaultErrorMessage } from '../common/helpers'
 import { ResponseBadRequest, ResponseOk } from '../common/responses'
 import { getAddressFromRequest } from '../common/validators'
-import type { DebankNetworkNames, DebankTokensReply, PortfolioAssetsResponse } from './types'
-import { DebankNetworkNameToOurs, NetworkNames } from './types'
+import { DebankNetworkNames, DebankTokensReply, PortfolioAssetsResponse } from './types'
+import { DebankNetworkNameToOurs } from './types'
 
 const {
   DEBANK_API_KEY: debankApiKey,
@@ -50,7 +50,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
       balance: token.amount,
       balanceUSD: token.amount * token.price,
     }))
-    .filter(({ network }) => Object.values(NetworkNames).includes(network))
+    .filter(({ network }) => Object.values(DebankNetworkNames).includes(network))
     .sort((a, b) => b.balanceUSD - a.balanceUSD)
 
   const walletAssetsResponse: PortfolioAssetsResponse = {

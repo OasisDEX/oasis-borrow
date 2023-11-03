@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
-import type { PortfolioPositionsReply } from 'lambdas/src/portfolio-positions/types'
+import type { PortfolioPositionsResponse } from 'lambdas/src/portfolio-positions/types'
 
 type PortfolioPositionsViewFiltersType = {
   showEmptyPositions: boolean
@@ -25,11 +25,11 @@ export const PortfolioPositionsView = ({
   fetchData,
 }: {
   address: string
-  fetchData: (address: string) => Promise<PortfolioPositionsReply>
+  fetchData: (address: string) => Promise<PortfolioPositionsResponse>
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
   // fetch data
-  const [portfolioPositionsData, setPortfolioPositionsData] = useState<PortfolioPositionsReply>()
+  const [portfolioPositionsData, setPortfolioPositionsData] = useState<PortfolioPositionsResponse>()
   useEffect(() => {
     void fetchData(address).then((data) => {
       setPortfolioPositionsData(data)
