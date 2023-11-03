@@ -1,4 +1,5 @@
-export type BlogPost = {    id: string;
+export type BlogPost = {
+    id: string;
     uuid: string;
     title: string;
     slug: string;
