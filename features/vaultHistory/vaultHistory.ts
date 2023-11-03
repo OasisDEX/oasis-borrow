@@ -372,19 +372,27 @@ async function getVaultMultiplyHistory(
 async function getVaultAutomationHistory(
   client: GraphQLClient,
   id: BigNumber,
+  chainId: NetworkIds,
 ): Promise<ReturnedAutomationEvent[]> {
   const triggersData = await client.request(triggerEventsQuery, { cdpId: id.toNumber() })
-  return triggersData.allTriggerEvents.nodes
+  return triggersData.allTriggerEvents.nodes.map((item: ReturnedAutomationEvent) => ({
+    ...item,
+    chainId,
+  }))
 }
 
 async function getVaultAutomationV2History(
   client: GraphQLClient,
   proxyAddress: string,
+  chainId: NetworkIds,
 ): Promise<ReturnedAutomationEvent[]> {
   const triggersData = await client.request(triggerEventsQueryUsingProxy, {
     proxyAddress: proxyAddress.toLowerCase(),
   })
-  return triggersData.allTriggerEvents.nodes
+  return triggersData.allTriggerEvents.nodes.map((item: ReturnedAutomationEvent) => ({
+    ...item,
+    chainId,
+  }))
 }
 
 function addReclaimFlag(events: VaultHistoryEvent[]) {
@@ -446,7 +454,7 @@ export function createVaultHistory$(
 
           return combineLatest(
             getVaultMultiplyHistory(apiClient, address.toLowerCase()),
-            getVaultAutomationHistory(apiClient, id),
+            getVaultAutomationHistory(apiClient, id, chainId),
           )
         }),
         mapEventsToVaultEvents,
@@ -473,7 +481,10 @@ export function createAaveHistory$(
       return onEveryBlock$.pipe(
         switchMap(() => {
           const apiClient = makeClient(cacheApi)
-          return combineLatest(of([]), getVaultAutomationV2History(apiClient, proxyAddress))
+          return combineLatest(
+            of([]),
+            getVaultAutomationV2History(apiClient, proxyAddress, chainId),
+          )
         }),
         mapEventsToVaultEvents,
         map((events) =>
