@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react'
 import React from 'react'
-import { Flex, Text } from 'theme-ui'
 import { checkmark } from 'theme/icons'
+import { Flex, Text } from 'theme-ui'
 
 import { Icon } from './Icon'
 

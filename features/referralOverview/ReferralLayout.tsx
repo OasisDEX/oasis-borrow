@@ -4,9 +4,9 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useTranslation } from 'next-i18next'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
-import { Flex, Grid, Heading, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
 import { arrow_right } from 'theme/icons'
+import { Flex, Grid, Heading, Text } from 'theme-ui'
 
 export function ReferralLayout({ children }: PropsWithChildren<{}>) {
   const { t } = useTranslation()

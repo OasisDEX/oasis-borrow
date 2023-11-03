@@ -1,8 +1,9 @@
 import { NetworkNames } from 'blockchain/networks'
 import { ProductType, StrategyType } from 'features/aave/types'
-import type { PortfolioPositionsReply } from 'features/portfolio/types'
 import { LendingProtocol } from 'lendingProtocols'
 import type { NextApiRequest, NextApiResponse } from 'next'
+
+import type { PortfolioPositionsReply } from 'lambdas/src/portfolio-positions/types'
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {

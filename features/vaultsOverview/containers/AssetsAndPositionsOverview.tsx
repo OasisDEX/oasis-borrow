@@ -23,10 +23,10 @@ import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { createPortal } from 'react-dom'
-import type { ThemeUIStyleObject } from 'theme-ui'
-import { Box, Card, Flex, Grid, Heading, Image, Link, Text } from 'theme-ui'
 import { arrow_right, dots_v } from 'theme/icons'
 import { useBreakpointIndex } from 'theme/useBreakpointIndex'
+import type { ThemeUIStyleObject } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Image, Link, Text } from 'theme-ui'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'

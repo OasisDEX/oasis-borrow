@@ -1,4 +1,4 @@
-import { type NetworkNames, isSupportedNetwork } from 'blockchain/networks'
+import { isSupportedNetwork, type NetworkNames } from 'blockchain/networks'
 import { isAddress } from 'ethers/lib/utils'
 import type { OmniProductPage } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'

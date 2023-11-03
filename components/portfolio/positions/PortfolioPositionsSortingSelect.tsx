@@ -1,10 +1,10 @@
-import { type GenericSelectOption, GenericSelect } from 'components/GenericSelect'
+import { GenericSelect, type GenericSelectOption } from 'components/GenericSelect'
 import { Icon } from 'components/Icon'
 import { PortfolioSortingType } from 'components/portfolio/positions/types'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Text } from 'theme-ui'
 import { arrow_down, arrow_up_thin, portfolio_sort_dropdown_icon } from 'theme/icons'
+import { Box, Text } from 'theme-ui'
 
 export const PortfolioPositionsSortingSelect = ({
   onChange,

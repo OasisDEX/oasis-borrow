@@ -1,5 +1,6 @@
 import { TokensGroup } from 'components/TokensGroup'
 import { allDefined } from 'helpers/allDefined'
+import type { ReactNode } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'theme-ui'
@@ -8,7 +9,7 @@ interface AssetsTableDataCellAssetProps {
   asset: string
   icons?: string[]
   positionId?: string
-  description?: string
+  description?: ReactNode
   prefix?: string
   suffix?: string
 }
@@ -17,7 +18,7 @@ export function AssetsTableDataCellAsset({
   asset,
   icons = [],
   positionId,
-  description = '',
+  description,
   prefix,
   suffix,
 }: AssetsTableDataCellAssetProps) {

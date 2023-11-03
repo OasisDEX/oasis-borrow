@@ -11,8 +11,8 @@ import { sortBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 import { arrow_right } from 'theme/icons'
+import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 
 function AboutPage({ members }: { members: TeamMember[] }) {
   const { t } = useTranslation()

@@ -5,9 +5,9 @@ import { isAddress } from 'ethers/lib/utils'
 import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React, { useRef, useState } from 'react'
-import { Box, Card, Flex, Text, Textarea } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
 import { checkmark, duplicate } from 'theme/icons'
+import { Box, Card, Flex, Text, Textarea } from 'theme-ui'
 
 interface Props {
   address: string

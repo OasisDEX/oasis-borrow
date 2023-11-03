@@ -3,8 +3,8 @@ import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/Ma
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Divider, Flex, Grid, Text } from 'theme-ui'
 import { dai_circle_color } from 'theme/icons'
+import { Divider, Flex, Grid, Text } from 'theme-ui'
 
 import { GuniManageMultiplyVaultChangesInformation } from './GuniManageMultiplyVaultChangesInformation'
 

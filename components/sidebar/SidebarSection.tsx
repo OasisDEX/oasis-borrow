@@ -1,8 +1,8 @@
 import { Icon } from 'components/Icon'
 import { MobileSidePanel } from 'components/Modal'
 import React, { useState } from 'react'
-import { Card } from 'theme-ui'
 import { edit } from 'theme/icons'
+import { Card } from 'theme-ui'
 
 import type { SidebarSectionContentProps } from './SidebarSectionContent'
 import { SidebarSectionContent } from './SidebarSectionContent'

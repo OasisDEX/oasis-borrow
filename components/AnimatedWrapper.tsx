@@ -1,8 +1,8 @@
 import type { PropsWithChildren } from 'react'
 import React from 'react'
+import { slideInAnimation } from 'theme/animations'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box } from 'theme-ui'
-import { slideInAnimation } from 'theme/animations'
 
 export function AnimatedWrapper({ children, sx }: PropsWithChildren<{ sx?: ThemeUIStyleObject }>) {
   return (

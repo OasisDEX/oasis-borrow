@@ -1,8 +1,8 @@
 import { Announcement } from 'components/Announcement'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import React from 'react'
-import { Container, Flex } from 'theme-ui'
 import { Background } from 'theme/Background'
+import { Container, Flex } from 'theme-ui'
 
 import type { BasicLayoutProps } from './BasicLayout'
 

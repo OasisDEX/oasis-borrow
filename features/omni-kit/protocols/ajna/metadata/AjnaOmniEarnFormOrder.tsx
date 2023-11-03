@@ -2,8 +2,8 @@ import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductCon
 import { AjnaOmniClaimCollateralFormOrderInformation } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniClaimCollateralFormOrderInformation'
 import { AjnaOmniEarnFormOrderInformation } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnFormOrderInformation'
 import {
-  type OmniIsCachedPosition,
   OmniEarnFormAction,
+  type OmniIsCachedPosition,
   OmniProductType,
 } from 'features/omni-kit/types'
 import type { FC } from 'react'

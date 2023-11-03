@@ -1,6 +1,6 @@
 import { NetworkNames } from 'blockchain/networks'
 import { getRemoteConfigWithCache } from 'helpers/config'
-import { type ConfigResponseType, configCacheTime } from 'helpers/config'
+import { configCacheTime, type ConfigResponseType } from 'helpers/config'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import getConfig from 'next/config'
 import type { AppConfigType } from 'types/config'
@@ -29,7 +29,7 @@ export function getRpcNodeGateway(
     return undefined
   }
   return (
-    `${rpcBase}/${rpcConfig.stage}/?` +
+    `${rpcBase}/?` +
     `network=${network}&` +
     `skipCache=${rpcConfig.skipCache}&` +
     `skipMulticall=${rpcConfig.skipMulticall}&` +

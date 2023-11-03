@@ -1,19 +1,4 @@
-export enum NetworkNames {
-  ethereumMainnet = 'ethereum',
-  ethereumGoerli = 'ethereum_goerli',
-
-  arbitrumMainnet = 'arbitrum',
-  arbitrumGoerli = 'arbitrum_goerli',
-
-  polygonMainnet = 'polygon',
-  polygonMumbai = 'polygon_mumbai',
-
-  optimismMainnet = 'optimism',
-  optimismGoerli = 'optimism_goerli',
-
-  baseMainnet = 'base',
-  baseGoerli = 'base_goerli',
-}
+import { NetworkNames } from 'blockchain/networks'
 
 export enum DebankNetworkNames {
   ethereumMainnet = 'eth',
@@ -55,8 +40,8 @@ export type DebankTokensReply = DebankTokenReply[]
 
 export type PortfolioAssetsToken = {
   name: string
-  symbol: string
   network: NetworkNames
+  symbol: string
   priceUSD: number
   price24hChange: number
   balance: number
@@ -66,5 +51,3 @@ export type PortfolioAssetsToken = {
 export type PortfolioAssetsReply = {
   assets: PortfolioAssetsToken[]
 }
-
-export type PortfolioAssetsResponse = PortfolioAssetsReply

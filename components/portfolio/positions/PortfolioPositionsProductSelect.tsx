@@ -3,8 +3,8 @@ import { type GenericSelectOption } from 'components/GenericSelect'
 import { PortfolioProductType } from 'components/portfolio/positions/types'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box } from 'theme-ui'
 import { portfolio_product_dropdown_icon } from 'theme/icons'
+import { Box } from 'theme-ui'
 
 export const PortfolioPositionsProductSelect = ({
   onChange,

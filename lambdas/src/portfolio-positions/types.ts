@@ -40,8 +40,9 @@ type AutomationType = {
   price?: number
 }
 
-type DetailsType =
+export type DetailsType =
   | 'netValue'
+  | 'netValueEarnActivePassive'
   | 'pnl'
   | 'liquidationPrice'
   | 'ltv'
@@ -98,5 +99,3 @@ export type PortfolioPosition = {
 export type PortfolioPositionsReply = {
   positions: PortfolioPosition[]
 }
-
-export type PortfolioPositionsResponse = PortfolioPositionsReply

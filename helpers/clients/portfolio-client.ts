@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react'
 
-import type { PortfolioAssetsResponse } from 'lambdas/src/portfolio-assets/types'
+import type { PortfolioAssetsReply } from 'lambdas/src/portfolio-assets/types'
 import type { PortfolioOverviewResponse } from 'lambdas/src/portfolio-overview/types'
-import type { PortfolioPositionsResponse } from 'lambdas/src/portfolio-positions/types'
+import type { PortfolioPositionsReply } from 'lambdas/src/portfolio-positions/types'
 
 /**
  * typed client for fetching portfolio data from aws gateway
@@ -31,9 +31,9 @@ export const usePortfolioClient = (baseUrl: string, headers: HeadersInit) => {
       fetchPortfolioOverview: (address: string) =>
         fetchPortfolioGeneric<PortfolioOverviewResponse>('overview', address),
       fetchPortfolioAssets: (address: string) =>
-        fetchPortfolioGeneric<PortfolioAssetsResponse>('assets', address),
+        fetchPortfolioGeneric<PortfolioAssetsReply>('assets', address),
       fetchPortfolioPositions: (address: string) =>
-        fetchPortfolioGeneric<PortfolioPositionsResponse>('positions', address),
+        fetchPortfolioGeneric<PortfolioPositionsReply>('positions', address),
     }),
     [fetchPortfolioGeneric],
   )

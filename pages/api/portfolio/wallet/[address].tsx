@@ -1,9 +1,11 @@
 import axios from 'axios'
+import { NetworkNames } from 'blockchain/networks'
 import type { DebankNetworkNames } from 'blockchain/networks/debank-network-names'
 import { DebankNetworkNameToOurs } from 'blockchain/networks/debank-network-names'
-import type { DebankTokensReply, PortfolioAssetsReply } from 'features/portfolio/types'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { object, string } from 'zod'
+
+import type { DebankTokensReply, PortfolioAssetsReply } from 'lambdas/src/portfolio-assets/types'
 
 const portfolioWalletAddressSchema = object({
   address: string(),
@@ -26,6 +28,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       error: 'Missing address query parameter',
     })
   }
+
   const portfolioAPIUrl = new URL(process.env.DEBANK_API_URL)
   const reqUrl = new URL(`/v1/user/all_token_list?id=${params.address}`, portfolioAPIUrl)
   const response = await axios.get<DebankTokensReply>(reqUrl.toString(), {
@@ -33,23 +36,22 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       AccessKey: `${process.env.DEBANK_API_KEY}`,
     },
   })
-  const tokensData = response.data.filter((token) => token.price > 0)
+  const tokensData = response.data
   const preparedTokenData = tokensData
-    .filter((token) => token.is_wallet)
+    .filter(({ chain, is_wallet }) => is_wallet && chain !== undefined)
     .map((token) => ({
       name: token.name,
+      symbol: token.symbol,
       network: DebankNetworkNameToOurs[token.chain as DebankNetworkNames],
       priceUSD: token.price,
       price24hChange: token.price_24h_change,
       balance: token.amount,
       balanceUSD: token.amount * token.price,
     }))
+    .filter(({ network }) => Object.values(NetworkNames).includes(network))
+    .sort((a, b) => b.balanceUSD - a.balanceUSD)
 
   const walletAssetsResponse: PortfolioAssetsReply = {
-    totalUSDAssets: preparedTokenData.reduce((acc, token) => acc + token.balanceUSD, 0),
-    totalUSDAssets24hChange:
-      preparedTokenData.reduce((acc, token) => acc + token.price24hChange, 0) /
-      preparedTokenData.length,
     assets: preparedTokenData,
   }
 

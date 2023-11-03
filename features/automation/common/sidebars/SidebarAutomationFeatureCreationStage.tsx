@@ -5,8 +5,8 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
+import { Box, Flex, Image, Text } from 'theme-ui'
 
 import type { SidebarAutomationFeatureCreationStageProps } from './SidebarAutomationFeatureCreationStage.types'
 

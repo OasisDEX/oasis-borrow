@@ -5,8 +5,8 @@ import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
-import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { Text } from 'theme-ui'
 
 interface OmniFormContentTransactionProps {
   orderInformation: FC<OmniIsCachedPosition>

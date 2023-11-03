@@ -3,7 +3,7 @@ import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
 import { PortfolioOverview } from 'components/portfolio/PortfolioOverview'
 import { PortfolioOverviewSkeleton } from 'components/portfolio/PortfolioOverviewSkeleton'
 import { PortfolioPositionsView } from 'components/portfolio/positions/PortfolioPositionsView'
-import { WalletView } from 'components/portfolio/wallet/WalletView'
+import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWalletView'
 import { TabBar } from 'components/TabBar'
 import { usePortfolioClient } from 'helpers/clients/portfolio-client'
 import { useRedirect } from 'helpers/useRedirect'
@@ -86,7 +86,10 @@ export default function PortfolioView({
               value: 'wallet',
               label: tPortfolio('wallet-tab'),
               content: (
-                <WalletView address={address} fetchData={portfolioClient.fetchPortfolioAssets} />
+                <PortfolioWalletView
+                  address={address}
+                  fetchData={portfolioClient.fetchPortfolioAssets}
+                />
               ),
             },
           ]}

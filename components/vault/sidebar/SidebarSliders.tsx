@@ -10,8 +10,8 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import type { ChangeEvent } from 'react'
 import React from 'react'
-import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 import { arrow_right } from 'theme/icons'
+import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
 type VaultState = OpenMultiplyVaultState | ManageMultiplyVaultState
 

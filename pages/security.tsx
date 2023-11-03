@@ -8,8 +8,8 @@ import { useScrollToTop } from 'helpers/useScrollToTop'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { Fragment } from 'react'
-import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 import { arrow_right } from 'theme/icons'
+import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {

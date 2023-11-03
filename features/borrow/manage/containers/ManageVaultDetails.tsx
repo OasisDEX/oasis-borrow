@@ -28,8 +28,8 @@ import { useAppConfig } from 'helpers/config'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid } from 'theme-ui'
 import { bell } from 'theme/icons'
+import { Box, Grid } from 'theme-ui'
 
 export function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },

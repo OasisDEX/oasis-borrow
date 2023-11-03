@@ -24,8 +24,8 @@ import {
 } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
-import { Grid } from 'theme-ui'
 import { circle_close, circle_exchange, circle_slider } from 'theme/icons'
+import { Grid } from 'theme-ui'
 
 import { SidebarManageMultiplyVaultEditingStage } from './SidebarManageMultiplyVaultEditingStage'
 

@@ -1,4 +1,4 @@
-import { type NetworkNames, getNetworkByName } from 'blockchain/networks'
+import { getNetworkByName, type NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'

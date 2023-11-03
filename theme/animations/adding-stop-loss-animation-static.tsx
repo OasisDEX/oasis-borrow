@@ -1,7 +1,7 @@
 import React from 'react'
 import Lottie from 'react-lottie-light'
-import { Box } from 'theme-ui'
 import addingStopLossAnimation from 'theme/animations/lottie/addingStopLossAnimation.json'
+import { Box } from 'theme-ui'
 
 const addingStopLossAnimationOptions = {
   loop: true,
