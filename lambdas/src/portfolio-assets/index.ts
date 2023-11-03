@@ -4,6 +4,22 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda
 import { getDefaultErrorMessage } from '../common/helpers'
 import { ResponseBadRequest, ResponseOk } from '../common/responses'
 import { getAddressFromRequest } from '../common/validators'
+import type { DebankNetworkNames, DebankTokensReply, PortfolioAssetsResponse } from './types'
+import { DebankNetworkNameToOurs, NetworkNames } from './types'
+
+const {
+  DEBANK_API_KEY: debankApiKey,
+  DEBANK_API_URL: serviceUrl = 'https://pro-openapi.debank.com/v1',
+} = process.env
+
+if (!debankApiKey) {
+  throw new Error('Missing DEBANK_API_KEY')
+}
+if (!serviceUrl) {
+  throw new Error('Missing DEBANK_API_URL')
+}
+const debankAuthHeaderKey = 'AccessKey'
+const headers = { [debankAuthHeaderKey]: debankApiKey }
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   // validate the query
@@ -16,7 +32,36 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     return ResponseBadRequest(message)
   }
 
-  return ResponseOk({ body: { address: address.toLowerCase() } })
+  const reqUrl = new URL(`${serviceUrl}/user/all_token_list?id=${address}`)
+  const response: DebankTokensReply = await fetch(reqUrl.toString(), {
+    headers,
+  })
+    .then((res) => res.json())
+    .catch((error) => {
+      console.error(error)
+      throw new Error('Failed to fetch wallet assets')
+    })
+
+  const tokensData = response
+  const preparedTokenData = tokensData
+    .filter(({ chain, is_wallet }) => is_wallet && chain !== undefined)
+    .map((token) => ({
+      name: token.name,
+      symbol: token.symbol,
+      network: DebankNetworkNameToOurs[token.chain as DebankNetworkNames],
+      priceUSD: token.price,
+      price24hChange: token.price_24h_change,
+      balance: token.amount,
+      balanceUSD: token.amount * token.price,
+    }))
+    .filter(({ network }) => Object.values(NetworkNames).includes(network))
+    .sort((a, b) => b.balanceUSD - a.balanceUSD)
+
+  const walletAssetsResponse: PortfolioAssetsResponse = {
+    assets: preparedTokenData,
+  }
+
+  return ResponseOk({ body: walletAssetsResponse })
 }
 
 export default handler

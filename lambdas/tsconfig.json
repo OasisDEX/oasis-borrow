@@ -65,7 +65,8 @@
   "include": [
     "src/portfolio-overview/index.ts",
     "src/portfolio-assets/index.ts",
-    "src/portfolio-positions/index.ts"
+    "src/portfolio-positions/index.ts",
+    "../features/portfolio/type.ts"
   ],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

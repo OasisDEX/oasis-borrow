@@ -19,7 +19,6 @@ if (!debankApiKey) {
 if (!serviceUrl) {
   throw new Error('Missing DEBANK_API_URL')
 }
-
 const debankAuthHeaderKey = 'AccessKey'
 const headers = { [debankAuthHeaderKey]: debankApiKey }
 
@@ -77,7 +76,11 @@ const getWalletAssetsUsdValue = async (
         headers,
       }).then((_res) => _res.json() as Promise<WalletAsset>),
     ),
-  )
+  ).catch((error) => {
+    console.error(error)
+    throw new Error('Failed to fetch wallet assets')
+  })
+
   const walletAssetsUsdValue = results.reduce((acc, cur) => {
     acc = acc + cur.usd_value
     return acc
@@ -92,7 +95,12 @@ const getProtocolAssets = async (
   const protocolAssets = await fetch(
     `${serviceUrl}/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`,
     { headers },
-  ).then((_res) => _res.json() as Promise<ProtocolAsset[]>)
+  )
+    .then((_res) => _res.json() as Promise<ProtocolAsset[]>)
+    .catch((error) => {
+      console.error(error)
+      throw new Error('Failed to fetch wallet assets')
+    })
   return protocolAssets
 }
 
