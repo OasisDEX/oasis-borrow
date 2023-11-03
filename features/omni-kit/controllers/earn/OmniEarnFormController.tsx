@@ -37,7 +37,7 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
     dynamicMetadata: {
       elements: { riskSidebar, earnFormOrderAsElement },
       values: { extraDropdownItems },
-      handlers: { txSuccessEarnHandler, customReset },
+      handlers,
     },
   } = useOmniProductContext(OmniProductType.Earn)
 
@@ -57,10 +57,10 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
                 iconShrink: 2,
                 action: () => {
                   dispatch({ type: 'reset' })
-                  customReset()
+                  handlers?.customReset?.()
                   updateState('uiPill', OmniEarnFormAction.DepositEarn)
                   updateState('action', OmniEarnFormAction.DepositEarn)
-                  txSuccessEarnHandler()
+                  handlers?.txSuccessEarnHandler()
                 },
               },
               {
@@ -72,13 +72,13 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
                 tokenIcon: quoteIcon,
                 action: () => {
                   dispatch({ type: 'reset' })
-                  customReset()
+                  handlers?.customReset?.()
                   updateState('uiDropdown', OmniSidebarEarnPanel.Liquidity)
                   updateState('uiPill', OmniEarnFormAction.DepositEarn)
                   updateState('action', OmniEarnFormAction.DepositEarn)
                 },
               },
-              ...extraDropdownItems,
+              ...(extraDropdownItems ?? []),
             ],
           },
         })}
@@ -86,7 +86,7 @@ export function OmniEarnFormController({ txHandler }: { txHandler: () => () => v
         if (quoteTokenAmount.isZero() || simulation?.quoteTokenAmount.isZero()) {
           updateState('uiPill', OmniEarnFormAction.DepositEarn)
           updateState('action', OmniEarnFormAction.DepositEarn)
-          txSuccessEarnHandler()
+          handlers?.txSuccessEarnHandler()
         }
       }}
       txHandler={txHandler}

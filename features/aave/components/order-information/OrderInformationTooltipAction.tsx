@@ -1,11 +1,11 @@
 import { Icon } from 'components/Icon'
-import type { WithChildren } from 'helpers/types/With.types'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
+import type { PropsWithChildren } from 'react'
 import React, { useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 import { question_o } from 'theme/icons'
 
-export function OrderInformationTooltipAction({ children }: WithChildren) {
+export function OrderInformationTooltipAction({ children }: PropsWithChildren<{}>) {
   const [isOpen, setIsOpen] = useState(false)
 
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))

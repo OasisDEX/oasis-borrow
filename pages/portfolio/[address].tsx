@@ -1,14 +1,17 @@
 import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
 import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
 import { PortfolioOverview } from 'components/portfolio/PortfolioOverview'
-import type { PortfolioAssetsReply, PortfolioPositionsReply } from 'features/portfolio/types'
+import { PortfolioOverviewSkeleton } from 'components/portfolio/PortfolioOverviewSkeleton'
+import { PositionsView } from 'components/portfolio/positions/PositionsView'
+import { WalletView } from 'components/portfolio/wallet/WalletView'
+import { TabBar } from 'components/TabBar'
 import { useRedirect } from 'helpers/useRedirect'
 import type { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getAwsInfraHeader, getAwsInfraUrl } from 'pages/serverside-helpers'
 import React, { useEffect } from 'react'
-import { Box, Flex } from 'theme-ui'
+import { Box } from 'theme-ui'
 import { useFetch } from 'usehooks-ts'
 
 import type { PortfolioOverviewResponse } from 'lambdas/src/portfolio-overview/types'
@@ -39,39 +42,44 @@ export default function PortfolioView({
 }) {
   const { t: tPortfolio } = useTranslation('portfolio')
   const { replace } = useRedirect()
-  useEffect(() => {
-    if (!address) {
-      replace('/')
-    }
-  }, [address, replace])
-  const { data: portfolioPositionsData = { positions: [] } } = useFetch<PortfolioPositionsReply>(
-    `/api/portfolio/positions/${address}`,
-  )
-  const { data: portfolioWalletData } = useFetch<PortfolioAssetsReply>(
-    `/api/portfolio/wallet/${address}`,
-  )
-  const { data: portfolioOverviewData } = useFetch<PortfolioOverviewResponse>(
+
+  const { data: overviewData } = useFetch<PortfolioOverviewResponse>(
     `${awsInfraUrl}/portfolio-overview?address=${address}`,
     {
       headers: awsInfraHeader,
     },
   )
 
+  useEffect(() => {
+    if (!address) {
+      replace('/')
+    }
+  }, [address, replace])
   return address ? (
     <PortfolioLayout>
       <Box sx={{ width: '100%' }}>
         <PortfolioHeader address={address} />
-        <PortfolioOverview overviewData={portfolioOverviewData} />
-        <Flex sx={{ flexDirection: 'column' }}>
-          <Box>
-            <h4>{tPortfolio('positions-data')}</h4>
-            <pre>{JSON.stringify(portfolioPositionsData, null, 2)}</pre>
-          </Box>
-          <Box>
-            <h4>{tPortfolio('wallet-data')}</h4>
-            <pre>{JSON.stringify(portfolioWalletData, null, 2)}</pre>
-          </Box>
-        </Flex>
+        {overviewData ? (
+          <PortfolioOverview overviewData={overviewData} />
+        ) : (
+          <PortfolioOverviewSkeleton />
+        )}
+        <TabBar
+          variant="underline"
+          useDropdownOnMobile
+          sections={[
+            {
+              value: 'positions',
+              label: tPortfolio('positions-tab'),
+              content: <PositionsView address={address} />,
+            },
+            {
+              value: 'wallet',
+              label: tPortfolio('wallet-tab'),
+              content: <WalletView address={address} />,
+            },
+          ]}
+        />
       </Box>
     </PortfolioLayout>
   ) : null

@@ -1,5 +1,5 @@
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Card, Heading, Text } from 'theme-ui'
@@ -12,10 +12,10 @@ function CardContent({
   title,
   subtitle,
   children,
-}: {
+}: PropsWithChildren<{
   title: string
   subtitle: string
-} & WithChildren) {
+}>) {
   return (
     <Box sx={{ position: 'relative', zIndex: 2, pb: 4 }}>
       <Heading sx={{ my: 2, fontWeight: 'bold', color: 'primary100' }}>{title}</Heading>
@@ -30,11 +30,11 @@ function CardWrapper({
   backgroundGradient,
   sx,
   children,
-}: {
+}: PropsWithChildren<{
   backgroundImage: string
   backgroundGradient: string
   sx?: ThemeUIStyleObject
-} & WithChildren) {
+}>) {
   return (
     <Card
       sx={{

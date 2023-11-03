@@ -17,9 +17,9 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { interpolate } from 'helpers/interpolate'
-import type { WithChildren } from 'helpers/types/With.types'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
+import type { PropsWithChildren } from 'react'
 import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 import { chevron_down, chevron_up } from 'theme/icons'
@@ -80,7 +80,7 @@ export function getHistoryEventTranslation(t: TranslationType, event: VaultHisto
   })
 }
 
-function VaultHistoryEntryDetailsItem({ label, children }: { label: string } & WithChildren) {
+function VaultHistoryEntryDetailsItem({ label, children }: PropsWithChildren<{ label: string }>) {
   return (
     <DefinitionListItem sx={{ display: 'flex', justifyContent: 'space-between', pl: 3, pr: 2 }}>
       <Text

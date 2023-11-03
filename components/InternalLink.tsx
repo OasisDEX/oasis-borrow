@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { Link as ThemeLink } from 'theme-ui'
 
@@ -15,7 +16,7 @@ export function InternalLink({
   query,
   variant,
   ...rest
-}: AppLinkProps) {
+}: PropsWithChildren<AppLinkProps>) {
   const readOnlyHref = href
   const readOnlyAs = as
 

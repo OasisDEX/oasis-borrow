@@ -1,12 +1,12 @@
 import { MobileSidePanel } from 'components/Modal'
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { Card, Grid } from 'theme-ui'
 
 export function VaultFormContainer({
   children,
   toggleTitle,
-}: WithChildren & { toggleTitle: string }) {
+}: PropsWithChildren<{ toggleTitle: string }>) {
   return (
     <MobileSidePanel toggleTitle={toggleTitle}>
       <Card variant="vaultFormContainer">

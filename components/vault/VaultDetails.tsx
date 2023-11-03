@@ -3,9 +3,8 @@ import { Icon } from 'components/Icon'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import type { PriceInfo } from 'features/shared/priceInfo.types'
 import type { CommonVaultState } from 'helpers/types/CommonVaultState.types'
-import type { WithChildren } from 'helpers/types/With.types'
 import { zero } from 'helpers/zero'
-import type { ReactNode } from 'react'
+import type { PropsWithChildren, ReactNode } from 'react'
 import React from 'react'
 import type { SxProp } from 'theme-ui'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -74,7 +73,7 @@ export function VaultDetailsAfterPill({
   children,
   afterPillColors,
   sx = {},
-}: WithChildren & AfterPillProps & SxProp) {
+}: PropsWithChildren<AfterPillProps & SxProp>) {
   return (
     <Card
       sx={{
@@ -185,7 +184,7 @@ export function VaultDetailsCardModal({
 export function VaultDetailsSummaryContainer({
   children,
   relevant = true,
-}: WithChildren & { relevant?: boolean }) {
+}: PropsWithChildren<{ relevant?: boolean }>) {
   return (
     <Card sx={{ borderRadius: 'large', border: 'lightMuted', opacity: relevant ? 1 : 0.5 }}>
       <Grid

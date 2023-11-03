@@ -9,7 +9,7 @@ import {
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
 import type { WalletRiskResponse } from 'features/walletAssociatedRisk/walletRiskApi'
 import type { DepreciatedServices } from 'helpers/context/types'
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 import type { Observable } from 'rxjs'
 
@@ -29,7 +29,7 @@ export function useTOSContext(): TOSContext {
   return ac
 }
 
-export function TOSContextProvider({ children }: WithChildren) {
+export function TOSContextProvider({ children }: PropsWithChildren<{}>) {
   const [context, setContext] = useState<TOSContext | undefined>(undefined)
   const { web3Context$, txHelpers$ } = useMainContext()
 

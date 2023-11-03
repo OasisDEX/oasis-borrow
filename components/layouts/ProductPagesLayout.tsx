@@ -1,12 +1,12 @@
 import { Footer } from 'components/Footer'
 import { NavigationController } from 'features/navigation/controls/NavigationController'
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { WithAnnouncementLayout } from './WithAnnouncementLayout'
 
-export function ProductPagesLayout({ children }: WithChildren) {
+export function ProductPagesLayout({ children }: PropsWithChildren<{}>) {
   return (
     <>
       <WithAnnouncementLayout

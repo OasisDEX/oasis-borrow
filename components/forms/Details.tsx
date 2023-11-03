@@ -1,4 +1,4 @@
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Card, Grid, Text } from 'theme-ui'
@@ -27,7 +27,7 @@ export function DetailsItem({ label, value }: { label: React.ReactNode; value: R
   )
 }
 
-export function Details({ children }: WithChildren) {
+export function Details({ children }: PropsWithChildren<{}>) {
   return (
     <Card bg="neutral30" sx={{ border: 'none' }}>
       <Grid columns={'auto 1fr'} gap={2}>
