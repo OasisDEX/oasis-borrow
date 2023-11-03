@@ -58,9 +58,16 @@ type DetailsType =
   | 'borrowedToken'
   | 'borrowedTokenBalance'
 
+export type PositionDetail = {
+  type: DetailsType
+  value: string
+  accent?: 'positive' | 'negative'
+  subvalue?: string
+}
+
 export type PortfolioPosition = {
   positionId: number
-  type: ProductType
+  type?: ProductType
   network: NetworkNames
   protocol: LendingProtocol
   strategyType?: StrategyType
@@ -79,12 +86,7 @@ export type PortfolioPosition = {
       amountUSD: number
     }
   }
-  details: {
-    type: DetailsType
-    value: string
-    accent?: 'positive' | 'negative'
-    subvalue?: string
-  }[]
+  details: PositionDetail[]
   automations: {
     stopLoss?: AutomationType
     takeProfit?: AutomationType
@@ -96,5 +98,3 @@ export type PortfolioPosition = {
 export type PortfolioPositionsReply = {
   positions: PortfolioPosition[]
 }
-
-export type PortfolioPositionsResponse = PortfolioPositionsReply

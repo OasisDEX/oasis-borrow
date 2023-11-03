@@ -2,11 +2,12 @@ import type { NetworkNames } from 'blockchain/networks'
 import { GenericMultiselect } from 'components/GenericMultiselect'
 import { PortfolioWalletAssets } from 'components/portfolio/wallet/PortfolioWalletAssets'
 import { PortfolioWalletSummary } from 'components/portfolio/wallet/PortfolioWalletSummary'
-import type { PortfolioAssetsReply } from 'features/portfolio/types'
 import { productHubNetworkFilter } from 'features/productHub/meta'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Grid, Heading } from 'theme-ui'
+
+import type { PortfolioAssetsReply } from 'lambdas/src/portfolio-assets/types'
 
 export const PortfolioWalletView = ({
   address,

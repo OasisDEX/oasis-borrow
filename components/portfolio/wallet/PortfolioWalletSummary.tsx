@@ -2,11 +2,12 @@ import BigNumber from 'bignumber.js'
 import { getPortfolioChangeColor, getPortfolioChangeSign } from 'components/portfolio/helpers'
 import { PortfolioWalletTopAssets } from 'components/portfolio/wallet/PortfolioWalletTopAssets'
 import { Skeleton } from 'components/Skeleton'
-import type { PortfolioAssetsToken } from 'features/portfolio/types'
 import { formatAmount } from 'helpers/formatters/format'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Text } from 'theme-ui'
+
+import type { PortfolioAssetsToken } from 'lambdas/src/portfolio-assets/types'
 
 interface PortfolioWalletSummaryProps {
   assets?: PortfolioAssetsToken[]
