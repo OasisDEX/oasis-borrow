@@ -1,9 +1,11 @@
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
+import { AppLink } from 'components/Links'
 import { ProtocolLabel } from 'components/ProtocolLabel'
-import { Skeleton } from 'components/Skeleton'
+import { WithArrow } from 'components/WithArrow'
 import dayjs from 'dayjs'
 import { ProductType } from 'features/aave/types'
 import type { PortfolioPosition } from 'features/portfolio/types'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Text } from 'theme-ui'
@@ -43,7 +45,12 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
             ? [position.tokens.supply.symbol, position.tokens.borrow?.symbol]
             : [position.tokens.supply.symbol]
         }
-        positionId={position.positionId.toString()}
+        positionId={!position.availableToMigrate ? position.positionId.toString() : undefined}
+        description={
+          position.availableToMigrate
+            ? `${LendingProtocolLabel[position.protocol]} Borrowing`
+            : undefined
+        }
       />
       <Flex
         sx={{
@@ -84,7 +91,13 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
             </Flex>
           )}
           <Flex>
-            <Skeleton width={150} height={40} />
+            <AppLink
+              variant="secondary"
+              sx={{ fontSize: 1 }}
+              href={`/${position.network}/${position.protocol}/${position.positionId}`}
+            >
+              <WithArrow>{tPortfolio('view-position')}</WithArrow>
+            </AppLink>
           </Flex>
         </Flex>
       )}

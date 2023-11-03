@@ -18,6 +18,7 @@
   "show-empty-positions": "Show empty positions",
   "automations": "Automations",
   "days-of-earning": "{{days}} Days of Earning",
+  "view-position": "View Position",
   "automation-details": {
     "autoBuy": "Auto Buy",
     "autoSell": "Auto Sell",
@@ -36,10 +37,29 @@
     "lendingRange": "Lending Range",
     "earnings": "Earnings",
     "apy": "Current APY",
-    "90dApy": " 90D APY",
+    "90dApy": "90D APY",
     "suppliedToken": "Supplied",
     "suppliedTokenBalance": "Balance of Supplied",
     "borrowedToken": "Borrowed",
     "borrowedTokenBalance": "Balance of Borrowed"
-  }
+  },
+  "details-tooltips": {
+    "netValue": "here",
+    "pnl": "here",
+    "liquidationPrice": "here",
+    "ltv": "here",
+    "multiple": "here",
+    "collateralLocked": "here",
+    "totalDebt": "here",
+    "borrowRate": "here",
+    "lendingRange": "here",
+    "earnings": "here",
+    "apy": "here",
+    "90dApy": "here",
+    "suppliedToken": "here",
+    "suppliedTokenBalance": "here",
+    "borrowedToken": "here",
+    "borrowedTokenBalance": "here"
+  },
+  "show-empty-positions-tooltip:": "here"
 }
