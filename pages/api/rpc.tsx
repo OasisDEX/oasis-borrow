@@ -10,25 +10,17 @@ function getSpotAddress(network: NetworkNames): string | undefined {
     case NetworkNames.ethereumGoerli:
       return `0xACe2A9106ec175bd56ec05C9E38FE1FDa8a1d758`
     default:
-      console.warn(`Network: ${network} does not have a spot contract`)
       return undefined
   }
 }
-function getMulticall(network: NetworkNames): string | undefined {
-  switch (network) {
-    case NetworkNames.ethereumMainnet:
-      return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
-    case NetworkNames.ethereumGoerli:
-      return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
-    case NetworkNames.arbitrumGoerli:
-    case NetworkNames.arbitrumMainnet:
-    case NetworkNames.optimismMainnet:
-    case NetworkNames.optimismGoerli:
-      return '0xcA11bde05977b3631167028862bE2a173976CA11' //https://github.com/mds1/multicall
-    default:
-      console.warn(`Network: ${network} does not have a multicall contract`)
-      return undefined
-  }
+
+/**
+ * The multicall address is the same for all networks.
+ * checkout: https://github.com/mds1/multicall https://www.multicall3.com/deployments
+ * @return The address of the multicall contract.
+ */
+function getMulticall(): string {
+  return '0xcA11bde05977b3631167028862bE2a173976CA11'
 }
 
 const abi = [
@@ -296,9 +288,9 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     .map((call) => call.hash)
     .map((x) => dedupedCalls.map((x) => x.hash).indexOf(x))
 
-  const multicallAddress = getMulticall(network)
+  const multicallAddress = getMulticall()
 
-  if (calls.every((call) => call.method === 'eth_call') && multicallAddress !== undefined) {
+  if (calls.every((call) => call.method === 'eth_call')) {
     try {
       const result = await makeMulticall(
         multicallAddress,
