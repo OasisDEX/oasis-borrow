@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { networksByName } from 'blockchain/networks'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
+import { AppLink } from 'components/Links'
 import { getPortfolioChangeColor, getPortfolioTokenProducts } from 'components/portfolio/helpers'
 import type { PortfolioAssetsToken } from 'features/portfolio/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
@@ -9,7 +10,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { upperFirst } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Flex, Text } from 'theme-ui'
+import { Box, Button, Flex, Text } from 'theme-ui'
 
 interface PortfolioWalletAssetsProps {
   assets?: PortfolioAssetsToken[]
@@ -93,13 +94,17 @@ export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProp
                   </Text>
                 </Flex>
               </Flex>
-              <Flex sx={{ flexDirection: 'column' }}>
-                {products.map((product) => (
-                  <span>
-                    /{product}/{getTokenGroup(symbol)}?network={network}
-                  </span>
-                ))}
-              </Flex>
+              {products.length > 0 && (
+                <Flex as="ul" sx={{ columnGap: 1, m: 0, pt: 2, pl: 0, listStyle: 'none' }}>
+                  {products.map((product) => (
+                    <Box as="li">
+                      <AppLink href={`/${product}/${getTokenGroup(symbol)}`} query={{ network }}>
+                        <Button variant="tag">{upperFirst(product)}</Button>
+                      </AppLink>
+                    </Box>
+                  ))}
+                </Flex>
+              )}
             </Box>
           )
         })}

@@ -789,6 +789,28 @@ export const theme = themeTypeSafe({
         cursor: 'not-allowed',
       },
     },
+    tag: {
+      px: '12px',
+      py: '4px',
+      color: 'neutral80',
+      fontFamily: 'body',
+      fontSize: 1,
+      fontWeight: 'semiBold',
+      lineHeight: '20px',
+      backgroundColor: 'transparent',
+      textAlign: 'center',
+      border: '1px solid',
+      borderColor: 'neutral20',
+      borderRadius: 'large',
+      bg: 'neutral10',
+      cursor: 'pointer',
+      '&:hover': {
+        color: 'interactive100',
+        backgroundColor: 'interactive10',
+        borderColor: 'interactive10',
+      },
+      transition: 'color 200ms, border-color 200ms, background-color 200ms',
+    },
   },
   links: {
     unStyled: {

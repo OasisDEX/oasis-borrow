@@ -1,7 +1,7 @@
 import type { NetworkNames } from 'blockchain/networks'
-import type { ProductType } from 'features/aave/types'
+import { ProductType } from 'features/aave/types'
 import type { ProductHubItem } from 'features/productHub/types'
-import { uniq } from 'lodash'
+import { uniq, upperFirst } from 'lodash'
 
 interface GetPortfolioTokenProductsParams {
   network: NetworkNames
@@ -9,23 +9,27 @@ interface GetPortfolioTokenProductsParams {
   token: string
 }
 
+const sortingOrder = [ProductType.Earn, ProductType.Borrow, ProductType.Multiply]
+
 export function getPortfolioTokenProducts({
   network,
   table,
   token,
 }: GetPortfolioTokenProductsParams) {
+  const resolvedToken = token === 'WETH' ? 'ETH' : token
+
   return uniq(
-    table.reduce<ProductType[]>(
-      (result, { network: productNetwork, primaryToken, product, secondaryToken }) => {
-        return [
-          ...result,
-          ...([primaryToken, secondaryToken].includes(token.toUpperCase()) &&
-          network === productNetwork
-            ? [...(product as unknown as ProductType[])]
-            : []),
-        ]
-      },
+    table.reduce<string[]>(
+      (result, { network: productNetwork, primaryToken, product, secondaryToken }) => [
+        ...result,
+        ...([primaryToken, secondaryToken].includes(resolvedToken.toUpperCase()) &&
+        network === productNetwork
+          ? [...product]
+          : []),
+      ],
       [],
     ),
   )
+    .map((product) => upperFirst(product) as ProductType)
+    .sort((a, b) => sortingOrder.indexOf(a) - sortingOrder.indexOf(b))
 }
