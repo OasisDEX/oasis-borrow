@@ -8,11 +8,10 @@ import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { PortfolioPositionsReply } from 'features/portfolio/types'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 import { question_o } from 'theme/icons'
-import { useFetch } from 'usehooks-ts'
 
 type PortfolioPositionsViewFiltersType = {
   showEmptyPositions: boolean
@@ -20,11 +19,21 @@ type PortfolioPositionsViewFiltersType = {
   sorting?: PortfolioSortingType
 }
 
-export const PortfolioPositionsView = ({ address }: { address: string }) => {
+export const PortfolioPositionsView = ({
+  address,
+  fetchData,
+}: {
+  address: string
+  fetchData: (address: string) => Promise<PortfolioPositionsReply>
+}) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const { data: portfolioPositionsData } = useFetch<PortfolioPositionsReply>(
-    `/api/portfolio/positions/${address}`,
-  )
+  // fetch data
+  const [portfolioPositionsData, setPortfolioPositionsData] = useState<PortfolioPositionsReply>()
+  useEffect(() => {
+    void fetchData(address).then((data) => {
+      setPortfolioPositionsData(data)
+    })
+  }, [address, fetchData])
 
   const [filterState, setFilterState] = useState<PortfolioPositionsViewFiltersType>({
     showEmptyPositions: false,

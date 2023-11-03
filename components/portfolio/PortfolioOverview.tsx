@@ -14,7 +14,7 @@ import type { PortfolioOverviewResponse } from 'lambdas/src/portfolio-overview/t
 export const PortfolioOverview = ({
   overviewData,
 }: {
-  overviewData?: PortfolioOverviewResponse
+  overviewData?: PortfolioOverviewResponse | void
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
