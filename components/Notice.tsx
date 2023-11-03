@@ -1,4 +1,4 @@
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, IconButton } from 'theme-ui'
@@ -12,7 +12,7 @@ type Closable = {
   withClose?: boolean
 }
 
-type NoticeProps = WithChildren & Closable
+type NoticeProps = PropsWithChildren<Closable>
 
 export function Notice({ children, close, sx, withClose = true }: NoticeProps) {
   return (

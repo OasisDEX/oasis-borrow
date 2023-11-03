@@ -6,9 +6,9 @@ import type { TxPayloadChange } from 'helpers/gasEstimate.types'
 import { useObservable } from 'helpers/observableHook'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
-import type { WithChildren } from 'helpers/types/With.types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
+import type { PropsWithChildren } from 'react'
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { of } from 'rxjs'
 
@@ -37,7 +37,7 @@ export const useGasEstimationContext = () => {
   This component is providing data regarding gas based on txData received from uiChanges.
 */
 
-export function GasEstimationContextProvider({ children }: WithChildren) {
+export function GasEstimationContextProvider({ children }: PropsWithChildren<{}>) {
   if (!isProductContextAvailable()) {
     return null
   }

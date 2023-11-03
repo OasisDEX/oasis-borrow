@@ -2,9 +2,9 @@ import { NetworkNames } from 'blockchain/networks'
 import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
-import type { WithChildren } from 'helpers/types/With.types'
 import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
+import type { PropsWithChildren } from 'react'
 import React, { useContext, useEffect, useState } from 'react'
 
 import type { AaveContext } from './aave-context'
@@ -44,7 +44,7 @@ export function useAaveContext(
   return aaveContextsForNetwork[protocol]!
 }
 
-export function AaveContextProvider({ children }: WithChildren) {
+export function AaveContextProvider({ children }: PropsWithChildren<{}>) {
   const mainContext = useMainContext()
   const accountContext = useAccountContext()
   const productContext = useProductContext()

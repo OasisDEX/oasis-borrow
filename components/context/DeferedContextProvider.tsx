@@ -1,5 +1,5 @@
 import { AppSpinnerWholePage } from 'helpers/AppSpinner'
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React, { useContext } from 'react'
 
 // usable in situations where ProductContext and other context is rendered simultanously:
@@ -11,6 +11,6 @@ import React, { useContext } from 'react'
 export function DeferedContextProvider({
   children,
   context,
-}: WithChildren & { context: React.Context<any> }) {
-  return useContext(context) ? children : <AppSpinnerWholePage />
+}: PropsWithChildren<{ context: React.Context<any> }>) {
+  return useContext(context) ? <>{children}</> : <AppSpinnerWholePage />
 }

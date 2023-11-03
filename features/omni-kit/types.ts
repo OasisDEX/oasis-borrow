@@ -3,6 +3,7 @@ import type { NetworkNames } from 'blockchain/networks'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
+import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export type OmniGenericPosition = LendingPosition | SupplyPosition
 
@@ -126,4 +127,11 @@ export interface OmniFormDefaults {
   borrow: Partial<OmniBorrowFormState>
   earn: Partial<OmniEarnFormState>
   multiply: Partial<OmniMultiplyFormState>
+}
+
+export interface OmniFlowStateFilterParams {
+  collateralAddress: string
+  event: CreatePositionEvent
+  productType: OmniProductType
+  quoteAddress: string
 }

@@ -81,7 +81,7 @@ export function OmniFormView({
     dynamicMetadata: {
       values: { interestRate, sidebarTitle, isFormEmpty },
       validations: { isFormValid, isFormFrozen, hasErrors },
-      filters: { flowStateFilter, consumedProxyFilter },
+      filters: { flowStateFilter },
       elements: { dupeModal },
       featureToggles: { suppressValidation, safetySwitch },
     },
@@ -103,7 +103,7 @@ export function OmniFormView({
       quoteToken,
       state,
     }),
-    filterConsumedProxy: (events) => events.every(consumedProxyFilter),
+    filterConsumedProxy: (events) => events.every((event) => !flowStateFilter(event)),
     onProxiesAvailable: (events, dpmAccounts) => {
       const filteredEvents = events.filter(flowStateFilter)
 

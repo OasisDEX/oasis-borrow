@@ -1,15 +1,15 @@
 import { Box, Flex, Text } from '@theme-ui/components'
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 
 export function WithVaultFormStepIndicator({
   currentStep,
   totalSteps,
   children,
-}: {
+}: PropsWithChildren<{
   currentStep: number
   totalSteps: number
-} & WithChildren) {
+}>) {
   return (
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
       <Box sx={{ flex: 1 }}>{children}</Box>

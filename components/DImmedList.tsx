@@ -1,8 +1,8 @@
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-export function DimmedList({ children }: WithChildren) {
+export function DimmedList({ children }: PropsWithChildren<{}>) {
   return (
     <Grid
       as="ul"

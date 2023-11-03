@@ -1,8 +1,8 @@
 import { useProductHubData } from 'features/productHub/hooks/useProductHubData'
 import type { ConfigResponseType, PreloadAppDataContext } from 'helpers/config'
 import { configCacheTime, getLocalAppConfig, saveConfigToLocalStorage } from 'helpers/config'
-import type { WithChildren } from 'helpers/types/With.types'
 import { LendingProtocol } from 'lendingProtocols'
+import type { PropsWithChildren } from 'react'
 import React, { useContext, useEffect, useState } from 'react'
 import { FeaturesEnum } from 'types/config'
 
@@ -35,7 +35,7 @@ export function usePreloadAppDataContext(): PreloadAppDataContext {
   return ac
 }
 
-export function PreloadAppDataContextProvider({ children }: WithChildren) {
+export function PreloadAppDataContextProvider({ children }: PropsWithChildren<{}>) {
   const [context, setContext] = useState<PreloadAppDataContext | undefined>(undefined)
   const { AjnaSafetySwitch } = getLocalAppConfig('features')
 

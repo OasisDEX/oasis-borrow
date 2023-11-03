@@ -1,9 +1,9 @@
-import type { WithChildren } from 'helpers/types/With.types'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Container, Flex } from 'theme-ui'
 
-export interface BasicLayoutProps extends WithChildren {
+export interface BasicLayoutProps extends PropsWithChildren<{}> {
   header: JSX.Element
   footer?: JSX.Element
   sx?: ThemeUIStyleObject

@@ -1,11 +1,11 @@
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import type { WithChildren } from 'helpers/types/With.types'
 import { useTranslation } from 'next-i18next'
+import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { Box, Card, Flex, Grid, Image, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 
-export function BenefitCardsWrapper({ children }: WithChildren) {
+export function BenefitCardsWrapper({ children }: PropsWithChildren<{}>) {
   return (
     <Grid
       columns={[1, 2, 3]}

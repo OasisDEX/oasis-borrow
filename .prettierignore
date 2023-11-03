@@ -11,3 +11,5 @@ coverage
 .run
 .swc
 .vercel
+jest.config.js
+setup.js

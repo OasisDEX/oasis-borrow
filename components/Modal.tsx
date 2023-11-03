@@ -3,9 +3,8 @@ import { useSharedUI } from 'components/SharedUIProvider'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { ModalProps } from 'helpers/modalHook'
-import type { WithChildren } from 'helpers/types/With.types'
 import { Trans, useTranslation } from 'next-i18next'
-import type { ReactNode } from 'react'
+import type { PropsWithChildren, ReactNode } from 'react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { TRANSITIONS } from 'theme'
@@ -29,7 +28,7 @@ import { Icon } from './Icon'
 import { AppLink } from './Links'
 import curry from 'ramda/src/curry'
 
-interface ModalCloseIconProps extends ModalProps<WithChildren> {
+interface ModalCloseIconProps extends PropsWithChildren<ModalProps> {
   sx?: ThemeUIStyleObject
   size?: number
   color?: string
@@ -137,12 +136,12 @@ function ModalWrapper({
   close,
   sxWrapper,
   omitHTMLOverflow,
-}: WithChildren & {
+}: PropsWithChildren<{
   close: () => void
   id?: string
   sxWrapper?: ThemeUIStyleObject
   omitHTMLOverflow?: boolean
-}) {
+}>) {
   useEffect(() => {
     const curriedOverflowClickHandler = curry(overflowClickHandler)(close)
 
@@ -233,16 +232,16 @@ export function ModalErrorMessage({ message }: { message: string }) {
   )
 }
 
-export function MobileSidePanelPortal({ children }: WithChildren) {
+export function MobileSidePanelPortal({ children }: PropsWithChildren<{}>) {
   const onMobile = useOnMobile()
 
-  return onMobile && document.body ? createPortal(children, document.body) : children
+  return onMobile && document.body ? createPortal(children, document.body) : <>{children}</>
 }
 
 export function MobileSidePanel({
   toggleTitle,
   children,
-}: WithChildren & { toggleTitle: ReactNode }) {
+}: PropsWithChildren<{ toggleTitle: ReactNode }>) {
   const { vaultFormOpened, setVaultFormOpened, setVaultFormToggleTitle } = useSharedUI()
 
   useEffect(() => {

@@ -9,18 +9,19 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, Heading, Text } from 'theme-ui'
 
+import type { PortfolioOverviewResponse } from 'lambdas/src/portfolio-overview/types'
+
 export const PortfolioOverview = ({
   overviewData,
 }: {
-  overviewData: {
-    walletBalanceUsdValue: number
-    suppliedUsdValue: number
-    suppliedPercentageChange: number
-    borrowedUsdValue: number
-    borrowedPercentageChange: number
-  }
+  overviewData?: PortfolioOverviewResponse
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
+
+  if (!overviewData) {
+    return <>'Loading'</>
+  }
+
   return (
     <Flex
       sx={{
