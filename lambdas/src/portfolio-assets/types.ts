@@ -24,6 +24,7 @@ export type DebankTokensReply = DebankTokenReply[]
 export type PortfolioAssetsToken = {
   name: string
   network: NetworkNames
+  symbol: string
   priceUSD: number
   price24hChange: number
   balance: number
@@ -31,7 +32,5 @@ export type PortfolioAssetsToken = {
 }
 
 export type PortfolioAssetsReply = {
-  totalUSDAssets: number
-  totalUSDAssets24hChange: number
   assets: PortfolioAssetsToken[]
 }

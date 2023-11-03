@@ -7,8 +7,8 @@ import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'
-import type { ThemeUIStyleObject } from 'theme-ui'
 import { tooltip } from 'theme/icons'
+import type { ThemeUIStyleObject } from 'theme-ui'
 
 import { VaultHeaderContainer } from './VaultHeaderContainer'
 

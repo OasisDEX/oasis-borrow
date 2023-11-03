@@ -2,8 +2,8 @@ import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import l2beatLogo from 'public/static/img/l2beat-logo.svg'
 import React, { useState } from 'react'
-import { Box, Image, Link } from 'theme-ui'
 import { arrow_right_light } from 'theme/icons'
+import { Box, Image, Link } from 'theme-ui'
 
 export const L2BeatSection = () => {
   const [hover, setHover] = useState<boolean>(false)

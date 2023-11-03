@@ -9,8 +9,8 @@ import { one, zero } from 'helpers/zero'
 import type { ChangeEvent } from 'react'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import { Box, Grid, Text } from 'theme-ui'
 import { exchange, minus, plus } from 'theme/icons'
+import { Box, Grid, Text } from 'theme-ui'
 
 export type VaultAction =
   | 'Borrow'

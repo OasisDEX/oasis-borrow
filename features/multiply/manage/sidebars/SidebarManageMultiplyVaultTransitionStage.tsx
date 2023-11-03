@@ -4,8 +4,8 @@ import { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { ManageMultiplyVaultStage } from 'features/multiply/manage/pipes/ManageMultiplyVaultStage.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid, Text } from 'theme-ui'
 import { borrow_transition, checkmark, multiply_transition } from 'theme/icons'
+import { Grid, Text } from 'theme-ui'
 
 export function SidebarManageMultiplyVaultTransitionStage({
   stage,

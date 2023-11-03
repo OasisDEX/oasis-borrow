@@ -40,8 +40,9 @@ type AutomationType = {
   price?: number
 }
 
-type DetailsType =
+export type DetailsType =
   | 'netValue'
+  | 'netValueEarnActivePassive'
   | 'pnl'
   | 'liquidationPrice'
   | 'ltv'

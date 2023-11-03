@@ -23,8 +23,8 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import ReactSelect from 'react-select'
-import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 import { dai_circle_color } from 'theme/icons'
+import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 

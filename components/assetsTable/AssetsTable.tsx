@@ -15,8 +15,8 @@ import { getRandomString } from 'helpers/getRandomString'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
-import { Box, Flex } from 'theme-ui'
 import { question_o } from 'theme/icons'
+import { Box, Flex } from 'theme-ui'
 
 interface AssetsTableHeaderCellProps {
   first: boolean

@@ -1,8 +1,8 @@
 import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Button, Flex, Text } from 'theme-ui'
 import { arrow_left, settings } from 'theme/icons'
+import { Button, Flex, Text } from 'theme-ui'
 
 interface NotificationsCenterHeaderProps {
   onButtonClick: () => void

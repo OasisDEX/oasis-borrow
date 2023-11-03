@@ -86,7 +86,10 @@ export default function PortfolioView({
               value: 'wallet',
               label: tPortfolio('wallet-tab'),
               content: (
-                <PortfolioWalletView address={address} fetchData={portfolioClient.fetchPortfolioAssets} />
+                <PortfolioWalletView
+                  address={address}
+                  fetchData={portfolioClient.fetchPortfolioAssets}
+                />
               ),
             },
           ]}

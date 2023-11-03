@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import {
-  type OmniFormAction,
   OmniBorrowFormAction,
+  type OmniFormAction,
   OmniMultiplyFormAction,
   OmniProductType,
 } from 'features/omni-kit/types'

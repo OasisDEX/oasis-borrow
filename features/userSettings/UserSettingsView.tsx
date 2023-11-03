@@ -18,14 +18,14 @@ import {
   formatPrecision,
 } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
+import { useTranslation } from 'next-i18next'
 import type { ChangeEvent } from 'react'
 import React, { useCallback, useRef, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
+import { chevron_down, chevron_up, dai_color, settings, sign_out } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Card, Flex, Grid, Heading, Link as ThemeLink, Text, Textarea } from 'theme-ui'
-import { chevron_down, chevron_up, dai_color, settings, sign_out } from 'theme/icons'
 import { UnreachableCaseError } from 'ts-essentials'
 
 import { SLIPPAGE_OPTIONS } from './userSettings.constants'

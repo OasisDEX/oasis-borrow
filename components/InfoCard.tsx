@@ -1,9 +1,9 @@
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
+import { arrow_right } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Card, Heading, Text } from 'theme-ui'
-import { arrow_right } from 'theme/icons'
 
 import { Icon } from './Icon'
 import { AppLink } from './Links'

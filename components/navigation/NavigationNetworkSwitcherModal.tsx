@@ -8,8 +8,8 @@ import { Icon } from 'components/Icon'
 import { Modal } from 'components/Modal'
 import type { ModalProps } from 'helpers/modalHook'
 import React from 'react'
-import { Box, Button, Flex, IconButton, Image, Input, Text } from 'theme-ui'
 import { close_squared } from 'theme/icons'
+import { Box, Button, Flex, IconButton, Image, Input, Text } from 'theme-ui'
 
 export function NavigationNetworkSwitcherModal({ close: _close }: ModalProps<{}>) {
   const [forkSettings, setForkSettings] = useCustomForkParameter()

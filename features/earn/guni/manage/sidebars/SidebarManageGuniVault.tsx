@@ -20,8 +20,8 @@ import {
 } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
-import { Grid } from 'theme-ui'
 import { circle_close } from 'theme/icons'
+import { Grid } from 'theme-ui'
 
 export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()

@@ -3,7 +3,7 @@ import {
   omniSidebarManageSteps,
   omniSidebarSetupSteps,
 } from 'features/omni-kit/constants'
-import { type OmniSidebarStepsSet, OmniSidebarStep } from 'features/omni-kit/types'
+import { OmniSidebarStep, type OmniSidebarStepsSet } from 'features/omni-kit/types'
 
 export const ajnaOmniSteps: OmniSidebarStepsSet = {
   borrow: {

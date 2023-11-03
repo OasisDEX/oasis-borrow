@@ -4,8 +4,8 @@ import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Button, Flex, Heading } from 'theme-ui'
 import { arrow_right } from 'theme/icons'
+import { Button, Flex, Heading } from 'theme-ui'
 
 export function ConnectWalletPrompt() {
   const { t } = useTranslation()

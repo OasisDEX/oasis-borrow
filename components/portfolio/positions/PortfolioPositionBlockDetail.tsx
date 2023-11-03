@@ -4,8 +4,8 @@ import { StatefulTooltip } from 'components/Tooltip'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Flex, Text } from 'theme-ui'
 import { question_o } from 'theme/icons'
+import { Box, Flex, Text } from 'theme-ui'
 
 import type { DetailsType, PositionDetail } from 'lambdas/src/portfolio-positions/types'
 

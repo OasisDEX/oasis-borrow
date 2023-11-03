@@ -9,8 +9,8 @@ import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Flex, Grid, Text } from 'theme-ui'
 import { question_o } from 'theme/icons'
+import { Box, Flex, Grid, Text } from 'theme-ui'
 
 import type { PortfolioPositionsReply } from 'lambdas/src/portfolio-positions/types'
 

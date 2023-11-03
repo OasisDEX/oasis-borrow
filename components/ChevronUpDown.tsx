@@ -1,6 +1,6 @@
 import React from 'react'
-import type { ThemeUIStyleObject } from 'theme-ui'
 import { chevron_down, chevron_up } from 'theme/icons'
+import type { ThemeUIStyleObject } from 'theme-ui'
 
 import { Icon } from './Icon'
 import type { IconProps } from './Icon.types'

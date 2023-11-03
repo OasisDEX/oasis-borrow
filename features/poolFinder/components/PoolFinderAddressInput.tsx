@@ -5,8 +5,8 @@ import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import type { FC } from 'react'
 import React from 'react'
-import { Flex, Input, Label } from 'theme-ui'
 import { link } from 'theme/icons'
+import { Flex, Input, Label } from 'theme-ui'
 
 interface PoolFinderAddressInputProps {
   label: string

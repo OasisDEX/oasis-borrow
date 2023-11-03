@@ -6,9 +6,9 @@ import { scrollTo } from 'helpers/scrollTo'
 import { useTranslation } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'
+import { arrow_right } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Button, Flex, Grid, Heading, Text } from 'theme-ui'
-import { arrow_right } from 'theme/icons'
 
 export function Hero({
   sx,

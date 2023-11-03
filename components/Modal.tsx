@@ -8,6 +8,8 @@ import type { PropsWithChildren, ReactNode } from 'react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { TRANSITIONS } from 'theme'
+import { close_squared } from 'theme/icons'
+import { useOnMobile } from 'theme/useBreakpointIndex'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import {
   Box,
@@ -21,8 +23,6 @@ import {
   IconButton,
   Text,
 } from 'theme-ui'
-import { close_squared } from 'theme/icons'
-import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { Icon } from './Icon'
 import { AppLink } from './Links'

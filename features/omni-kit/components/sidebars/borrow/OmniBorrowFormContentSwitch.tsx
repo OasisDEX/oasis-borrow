@@ -2,8 +2,8 @@ import { ListWithIcon } from 'components/ListWithIcon'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Text } from 'theme-ui'
 import { checkmark } from 'theme/icons'
+import { Text } from 'theme-ui'
 
 export function OmniBorrowFormContentSwitch() {
   const { t } = useTranslation()

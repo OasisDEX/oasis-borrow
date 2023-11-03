@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState } from 'react'
-import { Box, Flex, Text } from 'theme-ui'
 import { announcement } from 'theme/icons'
+import { Box, Flex, Text } from 'theme-ui'
 
 import { Icon } from './Icon'
 import { AppLink } from './Links'

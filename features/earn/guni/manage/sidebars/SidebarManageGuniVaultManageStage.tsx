@@ -3,8 +3,8 @@ import { GuniManageMultiplyVaultChangesInformation } from 'features/earn/guni/ma
 import type { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/ManageMultiplyVaultState.types'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
-import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { Text } from 'theme-ui'
 
 export function SidebarManageGuniVaultManageStage(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()

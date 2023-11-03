@@ -1,9 +1,9 @@
 import { Trans } from 'next-i18next'
 import type { ReactNode } from 'react'
 import React from 'react'
+import { checkbox } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Grid, Text } from 'theme-ui'
-import { checkbox } from 'theme/icons'
 
 import { Icon } from './Icon'
 import type { IconProps } from './Icon.types'

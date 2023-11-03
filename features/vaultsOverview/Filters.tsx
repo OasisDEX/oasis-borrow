@@ -1,13 +1,13 @@
 import { trackingEvents } from 'analytics/trackingEvents'
 import type { MixpanelPages } from 'analytics/types'
-import { type CoinTag, COIN_TAGS } from 'blockchain/TokenConfig'
+import { COIN_TAGS, type CoinTag } from 'blockchain/TokenConfig'
 import { Icon } from 'components/Icon'
 import { useTranslation } from 'next-i18next'
 import React, { memo, useCallback } from 'react'
 import ReactSelect from 'react-select'
+import { chevron, searchIcon } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Flex, Input } from 'theme-ui'
-import { chevron, searchIcon } from 'theme/icons'
 
 interface FiltersProps {
   onSearch: (search: string) => void

@@ -20,12 +20,12 @@ import { useObservable } from 'helpers/observableHook'
 import type { SparkLendingProtocol } from 'lendingProtocols'
 import { checkIfSpark } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useRouter } from 'next/router'
 import React from 'react'
-import { Grid } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
+import { Grid } from 'theme-ui'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const networkOrProduct = ctx.query.networkOrProduct as string

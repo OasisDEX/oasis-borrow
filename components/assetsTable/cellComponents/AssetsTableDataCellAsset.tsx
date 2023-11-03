@@ -1,6 +1,6 @@
 import { TokensGroup } from 'components/TokensGroup'
 import { allDefined } from 'helpers/allDefined'
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'theme-ui'

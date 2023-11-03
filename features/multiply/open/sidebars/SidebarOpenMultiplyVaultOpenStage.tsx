@@ -4,8 +4,8 @@ import { OpenMultiplyVaultChangesInformation } from 'features/multiply/open/cont
 import type { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault.types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
+import { Text } from 'theme-ui'
 
 export function SidebarOpenMultiplyVaultOpenStage(props: OpenMultiplyVaultState) {
   const { t } = useTranslation()
