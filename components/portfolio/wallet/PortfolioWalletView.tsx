@@ -30,6 +30,7 @@ export const WalletView = ({ address }: { address: string }) => {
           />
         </Flex>
         <PortfolioWalletSummary
+          assets={portfolioWalletData?.assets.slice(0, 3)}
           totalAssets={portfolioWalletData?.totalUSDAssets}
           totalAssetsChange={portfolioWalletData?.totalUSDAssets24hChange}
         />

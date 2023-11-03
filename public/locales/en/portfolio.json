@@ -13,5 +13,6 @@
   "assets": "Networks",
   "summary": "Summary",
   "top-assets": "Top {{amount}} assets",
+  "no-assets": "There are no assets in this wallet.",
   "total-assets": "Total assets"
 }

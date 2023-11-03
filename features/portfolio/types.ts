@@ -26,6 +26,7 @@ export type DebankTokensReply = DebankTokenReply[]
 
 export type PortfolioAssetsToken = {
   name: string
+  symbol: string
   network: NetworkNames
   priceUSD: number
   price24hChange: number
