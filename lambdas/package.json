@@ -2,13 +2,13 @@
   "name": "lambdas",
   "version": "1.0.0",
   "scripts": {
-    "build": "tsc",
+    "tsc": "tsc",
     "watch": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "zip-assets": "zip -r assets.zip dist/common dist/portfolio-assets",
-    "zip-overview": "zip -r overview.zip dist/common dist/portfolio-overview",
-    "zip-positions": "zip -r positions.zip dist/common dist/portfolio-positions",
-    "zip": "npm run build && npm run zip-assets && npm run zip-overview && npm run zip-positions"
+    "zip-assets": "zip -r artifacts/portfolio-assets.zip dist/common dist/portfolio-assets",
+    "zip-overview": "zip -r artifacts/portfolio-overview.zip dist/common dist/portfolio-overview",
+    "zip-positions": "zip -r artifacts/portfolio-positions.zip dist/common dist/portfolio-positions",
+    "build": "npm run tsc && mkdir -p artifacts && npm run zip-assets && npm run zip-overview && npm run zip-positions"
   },
   "author": "Piter",
   "license": "ISC",

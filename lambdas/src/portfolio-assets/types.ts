@@ -1,4 +1,21 @@
-import type { NetworkNames } from 'blockchain/networks'
+import { NetworkNames } from 'blockchain/networks'
+
+export enum DebankNetworkNames {
+  ethereumMainnet = 'eth',
+  arbitrumMainnet = 'arb',
+  polygonMainnet = 'matic',
+  optimismMainnet = 'op',
+  baseMainnet = 'base',
+}
+
+export const DebankNetworkNameToOurs = {
+  [DebankNetworkNames.ethereumMainnet]: NetworkNames.ethereumMainnet,
+  [DebankNetworkNames.arbitrumMainnet]: NetworkNames.arbitrumMainnet,
+  [DebankNetworkNames.polygonMainnet]: NetworkNames.polygonMainnet,
+  [DebankNetworkNames.optimismMainnet]: NetworkNames.optimismMainnet,
+  [DebankNetworkNames.baseMainnet]: NetworkNames.baseMainnet,
+}
+
 export type DebankTokenReply = {
   id: string
   chain: string
