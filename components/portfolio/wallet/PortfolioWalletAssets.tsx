@@ -11,10 +11,10 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
-import type { PortfolioAssetsToken } from 'lambdas/src/portfolio-assets/types'
+import type { PortfolioAsset } from 'lambdas/src/portfolio-assets/types'
 
 interface PortfolioWalletAssetsProps {
-  assets?: PortfolioAssetsToken[]
+  assets?: PortfolioAsset[]
 }
 
 export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProps) => {
@@ -83,7 +83,7 @@ export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProp
                     variant="paragraph4"
                     sx={{ color: getPortfolioChangeColor(price24hChange) }}
                   >
-                    {price24hChange.toFixed(2)}%
+                    {price24hChange?.toFixed(2) ?? '-'}%
                   </Text>
                 </Flex>
                 <Flex sx={{ flexDirection: 'column', width: '150px', textAlign: 'right' }}>

@@ -12,8 +12,10 @@ import { Flex, Heading, Text } from 'theme-ui'
 import type { PortfolioOverviewResponse } from 'lambdas/src/portfolio-overview/types'
 
 export const PortfolioOverview = ({
+  address,
   overviewData,
 }: {
+  address: string
   overviewData?: PortfolioOverviewResponse | void
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
@@ -32,20 +34,14 @@ export const PortfolioOverview = ({
     >
       <Flex sx={{ alignItems: 'flex-start' }}>
         <PortfolioOverviewItem
-          header={tPortfolio('summer-fi-portfolio')}
+          header={tPortfolio('wallet-balance')}
           value={
             <Heading variant="header4">
-              $
-              {formatAmount(
-                new BigNumber(overviewData.suppliedUsdValue).minus(
-                  new BigNumber(overviewData.borrowedUsdValue),
-                ),
-                'USD',
-              )}
+              ${formatAmount(new BigNumber(overviewData.walletBalanceUsdValue), 'USD')}
             </Heading>
           }
           subValue={
-            <AppLink href="/portfolio/wallet">
+            <AppLink href={`/portfolio/${address}`} hash="wallet">
               <WithArrow sx={{ color: 'interactive100' }}>{tPortfolio('view-assets')}</WithArrow>
             </AppLink>
           }
@@ -60,7 +56,7 @@ export const PortfolioOverview = ({
         }}
       >
         <PortfolioOverviewItem
-          header={tPortfolio('total-supplied')}
+          header={tPortfolio('total-portfiolio')}
           value={
             <Heading
               variant="header4"
@@ -70,6 +66,23 @@ export const PortfolioOverview = ({
                 color: 'transparent',
               }}
             >
+              ${formatAmount(new BigNumber(overviewData.totalUsdValue), 'USD')}
+            </Heading>
+          }
+          subValue={
+            <Text
+              variant="paragraph4"
+              sx={{ color: getPortfolioChangeColor(overviewData.totalPercentageChange) }}
+            >
+              {getPortfolioChangeSign(overviewData.totalPercentageChange)}
+              {tPortfolio('past-week', { percentage: overviewData.totalPercentageChange })}
+            </Text>
+          }
+        />
+        <PortfolioOverviewItem
+          header={tPortfolio('total-supplied')}
+          value={
+            <Heading variant="header4">
               ${formatAmount(new BigNumber(overviewData.suppliedUsdValue), 'USD')}
             </Heading>
           }

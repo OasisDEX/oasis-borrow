@@ -5,7 +5,7 @@ export type PortfolioAsset = {
   network: NetworkNames
   symbol: string
   priceUSD: number
-  price24hChange: number
+  price24hChange?: number
   balance: number
   balanceUSD: number
 }

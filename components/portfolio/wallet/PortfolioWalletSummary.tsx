@@ -7,10 +7,10 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Text } from 'theme-ui'
 
-import type { PortfolioAssetsToken } from 'lambdas/src/portfolio-assets/types'
+import type { PortfolioAsset } from 'lambdas/src/portfolio-assets/types'
 
 interface PortfolioWalletSummaryProps {
-  assets?: PortfolioAssetsToken[]
+  assets?: PortfolioAsset[]
 }
 
 export const PortfolioWalletSummary = ({ assets }: PortfolioWalletSummaryProps) => {
@@ -25,7 +25,9 @@ export const PortfolioWalletSummary = ({ assets }: PortfolioWalletSummaryProps) 
     () =>
       assets
         ? assets.length
-          ? assets.reduce((acc, token) => acc + token.price24hChange, 0) / assets.length
+          ? assets
+              .filter((token) => token.price24hChange != null)
+              .reduce((acc, token) => acc + (token.price24hChange ?? 0), 0) / assets.length
           : 0
         : undefined,
     [assets],

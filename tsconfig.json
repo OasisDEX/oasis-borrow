@@ -32,7 +32,7 @@
     "next-i18next.config.js",
     "middleware.ts"
   ],
-  "exclude": ["node_modules", "types", "coverage", "lambdas", "infra"],
+  "exclude": ["node_modules", "types", "coverage", "infra"],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"

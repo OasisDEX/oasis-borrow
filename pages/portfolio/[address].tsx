@@ -65,7 +65,7 @@ export default function PortfolioView({
       <Box sx={{ width: '100%' }}>
         <PortfolioHeader address={address} />
         {overviewData ? (
-          <PortfolioOverview overviewData={overviewData} />
+          <PortfolioOverview address={address} overviewData={overviewData} />
         ) : (
           <PortfolioOverviewSkeleton />
         )}

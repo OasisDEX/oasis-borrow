@@ -5,10 +5,10 @@ import { formatFiatBalance } from 'helpers/formatters/format'
 import React from 'react'
 import { Flex, Grid, Text } from 'theme-ui'
 
-import type { PortfolioAssetsToken } from 'lambdas/src/portfolio-assets/types'
+import type { PortfolioAsset } from 'lambdas/src/portfolio-assets/types'
 
 interface PortfolioWalletTopAssetsProps {
-  assets?: PortfolioAssetsToken[]
+  assets?: PortfolioAsset[]
 }
 
 export const PortfolioWalletTopAssets = ({ assets }: PortfolioWalletTopAssetsProps) => {
