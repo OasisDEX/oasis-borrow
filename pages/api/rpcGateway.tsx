@@ -29,7 +29,7 @@ export function getRpcNodeGateway(
     return undefined
   }
   return (
-    `${rpcBase}/${rpcConfig.stage}/?` +
+    `${rpcBase}/?` +
     `network=${network}&` +
     `skipCache=${rpcConfig.skipCache}&` +
     `skipMulticall=${rpcConfig.skipMulticall}&` +
