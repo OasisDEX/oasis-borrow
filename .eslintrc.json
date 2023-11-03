@@ -1,5 +1,5 @@
 {
-  "ignorePatterns": ["node_modules", "types", "coverage"],
+  "ignorePatterns": ["node_modules", "types", "coverage", "infra"],
   "env": {
     "es6": true
   },

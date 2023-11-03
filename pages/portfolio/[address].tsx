@@ -9,41 +9,47 @@ import { useRedirect } from 'helpers/useRedirect'
 import type { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { getAwsInfraHeader, getAwsInfraUrl } from 'server/helpers'
 import { Box } from 'theme-ui'
+import { useFetch } from 'usehooks-ts'
+
+import type { PortfolioOverviewResponse } from 'lambdas/src/portfolio-overview/types'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const address = ctx.query.address
+  const awsInfraUrl = getAwsInfraUrl()
+  const awsInfraHeader = getAwsInfraHeader()
+
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale ?? 'en', ['portfolio', 'common'])),
-      address: ctx.query?.address ?? null,
+      address,
+      awsInfraUrl,
+      awsInfraHeader,
     },
   }
 }
 
-export default function PortfolioView({ address }: { address: string }) {
+export default function PortfolioView({
+  address,
+  awsInfraUrl,
+  awsInfraHeader,
+}: {
+  address: string
+  awsInfraUrl: string
+  awsInfraHeader: Record<string, string>
+}) {
   const { t: tPortfolio } = useTranslation('portfolio')
   const { replace } = useRedirect()
-  const [overviewData, setOverviewData] = useState<{
-    walletBalanceUsdValue: number
-    suppliedUsdValue: number
-    suppliedPercentageChange: number
-    borrowedUsdValue: number
-    borrowedPercentageChange: number
-  }>()
-  useEffect(() => {
-    const test = setTimeout(() => {
-      !overviewData &&
-        setOverviewData({
-          walletBalanceUsdValue: 20859930.02,
-          suppliedUsdValue: 1200621,
-          suppliedPercentageChange: 10.85,
-          borrowedUsdValue: 10000.22,
-          borrowedPercentageChange: 0.98,
-        })
-    }, 3500)
-    return () => clearTimeout(test)
-  }, [overviewData])
+
+  const { data: overviewData } = useFetch<PortfolioOverviewResponse>(
+    `${awsInfraUrl}/portfolio-overview?address=${address}`,
+    {
+      headers: awsInfraHeader,
+    },
+  )
+
   useEffect(() => {
     if (!address) {
       replace('/')
