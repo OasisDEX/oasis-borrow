@@ -2,17 +2,17 @@ import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
 import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
 import { PortfolioOverview } from 'components/portfolio/PortfolioOverview'
 import { PortfolioOverviewSkeleton } from 'components/portfolio/PortfolioOverviewSkeleton'
-import { PositionsView } from 'components/portfolio/positions/PositionsView'
-import { WalletView } from 'components/portfolio/wallet/PortfolioWalletView'
+import { PortfolioPositionsView } from 'components/portfolio/positions/PortfolioPositionsView'
+import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWalletView'
 import { TabBar } from 'components/TabBar'
+import { usePortfolioClient } from 'helpers/clients/portfolio-client'
 import { useRedirect } from 'helpers/useRedirect'
 import type { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getAwsInfraHeader, getAwsInfraUrl } from 'server/helpers'
 import { Box } from 'theme-ui'
-import { useFetch } from 'usehooks-ts'
 
 import type { PortfolioOverviewResponse } from 'lambdas/src/portfolio-overview/types'
 
@@ -43,18 +43,23 @@ export default function PortfolioView({
   const { t: tPortfolio } = useTranslation('portfolio')
   const { replace } = useRedirect()
 
-  const { data: overviewData } = useFetch<PortfolioOverviewResponse>(
-    `${awsInfraUrl}/portfolio-overview?address=${address}`,
-    {
-      headers: awsInfraHeader,
-    },
-  )
+  const portfolioClient = usePortfolioClient(awsInfraUrl, awsInfraHeader)
 
+  // fetch data
+  const [overviewData, setOverviewData] = useState<PortfolioOverviewResponse>()
+  useEffect(() => {
+    void portfolioClient.fetchPortfolioOverview(address).then((data) => {
+      setOverviewData(data)
+    })
+  }, [address, portfolioClient])
+
+  // redirect
   useEffect(() => {
     if (!address) {
       replace('/')
     }
   }, [address, replace])
+
   return address ? (
     <PortfolioLayout>
       <Box sx={{ width: '100%' }}>
@@ -66,17 +71,23 @@ export default function PortfolioView({
         )}
         <TabBar
           variant="underline"
-          useDropdownOnMobile
           sections={[
             {
               value: 'positions',
               label: tPortfolio('positions-tab'),
-              content: <PositionsView address={address} />,
+              content: (
+                <PortfolioPositionsView
+                  address={address}
+                  fetchData={portfolioClient.fetchPortfolioPositions}
+                />
+              ),
             },
             {
               value: 'wallet',
               label: tPortfolio('wallet-tab'),
-              content: <WalletView address={address} />,
+              content: (
+                <PortfolioWalletView address={address} fetchData={portfolioClient.fetchPortfolioAssets} />
+              ),
             },
           ]}
         />

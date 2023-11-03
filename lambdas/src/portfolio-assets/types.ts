@@ -1,9 +1,3 @@
-export type PortfolioAssetsResponse = {
-  walletBalanceUsdValue: number
-  suppliedUsdValue: number
-  suppliedPercentageChange: number
-  borrowedUsdValue: number
-  borrowedPercentageChange: number
-  totalUsdValue: number
-  totalPercentageChange: number
-}
+import type { PortfolioAssetsReply } from 'features/portfolio/types'
+
+export type PortfolioAssetsResponse = PortfolioAssetsReply

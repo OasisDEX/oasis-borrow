@@ -243,9 +243,44 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
           automations: {},
         },
         {
+          positionId: 123123,
+          type: ProductType.Earn,
+          network: NetworkNames.ethereumMainnet,
+          protocol: LendingProtocol.Ajna,
+          lendingType: 'loop',
+          openDate: 1678414480,
+          tokens: {
+            supply: {
+              symbol: 'DAI',
+              amount: 0,
+              amountUSD: 0,
+            },
+          },
+          details: [
+            {
+              type: 'netValue',
+              value: '0 DAI',
+            },
+            {
+              type: 'earnings',
+              value: '1,4 DAI',
+            },
+            {
+              type: 'apy',
+              value: '8.3%',
+              subvalue: '90d: Avg 4.15%',
+            },
+            {
+              type: 'ltv',
+              value: '72%',
+              subvalue: '76%',
+            },
+          ],
+          automations: {},
+        },
+        {
           positionId: 6543,
           network: NetworkNames.ethereumMainnet,
-          type: ProductType.Borrow,
           protocol: LendingProtocol.AaveV3,
           openDate: 1698514480,
           availableToMigrate: true,
