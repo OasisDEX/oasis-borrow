@@ -1,4 +1,5 @@
 import { GenericMultiselect } from 'components/GenericMultiselect'
+import { PortfolioWalletAssets } from 'components/portfolio/wallet/PortfolioWalletAssets'
 import { PortfolioWalletSummary } from 'components/portfolio/wallet/PortfolioWalletSummary'
 import type { PortfolioAssetsReply } from 'features/portfolio/types'
 import { productHubNetworkFilter } from 'features/productHub/meta'
@@ -34,9 +35,10 @@ export const WalletView = ({ address }: { address: string }) => {
           totalAssets={portfolioWalletData?.totalUSDAssets}
           totalAssetsChange={portfolioWalletData?.totalUSDAssets24hChange}
         />
-        <Heading as="h2" variant="header5">
+        <Heading as="h2" variant="header5" sx={{ my: '24px' }}>
           {tPortfolio('assets')}
         </Heading>
+        <PortfolioWalletAssets assets={portfolioWalletData?.assets} />
       </Box>
       <Box>
         <pre>{JSON.stringify(portfolioWalletData, null, 2)}</pre>
