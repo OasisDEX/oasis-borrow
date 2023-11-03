@@ -1023,6 +1023,11 @@ export const theme = themeTypeSafe({
       borderRadius: '2em',
       gap: '0px',
     },
+    portfolio: {
+      gap: [3, null, 4, '48px'],
+      gridTemplateColumns: ['1fr', '3fr minmax(380px, 1fr)'],
+      alignItems: 'flex-start',
+    },
   },
   styles: {
     root: {

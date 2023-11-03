@@ -44,8 +44,9 @@ type AutomationType = {
   price?: number
 }
 
-type DetailsType =
+export type DetailsType =
   | 'netValue'
+  | 'netValueEarnActivePassive'
   | 'pnl'
   | 'liquidationPrice'
   | 'ltv'
@@ -62,9 +63,16 @@ type DetailsType =
   | 'borrowedToken'
   | 'borrowedTokenBalance'
 
+export type PositionDetail = {
+  type: DetailsType
+  value: string
+  accent?: 'positive' | 'negative'
+  subvalue?: string
+}
+
 export type PortfolioPosition = {
   positionId: number
-  type: ProductType
+  type?: ProductType
   network: NetworkNames
   protocol: LendingProtocol
   strategyType?: StrategyType
@@ -83,12 +91,7 @@ export type PortfolioPosition = {
       amountUSD: number
     }
   }
-  details: {
-    type: DetailsType
-    value: string
-    accent?: 'positive' | 'negative'
-    subvalue?: string
-  }[]
+  details: PositionDetail[]
   automations: {
     stopLoss?: AutomationType
     takeProfit?: AutomationType

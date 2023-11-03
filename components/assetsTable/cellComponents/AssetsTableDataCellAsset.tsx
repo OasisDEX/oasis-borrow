@@ -8,6 +8,7 @@ interface AssetsTableDataCellAssetProps {
   asset: string
   icons?: string[]
   positionId?: string
+  description?: string
   prefix?: string
   suffix?: string
 }
@@ -16,6 +17,7 @@ export function AssetsTableDataCellAsset({
   asset,
   icons = [],
   positionId,
+  description = '',
   prefix,
   suffix,
 }: AssetsTableDataCellAssetProps) {
@@ -39,10 +41,15 @@ export function AssetsTableDataCellAsset({
             </Text>
           )}
         </Text>
-        {positionId && (
+        {(positionId || description) && (
           <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
-            {t('position')} {!positionId.toString().includes('...') && '#'}
+            {positionId && (
+              <>
+                {t('position')} {!positionId.toString().includes('...') && '#'}
+              </>
+            )}
             {positionId}
+            {description}
           </Text>
         )}
       </Flex>
