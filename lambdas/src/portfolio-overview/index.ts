@@ -12,12 +12,8 @@ const {
   DEBANK_API_KEY: debankApiKey,
   DEBANK_API_URL: serviceUrl = 'https://pro-openapi.debank.com/v1',
 } = process.env
-
 if (!debankApiKey) {
   throw new Error('Missing DEBANK_API_KEY')
-}
-if (!serviceUrl) {
-  throw new Error('Missing DEBANK_API_URL')
 }
 const debankAuthHeaderKey = 'AccessKey'
 const headers = { [debankAuthHeaderKey]: debankApiKey }
