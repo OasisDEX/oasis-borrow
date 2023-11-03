@@ -1,8 +1,9 @@
 /* eslint-disable no-relative-import-paths/no-relative-import-paths */
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 
+import { getDefaultErrorMessage } from '../common/helpers'
 import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from '../common/responses'
-import { isValidAddress } from '../common/validators'
+import { getAddressFromRequest } from '../common/validators'
 import type { PortfolioOverviewResponse, ProtocolAsset, WalletAsset } from './types'
 
 const SUPPORTED_CHAIN_IDS = ['eth', 'op', 'arb', 'base']
@@ -24,18 +25,13 @@ const headers = { [debankAuthHeaderKey]: debankApiKey }
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   // validate the query
-  const query = event.queryStringParameters
-  if (query == null) {
-    return ResponseBadRequest('Missing query string')
-  }
+  let address: string | undefined
 
-  const { address } = query
-
-  if (!address) {
-    return ResponseBadRequest('Missing address')
-  }
-  if (isValidAddress(address)) {
-    return ResponseBadRequest('Invalid address')
+  try {
+    address = getAddressFromRequest(event)
+  } catch (error) {
+    const message = getDefaultErrorMessage(error)
+    return ResponseBadRequest(message)
   }
 
   try {
