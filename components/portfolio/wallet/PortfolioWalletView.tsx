@@ -4,16 +4,25 @@ import { PortfolioWalletAssets } from 'components/portfolio/wallet/PortfolioWall
 import { PortfolioWalletSummary } from 'components/portfolio/wallet/PortfolioWalletSummary'
 import type { PortfolioAssetsReply } from 'features/portfolio/types'
 import { productHubNetworkFilter } from 'features/productHub/meta'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Grid, Heading } from 'theme-ui'
-import { useFetch } from 'usehooks-ts'
 
-export const WalletView = ({ address }: { address: string }) => {
+export const PortfolioWalletView = ({
+  address,
+  fetchData,
+}: {
+  address: string
+  fetchData: (address: string) => Promise<PortfolioAssetsReply>
+}) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const { data: portfolioWalletData } = useFetch<PortfolioAssetsReply>(
-    `/api/portfolio/wallet/${address}`,
-  )
+  const [portfolioWalletData, setPortfolioWalletData] = useState<PortfolioAssetsReply>()
+
+  useEffect(() => {
+    void fetchData(address).then((data) => {
+      setPortfolioWalletData(data)
+    })
+  }, [address, fetchData])
 
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkNames[]>([])
   const filteredAssets = useMemo(
