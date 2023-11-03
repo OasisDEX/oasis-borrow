@@ -29,7 +29,10 @@ export const WalletView = ({ address }: { address: string }) => {
             }}
           />
         </Flex>
-        <PortfolioWalletSummary totalAssets={20859930.02} totalAssetsChange={1.54} />
+        <PortfolioWalletSummary
+          totalAssets={portfolioWalletData?.totalUSDAssets}
+          totalAssetsChange={portfolioWalletData?.totalUSDAssets24hChange}
+        />
         <Heading as="h2" variant="header5">
           {tPortfolio('assets')}
         </Heading>

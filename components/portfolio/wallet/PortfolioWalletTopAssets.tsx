@@ -3,7 +3,7 @@ import type { NetworkNames } from 'blockchain/networks'
 import { TokensGroup } from 'components/TokensGroup'
 import { formatFiatBalance } from 'helpers/formatters/format'
 import React from 'react'
-import { Flex, Text } from 'theme-ui'
+import { Flex, Grid, Text } from 'theme-ui'
 
 interface PortfolioWalletTopAssetsProps {
   assets: {
@@ -15,9 +15,10 @@ interface PortfolioWalletTopAssetsProps {
 
 export const PortfolioWalletTopAssets = ({ assets }: PortfolioWalletTopAssetsProps) => {
   return (
-    <Flex
+    <Grid
       as="ul"
       sx={{
+        gridTemplateColumns: '1fr 1fr 1fr',
         columnGap: 2,
         m: 0,
         p: 0,
@@ -29,12 +30,10 @@ export const PortfolioWalletTopAssets = ({ assets }: PortfolioWalletTopAssetsPro
           key={`${network}-${asset}`}
           as="li"
           sx={{
-            flexGrow: 1,
             p: 2,
             border: '1px solid',
             borderColor: 'neutral20',
             borderRadius: 'medium',
-            maxWidth: 'calc(33% - 4px)',
           }}
         >
           <TokensGroup tokens={[asset]} forceSize={40} network={network} />
@@ -48,6 +47,6 @@ export const PortfolioWalletTopAssets = ({ assets }: PortfolioWalletTopAssetsPro
           </Flex>
         </Flex>
       ))}
-    </Flex>
+    </Grid>
   )
 }
