@@ -1,14 +1,23 @@
 import type { PortfolioAssetsReply } from 'features/portfolio/types'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box } from 'theme-ui'
-import { useFetch } from 'usehooks-ts'
 
-export const WalletView = ({ address }: { address: string }) => {
+export const WalletView = ({
+  address,
+  fetchData,
+}: {
+  address: string
+  fetchData: (address: string) => Promise<PortfolioAssetsReply>
+}) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const { data: portfolioWalletData } = useFetch<PortfolioAssetsReply>(
-    `/api/portfolio/wallet/${address}`,
-  )
+  // fetch data
+  const [portfolioWalletData, setPortfolioWalletData] = useState<PortfolioAssetsReply>()
+  useEffect(() => {
+    void fetchData(address).then((data) => {
+      setPortfolioWalletData(data)
+    })
+  }, [address, fetchData])
   return (
     <Box>
       <h4>{tPortfolio('wallet-data')}</h4>
