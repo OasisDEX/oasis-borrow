@@ -4,8 +4,9 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda
 import { getDefaultErrorMessage } from '../common/helpers'
 import { ResponseBadRequest, ResponseOk } from '../common/responses'
 import { getAddressFromRequest } from '../common/validators'
-import { DebankNetworkNames, DebankTokensReply, PortfolioAssetsResponse } from './types'
-import { DebankNetworkNameToOurs } from './types'
+import { PortfolioAssetsResponse, PortfolioAsset } from './types'
+import { DebankNetworkNameToOurs, DebankNetworkNames, DebankToken } from '../common/debank'
+import { NetworkNames } from '../common/domain'
 
 const {
   DEBANK_API_KEY: debankApiKey,
@@ -29,7 +30,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   }
 
   const reqUrl = new URL(`${serviceUrl}/user/all_token_list?id=${address}`)
-  const response: DebankTokensReply = await fetch(reqUrl.toString(), {
+  const response: DebankToken[] = await fetch(reqUrl.toString(), {
     headers,
   })
     .then((res) => res.json())
@@ -41,16 +42,18 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   const tokensData = response
   const preparedTokenData = tokensData
     .filter(({ chain, is_wallet }) => is_wallet && chain !== undefined)
-    .map((token) => ({
-      name: token.name,
-      symbol: token.symbol,
-      network: DebankNetworkNameToOurs[token.chain as DebankNetworkNames],
-      priceUSD: token.price,
-      price24hChange: token.price_24h_change,
-      balance: token.amount,
-      balanceUSD: token.amount * token.price,
-    }))
-    .filter(({ network }) => Object.values(DebankNetworkNames).includes(network))
+    .map(
+      (token): PortfolioAsset => ({
+        name: token.name,
+        symbol: token.symbol,
+        network: DebankNetworkNameToOurs[token.chain as DebankNetworkNames],
+        priceUSD: token.price,
+        price24hChange: token.price_24h_change,
+        balance: token.amount,
+        balanceUSD: token.amount * token.price,
+      }),
+    )
+    .filter(({ network }) => Object.values(NetworkNames).includes(network))
     .sort((a, b) => b.balanceUSD - a.balanceUSD)
 
   const walletAssetsResponse: PortfolioAssetsResponse = {

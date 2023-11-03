@@ -62,11 +62,6 @@
     "skipLibCheck": true /* Skip type checking of declaration files. */,
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   },
-  "include": [
-    "src/portfolio-overview/index.ts",
-    "src/portfolio-assets/index.ts",
-    "src/portfolio-positions/index.ts",
-    "../features/portfolio/type.ts"
-  ],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

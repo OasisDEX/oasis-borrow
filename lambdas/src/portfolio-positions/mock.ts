@@ -1,9 +1,9 @@
-import type { PortfolioPositionsReply } from './types'
-import { LendingProtocol, NetworkNames, ProductType, StrategyType } from './types'
+import { LendingProtocol, NetworkNames } from '../common/domain'
+import { PortfolioPositionsResponse, ProductType, StrategyType } from './types'
 
 export const mockPositionsResponse: {
   status: number
-  response: PortfolioPositionsReply
+  response: PortfolioPositionsResponse
 } = {
   status: 200,
   response: {

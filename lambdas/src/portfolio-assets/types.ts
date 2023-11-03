@@ -1,44 +1,6 @@
-import { NetworkNames } from 'blockchain/networks'
+import { NetworkNames } from '../common/domain'
 
-export enum DebankNetworkNames {
-  ethereumMainnet = 'eth',
-  arbitrumMainnet = 'arb',
-  polygonMainnet = 'matic',
-  optimismMainnet = 'op',
-  baseMainnet = 'base',
-}
-
-export const DebankNetworkNameToOurs = {
-  [DebankNetworkNames.ethereumMainnet]: NetworkNames.ethereumMainnet,
-  [DebankNetworkNames.arbitrumMainnet]: NetworkNames.arbitrumMainnet,
-  [DebankNetworkNames.polygonMainnet]: NetworkNames.polygonMainnet,
-  [DebankNetworkNames.optimismMainnet]: NetworkNames.optimismMainnet,
-  [DebankNetworkNames.baseMainnet]: NetworkNames.baseMainnet,
-}
-
-export type DebankTokenReply = {
-  id: string
-  chain: string
-  name: string
-  symbol: string
-  display_symbol: string
-  optimized_symbol: string
-  decimals: number
-  logo_url: string
-  protocol_id: string
-  price: number
-  price_24h_change: number
-  is_verified: boolean
-  is_core: boolean
-  is_wallet: boolean
-  time_at: number
-  amount: number
-  raw_amount: number
-  raw_amount_hex_str: string
-}
-export type DebankTokensReply = DebankTokenReply[]
-
-export type PortfolioAssetsToken = {
+export type PortfolioAsset = {
   name: string
   network: NetworkNames
   symbol: string
@@ -49,5 +11,5 @@ export type PortfolioAssetsToken = {
 }
 
 export type PortfolioAssetsResponse = {
-  assets: PortfolioAssetsToken[]
+  assets: PortfolioAsset[]
 }

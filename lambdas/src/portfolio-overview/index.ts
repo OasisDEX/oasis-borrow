@@ -4,7 +4,8 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda
 import { getDefaultErrorMessage } from '../common/helpers'
 import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from '../common/responses'
 import { getAddressFromRequest } from '../common/validators'
-import type { PortfolioOverviewResponse, ProtocolAsset, WalletAsset } from './types'
+import type { PortfolioOverviewResponse } from './types'
+import { ProtocolAsset, WalletAsset } from '../common/debank'
 
 const SUPPORTED_CHAIN_IDS = ['eth', 'op', 'arb', 'base']
 
@@ -44,16 +45,25 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
       0,
     )
 
-    const borrowedUsdValue: number = walletBalanceUsdValue + suppliedUsdValue
+    const borrowedUsdValue: number = protocolAssets.reduce(
+      (acc, { debt_usd_value }) => acc + debt_usd_value,
+      0,
+    )
+
+    const assetUsdValue: number = protocolAssets.reduce(
+      (acc, { asset_usd_value }) => acc + asset_usd_value,
+      0,
+    )
 
     const body: PortfolioOverviewResponse = {
       walletBalanceUsdValue,
       suppliedUsdValue,
-      suppliedPercentageChange: -12,
+      suppliedPercentageChange: 0,
       borrowedUsdValue,
-      borrowedPercentageChange: 9,
-      totalUsdValue: suppliedUsdValue + borrowedUsdValue,
+      borrowedPercentageChange: 0,
+      totalUsdValue: assetUsdValue,
       totalPercentageChange: 0,
+      // protocolAssets,
     }
     return ResponseOk<PortfolioOverviewResponse>({ body })
   } catch (error) {
