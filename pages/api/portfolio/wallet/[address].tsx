@@ -51,11 +51,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     .sort((a, b) => b.balanceUSD - a.balanceUSD)
 
   const walletAssetsResponse: PortfolioAssetsReply = {
-    totalUSDAssets: preparedTokenData.reduce((acc, token) => acc + token.balanceUSD, 0),
-    totalUSDAssets24hChange: preparedTokenData.length
-      ? preparedTokenData.reduce((acc, token) => acc + token.price24hChange, 0) /
-        preparedTokenData.length
-      : 0,
     assets: preparedTokenData,
   }
 

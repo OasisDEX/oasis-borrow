@@ -35,8 +35,6 @@ export type PortfolioAssetsToken = {
 }
 
 export type PortfolioAssetsReply = {
-  totalUSDAssets: number
-  totalUSDAssets24hChange: number
   assets: PortfolioAssetsToken[]
 }
 

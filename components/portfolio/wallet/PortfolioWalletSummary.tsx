@@ -4,22 +4,31 @@ import { PortfolioWalletTopAssets } from 'components/portfolio/wallet/PortfolioW
 import { Skeleton } from 'components/Skeleton'
 import type { PortfolioAssetsToken } from 'features/portfolio/types'
 import { formatAmount } from 'helpers/formatters/format'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Text } from 'theme-ui'
 
 interface PortfolioWalletSummaryProps {
   assets?: PortfolioAssetsToken[]
-  totalAssets?: number
-  totalAssetsChange?: number
 }
 
-export const PortfolioWalletSummary = ({
-  assets,
-  totalAssets,
-  totalAssetsChange,
-}: PortfolioWalletSummaryProps) => {
+export const PortfolioWalletSummary = ({ assets }: PortfolioWalletSummaryProps) => {
   const { t: tPortfolio } = useTranslation('portfolio')
+
+  const topAssets = useMemo(() => (assets ? assets.slice(0, 3) : undefined), [assets])
+  const totalAssets = useMemo(
+    () => (assets ? assets.reduce((acc, token) => acc + token.balanceUSD, 0) : undefined),
+    [assets],
+  )
+  const totalAssetsChange = useMemo(
+    () =>
+      assets
+        ? assets.length
+          ? assets.reduce((acc, token) => acc + token.price24hChange, 0) / assets.length
+          : 0
+        : undefined,
+    [assets],
+  )
 
   return (
     <Box sx={{ p: 3, border: '1px solid', borderColor: 'neutral20', borderRadius: 'large' }}>
@@ -46,9 +55,11 @@ export const PortfolioWalletSummary = ({
         <Skeleton sx={{ width: '250px', height: 3, mt: 1 }} />
       )}
       <Text as="p" variant="paragraph4" sx={{ mt: '24px', mb: 2, color: 'neutral80' }}>
-        {tPortfolio('top-assets', { amount: assets?.length ?? 0 > 1 ? assets?.length : '' })}
+        {tPortfolio(topAssets === undefined || topAssets?.length > 0 ? 'top-assets' : 'no-assets', {
+          amount: (topAssets?.length ?? 0) > 1 ? topAssets?.length : '',
+        })}
       </Text>
-      <PortfolioWalletTopAssets assets={assets} />
+      <PortfolioWalletTopAssets assets={topAssets} />
     </Box>
   )
 }
