@@ -1,21 +1,20 @@
 import type { APIGatewayProxyEventV2 } from 'aws-lambda'
 
 import { isValidAddress } from './guards'
-import { ResponseBadRequest } from './responses'
 
 export const getAddressFromRequest = (event: APIGatewayProxyEventV2): string => {
   const query = event.queryStringParameters
   if (query == null) {
-    throw ResponseBadRequest('Missing query string')
+    throw Error('Missing query string')
   }
 
   const { address } = query
 
   if (!address) {
-    throw ResponseBadRequest('Missing address')
+    throw Error('Missing address')
   }
   if (isValidAddress(address)) {
-    throw ResponseBadRequest('Invalid address')
+    throw Error('Invalid address')
   }
 
   return address
