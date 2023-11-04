@@ -57,7 +57,7 @@ export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProp
               }}
             >
               <Flex>
-                <Box sx={{ flexGrow: 1, flexShrink: 0, }}>
+                <Box sx={{ flexGrow: 1, flexShrink: 0 }}>
                   <AssetsTableDataCellAsset
                     asset={symbol}
                     icons={symbol === 'WETH' ? ['ETH'] : [symbol]}
