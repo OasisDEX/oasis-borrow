@@ -38,7 +38,7 @@ export const PortfolioWalletView = ({
   )
 
   return (
-    <Grid variant="vaultContainer">
+    <Grid variant="portfolio">
       <Box>
         <Flex sx={{ alignItems: 'flex-end', justifyContent: 'space-between', mb: '24px' }}>
           <Heading as="h2" variant="header5">

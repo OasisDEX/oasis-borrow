@@ -314,8 +314,7 @@ export const theme = themeTypeSafe({
       px: '16px',
     },
     portfolio: {
-      maxWidth: '1408px',
-      px: '16px',
+      variant: 'layout.container',
     },
   },
   cards: {
@@ -1046,8 +1045,8 @@ export const theme = themeTypeSafe({
       gap: '0px',
     },
     portfolio: {
-      gap: [3, null, 4, '48px'],
-      gridTemplateColumns: ['1fr', '3fr minmax(380px, 1fr)'],
+      gap: ['24px', null, null, 5],
+      gridTemplateColumns: ['1fr', null, null, 'auto 380px'],
       alignItems: 'flex-start',
     },
   },
