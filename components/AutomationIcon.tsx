@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { auto_buy, auto_sell, stop_loss, take_profit } from 'theme/icons'
 import { Text } from 'theme-ui'
 
-import type { PortfolioPosition } from 'lambdas/src/portfolio-positions/types'
+import type { PortfolioPosition } from 'lambdas/src/shared/domain-types'
 
 const automationIconMap: Record<keyof PortfolioPosition['automations'], typeof stop_loss> = {
   autoBuy: auto_buy,

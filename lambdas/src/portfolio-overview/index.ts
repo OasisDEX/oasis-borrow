@@ -1,11 +1,11 @@
 /* eslint-disable no-relative-import-paths/no-relative-import-paths */
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 
-import { getDefaultErrorMessage } from '../common/helpers'
-import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from '../common/responses'
-import { getAddressFromRequest } from '../common/validators'
-import type { PortfolioOverviewResponse } from './types'
-import { ProtocolAsset, WalletAsset } from '../common/debank'
+import { getDefaultErrorMessage } from '../shared/helpers'
+import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from '../shared/responses'
+import { getAddressFromRequest } from '../shared/validators'
+import { ProtocolAsset, WalletAsset } from '../shared/debank'
+import { PortfolioOverviewResponse } from '../shared/domain-types'
 
 const SUPPORTED_CHAIN_IDS = ['eth', 'op', 'arb', 'base']
 

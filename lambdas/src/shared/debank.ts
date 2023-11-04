@@ -1,4 +1,4 @@
-import { NetworkNames } from './domain'
+import { NetworkNames } from './domain-types'
 
 export type ProtocolAsset = {
   id: string

@@ -1,12 +1,11 @@
 /* eslint-disable no-relative-import-paths/no-relative-import-paths */
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 
-import { getDefaultErrorMessage } from '../common/helpers'
-import { ResponseBadRequest, ResponseOk } from '../common/responses'
-import { getAddressFromRequest } from '../common/validators'
-import { PortfolioAssetsResponse, PortfolioAsset } from './types'
-import { DebankNetworkNameToOurs, DebankNetworkNames, DebankToken } from '../common/debank'
-import { NetworkNames } from '../common/domain'
+import { getDefaultErrorMessage } from '../shared/helpers'
+import { ResponseBadRequest, ResponseOk } from '../shared/responses'
+import { getAddressFromRequest } from '../shared/validators'
+import { DebankNetworkNameToOurs, DebankNetworkNames, DebankToken } from '../shared/debank'
+import { NetworkNames, PortfolioAsset, PortfolioAssetsResponse } from '../shared/domain-types'
 
 const {
   DEBANK_API_KEY: debankApiKey,

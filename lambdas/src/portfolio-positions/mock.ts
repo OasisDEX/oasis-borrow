@@ -1,4 +1,4 @@
-import { LendingProtocol, NetworkNames } from '../common/domain'
+import { LendingProtocol, NetworkNames } from '../shared/domain'
 import { PortfolioPositionsResponse, ProductType, StrategyType } from './types'
 
 export const mockPositionsResponse: {

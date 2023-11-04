@@ -11,7 +11,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
-import type { PortfolioAsset } from 'lambdas/src/portfolio-assets/types'
+import type { PortfolioAsset } from 'lambdas/src/shared/domain-types'
 
 interface PortfolioWalletAssetsProps {
   assets?: PortfolioAsset[]

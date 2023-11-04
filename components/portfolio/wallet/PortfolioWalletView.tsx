@@ -7,7 +7,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Grid, Heading } from 'theme-ui'
 
-import type { PortfolioAssetsResponse } from 'lambdas/src/portfolio-assets/types'
+import type { PortfolioAssetsResponse } from 'lambdas/src/shared/domain-types'
 
 export const PortfolioWalletView = ({
   address,
