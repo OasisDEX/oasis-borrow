@@ -14,7 +14,7 @@ const blogPosts = cacheObject<BlogPostsApiReply>(
       },
     ).then((resp) => resp.json()),
   60 * 60,
-  'tokens-list',
+  'blog-posts',
 )
 
 export async function getBlogPosts(req: NextApiRequest, res: NextApiResponse) {
