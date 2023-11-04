@@ -25,6 +25,17 @@ jobs:
         with:
           node-version: 18.12
 
+      - name: Check required secrets
+        run: |
+          required_secrets=("NOTIFICATIONS_HOST_STAGING" "NOTIFICATIONS_HOST_STAGING_GOERLI" "AJNA_SUBGRAPH_URL_STAGING" "AJNA_SUBGRAPH_URL_GOERLI" "AJNA_SUBGRAPH_V2_URL_STAGING" "AJNA_SUBGRAPH_V2_URL_GOERLI" "MIXPANEL_KEY_STAGING" "ADROLL_ADV_ID_STAGING" "ADROLL_PIX_ID_STAGING" "MAINNET_CACHE_URL_STAGING" "MAILCHIMP_ENDPOINT" "MAILCHIMP_API_KEY" "INFURA_PROJECT_ID_STAGING" "ETHERSCAN_API_KEY" "BLOCKNATIVE_API_KEY_STAGING" "SENTRY_AUTH_TOKEN" "PRODUCT_HUB_KEY" "ONE_INCH_API_KEY_STAGING" "ONE_INCH_API_URL_STAGING" "REFERRAL_SUBGRAPH_URL_STAGING" "AWS_API_GATEWAY_URL" "BLOG_POSTS_API_URL" "BLOG_POSTS_API_KEY")
+          for secret in "${required_secrets[@]}"; do
+            secret_value=$(printenv $secret)
+            if [[ -z "$secret_value" ]]; then
+              echo "::error ::Secret $secret is not set. Failing the workflow."
+              exit 1
+            fi
+          done
+
       - name: Extract commit hash
         id: vars
         shell: bash
@@ -81,6 +92,8 @@ jobs:
           ONE_INCH_API_URL: ${{ secrets.ONE_INCH_API_URL_STAGING }}
           REFERRAL_SUBGRAPH_URL: ${{ secrets.REFERRAL_SUBGRAPH_URL_STAGING }}
           AWS_API_GATEWAY_URL: ${{ secrets.AWS_API_GATEWAY_URL }}
+          BLOG_POSTS_API_URL: ${{ secrets.BLOG_POSTS_API_URL }}
+          BLOG_POSTS_API_KEY: ${{ secrets.BLOG_POSTS_API_KEY }}
         run: yarn build
 
       - name: Configure AWS credentials
