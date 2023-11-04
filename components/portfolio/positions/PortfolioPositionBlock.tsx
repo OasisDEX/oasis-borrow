@@ -11,7 +11,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Text } from 'theme-ui'
 
-import type { PortfolioPosition } from 'lambdas/src/portfolio-positions/types'
+import type { PortfolioPosition } from 'lambdas/src/shared/domain-types'
 
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')

@@ -1,4 +1,24 @@
-import { LendingProtocol, NetworkNames } from '../common/domain'
+export enum NetworkNames {
+  ethereumMainnet = 'ethereum',
+  ethereumGoerli = 'ethereum_goerli',
+  arbitrumMainnet = 'arbitrum',
+  arbitrumGoerli = 'arbitrum_goerli',
+  polygonMainnet = 'polygon',
+  polygonMumbai = 'polygon_mumbai',
+  optimismMainnet = 'optimism',
+  optimismGoerli = 'optimism_goerli',
+  baseMainnet = 'base',
+  baseGoerli = 'base_goerli',
+}
+
+export enum LendingProtocol {
+  AaveV2 = 'aavev2',
+  AaveV3 = 'aavev3',
+  Ajna = 'ajna',
+  Maker = 'maker',
+  MorphoBlue = 'morphoblue',
+  SparkV3 = 'sparkv3',
+}
 
 export enum ProductType {
   'Multiply' = 'Multiply',
@@ -74,4 +94,28 @@ export type PortfolioPosition = {
 
 export type PortfolioPositionsResponse = {
   positions: PortfolioPosition[]
+}
+
+export type PortfolioOverviewResponse = {
+  walletBalanceUsdValue: number
+  suppliedUsdValue: number
+  suppliedPercentageChange: number
+  borrowedUsdValue: number
+  borrowedPercentageChange: number
+  totalUsdValue: number
+  totalPercentageChange: number
+}
+
+export type PortfolioAsset = {
+  name: string
+  network: NetworkNames
+  symbol: string
+  priceUSD: number
+  price24hChange?: number
+  balance: number
+  balanceUSD: number
+}
+
+export type PortfolioAssetsResponse = {
+  assets: PortfolioAsset[]
 }

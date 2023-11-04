@@ -5,7 +5,7 @@ import { formatFiatBalance } from 'helpers/formatters/format'
 import React from 'react'
 import { Flex, Grid, Text } from 'theme-ui'
 
-import type { PortfolioAsset } from 'lambdas/src/portfolio-assets/types'
+import type { PortfolioAsset } from 'lambdas/src/shared/domain-types'
 
 interface PortfolioWalletTopAssetsProps {
   assets?: PortfolioAsset[]

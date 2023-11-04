@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
-import type { PortfolioPositionsResponse } from 'lambdas/src/portfolio-positions/types'
+import type { PortfolioPositionsResponse } from 'lambdas/src/shared/domain-types'
 
 type PortfolioPositionsViewFiltersType = {
   showEmptyPositions: boolean

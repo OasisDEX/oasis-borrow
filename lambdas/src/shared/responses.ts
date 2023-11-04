@@ -1,6 +1,6 @@
 import type { APIGatewayProxyResultV2 } from 'aws-lambda'
 
-import type { DefaultErrorResponse } from './types'
+import type { DefaultErrorResponse } from './helper-types'
 
 export function createOkBody(obj: Record<string, any>): string {
   return JSON.stringify(obj)

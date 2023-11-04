@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { arrow_decrease, arrow_increase } from 'theme/icons'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
-import type { PortfolioAsset } from 'lambdas/src/portfolio-assets/types'
+import type { PortfolioAsset } from 'lambdas/src/shared/domain-types'
 
 interface PortfolioWalletAssetsProps {
   assets?: PortfolioAsset[]

@@ -30,9 +30,10 @@
     "**/*.tsx",
     "runtimeConfig.js",
     "next-i18next.config.js",
-    "middleware.ts"
+    "middleware.ts",
+    "lambdas/src/shared"
   ],
-  "exclude": ["node_modules", "types", "coverage", "infra"],
+  "exclude": ["node_modules", "types", "coverage", "infra", "lambdas"],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"

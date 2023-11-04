@@ -9,7 +9,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, Heading, Text } from 'theme-ui'
 
-import type { PortfolioOverviewResponse } from 'lambdas/src/portfolio-overview/types'
+import type { PortfolioOverviewResponse } from 'lambdas/src/shared/domain-types'
 
 export const PortfolioOverview = ({
   address,

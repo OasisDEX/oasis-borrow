@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
 import { Box, Flex, Text } from 'theme-ui'
 
-import type { DetailsType, PositionDetail } from 'lambdas/src/portfolio-positions/types'
+import type { DetailsType, PositionDetail } from 'lambdas/src/shared/domain-types'
 
 export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetail }) => {
   const { t: tPortfolio } = useTranslation('portfolio')

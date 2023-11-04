@@ -7,19 +7,43 @@ import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWallet
 import { TabBar } from 'components/TabBar'
 import { usePortfolioClient } from 'helpers/clients/portfolio-client'
 import { useRedirect } from 'helpers/useRedirect'
-import type { GetServerSidePropsContext } from 'next'
+import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { useEffect, useState } from 'react'
 import { getAwsInfraHeader, getAwsInfraUrl } from 'server/helpers'
 import { Box } from 'theme-ui'
 
-import type { PortfolioOverviewResponse } from 'lambdas/src/portfolio-overview/types'
+import type { PortfolioOverviewResponse } from 'lambdas/src/shared/domain-types'
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+type PortfolioViewProps = {
+  address: string
+  awsInfraUrl: string
+  awsInfraHeader: Record<string, string>
+}
+
+export async function getServerSideProps(
+  ctx: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<PortfolioViewProps>> {
   const address = ctx.query.address
-  const awsInfraUrl = getAwsInfraUrl()
-  const awsInfraHeader = getAwsInfraHeader()
+  let awsInfraUrl
+  let awsInfraHeader
+
+  try {
+    awsInfraUrl = getAwsInfraUrl()
+    awsInfraHeader = getAwsInfraHeader()
+    if (address == null || Array.isArray(address)) {
+      throw new Error('Address is required')
+    }
+  } catch (e) {
+    console.error(e)
+    return {
+      redirect: {
+        destination: '/not-found',
+        permanent: false,
+      },
+    }
+  }
 
   return {
     props: {
@@ -31,17 +55,11 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-export default function PortfolioView({
-  address,
-  awsInfraUrl,
-  awsInfraHeader,
-}: {
-  address: string
-  awsInfraUrl: string
-  awsInfraHeader: Record<string, string>
-}) {
+export default function PortfolioView(props: PortfolioViewProps) {
   const { t: tPortfolio } = useTranslation('portfolio')
   const { replace } = useRedirect()
+
+  const { address, awsInfraUrl, awsInfraHeader } = props
 
   const portfolioClient = usePortfolioClient(awsInfraUrl, awsInfraHeader)
 
