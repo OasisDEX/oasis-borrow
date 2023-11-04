@@ -41,7 +41,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 
   const tokensData = response
   const preparedTokenData = tokensData
-    .filter(({ chain, is_wallet }) => is_wallet && chain !== undefined)
+    .filter(({ chain, is_wallet, price }) => is_wallet && chain !== undefined && price > 0)
     .map(
       (token): PortfolioAsset => ({
         name: token.name,

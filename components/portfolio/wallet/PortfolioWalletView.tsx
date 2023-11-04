@@ -1,6 +1,7 @@
 import type { NetworkNames } from 'blockchain/networks'
 import { GenericMultiselect } from 'components/GenericMultiselect'
 import { PortfolioWalletAssets } from 'components/portfolio/wallet/PortfolioWalletAssets'
+import { PortfolioWalletBanner } from 'components/portfolio/wallet/PortfolioWalletBanner'
 import { PortfolioWalletSummary } from 'components/portfolio/wallet/PortfolioWalletSummary'
 import { productHubNetworkFilter } from 'features/productHub/meta'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -37,9 +38,9 @@ export const PortfolioWalletView = ({
   )
 
   return (
-    <Grid variant="vaultContainer">
+    <Grid variant="portfolio">
       <Box>
-        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mb: '24px' }}>
+        <Flex sx={{ alignItems: 'flex-end', justifyContent: 'space-between', mb: '24px' }}>
           <Heading as="h2" variant="header5">
             {tPortfolio('summary')}
           </Heading>
@@ -55,11 +56,18 @@ export const PortfolioWalletView = ({
         <PortfolioWalletSummary assets={filteredAssets} />
         {(filteredAssets?.length ?? 0) > 0 && (
           <>
-            <Heading as="h2" variant="header5" sx={{ my: '24px' }}>
-              {tPortfolio('assets')}
-            </Heading>
+            <Flex sx={{ my: '24px' }}>
+              <Heading as="h2" variant="header5">
+                {tPortfolio('assets')}
+              </Heading>
+            </Flex>
             <PortfolioWalletAssets assets={filteredAssets} />
           </>
+        )}
+        {portfolioWalletData?.assets && (
+          <Box sx={{ mt: '24px' }}>
+            <PortfolioWalletBanner assets={portfolioWalletData.assets} />
+          </Box>
         )}
       </Box>
       <Box></Box>
