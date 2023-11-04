@@ -2,10 +2,11 @@ import type { NetworkNames } from 'blockchain/networks'
 import { GenericMultiselect } from 'components/GenericMultiselect'
 import { PortfolioWalletAssets } from 'components/portfolio/wallet/PortfolioWalletAssets'
 import { PortfolioWalletSummary } from 'components/portfolio/wallet/PortfolioWalletSummary'
+import { TokenBanner } from 'components/TokenBanner'
 import { productHubNetworkFilter } from 'features/productHub/meta'
 import React, { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Box, Flex, Grid, Heading } from 'theme-ui'
+import { Trans, useTranslation } from 'react-i18next'
+import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import type { PortfolioAssetsResponse } from 'lambdas/src/portfolio-assets/types'
 
@@ -61,6 +62,27 @@ export const PortfolioWalletView = ({
             <PortfolioWalletAssets assets={filteredAssets} />
           </>
         )}
+        <Box sx={{ mt: '24px' }}>
+          <TokenBanner cta={tPortfolio('explore')} tokens={['ETH', 'DAI', 'USDC']} url="/earn">
+            <Trans
+              t={tPortfolio}
+              i18nKey="explore-banner"
+              components={{
+                span: (
+                  <Text
+                    sx={{
+                      background:
+                        'linear-gradient(270deg, #E97047 64.94%, #E7A77F 75.51%, #007DA3 83.22%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  />
+                ),
+              }}
+              values={{ amount: 100 }}
+            />
+          </TokenBanner>
+        </Box>
       </Box>
       <Box></Box>
     </Grid>

@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { getPortfolioChangeColor, getPortfolioChangeSign } from 'components/portfolio/helpers'
 import { PortfolioWalletTopAssets } from 'components/portfolio/wallet/PortfolioWalletTopAssets'
 import { Skeleton } from 'components/Skeleton'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Text } from 'theme-ui'
@@ -52,7 +52,9 @@ export const PortfolioWalletSummary = ({ assets }: PortfolioWalletSummaryProps) 
           sx={{ color: getPortfolioChangeColor(totalAssetsChange) }}
         >
           {getPortfolioChangeSign(totalAssetsChange)}
-          {tPortfolio('past-week', { percentage: totalAssetsChange.toFixed(2) })}
+          {tPortfolio('past-week', {
+            percentage: formatCryptoBalance(new BigNumber(totalAssetsChange * 100)),
+          })}
         </Text>
       ) : (
         <Skeleton sx={{ width: '250px', height: 3, mt: 1 }} />

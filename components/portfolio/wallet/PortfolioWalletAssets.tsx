@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { networksByName } from 'blockchain/networks'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
+import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { getPortfolioChangeColor, getPortfolioTokenProducts } from 'components/portfolio/helpers'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
@@ -9,6 +10,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { upperFirst } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { arrow_decrease, arrow_increase } from 'theme/icons'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
 import type { PortfolioAsset } from 'lambdas/src/portfolio-assets/types'
@@ -38,7 +40,7 @@ export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProp
         </Text>
       </Flex>
       <Flex as="ul" sx={{ flexDirection: 'column', rowGap: 3, m: 0, p: 0, listStyle: 'none' }}>
-        {assets.map(({ balance, balanceUSD, network, price24hChange, priceUSD, symbol }) => {
+        {assets.map(({ balance, balanceUSD, network, price24hChange = 0, priceUSD, symbol }) => {
           const products = getPortfolioTokenProducts({ network, table, token: symbol })
 
           return (
@@ -83,7 +85,14 @@ export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProp
                     variant="paragraph4"
                     sx={{ color: getPortfolioChangeColor(price24hChange) }}
                   >
-                    {price24hChange?.toFixed(2) ?? '-'}%
+                    {price24hChange !== 0 && (
+                      <Icon
+                        icon={price24hChange > 0 ? arrow_increase : arrow_decrease}
+                        size="8px"
+                        sx={{ mr: 1 }}
+                      />
+                    )}
+                    {formatCryptoBalance(new BigNumber(price24hChange * 100))}%
                   </Text>
                 </Flex>
                 <Flex sx={{ flexDirection: 'column', width: '150px', textAlign: 'right' }}>
