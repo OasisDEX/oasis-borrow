@@ -17,11 +17,11 @@ export const PortfolioWalletSummary = ({ assets }: PortfolioWalletSummaryProps) 
   const { t: tPortfolio } = useTranslation('portfolio')
 
   const topAssets = useMemo(() => (assets ? assets.slice(0, 3) : undefined), [assets])
-  const totalAssets = useMemo(
+  const totalAssetsAmount = useMemo(
     () => (assets ? assets.reduce((acc, token) => acc + token.balanceUSD, 0) : undefined),
     [assets],
   )
-  const totalAssetsChange = useMemo(
+  const totalAssetsAmountChange = useMemo(
     () =>
       assets
         ? assets.length
@@ -38,22 +38,22 @@ export const PortfolioWalletSummary = ({ assets }: PortfolioWalletSummaryProps) 
       <Text as="p" variant="paragraph4" sx={{ color: 'neutral80' }}>
         {tPortfolio('total-assets')}
       </Text>
-      {totalAssets !== undefined ? (
+      {totalAssetsAmount !== undefined ? (
         <Text as="p" variant="header4">
-          ${formatAmount(new BigNumber(totalAssets), 'USD')}
+          ${formatAmount(new BigNumber(totalAssetsAmount), 'USD')}
         </Text>
       ) : (
         <Skeleton sx={{ width: '250px', height: 4, mt: 2 }} />
       )}
-      {totalAssetsChange !== undefined ? (
+      {totalAssetsAmountChange !== undefined ? (
         <Text
           as="p"
           variant="paragraph4"
-          sx={{ color: getPortfolioChangeColor(totalAssetsChange) }}
+          sx={{ color: getPortfolioChangeColor(totalAssetsAmountChange) }}
         >
-          {getPortfolioChangeSign(totalAssetsChange)}
+          {getPortfolioChangeSign(totalAssetsAmountChange)}
           {tPortfolio('past-week', {
-            percentage: formatCryptoBalance(new BigNumber(totalAssetsChange * 100)),
+            percentage: formatCryptoBalance(new BigNumber(totalAssetsAmountChange * 100)),
           })}
         </Text>
       ) : (

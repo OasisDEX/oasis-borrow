@@ -6,11 +6,16 @@ import { Button, Flex, Text } from 'theme-ui'
 
 interface TokenBannerProps {
   cta: string
-  tokens: string[]
+  tokens?: string[]
   url: string
 }
 
-export function TokenBanner({ children, cta, tokens, url }: PropsWithChildren<TokenBannerProps>) {
+export function TokenBanner({
+  children,
+  cta,
+  tokens = [],
+  url,
+}: PropsWithChildren<TokenBannerProps>) {
   return (
     <Flex
       sx={{
@@ -20,11 +25,11 @@ export function TokenBanner({ children, cta, tokens, url }: PropsWithChildren<To
         border: '1px solid',
         borderColor: 'neutral20',
         borderRadius: 'large',
-        background: 'linear-gradient(121deg, #D3F5FF 2.53%, #F2FCFF 52.06%, #FFE7D8 98.6%)',
+        background: 'linear-gradient(169deg, #D3F5FF 2.53%, #F2FCFF 52.06%, #FFE7D8 98.6%)',
       }}
     >
-      <TokensGroup tokens={tokens} forceSize={32} sx={{ flexShrink: 0 }} />
-      <Text as="p" variant="boldParagraph3" sx={{ px: 3 }}>
+      {tokens.length > 0 && <TokensGroup tokens={tokens} forceSize={32} sx={{ flexShrink: 0 }} />}
+      <Text as="p" variant="boldParagraph3" sx={{ pr: 3, pl: tokens.length ? 3 : 0 }}>
         {children}
       </Text>
       <AppLink href={url} sx={{ flexShrink: 0, ml: 'auto' }}>
