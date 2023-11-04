@@ -1045,9 +1045,19 @@ export const theme = themeTypeSafe({
       gap: '0px',
     },
     portfolio: {
+      position: 'relative',
       gap: ['24px', null, null, 5],
       gridTemplateColumns: ['1fr', null, null, 'auto 380px'],
       alignItems: 'flex-start',
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        right: '412px',
+        bottom: 0,
+        width: '1px',
+        bg: 'neutral20',
+      }
     },
   },
   styles: {
