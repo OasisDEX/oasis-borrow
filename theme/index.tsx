@@ -1050,14 +1050,14 @@ export const theme = themeTypeSafe({
       gridTemplateColumns: ['1fr', null, null, 'auto 380px'],
       alignItems: 'flex-start',
       '&::after': {
-        content: '""',
+        content: ['normal', null, null, '""'],
         position: 'absolute',
         top: 0,
         right: '412px',
         bottom: 0,
         width: '1px',
         bg: 'neutral20',
-      }
+      },
     },
   },
   styles: {

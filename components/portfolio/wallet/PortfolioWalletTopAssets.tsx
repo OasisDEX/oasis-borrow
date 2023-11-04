@@ -18,7 +18,7 @@ export const PortfolioWalletTopAssets = ({ assets }: PortfolioWalletTopAssetsPro
         <Grid
           as="ul"
           sx={{
-            gridTemplateColumns: '1fr 1fr 1fr',
+            gridTemplateColumns: ['1fr', '1fr 1fr 1fr'],
             columnGap: 2,
             m: 0,
             p: 0,
