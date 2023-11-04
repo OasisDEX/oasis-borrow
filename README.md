@@ -178,10 +178,6 @@ at _run time_
 - `USER_JWT_SECRET` - Could be any value different from `CHALLENGE_JWT_SECRET`. This is used when
   the user signs the Terms of Service.
 
-- `MAILCHIMP_ENDPOINT` - Mailchimp endpoint with audience ID used to integrate Mailchimp newsletter.
-
-- `MAILCHIMP_API_KEY` - Mailchimp API Key used to integrate Mailchimp newsletter.
-
 - `SENTRY_RELEASE` - The release in sentry.io. Used by sentry.io to generate and upload source maps
   for a given release at build time, and tie those source maps to errors sent to sentry at run time.
 
