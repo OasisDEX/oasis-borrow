@@ -21,8 +21,8 @@ export const BlogPostBlockSkeleton = () => {
         }}
       />
       <Flex sx={{ flexDirection: 'column' }}>
-        <Skeleton width={Math.random() * 150 + 100} sx={{ mb: 2 }} />
-        <Skeleton width={Math.random() * 100 + 80} />
+        <Skeleton height={20} width={330} sx={{ mb: 2 }} />
+        <Skeleton height={13} width={170} />
       </Flex>
     </Flex>
   )
