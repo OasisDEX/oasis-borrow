@@ -1,5 +1,6 @@
 import type { GenericSelectOption } from 'components/GenericSelect'
 import { Icon } from 'components/Icon'
+import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
 import { PortfolioPositionBlock } from 'components/portfolio/positions/PortfolioPositionBlock'
 import { PortfolioPositionBlockSkeleton } from 'components/portfolio/positions/PortfolioPositionBlockSkeleton'
 import { PortfolioPositionsProductSelect } from 'components/portfolio/positions/PortfolioPositionsProductSelect'
@@ -167,19 +168,7 @@ export const PortfolioPositionsView = ({
             padding: 3,
           }}
         />
-        <Text variant="boldParagraph2">News & Updates</Text>
-        <Box
-          sx={{
-            height: '300px',
-            border: '1px solid',
-            borderColor: 'neutral20',
-            borderRadius: 'round',
-            mt: 3,
-            mb: 4,
-            overflow: 'hidden',
-            padding: 3,
-          }}
-        />
+        <BlogPosts />
       </Box>
     </Grid>
   )

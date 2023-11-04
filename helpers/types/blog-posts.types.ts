@@ -19,6 +19,16 @@ export type BlogPost = {
     feature_image_caption: string;
 }
 
-export type BlogPostsReply = {
+export type BlogPostsApiReply = {
+    // thats from the ghost blog api
     posts: BlogPost[]
 }
+
+export type BlogPostsReply = {
+    // thats from the internal blog posts api
+    id: string;
+    title: string;
+    slug: string;
+    url: string;
+    date: string;
+  }[]
