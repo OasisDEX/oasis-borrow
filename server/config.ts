@@ -12,7 +12,6 @@ export const configSchema = z.object({
   enableSnowflake: z.boolean().optional(),
   oneInchApiKey: z.string(),
   oneInchApiUrl: z.string(),
-  awsApiGatewayUrl: z.string(),
 })
 
 export const config = configSchema.parse({
@@ -24,7 +23,6 @@ export const config = configSchema.parse({
   enableSnowflake: JSON.parse(process.env.ENABLE_SNOWFLAKE || 'false'),
   oneInchApiKey: process.env.ONE_INCH_API_KEY,
   oneInchApiUrl: process.env.ONE_INCH_API_URL,
-  awsApiGatewayUrl: process.env.AWS_API_GATEWAY_URL,
 })
 
 export type Config = z.infer<typeof configSchema>
