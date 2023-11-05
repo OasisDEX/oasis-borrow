@@ -10,7 +10,7 @@ export function getAwsInfraHeader(): { 'x-api-key': string } | {} {
       'x-api-key': `${key}`,
     }
   } else if (key) {
-    // AWS_API_GATEWAY_KEY should not be present on production
+    // guard to make sure AWS_API_GATEWAY_KEY should not leak to production
     throw new Error('AWS_API_GATEWAY_KEY is leaking to production, pleasse remove it!')
   }
 
