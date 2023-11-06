@@ -45,12 +45,15 @@ export const usePortfolioClientData = ({
     void portfolioClient.fetchPortfolioPositions(address).then((data) => {
       setPortfolioPositionsData(data)
     })
+  }, [address, portfolioClient])
+  useEffect(() => {
+    // separate cause connecting wallet made additional calls
     !isOwner &&
       walletAddress &&
       void portfolioClient.fetchPortfolioAssets(walletAddress).then((data) => {
         setPortfolioConnectedWalletWalletData(data)
       })
-  }, [address, isOwner, portfolioClient, walletAddress])
+  }, [isOwner, portfolioClient, walletAddress])
   return {
     overviewData,
     portfolioPositionsData,
