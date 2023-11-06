@@ -1,1 +1,5 @@
-export type LendingRangeType = 'belowHtp' | 'belowLup' | 'aboveLup'
+export enum LendingRangeType {
+  belowHtp = 'belowHtp',
+  belowLup = 'belowLup',
+  aboveLup = 'aboveLup',
+}
