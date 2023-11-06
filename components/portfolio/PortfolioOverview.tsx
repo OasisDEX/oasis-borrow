@@ -1,9 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { AppLink } from 'components/Links'
 import { getPortfolioChangeColor, getPortfolioChangeSign } from 'components/portfolio/helpers'
 import { PortfolioOverviewItem } from 'components/portfolio/PortfolioOverviewItem'
 import { Tag } from 'components/Tag'
-import { WithArrow } from 'components/WithArrow'
 import { formatAmount } from 'helpers/formatters/format'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -12,10 +10,8 @@ import { Flex, Heading, Text } from 'theme-ui'
 import type { PortfolioOverviewResponse } from 'lambdas/src/shared/domain-types'
 
 export const PortfolioOverview = ({
-  address,
   overviewData,
 }: {
-  address: string
   overviewData?: PortfolioOverviewResponse | void
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')

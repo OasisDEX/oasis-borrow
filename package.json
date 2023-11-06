@@ -19,7 +19,7 @@
     "build:server": "tsc --project ./tsconfig.prod.json",
     "format": "prettier --check \"./**/*.{ts,tsx,js,jsx}\"",
     "format:fix": "prettier --write \"./**/*.{ts,tsx,js,jsx}\"",
-    "lint": "eslint --ext .ts --ext .tsx .",
+    "lint": "eslint --quiet --ext .ts --ext .tsx .",
     "lint:fix": "yarn lint --fix",
     "typecheck": "tsc -p ./tsconfig.test.json --noEmit && tsc -p ./tsconfig.json --noEmit",
     "typecheck:watch": "tsc -p ./tsconfig.json --noEmit --watch",
