@@ -2,10 +2,9 @@ import { NetworkNames } from 'blockchain/networks'
 import { getRemoteConfigWithCache } from 'helpers/config'
 import { configCacheTime, type ConfigResponseType } from 'helpers/config'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import getConfig from 'next/config'
 import type { AppConfigType } from 'types/config'
 
-const rpcGatewayUrl = getConfig()?.publicRuntimeConfig?.rpcGatewayUrl
+const rpcGatewayUrl = process.env.RPC_GATEWAY
 
 if (!rpcGatewayUrl) {
   throw new Error('RPC Gateway URL is not defined')
