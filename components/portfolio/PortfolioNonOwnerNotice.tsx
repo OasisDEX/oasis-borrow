@@ -39,7 +39,7 @@ export const PortfolioNonOwnerNotice = ({
           {tPortfolio('non-owner-notice.header', { address: formatAddress(address, 6) })}
         </Text>
         <Text variant="paragraph3">
-          {matchingAssetsValue ? (
+          {matchingAssetsValue || matchingAssetsValue === 0 ? (
             <Trans
               t={tPortfolio}
               i18nKey="non-owner-notice.assets-available"
