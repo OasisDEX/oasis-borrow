@@ -34,7 +34,7 @@ export const PortfolioOverview = ({
     >
       <Flex sx={{ alignItems: 'flex-start' }}>
         <PortfolioOverviewItem
-          header={tPortfolio('wallet-balance')}
+          header={tPortfolio('total-value')}
           value={
             <Heading variant="header4">
               ${formatAmount(new BigNumber(overviewData.walletBalanceUsdValue), 'USD')}
@@ -45,7 +45,6 @@ export const PortfolioOverview = ({
               <WithArrow sx={{ color: 'interactive100' }}>{tPortfolio('view-assets')}</WithArrow>
             </AppLink>
           }
-          firstInColumn
         />
       </Flex>
       <Flex
@@ -53,6 +52,7 @@ export const PortfolioOverview = ({
           flexDirection: ['column', 'row'],
           alignItems: 'flex-start',
           justifyItems: 'flex-start',
+          columnGap: 4,
         }}
       >
         <PortfolioOverviewItem

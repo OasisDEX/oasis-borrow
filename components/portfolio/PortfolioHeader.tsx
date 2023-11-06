@@ -29,7 +29,7 @@ export const PortfolioHeader = ({ address }: { address: string }) => {
       </Flex>
       <Flex sx={{ justifyContent: ['flex-start', 'flex-end'] }}>
         <AppLink href={`${EXTERNAL_LINKS.ETHERSCAN}/address/${address}`}>
-          <Button variant="secondary">{tPortfolio('view-on-etherscan')}</Button>
+          <Button variant="action">{tPortfolio('view-on-etherscan')}</Button>
         </AppLink>
       </Flex>
     </Flex>
