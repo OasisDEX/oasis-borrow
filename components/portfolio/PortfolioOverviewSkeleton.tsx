@@ -8,7 +8,7 @@ import { Flex } from 'theme-ui'
 
 import { PortfolioOverviewItem } from './PortfolioOverviewItem'
 
-export const PortfolioOverviewSkeleton = () => {
+export const PortfolioOverviewSkeleton = ({ address }: { address: string }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
   return (
     <Flex
@@ -23,7 +23,7 @@ export const PortfolioOverviewSkeleton = () => {
           header={tPortfolio('wallet-balance')}
           value={<Skeleton sx={{ height: 4, mt: 2 }} />}
           subValue={
-            <AppLink href="/portfolio/wallet">
+            <AppLink href={`/portfolio/${address}`} hash="wallet">
               <WithArrow sx={{ color: 'interactive100' }}>{tPortfolio('view-assets')}</WithArrow>
             </AppLink>
           }
