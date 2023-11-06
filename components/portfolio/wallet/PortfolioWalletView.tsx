@@ -1,5 +1,6 @@
 import type { NetworkNames } from 'blockchain/networks'
 import { GenericMultiselect } from 'components/GenericMultiselect'
+import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
 import { PortfolioWalletAssets } from 'components/portfolio/wallet/PortfolioWalletAssets'
 import { PortfolioWalletBanner } from 'components/portfolio/wallet/PortfolioWalletBanner'
 import { PortfolioWalletSummary } from 'components/portfolio/wallet/PortfolioWalletSummary'
@@ -70,7 +71,9 @@ export const PortfolioWalletView = ({
           </Box>
         )}
       </Box>
-      <Box></Box>
+      <Box>
+        <BlogPosts />
+      </Box>
     </Grid>
   )
 }

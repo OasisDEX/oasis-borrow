@@ -7,17 +7,14 @@ export const PortfolioOverviewItem = ({
   header,
   value,
   subValue,
-  firstInColumn,
 }: {
   header: TranslateStringType
   value: ReactNode
   subValue?: ReactNode
-  firstInColumn?: boolean
 }) => {
   return (
     <Flex
       sx={{
-        ml: firstInColumn ? 0 : [0, 4],
         mb: [4, 0],
         flexDirection: 'column',
         minWidth: ['auto', '150px'],

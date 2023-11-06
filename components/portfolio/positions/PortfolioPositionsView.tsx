@@ -93,7 +93,7 @@ export const PortfolioPositionsView = ({
   }, [filterState, portfolioPositionsData])
 
   return (
-    <Grid variant="vaultContainer">
+    <Grid variant="portfolio">
       <Box>
         <Flex
           sx={{
