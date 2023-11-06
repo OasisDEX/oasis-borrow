@@ -56,7 +56,7 @@ export const PortfolioOverview = ({
         }}
       >
         <PortfolioOverviewItem
-          header={tPortfolio('total-portfiolio')}
+          header={tPortfolio('total-portfolio')}
           value={
             <Heading
               variant="header4"
