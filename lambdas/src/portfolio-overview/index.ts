@@ -37,7 +37,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     const protocolAssets: ProtocolAsset[] | undefined = await getProtocolAssets(address, headers)
 
     const suppliedUsdValue: number = protocolAssets.reduce(
-      (acc, { net_usd_value }) => acc + net_usd_value,
+      (acc, { asset_usd_value }) => acc + asset_usd_value,
       0,
     )
 
@@ -47,18 +47,20 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     )
 
     const summerUsdValue: number = protocolAssets.reduce(
-      (acc, { asset_usd_value }) => acc + asset_usd_value,
+      (acc, { net_usd_value }) => acc + net_usd_value,
       0,
     )
 
+    const totalUsdValue: number = walletBalanceUsdValue + summerUsdValue
+
     const body: PortfolioOverviewResponse = {
-      totalUsdValue: walletBalanceUsdValue,
+      totalUsdValue,
       totalPercentageChange: 0,
       suppliedUsdValue,
       suppliedPercentageChange: 0,
       borrowedUsdValue,
       borrowedPercentageChange: 0,
-      summerUsdValue: summerUsdValue,
+      summerUsdValue,
       summerPercentageChange: 0,
       // protocolAssets,
     }
