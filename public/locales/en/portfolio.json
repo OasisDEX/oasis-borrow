@@ -58,6 +58,11 @@
     "borrowedToken": "Borrowed",
     "borrowedTokenBalance": "Balance of Borrowed"
   },
+  "lending-range-types": {
+    "aboveLup": "Active",
+    "belowHtp": "Unutilized",
+    "belowLup": "Available"
+  },
   "details-tooltips": {
     "netValue": "Net Value is the current value of the collateral in your position minus the current debt expressed in USD.",
     "netValueEarnActivePassive": "Net Value is the total of your initial deposit, plus earnings or additional deposits, minus fees.",
