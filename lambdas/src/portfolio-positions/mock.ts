@@ -1,5 +1,10 @@
-import { LendingProtocol, NetworkNames } from '../shared/domain'
-import { PortfolioPositionsResponse, ProductType, StrategyType } from './types'
+import {
+  LendingProtocol,
+  NetworkNames,
+  PortfolioPositionsResponse,
+  ProductType,
+  StrategyType,
+} from '../shared/domain-types'
 
 export const mockPositionsResponse: {
   status: number

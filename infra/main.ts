@@ -3,8 +3,8 @@ import { Construct } from 'constructs'
 import {
   App,
   TerraformStack,
-  CloudBackend,
-  NamedCloudWorkspace,
+  // CloudBackend,
+  // NamedCloudWorkspace,
   TerraformAsset,
   AssetType,
   TerraformOutput,
@@ -41,28 +41,28 @@ class LambdaStack extends TerraformStack {
     new aws.provider.AwsProvider(this, 'AWS', {
       region: 'eu-north-1',
     })
+    new random.provider.RandomProvider(this, 'random')
 
     // Create random value
     const pet = new random.pet.Pet(this, 'random-name', {
       length: 2,
     })
 
-    // Create Lambda executable
-    const asset = new TerraformAsset(this, 'lambda-asset', {
-      path: path.resolve(__dirname, config.path),
-      type: AssetType.ARCHIVE, // if left empty it infers directory and file
+    // Create unique S3 bucket that hosts artifacts
+    const bucket = new aws.s3Bucket.S3Bucket(this, 'artifacts', {
+      bucketPrefix: `artifacts-${name}`,
     })
 
-    // Create unique S3 bucket that hosts Lambda executable
-    const bucket = new aws.s3Bucket.S3Bucket(this, 'lambda-archives', {
-      bucketPrefix: `lambda-archives-${name}`,
+    // Create Lambda asset
+    const lambdaAsset = new TerraformAsset(this, 'lambda-asset', {
+      path: path.resolve(__dirname, config.path),
     })
 
     // Upload Lambda zip file to newly created S3 bucket
     const lambdaArchive = new aws.s3Object.S3Object(this, 'lambda-archive', {
       bucket: bucket.bucket,
-      key: `${config.version}/${asset.fileName}`,
-      source: asset.path, // returns a posix path
+      key: `${config.version}/${lambdaAsset.fileName}`,
+      source: lambdaAsset.path,
     })
 
     // Create Lambda role
@@ -79,7 +79,7 @@ class LambdaStack extends TerraformStack {
 
     // Create Lambda function
     const lambdaFunc = new aws.lambdaFunction.LambdaFunction(this, 'lambda', {
-      functionName: `lambda-${name}-${pet.id}`,
+      functionName: `${name}-${pet.id}`,
       s3Bucket: bucket.bucket,
       s3Key: lambdaArchive.key,
       handler: config.handler,
@@ -108,9 +108,9 @@ class LambdaStack extends TerraformStack {
 }
 
 const app = new App()
-const stack = new LambdaStack(app, 'lambda-hello-world', {
-  path: '../lambdas/dist/portfolio-positions',
-  handler: 'index.handler',
+new LambdaStack(app, 'portfolio-positions', {
+  path: '../lambdas/artifacts/portfolio-positions.zip',
+  handler: 'dist/portfolio-positions/index.handler',
   runtime: 'nodejs18.x',
   version: 'v0.0.1',
 })

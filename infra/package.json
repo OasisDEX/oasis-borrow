@@ -7,6 +7,7 @@
   "private": true,
   "scripts": {
     "get": "cdktf get",
+    "list": "cdktf list",
     "destroy": "cdktf destroy",
     "deploy": "cdktf deploy",
     "build": "tsc",
@@ -22,8 +23,8 @@
     "node": ">=18.0"
   },
   "dependencies": {
-    "@cdktf/provider-aws": "^18.0.3",
-    "@cdktf/provider-random": "^10.0.0",
+    "@cdktf/provider-aws": "18.0.4",
+    "@cdktf/provider-random": "10.0.0",
     "cdktf": "^0.19.0",
     "constructs": "^10.3.0"
   },
