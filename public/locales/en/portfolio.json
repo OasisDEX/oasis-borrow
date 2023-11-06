@@ -70,5 +70,9 @@
     "90dApy": "The Annualised rate the position is earning based on the average of the last 90 days",
     "suppliedTokenBalance": "The total amount of your supplied asset(s), expressed in USD.",
     "borrowedTokenBalance": "The total amount of your borrowed asset(s), expressed in USD."
+  },
+  "non-owner-notice": {
+    "header": "You are viewing the wallet of {{address}}",
+    "assets-available": "You have <span>${{amount}}</span> worth of reasons to open a position on summer.fi"
   }
 }

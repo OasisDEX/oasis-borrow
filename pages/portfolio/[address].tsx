@@ -1,20 +1,20 @@
 import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
 import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
+import { PortfolioNonOwnerNotice } from 'components/portfolio/PortfolioNonOwnerNotice'
 import { PortfolioOverview } from 'components/portfolio/PortfolioOverview'
 import { PortfolioOverviewSkeleton } from 'components/portfolio/PortfolioOverviewSkeleton'
 import { PortfolioPositionsView } from 'components/portfolio/positions/PortfolioPositionsView'
 import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWalletView'
 import { TabBar } from 'components/TabBar'
-import { usePortfolioClient } from 'helpers/clients/portfolio-client'
+import { usePortfolioClientData } from 'helpers/clients/portfolio-client-data'
+import { useAccount } from 'helpers/useAccount'
 import { useRedirect } from 'helpers/useRedirect'
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { getAwsInfraHeader, getAwsInfraUrl } from 'server/helpers'
 import { Box } from 'theme-ui'
-
-import type { PortfolioOverviewResponse } from 'lambdas/src/shared/domain-types'
 
 type PortfolioViewProps = {
   address: string
@@ -58,18 +58,22 @@ export async function getServerSideProps(
 export default function PortfolioView(props: PortfolioViewProps) {
   const { t: tPortfolio } = useTranslation('portfolio')
   const { replace } = useRedirect()
+  const { walletAddress } = useAccount()
 
   const { address, awsInfraUrl, awsInfraHeader } = props
-
-  const portfolioClient = usePortfolioClient(awsInfraUrl, awsInfraHeader)
-
-  // fetch data
-  const [overviewData, setOverviewData] = useState<PortfolioOverviewResponse>()
-  useEffect(() => {
-    void portfolioClient.fetchPortfolioOverview(address).then((data) => {
-      setOverviewData(data)
-    })
-  }, [address, portfolioClient])
+  const isOwner = address === walletAddress
+  const {
+    overviewData,
+    portfolioConnectedWalletWalletData,
+    portfolioPositionsData,
+    portfolioWalletData,
+    blogPosts,
+  } = usePortfolioClientData({
+    address,
+    awsInfraHeader,
+    awsInfraUrl,
+    walletAddress,
+  })
 
   // redirect
   useEffect(() => {
@@ -81,6 +85,13 @@ export default function PortfolioView(props: PortfolioViewProps) {
   return address ? (
     <PortfolioLayout>
       <Box sx={{ width: '100%' }}>
+        {!isOwner &&
+          walletAddress && ( // walletAddress prevents showing the notice when not connected
+            <PortfolioNonOwnerNotice
+              address={address}
+              assets={portfolioConnectedWalletWalletData?.assets}
+            />
+          )}
         <PortfolioHeader address={address} />
         {overviewData ? (
           <PortfolioOverview address={address} overviewData={overviewData} />
@@ -95,8 +106,8 @@ export default function PortfolioView(props: PortfolioViewProps) {
               label: tPortfolio('positions-tab'),
               content: (
                 <PortfolioPositionsView
-                  address={address}
-                  fetchData={portfolioClient.fetchPortfolioPositions}
+                  portfolioPositionsData={portfolioPositionsData}
+                  blogPosts={blogPosts}
                 />
               ),
             },
@@ -105,8 +116,10 @@ export default function PortfolioView(props: PortfolioViewProps) {
               label: tPortfolio('wallet-tab'),
               content: (
                 <PortfolioWalletView
+                  isOwner={isOwner}
                   address={address}
-                  fetchData={portfolioClient.fetchPortfolioAssets}
+                  portfolioWalletData={portfolioWalletData}
+                  blogPosts={blogPosts}
                 />
               ),
             },

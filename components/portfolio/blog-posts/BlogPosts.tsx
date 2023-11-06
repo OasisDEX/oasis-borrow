@@ -8,10 +8,8 @@ import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import React from 'react'
 import { Box, Flex, Text } from 'theme-ui'
-import { useFetch } from 'usehooks-ts'
 
-export const BlogPosts = () => {
-  const { data: posts, error: postsError } = useFetch<BlogPostsReply>(`/api/blog-posts`)
+export const BlogPosts = ({ posts }: { posts?: BlogPostsReply }) => {
   const [readPostsList, setReadPostList] = useLocalStorage<string[]>('ob-read-post-list', [])
   const updateReadPostsList = (postId: string) => {
     setReadPostList((prev) => (prev?.length ? [...prev, postId] : [postId]))
@@ -39,7 +37,6 @@ export const BlogPosts = () => {
               />
             ))
           : Array.from({ length: 4 }).map((_, i) => <BlogPostBlockSkeleton key={i} />)}
-        {postsError && <div>Blog posts error</div>}
       </Box>
     </>
   )

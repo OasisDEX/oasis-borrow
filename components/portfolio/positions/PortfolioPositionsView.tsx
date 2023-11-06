@@ -8,7 +8,8 @@ import { PortfolioPositionsSortingSelect } from 'components/portfolio/positions/
 import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio/positions/types'
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
-import React, { useEffect, useMemo, useState } from 'react'
+import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
+import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
 import { Box, Flex, Grid, Text } from 'theme-ui'
@@ -22,20 +23,13 @@ type PortfolioPositionsViewFiltersType = {
 }
 
 export const PortfolioPositionsView = ({
-  address,
-  fetchData,
+  portfolioPositionsData,
+  blogPosts,
 }: {
-  address: string
-  fetchData: (address: string) => Promise<PortfolioPositionsResponse>
+  portfolioPositionsData?: PortfolioPositionsResponse
+  blogPosts?: BlogPostsReply
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  // fetch data
-  const [portfolioPositionsData, setPortfolioPositionsData] = useState<PortfolioPositionsResponse>()
-  useEffect(() => {
-    void fetchData(address).then((data) => {
-      setPortfolioPositionsData(data)
-    })
-  }, [address, fetchData])
 
   const [filterState, setFilterState] = useState<PortfolioPositionsViewFiltersType>({
     showEmptyPositions: false,
@@ -155,20 +149,7 @@ export const PortfolioPositionsView = ({
         </Box>
       </Box>
       <Box>
-        <Text variant="boldParagraph2">Summer.fi Activity</Text>
-        <Box
-          sx={{
-            height: '300px',
-            border: '1px solid',
-            borderColor: 'neutral20',
-            borderRadius: 'round',
-            mt: 3,
-            mb: 4,
-            overflow: 'hidden',
-            padding: 3,
-          }}
-        />
-        <BlogPosts />
+        <BlogPosts posts={blogPosts} />
       </Box>
     </Grid>
   )
