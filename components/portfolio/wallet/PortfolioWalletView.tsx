@@ -5,6 +5,7 @@ import { PortfolioWalletAssets } from 'components/portfolio/wallet/PortfolioWall
 import { PortfolioWalletBanner } from 'components/portfolio/wallet/PortfolioWalletBanner'
 import { PortfolioWalletSummary } from 'components/portfolio/wallet/PortfolioWalletSummary'
 import { productHubNetworkFilter } from 'features/productHub/meta'
+import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Grid, Heading } from 'theme-ui'
@@ -14,10 +15,12 @@ import type { PortfolioAssetsResponse } from 'lambdas/src/shared/domain-types'
 export const PortfolioWalletView = ({
   portfolioWalletData,
   isOwner,
+  blogPosts,
 }: {
   address: string
   isOwner: boolean
   portfolioWalletData?: PortfolioAssetsResponse
+  blogPosts?: BlogPostsReply
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
@@ -66,7 +69,7 @@ export const PortfolioWalletView = ({
         )}
       </Box>
       <Box>
-        <BlogPosts />
+        <BlogPosts posts={blogPosts} />
       </Box>
     </Grid>
   )

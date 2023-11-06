@@ -8,6 +8,7 @@ import { PortfolioPositionsSortingSelect } from 'components/portfolio/positions/
 import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio/positions/types'
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
+import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
@@ -23,8 +24,10 @@ type PortfolioPositionsViewFiltersType = {
 
 export const PortfolioPositionsView = ({
   portfolioPositionsData,
+  blogPosts,
 }: {
   portfolioPositionsData?: PortfolioPositionsResponse
+  blogPosts?: BlogPostsReply
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
@@ -146,20 +149,7 @@ export const PortfolioPositionsView = ({
         </Box>
       </Box>
       <Box>
-        <Text variant="boldParagraph2">Summer.fi Activity</Text>
-        <Box
-          sx={{
-            height: '300px',
-            border: '1px solid',
-            borderColor: 'neutral20',
-            borderRadius: 'round',
-            mt: 3,
-            mb: 4,
-            overflow: 'hidden',
-            padding: 3,
-          }}
-        />
-        <BlogPosts />
+        <BlogPosts posts={blogPosts} />
       </Box>
     </Grid>
   )

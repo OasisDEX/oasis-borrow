@@ -1,5 +1,7 @@
 import { usePortfolioClient } from 'helpers/clients/portfolio-client'
+import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
 import { useEffect, useState } from 'react'
+import { useFetch } from 'usehooks-ts'
 
 import type {
   PortfolioAssetsResponse,
@@ -20,6 +22,7 @@ export const usePortfolioClientData = ({
 }) => {
   const isOwner = address === walletAddress
   const portfolioClient = usePortfolioClient(awsInfraUrl, awsInfraHeader)
+  const { data: blogPosts } = useFetch<BlogPostsReply>(`/api/blog-posts`)
   const [overviewData, setOverviewData] = useState<PortfolioOverviewResponse>()
   const [portfolioPositionsData, setPortfolioPositionsData] = useState<PortfolioPositionsResponse>()
   const [portfolioWalletData, setPortfolioWalletData] = useState<PortfolioAssetsResponse>()
@@ -53,5 +56,6 @@ export const usePortfolioClientData = ({
     portfolioPositionsData,
     portfolioWalletData,
     portfolioConnectedWalletWalletData,
+    blogPosts,
   }
 }

@@ -67,6 +67,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
     portfolioConnectedWalletWalletData,
     portfolioPositionsData,
     portfolioWalletData,
+    blogPosts,
   } = usePortfolioClientData({
     address,
     awsInfraHeader,
@@ -103,7 +104,12 @@ export default function PortfolioView(props: PortfolioViewProps) {
             {
               value: 'positions',
               label: tPortfolio('positions-tab'),
-              content: <PortfolioPositionsView portfolioPositionsData={portfolioPositionsData} />,
+              content: (
+                <PortfolioPositionsView
+                  portfolioPositionsData={portfolioPositionsData}
+                  blogPosts={blogPosts}
+                />
+              ),
             },
             {
               value: 'wallet',
@@ -113,6 +119,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
                   isOwner={isOwner}
                   address={address}
                   portfolioWalletData={portfolioWalletData}
+                  blogPosts={blogPosts}
                 />
               ),
             },
