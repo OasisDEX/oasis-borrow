@@ -1,10 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
-import { getPortfolioTokenProducts } from 'components/portfolio/helpers'
+import { usePortfolioMatchingAssets } from 'components/portfolio/helpers/usePortfolioMatchingAssets'
 import { TokenBanner } from 'components/TokenBanner'
 import { formatAmount } from 'helpers/formatters/format'
-import { uniq } from 'lodash'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
 
@@ -17,26 +15,7 @@ interface PortfolioWalletBannerProps {
 export const PortfolioWalletBanner = ({ assets }: PortfolioWalletBannerProps) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
-  const {
-    productHub: { table },
-  } = usePreloadAppDataContext()
-
-  const matchingAssets = useMemo(
-    () =>
-      assets.filter(
-        ({ network, symbol }) =>
-          getPortfolioTokenProducts({ network, table, token: symbol }).length,
-      ),
-    [assets, table],
-  )
-  const matchingTopAssets = useMemo(
-    () => uniq(matchingAssets.map(({ symbol }) => symbol)).slice(0, 3),
-    [matchingAssets],
-  )
-  const matchingAssetsValue = useMemo(
-    () => matchingAssets.reduce((acc, token) => acc + token.balanceUSD, 0),
-    [matchingAssets],
-  )
+  const { matchingAssetsValue, matchingTopAssets } = usePortfolioMatchingAssets({ assets })
 
   return (
     <TokenBanner cta={tPortfolio('explore')} tokens={matchingTopAssets} url="/earn">

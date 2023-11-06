@@ -8,7 +8,7 @@ import { PortfolioPositionsSortingSelect } from 'components/portfolio/positions/
 import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio/positions/types'
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
 import { Box, Flex, Grid, Text } from 'theme-ui'
@@ -22,20 +22,11 @@ type PortfolioPositionsViewFiltersType = {
 }
 
 export const PortfolioPositionsView = ({
-  address,
-  fetchData,
+  portfolioPositionsData,
 }: {
-  address: string
-  fetchData: (address: string) => Promise<PortfolioPositionsResponse>
+  portfolioPositionsData?: PortfolioPositionsResponse
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  // fetch data
-  const [portfolioPositionsData, setPortfolioPositionsData] = useState<PortfolioPositionsResponse>()
-  useEffect(() => {
-    void fetchData(address).then((data) => {
-      setPortfolioPositionsData(data)
-    })
-  }, [address, fetchData])
 
   const [filterState, setFilterState] = useState<PortfolioPositionsViewFiltersType>({
     showEmptyPositions: false,

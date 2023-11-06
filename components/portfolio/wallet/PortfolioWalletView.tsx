@@ -4,27 +4,21 @@ import { PortfolioWalletAssets } from 'components/portfolio/wallet/PortfolioWall
 import { PortfolioWalletBanner } from 'components/portfolio/wallet/PortfolioWalletBanner'
 import { PortfolioWalletSummary } from 'components/portfolio/wallet/PortfolioWalletSummary'
 import { productHubNetworkFilter } from 'features/productHub/meta'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Grid, Heading } from 'theme-ui'
 
 import type { PortfolioAssetsResponse } from 'lambdas/src/shared/domain-types'
 
 export const PortfolioWalletView = ({
-  address,
-  fetchData,
+  portfolioWalletData,
+  isOwner,
 }: {
   address: string
-  fetchData: (address: string) => Promise<PortfolioAssetsResponse>
+  isOwner: boolean
+  portfolioWalletData?: PortfolioAssetsResponse
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const [portfolioWalletData, setPortfolioWalletData] = useState<PortfolioAssetsResponse>()
-
-  useEffect(() => {
-    void fetchData(address).then((data) => {
-      setPortfolioWalletData(data)
-    })
-  }, [address, fetchData])
 
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkNames[]>([])
   const filteredAssets = useMemo(
@@ -64,7 +58,7 @@ export const PortfolioWalletView = ({
             <PortfolioWalletAssets assets={filteredAssets} />
           </>
         )}
-        {portfolioWalletData?.assets && (
+        {portfolioWalletData?.assets && isOwner && (
           <Box sx={{ mt: '24px' }}>
             <PortfolioWalletBanner assets={portfolioWalletData.assets} />
           </Box>
