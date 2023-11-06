@@ -25,10 +25,10 @@ const baseConfig = {
   productionBrowserSourceMaps: true,
   pageExtensions: ['tsx', 'ts'],
   publicRuntimeConfig: publicRuntimeConfig,
-  // sentry: {
-  //   disableServerWebpackPlugin: true,
-  //   disableClientWebpackPlugin: true,
-  // },
+  sentry: {
+    disableServerWebpackPlugin: true,
+    disableClientWebpackPlugin: true,
+  },
   webpack: function (config, { isServer, dev }) {
     config.module.rules.push({
       test: /\.(svg|png|jpg|gif)$/,
