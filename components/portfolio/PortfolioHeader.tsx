@@ -20,7 +20,7 @@ export const PortfolioHeader = ({ address }: { address: string }) => {
         <Avatar
           size={48}
           name={address}
-          variant="sunset"
+          variant="pixel"
           colors={['#6FD9FF', '#F2FCFF', '#FFE7D8', '#FBB677']}
         />
         <Text variant="header5" sx={{ ml: 3 }}>
