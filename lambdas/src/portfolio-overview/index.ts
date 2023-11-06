@@ -9,14 +9,11 @@ import { PortfolioOverviewResponse } from '../shared/domain-types'
 
 const SUPPORTED_CHAIN_IDS = ['eth', 'op', 'arb', 'base']
 
-const {
-  DEBANK_API_KEY: debankApiKey,
-  DEBANK_API_URL: serviceUrl = 'https://pro-openapi.debank.com/v1',
-} = process.env
+const { DEBANK_API_KEY: debankApiKey, DEBANK_API_URL: serviceUrl } = process.env
 if (!debankApiKey) {
   throw new Error('Missing DEBANK_API_KEY')
 }
-const debankAuthHeaderKey = 'AccessKey'
+const debankAuthHeaderKey = 'Accesskey'
 const headers = { [debankAuthHeaderKey]: debankApiKey }
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
@@ -50,19 +47,20 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
       0,
     )
 
-    const assetUsdValue: number = protocolAssets.reduce(
+    const summerUsdValue: number = protocolAssets.reduce(
       (acc, { asset_usd_value }) => acc + asset_usd_value,
       0,
     )
 
     const body: PortfolioOverviewResponse = {
-      walletBalanceUsdValue,
+      totalUsdValue: walletBalanceUsdValue,
+      totalPercentageChange: 0,
       suppliedUsdValue,
       suppliedPercentageChange: 0,
       borrowedUsdValue,
       borrowedPercentageChange: 0,
-      totalUsdValue: assetUsdValue,
-      totalPercentageChange: 0,
+      summerUsdValue: summerUsdValue,
+      summerPercentageChange: 0,
       // protocolAssets,
     }
     return ResponseOk<PortfolioOverviewResponse>({ body })
@@ -78,7 +76,7 @@ const getWalletAssetsUsdValue = async (
 ): Promise<number> => {
   const results = await Promise.all(
     SUPPORTED_CHAIN_IDS.map((chainId) =>
-      fetch(`${serviceUrl}/user/chain_balance?id=${address}&chain_id=${chainId}`, {
+      fetch(`${serviceUrl}/v1/user/chain_balance?id=${address}&chain_id=${chainId}`, {
         headers,
       }).then((_res) => _res.json() as Promise<WalletAsset>),
     ),
@@ -99,7 +97,7 @@ const getProtocolAssets = async (
   headers: Record<string, string>,
 ): Promise<ProtocolAsset[]> => {
   const protocolAssets = await fetch(
-    `${serviceUrl}/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`,
+    `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`,
     { headers },
   )
     .then((_res) => _res.json() as Promise<ProtocolAsset[]>)

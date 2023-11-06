@@ -37,13 +37,17 @@ export const PortfolioOverview = ({
           header={tPortfolio('total-value')}
           value={
             <Heading variant="header4">
-              ${formatAmount(new BigNumber(overviewData.walletBalanceUsdValue), 'USD')}
+              ${formatAmount(new BigNumber(overviewData.totalUsdValue), 'USD')}
             </Heading>
           }
           subValue={
-            <AppLink href={`/portfolio/${address}`} hash="wallet">
-              <WithArrow sx={{ color: 'interactive100' }}>{tPortfolio('view-assets')}</WithArrow>
-            </AppLink>
+            <Text
+              variant="paragraph4"
+              sx={{ color: getPortfolioChangeColor(overviewData.totalPercentageChange) }}
+            >
+              {getPortfolioChangeSign(overviewData.totalPercentageChange)}
+              {tPortfolio('past-week', { percentage: overviewData.totalPercentageChange })}
+            </Text>
           }
         />
       </Flex>
@@ -66,16 +70,16 @@ export const PortfolioOverview = ({
                 color: 'transparent',
               }}
             >
-              ${formatAmount(new BigNumber(overviewData.totalUsdValue), 'USD')}
+              ${formatAmount(new BigNumber(overviewData.summerUsdValue), 'USD')}
             </Heading>
           }
           subValue={
             <Text
               variant="paragraph4"
-              sx={{ color: getPortfolioChangeColor(overviewData.totalPercentageChange) }}
+              sx={{ color: getPortfolioChangeColor(overviewData.summerPercentageChange) }}
             >
-              {getPortfolioChangeSign(overviewData.totalPercentageChange)}
-              {tPortfolio('past-week', { percentage: overviewData.totalPercentageChange })}
+              {getPortfolioChangeSign(overviewData.summerPercentageChange)}
+              {tPortfolio('past-week', { percentage: overviewData.summerPercentageChange })}
             </Text>
           }
         />

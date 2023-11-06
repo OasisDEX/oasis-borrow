@@ -7,14 +7,11 @@ import { getAddressFromRequest } from '../shared/validators'
 import { DebankNetworkNameToOurs, DebankNetworkNames, DebankToken } from '../shared/debank'
 import { NetworkNames, PortfolioAsset, PortfolioAssetsResponse } from '../shared/domain-types'
 
-const {
-  DEBANK_API_KEY: debankApiKey,
-  DEBANK_API_URL: serviceUrl = 'https://pro-openapi.debank.com/v1',
-} = process.env
+const { DEBANK_API_KEY: debankApiKey, DEBANK_API_URL: serviceUrl } = process.env
 if (!debankApiKey) {
   throw new Error('Missing DEBANK_API_KEY')
 }
-const debankAuthHeaderKey = 'AccessKey'
+const debankAuthHeaderKey = 'Accesskey'
 const headers = { [debankAuthHeaderKey]: debankApiKey }
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
@@ -28,7 +25,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     return ResponseBadRequest(message)
   }
 
-  const reqUrl = new URL(`${serviceUrl}/user/all_token_list?id=${address}`)
+  const reqUrl = new URL(`${serviceUrl}/v1/user/all_token_list?id=${address}`)
   const response: DebankToken[] = await fetch(reqUrl.toString(), {
     headers,
   })
