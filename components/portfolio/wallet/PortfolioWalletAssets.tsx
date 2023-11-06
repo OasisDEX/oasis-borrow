@@ -45,6 +45,7 @@ export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProp
 
           return (
             <Box
+              key={`${symbol}-${network}`}
               as="li"
               sx={{
                 pb: 3,
