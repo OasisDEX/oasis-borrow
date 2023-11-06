@@ -27,12 +27,6 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   }
 
   try {
-    // fetch for wallet assets on supported chains
-    const walletBalanceUsdValue: number | undefined = await getWalletAssetsUsdValue(
-      address,
-      headers,
-    )
-
     // fetch for supported protocol assets on supported chains
     const protocolAssets: ProtocolAsset[] | undefined = await getProtocolAssets(address, headers)
 
@@ -51,11 +45,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
       0,
     )
 
-    const totalUsdValue: number = walletBalanceUsdValue + summerUsdValue
-
     const body: PortfolioOverviewResponse = {
-      totalUsdValue,
-      totalPercentageChange: 0,
       suppliedUsdValue,
       suppliedPercentageChange: 0,
       borrowedUsdValue,
@@ -69,28 +59,6 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     console.error(error)
     return ResponseInternalServerError()
   }
-}
-
-const getWalletAssetsUsdValue = async (
-  address: string,
-  headers: Record<string, string>,
-): Promise<number> => {
-  const results = await Promise.all(
-    SUPPORTED_CHAIN_IDS.map((chainId) =>
-      fetch(`${serviceUrl}/v1/user/chain_balance?id=${address}&chain_id=${chainId}`, {
-        headers,
-      }).then((_res) => _res.json() as Promise<WalletAsset>),
-    ),
-  ).catch((error) => {
-    console.error(error)
-    throw new Error('Failed to fetch wallet assets')
-  })
-
-  const walletAssetsUsdValue = results.reduce((acc, cur) => {
-    acc = acc + cur.usd_value
-    return acc
-  }, 0)
-  return walletAssetsUsdValue
 }
 
 const getProtocolAssets = async (

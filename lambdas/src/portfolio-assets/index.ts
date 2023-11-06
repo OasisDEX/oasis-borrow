@@ -35,8 +35,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
       throw new Error('Failed to fetch wallet assets')
     })
 
-  const tokensData = response
-  const preparedTokenData = tokensData
+  const preparedTokenData = response
     .filter(({ chain, is_wallet, price }) => is_wallet && chain !== undefined && price > 0)
     .map(
       (token): PortfolioAsset => ({
@@ -53,6 +52,8 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     .sort((a, b) => b.balanceUSD - a.balanceUSD)
 
   const walletAssetsResponse: PortfolioAssetsResponse = {
+    totalAssetsUsdValue: preparedTokenData.reduce((acc, { balanceUSD }) => acc + balanceUSD, 0),
+    totalAssetsPercentageChange: 0,
     assets: preparedTokenData,
   }
 

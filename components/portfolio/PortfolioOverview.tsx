@@ -7,18 +7,27 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, Heading, Text } from 'theme-ui'
 
-import type { PortfolioOverviewResponse } from 'lambdas/src/shared/domain-types'
+import type {
+  PortfolioAssetsResponse,
+  PortfolioOverviewResponse,
+} from 'lambdas/src/shared/domain-types'
 
 export const PortfolioOverview = ({
   overviewData,
+  portfolioWalletData,
 }: {
   overviewData?: PortfolioOverviewResponse | void
+  portfolioWalletData?: PortfolioAssetsResponse | void
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
-  if (!overviewData) {
+  if (!overviewData || !portfolioWalletData) {
     return <>'Loading'</>
   }
+
+  const totalValue = overviewData.summerUsdValue + portfolioWalletData.totalAssetsUsdValue
+  const totalPercentageChange =
+    (overviewData.summerPercentageChange + portfolioWalletData.totalAssetsPercentageChange) / 2
 
   return (
     <Flex
@@ -32,17 +41,15 @@ export const PortfolioOverview = ({
         <PortfolioOverviewItem
           header={tPortfolio('total-value')}
           value={
-            <Heading variant="header4">
-              ${formatAmount(new BigNumber(overviewData.totalUsdValue), 'USD')}
-            </Heading>
+            <Heading variant="header4">${formatAmount(new BigNumber(totalValue), 'USD')}</Heading>
           }
           subValue={
             <Text
               variant="paragraph4"
-              sx={{ color: getPortfolioChangeColor(overviewData.totalPercentageChange) }}
+              sx={{ color: getPortfolioChangeColor(totalPercentageChange) }}
             >
-              {getPortfolioChangeSign(overviewData.totalPercentageChange)}
-              {tPortfolio('past-week', { percentage: overviewData.totalPercentageChange })}
+              {getPortfolioChangeSign(totalPercentageChange)}
+              {tPortfolio('past-week', { percentage: totalPercentageChange })}
             </Text>
           }
         />
