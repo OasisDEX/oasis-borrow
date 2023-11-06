@@ -6,8 +6,7 @@ import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from '../
 import { getAddressFromRequest } from '../shared/validators'
 import { ProtocolAsset, WalletAsset } from '../shared/debank'
 import { PortfolioOverviewResponse } from '../shared/domain-types'
-
-const SUPPORTED_CHAIN_IDS = ['eth', 'op', 'arb', 'base']
+import { SUPPORTED_CHAIN_IDS, SUPPORTED_PROTOCOL_IDS } from '../shared/debank-helpers'
 
 const { DEBANK_API_KEY: debankApiKey, DEBANK_API_URL: serviceUrl } = process.env
 if (!debankApiKey) {
@@ -101,6 +100,7 @@ const getProtocolAssets = async (
     { headers },
   )
     .then((_res) => _res.json() as Promise<ProtocolAsset[]>)
+    .then((res) => res.filter(({ id }) => SUPPORTED_PROTOCOL_IDS.includes(id)))
     .catch((error) => {
       console.error(error)
       throw new Error('Failed to fetch wallet assets')
