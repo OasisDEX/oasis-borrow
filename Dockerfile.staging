@@ -9,4 +9,8 @@ COPY package.json yarn.lock next.config.js /app
 COPY public /app/.next/standalone/public
 COPY .next/static /app/.next/standalone/.next/static
 
+# Set runtime env vars from build args
+ARG AWS_API_GATEWAY_URL
+ENV AWS_API_GATEWAY_URL=$AWS_API_GATEWAY_URL
+
 CMD [ "yarn", "start:prod" ]

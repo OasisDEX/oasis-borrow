@@ -1,5 +1,8 @@
 import * as z from 'zod'
 
+// Adding env vars to this file will make them validated for existance during runtime
+// this way we can be sure that they are always present
+
 export const configSchema = z.object({
   challengeJWTSecret: z.string(),
   userJWTSecret: z.string(),
