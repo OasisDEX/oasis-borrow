@@ -1,4 +1,6 @@
 import Avatar from 'boring-avatars'
+import { AppLink } from 'components/Links'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAddress } from 'helpers/formatters/format'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -18,7 +20,7 @@ export const PortfolioHeader = ({ address }: { address: string }) => {
         <Avatar
           size={48}
           name={address}
-          variant="sunset"
+          variant="pixel"
           colors={['#6FD9FF', '#F2FCFF', '#FFE7D8', '#FBB677']}
         />
         <Text variant="header5" sx={{ ml: 3 }}>
@@ -26,7 +28,9 @@ export const PortfolioHeader = ({ address }: { address: string }) => {
         </Text>
       </Flex>
       <Flex sx={{ justifyContent: ['flex-start', 'flex-end'] }}>
-        <Button variant="secondary">{tPortfolio('view-on-etherscan')}</Button>
+        <AppLink href={`${EXTERNAL_LINKS.ETHERSCAN}/address/${address}`}>
+          <Button variant="secondary">{tPortfolio('view-on-etherscan')}</Button>
+        </AppLink>
       </Flex>
     </Flex>
   )

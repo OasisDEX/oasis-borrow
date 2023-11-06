@@ -85,7 +85,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
         {overviewData ? (
           <PortfolioOverview address={address} overviewData={overviewData} />
         ) : (
-          <PortfolioOverviewSkeleton />
+          <PortfolioOverviewSkeleton address={address} />
         )}
         <TabBar
           variant="underline"
