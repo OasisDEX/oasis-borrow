@@ -148,7 +148,7 @@ export const mockPositionsResponse: {
           },
           {
             type: 'lendingRange',
-            value: 'active',
+            value: 'aboveLup',
           },
           {
             type: 'earnings',

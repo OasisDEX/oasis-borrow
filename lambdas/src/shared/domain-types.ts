@@ -1,3 +1,5 @@
+import { LendingRangeType } from './lending-range'
+
 export enum NetworkNames {
   ethereumMainnet = 'ethereum',
   ethereumGoerli = 'ethereum_goerli',
@@ -57,7 +59,7 @@ export type DetailsType =
 
 export type PositionDetail = {
   type: DetailsType
-  value: string
+  value: string | LendingRangeType
   accent?: 'positive' | 'negative'
   subvalue?: string
 }
