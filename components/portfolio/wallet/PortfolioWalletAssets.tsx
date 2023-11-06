@@ -108,7 +108,7 @@ export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProp
               {products.length > 0 && (
                 <Flex as="ul" sx={{ columnGap: 1, m: 0, pt: 2, pl: 0, listStyle: 'none' }}>
                   {products.map((product) => (
-                    <Box as="li">
+                    <Box as="li" key={`${symbol}-${network}-${product}`}>
                       <AppLink href={`/${product}/${getTokenGroup(symbol)}`} query={{ network }}>
                         <Button variant="tag">{upperFirst(product)}</Button>
                       </AppLink>
