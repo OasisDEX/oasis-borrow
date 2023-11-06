@@ -17,7 +17,7 @@ export const PortfolioWalletBanner = ({ assets }: PortfolioWalletBannerProps) =>
 
   const { matchingAssetsValue, matchingTopAssets } = usePortfolioMatchingAssets({ assets })
 
-  return (
+  return matchingAssetsValue ? (
     <TokenBanner cta={tPortfolio('explore')} tokens={matchingTopAssets} url="/earn">
       <Trans
         t={tPortfolio}
@@ -37,5 +37,5 @@ export const PortfolioWalletBanner = ({ assets }: PortfolioWalletBannerProps) =>
         values={{ amount: formatAmount(new BigNumber(matchingAssetsValue), 'USD') }}
       />
     </TokenBanner>
-  )
+  ) : null
 }
