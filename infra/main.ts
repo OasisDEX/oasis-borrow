@@ -4,7 +4,6 @@ import {
   App,
   TerraformStack,
   CloudBackend,
-  RemoteBackend,
   NamedCloudWorkspace,
   TerraformAsset,
   AssetType,
@@ -18,11 +17,10 @@ interface LambdaFunctionConfig {
   path: string
   handler: string
   runtime: string
-  stageName: string
   version: string
 }
 
-const lambdaRolePolicy = {
+const lambdaExecRolePolicy = {
   Version: '2012-10-17',
   Statement: [
     {
@@ -56,8 +54,8 @@ class LambdaStack extends TerraformStack {
     })
 
     // Create unique S3 bucket that hosts Lambda executable
-    const bucket = new aws.s3Bucket.S3Bucket(this, 'bucket', {
-      bucketPrefix: `learn-cdktf-${name}`,
+    const bucket = new aws.s3Bucket.S3Bucket(this, 'lambda-archives', {
+      bucketPrefix: `lambda-archives-${name}`,
     })
 
     // Upload Lambda zip file to newly created S3 bucket
@@ -69,8 +67,8 @@ class LambdaStack extends TerraformStack {
 
     // Create Lambda role
     const role = new aws.iamRole.IamRole(this, 'lambda-exec', {
-      name: `learn-cdktf-${name}-${pet.id}`,
-      assumeRolePolicy: JSON.stringify(lambdaRolePolicy),
+      name: `lambda-exec-${name}-${pet.id}`,
+      assumeRolePolicy: JSON.stringify(lambdaExecRolePolicy),
     })
 
     // Add execution role for lambda to write to CloudWatch logs
@@ -80,8 +78,8 @@ class LambdaStack extends TerraformStack {
     })
 
     // Create Lambda function
-    const lambdaFunc = new aws.lambdaFunction.LambdaFunction(this, 'learn-cdktf-lambda', {
-      functionName: `learn-cdktf-${name}-${pet.id}`,
+    const lambdaFunc = new aws.lambdaFunction.LambdaFunction(this, 'lambda', {
+      functionName: `lambda-${name}-${pet.id}`,
       s3Bucket: bucket.bucket,
       s3Key: lambdaArchive.key,
       handler: config.handler,
@@ -96,7 +94,7 @@ class LambdaStack extends TerraformStack {
       target: lambdaFunc.arn,
     })
 
-    new aws.lambdaPermission.LambdaPermission(this, 'apigw-lambda', {
+    new aws.lambdaPermission.LambdaPermission(this, 'api-gw-lambda-invoke', {
       functionName: lambdaFunc.functionName,
       action: 'lambda:InvokeFunction',
       principal: 'apigateway.amazonaws.com',
@@ -111,10 +109,9 @@ class LambdaStack extends TerraformStack {
 
 const app = new App()
 const stack = new LambdaStack(app, 'lambda-hello-world', {
-  path: '../lambdas/dist/portfolio-overview',
+  path: '../lambdas/dist/portfolio-positions',
   handler: 'index.handler',
   runtime: 'nodejs18.x',
-  stageName: 'hello-world',
   version: 'v0.0.1',
 })
 
@@ -122,14 +119,6 @@ const stack = new LambdaStack(app, 'lambda-hello-world', {
 //   hostname: 'app.terraform.io',
 //   organization: 'Oazo',
 //   workspaces: new NamedCloudWorkspace('borrow-infra'),
-// })
-
-// new RemoteBackend(stack, {
-//   hostname: 'app.terraform.io',
-//   organization: 'Oazo',
-//   workspaces: {
-//     name: 'borrow-infra',
-//   },
 // })
 
 app.synth()
