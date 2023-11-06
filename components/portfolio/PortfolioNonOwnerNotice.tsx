@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { usePortfolioMatchingAssets } from 'components/portfolio/helpers/usePortfolioMatchingAssets'
+import { Skeleton } from 'components/Skeleton'
 import { formatAddress, formatAmount } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'react-i18next'
 import { non_owner_notice_icon } from 'theme/icons'
@@ -17,7 +18,7 @@ export const PortfolioNonOwnerNotice = ({
   assets?: PortfolioAsset[]
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const { matchingAssetsValue, matchingTopAssets } = usePortfolioMatchingAssets({ assets })
+  const { matchingAssetsValue } = usePortfolioMatchingAssets({ assets })
   return (
     <Flex
       sx={{
@@ -37,24 +38,28 @@ export const PortfolioNonOwnerNotice = ({
           {tPortfolio('non-owner-notice.header', { address: formatAddress(address, 6) })}
         </Text>
         <Text variant="paragraph3">
-          <Trans
-            t={tPortfolio}
-            i18nKey="non-owner-notice.assets-available"
-            components={{
-              span: (
-                <Text
-                  variant="boldParagraph3"
-                  sx={{
-                    background:
-                      'linear-gradient(270deg, #E97047 0.02%, #E7A77F 46.92%, #007DA3 88.44%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                />
-              ),
-            }}
-            values={{ amount: formatAmount(new BigNumber(matchingAssetsValue), 'USD') }}
-          />
+          {matchingAssetsValue ? (
+            <Trans
+              t={tPortfolio}
+              i18nKey="non-owner-notice.assets-available"
+              components={{
+                span: (
+                  <Text
+                    variant="boldParagraph3"
+                    sx={{
+                      background:
+                        'linear-gradient(270deg, #E97047 0.02%, #E7A77F 46.92%, #007DA3 88.44%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  />
+                ),
+              }}
+              values={{ amount: formatAmount(new BigNumber(matchingAssetsValue), 'USD') }}
+            />
+          ) : (
+            <Skeleton width={440} sx={{ mt: 1 }} />
+          )}
         </Text>
       </Flex>
       <AppLink href={'/earn'} sx={{ flexShrink: 0, ml: 'auto' }}>
