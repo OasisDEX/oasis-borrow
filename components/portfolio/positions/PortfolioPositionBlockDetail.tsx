@@ -27,7 +27,7 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
     borrowedTokenBalance: tPortfolio('details-tooltips.borrowedTokenBalance'),
   }
   return (
-    <Flex sx={{ flexDirection: 'column', justifyContent: 'flex-start' }}>
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'flex-start', my: [3, 0] }}>
       <Box>
         <Text as="div" variant="paragraph4" color="neutral80" sx={{ verticalAlign: 'center' }}>
           {tPortfolio(`position-details.${detail.type}`)}
