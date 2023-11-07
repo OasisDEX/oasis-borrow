@@ -6,10 +6,9 @@ import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards
 import { useAppConfig } from 'helpers/config'
 import { uniq } from 'lodash'
 import React, { useState } from 'react'
-import { theme } from 'theme'
 import { chevron_left, chevron_right } from 'theme/icons'
+import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Box, Button, Flex, Text } from 'theme-ui'
-import { useMediaQuery } from 'usehooks-ts'
 
 export const PortfolioPositionFeatured = () => {
   const {
@@ -17,8 +16,8 @@ export const PortfolioPositionFeatured = () => {
   } = usePreloadAppDataContext()
   const { AjnaSafetySwitch } = useAppConfig('features')
 
-  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[0]})`)
-  const slidesToDisplay = isSmallerScreen ? 1 : 2
+  const isMobile = useOnMobile()
+  const slidesToDisplay = isMobile ? 1 : 2
   const [emblaRef, emblaApi] = useEmblaCarousel({ slidesToScroll: slidesToDisplay })
 
   const [amount, setAmount] = useState<number>(slidesToDisplay)
