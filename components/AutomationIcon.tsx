@@ -55,8 +55,8 @@ export const AutomationIcon = ({
         sx={{
           display: 'block',
           p: 2,
-          transition: 'path 200ms',
           '& path': {
+            transition: 'color 200ms',
             color: enabled ? 'white' : 'primary60',
           },
         }}
