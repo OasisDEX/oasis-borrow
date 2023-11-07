@@ -6,22 +6,19 @@ import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards
 import { useAppConfig } from 'helpers/config'
 import { uniq } from 'lodash'
 import React, { useState } from 'react'
+import { theme } from 'theme'
 import { chevron_left, chevron_right } from 'theme/icons'
 import { Box, Button, Flex, Text } from 'theme-ui'
+import { useMediaQuery } from 'usehooks-ts'
 
-const SLIDES = 9
-
-interface PortfolioPositionFeaturedProps {
-  slidesToDisplay?: number
-}
-
-export const PortfolioPositionFeatured = ({
-  slidesToDisplay = 2,
-}: PortfolioPositionFeaturedProps) => {
+export const PortfolioPositionFeatured = () => {
   const {
     productHub: { table },
   } = usePreloadAppDataContext()
   const { AjnaSafetySwitch } = useAppConfig('features')
+
+  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[0]})`)
+  const slidesToDisplay = isSmallerScreen ? 1 : 2
   const [emblaRef, emblaApi] = useEmblaCarousel({ slidesToScroll: slidesToDisplay })
 
   const [amount, setAmount] = useState<number>(slidesToDisplay)
@@ -39,7 +36,9 @@ export const PortfolioPositionFeatured = ({
   )
 
   emblaApi?.on('select', () => {
-    setAmount(Math.min(emblaApi?.selectedScrollSnap() * slidesToDisplay + slidesToDisplay, SLIDES))
+    setAmount(
+      Math.min(emblaApi?.selectedScrollSnap() * slidesToDisplay + slidesToDisplay, slides.length),
+    )
   })
 
   return (
@@ -53,15 +52,15 @@ export const PortfolioPositionFeatured = ({
           }}
         >
           {slides.map((slide, i) => (
-            <Box key={i} sx={{ flex: `0 0 ${100 / slidesToDisplay}%`, pl: 3 }}>
-              <PromoCard {...slide} />
-            </Box>
+            <Flex key={i} sx={{ flex: `0 0 ${100 / slidesToDisplay}%`, pl: 3 }}>
+              <PromoCard sx={{ flexGrow: 1 }} {...slide} />
+            </Flex>
           ))}
         </Flex>
       </Box>
       <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: '24px' }}>
         <Text variant="paragraph3">
-          {amount} of {SLIDES}
+          {amount} of {slides.length}
         </Text>
         <Flex sx={{ columnGap: 2 }}>
           <Button
