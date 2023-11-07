@@ -8,7 +8,7 @@ import { ProductType } from 'features/aave/types'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Flex, Text } from 'theme-ui'
+import { Box, Button, Flex, Text } from 'theme-ui'
 
 import type { PortfolioPosition } from 'lambdas/src/shared/domain-types'
 
@@ -89,12 +89,8 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
             </Flex>
           )}
           <Flex>
-            <AppLink
-              variant="secondary"
-              sx={{ fontSize: 1 }}
-              href={`/${position.network}/${position.protocol}/${position.positionId}`}
-            >
-              {tPortfolio('view-position')}
+            <AppLink href={`/${position.network}/${position.protocol}/${position.positionId}`}>
+              <Button variant="tertiary">{tPortfolio('view-position')}</Button>
             </AppLink>
           </Flex>
         </Flex>
