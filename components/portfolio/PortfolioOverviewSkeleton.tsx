@@ -20,7 +20,6 @@ export const PortfolioOverviewSkeleton = () => {
         <PortfolioOverviewItem
           header={tPortfolio('total-value')}
           value={<Skeleton sx={{ width: '200px', height: '28px', mt: 2 }} />}
-          subValue={<Skeleton sx={{ mt: 2 }} />}
         />
       </Flex>
       <Flex
@@ -34,17 +33,14 @@ export const PortfolioOverviewSkeleton = () => {
         <PortfolioOverviewItem
           header={tPortfolio('total-portfolio')}
           value={<Skeleton sx={{ width: '120px', height: '28px', mt: 2 }} color="fancy" />}
-          subValue={<Skeleton sx={{ mt: 2 }} />}
         />
         <PortfolioOverviewItem
           header={tPortfolio('total-supplied')}
           value={<Skeleton sx={{ width: '120px', height: '28px', mt: 2 }} />}
-          subValue={<Skeleton sx={{ mt: 2 }} />}
         />
         <PortfolioOverviewItem
           header={tPortfolio('total-borrowed')}
           value={<Skeleton sx={{ width: '120px', height: '28px', mt: 2 }} />}
-          subValue={<Skeleton sx={{ mt: 2 }} />}
         />
         <PortfolioOverviewItem
           header={tPortfolio('available-to-migrate')}
