@@ -25,6 +25,8 @@
   "automations": "Automations",
   "days-of-earning": "{{days}} Days of Earning",
   "view-position": "View Position",
+  "featured-for-you": "Featured for you",
+  "featured-for-address": "Featured for {{address}}",
   "networks": "Networks",
   "assets": "Assets",
   "summary": "Summary",

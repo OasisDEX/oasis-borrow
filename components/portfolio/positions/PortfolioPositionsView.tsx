@@ -3,32 +3,41 @@ import { Icon } from 'components/Icon'
 import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
 import { PortfolioPositionBlock } from 'components/portfolio/positions/PortfolioPositionBlock'
 import { PortfolioPositionBlockSkeleton } from 'components/portfolio/positions/PortfolioPositionBlockSkeleton'
+import { PortfolioPositionFeatured } from 'components/portfolio/positions/PortfolioPositionFeatured'
 import { PortfolioPositionsProductSelect } from 'components/portfolio/positions/PortfolioPositionsProductSelect'
 import { PortfolioPositionsSortingSelect } from 'components/portfolio/positions/PortfolioPositionsSortingSelect'
 import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio/positions/types'
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
+import { formatAddress } from 'helpers/formatters/format'
+import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { question_o } from 'theme/icons'
-import { Box, Flex, Grid, Text } from 'theme-ui'
+import { question_o, sparks } from 'theme/icons'
+import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import type { PortfolioPositionsResponse } from 'lambdas/src/shared/domain-types'
 
+interface PortfolioPositionsViewProps {
+  address: string
+  blogPosts?: BlogPostsReply
+  isOwner: boolean
+  portfolioPositionsData?: PortfolioPositionsResponse
+}
+
 type PortfolioPositionsViewFiltersType = {
-  showEmptyPositions: boolean
   product?: PortfolioProductType[]
+  showEmptyPositions: boolean
   sorting?: PortfolioSortingType
 }
 
 export const PortfolioPositionsView = ({
+  address,
+  isOwner,
   portfolioPositionsData,
   blogPosts,
-}: {
-  portfolioPositionsData?: PortfolioPositionsResponse
-  blogPosts?: BlogPostsReply
-}) => {
+}: PortfolioPositionsViewProps) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
   const [filterState, setFilterState] = useState<PortfolioPositionsViewFiltersType>({
@@ -138,7 +147,7 @@ export const PortfolioPositionsView = ({
             />
           </Flex>
         </Flex>
-        <Box sx={{ pt: 4 }}>
+        <Flex sx={{ flexDirection: 'column', rowGap: '24px', pt: 4 }}>
           {filteredAndSortedPositions
             ? filteredAndSortedPositions.map((position) => (
                 <PortfolioPositionBlock
@@ -149,7 +158,20 @@ export const PortfolioPositionsView = ({
             : Array.from({ length: 3 }).map((_, index) => (
                 <PortfolioPositionBlockSkeleton key={`skeleton-${index}`} />
               ))}
-        </Box>
+        </Flex>
+        <Flex sx={{ alignItems: 'center', my: '24px' }}>
+          <Icon icon={sparks} color="#007DA3" />
+          <Heading
+            as="h2"
+            variant="header5"
+            sx={{ ml: 1, ...getGradientColor(summerBrandGradient) }}
+          >
+            {tPortfolio(`featured-for-${isOwner ? 'you' : 'address'}`, {
+              address: formatAddress(address, 6),
+            })}
+          </Heading>
+        </Flex>
+        <PortfolioPositionFeatured />
       </Box>
       <Box>
         <BlogPosts posts={blogPosts} />

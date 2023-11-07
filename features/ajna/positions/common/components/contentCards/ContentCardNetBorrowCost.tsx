@@ -10,7 +10,7 @@ import { useAjnaRewards } from 'features/ajna/rewards/useAjnaRewards'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { ajnaSparks } from 'theme/icons'
+import { sparks } from 'theme/icons'
 import { Text } from 'theme-ui'
 
 interface ContentCardNetBorrowCostProps {
@@ -74,7 +74,7 @@ export function ContentCardNetBorrowCost({
               lineHeight: 'body',
             }}
           >
-            <Icon size={24} icon={ajnaSparks} color="interactive100" />
+            <Icon size={24} icon={sparks} color="interactive100" />
           </StatefulTooltip>
         )}
         {formatted.netBorrowCost}

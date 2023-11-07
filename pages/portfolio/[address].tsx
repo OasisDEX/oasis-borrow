@@ -109,8 +109,10 @@ export default function PortfolioView(props: PortfolioViewProps) {
               label: tPortfolio('positions-tab'),
               content: (
                 <PortfolioPositionsView
-                  portfolioPositionsData={portfolioPositionsData}
+                  address={address}
                   blogPosts={blogPosts}
+                  isOwner={isOwner}
+                  portfolioPositionsData={portfolioPositionsData}
                 />
               ),
             },
@@ -119,10 +121,10 @@ export default function PortfolioView(props: PortfolioViewProps) {
               label: tPortfolio('wallet-tab'),
               content: (
                 <PortfolioWalletView
-                  isOwner={isOwner}
                   address={address}
-                  portfolioWalletData={portfolioWalletData}
                   blogPosts={blogPosts}
+                  isOwner={isOwner}
+                  portfolioWalletData={portfolioWalletData}
                 />
               ),
             },

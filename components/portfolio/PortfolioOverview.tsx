@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { PortfolioOverviewItem } from 'components/portfolio/PortfolioOverviewItem'
 import { Tag } from 'components/Tag'
 import { formatAmount } from 'helpers/formatters/format'
+import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -52,14 +53,7 @@ export const PortfolioOverview = ({
         <PortfolioOverviewItem
           header={tPortfolio('total-portfolio')}
           value={
-            <Heading
-              variant="header4"
-              sx={{
-                backgroundImage: 'linear-gradient(90deg, #007DA3 0%, #E7A77F 50%, #E97047 100%)',
-                backgroundClip: 'text',
-                color: 'transparent',
-              }}
-            >
+            <Heading variant="header4" sx={getGradientColor(summerBrandGradient)}>
               ${formatAmount(new BigNumber(overviewData.summerUsdValue), 'USD')}
             </Heading>
           }
