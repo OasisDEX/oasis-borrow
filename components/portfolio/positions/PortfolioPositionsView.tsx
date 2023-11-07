@@ -113,18 +113,21 @@ export const PortfolioPositionsView = ({
               width: ['100%', 'auto'],
             }}
           >
-            <Text variant="paragraph3" sx={{ mr: 3 }}>
+            <Text variant="paragraph3" sx={{ mr: 1 }}>
               {tPortfolio('show-empty-positions.label')}
             </Text>
             <StatefulTooltip
-              tooltip={
-                <Text variant="paragraph4">{tPortfolio('show-empty-positions.tooltip')}</Text>
-              }
-              containerSx={{ mr: 2, ml: '-10px' }}
+              tooltip={tPortfolio('show-empty-positions.tooltip')}
+              containerSx={{ position: 'relative', mr: 1, }}
               tooltipSx={{
-                ml: '-75px',
-                width: '300px',
+                top: '24px',
+                width: '250px',
+                fontSize: 1,
+                whiteSpace: 'initial',
+                textAlign: 'left',
+                border: 'none',
                 borderRadius: 'medium',
+                boxShadow: 'buttonMenu',
               }}
             >
               <Icon size={16} icon={question_o} color="neutral80" />
