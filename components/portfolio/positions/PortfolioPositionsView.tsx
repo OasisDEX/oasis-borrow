@@ -3,6 +3,7 @@ import { Icon } from 'components/Icon'
 import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
 import { PortfolioPositionBlock } from 'components/portfolio/positions/PortfolioPositionBlock'
 import { PortfolioPositionBlockSkeleton } from 'components/portfolio/positions/PortfolioPositionBlockSkeleton'
+import { PortfolioPositionFeatured } from 'components/portfolio/positions/PortfolioPositionFeatured'
 import { PortfolioPositionsProductSelect } from 'components/portfolio/positions/PortfolioPositionsProductSelect'
 import { PortfolioPositionsSortingSelect } from 'components/portfolio/positions/PortfolioPositionsSortingSelect'
 import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio/positions/types'
@@ -150,6 +151,7 @@ export const PortfolioPositionsView = ({
                 <PortfolioPositionBlockSkeleton key={`skeleton-${index}`} />
               ))}
         </Box>
+        <PortfolioPositionFeatured />
       </Box>
       <Box>
         <BlogPosts posts={blogPosts} />
