@@ -44,7 +44,7 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
               tooltipSx={{
                 top: 3,
                 left: 0,
-                width: '250px',
+                width: ['200px', '250px'],
                 fontSize: 1,
                 fontWeight: 'normal',
                 whiteSpace: 'initial',
