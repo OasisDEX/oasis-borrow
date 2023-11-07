@@ -110,7 +110,7 @@ export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProp
                   {products.map((product) => (
                     <Box as="li" key={`${symbol}-${network}-${product}`}>
                       <AppLink
-                        href={`/${product.toLowerCase()}/${getTokenGroup(symbol)}`}
+                        href={`/${product.toLowerCase()}/${getTokenGroup(symbol.toUpperCase())}`}
                         query={{ network }}
                       >
                         <Button variant="tag">{upperFirst(product)}</Button>

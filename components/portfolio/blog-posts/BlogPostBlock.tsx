@@ -23,8 +23,8 @@ export const BlogPostBlock = ({
           borderRadius: 'large',
           p: 2,
           py: 3,
-          cursor: 'pointer',
-          ':hover': {
+          transition: 'background-color 200ms',
+          '&:hover': {
             backgroundColor: 'neutral30',
           },
         }}
