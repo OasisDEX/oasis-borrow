@@ -1,11 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { getPortfolioChangeColor, getPortfolioChangeSign } from 'components/portfolio/helpers'
 import { PortfolioOverviewItem } from 'components/portfolio/PortfolioOverviewItem'
 import { Tag } from 'components/Tag'
 import { formatAmount } from 'helpers/formatters/format'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Flex, Heading, Text } from 'theme-ui'
+import { Flex, Heading } from 'theme-ui'
 
 import type {
   PortfolioAssetsResponse,
@@ -16,18 +15,12 @@ export const PortfolioOverview = ({
   overviewData,
   portfolioWalletData,
 }: {
-  overviewData?: PortfolioOverviewResponse | void
-  portfolioWalletData?: PortfolioAssetsResponse | void
+  overviewData: PortfolioOverviewResponse
+  portfolioWalletData: PortfolioAssetsResponse
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
-  if (!overviewData || !portfolioWalletData) {
-    return <>'Loading'</>
-  }
-
   const totalValue = overviewData.summerUsdValue + portfolioWalletData.totalAssetsUsdValue
-  const totalPercentageChange =
-    (overviewData.summerPercentageChange + portfolioWalletData.totalAssetsPercentageChange) / 2
 
   return (
     <Flex
@@ -42,15 +35,6 @@ export const PortfolioOverview = ({
           header={tPortfolio('total-value')}
           value={
             <Heading variant="header4">${formatAmount(new BigNumber(totalValue), 'USD')}</Heading>
-          }
-          subValue={
-            <Text
-              variant="paragraph4"
-              sx={{ color: getPortfolioChangeColor(totalPercentageChange) }}
-            >
-              {getPortfolioChangeSign(totalPercentageChange)}
-              {tPortfolio('past-week', { percentage: totalPercentageChange })}
-            </Text>
           }
         />
       </Flex>
@@ -76,15 +60,6 @@ export const PortfolioOverview = ({
               ${formatAmount(new BigNumber(overviewData.summerUsdValue), 'USD')}
             </Heading>
           }
-          subValue={
-            <Text
-              variant="paragraph4"
-              sx={{ color: getPortfolioChangeColor(overviewData.summerPercentageChange) }}
-            >
-              {getPortfolioChangeSign(overviewData.summerPercentageChange)}
-              {tPortfolio('past-week', { percentage: overviewData.summerPercentageChange })}
-            </Text>
-          }
         />
         <PortfolioOverviewItem
           header={tPortfolio('total-supplied')}
@@ -93,15 +68,6 @@ export const PortfolioOverview = ({
               ${formatAmount(new BigNumber(overviewData.suppliedUsdValue), 'USD')}
             </Heading>
           }
-          subValue={
-            <Text
-              variant="paragraph4"
-              sx={{ color: getPortfolioChangeColor(overviewData.suppliedPercentageChange) }}
-            >
-              {getPortfolioChangeSign(overviewData.suppliedPercentageChange)}
-              {tPortfolio('past-week', { percentage: overviewData.suppliedPercentageChange })}
-            </Text>
-          }
         />
         <PortfolioOverviewItem
           header={tPortfolio('total-borrowed')}
@@ -109,15 +75,6 @@ export const PortfolioOverview = ({
             <Heading variant="header4">
               ${formatAmount(new BigNumber(overviewData.borrowedUsdValue), 'USD')}
             </Heading>
-          }
-          subValue={
-            <Text
-              variant="paragraph4"
-              sx={{ color: getPortfolioChangeColor(overviewData.borrowedPercentageChange) }}
-            >
-              {getPortfolioChangeSign(overviewData.borrowedPercentageChange)}
-              {tPortfolio('past-week', { percentage: overviewData.borrowedPercentageChange })}
-            </Text>
           }
         />
         <PortfolioOverviewItem
