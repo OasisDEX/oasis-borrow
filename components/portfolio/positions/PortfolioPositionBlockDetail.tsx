@@ -42,8 +42,16 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
                 top: '3px',
               }}
               tooltipSx={{
+                top: 3,
+                left: 0,
+                width: '250px',
+                fontSize: 1,
+                fontWeight: 'normal',
+                whiteSpace: 'initial',
+                textAlign: 'left',
+                border: 'none',
                 borderRadius: 'medium',
-                width: '230px',
+                boxShadow: 'buttonMenu',
               }}
             >
               <Icon size={16} icon={question_o} color="neutral80" />
