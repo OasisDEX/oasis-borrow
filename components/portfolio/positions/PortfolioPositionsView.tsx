@@ -118,7 +118,7 @@ export const PortfolioPositionsView = ({
             </Text>
             <StatefulTooltip
               tooltip={tPortfolio('show-empty-positions.tooltip')}
-              containerSx={{ position: 'relative', mr: 1, }}
+              containerSx={{ position: 'relative', mr: 1 }}
               tooltipSx={{
                 top: '24px',
                 width: '250px',

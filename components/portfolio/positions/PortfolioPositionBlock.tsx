@@ -75,7 +75,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
               <Text variant="paragraph4" color="neutral80" sx={{ mb: 2 }}>
                 {tPortfolio('automations')}
               </Text>
-              <Flex sx={{ justifyContent: 'space-between', columnGap: 1, }}>
+              <Flex sx={{ justifyContent: 'space-between', columnGap: 1 }}>
                 <PortfolioPositionAutomationIcons automations={position.automations} />
               </Flex>
             </Flex>
