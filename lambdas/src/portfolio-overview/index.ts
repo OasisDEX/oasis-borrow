@@ -4,7 +4,7 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda
 import { getDefaultErrorMessage } from '../shared/helpers'
 import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from '../shared/responses'
 import { getAddressFromRequest } from '../shared/validators'
-import { ProtocolAsset, WalletAsset } from '../shared/debank'
+import { DebankSimpleProtocol } from '../shared/debank-types'
 import { PortfolioOverviewResponse } from '../shared/domain-types'
 import { SUPPORTED_CHAIN_IDS, SUPPORTED_PROTOCOL_IDS } from '../shared/debank-helpers'
 
@@ -28,7 +28,10 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 
   try {
     // fetch for supported protocol assets on supported chains
-    const protocolAssets: ProtocolAsset[] | undefined = await getProtocolAssets(address, headers)
+    const protocolAssets: DebankSimpleProtocol[] | undefined = await getProtocolAssets(
+      address,
+      headers,
+    )
 
     const suppliedUsdValue: number = protocolAssets.reduce(
       (acc, { asset_usd_value }) => acc + asset_usd_value,
@@ -64,12 +67,12 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 const getProtocolAssets = async (
   address: string,
   headers: Record<string, string>,
-): Promise<ProtocolAsset[]> => {
+): Promise<DebankSimpleProtocol[]> => {
   const protocolAssets = await fetch(
     `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`,
     { headers },
   )
-    .then((_res) => _res.json() as Promise<ProtocolAsset[]>)
+    .then((_res) => _res.json() as Promise<DebankSimpleProtocol[]>)
     .then((res) => res.filter(({ id }) => SUPPORTED_PROTOCOL_IDS.includes(id)))
     .catch((error) => {
       console.error(error)

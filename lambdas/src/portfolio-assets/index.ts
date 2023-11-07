@@ -4,8 +4,9 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda
 import { getDefaultErrorMessage } from '../shared/helpers'
 import { ResponseBadRequest, ResponseOk } from '../shared/responses'
 import { getAddressFromRequest } from '../shared/validators'
-import { DebankNetworkNameToOurs, DebankNetworkNames, DebankToken } from '../shared/debank'
+import { DebankToken } from '../shared/debank-types'
 import { NetworkNames, PortfolioAsset, PortfolioAssetsResponse } from '../shared/domain-types'
+import { DebankNetworkNameToOurs, DebankNetworkNames } from '../shared/debank-helpers'
 
 const { DEBANK_API_KEY: debankApiKey, DEBANK_API_URL: serviceUrl } = process.env
 if (!debankApiKey) {
