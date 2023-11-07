@@ -1,7 +1,6 @@
 import { PromoCard } from 'components/PromoCard'
 import useEmblaCarousel from 'embla-carousel-react'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { Box, Button, Flex } from 'theme-ui'
 
 const SLIDES = 9
@@ -13,8 +12,6 @@ interface PortfolioPositionFeaturedProps {
 export const PortfolioPositionFeatured = ({
   slidesToDisplay = 2,
 }: PortfolioPositionFeaturedProps) => {
-  const { t: tPortfolio } = useTranslation('portfolio')
-
   const [emblaRef, emblaApi] = useEmblaCarousel({ slidesToScroll: slidesToDisplay })
   const [amount, setAmount] = useState<number>(slidesToDisplay)
 
@@ -38,7 +35,7 @@ export const PortfolioPositionFeatured = ({
         </Flex>
       </Box>
       <span>
-        {amount}of {SLIDES}
+        {amount} of {SLIDES}
       </span>
       <Button
         onClick={() => {

@@ -1,9 +1,8 @@
-import { ajnaSparks, question_o, sparkSparks } from 'theme/icons'
+import { question_o, sparks } from 'theme/icons'
 
 export const productHubIcons = {
   question_o,
-  ajnaSparks,
-  sparkSparks,
+  sparks,
 }
 
 export type ProductHubTooltipType = {
@@ -36,7 +35,7 @@ export const productHubAjnaRewardsTooltip: ProductHubTooltipType = {
       key: 'ajna.product-hub-tooltips.rewards-available-soon',
     },
   },
-  icon: 'ajnaSparks',
+  icon: 'sparks',
 }
 
 export const productHubSparkRewardsTooltip: ProductHubTooltipType = {
@@ -48,7 +47,7 @@ export const productHubSparkRewardsTooltip: ProductHubTooltipType = {
       key: 'spark.product-hub-tooltips.elligible-for-spk-airdrop-description',
     },
   },
-  icon: 'sparkSparks',
+  icon: 'sparks',
 }
 
 export const productHubEmptyPoolMaxLtvTooltip: ProductHubTooltipType = {

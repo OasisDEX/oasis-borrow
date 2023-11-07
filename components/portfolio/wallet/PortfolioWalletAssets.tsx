@@ -7,6 +7,7 @@ import { AppLink } from 'components/Links'
 import { getPortfolioChangeColor, getPortfolioTokenProducts } from 'components/portfolio/helpers'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import { getGradientColor } from 'helpers/getGradientColor'
 import { upperFirst } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -67,9 +68,7 @@ export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProp
                         sx={{
                           ...(networksByName[network].gradient && {
                             fontWeight: 'semiBold',
-                            background: networksByName[network].gradient,
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
+                            ...getGradientColor(networksByName[network].gradient),
                           }),
                         }}
                       >

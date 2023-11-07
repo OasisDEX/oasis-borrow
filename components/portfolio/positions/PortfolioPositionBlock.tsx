@@ -21,7 +21,6 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         border: '1px solid',
         borderColor: 'neutral20',
         borderRadius: 'large',
-        mb: 4,
         p: 3,
       }}
     >
