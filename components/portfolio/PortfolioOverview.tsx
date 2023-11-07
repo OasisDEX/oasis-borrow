@@ -1,28 +1,33 @@
 import BigNumber from 'bignumber.js'
-import { AppLink } from 'components/Links'
 import { getPortfolioChangeColor, getPortfolioChangeSign } from 'components/portfolio/helpers'
 import { PortfolioOverviewItem } from 'components/portfolio/PortfolioOverviewItem'
 import { Tag } from 'components/Tag'
-import { WithArrow } from 'components/WithArrow'
 import { formatAmount } from 'helpers/formatters/format'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, Heading, Text } from 'theme-ui'
 
-import type { PortfolioOverviewResponse } from 'lambdas/src/shared/domain-types'
+import type {
+  PortfolioAssetsResponse,
+  PortfolioOverviewResponse,
+} from 'lambdas/src/shared/domain-types'
 
 export const PortfolioOverview = ({
-  address,
   overviewData,
+  portfolioWalletData,
 }: {
-  address: string
   overviewData?: PortfolioOverviewResponse | void
+  portfolioWalletData?: PortfolioAssetsResponse | void
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
-  if (!overviewData) {
+  if (!overviewData || !portfolioWalletData) {
     return <>'Loading'</>
   }
+
+  const totalValue = overviewData.summerUsdValue + portfolioWalletData.totalAssetsUsdValue
+  const totalPercentageChange =
+    (overviewData.summerPercentageChange + portfolioWalletData.totalAssetsPercentageChange) / 2
 
   return (
     <Flex
@@ -36,14 +41,16 @@ export const PortfolioOverview = ({
         <PortfolioOverviewItem
           header={tPortfolio('total-value')}
           value={
-            <Heading variant="header4">
-              ${formatAmount(new BigNumber(overviewData.walletBalanceUsdValue), 'USD')}
-            </Heading>
+            <Heading variant="header4">${formatAmount(new BigNumber(totalValue), 'USD')}</Heading>
           }
           subValue={
-            <AppLink href={`/portfolio/${address}`} hash="wallet">
-              <WithArrow sx={{ color: 'interactive100' }}>{tPortfolio('view-assets')}</WithArrow>
-            </AppLink>
+            <Text
+              variant="paragraph4"
+              sx={{ color: getPortfolioChangeColor(totalPercentageChange) }}
+            >
+              {getPortfolioChangeSign(totalPercentageChange)}
+              {tPortfolio('past-week', { percentage: totalPercentageChange })}
+            </Text>
           }
         />
       </Flex>
@@ -66,16 +73,16 @@ export const PortfolioOverview = ({
                 color: 'transparent',
               }}
             >
-              ${formatAmount(new BigNumber(overviewData.totalUsdValue), 'USD')}
+              ${formatAmount(new BigNumber(overviewData.summerUsdValue), 'USD')}
             </Heading>
           }
           subValue={
             <Text
               variant="paragraph4"
-              sx={{ color: getPortfolioChangeColor(overviewData.totalPercentageChange) }}
+              sx={{ color: getPortfolioChangeColor(overviewData.summerPercentageChange) }}
             >
-              {getPortfolioChangeSign(overviewData.totalPercentageChange)}
-              {tPortfolio('past-week', { percentage: overviewData.totalPercentageChange })}
+              {getPortfolioChangeSign(overviewData.summerPercentageChange)}
+              {tPortfolio('past-week', { percentage: overviewData.summerPercentageChange })}
             </Text>
           }
         />

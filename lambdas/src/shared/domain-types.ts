@@ -99,13 +99,12 @@ export type PortfolioPositionsResponse = {
 }
 
 export type PortfolioOverviewResponse = {
-  walletBalanceUsdValue: number
   suppliedUsdValue: number
   suppliedPercentageChange: number
   borrowedUsdValue: number
   borrowedPercentageChange: number
-  totalUsdValue: number
-  totalPercentageChange: number
+  summerUsdValue: number
+  summerPercentageChange: number
 }
 
 export type PortfolioAsset = {
@@ -119,5 +118,7 @@ export type PortfolioAsset = {
 }
 
 export type PortfolioAssetsResponse = {
+  totalAssetsUsdValue: number
+  totalAssetsPercentageChange: number
   assets: PortfolioAsset[]
 }

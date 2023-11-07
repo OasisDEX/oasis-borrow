@@ -94,7 +94,10 @@ export default function PortfolioView(props: PortfolioViewProps) {
           )}
         <PortfolioHeader address={address} />
         {overviewData ? (
-          <PortfolioOverview address={address} overviewData={overviewData} />
+          <PortfolioOverview
+            overviewData={overviewData}
+            portfolioWalletData={portfolioWalletData}
+          />
         ) : (
           <PortfolioOverviewSkeleton address={address} />
         )}
