@@ -93,7 +93,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
             />
           )}
         <PortfolioHeader address={address} />
-        {overviewData ? (
+        {overviewData && portfolioWalletData ? (
           <PortfolioOverview
             overviewData={overviewData}
             portfolioWalletData={portfolioWalletData}
