@@ -43,6 +43,7 @@ export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, link }) 
           href={link}
           sx={{
             ...sx,
+            display: 'block',
             fontWeight: 'inherit',
             transition: 'border-color 200ms',
             '&:hover': {
