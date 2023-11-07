@@ -9,7 +9,7 @@ const blogPosts = cacheObject<BlogPostsApiReply>(
       {
         method: 'GET',
         headers: {
-          'Accept-Version': 'v5.0',
+          'Accept-Version': 'v5.71',
         },
       },
     ).then((resp) => resp.json()),

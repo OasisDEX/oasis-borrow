@@ -1,5 +1,6 @@
 import { Icon } from 'components/Icon'
 import { getPortfolioAccentColor } from 'components/portfolio/helpers/getPortfolioAccentColor'
+import { LendingRangeDetail } from 'components/portfolio/LendingRangeDetail'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
@@ -8,6 +9,7 @@ import { question_o } from 'theme/icons'
 import { Box, Flex, Text } from 'theme-ui'
 
 import type { DetailsType, PositionDetail } from 'lambdas/src/shared/domain-types'
+import type { LendingRangeType } from 'lambdas/src/shared/lending-range'
 
 export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetail }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
@@ -53,7 +55,11 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
         variant="boldParagraph1"
         color={detail.accent ? getPortfolioAccentColor(detail.accent) : 'neutral100'}
       >
-        {detail.value}
+        {detail.type === 'lendingRange' ? (
+          <LendingRangeDetail value={detail.value as LendingRangeType} />
+        ) : (
+          detail.value
+        )}
       </Text>
       {detail.subvalue && (
         <Text variant="paragraph4" color="neutral80">

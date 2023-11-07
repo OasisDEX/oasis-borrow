@@ -1,30 +1,28 @@
 import type { NetworkNames } from 'blockchain/networks'
 import { GenericMultiselect } from 'components/GenericMultiselect'
+import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
 import { PortfolioWalletAssets } from 'components/portfolio/wallet/PortfolioWalletAssets'
 import { PortfolioWalletBanner } from 'components/portfolio/wallet/PortfolioWalletBanner'
 import { PortfolioWalletSummary } from 'components/portfolio/wallet/PortfolioWalletSummary'
 import { productHubNetworkFilter } from 'features/productHub/meta'
-import React, { useEffect, useMemo, useState } from 'react'
+import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
+import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Grid, Heading } from 'theme-ui'
 
 import type { PortfolioAssetsResponse } from 'lambdas/src/shared/domain-types'
 
 export const PortfolioWalletView = ({
-  address,
-  fetchData,
+  portfolioWalletData,
+  isOwner,
+  blogPosts,
 }: {
   address: string
-  fetchData: (address: string) => Promise<PortfolioAssetsResponse>
+  isOwner: boolean
+  portfolioWalletData?: PortfolioAssetsResponse
+  blogPosts?: BlogPostsReply
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const [portfolioWalletData, setPortfolioWalletData] = useState<PortfolioAssetsResponse>()
-
-  useEffect(() => {
-    void fetchData(address).then((data) => {
-      setPortfolioWalletData(data)
-    })
-  }, [address, fetchData])
 
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkNames[]>([])
   const filteredAssets = useMemo(
@@ -64,13 +62,15 @@ export const PortfolioWalletView = ({
             <PortfolioWalletAssets assets={filteredAssets} />
           </>
         )}
-        {portfolioWalletData?.assets && (
+        {portfolioWalletData?.assets && isOwner && (
           <Box sx={{ mt: '24px' }}>
             <PortfolioWalletBanner assets={portfolioWalletData.assets} />
           </Box>
         )}
       </Box>
-      <Box></Box>
+      <Box>
+        <BlogPosts posts={blogPosts} />
+      </Box>
     </Grid>
   )
 }

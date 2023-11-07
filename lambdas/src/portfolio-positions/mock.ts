@@ -1,9 +1,9 @@
 import {
-  LendingProtocol,
-  NetworkNames,
   PortfolioPositionsResponse,
   ProductType,
   StrategyType,
+  LendingProtocol,
+  NetworkNames,
 } from '../shared/domain-types'
 
 export const mockPositionsResponse: {
@@ -153,7 +153,7 @@ export const mockPositionsResponse: {
           },
           {
             type: 'lendingRange',
-            value: 'active',
+            value: 'aboveLup',
           },
           {
             type: 'earnings',

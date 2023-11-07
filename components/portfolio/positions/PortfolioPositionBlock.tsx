@@ -3,7 +3,6 @@ import { AppLink } from 'components/Links'
 import { PortfolioPositionAutomationIcons } from 'components/portfolio/positions/PortfolioPositionAutomationIcons'
 import { PortfolioPositionBlockDetail } from 'components/portfolio/positions/PortfolioPositionBlockDetail'
 import { ProtocolLabel } from 'components/ProtocolLabel'
-import { WithArrow } from 'components/WithArrow'
 import dayjs from 'dayjs'
 import { ProductType } from 'features/aave/types'
 import { LendingProtocolLabel } from 'lendingProtocols'
@@ -96,7 +95,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
               sx={{ fontSize: 1 }}
               href={`/${position.network}/${position.protocol}/${position.positionId}`}
             >
-              <WithArrow>{tPortfolio('view-position')}</WithArrow>
+              {tPortfolio('view-position')}
             </AppLink>
           </Flex>
         </Flex>

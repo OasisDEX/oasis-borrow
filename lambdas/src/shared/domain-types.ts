@@ -1,3 +1,5 @@
+import { LendingRangeType } from './lending-range'
+
 export enum NetworkNames {
   ethereumMainnet = 'ethereum',
   ethereumGoerli = 'ethereum_goerli',
@@ -57,7 +59,7 @@ export type DetailsType =
 
 export type PositionDetail = {
   type: DetailsType
-  value: string
+  value: string | LendingRangeType
   accent?: 'positive' | 'negative'
   subvalue?: string
 }
@@ -97,13 +99,12 @@ export type PortfolioPositionsResponse = {
 }
 
 export type PortfolioOverviewResponse = {
-  walletBalanceUsdValue: number
   suppliedUsdValue: number
   suppliedPercentageChange: number
   borrowedUsdValue: number
   borrowedPercentageChange: number
-  totalUsdValue: number
-  totalPercentageChange: number
+  summerUsdValue: number
+  summerPercentageChange: number
 }
 
 export type PortfolioAsset = {
@@ -117,5 +118,7 @@ export type PortfolioAsset = {
 }
 
 export type PortfolioAssetsResponse = {
+  totalAssetsUsdValue: number
+  totalAssetsPercentageChange: number
   assets: PortfolioAsset[]
 }

@@ -2,9 +2,9 @@
   "positions-tab": "Positions",
   "wallet-tab": "Wallet",
   "view-on-etherscan": "View on Etherscan",
-  "wallet-balance": "Wallet balance",
+  "total-value": "Total Value",
   "view-assets": "View Assets",
-  "total-portfolio": "Portfolio",
+  "total-portfolio": "Summer.fi Portfolio",
   "total-supplied": "Total Supplied",
   "total-borrowed": "Total Borrowed",
   "available-to-migrate": "Available to Migrate",
@@ -58,6 +58,11 @@
     "borrowedToken": "Borrowed",
     "borrowedTokenBalance": "Balance of Borrowed"
   },
+  "lending-range-types": {
+    "aboveLup": "Active",
+    "belowHtp": "Unutilized",
+    "belowLup": "Available"
+  },
   "details-tooltips": {
     "netValue": "Net Value is the current value of the collateral in your position minus the current debt expressed in USD.",
     "netValueEarnActivePassive": "Net Value is the total of your initial deposit, plus earnings or additional deposits, minus fees.",
@@ -70,5 +75,9 @@
     "90dApy": "The Annualised rate the position is earning based on the average of the last 90 days",
     "suppliedTokenBalance": "The total amount of your supplied asset(s), expressed in USD.",
     "borrowedTokenBalance": "The total amount of your borrowed asset(s), expressed in USD."
+  },
+  "non-owner-notice": {
+    "header": "You are viewing the wallet of {{address}}",
+    "assets-available": "You have <span>${{amount}}</span> worth of reasons to open a position on summer.fi"
   }
 }
