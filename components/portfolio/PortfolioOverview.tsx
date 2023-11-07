@@ -59,7 +59,7 @@ export const PortfolioOverview = ({
           flexDirection: ['column', 'row'],
           alignItems: 'flex-start',
           justifyItems: 'flex-start',
-          columnGap: 4,
+          columnGap: '24px',
         }}
       >
         <PortfolioOverviewItem
