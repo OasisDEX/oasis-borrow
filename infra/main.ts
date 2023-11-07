@@ -6,7 +6,7 @@ import {
   // CloudBackend,
   // NamedCloudWorkspace,
   TerraformAsset,
-  AssetType,
+  // AssetType,
   TerraformOutput,
 } from 'cdktf'
 
@@ -61,7 +61,7 @@ class LambdaStack extends TerraformStack {
     // Upload Lambda zip file to newly created S3 bucket
     const lambdaArchive = new aws.s3Object.S3Object(this, 'lambda-archive', {
       bucket: bucket.bucket,
-      key: `${config.version}/${lambdaAsset.fileName}`,
+      key: `${pet.id}/${lambdaAsset.fileName}`,
       source: lambdaAsset.path,
     })
 
@@ -108,11 +108,11 @@ class LambdaStack extends TerraformStack {
 }
 
 const app = new App()
-new LambdaStack(app, 'portfolio-positions', {
+new LambdaStack(app, 'portfolio-positions-2', {
   path: '../lambdas/artifacts/portfolio-positions.zip',
   handler: 'dist/portfolio-positions/index.handler',
   runtime: 'nodejs18.x',
-  version: 'v0.0.1',
+  version: 'v0.0.7',
 })
 
 // new CloudBackend(stack, {

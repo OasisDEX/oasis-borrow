@@ -10,6 +10,7 @@
     "list": "cdktf list",
     "destroy": "cdktf destroy",
     "deploy": "cdktf deploy",
+    "predeploy": "cd ../lambdas && npm run build && cd -",
     "build": "tsc",
     "synth": "cdktf synth",
     "compile": "tsc --pretty",

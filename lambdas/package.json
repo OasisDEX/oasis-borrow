@@ -16,6 +16,8 @@
     "@types/aws-lambda": "^8.10.76"
   },
   "dependencies": {
+    "graphql": "^16.8.1",
+    "graphql-request": "^6.1.0",
     "typescript": "^5.2.2"
   }
 }
