@@ -3,8 +3,10 @@ import { PortfolioOverviewItem } from 'components/portfolio/PortfolioOverviewIte
 import { Tag } from 'components/Tag'
 import { formatAmount } from 'helpers/formatters/format'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
+import { isTouchDevice } from 'helpers/isTouchDevice'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Flex, Heading } from 'theme-ui'
 
 import type {
@@ -20,6 +22,7 @@ export const PortfolioOverview = ({
   portfolioWalletData: PortfolioAssetsResponse
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
+  const isMobile = useOnMobile() && isTouchDevice
 
   const totalValue = overviewData.summerUsdValue + portfolioWalletData.totalAssetsUsdValue
 
@@ -56,7 +59,7 @@ export const PortfolioOverview = ({
           }
         />
         <PortfolioOverviewItem
-          header={tPortfolio('total-supplied')}
+          header={tPortfolio(isMobile ? 'total-supplied-mobile' : 'total-supplied')}
           value={
             <Heading variant="header4">
               ${formatAmount(new BigNumber(overviewData.suppliedUsdValue), 'USD')}
@@ -64,7 +67,7 @@ export const PortfolioOverview = ({
           }
         />
         <PortfolioOverviewItem
-          header={tPortfolio('total-borrowed')}
+          header={tPortfolio(isMobile ? 'total-borrowed-mobile' : 'total-borrowed')}
           value={
             <Heading variant="header4">
               ${formatAmount(new BigNumber(overviewData.borrowedUsdValue), 'USD')}

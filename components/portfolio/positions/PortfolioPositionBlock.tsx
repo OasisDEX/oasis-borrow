@@ -52,6 +52,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
       />
       <Flex
         sx={{
+          flexDirection: ['column', 'row'],
           justifyContent: 'space-between',
           my: 3,
           ...(!position.availableToMigrate && {
