@@ -16,8 +16,8 @@ export const PortfolioOverviewItem = ({
     <Flex
       sx={{
         mb: [4, 0],
+        pr: 3,
         flexDirection: 'column',
-        minWidth: ['auto', '150px'],
       }}
     >
       <Text variant="paragraph4" sx={{ color: 'neutral80' }}>

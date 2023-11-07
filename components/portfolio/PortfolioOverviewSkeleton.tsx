@@ -1,14 +1,12 @@
-import { AppLink } from 'components/Links'
 import { Skeleton } from 'components/Skeleton'
 import { Tag } from 'components/Tag'
-import { WithArrow } from 'components/WithArrow'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex } from 'theme-ui'
 
 import { PortfolioOverviewItem } from './PortfolioOverviewItem'
 
-export const PortfolioOverviewSkeleton = ({ address }: { address: string }) => {
+export const PortfolioOverviewSkeleton = () => {
   const { t: tPortfolio } = useTranslation('portfolio')
   return (
     <Flex
@@ -21,12 +19,8 @@ export const PortfolioOverviewSkeleton = ({ address }: { address: string }) => {
       <Flex sx={{ alignItems: 'flex-start' }}>
         <PortfolioOverviewItem
           header={tPortfolio('total-value')}
-          value={<Skeleton sx={{ height: 4, mt: 2 }} />}
-          subValue={
-            <AppLink href={`/portfolio/${address}`} hash="wallet">
-              <WithArrow sx={{ color: 'interactive100' }}>{tPortfolio('view-assets')}</WithArrow>
-            </AppLink>
-          }
+          value={<Skeleton sx={{ width: '200px', height: '28px', mt: 2 }} />}
+          subValue={<Skeleton sx={{ mt: 2 }} />}
         />
       </Flex>
       <Flex
@@ -34,25 +28,22 @@ export const PortfolioOverviewSkeleton = ({ address }: { address: string }) => {
           flexDirection: ['column', 'row'],
           alignItems: 'flex-start',
           justifyItems: 'flex-start',
-          columnGap: 4,
+          columnGap: '24px',
         }}
       >
         <PortfolioOverviewItem
+          header={tPortfolio('total-portfolio')}
+          value={<Skeleton sx={{ width: '120px', height: '28px', mt: 2 }} color="fancy" />}
+          subValue={<Skeleton sx={{ mt: 2 }} />}
+        />
+        <PortfolioOverviewItem
           header={tPortfolio('total-supplied')}
-          value={
-            <Skeleton
-              sx={{
-                mt: 2,
-                height: 4,
-              }}
-              color="fancy"
-            />
-          }
+          value={<Skeleton sx={{ width: '120px', height: '28px', mt: 2 }} />}
           subValue={<Skeleton sx={{ mt: 2 }} />}
         />
         <PortfolioOverviewItem
           header={tPortfolio('total-borrowed')}
-          value={<Skeleton sx={{ mt: 2, height: 4 }} />}
+          value={<Skeleton sx={{ width: '120px', height: '28px', mt: 2 }} />}
           subValue={<Skeleton sx={{ mt: 2 }} />}
         />
         <PortfolioOverviewItem

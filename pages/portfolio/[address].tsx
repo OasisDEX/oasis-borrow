@@ -99,7 +99,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
             portfolioWalletData={portfolioWalletData}
           />
         ) : (
-          <PortfolioOverviewSkeleton address={address} />
+          <PortfolioOverviewSkeleton />
         )}
         <TabBar
           variant="underline"
