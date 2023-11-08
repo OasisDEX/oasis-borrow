@@ -1,15 +1,19 @@
 /* eslint-disable no-relative-import-paths/no-relative-import-paths */
-import dotenv from 'dotenv'
-dotenv.config({
-  path: '../../../.env',
-})
+// import dotenv from 'dotenv'
+// dotenv.config({
+//   path: '../../../.env',
+// })
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 import { GraphQLClient, gql } from 'graphql-request'
 
 import { getDefaultErrorMessage } from '../shared/helpers'
 import { ResponseBadRequest, ResponseOk } from '../shared/responses'
 import { getAddressFromRequest } from '../shared/validators'
-import { PortfolioPosition, PortfolioPositionsResponse } from '../shared/domain-types'
+import {
+  PortfolioPosition,
+  PortfolioPositionLambda,
+  PortfolioPositionsResponse,
+} from '../shared/domain-types'
 import { DebankComplexProtocol, DebankPortfolioItemObject } from '../shared/debank-types'
 import { SUPPORTED_CHAIN_IDS } from '../shared/debank-helpers'
 // import { event } from './aaa'
@@ -99,11 +103,12 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     })
     .flat()
 
-  const positionsPerProtocol = await Promise.all(positionsPerProtocolRequests)
+  const positionsPerProtocol: PortfolioPositionLambda[] = (
+    await Promise.all(positionsPerProtocolRequests)
+  ).flat()
   console.log(JSON.stringify(positionsPerProtocol, null, 2))
 
-  const body = {
-    // positions: positionsPerProtocol.flat(),
+  const body: PortfolioPositionsResponse = {
     positionsPerProtocol,
   }
 
@@ -134,14 +139,14 @@ async function getTriggers(item: DebankPortfolioItemObject) {
   ]
 }
 
-handler({
-  queryStringParameters: {
-    address: '0x0f8c58edf65cbd972d175bfe481bc16fa8deee45',
-  },
-  stageVariables: {
-    DEBANK_API_KEY: process.env.DEBANK_API_KEY,
-    DEBANK_API_URL: process.env.DEBANK_API_URL,
-  },
-} as Partial<APIGatewayProxyEventV2> as any)
+// handler({
+//   queryStringParameters: {
+//     address: '0x0f8c58edf65cbd972d175bfe481bc16fa8deee45',
+//   },
+//   stageVariables: {
+//     DEBANK_API_KEY: process.env.DEBANK_API_KEY,
+//     DEBANK_API_URL: process.env.DEBANK_API_URL,
+//   },
+// } as Partial<APIGatewayProxyEventV2> as any)
 
 

@@ -94,8 +94,34 @@ export type PortfolioPosition = {
   }
 }
 
+export type PortfolioPositionLambda = {
+  name: string
+  logoUrl: string
+  positionId: any
+  protocol: string
+  network: string
+  lendingType: string
+  triggers: any[] | null
+  tokens: {
+    supply: {
+      symbol: string
+      amount: number
+      price: number
+    }[]
+    borrow: {
+      symbol: string
+      amount: number
+      price: number
+    }[]
+  }
+  netUsdValue: number
+  debtUsdValue: number
+  assetUsdValue: number
+  time: number | undefined
+}
+
 export type PortfolioPositionsResponse = {
-  positions: PortfolioPosition[]
+  positionsPerProtocol: PortfolioPositionLambda[]
 }
 
 export type PortfolioOverviewResponse = {
