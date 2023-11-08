@@ -82,7 +82,7 @@ export const PortfolioPositionLearn = ({ posts }: PortfolioPositionLearnProps) =
         <>
           {Array.from({ length: 2 }).map((_, i) => (
             <Box key={`skeleton-${i}`} as="li" sx={{ flexGrow: 1 }}>
-              <Skeleton height="330px" />
+              <Skeleton height="340px" />
             </Box>
           ))}
         </>
