@@ -55,7 +55,7 @@ export const PortfolioPositionsView = ({
     }
 
   const filteredAndSortedPositions = useMemo(() => {
-    if (!portfolioPositionsData?.positions) return []
+    if (!portfolioPositionsData) return undefined
     // empty positions first
     const filteredEmptyPositions = portfolioPositionsData.positions.filter(
       ({ tokens }) => filterState['showEmptyPositions'] || tokens.supply.amountUSD > 0,
@@ -147,7 +147,7 @@ export const PortfolioPositionsView = ({
             />
           </Flex>
         </Flex>
-        <Flex sx={{ flexDirection: 'column', rowGap: '24px', pt: 4 }}>
+        <Flex sx={{ flexDirection: 'column', rowGap: '24px', mt: '24px' }}>
           {filteredAndSortedPositions
             ? filteredAndSortedPositions.map((position) => (
                 <PortfolioPositionBlock
