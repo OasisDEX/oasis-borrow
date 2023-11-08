@@ -66,7 +66,8 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
       const positionsPromises = portfolio_item_list.map(async (item) => {
         const triggers = await getTriggers(item)
         const { stats, position_index, detail, pool, name, proxy_detail } = item
-        const positionId = triggers != null ? triggers[0][0] : position_index
+        const positionId =
+          triggers != null && triggers[0]?.[0] != null ? triggers[0][0] : position_index
 
         return {
           name,
@@ -92,7 +93,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
           debtUsdValue: stats.debt_usd_value,
           assetUsdValue: stats.asset_usd_value,
           time: pool.time_at,
-          proxyName: proxy_detail.project.name,
+          proxyName: proxy_detail.project?.name,
         }
       })
 
@@ -143,11 +144,11 @@ dotenv.config({
 })
 handler({
   queryStringParameters: {
-    address: '0x0f8c58edf65cbd972d175bfe481bc16fa8deee45',
+    // address: '0x0f8c58edf65cbd972d175bfe481bc16fa8deee45',
+    address: '0x10649c79428d718621821Cf6299e91920284743F',
   },
   stageVariables: {
     DEBANK_API_KEY: process.env.DEBANK_API_KEY,
     DEBANK_API_URL: process.env.DEBANK_API_URL,
   },
 } as Partial<APIGatewayProxyEventV2> as any)
-
