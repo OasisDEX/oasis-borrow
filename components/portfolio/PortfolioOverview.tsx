@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { PortfolioOverviewItem } from 'components/portfolio/PortfolioOverviewItem'
 import { Tag } from 'components/Tag'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import React from 'react'
@@ -38,7 +38,7 @@ export const PortfolioOverview = ({
         <PortfolioOverviewItem
           header={tPortfolio('total-value')}
           value={
-            <Heading variant="header4">${formatAmount(new BigNumber(totalValue), 'USD')}</Heading>
+            <Heading variant="header4">${formatCryptoBalance(new BigNumber(totalValue))}</Heading>
           }
         />
       </Flex>
@@ -54,7 +54,7 @@ export const PortfolioOverview = ({
           header={tPortfolio('total-portfolio')}
           value={
             <Heading variant="header4" sx={getGradientColor(summerBrandGradient)}>
-              ${formatAmount(new BigNumber(overviewData.summerUsdValue), 'USD')}
+              ${formatCryptoBalance(new BigNumber(overviewData.summerUsdValue))}
             </Heading>
           }
         />
@@ -62,7 +62,7 @@ export const PortfolioOverview = ({
           header={tPortfolio(isMobile ? 'total-supplied-mobile' : 'total-supplied')}
           value={
             <Heading variant="header4">
-              ${formatAmount(new BigNumber(overviewData.suppliedUsdValue), 'USD')}
+              ${formatCryptoBalance(new BigNumber(overviewData.suppliedUsdValue))}
             </Heading>
           }
         />
@@ -70,7 +70,7 @@ export const PortfolioOverview = ({
           header={tPortfolio(isMobile ? 'total-borrowed-mobile' : 'total-borrowed')}
           value={
             <Heading variant="header4">
-              ${formatAmount(new BigNumber(overviewData.borrowedUsdValue), 'USD')}
+              ${formatCryptoBalance(new BigNumber(overviewData.borrowedUsdValue))}
             </Heading>
           }
         />
