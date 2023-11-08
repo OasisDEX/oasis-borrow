@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { usePortfolioMatchingAssets } from 'components/portfolio/helpers/usePortfolioMatchingAssets'
 import { TokenBanner } from 'components/TokenBanner'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount } from 'helpers/formatters/format'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import React from 'react'
@@ -19,7 +20,7 @@ export const PortfolioWalletBanner = ({ assets }: PortfolioWalletBannerProps) =>
   const { matchingAssetsValue, matchingTopAssets } = usePortfolioMatchingAssets({ assets })
 
   return matchingAssetsValue ? (
-    <TokenBanner cta={tPortfolio('explore')} tokens={matchingTopAssets} url="/earn">
+    <TokenBanner cta={tPortfolio('explore')} tokens={matchingTopAssets} url={INTERNAL_LINKS.earn}>
       <Trans
         t={tPortfolio}
         i18nKey="explore-banner"

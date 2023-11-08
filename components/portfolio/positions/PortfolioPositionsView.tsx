@@ -1,5 +1,6 @@
 import type { GenericSelectOption } from 'components/GenericSelect'
 import { Icon } from 'components/Icon'
+import { AppLink } from 'components/Links'
 import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
 import { PortfolioPositionBlock } from 'components/portfolio/positions/PortfolioPositionBlock'
 import { PortfolioPositionBlockSkeleton } from 'components/portfolio/positions/PortfolioPositionBlockSkeleton'
@@ -9,6 +10,8 @@ import { PortfolioPositionsSortingSelect } from 'components/portfolio/positions/
 import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio/positions/types'
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
+import { WithArrow } from 'components/WithArrow'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAddress } from 'helpers/formatters/format'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
@@ -159,19 +162,26 @@ export const PortfolioPositionsView = ({
                 <PortfolioPositionBlockSkeleton key={`skeleton-${index}`} />
               ))}
         </Flex>
-        <Flex sx={{ alignItems: 'center', my: '24px' }}>
-          <Icon icon={sparks} color="#007DA3" />
-          <Heading
-            as="h2"
-            variant="header5"
-            sx={{ ml: 1, ...getGradientColor(summerBrandGradient) }}
-          >
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: '24px' }}>
+          <Heading as="h2" variant="header5" sx={getGradientColor(summerBrandGradient)}>
+            <Icon icon={sparks} color="#007DA3" sx={{ mr: 1 }} />
             {tPortfolio(`featured-for-${isOwner ? 'you' : 'address'}`, {
               address: formatAddress(address, 6),
             })}
           </Heading>
+          <AppLink href={INTERNAL_LINKS.earn} sx={{ mr: 3 }}>
+            <WithArrow sx={{ color: 'neutral80' }}>{tPortfolio('see-all-strategies')}</WithArrow>
+          </AppLink>
         </Flex>
         <PortfolioPositionFeatured />
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: '24px' }}>
+          <Heading as="h2" variant="header5">
+            {tPortfolio('learn-with-summer-fi')}
+          </Heading>
+          <AppLink href={EXTERNAL_LINKS.BLOG.LEARN} sx={{ mr: 3 }}>
+            <WithArrow sx={{ color: 'neutral80' }}>{tPortfolio('see-our-blog')}</WithArrow>
+          </AppLink>
+        </Flex>
       </Box>
       <Box>
         <BlogPosts posts={blogPosts?.news} />
