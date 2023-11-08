@@ -5,18 +5,20 @@ export function isAvailableToMigrate(position: PortfolioPositionLambda): unknown
   return getProductType(position) === PortfolioProductType.migrate
 }
 
-export function getProductType(position: PortfolioPositionLambda): PortfolioProductType {
-  switch (position.protocol) {
-    // TODO: hmm need idea for this
-    case 'compound':
-      return PortfolioProductType.borrow
-    case 'dydx':
-      return PortfolioProductType.multiply
-    case 'aave':
-      return PortfolioProductType.earn
-    default:
-      return PortfolioProductType.migrate
+export function getProductType(position: PortfolioPositionLambda): PortfolioProductType | null {
+  // TODO: hmm need idea for this
+  let condition, condition2, condition3, condition4
+  if (condition) {
+    return PortfolioProductType.borrow
+  } else if (condition2) {
+    return PortfolioProductType.multiply
+  } else if (condition3) {
+    return PortfolioProductType.earn
+  } else if (condition4) {
+    return PortfolioProductType.migrate
   }
+
+  throw new Error(`Unknown product type ${position}, should be filtered out or added.`)
 }
 
 export function mapLendingType(position: PortfolioPositionLambda): LendingType | null {
@@ -35,6 +37,6 @@ export function mapLendingType(position: PortfolioPositionLambda): LendingType |
     case 'Staked':
       return 'staking'
     default:
-      return null
+      throw new Error(`Unknown lending type ${position}, should be filtered out or added.`)
   }
 }
