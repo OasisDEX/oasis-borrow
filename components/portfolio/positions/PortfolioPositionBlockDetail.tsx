@@ -2,13 +2,13 @@ import { Icon } from 'components/Icon'
 import { getPortfolioAccentColor } from 'components/portfolio/helpers/getPortfolioAccentColor'
 import { LendingRangeDetail } from 'components/portfolio/LendingRangeDetail'
 import { StatefulTooltip } from 'components/Tooltip'
+import type { DetailsType, PositionDetail } from 'handlers/portfolio/types'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
 import { Box, Flex, Text } from 'theme-ui'
 
-import type { DetailsType, PositionDetail } from 'lambdas/src/shared/domain-types'
 import type { LendingRangeType } from 'lambdas/src/shared/lending-range'
 
 export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetail }) => {

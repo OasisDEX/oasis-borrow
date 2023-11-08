@@ -5,12 +5,11 @@ import { PortfolioPositionBlockDetail } from 'components/portfolio/positions/Por
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import dayjs from 'dayjs'
 import { ProductType } from 'features/aave/types'
+import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Text } from 'theme-ui'
-
-import type { PortfolioPosition } from 'lambdas/src/shared/domain-types'
 
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')

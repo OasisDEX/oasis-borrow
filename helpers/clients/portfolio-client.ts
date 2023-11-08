@@ -1,9 +1,9 @@
+import type { PortfolioPositionsResponse } from 'handlers/portfolio/types'
 import { useCallback, useMemo } from 'react'
 
 import type {
   PortfolioAssetsResponse,
   PortfolioOverviewResponse,
-  PortfolioPositionsResponse,
 } from 'lambdas/src/shared/domain-types'
 
 /**
