@@ -1,3 +1,4 @@
+import type { PortfolioPositionsResponse } from 'handlers/portfolio/types'
 import { usePortfolioClient } from 'helpers/clients/portfolio-client'
 import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
 import { useEffect, useState } from 'react'
@@ -6,7 +7,6 @@ import { useFetch } from 'usehooks-ts'
 import type {
   PortfolioAssetsResponse,
   PortfolioOverviewResponse,
-  PortfolioPositionsResponse,
 } from 'lambdas/src/shared/domain-types'
 
 export const usePortfolioClientData = ({

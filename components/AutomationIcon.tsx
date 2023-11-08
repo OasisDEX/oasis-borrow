@@ -1,10 +1,9 @@
 import { Icon } from 'components/Icon'
 import { StatefulTooltip } from 'components/Tooltip'
+import type { PortfolioPosition } from 'handlers/portfolio/types'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { auto_buy, auto_sell, stop_loss, take_profit } from 'theme/icons'
-
-import type { PortfolioPosition } from 'lambdas/src/shared/domain-types'
 
 const automationIconMap: Record<keyof PortfolioPosition['automations'], typeof stop_loss> = {
   autoBuy: auto_buy,

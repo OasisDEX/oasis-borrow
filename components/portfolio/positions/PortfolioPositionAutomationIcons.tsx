@@ -1,7 +1,6 @@
 import { AutomationIcon } from 'components/AutomationIcon'
+import type { PortfolioPosition } from 'handlers/portfolio/types'
 import React from 'react'
-
-import type { PortfolioPosition } from 'lambdas/src/shared/domain-types'
 
 export const PortfolioPositionAutomationIcons = ({
   automations = {},

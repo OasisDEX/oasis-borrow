@@ -12,6 +12,7 @@ import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
 import { WithArrow } from 'components/WithArrow'
+import type { PortfolioPositionsResponse } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAddress } from 'helpers/formatters/format'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
@@ -20,8 +21,6 @@ import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { question_o, sparks } from 'theme/icons'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
-
-import type { PortfolioPositionsResponse } from 'lambdas/src/shared/domain-types'
 
 interface PortfolioPositionsViewProps {
   address: string
