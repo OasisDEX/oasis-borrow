@@ -1,7 +1,7 @@
 import { AppLink } from 'components/Links'
 import { BlogPostDot } from 'components/portfolio/blog-posts/BlogPostDot'
 import dayjs from 'dayjs'
-import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
+import type { ParsedBlogPost } from 'helpers/types/blog-posts.types'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
 
@@ -10,7 +10,7 @@ export const BlogPostBlock = ({
   readPostsList = [],
   onClick,
 }: {
-  post: BlogPostsReply[number]
+  post: ParsedBlogPost
   readPostsList: string[]
   onClick?: (postid: string) => void
 }) => {

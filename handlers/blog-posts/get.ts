@@ -8,7 +8,7 @@ import type {
 import { shuffle } from 'lodash'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-const blogPostsFetchUrl = `${process.env.BLOG_POSTS_API_URL}/content/posts/?key=${process.env.BLOG_POSTS_API_KEY}&filter=visibility:public`
+const blogPostsFetchUrl = `${process.env.BLOG_POSTS_API_URL}/content/posts/?key=${process.env.BLOG_POSTS_API_KEY}`
 const blogPostsFetchOptions = {
   method: 'GET',
   headers: {
@@ -17,16 +17,20 @@ const blogPostsFetchOptions = {
 }
 
 const blogPostsNews = cacheObject<BlogPostsApiReply>(
-  () => fetch(`${blogPostsFetchUrl}&limit=4`, blogPostsFetchOptions).then((resp) => resp.json()),
+  () =>
+    fetch(`${blogPostsFetchUrl}&limit=4&filter=visibility:public`, blogPostsFetchOptions).then(
+      (resp) => resp.json(),
+    ),
   60 * 60,
   'blog-posts-news',
 )
 
 const blogPostsLearn = cacheObject<BlogPostsApiReply>(
   () =>
-    fetch(`${blogPostsFetchUrl}&filter=tag:learn`, blogPostsFetchOptions).then((resp) =>
-      resp.json(),
-    ),
+    fetch(
+      `${blogPostsFetchUrl}&filter=tag:learn%2Bvisibility:public`,
+      blogPostsFetchOptions,
+    ).then((resp) => resp.json()),
   60 * 60,
   'blog-posts-learn',
 )
@@ -59,7 +63,7 @@ export async function getBlogPosts(req: NextApiRequest, res: NextApiResponse) {
     ([resultsNews, resultsLearn]) => {
       return {
         news: resultsNews?.data.posts.map(parseBlogPost),
-        learn: shuffle(resultsLearn?.data.posts.map(parseBlogPost)).slice(0, 3),
+        learn: shuffle(resultsLearn?.data.posts.map(parseBlogPost)).slice(0, 2),
       } as BlogPostsReply
     },
   )

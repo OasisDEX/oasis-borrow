@@ -5,6 +5,7 @@ import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
 import { PortfolioPositionBlock } from 'components/portfolio/positions/PortfolioPositionBlock'
 import { PortfolioPositionBlockSkeleton } from 'components/portfolio/positions/PortfolioPositionBlockSkeleton'
 import { PortfolioPositionFeatured } from 'components/portfolio/positions/PortfolioPositionFeatured'
+import { PortfolioPositionLearn } from 'components/portfolio/positions/PortfolioPositionLearn'
 import { PortfolioPositionsProductSelect } from 'components/portfolio/positions/PortfolioPositionsProductSelect'
 import { PortfolioPositionsSortingSelect } from 'components/portfolio/positions/PortfolioPositionsSortingSelect'
 import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio/positions/types'
@@ -182,6 +183,7 @@ export const PortfolioPositionsView = ({
             <WithArrow sx={{ color: 'neutral80' }}>{tPortfolio('see-our-blog')}</WithArrow>
           </AppLink>
         </Flex>
+        <PortfolioPositionLearn posts={blogPosts?.learn} />
       </Box>
       <Box>
         <BlogPosts posts={blogPosts?.news} />

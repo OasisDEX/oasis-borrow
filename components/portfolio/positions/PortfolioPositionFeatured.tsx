@@ -51,7 +51,7 @@ export const PortfolioPositionFeatured = () => {
           }}
         >
           {slides.map((slide, i) => (
-            <Flex key={i} sx={{ flex: `0 0 ${100 / slidesToDisplay}%`, pl: 3 }}>
+            <Flex key={i} sx={{ flex: `0 0 ${100 / slidesToDisplay}%`, pl: '16px' }}>
               <PromoCard sx={{ flexGrow: 1 }} {...slide} />
             </Flex>
           ))}
