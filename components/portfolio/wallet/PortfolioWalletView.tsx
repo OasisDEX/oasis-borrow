@@ -69,7 +69,7 @@ export const PortfolioWalletView = ({
         )}
       </Box>
       <Box>
-        <BlogPosts posts={blogPosts} />
+        <BlogPosts posts={blogPosts?.news} />
       </Box>
     </Grid>
   )

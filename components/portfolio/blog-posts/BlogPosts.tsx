@@ -4,12 +4,12 @@ import { BlogPostBlockSkeleton } from 'components/portfolio/blog-posts/BlogPostB
 import { BlogPostDot } from 'components/portfolio/blog-posts/BlogPostDot'
 import { WithArrow } from 'components/WithArrow'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
+import type { ParsedBlogPost } from 'helpers/types/blog-posts.types'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import React from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
-export const BlogPosts = ({ posts }: { posts?: BlogPostsReply }) => {
+export const BlogPosts = ({ posts }: { posts?: ParsedBlogPost[] }) => {
   const [readPostsList, setReadPostList] = useLocalStorage<string[]>('ob-read-post-list', [])
   const updateReadPostsList = (postId: string) => {
     setReadPostList((prev) => (prev?.length ? [...prev, postId] : [postId]))

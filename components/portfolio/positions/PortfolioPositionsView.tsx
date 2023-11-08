@@ -174,7 +174,7 @@ export const PortfolioPositionsView = ({
         <PortfolioPositionFeatured />
       </Box>
       <Box>
-        <BlogPosts posts={blogPosts} />
+        <BlogPosts posts={blogPosts?.news} />
       </Box>
     </Grid>
   )
