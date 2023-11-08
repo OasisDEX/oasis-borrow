@@ -1,14 +1,16 @@
 import {
-  PortfolioPositionsResponse,
   ProductType,
   StrategyType,
   LendingProtocol,
   NetworkNames,
+  PortfolioPosition,
 } from '../shared/domain-types'
 
 export const mockPositionsResponse: {
   status: number
-  response: PortfolioPositionsResponse
+  response: {
+    positions: PortfolioPosition[]
+  }
 } = {
   status: 200,
   response: {

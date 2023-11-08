@@ -53,7 +53,7 @@ export type DebankPortfolioItemObject = {
     net_usd_value: number
   }
   update_at: number
-  name: DebankType
+  name: DebankLendingType
   detail_types: string
   detail: {
     supply_token_list: DebankToken[]
