@@ -7,6 +7,7 @@ import { PortfolioPositionFeatured } from 'components/portfolio/positions/Portfo
 import { PortfolioPositionsProductSelect } from 'components/portfolio/positions/PortfolioPositionsProductSelect'
 import { PortfolioPositionsSortingSelect } from 'components/portfolio/positions/PortfolioPositionsSortingSelect'
 import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio/positions/types'
+import { PortfolioWalletHistory } from 'components/portfolio/wallet-history/PortfolioWalletHistory'
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
 import { formatAddress } from 'helpers/formatters/format'
@@ -174,6 +175,7 @@ export const PortfolioPositionsView = ({
         <PortfolioPositionFeatured />
       </Box>
       <Box>
+        <PortfolioWalletHistory walletHistoryData={/* mock here */} />
         <BlogPosts posts={blogPosts} />
       </Box>
     </Grid>
