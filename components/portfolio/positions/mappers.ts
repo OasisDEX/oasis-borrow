@@ -1,10 +1,36 @@
 import type { PortfolioProductType } from './types'
-import type { PortfolioPositionLambda } from 'lambdas/src/shared/domain-types'
+import type { LendingType, PortfolioPositionLambda } from 'lambdas/src/shared/domain-types'
 
 export function isAvailableToMigrate(position: PortfolioPositionLambda): unknown {
-  throw new Error('Function not implemented.')
+  return position.lendingType
 }
 
 export function getProductType(position: PortfolioPositionLambda): PortfolioProductType {
-  throw new Error('Function not implemented.')
+  switch (position.protocol) {
+    case 'compound':
+      return 'lending'
+    case 'dydx':
+      return 'lending'
+    case 'aave':
+      return 'lending'
+    default:
+      return 'migrate'
+  }
+}
+
+export function mapLendingType(position: PortfolioPositionLambda): LendingType | null {
+  switch (position.lendingType) {
+    case 'Lending':
+      return 'active'
+    case 'Yield':
+      return 'loop'
+    case 'Deposit':
+      return 'passive'
+    case 'Liquidity Pool':
+      return 'pool'
+    case 'Staked':
+      return 'staking'
+    default:
+      return null
+  }
 }

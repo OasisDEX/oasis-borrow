@@ -79,6 +79,32 @@ export type DebankPortfolioItemObject = {
   position_index: string
 }
 
+export type DebankLendingType =
+  | 'Yield'
+  | 'Deposit'
+  | 'Staked'
+  | 'Locked'
+  | 'Farming'
+  | 'Leveraged Farming'
+  | 'Lending'
+  | 'Vesting'
+  | 'Rewards'
+  | 'Airdrop'
+  | 'Liquidity Pool'
+  | 'Options Seller'
+  | 'Options Buyer'
+  | 'Insurance Seller'
+  | 'Insurance Buyer'
+  | 'Investment'
+  | 'Governance'
+  | 'Perpetuals'
+  | 'NFT Staked'
+  | 'NFT Liquidity Pool'
+  | 'NFT Lending'
+  | 'NFT Fraction'
+  | 'NFT P2P Borrower'
+  | 'NFT P2P Lender'
+
 export type DebankType =
   | 'common'
   | 'locked'

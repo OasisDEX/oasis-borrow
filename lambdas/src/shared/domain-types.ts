@@ -1,3 +1,4 @@
+import { DebankLendingType, DebankType } from './debank-types'
 import { LendingRangeType } from './lending-range'
 
 export enum NetworkNames {
@@ -64,13 +65,15 @@ export type PositionDetail = {
   subvalue?: string
 }
 
+export type LendingType = 'active' | 'passive' | 'loop' | 'staking' | 'pool'
+
 export type PortfolioPosition = {
   positionId: number
   type?: ProductType
   network: NetworkNames
   protocol: LendingProtocol
   strategyType?: StrategyType
-  lendingType?: 'active' | 'passive' | 'loop' | 'staking' | 'pool' // are these all types?
+  lendingType?: LendingType // are these all types?
   openDate: number // epoch based on block height timestamp
   availableToMigrate?: boolean
   tokens: {
@@ -100,7 +103,7 @@ export type PortfolioPositionLambda = {
   positionId: any
   protocol: string
   network: string
-  lendingType: string
+  lendingType: DebankLendingType
   triggers: any[] | null
   tokens: {
     supply: {
