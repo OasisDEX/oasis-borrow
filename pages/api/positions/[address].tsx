@@ -3,7 +3,7 @@ import type { NextApiHandler } from 'next'
 
 const handler: NextApiHandler = async (req, res) => {
   const { query, method } = req
-  if (method !== 'POST') {
+  if (method !== 'GET') {
     res.status(405).json({ error: 'Method not allowed' })
     return
   }

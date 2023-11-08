@@ -5,6 +5,6 @@ export const portfolioPositionsHandler = async (
   req: NextApiRequest,
 ): Promise<{ positions: PortfolioPosition[]; address: string }> => {
   const { address } = req.query
-  const positions = {} as PortfolioPosition[]
+  const positions = [] as PortfolioPosition[]
   return { positions, address: address as string }
 }
