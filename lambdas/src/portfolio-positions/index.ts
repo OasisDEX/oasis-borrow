@@ -1,8 +1,5 @@
 /* eslint-disable no-relative-import-paths/no-relative-import-paths */
-// import dotenv from 'dotenv'
-// dotenv.config({
-//   path: '../../../.env',
-// })
+
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 import { GraphQLClient, gql } from 'graphql-request'
 
@@ -139,6 +136,10 @@ async function getTriggers(item: DebankPortfolioItemObject) {
   ]
 }
 
+// const dotenv = require('dotenv')
+// dotenv.config({
+//   path: '../../../.env',
+// })
 // handler({
 //   queryStringParameters: {
 //     address: '0x0f8c58edf65cbd972d175bfe481bc16fa8deee45',
@@ -148,5 +149,4 @@ async function getTriggers(item: DebankPortfolioItemObject) {
 //     DEBANK_API_URL: process.env.DEBANK_API_URL,
 //   },
 // } as Partial<APIGatewayProxyEventV2> as any)
-
 
