@@ -22,11 +22,14 @@ export function getProductType(position: PortfolioPositionLambda): PortfolioProd
 export function mapLendingType(position: PortfolioPositionLambda): LendingType | null {
   switch (position.lendingType) {
     case 'Lending':
-      return 'active'
+      // TODO Implement this
+      const checkInDbIfMultiply = true
+      if (checkInDbIfMultiply) {
+        return 'active'
+      }
+      return 'passive'
     case 'Yield':
       return 'loop'
-    case 'Deposit':
-      return 'passive'
     case 'Liquidity Pool':
       return 'pool'
     case 'Staked':

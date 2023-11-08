@@ -136,17 +136,17 @@ async function getTriggers(item: DebankPortfolioItemObject) {
   ]
 }
 
-// const dotenv = require('dotenv')
-// dotenv.config({
-//   path: '../../../.env',
-// })
-// handler({
-//   queryStringParameters: {
-//     address: '0x0f8c58edf65cbd972d175bfe481bc16fa8deee45',
-//   },
-//   stageVariables: {
-//     DEBANK_API_KEY: process.env.DEBANK_API_KEY,
-//     DEBANK_API_URL: process.env.DEBANK_API_URL,
-//   },
-// } as Partial<APIGatewayProxyEventV2> as any)
+const dotenv = require('dotenv')
+dotenv.config({
+  path: '../../../.env',
+})
+handler({
+  queryStringParameters: {
+    address: '0x0f8c58edf65cbd972d175bfe481bc16fa8deee45',
+  },
+  stageVariables: {
+    DEBANK_API_KEY: process.env.DEBANK_API_KEY,
+    DEBANK_API_URL: process.env.DEBANK_API_URL,
+  },
+} as Partial<APIGatewayProxyEventV2> as any)
 
