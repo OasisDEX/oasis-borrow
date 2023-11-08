@@ -27,10 +27,9 @@ const blogPostsNews = cacheObject<BlogPostsApiReply>(
 
 const blogPostsLearn = cacheObject<BlogPostsApiReply>(
   () =>
-    fetch(
-      `${blogPostsFetchUrl}&filter=tag:learn%2Bvisibility:public`,
-      blogPostsFetchOptions,
-    ).then((resp) => resp.json()),
+    fetch(`${blogPostsFetchUrl}&filter=tag:learn%2Bvisibility:public`, blogPostsFetchOptions).then(
+      (resp) => resp.json(),
+    ),
   60 * 60,
   'blog-posts-learn',
 )
