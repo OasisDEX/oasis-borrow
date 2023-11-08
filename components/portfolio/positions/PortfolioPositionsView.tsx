@@ -14,7 +14,10 @@ import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
-import type { PortfolioPositionsResponse } from 'lambdas/src/shared/domain-types'
+import type {
+  PortfolioPositionLambda,
+  PortfolioPositionsResponse,
+} from 'lambdas/src/shared/domain-types'
 
 type PortfolioPositionsViewFiltersType = {
   showEmptyPositions: boolean
@@ -46,10 +49,10 @@ export const PortfolioPositionsView = ({
     }
 
   const filteredAndSortedPositions = useMemo(() => {
-    if (!portfolioPositionsData?.positions) return []
+    if (!portfolioPositionsData?.positionsPerProtocol) return []
     // empty positions first
-    const filteredEmptyPositions = portfolioPositionsData.positions.filter(
-      ({ tokens }) => filterState['showEmptyPositions'] || tokens.supply.amountUSD > 0,
+    const filteredEmptyPositions = portfolioPositionsData.positionsPerProtocol.filter(
+      ({ assetUsdValue }) => filterState['showEmptyPositions'] || assetUsdValue > 0,
     )
     // filter by product
     const noneSelected = [0, undefined].includes(filterState['product']?.length) // none selected = "All products"
@@ -63,23 +66,23 @@ export const PortfolioPositionsView = ({
       return (
         filterState['product']?.includes(
           // filter by product type
-          position.type?.toLocaleLowerCase() as PortfolioProductType,
+          getProductType(position),
         ) ||
-        (includeMigrated && position.availableToMigrate) // special case for migration positions
+        (includeMigrated && isAvailableToMigrate(position)) // special case for migration positions
       )
     })
 
     const sortedPositions = filteredProductPositions
       .sort((a, b) => {
         if (filterState['sorting'] === PortfolioSortingType.netValueAscending) {
-          return a.tokens.supply.amountUSD - b.tokens.supply.amountUSD
+          return a.assetUsdValue - b.assetUsdValue
         }
-        return b.tokens.supply.amountUSD - a.tokens.supply.amountUSD
+        return b.assetUsdValue - a.assetUsdValue
       })
       .sort((a, b) => {
         // move migration positions to the bottom
-        if (a.availableToMigrate) return 1
-        if (b.availableToMigrate) return -1
+        if (isAvailableToMigrate(a)) return 1
+        if (isAvailableToMigrate(b)) return -1
         return 0
       })
 
@@ -153,4 +156,12 @@ export const PortfolioPositionsView = ({
       </Box>
     </Grid>
   )
+}
+
+function isAvailableToMigrate(position: PortfolioPositionLambda): unknown {
+  throw new Error('Function not implemented.')
+}
+
+function getProductType(position: PortfolioPositionLambda): PortfolioProductType {
+  throw new Error('Function not implemented.')
 }
