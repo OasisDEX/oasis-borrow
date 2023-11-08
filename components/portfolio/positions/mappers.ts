@@ -7,18 +7,15 @@ export function isAvailableToMigrate(position: PortfolioPositionLambda): unknown
 
 export function getProductType(position: PortfolioPositionLambda): PortfolioProductType | null {
   // TODO: hmm need idea for this
-  let condition, condition2, condition3, condition4
-  if (condition) {
-    return PortfolioProductType.borrow
-  } else if (condition2) {
-    return PortfolioProductType.multiply
-  } else if (condition3) {
-    return PortfolioProductType.earn
-  } else if (condition4) {
+  if (position.proxyName !== 'Summer.fi') {
     return PortfolioProductType.migrate
-  }
-
-  throw new Error(`Unknown product type ${position}, should be filtered out or added.`)
+  } else if (mapLendingType(position) === 'active') {
+    return PortfolioProductType.borrow
+  } else if (mapLendingType(position) === 'passive') {
+    return PortfolioProductType.multiply
+  } else if (mapLendingType(position) === 'loop') {
+    return PortfolioProductType.earn
+  } else throw new Error(`Unknown product type ${position}, should be filtered out or added.`)
 }
 
 export function mapLendingType(position: PortfolioPositionLambda): LendingType | null {

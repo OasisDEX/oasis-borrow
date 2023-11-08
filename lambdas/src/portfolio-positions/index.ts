@@ -65,7 +65,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 
       const positionsPromises = portfolio_item_list.map(async (item) => {
         const triggers = await getTriggers(item)
-        const { stats, position_index, detail, pool, name } = item
+        const { stats, position_index, detail, pool, name, proxy_detail } = item
         const positionId = triggers != null ? triggers[0][0] : position_index
 
         return {
@@ -92,6 +92,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
           debtUsdValue: stats.debt_usd_value,
           assetUsdValue: stats.asset_usd_value,
           time: pool.time_at,
+          proxyName: proxy_detail.project.name,
         }
       })
 

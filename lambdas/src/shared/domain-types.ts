@@ -121,6 +121,7 @@ export type PortfolioPositionLambda = {
   debtUsdValue: number
   assetUsdValue: number
   time: number | undefined
+  proxyName: string | undefined
 }
 
 export type PortfolioPositionsResponse = {
