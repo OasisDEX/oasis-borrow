@@ -74,6 +74,7 @@ export type DebankPortfolioItemObject = {
     controller: string
     chain: string
     project_id: string
+    time_at?: number
   }
   position_index: string
 }

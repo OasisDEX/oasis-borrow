@@ -10,14 +10,14 @@ import { getDefaultErrorMessage } from '../shared/helpers'
 import { ResponseBadRequest, ResponseOk } from '../shared/responses'
 import { getAddressFromRequest } from '../shared/validators'
 import { PortfolioPosition, PortfolioPositionsResponse } from '../shared/domain-types'
-import { DebankComplexProtocol } from '../shared/debank-types'
+import { DebankComplexProtocol, DebankPortfolioItemObject } from '../shared/debank-types'
 import { SUPPORTED_CHAIN_IDS } from '../shared/debank-helpers'
 // import { event } from './aaa'
 
 const endpoint = 'https://graph.staging.summer.fi/subgraphs/name/oasis/automation'
 const graphClient = new GraphQLClient(endpoint)
 
-const query = gql`
+const document = (id: string) => gql`
   query ($id: String!) {
     triggers(where: { account: $id }) {
       id
@@ -49,7 +49,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   const reqUrl = new URL(
     `${serviceUrl}/v1/user/all_complex_protocol_list?id=${address}&chain_idschain_ids=${SUPPORTED_CHAIN_IDS.toString()}`,
   )
-  const response: DebankComplexProtocol[] = await fetch(reqUrl.toString(), {
+  const protocols: DebankComplexProtocol[] = await fetch(reqUrl.toString(), {
     headers,
   })
     .then((res) => res.json())
@@ -57,46 +57,54 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
       console.error(error)
       throw new Error('Failed to fetch wallet assets')
     })
-  // console.log(response)
-  const positionsPerProtocol = response.map(async (protocol) => {
-    const { id, chain, name, logo_url, tvl, portfolio_item_list } = protocol
+  // console.log(JSON.stringify(protocols, null, 2))
+  const positionsPerProtocolRequests = protocols
+    .map(async (protocol) => {
+      const { id, chain, name, logo_url, tvl, portfolio_item_list } = protocol
 
-    const triggersPerPositionId = await Promise.all(
-      portfolio_item_list
-        .filter((item) => item.proxy_detail.proxy_contract_id != null)
-        .map(async (item) => {
-          const variables = {
-            id: item.proxy_detail.proxy_contract_id,
-          }
-          console.log(variables)
-          const data: any = await graphClient.request(query, variables)
-          if (data.triggers.length === 0) {
-            return null
-          }
-          const decodedDataIdIndex = data.triggers[0].decodedDataNames.indexOf('cdpId')
-          const positionId = data.triggers[0].decodedData[decodedDataIdIndex]
-          return [
-            positionId,
-            {
-              triggers: data.triggers,
-            },
-          ]
-        })
-        .filter(Boolean),
-    )
+      const positionsPromises = portfolio_item_list.map(async (item) => {
+        const triggers = await getTriggers(item)
+        const { stats, position_index, detail, pool } = item
+        const positionId = triggers != null ? triggers[0][0] : position_index
 
-    return {
-      protocol: id,
-      triggersPerPosition: triggersPerPositionId.flat(),
-    }
-  })
+        return {
+          name,
+          logoUrl: logo_url,
+          positionId,
+          protocol: id,
+          network: chain,
+          lendingType: name,
+          triggers: triggers,
+          tokens: {
+            supply: detail.supply_token_list?.map((token) => ({
+              symbol: token.symbol,
+              amount: token.amount,
+              price: token.price,
+            })),
+            borrow: detail.borrow_token_list?.map((token) => ({
+              symbol: token.symbol,
+              amount: token.amount,
+              price: token.price,
+            })),
+          },
+          netUsdValue: stats.net_usd_value,
+          debtUsdValue: stats.debt_usd_value,
+          assetUsdValue: stats.asset_usd_value,
+          time: pool.time_at,
+        }
+      })
 
-  const positions = await Promise.all(positionsPerProtocol)
-  console.log(JSON.stringify(positions, null, 2))
+      const positions = await Promise.all(positionsPromises)
+      return positions
+    })
+    .flat()
+
+  const positionsPerProtocol = await Promise.all(positionsPerProtocolRequests)
+  console.log(JSON.stringify(positionsPerProtocol, null, 2))
 
   const body = {
     // positions: positionsPerProtocol.flat(),
-    positions,
+    positionsPerProtocol,
   }
 
   return ResponseOk({ body })
@@ -104,13 +112,36 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 
 export default handler
 
-// handler({
-//   queryStringParameters: {
-//     address: '0x0f8c58edf65cbd972d175bfe481bc16fa8deee45',
-//   },
-//   stageVariables: {
-//     DEBANK_API_KEY: process.env.DEBANK_API_KEY,
-//     DEBANK_API_URL: process.env.DEBANK_API_URL,
-//   },
-// } as Partial<APIGatewayProxyEventV2> as any)
+async function getTriggers(item: DebankPortfolioItemObject) {
+  if (item.proxy_detail.proxy_contract_id == null) {
+    return null
+  }
+  const variables = {
+    id: item.proxy_detail.proxy_contract_id,
+  }
+  const data: any = await graphClient.request(document(variables.id), variables)
+
+  if (data.triggers.length === 0) {
+    return null
+  }
+  const decodedDataIdIndex = data.triggers[0].decodedDataNames.indexOf('cdpId')
+  const positionId = data.triggers[0].decodedData[decodedDataIdIndex]
+  return [
+    positionId,
+    {
+      triggers: data.triggers,
+    },
+  ]
+}
+
+handler({
+  queryStringParameters: {
+    address: '0x0f8c58edf65cbd972d175bfe481bc16fa8deee45',
+  },
+  stageVariables: {
+    DEBANK_API_KEY: process.env.DEBANK_API_KEY,
+    DEBANK_API_URL: process.env.DEBANK_API_URL,
+  },
+} as Partial<APIGatewayProxyEventV2> as any)
+
 
