@@ -1,20 +1,21 @@
-import type { PortfolioProductType } from './types'
+import { PortfolioProductType } from './types'
 import type { LendingType, PortfolioPositionLambda } from 'lambdas/src/shared/domain-types'
 
 export function isAvailableToMigrate(position: PortfolioPositionLambda): unknown {
-  return position.lendingType
+  return getProductType(position) === PortfolioProductType.migrate
 }
 
 export function getProductType(position: PortfolioPositionLambda): PortfolioProductType {
   switch (position.protocol) {
+    // TODO: hmm need idea for this
     case 'compound':
-      return 'lending'
+      return PortfolioProductType.borrow
     case 'dydx':
-      return 'lending'
+      return PortfolioProductType.multiply
     case 'aave':
-      return 'lending'
+      return PortfolioProductType.earn
     default:
-      return 'migrate'
+      return PortfolioProductType.migrate
   }
 }
 
