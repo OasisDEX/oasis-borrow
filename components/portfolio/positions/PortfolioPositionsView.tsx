@@ -14,10 +14,8 @@ import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
-import type {
-  PortfolioPositionLambda,
-  PortfolioPositionsResponse,
-} from 'lambdas/src/shared/domain-types'
+import { getProductType, isAvailableToMigrate } from './mappers'
+import type { PortfolioPositionsResponse } from 'lambdas/src/shared/domain-types'
 
 type PortfolioPositionsViewFiltersType = {
   showEmptyPositions: boolean
@@ -156,12 +154,4 @@ export const PortfolioPositionsView = ({
       </Box>
     </Grid>
   )
-}
-
-function isAvailableToMigrate(position: PortfolioPositionLambda): unknown {
-  throw new Error('Function not implemented.')
-}
-
-function getProductType(position: PortfolioPositionLambda): PortfolioProductType {
-  throw new Error('Function not implemented.')
 }
