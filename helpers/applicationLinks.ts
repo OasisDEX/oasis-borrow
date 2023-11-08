@@ -84,6 +84,7 @@ export const EXTERNAL_LINKS = {
     MULTIPLY_FOR_AAVE: 'https://blog.summer.fi/introducing-oasis-multiply-for-aave',
     DSR_RATE_HIKE: 'https://blog.summer.fi/dsr-rate-hike/',
     MAKER_STABILITY_FEE_CHANGES: 'https://blog.summer.fi/major-stability-fee-changes/',
+    LEARN: 'https://blog.summer.fi/tag/learn',
   },
   DOCS: {
     AJNA: {
