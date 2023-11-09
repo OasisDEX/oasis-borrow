@@ -286,8 +286,6 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
               symbol
               address
             }
-            interestRate
-            lup
             quoteToken {
               symbol
               address
@@ -299,6 +297,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
             timestamp
           }
           pool {
+            address
             collateralToken {
               symbol
               address
@@ -307,7 +306,6 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
               symbol
               address
             }
-            address
           }
         }
         vaultId

@@ -1,9 +1,7 @@
 import { views } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getNetworkById, getRpcProvider } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
-import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAjnaCumulatives'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
@@ -47,7 +45,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
     positionsArray.map(
       async ({
         isEarn,
-        pool: { address: poolAddress, collateralToken, interestRate, lup, quoteToken },
+        pool: { address: poolAddress, collateralToken, quoteToken },
         positionId,
         protocolEvents,
         proxyAddress,
@@ -73,8 +71,6 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
         })
         const collateralPrice = isOracless ? one : getTokenPrice(primaryToken, tickers)
         const quotePrice = isOracless ? one : getTokenPrice(secondaryToken, tickers)
-        const lowestUtilizedPrice = new BigNumber(lup).shiftedBy(NEGATIVE_WAD_PRECISION)
-        const fee = new BigNumber(interestRate).shiftedBy(NEGATIVE_WAD_PRECISION)
 
         const commonPayload = { collateralPrice, quotePrice, proxyAddress, poolAddress }
         const commonDependency = {
@@ -96,10 +92,8 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
           automations: {},
           details: getAjnaPositionDetails({
             collateralPrice,
-            fee,
             isOracless,
             isProxyWithManyPositions,
-            lowestUtilizedPrice,
             position,
             primaryToken,
             quotePrice,

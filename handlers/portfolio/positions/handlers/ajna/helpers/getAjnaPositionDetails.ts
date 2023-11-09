@@ -1,19 +1,17 @@
-import type { AjnaPosition } from '@oasisdex/dma-library'
+import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
-import type { PositionDetail } from 'handlers/portfolio/types'
+import { LendingRangeType, type PositionDetail } from 'handlers/portfolio/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 
 interface GetAjnaPositionDetailsParams {
   collateralPrice: BigNumber
-  fee: BigNumber
   isOracless: boolean
   isProxyWithManyPositions: boolean
-  lowestUtilizedPrice: BigNumber
   position: AjnaGenericPosition
   primaryToken: string
   quotePrice: BigNumber
@@ -23,16 +21,17 @@ interface GetAjnaPositionDetailsParams {
 
 export function getAjnaPositionDetails({
   collateralPrice,
-  fee,
   isOracless,
   isProxyWithManyPositions,
-  lowestUtilizedPrice,
   position,
   primaryToken,
   quotePrice,
   secondaryToken,
   type,
 }: GetAjnaPositionDetailsParams): PositionDetail[] {
+  const {
+    pool: { highestThresholdPrice, lowestUtilizedPrice, interestRate },
+  } = position
   const isShort = isShortPosition({ collateralToken: primaryToken })
   const priceFormat = isShort
     ? `${secondaryToken}/${primaryToken}`
@@ -74,12 +73,48 @@ export function getAjnaPositionDetails({
         },
         {
           type: 'borrowRate',
-          value: formatDecimalAsPercent(fee),
+          value: formatDecimalAsPercent(interestRate),
         },
       ]
     }
-    case OmniProductType.Earn:
-      return []
+    case OmniProductType.Earn: {
+      const {
+        pool: { lendApr },
+        poolApy: { per90d },
+        price,
+        quoteTokenAmount,
+        totalEarnings: { withoutFees },
+      } = position as AjnaEarnPosition
+
+      const netValue = quoteTokenAmount.times(quotePrice)
+
+      return [
+        {
+          type: 'netValue',
+          value: `$${formatCryptoBalance(new BigNumber(netValue))}`,
+        },
+        {
+          type: 'lendingRange',
+          value: price.lt(highestThresholdPrice)
+            ? LendingRangeType.Active
+            : price.lt(lowestUtilizedPrice)
+            ? LendingRangeType.Unutilized
+            : LendingRangeType.Available,
+        },
+        {
+          type: 'earnings',
+          value: `${formatCryptoBalance(new BigNumber(withoutFees))} ${secondaryToken}`,
+        },
+        {
+          type: 'apy',
+          value: lendApr ? formatDecimalAsPercent(lendApr) : 'n/a',
+        },
+        {
+          type: '90dApy',
+          value: per90d ? formatDecimalAsPercent(per90d) : 'n/a',
+        },
+      ]
+    }
     case OmniProductType.Multiply: {
       const {
         collateralAmount,

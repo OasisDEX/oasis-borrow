@@ -1,6 +1,5 @@
 import { Icon } from 'components/Icon'
 import { getPortfolioAccentColor } from 'components/portfolio/helpers/getPortfolioAccentColor'
-import { LendingRangeDetail } from 'components/portfolio/LendingRangeDetail'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { DetailsType, PositionDetail } from 'handlers/portfolio/types'
 import type { TranslateStringType } from 'helpers/translateStringType'
@@ -10,6 +9,7 @@ import { question_o } from 'theme/icons'
 import { Box, Flex, Text } from 'theme-ui'
 
 import type { LendingRangeType } from 'lambdas/src/shared/lending-range'
+import {Steps} from 'components/Steps'
 
 export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetail }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
@@ -64,7 +64,7 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
         color={detail.accent ? getPortfolioAccentColor(detail.accent) : 'neutral100'}
       >
         {detail.type === 'lendingRange' ? (
-          <LendingRangeDetail value={detail.value as LendingRangeType} />
+          <Steps count={3} active={2} />
         ) : (
           detail.value
         )}

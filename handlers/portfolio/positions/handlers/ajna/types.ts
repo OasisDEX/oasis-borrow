@@ -4,8 +4,6 @@ interface AjnaDpmPositionsPool {
     address: string
     symbol: string
   }
-  interestRate: string
-  lup: string
   quoteToken: {
     address: string
     symbol: string
