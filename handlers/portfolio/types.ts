@@ -5,33 +5,24 @@ import type { DpmList } from 'handlers/portfolio/positions/handlers/dpm'
 import type { LendingProtocol } from 'lendingProtocols'
 
 export type PortfolioPosition = {
-  positionId: number
-  type?: ProductType
-  network: NetworkNames
-  protocol: LendingProtocol
-  strategyType?: StrategyType
-  lendingType?: 'active' | 'passive' | 'loop' | 'staking' | 'pool' // are these all types?
-  openDate: number // epoch based on block height timestamp
   availableToMigrate?: boolean
-  tokens: {
-    supply: {
-      symbol: string
-      amount: number
-      amountUSD: number
-    }
-    borrow?: {
-      symbol: string
-      amount: number
-      amountUSD: number
-    }
-  }
-  details: PositionDetail[]
   automations: {
     stopLoss?: AutomationType
     takeProfit?: AutomationType
     autoBuy?: AutomationType
     autoSell?: AutomationType
   }
+  details: PositionDetail[]
+  lendingType?: 'active' | 'passive' | 'loop' | 'staking' | 'pool' // are these all types?
+  network: NetworkNames
+  netValue: number
+  openDate?: number // epoch based on block height timestamp
+  positionId: number
+  primaryToken: string
+  protocol: LendingProtocol
+  secondaryToken: string
+  strategyType?: StrategyType
+  type?: ProductType
 }
 
 export type PortfolioPositionsHandler = ({
