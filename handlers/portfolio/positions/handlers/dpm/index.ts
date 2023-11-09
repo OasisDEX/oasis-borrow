@@ -48,10 +48,10 @@ const dpmListSupportedNetworks = [
   NetworkIds.BASEMAINNET,
 ]
 const subgraphListDict = {
-  [NetworkIds.MAINNET]: 'oasis/dpm-arbitrum',
-  [NetworkIds.ARBITRUMMAINNET]: 'oasis/dpm-base',
+  [NetworkIds.MAINNET]: 'oasis/dpm',
+  [NetworkIds.ARBITRUMMAINNET]: 'oasis/dpm-arbitrum',
   [NetworkIds.OPTIMISMMAINNET]: 'oasis/dpm-optimism',
-  [NetworkIds.BASEMAINNET]: 'oasis/dpm',
+  [NetworkIds.BASEMAINNET]: 'oasis/dpm-base',
 } as Record<(typeof dpmListSupportedNetworks)[number], string>
 
 export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
