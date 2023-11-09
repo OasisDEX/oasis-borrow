@@ -1,6 +1,7 @@
 import type { NetworkNames } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
-import type { ProductType, StrategyType } from 'features/aave/types'
+import type { StrategyType } from 'features/aave/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import type { DpmList } from 'handlers/portfolio/positions/handlers/dpm'
 import type { LendingProtocol } from 'lendingProtocols'
 
@@ -22,7 +23,8 @@ export type PortfolioPosition = {
   protocol: LendingProtocol
   secondaryToken: string
   strategyType?: StrategyType
-  type?: ProductType
+  type?: OmniProductType
+  url: string
 }
 
 export type PortfolioPositionsHandler = ({
