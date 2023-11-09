@@ -61,7 +61,7 @@ export const PortfolioPositionsView = ({
     if (!portfolioPositionsData) return undefined
     // empty positions first
     const filteredEmptyPositions = portfolioPositionsData.positions.filter(
-      ({ tokens }) => filterState['showEmptyPositions'] || tokens.supply.amountUSD > 0,
+      ({ netValue }) => filterState['showEmptyPositions'] || netValue > 0,
     )
     // filter by product
     const noneSelected = [0, undefined].includes(filterState['product']?.length) // none selected = "All products"
@@ -84,9 +84,9 @@ export const PortfolioPositionsView = ({
     const sortedPositions = filteredProductPositions
       .sort((a, b) => {
         if (filterState['sorting'] === PortfolioSortingType.netValueAscending) {
-          return a.tokens.supply.amountUSD - b.tokens.supply.amountUSD
+          return a.netValue - b.netValue
         }
-        return b.tokens.supply.amountUSD - a.tokens.supply.amountUSD
+        return b.netValue - a.netValue
       })
       .sort((a, b) => {
         // move migration positions to the bottom
