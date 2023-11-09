@@ -68,6 +68,13 @@
     "borrowedToken": "Borrowed",
     "borrowedTokenBalance": "Balance of Borrowed"
   },
+  "lending-type": {
+    "active": "Active Lending",
+    "loop": "Yield Loop",
+    "passive": "Passive Lending",
+    "pool": "Pool",
+    "staking": "Staking"
+  },
   "lending-range-types": {
     "1": "Active",
     "2": "Unutilized",

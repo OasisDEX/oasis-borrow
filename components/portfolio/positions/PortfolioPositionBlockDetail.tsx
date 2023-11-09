@@ -27,7 +27,12 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
   return (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'flex-start', my: [3, 0] }}>
       <Box>
-        <Text as="div" variant="paragraph4" color="neutral80" sx={{ verticalAlign: 'center' }}>
+        <Text
+          as="div"
+          variant="paragraph4"
+          color="neutral80"
+          sx={{ mb: 1, verticalAlign: 'center' }}
+        >
           {tPortfolio(`position-details.${detail.type}`)}
           {detailsTooltipsMap[detail.type as DetailsType] && (
             <StatefulTooltip

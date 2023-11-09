@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { LendingProtocolLabel } from 'lendingProtocols'
+import { upperFirst } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Text } from 'theme-ui'
@@ -23,9 +24,10 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         p: 3,
       }}
     >
-      <Flex sx={{ justifyContent: 'space-between', mb: 3 }}>
+      <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mb: '24px' }}>
         <Text variant="boldParagraph3" color="neutral80">
-          {position.availableToMigrate ? tPortfolio('migrate') : position.type}
+          {position.availableToMigrate ? tPortfolio('migrate') : upperFirst(position.type)}
+          {position.lendingType && ` - ${tPortfolio(`lending-type.${position.lendingType}`)}`}
         </Text>
         <Flex>
           <ProtocolLabel network={position.network} protocol={position.protocol} />
@@ -45,11 +47,12 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         sx={{
           flexDirection: ['column', 'row'],
           justifyContent: 'space-between',
-          my: 3,
+          mt: '24px',
+          mb: 3,
           ...(!position.availableToMigrate && {
             borderBottom: '1px solid',
             borderColor: 'neutral20',
-            paddingBottom: 3,
+            pb: 3,
           }),
         }}
       >
@@ -58,31 +61,32 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         ))}
       </Flex>
       {!position.availableToMigrate && (
-        <Flex
-          sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}
-        >
-          {position.type &&
-            [OmniProductType.Borrow, OmniProductType.Multiply].includes(position.type) && (
-              <Flex sx={{ flexDirection: 'column' }}>
-                <Text variant="paragraph4" color="neutral80" sx={{ mb: 2 }}>
-                  {tPortfolio('automations')}
-                </Text>
-                <Flex sx={{ justifyContent: 'space-between', columnGap: 1 }}>
-                  <PortfolioPositionAutomationIcons automations={position.automations} />
-                </Flex>
-              </Flex>
-            )}
-          {position.type && [OmniProductType.Earn].includes(position.type) && position.openDate && (
+        <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          {[OmniProductType.Borrow, OmniProductType.Multiply].includes(position.type) && (
             <Flex sx={{ flexDirection: 'column' }}>
-              <Text variant="boldParagraph3" color="neutral80" sx={{ mb: 2 }}>
+              {Object.keys(position.automations).length > 0 && (
+                <>
+                  <Text variant="paragraph4" color="neutral80" sx={{ mb: 2 }}>
+                    {tPortfolio('automations')}
+                  </Text>
+                  <Flex sx={{ justifyContent: 'space-between', columnGap: 1 }}>
+                    <PortfolioPositionAutomationIcons automations={position.automations} />
+                  </Flex>
+                </>
+              )}
+            </Flex>
+          )}
+          {[OmniProductType.Earn].includes(position.type) && position.openDate && (
+            <Flex>
+              <Text variant="boldParagraph3" color="neutral80">
                 {tPortfolio('days-of-earning', {
                   days: dayjs().diff(dayjs.unix(position.openDate), 'day'),
                 })}
               </Text>
             </Flex>
           )}
-          <Flex>
-            <AppLink href={`/${position.network}/${position.protocol}/${position.positionId}`}>
+          <Flex sx={{ alignSelf: 'flex-end' }}>
+            <AppLink href={position.url}>
               <Button variant="tertiary">{tPortfolio('view-position')}</Button>
             </AppLink>
           </Flex>
