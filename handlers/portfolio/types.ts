@@ -32,6 +32,12 @@ export type PortfolioPosition = {
   }
 }
 
+export type PortfolioPositionsHandler = ({
+  address,
+}: {
+  address: string
+}) => Promise<PortfolioPositionsResponse>
+
 export type PortfolioPositionsResponse = {
   positions: PortfolioPosition[]
   address: string
