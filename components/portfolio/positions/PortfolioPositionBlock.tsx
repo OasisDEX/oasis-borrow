@@ -4,7 +4,7 @@ import { PortfolioPositionAutomationIcons } from 'components/portfolio/positions
 import { PortfolioPositionBlockDetail } from 'components/portfolio/positions/PortfolioPositionBlockDetail'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import dayjs from 'dayjs'
-import { ProductType } from 'features/aave/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
@@ -61,17 +61,18 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         <Flex
           sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}
         >
-          {position.type && [ProductType.Borrow, ProductType.Multiply].includes(position.type) && (
-            <Flex sx={{ flexDirection: 'column' }}>
-              <Text variant="paragraph4" color="neutral80" sx={{ mb: 2 }}>
-                {tPortfolio('automations')}
-              </Text>
-              <Flex sx={{ justifyContent: 'space-between', columnGap: 1 }}>
-                <PortfolioPositionAutomationIcons automations={position.automations} />
+          {position.type &&
+            [OmniProductType.Borrow, OmniProductType.Multiply].includes(position.type) && (
+              <Flex sx={{ flexDirection: 'column' }}>
+                <Text variant="paragraph4" color="neutral80" sx={{ mb: 2 }}>
+                  {tPortfolio('automations')}
+                </Text>
+                <Flex sx={{ justifyContent: 'space-between', columnGap: 1 }}>
+                  <PortfolioPositionAutomationIcons automations={position.automations} />
+                </Flex>
               </Flex>
-            </Flex>
-          )}
-          {position.type && [ProductType.Earn].includes(position.type) && position.openDate && (
+            )}
+          {position.type && [OmniProductType.Earn].includes(position.type) && position.openDate && (
             <Flex sx={{ flexDirection: 'column' }}>
               <Text variant="boldParagraph3" color="neutral80" sx={{ mb: 2 }}>
                 {tPortfolio('days-of-earning', {
