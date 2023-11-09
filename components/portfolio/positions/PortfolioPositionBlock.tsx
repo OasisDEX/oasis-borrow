@@ -32,16 +32,8 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         </Flex>
       </Flex>
       <AssetsTableDataCellAsset
-        asset={
-          position.tokens.borrow?.symbol
-            ? `${position.tokens.supply.symbol}/${position.tokens.borrow?.symbol}`
-            : position.tokens.supply.symbol
-        }
-        icons={
-          position.tokens.borrow?.symbol
-            ? [position.tokens.supply.symbol, position.tokens.borrow?.symbol]
-            : [position.tokens.supply.symbol]
-        }
+        asset={`${position.primaryToken}/${position.secondaryToken}`}
+        icons={[position.primaryToken, position.secondaryToken]}
         positionId={!position.availableToMigrate ? position.positionId.toString() : undefined}
         description={
           position.availableToMigrate
