@@ -15,7 +15,7 @@ import {
   getAjnaPositionDetails,
   getAjnaPositionNetValue,
 } from 'handlers/portfolio/positions/handlers/ajna/helpers'
-import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
+import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { prisma } from 'server/prisma'
@@ -51,7 +51,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
         positionId,
         protocolEvents,
         proxyAddress,
-      }): Promise<any> => {
+      }): Promise<PortfolioPosition> => {
         const { ajnaPoolInfo } = getNetworkContracts(networkId)
         const apiVaults = await prisma.vault.findMany({
           where: {
@@ -64,6 +64,8 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
         const secondaryToken = quoteToken.symbol.toUpperCase()
         const network = getNetworkById(networkId).name
         const type = (isEarn ? 'earn' : apiVaults[0]?.type ?? 'borrow') as OmniProductType
+        const isProxyWithManyPositions =
+          positionsArray.filter((item) => proxyAddress === item.proxyAddress).length > 1
         const isOracless = isPoolOracless({
           chainId: networkId,
           collateralToken: primaryToken,
@@ -96,6 +98,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
             collateralPrice,
             fee,
             isOracless,
+            isProxyWithManyPositions,
             lowestUtilizedPrice,
             position,
             primaryToken,
@@ -113,7 +116,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
             type,
           }),
           openDate: Number(protocolEvents[0].timestamp),
-          positionId,
+          positionId: Number(positionId),
           primaryToken,
           protocol: LendingProtocol.Ajna,
           secondaryToken,
@@ -123,27 +126,6 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
       },
     ),
   )
-
-  // const { ajnaPoolPairs, ajnaPoolInfo } = getNetworkContracts(NetworkIds.MAINNET)
-
-  // const commonPayload = {
-  //   collateralPrice: getTokenPrice('SDAI', tickers),
-  //   quotePrice: getTokenPrice('USDC', tickers),
-  //   proxyAddress: '0x07aab97fbaf2a8fc7d209e342fb161f3cb7e7a7b',
-  //   poolAddress: ajnaPoolPairs['SDAI-USDC' as keyof typeof ajnaPoolPairs].address,
-  // }
-
-  // const commonDependency = {
-  //   poolInfoAddress: ajnaPoolInfo.address,
-  //   provider: getRpcProvider(NetworkIds.MAINNET),
-  //   getPoolData: getAjnaPoolData(NetworkIds.MAINNET),
-  //   getCumulatives: getAjnaCumulatives(NetworkIds.MAINNET),
-  // }
-
-  // const position = await views.ajna.getPosition(commonPayload, commonDependency)
-
-  // console.log(position.collateralAmount.toString())
-  // console.log(position.debtAmount.toString())
 
   return {
     positions,
