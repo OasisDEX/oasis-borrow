@@ -1,13 +1,15 @@
 interface AjnaDpmPositionsPool {
+  address: string
   collateralToken: {
     address: string
     symbol: string
   }
+  interestRate: string
+  lup: string
   quoteToken: {
     address: string
     symbol: string
   }
-  address: string
 }
 
 interface AjnaDpmPositionsProtocolEvent {

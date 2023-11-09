@@ -281,15 +281,17 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
             timestamp
           }
           pool {
+            address
             collateralToken {
               symbol
               address
             }
+            interestRate
+            lup
             quoteToken {
               symbol
               address
             }
-            address
           }
         }
         earnPositions {

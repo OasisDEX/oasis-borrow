@@ -1,53 +1,21 @@
-import type { AjnaEarnPosition, AjnaPosition  } from '@oasisdex/dma-library'
-import { views } from '@oasisdex/dma-library';
+import { views } from '@oasisdex/dma-library'
+import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getNetworkById, getRpcProvider } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
+import { NEGATIVE_WAD_PRECISION } from 'components/constants'
+import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAjnaCumulatives'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
-import { OmniProductType } from 'features/omni-kit/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
-import type { PortfolioPositionsHandler, PositionDetail } from 'handlers/portfolio/types'
+import { getAjnaPositionDetails } from 'handlers/portfolio/positions/handlers/ajna/helpers'
+import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
+import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { prisma } from 'server/prisma'
-
-interface GetBorrowishPositionDetailsParams {
-  position: AjnaPosition
-  type: OmniProductType.Borrow | OmniProductType.Multiply
-}
-
-interface GetEarnPositionDetailsParams {
-  position: AjnaEarnPosition
-}
-
-function getBorrowishPositionDetails({
-  position,
-  type,
-}: GetBorrowishPositionDetailsParams): PositionDetail[] {
-  switch (type) {
-    case OmniProductType.Borrow:
-      return [
-        {
-          type: 'collateralLocked',
-          value: position.collateralAmount.toString(),
-        },
-        {
-          type: 'totalDebt',
-          value: position.debtAmount.toString(),
-        },
-      ]
-    case OmniProductType.Multiply:
-      return []
-  }
-}
-
-function getEarnPositionDetails({ position }: GetEarnPositionDetailsParams): PositionDetail[] {
-  console.info(position)
-
-  return []
-}
 
 export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
   address,
@@ -76,7 +44,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
     positionsArray.map(
       async ({
         isEarn,
-        pool: { address: poolAddress, collateralToken, quoteToken },
+        pool: { address: poolAddress, collateralToken, interestRate, lup, quoteToken },
         positionId,
         proxyAddress,
       }): Promise<any> => {
@@ -92,13 +60,17 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
         const secondaryToken = quoteToken.symbol.toUpperCase()
         const network = getNetworkById(networkId).name
         const type = (isEarn ? 'earn' : apiVaults[0]?.type ?? 'borrow') as OmniProductType
+        const isOracless = isPoolOracless({
+          chainId: networkId,
+          collateralToken: primaryToken,
+          quoteToken: secondaryToken,
+        })
+        const collateralPrice = isOracless ? one : getTokenPrice(primaryToken, tickers)
+        const quotePrice = isOracless ? one : getTokenPrice(secondaryToken, tickers)
+        const lowestUtilizedPrice = new BigNumber(lup).shiftedBy(NEGATIVE_WAD_PRECISION)
+        const fee = new BigNumber(interestRate).shiftedBy(NEGATIVE_WAD_PRECISION)
 
-        const commonPayload = {
-          collateralPrice: getTokenPrice(primaryToken, tickers),
-          quotePrice: getTokenPrice(secondaryToken, tickers),
-          proxyAddress,
-          poolAddress,
-        }
+        const commonPayload = { collateralPrice, quotePrice, proxyAddress, poolAddress }
         const commonDependency = {
           poolInfoAddress: ajnaPoolInfo.address,
           provider: getRpcProvider(networkId),
@@ -116,14 +88,18 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
         return {
           availableToMigrate: false,
           automations: {},
-          details:
-            type === OmniProductType.Earn
-              ? getEarnPositionDetails({ position: position as AjnaEarnPosition })
-              : getBorrowishPositionDetails({
-                  position: position as AjnaPosition,
-                  type,
-                }),
-          // lendingType,
+          details: getAjnaPositionDetails({
+            collateralPrice,
+            fee,
+            isOracless,
+            lowestUtilizedPrice,
+            position,
+            primaryToken,
+            quotePrice,
+            secondaryToken,
+            type,
+          }),
+          ...(isEarn && { lendingType: 'active' }),
           network,
           // netValue,
           // openDate,
