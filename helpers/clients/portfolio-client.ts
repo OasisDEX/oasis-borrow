@@ -1,9 +1,9 @@
+import type { PortfolioPositionsResponse } from 'handlers/portfolio/types'
 import { useCallback, useMemo } from 'react'
 
 import type {
   PortfolioAssetsResponse,
   PortfolioOverviewResponse,
-  PortfolioPositionsResponse,
 } from 'lambdas/src/shared/domain-types'
 
 /**
@@ -18,7 +18,11 @@ export const usePortfolioClient = (baseUrl: string, headers: HeadersInit) => {
       section: 'overview' | 'assets' | 'positions',
       address: string,
     ): Promise<ResponseType> => {
-      const response = await fetch(`${baseUrl}/portfolio-${section}?address=${address}`, {
+      const callUrl =
+        section === 'positions'
+          ? `/api/positions/${address}`
+          : `${baseUrl}/portfolio-${section}?address=${address}`
+      const response = await fetch(callUrl, {
         headers,
       })
         .then((res) => res.json())

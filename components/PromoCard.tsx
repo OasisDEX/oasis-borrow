@@ -24,8 +24,8 @@ export const dataColors: { [key in PromoCardVariant]: ThemeUIStyleObject } = {
   neutral: { color: 'primary100' },
 }
 
-export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, link }) => {
-  const sx: ThemeUIStyleObject = {
+export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, link, sx }) => {
+  const styles: ThemeUIStyleObject = {
     position: 'relative',
     px: 3,
     py: '24px',
@@ -34,6 +34,7 @@ export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, link }) 
     borderColor: 'neutral20',
     borderRadius: 'large',
     bg: 'neutral10',
+    ...sx,
   }
 
   return (
@@ -42,7 +43,8 @@ export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, link }) 
         <AppLink
           href={link}
           sx={{
-            ...sx,
+            ...styles,
+            display: 'block',
             fontWeight: 'inherit',
             transition: 'border-color 200ms',
             '&:hover': {
@@ -53,7 +55,7 @@ export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, link }) 
           {children}
         </AppLink>
       ) : (
-        <Box sx={sx}>{children}</Box>
+        <Box sx={styles}>{children}</Box>
       )}
     </>
   )
@@ -87,11 +89,12 @@ export const PromoCard: FC<PromoCardProps> = ({
   link,
   pills,
   protocol,
+  sx,
   title,
   tokens,
 }) => {
   return (
-    <PromoCardWrapper link={link?.href}>
+    <PromoCardWrapper link={link?.href} sx={sx}>
       <Flex
         sx={{
           justifyContent: 'center',

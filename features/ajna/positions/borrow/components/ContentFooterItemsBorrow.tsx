@@ -10,7 +10,7 @@ import { useAjnaRewards } from 'features/ajna/rewards/useAjnaRewards'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { ajnaSparks } from 'theme/icons'
+import { sparks } from 'theme/icons'
 import { Text } from 'theme-ui'
 
 interface ContentFooterItemsBorrowProps {
@@ -91,7 +91,7 @@ export function ContentFooterItemsBorrow({
                   lineHeight: 'body',
                 }}
               >
-                <Icon size={16} icon={ajnaSparks} color="interactive100" />
+                <Icon size={16} icon={sparks} color="interactive100" />
               </StatefulTooltip>
             )}
             {formatted.cost}

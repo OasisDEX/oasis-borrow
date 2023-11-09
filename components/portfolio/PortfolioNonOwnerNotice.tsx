@@ -4,6 +4,7 @@ import { AppLink } from 'components/Links'
 import { usePortfolioMatchingAssets } from 'components/portfolio/helpers/usePortfolioMatchingAssets'
 import { Skeleton } from 'components/Skeleton'
 import { formatAddress, formatAmount } from 'helpers/formatters/format'
+import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { non_owner_notice_icon } from 'theme/icons'
@@ -44,17 +45,7 @@ export const PortfolioNonOwnerNotice = ({
               t={tPortfolio}
               i18nKey="non-owner-notice.assets-available"
               components={{
-                span: (
-                  <Text
-                    variant="boldParagraph3"
-                    sx={{
-                      background:
-                        'linear-gradient(270deg, #E97047 0.02%, #E7A77F 46.92%, #007DA3 88.44%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
-                  />
-                ),
+                span: <Text variant="boldParagraph3" sx={getGradientColor(summerBrandGradient)} />,
               }}
               values={{ amount: formatAmount(new BigNumber(matchingAssetsValue), 'USD') }}
             />

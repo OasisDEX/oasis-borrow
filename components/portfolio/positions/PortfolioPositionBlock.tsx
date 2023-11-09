@@ -5,12 +5,11 @@ import { PortfolioPositionBlockDetail } from 'components/portfolio/positions/Por
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import dayjs from 'dayjs'
 import { ProductType } from 'features/aave/types'
+import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Flex, Text } from 'theme-ui'
-
-import type { PortfolioPosition } from 'lambdas/src/shared/domain-types'
+import { Box, Button, Flex, Text } from 'theme-ui'
 
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
@@ -21,7 +20,6 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         border: '1px solid',
         borderColor: 'neutral20',
         borderRadius: 'large',
-        mb: 4,
         p: 3,
       }}
     >
@@ -53,6 +51,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
       />
       <Flex
         sx={{
+          flexDirection: ['column', 'row'],
           justifyContent: 'space-between',
           my: 3,
           ...(!position.availableToMigrate && {
@@ -75,7 +74,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
               <Text variant="paragraph4" color="neutral80" sx={{ mb: 2 }}>
                 {tPortfolio('automations')}
               </Text>
-              <Flex sx={{ justifyContent: 'space-between' }}>
+              <Flex sx={{ justifyContent: 'space-between', columnGap: 1 }}>
                 <PortfolioPositionAutomationIcons automations={position.automations} />
               </Flex>
             </Flex>
@@ -90,12 +89,8 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
             </Flex>
           )}
           <Flex>
-            <AppLink
-              variant="secondary"
-              sx={{ fontSize: 1 }}
-              href={`/${position.network}/${position.protocol}/${position.positionId}`}
-            >
-              {tPortfolio('view-position')}
+            <AppLink href={`/${position.network}/${position.protocol}/${position.positionId}`}>
+              <Button variant="tertiary">{tPortfolio('view-position')}</Button>
             </AppLink>
           </Flex>
         </Flex>

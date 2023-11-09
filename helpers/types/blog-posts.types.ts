@@ -1,34 +1,47 @@
 export type BlogPost = {
-    id: string;
-    uuid: string;
-    title: string;
-    slug: string;
-    html: string;
-    comment_id: string;
-    feature_image: string;
-    featured: boolean;
-    visibility: string;
-    created_at: string;
-    updated_at: string;
-    published_at: string;
-    url: string;
-    excerpt: string;
-    reading_time: number;
-    access: boolean;
-    comments: boolean;
-    feature_image_caption: string;
+  access: boolean
+  comment_id: string
+  comments: boolean
+  created_at: string
+  excerpt: string
+  feature_image_caption: string
+  feature_image: string
+  featured: boolean
+  html: string
+  id: string
+  published_at: string
+  reading_time: number
+  slug: string
+  tags: {
+    id: string
+    name: string
+    slug: string
+    description: string
+  }[]
+  title: string
+  updated_at: string
+  url: string
+  uuid: string
+  visibility: string
 }
 
 export type BlogPostsApiReply = {
-    // thats from the ghost blog api
-    posts: BlogPost[]
+  // thats from the ghost blog api
+  posts: BlogPost[]
+}
+
+export type ParsedBlogPost = {
+  date: string
+  id: string
+  image: string
+  readingTime: number
+  slug: string
+  title: string
+  url: string
 }
 
 export type BlogPostsReply = {
-    // thats from the internal blog posts api
-    id: string;
-    title: string;
-    slug: string;
-    url: string;
-    date: string;
-  }[]
+  // thats from the internal blog posts api
+  news: ParsedBlogPost[]
+  learn: ParsedBlogPost[]
+}

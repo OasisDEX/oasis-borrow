@@ -2,13 +2,13 @@ import { Icon } from 'components/Icon'
 import { getPortfolioAccentColor } from 'components/portfolio/helpers/getPortfolioAccentColor'
 import { LendingRangeDetail } from 'components/portfolio/LendingRangeDetail'
 import { StatefulTooltip } from 'components/Tooltip'
+import type { DetailsType, PositionDetail } from 'handlers/portfolio/types'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
 import { Box, Flex, Text } from 'theme-ui'
 
-import type { DetailsType, PositionDetail } from 'lambdas/src/shared/domain-types'
 import type { LendingRangeType } from 'lambdas/src/shared/lending-range'
 
 export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetail }) => {
@@ -27,7 +27,7 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
     borrowedTokenBalance: tPortfolio('details-tooltips.borrowedTokenBalance'),
   }
   return (
-    <Flex sx={{ flexDirection: 'column', justifyContent: 'flex-start' }}>
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'flex-start', my: [3, 0] }}>
       <Box>
         <Text as="div" variant="paragraph4" color="neutral80" sx={{ verticalAlign: 'center' }}>
           {tPortfolio(`position-details.${detail.type}`)}
@@ -42,8 +42,16 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
                 top: '3px',
               }}
               tooltipSx={{
+                top: 3,
+                left: 0,
+                width: ['200px', '250px'],
+                fontSize: 1,
+                fontWeight: 'normal',
+                whiteSpace: 'initial',
+                textAlign: 'left',
+                border: 'none',
                 borderRadius: 'medium',
-                width: '230px',
+                boxShadow: 'buttonMenu',
               }}
             >
               <Icon size={16} icon={question_o} color="neutral80" />

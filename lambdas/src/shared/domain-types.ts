@@ -1,6 +1,3 @@
-import { DebankLendingType, DebankType } from './debank-types'
-import { LendingRangeType } from './lending-range'
-
 export enum NetworkNames {
   ethereumMainnet = 'ethereum',
   ethereumGoerli = 'ethereum_goerli',
@@ -12,31 +9,6 @@ export enum NetworkNames {
   optimismGoerli = 'optimism_goerli',
   baseMainnet = 'base',
   baseGoerli = 'base_goerli',
-}
-
-export enum LendingProtocol {
-  AaveV2 = 'aavev2',
-  AaveV3 = 'aavev3',
-  Ajna = 'ajna',
-  Maker = 'maker',
-  MorphoBlue = 'morphoblue',
-  SparkV3 = 'sparkv3',
-}
-
-export enum ProductType {
-  'Multiply' = 'Multiply',
-  'Earn' = 'Earn',
-  'Borrow' = 'Borrow',
-}
-
-export enum StrategyType {
-  Short = 'short',
-  Long = 'long',
-}
-
-type AutomationType = {
-  enabled: boolean
-  price?: number
 }
 
 export type DetailsType =
@@ -57,76 +29,6 @@ export type DetailsType =
   | 'suppliedTokenBalance'
   | 'borrowedToken'
   | 'borrowedTokenBalance'
-
-export type PositionDetail = {
-  type: DetailsType
-  value: string | LendingRangeType
-  accent?: 'positive' | 'negative'
-  subvalue?: string
-}
-
-export type LendingType = 'active' | 'passive' | 'loop' | 'staking' | 'pool'
-
-export type PortfolioPosition = {
-  positionId: number
-  type?: ProductType
-  network: NetworkNames
-  protocol: LendingProtocol
-  strategyType?: StrategyType
-  lendingType?: LendingType // are these all types?
-  openDate: number // epoch based on block height timestamp
-  availableToMigrate?: boolean
-  tokens: {
-    supply: {
-      symbol: string
-      amount: number
-      amountUSD: number
-    }
-    borrow?: {
-      symbol: string
-      amount: number
-      amountUSD: number
-    }
-  }
-  details: PositionDetail[]
-  automations: {
-    stopLoss?: AutomationType
-    takeProfit?: AutomationType
-    autoBuy?: AutomationType
-    autoSell?: AutomationType
-  }
-}
-
-export type PortfolioPositionLambda = {
-  name: string
-  logoUrl: string
-  positionId: any
-  protocol: string
-  network: string
-  lendingType: DebankLendingType
-  triggers: any[] | null
-  tokens: {
-    supply: {
-      symbol: string
-      amount: number
-      price: number
-    }[]
-    borrow: {
-      symbol: string
-      amount: number
-      price: number
-    }[]
-  }
-  netUsdValue: number
-  debtUsdValue: number
-  assetUsdValue: number
-  time: number | undefined
-  proxyName: string | undefined
-}
-
-export type PortfolioPositionsResponse = {
-  positionsPerProtocol: PortfolioPositionLambda[]
-}
 
 export type PortfolioOverviewResponse = {
   suppliedUsdValue: number

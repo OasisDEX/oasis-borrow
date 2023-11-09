@@ -1,11 +1,13 @@
 import BigNumber from 'bignumber.js'
-import { getPortfolioChangeColor, getPortfolioChangeSign } from 'components/portfolio/helpers'
 import { PortfolioOverviewItem } from 'components/portfolio/PortfolioOverviewItem'
 import { Tag } from 'components/Tag'
 import { formatAmount } from 'helpers/formatters/format'
+import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
+import { isTouchDevice } from 'helpers/isTouchDevice'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Flex, Heading, Text } from 'theme-ui'
+import { useOnMobile } from 'theme/useBreakpointIndex'
+import { Flex, Heading } from 'theme-ui'
 
 import type {
   PortfolioAssetsResponse,
@@ -16,18 +18,13 @@ export const PortfolioOverview = ({
   overviewData,
   portfolioWalletData,
 }: {
-  overviewData?: PortfolioOverviewResponse | void
-  portfolioWalletData?: PortfolioAssetsResponse | void
+  overviewData: PortfolioOverviewResponse
+  portfolioWalletData: PortfolioAssetsResponse
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-
-  if (!overviewData || !portfolioWalletData) {
-    return <>'Loading'</>
-  }
+  const isMobile = useOnMobile() && isTouchDevice
 
   const totalValue = overviewData.summerUsdValue + portfolioWalletData.totalAssetsUsdValue
-  const totalPercentageChange =
-    (overviewData.summerPercentageChange + portfolioWalletData.totalAssetsPercentageChange) / 2
 
   return (
     <Flex
@@ -43,15 +40,6 @@ export const PortfolioOverview = ({
           value={
             <Heading variant="header4">${formatAmount(new BigNumber(totalValue), 'USD')}</Heading>
           }
-          subValue={
-            <Text
-              variant="paragraph4"
-              sx={{ color: getPortfolioChangeColor(totalPercentageChange) }}
-            >
-              {getPortfolioChangeSign(totalPercentageChange)}
-              {tPortfolio('past-week', { percentage: totalPercentageChange })}
-            </Text>
-          }
         />
       </Flex>
       <Flex
@@ -59,65 +47,31 @@ export const PortfolioOverview = ({
           flexDirection: ['column', 'row'],
           alignItems: 'flex-start',
           justifyItems: 'flex-start',
-          columnGap: 4,
+          columnGap: '24px',
         }}
       >
         <PortfolioOverviewItem
           header={tPortfolio('total-portfolio')}
           value={
-            <Heading
-              variant="header4"
-              sx={{
-                backgroundImage: 'linear-gradient(90deg, #007DA3 0%, #E7A77F 50%, #E97047 100%)',
-                backgroundClip: 'text',
-                color: 'transparent',
-              }}
-            >
+            <Heading variant="header4" sx={getGradientColor(summerBrandGradient)}>
               ${formatAmount(new BigNumber(overviewData.summerUsdValue), 'USD')}
             </Heading>
           }
-          subValue={
-            <Text
-              variant="paragraph4"
-              sx={{ color: getPortfolioChangeColor(overviewData.summerPercentageChange) }}
-            >
-              {getPortfolioChangeSign(overviewData.summerPercentageChange)}
-              {tPortfolio('past-week', { percentage: overviewData.summerPercentageChange })}
-            </Text>
-          }
         />
         <PortfolioOverviewItem
-          header={tPortfolio('total-supplied')}
+          header={tPortfolio(isMobile ? 'total-supplied-mobile' : 'total-supplied')}
           value={
             <Heading variant="header4">
               ${formatAmount(new BigNumber(overviewData.suppliedUsdValue), 'USD')}
             </Heading>
           }
-          subValue={
-            <Text
-              variant="paragraph4"
-              sx={{ color: getPortfolioChangeColor(overviewData.suppliedPercentageChange) }}
-            >
-              {getPortfolioChangeSign(overviewData.suppliedPercentageChange)}
-              {tPortfolio('past-week', { percentage: overviewData.suppliedPercentageChange })}
-            </Text>
-          }
         />
         <PortfolioOverviewItem
-          header={tPortfolio('total-borrowed')}
+          header={tPortfolio(isMobile ? 'total-borrowed-mobile' : 'total-borrowed')}
           value={
             <Heading variant="header4">
               ${formatAmount(new BigNumber(overviewData.borrowedUsdValue), 'USD')}
             </Heading>
-          }
-          subValue={
-            <Text
-              variant="paragraph4"
-              sx={{ color: getPortfolioChangeColor(overviewData.borrowedPercentageChange) }}
-            >
-              {getPortfolioChangeSign(overviewData.borrowedPercentageChange)}
-              {tPortfolio('past-week', { percentage: overviewData.borrowedPercentageChange })}
-            </Text>
           }
         />
         <PortfolioOverviewItem
