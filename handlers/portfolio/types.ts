@@ -1,5 +1,6 @@
 import type { NetworkNames } from 'blockchain/networks'
 import type { ProductType, StrategyType } from 'features/aave/types'
+import type { DpmList } from 'handlers/portfolio/positions/handlers/dpm'
 import type { LendingProtocol } from 'lendingProtocols'
 
 export type PortfolioPosition = {
@@ -34,8 +35,10 @@ export type PortfolioPosition = {
 
 export type PortfolioPositionsHandler = ({
   address,
+  dpmList,
 }: {
   address: string
+  dpmList: DpmList
 }) => Promise<PortfolioPositionsResponse>
 
 export type PortfolioPositionsResponse = {
