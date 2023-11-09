@@ -275,7 +275,11 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   getAjnaDpmPositions: gql`
     query getDpmPositions($dpmProxyAddress: [String!]) {
       accounts(where: { address_in: $dpmProxyAddress }) {
+        address
         borrowPositions {
+          protocolEvents(first: 1, orderBy: timestamp, orderDirection: asc) {
+            timestamp
+          }
           pool {
             collateralToken {
               symbol
@@ -289,6 +293,9 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           }
         }
         earnPositions {
+          protocolEvents(first: 1, orderBy: timestamp, orderDirection: asc) {
+            timestamp
+          }
           pool {
             collateralToken {
               symbol
@@ -301,6 +308,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
             address
           }
         }
+        vaultId
       }
     }
   `,

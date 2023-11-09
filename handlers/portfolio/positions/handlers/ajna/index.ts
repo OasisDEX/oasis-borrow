@@ -1,17 +1,16 @@
-import { views } from '@oasisdex/dma-library'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { getRpcProvider, NetworkIds } from 'blockchain/networks'
-import { getTokenPrice } from 'blockchain/prices'
-import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAjnaCumulatives'
-import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
-import { SubgraphsResponses } from 'features/subgraphLoader/types'
+import type { ProductType } from 'features/aave/types'
+import {AjnaProduct} from 'features/ajna/common/types'
+import {OmniProductType} from 'features/omni-kit/types'
+import { getApiVaults } from 'features/shared/vaultApi'
+import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
+import { LendingProtocol } from 'lendingProtocols'
 
 export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
   address,
   dpmList,
-  tickers,
+  // tickers,
 }) => {
   const networkId = 1
   const positions = [] as PortfolioPosition[]
@@ -20,9 +19,27 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
   const subgraphPositions = (await loadSubgraph('Ajna', 'getAjnaDpmPositions', networkId, {
     dpmProxyAddress,
   })) as SubgraphsResponses['Ajna']['getAjnaDpmPositions']
+  const positionsArray = subgraphPositions.response.accounts.flatMap(
+    ({ address: dpmAddress, borrowPositions, earnPositions, vaultId }) => [
+      ...borrowPositions.map((position) => ({ ...position, dpmAddress, isEarn: false, vaultId })),
+      ...earnPositions.map((position) => ({ ...position, dpmAddress, isEarn: true, vaultId })),
+    ],
+  )
 
-  console.log(dpmProxyAddress)
-  console.log(subgraphPositions.response.accounts)
+  const a = await Promise.all(
+    positionsArray.map(async ({ isEarn, vaultId }): Promise<any> => {
+      const apiVaults = await getApiVaults({
+        chainId: networkId,
+        protocol: LendingProtocol.Ajna,
+        vaultIds: [Number(vaultId)],
+      })
+      const type = (isEarn ? 'earn' : apiVaults[0]?.type ?? 'borrow') as OmniProductType
+
+      return type
+    }),
+  )
+
+  console.log(a)
 
   // const { ajnaPoolPairs, ajnaPoolInfo } = getNetworkContracts(NetworkIds.MAINNET)
 

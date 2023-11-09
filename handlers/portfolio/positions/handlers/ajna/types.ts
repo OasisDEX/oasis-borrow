@@ -10,13 +10,20 @@ interface AjnaDpmPositionsPool {
   address: string
 }
 
+interface AjnaDpmPositionsProtocolEvent {
+  timestamp: number
+}
+
 interface AjnaDpmPositionsPosition {
   pool: AjnaDpmPositionsPool
+  protocolEvents: [AjnaDpmPositionsProtocolEvent]
 }
 
 export interface AjnaDpmPositionsResponse {
   accounts: {
+    address: string
     borrowPositions: AjnaDpmPositionsPosition[]
     earnPositions: AjnaDpmPositionsPosition[]
+    vaultId: string
   }[]
 }
