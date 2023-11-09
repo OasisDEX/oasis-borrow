@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
-import { getProductType, isAvailableToMigrate } from './mappers'
 import type { PortfolioPositionsResponse } from 'lambdas/src/shared/domain-types'
 
 type PortfolioPositionsViewFiltersType = {
@@ -47,10 +46,10 @@ export const PortfolioPositionsView = ({
     }
 
   const filteredAndSortedPositions = useMemo(() => {
-    if (!portfolioPositionsData?.positionsPerProtocol) return []
+    if (!portfolioPositionsData?.positions) return []
     // empty positions first
-    const filteredEmptyPositions = portfolioPositionsData.positionsPerProtocol.filter(
-      ({ assetUsdValue }) => filterState['showEmptyPositions'] || assetUsdValue > 0,
+    const filteredEmptyPositions = portfolioPositionsData.positions.filter(
+      ({ tokens }) => filterState['showEmptyPositions'] || tokens.supply.amountUSD > 0,
     )
     // filter by product
     const noneSelected = [0, undefined].includes(filterState['product']?.length) // none selected = "All products"
@@ -64,23 +63,23 @@ export const PortfolioPositionsView = ({
       return (
         filterState['product']?.includes(
           // filter by product type
-          getProductType(position),
+          position.type?.toLocaleLowerCase() as PortfolioProductType,
         ) ||
-        (includeMigrated && isAvailableToMigrate(position)) // special case for migration positions
+        (includeMigrated && position.availableToMigrate) // special case for migration positions
       )
     })
 
     const sortedPositions = filteredProductPositions
       .sort((a, b) => {
         if (filterState['sorting'] === PortfolioSortingType.netValueAscending) {
-          return a.assetUsdValue - b.assetUsdValue
+          return a.tokens.supply.amountUSD - b.tokens.supply.amountUSD
         }
-        return b.assetUsdValue - a.assetUsdValue
+        return b.tokens.supply.amountUSD - a.tokens.supply.amountUSD
       })
       .sort((a, b) => {
         // move migration positions to the bottom
-        if (isAvailableToMigrate(a)) return 1
-        if (isAvailableToMigrate(b)) return -1
+        if (a.availableToMigrate) return 1
+        if (b.availableToMigrate) return -1
         return 0
       })
 
