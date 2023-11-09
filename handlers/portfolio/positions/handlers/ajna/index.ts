@@ -6,7 +6,7 @@ import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAj
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
 
-export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({ address, tickers }) => {
+export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({ address, dpmList, tickers }) => {
   const positions = [] as PortfolioPosition[]
 
   const { ajnaPoolPairs, ajnaPoolInfo } = getNetworkContracts(NetworkIds.MAINNET)
@@ -33,5 +33,6 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({ address,
   return {
     positions,
     address,
+    dpmList,
   }
 }
