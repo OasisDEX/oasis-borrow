@@ -19,7 +19,7 @@ export const PortfolioPositionLearn = ({ posts }: PortfolioPositionLearnProps) =
   return (
     <Flex
       as="ul"
-      sx={{ flexDirection: ['column', 'row'], columnGap: '24px', p: 0, m: 0, listStyle: 'none' }}
+      sx={{ flexDirection: ['column', 'row'], gap: '16px 24px', p: 0, m: 0, listStyle: 'none' }}
     >
       {posts ? (
         <>
@@ -36,7 +36,7 @@ export const PortfolioPositionLearn = ({ posts }: PortfolioPositionLearnProps) =
                 overflow: 'hidden',
               }}
             >
-              <Box sx={{ height: '205px' }}>
+              <Box sx={{ aspectRatio: '2 / 1' }}>
                 <Image
                   src={image}
                   alt={title}

@@ -5,7 +5,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import { useAppConfig } from 'helpers/config'
 import { uniq } from 'lodash'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { chevron_left, chevron_right } from 'theme/icons'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Box, Button, Flex, Text } from 'theme-ui'
@@ -21,6 +21,8 @@ export const PortfolioPositionFeatured = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ slidesToScroll: slidesToDisplay })
 
   const [amount, setAmount] = useState<number>(slidesToDisplay)
+  const [canScrollPrev, setCanScrollPrev] = useState<boolean>(false)
+  const [canScrollNext, setCanScrollNext] = useState<boolean>(true)
   const promoCardsData =
     PROMO_CARD_COLLECTIONS_PARSERS[AjnaSafetySwitch ? 'Home' : 'HomeWithAjna'](table)
   const slides = uniq(
@@ -34,11 +36,18 @@ export const PortfolioPositionFeatured = () => {
     ].filter(({ tokens }) => !!tokens),
   )
 
-  emblaApi?.on('select', () => {
-    setAmount(
-      Math.min(emblaApi?.selectedScrollSnap() * slidesToDisplay + slidesToDisplay, slides.length),
-    )
-  })
+  function updateSliderUI() {
+    if (emblaApi) {
+      setCanScrollPrev(emblaApi.canScrollPrev())
+      setCanScrollNext(emblaApi.canScrollNext())
+      setAmount(
+        Math.min(emblaApi?.selectedScrollSnap() * slidesToDisplay + slidesToDisplay, slides.length),
+      )
+    }
+  }
+
+  emblaApi?.on('select', () => updateSliderUI())
+  useEffect(() => updateSliderUI(), [isMobile])
 
   return (
     <>
@@ -66,7 +75,7 @@ export const PortfolioPositionFeatured = () => {
             variant="tertiary"
             sx={{ px: 2 }}
             onClick={() => emblaApi?.scrollPrev()}
-            disabled={!emblaApi?.canScrollPrev()}
+            disabled={!canScrollPrev}
           >
             <Icon
               icon={chevron_left}
@@ -79,7 +88,7 @@ export const PortfolioPositionFeatured = () => {
             variant="tertiary"
             sx={{ px: 2 }}
             onClick={() => emblaApi?.scrollNext()}
-            disabled={!emblaApi?.canScrollNext()}
+            disabled={!canScrollNext}
           >
             <Icon
               icon={chevron_right}
