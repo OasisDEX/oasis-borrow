@@ -10,10 +10,13 @@ export const portfolioPositionsHandler = async (
   req: NextApiRequest,
 ): Promise<{ positions: PortfolioPosition[]; address: string; error?: string }> => {
   const tickersResponse = await tokenTickers()
-  const tickers = Object.entries(tickersResponse).reduce((acc, [key, value]) => {
-    acc[key.toLowerCase()] = new BigNumber(value)
-    return acc
-  }, {} as Tickers)
+  const tickers = Object.entries(tickersResponse).reduce<Tickers>(
+    (acc, [key, value]) => ({
+      ...acc,
+      [key.toLowerCase()]: new BigNumber(value),
+    }),
+    {},
+  )
 
   const { address } = req.query as { address: string }
   const positionsReply = await Promise.all([
