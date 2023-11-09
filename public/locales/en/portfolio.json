@@ -76,9 +76,9 @@
     "staking": "Staking"
   },
   "lending-range-types": {
-    "1": "Active",
-    "2": "Unutilized",
-    "3": "Available"
+    "0": "Available",
+    "1": "Unutilized",
+    "2": "Active"
   },
   "details-tooltips": {
     "netValue": "Net Value is the current value of the collateral in your position minus the current debt expressed in USD.",

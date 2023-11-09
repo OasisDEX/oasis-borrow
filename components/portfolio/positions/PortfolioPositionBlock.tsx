@@ -14,6 +14,7 @@ import { Box, Button, Flex, Text } from 'theme-ui'
 
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
+
   return (
     <Box
       sx={{

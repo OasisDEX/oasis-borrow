@@ -7,9 +7,3 @@ export const lendingPriceColors = {
   belowMomp: '#EABE4C',
   aboveMomp: '#EE5728',
 }
-
-export const omniLendingPriceColors = {
-  belowHtp: '#D3D4D8',
-  belowLup: '#EABE4C',
-  aboveLup: '#1ECBAE',
-}

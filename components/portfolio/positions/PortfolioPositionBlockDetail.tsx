@@ -2,6 +2,7 @@ import { Icon } from 'components/Icon'
 import { getPortfolioAccentColor } from 'components/portfolio/helpers/getPortfolioAccentColor'
 import { Steps } from 'components/Steps'
 import { StatefulTooltip } from 'components/Tooltip'
+import { omniLendingPriceColors } from 'features/omni-kit/constants'
 import type { DetailsType, PositionDetail } from 'handlers/portfolio/types'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
@@ -24,6 +25,7 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
     suppliedTokenBalance: tPortfolio('details-tooltips.suppliedTokenBalance'),
     borrowedTokenBalance: tPortfolio('details-tooltips.borrowedTokenBalance'),
   }
+
   return (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'flex-start', my: [3, 0] }}>
       <Box>
@@ -66,7 +68,14 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
         variant="boldParagraph1"
         color={detail.accent ? getPortfolioAccentColor(detail.accent) : 'neutral100'}
       >
-        {detail.type === 'lendingRange' ? <Steps count={3} active={2} /> : detail.value}
+        {detail.type === 'lendingRange' ? (
+          <>
+            {tPortfolio(`lending-range-types.${detail.value}`)}
+            <Steps count={3} active={detail.value} color={omniLendingPriceColors[detail.value]} />
+          </>
+        ) : (
+          detail.value
+        )}
       </Text>
       {detail.subvalue && (
         <Text variant="paragraph4" color="neutral80">

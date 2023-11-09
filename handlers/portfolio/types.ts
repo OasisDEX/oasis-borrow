@@ -66,9 +66,9 @@ export type DetailsTypeLendingRange = 'lendingRange'
 export type DetailsType = DetailsTypeCommon & DetailsTypeLendingRange
 
 export enum LendingRangeType {
-  Active = 1,
-  Unutilized = 2,
-  Available = 3,
+  Available = 0,
+  Unutilized = 1,
+  Active = 2,
 }
 
 export type PositionDetailCommon = {
