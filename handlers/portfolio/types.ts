@@ -16,7 +16,7 @@ export type PortfolioPosition = {
   lendingType?: 'active' | 'passive' | 'loop' | 'staking' | 'pool' // are these all types?
   network: NetworkNames
   netValue: number
-  openDate: number // epoch based on block height timestamp
+  openDate?: number // epoch based on block height timestamp
   positionId: number
   primaryToken: string
   protocol: LendingProtocol
