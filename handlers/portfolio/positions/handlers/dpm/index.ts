@@ -48,15 +48,15 @@ const dpmListSupportedNetworks = [
   NetworkIds.BASEMAINNET,
 ]
 const subgraphListDict = {
-  [NetworkIds.MAINNET]: 'dpm-arbitrum',
-  [NetworkIds.ARBITRUMMAINNET]: 'dpm-base',
-  [NetworkIds.OPTIMISMMAINNET]: 'dpm-optimism',
-  [NetworkIds.BASEMAINNET]: 'dpm',
+  [NetworkIds.MAINNET]: 'oasis/dpm-arbitrum',
+  [NetworkIds.ARBITRUMMAINNET]: 'oasis/dpm-base',
+  [NetworkIds.OPTIMISMMAINNET]: 'oasis/dpm-optimism',
+  [NetworkIds.BASEMAINNET]: 'oasis/dpm',
 } as Record<(typeof dpmListSupportedNetworks)[number], string>
 
 export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
   const dpmCallList = dpmListSupportedNetworks.map((networkId) => {
-    const subgraphUrl = `${process.env.DPM_SUBGRAPHS_BASE_URL}/${subgraphListDict[networkId]}`
+    const subgraphUrl = `${process.env.SUBGRAPHS_BASE_URL}/${subgraphListDict[networkId]}`
     const subgraphMethod = dpmListQuery
     const params = { walletAddress: address.toLowerCase() }
     return request<DpmListQueryResponse>(subgraphUrl, subgraphMethod, params)
