@@ -71,7 +71,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
               </Flex>
             </Flex>
           )}
-          {position.type && [ProductType.Earn].includes(position.type) && (
+          {position.type && [ProductType.Earn].includes(position.type) && position.openDate && (
             <Flex sx={{ flexDirection: 'column' }}>
               <Text variant="boldParagraph3" color="neutral80" sx={{ mb: 2 }}>
                 {tPortfolio('days-of-earning', {
