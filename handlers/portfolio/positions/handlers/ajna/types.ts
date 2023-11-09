@@ -13,7 +13,7 @@ interface AjnaDpmPositionsPool {
 }
 
 interface AjnaDpmPositionsProtocolEvent {
-  timestamp: number
+  timestamp: string
 }
 
 interface AjnaDpmPositionsPosition {

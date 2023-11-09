@@ -11,7 +11,10 @@ import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEar
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
-import { getAjnaPositionDetails } from 'handlers/portfolio/positions/handlers/ajna/helpers'
+import {
+  getAjnaPositionDetails,
+  getAjnaPositionNetValue,
+} from 'handlers/portfolio/positions/handlers/ajna/helpers'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -46,6 +49,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
         isEarn,
         pool: { address: poolAddress, collateralToken, interestRate, lup, quoteToken },
         positionId,
+        protocolEvents,
         proxyAddress,
       }): Promise<any> => {
         const { ajnaPoolInfo } = getNetworkContracts(networkId)
@@ -101,13 +105,18 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
           }),
           ...(isEarn && { lendingType: 'active' }),
           network,
-          // netValue,
-          // openDate,
+          netValue: getAjnaPositionNetValue({
+            collateralPrice,
+            isOracless,
+            position,
+            quotePrice,
+            type,
+          }),
+          openDate: Number(protocolEvents[0].timestamp),
           positionId,
           primaryToken,
           protocol: LendingProtocol.Ajna,
           secondaryToken,
-          // strategyType,
           type,
           url: `${network}/ajna/${type}/${primaryToken}-${secondaryToken}/${positionId}`,
         }
