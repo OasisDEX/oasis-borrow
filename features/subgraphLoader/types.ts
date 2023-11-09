@@ -21,7 +21,7 @@ export type Subgraphs = {
     getAjnaCumulatives: { dpmProxyAddress: string; poolAddress: string }
     getAjnaPoolsData: {}
     getAjnaClaimedRewards: { walletAddress: string }
-    getAjnaDpmPositions: { dpmProxyAddress: string }
+    getAjnaDpmPositions: { dpmProxyAddress: string[] }
     searchAjnaPool: { collateralAddress: string[]; poolAddress: string[]; quoteAddress: string[] }
   }
   Aave: {

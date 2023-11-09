@@ -273,8 +273,8 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     }
   `,
   getAjnaDpmPositions: gql`
-    query getDpmPositions($dpmProxyAddress: ID!) {
-      accounts(where: { address: $dpmProxyAddress }) {
+    query getDpmPositions($dpmProxyAddress: [String!]) {
+      accounts(where: { address_in: $dpmProxyAddress }) {
         borrowPositions {
           pool {
             collateralToken {
