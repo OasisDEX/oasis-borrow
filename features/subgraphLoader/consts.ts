@@ -272,6 +272,38 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getAjnaDpmPositions: gql`
+    query getDpmPositions($dpmProxyAddress: ID!) {
+      accounts(where: { address: $dpmProxyAddress }) {
+        borrowPositions {
+          pool {
+            collateralToken {
+              symbol
+              address
+            }
+            quoteToken {
+              symbol
+              address
+            }
+            address
+          }
+        }
+        earnPositions {
+          pool {
+            collateralToken {
+              symbol
+              address
+            }
+            quoteToken {
+              symbol
+              address
+            }
+            address
+          }
+        }
+      }
+    }
+  `,
   searchAjnaPool: gql`
     query searchPool($collateralAddress: [ID]!, $poolAddress: [ID]!, $quoteAddress: [ID]!) {
       pools(
