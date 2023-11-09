@@ -59,7 +59,9 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
           },
         })
         const primaryToken = collateralToken.symbol.toUpperCase()
+        const primaryTokenAddress = collateralToken.address
         const secondaryToken = quoteToken.symbol.toUpperCase()
+        const secondaryTokenAddress = quoteToken.address
         const network = getNetworkById(networkId).name
         const type = (isEarn ? 'earn' : apiVaults[0]?.type ?? 'borrow') as OmniProductType
         const isProxyWithManyPositions =
@@ -115,7 +117,9 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
           protocol: LendingProtocol.Ajna,
           secondaryToken,
           type,
-          url: `${network}/ajna/${type}/${primaryToken}-${secondaryToken}/${positionId}`,
+          url: `${network}/ajna/${type}/${isOracless ? primaryTokenAddress : primaryToken}-${
+            isOracless ? secondaryTokenAddress : secondaryToken
+          }/${positionId}`,
         }
       },
     ),

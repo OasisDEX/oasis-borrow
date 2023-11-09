@@ -62,14 +62,16 @@ export function getAjnaPositionDetails({
           value: isOracless
             ? 'n/a'
             : `${formatCryptoBalance(new BigNumber(formattedLiquidationPrice))} ${priceFormat}`,
-          subvalue: isOracless
-            ? 'n/a'
-            : `Now ${formatCryptoBalance(new BigNumber(marketPrice))} ${priceFormat}`,
+          ...(!isOracless && {
+            subvalue: `Now ${formatCryptoBalance(new BigNumber(marketPrice))} ${priceFormat}`,
+          }),
         },
         {
           type: 'ltv',
           value: isOracless ? 'n/a' : formatDecimalAsPercent(riskRatio.loanToValue),
-          subvalue: isOracless ? 'n/a' : `Max ${formatDecimalAsPercent(maxLtv)}`,
+          ...(!isOracless && {
+            subvalue: `Max ${formatDecimalAsPercent(maxLtv)}`,
+          }),
         },
         {
           type: 'borrowRate',
