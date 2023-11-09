@@ -28,6 +28,7 @@ type DpmListQueryResponse = {
     collateralToken: string
     debtToken: string
     protocol: string
+    networkId: NetworkIds
   }[]
 }
 
@@ -59,13 +60,17 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
     const subgraphUrl = `${process.env.SUBGRAPHS_BASE_URL}/${subgraphListDict[networkId]}`
     const subgraphMethod = dpmListQuery
     const params = { walletAddress: address.toLowerCase() }
-    return request<DpmListQueryResponse>(subgraphUrl, subgraphMethod, params)
+    return request<DpmListQueryResponse>(subgraphUrl, subgraphMethod, params).then((data) => ({
+      networkId,
+      accounts: data.accounts,
+    }))
   })
   const dpmList = await Promise.all(dpmCallList).then((dpmNetworkList) => {
     return dpmNetworkList
       .map((dpm) => {
         return dpm.accounts.map((account) => {
           return {
+            networkId: dpm.networkId,
             id: account.id,
             user: account.user.id,
             vaultId: account.vaultId,
