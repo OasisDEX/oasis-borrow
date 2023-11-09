@@ -3,11 +3,10 @@ import { Construct } from 'constructs'
 import {
   App,
   TerraformStack,
-  CloudBackend,
-  RemoteBackend,
-  NamedCloudWorkspace,
+  // CloudBackend,
+  // NamedCloudWorkspace,
   TerraformAsset,
-  AssetType,
+  // AssetType,
   TerraformOutput,
 } from 'cdktf'
 
@@ -18,11 +17,10 @@ interface LambdaFunctionConfig {
   path: string
   handler: string
   runtime: string
-  stageName: string
   version: string
 }
 
-const lambdaRolePolicy = {
+const lambdaExecRolePolicy = {
   Version: '2012-10-17',
   Statement: [
     {
@@ -43,34 +41,34 @@ class LambdaStack extends TerraformStack {
     new aws.provider.AwsProvider(this, 'AWS', {
       region: 'eu-north-1',
     })
+    new random.provider.RandomProvider(this, 'random')
 
     // Create random value
     const pet = new random.pet.Pet(this, 'random-name', {
       length: 2,
     })
 
-    // Create Lambda executable
-    const asset = new TerraformAsset(this, 'lambda-asset', {
-      path: path.resolve(__dirname, config.path),
-      type: AssetType.ARCHIVE, // if left empty it infers directory and file
+    // Create unique S3 bucket that hosts artifacts
+    const bucket = new aws.s3Bucket.S3Bucket(this, 'artifacts', {
+      bucketPrefix: `artifacts-${name}`,
     })
 
-    // Create unique S3 bucket that hosts Lambda executable
-    const bucket = new aws.s3Bucket.S3Bucket(this, 'bucket', {
-      bucketPrefix: `learn-cdktf-${name}`,
+    // Create Lambda asset
+    const lambdaAsset = new TerraformAsset(this, 'lambda-asset', {
+      path: path.resolve(__dirname, config.path),
     })
 
     // Upload Lambda zip file to newly created S3 bucket
     const lambdaArchive = new aws.s3Object.S3Object(this, 'lambda-archive', {
       bucket: bucket.bucket,
-      key: `${config.version}/${asset.fileName}`,
-      source: asset.path, // returns a posix path
+      key: `${pet.id}/${lambdaAsset.fileName}`,
+      source: lambdaAsset.path,
     })
 
     // Create Lambda role
     const role = new aws.iamRole.IamRole(this, 'lambda-exec', {
-      name: `learn-cdktf-${name}-${pet.id}`,
-      assumeRolePolicy: JSON.stringify(lambdaRolePolicy),
+      name: `lambda-exec-${name}-${pet.id}`,
+      assumeRolePolicy: JSON.stringify(lambdaExecRolePolicy),
     })
 
     // Add execution role for lambda to write to CloudWatch logs
@@ -80,8 +78,8 @@ class LambdaStack extends TerraformStack {
     })
 
     // Create Lambda function
-    const lambdaFunc = new aws.lambdaFunction.LambdaFunction(this, 'learn-cdktf-lambda', {
-      functionName: `learn-cdktf-${name}-${pet.id}`,
+    const lambdaFunc = new aws.lambdaFunction.LambdaFunction(this, 'lambda', {
+      functionName: `${name}-${pet.id}`,
       s3Bucket: bucket.bucket,
       s3Key: lambdaArchive.key,
       handler: config.handler,
@@ -96,7 +94,7 @@ class LambdaStack extends TerraformStack {
       target: lambdaFunc.arn,
     })
 
-    new aws.lambdaPermission.LambdaPermission(this, 'apigw-lambda', {
+    new aws.lambdaPermission.LambdaPermission(this, 'api-gw-lambda-invoke', {
       functionName: lambdaFunc.functionName,
       action: 'lambda:InvokeFunction',
       principal: 'apigateway.amazonaws.com',
@@ -110,26 +108,17 @@ class LambdaStack extends TerraformStack {
 }
 
 const app = new App()
-const stack = new LambdaStack(app, 'lambda-hello-world', {
-  path: '../lambdas/dist/portfolio-overview',
-  handler: 'index.handler',
+new LambdaStack(app, 'portfolio-positions-2', {
+  path: '../lambdas/artifacts/portfolio-positions.zip',
+  handler: 'dist/portfolio-positions/index.handler',
   runtime: 'nodejs18.x',
-  stageName: 'hello-world',
-  version: 'v0.0.1',
+  version: 'v0.0.7',
 })
 
 // new CloudBackend(stack, {
 //   hostname: 'app.terraform.io',
 //   organization: 'Oazo',
 //   workspaces: new NamedCloudWorkspace('borrow-infra'),
-// })
-
-// new RemoteBackend(stack, {
-//   hostname: 'app.terraform.io',
-//   organization: 'Oazo',
-//   workspaces: {
-//     name: 'borrow-infra',
-//   },
 // })
 
 app.synth()

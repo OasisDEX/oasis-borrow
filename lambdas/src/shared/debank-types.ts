@@ -53,7 +53,7 @@ export type DebankPortfolioItemObject = {
     net_usd_value: number
   }
   update_at: number
-  name: DebankType
+  name: DebankLendingType
   detail_types: string
   detail: {
     supply_token_list: DebankToken[]
@@ -74,9 +74,36 @@ export type DebankPortfolioItemObject = {
     controller: string
     chain: string
     project_id: string
+    time_at?: number
   }
   position_index: string
 }
+
+export type DebankLendingType =
+  | 'Yield'
+  | 'Deposit'
+  | 'Staked'
+  | 'Locked'
+  | 'Farming'
+  | 'Leveraged Farming'
+  | 'Lending'
+  | 'Vesting'
+  | 'Rewards'
+  | 'Airdrop'
+  | 'Liquidity Pool'
+  | 'Options Seller'
+  | 'Options Buyer'
+  | 'Insurance Seller'
+  | 'Insurance Buyer'
+  | 'Investment'
+  | 'Governance'
+  | 'Perpetuals'
+  | 'NFT Staked'
+  | 'NFT Liquidity Pool'
+  | 'NFT Lending'
+  | 'NFT Fraction'
+  | 'NFT P2P Borrower'
+  | 'NFT P2P Lender'
 
 export type DebankType =
   | 'common'

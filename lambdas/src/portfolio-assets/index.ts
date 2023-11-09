@@ -8,17 +8,20 @@ import { DebankToken } from '../shared/debank-types'
 import { NetworkNames, PortfolioAsset, PortfolioAssetsResponse } from '../shared/domain-types'
 import { DebankNetworkNameToOurs, DebankNetworkNames } from '../shared/debank-helpers'
 
-const { DEBANK_API_KEY: debankApiKey, DEBANK_API_URL: serviceUrl } = process.env
-if (!debankApiKey) {
-  throw new Error('Missing DEBANK_API_KEY')
-}
-const debankAuthHeaderKey = 'Accesskey'
-const headers = { [debankAuthHeaderKey]: debankApiKey }
-
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
+  //set envs
+  const {
+    DEBANK_API_KEY: debankApiKey = process.env.DEBANK_API_KEY,
+    DEBANK_API_URL: serviceUrl = process.env.DEBANK_API_URL,
+  } = (event.stageVariables as Record<string, string>) || {}
+  if (!debankApiKey || !serviceUrl) {
+    throw new Error('Missing env vars')
+  }
+  const debankAuthHeaderKey = 'Accesskey'
+  const headers = { [debankAuthHeaderKey]: debankApiKey }
+
   // validate the query
   let address: string | undefined
-
   try {
     address = getAddressFromRequest(event)
   } catch (error) {
