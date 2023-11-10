@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
+import { notAvailable } from 'handlers/portfolio/constants'
 import { LendingRangeType, type PositionDetail } from 'handlers/portfolio/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
@@ -60,7 +61,7 @@ export function getAjnaPositionDetails({
         {
           type: 'liquidationPrice',
           value: isOracless
-            ? 'n/a'
+            ? notAvailable
             : `${formatCryptoBalance(new BigNumber(formattedLiquidationPrice))} ${priceFormat}`,
           ...(!isOracless && {
             subvalue: `Now ${formatCryptoBalance(new BigNumber(marketPrice))} ${priceFormat}`,
@@ -68,7 +69,7 @@ export function getAjnaPositionDetails({
         },
         {
           type: 'ltv',
-          value: isOracless ? 'n/a' : formatDecimalAsPercent(riskRatio.loanToValue),
+          value: isOracless ? notAvailable : formatDecimalAsPercent(riskRatio.loanToValue),
           ...(!isOracless && {
             subvalue: `Max ${formatDecimalAsPercent(maxLtv)}`,
           }),
@@ -110,11 +111,11 @@ export function getAjnaPositionDetails({
         },
         {
           type: 'apy',
-          value: lendApr ? formatDecimalAsPercent(lendApr) : 'n/a',
+          value: lendApr ? formatDecimalAsPercent(lendApr) : notAvailable,
         },
         {
           type: '90dApy',
-          value: per90d ? formatDecimalAsPercent(per90d) : 'n/a',
+          value: per90d ? formatDecimalAsPercent(per90d) : notAvailable,
         },
       ]
     }
@@ -142,7 +143,7 @@ export function getAjnaPositionDetails({
         },
         {
           type: 'pnl',
-          value: isProxyWithManyPositions ? formatDecimalAsPercent(withoutFees) : 'n/a',
+          value: isProxyWithManyPositions ? formatDecimalAsPercent(withoutFees) : notAvailable,
           ...(isProxyWithManyPositions && {
             accent: withoutFees.gt(zero) ? 'positive' : 'negative',
           }),
