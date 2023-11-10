@@ -225,6 +225,7 @@ const getAaveEarnPosition: GetPositionHandlerType = async (dpm, tickers) => {
       {
         type: 'earnings',
         value: '23',
+        // value: net value - (cum deposit - cum withdraw ) /  (cum deposit - cum withdraw ) ,
       },
       {
         type: 'apy',

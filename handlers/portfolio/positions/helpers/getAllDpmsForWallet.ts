@@ -68,9 +68,8 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
     const subgraphUrl = `${process.env.SUBGRAPHS_BASE_URL}/${
       subgraphListDict[networkId as DpmSupportedNetworks]
     }`
-    const subgraphMethod = dpmListQuery
     const params = { walletAddress: address.toLowerCase() }
-    return request<DpmListQueryResponse>(subgraphUrl, subgraphMethod, params).then((data) => ({
+    return request<DpmListQueryResponse>(subgraphUrl, dpmListQuery, params).then((data) => ({
       networkId: networkId as DpmSupportedNetworks,
       accounts: data.accounts,
     }))
