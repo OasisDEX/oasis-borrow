@@ -5,6 +5,7 @@ import { ajnaPositionsHandler } from 'handlers/portfolio/positions/handlers/ajna
 import type { DpmList } from 'handlers/portfolio/positions/handlers/dpm'
 import { getAllDpmsForWallet } from 'handlers/portfolio/positions/handlers/dpm'
 import { makerPositionsHandler } from 'handlers/portfolio/positions/handlers/maker'
+import { getPositionsFromDatabase } from 'handlers/portfolio/positions/helpers'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { tokenTickers } from 'helpers/api/tokenTickers'
 import type { NextApiRequest } from 'next'
@@ -19,6 +20,9 @@ type PortfolioPositionsReply = {
 export const portfolioPositionsHandler = async (
   req: NextApiRequest,
 ): Promise<PortfolioPositionsReply> => {
+  const { address } = req.query as { address: string }
+
+  const apiVaults = await getPositionsFromDatabase({ address })
   const tickersResponse = await tokenTickers()
   const tickers = Object.entries(tickersResponse).reduce<Tickers>(
     (acc, [key, value]) => ({
@@ -28,12 +32,11 @@ export const portfolioPositionsHandler = async (
     {},
   )
 
-  const { address } = req.query as { address: string }
   const dpmList = await getAllDpmsForWallet({ address })
   const positionsReply = await Promise.all([
-    ajnaPositionsHandler({ address, tickers, dpmList }),
-    aaveV3PositionsHandler({ address, tickers, dpmList }),
-    makerPositionsHandler({ address, tickers, dpmList }),
+    ajnaPositionsHandler({ address, dpmList, apiVaults, tickers }),
+    aaveV3PositionsHandler({ address, dpmList, apiVaults, tickers }),
+    makerPositionsHandler({ address, dpmList, apiVaults, tickers }),
   ])
     .then(
       ([
@@ -42,7 +45,11 @@ export const portfolioPositionsHandler = async (
         { positions: makerPositions },
       ]) => {
         return {
-          positions: [...ajnaPositions, ...aaveV3Positions, ...makerPositions],
+          positions: [
+            ...ajnaPositions,
+            ...aaveV3Positions,
+            ...makerPositions,
+          ],
           address: address as string,
           dpmList,
         }
