@@ -1,8 +1,7 @@
 import { Icon } from 'components/Icon'
 import { getPortfolioAccentColor } from 'components/portfolio/helpers/getPortfolioAccentColor'
-import { Steps } from 'components/Steps'
+import { PortfolioPositionBlockLendingRangeDetail } from 'components/portfolio/positions/PortfolioPositionBlockLendingRangeDetail'
 import { StatefulTooltip } from 'components/Tooltip'
-import { omniLendingPriceColors } from 'features/omni-kit/constants'
 import type { DetailsType, PositionDetail } from 'handlers/portfolio/types'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
@@ -69,10 +68,7 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
         color={detail.accent ? getPortfolioAccentColor(detail.accent) : 'neutral100'}
       >
         {detail.type === 'lendingRange' ? (
-          <>
-            {tPortfolio(`lending-range-types.${detail.value}`)}
-            <Steps count={3} active={detail.value} color={omniLendingPriceColors[detail.value]} />
-          </>
+          <PortfolioPositionBlockLendingRangeDetail detail={detail} />
         ) : (
           detail.value
         )}
