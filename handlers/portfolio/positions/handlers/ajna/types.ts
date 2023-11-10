@@ -1,4 +1,4 @@
-interface AjnaDpmPositionsPool {
+export interface AjnaDpmPositionsPool {
   address: string
   collateralToken: {
     address: string
@@ -10,11 +10,11 @@ interface AjnaDpmPositionsPool {
   }
 }
 
-interface AjnaDpmPositionsProtocolEvent {
+export interface AjnaDpmPositionsProtocolEvent {
   timestamp: string
 }
 
-interface AjnaDpmPositionsPosition {
+export interface AjnaDpmPositionsPosition {
   pool: AjnaDpmPositionsPool
   protocolEvents: [AjnaDpmPositionsProtocolEvent]
 }

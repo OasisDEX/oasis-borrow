@@ -1,32 +1,25 @@
 import { views } from '@oasisdex/dma-library'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { getNetworkById, getRpcProvider } from 'blockchain/networks'
-import { getTokenPrice } from 'blockchain/prices'
-import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAjnaCumulatives'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
-import type { OmniProductType } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import {
   getAjnaPositionDetails,
+  getAjnaPositionInfo,
   getAjnaPositionNetValue,
 } from 'handlers/portfolio/positions/handlers/ajna/helpers'
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
-import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
-import { prisma } from 'server/prisma'
 
 export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
   address,
   dpmList,
   tickers,
 }) => {
-  const networkId = 1
-
   const dpmProxyAddress = dpmList.map(({ id }) => id)
-  const subgraphPositions = (await loadSubgraph('Ajna', 'getAjnaDpmPositions', networkId, {
+  const subgraphPositions = (await loadSubgraph('Ajna', 'getAjnaDpmPositions', NetworkIds.MAINNET, {
     dpmProxyAddress,
   })) as SubgraphsResponses['Ajna']['getAjnaDpmPositions']
   const positionsArray = subgraphPositions.response.accounts.flatMap(
@@ -45,47 +38,41 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
     positionsArray.map(
       async ({
         isEarn,
-        pool: { address: poolAddress, collateralToken, quoteToken },
+        pool,
         positionId,
         protocolEvents,
         proxyAddress,
       }): Promise<PortfolioPosition> => {
-        const { ajnaPoolInfo } = getNetworkContracts(networkId)
-        const apiVaults = await prisma.vault.findMany({
-          where: {
-            vault_id: { equals: Number(positionId) },
-            chain_id: { equals: networkId },
-            protocol: { equals: LendingProtocol.Ajna },
-          },
-        })
-        const primaryToken = collateralToken.symbol.toUpperCase()
-        const primaryTokenAddress = collateralToken.address
-        const secondaryToken = quoteToken.symbol.toUpperCase()
-        const secondaryTokenAddress = quoteToken.address
-        const network = getNetworkById(networkId).name
-        const type = (isEarn ? 'earn' : apiVaults[0]?.type ?? 'borrow') as OmniProductType
+        const {
+          ajnaPoolInfo,
+          collateralPrice,
+          isOracless,
+          network,
+          poolAddress,
+          primaryToken,
+          quotePrice,
+          secondaryToken,
+          type,
+          url,
+        } = await getAjnaPositionInfo({ isEarn, pool, positionId, tickers })
+
+        // proxies with more than one position doesn not support pnl calculation on subgraph so far
         const isProxyWithManyPositions =
           positionsArray.filter((item) => proxyAddress === item.proxyAddress).length > 1
-        const isOracless = isPoolOracless({
-          chainId: networkId,
-          collateralToken: primaryToken,
-          quoteToken: secondaryToken,
-        })
-        const collateralPrice = isOracless ? one : getTokenPrice(primaryToken, tickers)
-        const quotePrice = isOracless ? one : getTokenPrice(secondaryToken, tickers)
 
+        // get Ajna position from dma
         const commonPayload = { collateralPrice, quotePrice, proxyAddress, poolAddress }
         const commonDependency = {
           poolInfoAddress: ajnaPoolInfo.address,
-          provider: getRpcProvider(networkId),
-          getPoolData: getAjnaPoolData(networkId),
-          getCumulatives: getAjnaCumulatives(networkId),
+          provider: getRpcProvider(NetworkIds.MAINNET),
+          getPoolData: getAjnaPoolData(NetworkIds.MAINNET),
+          getCumulatives: getAjnaCumulatives(NetworkIds.MAINNET),
         }
 
         const position = isEarn
           ? await views.ajna.getEarnPosition(commonPayload, {
               ...commonDependency,
-              getEarnData: getAjnaEarnData(networkId),
+              getEarnData: getAjnaEarnData(NetworkIds.MAINNET),
             })
           : await views.ajna.getPosition(commonPayload, commonDependency)
 
@@ -117,9 +104,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
           protocol: LendingProtocol.Ajna,
           secondaryToken,
           type,
-          url: `${network}/ajna/${type}/${isOracless ? primaryTokenAddress : primaryToken}-${
-            isOracless ? secondaryTokenAddress : secondaryToken
-          }/${positionId}`,
+          url,
         }
       },
     ),
