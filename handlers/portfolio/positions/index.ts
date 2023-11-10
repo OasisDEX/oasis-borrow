@@ -4,6 +4,7 @@ import { aaveV3PositionsHandler } from 'handlers/portfolio/positions/handlers/aa
 import { ajnaPositionsHandler } from 'handlers/portfolio/positions/handlers/ajna'
 import type { DpmList } from 'handlers/portfolio/positions/handlers/dpm'
 import { getAllDpmsForWallet } from 'handlers/portfolio/positions/handlers/dpm'
+import { makerPositionsHandler } from 'handlers/portfolio/positions/handlers/maker'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { tokenTickers } from 'helpers/api/tokenTickers'
 import type { NextApiRequest } from 'next'
@@ -32,14 +33,21 @@ export const portfolioPositionsHandler = async (
   const positionsReply = await Promise.all([
     ajnaPositionsHandler({ address, tickers, dpmList }),
     aaveV3PositionsHandler({ address, tickers, dpmList }),
+    makerPositionsHandler({ address, tickers, dpmList }),
   ])
-    .then(([{ positions: ajnaPositions }, { positions: aaveV3Positions }]) => {
-      return {
-        positions: [...ajnaPositions, ...aaveV3Positions],
-        address: address as string,
-        dpmList,
-      }
-    })
+    .then(
+      ([
+        { positions: ajnaPositions },
+        { positions: aaveV3Positions },
+        { positions: makerPositions },
+      ]) => {
+        return {
+          positions: [...ajnaPositions, ...aaveV3Positions, ...makerPositions],
+          address: address as string,
+          dpmList,
+        }
+      },
+    )
     .catch((error) => {
       console.error(error)
       return { positions: [], address: address as string, error: JSON.stringify(error), dpmList }
