@@ -1,6 +1,11 @@
+import { RiskRatio } from '@oasisdex/dma-library'
 import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
-import { getAaveV3ReserveData, getAaveV3UserReserveData } from 'blockchain/aave-v3'
+import {
+  getAaveV3ReserveConfigurationData,
+  getAaveV3ReserveData,
+  getAaveV3UserReserveData,
+} from 'blockchain/aave-v3'
 import { networksById } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
@@ -11,7 +16,7 @@ import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/port
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 
-type getPositionHandler = (dpm: DpmList[number], tickers: Tickers) => Promise<PortfolioPosition>
+type GetPositionHandlerType = (dpm: DpmList[number], tickers: Tickers) => Promise<PortfolioPosition>
 
 const commonDataMapper = (dpm: DpmList[number]) => ({
   positionId: Number(dpm.vaultId),
@@ -22,7 +27,7 @@ const commonDataMapper = (dpm: DpmList[number]) => ({
   secondaryToken: getTokenName(dpm.networkId, dpm.debtToken),
 })
 
-const getAaveBorrowPosition: getPositionHandler = async (dpm) => {
+const getAaveBorrowPosition: GetPositionHandlerType = async (dpm) => {
   const commonData = commonDataMapper(dpm)
   const userReserveData = await getAaveV3UserReserveData({
     networkId: dpm.networkId,
@@ -57,40 +62,55 @@ const getAaveBorrowPosition: getPositionHandler = async (dpm) => {
     netValue: 22,
   }
 }
-const getAaveMultiplyPosition: getPositionHandler = async (dpm, tickers) => {
+
+const getAaveMultiplyPosition: GetPositionHandlerType = async (dpm, tickers) => {
   const commonData = commonDataMapper(dpm)
   const primaryTokenPrice = getTokenPrice(commonData.primaryToken, tickers)
   const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, tickers)
-  const collateralTokenReserveData = await getAaveV3ReserveData({
-    networkId: dpm.networkId,
-    token: commonData.primaryToken,
-  })
-  const debtTokenReserveData = await getAaveV3ReserveData({
-    networkId: dpm.networkId,
-    token: commonData.secondaryToken,
-  })
-  const onChainPositionData = await getOnChainPosition({
-    networkId: dpm.networkId,
-    collateralToken: commonData.primaryToken,
-    debtToken: commonData.secondaryToken,
-    protocol: commonData.protocol,
-    proxyAddress: dpm.id.toLowerCase(),
-  })
+  const [
+    primaryTokenReserveConfiguration,
+    primaryTokenReserveData,
+    secondaryTokenReserveData,
+    onChainPositionData,
+  ] = await Promise.all([
+    getAaveV3ReserveConfigurationData({
+      networkId: dpm.networkId,
+      token: commonData.primaryToken,
+    }),
+    getAaveV3ReserveData({
+      networkId: dpm.networkId,
+      token: commonData.primaryToken,
+    }),
+    getAaveV3ReserveData({
+      networkId: dpm.networkId,
+      token: commonData.secondaryToken,
+    }),
+    getOnChainPosition({
+      networkId: dpm.networkId,
+      collateralToken: commonData.primaryToken,
+      debtToken: commonData.secondaryToken,
+      protocol: commonData.protocol,
+      proxyAddress: dpm.id.toLowerCase(),
+    }),
+  ])
+
   const calculations = calculateViewValuesForPosition(
     onChainPositionData,
     primaryTokenPrice,
     secondaryTokenPrice,
-    collateralTokenReserveData.liquidityRate,
-    debtTokenReserveData.variableBorrowRate,
+    primaryTokenReserveData.liquidityRate,
+    secondaryTokenReserveData.variableBorrowRate,
+  )
+  const { multiple: maxMultiple } = new RiskRatio(
+    primaryTokenReserveConfiguration.ltv,
+    RiskRatio.TYPE.LTV,
   )
   return {
     ...commonData,
     details: [
       {
         type: 'netValue',
-        value: `${formatAmount(calculations.netValueInDebtToken, commonData.secondaryToken)} ${
-          commonData.secondaryToken
-        }`,
+        value: `$${formatAmount(calculations.netValue, 'USD')}`,
       },
       {
         type: 'pnl',
@@ -99,26 +119,32 @@ const getAaveMultiplyPosition: getPositionHandler = async (dpm, tickers) => {
       },
       {
         type: 'liquidationPrice',
-        value: `${formatAmount(calculations.liquidationPriceInDebt, commonData.secondaryToken)} ${
-          commonData.secondaryToken
-        }`,
+        value: `$${formatAmount(
+          calculations.liquidationPriceInDebt.times(secondaryTokenPrice),
+          commonData.secondaryToken,
+        )}`,
+        subvalue: `now: $${formatAmount(primaryTokenPrice, 'USD')}`,
       },
       {
         type: 'ltv',
         value: formatPercent(onChainPositionData.riskRatio.loanToValue.times(100), {
           precision: 2,
         }),
+        subvalue: `max: ${formatPercent(onChainPositionData.category.maxLoanToValue.times(100), {
+          precision: 2,
+        })}`,
       },
       {
         type: 'multiple',
-        value: `${onChainPositionData.riskRatio.multiple.toFormat(1, BigNumber.ROUND_DOWN)}x`,
+        value: `${onChainPositionData.riskRatio.multiple.toFormat(2, BigNumber.ROUND_DOWN)}x`,
+        subvalue: `max: ${maxMultiple.toFormat(2, BigNumber.ROUND_DOWN)}x`,
       },
     ],
     automations: {},
-    netValue: 22,
+    netValue: calculations.netValue.toNumber(),
   }
 }
-const getAaveEarnPosition: getPositionHandler = async (dpm) => {
+const getAaveEarnPosition: GetPositionHandlerType = async (dpm) => {
   return {
     ...commonDataMapper(dpm),
     details: [
