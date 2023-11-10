@@ -128,6 +128,7 @@ export const tokenConfigs: TokenConfig[] = [
     name: 'Ether',
     icon: ether,
     iconCircle: ether_circle_color,
+    oracleTicker: 'ethBaseChainlinkTicker',
     coinpaprikaTicker: 'eth-ethereum',
     coinbaseTicker: 'eth-usd',
     coinGeckoId: 'ethereum',
@@ -257,9 +258,7 @@ export const tokenConfigs: TokenConfig[] = [
     //TODO: replace with values provided by design team - so far content is duplicated from ETH
     color: '#667FE3',
     background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
-    coinbaseTicker: 'cbeth-usd',
-    coinGeckoTicker: 'coinbase-wrapped-staked-eth',
-    coinpaprikaTicker: 'cbeth-coinbase-wrapped-staked-eth',
+    oracleTicker: 'cbethBaseChainlinkTicker',
     rootToken: 'ETH',
     tags: [],
   },
