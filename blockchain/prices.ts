@@ -106,11 +106,11 @@ export function getTokenPrice(token: string, tickers: Tickers) {
   } = getToken(token)
 
   return getPrice(tickers, [
+    oracleTicker,
     coinbaseTicker,
     coinpaprikaTicker,
     coinGeckoTicker,
     coinpaprikaFallbackTicker,
-    oracleTicker,
   ])
 }
 
