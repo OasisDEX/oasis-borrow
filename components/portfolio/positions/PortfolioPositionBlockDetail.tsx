@@ -1,6 +1,6 @@
 import { Icon } from 'components/Icon'
 import { getPortfolioAccentColor } from 'components/portfolio/helpers/getPortfolioAccentColor'
-import { LendingRangeDetail } from 'components/portfolio/LendingRangeDetail'
+import { PortfolioPositionBlockLendingRangeDetail } from 'components/portfolio/positions/PortfolioPositionBlockLendingRangeDetail'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { DetailsType, PositionDetail } from 'handlers/portfolio/types'
 import type { TranslateStringType } from 'helpers/translateStringType'
@@ -8,8 +8,6 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
 import { Box, Flex, Text } from 'theme-ui'
-
-import type { LendingRangeType } from 'lambdas/src/shared/lending-range'
 
 export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetail }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
@@ -26,10 +24,16 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
     suppliedTokenBalance: tPortfolio('details-tooltips.suppliedTokenBalance'),
     borrowedTokenBalance: tPortfolio('details-tooltips.borrowedTokenBalance'),
   }
+
   return (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'flex-start', my: [3, 0] }}>
       <Box>
-        <Text as="div" variant="paragraph4" color="neutral80" sx={{ verticalAlign: 'center' }}>
+        <Text
+          as="div"
+          variant="paragraph4"
+          color="neutral80"
+          sx={{ mb: 1, verticalAlign: 'center' }}
+        >
           {tPortfolio(`position-details.${detail.type}`)}
           {detailsTooltipsMap[detail.type] && (
             <StatefulTooltip
@@ -64,7 +68,7 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
         color={detail.accent ? getPortfolioAccentColor(detail.accent) : 'neutral100'}
       >
         {detail.type === 'lendingRange' ? (
-          <LendingRangeDetail value={detail.value as LendingRangeType} />
+          <PortfolioPositionBlockLendingRangeDetail detail={detail} />
         ) : (
           detail.value
         )}

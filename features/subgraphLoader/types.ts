@@ -6,6 +6,7 @@ import type { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/g
 import type { SearchAjnaPoolResponse } from 'features/ajna/positions/common/helpers/searchAjnaPool.types'
 import type { AavePositionHistoryResponse } from 'features/positionHistory/types'
 import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'
+import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/ajna/types'
 
 export type Subgraphs = {
   Ajna: {
@@ -20,6 +21,7 @@ export type Subgraphs = {
     getAjnaCumulatives: { dpmProxyAddress: string; poolAddress: string }
     getAjnaPoolsData: {}
     getAjnaClaimedRewards: { walletAddress: string }
+    getAjnaDpmPositions: { dpmProxyAddress: string[] }
     searchAjnaPool: { collateralAddress: string[]; poolAddress: string[]; quoteAddress: string[] }
   }
   Aave: {
@@ -92,6 +94,7 @@ export type SubgraphsResponses = {
       }
     }>
     getAjnaClaimedRewards: SubgraphBaseResponse<{ claimeds: AjnaClaimedReward[] }>
+    getAjnaDpmPositions: SubgraphBaseResponse<AjnaDpmPositionsResponse>
     searchAjnaPool: SubgraphBaseResponse<{
       pools: SearchAjnaPoolResponse[]
     }>

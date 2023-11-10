@@ -13,3 +13,5 @@ export const omniSidebarManageBorrowishSteps = [
 
 export const omniFormExternalSteps: OmniSidebarStep[] = [OmniSidebarStep.Dpm]
 export const omniFormStepsWithTransaction: OmniSidebarStep[] = [OmniSidebarStep.Transaction]
+
+export const omniLendingPriceColors = ['#D3D4D8', '#EABE4C', '#1ECBAE']

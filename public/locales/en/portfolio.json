@@ -68,10 +68,17 @@
     "borrowedToken": "Borrowed",
     "borrowedTokenBalance": "Balance of Borrowed"
   },
+  "lending-type": {
+    "active": "Active Lending",
+    "loop": "Yield Loop",
+    "passive": "Passive Lending",
+    "pool": "Pool",
+    "staking": "Staking"
+  },
   "lending-range-types": {
-    "aboveLup": "Active",
-    "belowHtp": "Unutilized",
-    "belowLup": "Available"
+    "0": "Available",
+    "1": "Unutilized",
+    "2": "Active"
   },
   "details-tooltips": {
     "netValue": "Net Value is the current value of the collateral in your position minus the current debt expressed in USD.",

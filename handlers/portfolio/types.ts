@@ -1,6 +1,6 @@
 import type { NetworkNames } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
-import type { ProductType, StrategyType } from 'features/aave/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import type { DpmList } from 'handlers/portfolio/positions/handlers/dpm'
 import type { LendingProtocol } from 'lendingProtocols'
 
@@ -21,8 +21,8 @@ export type PortfolioPosition = {
   primaryToken: string
   protocol: LendingProtocol
   secondaryToken: string
-  strategyType?: StrategyType
-  type?: ProductType
+  type: OmniProductType
+  url: string
 }
 
 export type PortfolioPositionsHandler = ({
@@ -44,34 +44,43 @@ type AutomationType = {
   price?: number
 }
 
-export type DetailsType =
-  | 'netValue'
-  | 'netValueEarnActivePassive'
-  | 'pnl'
+type DetailsTypeCommon =
+  | '90dApy'
+  | 'apy'
+  | 'borrowedToken'
+  | 'borrowedTokenBalance'
+  | 'borrowRate'
+  | 'collateralLocked'
+  | 'earnings'
   | 'liquidationPrice'
   | 'ltv'
   | 'multiple'
-  | 'collateralLocked'
-  | 'totalDebt'
-  | 'borrowRate'
-  | 'lendingRange'
-  | 'earnings'
-  | 'apy'
-  | '90dApy'
+  | 'netValue'
+  | 'netValueEarnActivePassive'
+  | 'pnl'
   | 'suppliedToken'
   | 'suppliedTokenBalance'
-  | 'borrowedToken'
-  | 'borrowedTokenBalance'
+  | 'totalDebt'
 
-export type PositionDetail = {
-  type: DetailsType
-  value: string | LendingRangeType
-  accent?: 'positive' | 'negative'
-  subvalue?: string
-}
+type DetailsTypeLendingRange = 'lendingRange'
+export type DetailsType = DetailsTypeCommon | DetailsTypeLendingRange
 
 export enum LendingRangeType {
-  belowHtp = 'belowHtp',
-  belowLup = 'belowLup',
-  aboveLup = 'aboveLup',
+  Available = 0,
+  Unutilized = 1,
+  Active = 2,
+}
+
+export type PositionDetailCommon = {
+  type: DetailsTypeCommon
+  value: string
+}
+export type PositionDetailLendingRange = {
+  type: DetailsTypeLendingRange
+  value: LendingRangeType
+}
+
+export type PositionDetail = (PositionDetailCommon | PositionDetailLendingRange) & {
+  accent?: 'positive' | 'negative'
+  subvalue?: string
 }
