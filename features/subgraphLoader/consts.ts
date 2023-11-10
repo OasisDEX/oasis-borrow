@@ -427,7 +427,10 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   getMakerDiscoverPositions: gql`
     query getDiscoverPositions($walletAddress: Bytes!) {
       cdps (where: {owner_: {address: $walletAddress}}) {
-        id
+        cdp
+        collateral
+        debt
+        type
       }
     }
   `,
