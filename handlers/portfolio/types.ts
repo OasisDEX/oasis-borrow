@@ -62,8 +62,8 @@ type DetailsTypeCommon =
   | 'suppliedTokenBalance'
   | 'totalDebt'
 
-export type DetailsTypeLendingRange = 'lendingRange'
-export type DetailsType = DetailsTypeCommon & DetailsTypeLendingRange
+type DetailsTypeLendingRange = 'lendingRange'
+export type DetailsType = DetailsTypeCommon | DetailsTypeLendingRange
 
 export enum LendingRangeType {
   Available = 0,

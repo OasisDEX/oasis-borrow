@@ -36,9 +36,9 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
           sx={{ mb: 1, verticalAlign: 'center' }}
         >
           {tPortfolio(`position-details.${detail.type}`)}
-          {detailsTooltipsMap[detail.type as DetailsType] && (
+          {detailsTooltipsMap[detail.type] && (
             <StatefulTooltip
-              tooltip={detailsTooltipsMap[detail.type as DetailsType]}
+              tooltip={detailsTooltipsMap[detail.type]}
               containerSx={{
                 ml: 1,
                 mb: '-10px',
