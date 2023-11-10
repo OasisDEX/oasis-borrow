@@ -7,10 +7,16 @@ import { LendingProtocol } from 'lendingProtocols'
 interface getMakerPositionInfoParams {
   apiVaults: Vault[]
   cdp: string
+  tokenSymbol: string
   type: string
 }
 
-export async function getMakerPositionInfo({ apiVaults, cdp, type }: getMakerPositionInfoParams) {
+export async function getMakerPositionInfo({
+  apiVaults,
+  cdp,
+  tokenSymbol,
+  type,
+}: getMakerPositionInfoParams) {
   // determine position type based on subgraph and db responses
   const resolvedType =
     type === 'earn'
@@ -23,11 +29,13 @@ export async function getMakerPositionInfo({ apiVaults, cdp, type }: getMakerPos
         })
 
   // shorhands and formatting for better clarity
+  const primaryToken = tokenSymbol === 'WETH' ? 'ETH' : tokenSymbol.toUpperCase()
   const url = `/${NetworkNames.ethereumMainnet}/${LendingProtocol.Maker}/${cdp}`
 
   // prices for oracle positions is always equal to one
 
   return {
+    primaryToken,
     type: resolvedType,
     url,
   }

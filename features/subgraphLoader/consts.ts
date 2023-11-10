@@ -430,6 +430,15 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         cdp
         collateral
         debt
+        ilk {
+          liquidationRatio
+          pip {
+            value
+          }
+          tokenSymbol
+        }
+        liquidationPrice,
+        openedAt,
         type
       }
     }
