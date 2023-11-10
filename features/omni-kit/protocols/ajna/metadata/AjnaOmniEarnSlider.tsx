@@ -2,13 +2,10 @@ import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { PillAccordion } from 'components/PillAccordion'
-import {
-  AJNA_HTP_OFFSET,
-  AJNA_MOMP_OFFSET,
-  omniLendingPriceColors,
-} from 'features/ajna/positions/earn/consts'
+import { AJNA_HTP_OFFSET, AJNA_MOMP_OFFSET } from 'features/ajna/positions/earn/consts'
 import { convertAjnaOmniSliderThresholds } from 'features/ajna/positions/earn/helpers/convertSliderThresholds'
 import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
+import { omniLendingPriceColors } from 'features/omni-kit/constants'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
@@ -127,9 +124,9 @@ export const AjnaOmniEarnSlider: FC<AjnaEarnSliderProps> = ({
           leftBottomLabel={t('safer')}
           rightBottomLabel={t('riskier')}
           colorfulRanges={`linear-gradient(to right,
-        ${omniLendingPriceColors.belowHtp} 0 ${htpPercentage}%,
-        ${omniLendingPriceColors.belowLup} ${htpPercentage}% ${lupPercentage}%,
-        ${omniLendingPriceColors.aboveLup} ${lupPercentage}% 100%)`}
+        ${omniLendingPriceColors[0]} 0 ${htpPercentage}%,
+        ${omniLendingPriceColors[1]} ${htpPercentage}% ${lupPercentage}%,
+        ${omniLendingPriceColors[2]} ${lupPercentage}% 100%)`}
         />
       )}
       {nestedManualInput ? (
