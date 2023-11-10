@@ -1,5 +1,5 @@
 import { NetworkIds } from 'blockchain/networks'
-import type { ProductType } from 'features/aave/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import request, { gql } from 'graphql-request'
 
 const dpmListQuery = gql`
@@ -25,7 +25,7 @@ type DpmListQueryResponse = {
       id: string
     }
     vaultId: string
-    positionType: string
+    positionType: OmniProductType
     collateralToken: string
     debtToken: string
     protocol: string
@@ -37,7 +37,7 @@ export type DpmList = {
   id: string
   user: string
   vaultId: string
-  positionType: ProductType
+  positionType: OmniProductType
   collateralToken: string
   debtToken: string
   protocol: string

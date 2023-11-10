@@ -13,6 +13,13 @@ export type PortfolioPosition = {
     autoSell?: AutomationType
   }
   details: PositionDetail[]
+  /*
+  lendingType:
+    if earn, and has debt -> Yield Loop (loop)
+    If earn, no debt and not ajna -> Passive (passive)
+    If earn, no debt and ajna -> Active Lending (active)
+    the rest is just future proofing
+  */
   lendingType?: 'active' | 'passive' | 'loop' | 'staking' | 'pool' // are these all types?
   network: NetworkNames
   netValue: number
