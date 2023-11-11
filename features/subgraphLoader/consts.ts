@@ -426,7 +426,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   `,
   getMakerDiscoverPositions: gql`
     query getDiscoverPositions($walletAddress: Bytes!) {
-      cdps (where: {owner_: {address: $walletAddress}}) {
+      cdps(where: { owner_: { address: $walletAddress } }) {
         cdp
         collateral
         cumulativeDepositUSD
@@ -442,9 +442,9 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           stabilityFee
           tokenSymbol
         }
-        liquidationPrice,
+        liquidationPrice
         normalizedDebt
-        openedAt,
+        openedAt
         type
       }
     }
