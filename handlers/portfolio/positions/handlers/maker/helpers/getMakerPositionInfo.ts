@@ -30,7 +30,7 @@ export async function getMakerPositionInfo({
 
   // determine position type based on subgraph and db responses
   const resolvedType =
-    type === 'earn'
+    type === 'earn' || tokenSymbol === 'G-UNI'
       ? OmniProductType.Earn
       : getBorrowishPositionType({
           apiVaults,

@@ -10,10 +10,14 @@ import { one, zero } from 'helpers/zero'
 interface GetAjnaPositionDetailsParams {
   collateral: string
   collateralPrice: BigNumber
+  cumulativeDepositUSD: string
+  cumulativeFeesUSD: string
+  cumulativeWithdrawnUSD: string
   daiPrice: BigNumber
   debt: string
   ilk: MakerDiscoverPositionsIlk
   liquidationPrice: string
+  netValue: BigNumber
   primaryToken: string
   type: OmniProductType
 }
@@ -21,10 +25,14 @@ interface GetAjnaPositionDetailsParams {
 export function getMakerPositionDetails({
   collateral,
   collateralPrice,
+  cumulativeDepositUSD,
+  cumulativeFeesUSD,
+  cumulativeWithdrawnUSD,
   daiPrice,
   debt,
   ilk,
   liquidationPrice,
+  netValue,
   primaryToken,
   type,
 }: GetAjnaPositionDetailsParams): PositionDetail[] {
@@ -39,10 +47,11 @@ export function getMakerPositionDetails({
     one.div(amountFromRay(new BigNumber(liquidationRatio))),
     RiskRatio.TYPE.LTV,
   )
-  const fee = new BigNumber(stabilityFee).minus(one)
 
   switch (type) {
     case OmniProductType.Borrow: {
+      const fee = new BigNumber(stabilityFee).minus(one)
+
       return [
         {
           type: 'collateralLocked',
@@ -89,29 +98,36 @@ export function getMakerPositionDetails({
       ]
     }
     case OmniProductType.Multiply: {
+      const pnl = new BigNumber(cumulativeWithdrawnUSD)
+        .plus(netValue)
+        .minus(new BigNumber(cumulativeFeesUSD))
+        .minus(new BigNumber(cumulativeDepositUSD))
+        .div(new BigNumber(cumulativeDepositUSD))
+
       return [
         {
           type: 'netValue',
-          value: '',
+          value: `$${formatCryptoBalance(netValue)}`,
         },
         {
           type: 'pnl',
-          value: '',
+          value: formatDecimalAsPercent(pnl),
+          accent: pnl.gt(zero) ? 'positive' : 'negative',
         },
         {
           type: 'liquidationPrice',
-          value: '',
-          subvalue: '',
+          value: `${formatCryptoBalance(new BigNumber(liquidationPrice))} ${primaryToken}`,
+          subvalue: `Now ${formatCryptoBalance(new BigNumber(collateralPrice))} ${primaryToken}`,
         },
         {
           type: 'ltv',
-          value: '',
-          subvalue: '',
+          value: formatDecimalAsPercent(riskRatio.loanToValue),
+          subvalue: `Max ${formatDecimalAsPercent(maxRiskRatio.loanToValue)}`,
         },
         {
           type: 'multiple',
-          value: '',
-          subvalue: '',
+          value: `${riskRatio.multiple.toFixed(2)}x`,
+          subvalue: `Max ${maxRiskRatio.multiple.toFixed(2)}x`,
         },
       ]
     }

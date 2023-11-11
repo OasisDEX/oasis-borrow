@@ -429,6 +429,9 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       cdps (where: {owner_: {address: $walletAddress}}) {
         cdp
         collateral
+        cumulativeDepositUSD
+        cumulativeFeesUSD
+        cumulativeWithdrawnUSD
         debt
         ilk {
           liquidationRatio

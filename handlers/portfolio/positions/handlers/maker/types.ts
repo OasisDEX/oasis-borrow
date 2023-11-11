@@ -11,6 +11,9 @@ export interface MakerDiscoverPositionsResponse {
   cdps: {
     cdp: string
     collateral: string
+    cumulativeDepositUSD: string
+    cumulativeFeesUSD: string
+    cumulativeWithdrawnUSD: string
     debt: string
     ilk: MakerDiscoverPositionsIlk
     liquidationPrice: string
