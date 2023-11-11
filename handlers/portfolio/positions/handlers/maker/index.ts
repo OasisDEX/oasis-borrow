@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
-import { getTokenPrice } from 'blockchain/prices'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
@@ -29,23 +28,19 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
         cdp,
         collateral,
         debt,
-        ilk: {
-          liquidationRatio,
-          pip: { value },
-          tokenSymbol,
-        },
+        ilk,
         liquidationPrice,
         openedAt,
         type: initialType,
       }): Promise<PortfolioPosition> => {
-        const { primaryToken, type, url } = await getMakerPositionInfo({
+        const { collateralPrice, daiPrice, primaryToken, type, url } = await getMakerPositionInfo({
           apiVaults,
           cdp,
-          tokenSymbol,
+          ilk,
+          tickers,
           type: initialType,
         })
-        const daiPrice = getTokenPrice('DAI', tickers)
-        const collateralPrice = new BigNumber(value)
+
         const netValue = new BigNumber(collateral)
           .times(collateralPrice)
           .minus(new BigNumber(debt).times(daiPrice))
@@ -64,9 +59,9 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
             daiPrice,
             debt,
             liquidationPrice,
-            liquidationRatio,
             primaryToken,
             type,
+            ilk,
           }),
           ...(type === OmniProductType.Earn && { lendingType: 'passive' }),
           network: NetworkNames.ethereumMainnet,

@@ -435,6 +435,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           pip {
             value
           }
+          stabilityFee
           tokenSymbol
         }
         liquidationPrice,
