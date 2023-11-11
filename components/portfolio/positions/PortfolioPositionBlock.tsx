@@ -15,6 +15,15 @@ import { Box, Button, Flex, Text } from 'theme-ui'
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
+  const asset =
+    position.primaryToken === position.secondaryToken
+      ? position.primaryToken
+      : `${position.primaryToken}/${position.secondaryToken}`
+  const icons =
+    position.primaryToken === position.secondaryToken
+      ? [position.primaryToken]
+      : [position.primaryToken, position.secondaryToken]
+
   return (
     <Box
       sx={{
@@ -35,8 +44,8 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         </Flex>
       </Flex>
       <AssetsTableDataCellAsset
-        asset={`${position.primaryToken}/${position.secondaryToken}`}
-        icons={[position.primaryToken, position.secondaryToken]}
+        asset={asset}
+        icons={icons}
         positionId={!position.availableToMigrate ? position.positionId.toString() : undefined}
         description={
           position.availableToMigrate

@@ -30,31 +30,35 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
         cumulativeDepositUSD,
         cumulativeFeesUSD,
         cumulativeWithdrawnUSD,
-        debt,
         ilk,
         liquidationPrice,
+        normalizedDebt,
         openedAt,
         type: initialType,
       }): Promise<PortfolioPosition> => {
-        const { collateralPrice, daiPrice, primaryToken, type, url } = await getMakerPositionInfo({
-          apiVaults,
-          cdp,
-          ilk,
-          tickers,
-          type: initialType,
-        })
+        const { collateralPrice, daiPrice, debt, primaryToken, secondaryToken, type, url } =
+          await getMakerPositionInfo({
+            apiVaults,
+            cdp,
+            ilk,
+            normalizedDebt,
+            tickers,
+            type: initialType,
+          })
 
         const netValue = new BigNumber(collateral)
           .times(collateralPrice)
-          .minus(new BigNumber(debt).times(daiPrice))
+          .minus(debt.times(daiPrice))
 
         return {
           availableToMigrate: false,
           automations: {
-            autoBuy: { enabled: false },
-            autoSell: { enabled: false },
-            stopLoss: { enabled: false },
-            takeProfit: { enabled: false },
+            ...(type !== OmniProductType.Earn && {
+              autoBuy: { enabled: false },
+              autoSell: { enabled: false },
+              stopLoss: { enabled: false },
+              takeProfit: { enabled: false },
+            }),
           },
           details: getMakerPositionDetails({
             collateral,
@@ -77,7 +81,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
           positionId: Number(cdp),
           primaryToken,
           protocol: LendingProtocol.Maker,
-          secondaryToken: 'DAI',
+          secondaryToken,
           type,
           url,
         }

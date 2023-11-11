@@ -1,8 +1,10 @@
 export interface MakerDiscoverPositionsIlk {
+  ilk: string
   liquidationRatio: string
   pip: {
     value: string
   }
+  rate: string
   stabilityFee: string
   tokenSymbol: string
 }
@@ -14,9 +16,9 @@ export interface MakerDiscoverPositionsResponse {
     cumulativeDepositUSD: string
     cumulativeFeesUSD: string
     cumulativeWithdrawnUSD: string
-    debt: string
     ilk: MakerDiscoverPositionsIlk
     liquidationPrice: string
+    normalizedDebt: string
     openedAt: string
     type: string
   }[]

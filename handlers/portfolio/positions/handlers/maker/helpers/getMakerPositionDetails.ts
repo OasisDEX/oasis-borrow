@@ -14,7 +14,7 @@ interface GetAjnaPositionDetailsParams {
   cumulativeFeesUSD: string
   cumulativeWithdrawnUSD: string
   daiPrice: BigNumber
-  debt: string
+  debt: BigNumber
   ilk: MakerDiscoverPositionsIlk
   liquidationPrice: string
   netValue: BigNumber

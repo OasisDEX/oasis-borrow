@@ -432,16 +432,18 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         cumulativeDepositUSD
         cumulativeFeesUSD
         cumulativeWithdrawnUSD
-        debt
         ilk {
+          ilk
           liquidationRatio
           pip {
             value
           }
+          rate
           stabilityFee
           tokenSymbol
         }
         liquidationPrice,
+        normalizedDebt
         openedAt,
         type
       }
