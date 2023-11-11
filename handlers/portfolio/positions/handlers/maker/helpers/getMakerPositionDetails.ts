@@ -78,14 +78,20 @@ export function getMakerPositionDetails({
       ]
     }
     case OmniProductType.Earn: {
+      const earnings = netValue
+        .minus(cumulativeDepositUSD)
+        .plus(cumulativeWithdrawnUSD)
+        .minus(cumulativeFeesUSD)
+        .div(daiPrice)
+
       return [
         {
           type: 'netValue',
-          value: '',
+          value: `$${formatCryptoBalance(netValue)}`,
         },
         {
           type: 'earnings',
-          value: '',
+          value: `${formatCryptoBalance(earnings)} DAI`,
         },
         {
           type: 'apy',
@@ -100,9 +106,9 @@ export function getMakerPositionDetails({
     case OmniProductType.Multiply: {
       const pnl = new BigNumber(cumulativeWithdrawnUSD)
         .plus(netValue)
-        .minus(new BigNumber(cumulativeFeesUSD))
-        .minus(new BigNumber(cumulativeDepositUSD))
-        .div(new BigNumber(cumulativeDepositUSD))
+        .minus(cumulativeFeesUSD)
+        .minus(cumulativeDepositUSD)
+        .div(cumulativeDepositUSD)
 
       return [
         {
