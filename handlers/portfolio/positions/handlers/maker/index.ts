@@ -3,8 +3,10 @@ import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
-import { getMakerPositionInfo } from 'handlers/portfolio/positions/handlers/maker/helpers'
-import { getMakerPositionDetails } from 'handlers/portfolio/positions/handlers/maker/helpers/getMakerPositionDetails'
+import {
+  getMakerPositionDetails,
+  getMakerPositionInfo,
+} from 'handlers/portfolio/positions/handlers/maker/helpers'
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { LendingProtocol } from 'lendingProtocols'
 
