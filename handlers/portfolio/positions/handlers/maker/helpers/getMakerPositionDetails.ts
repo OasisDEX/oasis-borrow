@@ -1,7 +1,9 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { amountFromRay } from 'blockchain/utils'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { OmniProductType } from 'features/omni-kit/types'
+import { notAvailable } from 'handlers/portfolio/constants'
 import type { MakerDiscoverPositionsIlk } from 'handlers/portfolio/positions/handlers/maker/types'
 import { type PositionDetail } from 'handlers/portfolio/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -31,22 +33,25 @@ export function getMakerPositionDetails({
   daiPrice,
   debt,
   ilk,
-  liquidationPrice,
+  // liquidationPrice,
   netValue,
   primaryToken,
   type,
 }: GetAjnaPositionDetailsParams): PositionDetail[] {
   const { liquidationRatio, stabilityFee } = ilk
+  const minCollRatio = amountFromRay(new BigNumber(liquidationRatio))
   const riskRatio = new RiskRatio(
     Number(collateral) > 0
       ? new BigNumber(debt).times(daiPrice).div(new BigNumber(collateral).times(collateralPrice))
       : zero,
     RiskRatio.TYPE.LTV,
   )
-  const maxRiskRatio = new RiskRatio(
-    one.div(amountFromRay(new BigNumber(liquidationRatio))),
-    RiskRatio.TYPE.LTV,
-  )
+  const maxRiskRatio = new RiskRatio(one.div(minCollRatio), RiskRatio.TYPE.LTV)
+  const liquidationPrice = collateralPriceAtRatio({
+    collateral: new BigNumber(collateral),
+    colRatio: minCollRatio,
+    vaultDebt: new BigNumber(debt),
+  })
 
   switch (type) {
     case OmniProductType.Borrow: {
@@ -63,8 +68,8 @@ export function getMakerPositionDetails({
         },
         {
           type: 'liquidationPrice',
-          value: `${formatCryptoBalance(new BigNumber(liquidationPrice))} ${primaryToken}`,
-          subvalue: `Now ${formatCryptoBalance(new BigNumber(collateralPrice))} ${primaryToken}`,
+          value: `$${formatCryptoBalance(new BigNumber(liquidationPrice))}`,
+          subvalue: `Now $${formatCryptoBalance(new BigNumber(collateralPrice))}`,
         },
         {
           type: 'ltv',
@@ -95,11 +100,11 @@ export function getMakerPositionDetails({
         },
         {
           type: 'apy',
-          value: '',
+          value: notAvailable,
         },
         {
           type: '90dApy',
-          value: '',
+          value: notAvailable,
         },
       ]
     }
@@ -122,8 +127,8 @@ export function getMakerPositionDetails({
         },
         {
           type: 'liquidationPrice',
-          value: `${formatCryptoBalance(new BigNumber(liquidationPrice))} ${primaryToken}`,
-          subvalue: `Now ${formatCryptoBalance(new BigNumber(collateralPrice))} ${primaryToken}`,
+          value: `$${formatCryptoBalance(new BigNumber(liquidationPrice))}`,
+          subvalue: `Now ${formatCryptoBalance(new BigNumber(collateralPrice))}`,
         },
         {
           type: 'ltv',
