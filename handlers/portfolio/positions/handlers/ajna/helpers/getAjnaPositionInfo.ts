@@ -39,9 +39,10 @@ export async function getAjnaPositionInfo({
       })
 
   // shorhands and formatting for better clarity
-  const primaryToken = collateralToken.symbol.toUpperCase()
+  const primaryToken =
+    collateralToken.symbol === 'WETH' ? 'ETH' : collateralToken.symbol.toUpperCase()
   const primaryTokenAddress = collateralToken.address
-  const secondaryToken = quoteToken.symbol.toUpperCase()
+  const secondaryToken = quoteToken.symbol === 'WETH' ? 'ETH' : quoteToken.symbol.toUpperCase()
   const secondaryTokenAddress = quoteToken.address
   const isOracless = isPoolOracless({
     chainId: NetworkIds.MAINNET,

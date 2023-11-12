@@ -46,11 +46,15 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
       <AssetsTableDataCellAsset
         asset={asset}
         icons={icons}
-        positionId={!position.availableToMigrate ? position.positionId.toString() : undefined}
+        positionId={
+          !position.availableToMigrate && !position.description
+            ? position.positionId.toString()
+            : undefined
+        }
         description={
           position.availableToMigrate
-            ? `${LendingProtocolLabel[position.protocol]} Borrowing`
-            : undefined
+            ? `${LendingProtocolLabel[position.protocol]} ${position.type}`
+            : position.description
         }
       />
       <Flex
@@ -86,13 +90,15 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
               )}
             </Flex>
           )}
-          {[OmniProductType.Earn].includes(position.type) && position.openDate && (
+          {[OmniProductType.Earn].includes(position.type) && (
             <Flex>
-              <Text variant="boldParagraph3" color="neutral80">
-                {tPortfolio('days-of-earning', {
-                  days: dayjs().diff(dayjs.unix(position.openDate), 'day'),
-                })}
-              </Text>
+              {position.openDate && (
+                <Text variant="boldParagraph3" color="neutral80">
+                  {tPortfolio('days-of-earning', {
+                    days: dayjs().diff(dayjs.unix(position.openDate), 'day'),
+                  })}
+                </Text>
+              )}
             </Flex>
           )}
           <Flex sx={{ alignSelf: 'flex-end' }}>

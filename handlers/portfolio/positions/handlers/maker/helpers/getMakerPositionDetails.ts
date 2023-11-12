@@ -102,10 +102,6 @@ export function getMakerPositionDetails({
           type: 'apy',
           value: notAvailable,
         },
-        {
-          type: '90dApy',
-          value: notAvailable,
-        },
       ]
     }
     case OmniProductType.Multiply: {

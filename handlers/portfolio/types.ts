@@ -13,6 +13,7 @@ export type PortfolioPosition = {
     autoBuy?: AutomationType
     autoSell?: AutomationType
   }
+  description?: string
   details: PositionDetail[]
   lendingType?: 'active' | 'passive' | 'loop' | 'staking' | 'pool' // are these all types?
   network: NetworkNames

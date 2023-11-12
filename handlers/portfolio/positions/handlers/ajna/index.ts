@@ -111,7 +111,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
   )
 
   return {
-    positions,
     address,
+    positions,
   }
 }
