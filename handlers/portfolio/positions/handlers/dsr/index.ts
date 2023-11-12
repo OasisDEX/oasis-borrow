@@ -36,7 +36,7 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({ address, 
       chi: new BigNumber(chi.toString()),
       pie: new BigNumber(pie.toString()),
     })
-    const apy = getYearlyRate(new BigNumber(dsr.toString()) || zero)
+    const apy = getYearlyRate(new BigNumber(dsr.toString()))
       .decimalPlaces(5, BigNumber.ROUND_UP)
       .minus(1)
 
