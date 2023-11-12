@@ -56,7 +56,6 @@ jobs:
                        --build-arg AJNA_SUBGRAPH_URL_GOERLI=${{ secrets.AJNA_SUBGRAPH_URL_GOERLI }} \
                        --build-arg AJNA_SUBGRAPH_V2_URL=${{ secrets.AJNA_SUBGRAPH_V2_URL_PROD }} \
                        --build-arg AJNA_SUBGRAPH_V2_URL_GOERLI=${{ secrets.AJNA_SUBGRAPH_V2_URL_GOERLI }} \
-                       --build-arg DISCOVER_SUBGRAPH_URL=${{ secrets.DISCOVER_SUBGRAPH_URL_PROD }} \
                        --build-arg MIXPANEL_ENV=production \
                        --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_KEY_PROD }} \
                        --build-arg ADROLL_ADV_ID=${{ secrets.ADROLL_ADV_ID_PROD }} \
