@@ -2,7 +2,7 @@ import type { Vault } from '@prisma/client'
 import type { NetworkNames } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { OmniProductType } from 'features/omni-kit/types'
-import type { DpmList } from 'handlers/portfolio/positions/handlers/dpm'
+import type { DpmList } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { LendingProtocol } from 'lendingProtocols'
 
 export type PortfolioPosition = {
