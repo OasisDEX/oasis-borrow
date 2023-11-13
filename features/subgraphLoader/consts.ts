@@ -32,6 +32,20 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
+  Discover: {
+    [NetworkIds.MAINNET]: `${process.env.SUBGRAPHS_BASE_URL}/oasis/discover`,
+    [NetworkIds.HARDHAT]: `${process.env.SUBGRAPHS_BASE_URL}/oasis/discover`,
+    [NetworkIds.GOERLI]: '',
+    [NetworkIds.ARBITRUMMAINNET]: '',
+    [NetworkIds.ARBITRUMGOERLI]: '',
+    [NetworkIds.BASEMAINNET]: '',
+    [NetworkIds.BASEGOERLI]: '',
+    [NetworkIds.POLYGONMAINNET]: '',
+    [NetworkIds.POLYGONMUMBAI]: '',
+    [NetworkIds.OPTIMISMMAINNET]: '',
+    [NetworkIds.OPTIMISMGOERLI]: '',
+    [NetworkIds.EMPTYNET]: '',
+  },
   TempGraph: {
     [NetworkIds.MAINNET]: '',
     [NetworkIds.HARDHAT]: '',
@@ -407,6 +421,31 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           decodedData
           decodedDataNames
         }
+      }
+    }
+  `,
+  getMakerDiscoverPositions: gql`
+    query getDiscoverPositions($walletAddress: Bytes!) {
+      cdps(where: { owner_: { address: $walletAddress } }) {
+        cdp
+        collateral
+        cumulativeDepositUSD
+        cumulativeFeesUSD
+        cumulativeWithdrawnUSD
+        ilk {
+          ilk
+          liquidationRatio
+          pip {
+            value
+          }
+          rate
+          stabilityFee
+          tokenSymbol
+        }
+        liquidationPrice
+        normalizedDebt
+        openedAt
+        type
       }
     }
   `,

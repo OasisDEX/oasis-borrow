@@ -1,5 +1,5 @@
 import { views } from '@oasisdex/dma-library'
-import { getRpcProvider, NetworkIds } from 'blockchain/networks'
+import { getRpcProvider, NetworkIds, NetworkNames } from 'blockchain/networks'
 import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAjnaCumulatives'
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
@@ -15,6 +15,7 @@ import { LendingProtocol } from 'lendingProtocols'
 
 export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
   address,
+  apiVaults,
   dpmList,
   tickers,
 }) => {
@@ -47,14 +48,13 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
           ajnaPoolInfo,
           collateralPrice,
           isOracless,
-          network,
           poolAddress,
           primaryToken,
           quotePrice,
           secondaryToken,
           type,
           url,
-        } = await getAjnaPositionInfo({ isEarn, pool, positionId, tickers })
+        } = await getAjnaPositionInfo({ apiVaults, isEarn, pool, positionId, tickers })
 
         // proxies with more than one position doesn not support pnl calculation on subgraph so far
         const isProxyWithManyPositions =
@@ -90,7 +90,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
             type,
           }),
           ...(isEarn && { lendingType: 'active' }),
-          network,
+          network: NetworkNames.ethereumMainnet,
           netValue: getAjnaPositionNetValue({
             collateralPrice,
             isOracless,
@@ -111,7 +111,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
   )
 
   return {
-    positions,
     address,
+    positions,
   }
 }

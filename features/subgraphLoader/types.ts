@@ -7,6 +7,7 @@ import type { SearchAjnaPoolResponse } from 'features/ajna/positions/common/help
 import type { AavePositionHistoryResponse } from 'features/positionHistory/types'
 import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'
 import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/ajna/types'
+import type { MakerDiscoverPositionsResponse } from 'handlers/portfolio/positions/handlers/maker/types'
 
 export type Subgraphs = {
   Ajna: {
@@ -26,6 +27,9 @@ export type Subgraphs = {
   }
   Aave: {
     getAaveHistory: { dpmProxyAddress: string }
+  }
+  Discover: {
+    getMakerDiscoverPositions: { walletAddress: string }
   }
   TempGraph: {
     tempMethod: undefined
@@ -104,6 +108,9 @@ export type SubgraphsResponses = {
       positionEvents: AavePositionHistoryResponse[]
     }>
   }
+  Discover: {
+    getMakerDiscoverPositions: SubgraphBaseResponse<MakerDiscoverPositionsResponse>
+  }
   TempGraph: {
     tempMethod: SubgraphBaseResponse<undefined>
   }
@@ -133,6 +140,7 @@ export type SubgraphsRecord = {
 export type SubgraphMethodsRecord = {
   [key in keyof (Subgraphs['Aave'] &
     Subgraphs['Ajna'] &
+    Subgraphs['Discover'] &
     Subgraphs['TempGraph'] &
     Subgraphs['Referral'])]: string
 }
