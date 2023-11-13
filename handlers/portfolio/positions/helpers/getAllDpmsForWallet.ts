@@ -83,7 +83,7 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
             id: account.id,
             user: account.user.id,
             vaultId: account.vaultId,
-            positionType: account.positionType,
+            positionType: account.positionType.toLowerCase() as OmniProductType,
             collateralToken: account.collateralToken,
             debtToken: account.debtToken,
             protocol: account.protocol,
