@@ -50,7 +50,7 @@ import {
   getCollaterals,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { contractDesc, emptyContractDesc } from 'blockchain/networks'
+import { contractDesc } from 'blockchain/networks'
 import {
   AAVE_V2_LENDING_POOL_GENESIS_MAINNET,
   AAVE_V3_POOL_GENESIS_MAINNET,
@@ -136,7 +136,6 @@ export const mainnetContracts = {
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, mainnet.common.ChainlinkPriceOracle_ETHUSD),
-    CBETHUSD: emptyContractDesc('chainLinkPriceOracle'),
   },
   aaveV2LendingPool: contractDesc(
     aaveV2LendingPool,
