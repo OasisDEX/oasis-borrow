@@ -26,22 +26,14 @@ async function fetchTicker(ticker: string): Promise<{ data: CoingeckoApiResponse
 }
 
 export async function getCoingeckoTickers(): Promise<PriceServiceResponse> {
-  const result = await Promise.allSettled(requiredTickers.map((ticker) => fetchTicker(ticker)))
+  const result = await fetchTicker(requiredTickers.join(','))
 
-  // Need to map over all results to ensure ticker order is preserved
-  return result
-    .map((res, idx) => ({
-      ...(res.status === 'fulfilled' ? { ...res.value.data[requiredTickers[idx]] } : {}),
-      ticker: requiredTickers[idx],
-    }))
-    .reduce((acc, res) => {
-      // If the price is not available, we don't want to add it to the result
-      if (!res.usd) {
-        return acc
-      }
-      return {
-        ...acc,
-        [res.ticker]: res.usd,
-      }
-    }, {})
+  const results: PriceServiceResponse = {}
+  requiredTickers.forEach((ticker) => {
+    const tickerData = result.data[ticker]
+    if (tickerData?.usd) {
+      results[ticker] = tickerData.usd
+    }
+  })
+  return results
 }
