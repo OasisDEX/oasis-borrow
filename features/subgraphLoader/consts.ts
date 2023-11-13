@@ -445,6 +445,12 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         liquidationPrice
         normalizedDebt
         openedAt
+        triggers {
+          commandAddress
+          executedBlock
+          removedBlock
+          triggerData
+        }
         type
       }
     }
