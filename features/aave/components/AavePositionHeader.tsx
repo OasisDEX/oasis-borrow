@@ -13,8 +13,10 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
+import { has7daysYield, has90daysYield } from 'lendingProtocols/aave-like-common'
 import type { PreparedAaveTotalValueLocked } from 'lendingProtocols/aave-v2/pipelines'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -88,27 +90,38 @@ function AavePositionHeader({
       formatPercent(yieldVal, {
         precision: 2,
       })
-    const yield7DaysMin = minYields.annualisedYield7days!
-    const yield7DaysMax = maxYields.annualisedYield7days!
 
-    const yield7DaysDiff = maxYields.annualisedYield7days!.minus(
-      maxYields.annualisedYield7daysOffset!,
-    )
+    if (has7daysYield(minYields) && has7daysYield(maxYields)) {
+      const yield7DaysMin = minYields.annualisedYield7days ?? zero
+      const yield7DaysMax = maxYields.annualisedYield7days ?? zero
 
-    headlineDetails.push({
-      label: t('open-earn.aave.product-header.current-yield'),
-      value: `${formatYield(yield7DaysMin).toString()} - ${formatYield(yield7DaysMax).toString()}`,
-      sub: formatPercent(yield7DaysDiff, {
-        precision: 2,
-        plus: true,
-      }),
-      subColor: getPriceChangeColor({
-        collateralPricePercentageChange: yield7DaysDiff,
-      }),
-    })
+      const yield7DaysDiff = maxYields.annualisedYield7days.minus(
+        maxYields.annualisedYield7daysOffset,
+      )
+
+      headlineDetails.push({
+        label: t('open-earn.aave.product-header.current-yield'),
+        value: `${formatYield(yield7DaysMin).toString()} - ${formatYield(
+          yield7DaysMax,
+        ).toString()}`,
+        sub: formatPercent(yield7DaysDiff, {
+          precision: 2,
+          plus: true,
+        }),
+        subColor: getPriceChangeColor({
+          collateralPricePercentageChange: yield7DaysDiff,
+        }),
+      })
+    } else {
+      headlineDetails.push({
+        label: t('open-earn.aave.product-header.current-yield'),
+        value: `n/a`,
+      })
+    }
   }
-  if (maxYields && maxYields?.annualisedYield90days) {
-    const yield90DaysDiff = maxYields.annualisedYield90daysOffset!.minus(
+
+  if (maxYields && has90daysYield(maxYields)) {
+    const yield90DaysDiff = maxYields.annualisedYield90daysOffset.minus(
       maxYields.annualisedYield90days,
     )
     headlineDetails.push({
@@ -123,6 +136,11 @@ function AavePositionHeader({
       subColor: getPriceChangeColor({
         collateralPricePercentageChange: yield90DaysDiff,
       }),
+    })
+  } else {
+    headlineDetails.push({
+      label: t('open-earn.aave.product-header.90-day-avg-yield'),
+      value: `n/a`,
     })
   }
 
