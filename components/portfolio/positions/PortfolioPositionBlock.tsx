@@ -15,6 +15,15 @@ import { Box, Button, Flex, Text } from 'theme-ui'
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
+  const asset =
+    position.primaryToken === position.secondaryToken
+      ? position.primaryToken
+      : `${position.primaryToken}/${position.secondaryToken}`
+  const icons =
+    position.primaryToken === position.secondaryToken
+      ? [position.primaryToken]
+      : [position.primaryToken, position.secondaryToken]
+
   return (
     <Box
       sx={{
@@ -35,13 +44,17 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         </Flex>
       </Flex>
       <AssetsTableDataCellAsset
-        asset={`${position.primaryToken}/${position.secondaryToken}`}
-        icons={[position.primaryToken, position.secondaryToken]}
-        positionId={!position.availableToMigrate ? position.positionId.toString() : undefined}
+        asset={asset}
+        icons={icons}
+        positionId={
+          !position.availableToMigrate && !position.description
+            ? position.positionId.toString()
+            : undefined
+        }
         description={
           position.availableToMigrate
-            ? `${LendingProtocolLabel[position.protocol]} Borrowing`
-            : undefined
+            ? `${LendingProtocolLabel[position.protocol]} ${position.type}`
+            : position.description
         }
       />
       <Flex
@@ -77,13 +90,15 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
               )}
             </Flex>
           )}
-          {[OmniProductType.Earn].includes(position.type) && position.openDate && (
+          {[OmniProductType.Earn].includes(position.type) && (
             <Flex>
-              <Text variant="boldParagraph3" color="neutral80">
-                {tPortfolio('days-of-earning', {
-                  days: dayjs().diff(dayjs.unix(position.openDate), 'day'),
-                })}
-              </Text>
+              {position.openDate && (
+                <Text variant="boldParagraph3" color="neutral80">
+                  {tPortfolio('days-of-earning', {
+                    days: dayjs().diff(dayjs.unix(position.openDate), 'day'),
+                  })}
+                </Text>
+              )}
             </Flex>
           )}
           <Flex sx={{ alignSelf: 'flex-end' }}>

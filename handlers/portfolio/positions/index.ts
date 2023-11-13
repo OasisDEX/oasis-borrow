@@ -4,6 +4,9 @@ import { aaveV3PositionsHandler } from 'handlers/portfolio/positions/handlers/aa
 import { ajnaPositionsHandler } from 'handlers/portfolio/positions/handlers/ajna'
 import type { DpmList } from 'handlers/portfolio/positions/handlers/dpm'
 import { getAllDpmsForWallet } from 'handlers/portfolio/positions/handlers/dpm'
+import { dsrPositionsHandler } from 'handlers/portfolio/positions/handlers/dsr'
+import { makerPositionsHandler } from 'handlers/portfolio/positions/handlers/maker'
+import { getPositionsFromDatabase } from 'handlers/portfolio/positions/helpers'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { tokenTickers } from 'helpers/api/tokenTickers'
 import type { NextApiRequest } from 'next'
@@ -18,6 +21,9 @@ type PortfolioPositionsReply = {
 export const portfolioPositionsHandler = async (
   req: NextApiRequest,
 ): Promise<PortfolioPositionsReply> => {
+  const { address } = req.query as { address: string }
+
+  const apiVaults = await getPositionsFromDatabase({ address })
   const tickersResponse = await tokenTickers()
   const tickers = Object.entries(tickersResponse).reduce<Tickers>(
     (acc, [key, value]) => ({
@@ -27,19 +33,27 @@ export const portfolioPositionsHandler = async (
     {},
   )
 
-  const { address } = req.query as { address: string }
   const dpmList = await getAllDpmsForWallet({ address })
   const positionsReply = await Promise.all([
-    ajnaPositionsHandler({ address, tickers, dpmList }),
-    aaveV3PositionsHandler({ address, tickers, dpmList }),
+    aaveV3PositionsHandler({ address, dpmList, apiVaults, tickers }),
+    ajnaPositionsHandler({ address, dpmList, apiVaults, tickers }),
+    dsrPositionsHandler({ address, dpmList, apiVaults, tickers }),
+    makerPositionsHandler({ address, dpmList, apiVaults, tickers }),
   ])
-    .then(([{ positions: ajnaPositions }, { positions: aaveV3Positions }]) => {
-      return {
-        positions: [...ajnaPositions, ...aaveV3Positions],
-        address: address as string,
-        dpmList,
-      }
-    })
+    .then(
+      ([
+        { positions: aaveV3Positions },
+        { positions: ajnaPositions },
+        { positions: dsrPositions },
+        { positions: makerPositions },
+      ]) => {
+        return {
+          positions: [...aaveV3Positions, ...ajnaPositions, ...dsrPositions, ...makerPositions],
+          address: address as string,
+          dpmList,
+        }
+      },
+    )
     .catch((error) => {
       console.error(error)
       return { positions: [], address: address as string, error: JSON.stringify(error), dpmList }
