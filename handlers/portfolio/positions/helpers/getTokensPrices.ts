@@ -32,6 +32,8 @@ export async function getTokensPrices(): Promise<TokensPrices> {
     console.info('Error loading one of the prices')
     console.info(e)
 
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
     return await getTokensPrices()
   }
 }
