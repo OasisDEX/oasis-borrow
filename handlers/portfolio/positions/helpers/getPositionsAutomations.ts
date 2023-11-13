@@ -48,8 +48,9 @@ export function getPositionsAutomations({
         ...Object.keys(triggerTypesMap).reduce(
           (result, key) => ({
             ...result,
-            ...(triggerTypesMap[key as keyof typeof triggerTypesMap].includes(triggerType),
-            { [key]: { enabled: true } }),
+            ...(triggerTypesMap[key as keyof typeof triggerTypesMap].includes(triggerType) && {
+              [key]: { enabled: true },
+            }),
           }),
           {},
         ),
