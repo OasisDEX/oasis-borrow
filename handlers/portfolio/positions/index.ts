@@ -5,7 +5,6 @@ import { ajnaPositionsHandler } from 'handlers/portfolio/positions/handlers/ajna
 import { dsrPositionsHandler } from 'handlers/portfolio/positions/handlers/dsr'
 import { makerPositionsHandler } from 'handlers/portfolio/positions/handlers/maker'
 import { getPositionsFromDatabase } from 'handlers/portfolio/positions/helpers'
-import type { DpmList } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import { getAllDpmsForWallet } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { tokenTickers } from 'helpers/api/tokenTickers'
@@ -13,9 +12,7 @@ import type { NextApiRequest } from 'next'
 
 type PortfolioPositionsReply = {
   positions: PortfolioPosition[]
-  address: string
   error?: string
-  dpmList: DpmList
 }
 
 export const portfolioPositionsHandler = async (
@@ -49,8 +46,6 @@ export const portfolioPositionsHandler = async (
       ]) => {
         return {
           positions: [...aaveV3Positions, ...ajnaPositions, ...dsrPositions, ...makerPositions],
-          address,
-          dpmList,
         }
       },
     )
