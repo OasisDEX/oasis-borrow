@@ -52,14 +52,16 @@ export const getReserveConfigurationDataCall = (dpm: DpmList[number], token: str
 export const commonDataMapper = (
   dpm: DpmList[number],
   automations?: AutomationResponse[number],
+  positionIdAsString?: boolean,
 ) => ({
   dpmId: dpm.id,
-  positionId: Number(dpm.vaultId),
+  positionId: positionIdAsString ? dpm.vaultId : Number(dpm.vaultId),
   type: dpm.positionType,
   network: networksById[dpm.networkId].name,
   protocol: {
     AAVE_V3: LendingProtocol.AaveV3,
     Spark: LendingProtocol.SparkV3,
+    [LendingProtocol.AaveV2]: LendingProtocol.AaveV2,
   }[dpm.protocol] as LendingProtocol,
   primaryToken: getTokenName(dpm.networkId, dpm.collateralToken),
   secondaryToken: getTokenName(dpm.networkId, dpm.debtToken),
@@ -67,8 +69,15 @@ export const commonDataMapper = (
     {
       AAVE_V3: 'aave',
       Spark: 'spark',
+      [LendingProtocol.AaveV2]: 'aave',
     }[dpm.protocol]
-  }/v3/${dpm.vaultId}`,
+  }/${
+    {
+      AAVE_V3: 'v3',
+      Spark: 'v3',
+      [LendingProtocol.AaveV2]: 'v2',
+    }[dpm.protocol]
+  }/${dpm.vaultId}`,
   automations: {
     ...(dpm.positionType !== OmniProductType.Earn &&
       automations && {
