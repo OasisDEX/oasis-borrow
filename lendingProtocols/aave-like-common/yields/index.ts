@@ -19,3 +19,23 @@ export interface AaveLikeYieldsResponse {
   annualisedYield1Year?: BigNumber
   annualisedYieldSinceInception?: BigNumber
 }
+
+export function has7daysYield(
+  yields: AaveLikeYieldsResponse,
+): yields is Required<
+  Pick<AaveLikeYieldsResponse, 'annualisedYield7days' | 'annualisedYield7daysOffset'>
+> {
+  return (
+    yields.annualisedYield7days !== undefined && yields.annualisedYield7daysOffset !== undefined
+  )
+}
+
+export function has90daysYield(
+  yields: AaveLikeYieldsResponse,
+): yields is Required<
+  Pick<AaveLikeYieldsResponse, 'annualisedYield90days' | 'annualisedYield90daysOffset'>
+> {
+  return (
+    yields.annualisedYield90days !== undefined && yields.annualisedYield90daysOffset !== undefined
+  )
+}
