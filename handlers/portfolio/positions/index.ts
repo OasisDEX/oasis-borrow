@@ -5,6 +5,7 @@ import { makerPositionsHandler } from 'handlers/portfolio/positions/handlers/mak
 import { getPositionsFromDatabase, getTokensPrices } from 'handlers/portfolio/positions/helpers'
 import { getAllDpmsForWallet } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
+import { cacheObject } from 'helpers/api/cacheObject'
 import type { NextApiRequest } from 'next'
 
 type PortfolioPositionsReply = {
@@ -12,37 +13,58 @@ type PortfolioPositionsReply = {
   error?: string
 }
 
-export const portfolioPositionsHandler = async (
-  req: NextApiRequest,
-): Promise<PortfolioPositionsReply> => {
-  const { address } = req.query as { address: string }
+export const getCachedTokensPrices = cacheObject(getTokensPrices, 2 * 60, 'portfolio-prices')
 
-  const apiVaults = await getPositionsFromDatabase({ address })
-  const prices = await getTokensPrices()
+export const portfolioPositionsHandler = async ({
+  query,
+}: NextApiRequest): Promise<PortfolioPositionsReply> => {
+  const address = query.address as string
+  const debug = 'debug' in query
 
-  const dpmList = await getAllDpmsForWallet({ address })
-  const positionsReply = await Promise.all([
-    aaveLikePositionsHandler({ address, dpmList, apiVaults, prices }),
-    ajnaPositionsHandler({ address, dpmList, apiVaults, prices }),
-    dsrPositionsHandler({ address, dpmList, apiVaults, prices }),
-    makerPositionsHandler({ address, dpmList, apiVaults, prices }),
-  ])
-    .then(
-      ([
-        { positions: aaveV3Positions },
-        { positions: ajnaPositions },
-        { positions: dsrPositions },
-        { positions: makerPositions },
-      ]) => {
-        return {
+  const prices = await getCachedTokensPrices()
+
+  if (prices) {
+    const apiVaults = await getPositionsFromDatabase({ address })
+    const dpmList = await getAllDpmsForWallet({ address })
+
+    const payload = {
+      address,
+      apiVaults,
+      dpmList,
+      prices: prices.data,
+    }
+
+    const positionsReply = await Promise.all([
+      aaveLikePositionsHandler(payload),
+      ajnaPositionsHandler(payload),
+      dsrPositionsHandler(payload),
+      makerPositionsHandler(payload),
+    ])
+      .then(
+        ([
+          { positions: aaveV3Positions },
+          { positions: ajnaPositions },
+          { positions: dsrPositions },
+          { positions: makerPositions },
+        ]) => ({
           positions: [...aaveV3Positions, ...ajnaPositions, ...dsrPositions, ...makerPositions],
-        }
-      },
-    )
-    .catch((error) => {
-      console.error(error)
-      return { positions: [], address, error: JSON.stringify(error), dpmList }
-    })
+          ...(debug && { ...payload }),
+        }),
+      )
+      .catch((error) => {
+        console.error(error)
 
-  return positionsReply
+        return {
+          positions: [],
+          ...(debug && { ...payload, error: error.toString() }),
+        }
+      })
+
+    return positionsReply
+  } else {
+    return {
+      positions: [],
+      ...(debug && { error: 'Unable to load token prices' }),
+    }
+  }
 }

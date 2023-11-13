@@ -5,7 +5,7 @@ import { tokensBySymbol } from 'blockchain/tokensMetadata.constants'
 import { tokenTickers } from 'helpers/api/tokenTickers'
 
 export interface TokensPrices {
-  [key: string]: BigNumber
+  [key: string]: number
 }
 
 export async function getTokensPrices(): Promise<TokensPrices> {
@@ -24,7 +24,7 @@ export async function getTokensPrices(): Promise<TokensPrices> {
       .reduce<TokensPrices>(
         (result, current) => ({
           ...result,
-          [current]: getTokenPrice(current, tickers),
+          [current]: getTokenPrice(current, tickers).toNumber(),
         }),
         {},
       )

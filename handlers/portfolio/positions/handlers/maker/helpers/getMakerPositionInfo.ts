@@ -44,7 +44,7 @@ export async function getMakerPositionInfo({
 
   // shorhands and formatting for better clarity
   const collateralPrice = new BigNumber(value)
-  const daiPrice = prices['DAI']
+  const daiPrice = new BigNumber(prices['DAI'])
   const debt = new BigNumber(normalizedDebt).times(rate)
   const [earnToken] = ilkLabel.split('-')
   const primaryToken =

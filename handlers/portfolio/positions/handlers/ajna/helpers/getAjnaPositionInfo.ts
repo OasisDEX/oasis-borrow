@@ -1,4 +1,5 @@
 import type { Vault } from '@prisma/client'
+import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
@@ -53,8 +54,8 @@ export async function getAjnaPositionInfo({
   }-${isOracless ? secondaryTokenAddress : secondaryToken}/${positionId}`
 
   // prices for oracle positions is always equal to one
-  const collateralPrice = isOracless ? one : prices[primaryToken]
-  const quotePrice = isOracless ? one : prices[secondaryToken]
+  const collateralPrice = isOracless ? one : new BigNumber(prices[primaryToken])
+  const quotePrice = isOracless ? one : new BigNumber(prices[secondaryToken])
 
   return {
     ajnaPoolInfo,
