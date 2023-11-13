@@ -2,7 +2,6 @@ import { RiskRatio } from '@oasisdex/dma-library'
 import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
-import { getTokenPrice } from 'blockchain/prices'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -32,8 +31,8 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
   const commonData = commonDataMapper(dpm, positionAutomations)
-  const primaryTokenPrice = getTokenPrice(commonData.primaryToken, prices)
-  const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, prices)
+  const primaryTokenPrice = prices[commonData.primaryToken]
+  const secondaryTokenPrice = prices[commonData.secondaryToken]
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
       getReserveDataCall(dpm, commonData.primaryToken),
@@ -101,8 +100,8 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
   const commonData = commonDataMapper(dpm, positionAutomations)
-  const primaryTokenPrice = getTokenPrice(commonData.primaryToken, prices)
-  const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, prices)
+  const primaryTokenPrice = prices[commonData.primaryToken]
+  const secondaryTokenPrice = prices[commonData.secondaryToken]
   const [
     primaryTokenReserveConfiguration,
     primaryTokenReserveData,
@@ -192,8 +191,8 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
   allPositionsHistory,
 ) => {
   const commonData = commonDataMapper(dpm)
-  const primaryTokenPrice = getTokenPrice(commonData.primaryToken, prices)
-  const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, prices)
+  const primaryTokenPrice = prices[commonData.primaryToken]
+  const secondaryTokenPrice = prices[commonData.secondaryToken]
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
       getReserveDataCall(dpm, commonData.primaryToken),
