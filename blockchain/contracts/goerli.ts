@@ -47,7 +47,7 @@ import {
   getCollaterals,
   getOsms,
 } from 'blockchain/addresses/addressesUtils'
-import { contractDesc } from 'blockchain/networks'
+import { contractDesc, emptyContractDesc } from 'blockchain/networks'
 import {
   AAVE_V2_LENDING_POOL_GENESIS_GOERLI,
   AAVE_V3_POOL_GENESIS_GOERLI,
@@ -138,6 +138,7 @@ export const goerliContracts: MainnetContractsWithOptional = {
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_USDCUSD),
     ETHUSD: contractDesc(chainLinkPriceOracle, goerli.common.ChainlinkPriceOracle_ETHUSD),
+    CBETHUSD: emptyContractDesc('chainLinkPriceOracle'),
   },
   aaveV2LendingPool: contractDesc(
     aaveV2LendingPool,
