@@ -62,7 +62,7 @@ export type DebankPortfolioItemObject = {
   }
   proxy_detail: {
     project: {
-      id: string
+      id?: string
       name: string
       site_url: string
       logo_url: string

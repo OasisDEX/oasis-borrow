@@ -4,9 +4,17 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda
 import { getDefaultErrorMessage } from '../shared/helpers'
 import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from '../shared/responses'
 import { getAddressFromRequest } from '../shared/validators'
-import { DebankSimpleProtocol } from '../shared/debank-types'
+import {
+  DebankComplexProtocol,
+  DebankPortfolioItemObject,
+  DebankSimpleProtocol,
+} from '../shared/debank-types'
 import { PortfolioOverviewResponse } from '../shared/domain-types'
-import { SUPPORTED_CHAIN_IDS, SUPPORTED_PROTOCOL_IDS } from '../shared/debank-helpers'
+import {
+  SUPPORTED_CHAIN_IDS,
+  SUPPORTED_PROTOCOL_IDS,
+  SUPPORTED_PROXY_IDS,
+} from '../shared/debank-helpers'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs
@@ -31,24 +39,28 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 
   try {
     // fetch for supported protocol assets on supported chains
-    const protocolAssets: DebankSimpleProtocol[] | undefined = await getProtocolAssets(
-      serviceUrl,
-      address,
-      headers,
+    const [allProtocolAssets, summerProtocolAssets] = await Promise.all([
+      getAllProtocolAssets(serviceUrl, address, headers),
+      getSummerProtocolAssets(serviceUrl, address, headers),
+    ])
+
+    const suppliedUsdValue: number = summerProtocolAssets.reduce(
+      (acc, { stats: { asset_usd_value } }) => acc + asset_usd_value,
+      0,
     )
 
-    const suppliedUsdValue: number = protocolAssets.reduce(
+    const borrowedUsdValue: number = summerProtocolAssets.reduce(
+      (acc, { stats: { debt_usd_value } }) => acc + debt_usd_value,
+      0,
+    )
+
+    const summerUsdValue: number = summerProtocolAssets.reduce(
+      (acc, { stats: { net_usd_value } }) => acc + net_usd_value,
+      0,
+    )
+
+    const allAssetsUsdValue: number = allProtocolAssets.reduce(
       (acc, { asset_usd_value }) => acc + asset_usd_value,
-      0,
-    )
-
-    const borrowedUsdValue: number = protocolAssets.reduce(
-      (acc, { debt_usd_value }) => acc + debt_usd_value,
-      0,
-    )
-
-    const summerUsdValue: number = protocolAssets.reduce(
-      (acc, { net_usd_value }) => acc + net_usd_value,
       0,
     )
 
@@ -59,7 +71,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
       borrowedPercentageChange: 0,
       summerUsdValue,
       summerPercentageChange: 0,
-      // protocolAssets,
+      allAssetsUsdValue,
     }
     return ResponseOk<PortfolioOverviewResponse>({ body })
   } catch (error) {
@@ -68,21 +80,56 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   }
 }
 
-const getProtocolAssets = async (
+const getAllProtocolAssets = async (
   serviceUrl: string,
   address: string,
   headers: Record<string, string>,
-): Promise<DebankSimpleProtocol[]> => {
+) => {
   const protocolAssets = await fetch(
     `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`,
     { headers },
   )
     .then((_res) => _res.json() as Promise<DebankSimpleProtocol[]>)
-    .then((res) => res.filter(({ id }) => SUPPORTED_PROTOCOL_IDS.includes(id)))
     .catch((error) => {
       console.error(error)
-      throw new Error('Failed to fetch wallet assets')
+      throw new Error('Failed to fetch getAllProtocolAssets')
     })
+  return protocolAssets
+}
+
+const getSummerProtocolAssets = async (
+  serviceUrl: string,
+  address: string,
+  headers: Record<string, string>,
+): Promise<DebankPortfolioItemObject[]> => {
+  const protocolAssets = await fetch(
+    `${serviceUrl}/v1/user/all_complex_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`,
+    { headers },
+  )
+    .then((_res) => _res.json() as Promise<DebankComplexProtocol[]>)
+    .then((res) =>
+      // filter out non-supported protocols
+      res.filter(({ id }) => {
+        const isSupportedProtocol = SUPPORTED_PROTOCOL_IDS.includes(id)
+        return isSupportedProtocol
+      }),
+    )
+    .then((res) =>
+      // map each protocol to position array and flatten
+      // and filter out non-supported positions
+      res
+        .map(({ portfolio_item_list }) =>
+          (portfolio_item_list || []).filter(({ proxy_detail }) =>
+            SUPPORTED_PROXY_IDS.includes(proxy_detail?.project?.id ?? ''),
+          ),
+        )
+        .flat(),
+    )
+    .catch((error) => {
+      console.error(error)
+      throw new Error('Failed to fetch getSummerProtocolAssets')
+    })
+
   return protocolAssets
 }
 

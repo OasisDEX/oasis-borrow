@@ -24,7 +24,7 @@ export const PortfolioOverview = ({
   const { t: tPortfolio } = useTranslation('portfolio')
   const isMobile = useOnMobile() && isTouchDevice
 
-  const totalValue = overviewData.summerUsdValue + portfolioWalletData.totalAssetsUsdValue
+  const totalValue = overviewData.allAssetsUsdValue + portfolioWalletData.totalAssetsUsdValue
 
   return (
     <Flex

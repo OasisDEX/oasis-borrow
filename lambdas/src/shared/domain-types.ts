@@ -37,6 +37,7 @@ export type PortfolioOverviewResponse = {
   borrowedPercentageChange: number
   summerUsdValue: number
   summerPercentageChange: number
+  allAssetsUsdValue: number
 }
 
 export type PortfolioAsset = {
