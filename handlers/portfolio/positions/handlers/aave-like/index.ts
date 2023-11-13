@@ -26,14 +26,14 @@ import { zero } from 'helpers/zero'
 
 const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
   dpm,
-  tickers,
+  prices,
   _history,
   allPositionsAutomations,
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
   const commonData = commonDataMapper(dpm, positionAutomations)
-  const primaryTokenPrice = getTokenPrice(commonData.primaryToken, tickers)
-  const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, tickers)
+  const primaryTokenPrice = getTokenPrice(commonData.primaryToken, prices)
+  const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, prices)
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
       getReserveDataCall(dpm, commonData.primaryToken),
@@ -95,14 +95,14 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
 
 const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
   dpm,
-  tickers,
+  prices,
   allPositionsHistory,
   allPositionsAutomations,
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
   const commonData = commonDataMapper(dpm, positionAutomations)
-  const primaryTokenPrice = getTokenPrice(commonData.primaryToken, tickers)
-  const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, tickers)
+  const primaryTokenPrice = getTokenPrice(commonData.primaryToken, prices)
+  const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, prices)
   const [
     primaryTokenReserveConfiguration,
     primaryTokenReserveData,
@@ -188,12 +188,12 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
 
 const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
   dpm,
-  tickers,
+  prices,
   allPositionsHistory,
 ) => {
   const commonData = commonDataMapper(dpm)
-  const primaryTokenPrice = getTokenPrice(commonData.primaryToken, tickers)
-  const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, tickers)
+  const primaryTokenPrice = getTokenPrice(commonData.primaryToken, prices)
+  const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, prices)
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
       getReserveDataCall(dpm, commonData.primaryToken),
@@ -258,7 +258,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
   }
 }
 
-export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({ dpmList, tickers }) => {
+export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({ dpmList, prices }) => {
   const aaveLikeDpmList = dpmList.filter(({ protocol }) => ['AAVE_V3', 'Spark'].includes(protocol))
   const uniqueDpmNetworks = Array.from(new Set(aaveLikeDpmList.map(({ networkId }) => networkId)))
   const [allPositionsHistory, allPositionsAutomations] = await Promise.all([
@@ -286,19 +286,19 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({ dpmL
         case OmniProductType.Multiply:
           return getAaveLikeMultiplyPosition(
             dpm,
-            tickers,
+            prices,
             allPositionsHistory,
             allPositionsAutomations,
           )
         case OmniProductType.Borrow:
           return getAaveLikeBorrowPosition(
             dpm,
-            tickers,
+            prices,
             allPositionsHistory,
             allPositionsAutomations,
           )
         case OmniProductType.Earn:
-          return getAaveLikeEarnPosition(dpm, tickers, allPositionsHistory, allPositionsAutomations)
+          return getAaveLikeEarnPosition(dpm, prices, allPositionsHistory, allPositionsAutomations)
         default:
           throw new Error(`Unsupported position type ${dpm.positionType}`)
       }

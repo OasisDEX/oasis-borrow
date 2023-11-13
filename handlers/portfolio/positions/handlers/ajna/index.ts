@@ -17,7 +17,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
   address,
   apiVaults,
   dpmList,
-  tickers,
+  prices,
 }) => {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
   const subgraphPositions = (await loadSubgraph('Ajna', 'getAjnaDpmPositions', NetworkIds.MAINNET, {
@@ -54,7 +54,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
           secondaryToken,
           type,
           url,
-        } = await getAjnaPositionInfo({ apiVaults, isEarn, pool, positionId, tickers })
+        } = await getAjnaPositionInfo({ apiVaults, isEarn, pool, positionId, prices })
 
         // proxies with more than one position doesn not support pnl calculation on subgraph so far
         const isProxyWithManyPositions =

@@ -1,10 +1,9 @@
 import type { Vault } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
-import { getTokenPrice } from 'blockchain/prices'
-import type { Tickers } from 'blockchain/prices.types'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { MakerDiscoverPositionsIlk } from 'handlers/portfolio/positions/handlers/maker/types'
+import type { TokensPrices } from 'handlers/portfolio/positions/helpers'
 import { getBorrowishPositionType } from 'handlers/portfolio/positions/helpers'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -13,7 +12,7 @@ interface getMakerPositionInfoParams {
   cdp: string
   ilk: MakerDiscoverPositionsIlk
   normalizedDebt: string
-  tickers: Tickers
+  prices: TokensPrices
   type: string
 }
 
@@ -22,7 +21,7 @@ export async function getMakerPositionInfo({
   cdp,
   ilk,
   normalizedDebt,
-  tickers,
+  prices,
   type,
 }: getMakerPositionInfoParams) {
   const {
@@ -45,7 +44,7 @@ export async function getMakerPositionInfo({
 
   // shorhands and formatting for better clarity
   const collateralPrice = new BigNumber(value)
-  const daiPrice = getTokenPrice('DAI', tickers)
+  const daiPrice = prices['DAI']
   const debt = new BigNumber(normalizedDebt).times(rate)
   const [earnToken] = ilkLabel.split('-')
   const primaryToken =
