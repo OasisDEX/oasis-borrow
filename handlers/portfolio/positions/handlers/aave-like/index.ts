@@ -31,8 +31,8 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
   const commonData = commonDataMapper(dpm, positionAutomations)
-  const primaryTokenPrice = prices[commonData.primaryToken]
-  const secondaryTokenPrice = prices[commonData.secondaryToken]
+  const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
+  const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
       getReserveDataCall(dpm, commonData.primaryToken),
@@ -100,8 +100,8 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
   const commonData = commonDataMapper(dpm, positionAutomations)
-  const primaryTokenPrice = prices[commonData.primaryToken]
-  const secondaryTokenPrice = prices[commonData.secondaryToken]
+  const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
+  const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
   const [
     primaryTokenReserveConfiguration,
     primaryTokenReserveData,
@@ -191,8 +191,8 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
   allPositionsHistory,
 ) => {
   const commonData = commonDataMapper(dpm)
-  const primaryTokenPrice = prices[commonData.primaryToken]
-  const secondaryTokenPrice = prices[commonData.secondaryToken]
+  const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
+  const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
       getReserveDataCall(dpm, commonData.primaryToken),

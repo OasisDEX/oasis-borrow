@@ -15,20 +15,22 @@ type PortfolioPositionsReply = {
 
 export const getCachedTokensPrices = cacheObject(getTokensPrices, 2 * 60, 'portfolio-prices')
 
-export const portfolioPositionsHandler = async (
-  req: NextApiRequest,
-): Promise<PortfolioPositionsReply> => {
-  const { address } = req.query as { address: string }
+export const portfolioPositionsHandler = async ({
+  query,
+}: NextApiRequest): Promise<PortfolioPositionsReply> => {
+  const address = query.address as string
+  const debug = 'debug' in query
 
-  const apiVaults = await getPositionsFromDatabase({ address })
-  const dpmList = await getAllDpmsForWallet({ address })
   const prices = await getCachedTokensPrices()
 
   if (prices) {
+    const apiVaults = await getPositionsFromDatabase({ address })
+    const dpmList = await getAllDpmsForWallet({ address })
+
     const payload = {
       address,
-      dpmList,
       apiVaults,
+      dpmList,
       prices: prices.data,
     }
 
@@ -44,22 +46,25 @@ export const portfolioPositionsHandler = async (
           { positions: ajnaPositions },
           { positions: dsrPositions },
           { positions: makerPositions },
-        ]) => {
-          return {
-            positions: [...aaveV3Positions, ...ajnaPositions, ...dsrPositions, ...makerPositions],
-          }
-        },
+        ]) => ({
+          positions: [...aaveV3Positions, ...ajnaPositions, ...dsrPositions, ...makerPositions],
+          ...(debug && { ...payload }),
+        }),
       )
       .catch((error) => {
         console.error(error)
-        return { positions: [], address, error: JSON.stringify(error), dpmList }
+
+        return {
+          positions: [],
+          ...(debug && { ...payload, error: error.toString() }),
+        }
       })
 
     return positionsReply
   } else {
     return {
       positions: [],
-      error: 'Unable to load token prices',
+      ...(debug && { error: 'Unable to load token prices' }),
     }
   }
 }
