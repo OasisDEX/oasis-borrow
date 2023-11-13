@@ -20,8 +20,8 @@ export function useAaveEarnYields(
   useEffect(() => {
     if (!riskRatio) return
     aaveEarnYieldsQuery(riskRatio, yieldFields)
-      .then((yields) => {
-        setYields(yields)
+      .then((yieldsResponse) => {
+        setYields(yieldsResponse)
       })
       .catch((e) => {
         console.error('unable to get yields', e)
