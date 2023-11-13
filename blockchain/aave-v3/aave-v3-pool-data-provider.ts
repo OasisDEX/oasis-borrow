@@ -88,6 +88,7 @@ export function getAaveV3UserReserveData({
   networkId,
 }: AaveV3UserReserveDataParameters): Promise<AaveV3UserReserveData> {
   const { contract, tokenMappings } = networkMappings[networkId]()
+
   const tokenAddress = wethToEthAddress(tokenMappings, token)
   return contract.getUserReserveData(tokenAddress, address).then((result) => {
     return {
