@@ -5,14 +5,21 @@ import type { OmniProductType } from 'features/omni-kit/types'
 import type { DpmList } from 'handlers/portfolio/positions/handlers/dpm'
 import type { LendingProtocol } from 'lendingProtocols'
 
+type AutomationType = {
+  enabled: boolean
+  price?: number
+}
+
+export type PortfolioPositionAutomations = {
+  stopLoss?: AutomationType
+  takeProfit?: AutomationType
+  autoBuy?: AutomationType
+  autoSell?: AutomationType
+}
+
 export type PortfolioPosition = {
   availableToMigrate?: boolean
-  automations: {
-    stopLoss?: AutomationType
-    takeProfit?: AutomationType
-    autoBuy?: AutomationType
-    autoSell?: AutomationType
-  }
+  automations: PortfolioPositionAutomations
   description?: string
   details: PositionDetail[]
   lendingType?: 'active' | 'passive' | 'loop' | 'staking' | 'pool' // are these all types?
@@ -42,11 +49,6 @@ export type PortfolioPositionsHandler = ({
 export type PortfolioPositionsResponse = {
   positions: PortfolioPosition[]
   address: string
-}
-
-type AutomationType = {
-  enabled: boolean
-  price?: number
 }
 
 type DetailsTypeCommon =

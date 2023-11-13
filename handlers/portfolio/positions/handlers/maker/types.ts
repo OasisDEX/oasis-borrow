@@ -9,6 +9,13 @@ export interface MakerDiscoverPositionsIlk {
   tokenSymbol: string
 }
 
+export interface MakerDiscoverPositionsTrigger {
+  commandAddress: string
+  executedBlock: string
+  removedBlock: string
+  triggerData: string
+}
+
 export interface MakerDiscoverPositionsResponse {
   cdps: {
     cdp: string
@@ -20,6 +27,7 @@ export interface MakerDiscoverPositionsResponse {
     liquidationPrice: string
     normalizedDebt: string
     openedAt: string
+    triggers: MakerDiscoverPositionsTrigger[]
     type: string
   }[]
 }

@@ -7,6 +7,7 @@ import {
   getMakerPositionDetails,
   getMakerPositionInfo,
 } from 'handlers/portfolio/positions/handlers/maker/helpers'
+import { getPositionsAutomations } from 'handlers/portfolio/positions/helpers'
 import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -36,6 +37,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
         liquidationPrice,
         normalizedDebt,
         openedAt,
+        triggers,
         type: initialType,
       }): Promise<PortfolioPosition> => {
         const { collateralPrice, daiPrice, debt, primaryToken, secondaryToken, type, url } =
@@ -60,6 +62,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
               autoSell: { enabled: false },
               stopLoss: { enabled: false },
               takeProfit: { enabled: false },
+              ...getPositionsAutomations({ networkId: NetworkIds.MAINNET, triggers }),
             }),
           },
           details: getMakerPositionDetails({
