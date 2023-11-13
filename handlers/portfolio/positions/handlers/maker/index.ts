@@ -14,7 +14,7 @@ import { LendingProtocol } from 'lendingProtocols'
 export const makerPositionsHandler: PortfolioPositionsHandler = async ({
   apiVaults,
   address,
-  tickers,
+  prices,
 }) => {
   const subgraphPositions = (await loadSubgraph(
     'Discover',
@@ -46,7 +46,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
             cdp,
             ilk,
             normalizedDebt,
-            tickers,
+            prices,
             type: initialType,
           })
 

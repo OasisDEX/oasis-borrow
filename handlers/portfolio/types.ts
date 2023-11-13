@@ -1,8 +1,8 @@
 import type { Vault } from '@prisma/client'
 import type { NetworkNames } from 'blockchain/networks'
-import type { Tickers } from 'blockchain/prices.types'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { DpmList } from 'handlers/portfolio/positions/handlers/dpm'
+import type { TokensPrices } from 'handlers/portfolio/positions/helpers'
 import type { LendingProtocol } from 'lendingProtocols'
 
 type AutomationType = {
@@ -38,12 +38,12 @@ export type PortfolioPositionsHandler = ({
   address,
   apiVaults,
   dpmList,
-  tickers,
+  prices,
 }: {
   address: string
   apiVaults: Vault[]
   dpmList: DpmList
-  tickers: Tickers
+  prices: TokensPrices
 }) => Promise<PortfolioPositionsResponse>
 
 export type PortfolioPositionsResponse = {

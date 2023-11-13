@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds, NetworkNames } from 'blockchain/networks'
-import { getTokenPrice } from 'blockchain/prices'
 import { calculateDsrBalance, getYearlyRate } from 'features/dsr/helpers/dsrPot'
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -14,7 +13,7 @@ import { DsProxyRegistry__factory, McdPot__factory } from 'types/ethers-contract
 const PotFactory = McdPot__factory
 const DsProxyFactory = DsProxyRegistry__factory
 
-export const dsrPositionsHandler: PortfolioPositionsHandler = async ({ address, tickers }) => {
+export const dsrPositionsHandler: PortfolioPositionsHandler = async ({ address, prices }) => {
   const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
 
   const DsProxyContractAddress = getNetworkContracts(NetworkIds.MAINNET).dsProxyRegistry.address
@@ -23,7 +22,7 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({ address, 
   const dsProxyAddress = await DsProxyContract.proxies(address)
 
   if (dsProxyAddress) {
-    const daiPrice = getTokenPrice('DAI', tickers)
+    const daiPrice = prices['DAI']
 
     const PotContractAddress = getNetworkContracts(NetworkIds.MAINNET).mcdPot.address
     const PotContract = PotFactory.connect(PotContractAddress, rpcProvider)

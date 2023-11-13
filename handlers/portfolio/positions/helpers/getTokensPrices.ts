@@ -4,7 +4,7 @@ import type { Tickers } from 'blockchain/prices.types'
 import { tokensBySymbol } from 'blockchain/tokensMetadata.constants'
 import { tokenTickers } from 'helpers/api/tokenTickers'
 
-interface TokensPrices {
+export interface TokensPrices {
   [key: string]: BigNumber
 }
 

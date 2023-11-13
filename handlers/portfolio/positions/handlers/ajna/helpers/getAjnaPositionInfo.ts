@@ -1,11 +1,10 @@
 import type { Vault } from '@prisma/client'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
-import { getTokenPrice } from 'blockchain/prices'
-import type { Tickers } from 'blockchain/prices.types'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { AjnaDpmPositionsPool } from 'handlers/portfolio/positions/handlers/ajna/types'
+import type { TokensPrices } from 'handlers/portfolio/positions/helpers'
 import { getBorrowishPositionType } from 'handlers/portfolio/positions/helpers'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
@@ -15,7 +14,7 @@ interface getAjnaPositionInfoParams {
   isEarn: boolean
   pool: AjnaDpmPositionsPool
   positionId: string
-  tickers: Tickers
+  prices: TokensPrices
 }
 
 export async function getAjnaPositionInfo({
@@ -23,7 +22,7 @@ export async function getAjnaPositionInfo({
   isEarn,
   pool: { address: poolAddress, collateralToken, quoteToken },
   positionId,
-  tickers,
+  prices,
 }: getAjnaPositionInfoParams) {
   // get pool info contract
   const { ajnaPoolInfo } = getNetworkContracts(NetworkIds.MAINNET)
@@ -54,8 +53,8 @@ export async function getAjnaPositionInfo({
   }-${isOracless ? secondaryTokenAddress : secondaryToken}/${positionId}`
 
   // prices for oracle positions is always equal to one
-  const collateralPrice = isOracless ? one : getTokenPrice(primaryToken, tickers)
-  const quotePrice = isOracless ? one : getTokenPrice(secondaryToken, tickers)
+  const collateralPrice = isOracless ? one : prices[primaryToken]
+  const quotePrice = isOracless ? one : prices[secondaryToken]
 
   return {
     ajnaPoolInfo,
