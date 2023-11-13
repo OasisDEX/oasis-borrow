@@ -96,7 +96,7 @@ function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefine
   throw new Error(`No price data for given token - ${JSON.stringify(errorsArray)}`)
 }
 
-export function getTokenPrice(token: string, tickers: Tickers) {
+export function getTokenPriceSources(token: string) {
   const {
     coinpaprikaTicker,
     coinbaseTicker,
@@ -105,13 +105,19 @@ export function getTokenPrice(token: string, tickers: Tickers) {
     oracleTicker,
   } = getToken(token)
 
-  return getPrice(tickers, [
-    coinbaseTicker,
+  return [
     coinpaprikaTicker,
+    coinbaseTicker,
     coinGeckoTicker,
     coinpaprikaFallbackTicker,
     oracleTicker,
-  ])
+  ]
+}
+
+export function getTokenPrice(token: string, tickers: Tickers) {
+  const priceSources = getTokenPriceSources(token)
+
+  return getPrice(tickers, priceSources)
 }
 
 export function createTokenPriceInUSD$(
