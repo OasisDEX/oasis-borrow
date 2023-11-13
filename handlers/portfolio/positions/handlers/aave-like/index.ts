@@ -203,8 +203,6 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
       ['7Days'],
     )
   }
-  console.log('commonData', commonData)
-  console.log('wstEthYield', wstEthYield)
   const positionHistory = allPositionsHistory.filter(
     (position) => position.id === dpm.id.toLowerCase(),
   )[0]
