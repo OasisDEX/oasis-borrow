@@ -11,7 +11,7 @@ const handler: NextApiHandler = async (req, res) => {
     res.status(400).json({ error: 'Missing address' })
     return
   }
-  const { positions, dpmList } = await portfolioPositionsHandler(req)
-  res.status(200).json({ positions, dpmList })
+  const { positions } = await portfolioPositionsHandler(req)
+  res.status(200).json({ positions })
 }
 export default handler

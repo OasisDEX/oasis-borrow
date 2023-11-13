@@ -1,8 +1,8 @@
 import type { Vault } from '@prisma/client'
 import type { NetworkNames } from 'blockchain/networks'
 import type { OmniProductType } from 'features/omni-kit/types'
-import type { DpmList } from 'handlers/portfolio/positions/handlers/dpm'
 import type { TokensPrices } from 'handlers/portfolio/positions/helpers'
+import type { DpmList } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { LendingProtocol } from 'lendingProtocols'
 
 type AutomationType = {
@@ -22,6 +22,13 @@ export type PortfolioPosition = {
   automations: PortfolioPositionAutomations
   description?: string
   details: PositionDetail[]
+  /*
+  lendingType:
+    if earn, and has debt -> Yield Loop (loop)
+    If earn, no debt and not ajna -> Passive (passive)
+    If earn, no debt and ajna -> Active Lending (active)
+    the rest is just future proofing
+  */
   lendingType?: 'active' | 'passive' | 'loop' | 'staking' | 'pool' // are these all types?
   network: NetworkNames
   netValue: number
@@ -48,7 +55,6 @@ export type PortfolioPositionsHandler = ({
 
 export type PortfolioPositionsResponse = {
   positions: PortfolioPosition[]
-  address: string
 }
 
 type DetailsTypeCommon =
