@@ -33,7 +33,7 @@ export type PortfolioPosition = {
   network: NetworkNames
   netValue: number
   openDate?: number // epoch based on block height timestamp
-  positionId: number
+  positionId: number | string
   primaryToken: string
   protocol: LendingProtocol
   secondaryToken: string

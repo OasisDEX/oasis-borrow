@@ -1,9 +1,12 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
+import dayjs from 'dayjs'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { OmniProductType } from 'features/omni-kit/types'
+import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
 import {
   commonDataMapper,
@@ -21,6 +24,7 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 
 const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
   dpm,
@@ -187,6 +191,18 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
         proxyAddress: dpm.id.toLowerCase(),
       }),
     ])
+  const isWstethEthEarn =
+    commonData.primaryToken === 'WSTETH' && commonData.secondaryToken === 'WETH'
+  let wstEthYield
+  if (isWstethEthEarn) {
+    const contracts = getNetworkContracts(NetworkIds.MAINNET)
+    wstEthYield = await getAaveWstEthYield(
+      new GraphQLClient(contracts.cacheApi),
+      dayjs(),
+      onChainPositionData.riskRatio,
+      ['7Days'],
+    )
+  }
   const positionHistory = allPositionsHistory.filter(
     (position) => position.id === dpm.id.toLowerCase(),
   )[0]
@@ -220,7 +236,11 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'apy',
-        value: formatDecimalAsPercent(primaryTokenReserveData.liquidityRate),
+        value: formatDecimalAsPercent(
+          wstEthYield?.annualisedYield7days
+            ? wstEthYield.annualisedYield7days.div(100)
+            : primaryTokenReserveData.liquidityRate,
+        ),
       },
       {
         type: 'ltv',

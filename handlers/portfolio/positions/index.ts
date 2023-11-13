@@ -1,4 +1,5 @@
 import { aaveLikePositionsHandler } from 'handlers/portfolio/positions/handlers/aave-like'
+import { aaveV2PositionHandler } from 'handlers/portfolio/positions/handlers/aave-v2'
 import { ajnaPositionsHandler } from 'handlers/portfolio/positions/handlers/ajna'
 import { dsrPositionsHandler } from 'handlers/portfolio/positions/handlers/dsr'
 import { makerPositionsHandler } from 'handlers/portfolio/positions/handlers/maker'
@@ -39,6 +40,7 @@ export const portfolioPositionsHandler = async ({
       ajnaPositionsHandler(payload),
       dsrPositionsHandler(payload),
       makerPositionsHandler(payload),
+      aaveV2PositionHandler(payload),
     ])
       .then(
         ([
@@ -46,8 +48,15 @@ export const portfolioPositionsHandler = async ({
           { positions: ajnaPositions },
           { positions: dsrPositions },
           { positions: makerPositions },
+          { positions: aaveV2Positions },
         ]) => ({
-          positions: [...aaveV3Positions, ...ajnaPositions, ...dsrPositions, ...makerPositions],
+          positions: [
+            ...aaveV2Positions,
+            ...aaveV3Positions,
+            ...ajnaPositions,
+            ...dsrPositions,
+            ...makerPositions,
+          ],
           ...(debug && { ...payload }),
         }),
       )
