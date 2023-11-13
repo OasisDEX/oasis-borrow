@@ -56,7 +56,7 @@ export const portfolioPositionsHandler = async ({
 
         return {
           positions: [],
-          ...(debug && { ...payload, error: error.toString() }),
+          ...(debug && { ...payload, error: error.toString(), errorJson: JSON.stringify(error) }),
         }
       })
 
