@@ -60,7 +60,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     )
 
     const allAssetsUsdValue: number = allProtocolAssets.reduce(
-      (acc, { asset_usd_value }) => acc + asset_usd_value,
+      (acc, { net_usd_value }) => acc + net_usd_value,
       0,
     )
 
