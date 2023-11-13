@@ -1,6 +1,8 @@
+import { getCbethBaseChainlinkTicker } from 'server/services/cbethBaseChainlinkTicker'
 import { getCoinbaseTickers } from 'server/services/coinbase'
 import { getCoingeckoTickers } from 'server/services/coingecko'
 import { getCoinPaprikaTickers } from 'server/services/coinPaprika'
+import { getEthBaseChainlinkTicker } from 'server/services/ethBaseChainlinkTicker'
 import { getSDaiOracleTicker } from 'server/services/sdaiOracle'
 
 export async function tokenTickers() {
@@ -19,6 +21,14 @@ export async function tokenTickers() {
     }),
     getSDaiOracleTicker().catch((error) => {
       console.error('Error getting sDAI oracle price', error)
+      return {}
+    }),
+    getCbethBaseChainlinkTicker().catch((error) => {
+      console.error('Error getting CBETH (BASE) oracle price', error)
+      return {}
+    }),
+    getEthBaseChainlinkTicker().catch((error) => {
+      console.error('Error getting ETH (BASE) oracle price', error)
       return {}
     }),
   ])
