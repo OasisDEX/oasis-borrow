@@ -4,6 +4,7 @@ import request, { gql } from 'graphql-request'
 const automationQuery = gql`
   query automationTriggers($proxyAddresses: [String]) {
     triggers(where: { account_in: $proxyAddresses }) {
+      id
       account
       commandAddress
       executedBlock
@@ -16,6 +17,7 @@ const automationQuery = gql`
 
 type AutomationQueryResponse = {
   triggers: {
+    id: string
     account: string
     commandAddress: string
     executedBlock: string
@@ -28,6 +30,7 @@ type AutomationQueryResponse = {
 export type AutomationResponse = {
   networkId: AutomationSupportedNetworks // currently just mainnet
   triggers: {
+    id: string
     account: string
     commandAddress: string
     executedBlock: string

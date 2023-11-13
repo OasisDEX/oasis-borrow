@@ -43,7 +43,7 @@ export type HistorySupportedNetworks =
 const subgraphListDict = {
   [NetworkIds.MAINNET]: 'oasis/oasis-history',
   [NetworkIds.ARBITRUMMAINNET]: 'oasis/oasis-history-arbitrum',
-  [NetworkIds.OPTIMISMMAINNET]: 'oasis-history-optimism',
+  [NetworkIds.OPTIMISMMAINNET]: 'oasis/oasis-history-optimism',
   [NetworkIds.BASEMAINNET]: 'oasis/oasis-history-base',
 } as Record<HistorySupportedNetworks, string>
 

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { Tickers } from 'blockchain/prices.types'
-import { aaveV3PositionsHandler } from 'handlers/portfolio/positions/handlers/aaveV3'
+import { aaveLikePositionsHandler } from 'handlers/portfolio/positions/handlers/aave-like'
 import { ajnaPositionsHandler } from 'handlers/portfolio/positions/handlers/ajna'
 import { dsrPositionsHandler } from 'handlers/portfolio/positions/handlers/dsr'
 import { makerPositionsHandler } from 'handlers/portfolio/positions/handlers/maker'
@@ -32,7 +32,7 @@ export const portfolioPositionsHandler = async (
 
   const dpmList = await getAllDpmsForWallet({ address })
   const positionsReply = await Promise.all([
-    aaveV3PositionsHandler({ address, dpmList, apiVaults, tickers }),
+    aaveLikePositionsHandler({ address, dpmList, apiVaults, tickers }),
     ajnaPositionsHandler({ address, dpmList, apiVaults, tickers }),
     dsrPositionsHandler({ address, dpmList, apiVaults, tickers }),
     makerPositionsHandler({ address, dpmList, apiVaults, tickers }),

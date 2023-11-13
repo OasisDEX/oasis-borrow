@@ -55,7 +55,6 @@ export type PortfolioPositionsHandler = ({
 
 export type PortfolioPositionsResponse = {
   positions: PortfolioPosition[]
-  address: string
 }
 
 type DetailsTypeCommon =

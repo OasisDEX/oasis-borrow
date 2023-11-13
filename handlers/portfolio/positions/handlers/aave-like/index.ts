@@ -1,21 +1,21 @@
 import { RiskRatio } from '@oasisdex/dma-library'
 import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
-import { getAaveV3ReserveConfigurationData, getAaveV3ReserveData } from 'blockchain/aave-v3'
-import { NetworkIds, networksById } from 'blockchain/networks'
+import { NetworkIds } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
-import type { Tickers } from 'blockchain/prices.types'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
-import { getPositionsAutomations } from 'handlers/portfolio/positions/helpers'
-import type { DpmList } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
-import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/getAutomationData'
+import {
+  commonDataMapper,
+  filterAutomation,
+  getReserveConfigurationDataCall,
+  getReserveDataCall,
+} from 'handlers/portfolio/positions/handlers/aave-like/helpers'
+import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/positions/handlers/aave-like/types'
 import { getAutomationData } from 'handlers/portfolio/positions/helpers/getAutomationData'
-import type { HistoryResponse } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
-import { getTokenName } from 'handlers/portfolio/positions/helpers/getTokenName'
-import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
+import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import {
   formatAmount,
   formatAsShorthandNumbers,
@@ -23,60 +23,21 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
 
-type GetPositionHandlerType = (
-  dpm: DpmList[number],
-  tickers: Tickers,
-  allPositionsHistory: HistoryResponse,
-  allPositionsAutomation: AutomationResponse,
-) => Promise<PortfolioPosition>
-
-const commonDataMapper = (dpm: DpmList[number], automations?: AutomationResponse[number]) => ({
-  positionId: Number(dpm.vaultId),
-  type: dpm.positionType,
-  network: networksById[dpm.networkId].name,
-  protocol: LendingProtocol.AaveV3,
-  primaryToken: getTokenName(dpm.networkId, dpm.collateralToken),
-  secondaryToken: getTokenName(dpm.networkId, dpm.debtToken),
-  url: `/${networksById[dpm.networkId].name.toLowerCase()}/aave/v3/${dpm.vaultId}`,
-  automations: {
-    ...(dpm.positionType !== OmniProductType.Earn &&
-      automations && {
-        autoBuy: { enabled: false },
-        autoSell: { enabled: false },
-        stopLoss: { enabled: false },
-        takeProfit: { enabled: false },
-        ...getPositionsAutomations({
-          networkId: NetworkIds.MAINNET,
-          triggers: [automations.triggers],
-        }),
-      }),
-  },
-})
-
-const getAaveBorrowPosition: GetPositionHandlerType = async (
+const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
   dpm,
   tickers,
   _history,
   allPositionsAutomations,
 ) => {
-  const positionAutomations = allPositionsAutomations.filter(
-    (position) => position.triggers.owner.toLowerCase() === dpm.user.toLowerCase(),
-  )[0]
+  const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
   const commonData = commonDataMapper(dpm, positionAutomations)
   const primaryTokenPrice = getTokenPrice(commonData.primaryToken, tickers)
   const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, tickers)
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
-      getAaveV3ReserveData({
-        networkId: dpm.networkId,
-        token: commonData.primaryToken,
-      }),
-      getAaveV3ReserveData({
-        networkId: dpm.networkId,
-        token: commonData.secondaryToken,
-      }),
+      getReserveDataCall(dpm, commonData.primaryToken),
+      getReserveDataCall(dpm, commonData.secondaryToken),
       getOnChainPosition({
         networkId: dpm.networkId,
         collateralToken: commonData.primaryToken,
@@ -132,15 +93,13 @@ const getAaveBorrowPosition: GetPositionHandlerType = async (
   }
 }
 
-const getAaveMultiplyPosition: GetPositionHandlerType = async (
+const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
   dpm,
   tickers,
   allPositionsHistory,
   allPositionsAutomations,
 ) => {
-  const positionAutomations = allPositionsAutomations.filter(
-    (position) => position.triggers.owner.toLowerCase() === dpm.user.toLowerCase(),
-  )[0]
+  const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
   const commonData = commonDataMapper(dpm, positionAutomations)
   const primaryTokenPrice = getTokenPrice(commonData.primaryToken, tickers)
   const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, tickers)
@@ -150,18 +109,9 @@ const getAaveMultiplyPosition: GetPositionHandlerType = async (
     secondaryTokenReserveData,
     onChainPositionData,
   ] = await Promise.all([
-    getAaveV3ReserveConfigurationData({
-      networkId: dpm.networkId,
-      token: commonData.primaryToken,
-    }),
-    getAaveV3ReserveData({
-      networkId: dpm.networkId,
-      token: commonData.primaryToken,
-    }),
-    getAaveV3ReserveData({
-      networkId: dpm.networkId,
-      token: commonData.secondaryToken,
-    }),
+    getReserveConfigurationDataCall(dpm, commonData.primaryToken),
+    getReserveDataCall(dpm, commonData.primaryToken),
+    getReserveDataCall(dpm, commonData.secondaryToken),
     getOnChainPosition({
       networkId: dpm.networkId,
       collateralToken: commonData.primaryToken,
@@ -236,20 +186,18 @@ const getAaveMultiplyPosition: GetPositionHandlerType = async (
   }
 }
 
-const getAaveEarnPosition: GetPositionHandlerType = async (dpm, tickers, allPositionsHistory) => {
+const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
+  dpm,
+  tickers,
+  allPositionsHistory,
+) => {
   const commonData = commonDataMapper(dpm)
   const primaryTokenPrice = getTokenPrice(commonData.primaryToken, tickers)
   const secondaryTokenPrice = getTokenPrice(commonData.secondaryToken, tickers)
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
-      getAaveV3ReserveData({
-        networkId: dpm.networkId,
-        token: commonData.primaryToken,
-      }),
-      getAaveV3ReserveData({
-        networkId: dpm.networkId,
-        token: commonData.secondaryToken,
-      }),
+      getReserveDataCall(dpm, commonData.primaryToken),
+      getReserveDataCall(dpm, commonData.secondaryToken),
       getOnChainPosition({
         networkId: dpm.networkId,
         collateralToken: commonData.primaryToken,
@@ -307,30 +255,25 @@ const getAaveEarnPosition: GetPositionHandlerType = async (dpm, tickers, allPosi
       },
     ],
     netValue: calculations.netValue.toNumber(),
-    automations: {}, // TODO add automations
   }
 }
 
-export const aaveV3PositionsHandler: PortfolioPositionsHandler = async ({
-  address,
-  dpmList,
-  tickers,
-}) => {
-  const aaveV3DpmList = dpmList.filter(({ protocol }) => protocol === 'AAVE_V3')
-  const uniqueDpmNetworks = Array.from(new Set(aaveV3DpmList.map(({ networkId }) => networkId)))
+export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({ dpmList, tickers }) => {
+  const aaveLikeDpmList = dpmList.filter(({ protocol }) => ['AAVE_V3', 'Spark'].includes(protocol))
+  const uniqueDpmNetworks = Array.from(new Set(aaveLikeDpmList.map(({ networkId }) => networkId)))
   const [allPositionsHistory, allPositionsAutomations] = await Promise.all([
     Promise.all(
       uniqueDpmNetworks.map((networkId) =>
         getHistoryData({
           network: networkId,
-          addresses: aaveV3DpmList
+          addresses: aaveLikeDpmList
             .filter(({ networkId: dpmNetworkId }) => dpmNetworkId === networkId)
             .map(({ id }) => id),
         }),
       ),
     ).then((data) => data.flat()),
     getAutomationData({
-      addresses: aaveV3DpmList
+      addresses: aaveLikeDpmList
         .filter(({ networkId }) => networkId === NetworkIds.MAINNET)
         .map(({ id }) => id),
       network: NetworkIds.MAINNET,
@@ -338,14 +281,24 @@ export const aaveV3PositionsHandler: PortfolioPositionsHandler = async ({
   ])
 
   const positions = await Promise.all(
-    aaveV3DpmList.map(async (dpm) => {
+    aaveLikeDpmList.map(async (dpm) => {
       switch (dpm.positionType.toLowerCase()) {
         case OmniProductType.Multiply:
-          return getAaveMultiplyPosition(dpm, tickers, allPositionsHistory, allPositionsAutomations)
+          return getAaveLikeMultiplyPosition(
+            dpm,
+            tickers,
+            allPositionsHistory,
+            allPositionsAutomations,
+          )
         case OmniProductType.Borrow:
-          return getAaveBorrowPosition(dpm, tickers, allPositionsHistory, allPositionsAutomations)
+          return getAaveLikeBorrowPosition(
+            dpm,
+            tickers,
+            allPositionsHistory,
+            allPositionsAutomations,
+          )
         case OmniProductType.Earn:
-          return getAaveEarnPosition(dpm, tickers, allPositionsHistory, allPositionsAutomations)
+          return getAaveLikeEarnPosition(dpm, tickers, allPositionsHistory, allPositionsAutomations)
         default:
           throw new Error(`Unsupported position type ${dpm.positionType}`)
       }
@@ -354,7 +307,5 @@ export const aaveV3PositionsHandler: PortfolioPositionsHandler = async ({
 
   return {
     positions,
-    address,
-    dpmList,
   }
 }
