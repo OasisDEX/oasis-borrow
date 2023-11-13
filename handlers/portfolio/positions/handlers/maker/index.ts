@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
-import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
+import { loadSubgraphBackend } from 'features/subgraphLoader/useSubgraphLoaderBackend'
 import {
   getMakerPositionDetails,
   getMakerPositionInfo,
@@ -16,7 +16,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
   address,
   prices,
 }) => {
-  const subgraphPositions = (await loadSubgraph(
+  const subgraphPositions = (await loadSubgraphBackend(
     'Discover',
     'getMakerDiscoverPositions',
     NetworkIds.MAINNET,

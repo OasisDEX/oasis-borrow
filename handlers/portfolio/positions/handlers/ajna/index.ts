@@ -4,7 +4,7 @@ import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAj
 import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
 import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
-import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
+import { loadSubgraphBackend } from 'features/subgraphLoader/useSubgraphLoaderBackend'
 import {
   getAjnaPositionDetails,
   getAjnaPositionInfo,
@@ -20,9 +20,14 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
   prices,
 }) => {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
-  const subgraphPositions = (await loadSubgraph('Ajna', 'getAjnaDpmPositions', NetworkIds.MAINNET, {
-    dpmProxyAddress,
-  })) as SubgraphsResponses['Ajna']['getAjnaDpmPositions']
+  const subgraphPositions = (await loadSubgraphBackend(
+    'Ajna',
+    'getAjnaDpmPositions',
+    NetworkIds.MAINNET,
+    {
+      dpmProxyAddress,
+    },
+  )) as SubgraphsResponses['Ajna']['getAjnaDpmPositions']
   const positionsArray = subgraphPositions.response.accounts.flatMap(
     ({ address: proxyAddress, borrowPositions, earnPositions, vaultId: positionId }) => [
       ...borrowPositions.map((position) => ({
