@@ -55,6 +55,8 @@ export type PortfolioPositionsHandler = ({
 
 export type PortfolioPositionsResponse = {
   positions: PortfolioPosition[]
+  error?: boolean | string
+  errorJson?: boolean | string
 }
 
 type DetailsTypeCommon =
