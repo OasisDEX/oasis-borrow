@@ -29,34 +29,45 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     return ResponseBadRequest(message)
   }
 
-  const reqUrl = new URL(`${serviceUrl}/v1/user/all_token_list?id=${address}`)
-  const response: DebankToken[] = await fetch(reqUrl.toString(), {
+  const url = `${serviceUrl}/v1/user/all_token_list?id=${address}`
+  const response = await fetch(url, {
     headers,
   })
-    .then((res) => res.json())
+    .then(async (_res) => {
+      const json: DebankToken[] | undefined = await _res.json()
+      if (json == null || Array.isArray(json) === false) {
+        console.log('fetching: ', url, { headers })
+        console.log('response: ', JSON.stringify(json))
+        throw new Error('Wrong response from the proxy')
+      }
+      return json
+    })
     .catch((error) => {
       console.error(error)
       throw new Error('Failed to fetch wallet assets')
     })
 
-  const preparedTokenData = response
-    .filter(({ chain, is_wallet, price }) => is_wallet && chain !== undefined && price > 0)
-    .map(
-      (token): PortfolioAsset => ({
-        name: token.name,
-        symbol: token.symbol,
-        network: DebankNetworkNameToOurs[token.chain as DebankNetworkNames],
-        priceUSD: token.price,
-        price24hChange: token.price_24h_change,
-        balance: token.amount,
-        balanceUSD: token.amount * token.price,
-      }),
-    )
-    .filter(({ network }) => Object.values(NetworkNames).includes(network))
-    .sort((a, b) => b.balanceUSD - a.balanceUSD)
+  const preparedTokenData =
+    response
+      .filter(({ chain, is_wallet, price }) => is_wallet && chain !== undefined && price > 0)
+      .map(
+        (token): PortfolioAsset => ({
+          name: token.name,
+          symbol: token.symbol,
+          network: DebankNetworkNameToOurs[token.chain as DebankNetworkNames],
+          priceUSD: token.price,
+          price24hChange: token.price_24h_change,
+          balance: token.amount,
+          balanceUSD: token.amount * token.price,
+        }),
+      )
+      .filter(({ network }) => Object.values(NetworkNames).includes(network))
+      .sort((a, b) => b.balanceUSD - a.balanceUSD) ?? []
+
+  const totalAssetsUsdValue = preparedTokenData.reduce((acc, { balanceUSD }) => acc + balanceUSD, 0)
 
   const walletAssetsResponse: PortfolioAssetsResponse = {
-    totalAssetsUsdValue: preparedTokenData.reduce((acc, { balanceUSD }) => acc + balanceUSD, 0),
+    totalAssetsUsdValue,
     totalAssetsPercentageChange: 0,
     assets: preparedTokenData,
   }

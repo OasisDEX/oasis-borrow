@@ -1,106 +1,122 @@
+import { RiskRatio } from '@oasisdex/dma-library'
 import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
-import { getAaveV2ReserveData } from 'blockchain/aave'
-import { getNetworkContracts } from 'blockchain/contracts'
-import { getRpcProvider, NetworkIds } from 'blockchain/networks'
-import dayjs from 'dayjs'
+import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
+import { NetworkIds } from 'blockchain/networks'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { OmniProductType } from 'features/omni-kit/types'
-import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
 import { commonDataMapper } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
+import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/positions/handlers/aave-like/types'
+import { getAaveV2DsProxyPosition } from 'handlers/portfolio/positions/handlers/aave-v2/ds-proxy-position'
+import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatPercent,
+} from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
-import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
-import { DsProxyRegistry__factory } from 'types/ethers-contracts'
-const DsProxyFactory = DsProxyRegistry__factory
 
-export const aaveV2PositionHandler: PortfolioPositionsHandler = async ({ address, prices }) => {
-  const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
-  const contracts = getNetworkContracts(NetworkIds.MAINNET)
+const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
+  dpm,
+  prices,
+  allPositionsHistory,
+) => {
+  const commonData = commonDataMapper(dpm)
+  const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
+  const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
+  const [
+    primaryTokenReserveConfiguration,
+    primaryTokenReserveData,
+    secondaryTokenReserveData,
+    onChainPositionData,
+  ] = await Promise.all([
+    getAaveV2ReserveConfigurationData({ token: commonData.primaryToken }),
+    getAaveV2ReserveData({ token: commonData.primaryToken }),
+    getAaveV2ReserveData({ token: commonData.secondaryToken }),
+    getOnChainPosition({
+      networkId: dpm.networkId,
+      collateralToken: commonData.primaryToken,
+      debtToken: commonData.secondaryToken,
+      protocol: commonData.protocol,
+      proxyAddress: dpm.id.toLowerCase(),
+    }),
+  ])
 
-  const DsProxyContract = DsProxyFactory.connect(contracts.dsProxyRegistry.address, rpcProvider)
+  const calculations = calculateViewValuesForPosition(
+    onChainPositionData,
+    primaryTokenPrice,
+    secondaryTokenPrice,
+    primaryTokenReserveData.liquidityRate,
+    secondaryTokenReserveData.variableBorrowRate,
+  )
+  const { multiple: maxMultiple } = new RiskRatio(
+    primaryTokenReserveConfiguration.ltv,
+    RiskRatio.TYPE.LTV,
+  )
+  const positionHistory = allPositionsHistory.filter(
+    (position) => position.id.toLowerCase() === dpm.id.toLowerCase(),
+  )[0]
+  const pnlValue =
+    positionHistory?.cumulativeDeposit.gt(zero) &&
+    calculations.netValue
+      .minus(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
+      .div(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
 
-  const dsProxyAddress = await DsProxyContract.proxies(address)
-  if (!dsProxyAddress) {
-    return {
-      positions: [],
-    }
-  }
-
-  const stEthPosition = await getOnChainPosition({
-    networkId: NetworkIds.MAINNET,
-    proxyAddress: dsProxyAddress,
-    protocol: LendingProtocol.AaveV2,
-    debtToken: 'ETH',
-    collateralToken: 'STETH',
-  })
-
-  if (stEthPosition.collateral.amount.gt(zero)) {
-    const commonData = commonDataMapper(
-      {
-        collateralToken: contracts.tokens.STETH.address,
-        debtToken: contracts.tokens.ETH.address,
-        id: dsProxyAddress,
-        networkId: NetworkIds.MAINNET,
-        protocol: LendingProtocol.AaveV2,
-        positionType: OmniProductType.Earn,
-        user: address,
-        vaultId: address,
-      },
-      undefined,
-      true,
-    )
-    const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
-    const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
-    const [primaryTokenReserveData, secondaryTokenReserveData, yields] = await Promise.all([
-      getAaveV2ReserveData({ token: commonData.primaryToken }),
-      getAaveV2ReserveData({ token: commonData.secondaryToken }),
-      getAaveStEthYield(new GraphQLClient(contracts.cacheApi), dayjs(), stEthPosition.riskRatio, [
-        '7Days',
-      ]),
-    ])
-    const calculations = calculateViewValuesForPosition(
-      stEthPosition,
-      primaryTokenPrice,
-      secondaryTokenPrice,
-      primaryTokenReserveData.liquidityRate,
-      secondaryTokenReserveData.variableBorrowRate,
-    )
-    return {
-      positions: [
-        {
-          ...commonData,
-          lendingType: stEthPosition.debt.amount.gt(zero) ? 'loop' : 'passive',
-          details: [
-            {
-              type: 'netValue',
-              value: `$${formatCryptoBalance(calculations.netValue)}`,
-            },
-            {
-              type: 'earnings',
-              value: notAvailable,
-            },
-            {
-              type: 'apy',
-              value: yields.annualisedYield7days
-                ? formatDecimalAsPercent(yields.annualisedYield7days.div(100))
-                : notAvailable,
-            },
-            {
-              type: 'ltv',
-              value: formatDecimalAsPercent(stEthPosition.riskRatio.loanToValue),
-              subvalue: `Max ${formatDecimalAsPercent(stEthPosition.category.maxLoanToValue)}`,
-            },
-          ],
-          netValue: calculations.netValue.toNumber(),
-        },
-      ],
-    }
-  }
   return {
-    positions: [],
+    ...commonData,
+    details: [
+      {
+        type: 'netValue',
+        value: `$${formatCryptoBalance(calculations.netValue)}`,
+      },
+      {
+        type: 'pnl',
+        value: pnlValue ? formatPercent(pnlValue, { precision: 2 }) : notAvailable,
+        accent: pnlValue ? (pnlValue.gte(zero) ? 'positive' : 'negative') : undefined,
+      },
+      {
+        type: 'liquidationPrice',
+        value: `$${formatCryptoBalance(
+          calculations.liquidationPriceInDebt.times(secondaryTokenPrice),
+        )}`,
+        subvalue: `Now $${formatCryptoBalance(primaryTokenPrice)}`,
+      },
+      {
+        type: 'ltv',
+        value: formatDecimalAsPercent(onChainPositionData.riskRatio.loanToValue),
+        subvalue: `Max ${formatDecimalAsPercent(onChainPositionData.category.maxLoanToValue)}`,
+      },
+      {
+        type: 'multiple',
+        value: `${onChainPositionData.riskRatio.multiple.toFormat(2, BigNumber.ROUND_DOWN)}x`,
+        subvalue: `Max ${maxMultiple.toFormat(2, BigNumber.ROUND_DOWN)}x`,
+      },
+    ],
+    netValue: calculations.netValue.toNumber(),
+  }
+}
+
+export const aaveV2PositionHandler: PortfolioPositionsHandler = async ({
+  address,
+  prices,
+  dpmList,
+  ...rest
+}) => {
+  const aaveV2DpmList = dpmList.filter(({ protocol }) => ['AAVE'].includes(protocol))
+  const [allPositionsHistory, dsProxyPositions] = await Promise.all([
+    getHistoryData({
+      network: NetworkIds.MAINNET,
+      addresses: aaveV2DpmList.map(({ id }) => id),
+    }),
+    getAaveV2DsProxyPosition({ address, prices, dpmList, ...rest }),
+  ])
+  const positions = await Promise.all(
+    aaveV2DpmList.map(async (dpm) =>
+      getAaveV2MultiplyPosition(dpm, prices, allPositionsHistory, []),
+    ),
+  )
+  return {
+    positions: [...dsProxyPositions.positions, ...positions],
   }
 }
