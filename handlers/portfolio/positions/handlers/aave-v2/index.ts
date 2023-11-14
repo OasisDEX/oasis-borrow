@@ -61,6 +61,7 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
       .minus(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
       .div(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
 
+  const tokensLabel = `${commonData.primaryToken}/${commonData.secondaryToken}`
   return {
     ...commonData,
     details: [
@@ -75,10 +76,10 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'liquidationPrice',
-        value: `$${formatCryptoBalance(
-          calculations.liquidationPriceInDebt.times(secondaryTokenPrice),
-        )}`,
-        subvalue: `Now $${formatCryptoBalance(primaryTokenPrice)}`,
+        value: `${formatCryptoBalance(calculations.liquidationPriceInDebt)} ${tokensLabel}`,
+        subvalue: `Now ${formatCryptoBalance(
+          primaryTokenPrice.div(secondaryTokenPrice),
+        )} ${tokensLabel}`,
       },
       {
         type: 'ltv',
