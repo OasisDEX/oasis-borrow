@@ -50,9 +50,9 @@ export async function getAjnaPositionInfo({
       })
 
   // shorhands and formatting for better clarity
-  const primaryToken = collateralToken.symbol.toUpperCase()
+  const primaryToken = getTokenDisplayName(collateralToken.symbol)
   const primaryTokenAddress = collateralToken.address
-  const secondaryToken = quoteToken.symbol.toUpperCase()
+  const secondaryToken = getTokenDisplayName(quoteToken.symbol)
   const secondaryTokenAddress = quoteToken.address
   const isOracless = isPoolOracless({
     chainId: NetworkIds.MAINNET,
@@ -64,17 +64,19 @@ export async function getAjnaPositionInfo({
   }-${isOracless ? secondaryTokenAddress : secondaryToken}/${positionId}`
 
   // prices for oracle positions is always equal to one
-  const collateralPrice = isOracless ? one : new BigNumber(prices[primaryToken])
-  const quotePrice = isOracless ? one : new BigNumber(prices[secondaryToken])
+  const collateralPrice = isOracless
+    ? one
+    : new BigNumber(prices[collateralToken.symbol.toUpperCase()])
+  const quotePrice = isOracless ? one : new BigNumber(prices[quoteToken.symbol.toUpperCase()])
 
   return {
     ajnaPoolInfo,
     collateralPrice,
     isOracless,
     poolAddress,
-    primaryToken: getTokenDisplayName(primaryToken),
+    primaryToken,
     quotePrice,
-    secondaryToken: getTokenDisplayName(secondaryToken),
+    secondaryToken,
     type,
     url,
   }
