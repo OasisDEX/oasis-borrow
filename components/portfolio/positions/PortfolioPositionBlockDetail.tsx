@@ -12,6 +12,21 @@ import { useTranslation } from 'react-i18next'
 import { question_o } from 'theme/icons'
 import { Box, Flex, Text } from 'theme-ui'
 
+const MainDetailComponent = ({ detail }: { detail: PositionDetail }) => {
+  switch (detail.type) {
+    case 'apyLink':
+      return (
+        <AppLink href={EXTERNAL_LINKS.AAVE_SDAI_YIELD_DUNE}>
+          <WithArrow>APY</WithArrow>
+        </AppLink>
+      )
+    case 'lendingRange':
+      return <PortfolioPositionBlockLendingRangeDetail detail={detail} />
+    default:
+      return <>{detail.value}</>
+  }
+}
+
 export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetail }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
   const detailsTooltipsMap: Partial<Record<DetailsType, TranslateStringType>> = {
@@ -27,22 +42,6 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
     '90dApy': tPortfolio('details-tooltips.90dApy'),
     suppliedTokenBalance: tPortfolio('details-tooltips.suppliedTokenBalance'),
     borrowedTokenBalance: tPortfolio('details-tooltips.borrowedTokenBalance'),
-  }
-  let mainDetailComponent
-  switch (detail.type) {
-    case 'apyLink':
-      mainDetailComponent = (
-        <AppLink href={EXTERNAL_LINKS.AAVE_SDAI_YIELD_DUNE}>
-          <WithArrow>APY</WithArrow>
-        </AppLink>
-      )
-      break
-    case 'lendingRange':
-      mainDetailComponent = <PortfolioPositionBlockLendingRangeDetail detail={detail} />
-      break
-    default:
-      mainDetailComponent = detail.value
-      break
   }
 
   return (
@@ -87,7 +86,7 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
         variant="boldParagraph1"
         color={detail.accent ? getPortfolioAccentColor(detail.accent) : 'neutral100'}
       >
-        {mainDetailComponent}
+        <MainDetailComponent detail={detail} />
       </Text>
       {detail.subvalue && (
         <Text variant="paragraph4" color="neutral80">
