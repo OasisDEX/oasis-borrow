@@ -84,17 +84,23 @@ const getAllProtocolAssets = async (
   serviceUrl: string,
   address: string,
   headers: Record<string, string>,
-) => {
-  const protocolAssets = await fetch(
-    `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`,
-    { headers },
-  )
-    .then((_res) => _res.json() as Promise<DebankSimpleProtocol[]>)
+): Promise<DebankSimpleProtocol[]> => {
+  const url = `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`
+  const protocolAssets = await fetch(url, { headers })
+    .then(async (_res) => {
+      const json: DebankSimpleProtocol[] | undefined = await _res.json()
+      if (json == null || Array.isArray(json) === false) {
+        console.log('fetching 1: ', url, { headers })
+        console.log('response 1: ', JSON.stringify(json))
+        throw new Error('Wrong response from proxy')
+      }
+      return json
+    })
     .catch((error) => {
       console.error(error)
       throw new Error('Failed to fetch getAllProtocolAssets')
     })
-  return protocolAssets
+  return protocolAssets || []
 }
 
 const getSummerProtocolAssets = async (
@@ -102,35 +108,39 @@ const getSummerProtocolAssets = async (
   address: string,
   headers: Record<string, string>,
 ): Promise<DebankPortfolioItemObject[]> => {
-  const protocolAssets = await fetch(
-    `${serviceUrl}/v1/user/all_complex_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`,
-    { headers },
-  )
-    .then((_res) => _res.json() as Promise<DebankComplexProtocol[]>)
-    .then((res) =>
+  const url = `${serviceUrl}/v1/user/all_complex_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`
+  const protocolAssets = await fetch(url, { headers })
+    .then(async (_res) => {
+      const json: DebankComplexProtocol[] | undefined = await _res.json()
+      if (json == null || Array.isArray(json) === false) {
+        console.log('fetching 2: ', url, { headers })
+        console.log('response 2: ', JSON.stringify(json))
+        throw new Error('Wrong response from the proxy')
+      }
+
       // filter out non-supported protocols
-      res.filter(({ id }) => {
-        const isSupportedProtocol = SUPPORTED_PROTOCOL_IDS.includes(id)
-        return isSupportedProtocol
-      }),
-    )
-    .then((res) =>
-      // map each protocol to position array and flatten
-      // and filter out non-supported positions
-      res
+      const result = json
+        .filter(({ id }) => {
+          const isSupportedProtocol = SUPPORTED_PROTOCOL_IDS.includes(id)
+          return isSupportedProtocol
+        })
+        // map each protocol to position array and flatten
+        // and filter out non-supported positions
         .map(({ portfolio_item_list }) =>
           (portfolio_item_list || []).filter(({ proxy_detail }) =>
             SUPPORTED_PROXY_IDS.includes(proxy_detail?.project?.id ?? ''),
           ),
         )
-        .flat(),
-    )
+        .flat()
+
+      return result
+    })
     .catch((error) => {
       console.error(error)
       throw new Error('Failed to fetch getSummerProtocolAssets')
     })
 
-  return protocolAssets
+  return protocolAssets || []
 }
 
 export default handler
