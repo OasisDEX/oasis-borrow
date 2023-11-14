@@ -1,6 +1,7 @@
 import type { Vault } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import type { OmniProductBorrowishType } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { MakerDiscoverPositionsIlk } from 'handlers/portfolio/positions/handlers/maker/types'
 import type { TokensPrices } from 'handlers/portfolio/positions/helpers'
@@ -38,6 +39,7 @@ export async function getMakerPositionInfo({
       ? OmniProductType.Earn
       : getBorrowishPositionType({
           apiVaults,
+          defaultType: type.toLowerCase() as OmniProductBorrowishType,
           networkId: NetworkIds.MAINNET,
           positionId: Number(cdp),
           protocol: LendingProtocol.Maker,

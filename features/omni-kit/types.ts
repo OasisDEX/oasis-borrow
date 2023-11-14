@@ -13,6 +13,8 @@ export enum OmniProductType {
   Multiply = 'multiply',
 }
 
+export type OmniProductBorrowishType = OmniProductType.Borrow | OmniProductType.Multiply
+
 export enum OmniSidebarStep {
   Dpm = 'dpm',
   Manage = 'manage',
