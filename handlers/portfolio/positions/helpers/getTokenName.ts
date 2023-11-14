@@ -30,8 +30,7 @@ export const getTokenName = memoize(
         )}`,
       )
     }
-
-    return tokenName === 'WETH' ? 'ETH' : tokenName
+    return tokenName
   },
   (networkId, tokenAddress) => JSON.stringify({ networkId, tokenAddress }),
 )

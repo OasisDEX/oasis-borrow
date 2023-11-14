@@ -32,36 +32,40 @@ export function TokensGroup({ forceSize, network, sx, tokens }: TokensGroupProps
           }),
         }}
       >
-        {tokens.map((token, i) => (
-          <Flex
-            key={i}
-            as="li"
-            sx={{
-              position: 'relative',
-              mr: `-${Math.ceil(forceSize || defaultMultipleSize) * 0.55}px`,
-              zIndex: tokens.length - i,
-              '&:last-child': { mr: 0 },
-            }}
-          >
-            {Object.keys(tokensBySymbol).includes(token) ? (
-              <Icon
-                size={forceSize || (tokens.length > 1 ? defaultMultipleSize : defaultSingleSize)}
-                key={getToken(token).name}
-                icon={getToken(token).iconCircle}
-                sx={{
-                  verticalAlign: 'bottom',
-                  my: tokens.length === 1 ? (forceSize ? 0 : '-4px') : 0,
-                }}
-              />
-            ) : (
-              <GenericTokenIcon
-                key={token}
-                size={forceSize || (tokens.length > 1 ? defaultMultipleSize : defaultSingleSize)}
-                symbol={token}
-              />
-            )}
-          </Flex>
-        ))}
+        {tokens.map((token, i) => {
+          const resolvedToken = token === 'ETH' ? 'WETH' : token
+
+          return (
+            <Flex
+              key={i}
+              as="li"
+              sx={{
+                position: 'relative',
+                mr: `-${Math.ceil(forceSize || defaultMultipleSize) * 0.55}px`,
+                zIndex: tokens.length - i,
+                '&:last-child': { mr: 0 },
+              }}
+            >
+              {Object.keys(tokensBySymbol).includes(resolvedToken) ? (
+                <Icon
+                  size={forceSize || (tokens.length > 1 ? defaultMultipleSize : defaultSingleSize)}
+                  key={getToken(resolvedToken).name}
+                  icon={getToken(resolvedToken).iconCircle}
+                  sx={{
+                    verticalAlign: 'bottom',
+                    my: tokens.length === 1 ? (forceSize ? 0 : '-4px') : 0,
+                  }}
+                />
+              ) : (
+                <GenericTokenIcon
+                  key={resolvedToken}
+                  size={forceSize || (tokens.length > 1 ? defaultMultipleSize : defaultSingleSize)}
+                  symbol={resolvedToken}
+                />
+              )}
+            </Flex>
+          )
+        })}
       </Flex>
       {network && (
         <Image
