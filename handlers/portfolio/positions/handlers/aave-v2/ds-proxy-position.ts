@@ -38,7 +38,7 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
   })
 
   if (stEthPosition.collateral.amount.gt(zero)) {
-    const commonData = commonDataMapper({
+    const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({
       dpm: {
         collateralToken: contracts.tokens.STETH.address,
         debtToken: contracts.tokens.ETH.address,
@@ -61,8 +61,8 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
     ])
     const calculations = calculateViewValuesForPosition(
       stEthPosition,
-      commonData.primaryTokenPrice,
-      commonData.secondaryTokenPrice,
+      primaryTokenPrice,
+      secondaryTokenPrice,
       primaryTokenReserveData.liquidityRate,
       secondaryTokenReserveData.variableBorrowRate,
     )

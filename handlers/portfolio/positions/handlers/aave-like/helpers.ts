@@ -69,40 +69,42 @@ export const commonDataMapper = ({
   const secondaryToken = getTokenName(dpm.networkId, dpm.debtToken)
 
   return {
-    positionId: positionIdAsString ? dpm.vaultId : Number(dpm.vaultId),
-    type: dpm.positionType,
-    network: networksById[dpm.networkId].name,
-    protocol: {
-      AAVE_V3: LendingProtocol.AaveV3,
-      Spark: LendingProtocol.SparkV3,
-      AAVE: LendingProtocol.AaveV2, // this means Aave V2
-    }[dpm.protocol] as LendingProtocol,
-    primaryToken: getTokenDisplayName(primaryToken),
-    primaryTokenPrice: new BigNumber(prices[primaryToken]),
-    secondaryToken: getTokenDisplayName(secondaryToken),
-    secondaryTokenPrice: new BigNumber(prices[secondaryToken]),
-    url: `/${networksById[dpm.networkId].name.toLowerCase()}/${
-      {
-        AAVE_V3: 'aave',
-        Spark: 'spark',
-        AAVE: 'aave',
-      }[dpm.protocol]
-    }/${
-      {
-        AAVE_V3: 'v3',
-        Spark: 'v3',
-        AAVE: 'v2',
-      }[dpm.protocol]
-    }/${dpm.vaultId}`,
-    automations: {
-      ...(dpm.positionType !== OmniProductType.Earn &&
-        automations && {
-          stopLoss: { enabled: false },
-          ...getPositionsAutomations({
-            networkId: NetworkIds.MAINNET,
-            triggers: [automations.triggers],
+    commonData: {
+      positionId: positionIdAsString ? dpm.vaultId : Number(dpm.vaultId),
+      type: dpm.positionType,
+      network: networksById[dpm.networkId].name,
+      protocol: {
+        AAVE_V3: LendingProtocol.AaveV3,
+        Spark: LendingProtocol.SparkV3,
+        AAVE: LendingProtocol.AaveV2, // this means Aave V2
+      }[dpm.protocol] as LendingProtocol,
+      primaryToken: getTokenDisplayName(primaryToken),
+      secondaryToken: getTokenDisplayName(secondaryToken),
+      url: `/${networksById[dpm.networkId].name.toLowerCase()}/${
+        {
+          AAVE_V3: 'aave',
+          Spark: 'spark',
+          AAVE: 'aave',
+        }[dpm.protocol]
+      }/${
+        {
+          AAVE_V3: 'v3',
+          Spark: 'v3',
+          AAVE: 'v2',
+        }[dpm.protocol]
+      }/${dpm.vaultId}`,
+      automations: {
+        ...(dpm.positionType !== OmniProductType.Earn &&
+          automations && {
+            stopLoss: { enabled: false },
+            ...getPositionsAutomations({
+              networkId: NetworkIds.MAINNET,
+              triggers: [automations.triggers],
+            }),
           }),
-        }),
+      },
     },
+    primaryTokenPrice: new BigNumber(prices[primaryToken]),
+    secondaryTokenPrice: new BigNumber(prices[secondaryToken]),
   }
 }

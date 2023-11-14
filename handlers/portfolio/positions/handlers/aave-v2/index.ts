@@ -22,7 +22,7 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
   prices,
   allPositionsHistory,
 ) => {
-  const commonData = commonDataMapper({ dpm, prices })
+  const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({ dpm, prices })
   const [
     primaryTokenReserveConfiguration,
     primaryTokenReserveData,
@@ -43,8 +43,8 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
 
   const calculations = calculateViewValuesForPosition(
     onChainPositionData,
-    commonData.primaryTokenPrice,
-    commonData.secondaryTokenPrice,
+    primaryTokenPrice,
+    secondaryTokenPrice,
     primaryTokenReserveData.liquidityRate,
     secondaryTokenReserveData.variableBorrowRate,
   )
@@ -76,9 +76,9 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
       {
         type: 'liquidationPrice',
         value: `$${formatCryptoBalance(
-          calculations.liquidationPriceInDebt.times(commonData.secondaryTokenPrice),
+          calculations.liquidationPriceInDebt.times(secondaryTokenPrice),
         )}`,
-        subvalue: `Now $${formatCryptoBalance(commonData.primaryTokenPrice)}`,
+        subvalue: `Now $${formatCryptoBalance(primaryTokenPrice)}`,
       },
       {
         type: 'ltv',
