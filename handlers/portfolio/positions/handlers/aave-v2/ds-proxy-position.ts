@@ -44,7 +44,7 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
         debtToken: contracts.tokens.ETH.address,
         id: dsProxyAddress,
         networkId: NetworkIds.MAINNET,
-        protocol: 'Aave', // this means Aave V2
+        protocol: 'AAVE', // this means Aave V2
         positionType: OmniProductType.Earn,
         user: address,
         vaultId: address,
