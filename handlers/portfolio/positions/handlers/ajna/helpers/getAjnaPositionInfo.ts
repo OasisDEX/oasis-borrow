@@ -49,7 +49,7 @@ export async function getAjnaPositionInfo({
     collateralToken: primaryToken,
     quoteToken: secondaryToken,
   })
-  const url = `${NetworkNames.ethereumMainnet}/${LendingProtocol.Ajna}/${type}/${
+  const url = `/${NetworkNames.ethereumMainnet}/${LendingProtocol.Ajna}/${type}/${
     isOracless ? primaryTokenAddress : primaryToken
   }-${isOracless ? secondaryTokenAddress : secondaryToken}/${positionId}`
 
