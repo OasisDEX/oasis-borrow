@@ -64,10 +64,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
       .filter(({ network }) => Object.values(NetworkNames).includes(network))
       .sort((a, b) => b.balanceUSD - a.balanceUSD) ?? []
 
-  const totalAssetsUsdValue = preparedTokenData?.reduce(
-    (acc, { balanceUSD }) => acc + balanceUSD,
-    0,
-  )
+  const totalAssetsUsdValue = preparedTokenData.reduce((acc, { balanceUSD }) => acc + balanceUSD, 0)
 
   const walletAssetsResponse: PortfolioAssetsResponse = {
     totalAssetsUsdValue,
