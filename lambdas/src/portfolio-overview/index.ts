@@ -88,9 +88,12 @@ const getAllProtocolAssets = async (
   const url = `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`
   console.log('fetching 1: ', url, { headers })
   const protocolAssets = await fetch(url, { headers })
-    .then((_res) => {
-      const json = _res.json() as Promise<DebankSimpleProtocol[] | undefined>
+    .then(async (_res) => {
+      const json: DebankSimpleProtocol[] | undefined = await _res.json()
       console.log('response 1: ', JSON.stringify(json))
+      if (json == null || Array.isArray(json) === false) {
+        throw new Error('Wrong response from proxy')
+      }
       return json
     })
     .catch((error) => {
@@ -108,29 +111,30 @@ const getSummerProtocolAssets = async (
   const url = `${serviceUrl}/v1/user/all_complex_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`
   console.log('fetching 2: ', url, { headers })
   const protocolAssets = await fetch(url, { headers })
-    .then((_res) => {
-      const json = _res.json() as Promise<DebankComplexProtocol[] | undefined>
+    .then(async (_res) => {
+      const json: DebankComplexProtocol[] | undefined = await _res.json()
       console.log('response 2: ', JSON.stringify(json))
-      return json
-    })
-    .then((res) =>
+      if (json == null || Array.isArray(json) === false) {
+        throw new Error('Wrong response from the proxy')
+      }
+
       // filter out non-supported protocols
-      res?.filter(({ id }) => {
-        const isSupportedProtocol = SUPPORTED_PROTOCOL_IDS.includes(id)
-        return isSupportedProtocol
-      }),
-    )
-    .then((res) =>
-      // map each protocol to position array and flatten
-      // and filter out non-supported positions
-      res
-        ?.map(({ portfolio_item_list }) =>
+      const result = json
+        .filter(({ id }) => {
+          const isSupportedProtocol = SUPPORTED_PROTOCOL_IDS.includes(id)
+          return isSupportedProtocol
+        })
+        // map each protocol to position array and flatten
+        // and filter out non-supported positions
+        .map(({ portfolio_item_list }) =>
           (portfolio_item_list || []).filter(({ proxy_detail }) =>
             SUPPORTED_PROXY_IDS.includes(proxy_detail?.project?.id ?? ''),
           ),
         )
-        .flat(),
-    )
+        .flat()
+
+      return result
+    })
     .catch((error) => {
       console.error(error)
       throw new Error('Failed to fetch getSummerProtocolAssets')
