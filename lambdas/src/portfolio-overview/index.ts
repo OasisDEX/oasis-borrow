@@ -84,17 +84,20 @@ const getAllProtocolAssets = async (
   serviceUrl: string,
   address: string,
   headers: Record<string, string>,
-) => {
-  const protocolAssets = await fetch(
-    `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`,
-    { headers },
-  )
-    .then((_res) => _res.json() as Promise<DebankSimpleProtocol[]>)
+): Promise<DebankSimpleProtocol[]> => {
+  const url = `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`
+  console.log('fetching: ', url, { headers })
+  const protocolAssets = await fetch(url, { headers })
+    .then((_res) => {
+      const json = _res.json() as Promise<DebankSimpleProtocol[] | undefined>
+      console.log('response: ', json)
+      return json
+    })
     .catch((error) => {
       console.error(error)
       throw new Error('Failed to fetch getAllProtocolAssets')
     })
-  return protocolAssets
+  return protocolAssets || []
 }
 
 const getSummerProtocolAssets = async (
@@ -102,14 +105,17 @@ const getSummerProtocolAssets = async (
   address: string,
   headers: Record<string, string>,
 ): Promise<DebankPortfolioItemObject[]> => {
-  const protocolAssets = await fetch(
-    `${serviceUrl}/v1/user/all_complex_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`,
-    { headers },
-  )
-    .then((_res) => _res.json() as Promise<DebankComplexProtocol[]>)
+  const url = `${serviceUrl}/v1/user/all_complex_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`
+  console.log('fetching: ', url, { headers })
+  const protocolAssets = await fetch(url, { headers })
+    .then((_res) => {
+      const json = _res.json() as Promise<DebankComplexProtocol[] | undefined>
+      console.log('response: ', json)
+      return json
+    })
     .then((res) =>
       // filter out non-supported protocols
-      res.filter(({ id }) => {
+      res?.filter(({ id }) => {
         const isSupportedProtocol = SUPPORTED_PROTOCOL_IDS.includes(id)
         return isSupportedProtocol
       }),
@@ -118,7 +124,7 @@ const getSummerProtocolAssets = async (
       // map each protocol to position array and flatten
       // and filter out non-supported positions
       res
-        .map(({ portfolio_item_list }) =>
+        ?.map(({ portfolio_item_list }) =>
           (portfolio_item_list || []).filter(({ proxy_detail }) =>
             SUPPORTED_PROXY_IDS.includes(proxy_detail?.project?.id ?? ''),
           ),
@@ -130,7 +136,7 @@ const getSummerProtocolAssets = async (
       throw new Error('Failed to fetch getSummerProtocolAssets')
     })
 
-  return protocolAssets
+  return protocolAssets || []
 }
 
 export default handler
