@@ -33,9 +33,7 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
   allPositionsAutomations,
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
-  const commonData = commonDataMapper(dpm, positionAutomations)
-  const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
-  const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
+  const commonData = commonDataMapper({ automations: positionAutomations, dpm, prices })
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
       getReserveDataCall(dpm, commonData.primaryToken),
@@ -51,8 +49,8 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
 
   const calculations = calculateViewValuesForPosition(
     onChainPositionData,
-    primaryTokenPrice,
-    secondaryTokenPrice,
+    commonData.primaryTokenPrice,
+    commonData.secondaryTokenPrice,
     primaryTokenReserveData.liquidityRate,
     secondaryTokenReserveData.variableBorrowRate,
   )
@@ -71,9 +69,9 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
       {
         type: 'liquidationPrice',
         value: `$${formatCryptoBalance(
-          calculations.liquidationPriceInDebt.times(secondaryTokenPrice),
+          calculations.liquidationPriceInDebt.times(commonData.secondaryTokenPrice),
         )}`,
-        subvalue: `Now $${formatCryptoBalance(primaryTokenPrice)}`,
+        subvalue: `Now $${formatCryptoBalance(commonData.primaryTokenPrice)}`,
       },
       {
         type: 'ltv',
@@ -96,9 +94,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
   allPositionsAutomations,
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
-  const commonData = commonDataMapper(dpm, positionAutomations)
-  const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
-  const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
+  const commonData = commonDataMapper({ automations: positionAutomations, dpm, prices })
   const [
     primaryTokenReserveConfiguration,
     primaryTokenReserveData,
@@ -119,8 +115,8 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
 
   const calculations = calculateViewValuesForPosition(
     onChainPositionData,
-    primaryTokenPrice,
-    secondaryTokenPrice,
+    commonData.primaryTokenPrice,
+    commonData.secondaryTokenPrice,
     primaryTokenReserveData.liquidityRate,
     secondaryTokenReserveData.variableBorrowRate,
   )
@@ -152,9 +148,9 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
       {
         type: 'liquidationPrice',
         value: `$${formatCryptoBalance(
-          calculations.liquidationPriceInDebt.times(secondaryTokenPrice),
+          calculations.liquidationPriceInDebt.times(commonData.secondaryTokenPrice),
         )}`,
-        subvalue: `Now $${formatCryptoBalance(primaryTokenPrice)}`,
+        subvalue: `Now $${formatCryptoBalance(commonData.primaryTokenPrice)}`,
       },
       {
         type: 'ltv',
@@ -176,9 +172,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
   prices,
   allPositionsHistory,
 ) => {
-  const commonData = commonDataMapper(dpm)
-  const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
-  const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
+  const commonData = commonDataMapper({ dpm, prices })
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
       getReserveDataCall(dpm, commonData.primaryToken),
@@ -208,8 +202,8 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
   )[0]
   const calculations = calculateViewValuesForPosition(
     onChainPositionData,
-    primaryTokenPrice,
-    secondaryTokenPrice,
+    commonData.primaryTokenPrice,
+    commonData.secondaryTokenPrice,
     primaryTokenReserveData.liquidityRate,
     secondaryTokenReserveData.variableBorrowRate,
   )
