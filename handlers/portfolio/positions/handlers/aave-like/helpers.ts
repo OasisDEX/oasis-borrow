@@ -81,10 +81,7 @@ export const commonDataMapper = (
   automations: {
     ...(dpm.positionType !== OmniProductType.Earn &&
       automations && {
-        autoBuy: { enabled: false },
-        autoSell: { enabled: false },
         stopLoss: { enabled: false },
-        takeProfit: { enabled: false },
         ...getPositionsAutomations({
           networkId: NetworkIds.MAINNET,
           triggers: [automations.triggers],
