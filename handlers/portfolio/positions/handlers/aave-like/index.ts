@@ -59,6 +59,8 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
     secondaryTokenReserveData.variableBorrowRate,
   )
 
+  const tokensLabel = `${commonData.primaryToken}/${commonData.secondaryToken}`
+
   return {
     ...commonData,
     details: [
@@ -72,12 +74,10 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'liquidationPrice',
-        value: `${formatCryptoBalance(calculations.liquidationPriceInDebt)} ${
-          commonData.primaryToken
-        }/${commonData.secondaryToken}`,
-        subvalue: `Now ${formatCryptoBalance(primaryTokenPrice.div(secondaryTokenPrice))} ${
-          commonData.primaryToken
-        }/${commonData.secondaryToken}`,
+        value: `${formatCryptoBalance(calculations.liquidationPriceInDebt)} ${tokensLabel}`,
+        subvalue: `Now ${formatCryptoBalance(
+          primaryTokenPrice.div(secondaryTokenPrice),
+        )} ${tokensLabel}`,
       },
       {
         type: 'ltv',
@@ -142,6 +142,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
     calculations.netValue
       .minus(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
       .div(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
+  const tokensLabel = `${commonData.primaryToken}/${commonData.secondaryToken}`
 
   return {
     ...commonData,
@@ -157,12 +158,10 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'liquidationPrice',
-        value: `${formatCryptoBalance(calculations.liquidationPriceInDebt)} ${
-          commonData.primaryToken
-        }/${commonData.secondaryToken}`,
-        subvalue: `Now ${formatCryptoBalance(primaryTokenPrice.div(secondaryTokenPrice))} ${
-          commonData.primaryToken
-        }/${commonData.secondaryToken}`,
+        value: `${formatCryptoBalance(calculations.liquidationPriceInDebt)} ${tokensLabel}`,
+        subvalue: `Now ${formatCryptoBalance(
+          primaryTokenPrice.div(secondaryTokenPrice),
+        )} ${tokensLabel}`,
       },
       {
         type: 'ltv',
