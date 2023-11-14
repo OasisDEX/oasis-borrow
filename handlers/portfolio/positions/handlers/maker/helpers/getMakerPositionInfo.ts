@@ -5,6 +5,7 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { MakerDiscoverPositionsIlk } from 'handlers/portfolio/positions/handlers/maker/types'
 import type { TokensPrices } from 'handlers/portfolio/positions/helpers'
 import { getBorrowishPositionType } from 'handlers/portfolio/positions/helpers'
+import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import { LendingProtocol } from 'lendingProtocols'
 
 interface getMakerPositionInfoParams {
@@ -47,12 +48,7 @@ export async function getMakerPositionInfo({
   const daiPrice = new BigNumber(prices['DAI'])
   const debt = new BigNumber(normalizedDebt).times(rate)
   const [earnToken] = ilkLabel.split('-')
-  const primaryToken =
-    tokenSymbol === 'WETH'
-      ? 'ETH'
-      : resolvedType === OmniProductType.Earn
-      ? earnToken
-      : tokenSymbol.toUpperCase()
+  const primaryToken = resolvedType === OmniProductType.Earn ? earnToken : tokenSymbol.toUpperCase()
   const secondaryToken = resolvedType === OmniProductType.Earn ? earnToken : 'DAI'
   const url = `/${NetworkNames.ethereumMainnet}/${LendingProtocol.Maker}/${cdp}`
 
@@ -60,7 +56,7 @@ export async function getMakerPositionInfo({
     collateralPrice,
     daiPrice,
     debt,
-    primaryToken,
+    primaryToken: getTokenDisplayName(primaryToken),
     secondaryToken,
     type: resolvedType,
     url,

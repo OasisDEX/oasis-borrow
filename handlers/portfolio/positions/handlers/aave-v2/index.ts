@@ -22,9 +22,7 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
   prices,
   allPositionsHistory,
 ) => {
-  const commonData = commonDataMapper(dpm)
-  const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
-  const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
+  const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({ dpm, prices })
   const [
     primaryTokenReserveConfiguration,
     primaryTokenReserveData,

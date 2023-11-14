@@ -7,6 +7,7 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { AjnaDpmPositionsPool } from 'handlers/portfolio/positions/handlers/ajna/types'
 import type { TokensPrices } from 'handlers/portfolio/positions/helpers'
 import { getBorrowishPositionType } from 'handlers/portfolio/positions/helpers'
+import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 
@@ -39,10 +40,9 @@ export async function getAjnaPositionInfo({
       })
 
   // shorhands and formatting for better clarity
-  const primaryToken =
-    collateralToken.symbol === 'WETH' ? 'ETH' : collateralToken.symbol.toUpperCase()
+  const primaryToken = collateralToken.symbol.toUpperCase()
   const primaryTokenAddress = collateralToken.address
-  const secondaryToken = quoteToken.symbol === 'WETH' ? 'ETH' : quoteToken.symbol.toUpperCase()
+  const secondaryToken = quoteToken.symbol.toUpperCase()
   const secondaryTokenAddress = quoteToken.address
   const isOracless = isPoolOracless({
     chainId: NetworkIds.MAINNET,
@@ -62,9 +62,9 @@ export async function getAjnaPositionInfo({
     collateralPrice,
     isOracless,
     poolAddress,
-    primaryToken,
+    primaryToken: getTokenDisplayName(primaryToken),
     quotePrice,
-    secondaryToken,
+    secondaryToken: getTokenDisplayName(secondaryToken),
     type,
     url,
   }

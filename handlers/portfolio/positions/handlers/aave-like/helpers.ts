@@ -1,13 +1,16 @@
+import BigNumber from 'bignumber.js'
 import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
 import { getAaveV3ReserveConfigurationData, getAaveV3ReserveData } from 'blockchain/aave-v3'
 import { NetworkIds, networksById } from 'blockchain/networks'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import { getSparkV3ReserveConfigurationData, getSparkV3ReserveData } from 'blockchain/spark-v3'
 import { OmniProductType } from 'features/omni-kit/types'
+import type { TokensPrices } from 'handlers/portfolio/positions/helpers'
 import { getPositionsAutomations } from 'handlers/portfolio/positions/helpers'
 import type { DpmList } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import { getTokenName } from 'handlers/portfolio/positions/helpers/getTokenName'
+import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const filterAutomation = (dpm: DpmList[number]) => (position: AutomationResponse[number]) =>
@@ -49,42 +52,59 @@ export const getReserveConfigurationDataCall = (dpm: DpmList[number], token: str
   }
 }
 
-export const commonDataMapper = (
-  dpm: DpmList[number],
-  automations?: AutomationResponse[number],
-  positionIdAsString?: boolean,
-) => ({
-  positionId: positionIdAsString ? dpm.vaultId : Number(dpm.vaultId),
-  type: dpm.positionType,
-  network: networksById[dpm.networkId].name,
-  protocol: {
-    AAVE_V3: LendingProtocol.AaveV3,
-    Spark: LendingProtocol.SparkV3,
-    AAVE: LendingProtocol.AaveV2, // this means Aave V2
-  }[dpm.protocol] as LendingProtocol,
-  primaryToken: getTokenName(dpm.networkId, dpm.collateralToken),
-  secondaryToken: getTokenName(dpm.networkId, dpm.debtToken),
-  url: `/${networksById[dpm.networkId].name.toLowerCase()}/${
-    {
-      AAVE_V3: 'aave',
-      Spark: 'spark',
-      AAVE: 'aave',
-    }[dpm.protocol]
-  }/${
-    {
-      AAVE_V3: 'v3',
-      Spark: 'v3',
-      AAVE: 'v2',
-    }[dpm.protocol]
-  }/${dpm.vaultId}`,
-  automations: {
-    ...(dpm.positionType !== OmniProductType.Earn &&
-      automations && {
-        stopLoss: { enabled: false },
-        ...getPositionsAutomations({
-          networkId: NetworkIds.MAINNET,
-          triggers: [automations.triggers],
-        }),
-      }),
-  },
-})
+interface CommonDataMapperParams {
+  automations?: AutomationResponse[number]
+  dpm: DpmList[number]
+  positionIdAsString?: boolean
+  prices: TokensPrices
+}
+
+export const commonDataMapper = ({
+  automations,
+  dpm,
+  positionIdAsString,
+  prices,
+}: CommonDataMapperParams) => {
+  const primaryToken = getTokenName(dpm.networkId, dpm.collateralToken)
+  const secondaryToken = getTokenName(dpm.networkId, dpm.debtToken)
+
+  return {
+    commonData: {
+      positionId: positionIdAsString ? dpm.vaultId : Number(dpm.vaultId),
+      type: dpm.positionType,
+      network: networksById[dpm.networkId].name,
+      protocol: {
+        AAVE_V3: LendingProtocol.AaveV3,
+        Spark: LendingProtocol.SparkV3,
+        AAVE: LendingProtocol.AaveV2, // this means Aave V2
+      }[dpm.protocol] as LendingProtocol,
+      primaryToken: getTokenDisplayName(primaryToken),
+      secondaryToken: getTokenDisplayName(secondaryToken),
+      url: `/${networksById[dpm.networkId].name.toLowerCase()}/${
+        {
+          AAVE_V3: 'aave',
+          Spark: 'spark',
+          AAVE: 'aave',
+        }[dpm.protocol]
+      }/${
+        {
+          AAVE_V3: 'v3',
+          Spark: 'v3',
+          AAVE: 'v2',
+        }[dpm.protocol]
+      }/${dpm.vaultId}`,
+      automations: {
+        ...(dpm.positionType !== OmniProductType.Earn &&
+          automations && {
+            stopLoss: { enabled: false },
+            ...getPositionsAutomations({
+              networkId: NetworkIds.MAINNET,
+              triggers: [automations.triggers],
+            }),
+          }),
+      },
+    },
+    primaryTokenPrice: new BigNumber(prices[primaryToken]),
+    secondaryTokenPrice: new BigNumber(prices[secondaryToken]),
+  }
+}
