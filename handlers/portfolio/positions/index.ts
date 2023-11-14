@@ -16,8 +16,13 @@ type PortfolioPositionsReply = {
   errorJson?: boolean | string
 }
 
-export const getCachedTokensPrices = cacheObject(getTokensPrices, 2 * 60, 'portfolio-prices')
-const portfolioCache = new NodeCache({ stdTTL: 60 })
+const portfolioCacheTime = 2 * 60
+export const getCachedTokensPrices = cacheObject(
+  getTokensPrices,
+  portfolioCacheTime,
+  'portfolio-prices',
+)
+const portfolioCache = new NodeCache({ stdTTL: portfolioCacheTime })
 
 export const portfolioPositionsHandler = async ({
   query,
