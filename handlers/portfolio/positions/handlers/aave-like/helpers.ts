@@ -54,14 +54,13 @@ export const commonDataMapper = (
   automations?: AutomationResponse[number],
   positionIdAsString?: boolean,
 ) => ({
-  dpmId: dpm.id,
   positionId: positionIdAsString ? dpm.vaultId : Number(dpm.vaultId),
   type: dpm.positionType,
   network: networksById[dpm.networkId].name,
   protocol: {
     AAVE_V3: LendingProtocol.AaveV3,
     Spark: LendingProtocol.SparkV3,
-    [LendingProtocol.AaveV2]: LendingProtocol.AaveV2,
+    AAVE: LendingProtocol.AaveV2, // this means Aave V2
   }[dpm.protocol] as LendingProtocol,
   primaryToken: getTokenName(dpm.networkId, dpm.collateralToken),
   secondaryToken: getTokenName(dpm.networkId, dpm.debtToken),
@@ -69,13 +68,13 @@ export const commonDataMapper = (
     {
       AAVE_V3: 'aave',
       Spark: 'spark',
-      [LendingProtocol.AaveV2]: 'aave',
+      AAVE: 'aave',
     }[dpm.protocol]
   }/${
     {
       AAVE_V3: 'v3',
       Spark: 'v3',
-      [LendingProtocol.AaveV2]: 'v2',
+      AAVE: 'v2',
     }[dpm.protocol]
   }/${dpm.vaultId}`,
   automations: {
