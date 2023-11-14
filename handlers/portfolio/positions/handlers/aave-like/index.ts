@@ -94,7 +94,7 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'borrowRate',
-        value: formatDecimalAsPercent(secondaryTokenReserveData.variableBorrowRate),
+        value: formatDecimalAsPercent(calculations.netBorrowCostPercentage),
       },
     ],
     netValue: calculations.netValue.toNumber(),
