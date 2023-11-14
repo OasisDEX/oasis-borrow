@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
 import { NetworkIds } from 'blockchain/networks'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import { commonDataMapper } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/positions/handlers/aave-like/types'
@@ -104,28 +103,18 @@ export const aaveV2PositionHandler: PortfolioPositionsHandler = async ({
   dpmList,
   ...rest
 }) => {
-  const dsProxyPositions = await getAaveV2DsProxyPosition({ address, prices, dpmList, ...rest })
   const aaveV2DpmList = dpmList.filter(({ protocol }) => ['AAVE'].includes(protocol))
-  const [allPositionsHistory] = await Promise.all([
+  const [allPositionsHistory, dsProxyPositions] = await Promise.all([
     getHistoryData({
       network: NetworkIds.MAINNET,
       addresses: aaveV2DpmList.map(({ id }) => id),
     }),
+    getAaveV2DsProxyPosition({ address, prices, dpmList, ...rest }),
   ])
   const positions = await Promise.all(
-    aaveV2DpmList.map(async (dpm) => {
-      switch (dpm.positionType.toLowerCase()) {
-        case OmniProductType.Multiply:
-          return getAaveV2MultiplyPosition(dpm, prices, allPositionsHistory, [])
-        // just multiply (and earn but thats ds proxy) for now
-        case OmniProductType.Borrow:
-          return
-        case OmniProductType.Earn:
-          return
-        default:
-          throw new Error(`Unsupported position type ${dpm.positionType}`)
-      }
-    }),
+    aaveV2DpmList.map(async (dpm) =>
+      getAaveV2MultiplyPosition(dpm, prices, allPositionsHistory, []),
+    ),
   )
   return {
     positions: [...dsProxyPositions.positions, ...positions],
