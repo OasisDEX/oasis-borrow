@@ -5,6 +5,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import dayjs from 'dayjs'
 import { calculateViewValuesForPosition } from 'features/aave/services'
+import { isShortPosition } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -59,7 +60,10 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
     secondaryTokenReserveData.variableBorrowRate,
   )
 
-  const tokensLabel = `${commonData.primaryToken}/${commonData.secondaryToken}`
+  const isShort = isShortPosition({ collateralToken: commonData.primaryToken })
+  const tokensLabel = isShort
+    ? `${commonData.secondaryToken}/${commonData.primaryToken}`
+    : `${commonData.primaryToken}/${commonData.secondaryToken}`
 
   return {
     ...commonData,
@@ -74,9 +78,13 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'liquidationPrice',
-        value: `${formatCryptoBalance(calculations.liquidationPriceInDebt)} ${tokensLabel}`,
+        value: `${formatCryptoBalance(
+          isShort ? calculations.liquidationPriceInDebt : calculations.liquidationPriceInCollateral,
+        )} ${tokensLabel}`,
         subvalue: `Now ${formatCryptoBalance(
-          primaryTokenPrice.div(secondaryTokenPrice),
+          isShort
+            ? secondaryTokenPrice.div(primaryTokenPrice)
+            : primaryTokenPrice.div(secondaryTokenPrice),
         )} ${tokensLabel}`,
       },
       {
@@ -142,7 +150,10 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
     calculations.netValue
       .minus(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
       .div(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
-  const tokensLabel = `${commonData.primaryToken}/${commonData.secondaryToken}`
+  const isShort = isShortPosition({ collateralToken: commonData.primaryToken })
+  const tokensLabel = isShort
+    ? `${commonData.secondaryToken}/${commonData.primaryToken}`
+    : `${commonData.primaryToken}/${commonData.secondaryToken}`
 
   return {
     ...commonData,
@@ -158,9 +169,13 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'liquidationPrice',
-        value: `${formatCryptoBalance(calculations.liquidationPriceInDebt)} ${tokensLabel}`,
+        value: `${formatCryptoBalance(
+          isShort ? calculations.liquidationPriceInDebt : calculations.liquidationPriceInCollateral,
+        )} ${tokensLabel}`,
         subvalue: `Now ${formatCryptoBalance(
-          primaryTokenPrice.div(secondaryTokenPrice),
+          isShort
+            ? secondaryTokenPrice.div(primaryTokenPrice)
+            : primaryTokenPrice.div(secondaryTokenPrice),
         )} ${tokensLabel}`,
       },
       {
