@@ -1,0 +1,17 @@
+{
+  "name": "portfolio-overview",
+  "version": "1.0.0",
+  "scripts": {
+    "tsc": "tsc",
+    "watch": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Piter",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.76"
+  },
+  "dependencies": {
+    "typescript": "^5.2.2"
+  }
+}

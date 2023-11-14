@@ -1,22 +1,17 @@
 {
-  "name": "lambdas",
+  "name": "workflow",
   "version": "1.0.0",
   "scripts": {
-    "tsc": "tsc",
-    "watch": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "zip-assets": "zip -r artifacts/portfolio-assets.zip dist/shared dist/portfolio-assets",
-    "zip-overview": "zip -r artifacts/portfolio-overview.zip dist/shared dist/portfolio-overview",
-    "build": "npm run tsc && mkdir -p artifacts && npm run zip-assets && npm run zip-overview"
+    "build:portfolio-assets": "cd lib/portfolio-assets && npm run tsc && cd - && zip -r artifacts/portfolio-assets.zip dist/portfolio-assets dist/shared",
+    "build:portfolio-overview": "cd lib/portfolio-overview && npm run tsc && cd - && zip -r artifacts/portfolio-overview.zip dist/portfolio-overview dist/shared",
+    "build:portfolio-migrations": "cd lib/portfolio-migrations && npm run tsc && cd - && zip -r artifacts/portfolio-migrations.zip dist/portfolio-migrations dist/shared",
+    "build": "./build.sh"
   },
   "author": "Piter",
   "license": "ISC",
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.76"
   },
   "dependencies": {
-    "graphql": "^16.8.1",
-    "graphql-request": "^6.1.0",
-    "typescript": "^5.2.2"
   }
 }
