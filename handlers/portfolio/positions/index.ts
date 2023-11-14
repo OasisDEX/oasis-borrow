@@ -37,18 +37,18 @@ export const portfolioPositionsHandler = async ({
 
     const positionsReply = await Promise.all([
       aaveLikePositionsHandler(payload),
+      aaveV2PositionHandler(payload),
       ajnaPositionsHandler(payload),
       dsrPositionsHandler(payload),
       makerPositionsHandler(payload),
-      aaveV2PositionHandler(payload),
     ])
       .then(
         ([
+          { positions: aaveV2Positions },
           { positions: aaveV3Positions },
           { positions: ajnaPositions },
           { positions: dsrPositions },
           { positions: makerPositions },
-          { positions: aaveV2Positions },
         ]) => ({
           positions: [
             ...aaveV2Positions,
