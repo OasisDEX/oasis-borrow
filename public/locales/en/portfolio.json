@@ -62,6 +62,7 @@
     "lendingRange": "Lending Range",
     "earnings": "Earnings",
     "apy": "Current APY",
+    "apyLink": "Current APY ⧉",
     "90dApy": "90D APY",
     "suppliedToken": "Supplied",
     "suppliedTokenBalance": "Balance of Supplied",
