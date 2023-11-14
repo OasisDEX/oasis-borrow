@@ -36,7 +36,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   })
     .then((_res) => {
       const json = _res.json() as Promise<DebankToken[] | undefined>
-      console.log('response: ', json)
+      console.log('response: ', JSON.stringify(json))
       return json
     })
     .catch((error) => {

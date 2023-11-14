@@ -86,11 +86,11 @@ const getAllProtocolAssets = async (
   headers: Record<string, string>,
 ): Promise<DebankSimpleProtocol[]> => {
   const url = `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`
-  console.log('fetching: ', url, { headers })
+  console.log('fetching 1: ', url, { headers })
   const protocolAssets = await fetch(url, { headers })
     .then((_res) => {
       const json = _res.json() as Promise<DebankSimpleProtocol[] | undefined>
-      console.log('response: ', json)
+      console.log('response 1: ', JSON.stringify(json))
       return json
     })
     .catch((error) => {
@@ -106,11 +106,11 @@ const getSummerProtocolAssets = async (
   headers: Record<string, string>,
 ): Promise<DebankPortfolioItemObject[]> => {
   const url = `${serviceUrl}/v1/user/all_complex_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`
-  console.log('fetching: ', url, { headers })
+  console.log('fetching 2: ', url, { headers })
   const protocolAssets = await fetch(url, { headers })
     .then((_res) => {
       const json = _res.json() as Promise<DebankComplexProtocol[] | undefined>
-      console.log('response: ', json)
+      console.log('response 2: ', JSON.stringify(json))
       return json
     })
     .then((res) =>
