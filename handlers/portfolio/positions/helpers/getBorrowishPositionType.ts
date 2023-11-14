@@ -21,7 +21,9 @@ export function getBorrowishPositionType({
 }: getBorrowishPositionTypeParams): OmniProductBorrowishType {
   const [apiVault] = apiVaults.filter(
     ({ chain_id, protocol: _protocol, vault_id }) =>
-      chain_id === networkId && _protocol.toLowerCase() === protocol.toLowerCase() && vault_id === positionId,
+      chain_id === networkId &&
+      _protocol.toLowerCase() === protocol.toLowerCase() &&
+      vault_id === positionId,
   )
 
   return apiVault
