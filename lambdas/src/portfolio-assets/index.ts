@@ -30,13 +30,13 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   }
 
   const url = `${serviceUrl}/v1/user/all_token_list?id=${address}`
-  console.log('fetching: ', url, { headers })
   const response = await fetch(url, {
     headers,
   })
     .then(async (_res) => {
       const json: DebankToken[] | undefined = await _res.json()
       if (json == null || Array.isArray(json) === false) {
+        console.log('fetching: ', url, { headers })
         console.log('response: ', JSON.stringify(json))
         throw new Error('Wrong response from the proxy')
       }

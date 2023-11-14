@@ -86,11 +86,11 @@ const getAllProtocolAssets = async (
   headers: Record<string, string>,
 ): Promise<DebankSimpleProtocol[]> => {
   const url = `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`
-  console.log('fetching 1: ', url, { headers })
   const protocolAssets = await fetch(url, { headers })
     .then(async (_res) => {
       const json: DebankSimpleProtocol[] | undefined = await _res.json()
       if (json == null || Array.isArray(json) === false) {
+        console.log('fetching 1: ', url, { headers })
         console.log('response 1: ', JSON.stringify(json))
         throw new Error('Wrong response from proxy')
       }
@@ -109,11 +109,11 @@ const getSummerProtocolAssets = async (
   headers: Record<string, string>,
 ): Promise<DebankPortfolioItemObject[]> => {
   const url = `${serviceUrl}/v1/user/all_complex_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`
-  console.log('fetching 2: ', url, { headers })
   const protocolAssets = await fetch(url, { headers })
     .then(async (_res) => {
       const json: DebankComplexProtocol[] | undefined = await _res.json()
       if (json == null || Array.isArray(json) === false) {
+        console.log('fetching 2: ', url, { headers })
         console.log('response 2: ', JSON.stringify(json))
         throw new Error('Wrong response from the proxy')
       }
