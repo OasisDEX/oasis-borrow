@@ -3,6 +3,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { tokensBySymbol } from 'blockchain/tokensMetadata.constants'
 import { GenericTokenIcon } from 'components/GenericTokenIcon'
 import { Icon } from 'components/Icon'
+import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Flex, Image } from 'theme-ui'
@@ -33,7 +34,7 @@ export function TokensGroup({ forceSize, network, sx, tokens }: TokensGroupProps
         }}
       >
         {tokens.map((token, i) => {
-          const resolvedToken = token === 'ETH' ? 'WETH' : token
+          const resolvedToken = getTokenDisplayName(token)
 
           return (
             <Flex
