@@ -90,8 +90,8 @@ const getAllProtocolAssets = async (
   const protocolAssets = await fetch(url, { headers })
     .then(async (_res) => {
       const json: DebankSimpleProtocol[] | undefined = await _res.json()
-      console.log('response 1: ', JSON.stringify(json))
       if (json == null || Array.isArray(json) === false) {
+        console.log('response 1: ', JSON.stringify(json))
         throw new Error('Wrong response from proxy')
       }
       return json
@@ -113,8 +113,8 @@ const getSummerProtocolAssets = async (
   const protocolAssets = await fetch(url, { headers })
     .then(async (_res) => {
       const json: DebankComplexProtocol[] | undefined = await _res.json()
-      console.log('response 2: ', JSON.stringify(json))
       if (json == null || Array.isArray(json) === false) {
+        console.log('response 2: ', JSON.stringify(json))
         throw new Error('Wrong response from the proxy')
       }
 
