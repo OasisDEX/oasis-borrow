@@ -72,10 +72,12 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'liquidationPrice',
-        value: `$${formatCryptoBalance(
-          calculations.liquidationPriceInDebt.times(secondaryTokenPrice),
-        )}`,
-        subvalue: `Now $${formatCryptoBalance(primaryTokenPrice)}`,
+        value: `${formatCryptoBalance(calculations.liquidationPriceInDebt)} ${
+          commonData.primaryToken
+        }/${commonData.secondaryToken}`,
+        subvalue: `Now ${formatCryptoBalance(primaryTokenPrice.div(secondaryTokenPrice))} ${
+          commonData.primaryToken
+        }/${commonData.secondaryToken}`,
       },
       {
         type: 'ltv',
@@ -155,10 +157,12 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'liquidationPrice',
-        value: `$${formatCryptoBalance(
-          calculations.liquidationPriceInDebt.times(secondaryTokenPrice),
-        )}`,
-        subvalue: `Now $${formatCryptoBalance(primaryTokenPrice)}`,
+        value: `${formatCryptoBalance(calculations.liquidationPriceInDebt)} ${
+          commonData.primaryToken
+        }/${commonData.secondaryToken}`,
+        subvalue: `Now ${formatCryptoBalance(primaryTokenPrice.div(secondaryTokenPrice))} ${
+          commonData.primaryToken
+        }/${commonData.secondaryToken}`,
       },
       {
         type: 'ltv',
