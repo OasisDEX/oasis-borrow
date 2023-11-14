@@ -1,8 +1,11 @@
 import { Icon } from 'components/Icon'
+import { AppLink } from 'components/Links'
 import { getPortfolioAccentColor } from 'components/portfolio/helpers/getPortfolioAccentColor'
 import { PortfolioPositionBlockLendingRangeDetail } from 'components/portfolio/positions/PortfolioPositionBlockLendingRangeDetail'
 import { StatefulTooltip } from 'components/Tooltip'
+import { WithArrow } from 'components/WithArrow'
 import type { DetailsType, PositionDetail } from 'handlers/portfolio/types'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -20,9 +23,26 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
     borrowRate: tPortfolio('details-tooltips.borrowRate'),
     lendingRange: tPortfolio('details-tooltips.lendingRange'),
     apy: tPortfolio('details-tooltips.apy'),
+    apyLink: tPortfolio('details-tooltips.apy'),
     '90dApy': tPortfolio('details-tooltips.90dApy'),
     suppliedTokenBalance: tPortfolio('details-tooltips.suppliedTokenBalance'),
     borrowedTokenBalance: tPortfolio('details-tooltips.borrowedTokenBalance'),
+  }
+  let mainDetailComponent
+  switch (detail.type) {
+    case 'apyLink':
+      mainDetailComponent = (
+        <AppLink href={EXTERNAL_LINKS.AAVE_SDAI_YIELD_DUNE}>
+          <WithArrow>APY</WithArrow>
+        </AppLink>
+      )
+      break
+    case 'lendingRange':
+      mainDetailComponent = <PortfolioPositionBlockLendingRangeDetail detail={detail} />
+      break
+    default:
+      mainDetailComponent = detail.value
+      break
   }
 
   return (
@@ -67,11 +87,7 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
         variant="boldParagraph1"
         color={detail.accent ? getPortfolioAccentColor(detail.accent) : 'neutral100'}
       >
-        {detail.type === 'lendingRange' ? (
-          <PortfolioPositionBlockLendingRangeDetail detail={detail} />
-        ) : (
-          detail.value
-        )}
+        {mainDetailComponent}
       </Text>
       {detail.subvalue && (
         <Text variant="paragraph4" color="neutral80">

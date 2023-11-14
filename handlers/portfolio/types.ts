@@ -60,6 +60,7 @@ export type PortfolioPositionsResponse = {
 type DetailsTypeCommon =
   | '90dApy'
   | 'apy'
+  | 'apyLink'
   | 'borrowedToken'
   | 'borrowedTokenBalance'
   | 'borrowRate'
