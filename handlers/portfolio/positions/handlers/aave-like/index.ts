@@ -80,7 +80,7 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
       {
         type: 'liquidationPrice',
         value: `${formatCryptoBalance(
-          isShort ? calculations.liquidationPriceInDebt : calculations.liquidationPriceInCollateral,
+          isShort ? calculations.liquidationPriceInCollateral : calculations.liquidationPriceInDebt,
         )} ${tokensLabel}`,
         subvalue: `Now ${formatCryptoBalance(
           isShort
@@ -171,7 +171,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
       {
         type: 'liquidationPrice',
         value: `${formatCryptoBalance(
-          isShort ? calculations.liquidationPriceInDebt : calculations.liquidationPriceInCollateral,
+          isShort ? calculations.liquidationPriceInCollateral : calculations.liquidationPriceInDebt,
         )} ${tokensLabel}`,
         subvalue: `Now ${formatCryptoBalance(
           isShort
