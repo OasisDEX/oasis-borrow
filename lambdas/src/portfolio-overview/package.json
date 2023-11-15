@@ -1,13 +1,10 @@
 {
-  "name": "lambdas",
+  "name": "portfolio-overview",
   "version": "1.0.0",
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc -w",
-    "test": "jest",
-    "zip-assets": "zip -r artifacts/portfolio-assets.zip dist/shared dist/portfolio-assets",
-    "zip-overview": "zip -r artifacts/portfolio-overview.zip dist/shared dist/portfolio-overview",
-    "build": "npm run tsc && mkdir -p artifacts && npm run zip-assets && npm run zip-overview"
+    "test": "jest"
   },
   "author": "Piter",
   "license": "ISC",
