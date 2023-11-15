@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+import { formatAddress } from 'helpers/formatters/format'
 import { useMemo, useState } from 'react'
 import type { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
@@ -66,10 +67,15 @@ export const useMainnetEnsName = (address?: string | null) => {
   return [ensName]
 }
 
-export const useMainnetEnsNames = (addresses?: string[]) => {
+export const useMainnetEnsNames = (
+  addresses?: string[],
+  options?: { format?: boolean; formatLetterCount?: number },
+) => {
   const initialAddressesList: { [key: string]: string } = {}
   addresses?.forEach((address) => {
-    initialAddressesList[address] = address
+    initialAddressesList[address] = options?.format
+      ? formatAddress(address, options?.formatLetterCount ?? 6)
+      : address
   })
   const [ensNames, setEnsNames] = useState<{ [key: string]: string }>(initialAddressesList)
 
@@ -82,7 +88,9 @@ export const useMainnetEnsNames = (addresses?: string[]) => {
           if (name !== null) {
             newEnsNames[addresses[index]] = name
           } else {
-            newEnsNames[addresses[index]] = addresses[index]
+            newEnsNames[addresses[index]] = options?.format
+              ? formatAddress(addresses[index], options?.formatLetterCount ?? 6)
+              : addresses[index]
           }
         })
         setEnsNames(newEnsNames)
