@@ -87,10 +87,12 @@ export default function PortfolioView(props: PortfolioViewProps) {
       <Box sx={{ width: '100%' }}>
         {!isOwner &&
           walletAddress && ( // walletAddress prevents showing the notice when not connected
-            <PortfolioNonOwnerNotice
-              address={address}
-              assets={portfolioConnectedWalletWalletData?.assets}
-            />
+            <Box sx={{ mb: 4 }}>
+              <PortfolioNonOwnerNotice
+                address={address}
+                assets={portfolioConnectedWalletWalletData?.assets}
+              />
+            </Box>
           )}
         <PortfolioHeader address={address} />
         {overviewData && portfolioWalletData ? (
