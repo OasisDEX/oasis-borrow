@@ -1,7 +1,16 @@
 import { NetworkNames } from './domain-types'
 
 export const SUPPORTED_CHAIN_IDS = ['eth', 'op', 'arb', 'base']
-export const SUPPORTED_PROTOCOL_IDS = ['aave2', 'aave3', 'ajna', 'makerdao', 'spark']
+export const SUPPORTED_PROTOCOL_IDS = [
+  'aave2',
+  'aave3',
+  'arb_aave3',
+  'op_aave3',
+  'base_aave3',
+  'ajna',
+  'makerdao',
+  'spark',
+]
 export const SUPPORTED_PROXY_IDS = ['summer', 'makerdao']
 
 export enum DebankNetworkNames {

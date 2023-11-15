@@ -1,0 +1,123 @@
+[
+  {
+    "id": "base_aave3",
+    "chain": "base",
+    "name": "Aave V3",
+    "site_url": "https://app.aave.com",
+    "logo_url": "https://static.debank.com/image/project/logo_url/aave3/07bc2403c8c357d2317db15d64872314.png",
+    "has_supported_portfolio": true,
+    "tvl": 3881404.9977556616,
+    "portfolio_item_list": [
+      {
+        "stats": {
+          "asset_usd_value": 435.3995846851955,
+          "debt_usd_value": 308.377514,
+          "net_usd_value": 127.0220706851955
+        },
+        "asset_dict": {
+          "base": 0.21598380104330867,
+          "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca": -308.377514
+        },
+        "asset_token_list": [
+          {
+            "id": "base",
+            "chain": "base",
+            "name": "ETH",
+            "symbol": "ETH",
+            "display_symbol": null,
+            "optimized_symbol": "ETH",
+            "decimals": 18,
+            "logo_url": "https://static.debank.com/image/coin/logo_url/eth/d61441782d4a08a7479d54aea211679e.png",
+            "protocol_id": "",
+            "price": 2015.89,
+            "is_verified": true,
+            "is_core": true,
+            "is_wallet": true,
+            "time_at": null,
+            "amount": 0.21598380104330867
+          },
+          {
+            "id": "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca",
+            "chain": "base",
+            "name": "USD Base Coin",
+            "symbol": "USDbC",
+            "display_symbol": null,
+            "optimized_symbol": "USDbC",
+            "decimals": 6,
+            "logo_url": "https://static.debank.com/image/base_token/logo_url/0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca/02eafdd0ee21a4de9f19a6bc861f3024.png",
+            "protocol_id": "base_fxdx",
+            "price": 1.0,
+            "is_verified": false,
+            "is_core": true,
+            "is_wallet": true,
+            "time_at": 1690914161.0,
+            "amount": -308.377514
+          }
+        ],
+        "update_at": 1700062436.0,
+        "name": "Lending",
+        "detail_types": ["lending"],
+        "detail": {
+          "supply_token_list": [
+            {
+              "id": "base",
+              "chain": "base",
+              "name": "ETH",
+              "symbol": "ETH",
+              "display_symbol": null,
+              "optimized_symbol": "ETH",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/coin/logo_url/eth/d61441782d4a08a7479d54aea211679e.png",
+              "protocol_id": "",
+              "price": 2015.89,
+              "is_verified": true,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": null,
+              "amount": 0.21598380104330867
+            }
+          ],
+          "borrow_token_list": [
+            {
+              "id": "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca",
+              "chain": "base",
+              "name": "USD Base Coin",
+              "symbol": "USDbC",
+              "display_symbol": null,
+              "optimized_symbol": "USDbC",
+              "decimals": 6,
+              "logo_url": "https://static.debank.com/image/base_token/logo_url/0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca/02eafdd0ee21a4de9f19a6bc861f3024.png",
+              "protocol_id": "base_fxdx",
+              "price": 1.0,
+              "is_verified": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1690914161.0,
+              "amount": 308.377514
+            }
+          ],
+          "health_rate": 1.1708487980652007
+        },
+        "proxy_detail": {
+          "project": {
+            "id": "summer",
+            "name": "Summer.fi",
+            "site_url": "https://summer.fi",
+            "logo_url": "https://static.debank.com/image/project/logo_url/summer/1156c7e0d1540f1f804fcd1225c9fa2f.png"
+          },
+          "proxy_contract_id": "0x3749022b637c963397e46b83a89e0df35e91643b"
+        },
+        "pool": {
+          "id": "0xa238dd80c259a72e81d7e4664a9801593f98d1c5",
+          "chain": "base",
+          "project_id": "base_aave3",
+          "adapter_id": "aave3_proxy_lending",
+          "controller": "0xa238dd80c259a72e81d7e4664a9801593f98d1c5",
+          "index": null,
+          "time_at": 1691503615
+        },
+        "position_index": "0x3749022b637c963397e46b83a89e0df35e91643b"
+      }
+    ]
+  }
+]
