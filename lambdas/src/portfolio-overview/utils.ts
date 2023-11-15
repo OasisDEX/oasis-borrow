@@ -9,13 +9,13 @@ export function getSupportedPositions(json: DebankComplexProtocol[]) {
         const isSupportedProtocol = SUPPORTED_PROTOCOL_IDS.includes(id)
         return isSupportedProtocol
       })
-      // map each protocol to position array and flatten
-      // and filter out non-supported positions
+      // map each protocol to position array and filter out non-supported positions
       .map(({ portfolio_item_list }) =>
         (portfolio_item_list || []).filter(({ proxy_detail }) =>
           SUPPORTED_PROXY_IDS.includes(proxy_detail?.project?.id ?? ''),
         ),
       )
+      // flatten positions array
       .flat()
   )
 }
