@@ -7,6 +7,8 @@ import { PortfolioPositionsView } from 'components/portfolio/positions/Portfolio
 import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWalletView'
 import { TabBar } from 'components/TabBar'
 import { usePortfolioClientData } from 'helpers/clients/portfolio-client-data'
+import { getLocalAppConfig } from 'helpers/config'
+import { getPortfolioLink } from 'helpers/get-portfolio-link'
 import { useAccount } from 'helpers/useAccount'
 import { useRedirect } from 'helpers/useRedirect'
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
@@ -59,6 +61,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
   const { t: tPortfolio } = useTranslation('portfolio')
   const { replace } = useRedirect()
   const { walletAddress } = useAccount()
+  const { NewPortfolio } = getLocalAppConfig('features')
 
   const { address, awsInfraUrl, awsInfraHeader } = props
   const isOwner = address === walletAddress
@@ -81,6 +84,11 @@ export default function PortfolioView(props: PortfolioViewProps) {
       replace('/')
     }
   }, [address, replace])
+  useEffect(() => {
+    if (NewPortfolio) {
+      void replace(getPortfolioLink(address))
+    }
+  }, [NewPortfolio, address, replace])
 
   return address ? (
     <PortfolioLayout>
