@@ -1482,6 +1482,8 @@
     }
   },
   "vaults-overview": {
+    "portfolio-banner-header": "You're now viewing the old portfolio page",
+    "portfolio-banner-content": "You can view the new portfolio page, and all it's new shiny features",
     "banner-content": "You can view your vaults",
     "banner-header": "You are viewing {{address}} Vaults overview",
     "headers": {
