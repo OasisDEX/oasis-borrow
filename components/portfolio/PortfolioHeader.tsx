@@ -1,13 +1,14 @@
+import { useMainnetEnsNames } from 'blockchain/ens'
 import Avatar from 'boring-avatars'
 import { AppLink } from 'components/Links'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { formatAddress } from 'helpers/formatters/format'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Flex, Text } from 'theme-ui'
 
 export const PortfolioHeader = ({ address }: { address: string }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
+  const [ensName] = useMainnetEnsNames([address], { format: true })
   return (
     <Flex
       sx={{
@@ -24,7 +25,7 @@ export const PortfolioHeader = ({ address }: { address: string }) => {
           colors={['#6FD9FF', '#F2FCFF', '#FFE7D8', '#FBB677']}
         />
         <Text variant="header5" sx={{ ml: 3 }}>
-          {formatAddress(address, 6)}
+          {ensName[address]}
         </Text>
       </Flex>
       <Flex sx={{ justifyContent: ['flex-start', 'flex-end'] }}>
