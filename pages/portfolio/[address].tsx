@@ -58,7 +58,7 @@ export async function getServerSideProps(
 export default function PortfolioView(props: PortfolioViewProps) {
   const { t: tPortfolio } = useTranslation('portfolio')
   const { replace } = useRedirect()
-  const { walletAddress } = useAccount()
+  const { isConnected, walletAddress } = useAccount()
 
   const { address, awsInfraUrl, awsInfraHeader } = props
   const isOwner = address === walletAddress
@@ -85,13 +85,13 @@ export default function PortfolioView(props: PortfolioViewProps) {
   return address ? (
     <PortfolioLayout>
       <Box sx={{ width: '100%' }}>
-        {!isOwner &&
-          walletAddress && ( // walletAddress prevents showing the notice when not connected
-            <PortfolioNonOwnerNotice
-              address={address}
-              assets={portfolioConnectedWalletWalletData?.assets}
-            />
-          )}
+        <PortfolioNonOwnerNotice
+          address={address}
+          connectedAssets={portfolioConnectedWalletWalletData?.assets}
+          isConnected={isConnected}
+          isOwner={isOwner}
+          ownerAssets={portfolioWalletData?.assets}
+        />
         <PortfolioHeader address={address} />
         {overviewData && portfolioWalletData ? (
           <PortfolioOverview
