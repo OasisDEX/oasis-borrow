@@ -38,6 +38,7 @@
   "summary": "Summary",
   "top-assets": "Top {{amount}} assets",
   "no-assets": "There are no assets in this wallet.",
+  "connect": "Connect a wallet",
   "explore": "Explore",
   "explore-banner": "You have <span>${{amount}}</span> of assets available to be put to work on Summer.fi",
   "token": "Token",
@@ -97,7 +98,7 @@
   "non-owner-notice": {
     "header": "You are viewing the wallet of {{address}}",
     "connected-assets": "You have <span>${{amount}}</span> worth of reasons to open a position on summer.fi",
-    "disconnected-assets": "They have ${{amount}} worth of reasons to open a position on summer.fi. Connect your wallet to see what positions you could open",
+    "disconnected-assets": "They have <span>${{amount}}</span> worth of reasons to open a position on summer.fi. Connect your wallet to see what positions you could open",
     "disconnected-no-assets": "Connect your wallet to see what positions you could open"
   }
 }
