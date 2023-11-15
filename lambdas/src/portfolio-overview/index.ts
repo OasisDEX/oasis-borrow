@@ -128,6 +128,3 @@ const getSummerProtocolAssets = async (
 }
 
 export default handler
-
-
-
