@@ -1,17 +1,21 @@
 {
   "name": "workflow",
+  "type": "module",
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:portfolio-assets": "cd lib/portfolio-assets && npm run tsc && cd - && zip -r artifacts/portfolio-assets.zip dist/portfolio-assets dist/shared",
-    "build:portfolio-overview": "cd lib/portfolio-overview && npm run tsc && cd - && zip -r artifacts/portfolio-overview.zip dist/portfolio-overview dist/shared",
-    "build:portfolio-migrations": "cd lib/portfolio-migrations && npm run tsc && cd - && zip -r artifacts/portfolio-migrations.zip dist/portfolio-migrations dist/shared",
-    "build": "./build.sh"
+    "build:portfolio-assets": "zx build.mjs portfolio-assets",
+    "build:portfolio-overview": "zx build.mjs portfolio-overview",
+    "build:portfolio-migrations": "zx build.mjs portfolio-migrations",
+    "build": "zx build.mjs"
   },
   "author": "Piter",
-  "license": "ISC",
   "devDependencies": {
-  },
-  "dependencies": {
+    "@types/aws-lambda": "^8.10.126",
+    "@types/jest": "^29.5.8",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2",
+    "zx": "^7.2.3"
   }
 }

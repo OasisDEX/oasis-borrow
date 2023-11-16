@@ -1,15 +1,15 @@
 {
-  "name": "portfolio-assets",
+  "name": "shared",
   "version": "1.0.0",
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc -w",
     "test": "jest"
   },
+  "files": [
+    "src"
+  ],
   "author": "Piter",
   "devDependencies": {
-  },
-  "dependencies": {
-    "shared": "file:../shared"
   }
 }

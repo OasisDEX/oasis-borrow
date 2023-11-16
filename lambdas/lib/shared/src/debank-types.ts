@@ -1,5 +1,3 @@
-import { type } from 'os'
-
 export type DebankToken = {
   id: string
   chain: string
