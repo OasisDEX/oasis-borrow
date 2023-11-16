@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
@@ -19,7 +20,9 @@ export function getAddAutomationAggregatotTriggerCallData(
     getNetworkContracts(NetworkIds.MAINNET, chainId).automationBotAggregator,
   ).methods.addTriggerGroup(
     CONSTANT_MULTIPLE_GROUP_TYPE,
-    data.replacedTriggerIds,
+    data.replacedTriggerIds.map((id: BigNumber) =>
+      BigNumber.isBigNumber(id) ? id.toString() : id,
+    ),
     data.triggersData,
   )
 }
