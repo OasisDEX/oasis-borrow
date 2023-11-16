@@ -12,7 +12,7 @@ import { Flex, Heading } from 'theme-ui'
 import type {
   PortfolioAssetsResponse,
   PortfolioOverviewResponse,
-} from 'lambdas/src/shared/domain-types'
+} from 'lambdas/lib/shared/src/domain-types'
 
 export const PortfolioOverview = ({
   overviewData,

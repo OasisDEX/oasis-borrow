@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react'
 import type {
   PortfolioAssetsResponse,
   PortfolioOverviewResponse,
-} from 'lambdas/src/shared/domain-types'
+} from 'lambdas/lib/shared/src/domain-types'
 
 /**
  * typed client for fetching portfolio data from aws gateway

@@ -31,7 +31,7 @@
     "runtimeConfig.js",
     "next-i18next.config.js",
     "middleware.ts",
-    "lambdas/src/shared"
+    "lambdas/lib/shared"
   ],
   "exclude": ["node_modules", "types", "coverage", "infra", "lambdas"],
   "ts-node": {

@@ -8,7 +8,7 @@ import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
 
-import type { PortfolioAsset } from 'lambdas/src/shared/domain-types'
+import type { PortfolioAsset } from 'lambdas/lib/shared/src/domain-types'
 
 interface PortfolioWalletBannerProps {
   assets: PortfolioAsset[]

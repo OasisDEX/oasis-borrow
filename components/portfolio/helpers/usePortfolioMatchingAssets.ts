@@ -3,7 +3,7 @@ import { getPortfolioTokenProducts } from 'components/portfolio/helpers/getPortf
 import { uniq } from 'lodash'
 import { useMemo } from 'react'
 
-import type { PortfolioAsset } from 'lambdas/src/shared/domain-types'
+import type { PortfolioAsset } from 'lambdas/lib/shared/src/domain-types'
 
 export const usePortfolioMatchingAssets = ({ assets }: { assets?: PortfolioAsset[] }) => {
   const {

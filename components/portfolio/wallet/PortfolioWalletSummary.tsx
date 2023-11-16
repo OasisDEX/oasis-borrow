@@ -7,7 +7,7 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Text } from 'theme-ui'
 
-import type { PortfolioAsset } from 'lambdas/src/shared/domain-types'
+import type { PortfolioAsset } from 'lambdas/lib/shared/src/domain-types'
 
 interface PortfolioWalletSummaryProps {
   assets?: PortfolioAsset[]
