@@ -12,7 +12,7 @@ import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
 import { WithArrow } from 'components/WithArrow'
-import type { PortfolioPositionsReply } from 'handlers/portfolio/types'
+import type { PortfolioPosition, PortfolioPositionsReply } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAddress } from 'helpers/formatters/format'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
@@ -34,6 +34,11 @@ type PortfolioPositionsViewFiltersType = {
   showEmptyPositions: boolean
   sorting?: PortfolioSortingType
 }
+
+const filterEmptyPosition =
+  (isFilterOn: boolean = false) =>
+  ({ netValue }: PortfolioPosition) =>
+    isFilterOn || netValue >= 0.01
 
 export const PortfolioPositionsView = ({
   address,
@@ -61,7 +66,7 @@ export const PortfolioPositionsView = ({
     if (!portfolioPositionsData) return undefined
     // empty positions first
     const positionsWithValue = portfolioPositionsData.positions.filter(
-      ({ netValue }) => filterState['showEmptyPositions'] || netValue >= 0.01,
+      filterEmptyPosition(filterState['showEmptyPositions']),
     )
     return positionsWithValue
   }, [filterState, portfolioPositionsData])
@@ -85,22 +90,7 @@ export const PortfolioPositionsView = ({
         (includeMigrated && position.availableToMigrate) // special case for migration positions
       )
     })
-
-    const sortedPositions = filteredProductPositions
-      .sort((a, b) => {
-        if (filterState['sorting'] === PortfolioSortingType.netValueAscending) {
-          return a.netValue - b.netValue
-        }
-        return b.netValue - a.netValue
-      })
-      .sort((a, b) => {
-        // move migration positions to the bottom
-        if (a.availableToMigrate) return 1
-        if (b.availableToMigrate) return -1
-        return 0
-      })
-
-    return sortedPositions
+    return filteredProductPositions
   }, [filterState, filteredEmptyPositions])
 
   const sortedPositions = useMemo(() => {
@@ -122,10 +112,10 @@ export const PortfolioPositionsView = ({
     return sortedPositions
   }, [filterState, filteredPositionsByProduct])
 
-  const hiddenPositionsCount =
-    filteredEmptyPositions && portfolioPositionsData
-      ? portfolioPositionsData.positions.length - filteredEmptyPositions.length
-      : 0
+  const hiddenPositionsCount = portfolioPositionsData
+    ? portfolioPositionsData.positions.length -
+      portfolioPositionsData.positions.filter(filterEmptyPosition()).length
+    : 0
 
   return (
     <Grid variant="portfolio">
@@ -155,12 +145,7 @@ export const PortfolioPositionsView = ({
             }}
           >
             <Text variant="paragraph3" sx={{ mr: 1 }}>
-              {tPortfolio(
-                filterState['showEmptyPositions']
-                  ? 'show-empty-positions.showing-all'
-                  : 'show-empty-positions.label',
-                { count: hiddenPositionsCount },
-              )}
+              {tPortfolio('show-empty-positions.label', { count: hiddenPositionsCount })}
             </Text>
             <StatefulTooltip
               tooltip={tPortfolio('show-empty-positions.tooltip')}
