@@ -22,11 +22,14 @@ import { useTranslation } from 'react-i18next'
 import { question_o, sparks } from 'theme/icons'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
+import type { PortfolioAssetsResponse } from 'lambdas/src/shared/domain-types'
+
 interface PortfolioPositionsViewProps {
   address: string
   blogPosts?: BlogPostsReply
   isOwner: boolean
   portfolioPositionsData?: PortfolioPositionsResponse
+  portfolioWalletData?: PortfolioAssetsResponse
 }
 
 type PortfolioPositionsViewFiltersType = {
@@ -37,9 +40,10 @@ type PortfolioPositionsViewFiltersType = {
 
 export const PortfolioPositionsView = ({
   address,
+  blogPosts,
   isOwner,
   portfolioPositionsData,
-  blogPosts,
+  portfolioWalletData,
 }: PortfolioPositionsViewProps) => {
   const { t: tPortfolio } = useTranslation('portfolio')
 
@@ -173,7 +177,10 @@ export const PortfolioPositionsView = ({
             <WithArrow sx={{ color: 'neutral80' }}>{tPortfolio('see-all-strategies')}</WithArrow>
           </AppLink>
         </Flex>
-        <PortfolioPositionFeatured />
+        <PortfolioPositionFeatured
+          assets={portfolioWalletData?.assets}
+          positions={portfolioPositionsData?.positions}
+        />
         <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: '24px' }}>
           <Heading as="h2" variant="header5">
             {tPortfolio('learn-with-summer-fi')}
