@@ -5,6 +5,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import dayjs from 'dayjs'
 import { calculateViewValuesForPosition } from 'features/aave/services'
+import { isShortPosition } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -17,7 +18,8 @@ import {
 import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/positions/handlers/aave-like/types'
 import { getAutomationData } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
-import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
+import type { PortfolioPositionsHandler, PositionDetail } from 'handlers/portfolio/types'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
@@ -33,9 +35,11 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
   allPositionsAutomations,
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
-  const commonData = commonDataMapper(dpm, positionAutomations)
-  const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
-  const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
+  const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({
+    automations: positionAutomations,
+    dpm,
+    prices,
+  })
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
       getReserveDataCall(dpm, commonData.primaryToken),
@@ -57,6 +61,11 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
     secondaryTokenReserveData.variableBorrowRate,
   )
 
+  const isShort = isShortPosition({ collateralToken: commonData.primaryToken })
+  const tokensLabel = isShort
+    ? `${commonData.secondaryToken}/${commonData.primaryToken}`
+    : `${commonData.primaryToken}/${commonData.secondaryToken}`
+
   return {
     ...commonData,
     details: [
@@ -70,10 +79,14 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'liquidationPrice',
-        value: `$${formatCryptoBalance(
-          calculations.liquidationPriceInDebt.times(secondaryTokenPrice),
-        )}`,
-        subvalue: `Now $${formatCryptoBalance(primaryTokenPrice)}`,
+        value: `${formatCryptoBalance(
+          isShort ? calculations.liquidationPriceInCollateral : calculations.liquidationPriceInDebt,
+        )} ${tokensLabel}`,
+        subvalue: `Now ${formatCryptoBalance(
+          isShort
+            ? secondaryTokenPrice.div(primaryTokenPrice)
+            : primaryTokenPrice.div(secondaryTokenPrice),
+        )} ${tokensLabel}`,
       },
       {
         type: 'ltv',
@@ -82,7 +95,7 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'borrowRate',
-        value: formatDecimalAsPercent(secondaryTokenReserveData.variableBorrowRate),
+        value: formatDecimalAsPercent(calculations.netBorrowCostPercentage),
       },
     ],
     netValue: calculations.netValue.toNumber(),
@@ -96,9 +109,11 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
   allPositionsAutomations,
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
-  const commonData = commonDataMapper(dpm, positionAutomations)
-  const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
-  const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
+  const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({
+    automations: positionAutomations,
+    dpm,
+    prices,
+  })
   const [
     primaryTokenReserveConfiguration,
     primaryTokenReserveData,
@@ -136,6 +151,10 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
     calculations.netValue
       .minus(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
       .div(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
+  const isShort = isShortPosition({ collateralToken: commonData.primaryToken })
+  const tokensLabel = isShort
+    ? `${commonData.secondaryToken}/${commonData.primaryToken}`
+    : `${commonData.primaryToken}/${commonData.secondaryToken}`
 
   return {
     ...commonData,
@@ -151,10 +170,14 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'liquidationPrice',
-        value: `$${formatCryptoBalance(
-          calculations.liquidationPriceInDebt.times(secondaryTokenPrice),
-        )}`,
-        subvalue: `Now $${formatCryptoBalance(primaryTokenPrice)}`,
+        value: `${formatCryptoBalance(
+          isShort ? calculations.liquidationPriceInCollateral : calculations.liquidationPriceInDebt,
+        )} ${tokensLabel}`,
+        subvalue: `Now ${formatCryptoBalance(
+          isShort
+            ? secondaryTokenPrice.div(primaryTokenPrice)
+            : primaryTokenPrice.div(secondaryTokenPrice),
+        )} ${tokensLabel}`,
       },
       {
         type: 'ltv',
@@ -176,9 +199,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
   prices,
   allPositionsHistory,
 ) => {
-  const commonData = commonDataMapper(dpm)
-  const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
-  const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
+  const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({ dpm, prices })
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
       getReserveDataCall(dpm, commonData.primaryToken),
@@ -191,6 +212,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
         proxyAddress: dpm.id.toLowerCase(),
       }),
     ])
+  const isSDAIEarn = commonData.primaryToken === 'SDAI'
   const isWstethEthEarn =
     commonData.primaryToken === 'WSTETH' && commonData.secondaryToken === 'WETH'
   let wstEthYield
@@ -234,20 +256,24 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
             : notAvailable
         }`,
       },
-      {
-        type: 'apy',
-        value: formatDecimalAsPercent(
-          wstEthYield?.annualisedYield7days
-            ? wstEthYield.annualisedYield7days.div(100)
-            : primaryTokenReserveData.liquidityRate,
-        ),
-      },
+      wstEthYield?.annualisedYield7days
+        ? {
+            type: 'apy',
+            value: formatDecimalAsPercent(wstEthYield.annualisedYield7days.div(100)),
+          }
+        : undefined,
+      isSDAIEarn
+        ? {
+            type: 'apyLink',
+            value: EXTERNAL_LINKS.AAVE_SDAI_YIELD_DUNE,
+          }
+        : undefined,
       {
         type: 'ltv',
         value: formatDecimalAsPercent(onChainPositionData.riskRatio.loanToValue),
         subvalue: `Max ${formatDecimalAsPercent(onChainPositionData.category.maxLoanToValue)}`,
       },
-    ],
+    ].filter(Boolean) as PositionDetail[],
     netValue: calculations.netValue.toNumber(),
   }
 }

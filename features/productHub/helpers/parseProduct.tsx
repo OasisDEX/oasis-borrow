@@ -7,6 +7,7 @@ import { WithArrow } from 'components/WithArrow'
 import { parseProductNumbers } from 'features/productHub/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
@@ -147,7 +148,7 @@ export function parseProduct(
               {earnStrategyDescription &&
               protocol === LendingProtocol.AaveV3 &&
               yieldLoopStables.includes(earnStrategyDescription) ? (
-                <AppLink href="https://dune.com/Lucianken/aave-v3-sdai-yield-multiple">
+                <AppLink href={EXTERNAL_LINKS.AAVE_SDAI_YIELD_DUNE}>
                   <WithArrow>APY</WithArrow>
                 </AppLink>
               ) : weeklyNetApy ? (

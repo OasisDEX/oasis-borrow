@@ -55,11 +55,14 @@ export type PortfolioPositionsHandler = ({
 
 export type PortfolioPositionsResponse = {
   positions: PortfolioPosition[]
+  error?: boolean | string
+  errorJson?: boolean | string
 }
 
 type DetailsTypeCommon =
   | '90dApy'
   | 'apy'
+  | 'apyLink'
   | 'borrowedToken'
   | 'borrowedTokenBalance'
   | 'borrowRate'

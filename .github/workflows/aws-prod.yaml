@@ -73,6 +73,8 @@ jobs:
                        --build-arg ONE_INCH_API_URL=${{ secrets.ONE_INCH_API_URL_PROD }} \
                        --build-arg REFERRAL_SUBGRAPH_URL=${{ secrets.REFERRAL_SUBGRAPH_URL_PROD }} \
                        --build-arg CONFIG_URL=${{ secrets.CONFIG_URL }} \
+                       --build-arg BLOG_POSTS_API_KEY=${{ secrets.BLOG_POSTS_API_KEY }} \
+                       --build-arg BLOG_POSTS_API_URL=${{ secrets.BLOG_POSTS_API_URL }} \
                        --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
                        -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \

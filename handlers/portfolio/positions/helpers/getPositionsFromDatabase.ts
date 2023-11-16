@@ -7,7 +7,7 @@ interface GetPositionsFromDatabaseParams {
 export async function getPositionsFromDatabase({ address }: GetPositionsFromDatabaseParams) {
   const apiVaults = await prisma.vault.findMany({
     where: {
-      owner_address: address,
+      owner_address: address.toLowerCase(),
     },
   })
 

@@ -61,7 +61,7 @@ export const PortfolioPositionsView = ({
     if (!portfolioPositionsData) return undefined
     // empty positions first
     const filteredEmptyPositions = portfolioPositionsData.positions.filter(
-      ({ netValue }) => filterState['showEmptyPositions'] || netValue > 0,
+      ({ netValue }) => filterState['showEmptyPositions'] || netValue >= 0.01,
     )
     // filter by product
     const noneSelected = [0, undefined].includes(filterState['product']?.length) // none selected = "All products"

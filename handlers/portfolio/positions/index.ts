@@ -8,19 +8,30 @@ import { getAllDpmsForWallet } from 'handlers/portfolio/positions/helpers/getAll
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { cacheObject } from 'helpers/api/cacheObject'
 import type { NextApiRequest } from 'next'
+import NodeCache from 'node-cache'
 
 type PortfolioPositionsReply = {
   positions: PortfolioPosition[]
-  error?: string
+  error?: boolean | string
+  errorJson?: boolean | string
 }
 
-export const getCachedTokensPrices = cacheObject(getTokensPrices, 2 * 60, 'portfolio-prices')
+const portfolioCacheTime = 2 * 60
+export const getCachedTokensPrices = cacheObject(
+  getTokensPrices,
+  portfolioCacheTime,
+  'portfolio-prices',
+)
+const portfolioCache = new NodeCache({ stdTTL: portfolioCacheTime })
 
 export const portfolioPositionsHandler = async ({
   query,
 }: NextApiRequest): Promise<PortfolioPositionsReply> => {
   const address = query.address as string
   const debug = 'debug' in query
+  if (portfolioCache.has(address)) {
+    return JSON.parse(portfolioCache.get(address) as string)
+  }
 
   const prices = await getCachedTokensPrices()
 
@@ -37,18 +48,18 @@ export const portfolioPositionsHandler = async ({
 
     const positionsReply = await Promise.all([
       aaveLikePositionsHandler(payload),
+      aaveV2PositionHandler(payload),
       ajnaPositionsHandler(payload),
       dsrPositionsHandler(payload),
       makerPositionsHandler(payload),
-      aaveV2PositionHandler(payload),
     ])
       .then(
         ([
+          { positions: aaveV2Positions },
           { positions: aaveV3Positions },
           { positions: ajnaPositions },
           { positions: dsrPositions },
           { positions: makerPositions },
-          { positions: aaveV2Positions },
         ]) => ({
           positions: [
             ...aaveV2Positions,
@@ -57,6 +68,8 @@ export const portfolioPositionsHandler = async ({
             ...dsrPositions,
             ...makerPositions,
           ],
+          error: false,
+          errorJson: false,
           ...(debug && { ...payload }),
         }),
       )
@@ -68,6 +81,10 @@ export const portfolioPositionsHandler = async ({
           ...(debug && { ...payload, error: error.toString(), errorJson: JSON.stringify(error) }),
         }
       })
+
+    if (!positionsReply.error) {
+      portfolioCache.set(address, JSON.stringify(positionsReply))
+    }
 
     return positionsReply
   } else {

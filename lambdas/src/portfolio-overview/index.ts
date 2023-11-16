@@ -10,11 +10,8 @@ import {
   DebankSimpleProtocol,
 } from '../shared/debank-types'
 import { PortfolioOverviewResponse } from '../shared/domain-types'
-import {
-  SUPPORTED_CHAIN_IDS,
-  SUPPORTED_PROTOCOL_IDS,
-  SUPPORTED_PROXY_IDS,
-} from '../shared/debank-helpers'
+import { SUPPORTED_CHAIN_IDS } from '../shared/debank-helpers'
+import { getSupportedPositions } from './utils'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs
@@ -118,20 +115,7 @@ const getSummerProtocolAssets = async (
         throw new Error('Wrong response from the proxy')
       }
 
-      // filter out non-supported protocols
-      const result = json
-        .filter(({ id }) => {
-          const isSupportedProtocol = SUPPORTED_PROTOCOL_IDS.includes(id)
-          return isSupportedProtocol
-        })
-        // map each protocol to position array and flatten
-        // and filter out non-supported positions
-        .map(({ portfolio_item_list }) =>
-          (portfolio_item_list || []).filter(({ proxy_detail }) =>
-            SUPPORTED_PROXY_IDS.includes(proxy_detail?.project?.id ?? ''),
-          ),
-        )
-        .flat()
+      const result = getSupportedPositions(json)
 
       return result
     })

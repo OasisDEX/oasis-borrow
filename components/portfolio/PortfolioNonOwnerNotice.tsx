@@ -1,62 +1,110 @@
 import BigNumber from 'bignumber.js'
-import { Icon } from 'components/Icon'
-import { AppLink } from 'components/Links'
+import { BannerTransparent } from 'components/BannerTransparent'
 import { usePortfolioMatchingAssets } from 'components/portfolio/helpers/usePortfolioMatchingAssets'
-import { Skeleton } from 'components/Skeleton'
-import { formatAddress, formatAmount } from 'helpers/formatters/format'
+import { useConnection } from 'features/web3OnBoard/useConnection'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { non_owner_notice_icon } from 'theme/icons'
-import { Button, Flex, Text } from 'theme-ui'
+import { Box, Text } from 'theme-ui'
 
 import type { PortfolioAsset } from 'lambdas/src/shared/domain-types'
 
+interface PortfolioNonOwnerNoticeProps {
+  address: string
+  connectedAssets?: PortfolioAsset[]
+  isConnected: boolean
+  isOwner: boolean
+  ownerAssets?: PortfolioAsset[]
+}
+
+function useNoticeCta(isConnected: boolean, hasAssets: boolean) {
+  const { t: tPortfolio } = useTranslation('portfolio')
+
+  const { connecting, connect } = useConnection()
+
+  if (!isConnected) {
+    return {
+      label: tPortfolio('connect'),
+      onClick: () => connecting || connect(),
+    }
+  } else if (hasAssets) {
+    return {
+      label: tPortfolio('explore'),
+      url: INTERNAL_LINKS.earn,
+    }
+  } else return undefined
+}
+
+function useNoticeContent(
+  isConnected: boolean,
+  {
+    connectedAssetsValue = 0,
+    ownerAssetsValue = 0,
+  }: { connectedAssetsValue?: number; ownerAssetsValue?: number },
+) {
+  const { t: tPortfolio } = useTranslation('portfolio')
+
+  if (!isConnected) {
+    return ownerAssetsValue > 0 ? (
+      <Trans
+        t={tPortfolio}
+        i18nKey="non-owner-notice.disconnected-assets"
+        components={{
+          span: <Text variant="boldParagraph3" sx={getGradientColor(summerBrandGradient)} />,
+        }}
+        values={{ amount: formatCryptoBalance(new BigNumber(ownerAssetsValue)) }}
+      />
+    ) : (
+      tPortfolio('non-owner-notice.disconnected-no-assets')
+    )
+  } else if (isConnected && connectedAssetsValue > 0) {
+    return (
+      <Trans
+        t={tPortfolio}
+        i18nKey="non-owner-notice.connected-assets"
+        components={{
+          span: <Text variant="boldParagraph3" sx={getGradientColor(summerBrandGradient)} />,
+        }}
+        values={{ amount: formatCryptoBalance(new BigNumber(connectedAssetsValue)) }}
+      />
+    )
+  }
+  return undefined
+}
+
 export const PortfolioNonOwnerNotice = ({
   address,
-  assets,
-}: {
-  address: string
-  assets?: PortfolioAsset[]
-}) => {
+  isConnected,
+  isOwner,
+  connectedAssets,
+  ownerAssets,
+}: PortfolioNonOwnerNoticeProps) => {
   const { t: tPortfolio } = useTranslation('portfolio')
-  const { matchingAssetsValue } = usePortfolioMatchingAssets({ assets })
-  return (
-    <Flex
-      sx={{
-        borderRadius: 'large',
-        p: 3,
-        background: 'linear-gradient(90.61deg, #FFFFFF 0.79%, rgba(255, 255, 255, 0) 99.94%)',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        boxShadow: 'cardLanding',
-        mb: 4,
-      }}
-    >
-      <Icon icon={non_owner_notice_icon} size={60} sx={{ mr: 3 }} />
-      <Flex sx={{ flexDirection: 'column', width: '100%' }}>
-        <Text variant="boldParagraph2">
-          {tPortfolio('non-owner-notice.header', { address: formatAddress(address, 6) })}
-        </Text>
-        <Text variant="paragraph3">
-          {matchingAssetsValue ? (
-            <Trans
-              t={tPortfolio}
-              i18nKey="non-owner-notice.assets-available"
-              components={{
-                span: <Text variant="boldParagraph3" sx={getGradientColor(summerBrandGradient)} />,
-              }}
-              values={{ amount: formatAmount(new BigNumber(matchingAssetsValue), 'USD') }}
-            />
-          ) : (
-            <Skeleton width={440} sx={{ mt: 1 }} />
-          )}
-        </Text>
-      </Flex>
-      <AppLink href={'/earn'} sx={{ flexShrink: 0, ml: 'auto' }}>
-        <Button variant="action">{tPortfolio('explore')}</Button>
-      </AppLink>
-    </Flex>
+
+  const { matchingAssetsValue: connectedAssetsValue } = usePortfolioMatchingAssets({
+    assets: connectedAssets,
+  })
+  const { matchingAssetsValue: ownerAssetsValue } = usePortfolioMatchingAssets({
+    assets: ownerAssets,
+  })
+
+  const cta = useNoticeCta(isConnected, !!(connectedAssetsValue && connectedAssetsValue > 0))
+  const content = useNoticeContent(isConnected, { connectedAssetsValue, ownerAssetsValue })
+
+  return !isConnected || (isConnected && !isOwner) ? (
+    <Box sx={{ mb: 4 }}>
+      <BannerTransparent
+        icon={non_owner_notice_icon}
+        title={tPortfolio('non-owner-notice.header', { address: formatAddress(address, 6) })}
+        cta={cta}
+      >
+        {content}
+      </BannerTransparent>
+    </Box>
+  ) : (
+    <></>
   )
 }

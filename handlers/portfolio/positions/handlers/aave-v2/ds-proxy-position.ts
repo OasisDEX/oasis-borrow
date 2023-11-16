@@ -1,5 +1,4 @@
 import { getOnChainPosition } from 'actions/aave-like'
-import BigNumber from 'bignumber.js'
 import { getAaveV2ReserveData } from 'blockchain/aave'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
@@ -39,8 +38,8 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
   })
 
   if (stEthPosition.collateral.amount.gt(zero)) {
-    const commonData = commonDataMapper(
-      {
+    const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({
+      dpm: {
         collateralToken: contracts.tokens.STETH.address,
         debtToken: contracts.tokens.ETH.address,
         id: dsProxyAddress,
@@ -50,11 +49,9 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
         user: address,
         vaultId: address,
       },
-      undefined,
-      true,
-    )
-    const primaryTokenPrice = new BigNumber(prices[commonData.primaryToken])
-    const secondaryTokenPrice = new BigNumber(prices[commonData.secondaryToken])
+      positionIdAsString: true,
+      prices,
+    })
     const [primaryTokenReserveData, secondaryTokenReserveData, yields] = await Promise.all([
       getAaveV2ReserveData({ token: commonData.primaryToken }),
       getAaveV2ReserveData({ token: commonData.secondaryToken }),
