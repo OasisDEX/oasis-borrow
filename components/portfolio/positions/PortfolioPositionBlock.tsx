@@ -10,7 +10,7 @@ import { LendingProtocolLabel } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Button, Flex, Text } from 'theme-ui'
+import { Button, Flex, Text } from 'theme-ui'
 
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
@@ -25,13 +25,21 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
       : [position.primaryToken, position.secondaryToken]
 
   return (
-    <Box
+    <AppLink
+      href={position.url}
       sx={{
         width: '100%',
+        p: 3,
         border: '1px solid',
         borderColor: 'neutral20',
         borderRadius: 'large',
-        p: 3,
+        transition: 'border-color 200ms',
+        '&:hover': {
+          borderColor: 'neutral70',
+          '.position-action-button': {
+            bg: 'secondary100',
+          },
+        },
       }}
     >
       <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mb: '24px' }}>
@@ -105,12 +113,12 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
             </Flex>
           )}
           <Flex sx={{ alignSelf: 'flex-end' }}>
-            <AppLink href={position.url}>
-              <Button variant="tertiary">{tPortfolio('view-position')}</Button>
-            </AppLink>
+            <Button className="position-action-button" variant="tertiary">
+              {tPortfolio('view-position')}
+            </Button>
           </Flex>
         </Flex>
       )}
-    </Box>
+    </AppLink>
   )
 }
