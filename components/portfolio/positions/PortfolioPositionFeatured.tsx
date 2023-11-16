@@ -7,7 +7,7 @@ import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import { useAppConfig } from 'helpers/config'
 import { uniq } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { chevron_left, chevron_right } from 'theme/icons'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Box, Button, Flex, Text } from 'theme-ui'
@@ -28,9 +28,6 @@ export const PortfolioPositionFeatured = ({
   } = usePreloadAppDataContext()
   const { AjnaSafetySwitch } = useAppConfig('features')
 
-  // const isLoaded = true
-  const isLoaded = !!assets && !!positions
-
   const isMobile = useOnMobile()
   const slidesToDisplay = isMobile ? 1 : 2
   const [emblaRef, emblaApi] = useEmblaCarousel({ slidesToScroll: slidesToDisplay })
@@ -40,19 +37,35 @@ export const PortfolioPositionFeatured = ({
   const [canScrollNext, setCanScrollNext] = useState<boolean>(true)
   const promoCardsData =
     PROMO_CARD_COLLECTIONS_PARSERS[AjnaSafetySwitch ? 'Home' : 'HomeWithAjna'](table)
-  const slides = uniq(
-    [
-      ...Object.keys(promoCardsData)
-        .map((key) => promoCardsData[key as keyof typeof promoCardsData])
-        .flatMap(({ default: _default, tokens }) => [
-          ..._default,
-          ...Object.keys(tokens).flatMap((key) => tokens[key]),
-        ]),
-    ].filter(({ tokens }) => !!tokens),
-  )
+
+  const slides = useMemo(() => {
+    if (!!assets && !!positions) {
+      return uniq(
+        [
+          ...Object.keys(promoCardsData)
+            .map((key) => promoCardsData[key as keyof typeof promoCardsData])
+            .flatMap(({ default: _default, tokens }) => [
+              ..._default,
+              ...Object.keys(tokens).flatMap((key) => tokens[key]),
+            ]),
+        ]
+          .filter(({ tokens }) => !!tokens)
+          .filter(
+            ({ protocol, tokens }) =>
+              !positions.find(
+                ({ network, primaryToken, protocol: _protocol, secondaryToken }) =>
+                  network === protocol?.network &&
+                  _protocol === protocol.protocol &&
+                  (tokens?.join('') === `${primaryToken}${secondaryToken}` ||
+                    (tokens?.length === 1 && tokens[0] === primaryToken)),
+              ),
+          ),
+      )
+    } else return undefined
+  }, [assets, positions])
 
   function updateSliderUI() {
-    if (emblaApi) {
+    if (slides && emblaApi) {
       setCanScrollPrev(emblaApi.canScrollPrev())
       setCanScrollNext(emblaApi.canScrollNext())
       setAmount(
@@ -74,7 +87,7 @@ export const PortfolioPositionFeatured = ({
             touchAction: 'pan-y',
           }}
         >
-          {isLoaded ? (
+          {slides ? (
             <>
               {slides.map((slide, i) => (
                 <Flex key={i} sx={{ flex: `0 0 ${100 / slidesToDisplay}%`, pl: 3 }}>
@@ -91,14 +104,14 @@ export const PortfolioPositionFeatured = ({
         </Flex>
       </Box>
       <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: '24px' }}>
-        {isLoaded ? (
+        {slides ? (
           <Text variant="paragraph3">
             {amount} of {slides.length}
           </Text>
         ) : (
           <Skeleton width={5} height="22px" sx={{ my: 1 }} />
         )}
-        {isLoaded && (
+        {slides && (
           <Flex sx={{ columnGap: 2 }}>
             <Button
               variant="tertiary"
