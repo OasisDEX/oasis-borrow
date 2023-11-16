@@ -75,17 +75,6 @@ export async function estimateGasOnDpm({
 
     const result = await dpm.estimateGas.execute(operationExecutor.address, encodedCallDAta, {
       value: ethers.utils.parseEther(value.toString()).toHexString(),
-      type: 1,
-      accessList: [
-        {
-          address: '0xB694119b6dAa4fAc888A3FdbD1A8Da0398A8a438',
-          storageKeys: ['0x0000000000000000000000000000000000000000000000000000000000000000'],
-        },
-        {
-          address: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
-          storageKeys: [],
-        },
-      ],
     })
 
     return {
@@ -139,16 +128,5 @@ export async function createExecuteTransaction({
   return await dpm.execute(operationExecutor.address, encodedCallDAta, {
     value: ethers.utils.parseEther(value.toString()).toHexString(),
     gasLimit: gasLimit?.estimatedGas ?? undefined,
-    type: 1,
-    accessList: [
-      {
-        address: '0xB694119b6dAa4fAc888A3FdbD1A8Da0398A8a438',
-        storageKeys: ['0x0000000000000000000000000000000000000000000000000000000000000000'],
-      },
-      {
-        address: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
-        storageKeys: [],
-      },
-    ],
   })
 }
