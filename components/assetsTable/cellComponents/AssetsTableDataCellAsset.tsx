@@ -28,7 +28,7 @@ export function AssetsTableDataCellAsset({
     <Flex sx={{ alignItems: 'center' }}>
       {icons.length > 0 && allDefined(...icons) && <TokensGroup tokens={icons} />}
       <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
-        <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
+        <Text as="span" variant="boldParagraph1">
           {prefix && (
             <Text as="span" sx={{ fontWeight: 'regular' }}>
               {prefix}{' '}
@@ -43,7 +43,11 @@ export function AssetsTableDataCellAsset({
           )}
         </Text>
         {(positionId || description) && (
-          <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
+          <Text
+            as="span"
+            variant="paragraph3"
+            sx={{ color: 'neutral80', fontWeight: 'regular', whiteSpace: 'pre' }}
+          >
             {positionId && (
               <>
                 {t('position')} {!positionId.toString().includes('...') && '#'}
