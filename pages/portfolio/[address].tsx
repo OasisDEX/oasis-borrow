@@ -112,6 +112,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
                   blogPosts={blogPosts}
                   isOwner={isOwner}
                   portfolioPositionsData={portfolioPositionsData}
+                  portfolioWalletData={portfolioWalletData}
                 />
               ),
             },

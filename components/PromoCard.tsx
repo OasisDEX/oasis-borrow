@@ -10,7 +10,12 @@ import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Heading, Image, Text } from 'theme-ui'
 
 import { Icon } from './Icon'
-import type { PromoCardProps, PromoCardVariant, PromoCardWrapperProps } from './PromoCard.types'
+import type {
+  PromoCardLoadingStateProps,
+  PromoCardProps,
+  PromoCardVariant,
+  PromoCardWrapperProps,
+} from './PromoCard.types'
 
 const pillColors: { [key in PromoCardVariant]: ThemeUIStyleObject } = {
   negative: { color: 'critical100', borderColor: 'critical100' },
@@ -61,9 +66,9 @@ export const PromoCardWrapper: FC<PromoCardWrapperProps> = ({ children, link, sx
   )
 }
 
-export const PromoCardLoadingState: FC = () => {
+export const PromoCardLoadingState: FC<PromoCardLoadingStateProps> = ({ sx }) => {
   return (
-    <PromoCardWrapper>
+    <PromoCardWrapper sx={sx}>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Flex>
           <Box sx={{ mr: '-20px' }}>
