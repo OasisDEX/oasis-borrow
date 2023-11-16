@@ -6,7 +6,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import { useAppConfig } from 'helpers/config'
-import { uniq } from 'lodash'
+import { shuffle, uniq } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { chevron_left, chevron_right } from 'theme/icons'
 import { useOnMobile } from 'theme/useBreakpointIndex'
@@ -40,16 +40,20 @@ export const PortfolioPositionFeatured = ({
 
   const slides = useMemo(() => {
     if (!!assets && !!positions) {
-      return uniq(
-        [
-          ...Object.keys(promoCardsData)
-            .map((key) => promoCardsData[key as keyof typeof promoCardsData])
-            .flatMap(({ default: _default, tokens }) => [
-              ..._default,
-              ...Object.keys(tokens).flatMap((key) => tokens[key]),
-            ]),
-        ]
-          .filter(({ tokens }) => !!tokens)
+      return shuffle(
+        uniq(
+          [
+            ...Object.keys(promoCardsData)
+              .map((key) => promoCardsData[key as keyof typeof promoCardsData])
+              .flatMap(({ default: _default, tokens }) => [
+                ..._default,
+                ...Object.keys(tokens).flatMap((key) => tokens[key]),
+              ]),
+          ]
+            // filter out promo cards that aren't token
+            .filter(({ tokens }) => !!tokens),
+        )
+          // filter out promo cards of products that user already has
           .filter(
             ({ protocol, tokens }) =>
               !positions.find(
@@ -59,10 +63,18 @@ export const PortfolioPositionFeatured = ({
                   (tokens?.join('') === `${primaryToken}${secondaryToken}` ||
                     (tokens?.length === 1 && tokens[0] === primaryToken)),
               ),
+          )
+          // filter out promo cards of products using assets that user doesn't have
+          .filter(
+            ({ protocol, tokens }) =>
+              !!assets.find(
+                ({ network, symbol }) =>
+                  network === protocol?.network && tokens?.includes(symbol.toUpperCase()),
+              ),
           ),
       )
     } else return undefined
-  }, [assets, positions])
+  }, [assets, positions, promoCardsData])
 
   function updateSliderUI() {
     if (slides && emblaApi) {
@@ -79,7 +91,10 @@ export const PortfolioPositionFeatured = ({
 
   return (
     <>
-      <Box ref={emblaRef} sx={{ overflow: 'hidden' }}>
+      <Box
+        {...(slides && slides.length > slidesToDisplay && { ref: emblaRef })}
+        sx={{ overflow: 'hidden' }}
+      >
         <Flex
           sx={{
             ml: '-16px',
@@ -103,15 +118,11 @@ export const PortfolioPositionFeatured = ({
           )}
         </Flex>
       </Box>
-      <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: '24px' }}>
-        {slides ? (
+      {slides && slides.length > slidesToDisplay && (
+        <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: '24px' }}>
           <Text variant="paragraph3">
             {amount} of {slides.length}
           </Text>
-        ) : (
-          <Skeleton width={5} height="22px" sx={{ my: 1 }} />
-        )}
-        {slides && (
           <Flex sx={{ columnGap: 2 }}>
             <Button
               variant="tertiary"
@@ -140,8 +151,9 @@ export const PortfolioPositionFeatured = ({
               />
             </Button>
           </Flex>
-        )}
-      </Flex>
+        </Flex>
+      )}
+      {slides === undefined && <Skeleton width={5} height="22px" sx={{ mt: '28px', mb: 1 }} />}
     </>
   )
 }
