@@ -48,7 +48,7 @@ export async function getServerSideProps(
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale ?? 'en', ['portfolio', 'common'])),
-      address,
+      address: address.toLowerCase(),
       awsInfraUrl,
       awsInfraHeader,
     },
@@ -68,7 +68,6 @@ export default function PortfolioView(props: PortfolioViewProps) {
       replace('/')
     }
   }, [address, replace])
-  const parsedAddress = address.toLowerCase()
   const {
     overviewData,
     portfolioConnectedWalletWalletData,
@@ -76,24 +75,23 @@ export default function PortfolioView(props: PortfolioViewProps) {
     portfolioWalletData,
     blogPosts,
   } = usePortfolioClientData({
-    address: parsedAddress,
+    address,
     awsInfraHeader,
     awsInfraUrl,
-    walletAddress,
   })
-  const isOwner = !!walletAddress && parsedAddress === walletAddress.toLowerCase()
+  const isOwner = !!walletAddress && address === walletAddress.toLowerCase()
 
   return address ? (
     <PortfolioLayout>
       <Box sx={{ width: '100%' }}>
         <PortfolioNonOwnerNotice
-          address={parsedAddress}
+          address={address}
           connectedAssets={portfolioConnectedWalletWalletData?.assets}
           isConnected={isConnected}
           isOwner={isOwner}
           ownerAssets={portfolioWalletData?.assets}
         />
-        <PortfolioHeader address={parsedAddress} />
+        <PortfolioHeader address={address} />
         {overviewData && portfolioWalletData ? (
           <PortfolioOverview
             overviewData={overviewData}
@@ -110,7 +108,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
               label: tPortfolio('positions-tab'),
               content: (
                 <PortfolioPositionsView
-                  address={parsedAddress}
+                  address={address}
                   blogPosts={blogPosts}
                   isOwner={isOwner}
                   portfolioPositionsData={portfolioPositionsData}
@@ -122,7 +120,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
               label: tPortfolio('wallet-tab'),
               content: (
                 <PortfolioWalletView
-                  address={parsedAddress}
+                  address={address}
                   blogPosts={blogPosts}
                   isOwner={isOwner}
                   portfolioWalletData={portfolioWalletData}

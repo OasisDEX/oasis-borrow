@@ -6,6 +6,7 @@ import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { isZeroAddress } from 'helpers/isZeroAddress'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { DsProxyRegistry__factory, McdPot__factory } from 'types/ethers-contracts'
@@ -13,7 +14,11 @@ import { DsProxyRegistry__factory, McdPot__factory } from 'types/ethers-contract
 const PotFactory = McdPot__factory
 const DsProxyFactory = DsProxyRegistry__factory
 
-export const dsrPositionsHandler: PortfolioPositionsHandler = async ({ address, prices }) => {
+export const dsrPositionsHandler: PortfolioPositionsHandler = async ({
+  address,
+  prices,
+  positionsCount,
+}) => {
   const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
 
   const DsProxyContractAddress = getNetworkContracts(NetworkIds.MAINNET).dsProxyRegistry.address
@@ -21,7 +26,7 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({ address, 
 
   const dsProxyAddress = await DsProxyContract.proxies(address)
 
-  if (dsProxyAddress) {
+  if (dsProxyAddress && !isZeroAddress(dsProxyAddress)) {
     const daiPrice = prices['DAI']
 
     const PotContractAddress = getNetworkContracts(NetworkIds.MAINNET).mcdPot.address
@@ -35,6 +40,11 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({ address, 
       chi: new BigNumber(chi.toString()),
       pie: new BigNumber(pie.toString()),
     })
+    if (positionsCount && netValue.gt(zero)) {
+      return {
+        positions: [{ positionId: dsProxyAddress }],
+      }
+    }
     const apy = getYearlyRate(new BigNumber(dsr.toString()))
       .decimalPlaces(5, BigNumber.ROUND_UP)
       .minus(1)
@@ -64,7 +74,7 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({ address, 
               lendingType: 'passive',
               network: NetworkNames.ethereumMainnet,
               netValue: netValue.times(daiPrice).toNumber(),
-              positionId: 0,
+              positionId: dsProxyAddress,
               primaryToken: 'DAI',
               protocol: LendingProtocol.Maker,
               secondaryToken: 'DAI',

@@ -40,24 +40,34 @@ export type PortfolioPosition = {
   type: OmniProductType
   url: string
 }
+interface PortfolioPositionsCommonReply {
+  error?: boolean | string
+  errorJson?: boolean | string
+}
+
+export interface PortfolioPositionsCountReply extends PortfolioPositionsCommonReply {
+  positions: {
+    positionId: PortfolioPosition['positionId']
+  }[]
+}
+
+export interface PortfolioPositionsReply extends PortfolioPositionsCommonReply {
+  positions: PortfolioPosition[]
+}
 
 export type PortfolioPositionsHandler = ({
   address,
   apiVaults,
   dpmList,
   prices,
+  positionsCount,
 }: {
   address: string
-  apiVaults: Vault[]
+  apiVaults?: Vault[]
   dpmList: DpmList
   prices: TokensPrices
-}) => Promise<PortfolioPositionsResponse>
-
-export type PortfolioPositionsResponse = {
-  positions: PortfolioPosition[]
-  error?: boolean | string
-  errorJson?: boolean | string
-}
+  positionsCount?: boolean
+}) => Promise<PortfolioPositionsReply | PortfolioPositionsCountReply>
 
 type DetailsTypeCommon =
   | '90dApy'

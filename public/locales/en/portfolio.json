@@ -21,7 +21,8 @@
   "net-value-mobile-descending": "Net Value ▼",
   "net-value-mobile-ascending": "Net Value ▲",
   "show-empty-positions": {
-    "label": "Show empty positions",
+    "label": "Show {{count}} empty positions",
+    "showing-all": "Showing all positions",
     "tooltip": "Positions valued at $0 are hidden by default. Toggle 'Show Empty Positions' to view or use them. You still own these and can utilize them without incurring new position costs."
   },
   "automations": "Automations",
