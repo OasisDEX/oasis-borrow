@@ -70,7 +70,6 @@ export function createVaults$(
   cdpIdResolvers: CdpIdsResolver[],
   address: string,
 ): Observable<VaultWithType[]> {
-  console.log('createVaults')
   return combineLatest(refreshInterval, context$).pipe(
     switchMap(([_, context]) =>
       combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(
