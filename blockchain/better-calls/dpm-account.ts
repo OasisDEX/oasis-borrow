@@ -8,6 +8,7 @@ import { AccountImplementation__factory, OperationExecutor__factory } from 'type
 
 import { isDangerTransactionEnabled } from './is-danger-transaction-enabled'
 import { GasMultiplier } from './utils'
+import { getOverrides } from './utils/get-overrides'
 import type { EstimatedGasResult } from './utils/types'
 
 export interface DpmExecuteParameters {
@@ -74,6 +75,7 @@ export async function estimateGasOnDpm({
     ])
 
     const result = await dpm.estimateGas.execute(operationExecutor.address, encodedCallDAta, {
+      ...(await getOverrides(signer)),
       value: ethers.utils.parseEther(value.toString()).toHexString(),
     })
 
@@ -113,6 +115,7 @@ export async function createExecuteTransaction({
       calls,
     )
     return await dpm.execute(operationExecutor.address, encodedCallDAta, {
+      ...(await getOverrides(signer)),
       value: ethers.utils.parseEther(value.toString()).toHexString(),
       gasLimit: ethers.BigNumber.from(dangerTransactionEnabled.gasLimit),
     })
@@ -126,6 +129,7 @@ export async function createExecuteTransaction({
     calls,
   })
   return await dpm.execute(operationExecutor.address, encodedCallDAta, {
+    ...(await getOverrides(signer)),
     value: ethers.utils.parseEther(value.toString()).toHexString(),
     gasLimit: gasLimit?.estimatedGas ?? undefined,
   })
