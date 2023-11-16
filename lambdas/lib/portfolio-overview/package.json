@@ -7,10 +7,12 @@
     "test": "jest"
   },
   "author": "Piter",
+  "license": "Proprietary",
   "devDependencies": {
   },
   "dependencies": {
     "graphql": "^16.8.1",
-    "graphql-request": "^6.1.0"
+    "graphql-request": "^6.1.0",
+    "shared": "file:../shared"
   }
 }

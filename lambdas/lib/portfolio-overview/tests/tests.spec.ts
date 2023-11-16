@@ -1,4 +1,4 @@
-import { getSupportedPositions } from './utils'
+import { getSupportedPositions } from '../src/utils'
 import protocolMock from '../mocks/debank_complex_protocol.json'
 import protocolMockBase from '../mocks/debank_complex_protocol_base.json'
 import protocolMockOp from '../mocks/debank_complex_protocol_op.json'

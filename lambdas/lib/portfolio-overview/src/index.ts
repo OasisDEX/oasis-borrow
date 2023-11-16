@@ -1,24 +1,17 @@
 /* eslint-disable no-relative-import-paths/no-relative-import-paths */
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 
-import { getDefaultErrorMessage } from '../shared/src/helpers'
-import {
-  ResponseBadRequest,
-  ResponseInternalServerError,
-  ResponseOk,
-} from '../shared/src/responses'
-import { getAddressFromRequest } from '../shared/src/validators'
+import { getDefaultErrorMessage } from 'shared/src/helpers'
+import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/src/responses'
+import { getAddressFromRequest } from 'shared/src/validators'
 import {
   DebankComplexProtocol,
   DebankPortfolioItemObject,
   DebankSimpleProtocol,
-} from '../shared/src/debank-types'
-import { PortfolioOverviewResponse } from '../shared/src/domain-types'
-import {
-  SUPPORTED_CHAIN_IDS,
-  SUPPORTED_PROTOCOL_IDS,
-  SUPPORTED_PROXY_IDS,
-} from '../shared/src/debank-helpers'
+} from 'shared/src/debank-types'
+import { PortfolioOverviewResponse } from 'shared/src/domain-types'
+import { SUPPORTED_CHAIN_IDS } from 'shared/src/debank-helpers'
+import { getSupportedPositions } from './utils'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs
@@ -122,20 +115,7 @@ const getSummerProtocolAssets = async (
         throw new Error('Wrong response from the proxy')
       }
 
-      // filter out non-supported protocols
-      const result = json
-        .filter(({ id }) => {
-          const isSupportedProtocol = SUPPORTED_PROTOCOL_IDS.includes(id)
-          return isSupportedProtocol
-        })
-        // map each protocol to position array and flatten
-        // and filter out non-supported positions
-        .map(({ portfolio_item_list }) =>
-          (portfolio_item_list || []).filter(({ proxy_detail }) =>
-            SUPPORTED_PROXY_IDS.includes(proxy_detail?.project?.id ?? ''),
-          ),
-        )
-        .flat()
+      const result = getSupportedPositions(json)
 
       return result
     })

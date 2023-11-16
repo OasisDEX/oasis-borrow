@@ -1,14 +1,16 @@
 {
   "name": "portfolio-migrations",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc -w",
     "test": "jest"
   },
   "author": "Piter",
+  "license": "Proprietary",
   "devDependencies": {
   },
   "dependencies": {
+    "shared": "file:../shared"
   }
 }

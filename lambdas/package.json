@@ -10,6 +10,7 @@
     "build": "zx build.mjs"
   },
   "author": "Piter",
+  "license": "Proprietary",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.126",
     "@types/jest": "^29.5.8",

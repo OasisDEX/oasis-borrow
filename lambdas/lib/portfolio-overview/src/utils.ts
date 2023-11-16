@@ -1,5 +1,5 @@
-import { SUPPORTED_PROTOCOL_IDS, SUPPORTED_PROXY_IDS } from '../shared/src/debank-helpers'
-import { DebankComplexProtocol } from '../shared/src/debank-types'
+import { SUPPORTED_PROTOCOL_IDS, SUPPORTED_PROXY_IDS } from 'shared/src/debank-helpers'
+import { DebankComplexProtocol } from 'shared/src/debank-types'
 
 export function getSupportedPositions(json: DebankComplexProtocol[]) {
   return (

@@ -8,11 +8,13 @@ import { exit } from 'process'
 const LAMBDA_NAMES = ['portfolio-assets', 'portfolio-migrations', 'portfolio-overview']
 
 // Main
-await spinner(async () => {
+await within(async () => {
   echo(`Prepare...`)
-  await $`rm -rf dist`
   await $`mkdir -p artifacts`
+  echo(`Build shared...`)
+  cd(`lib/shared`)
   await $`npm install`
+  await $`npm run tsc`
 })
 
 const [lambdaName] = argv._
@@ -34,17 +36,16 @@ async function buildLambda(lambdaName) {
     exit()
   }
   await within(async () => {
-    await spinner(async () => {
-      cd(`lib/${lambdaName}`)
-      const pkPath = path.join('package.json')
-      const { name, version } = fs.readJSONSync(pkPath)
-      echo(`--- ${name}-${version} ---`)
-      echo(`Building...`)
-      await $`npm install`
-      await $`npm run tsc`
-      echo(`Packaging...`)
-      cd(`../..`)
-      await $`zip -q -r artifacts/${name}-${version}.zip dist/${name} dist/shared`
-    })
+    cd(`lib/${lambdaName}`)
+    const pkPath = path.join('package.json')
+    const { name, version } = fs.readJSONSync(pkPath)
+    echo(`--- ${name}-${version} ---`)
+    echo(`Building...`)
+    await $`npm install`
+    await $`npm run tsc`
+    echo(`Packaging...`)
+    await $`zip -r ../../artifacts/${name}-${version}.zip node_modules`
+    cd(`dist`)
+    await $`zip -r ../../../artifacts/${name}-${version}.zip *`
   })
 }
