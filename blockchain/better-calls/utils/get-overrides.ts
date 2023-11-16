@@ -18,9 +18,16 @@ export async function getOverrides(
     return {}
   }
 
-  const safeProxy = SafeProxy__factory.connect(address, provider)
+  let version = ''
 
-  const version = await safeProxy.VERSION()
+  try {
+    const safeProxy = SafeProxy__factory.connect(address, provider)
+
+    version = await safeProxy.VERSION()
+  } catch (e) {
+    console.info(`This address is not Safe`)
+    return {}
+  }
 
   if (version === '1.3.0') {
     return {
