@@ -74,7 +74,7 @@ export const PortfolioPositionFeatured = ({
           ),
       )
     } else return undefined
-  }, [assets, positions, promoCardsData])
+  }, [assets?.length, positions?.length])
 
   function updateSliderUI() {
     if (slides && emblaApi) {
