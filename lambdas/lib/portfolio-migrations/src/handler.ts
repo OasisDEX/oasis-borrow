@@ -1,10 +1,8 @@
-/* eslint-disable no-relative-import-paths/no-relative-import-paths */
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
-
 import { getDefaultErrorMessage } from 'shared/dist/helpers'
-import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/dist/responses'
+import { ResponseBadRequest } from 'shared/dist/responses'
 import { getAddressFromRequest } from 'shared/dist/validators'
-import { MigrationPosition, PortfolioMigrationsResponse } from 'shared/dist/domain-types'
+import { MigrationPosition } from 'shared/dist/domain-types'
 import { createClient } from './createClient'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
@@ -40,16 +38,10 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
           chainId,
           protocolId,
           debtAsset: debtAssets[0],
-          collAsset: dominantCollAsset,
+          collAsset: collAssets[0],
         })
       }
     })
-
-    return ResponseOk<PortfolioMigrationsResponse>({ body: { positions } })
-  } catch (error) {
-    console.error(error)
-    return ResponseInternalServerError()
+  } finally {
   }
 }
-
-export default handler

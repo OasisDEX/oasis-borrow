@@ -55,3 +55,19 @@ export type PortfolioAssetsResponse = {
   totalAssetsPercentageChange: number
   assets: PortfolioAsset[]
 }
+
+export type MigrationAsset = {
+  symbol: string
+  balance: number
+}
+
+export type MigrationPosition = {
+  chainId: number
+  protocolId: string
+  collateralAsset: MigrationAsset
+  debtAsset: MigrationAsset
+}
+
+export type PortfolioMigrationsResponse = {
+  positions: MigrationPosition[]
+}

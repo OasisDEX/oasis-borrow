@@ -12,7 +12,5 @@
     "dist"
   ],
   "author": "Piter",
-  "license": "UNLICENSED",
-  "devDependencies": {
-  }
+  "license": "UNLICENSED"
 }
