@@ -49,3 +49,7 @@ export type PromoCardProps = (
   }[]
   sx?: ThemeUIStyleObject
 }
+
+export interface PromoCardLoadingStateProps {
+  sx?: ThemeUIStyleObject
+}
