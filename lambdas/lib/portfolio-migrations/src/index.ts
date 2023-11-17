@@ -18,13 +18,18 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     return ResponseBadRequest(message)
   }
 
-  try {
-    const body = 'TODO'
-    return ResponseOk<any>({ body })
-  } catch (error) {
-    console.error(error)
-    return ResponseInternalServerError()
-  }
+    try {
+      const body = 'TODO'
+      console.log('address', address)
+      return {
+        statusCode: 200,
+        body: 'ashtas',
+      }
+      return ResponseOk<any>({ body: { body } })
+    } catch (error) {
+      console.error(error)
+      return ResponseInternalServerError()
+    }
 }
 
 export default handler
