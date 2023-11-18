@@ -1,3 +1,5 @@
+export type Address = `0x${string}`
+
 export enum NetworkNames {
   ethereumMainnet = 'ethereum',
   ethereumGoerli = 'ethereum_goerli',
@@ -40,7 +42,7 @@ export type PortfolioOverviewResponse = {
   allAssetsUsdValue: number
 }
 
-export type PortfolioAsset = {
+export type PortfolioWalletAsset = {
   name: string
   network: NetworkNames
   symbol: string
@@ -53,22 +55,22 @@ export type PortfolioAsset = {
 export type PortfolioAssetsResponse = {
   totalAssetsUsdValue: number
   totalAssetsPercentageChange: number
-  assets: PortfolioAsset[]
+  assets: PortfolioWalletAsset[]
 }
 
-export type MigrationAsset = {
+export type PortfolioMigrationAsset = {
   usdValue: number
   symbol: string
   balance: bigint
 }
 
-export type MigrationPosition = {
+export type PortfolioMigration = {
   chainId: number
   protocolId: string
-  collateralAsset: MigrationAsset
-  debtAsset: MigrationAsset
+  collateralAsset: PortfolioMigrationAsset
+  debtAsset: PortfolioMigrationAsset
 }
 
 export type PortfolioMigrationsResponse = {
-  positions: MigrationPosition[]
+  migrations: PortfolioMigration[]
 }

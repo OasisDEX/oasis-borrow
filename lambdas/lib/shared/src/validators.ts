@@ -1,8 +1,9 @@
 import type { APIGatewayProxyEventV2 } from 'aws-lambda'
 
 import { isValidAddress } from './guards'
+import { Address } from './domain-types'
 
-export const getAddressFromRequest = (event: APIGatewayProxyEventV2): string => {
+export const getAddressFromRequest = (event: APIGatewayProxyEventV2): Address => {
   const query = event.queryStringParameters
   if (query == null) {
     throw Error('Missing query string')

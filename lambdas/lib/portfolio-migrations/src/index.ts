@@ -3,16 +3,17 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda
 import { getDefaultErrorMessage } from 'shared/helpers'
 import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/responses'
 import { getAddressFromRequest } from 'shared/validators'
-import { MigrationPosition, PortfolioMigrationsResponse } from 'shared/domain-types'
+import { PortfolioMigration, PortfolioMigrationsResponse } from 'shared/domain-types'
 import { createClient } from './client'
-import { getDominantCollAsset } from './getDominantCollAsset'
+import { parseEligibleMigration } from './parseEligibleMigration'
+import { Address } from 'shared/domain-types'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs
-  const {} = (event.stageVariables as Record<string, string>) || {}
+  // const {} = (event.stageVariables as Record<string, string>) || {}
 
   // validate the query
-  let address: string | undefined
+  let address: Address | undefined
   try {
     address = getAddressFromRequest(event)
   } catch (error) {
@@ -27,25 +28,17 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   const client = createClient(rpcUrl)
 
   try {
-    let positions: MigrationPosition[] = []
-    const assetsByChain = await client.getAssetsByChain()
+    let eligibleMigrations: PortfolioMigration[] = []
+    const protocolAssetsToMigrate = await client.getProtocolAssetsToMigrate(address)
 
-    assetsByChain.forEach(({ debtAssets, collAssets, chainId, protocolId }) => {
-      const hasOneDebtAsset = debtAssets.length === 1
-      const dominantCollAsset = getDominantCollAsset(collAssets)
-      const hasOneDominantCollAsset = dominantCollAsset !== undefined
-
-      if (hasOneDebtAsset && hasOneDominantCollAsset) {
-        positions.push({
-          chainId,
-          protocolId,
-          debtAsset: debtAssets[0],
-          collateralAsset: dominantCollAsset,
-        })
+    protocolAssetsToMigrate.forEach((protocolAssets) => {
+      const eligibleMigration = parseEligibleMigration(protocolAssets)
+      if (eligibleMigration) {
+        eligibleMigrations.push(eligibleMigration)
       }
     })
 
-    return ResponseOk<PortfolioMigrationsResponse>({ body: { positions } })
+    return ResponseOk<PortfolioMigrationsResponse>({ body: { migrations: eligibleMigrations } })
   } catch (error) {
     console.error(error)
     return ResponseInternalServerError()

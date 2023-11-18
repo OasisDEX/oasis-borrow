@@ -1,7 +1,6 @@
-export function decodeBitmapToAssetsAddresses(
-  userConfigData: bigint,
-  reservesList: readonly `0x${string}`[],
-) {
+import { Address } from 'shared/domain-types'
+
+export function decodeBitmapToAssetsAddresses(userConfigData: bigint, reservesList: readonly Address[]) {
   // Convert userConfig data to binary string
   const binaryString = userConfigData.toString(2)
 

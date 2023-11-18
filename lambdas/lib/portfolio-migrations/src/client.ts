@@ -5,8 +5,9 @@ import { aavePoolContract } from './abi/aavePoolContract'
 import { decodeBitmapToAssetsAddresses } from './decodeBitmapToAssetsAddresses'
 import { aavePoolDataProviderContract } from './abi/aavePoolDataProviderContract'
 import { aaveOracleContract } from './abi/aaveOracleContract'
-import { MigrationAsset } from 'shared/domain-types'
 import { USD_DECIMALS } from 'shared/constants'
+import { ProtocolMigrationAssets } from './types'
+import { Address } from 'shared/domain-types'
 
 const chains = [sepolia]
 
@@ -18,17 +19,11 @@ export function createClient(rpcUrl: string) {
     },
   })
   const chain = sepolia
-  const user = '0x275f568287595D30E216b618da37897f4bbaB1B6' as const
 
-  const getAssetsByChain = async (): Promise<
-    {
-      debtAssets: MigrationAsset[]
-      collAssets: MigrationAsset[]
-      chainId: number
-      protocolId: string
-    }[]
-  > => {
-    const assets = await getAssets(chain, transport, user)
+  const getProtocolAssetsToMigrate = async (
+    address: Address,
+  ): Promise<ProtocolMigrationAssets[]> => {
+    const assets = await getAssets(chain, transport, address)
     return [
       {
         debtAssets: [],
@@ -40,15 +35,15 @@ export function createClient(rpcUrl: string) {
   }
 
   return {
-    getAssetsByChain,
+    getProtocolAssetsToMigrate: getProtocolAssetsToMigrate,
   }
 }
 
 const client = createClient('https://sepolia.infura.io/v3/58e739d6a76846c8ae547eee8e1becb8')
-client.getAssetsByChain()
+client.getProtocolAssetsToMigrate('0x275f568287595D30E216b618da37897f4bbaB1B6')
 // console.log('assets', assets)
 
-async function getAssets(chain: any, transport: any, user: `0x${string}`) {
+async function getAssets(chain: any, transport: any, user: Address) {
   const publicClient = createPublicClient({
     chain,
     transport,

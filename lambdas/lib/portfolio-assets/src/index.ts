@@ -5,7 +5,7 @@ import { getDefaultErrorMessage } from 'shared/helpers'
 import { ResponseBadRequest, ResponseOk } from 'shared/responses'
 import { getAddressFromRequest } from 'shared/validators'
 import { DebankToken } from 'shared/debank-types'
-import { NetworkNames, PortfolioAsset, PortfolioAssetsResponse } from 'shared/domain-types'
+import { NetworkNames, PortfolioWalletAsset, PortfolioAssetsResponse } from 'shared/domain-types'
 import { DebankNetworkNameToOurs, DebankNetworkNames } from 'shared/debank-helpers'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
@@ -51,7 +51,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     response
       .filter(({ chain, is_wallet, price }) => is_wallet && chain !== undefined && price > 0)
       .map(
-        (token): PortfolioAsset => ({
+        (token): PortfolioWalletAsset => ({
           name: token.name,
           symbol: token.symbol,
           network: DebankNetworkNameToOurs[token.chain as DebankNetworkNames],
