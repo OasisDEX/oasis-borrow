@@ -1,17 +1,16 @@
 import { createPublicClient, http } from 'viem'
 import { sepolia, mainnet, optimism, arbitrum, base } from 'viem/chains'
 import { getContract } from 'viem'
-import { aavePoolContract } from './abi/aavePoolContract'
-import { decodeBitmapToAssetsAddresses } from './decodeBitmapToAssetsAddresses'
-import { aavePoolDataProviderContract } from './abi/aavePoolDataProviderContract'
-import { aaveOracleContract } from './abi/aaveOracleContract'
+import { aavePoolContract } from './abi/aavePoolContract.js'
+import { decodeBitmapToAssetsAddresses } from './decodeBitmapToAssetsAddresses.js'
+import { aavePoolDataProviderContract } from './abi/aavePoolDataProviderContract.js'
+import { aaveOracleContract } from './abi/aaveOracleContract.js'
 import { MigrationAsset } from 'shared/domain-types'
-import { fetchToken } from '@wagmi/core'
 
 const AAVE_ORACLE_DECIMALS_V3 = 8n
 const chains = [sepolia]
 
-export async function createClient(rpcUrl: string) {
+export function createClient(rpcUrl: string) {
   const transport = http(rpcUrl, {
     batch: false,
     fetchOptions: {
@@ -21,19 +20,23 @@ export async function createClient(rpcUrl: string) {
   const chain = sepolia
   const user = '0x275f568287595D30E216b618da37897f4bbaB1B6' as const
 
-  const getAssetsByChain = async (): Promise<{
-    debtAssets: MigrationAsset[]
-    collAssets: MigrationAsset[]
-    chainId: number
-    protocolId: string
-  }> => {
+  const getAssetsByChain = async (): Promise<
+    {
+      debtAssets: MigrationAsset[]
+      collAssets: MigrationAsset[]
+      chainId: number
+      protocolId: string
+    }[]
+  > => {
     const assets = await getAssets(chain, transport, user)
-    return {
-      debtAssets: [],
-      collAssets: [],
-      chainId: sepolia.id,
-      protocolId: 'aave',
-    }
+    return [
+      {
+        debtAssets: [],
+        collAssets: [],
+        chainId: sepolia.id,
+        protocolId: 'aave',
+      },
+    ]
   }
 
   return {
@@ -41,7 +44,11 @@ export async function createClient(rpcUrl: string) {
   }
 }
 
-createClient('https://sepolia.infura.io/v3/58e739d6a76846c8ae547eee8e1becb8')
+createClient('https://sepolia.infura.io/v3/58e739d6a76846c8ae547eee8e1becb8').then((client) => {
+  client.getAssetsByChain().then((assets) => {
+    // console.log('assets', assets)
+  })
+})
 
 async function getAssets(chain: any, transport: any, user: `0x${string}`) {
   const publicClient = createPublicClient({
@@ -67,6 +74,12 @@ async function getAssets(chain: any, transport: any, user: `0x${string}`) {
 
   // read getReservesList
   const reservesList = await aavePool.read.getReservesList()
+  const fetchToken = await import('@wagmi/core').then((m) => {
+    console.log('m', m)
+    return m.fetchToken
+  })
+  console.log('fetchToken', fetchToken)
+
   const tokenRepository = await Promise.all(reservesList.map((address) => fetchToken({ address })))
   console.log('tokenRepository', tokenRepository)
   process.exit(0)

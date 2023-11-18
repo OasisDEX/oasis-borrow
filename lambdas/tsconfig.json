@@ -3,7 +3,7 @@
   "compilerOptions": {
     "lib": ["es2023"],
     "target": "es2022",
-    "module": "CommonJS",
+    "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "incremental": true /* Enable incremental compilation */,
