@@ -1,16 +1,16 @@
 /* eslint-disable no-relative-import-paths/no-relative-import-paths */
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 
-import { getDefaultErrorMessage } from 'shared/src/helpers'
-import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/src/responses'
-import { getAddressFromRequest } from 'shared/src/validators'
+import { getDefaultErrorMessage } from 'shared/helpers'
+import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/responses'
+import { getAddressFromRequest } from 'shared/validators'
 import {
   DebankComplexProtocol,
   DebankPortfolioItemObject,
   DebankSimpleProtocol,
-} from 'shared/src/debank-types'
-import { PortfolioOverviewResponse } from 'shared/src/domain-types'
-import { SUPPORTED_CHAIN_IDS } from 'shared/src/debank-helpers'
+} from 'shared/debank-types'
+import { PortfolioOverviewResponse } from 'shared/domain-types'
+import { SUPPORTED_CHAIN_IDS } from 'shared/debank-helpers'
 import { getSupportedPositions } from './utils'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {

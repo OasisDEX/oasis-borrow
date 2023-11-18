@@ -5,7 +5,7 @@ import { aavePoolContract } from './abi/aavePoolContract'
 import { decodeBitmapToAssetsAddresses } from './decodeBitmapToAssetsAddresses'
 import { aavePoolDataProviderContract } from './abi/aavePoolDataProviderContract'
 import { aaveOracleContract } from './abi/aaveOracleContract'
-import { MigrationAsset } from 'shared/dist/domain-types'
+import { MigrationAsset } from 'shared/domain-types'
 import { fetchToken } from '@wagmi/core'
 
 const AAVE_ORACLE_DECIMALS_V3 = 8n

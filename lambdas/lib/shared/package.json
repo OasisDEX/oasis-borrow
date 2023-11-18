@@ -4,10 +4,9 @@
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc -w",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc -b -v"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.tsx",
   "files": [
     "dist"
   ],

@@ -1,0 +1,219 @@
+{
+  "ignorePatterns": ["node_modules", "types", "coverage", "infra", "lambdas"],
+  "env": {
+    "es6": true
+  },
+  "extends": ["typestrict"],
+  "plugins": [
+    "no-only-tests",
+    "simple-import-sort",
+    "import",
+    "react",
+    "unused-imports",
+    "deprecation",
+    "no-relative-import-paths",
+    "react-hooks"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "sourceType": "module"
+  },
+  "rules": {
+    "unused-imports/no-unused-imports-ts": "error",
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "import/no-duplicates": "error",
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          // Side effect imports.
+          ["^\\u0000"],
+          // Packages.
+          // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
+          ["^@?\\w"],
+          // Absolute imports and other imports such as Vue-style `@/foo`.
+          // Anything that does not start with a dot.
+          ["^[^.]"],
+          // Relative imports.
+          // Anything that starts with a dot.
+          // anything that stars with /src (out custom path)
+          ["(^\\.|src/)"]
+        ]
+      }
+    ],
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-useless-constructor": "error",
+    "@typescript-eslint/no-non-null-assertion": "warn",
+    "@typescript-eslint/no-shadow": ["warn", { "builtinGlobals": true, "hoist": "all" }],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports",
+        "disallowTypeAnnotations": true
+      }
+    ],
+    "accessor-pairs": "error",
+    "constructor-super": "error",
+    "eqeqeq": [
+      "error",
+      "always",
+      {
+        "null": "ignore"
+      }
+    ],
+    "handle-callback-err": ["error", "^(err|error)$"],
+    "new-parens": "error",
+    "no-array-constructor": "error",
+    "no-async-promise-executor": "error",
+    "no-caller": "error",
+    "no-class-assign": "error",
+    "no-compare-neg-zero": "error",
+    "no-cond-assign": "error",
+    "no-const-assign": "error",
+    "no-constant-condition": [
+      "error",
+      {
+        "checkLoops": false
+      }
+    ],
+    "no-control-regex": "error",
+    "no-debugger": "error",
+    "no-delete-var": "error",
+    "no-dupe-args": "error",
+    "no-dupe-keys": "error",
+    "no-duplicate-case": "error",
+    "no-empty-character-class": "error",
+    "no-empty-pattern": "error",
+    "no-eval": "error",
+    "no-ex-assign": "error",
+    "no-extend-native": "error",
+    "no-extra-bind": "error",
+    "no-extra-boolean-cast": "error",
+    "no-fallthrough": "error",
+    "no-floating-decimal": "error",
+    "no-func-assign": "error",
+    "no-global-assign": "error",
+    "no-implied-eval": "error",
+    "no-inner-declarations": ["error", "functions"],
+    "no-invalid-regexp": "error",
+    "no-iterator": "error",
+    "no-label-var": "error",
+    "no-labels": [
+      "error",
+      {
+        "allowLoop": false,
+        "allowSwitch": false
+      }
+    ],
+    "no-lone-blocks": "error",
+    "no-misleading-character-class": "error",
+    "no-multi-str": "error",
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 1,
+        "maxEOF": 0
+      }
+    ],
+    "no-negated-in-lhs": "error",
+    "no-new": "error",
+    "no-new-func": "error",
+    "no-new-object": "error",
+    "no-new-require": "error",
+    "no-new-symbol": "error",
+    "no-new-wrappers": "error",
+    "no-obj-calls": "error",
+    "no-octal": "error",
+    "no-octal-escape": "error",
+    "no-path-concat": "error",
+    "no-proto": "error",
+    "@typescript-eslint/no-redeclare": "warn",
+    "no-invalid-this": "off",
+    "no-use-before-define": "off",
+    "no-regex-spaces": "error",
+    "no-return-assign": ["error", "except-parens"],
+    "no-self-assign": "error",
+    "no-self-compare": "error",
+    "no-sequences": "error",
+    "no-shadow": "off",
+    "no-shadow-restricted-names": "error",
+    "no-sparse-arrays": "error",
+    "no-tabs": "error",
+    "no-this-before-super": "error",
+    "no-throw-literal": "error",
+    "no-unexpected-multiline": "error",
+    "no-unmodified-loop-condition": "error",
+    "no-unneeded-ternary": [
+      "error",
+      {
+        "defaultAssignment": false
+      }
+    ],
+    "no-unreachable": "error",
+    "no-unsafe-finally": "error",
+    "no-unsafe-negation": "error",
+    "no-restricted-imports": ["error"],
+    "no-useless-call": "error",
+    "no-useless-catch": "error",
+    "no-useless-computed-key": "error",
+    "no-useless-escape": "error",
+    "no-useless-rename": "error",
+    "no-useless-return": "error",
+    "no-with": "error",
+    "object-curly-spacing": ["error", "always"],
+    "object-property-newline": [
+      "error",
+      {
+        "allowMultiplePropertiesPerLine": true
+      }
+    ],
+    "one-var": [
+      "error",
+      {
+        "initialized": "never"
+      }
+    ],
+    "prefer-const": [
+      "error",
+      {
+        "destructuring": "all"
+      }
+    ],
+    "prefer-promise-reject-errors": "error",
+    "symbol-description": "error",
+    "unicode-bom": ["error", "never"],
+    "use-isnan": "error",
+    "valid-typeof": [
+      "error",
+      {
+        "requireStringLiterals": true
+      }
+    ],
+    "wrap-iife": [
+      "error",
+      "any",
+      {
+        "functionPrototypeMethods": true
+      }
+    ],
+    "yoda": ["error", "never"],
+    "no-only-tests/no-only-tests": "error",
+    "no-relative-import-paths/no-relative-import-paths": ["warn", { "allowSameFolder": true }],
+    "deprecation/deprecation": "warn", // or "error" to have stricter rule
+    "react-hooks/rules-of-hooks": "warn",
+    "react-hooks/exhaustive-deps": "warn",
+    "no-console": ["error", { "allow": ["warn", "error", "info", "debug"] }]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.tsx"],
+      "rules": {
+        "func-style": "off"
+      }
+    }
+  ]
+}

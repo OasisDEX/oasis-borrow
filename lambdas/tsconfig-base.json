@@ -1,0 +1,23 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "compilerOptions": {
+    "lib": ["es2023"],
+    "target": "es2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "incremental": true /* Enable incremental compilation */,
+    "declaration": false,
+    "sourceMap": true,
+    "strict": true,
+    "isolatedModules": true /* Transpile each file as a separate module */,
+    "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+
+    // "baseUrl": "./", /* Base directory to resolve non-absolute module names. */
+    // "paths": {}, /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
+  },
+  "include": ["lib/**/*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}

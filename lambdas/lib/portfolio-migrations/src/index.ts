@@ -5,7 +5,7 @@ import { getDefaultErrorMessage } from 'shared/dist/helpers'
 import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/dist/responses'
 import { getAddressFromRequest } from 'shared/dist/validators'
 import { MigrationPosition, PortfolioMigrationsResponse } from 'shared/dist/domain-types'
-import { createClient } from './createClient'
+import { createClient } from './client'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs

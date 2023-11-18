@@ -1,12 +1,12 @@
 /* eslint-disable no-relative-import-paths/no-relative-import-paths */
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 
-import { getDefaultErrorMessage } from 'shared/src/helpers'
-import { ResponseBadRequest, ResponseOk } from 'shared/src/responses'
-import { getAddressFromRequest } from 'shared/src/validators'
-import { DebankToken } from 'shared/src/debank-types'
-import { NetworkNames, PortfolioAsset, PortfolioAssetsResponse } from 'shared/src/domain-types'
-import { DebankNetworkNameToOurs, DebankNetworkNames } from 'shared/src/debank-helpers'
+import { getDefaultErrorMessage } from 'shared/helpers'
+import { ResponseBadRequest, ResponseOk } from 'shared/responses'
+import { getAddressFromRequest } from 'shared/validators'
+import { DebankToken } from 'shared/debank-types'
+import { NetworkNames, PortfolioAsset, PortfolioAssetsResponse } from 'shared/domain-types'
+import { DebankNetworkNameToOurs, DebankNetworkNames } from 'shared/debank-helpers'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs

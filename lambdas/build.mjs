@@ -9,19 +9,15 @@ const LAMBDA_NAMES = ['portfolio-assets', 'portfolio-migrations', 'portfolio-ove
 
 // Main
 await within(async () => {
-  echo(`Prepare...`)
-  await $`mkdir -p artifacts`
-  echo(`Build shared...`)
-  cd(`lib/shared`)
-  await $`npm install`
-  await $`npm run tsc`
+  echo(`Clear artifacts...`)
+  await $`rm -rf artifacts && mkdir -p artifacts`
 })
 
 const [lambdaName] = argv._
 if (lambdaName) {
   await buildLambda(lambdaName)
 } else {
-  echo(`Building all lambdas...`)
+  echo(`Build all lambdas...`)
   for (let name of LAMBDA_NAMES) {
     await buildLambda(name)
   }
@@ -39,13 +35,14 @@ async function buildLambda(lambdaName) {
     cd(`lib/${lambdaName}`)
     const pkPath = path.join('package.json')
     const { name, version } = fs.readJSONSync(pkPath)
-    echo(`--- ${name}-${version} ---`)
-    echo(`Building...`)
+    echo(`\n--- ${name}-${version} ---`)
+    echo(`Install deps...`)
     await $`npm install`
-    await $`npm run tsc`
-    echo(`Packaging...`)
-    await $`zip -r ../../artifacts/${name}-${version}.zip node_modules`
+    echo(`Build dist...`)
+    await $`npm run build`
+    echo(`Package node_modules & dist...`)
+    await $`zip -rq ../../artifacts/${name}-${version}.zip node_modules`
     cd(`dist`)
-    await $`zip -r ../../../artifacts/${name}-${version}.zip *`
+    await $`zip -rq ../../../artifacts/${name}-${version}.zip *`
   })
 }
