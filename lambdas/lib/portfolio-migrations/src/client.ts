@@ -102,4 +102,3 @@ async function getAssets(chain: any, transport: any, user: `0x${string}`) {
   console.log('collAssetsPrices', collAssetsPrices)
   console.log('collAssetsValues', collAssetsValues)
 }
-
