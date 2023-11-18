@@ -1,11 +1,11 @@
 /* eslint-disable no-relative-import-paths/no-relative-import-paths */
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
-
-import { getDefaultErrorMessage } from 'shared/dist/helpers'
-import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/dist/responses'
-import { getAddressFromRequest } from 'shared/dist/validators'
-import { MigrationPosition, PortfolioMigrationsResponse } from 'shared/dist/domain-types'
+import { getDefaultErrorMessage } from 'shared/helpers'
+import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/responses'
+import { getAddressFromRequest } from 'shared/validators'
+import { MigrationPosition, PortfolioMigrationsResponse } from 'shared/domain-types'
 import { createClient } from './client'
+import { getDominantCollAsset } from './getDominantCollAsset'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs
@@ -32,15 +32,15 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 
     assetsByChain.forEach(({ debtAssets, collAssets, chainId, protocolId }) => {
       const hasOneDebtAsset = debtAssets.length === 1
-      const hasOneDominantCollAsset = collAssets.length === 1
       const dominantCollAsset = getDominantCollAsset(collAssets)
+      const hasOneDominantCollAsset = dominantCollAsset !== undefined
 
       if (hasOneDebtAsset && hasOneDominantCollAsset) {
         positions.push({
           chainId,
           protocolId,
           debtAsset: debtAssets[0],
-          collAsset: dominantCollAsset,
+          collateralAsset: dominantCollAsset,
         })
       }
     })

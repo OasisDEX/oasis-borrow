@@ -1,13 +1,13 @@
 import { createPublicClient, http } from 'viem'
 import { sepolia, mainnet, optimism, arbitrum, base } from 'viem/chains'
 import { getContract } from 'viem'
-import { aavePoolContract } from './abi/aavePoolContract.js'
-import { decodeBitmapToAssetsAddresses } from './decodeBitmapToAssetsAddresses.js'
-import { aavePoolDataProviderContract } from './abi/aavePoolDataProviderContract.js'
-import { aaveOracleContract } from './abi/aaveOracleContract.js'
+import { aavePoolContract } from './abi/aavePoolContract'
+import { decodeBitmapToAssetsAddresses } from './decodeBitmapToAssetsAddresses'
+import { aavePoolDataProviderContract } from './abi/aavePoolDataProviderContract'
+import { aaveOracleContract } from './abi/aaveOracleContract'
 import { MigrationAsset } from 'shared/domain-types'
+import { USD_DECIMALS } from 'shared/constants'
 
-const AAVE_ORACLE_DECIMALS_V3 = 8n
 const chains = [sepolia]
 
 export function createClient(rpcUrl: string) {
@@ -44,11 +44,9 @@ export function createClient(rpcUrl: string) {
   }
 }
 
-createClient('https://sepolia.infura.io/v3/58e739d6a76846c8ae547eee8e1becb8').then((client) => {
-  client.getAssetsByChain().then((assets) => {
-    // console.log('assets', assets)
-  })
-})
+const client = createClient('https://sepolia.infura.io/v3/58e739d6a76846c8ae547eee8e1becb8')
+client.getAssetsByChain()
+// console.log('assets', assets)
 
 async function getAssets(chain: any, transport: any, user: `0x${string}`) {
   const publicClient = createPublicClient({
@@ -106,7 +104,7 @@ async function getAssets(chain: any, transport: any, user: `0x${string}`) {
   // coll assets data
   const collAssetsValues = collAssetsAddresses.map(async (address, index) => {
     const balance = userReserveData[index][0] / 10n ** BigInt(tokenRepository[index].decimals)
-    const assetPrice = collAssetsPrices[index] / 10n ** AAVE_ORACLE_DECIMALS_V3
+    const assetPrice = collAssetsPrices[index] / 10n ** USD_DECIMALS
     const value = balance * assetPrice
     return value
   })

@@ -1,7 +1,6 @@
 {
   "name": "portfolio-migrations",
   "version": "0.0.1",
-  "type": "module",
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc -w",

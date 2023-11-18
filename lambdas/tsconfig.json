@@ -1,9 +1,9 @@
 {
   "extends": "@tsconfig/node18/tsconfig.json",
   "compilerOptions": {
-    "lib": ["es2023"],
+    "lib": ["es2022"],
     "target": "es2022",
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "incremental": true /* Enable incremental compilation */,

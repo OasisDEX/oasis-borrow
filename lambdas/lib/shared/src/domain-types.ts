@@ -57,8 +57,9 @@ export type PortfolioAssetsResponse = {
 }
 
 export type MigrationAsset = {
+  usdValue: number
   symbol: string
-  balance: number
+  balance: bigint
 }
 
 export type MigrationPosition = {
