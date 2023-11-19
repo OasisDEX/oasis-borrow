@@ -1,4 +1,4 @@
-import { createPublicClient, http } from 'viem'
+import { PublicClient, createPublicClient, http } from 'viem'
 import { sepolia, mainnet, optimism, arbitrum, base } from 'viem/chains'
 import { getContract } from 'viem'
 import { aavePoolContract } from './abi/aavePoolContract'
@@ -7,9 +7,11 @@ import { aavePoolDataProviderContract } from './abi/aavePoolDataProviderContract
 import { aaveOracleContract } from './abi/aaveOracleContract'
 import { USD_DECIMALS } from 'shared/constants'
 import { ProtocolMigrationAssets } from './types'
-import { Address } from 'shared/domain-types'
+import { Address, Network, PortfolioMigrationAsset } from 'shared/domain-types'
+import { createtokenService } from 'tokenService'
 
-const chains = [sepolia]
+const supportedChainsIds = ['sepolia']
+const supportedProtocolsIds = ['aave']
 
 export function createClient(rpcUrl: string) {
   const transport = http(rpcUrl, {
@@ -19,19 +21,32 @@ export function createClient(rpcUrl: string) {
     },
   })
   const chain = sepolia
+  const publicClient = createPublicClient({
+    chain,
+    transport,
+  })
 
   const getProtocolAssetsToMigrate = async (
     address: Address,
   ): Promise<ProtocolMigrationAssets[]> => {
-    const assets = await getAssets(chain, transport, address)
-    return [
-      {
-        debtAssets: [],
-        collAssets: [],
-        chainId: sepolia.id,
-        protocolId: 'aave',
-      },
-    ]
+    // for each supported chain
+    let promises: Promise<ProtocolMigrationAssets>[] = []
+    supportedChainsIds.forEach((chainId) => {
+      supportedProtocolsIds.forEach((protocolId) => {
+        const promise = async () => {
+          const { collAssets, debtAssets } = await getAssets(publicClient, address)
+          return {
+            debtAssets,
+            collAssets,
+            chainId,
+            protocolId,
+          } as ProtocolMigrationAssets
+        }
+        promises.push(promise())
+      })
+    })
+
+    return Promise.all(promises)
   }
 
   return {
@@ -43,12 +58,10 @@ const client = createClient('https://sepolia.infura.io/v3/58e739d6a76846c8ae547e
 client.getProtocolAssetsToMigrate('0x275f568287595D30E216b618da37897f4bbaB1B6')
 // console.log('assets', assets)
 
-async function getAssets(chain: any, transport: any, user: Address) {
-  const publicClient = createPublicClient({
-    chain,
-    transport,
-  })
-
+async function getAssets(
+  publicClient: PublicClient,
+  user: Address,
+): Promise<{ debtAssets: PortfolioMigrationAsset[]; collAssets: PortfolioMigrationAsset[] }> {
   const aavePool = getContract({
     address: aavePoolContract.address,
     abi: aavePoolContract.abi,
@@ -65,17 +78,11 @@ async function getAssets(chain: any, transport: any, user: Address) {
     publicClient,
   })
 
+  // instantiate address service
+  const tokenService = createtokenService(Network.MAINNET)
+
   // read getReservesList
   const reservesList = await aavePool.read.getReservesList()
-  const fetchToken = await import('@wagmi/core').then((m) => {
-    console.log('m', m)
-    return m.fetchToken
-  })
-  console.log('fetchToken', fetchToken)
-
-  const tokenRepository = await Promise.all(reservesList.map((address) => fetchToken({ address })))
-  console.log('tokenRepository', tokenRepository)
-  process.exit(0)
 
   // read getUserConfiguration
   const userConfig = await aavePool.read.getUserConfiguration([user])
@@ -96,15 +103,60 @@ async function getAssets(chain: any, transport: any, user: Address) {
     aaveOracle.read.getAssetsPrices([collAssetsAddresses]),
   ])
 
-  // coll assets data
-  const collAssetsValues = collAssetsAddresses.map(async (address, index) => {
-    const balance = userReserveData[index][0] / 10n ** BigInt(tokenRepository[index].decimals)
-    const assetPrice = collAssetsPrices[index] / 10n ** USD_DECIMALS
-    const value = balance * assetPrice
-    return value
+  // coll assets tokens meta
+  const collAssetsTokens = collAssetsAddresses.map((address, index) => {
+    const token = tokenService.getTokenByAddress(address)
+    return token
   })
+
+  const calculateUsdValue = ({
+    balance,
+    balanceDecimals,
+    price,
+    priceDecimals,
+  }: {
+    balance: bigint
+    balanceDecimals: bigint
+    price: bigint
+    priceDecimals: bigint
+  }) => {
+    const value = (balance * price) / 10n ** (balanceDecimals + priceDecimals)
+    return value
+  }
 
   console.log('collAssetsAddresses', collAssetsAddresses)
   console.log('collAssetsPrices', collAssetsPrices)
-  console.log('collAssetsValues', collAssetsValues)
+  console.log('collAssetsValues', collAssetsTokens)
+
+  const createPortfolioMigrationAsset = (
+    address: Address,
+    index: number,
+  ): PortfolioMigrationAsset => {
+    const symbol = collAssetsTokens[index].symbol
+    const balance = userReserveData[index][0]
+    const balanceDecimals = collAssetsTokens[index].decimals
+    const price = collAssetsPrices[index]
+    const priceDecimals = USD_DECIMALS
+    const usdValue = calculateUsdValue({ balance, balanceDecimals, price, priceDecimals })
+
+    return {
+      symbol,
+      balance,
+      balanceDecimals,
+      price,
+      priceDecimals,
+      usdValue,
+    }
+  }
+  const debtAssets: PortfolioMigrationAsset[] = debtAssetsAddresses.map(
+    createPortfolioMigrationAsset,
+  )
+  const collAssets: PortfolioMigrationAsset[] = collAssetsAddresses.map(
+    createPortfolioMigrationAsset,
+  )
+
+  return {
+    debtAssets,
+    collAssets,
+  }
 }

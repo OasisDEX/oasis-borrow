@@ -15,7 +15,8 @@
   "author": "Piter",
   "license": "UNLICENSED",
   "dependencies": {
-    "@wagmi/core": "^1.4.7",
+    "@wagmi/core": "^1.4.7-cjs",
+    "@oasisdex/addresses": "^0.1.13",
     "shared": "file:../shared/dist",
     "viem": "^1.19.3"
   }

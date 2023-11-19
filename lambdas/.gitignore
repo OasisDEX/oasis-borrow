@@ -1,0 +1,45 @@
+node_modules
+.env
+packages/*/.env
+.env_bak
+coverage
+coverage.json
+packages/dma-contracts/typechain
+yarn-error.log
+lerna-debug.log
+tenderly.yaml
+.idea/**/*
+.DS_Store
+
+#Hardhat files
+packages/abis/system/*
+cache
+artifacts
+typechain
+
+# Build outputs
+lib
+*.d.ts
+*.d.ts.map
+packages/dma-common/*.d.ts
+packages/dma-common/*.d.ts.map
+packages/deploy-configurations/*.d.ts
+packages/deploy-configurations/*.d.ts.map
+*.tsbuildinfo
+.parcel-cache
+
+# yarn
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+dist
+typechain/
+abi/
+packages/dma-contracts/contracts/chainlink
+packages/dma-contracts/contracts/tokens
+packages/dma-contracts/contracts/ajna
+packages/dma-contracts/contracts/morphoblue

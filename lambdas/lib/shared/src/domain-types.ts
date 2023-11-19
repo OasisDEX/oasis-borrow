@@ -1,5 +1,13 @@
 export type Address = `0x${string}`
 
+export enum Network {
+  MAINNET = 'mainnet',
+  GOERLI = 'goerli',
+  ARBITRUM = 'arbitrum',
+  OPTIMISM = 'optimism',
+  BASE = 'base',
+}
+
 export enum NetworkNames {
   ethereumMainnet = 'ethereum',
   ethereumGoerli = 'ethereum_goerli',
@@ -11,6 +19,24 @@ export enum NetworkNames {
   optimismGoerli = 'optimism_goerli',
   baseMainnet = 'base',
   baseGoerli = 'base_goerli',
+}
+
+export enum Chain {
+  MAINNET = 'mainnet',
+  ARBITRUM = 'arbitrum',
+  OPTIMISM = 'optimism',
+  BASE = 'base',
+}
+
+export enum Protocol {
+  AAVE3 = 'aave3',
+  SPARK = 'spark',
+}
+
+export type Token = {
+  symbol: string
+  decimals: bigint
+  address: Address
 }
 
 export type DetailsType =
@@ -59,13 +85,16 @@ export type PortfolioAssetsResponse = {
 }
 
 export type PortfolioMigrationAsset = {
-  usdValue: number
   symbol: string
   balance: bigint
+  balanceDecimals: bigint
+  price: bigint
+  priceDecimals: bigint
+  usdValue: bigint
 }
 
 export type PortfolioMigration = {
-  chainId: number
+  chainId: string
   protocolId: string
   collateralAsset: PortfolioMigrationAsset
   debtAsset: PortfolioMigrationAsset

@@ -3,10 +3,9 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda
 import { getDefaultErrorMessage } from 'shared/helpers'
 import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/responses'
 import { getAddressFromRequest } from 'shared/validators'
-import { PortfolioMigration, PortfolioMigrationsResponse } from 'shared/domain-types'
+import { Address, PortfolioMigration, PortfolioMigrationsResponse } from 'shared/domain-types'
 import { createClient } from './client'
 import { parseEligibleMigration } from './parseEligibleMigration'
-import { Address } from 'shared/domain-types'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs
