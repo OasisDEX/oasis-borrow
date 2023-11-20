@@ -1,6 +1,6 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  maxWorkers: 1,
+  workerThreads: true,
   testTimeout: 10000,
   preset: 'ts-jest',
   testEnvironment: 'node',
