@@ -212,7 +212,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
       }),
     ])
   const isWstethEthEarn =
-    commonData.primaryToken === 'WSTETH' && commonData.secondaryToken === 'WETH'
+    commonData.primaryToken === 'WSTETH' && commonData.secondaryToken === 'ETH'
   let wstEthYield
   if (isWstethEthEarn) {
     const contracts = getNetworkContracts(NetworkIds.MAINNET)
@@ -270,8 +270,17 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
   }
 }
 
-export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({ dpmList, prices }) => {
+export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
+  dpmList,
+  prices,
+  positionsCount,
+}) => {
   const aaveLikeDpmList = dpmList.filter(({ protocol }) => ['AAVE_V3', 'Spark'].includes(protocol))
+  if (positionsCount) {
+    return {
+      positions: aaveLikeDpmList.map(({ vaultId }) => ({ positionId: vaultId })),
+    }
+  }
   const uniqueDpmNetworks = Array.from(new Set(aaveLikeDpmList.map(({ networkId }) => networkId)))
   const [allPositionsHistory, allPositionsAutomations] = await Promise.all([
     Promise.all(

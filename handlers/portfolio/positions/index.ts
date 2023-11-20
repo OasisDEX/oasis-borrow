@@ -5,16 +5,13 @@ import { dsrPositionsHandler } from 'handlers/portfolio/positions/handlers/dsr'
 import { makerPositionsHandler } from 'handlers/portfolio/positions/handlers/maker'
 import { getPositionsFromDatabase, getTokensPrices } from 'handlers/portfolio/positions/helpers'
 import { getAllDpmsForWallet } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
-import type { PortfolioPosition } from 'handlers/portfolio/types'
+import type {
+  PortfolioPositionsCountReply,
+  PortfolioPositionsReply,
+} from 'handlers/portfolio/types'
 import { cacheObject } from 'helpers/api/cacheObject'
 import type { NextApiRequest } from 'next'
 import NodeCache from 'node-cache'
-
-type PortfolioPositionsReply = {
-  positions: PortfolioPosition[]
-  error?: boolean | string
-  errorJson?: boolean | string
-}
 
 const portfolioCacheTime = 2 * 60
 export const getCachedTokensPrices = cacheObject(
@@ -26,17 +23,27 @@ const portfolioCache = new NodeCache({ stdTTL: portfolioCacheTime })
 
 export const portfolioPositionsHandler = async ({
   query,
-}: NextApiRequest): Promise<PortfolioPositionsReply> => {
+}: NextApiRequest): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> => {
   const address = query.address as string
   const debug = 'debug' in query
+  const positionsCount = 'positionsCount' in query
   if (portfolioCache.has(address)) {
+    if (positionsCount) {
+      const { positions, ...rest } = JSON.parse(
+        portfolioCache.get(address) as string,
+      ) as PortfolioPositionsReply
+      return {
+        positions: positions.map(({ positionId }) => ({ positionId: positionId.toString() })),
+        ...rest,
+      }
+    }
     return JSON.parse(portfolioCache.get(address) as string)
   }
 
   const prices = await getCachedTokensPrices()
 
   if (prices) {
-    const apiVaults = await getPositionsFromDatabase({ address })
+    const apiVaults = !positionsCount ? await getPositionsFromDatabase({ address }) : undefined
     const dpmList = await getAllDpmsForWallet({ address })
 
     const payload = {
@@ -44,6 +51,7 @@ export const portfolioPositionsHandler = async ({
       apiVaults,
       dpmList,
       prices: prices.data,
+      positionsCount,
     }
 
     const positionsReply = await Promise.all([
@@ -55,15 +63,15 @@ export const portfolioPositionsHandler = async ({
     ])
       .then(
         ([
+          { positions: aaveLikePositions },
           { positions: aaveV2Positions },
-          { positions: aaveV3Positions },
           { positions: ajnaPositions },
           { positions: dsrPositions },
           { positions: makerPositions },
         ]) => ({
           positions: [
+            ...aaveLikePositions,
             ...aaveV2Positions,
-            ...aaveV3Positions,
             ...ajnaPositions,
             ...dsrPositions,
             ...makerPositions,
@@ -82,7 +90,7 @@ export const portfolioPositionsHandler = async ({
         }
       })
 
-    if (!positionsReply.error) {
+    if (!positionsReply.error && !positionsCount) {
       portfolioCache.set(address, JSON.stringify(positionsReply))
     }
 

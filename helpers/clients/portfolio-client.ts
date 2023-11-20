@@ -1,4 +1,7 @@
-import type { PortfolioPositionsResponse } from 'handlers/portfolio/types'
+import type {
+  PortfolioPositionsCountReply,
+  PortfolioPositionsReply,
+} from 'handlers/portfolio/types'
 import { useCallback, useMemo } from 'react'
 
 import {
@@ -15,16 +18,27 @@ import {
  * @param headers
  * @returns getters for portfolio data
  */
-export const usePortfolioClient = (baseUrl: string, headers: HeadersInit) => {
+export const usePortfolioClient = (baseUrl?: string, headers?: HeadersInit) => {
   const fetchPortfolioGeneric = useCallback(
     async <ResponseType>(
-      section: 'overview' | 'assets' | 'positions',
+      section: 'overview' | 'assets' | 'positions' | 'positionsCount',
       address: string,
     ): Promise<ResponseType> => {
-      const callUrl =
-        section === 'positions'
-          ? `/api/positions/${address}`
-          : `${baseUrl}/portfolio-${section}?address=${address}`
+      let callUrl
+      switch (section) {
+        case 'positions':
+          callUrl = `/api/positions/${address}`
+          break
+        case 'positionsCount':
+          callUrl = `/api/positions/${address}?positionsCount`
+          break
+        case 'overview':
+        case 'assets':
+          callUrl = `${baseUrl}/portfolio-${section}?address=${address}`
+          break
+        default:
+          throw new Error('Invalid usePortfolioClient section')
+      }
       const response = await fetch(callUrl, {
         headers,
       })
@@ -42,7 +56,9 @@ export const usePortfolioClient = (baseUrl: string, headers: HeadersInit) => {
       fetchPortfolioAssets: (address: string) =>
         fetchPortfolioGeneric<PortfolioAssetsResponse>('assets', address),
       fetchPortfolioPositions: (address: string) =>
-        fetchPortfolioGeneric<PortfolioPositionsResponse>('positions', address),
+        fetchPortfolioGeneric<PortfolioPositionsReply>('positions', address),
+      fetchPortfolioPositionsCount: (address: string) =>
+        fetchPortfolioGeneric<PortfolioPositionsCountReply>('positionsCount', address),
       fetchPortfolioMigrations: (address: string): Promise<PortfolioMigrationsResponse> => {
         address
         return Promise.resolve({

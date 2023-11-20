@@ -15,6 +15,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
   apiVaults,
   address,
   prices,
+  positionsCount,
 }) => {
   const subgraphPositions = (await loadSubgraph(
     'Discover',
@@ -24,6 +25,12 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
       walletAddress: address,
     },
   )) as SubgraphsResponses['Discover']['getMakerDiscoverPositions']
+
+  if (positionsCount || !apiVaults) {
+    return {
+      positions: subgraphPositions.response.cdps.map(({ cdp }) => ({ positionId: cdp })),
+    }
+  }
 
   const positions = await Promise.all(
     subgraphPositions.response.cdps.map(

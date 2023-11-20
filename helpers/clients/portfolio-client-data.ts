@@ -1,4 +1,4 @@
-import type { PortfolioPositionsResponse } from 'handlers/portfolio/types'
+import type { PortfolioPositionsReply } from 'handlers/portfolio/types'
 import { usePortfolioClient } from 'helpers/clients/portfolio-client'
 import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
 import { useEffect, useState } from 'react'
@@ -24,7 +24,7 @@ export const usePortfolioClientData = ({
   const portfolioClient = usePortfolioClient(awsInfraUrl, awsInfraHeader)
   const { data: blogPosts } = useFetch<BlogPostsReply>(`/api/blog-posts`)
   const [overviewData, setOverviewData] = useState<PortfolioOverviewResponse>()
-  const [portfolioPositionsData, setPortfolioPositionsData] = useState<PortfolioPositionsResponse>()
+  const [portfolioPositionsData, setPortfolioPositionsData] = useState<PortfolioPositionsReply>()
   const [portfolioWalletData, setPortfolioWalletData] = useState<PortfolioAssetsResponse>()
   const [portfolioConnectedWalletWalletData, setPortfolioConnectedWalletWalletData] =
     useState<PortfolioAssetsResponse>()

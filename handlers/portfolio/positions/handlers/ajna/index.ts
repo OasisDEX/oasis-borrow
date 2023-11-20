@@ -18,6 +18,7 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
   apiVaults,
   dpmList,
   prices,
+  positionsCount,
 }) => {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
   const subgraphPositions = (await loadSubgraph('Ajna', 'getAjnaDpmPositions', NetworkIds.MAINNET, {
@@ -34,6 +35,11 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
       ...earnPositions.map((position) => ({ ...position, proxyAddress, isEarn: true, positionId })),
     ],
   )
+  if (positionsCount || !apiVaults) {
+    return {
+      positions: positionsArray.map(({ positionId }) => ({ positionId })),
+    }
+  }
 
   const positions = await Promise.all(
     positionsArray.map(
