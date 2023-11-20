@@ -212,7 +212,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
       }),
     ])
   const isWstethEthEarn =
-    commonData.primaryToken === 'WSTETH' && commonData.secondaryToken === 'WETH'
+    commonData.primaryToken === 'WSTETH' && commonData.secondaryToken === 'ETH'
   let wstEthYield
   if (isWstethEthEarn) {
     const contracts = getNetworkContracts(NetworkIds.MAINNET)
