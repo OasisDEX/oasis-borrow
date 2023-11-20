@@ -100,5 +100,6 @@
     "connected-assets": "You have <span>${{amount}}</span> worth of reasons to open a position on summer.fi",
     "disconnected-assets": "They have <span>${{amount}}</span> worth of reasons to open a position on summer.fi. Connect your wallet to see what positions you could open",
     "disconnected-no-assets": "Connect your wallet to see what positions you could open"
-  }
+  },
+  "ajna-warning": "There has been possible griefing attack vector identified on Ajna Protocol. All Ajna users should close their positions and withdraw their funds. This is not related to any summer.fi contracts, so Maker and Aave users are not affected."
 }
