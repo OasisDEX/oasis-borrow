@@ -1,7 +1,4 @@
-import type {
-  PortfolioPositionsCountReply,
-  PortfolioPositionsReply,
-} from 'handlers/portfolio/types'
+import type { PortfolioPositionsReply } from 'handlers/portfolio/types'
 import { useCallback, useMemo } from 'react'
 
 import type {
@@ -25,9 +22,6 @@ export const usePortfolioClient = (baseUrl?: string, headers?: HeadersInit) => {
       switch (section) {
         case 'positions':
           callUrl = `/api/positions/${address}`
-          break
-        case 'positionsCount':
-          callUrl = `/api/positions/${address}?positionsCount`
           break
         case 'overview':
         case 'assets':
@@ -54,8 +48,6 @@ export const usePortfolioClient = (baseUrl?: string, headers?: HeadersInit) => {
         fetchPortfolioGeneric<PortfolioAssetsResponse>('assets', address),
       fetchPortfolioPositions: (address: string) =>
         fetchPortfolioGeneric<PortfolioPositionsReply>('positions', address),
-      fetchPortfolioPositionsCount: (address: string) =>
-        fetchPortfolioGeneric<PortfolioPositionsCountReply>('positionsCount', address),
     }),
     [fetchPortfolioGeneric],
   )

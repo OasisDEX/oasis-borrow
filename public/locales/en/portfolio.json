@@ -105,5 +105,6 @@
     "no-filtered-positions": "There are no positions matching your filters.",
     "no-assets": "There are no assets in this wallet.",
     "owner": "Discover your next opportunity below."
-  }
+  },
+  "ajna-warning": "There has been possible griefing attack vector identified on Ajna Protocol. All Ajna users should close their positions and withdraw their funds. This is not related to any summer.fi contracts, so Maker and Aave users are not affected."
 }
