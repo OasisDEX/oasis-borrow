@@ -32,12 +32,14 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
   prices,
   _history,
   allPositionsAutomations,
+  apiVaults,
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
   const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({
     automations: positionAutomations,
     dpm,
     prices,
+    apiVaults,
   })
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
@@ -278,6 +280,7 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
   apiVaults,
   positionsCount,
 }) => {
+  console.log('apiVaults', apiVaults)
   const aaveLikeDpmList = dpmList.filter(({ protocol }) => ['AAVE_V3', 'Spark'].includes(protocol))
   if (positionsCount) {
     return {
