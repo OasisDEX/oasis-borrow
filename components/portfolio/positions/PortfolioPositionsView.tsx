@@ -12,7 +12,7 @@ import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
 import { WithArrow } from 'components/WithArrow'
-import type { PortfolioPositionsResponse } from 'handlers/portfolio/types'
+import type { PortfolioPosition, PortfolioPositionsReply } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAddress } from 'helpers/formatters/format'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
@@ -28,7 +28,7 @@ interface PortfolioPositionsViewProps {
   address: string
   blogPosts?: BlogPostsReply
   isOwner: boolean
-  portfolioPositionsData?: PortfolioPositionsResponse
+  portfolioPositionsData?: PortfolioPositionsReply
   portfolioWalletData?: PortfolioAssetsResponse
 }
 
@@ -37,6 +37,11 @@ type PortfolioPositionsViewFiltersType = {
   showEmptyPositions: boolean
   sorting?: PortfolioSortingType
 }
+
+const filterEmptyPosition =
+  (isFilterOn: boolean = false) =>
+  ({ netValue }: PortfolioPosition) =>
+    isFilterOn || netValue >= 0.01
 
 export const PortfolioPositionsView = ({
   address,
@@ -61,12 +66,17 @@ export const PortfolioPositionsView = ({
       }))
     }
 
-  const filteredAndSortedPositions = useMemo(() => {
+  const filteredEmptyPositions = useMemo(() => {
     if (!portfolioPositionsData) return undefined
     // empty positions first
-    const filteredEmptyPositions = portfolioPositionsData.positions.filter(
-      ({ netValue }) => filterState['showEmptyPositions'] || netValue >= 0.01,
+    const positionsWithValue = portfolioPositionsData.positions.filter(
+      filterEmptyPosition(filterState['showEmptyPositions']),
     )
+    return positionsWithValue
+  }, [filterState, portfolioPositionsData])
+
+  const filteredPositionsByProduct = useMemo(() => {
+    if (!filteredEmptyPositions) return undefined
     // filter by product
     const noneSelected = [0, undefined].includes(filterState['product']?.length) // none selected = "All products"
     const allSelected =
@@ -84,8 +94,12 @@ export const PortfolioPositionsView = ({
         (includeMigrated && position.availableToMigrate) // special case for migration positions
       )
     })
+    return filteredProductPositions
+  }, [filterState, filteredEmptyPositions])
 
-    const sortedPositions = filteredProductPositions
+  const sortedPositions = useMemo(() => {
+    if (!filteredPositionsByProduct) return undefined
+    const sortedPositions = filteredPositionsByProduct
       .sort((a, b) => {
         if (filterState['sorting'] === PortfolioSortingType.netValueAscending) {
           return a.netValue - b.netValue
@@ -100,7 +114,12 @@ export const PortfolioPositionsView = ({
       })
 
     return sortedPositions
-  }, [filterState, portfolioPositionsData])
+  }, [filterState, filteredPositionsByProduct])
+
+  const hiddenPositionsCount = portfolioPositionsData
+    ? portfolioPositionsData.positions.length -
+      portfolioPositionsData.positions.filter(filterEmptyPosition()).length
+    : 0
 
   return (
     <Grid variant="portfolio">
@@ -130,7 +149,7 @@ export const PortfolioPositionsView = ({
             }}
           >
             <Text variant="paragraph3" sx={{ mr: 1 }}>
-              {tPortfolio('show-empty-positions.label')}
+              {tPortfolio('show-empty-positions.label', { count: hiddenPositionsCount })}
             </Text>
             <StatefulTooltip
               tooltip={tPortfolio('show-empty-positions.tooltip')}
@@ -155,8 +174,8 @@ export const PortfolioPositionsView = ({
           </Flex>
         </Flex>
         <Flex sx={{ flexDirection: 'column', rowGap: '24px', mt: '24px' }}>
-          {filteredAndSortedPositions
-            ? filteredAndSortedPositions.map((position) => (
+          {sortedPositions
+            ? sortedPositions.map((position) => (
                 <PortfolioPositionBlock
                   key={`${position.positionId}-${position.protocol}-${position.network}`}
                   position={position}

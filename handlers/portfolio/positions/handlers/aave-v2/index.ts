@@ -100,9 +100,19 @@ export const aaveV2PositionHandler: PortfolioPositionsHandler = async ({
   address,
   prices,
   dpmList,
+  positionsCount,
   ...rest
 }) => {
   const aaveV2DpmList = dpmList.filter(({ protocol }) => ['AAVE'].includes(protocol))
+  if (positionsCount) {
+    const dsProxyPosition = await getAaveV2DsProxyPosition({ address, prices, dpmList, ...rest })
+    return {
+      positions: [
+        ...aaveV2DpmList.map(({ vaultId }) => ({ positionId: vaultId })),
+        ...dsProxyPosition.positions.map(({ positionId }) => ({ positionId: positionId })),
+      ],
+    }
+  }
   const [allPositionsHistory, dsProxyPositions] = await Promise.all([
     getHistoryData({
       network: NetworkIds.MAINNET,
