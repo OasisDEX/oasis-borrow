@@ -40,6 +40,9 @@ export enum MixpanelPages {
   ConstantMultiple = 'ConstantMultiple',
   TakeProfit = 'TakeProfit',
   DAISavingsRate = 'DAISavingsRate',
+  ProductHub = 'ProductHub',
+  Portfolio = 'Portfolio',
+  Migrations = 'Migrations',
 }
 
 export enum MixpanelAutomationEventIds {
@@ -138,6 +141,8 @@ export enum MixpanelEventTypes {
   InputChange = 'input-change',
   ButtonClick = 'btn-click',
   OnScroll = 'on-scroll',
+  Displayed = 'displayed',
+  TxStatus = 'tx-status',
   SwapWidgetEvent = 'swap-widget-event',
   TopBannerEvent = 'top-banner-event',
 }
