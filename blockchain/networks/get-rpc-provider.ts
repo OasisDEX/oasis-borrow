@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { getRpcNode } from 'helpers/getRpcNode'
+import { getRpcNodeGateway } from 'pages/api/rpcGateway'
 
 import { networkSetById } from './network-helpers'
 import type { NetworkIds } from './network-ids'
@@ -14,7 +14,14 @@ export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider
 
   // check if server
   if (typeof window === 'undefined') {
-    const node = getRpcNode(network.name)
+    const isProd = process.env.NODE_ENV !== 'production'
+    const node = getRpcNodeGateway(network.name, {
+      skipCache: false,
+      skipMulticall: false,
+      skipGraph: true,
+      stage: '', // this is not required in getRpcNodeGateway
+      source: isProd ? 'borrow-prod-backend' : 'borrow-dev-backend',
+    })
     if (!node) {
       throw new Error('RPC provider is not available')
     }
