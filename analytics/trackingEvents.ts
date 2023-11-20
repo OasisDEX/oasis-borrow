@@ -1,5 +1,11 @@
 import type { Route } from '@lifi/sdk'
 import type { RouteExecutionUpdate } from '@lifi/widget'
+import type {
+  MixpanelMigrationsButtonClickParams,
+  MixpanelTxEventsIds,
+} from 'analytics/events-types'
+import { MixpanelMigrationsEventIds } from 'analytics/events-types'
+import { TrackingFeatureType } from 'analytics/TrackingFeatureType'
 import type BigNumber from 'bignumber.js'
 import { getDiscoverMixpanelPage } from 'features/discover/helpers/getDiscoverMixpanelPage'
 import type { DiscoverPages } from 'features/discover/types'
@@ -21,12 +27,6 @@ import type {
   MixpanelTopBannerEvents,
 } from './types'
 import { MixpanelCommonAnalyticsSections, MixpanelEventTypes, MixpanelPages } from './types'
-import { TrackingFeatureType } from 'analytics/TrackingFeatureType'
-import type {
-  MixpanelMigrationsButtonClickParams,
-  MixpanelTxEventsIds,
-} from 'analytics/events-types'
-import { MixpanelMigrationsEventIds } from 'analytics/events-types'
 
 export const trackingEvents = {
   landingPageView: (utm: { [key: string]: string | string[] | undefined }) => {

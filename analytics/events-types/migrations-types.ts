@@ -1,7 +1,6 @@
 import type { MixpanelCommonAnalyticsSections, MixpanelPages } from 'analytics/types'
-import type { LendingProtocol } from 'lendingProtocols'
-
 import type { ProductHubProductType } from 'features/productHub/types'
+import type { LendingProtocol } from 'lendingProtocols'
 
 export enum MixpanelMigrationsEventIds {
   PromptDisplayed = 'PromptDisplayed',
@@ -21,7 +20,7 @@ export type MixpanelMigrationsButtonClickParams =
         positionId: string
         alreadyHadDpm: boolean
         protocol: LendingProtocol
-        type: ProductHubProductType.Borrow | ProductHubProductType.Earn
+        positionType: ProductHubProductType.Borrow | ProductHubProductType.Earn
         tokenOrPair: string
         stopLoss?: {
           level: string
