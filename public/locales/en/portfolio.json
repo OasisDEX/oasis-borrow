@@ -100,5 +100,10 @@
     "connected-assets": "You have <span>${{amount}}</span> worth of reasons to open a position on summer.fi",
     "disconnected-assets": "They have <span>${{amount}}</span> worth of reasons to open a position on summer.fi. Connect your wallet to see what positions you could open",
     "disconnected-no-assets": "Connect your wallet to see what positions you could open"
+  },
+  "empty-states": {
+    "no-positions": "There are no positions for this wallet.",
+    "no-filtered-positions": "There are no positions matching your filters.",
+    "owner": "Discover your next opportunity below."
   }
 }

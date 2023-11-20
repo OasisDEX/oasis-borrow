@@ -9,7 +9,7 @@ export function PositionTableEmptyState({
   content,
 }: {
   title: string
-  header: ReactNode
+  header: string
   content: ReactNode
 }) {
   return (
