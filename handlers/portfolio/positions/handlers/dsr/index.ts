@@ -79,7 +79,7 @@ export const dsrPositionsHandler: PortfolioPositionsHandler = async ({
               protocol: LendingProtocol.Maker,
               secondaryToken: 'DAI',
               type: OmniProductType.Earn,
-              url: `/earn/dsr/${address}`,
+              url: `/earn/dsr/`,
             },
           ]
         : [],
