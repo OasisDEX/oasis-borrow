@@ -55,7 +55,7 @@ export function createOpenMultiplyVaultAnalytics$(
   tracker: Tracker,
 ) {
   const firstCDPChange: Observable<boolean | undefined> = accountDetails$.pipe(
-    map(({ numberOfVaults }) => (numberOfVaults ? numberOfVaults === 0 : undefined)),
+    map(({ amountOfPositions }) => (amountOfPositions ? amountOfPositions === 0 : undefined)),
     distinctUntilChanged(isEqual),
   )
 
