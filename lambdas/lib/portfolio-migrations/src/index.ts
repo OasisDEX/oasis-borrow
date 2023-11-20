@@ -20,10 +20,10 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     return ResponseBadRequest(message)
   }
 
-    if (!process.env.RPC_GATEWAY) {
-      throw new Error('RPC_GATEWAY env variable is not set')
-    }
-    const rpcUrl = event.queryStringParameters?.rpcUrl ?? process.env.RPC_GATEWAY
+  if (!process.env.RPC_GATEWAY) {
+    throw new Error('RPC_GATEWAY env variable is not set')
+  }
+  const rpcUrl = event.queryStringParameters?.rpcUrl ?? process.env.RPC_GATEWAY
 
   const client = createClient(rpcUrl)
 
