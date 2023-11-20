@@ -280,7 +280,6 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
   apiVaults,
   positionsCount,
 }) => {
-  console.log('apiVaults', apiVaults)
   const aaveLikeDpmList = dpmList.filter(({ protocol }) => ['AAVE_V3', 'Spark'].includes(protocol))
   if (positionsCount) {
     return {
