@@ -21,17 +21,13 @@ import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$ } from 'blockchain/ilks'
 import type { IlkData } from 'blockchain/ilks.types'
-import { NetworkIds } from 'blockchain/networks'
 import { createOraclePriceData$ } from 'blockchain/prices'
 import type { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices.types'
 import { createBalance$ } from 'blockchain/tokens'
-import { getUserDpmProxies$ } from 'blockchain/userDpmProxies'
-import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
-import { createStandardCdps$, createVault$, createVaults$ } from 'blockchain/vaults'
-import type { Vault, VaultWithType } from 'blockchain/vaults.types'
+import { createStandardCdps$, createVault$ } from 'blockchain/vaults'
+import type { Vault } from 'blockchain/vaults.types'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers'
-import type { PositionCreated } from 'features/aave/services'
-import { createProxyConsumed$, createReadPositionCreatedEvents$ } from 'features/aave/services'
+import { createProxyConsumed$ } from 'features/aave/services'
 import type { AccountDetails } from 'features/account/AccountData'
 import { createAccountData } from 'features/account/AccountData'
 import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
@@ -55,8 +51,6 @@ import { memoize } from 'lodash'
 import type { PropsWithChildren } from 'react'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
 import type { Observable } from 'rxjs'
-import { combineLatest, of } from 'rxjs'
-import { map } from 'rxjs/operators'
 
 import { useMainContext } from './MainContextProvider'
 import curry from 'ramda/src/curry'
@@ -96,68 +90,6 @@ export function AccountContextProvider({ children }: PropsWithChildren<{}>) {
       const proxyOwner$ = memoize(curry(createProxyOwner$)(onEveryBlock$, context$))
       const proxyConsumed$ = memoize(curry(createProxyConsumed$)(context$))
       const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
-
-      const mainnetDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
-        curry(getUserDpmProxies$)(of({ chainId: NetworkIds.MAINNET })),
-        (walletAddress) => walletAddress,
-      )
-
-      const mainnetReadPositionCreatedEvents$ = memoize(
-        curry(createReadPositionCreatedEvents$)(
-          of({ chainId: NetworkIds.MAINNET }),
-          mainnetDpmProxies$,
-        ),
-      )
-
-      const optimismDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
-        curry(getUserDpmProxies$)(of({ chainId: NetworkIds.OPTIMISMMAINNET })),
-        (walletAddress) => walletAddress,
-      )
-
-      const optimismReadPositionCreatedEvents$ = memoize(
-        curry(createReadPositionCreatedEvents$)(
-          of({ chainId: NetworkIds.OPTIMISMMAINNET }),
-          optimismDpmProxies$,
-        ),
-      )
-
-      const arbitrumDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
-        curry(getUserDpmProxies$)(of({ chainId: NetworkIds.ARBITRUMMAINNET })),
-        (walletAddress) => walletAddress,
-      )
-
-      const arbitrumReadPositionCreatedEvents$ = memoize(
-        curry(createReadPositionCreatedEvents$)(
-          of({ chainId: NetworkIds.ARBITRUMMAINNET }),
-          arbitrumDpmProxies$,
-        ),
-      )
-
-      const baseDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]> = memoize(
-        curry(getUserDpmProxies$)(of({ chainId: NetworkIds.BASEMAINNET })),
-        (walletAddress) => walletAddress,
-      )
-
-      const baseReadPositionCreatedEvents$ = memoize(
-        curry(createReadPositionCreatedEvents$)(
-          of({ chainId: NetworkIds.BASEMAINNET }),
-          baseDpmProxies$,
-        ),
-      )
-
-      // Here we're aggregating events from all networks to show all open positions
-      // Should add new networks here in the future to count all positions
-      const allNetworkReadPositionCreatedEvents$ = (wallet: string) =>
-        combineLatest([
-          mainnetReadPositionCreatedEvents$(wallet),
-          optimismReadPositionCreatedEvents$(wallet),
-          arbitrumReadPositionCreatedEvents$(wallet),
-          baseReadPositionCreatedEvents$(wallet),
-        ]).pipe(
-          map(([mainnetEvents, optimismEvents, arbitrumEvents, baseEvents]) => {
-            return [...mainnetEvents, ...optimismEvents, ...arbitrumEvents, ...baseEvents]
-          }),
-        )
 
       const balance$ = memoize(
         curry(createBalance$)(onEveryBlock$, chainContext$, tokenBalance$),
@@ -223,22 +155,12 @@ export function AccountContextProvider({ children }: PropsWithChildren<{}>) {
           ),
         bigNumberTostring,
       )
-      const vaults$ = memoize(
-        curry(createVaults$)(onEveryBlock$, vault$, chainContext$, [standardCdps$]),
-      )
       const hasActiveDsProxyAavePosition$ = hasActiveAavePositionOnDsProxy$(
         connectedContext$,
         proxyAddress$,
         proxyConsumed$,
       )
-      const accountData$ = createAccountData(
-        web3Context$,
-        balance$,
-        vaults$,
-        hasActiveDsProxyAavePosition$,
-        allNetworkReadPositionCreatedEvents$,
-        ensName$,
-      )
+      const accountData$ = createAccountData(web3Context$, balance$, ensName$)
 
       const userSettings$ = createUserSettings$(
         checkUserSettingsLocalStorage$,
@@ -256,7 +178,6 @@ export function AccountContextProvider({ children }: PropsWithChildren<{}>) {
 
       return {
         accountData$,
-        allNetworkReadPositionCreatedEvents$,
         balance$,
         cdpManagerIlks$,
         cdpManagerOwner$,
@@ -270,14 +191,6 @@ export function AccountContextProvider({ children }: PropsWithChildren<{}>) {
         ilkData$,
         ilkToToken$,
         jugIlks$,
-        mainnetDpmProxies$,
-        optimismDpmProxies$,
-        arbitrumDpmProxies$,
-        baseDpmProxies$,
-        mainnetReadPositionCreatedEvents$,
-        optimismReadPositionCreatedEvents$,
-        arbitrumReadPositionCreatedEvents$,
-        baseReadPositionCreatedEvents$,
         oraclePriceData$,
         pipHop$,
         pipPeek$,
@@ -296,7 +209,6 @@ export function AccountContextProvider({ children }: PropsWithChildren<{}>) {
         vatIlks$,
         vatUrns$,
         vault$,
-        vaults$,
       }
     })
   }, [
@@ -315,7 +227,6 @@ export function AccountContextProvider({ children }: PropsWithChildren<{}>) {
 
 export type AccountContext = {
   accountData$: Observable<AccountDetails>
-  allNetworkReadPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>
   balance$: (token: string, address: string) => Observable<BigNumber>
   cdpManagerIlks$: (args: BigNumber) => Observable<string>
   cdpManagerOwner$: (args: BigNumber) => Observable<string>
@@ -329,14 +240,6 @@ export type AccountContext = {
   ilkData$: (ilk: string) => Observable<IlkData>
   ilkToToken$: (ilk: string) => Observable<string>
   jugIlks$: (args: string) => Observable<JugIlk>
-  mainnetDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>
-  optimismDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>
-  arbitrumDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>
-  baseDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>
-  mainnetReadPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>
-  optimismReadPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>
-  arbitrumReadPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>
-  baseReadPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>
   oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>
   pipHop$: (args: string) => Observable<BigNumber>
   pipPeek$: (args: string) => Observable<[string, boolean]>
@@ -354,5 +257,4 @@ export type AccountContext = {
   vatIlks$: (args: string) => Observable<VatIlk>
   vatUrns$: (args: { ilk: string; urnAddress: string }) => Observable<Urn>
   vault$: (id: BigNumber) => Observable<Vault>
-  vaults$: (address: string) => Observable<VaultWithType>
 } & DepreciatedServices

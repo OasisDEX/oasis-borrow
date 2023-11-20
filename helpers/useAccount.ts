@@ -12,13 +12,13 @@ interface AccountState {
 
 export function useAccount(): AccountState {
   const { context$ } = useMainContext()
-  const { accountData$ } = useAccountContext()
   const [context] = useObservable(context$)
+  const { accountData$ } = useAccountContext()
   const [accountData] = useObservable(accountData$)
 
   return {
     contextIsLoaded: context !== undefined,
-    amountOfPositions: accountData?.numberOfVaults,
+    amountOfPositions: accountData?.amountOfPositions,
     isConnected: context?.status === 'connected',
     walletAddress: context?.account,
     chainId: context?.chainId,

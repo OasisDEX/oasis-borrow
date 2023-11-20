@@ -1,10 +1,7 @@
 import type BigNumber from 'bignumber.js'
-import type { AjnaPositionDetails } from 'features/ajna/positions/common/observables/getAjnaPosition'
 import type { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData.types'
 import type { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData.types'
 import type { Dsr } from 'features/dsr/utils/createDsr'
-import type { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
-import type { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
 import { zero } from 'helpers/zero'
 
 export const positionsTableTooltips = [
@@ -52,55 +49,4 @@ export function getProtection({
         : zero
       ).toNumber()
     : zero.toNumber()
-}
-
-export function getMakerPositionOfType(positions: MakerPositionDetails[]) {
-  return positions.reduce<{
-    borrow: MakerPositionDetails[]
-    multiply: MakerPositionDetails[]
-    earn: MakerPositionDetails[]
-  }>(
-    (v, position) => {
-      if (position.token === 'GUNIV3DAIUSDC1' || position.token === 'GUNIV3DAIUSDC2')
-        v.earn.push(position)
-      else if (position.type === 'borrow') v.borrow.push(position)
-      else if (position.type === 'multiply') v.multiply.push(position)
-
-      return v
-    },
-    { borrow: [], multiply: [], earn: [] },
-  )
-}
-
-export function getAavePositionOfType(positions: AaveLikePosition[]) {
-  return positions.reduce<{
-    multiply: AaveLikePosition[]
-    earn: AaveLikePosition[]
-    borrow: AaveLikePosition[]
-  }>(
-    (v, position) => {
-      if (position.type === 'earn') v.earn.push(position)
-      else if (position.type === 'multiply') v.multiply.push(position)
-      else if (position.type === 'borrow') v.borrow.push(position)
-      return v
-    },
-    { multiply: [], earn: [], borrow: [] },
-  )
-}
-
-export function getAjnaPositionOfType(positions: AjnaPositionDetails[]) {
-  return positions.reduce<{
-    borrow: AjnaPositionDetails[]
-    earn: AjnaPositionDetails[]
-    multiply: AjnaPositionDetails[]
-  }>(
-    (v, position) => {
-      if (position.details.product === 'borrow') v.borrow.push(position)
-      else if (position.details.product === 'earn') v.earn.push(position)
-      else if (position.details.product === 'multiply') v.multiply.push(position)
-
-      return v
-    },
-    { borrow: [], earn: [], multiply: [] },
-  )
 }

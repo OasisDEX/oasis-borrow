@@ -1,3 +1,4 @@
+import { Announcement } from 'components/Announcement'
 import { PortfolioLayout } from 'components/layouts/PortfolioLayout'
 import { PortfolioHeader } from 'components/portfolio/PortfolioHeader'
 import { PortfolioNonOwnerNotice } from 'components/portfolio/PortfolioNonOwnerNotice'
@@ -6,9 +7,12 @@ import { PortfolioOverviewSkeleton } from 'components/portfolio/PortfolioOvervie
 import { PortfolioPositionsView } from 'components/portfolio/positions/PortfolioPositionsView'
 import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWalletView'
 import { TabBar } from 'components/TabBar'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { usePortfolioClientData } from 'helpers/clients/portfolio-client-data'
+import { useAppConfig } from 'helpers/config'
 import { useAccount } from 'helpers/useAccount'
 import { useRedirect } from 'helpers/useRedirect'
+import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -59,6 +63,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
   const { t: tPortfolio } = useTranslation('portfolio')
   const { replace } = useRedirect()
   const { isConnected, walletAddress } = useAccount()
+  const { AjnaSafetySwitch: ajnaSafetySwitchOn } = useAppConfig('features')
 
   const { address, awsInfraUrl, awsInfraHeader } = props
 
@@ -80,10 +85,22 @@ export default function PortfolioView(props: PortfolioViewProps) {
     awsInfraUrl,
   })
   const isOwner = !!walletAddress && address === walletAddress.toLowerCase()
+  const hasAjnaPositions = portfolioPositionsData?.positions.some(
+    (position) => position.protocol === LendingProtocol.Ajna,
+  )
 
   return address ? (
     <PortfolioLayout>
       <Box sx={{ width: '100%' }}>
+        {ajnaSafetySwitchOn && isOwner && hasAjnaPositions && (
+          <Announcement
+            text={tPortfolio('ajna-warning')}
+            discordLink={EXTERNAL_LINKS.DISCORD}
+            link="https://blog.summer.fi/ajna-possible-attack-vector/"
+            linkText="Read more"
+            withClose={false}
+          />
+        )}
         <PortfolioNonOwnerNotice
           address={address}
           connectedAssets={portfolioConnectedWalletWalletData?.assets}
