@@ -5,7 +5,7 @@ import type {
 import { useCallback, useMemo } from 'react'
 
 import {
-  Chain,
+  ChainId,
   type PortfolioAssetsResponse,
   type PortfolioMigrationsResponse,
   type PortfolioOverviewResponse,
@@ -64,7 +64,7 @@ export const usePortfolioClient = (baseUrl?: string, headers?: HeadersInit) => {
         return Promise.resolve({
           migrations: [
             {
-              chainId: Chain.MAINNET,
+              chainId: ChainId.MAINNET,
               protocolId: Protocol.AAVE3,
               collateralAsset: {
                 symbol: 'WBTC',

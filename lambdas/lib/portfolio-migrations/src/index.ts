@@ -20,9 +20,10 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     return ResponseBadRequest(message)
   }
 
-  const rpcUrl =
-    event.queryStringParameters?.rpcUrl ??
-    'https://ps5xep63x8.execute-api.eu-central-1.amazonaws.com/staging'
+    if (!process.env.RPC_GATEWAY) {
+      throw new Error('RPC_GATEWAY env variable is not set')
+    }
+    const rpcUrl = event.queryStringParameters?.rpcUrl ?? process.env.RPC_GATEWAY
 
   const client = createClient(rpcUrl)
 

@@ -1,4 +1,4 @@
-import { PublicClient, createPublicClient, http } from 'viem'
+import { Chain, HttpTransport, PublicClient, createPublicClient, extractChain, http } from 'viem'
 import { sepolia, mainnet, optimism, arbitrum, base } from 'viem/chains'
 import { getContract } from 'viem'
 import { aavePoolContract } from './abi/aavePoolContract'
@@ -7,11 +7,11 @@ import { aavePoolDataProviderContract } from './abi/aavePoolDataProviderContract
 import { aaveOracleContract } from './abi/aaveOracleContract'
 import { USD_DECIMALS } from 'shared/constants'
 import { ProtocolMigrationAssets } from './types'
-import { Address, Network, PortfolioMigrationAsset } from 'shared/domain-types'
+import { Address, ChainId, Network, PortfolioMigrationAsset, Protocol } from 'shared/domain-types'
 import { createtokenService } from './tokenService'
 
-const supportedChainsIds = ['sepolia']
-const supportedProtocolsIds = ['aave3']
+const supportedChainsIds = Object.values(ChainId) as ChainId[]
+const supportedProtocolsIds = Object.values(Protocol) as Protocol[]
 
 export function createClient(rpcUrl: string) {
   const transport = http(rpcUrl, {
@@ -19,11 +19,6 @@ export function createClient(rpcUrl: string) {
     fetchOptions: {
       method: 'POST',
     },
-  })
-  const chain = sepolia
-  const publicClient = createPublicClient({
-    chain,
-    transport,
   })
 
   const getProtocolAssetsToMigrate = async (
@@ -33,14 +28,19 @@ export function createClient(rpcUrl: string) {
     let promises: Promise<ProtocolMigrationAssets>[] = []
     supportedChainsIds.forEach((chainId) => {
       supportedProtocolsIds.forEach((protocolId) => {
-        const promise = async () => {
-          const { collAssets, debtAssets } = await getAssets(publicClient, address)
+        const promise = async (): Promise<ProtocolMigrationAssets> => {
+          const chain = extractChain({
+            chains: [mainnet, base, optimism, arbitrum],
+            id: chainId,
+          })
+
+          const { collAssets, debtAssets } = await getAssets(transport, chain, address)
           return {
             debtAssets,
             collAssets,
             chainId,
             protocolId,
-          } as ProtocolMigrationAssets
+          }
         }
         promises.push(promise())
       })
@@ -55,9 +55,14 @@ export function createClient(rpcUrl: string) {
 }
 
 async function getAssets(
-  publicClient: PublicClient,
+  transport: HttpTransport,
+  chain: Chain,
   user: Address,
 ): Promise<{ debtAssets: PortfolioMigrationAsset[]; collAssets: PortfolioMigrationAsset[] }> {
+  const publicClient = createPublicClient({
+    chain,
+    transport,
+  })
   const aavePool = getContract({
     address: aavePoolContract.address,
     abi: aavePoolContract.abi,

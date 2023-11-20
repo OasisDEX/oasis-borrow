@@ -21,11 +21,11 @@ export enum NetworkNames {
   baseGoerli = 'base_goerli',
 }
 
-export enum Chain {
-  MAINNET = 'mainnet',
-  ARBITRUM = 'arbitrum',
-  OPTIMISM = 'optimism',
-  BASE = 'base',
+export enum ChainId {
+  MAINNET = 1,
+  ARBITRUM = 42161,
+  OPTIMISM = 10,
+  BASE = 8453,
 }
 
 export enum Protocol {
@@ -94,8 +94,8 @@ export type PortfolioMigrationAsset = {
 }
 
 export type PortfolioMigration = {
-  chainId: string
-  protocolId: string
+  chainId: ChainId
+  protocolId: Protocol
   collateralAsset: PortfolioMigrationAsset
   debtAsset: PortfolioMigrationAsset
 }
