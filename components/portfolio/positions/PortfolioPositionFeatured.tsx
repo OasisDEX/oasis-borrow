@@ -103,7 +103,7 @@ export const PortfolioPositionFeatured = ({
   useEffect(() => updateSliderUI(), [isMobile])
 
   return (
-    <>
+    <Box>
       <Box
         {...(slides && slides.length > slidesToDisplay && { ref: emblaRef })}
         sx={{ overflow: 'hidden' }}
@@ -167,6 +167,6 @@ export const PortfolioPositionFeatured = ({
         </Flex>
       )}
       {slides === undefined && <Skeleton width={5} height="22px" sx={{ mt: '28px', mb: 1 }} />}
-    </>
+    </Box>
   )
 }

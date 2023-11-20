@@ -124,7 +124,7 @@ export const PortfolioPositionsView = ({
 
   return (
     <Grid variant="portfolio">
-      <Box>
+      <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
         {portfolioPositionsData?.positions.length === 0 ? (
           <EmptyState header={tPortfolio('empty-states.no-positions')}>
             {isOwner && tPortfolio('empty-states.owner')}
@@ -180,7 +180,7 @@ export const PortfolioPositionsView = ({
                 />
               </Flex>
             </Flex>
-            <Flex sx={{ flexDirection: 'column', rowGap: '24px', mt: '24px' }}>
+            <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
               {sortedPositions ? (
                 <>
                   {sortedPositions.length > 0 ? (
@@ -206,7 +206,7 @@ export const PortfolioPositionsView = ({
             </Flex>
           </>
         )}
-        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: '24px' }}>
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Heading as="h2" variant="header5" sx={getGradientColor(summerBrandGradient)}>
             <Icon icon={sparks} color="#007DA3" sx={{ mr: 1 }} />
             {tPortfolio(`featured-for-${isOwner ? 'you' : 'address'}`, {
@@ -221,7 +221,7 @@ export const PortfolioPositionsView = ({
           assets={portfolioWalletData?.assets}
           positions={portfolioPositionsData?.positions}
         />
-        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: '24px' }}>
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Heading as="h2" variant="header5">
             {tPortfolio('learn-with-summer-fi')}
           </Heading>
@@ -230,7 +230,7 @@ export const PortfolioPositionsView = ({
           </AppLink>
         </Flex>
         <PortfolioPositionLearn posts={blogPosts?.learn} />
-      </Box>
+      </Flex>
       <Box>
         <BlogPosts posts={blogPosts?.news} />
       </Box>

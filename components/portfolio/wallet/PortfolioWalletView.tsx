@@ -1,4 +1,5 @@
 import type { NetworkNames } from 'blockchain/networks'
+import { EmptyState } from 'components/EmptyState'
 import { GenericMultiselect } from 'components/GenericMultiselect'
 import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
 import { PortfolioWalletAssets } from 'components/portfolio/wallet/PortfolioWalletAssets'
@@ -37,8 +38,8 @@ export const PortfolioWalletView = ({
 
   return (
     <Grid variant="portfolio">
-      <Box>
-        <Flex sx={{ alignItems: 'flex-end', justifyContent: 'space-between', mb: '24px' }}>
+      <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
+        <Flex sx={{ alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <Heading as="h2" variant="header5">
             {tPortfolio('summary')}
           </Heading>
@@ -52,22 +53,18 @@ export const PortfolioWalletView = ({
           />
         </Flex>
         <PortfolioWalletSummary assets={filteredAssets} />
-        {(filteredAssets?.length ?? 0) > 0 && (
-          <>
-            <Flex sx={{ my: '24px' }}>
-              <Heading as="h2" variant="header5">
-                {tPortfolio('assets')}
-              </Heading>
-            </Flex>
-            <PortfolioWalletAssets assets={filteredAssets} />
-          </>
+        <Heading as="h2" variant="header5">
+          {tPortfolio('assets')}
+        </Heading>
+        {(filteredAssets?.length ?? 0) > 0 ? (
+          <PortfolioWalletAssets assets={filteredAssets} />
+        ) : (
+          <EmptyState header={tPortfolio('empty-states.no-assets')} />
         )}
         {portfolioWalletData?.assets && isOwner && (
-          <Box sx={{ mt: '24px' }}>
-            <PortfolioWalletBanner assets={portfolioWalletData.assets} />
-          </Box>
+          <PortfolioWalletBanner assets={portfolioWalletData.assets} />
         )}
-      </Box>
+      </Flex>
       <Box>
         <BlogPosts posts={blogPosts?.news} />
       </Box>
