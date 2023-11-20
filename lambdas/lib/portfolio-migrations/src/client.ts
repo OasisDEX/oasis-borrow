@@ -9,7 +9,7 @@ import { USD_DECIMALS } from 'shared/constants'
 import { ProtocolMigrationAssets } from './types'
 import { Address, ChainId, Network, PortfolioMigrationAsset, ProtocolId } from 'shared/domain-types'
 import { createtokenService } from './tokenService'
-import { createAddressService } from 'addressService'
+import { createAddressService } from './addressService'
 
 const supportedChainsIds = Object.values(ChainId) as ChainId[]
 const supportedProtocolsIds = Object.values(ProtocolId) as ProtocolId[]
