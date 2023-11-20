@@ -32,12 +32,14 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
   prices,
   _history,
   allPositionsAutomations,
+  apiVaults,
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
   const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({
     automations: positionAutomations,
     dpm,
     prices,
+    apiVaults,
   })
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
@@ -106,12 +108,14 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
   prices,
   allPositionsHistory,
   allPositionsAutomations,
+  apiVaults,
 ) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
   const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({
     automations: positionAutomations,
     dpm,
     prices,
+    apiVaults,
   })
   const [
     primaryTokenReserveConfiguration,
@@ -273,6 +277,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
 export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
   dpmList,
   prices,
+  apiVaults,
   positionsCount,
 }) => {
   const aaveLikeDpmList = dpmList.filter(({ protocol }) => ['AAVE_V3', 'Spark'].includes(protocol))
@@ -310,6 +315,7 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
             prices,
             allPositionsHistory,
             allPositionsAutomations,
+            apiVaults,
           )
         case OmniProductType.Borrow:
           return getAaveLikeBorrowPosition(
@@ -317,9 +323,16 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
             prices,
             allPositionsHistory,
             allPositionsAutomations,
+            apiVaults,
           )
         case OmniProductType.Earn:
-          return getAaveLikeEarnPosition(dpm, prices, allPositionsHistory, allPositionsAutomations)
+          return getAaveLikeEarnPosition(
+            dpm,
+            prices,
+            allPositionsHistory,
+            allPositionsAutomations,
+            apiVaults,
+          )
         default:
           throw new Error(`Unsupported position type ${dpm.positionType}`)
       }

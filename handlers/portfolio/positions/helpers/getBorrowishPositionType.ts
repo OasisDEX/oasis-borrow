@@ -4,7 +4,7 @@ import type { OmniProductBorrowishType } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 
-interface getBorrowishPositionTypeParams {
+interface GetBorrowishPositionTypeParams {
   apiVaults: Vault[]
   defaultType?: OmniProductBorrowishType
   networkId: NetworkIds
@@ -18,7 +18,7 @@ export function getBorrowishPositionType({
   networkId,
   positionId,
   protocol,
-}: getBorrowishPositionTypeParams): OmniProductBorrowishType {
+}: GetBorrowishPositionTypeParams): OmniProductBorrowishType {
   const [apiVault] = apiVaults.filter(
     ({ chain_id, protocol: _protocol, vault_id }) =>
       chain_id === networkId &&
