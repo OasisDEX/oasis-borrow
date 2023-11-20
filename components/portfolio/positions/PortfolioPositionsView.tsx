@@ -4,7 +4,7 @@ import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
 import { PortfolioPositionBlock } from 'components/portfolio/positions/PortfolioPositionBlock'
-import { PortfolioPositionBlockSkeleton } from 'components/portfolio/positions/PortfolioPositionBlockSkeleton'
+import { PortfolioPositionBlockLoadingState } from 'components/portfolio/positions/PortfolioPositionBlockSkeleton'
 import { PortfolioPositionFeatured } from 'components/portfolio/positions/PortfolioPositionFeatured'
 import { PortfolioPositionLearn } from 'components/portfolio/positions/PortfolioPositionLearn'
 import { PortfolioPositionsProductSelect } from 'components/portfolio/positions/PortfolioPositionsProductSelect'
@@ -197,9 +197,11 @@ export const PortfolioPositionsView = ({
                   )}
                 </>
               ) : (
-                Array.from({ length: 3 }).map((_, index) => (
-                  <PortfolioPositionBlockSkeleton key={`skeleton-${index}`} />
-                ))
+                <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <PortfolioPositionBlockLoadingState key={`skeleton-${index}`} />
+                  ))}
+                </Flex>
               )}
             </Flex>
             <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: '24px' }}>
