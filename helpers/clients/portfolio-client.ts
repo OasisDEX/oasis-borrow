@@ -6,7 +6,7 @@ import {
   type PortfolioAssetsResponse,
   type PortfolioMigrationsResponse,
   type PortfolioOverviewResponse,
-  Protocol,
+  ProtocolId,
 } from 'lambdas/lib/shared/src/domain-types'
 
 /**
@@ -57,7 +57,7 @@ export const usePortfolioClient = (baseUrl?: string, headers?: HeadersInit) => {
           migrations: [
             {
               chainId: ChainId.MAINNET,
-              protocolId: Protocol.AAVE3,
+              protocolId: ProtocolId.AAVE3,
               collateralAsset: {
                 symbol: 'WBTC',
                 balance: 150000001n,

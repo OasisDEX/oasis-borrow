@@ -28,7 +28,14 @@ export enum ChainId {
   BASE = 8453,
 }
 
-export enum Protocol {
+export const NetworkByChainID: Record<ChainId, Network> = {
+  [ChainId.MAINNET]: Network.MAINNET,
+  [ChainId.ARBITRUM]: Network.ARBITRUM,
+  [ChainId.OPTIMISM]: Network.OPTIMISM,
+  [ChainId.BASE]: Network.BASE,
+}
+
+export enum ProtocolId {
   AAVE3 = 'aave3',
   SPARK = 'spark',
 }
@@ -95,7 +102,7 @@ export type PortfolioMigrationAsset = {
 
 export type PortfolioMigration = {
   chainId: ChainId
-  protocolId: Protocol
+  protocolId: ProtocolId
   collateralAsset: PortfolioMigrationAsset
   debtAsset: PortfolioMigrationAsset
 }

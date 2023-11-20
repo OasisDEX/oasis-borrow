@@ -1,8 +1,8 @@
-import { ChainId, PortfolioMigrationAsset, Protocol } from 'shared/domain-types'
+import { ChainId, PortfolioMigrationAsset, ProtocolId } from 'shared/domain-types'
 
 export type ProtocolMigrationAssets = {
   debtAssets: PortfolioMigrationAsset[]
   collAssets: PortfolioMigrationAsset[]
   chainId: ChainId
-  protocolId: Protocol
+  protocolId: ProtocolId
 }

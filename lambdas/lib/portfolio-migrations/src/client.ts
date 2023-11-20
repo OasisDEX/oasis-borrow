@@ -7,11 +7,12 @@ import { aavePoolDataProviderContract } from './abi/aavePoolDataProviderContract
 import { aaveOracleContract } from './abi/aaveOracleContract'
 import { USD_DECIMALS } from 'shared/constants'
 import { ProtocolMigrationAssets } from './types'
-import { Address, ChainId, Network, PortfolioMigrationAsset, Protocol } from 'shared/domain-types'
+import { Address, ChainId, Network, PortfolioMigrationAsset, ProtocolId } from 'shared/domain-types'
 import { createtokenService } from './tokenService'
+import { createAddressService } from 'addressService'
 
 const supportedChainsIds = Object.values(ChainId) as ChainId[]
-const supportedProtocolsIds = Object.values(Protocol) as Protocol[]
+const supportedProtocolsIds = Object.values(ProtocolId) as ProtocolId[]
 
 export function createClient(rpcUrl: string) {
   const transport = http(rpcUrl, {
@@ -34,7 +35,7 @@ export function createClient(rpcUrl: string) {
             id: chainId,
           })
 
-          const { collAssets, debtAssets } = await getAssets(transport, chain, address)
+          const { collAssets, debtAssets } = await getAssets(transport, chain, protocolId, address)
           return {
             debtAssets,
             collAssets,
@@ -57,24 +58,28 @@ export function createClient(rpcUrl: string) {
 async function getAssets(
   transport: HttpTransport,
   chain: Chain,
+  protocol: ProtocolId,
   user: Address,
 ): Promise<{ debtAssets: PortfolioMigrationAsset[]; collAssets: PortfolioMigrationAsset[] }> {
   const publicClient = createPublicClient({
     chain,
     transport,
   })
+
+  const addressService = createAddressService(chain.id)
+
   const aavePool = getContract({
-    address: aavePoolContract.address,
+    address: addressService.getProtocolContract(protocol, 'LendingPool'),
     abi: aavePoolContract.abi,
     publicClient,
   })
   const aavePoolDataProvider = getContract({
-    address: aavePoolDataProviderContract.address,
+    address: addressService.getProtocolContract(protocol, 'PoolDataProvider'),
     abi: aavePoolDataProviderContract.abi,
     publicClient,
   })
   const aaveOracle = getContract({
-    address: aaveOracleContract.address,
+    address: addressService.getProtocolContract(protocol, 'Oracle'),
     abi: aaveOracleContract.abi,
     publicClient,
   })
