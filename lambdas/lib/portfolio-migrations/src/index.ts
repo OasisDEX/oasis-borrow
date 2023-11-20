@@ -9,7 +9,9 @@ import { parseEligibleMigration } from './parseEligibleMigration'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs
-  // const {} = (event.stageVariables as Record<string, string>) || {}
+  const { RPC_GATEWAY } = (event.stageVariables as Record<string, string>) || {
+    RPC_GATEWAY: process.env.RPC_GATEWAY,
+  }
 
   // validate the query
   let address: Address | undefined
@@ -20,10 +22,10 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     return ResponseBadRequest(message)
   }
 
-  if (!process.env.RPC_GATEWAY) {
+  if (!RPC_GATEWAY) {
     throw new Error('RPC_GATEWAY env variable is not set')
   }
-  const rpcUrl = event.queryStringParameters?.rpcUrl ?? process.env.RPC_GATEWAY
+  const rpcUrl = event.queryStringParameters?.rpcUrl ?? RPC_GATEWAY
 
   const client = createClient(rpcUrl)
 

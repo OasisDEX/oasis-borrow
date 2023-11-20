@@ -1,5 +1,5 @@
-import { Chain, HttpTransport, PublicClient, createPublicClient, extractChain, http } from 'viem'
-import { sepolia, mainnet, optimism, arbitrum, base } from 'viem/chains'
+import { Chain, HttpTransport, createPublicClient, extractChain, http } from 'viem'
+import { mainnet, optimism, arbitrum, base } from 'viem/chains'
 import { getContract } from 'viem'
 import { aavePoolContract } from './abi/aavePoolContract'
 import { decodeBitmapToAssetsAddresses } from './decodeBitmapToAssetsAddresses'

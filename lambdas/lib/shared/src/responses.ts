@@ -2,11 +2,11 @@ import type { APIGatewayProxyResultV2 } from 'aws-lambda'
 import type { DefaultErrorResponse } from './helper-types'
 import { serialize } from './serialize'
 
-export function createOkBody(obj: Record<string, unknown>): string {
+export function createOkBody(obj: Record<string, unknown>): string | undefined {
   return serialize(obj)
 }
 
-export function createErrorBody(message: string): string {
+export function createErrorBody(message: string): string | undefined {
   const errorObject: DefaultErrorResponse = { message }
   return serialize(errorObject)
 }
