@@ -3,9 +3,11 @@ import { Icon } from 'components/Icon'
 import { PromoCard, PromoCardLoadingState } from 'components/PromoCard'
 import { Skeleton } from 'components/Skeleton'
 import useEmblaCarousel from 'embla-carousel-react'
+import { getGenericPromoCard } from 'features/productHub/helpers'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
 import { useAppConfig } from 'helpers/config'
+import { LendingProtocol } from 'lendingProtocols'
 import { shuffle, uniq } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { chevron_left, chevron_right } from 'theme/icons'
@@ -40,7 +42,7 @@ export const PortfolioPositionFeatured = ({
 
   const slides = useMemo(() => {
     if (!!assets && !!positions) {
-      return shuffle(
+      const matchingCards = shuffle(
         uniq(
           [
             ...Object.keys(promoCardsData)
@@ -73,6 +75,17 @@ export const PortfolioPositionFeatured = ({
               ),
           ),
       )
+
+      if (matchingCards.length) return matchingCards
+      else
+        return shuffle(
+          table.filter(
+            ({ protocol }) =>
+              !AjnaSafetySwitch || (AjnaSafetySwitch && protocol !== LendingProtocol.Ajna),
+          ),
+        )
+          .slice(0, 2)
+          .map((product) => getGenericPromoCard({ product }))
     } else return undefined
   }, [assets?.length, positions?.length])
 

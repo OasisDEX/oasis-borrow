@@ -204,25 +204,23 @@ export const PortfolioPositionsView = ({
                 </Flex>
               )}
             </Flex>
-            <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: '24px' }}>
-              <Heading as="h2" variant="header5" sx={getGradientColor(summerBrandGradient)}>
-                <Icon icon={sparks} color="#007DA3" sx={{ mr: 1 }} />
-                {tPortfolio(`featured-for-${isOwner ? 'you' : 'address'}`, {
-                  address: formatAddress(address, 6),
-                })}
-              </Heading>
-              <AppLink href={INTERNAL_LINKS.earn} sx={{ mr: 3 }}>
-                <WithArrow sx={{ color: 'neutral80' }}>
-                  {tPortfolio('see-all-strategies')}
-                </WithArrow>
-              </AppLink>
-            </Flex>
-            <PortfolioPositionFeatured
-              assets={portfolioWalletData?.assets}
-              positions={portfolioPositionsData?.positions}
-            />
           </>
         )}
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: '24px' }}>
+          <Heading as="h2" variant="header5" sx={getGradientColor(summerBrandGradient)}>
+            <Icon icon={sparks} color="#007DA3" sx={{ mr: 1 }} />
+            {tPortfolio(`featured-for-${isOwner ? 'you' : 'address'}`, {
+              address: formatAddress(address, 6),
+            })}
+          </Heading>
+          <AppLink href={INTERNAL_LINKS.earn} sx={{ mr: 3 }}>
+            <WithArrow sx={{ color: 'neutral80' }}>{tPortfolio('see-all-strategies')}</WithArrow>
+          </AppLink>
+        </Flex>
+        <PortfolioPositionFeatured
+          assets={portfolioWalletData?.assets}
+          positions={portfolioPositionsData?.positions}
+        />
         <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: '24px' }}>
           <Heading as="h2" variant="header5">
             {tPortfolio('learn-with-summer-fi')}
