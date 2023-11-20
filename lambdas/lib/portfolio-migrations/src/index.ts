@@ -10,7 +10,6 @@ import { parseEligibleMigration } from './parseEligibleMigration'
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs
   // const {} = (event.stageVariables as Record<string, string>) || {}
-  console.log('event', event)
 
   // validate the query
   let address: Address | undefined
@@ -24,7 +23,6 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   const rpcUrl =
     event.queryStringParameters?.rpcUrl ??
     'https://ps5xep63x8.execute-api.eu-central-1.amazonaws.com/staging'
-  console.log('rpcUrl', rpcUrl)
 
   const client = createClient(rpcUrl)
 
