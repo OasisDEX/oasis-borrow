@@ -1,5 +1,11 @@
 import type { Route } from '@lifi/sdk'
 import type { RouteExecutionUpdate } from '@lifi/widget'
+import type {
+  MixpanelMigrationsButtonClickParams,
+  MixpanelTxEventsIds,
+} from 'analytics/events-types'
+import { MixpanelMigrationsEventIds } from 'analytics/events-types'
+import { TrackingFeatureType } from 'analytics/TrackingFeatureType'
 import type BigNumber from 'bignumber.js'
 import { getDiscoverMixpanelPage } from 'features/discover/helpers/getDiscoverMixpanelPage'
 import type { DiscoverPages } from 'features/discover/types'
@@ -1005,6 +1011,43 @@ export const trackingEvents = {
         eventData: mixpanel.has_opted_out_tracking() ? { txHash } : { txHash, ...eventDataRest },
       })
     }
+  },
+  migrations: {
+    buttonClick: (data: MixpanelMigrationsButtonClickParams) => {
+      const { id, section, page, ...additionalParams } = data
+      const eventBody = {
+        id,
+        section,
+        page,
+        feature: TrackingFeatureType.Migrations,
+        ...additionalParams,
+      }
+
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(MixpanelEventTypes.ButtonClick, eventBody)
+    },
+    displayed: (page: MixpanelPages.Portfolio | MixpanelPages.ProductHub) => {
+      const eventBody = {
+        id: MixpanelMigrationsEventIds.PromptDisplayed,
+        feature: TrackingFeatureType.Migrations,
+        page,
+      }
+
+      !mixpanel.has_opted_out_tracking() &&
+        mixpanelInternalAPI(MixpanelEventTypes.Displayed, eventBody)
+    },
+  },
+  txStatus: (
+    id: MixpanelTxEventsIds,
+    page: MixpanelPages,
+    feature: TrackingFeatureType,
+    txHash: string,
+    totalCost?: string,
+  ) => {
+    const eventBody = { id, page, feature, txHash, totalCost }
+
+    !mixpanel.has_opted_out_tracking() &&
+      mixpanelInternalAPI(MixpanelEventTypes.TxStatus, eventBody)
   },
 }
 

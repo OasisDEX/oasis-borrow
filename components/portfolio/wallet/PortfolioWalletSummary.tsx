@@ -59,12 +59,16 @@ export const PortfolioWalletSummary = ({ assets }: PortfolioWalletSummaryProps) 
       ) : (
         <Skeleton sx={{ width: '250px', height: 3, mt: 1 }} />
       )}
-      <Text as="p" variant="paragraph4" sx={{ mt: '24px', mb: 2, color: 'neutral80' }}>
-        {tPortfolio(topAssets === undefined || topAssets?.length > 0 ? 'top-assets' : 'no-assets', {
-          amount: (topAssets?.length ?? 0) > 1 ? topAssets?.length : '',
-        })}
-      </Text>
-      <PortfolioWalletTopAssets assets={topAssets} />
+      {(topAssets?.length ?? 0) > 0 && (
+        <>
+          <Text as="p" variant="paragraph4" sx={{ mt: '24px', mb: 2, color: 'neutral80' }}>
+            {tPortfolio('top-assets', {
+              amount: topAssets?.length,
+            })}
+          </Text>
+          <PortfolioWalletTopAssets assets={topAssets} />
+        </>
+      )}
     </Box>
   )
 }

@@ -1,4 +1,5 @@
 export * from './getActionUrl'
+export * from './getGenericPromoCard'
 export * from './getInitialFilters'
 export * from './getInitialQueryString'
 export * from './getStrippedQueryString'

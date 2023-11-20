@@ -1,9 +1,10 @@
+import { EmptyState } from 'components/EmptyState'
 import type { GenericSelectOption } from 'components/GenericSelect'
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
 import { PortfolioPositionBlock } from 'components/portfolio/positions/PortfolioPositionBlock'
-import { PortfolioPositionBlockSkeleton } from 'components/portfolio/positions/PortfolioPositionBlockSkeleton'
+import { PortfolioPositionBlockLoadingState } from 'components/portfolio/positions/PortfolioPositionBlockSkeleton'
 import { PortfolioPositionFeatured } from 'components/portfolio/positions/PortfolioPositionFeatured'
 import { PortfolioPositionLearn } from 'components/portfolio/positions/PortfolioPositionLearn'
 import { PortfolioPositionsProductSelect } from 'components/portfolio/positions/PortfolioPositionsProductSelect'
@@ -77,6 +78,7 @@ export const PortfolioPositionsView = ({
 
   const filteredPositionsByProduct = useMemo(() => {
     if (!filteredEmptyPositions) return undefined
+
     // filter by product
     const noneSelected = [0, undefined].includes(filterState['product']?.length) // none selected = "All products"
     const allSelected =
@@ -99,7 +101,8 @@ export const PortfolioPositionsView = ({
 
   const sortedPositions = useMemo(() => {
     if (!filteredPositionsByProduct) return undefined
-    const sortedPositions = filteredPositionsByProduct
+
+    return filteredPositionsByProduct
       .sort((a, b) => {
         if (filterState['sorting'] === PortfolioSortingType.netValueAscending) {
           return a.netValue - b.netValue
@@ -112,8 +115,6 @@ export const PortfolioPositionsView = ({
         if (b.availableToMigrate) return -1
         return 0
       })
-
-    return sortedPositions
   }, [filterState, filteredPositionsByProduct])
 
   const hiddenPositionsCount = portfolioPositionsData
@@ -123,69 +124,89 @@ export const PortfolioPositionsView = ({
 
   return (
     <Grid variant="portfolio">
-      <Box>
-        <Flex
-          sx={{
-            flexDirection: ['column', 'row'],
-            justifyContent: 'space-between',
-            alignItems: ['flex-start', 'center'],
-          }}
-        >
-          <Flex sx={{ flexDirection: 'row', mt: [2, 0] }}>
-            <PortfolioPositionsProductSelect
-              onChange={updatePortfolioPositionsFilters('product')}
-            />
-            <PortfolioPositionsSortingSelect
-              onChange={updatePortfolioPositionsFilters('sorting')}
-            />
-          </Flex>
-          <Flex
-            sx={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: ['space-between', 'flex-end'],
-              mt: [3, 0],
-              width: ['100%', 'auto'],
-            }}
-          >
-            <Text variant="paragraph3" sx={{ mr: 1 }}>
-              {tPortfolio('show-empty-positions.label', { count: hiddenPositionsCount })}
-            </Text>
-            <StatefulTooltip
-              tooltip={tPortfolio('show-empty-positions.tooltip')}
-              containerSx={{ position: 'relative', mr: 1, width: ['40%', 'auto'] }}
-              tooltipSx={{
-                top: '24px',
-                width: ['200px', '250px'],
-                fontSize: 1,
-                whiteSpace: 'initial',
-                textAlign: 'left',
-                border: 'none',
-                borderRadius: 'medium',
-                boxShadow: 'buttonMenu',
+      <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
+        {portfolioPositionsData?.positions.length === 0 ? (
+          <EmptyState header={tPortfolio('empty-states.no-positions')}>
+            {isOwner && tPortfolio('empty-states.owner')}
+          </EmptyState>
+        ) : (
+          <>
+            <Flex
+              sx={{
+                flexDirection: ['column', 'row'],
+                justifyContent: 'space-between',
+                alignItems: ['flex-start', 'center'],
               }}
             >
-              <Icon size={16} icon={question_o} color="neutral80" />
-            </StatefulTooltip>
-            <Toggle
-              isChecked={filterState['showEmptyPositions']}
-              onChange={updatePortfolioPositionsFilters('showEmptyPositions')}
-            />
-          </Flex>
-        </Flex>
-        <Flex sx={{ flexDirection: 'column', rowGap: '24px', mt: '24px' }}>
-          {sortedPositions
-            ? sortedPositions.map((position) => (
-                <PortfolioPositionBlock
-                  key={`${position.positionId}-${position.protocol}-${position.network}`}
-                  position={position}
+              <Flex sx={{ flexDirection: 'row', mt: [2, 0] }}>
+                <PortfolioPositionsProductSelect
+                  onChange={updatePortfolioPositionsFilters('product')}
                 />
-              ))
-            : Array.from({ length: 3 }).map((_, index) => (
-                <PortfolioPositionBlockSkeleton key={`skeleton-${index}`} />
-              ))}
-        </Flex>
-        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: '24px' }}>
+                <PortfolioPositionsSortingSelect
+                  onChange={updatePortfolioPositionsFilters('sorting')}
+                />
+              </Flex>
+              <Flex
+                sx={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: ['space-between', 'flex-end'],
+                  mt: [3, 0],
+                  width: ['100%', 'auto'],
+                }}
+              >
+                <Text variant="paragraph3" sx={{ mr: 1 }}>
+                  {tPortfolio('show-empty-positions.label', { count: hiddenPositionsCount })}
+                </Text>
+                <StatefulTooltip
+                  tooltip={tPortfolio('show-empty-positions.tooltip')}
+                  containerSx={{ position: 'relative', mr: 1, width: ['40%', 'auto'] }}
+                  tooltipSx={{
+                    top: '24px',
+                    width: ['200px', '250px'],
+                    fontSize: 1,
+                    whiteSpace: 'initial',
+                    textAlign: 'left',
+                    border: 'none',
+                    borderRadius: 'medium',
+                    boxShadow: 'buttonMenu',
+                  }}
+                >
+                  <Icon size={16} icon={question_o} color="neutral80" />
+                </StatefulTooltip>
+                <Toggle
+                  isChecked={filterState['showEmptyPositions']}
+                  onChange={updatePortfolioPositionsFilters('showEmptyPositions')}
+                />
+              </Flex>
+            </Flex>
+            <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
+              {sortedPositions ? (
+                <>
+                  {sortedPositions.length > 0 ? (
+                    sortedPositions.map((position) => (
+                      <PortfolioPositionBlock
+                        key={`${position.positionId}-${position.protocol}-${position.network}`}
+                        position={position}
+                      />
+                    ))
+                  ) : (
+                    <EmptyState header={tPortfolio('empty-states.no-filtered-positions')}>
+                      {isOwner && tPortfolio('empty-states.owner')}
+                    </EmptyState>
+                  )}
+                </>
+              ) : (
+                <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <PortfolioPositionBlockLoadingState key={`skeleton-${index}`} />
+                  ))}
+                </Flex>
+              )}
+            </Flex>
+          </>
+        )}
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Heading as="h2" variant="header5" sx={getGradientColor(summerBrandGradient)}>
             <Icon icon={sparks} color="#007DA3" sx={{ mr: 1 }} />
             {tPortfolio(`featured-for-${isOwner ? 'you' : 'address'}`, {
@@ -200,7 +221,7 @@ export const PortfolioPositionsView = ({
           assets={portfolioWalletData?.assets}
           positions={portfolioPositionsData?.positions}
         />
-        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: '24px' }}>
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Heading as="h2" variant="header5">
             {tPortfolio('learn-with-summer-fi')}
           </Heading>
@@ -209,7 +230,7 @@ export const PortfolioPositionsView = ({
           </AppLink>
         </Flex>
         <PortfolioPositionLearn posts={blogPosts?.learn} />
-      </Box>
+      </Flex>
       <Box>
         <BlogPosts posts={blogPosts?.news} />
       </Box>

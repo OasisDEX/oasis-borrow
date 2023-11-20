@@ -1,5 +1,5 @@
 import type { AccountDetails } from 'features/account/AccountData'
 
 export function isFirstCdp(accountData?: AccountDetails) {
-  return accountData?.numberOfVaults ? accountData.numberOfVaults === 0 : undefined
+  return accountData?.amountOfPositions ? accountData.amountOfPositions === 0 : undefined
 }

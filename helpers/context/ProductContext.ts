@@ -49,7 +49,6 @@ import {
   getDpmPositionDataV2$,
 } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
-import type { TriggersData } from 'features/automation/api/automationTriggersData.types'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
 import type { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
@@ -89,7 +88,7 @@ import {
 import type { BalanceInfo } from 'features/shared/balanceInfo.types'
 import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
-import { checkVaultTypeUsingApi$, getApiVaults, saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
 import {
   getCreateDPMAccountTransactionMachine,
@@ -99,20 +98,10 @@ import { getGasEstimation$ } from 'features/stateMachines/proxy/pipelines'
 import { transactionContextService } from 'features/stateMachines/transaction'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
-import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
-import type { AaveLikePosition } from 'features/vaultsOverview/pipes/positions'
-import {
-  createAaveV2Position$,
-  createAaveV3DpmPosition$,
-  createMakerPositions$,
-  createPositions$,
-} from 'features/vaultsOverview/pipes/positions'
 import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
-import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { bigNumberTostring } from 'helpers/bigNumberToString'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation } from 'helpers/form'
-import { supportedBorrowIlks, supportedEarnIlks, supportedMultiplyIlks } from 'helpers/productCards'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { uiChanges } from 'helpers/uiChanges'
 import { zero } from 'helpers/zero'
@@ -157,18 +146,11 @@ export function setupProductContext(
     cdpManagerIlks$,
     ilkData$,
     ilkToToken$,
-    mainnetDpmProxies$,
-    optimismDpmProxies$,
-    arbitrumDpmProxies$,
-    mainnetReadPositionCreatedEvents$,
-    optimismReadPositionCreatedEvents$,
-    arbitrumReadPositionCreatedEvents$,
     oraclePriceData$,
     proxyAddress$,
     standardCdps$,
     userSettings$,
     vault$,
-    vaults$,
   }: AccountContext,
 ) {
   console.info('Product context setup')
@@ -454,10 +436,6 @@ export function setupProductContext(
       `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
 
-  const vaultWithValue$ = memoize(
-    curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
-  )
-
   const proxiesRelatedWithPosition$ = memoize(
     curry(getProxiesRelatedWithPosition$)(proxyAddress$, userDpmProxy$),
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
@@ -481,94 +459,6 @@ export function setupProductContext(
 
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
-  )
-
-  const mainnetPositionCreatedEventsForProtocol$ = memoize(
-    (walletAddress: string, protocol: LendingProtocol) => {
-      return mainnetReadPositionCreatedEvents$(walletAddress).pipe(
-        map((events) => events.filter((event) => event.protocol === protocol)),
-      )
-    },
-    (wallet, protocol) => `${wallet}-${protocol}`,
-  )
-
-  const mainnetAaveV2PositionCreatedEvents$ = memoize((walletAddress: string) => {
-    return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.AaveV2)
-  })
-
-  const mainnetAaveV3PositionCreatedEvents$ = memoize((walletAddress: string) => {
-    return mainnetPositionCreatedEventsForProtocol$(walletAddress, LendingProtocol.AaveV3)
-  })
-
-  const mainnetAaveV2Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
-    memoize(
-      curry(createAaveV2Position$)(
-        {
-          dsProxy$: proxyAddress$,
-          userDpmProxies$: mainnetDpmProxies$,
-        },
-        {
-          tickerPrices$: tokenPriceUSDStatic$,
-          context$,
-          automationTriggersData$,
-          readPositionCreatedEvents$: mainnetAaveV2PositionCreatedEvents$,
-        },
-        aaveV2Services,
-      ),
-    )
-
-  const aaveMainnetAaveV3Positions$: (walletAddress: string) => Observable<AaveLikePosition[]> =
-    memoize(
-      curry(createAaveV3DpmPosition$)(
-        context$,
-        mainnetDpmProxies$,
-        tokenPriceUSDStatic$,
-        mainnetAaveV3PositionCreatedEvents$,
-        getApiVaults,
-        automationTriggersData$,
-        aaveV3Services,
-        NetworkIds.MAINNET,
-      ),
-      (wallet) => wallet,
-    )
-
-  const aaveOptimismPositions$: (walletAddress: string) => Observable<AaveLikePosition[]> = memoize(
-    curry(createAaveV3DpmPosition$)(
-      context$,
-      optimismDpmProxies$,
-      tokenPriceUSDStatic$,
-      optimismReadPositionCreatedEvents$,
-      getApiVaults,
-      () => of<TriggersData | undefined>(undefined), // Triggers are not supported on optimism
-      aaveV3OptimismServices,
-      NetworkIds.OPTIMISMMAINNET,
-    ),
-    (wallet) => wallet,
-  )
-
-  const aaveArbitrumPositions$: (walletAddress: string) => Observable<AaveLikePosition[]> = memoize(
-    curry(createAaveV3DpmPosition$)(
-      context$,
-      arbitrumDpmProxies$,
-      tokenPriceUSDStatic$,
-      arbitrumReadPositionCreatedEvents$,
-      getApiVaults,
-      () => of<TriggersData | undefined>(undefined), // Triggers are not supported on arbitrum
-      aaveV3ArbitrumServices,
-      NetworkIds.ARBITRUMMAINNET,
-    ),
-    (wallet) => wallet,
-  )
-
-  const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
-  const positions$ = memoize(
-    curry(createPositions$)(
-      makerPositions$,
-      mainnetAaveV2Positions$,
-      aaveMainnetAaveV3Positions$,
-      aaveOptimismPositions$,
-      aaveArbitrumPositions$,
-    ),
   )
 
   const openMultiplyVault$ = memoize((ilk: string) =>
@@ -672,23 +562,6 @@ export function setupProductContext(
       vault$,
     ),
     bigNumberTostring,
-  )
-
-  const assetActions$ = memoize(
-    curry(createAssetActions$)(
-      context$,
-      ilkToToken$,
-      {
-        borrow: supportedBorrowIlks,
-        multiply: supportedMultiplyIlks,
-        earn: supportedEarnIlks,
-      },
-      uiChanges,
-    ),
-  )
-
-  const positionsOverviewSummary$ = memoize(
-    curry(createPositionsOverviewSummary$)(balanceLean$, tokenPriceUSD$, positions$, assetActions$),
   )
 
   const vaultBanners$ = memoize(
@@ -900,7 +773,6 @@ export function setupProductContext(
     openMultiplyVault$,
     openVault$,
     positionIdFromDpmProxy$,
-    positionsOverviewSummary$,
     potDsr$,
     potTotalValueLocked$,
     priceInfo$,

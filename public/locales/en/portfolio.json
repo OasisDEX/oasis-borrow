@@ -37,7 +37,6 @@
   "assets": "Assets",
   "summary": "Summary",
   "top-assets": "Top {{amount}} assets",
-  "no-assets": "There are no assets in this wallet.",
   "connect": "Connect a wallet",
   "explore": "Explore",
   "explore-banner": "You have <span>${{amount}}</span> of assets available to be put to work on Summer.fi",
@@ -100,5 +99,12 @@
     "connected-assets": "You have <span>${{amount}}</span> worth of reasons to open a position on summer.fi",
     "disconnected-assets": "They have <span>${{amount}}</span> worth of reasons to open a position on summer.fi. Connect your wallet to see what positions you could open",
     "disconnected-no-assets": "Connect your wallet to see what positions you could open"
-  }
+  },
+  "empty-states": {
+    "no-positions": "There are no positions for this wallet.",
+    "no-filtered-positions": "There are no positions matching your filters.",
+    "no-assets": "There are no assets in this wallet.",
+    "owner": "Discover your next opportunity below."
+  },
+  "ajna-warning": "There has been possible griefing attack vector identified on Ajna Protocol. All Ajna users should close their positions and withdraw their funds. This is not related to any summer.fi contracts, so Maker and Aave users are not affected."
 }
