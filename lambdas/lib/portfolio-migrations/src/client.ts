@@ -1,5 +1,5 @@
 import { Chain, HttpTransport, createPublicClient, extractChain, http } from 'viem'
-import { mainnet, optimism, arbitrum, base } from 'viem/chains'
+import { mainnet, optimism, arbitrum, base, sepolia } from 'viem/chains'
 import { getContract } from 'viem'
 import { aavePoolContract } from './abi/aavePoolContract'
 import { decodeBitmapToAssetsAddresses } from './decodeBitmapToAssetsAddresses'
@@ -11,10 +11,11 @@ import { Address, ChainId, Network, PortfolioMigrationAsset, ProtocolId } from '
 import { createtokenService } from './tokenService'
 import { createAddressService } from './addressService'
 
-const supportedChainsIds = Object.values(ChainId) as ChainId[]
-const supportedProtocolsIds = Object.values(ProtocolId) as ProtocolId[]
-
-export function createClient(rpcUrl: string) {
+export function createClient(
+  rpcUrl: string,
+  supportedChainsIds: ChainId[],
+  supportedProtocolsIds: ProtocolId[],
+) {
   const transport = http(rpcUrl, {
     batch: false,
     fetchOptions: {
@@ -27,11 +28,12 @@ export function createClient(rpcUrl: string) {
   ): Promise<ProtocolMigrationAssets[]> => {
     // for each supported chain
     let promises: Promise<ProtocolMigrationAssets>[] = []
+
     supportedChainsIds.forEach((chainId) => {
       supportedProtocolsIds.forEach((protocolId) => {
         const promise = async (): Promise<ProtocolMigrationAssets> => {
           const chain = extractChain({
-            chains: [mainnet, base, optimism, arbitrum],
+            chains: [mainnet, base, optimism, arbitrum, sepolia],
             id: chainId,
           })
 

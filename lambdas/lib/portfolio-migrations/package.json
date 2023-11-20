@@ -15,7 +15,7 @@
   "author": "Piter",
   "license": "UNLICENSED",
   "dependencies": {
-    "@oasisdex/addresses": "^0.1.13",
+    "@oasisdex/addresses": "^0.1.14",
     "shared": "file:../shared/dist",
     "viem": "^1.19.3"
   }

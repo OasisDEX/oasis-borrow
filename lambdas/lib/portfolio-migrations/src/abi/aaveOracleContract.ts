@@ -1,5 +1,4 @@
 export const aaveOracleContract = {
-  address: '0x2da88497588bf89281816106C7259e31AF45a663',
   abi: [
     {
       inputs: [

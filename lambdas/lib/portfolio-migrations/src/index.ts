@@ -3,7 +3,13 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda
 import { getDefaultErrorMessage } from 'shared/helpers'
 import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/responses'
 import { getAddressFromRequest } from 'shared/validators'
-import { Address, PortfolioMigration, PortfolioMigrationsResponse } from 'shared/domain-types'
+import {
+  Address,
+  ChainId,
+  PortfolioMigration,
+  PortfolioMigrationsResponse,
+  ProtocolId,
+} from 'shared/domain-types'
 import { createClient } from './client'
 import { parseEligibleMigration } from './parseEligibleMigration'
 
@@ -22,14 +28,27 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     return ResponseBadRequest(message)
   }
 
-  if (!RPC_GATEWAY) {
-    throw new Error('RPC_GATEWAY env variable is not set')
-  }
-  const rpcUrl = event.queryStringParameters?.rpcUrl ?? RPC_GATEWAY
-
-  const client = createClient(rpcUrl)
-
   try {
+    if (!RPC_GATEWAY) {
+      throw new Error('RPC_GATEWAY env variable is not set')
+    }
+    const rpcUrl = event.queryStringParameters?.rpcUrl ?? RPC_GATEWAY
+
+    const supportedChainsIds = event.queryStringParameters?.chainIds
+      ?.split(',')
+      .map(Number) as any as ChainId[] // ?? [
+    //   ChainId.MAINNET,
+    //   ChainId.ARBITRUM,
+    //   ChainId.OPTIMISM,
+    //   ChainId.BASE,
+    //   ChainId.SEPOLIA,
+    // ]
+    const supportedProtocolsIds = event.queryStringParameters?.protocolIds?.split(
+      ',',
+    ) as any as ProtocolId[] // ?? [(ProtocolId.AAVE3, ProtocolId.SPARK)]
+
+    const client = createClient(rpcUrl, supportedChainsIds, supportedProtocolsIds)
+
     let eligibleMigrations: PortfolioMigration[] = []
     const protocolAssetsToMigrate = await client.getProtocolAssetsToMigrate(address)
 

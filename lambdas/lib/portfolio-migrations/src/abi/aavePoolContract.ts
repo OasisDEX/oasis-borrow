@@ -1,5 +1,4 @@
 export const aavePoolContract = {
-  address: '0x6ae43d3271ff6888e7fc43fd7321a503ff738951',
   abi: [
     {
       inputs: [
