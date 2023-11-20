@@ -8,7 +8,7 @@ export function decodeBitmapToAssetsAddresses(
   const binaryString = userConfigData.toString(2)
 
   // Split binaryString into pairs
-  const binaryPairs = binaryString.match(/.{1,2}/g) || []
+  const binaryPairs = binaryString.match(/.{1,2}/g)?.reverse() || []
 
   // Initialize an empty array to hold the indices
   const collateralIndices = []
@@ -20,7 +20,8 @@ export function decodeBitmapToAssetsAddresses(
     const [isCollateral, isDebt] = binaryPairs[i]
     if (Number(isCollateral)) {
       collateralIndices.push(i)
-    } else if (Number(isDebt)) {
+    }
+    if (Number(isDebt)) {
       debtIndices.push(i)
     }
   }

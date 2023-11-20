@@ -8,10 +8,10 @@ import { aaveOracleContract } from './abi/aaveOracleContract'
 import { USD_DECIMALS } from 'shared/constants'
 import { ProtocolMigrationAssets } from './types'
 import { Address, Network, PortfolioMigrationAsset } from 'shared/domain-types'
-import { createtokenService } from 'tokenService'
+import { createtokenService } from './tokenService'
 
 const supportedChainsIds = ['sepolia']
-const supportedProtocolsIds = ['aave']
+const supportedProtocolsIds = ['aave3']
 
 export function createClient(rpcUrl: string) {
   const transport = http(rpcUrl, {
@@ -54,10 +54,6 @@ export function createClient(rpcUrl: string) {
   }
 }
 
-const client = createClient('https://sepolia.infura.io/v3/58e739d6a76846c8ae547eee8e1becb8')
-client.getProtocolAssetsToMigrate('0x275f568287595D30E216b618da37897f4bbaB1B6')
-// console.log('assets', assets)
-
 async function getAssets(
   publicClient: PublicClient,
   user: Address,
@@ -93,70 +89,69 @@ async function getAssets(
     reservesList,
   )
 
+  const assetsAddresses = [...collAssetsAddresses, ...debtAssetsAddresses]
+
   // read getUserReserveData from aavePoolDataProvider, and coll assets prices from aaveOracle
-  const [userReserveData, collAssetsPrices] = await Promise.all([
+  const [assetsReserveData, assetsPrices] = await Promise.all([
     Promise.all(
-      collAssetsAddresses.map((address) =>
+      assetsAddresses.map((address) =>
         aavePoolDataProvider.read.getUserReserveData([address, user]),
       ),
     ),
-    aaveOracle.read.getAssetsPrices([collAssetsAddresses]),
+    aaveOracle.read.getAssetsPrices([assetsAddresses]),
   ])
 
   // coll assets tokens meta
-  const collAssetsTokens = collAssetsAddresses.map((address, index) => {
+  const assetsTokens = assetsAddresses.map((address, index) => {
     const token = tokenService.getTokenByAddress(address)
     return token
   })
 
-  const calculateUsdValue = ({
-    balance,
-    balanceDecimals,
-    price,
-    priceDecimals,
-  }: {
-    balance: bigint
-    balanceDecimals: bigint
-    price: bigint
-    priceDecimals: bigint
-  }) => {
-    const value = (balance * price) / 10n ** (balanceDecimals + priceDecimals)
-    return value
-  }
+  const createPortfolioMigrationAsset =
+    ({ debt }: { debt?: boolean }) =>
+    (address: Address): PortfolioMigrationAsset => {
+      const index = assetsAddresses.indexOf(address)
+      const symbol = assetsTokens[index].symbol
+      const balance = debt ? assetsReserveData[index][2] : assetsReserveData[index][0]
+      const balanceDecimals = assetsTokens[index].decimals
+      const price = assetsPrices[index]
+      const priceDecimals = USD_DECIMALS
+      const usdValue = calculateUsdValue({ balance, balanceDecimals, price, priceDecimals })
 
-  console.log('collAssetsAddresses', collAssetsAddresses)
-  console.log('collAssetsPrices', collAssetsPrices)
-  console.log('collAssetsValues', collAssetsTokens)
-
-  const createPortfolioMigrationAsset = (
-    address: Address,
-    index: number,
-  ): PortfolioMigrationAsset => {
-    const symbol = collAssetsTokens[index].symbol
-    const balance = userReserveData[index][0]
-    const balanceDecimals = collAssetsTokens[index].decimals
-    const price = collAssetsPrices[index]
-    const priceDecimals = USD_DECIMALS
-    const usdValue = calculateUsdValue({ balance, balanceDecimals, price, priceDecimals })
-
-    return {
-      symbol,
-      balance,
-      balanceDecimals,
-      price,
-      priceDecimals,
-      usdValue,
+      return {
+        symbol,
+        balance,
+        balanceDecimals,
+        price,
+        priceDecimals,
+        usdValue,
+      }
     }
-  }
-  const debtAssets: PortfolioMigrationAsset[] = debtAssetsAddresses.map(
-    createPortfolioMigrationAsset,
-  )
+
   const collAssets: PortfolioMigrationAsset[] = collAssetsAddresses.map(
-    createPortfolioMigrationAsset,
+    createPortfolioMigrationAsset({}),
+  )
+  const debtAssets: PortfolioMigrationAsset[] = debtAssetsAddresses.map(
+    createPortfolioMigrationAsset({ debt: true }),
   )
 
   return {
-    debtAssets,
     collAssets,
+    debtAssets,
   }
+}
+
+function calculateUsdValue({
+  balance,
+  balanceDecimals,
+  price,
+  priceDecimals,
+}: {
+  balance: bigint
+  balanceDecimals: bigint
+  price: bigint
+  priceDecimals: bigint
+}): number {
+  const value = (balance * price) / 10n ** balanceDecimals
+  return Number(value) / Number(10n ** priceDecimals)
 }

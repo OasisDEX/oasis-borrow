@@ -90,7 +90,7 @@ export type PortfolioMigrationAsset = {
   balanceDecimals: bigint
   price: bigint
   priceDecimals: bigint
-  usdValue: bigint
+  usdValue: number
 }
 
 export type PortfolioMigration = {

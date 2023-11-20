@@ -11,5 +11,8 @@
     "dist"
   ],
   "author": "Piter",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@wagmi/core": "^1.4.7-cjs"
+  }
 }

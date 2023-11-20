@@ -1,7 +1,7 @@
 import { PortfolioMigrationAsset } from 'shared/domain-types'
 
 export function getDominantCollAsset(collAssets: PortfolioMigrationAsset[]) {
-  const DOMINANT_THRESHOLD = 1n
+  const DOMINANT_THRESHOLD = 1 / 100
 
   const sortedAssets = collAssets.slice().sort((a, b) => {
     return Number(b.usdValue - a.usdValue)
@@ -14,7 +14,7 @@ export function getDominantCollAsset(collAssets: PortfolioMigrationAsset[]) {
   let result: undefined | PortfolioMigrationAsset = dominantCollAsset
   // check if any other collAssets has usdValue value greater than dust 1% of dominantCollAsset
   for (let asset of sortedAssets) {
-    if (asset.usdValue > (dominantCollAsset.usdValue * DOMINANT_THRESHOLD) / 100n) {
+    if (asset.usdValue > dominantCollAsset.usdValue * DOMINANT_THRESHOLD) {
       result = undefined
     }
   }
