@@ -6,7 +6,7 @@ import type { PropsWithChildren } from 'react'
 import React, { useState } from 'react'
 import { close } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
-import { Box, Button, Flex, Heading, Image,Text } from 'theme-ui'
+import { Box, Button, Flex, Heading, Image, Text } from 'theme-ui'
 
 interface ActionBannerWithIcon {
   icon?: IconProps['icon']
