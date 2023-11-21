@@ -12,7 +12,6 @@ export interface AjnaPositionAggregatedDataAuctions {
   alreadyTaken: boolean
   collateral: BigNumber
   debtToCover: BigNumber
-  endOfGracePeriod: number
   id: string
   inLiquidation: boolean
 }
@@ -42,11 +41,10 @@ export const getAjnaPositionAggregatedData = async (
 
   return {
     auctions: response.auctions.map(
-      ({ alreadyTaken, collateral, debtToCover, endOfGracePeriod, id, inLiquidation }) => ({
+      ({ alreadyTaken, collateral, debtToCover, id, inLiquidation }) => ({
         alreadyTaken,
         collateral: new BigNumber(collateral).shiftedBy(NEGATIVE_WAD_PRECISION),
         debtToCover: new BigNumber(debtToCover).shiftedBy(NEGATIVE_WAD_PRECISION),
-        endOfGracePeriod: endOfGracePeriod * 1000,
         id,
         inLiquidation,
       }),

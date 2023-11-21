@@ -82,7 +82,6 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       auctions(where: { account_: { id: $dpmProxyAddress } }) {
         inLiquidation
         alreadyTaken
-        endOfGracePeriod
         debtToCover
         collateral
       }

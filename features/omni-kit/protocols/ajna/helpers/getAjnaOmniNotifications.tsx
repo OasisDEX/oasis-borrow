@@ -57,10 +57,6 @@ type EmptyPositionParams = {
   quoteToken: string
 }
 
-type TimeToLiquidationParams = {
-  time: string
-}
-
 type LendingPriceFrozenParams = {
   quoteToken: string
 }
@@ -78,7 +74,6 @@ const ajnaNotifications: {
   priceAboveMomp: NotificationCallbackWithParams<PriceAboveMompParams>
   safetySwichOpen: NotificationCallbackWithParams<null>
   safetySwichManage: NotificationCallbackWithParams<null>
-  timeToLiquidation: NotificationCallbackWithParams<TimeToLiquidationParams>
   nearLup: NotificationCallbackWithParams<null>
   aboveLup: NotificationCallbackWithParams<null>
 } = {
@@ -123,25 +118,6 @@ const ajnaNotifications: {
     message: {
       translationKey: 'ajna.position-page.earn.manage.notifications.empty-position.message',
       params: { quoteToken },
-    },
-    icon: coins_cross,
-    type: 'warning',
-    closable: true,
-  }),
-  timeToLiquidation: ({ time }) => ({
-    title: {
-      translationKey: 'ajna.position-page.common.notifications.time-to-liquidation.title',
-      params: { time },
-    },
-    message: {
-      component: (
-        <Trans
-          i18nKey="ajna.position-page.common.notifications.time-to-liquidation.message"
-          components={{
-            1: <strong />,
-          }}
-        />
-      ),
     },
     icon: coins_cross,
     type: 'warning',
@@ -323,14 +299,6 @@ export function getAjnaOmniNotifications({
     case OmniProductType.Multiply:
       const borrowishPositionAuction = positionAuction as AjnaBorrowishPositionAuction
       const borrowishPosition = position as AjnaPosition
-
-      if (borrowishPositionAuction.isDuringGraceTime) {
-        notifications.push(
-          ajnaNotifications.timeToLiquidation({
-            time: borrowishPositionAuction.graceTimeRemaining,
-          }),
-        )
-      }
 
       if (borrowishPositionAuction.isBeingLiquidated) {
         notifications.push(ajnaNotifications.beingLiquidated(null))

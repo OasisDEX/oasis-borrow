@@ -155,14 +155,6 @@ export function getAjnaOmniValidation({
   if (productType !== OmniProductType.Earn) {
     const borrowishAuction = positionAuction as AjnaBorrowishPositionAuction
 
-    if (borrowishAuction.isDuringGraceTime) {
-      localWarnings.push({
-        message: {
-          component: <AjnaValidationWithLink name="is-during-grace-time" />,
-        },
-      })
-    }
-
     if (borrowishAuction.isBeingLiquidated) {
       localWarnings.push({
         message: {

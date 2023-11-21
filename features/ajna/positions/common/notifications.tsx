@@ -334,14 +334,6 @@ export function getAjnaNotifications({
       const borrowishPositionAuction = positionAuction as AjnaBorrowishPositionAuction
       const borrowishPosition = position as AjnaPosition
 
-      if (borrowishPositionAuction.isDuringGraceTime) {
-        notifications.push(
-          ajnaNotifications.timeToLiquidation({
-            time: borrowishPositionAuction.graceTimeRemaining,
-          }),
-        )
-      }
-
       if (borrowishPositionAuction.isBeingLiquidated) {
         notifications.push(ajnaNotifications.beingLiquidated(null))
       }
