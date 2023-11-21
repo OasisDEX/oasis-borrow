@@ -250,11 +250,13 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
         type: 'earnings',
         value: `${
           positionHistory
-            ? formatCryptoBalance(
-                calculations.netValue.minus(
-                  positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw),
-                ),
-              )
+            ? `${formatCryptoBalance(
+                calculations.netValue
+                  .minus(
+                    positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw),
+                  )
+                  .div(secondaryTokenPrice),
+              )} ${commonData.secondaryToken}`
             : notAvailable
         }`,
       },
