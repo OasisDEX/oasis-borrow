@@ -41,7 +41,6 @@ export const AjnaValidationWithLink: FC<AjnaValidationWithLinkProps> = ({ name, 
     'price-between-lup-and-momp': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
     'price-above-momp': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
     'collateral-to-claim': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_EARN,
-    'is-during-grace-time': EXTERNAL_LINKS.DOCS.AJNA.LIQUIDATIONS,
     'is-being-liquidated': EXTERNAL_LINKS.DOCS.AJNA.LIQUIDATIONS,
   }
 
@@ -329,14 +328,6 @@ export function getAjnaValidation({
 
   if (['borrow', 'multiply'].includes(product)) {
     const borrowishAuction = positionAuction as AjnaBorrowishPositionAuction
-
-    if (borrowishAuction.isDuringGraceTime) {
-      localWarnings.push({
-        message: {
-          component: <AjnaValidationWithLink name="is-during-grace-time" />,
-        },
-      })
-    }
 
     if (borrowishAuction.isBeingLiquidated) {
       localWarnings.push({

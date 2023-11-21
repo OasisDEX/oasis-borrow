@@ -52,7 +52,6 @@ export type SubgraphsResponses = {
         alreadyTaken: boolean
         collateral: number
         debtToCover: number
-        endOfGracePeriod: number
         id: string
         inLiquidation: boolean
       }[]

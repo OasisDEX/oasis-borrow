@@ -2776,10 +2776,6 @@
           "cta-textual": "Open new position"
         },
         "notifications": {
-          "time-to-liquidation": {
-            "title": "Your position will be moved to liquidation {{time}}",
-            "message": "Your position is at risk of liquidation, a penalty of 90 days of interest has been applied. <1>Deposit collateral</1> or <1>Repay your Debt</1> to save it"
-          },
           "being-liquidated": {
             "title": "This position is currently being liquidated",
             "message": "A penalty of 7% has been applied increasing to the total debt. Liquidators can bid on your collateral to pay back the debt. You can still adjust your position, by paying back debt or adding more collateral to remove it from the liquidation auction. <0>Read more about Ajna Liquidations →</0>"
@@ -2968,7 +2964,6 @@
       "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}.",
       "withdraw-close-to-max-ltv": "Withdrawing {{amount}} {{collateralToken}}, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
       "generate-close-to-max-ltv": "Generating {{amount}} {{quoteToken}} of debt, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
-      "is-during-grace-time": "Your position has been moved to liquidation. 90 days of interest have been added as penalty. You still have some time to <1>Deposit Collateral</1> or <1>Repay your Debt</1> to save it from Liquidation. <2>Read more about <1>Ajna Liquidations →</1></2>",
       "is-being-liquidated": "Your position is currently being liquidated. A penalty has been applied increasing your debt. You still can <1>Deposit Collateral</1> or <1>Repay your Debt</1> to remove it from the liquidation auction. <2>Read more about <1>Ajna Liquidations →</1></2>",
       "collateral-to-claim": "There is collateral tokens for you to claim. These tokens don't earn any yield. <2>Read more about <1>Ajna Lending →</1></2>",
       "price-below-htp": "Unutilized Liquidity: Lending at this price means you are not earning any yield. <1>A deposit fee of 1 day's interest applies to all deposits below the active liquidity range.</1> <2><1>Help me pick correctly →</1></2>",

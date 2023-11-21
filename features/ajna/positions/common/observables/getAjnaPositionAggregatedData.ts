@@ -1,6 +1,5 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import type { NetworkIds } from 'blockchain/networks'
-import dayjs from 'dayjs'
 import type { AjnaGenericPosition, AjnaProduct } from 'features/ajna/common/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/ajna/history/ajnaUnifiedHistoryEvent'
 import type { AjnaPositionAggregatedDataAuctions } from 'features/ajna/positions/common/helpers/getAjnaPositionAggregatedData'
@@ -12,12 +11,9 @@ import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
 import { from } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
-import { timeAgo } from 'utils'
 
 export interface AjnaBorrowishPositionAuction {
-  graceTimeRemaining: string
   isBeingLiquidated: boolean
-  isDuringGraceTime: boolean
   isLiquidated: boolean
   isPartiallyLiquidated: boolean
 }
@@ -50,9 +46,7 @@ function parseAggregatedDataAuction({
     case 'multiply': {
       if (!auctions.length) {
         return {
-          graceTimeRemaining: '',
           isBeingLiquidated: false,
-          isDuringGraceTime: false,
           isLiquidated: false,
           isPartiallyLiquidated: false,
         }
@@ -68,13 +62,7 @@ function parseAggregatedDataAuction({
         mostRecentHistoryEvent.kind as string,
       )
 
-      const graceTimeRemaining = timeAgo({
-        to: new Date(auction.endOfGracePeriod),
-      })
-
-      const isDuringGraceTime =
-        auction.endOfGracePeriod - dayjs().valueOf() > 0 && !isEventAfterAuction
-      const isBeingLiquidated = !isDuringGraceTime && auction.inLiquidation
+      const isBeingLiquidated = auction.inLiquidation
       const isPartiallyLiquidated =
         mostRecentHistoryEvent.kind === 'AuctionSettle' &&
         ajnaBorrowishPosition.debtAmount.gt(zero) &&
@@ -86,9 +74,7 @@ function parseAggregatedDataAuction({
         !isEventAfterAuction
 
       return {
-        graceTimeRemaining,
         isBeingLiquidated,
-        isDuringGraceTime,
         isLiquidated,
         isPartiallyLiquidated,
       }
