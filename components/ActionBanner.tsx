@@ -1,8 +1,10 @@
 import { Icon } from 'components/Icon'
 import type { IconProps } from 'components/Icon.types'
 import { AppLink } from 'components/Links'
+import { kebabCase } from 'lodash'
 import type { PropsWithChildren } from 'react'
-import React from 'react'
+import React, { useState } from 'react'
+import { close } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Button, Flex, Heading, Text } from 'theme-ui'
 
@@ -16,6 +18,7 @@ interface ActionBannerWithImage {
 }
 
 type ActionBannerProps = {
+  closingSaveKey?: string
   cta?: {
     label: string
     onClick?: () => void
@@ -24,17 +27,28 @@ type ActionBannerProps = {
   }
   sx?: ThemeUIStyleObject
   title: string
+  withClose?: boolean
 } & (ActionBannerWithIcon | ActionBannerWithImage)
 
+function getSessionStorageKey(suffix: string): string {
+  return `action-banner-${kebabCase(suffix)}`
+}
+
 export function ActionBanner({
+  closingSaveKey,
   children,
   cta,
   icon,
   image,
   sx,
   title,
+  withClose,
 }: PropsWithChildren<ActionBannerProps>) {
-  return (
+  const [isBannerClosed, setIsBannerClosed] = useState<boolean>(
+    closingSaveKey ? sessionStorage.getItem(getSessionStorageKey(closingSaveKey)) === '1' : false,
+  )
+
+  return !isBannerClosed ? (
     <Flex
       sx={{
         flexDirection: ['column', 'row'],
@@ -52,7 +66,7 @@ export function ActionBanner({
           {icon && <Icon icon={icon} size={60} />}
         </Flex>
       )}
-      <Flex sx={{ flexDirection: 'column', rowGap: 1 }}>
+      <Flex sx={{ flexDirection: 'column', flexGrow: 1, rowGap: 1 }}>
         <Heading as="h3" variant="boldParagraph2">
           {title}
         </Heading>
@@ -81,6 +95,20 @@ export function ActionBanner({
           )}
         </Box>
       )}
+      {withClose && (
+        <Button
+          variant="unStyled"
+          sx={{ ml: 'auto', p: 1, lineHeight: 0 }}
+          onClick={() => {
+            if (closingSaveKey) sessionStorage.setItem(getSessionStorageKey(closingSaveKey), '1')
+            setIsBannerClosed(true)
+          }}
+        >
+          <Icon size="12px" icon={close} />
+        </Button>
+      )}
     </Flex>
+  ) : (
+    <></>
   )
 }
