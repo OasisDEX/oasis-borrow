@@ -90,6 +90,7 @@
     "borrowRate": "Percentage reflecting Borrow (debt) APY minus Supply (collateral) APY. Positive values mean you are paying to borrow; negative means you're earning. Rates are variable.",
     "lendingRange": "The range reflecting the price you’ve selected to lend your tokens, based on the existing distribution of price buckets.",
     "apy": "Annualised rate this position is currently earning",
+    "earnings": "The earnings show the additional amount earned by substracting your cumulative deposits and withdrawals from your current net value. Note: This can be negative for positions with a higher borrow rate than the collateral yield",
     "90dApy": "The Annualised rate the position is earning based on the average of the last 90 days",
     "suppliedTokenBalance": "The total amount of your supplied asset(s), expressed in USD.",
     "borrowedTokenBalance": "The total amount of your borrowed asset(s), expressed in USD."

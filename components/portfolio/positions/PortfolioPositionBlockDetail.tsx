@@ -17,6 +17,7 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
     liquidationPrice: tPortfolio('details-tooltips.liquidationPrice'),
     ltv: tPortfolio('details-tooltips.ltv'),
     multiple: tPortfolio('details-tooltips.multiple'),
+    earnings: tPortfolio('details-tooltips.earnings'),
     borrowRate: tPortfolio('details-tooltips.borrowRate'),
     lendingRange: tPortfolio('details-tooltips.lendingRange'),
     apy: tPortfolio('details-tooltips.apy'),
