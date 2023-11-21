@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { BannerTransparent } from 'components/BannerTransparent'
+import { ActionBanner } from 'components/ActionBanner'
 import { usePortfolioMatchingAssets } from 'components/portfolio/helpers/usePortfolioMatchingAssets'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -96,13 +96,16 @@ export const PortfolioNonOwnerNotice = ({
 
   return !isConnected || (isConnected && !isOwner) ? (
     <Box sx={{ mb: 4 }}>
-      <BannerTransparent
+      <ActionBanner
         icon={non_owner_notice_icon}
         title={tPortfolio('non-owner-notice.header', { address: formatAddress(address, 6) })}
         cta={cta}
+        sx={{
+          background: 'linear-gradient(90.61deg, #FFFFFF 0.79%, rgba(255, 255, 255, 0) 99.94%)',
+        }}
       >
         {content}
-      </BannerTransparent>
+      </ActionBanner>
     </Box>
   ) : (
     <></>

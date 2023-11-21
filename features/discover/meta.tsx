@@ -1,4 +1,3 @@
-import type { AssetsTableBannerProps } from 'components/assetsTable/types'
 import type { IconProps } from 'components/Icon.types'
 import {
   discoverFiltersAssetItems,
@@ -30,7 +29,13 @@ export interface DiscoverPageMeta {
   iconColor: string
   iconContent: JSX.Element
   filters: DiscoverFiltersList
-  banner: AssetsTableBannerProps
+  banner: {
+    cta: string
+    description: string
+    icon: IconProps['icon']
+    link: string
+    title: string
+  }
 }
 
 export const discoverPagesMeta: DiscoverPageMeta[] = [

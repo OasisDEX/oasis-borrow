@@ -1,13 +1,5 @@
+import type { ActionBannerProps } from 'components/ActionBanner'
 import type { ReactNode } from 'react'
-
-export interface AssetsTableBannerProps {
-  cta: string
-  description: string
-  icon: JSX.Element
-  link: string
-  title: string
-  onClick?: (link: string) => void
-}
 
 export type AssetsTableSortingDirection = 'asc' | 'desc'
 
@@ -33,7 +25,7 @@ export interface AssetsTableRowData {
 }
 
 export interface AssetsTableProps {
-  banner?: AssetsTableBannerProps
+  banner?: ActionBannerProps
   headerTranslationProps?: AssetsTableHeaderTranslationProps
   isLoading?: boolean
   isSticky?: boolean
