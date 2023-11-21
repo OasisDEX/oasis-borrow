@@ -75,6 +75,7 @@ export function NavigationOrb({
             '&:hover': { boxShadow: 'buttonMenu' },
             ':hover': { color: 'primary100' },
           }}
+          data-testid='nav-networ-switcher'
         >
           <NavigationOrbIcon
             beacon={beacon}
