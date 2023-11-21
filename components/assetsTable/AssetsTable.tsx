@@ -1,4 +1,4 @@
-import { AssetsTableBanner } from 'components/assetsTable/AssetsTableBanner'
+import { ActionBanner } from 'components/ActionBanner'
 import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
 import { sortRows } from 'components/assetsTable/helpers/sortRows'
 import type {
@@ -122,7 +122,7 @@ export function AssetsTable({
               {banner && i === Math.floor(bannerRows / 2) && (
                 <tr>
                   <td colSpan={Object.keys(row).length}>
-                    <AssetsTableBanner {...banner} />
+                    <ActionBanner {...banner} />
                   </td>
                 </tr>
               )}

@@ -1,5 +1,6 @@
+import type { ActionBannerProps } from 'components/ActionBanner'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
-import type { AssetsTableBannerProps, AssetsTableRowData } from 'components/assetsTable/types'
+import type { AssetsTableRowData } from 'components/assetsTable/types'
 import type { DiscoverDataResponseError } from 'features/discover/api'
 import { DiscoverError } from 'features/discover/common/DiscoverError'
 import { DiscoverPreloader } from 'features/discover/common/DiscoverPreloader'
@@ -7,7 +8,7 @@ import React from 'react'
 import { Box } from 'theme-ui'
 
 interface DiscoverDataProps {
-  banner?: AssetsTableBannerProps
+  banner?: ActionBannerProps
   error?: DiscoverDataResponseError
   isLoading: boolean
   isSticky: boolean

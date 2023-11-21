@@ -6,7 +6,7 @@ import type { PropsWithChildren } from 'react'
 import React, { useState } from 'react'
 import { close } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
-import { Box, Button, Flex, Heading, Text } from 'theme-ui'
+import { Box, Button, Flex, Heading, Image,Text } from 'theme-ui'
 
 interface ActionBannerWithIcon {
   icon?: IconProps['icon']
@@ -17,7 +17,7 @@ interface ActionBannerWithImage {
   image?: string
 }
 
-type ActionBannerProps = {
+export type ActionBannerType = {
   closingSaveKey?: string
   cta?: {
     label: string
@@ -29,6 +29,8 @@ type ActionBannerProps = {
   title: string
   withClose?: boolean
 } & (ActionBannerWithIcon | ActionBannerWithImage)
+
+export type ActionBannerProps = PropsWithChildren<ActionBannerType>
 
 function getSessionStorageKey(suffix: string): string {
   return `action-banner-${kebabCase(suffix)}`
@@ -43,7 +45,7 @@ export function ActionBanner({
   sx,
   title,
   withClose,
-}: PropsWithChildren<ActionBannerProps>) {
+}: ActionBannerProps) {
   const [isBannerClosed, setIsBannerClosed] = useState<boolean>(
     closingSaveKey ? sessionStorage.getItem(getSessionStorageKey(closingSaveKey)) === '1' : false,
   )
@@ -64,6 +66,7 @@ export function ActionBanner({
       {(icon || image) && (
         <Flex sx={{ flexShrink: 0, 'svg, img': { display: 'block' } }}>
           {icon && <Icon icon={icon} size={60} />}
+          {image && <Image src={image} alt={title} />}
         </Flex>
       )}
       <Flex sx={{ flexDirection: 'column', flexGrow: 1, rowGap: 1 }}>

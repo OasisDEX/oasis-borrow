@@ -1,22 +1,27 @@
-import type { AssetsTableBannerProps } from 'components/assetsTable/types'
+import type { ActionBannerProps } from 'components/ActionBanner'
+import type { DiscoverPageMeta } from 'features/discover/meta'
 import { useTranslation } from 'react-i18next'
 
 interface ParseBannerDataParams {
-  banner: AssetsTableBannerProps
+  banner: DiscoverPageMeta['banner']
   onClick?: () => void
 }
 
 export function parseBannerData({
-  banner: { cta, description, title, ...rest },
+  banner: { cta, description, link, title, icon },
   onClick,
-}: ParseBannerDataParams): AssetsTableBannerProps {
+}: ParseBannerDataParams): ActionBannerProps {
   const { t } = useTranslation()
 
   return {
-    cta: t(cta),
-    description: t(description),
+    children: t(description),
     title: t(title),
-    onClick,
-    ...rest,
+    cta: {
+      label: t(cta),
+      url: link,
+      onClick,
+      targetBlank: true,
+    },
+    icon,
   }
 }

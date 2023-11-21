@@ -1,12 +1,11 @@
-import type { AssetsTableBannerProps } from 'components/assetsTable/types'
+import type { ActionBannerProps } from 'components/ActionBanner'
 import { ProductHubProductType } from 'features/productHub/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { startCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import poolFinderIcon from 'public/static/img/product_hub_banners/pool-finder.svg'
-import React from 'react'
-import { Image } from 'theme-ui'
 
 interface ProductHubBannerProps {
   product: ProductHubProductType
@@ -14,7 +13,7 @@ interface ProductHubBannerProps {
 
 export const useProductHubBanner = ({
   product,
-}: ProductHubBannerProps): AssetsTableBannerProps | undefined => {
+}: ProductHubBannerProps): ActionBannerProps | undefined => {
   const { AjnaSafetySwitch: ajnaSafetySwitchOn, AjnaPoolFinder: ajnaPoolFinderEnabled } =
     useAppConfig('features')
   const { t } = useTranslation()
@@ -22,12 +21,14 @@ export const useProductHubBanner = ({
   if (!ajnaSafetySwitchOn && ajnaPoolFinderEnabled && product !== ProductHubProductType.Multiply) {
     return {
       title: t('product-hub.banners.pool-finder.title'),
-      description: t('product-hub.banners.pool-finder.description', {
+      children: t('product-hub.banners.pool-finder.description', {
         product: startCase(product),
       }),
-      cta: t('product-hub.banners.pool-finder.cta'),
-      link: `${INTERNAL_LINKS.ajnaPoolFinder}/${product}`,
-      icon: <Image src={poolFinderIcon} />,
+      cta: {
+        label: t('product-hub.banners.pool-finder.cta'),
+        url: `${INTERNAL_LINKS.ajnaPoolFinder}/${product}`,
+      },
+      image: staticFilesRuntimeUrl(poolFinderIcon),
     }
   }
 

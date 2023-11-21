@@ -1,4 +1,4 @@
-import { AssetsTableBanner } from 'components/assetsTable/AssetsTableBanner'
+import { ActionBanner } from 'components/ActionBanner'
 import { getRowKey } from 'components/assetsTable/helpers/getRowKey'
 import type {
   AssetsTableHeaderTranslationProps,
@@ -52,7 +52,7 @@ export function AssetsCards({
             <AssetCard headerTranslationProps={headerTranslationProps} row={row} />
             {banner && i === Math.floor(bannerRows / 2) && (
               <Box as="li">
-                <AssetsTableBanner {...banner} />
+                <ActionBanner {...banner} />
               </Box>
             )}
           </Fragment>
