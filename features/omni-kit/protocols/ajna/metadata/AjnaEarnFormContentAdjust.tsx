@@ -1,10 +1,7 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { OmniFormContentSummary } from 'features/omni-kit/components/sidebars/OmniFormContentSummary'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import {
-  AjnaEarnFormOrder,
-  AjnaEarnSlider,
-} from 'features/omni-kit/protocols/ajna/metadata'
+import { AjnaEarnFormOrder, AjnaEarnSlider } from 'features/omni-kit/protocols/ajna/metadata'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'

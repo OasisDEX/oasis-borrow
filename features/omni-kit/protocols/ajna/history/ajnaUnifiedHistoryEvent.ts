@@ -1,4 +1,7 @@
-import type { AjnaBorrowerEvent, AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
+import type {
+  AjnaBorrowerEvent,
+  AjnaHistoryEvent,
+} from 'features/omni-kit/protocols/ajna/history/types'
 import { zero } from 'helpers/zero'
 
 export const ajnaUnifiedHistoryItem = {
