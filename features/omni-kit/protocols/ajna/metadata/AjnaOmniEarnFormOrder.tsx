@@ -1,6 +1,8 @@
-import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
-import { AjnaOmniClaimCollateralFormOrderInformation } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniClaimCollateralFormOrderInformation'
-import { AjnaOmniEarnFormOrderInformation } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnFormOrderInformation'
+import { useOmniProductContext } from 'features/omni-kit/contexts'
+import {
+  AjnaOmniClaimCollateralFormOrderInformation,
+  AjnaOmniEarnFormOrderInformation,
+} from 'features/omni-kit/protocols/ajna/metadata'
 import {
   OmniEarnFormAction,
   type OmniIsCachedPosition,

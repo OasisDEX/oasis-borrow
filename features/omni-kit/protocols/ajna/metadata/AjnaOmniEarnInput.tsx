@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
+import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts'
 import {
   mappedAjnaBuckets,
   resolveLendingPriceIfOutsideRange,

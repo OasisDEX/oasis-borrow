@@ -12,21 +12,21 @@ import faqBorrow from 'features/content/faqs/ajna/borrow/en'
 import faqEarn from 'features/content/faqs/ajna/earn/en'
 import faqMultiply from 'features/content/faqs/ajna/multiply/en'
 import { OmniDupePositionModal } from 'features/omni-kit/components/OmniDupePositionModal'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import type {
   GetOmniMetadata,
   LendingMetadata,
   ProductContextWithBorrow,
   ProductContextWithEarn,
   SupplyMetadata,
-} from 'features/omni-kit/contexts/OmniProductContext'
+} from 'features/omni-kit/contexts'
+import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
   getOmniBorrowishChangeVariant,
   getOmniBorrowPaybackMax,
+  getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
-import { getOmniIsFormEmpty } from 'features/omni-kit/helpers/getOmniIsFormEmpty'
-import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
+import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts'
 import { AjnaOmniTokensBannerController } from 'features/omni-kit/protocols/ajna/controllers/AjnaOmniTokensBannerController'
 import {
   ajnaFlowStateFilter,
@@ -34,22 +34,24 @@ import {
   getAjnaBorrowDebtMax,
   getAjnaBorrowDebtMin,
   getAjnaEarnWithdrawMax,
+  getAjnaOmniNotifications,
+  getAjnaOmniValidation,
   getAjnaSidebarTitle,
   getOriginationFee,
   isPoolWithRewards,
 } from 'features/omni-kit/protocols/ajna/helpers'
-import { getAjnaOmniNotifications } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniNotifications'
-import { getAjnaOmniValidation } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniValidation'
-import { AjnaOmniEarnDetailsSectionContent } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnDetailsSectionContent'
-import { AjnaOmniEarnDetailsSectionFooter } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnDetailsSectionFooter'
-import { AjnaOmniEarnFormOrder } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnFormOrder'
-import { AjnaOmniEarnSlider } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnSlider'
-import { AjnaOmniExtraDropdownUiContent } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniExtraDropdownUiContent'
-import { AjnaOmniFormContentRisk } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniFormContentRisk'
-import { AjnaOmniLendingDetailsSectionContent } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionContent'
-import { AjnaOmniLendingDetailsSectionFooter } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionFooter'
-import { getAjnaOmniEarnIsFomEmpty } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFomEmpty'
-import { getAjnaOmniEarnIsFormValid } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFormValid'
+import {
+  AjnaOmniEarnDetailsSectionContent,
+  AjnaOmniEarnDetailsSectionFooter,
+  AjnaOmniEarnFormOrder,
+  AjnaOmniEarnSlider,
+  AjnaOmniExtraDropdownUiContent,
+  AjnaOmniFormContentRisk,
+  AjnaOmniLendingDetailsSectionContent,
+  AjnaOmniLendingDetailsSectionFooter,
+  getAjnaOmniEarnIsFomEmpty,
+  getAjnaOmniEarnIsFormValid,
+} from 'features/omni-kit/protocols/ajna/metadata'
 import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniEarnFormAction, OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'

@@ -1,12 +1,14 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type { OmniCustomStateParams } from 'features/omni-kit/controllers'
-import { AjnaCustomStateContextProvider } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
-import { getEarnDefaultPrice } from 'features/omni-kit/protocols/ajna/helpers'
-import { getAjnaOmniEarnDefaultAction } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniEarnDefaultAction'
-import { getAjnaOmniEarnDefaultUiDropdown } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniEarnDefaultUiDropdown'
+import { AjnaCustomStateContextProvider } from 'features/omni-kit/protocols/ajna/contexts'
+import {
+  getAjnaOmniEarnDefaultAction,
+  getAjnaOmniEarnDefaultUiDropdown,
+  getEarnDefaultPrice,
+} from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
-import { useAjnaOmniTxHandler } from 'features/omni-kit/protocols/ajna/hooks/useAjnaOmniTxHandler'
-import { useAjnaMetadata } from 'features/omni-kit/protocols/ajna/metadata/useAjnaMetadata'
+import { useAjnaOmniTxHandler } from 'features/omni-kit/protocols/ajna/hooks'
+import { useAjnaMetadata } from 'features/omni-kit/protocols/ajna/metadata'
 import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType } from 'features/omni-kit/types'

@@ -3,16 +3,15 @@ import type BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { PillAccordion } from 'components/PillAccordion'
 import { omniLendingPriceColors } from 'features/omni-kit/constants'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { AJNA_HTP_OFFSET, AJNA_MOMP_OFFSET } from 'features/omni-kit/protocols/ajna/constants'
-import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
+import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts'
 import {
   convertAjnaOmniSliderThresholds,
+  getAjnaOmniMinMaxAndRange,
   snapToPredefinedValues,
 } from 'features/omni-kit/protocols/ajna/helpers'
-import { getAjnaOmniMinMaxAndRange } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniMinMaxAndRange'
-import { AjnaOmniEarnInput } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnInput'
+import { AjnaOmniEarnInput } from 'features/omni-kit/protocols/ajna/metadata'
 import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'

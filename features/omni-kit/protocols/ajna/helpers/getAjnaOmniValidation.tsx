@@ -5,7 +5,7 @@ import {
   OmniSafetyOnMessage,
   OmniValidationWithLink,
 } from 'features/omni-kit/components'
-import { isOmniFormValid } from 'features/omni-kit/helpers/isOmniFormValid'
+import { isOmniFormValid } from 'features/omni-kit/helpers'
 import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,

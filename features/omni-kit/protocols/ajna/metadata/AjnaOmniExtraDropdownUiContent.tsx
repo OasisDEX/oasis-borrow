@@ -1,6 +1,8 @@
-import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
-import { AjnaOmniEarnFormContentAdjust } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEanFormContentAdjust'
-import { AjnaOmniEarnFormContentClaimCollateral } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnFormContentClaimCollateral'
+import { useOmniProductContext } from 'features/omni-kit/contexts'
+import {
+  AjnaOmniEarnFormContentAdjust,
+  AjnaOmniEarnFormContentClaimCollateral,
+} from 'features/omni-kit/protocols/ajna/metadata'
 import { OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'

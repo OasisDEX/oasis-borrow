@@ -5,8 +5,10 @@ import { ContentCardEarnNetValue } from 'features/ajna/positions/common/componen
 import { ContentCardMaxLendingLTV } from 'features/ajna/positions/common/components/contentCards/ContentCardMaxLendingLTV'
 import { ContentCardPositionLendingPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionLendingPrice'
 import { ContentCardTotalEarnings } from 'features/ajna/positions/common/components/contentCards/ContentCardTotalEarnings'
-import { getAjnaSimulationRows } from 'features/ajna/positions/earn/helpers/getAjnaSimulationRows'
-import { getLendingPriceColor } from 'features/ajna/positions/earn/helpers/getLendingPriceColor'
+import {
+  getAjnaSimulationRows,
+  getLendingPriceColor,
+} from 'features/omni-kit/protocols/ajna/helpers'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -55,12 +57,11 @@ export const AjnaOmniEarnDetailsSectionContent: FC<AjnaOmniEarnDetailsSectionCon
     },
   ]
 
-  const { highestThresholdPrice, lowestUtilizedPrice, mostOptimisticMatchingPrice } = position.pool
+  const { highestThresholdPrice, lowestUtilizedPrice } = position.pool
 
   const lendingPriceColor = getLendingPriceColor({
     highestThresholdPrice,
     lowestUtilizedPrice,
-    mostOptimisticMatchingPrice,
     price: position.price,
   })
 

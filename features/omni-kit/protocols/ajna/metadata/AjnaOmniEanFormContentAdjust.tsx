@@ -1,9 +1,10 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { OmniFormContentSummary } from 'features/omni-kit/components/sidebars/OmniFormContentSummary'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
-import { AjnaOmniEarnFormOrder } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnFormOrder'
-import { AjnaOmniEarnSlider } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnSlider'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import {
+  AjnaOmniEarnFormOrder,
+  AjnaOmniEarnSlider,
+} from 'features/omni-kit/protocols/ajna/metadata'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'

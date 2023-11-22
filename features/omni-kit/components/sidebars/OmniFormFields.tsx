@@ -1,7 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
-import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
+import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import type {
   FormActionsUpdateDeposit,
   FormActionsUpdateGenerate,

@@ -5,8 +5,8 @@ import type {
 } from '@oasisdex/dma-library'
 import { strategies } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { getAjnaEarnData } from 'features/omni-kit/protocols/ajna/helpers'
+import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import { zero } from 'helpers/zero'
 
