@@ -35,8 +35,8 @@ import {
   getAjnaBorrowDebtMin,
   getAjnaEarnWithdrawMax,
   getAjnaNotifications,
-  getAjnaValidation,
   getAjnaSidebarTitle,
+  getAjnaValidation,
   getOriginationFee,
   isPoolWithRewards,
 } from 'features/omni-kit/protocols/ajna/helpers'
