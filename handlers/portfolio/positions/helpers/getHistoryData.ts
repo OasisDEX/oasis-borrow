@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import request, { gql } from 'graphql-request'
@@ -56,24 +57,34 @@ export const getHistoryData = async ({
 }) => {
   const subgraphUrl = `${process.env.SUBGRAPHS_BASE_URL}/${subgraphListDict[network]}`
   const params = { proxyAddresses: addresses.map((addr) => addr.toLowerCase()) }
-  const historyCall = request<HistoryQueryResponse>(subgraphUrl, historyQuery, params).then(
-    (data) => ({
-      networkId: network,
-      positions: data.proxies,
-    }),
-  )
-  const positionsHistoryList = await historyCall.then(({ networkId, positions }) => {
-    return positions
-      .map((pos) => {
-        return {
-          networkId,
-          id: pos.position.id,
-          cumulativeDeposit: new BigNumber(pos.position.cumulativeDeposit),
-          cumulativeWithdraw: new BigNumber(pos.position.cumulativeWithdraw),
-          cumulativeFees: new BigNumber(pos.position.cumulativeFees),
-        }
-      })
-      .flat()
-  })
-  return positionsHistoryList
+  try {
+    const historyCall = request<HistoryQueryResponse>(subgraphUrl, historyQuery, params).then(
+      (data) => ({
+        networkId: network,
+        positions: data.proxies,
+      }),
+    )
+    const positionsHistoryList = await historyCall.then(({ networkId, positions }) => {
+      return positions
+        .map((pos) => {
+          return {
+            networkId,
+            id: pos.position.id,
+            cumulativeDeposit: new BigNumber(pos.position.cumulativeDeposit),
+            cumulativeWithdraw: new BigNumber(pos.position.cumulativeWithdraw),
+            cumulativeFees: new BigNumber(pos.position.cumulativeFees),
+          }
+        })
+        .flat()
+    })
+    return positionsHistoryList
+  } catch (error) {
+    captureException({
+      region: 'getHistoryData',
+      error,
+      addresses,
+      network,
+    })
+    return []
+  }
 }
