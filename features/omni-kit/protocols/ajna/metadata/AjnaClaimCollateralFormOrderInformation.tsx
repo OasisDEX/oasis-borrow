@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 
-export const AjnaOmniClaimCollateralFormOrderInformation: FC<AjnaIsCachedPosition> = ({
+export const AjnaClaimCollateralFormOrderInformation: FC<AjnaIsCachedPosition> = ({
   cached = false,
 }) => {
   const { t } = useTranslation()

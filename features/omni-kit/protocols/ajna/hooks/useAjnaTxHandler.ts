@@ -3,10 +3,10 @@ import { getRpcProvider } from 'blockchain/networks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { useOmniTxHandler } from 'features/omni-kit/hooks'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
-import { getAjnaOmniParameters } from 'features/omni-kit/protocols/ajna/helpers'
+import { getAjnaParameters } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 
-export function useAjnaOmniTxHandler(): () => void {
+export function useAjnaTxHandler(): () => void {
   const {
     environment: {
       collateralAddress,
@@ -34,7 +34,7 @@ export function useAjnaOmniTxHandler(): () => void {
 
   return useOmniTxHandler({
     getOmniParameters: (context: Context) =>
-      getAjnaOmniParameters({
+      getAjnaParameters({
         chainId: context.chainId,
         collateralAddress,
         collateralPrecision,

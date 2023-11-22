@@ -4,7 +4,7 @@ import { areEarnPricesEqual } from 'features/omni-kit/protocols/ajna/helpers'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn/earnFormReducto.types'
 import { OmniEarnFormAction, OmniSidebarStep } from 'features/omni-kit/types'
 
-export const getAjnaOmniEarnIsFormValid = ({
+export const getAjnaEarnIsFormValid = ({
   position,
   currentStep,
   state,

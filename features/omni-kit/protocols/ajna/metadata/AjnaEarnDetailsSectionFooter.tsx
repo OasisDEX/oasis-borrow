@@ -7,7 +7,7 @@ import { zero } from 'helpers/zero'
 import type { FC } from 'react'
 import React from 'react'
 
-interface AjnaOmniEarnDetailsSectionFooterProps {
+interface AjnaEarnDetailsSectionFooterProps {
   availableToWithdraw: BigNumber
   collateralToken: string
   depositAmount?: BigNumber
@@ -22,7 +22,7 @@ interface AjnaOmniEarnDetailsSectionFooterProps {
   withdrawAmount?: BigNumber
 }
 
-export const AjnaOmniEarnDetailsSectionFooter: FC<AjnaOmniEarnDetailsSectionFooterProps> = ({
+export const AjnaEarnDetailsSectionFooter: FC<AjnaEarnDetailsSectionFooterProps> = ({
   availableToWithdraw,
   collateralToken,
   depositAmount,

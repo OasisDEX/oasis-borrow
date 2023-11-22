@@ -1,1 +1,1 @@
-export * from './AjnaOmniCustomStateProvider'
+export * from './AjnaCustomStateProvider'

@@ -92,7 +92,7 @@ export const ajnaActionWithdrawEarn = ({
   )
 }
 
-export const ajnaOmniClaimEarn = ({
+export const ajnaClaimEarn = ({
   commonPayload,
   dependencies,
   position,

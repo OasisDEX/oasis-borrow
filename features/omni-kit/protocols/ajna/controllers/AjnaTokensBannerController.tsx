@@ -6,12 +6,12 @@ import { Trans, useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 
-interface AjnaOmniTokensBannerControllerProps {
+interface AjnaTokensBannerControllerProps {
   isOpening: boolean
   isPriceBelowLup?: boolean // used only in earn product
 }
 
-export const AjnaOmniTokensBannerController: FC<AjnaOmniTokensBannerControllerProps> = ({
+export const AjnaTokensBannerController: FC<AjnaTokensBannerControllerProps> = ({
   isOpening,
   isPriceBelowLup = false,
 }) => {

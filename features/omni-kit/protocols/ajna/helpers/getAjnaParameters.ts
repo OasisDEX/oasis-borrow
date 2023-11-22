@@ -14,7 +14,7 @@ import {
   ajnaActionDepositEarn,
   ajnaActionOpenEarn,
   ajnaActionWithdrawEarn,
-  ajnaOmniClaimEarn,
+  ajnaClaimEarn,
 } from 'features/omni-kit/protocols/ajna/actions/earn'
 import { ajnaActionOpenMultiply } from 'features/omni-kit/protocols/ajna/actions/multiply'
 import {
@@ -51,7 +51,7 @@ interface AjnaTxHandlerInput {
   walletAddress?: string
 }
 
-export async function getAjnaOmniParameters({
+export async function getAjnaParameters({
   chainId,
   collateralAddress,
   collateralPrecision,
@@ -140,7 +140,7 @@ export async function getAjnaOmniParameters({
       return ajnaActionWithdrawEarn({ state, commonPayload, dependencies, position, price })
     }
     case OmniEarnFormAction.ClaimEarn: {
-      return ajnaOmniClaimEarn({ commonPayload, dependencies, position, price })
+      return ajnaClaimEarn({ commonPayload, dependencies, position, price })
     }
 
     case OmniMultiplyFormAction.OpenMultiply: {

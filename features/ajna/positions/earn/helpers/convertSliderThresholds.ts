@@ -21,7 +21,7 @@ export const convertSliderThresholds = ({
   }
 }
 
-export const convertAjnaOmniSliderThresholds = ({
+export const convertAjnaSliderThresholds = ({
   min,
   max,
   highestThresholdPrice,

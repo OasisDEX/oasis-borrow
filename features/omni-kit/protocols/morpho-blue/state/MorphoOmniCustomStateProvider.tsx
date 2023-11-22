@@ -2,7 +2,7 @@ import type { AjnaEarnPosition, MorphoPosition } from '@oasisdex/dma-library'
 import type { OmniCustomStateParams } from 'features/omni-kit/controllers'
 import { AjnaCustomStateContextProvider } from 'features/omni-kit/protocols/ajna/contexts'
 import { getEarnDefaultPrice } from 'features/omni-kit/protocols/ajna/helpers'
-import { useAjnaOmniTxHandler } from 'features/omni-kit/protocols/ajna/hooks'
+import { useAjnaTxHandler } from 'features/omni-kit/protocols/ajna/hooks'
 import { useMorphoMetadata } from 'features/omni-kit/protocols/morpho-blue/metadata'
 import type { MorphoPositionAuction } from 'features/omni-kit/protocols/morpho-blue/types'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -32,7 +32,7 @@ export const MorphoOmniCustomStateProvider: FC<MorphoOmniCustomStateProviderProp
     >
       {children({
         useDynamicMetadata: useMorphoMetadata,
-        useTxHandler: useAjnaOmniTxHandler,
+        useTxHandler: useAjnaTxHandler,
       })}
     </AjnaCustomStateContextProvider>
   )

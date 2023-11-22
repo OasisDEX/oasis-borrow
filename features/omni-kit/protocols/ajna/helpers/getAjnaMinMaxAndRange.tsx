@@ -4,7 +4,7 @@ import { ajnaDefaultPoolRangeMarketPriceOffset } from 'features/omni-kit/protoco
 import { snapToPredefinedValues } from 'features/omni-kit/protocols/ajna/helpers'
 import { one, zero } from 'helpers/zero'
 
-export const getAjnaOmniMinMaxAndRange = ({
+export const getAjnaMinMaxAndRange = ({
   highestThresholdPrice,
   lowestUtilizedPrice,
   lowestUtilizedPriceIndex,

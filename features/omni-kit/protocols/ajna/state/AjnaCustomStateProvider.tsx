@@ -2,12 +2,12 @@ import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type { OmniCustomStateParams } from 'features/omni-kit/controllers'
 import { AjnaCustomStateContextProvider } from 'features/omni-kit/protocols/ajna/contexts'
 import {
-  getAjnaOmniEarnDefaultAction,
-  getAjnaOmniEarnDefaultUiDropdown,
+  getAjnaEarnDefaultAction,
+  getAjnaEarnDefaultUiDropdown,
   getEarnDefaultPrice,
 } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
-import { useAjnaOmniTxHandler } from 'features/omni-kit/protocols/ajna/hooks'
+import { useAjnaTxHandler } from 'features/omni-kit/protocols/ajna/hooks'
 import { useAjnaMetadata } from 'features/omni-kit/protocols/ajna/metadata'
 import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
@@ -21,7 +21,7 @@ type MorphoOmniCustomStateProviderProps = OmniCustomStateParams<
   AjnaGenericPosition
 >
 
-export const AjnaOmniCustomStateProvider: FC<MorphoOmniCustomStateProviderProps> = ({
+export const AjnaCustomStateProvider: FC<MorphoOmniCustomStateProviderProps> = ({
   children,
   dpmPosition,
   isOpening,
@@ -31,8 +31,8 @@ export const AjnaOmniCustomStateProvider: FC<MorphoOmniCustomStateProviderProps>
     borrow: {},
     earn: {
       ...(dpmPosition.product === OmniProductType.Earn && {
-        action: getAjnaOmniEarnDefaultAction(isOpening, positionData as AjnaEarnPosition),
-        uiDropdown: getAjnaOmniEarnDefaultUiDropdown(positionData as AjnaEarnPosition),
+        action: getAjnaEarnDefaultAction(isOpening, positionData as AjnaEarnPosition),
+        uiDropdown: getAjnaEarnDefaultUiDropdown(positionData as AjnaEarnPosition),
       }),
     },
     multiply: {},
@@ -48,7 +48,7 @@ export const AjnaOmniCustomStateProvider: FC<MorphoOmniCustomStateProviderProps>
     >
       {children({
         useDynamicMetadata: useAjnaMetadata,
-        useTxHandler: useAjnaOmniTxHandler,
+        useTxHandler: useAjnaTxHandler,
         formDefaults,
       })}
     </AjnaCustomStateContextProvider>

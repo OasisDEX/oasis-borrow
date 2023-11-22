@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 
-interface AjnaOmniEarnDetailsSectionContentProps {
+interface AjnaEarnDetailsSectionContentProps {
   collateralToken: string
   depositAmount?: BigNumber
   isOpening: boolean
@@ -27,7 +27,7 @@ interface AjnaOmniEarnDetailsSectionContentProps {
   simulation?: AjnaEarnPosition
 }
 
-export const AjnaOmniEarnDetailsSectionContent: FC<AjnaOmniEarnDetailsSectionContentProps> = ({
+export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProps> = ({
   collateralToken,
   depositAmount,
   isOpening,

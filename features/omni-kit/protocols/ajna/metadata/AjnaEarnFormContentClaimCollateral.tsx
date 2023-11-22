@@ -1,12 +1,12 @@
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import { OmniFormContentSummary } from 'features/omni-kit/components/sidebars/OmniFormContentSummary'
-import { AjnaOmniEarnFormOrder } from 'features/omni-kit/protocols/ajna/metadata'
+import { AjnaEarnFormOrder } from 'features/omni-kit/protocols/ajna/metadata'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Trans } from 'next-i18next'
 import React from 'react'
 
-export function AjnaOmniEarnFormContentClaimCollateral() {
+export function AjnaEarnFormContentClaimCollateral() {
   return (
     <>
       <MessageCard
@@ -29,7 +29,7 @@ export function AjnaOmniEarnFormContentClaimCollateral() {
         withBullet={false}
       />
       <OmniFormContentSummary showReset={false}>
-        <AjnaOmniEarnFormOrder />
+        <AjnaEarnFormOrder />
       </OmniFormContentSummary>
     </>
   )

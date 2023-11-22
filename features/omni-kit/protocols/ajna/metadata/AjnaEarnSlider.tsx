@@ -7,11 +7,11 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { AJNA_HTP_OFFSET, AJNA_MOMP_OFFSET } from 'features/omni-kit/protocols/ajna/constants'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts'
 import {
-  convertAjnaOmniSliderThresholds,
-  getAjnaOmniMinMaxAndRange,
+  convertAjnaSliderThresholds,
+  getAjnaMinMaxAndRange,
   snapToPredefinedValues,
 } from 'features/omni-kit/protocols/ajna/helpers'
-import { AjnaOmniEarnInput } from 'features/omni-kit/protocols/ajna/metadata'
+import { AjnaEarnInput } from 'features/omni-kit/protocols/ajna/metadata'
 import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
@@ -26,7 +26,7 @@ interface AjnaEarnSliderProps {
   nestedManualInput?: boolean
 }
 
-export const AjnaOmniEarnSlider: FC<AjnaEarnSliderProps> = ({
+export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({
   isDisabled,
   nestedManualInput,
   isFormFrozen,
@@ -52,7 +52,7 @@ export const AjnaOmniEarnSlider: FC<AjnaEarnSliderProps> = ({
 
   const { min, max, range } = useMemo(
     () =>
-      getAjnaOmniMinMaxAndRange({
+      getAjnaMinMaxAndRange({
         highestThresholdPrice,
         lowestUtilizedPrice,
         lowestUtilizedPriceIndex,
@@ -88,7 +88,7 @@ export const AjnaOmniEarnSlider: FC<AjnaEarnSliderProps> = ({
 
   const { htpPercentage, lupPercentage } = useMemo(
     () =>
-      convertAjnaOmniSliderThresholds({
+      convertAjnaSliderThresholds({
         min,
         max,
         highestThresholdPrice,
@@ -136,11 +136,11 @@ export const AjnaOmniEarnSlider: FC<AjnaEarnSliderProps> = ({
             priceFormat,
           })}
         >
-          <AjnaOmniEarnInput disabled={isDisabled || isFormFrozen} />
+          <AjnaEarnInput disabled={isDisabled || isFormFrozen} />
         </PillAccordion>
       ) : (
         <Box sx={{ mt: 3 }}>
-          <AjnaOmniEarnInput disabled={isDisabled || isFormFrozen} />
+          <AjnaEarnInput disabled={isDisabled || isFormFrozen} />
         </Box>
       )}
     </>

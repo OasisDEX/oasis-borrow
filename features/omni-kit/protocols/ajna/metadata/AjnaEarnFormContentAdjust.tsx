@@ -2,19 +2,19 @@ import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { OmniFormContentSummary } from 'features/omni-kit/components/sidebars/OmniFormContentSummary'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
-  AjnaOmniEarnFormOrder,
-  AjnaOmniEarnSlider,
+  AjnaEarnFormOrder,
+  AjnaEarnSlider,
 } from 'features/omni-kit/protocols/ajna/metadata'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
 
-interface AjnaOmniEarnFormContentAdjustProps {
+interface AjnaEarnFormContentAdjustProps {
   isFormValid: boolean
   isFormFrozen: boolean
 }
 
-export const AjnaOmniEarnFormContentAdjust: FC<AjnaOmniEarnFormContentAdjustProps> = ({
+export const AjnaEarnFormContentAdjust: FC<AjnaEarnFormContentAdjustProps> = ({
   isFormValid,
   isFormFrozen,
 }) => {
@@ -27,13 +27,13 @@ export const AjnaOmniEarnFormContentAdjust: FC<AjnaOmniEarnFormContentAdjustProp
 
   return (
     <>
-      <AjnaOmniEarnSlider
+      <AjnaEarnSlider
         nestedManualInput={!(isOracless && pool.lowestUtilizedPriceIndex.isZero())}
         isFormFrozen={isFormFrozen}
       />
       {isFormValid && (
         <OmniFormContentSummary>
-          <AjnaOmniEarnFormOrder />
+          <AjnaEarnFormOrder />
         </OmniFormContentSummary>
       )}
     </>

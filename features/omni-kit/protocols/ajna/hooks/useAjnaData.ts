@@ -22,7 +22,7 @@ export interface ProductDataProps {
   tokenPriceUSDData?: Tickers
 }
 
-export function useAjnaOmniData({
+export function useAjnaData({
   collateralToken,
   dpmPositionData,
   positionId,

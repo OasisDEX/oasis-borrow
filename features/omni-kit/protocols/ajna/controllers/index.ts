@@ -1,1 +1,1 @@
-export * from './AjnaOmniTokensBannerController'
+export * from './AjnaTokensBannerController'

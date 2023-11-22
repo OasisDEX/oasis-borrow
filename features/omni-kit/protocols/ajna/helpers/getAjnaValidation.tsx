@@ -46,7 +46,7 @@ interface GetOmniBorrowValidationsParams {
   txError?: TxError
 }
 
-interface AjnaOmniValidation {
+interface AjnaValidation {
   isFormValid: boolean
   isFormFrozen: boolean
   hasErrors: boolean
@@ -56,7 +56,7 @@ interface AjnaOmniValidation {
   successes: OmniValidationItem[]
 }
 
-export function getAjnaOmniValidation({
+export function getAjnaValidation({
   ajnaSafetySwitchOn,
   collateralBalance,
   collateralToken,
@@ -77,7 +77,7 @@ export function getAjnaOmniValidation({
   simulationWarnings = [],
   state,
   txError,
-}: GetOmniBorrowValidationsParams): AjnaOmniValidation {
+}: GetOmniBorrowValidationsParams): AjnaValidation {
   const localErrors: OmniValidationItem[] = []
   const localWarnings: OmniValidationItem[] = []
   const localNotices: OmniValidationItem[] = []

@@ -28,7 +28,7 @@ interface AjnaEarnInputProps {
   disabled?: boolean
 }
 
-const AjnaOmniEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, onClick }) => {
+const AjnaEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, variant, onClick }) => {
   return (
     <Button
       sx={{
@@ -91,7 +91,7 @@ const AjnaOmniEarnInputButton: FC<AjnaEarnInputButtonProps> = ({ disabled, varia
   )
 }
 
-export const AjnaOmniEarnInput: FC<AjnaEarnInputProps> = ({ disabled }) => {
+export const AjnaEarnInput: FC<AjnaEarnInputProps> = ({ disabled }) => {
   const { t } = useTranslation()
   const {
     environment: { isOracless, isShort, priceFormat, quoteToken },
@@ -221,8 +221,8 @@ export const AjnaOmniEarnInput: FC<AjnaEarnInputProps> = ({ disabled }) => {
         >
           {priceFormat} {t('ajna.position-page.earn.common.form.lending-price')}
         </Text>
-        <AjnaOmniEarnInputButton disabled={disabled} variant="-" onClick={clickHandler} />
-        <AjnaOmniEarnInputButton disabled={disabled} variant="+" onClick={clickHandler} />
+        <AjnaEarnInputButton disabled={disabled} variant="-" onClick={clickHandler} />
+        <AjnaEarnInputButton disabled={disabled} variant="+" onClick={clickHandler} />
       </Box>
     </>
   )

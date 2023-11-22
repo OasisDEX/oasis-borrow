@@ -255,7 +255,7 @@ const ajnaNotifications: {
   }),
 }
 
-export function getAjnaOmniNotifications({
+export function getAjnaNotifications({
   ajnaSafetySwitchOn,
   collateralToken,
   dispatch,

@@ -16,7 +16,7 @@ const LINKS_MAP: { [key in OmniProductType]: string } = {
   earn: EXTERNAL_LINKS.DOCS.AJNA.RISKS,
 }
 
-export function AjnaOmniFormContentRisk() {
+export function AjnaFormContentRisk() {
   const { t } = useTranslation()
   const {
     environment: { isOracless, productType },

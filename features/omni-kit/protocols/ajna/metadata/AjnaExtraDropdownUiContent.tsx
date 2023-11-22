@@ -1,18 +1,18 @@
 import { useOmniProductContext } from 'features/omni-kit/contexts'
 import {
-  AjnaOmniEarnFormContentAdjust,
-  AjnaOmniEarnFormContentClaimCollateral,
+  AjnaEarnFormContentAdjust,
+  AjnaEarnFormContentClaimCollateral,
 } from 'features/omni-kit/protocols/ajna/metadata'
 import { OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
 
-interface AjnaOmniExtraDropdownUiContentProps {
+interface AjnaExtraDropdownUiContentProps {
   isFormValid: boolean
   isFormFrozen: boolean
 }
 
-export const AjnaOmniExtraDropdownUiContent: FC<AjnaOmniExtraDropdownUiContentProps> = ({
+export const AjnaExtraDropdownUiContent: FC<AjnaExtraDropdownUiContentProps> = ({
   isFormValid,
   isFormFrozen,
 }) => {
@@ -25,10 +25,10 @@ export const AjnaOmniExtraDropdownUiContent: FC<AjnaOmniExtraDropdownUiContentPr
   return (
     <>
       {uiDropdown === OmniSidebarEarnPanel.Adjust && (
-        <AjnaOmniEarnFormContentAdjust isFormValid={isFormValid} isFormFrozen={isFormFrozen} />
+        <AjnaEarnFormContentAdjust isFormValid={isFormValid} isFormFrozen={isFormFrozen} />
       )}
       {uiDropdown === OmniSidebarEarnPanel.ClaimCollateral && (
-        <AjnaOmniEarnFormContentClaimCollateral />
+        <AjnaEarnFormContentClaimCollateral />
       )}
     </>
   )

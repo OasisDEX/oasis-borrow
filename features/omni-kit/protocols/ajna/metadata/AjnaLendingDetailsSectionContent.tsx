@@ -13,7 +13,7 @@ import { one } from 'helpers/zero'
 import type { FC } from 'react'
 import React from 'react'
 
-interface AjnaOmniDetailsSectionContentProps {
+interface AjnaDetailsSectionContentProps {
   afterPositionDebt?: BigNumber
   changeVariant: 'positive' | 'negative'
   collateralPrice: BigNumber
@@ -34,7 +34,7 @@ interface AjnaOmniDetailsSectionContentProps {
   thresholdPrice: BigNumber
 }
 
-export const AjnaOmniLendingDetailsSectionContent: FC<AjnaOmniDetailsSectionContentProps> = ({
+export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps> = ({
   afterPositionDebt,
   changeVariant,
   collateralPrice,

@@ -6,7 +6,7 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
 
-interface AjnaOmniLendingDetailsSectionFooterProps {
+interface AjnaLendingDetailsSectionFooterProps {
   afterAvailableToBorrow?: BigNumber
   afterBuyingPower?: BigNumber
   changeVariant: 'positive' | 'negative'
@@ -20,7 +20,7 @@ interface AjnaOmniLendingDetailsSectionFooterProps {
   simulation?: AjnaPosition
 }
 
-export const AjnaOmniLendingDetailsSectionFooter: FC<AjnaOmniLendingDetailsSectionFooterProps> = ({
+export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooterProps> = ({
   productType,
   isSimulationLoading,
   collateralToken,
