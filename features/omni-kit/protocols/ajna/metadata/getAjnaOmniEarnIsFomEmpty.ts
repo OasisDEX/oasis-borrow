@@ -1,7 +1,7 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
-import { areEarnPricesEqual } from 'features/ajna/positions/earn/helpers/areEarnPricesEqual'
+import { areEarnPricesEqual } from 'features/omni-kit/protocols/ajna/helpers'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn/earnFormReducto.types'
 import { OmniSidebarStep } from 'features/omni-kit/types'
 

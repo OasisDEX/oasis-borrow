@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { WAD_PRECISION } from 'components/constants'
-import { ajnaDefaultPoolRangeMarketPriceOffset } from 'features/ajna/common/consts'
-import { snapToPredefinedValues } from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
+import { ajnaDefaultPoolRangeMarketPriceOffset } from 'features/omni-kit/protocols/ajna/constants'
+import { snapToPredefinedValues } from 'features/omni-kit/protocols/ajna/helpers'
 import { one, zero } from 'helpers/zero'
 
 export const getAjnaOmniMinMaxAndRange = ({

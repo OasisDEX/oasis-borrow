@@ -2,10 +2,10 @@ import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import type { AjnaIsCachedPosition } from 'features/ajna/common/types'
-import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
+import { resolveIfCachedPosition } from 'features/omni-kit/protocols/ajna/helpers'
+import type { AjnaIsCachedPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import {
   formatAmount,

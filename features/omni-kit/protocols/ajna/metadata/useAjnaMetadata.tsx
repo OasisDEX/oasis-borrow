@@ -8,16 +8,6 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { PillAccordion } from 'components/PillAccordion'
-import type { AjnaGenericPosition } from 'features/ajna/common/types'
-import { getAjnaBorrowCollateralMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowCollateralMax'
-import { getAjnaBorrowDebtMax } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMax'
-import { getAjnaBorrowDebtMin } from 'features/ajna/positions/borrow/helpers/getAjnaBorrowDebtMin'
-import { getAjnaSidebarTitle } from 'features/ajna/positions/common/getAjnaSidebarTitle'
-import { ajnaFlowStateFilter } from 'features/ajna/positions/common/helpers/getFlowStateFilter'
-import { getOriginationFee } from 'features/ajna/positions/common/helpers/getOriginationFee'
-import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
-import type { AjnaPositionAuction } from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
-import { getAjnaEarnWithdrawMax } from 'features/ajna/positions/earn/helpers/getAjnaEarnWithdrawMax'
 import faqBorrow from 'features/content/faqs/ajna/borrow/en'
 import faqEarn from 'features/content/faqs/ajna/earn/en'
 import faqMultiply from 'features/content/faqs/ajna/multiply/en'
@@ -38,6 +28,16 @@ import {
 import { getOmniIsFormEmpty } from 'features/omni-kit/helpers/getOmniIsFormEmpty'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
 import { AjnaOmniTokensBannerController } from 'features/omni-kit/protocols/ajna/controllers/AjnaOmniTokensBannerController'
+import {
+  ajnaFlowStateFilter,
+  getAjnaBorrowCollateralMax,
+  getAjnaBorrowDebtMax,
+  getAjnaBorrowDebtMin,
+  getAjnaEarnWithdrawMax,
+  getAjnaSidebarTitle,
+  getOriginationFee,
+  isPoolWithRewards,
+} from 'features/omni-kit/protocols/ajna/helpers'
 import { getAjnaOmniNotifications } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniNotifications'
 import { getAjnaOmniValidation } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniValidation'
 import { AjnaOmniEarnDetailsSectionContent } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniEarnDetailsSectionContent'
@@ -50,6 +50,8 @@ import { AjnaOmniLendingDetailsSectionContent } from 'features/omni-kit/protocol
 import { AjnaOmniLendingDetailsSectionFooter } from 'features/omni-kit/protocols/ajna/metadata/AjnaOmniLendingDetailsSectionFooter'
 import { getAjnaOmniEarnIsFomEmpty } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFomEmpty'
 import { getAjnaOmniEarnIsFormValid } from 'features/omni-kit/protocols/ajna/metadata/getAjnaOmniEarnIsFormValid'
+import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
+import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniEarnFormAction, OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import {

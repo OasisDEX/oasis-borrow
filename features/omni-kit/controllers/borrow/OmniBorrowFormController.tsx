@@ -1,4 +1,3 @@
-import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
 import { OmniFormContentTransaction } from 'features/omni-kit/components/sidebars'
 import {
   OmniBorrowFormContentDeposit,
@@ -7,6 +6,7 @@ import {
   OmniBorrowFormOrder,
 } from 'features/omni-kit/components/sidebars/borrow'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
 import {
   OmniBorrowFormAction,
   OmniProductType,

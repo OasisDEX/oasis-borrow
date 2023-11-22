@@ -1,16 +1,16 @@
 import type BigNumber from 'bignumber.js'
+import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
+import {
+  mapSimulationValidation,
+  OmniSafetyOnMessage,
+  OmniValidationWithLink,
+} from 'features/omni-kit/components'
+import { isOmniFormValid } from 'features/omni-kit/helpers/isOmniFormValid'
 import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
   AjnaPositionAuction,
-} from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
-import {
-  AjnaSafetyOnMessage,
-  AjnaValidationWithLink,
-  mapSimulationValidation,
-} from 'features/ajna/positions/common/validation'
-import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
-import { isOmniFormValid } from 'features/omni-kit/helpers/isOmniFormValid'
+} from 'features/omni-kit/protocols/ajna/observables'
 import type {
   OmniFormState,
   OmniGenericPosition,
@@ -114,7 +114,7 @@ export function getAjnaOmniValidation({
             ('generateAmount' in state && state.generateAmount?.gt(zero)))
         ) {
           localErrors.push({
-            message: { component: <AjnaSafetyOnMessage /> },
+            message: { component: <OmniSafetyOnMessage /> },
           })
         }
 
@@ -127,7 +127,7 @@ export function getAjnaOmniValidation({
           state.depositAmount?.gt(zero)
         ) {
           localErrors.push({
-            message: { component: <AjnaSafetyOnMessage /> },
+            message: { component: <OmniSafetyOnMessage /> },
           })
         }
 
@@ -158,7 +158,7 @@ export function getAjnaOmniValidation({
     if (borrowishAuction.isBeingLiquidated) {
       localWarnings.push({
         message: {
-          component: <AjnaValidationWithLink name="is-being-liquidated" />,
+          component: <OmniValidationWithLink name="is-being-liquidated" />,
         },
       })
     }

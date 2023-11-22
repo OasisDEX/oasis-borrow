@@ -121,7 +121,7 @@ export interface OmniSimulationCommon {
   warnings: { name: string; data?: { [key: string]: string } }[]
 }
 
-export type OmniValidationItem = {
+export interface OmniValidationItem {
   message: { translationKey?: string; component?: JSX.Element; params?: { [key: string]: string } }
 }
 

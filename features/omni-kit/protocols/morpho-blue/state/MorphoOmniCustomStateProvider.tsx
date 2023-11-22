@@ -1,7 +1,7 @@
 import type { AjnaEarnPosition, MorphoPosition } from '@oasisdex/dma-library'
-import { getEarnDefaultPrice } from 'features/ajna/positions/earn/helpers/getEarnDefaultPrice'
 import type { OmniCustomStateParams } from 'features/omni-kit/controllers'
 import { AjnaCustomStateContextProvider } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
+import { getEarnDefaultPrice } from 'features/omni-kit/protocols/ajna/helpers'
 import { useAjnaOmniTxHandler } from 'features/omni-kit/protocols/ajna/hooks/useAjnaOmniTxHandler'
 import { useMorphoMetadata } from 'features/omni-kit/protocols/morpho-blue/metadata/useMorphoMetadata'
 import type { MorphoPositionAuction } from 'features/omni-kit/protocols/morpho-blue/types'

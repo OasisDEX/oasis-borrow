@@ -1,11 +1,11 @@
 import type { Context } from 'blockchain/network.types'
 import { getRpcProvider } from 'blockchain/networks'
-import type { AjnaGenericPosition } from 'features/ajna/common/types'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useOmniProductContext } from 'features/omni-kit/contexts/OmniProductContext'
 import { useOmniTxHandler } from 'features/omni-kit/hooks'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
 import { getAjnaOmniParameters } from 'features/omni-kit/protocols/ajna/helpers/getAjnaOmniParameters'
+import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 
 export function useAjnaOmniTxHandler(): () => void {
   const {

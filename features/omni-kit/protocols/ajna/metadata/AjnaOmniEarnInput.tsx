@@ -1,12 +1,12 @@
 import type BigNumber from 'bignumber.js'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
-import { resolveLendingPriceIfOutsideRange } from 'features/ajna/positions/earn/helpers/resolveLendingPriceIfOutsideRange'
-import {
-  mappedAjnaBuckets,
-  snapToPredefinedValues,
-} from 'features/ajna/positions/earn/helpers/snapToPredefinedValues'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
+import {
+  mappedAjnaBuckets,
+  resolveLendingPriceIfOutsideRange,
+  snapToPredefinedValues,
+} from 'features/omni-kit/protocols/ajna/helpers'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'

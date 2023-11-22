@@ -1,13 +1,13 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { AppLink } from 'components/Links'
-import { LUPPercentageOffset } from 'features/ajna/common/consts'
-import type { AjnaGenericPosition, AjnaUpdateState } from 'features/ajna/common/types'
+import { LUPPercentageOffset } from 'features/omni-kit/protocols/ajna/constants'
 import type {
   AjnaBorrowishPositionAuction,
   AjnaEarnPositionAuction,
   AjnaPositionAuction,
-} from 'features/ajna/positions/common/observables/getAjnaPositionAggregatedData'
+} from 'features/omni-kit/protocols/ajna/observables'
+import type { AjnaGenericPosition, AjnaUpdateState } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniBorrowFormActions, OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormActions, OmniEarnFormState } from 'features/omni-kit/state/earn'
 import type {

@@ -1,6 +1,6 @@
 import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaPosition } from '@oasisdex/dma-library'
 import { strategies } from '@oasisdex/dma-library'
-import type { AjnaGenericPosition } from 'features/ajna/common/types'
+import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import { zero } from 'helpers/zero'
 

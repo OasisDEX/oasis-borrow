@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
+import { getMaxIncreasedValue } from 'features/omni-kit/protocols/ajna/helpers'
 import {
   OmniBorrowFormAction,
   OmniEarnFormAction,

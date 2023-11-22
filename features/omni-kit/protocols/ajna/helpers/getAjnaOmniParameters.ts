@@ -4,11 +4,6 @@ import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import type { ethers } from 'ethers'
-import type { AjnaGenericPosition } from 'features/ajna/common/types'
-import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAjnaCumulatives'
-import { getAjnaPoolAddress } from 'features/ajna/positions/common/helpers/getAjnaPoolAddress'
-import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
-import { getMaxIncreasedValue } from 'features/ajna/positions/common/helpers/getMaxIncreasedValue'
 import {
   ajnaActionDepositGenerateBorrow,
   ajnaActionOpenBorrow,
@@ -22,6 +17,13 @@ import {
   ajnaOmniClaimEarn,
 } from 'features/omni-kit/protocols/ajna/actions/earn'
 import { ajnaActionOpenMultiply } from 'features/omni-kit/protocols/ajna/actions/multiply'
+import {
+  getAjnaCumulatives,
+  getAjnaPoolAddress,
+  getAjnaPoolData,
+  getMaxIncreasedValue,
+} from 'features/omni-kit/protocols/ajna/helpers'
+import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniFormState, OmniGenericPosition } from 'features/omni-kit/types'
 import {
   OmniBorrowFormAction,

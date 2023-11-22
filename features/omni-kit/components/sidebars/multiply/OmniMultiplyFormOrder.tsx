@@ -3,10 +3,12 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SecondaryVariantType } from 'components/infoSection/Item'
-import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
-import { resolveIfCachedSwap } from 'features/ajna/positions/common/helpers/resolveIfCachedSwap'
-import { resolveSwapTokenPrice } from 'features/ajna/positions/common/helpers/resolveSwapTokenPrice'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import {
+  resolveIfCachedPosition,
+  resolveIfCachedSwap,
+  resolveSwapTokenPrice,
+} from 'features/omni-kit/protocols/ajna/helpers'
 import {
   OmniBorrowFormAction,
   OmniMultiplyFormAction,
