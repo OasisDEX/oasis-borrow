@@ -1,14 +1,17 @@
-import type { AjnaEarnPosition } from '@oasisdex/dma-library'
+import { type AjnaEarnPosition, normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
-import { ContentCardEarnNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardEarnNetValue'
-import { ContentCardMaxLendingLTV } from 'features/ajna/positions/common/components/contentCards/ContentCardMaxLendingLTV'
-import { ContentCardPositionLendingPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionLendingPrice'
-import { ContentCardTotalEarnings } from 'features/ajna/positions/common/components/contentCards/ContentCardTotalEarnings'
+import {
+  OmniContentCardEarnNetValue,
+  OmniContentCardMaxLendingLTV,
+  OmniContentCardTotalEarnings,
+} from 'features/omni-kit/components/details-section'
+import { OmniContentCardPositionLendingPrice } from 'features/omni-kit/components/details-section/ContentCardPositionLendingPrice'
 import {
   getAjnaSimulationRows,
   getLendingPriceColor,
 } from 'features/omni-kit/protocols/ajna/helpers'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -80,13 +83,13 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
       )}
       {!isOpening && (
         <>
-          <ContentCardTotalEarnings
+          <OmniContentCardTotalEarnings
             quoteToken={quoteToken}
             totalEarnings={position.totalEarnings.withFees}
             totalEarningsWithoutFees={position.totalEarnings.withoutFees}
             netPnL={position.pnl.withoutFees}
           />
-          <ContentCardEarnNetValue
+          <OmniContentCardEarnNetValue
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
             netValue={position.quoteTokenAmount}
@@ -94,7 +97,7 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
             afterNetValue={simulation?.quoteTokenAmount}
           />
           {!isOracless && (
-            <ContentCardMaxLendingLTV
+            <OmniContentCardMaxLendingLTV
               isLoading={isSimulationLoading}
               quoteToken={quoteToken}
               collateralToken={collateralToken}
@@ -102,16 +105,29 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
               afterMaxLendingPercentage={simulation?.maxRiskRatio.loanToValue}
             />
           )}
-          <ContentCardPositionLendingPrice
+          <OmniContentCardPositionLendingPrice
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
             priceFormat={priceFormat}
+            positionLendingPrice={
+              isShort ? normalizeValue(one.div(position.price)) : position.price
+            }
+            highestThresholdPrice={
+              isShort
+                ? one.div(position.pool.highestThresholdPrice)
+                : position.pool.highestThresholdPrice
+            }
+            afterPositionLendingPrice={
+              simulation
+                ? isShort
+                  ? normalizeValue(one.div(simulation.price))
+                  : simulation?.price
+                : undefined
+            }
             isShort={isShort}
-            positionLendingPrice={position.price}
-            highestThresholdPrice={position.pool.highestThresholdPrice}
-            afterPositionLendingPrice={simulation?.price}
             priceColor={lendingPriceColor.color}
             priceColorIndex={lendingPriceColor.index}
+            steps={3}
             withTooltips={isOracless}
           />
         </>
