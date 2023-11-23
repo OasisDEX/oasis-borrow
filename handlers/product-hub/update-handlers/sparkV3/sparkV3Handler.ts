@@ -160,8 +160,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
         const tokensAddresses = getNetworkContracts(NetworkIds.MAINNET).tokens
         // rewards are available for the ETH-like+ BTC-like/DAI pairs
         const hasRewards =
-          primaryTokenGroup &&
-          secondaryToken &&
+          !!primaryTokenGroup &&
+          !!secondaryToken &&
           ['ETH', 'BTC'].includes(primaryTokenGroup) &&
           secondaryToken === 'DAI'
 
