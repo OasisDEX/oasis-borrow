@@ -1,27 +1,27 @@
 import type BigNumber from 'bignumber.js'
-import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
+import type { ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
-import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
+import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
+import type { OmniContentCardCommonProps } from 'features/omni-kit/components/details-section/types'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface OmniContentCardMaxLendingLTVProps {
+interface OmniContentCardMaxLendingLTVProps extends OmniContentCardCommonProps {
+  afterMaxLendingPercentage?: BigNumber
+  collateralToken: string
   maxLendingPercentage: BigNumber
   quoteToken: string
-  collateralToken: string
-  afterMaxLendingPercentage?: BigNumber
-  isLoading?: boolean
-  changeVariant?: ChangeVariantType
 }
 
 export function OmniContentCardMaxLendingLTV({
-  maxLendingPercentage,
-  quoteToken,
+  afterMaxLendingPercentage,
+  changeVariant,
   collateralToken,
   isLoading,
-  afterMaxLendingPercentage,
-  changeVariant = 'positive',
+  maxLendingPercentage,
+  modalTheme,
+  quoteToken,
 }: OmniContentCardMaxLendingLTVProps) {
   const { t } = useTranslation()
 
@@ -42,13 +42,14 @@ export function OmniContentCardMaxLendingLTV({
       variant: changeVariant,
     },
     modal: (
-      <AjnaDetailsSectionContentSimpleModal
+      <DetailsSectionContentSimpleModal
         title={t('ajna.position-page.earn.manage.overview.max-lending-ltv')}
         description={t('ajna.position-page.earn.manage.overview.max-lending-ltv-modal-desc', {
           quoteToken,
           collateralToken,
         })}
         value={formatted.maxLendingPercentage}
+        theme={modalTheme}
       />
     ),
   }

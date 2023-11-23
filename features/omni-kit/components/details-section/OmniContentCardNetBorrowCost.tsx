@@ -1,5 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
+import type { OmniContentCardCommonProps } from 'features/omni-kit/components/details-section/types'
 import { formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { zero } from 'helpers/zero'
@@ -8,17 +9,17 @@ import type { FC } from 'react'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
-interface OmniContentCardNetBorrowCostProps {
+interface OmniContentCardNetBorrowCostProps extends OmniContentCardCommonProps {
+  afterNextBorrowCost?: BigNumber
   netBorrowCost: BigNumber
   netBorrowCostInUSDC: BigNumber
   quoteToken: string
-  afterNextBorrowCost?: BigNumber
 }
 
 export const OmniContentCardNetBorrowCost: FC<OmniContentCardNetBorrowCostProps> = ({
+  afterNextBorrowCost,
   netBorrowCost,
   netBorrowCostInUSDC,
-  afterNextBorrowCost,
   quoteToken,
 }) => {
   const { t } = useTranslation()

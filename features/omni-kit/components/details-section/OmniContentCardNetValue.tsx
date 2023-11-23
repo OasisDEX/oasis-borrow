@@ -1,28 +1,27 @@
 import type BigNumber from 'bignumber.js'
-import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
+import type { ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
+import type { OmniContentCardCommonProps } from 'features/omni-kit/components/details-section/types'
 import { formatFiatBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface ContentCardNetValueProps {
-  isLoading?: boolean
-  netValue: BigNumber
+interface ContentCardNetValueProps extends OmniContentCardCommonProps {
   afterNetValue?: BigNumber
+  netValue: BigNumber
   pnl: BigNumber
   pnlNotAvailable?: boolean
   showPnl: boolean
-  changeVariant?: ChangeVariantType
 }
 
 export function OmniContentCardNetValue({
+  afterNetValue,
+  changeVariant,
   isLoading,
   netValue,
-  afterNetValue,
   pnl,
   pnlNotAvailable = false,
   showPnl,
-  changeVariant = 'positive',
 }: ContentCardNetValueProps) {
   const { t } = useTranslation()
 

@@ -1,9 +1,10 @@
 import type BigNumber from 'bignumber.js'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
-import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
+import type { ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
+import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
 import { Steps } from 'components/Steps'
-import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
+import type { OmniContentCardCommonProps } from 'features/omni-kit/components/details-section/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -60,34 +61,33 @@ function OmniContentCardPositionLendingPriceModal({
   )
 }
 
-interface OmniContentCardPositionLendingPriceProps {
-  isLoading?: boolean
-  quoteToken: string
-  priceFormat: string
-  positionLendingPrice: BigNumber
-  highestThresholdPrice: BigNumber
+interface OmniContentCardPositionLendingPriceProps extends OmniContentCardCommonProps {
   afterPositionLendingPrice?: BigNumber
+  highestThresholdPrice: BigNumber
   isShort: boolean
+  positionLendingPrice: BigNumber
   priceColor: string
   priceColorIndex: number
+  priceFormat: string
+  quoteToken: string
   steps: number
   withTooltips?: boolean
-  changeVariant?: ChangeVariantType
 }
 
 export function OmniContentCardPositionLendingPrice({
-  isLoading,
-  quoteToken,
-  priceFormat,
-  positionLendingPrice,
-  highestThresholdPrice,
   afterPositionLendingPrice,
+  changeVariant,
+  highestThresholdPrice,
+  isLoading,
   isShort,
+  modalTheme,
+  positionLendingPrice,
   priceColor,
   priceColorIndex,
+  priceFormat,
+  quoteToken,
   steps,
   withTooltips,
-  changeVariant = 'positive',
 }: OmniContentCardPositionLendingPriceProps) {
   const { t } = useTranslation()
 
@@ -121,8 +121,9 @@ export function OmniContentCardPositionLendingPrice({
       variant: changeVariant,
     },
     modal: (
-      <AjnaDetailsSectionContentSimpleModal
+      <DetailsSectionContentSimpleModal
         title={t('ajna.position-page.earn.manage.overview.position-lending-price')}
+        theme={modalTheme}
       >
         <OmniContentCardPositionLendingPriceModal
           positionLendingPrice={formatted.positionLendingPrice}
@@ -131,7 +132,7 @@ export function OmniContentCardPositionLendingPrice({
           quoteToken={quoteToken}
           isShort={isShort}
         />
-      </AjnaDetailsSectionContentSimpleModal>
+      </DetailsSectionContentSimpleModal>
     ),
   }
 

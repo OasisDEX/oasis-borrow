@@ -1,27 +1,27 @@
 import type BigNumber from 'bignumber.js'
-import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
+import type { ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
-import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
+import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
+import type { OmniContentCardCommonProps } from 'features/omni-kit/components/details-section/types'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Text } from 'theme-ui'
 
-interface OmniContentCardTotalEarningsProps {
-  isLoading?: boolean
+interface OmniContentCardTotalEarningsProps extends OmniContentCardCommonProps {
+  afterTotalEarnings?: BigNumber
+  netPnL: BigNumber
   quoteToken: string
   totalEarnings: BigNumber
   totalEarningsWithoutFees: BigNumber
-  afterTotalEarnings?: BigNumber
-  netPnL: BigNumber
-  changeVariant?: ChangeVariantType
 }
 
 export function OmniContentCardTotalEarnings({
+  modalTheme,
+  netPnL,
   quoteToken,
   totalEarnings,
   totalEarningsWithoutFees,
-  netPnL,
 }: OmniContentCardTotalEarningsProps) {
   const { t } = useTranslation()
 
@@ -35,16 +35,16 @@ export function OmniContentCardTotalEarnings({
     title: t('ajna.position-page.earn.manage.overview.total-earnings'),
     value: formatted.totalEarningsWithoutFees,
     unit: quoteToken,
-
     footnote: t('ajna.position-page.earn.manage.overview.net-pnl', {
       netPnL: formatted.netPnL,
     }),
     modal: (
-      <AjnaDetailsSectionContentSimpleModal
+      <DetailsSectionContentSimpleModal
         title={t('ajna.position-page.earn.manage.overview.total-earnings')}
         description={t('ajna.position-page.earn.manage.overview.total-earnings-modal-desc', {
           quoteToken,
         })}
+        theme={modalTheme}
       >
         <Card variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
           {`${formatted.totalEarningsWithoutFees} ${quoteToken}`}
@@ -55,7 +55,7 @@ export function OmniContentCardTotalEarnings({
         <Card variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
           {`${formatted.totalEarnings} ${quoteToken}`}
         </Card>
-      </AjnaDetailsSectionContentSimpleModal>
+      </DetailsSectionContentSimpleModal>
     ),
   }
 

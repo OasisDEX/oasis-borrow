@@ -25,7 +25,7 @@ export interface DetailsSectionContentCardChangePillProps {
   isLoading?: boolean
   tooltip?: string
   value?: string | [string, string, string]
-  variant: ChangeVariantType
+  variant?: ChangeVariantType
 }
 
 interface DetailsSectionContentCardLinkProps {
@@ -86,7 +86,7 @@ export function DetailsSectionContentCardChangePill({
   isLoading,
   tooltip,
   value,
-  variant,
+  variant = 'positive',
 }: DetailsSectionContentCardChangePillProps) {
   const isValueArray = Array.isArray(value)
 

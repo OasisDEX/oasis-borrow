@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import type { ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar.types'
+import type { OmniContentCardCommonProps } from 'features/omni-kit/components/details-section/types'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatDecimalAsPercent, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
@@ -126,10 +127,7 @@ function OmniContentCardLtvModal({
   )
 }
 
-interface ContentCardLtvProps {
-  loanToValue: BigNumber
-  liquidationThreshold: BigNumber
-  maxLoanToValue?: BigNumber
+interface OmniContentCardLtvProps extends OmniContentCardCommonProps {
   afterLoanToValue?: BigNumber
   automation: {
     isStopLossEnabled: boolean
@@ -137,15 +135,18 @@ interface ContentCardLtvProps {
     isAutomationAvailable?: boolean
     stopLossLevel?: BigNumber
   }
+  liquidationThreshold: BigNumber
+  loanToValue: BigNumber
+  maxLoanToValue?: BigNumber
 }
 
 export function OmniContentCardLtv({
-  loanToValue,
-  liquidationThreshold,
   afterLoanToValue,
-  maxLoanToValue,
   automation,
-}: ContentCardLtvProps) {
+  liquidationThreshold,
+  loanToValue,
+  maxLoanToValue,
+}: OmniContentCardLtvProps) {
   const { t } = useTranslation()
   const { stopLossLevel, isStopLossEnabled, isAutomationDataLoaded, isAutomationAvailable } =
     automation

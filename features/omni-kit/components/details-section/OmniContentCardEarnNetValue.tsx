@@ -1,27 +1,27 @@
 import type BigNumber from 'bignumber.js'
-import type { ChangeVariantType, ContentCardProps } from 'components/DetailsSectionContentCard'
+import type { ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
-import { AjnaDetailsSectionContentSimpleModal } from 'features/ajna/common/components/AjnaDetailsSectionContentSimpleModal'
+import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
+import type { OmniContentCardCommonProps } from 'features/omni-kit/components/details-section/types'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface OmniContentCardEarnNetValueProps {
-  isLoading?: boolean
-  quoteToken: string
-  netValue: BigNumber
+interface OmniContentCardEarnNetValueProps extends OmniContentCardCommonProps {
   afterNetValue?: BigNumber
+  netValue: BigNumber
   netValueUSD?: BigNumber
-  changeVariant?: ChangeVariantType
+  quoteToken: string
 }
 
 export function OmniContentCardEarnNetValue({
-  isLoading,
-  quoteToken,
-  netValue,
   afterNetValue,
+  changeVariant,
+  isLoading,
+  modalTheme,
+  netValue,
   netValueUSD,
-  changeVariant = 'positive',
+  quoteToken,
 }: OmniContentCardEarnNetValueProps) {
   const { t } = useTranslation()
 
@@ -41,10 +41,11 @@ export function OmniContentCardEarnNetValue({
       variant: changeVariant,
     },
     modal: (
-      <AjnaDetailsSectionContentSimpleModal
+      <DetailsSectionContentSimpleModal
         title={t('ajna.position-page.earn.manage.overview.net-value')}
         description={t('ajna.position-page.earn.manage.overview.net-value-modal-desc')}
         value={`${formatted.netValue} ${quoteToken}`}
+        theme={modalTheme}
       />
     ),
   }
