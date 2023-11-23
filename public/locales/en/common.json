@@ -2960,6 +2960,7 @@
       "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}.",
       "withdraw-close-to-max-ltv": "Withdrawing {{amount}} {{collateralToken}}, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
       "generate-close-to-max-ltv": "Generating {{amount}} {{quoteToken}} of debt, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
+      "liquidation-price-close-to-market-price": "Warning your Liquidation Price is close to Market price please check that your liquidation Price is not above Market price to avoid being liquidated with this action.",
       "is-being-liquidated": "Your position is currently being liquidated. A penalty has been applied increasing your debt. You still can <1>Deposit Collateral</1> or <1>Repay your Debt</1> to remove it from the liquidation auction. <2>Read more about <1>Ajna Liquidations →</1></2>",
       "collateral-to-claim": "There is collateral tokens for you to claim. These tokens don't earn any yield. <2>Read more about <1>Ajna Lending →</1></2>",
       "price-below-htp": "Unutilized Liquidity: Lending at this price means you are not earning any yield. <1>A deposit fee of 1 day's interest applies to all deposits below the active liquidity range.</1> <2><1>Help me pick correctly →</1></2>",
