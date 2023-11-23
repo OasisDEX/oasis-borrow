@@ -20,7 +20,6 @@ import { map, shareReplay } from 'rxjs/operators'
 export interface AjnaBorrowishPositionAuction {
   isBeingLiquidated: boolean
   isLiquidated: boolean
-  isPartiallyLiquidated: boolean
 }
 
 export interface AjnaEarnPositionAuction {
@@ -53,7 +52,6 @@ function parseAggregatedDataAuction({
         return {
           isBeingLiquidated: false,
           isLiquidated: false,
-          isPartiallyLiquidated: false,
         }
       }
 
@@ -68,10 +66,6 @@ function parseAggregatedDataAuction({
       )
 
       const isBeingLiquidated = auction.inLiquidation
-      const isPartiallyLiquidated =
-        mostRecentHistoryEvent.kind === 'AuctionSettle' &&
-        ajnaBorrowishPosition.debtAmount.gt(zero) &&
-        !isEventAfterAuction
 
       const isLiquidated =
         mostRecentHistoryEvent.kind === 'AuctionSettle' &&
@@ -81,7 +75,6 @@ function parseAggregatedDataAuction({
       return {
         isBeingLiquidated,
         isLiquidated,
-        isPartiallyLiquidated,
       }
     }
     case OmniProductType.Earn: {
