@@ -42,8 +42,10 @@ export function SkeletonLine({
 
   return (
     <Box
+      as="span"
       sx={{
         position: 'relative',
+        display: 'block',
         width,
         height,
         borderRadius: circle || doughnut ? 'ellipse' : radius,
@@ -75,12 +77,14 @@ export function SkeletonLine({
     >
       {doughnut && (
         <Box
+          as="span"
           sx={{
             position: 'absolute',
             top: doughnut,
             right: doughnut,
             bottom: doughnut,
             left: doughnut,
+            display: 'block',
             bg: 'neutral10',
             borderRadius: 'ellipse',
             zIndex: 1,
@@ -96,6 +100,7 @@ export function Skeleton({ cols = 1, count = 1, gap = 3, width = '100%', ...rest
 
   return (
     <Grid
+      as="span"
       gap={gap}
       sx={{
         width: isPercentageWidth ? '100%' : width,

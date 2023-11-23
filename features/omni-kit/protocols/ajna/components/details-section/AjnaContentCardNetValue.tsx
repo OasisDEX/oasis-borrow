@@ -6,15 +6,15 @@ import { formatFiatBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface ContentCardNetValueProps extends OmniContentCardCommonProps {
-  afterNetValue?: BigNumber
+interface AjnaContentCardNetValueProps extends OmniContentCardCommonProps {
   netValue: BigNumber
+  afterNetValue?: BigNumber
   pnl: BigNumber
   pnlNotAvailable?: boolean
   showPnl: boolean
 }
 
-export function OmniContentCardNetValue({
+export function AjnaContentCardNetValue({
   afterNetValue,
   changeVariant,
   isLoading,
@@ -22,7 +22,7 @@ export function OmniContentCardNetValue({
   pnl,
   pnlNotAvailable = false,
   showPnl,
-}: ContentCardNetValueProps) {
+}: AjnaContentCardNetValueProps) {
   const { t } = useTranslation()
 
   const formatted = {
@@ -33,7 +33,6 @@ export function OmniContentCardNetValue({
     }`,
   }
 
-  // TODO remove ajna translation dependency
   const contentCardSettings: ContentCardProps = {
     title: t('ajna.position-page.multiply.common.overview.net-value'),
     value: formatted.netValue,

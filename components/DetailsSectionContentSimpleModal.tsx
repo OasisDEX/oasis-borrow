@@ -1,19 +1,18 @@
 import type { FC, ReactNode } from 'react'
 import React from 'react'
-import { Card, Grid, Heading, Text } from 'theme-ui'
+import type { Theme } from 'theme-ui'
+import { Card, Grid, Heading, Text, ThemeUIProvider } from 'theme-ui'
 
 export interface DetailsSectionContentSimpleModalProps {
-  title: string
   description?: string
+  theme?: Theme
+  title: string
   value?: ReactNode
 }
 
-export const DetailsSectionContentSimpleModal: FC<DetailsSectionContentSimpleModalProps> = ({
-  title,
-  children,
-  description,
-  value,
-}) => (
+const DetailsSectionContentSimpleModalContent: FC<
+  Omit<DetailsSectionContentSimpleModalProps, 'theme'>
+> = ({ title, children, description, value }) => (
   <Grid gap={2}>
     <Heading variant="header5" sx={{ fontWeight: 'bold' }}>
       {title}
@@ -31,3 +30,15 @@ export const DetailsSectionContentSimpleModal: FC<DetailsSectionContentSimpleMod
     )}
   </Grid>
 )
+
+export const DetailsSectionContentSimpleModal: FC<DetailsSectionContentSimpleModalProps> = ({
+  theme,
+  ...rest
+}) =>
+  theme ? (
+    <ThemeUIProvider theme={theme}>
+      <DetailsSectionContentSimpleModalContent {...rest} />
+    </ThemeUIProvider>
+  ) : (
+    <DetailsSectionContentSimpleModalContent {...rest} />
+  )

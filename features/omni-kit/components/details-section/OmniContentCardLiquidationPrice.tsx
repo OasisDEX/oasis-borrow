@@ -1,34 +1,37 @@
 import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
+import type { OmniContentCardCommonProps } from 'features/omni-kit/components/details-section/types'
 import { formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
-export const OmniContentCardLiquidationPrice = ({
-  liquidationPriceInDebt,
-  afterLiquidationPriceInDebt,
-  liquidationPriceInCollateral,
-  afterLiquidationPriceInCollateral,
-  collateralPrice,
-  liquidationPenalty,
-  quotePrice,
-  quoteToken,
-  isShort,
-  collateralToken,
-}: {
-  liquidationPriceInDebt: BigNumber
-  afterLiquidationPriceInDebt?: BigNumber
-  liquidationPriceInCollateral: BigNumber
+interface OmniContentCardLiquidationPriceProps extends OmniContentCardCommonProps {
   afterLiquidationPriceInCollateral?: BigNumber
+  afterLiquidationPriceInDebt?: BigNumber
   collateralPrice: BigNumber
-  quotePrice: BigNumber
-  quoteToken: string
   collateralToken: string
   isShort: boolean
   liquidationPenalty: BigNumber
-}) => {
+  liquidationPriceInCollateral: BigNumber
+  liquidationPriceInDebt: BigNumber
+  quotePrice: BigNumber
+  quoteToken: string
+}
+
+export const OmniContentCardLiquidationPrice = ({
+  afterLiquidationPriceInCollateral,
+  afterLiquidationPriceInDebt,
+  collateralPrice,
+  collateralToken,
+  isShort,
+  liquidationPenalty,
+  liquidationPriceInCollateral,
+  liquidationPriceInDebt,
+  quotePrice,
+  quoteToken,
+}: OmniContentCardLiquidationPriceProps) => {
   const { t } = useTranslation()
 
   const belowCurrentPricePercentage = formatDecimalAsPercent(

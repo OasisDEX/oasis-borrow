@@ -1,7 +1,9 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import { ContentFooterItemsBorrow } from 'features/ajna/positions/borrow/components/ContentFooterItemsBorrow'
-import { ContentFooterItemsMultiply } from 'features/ajna/positions/multiply/components/ContentFooterItemsMultiply'
+import {
+  AjnaContentFooterBorrow,
+  AjnaContentFooterMultiply,
+} from 'features/omni-kit/protocols/ajna/components/details-section'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
@@ -34,7 +36,7 @@ export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooter
   afterBuyingPower,
 }) => {
   return productType === OmniProductType.Borrow ? (
-    <ContentFooterItemsBorrow
+    <AjnaContentFooterBorrow
       isLoading={isSimulationLoading}
       collateralToken={collateralToken}
       quoteToken={quoteToken}
@@ -47,7 +49,7 @@ export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooter
       changeVariant={changeVariant}
     />
   ) : (
-    <ContentFooterItemsMultiply
+    <AjnaContentFooterMultiply
       isLoading={isSimulationLoading}
       collateralToken={collateralToken}
       quoteToken={quoteToken}

@@ -1,8 +1,10 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import { ContentFooterItemsEarnManage } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnManage'
-import { ContentFooterItemsEarnOpen } from 'features/ajna/positions/earn/components/ContentFooterItemsEarnOpen'
+import {
+  AjnaContentFooterEarnManage,
+  AjnaContentFooterEarnOpen,
+} from 'features/omni-kit/protocols/ajna/components/details-section'
 import { zero } from 'helpers/zero'
 import type { FC } from 'react'
 import React from 'react'
@@ -39,7 +41,7 @@ export const AjnaEarnDetailsSectionFooter: FC<AjnaEarnDetailsSectionFooterProps>
   return (
     <>
       {isOpening && (
-        <ContentFooterItemsEarnOpen
+        <AjnaContentFooterEarnOpen
           days={30}
           quoteToken={quoteToken}
           isOracless={isOracless}
@@ -49,7 +51,7 @@ export const AjnaEarnDetailsSectionFooter: FC<AjnaEarnDetailsSectionFooterProps>
         />
       )}
       {!isOpening && (
-        <ContentFooterItemsEarnManage
+        <AjnaContentFooterEarnManage
           isLoading={isSimulationLoading}
           collateralToken={collateralToken}
           quoteToken={quoteToken}
