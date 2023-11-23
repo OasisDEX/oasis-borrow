@@ -2,9 +2,7 @@ import type BigNumber from 'bignumber.js'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import type { ContentCardProps } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
-import {
-  DetailsSectionContentSimpleModal,
-} from 'components/DetailsSectionContentSimpleModal'
+import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
 import type { OmniContentCardCommonProps } from 'features/omni-kit/components/details-section/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
