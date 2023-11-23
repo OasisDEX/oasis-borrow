@@ -7,6 +7,7 @@ import { ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import type { AjnaProduct } from 'features/ajna/common/types'
 import { AjnaProductController } from 'features/ajna/positions/common/controls/AjnaProductController'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -44,6 +45,18 @@ export default AjnaPositionPage
 export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
   const network = query.networkOrProduct as string
   const [product, pool, id = null] = query.position as string[]
+
+  // for now we can assume that all existing ajna product under this route should be redirected
+  // when Ajna v2 is available on DPM level, redirect needs to happen during positions loading
+  if (id) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: `${EXTERNAL_LINKS.AJNA.OLD}/ethereum/ajna/${product}/${pool}/${id}`,
+      },
+    }
+  }
+
   const [collateralToken, quoteToken] = pool.split('-')
   const caseSensitiveCollateralToken = isAddress(collateralToken)
     ? collateralToken.toLowerCase()

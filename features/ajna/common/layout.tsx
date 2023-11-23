@@ -1,7 +1,7 @@
 import { Footer } from 'components/Footer'
 import { PageSEOTags } from 'components/HeadTags'
 import { WithAnnouncementLayout } from 'components/layouts/WithAnnouncementLayout'
-import { AjnaNavigationController } from 'features/navigation/controls/AjnaNavigationController'
+import { NavigationController } from 'features/navigation/controls/NavigationController'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
@@ -15,7 +15,7 @@ export function AjnaLayout({ children }: PropsWithChildren<{}>) {
         sx={{ zIndex: 2, position: 'relative' }}
         showAnnouncement={false}
         footer={<Footer />}
-        header={<AjnaNavigationController />}
+        header={<NavigationController />}
         bg={<BackgroundLight />}
       >
         {children}
