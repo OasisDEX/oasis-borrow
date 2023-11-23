@@ -169,6 +169,17 @@ const availableTokenPairs: TokenPairConfig[] = [
       },
     },
   },
+  {
+    collateral: 'WBTC',
+    debt: 'DAI',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [],
+      },
+    },
+  },
 ]
 
 const borrowStrategies: IStrategyConfig[] = availableTokenPairs
