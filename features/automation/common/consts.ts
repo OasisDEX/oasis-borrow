@@ -84,6 +84,7 @@ export const aaveTokenPairsAllowedAutomation = [
   ['WSTETH', 'DAI'],
   ['RETH', 'DAI'],
   ['CBETH', 'DAI'],
+  ['WBTC', 'DAI'],
 ]
 
 export const vaultIdsThatAutoBuyTriggerShouldBeRecreated = [
