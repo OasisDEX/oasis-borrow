@@ -145,4 +145,16 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     earnStrategyDescription: 'SDAI/USDT Yield Loop',
     managementType: 'active',
   },
+  {
+    product: [ProductHubProductType.Multiply],
+    primaryToken: 'WBTC',
+    primaryTokenGroup: 'BTC',
+    secondaryToken: 'DAI',
+    depositToken: 'DAI',
+    network: NetworkNames.ethereumMainnet,
+    protocol: LendingProtocol.SparkV3,
+    label: 'WBTC/DAI',
+    multiplyStrategyType: 'long',
+    multiplyStrategy: 'Long WBTC',
+  },
 ]
