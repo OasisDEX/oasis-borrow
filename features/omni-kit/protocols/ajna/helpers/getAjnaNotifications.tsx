@@ -69,7 +69,6 @@ const ajnaNotifications: {
   earningNoApy: NotificationCallbackWithParams<EarningNoApyParams>
   emptyPosition: NotificationCallbackWithParams<EmptyPositionParams>
   gotLiquidated: NotificationCallbackWithParams<null>
-  gotPartiallyLiquidated: NotificationCallbackWithParams<null>
   lendingPriceFrozen: NotificationCallbackWithParams<LendingPriceFrozenParams>
   priceAboveMomp: NotificationCallbackWithParams<PriceAboveMompParams>
   safetySwichOpen: NotificationCallbackWithParams<null>
@@ -143,19 +142,6 @@ const ajnaNotifications: {
     message: {
       component: (
         <AjnaLiquidationNotificationWithLink translationKey="ajna.position-page.common.notifications.got-liquidated.message" />
-      ),
-    },
-    icon: coins_cross,
-    type: 'error',
-    closable: true,
-  }),
-  gotPartiallyLiquidated: () => ({
-    title: {
-      translationKey: 'ajna.position-page.common.notifications.got-partially-liquidated.title',
-    },
-    message: {
-      component: (
-        <AjnaLiquidationNotificationWithLink translationKey="ajna.position-page.common.notifications.got-partially-liquidated.message" />
       ),
     },
     icon: coins_cross,
@@ -302,10 +288,6 @@ export function getAjnaNotifications({
 
       if (borrowishPositionAuction.isBeingLiquidated) {
         notifications.push(ajnaNotifications.beingLiquidated(null))
-      }
-
-      if (borrowishPositionAuction.isPartiallyLiquidated) {
-        notifications.push(ajnaNotifications.gotPartiallyLiquidated(null))
       }
 
       if (borrowishPositionAuction.isLiquidated) {

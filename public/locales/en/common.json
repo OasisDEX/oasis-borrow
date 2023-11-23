@@ -2784,10 +2784,6 @@
             "title": "This position got liquidated. You have collateral to withdraw",
             "message": "The liquidation process is over you can now reclaim any collateral left. <0>Read more about Ajna Liquidations →</0>"
           },
-          "got-partially-liquidated": {
-            "title": "This position was partially liquidated. Some part of your collateral was sold to cover your debt",
-            "message": "Your debt was increased by 90 days before liquidation as a penalty. During the liquidation your position recollateralized and was removed from liquidation. <0>Read more about Ajna Liquidations →</0>"
-          },
           "safety-switch-open": {
             "title": "Opening Ajna positions temporary disabled",
             "message": "Due to a technical issue we have currently disabled opening new Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
