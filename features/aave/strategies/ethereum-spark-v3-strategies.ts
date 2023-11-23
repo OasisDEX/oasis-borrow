@@ -176,7 +176,21 @@ const availableTokenPairs: TokenPairConfig[] = [
     productTypes: {
       [ProductType.Multiply]: {
         featureToggle: undefined,
-        additionalManageActions: [],
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Borrow]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
       },
     },
   },

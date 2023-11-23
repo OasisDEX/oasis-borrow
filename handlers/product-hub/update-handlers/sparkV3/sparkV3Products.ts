@@ -154,7 +154,7 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.SparkV3,
     label: 'WBTC/DAI',
-    multiplyStrategyType: 'short',
+    multiplyStrategyType: 'long',
     multiplyStrategy: 'Long WBTC',
   },
 ]
