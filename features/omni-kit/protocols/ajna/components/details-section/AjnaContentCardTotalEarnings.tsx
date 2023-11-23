@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Text } from 'theme-ui'
 
-interface OmniContentCardTotalEarningsProps extends OmniContentCardCommonProps {
+interface AjnaContentCardTotalEarningsProps extends OmniContentCardCommonProps {
   afterTotalEarnings?: BigNumber
   netPnL: BigNumber
   quoteToken: string
@@ -16,13 +16,13 @@ interface OmniContentCardTotalEarningsProps extends OmniContentCardCommonProps {
   totalEarningsWithoutFees: BigNumber
 }
 
-export function OmniContentCardTotalEarnings({
+export function AjnaContentCardTotalEarnings({
   modalTheme,
   netPnL,
   quoteToken,
   totalEarnings,
   totalEarningsWithoutFees,
-}: OmniContentCardTotalEarningsProps) {
+}: AjnaContentCardTotalEarningsProps) {
   const { t } = useTranslation()
 
   const formatted = {

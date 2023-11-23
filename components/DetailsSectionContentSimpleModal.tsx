@@ -10,7 +10,7 @@ export interface DetailsSectionContentSimpleModalProps {
   value?: ReactNode
 }
 
-export const DetailsSectionContentSimpleModalContent: FC<
+const DetailsSectionContentSimpleModalContent: FC<
   Omit<DetailsSectionContentSimpleModalProps, 'theme'>
 > = ({ title, children, description, value }) => (
   <Grid gap={2}>

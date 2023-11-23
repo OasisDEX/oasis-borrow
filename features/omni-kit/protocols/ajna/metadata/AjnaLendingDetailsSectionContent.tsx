@@ -1,17 +1,22 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import { ContentCardCollateralLocked } from 'features/ajna/positions/common/components/contentCards/ContentCardCollateralLocked'
-import { ContentCardLiquidationPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardLiquidationPrice'
-import { ContentCardLoanToValue } from 'features/ajna/positions/common/components/contentCards/ContentCardLoanToValue'
-import { ContentCardNetBorrowCost } from 'features/ajna/positions/common/components/contentCards/ContentCardNetBorrowCost'
-import { ContentCardNetValue } from 'features/ajna/positions/common/components/contentCards/ContentCardNetValue'
-import { ContentCardPositionDebt } from 'features/ajna/positions/common/components/contentCards/ContentCardPositionDebt'
-import { ContentCardThresholdPrice } from 'features/ajna/positions/common/components/contentCards/ContentCardThresholdPrice'
+import {
+  OmniContentCardCollateralLocked,
+  OmniContentCardPositionDebt,
+} from 'features/omni-kit/components/details-section'
+import {
+  AjnaContentCardLiquidationPrice,
+  AjnaContentCardLoanToValue,
+  AjnaContentCardNetBorrowCost,
+  AjnaContentCardNetValue,
+  AjnaContentCardThresholdPrice,
+} from 'features/omni-kit/protocols/ajna/components/details-section'
 import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'
 import React from 'react'
+import { ajnaExtensionTheme } from 'theme'
 
 interface AjnaDetailsSectionContentProps {
   afterPositionDebt?: BigNumber
@@ -68,7 +73,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
   return (
     <>
-      <ContentCardLiquidationPrice
+      <AjnaContentCardLiquidationPrice
         isLoading={isSimulationLoading}
         priceFormat={priceFormat}
         liquidationPrice={liquidationPrice}
@@ -78,9 +83,10 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
         {...(!isOracless && {
           belowCurrentPrice,
         })}
+        modalTheme={ajnaExtensionTheme}
       />
       {isOracless ? (
-        <ContentCardThresholdPrice
+        <AjnaContentCardThresholdPrice
           isLoading={isSimulationLoading}
           thresholdPrice={thresholdPrice}
           debtAmount={position.debtAmount}
@@ -92,9 +98,10 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
           {...(shouldShowDynamicLtv && {
             lup: position.pool.lup,
           })}
+          modalTheme={ajnaExtensionTheme}
         />
       ) : (
-        <ContentCardLoanToValue
+        <AjnaContentCardLoanToValue
           isLoading={isSimulationLoading}
           loanToValue={position.riskRatio.loanToValue}
           afterLoanToValue={simulation?.riskRatio.loanToValue}
@@ -102,11 +109,13 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
             dynamicMaxLtv: position.maxRiskRatio.loanToValue,
           })}
           changeVariant={changeVariant}
+          modalTheme={ajnaExtensionTheme}
         />
       )}
+
       {productType === OmniProductType.Borrow && (
         <>
-          <ContentCardCollateralLocked
+          <OmniContentCardCollateralLocked
             isLoading={isSimulationLoading}
             collateralToken={collateralToken}
             collateralLocked={position.collateralAmount}
@@ -115,8 +124,9 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
             {...(!isOracless && {
               collateralLockedUSD: position.collateralAmount.times(collateralPrice),
             })}
+            modalTheme={ajnaExtensionTheme}
           />
-          <ContentCardPositionDebt
+          <OmniContentCardPositionDebt
             isLoading={isSimulationLoading}
             quoteToken={quoteToken}
             positionDebt={position.debtAmount}
@@ -125,20 +135,21 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
             {...(!isOracless && {
               positionDebtUSD: position.debtAmount.times(quotePrice),
             })}
+            modalTheme={ajnaExtensionTheme}
           />
         </>
       )}
-
       {productType === OmniProductType.Multiply && (
         <>
-          <ContentCardNetBorrowCost
+          <AjnaContentCardNetBorrowCost
             collateralToken={collateralToken}
             quoteToken={quoteToken}
             owner={owner}
             netBorrowCost={position.pool.interestRate}
             changeVariant={changeVariant}
+            modalTheme={ajnaExtensionTheme}
           />
-          <ContentCardNetValue
+          <AjnaContentCardNetValue
             isLoading={isSimulationLoading}
             netValue={position.collateralAmount
               .times(collateralPrice)
@@ -152,6 +163,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
             pnlNotAvailable={isProxyWithManyPositions}
             showPnl={!isOpening}
             changeVariant={changeVariant}
+            modalTheme={ajnaExtensionTheme}
           />
         </>
       )}

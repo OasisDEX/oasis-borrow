@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Heading, Text } from 'theme-ui'
 
-interface OmniContentCardPositionLendingPriceModalProps {
+interface AjnaContentCardPositionLendingPriceModalProps {
   positionLendingPrice: string
   highestThresholdPrice: string
   priceFormat: string
@@ -18,13 +18,13 @@ interface OmniContentCardPositionLendingPriceModalProps {
   isShort: boolean
 }
 
-function OmniContentCardPositionLendingPriceModal({
+function AjnaContentCardPositionLendingPriceModal({
   positionLendingPrice,
   highestThresholdPrice,
   priceFormat,
   quoteToken,
   isShort,
-}: OmniContentCardPositionLendingPriceModalProps) {
+}: AjnaContentCardPositionLendingPriceModalProps) {
   const { t } = useTranslation()
 
   return (
@@ -61,7 +61,7 @@ function OmniContentCardPositionLendingPriceModal({
   )
 }
 
-interface OmniContentCardPositionLendingPriceProps extends OmniContentCardCommonProps {
+interface AjnaContentCardPositionLendingPriceProps extends OmniContentCardCommonProps {
   afterPositionLendingPrice?: BigNumber
   highestThresholdPrice: BigNumber
   isShort: boolean
@@ -74,7 +74,7 @@ interface OmniContentCardPositionLendingPriceProps extends OmniContentCardCommon
   withTooltips?: boolean
 }
 
-export function OmniContentCardPositionLendingPrice({
+export function AjnaContentCardPositionLendingPrice({
   afterPositionLendingPrice,
   changeVariant,
   highestThresholdPrice,
@@ -88,7 +88,7 @@ export function OmniContentCardPositionLendingPrice({
   quoteToken,
   steps,
   withTooltips,
-}: OmniContentCardPositionLendingPriceProps) {
+}: AjnaContentCardPositionLendingPriceProps) {
   const { t } = useTranslation()
 
   const formatted = {
@@ -125,7 +125,7 @@ export function OmniContentCardPositionLendingPrice({
         title={t('ajna.position-page.earn.manage.overview.position-lending-price')}
         theme={modalTheme}
       >
-        <OmniContentCardPositionLendingPriceModal
+        <AjnaContentCardPositionLendingPriceModal
           positionLendingPrice={formatted.positionLendingPrice}
           highestThresholdPrice={formatted.highestThresholdPrice}
           priceFormat={priceFormat}

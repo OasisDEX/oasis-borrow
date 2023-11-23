@@ -7,14 +7,14 @@ import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface OmniContentCardEarnNetValueProps extends OmniContentCardCommonProps {
+interface AjnaContentCardEarnNetValueProps extends OmniContentCardCommonProps {
   afterNetValue?: BigNumber
   netValue: BigNumber
   netValueUSD?: BigNumber
   quoteToken: string
 }
 
-export function OmniContentCardEarnNetValue({
+export function AjnaContentCardEarnNetValue({
   afterNetValue,
   changeVariant,
   isLoading,
@@ -22,7 +22,7 @@ export function OmniContentCardEarnNetValue({
   netValue,
   netValueUSD,
   quoteToken,
-}: OmniContentCardEarnNetValueProps) {
+}: AjnaContentCardEarnNetValueProps) {
   const { t } = useTranslation()
 
   const formatted = {

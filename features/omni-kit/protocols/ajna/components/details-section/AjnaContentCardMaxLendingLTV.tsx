@@ -7,14 +7,14 @@ import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface OmniContentCardMaxLendingLTVProps extends OmniContentCardCommonProps {
+interface AjnaContentCardMaxLendingLTVProps extends OmniContentCardCommonProps {
   afterMaxLendingPercentage?: BigNumber
   collateralToken: string
   maxLendingPercentage: BigNumber
   quoteToken: string
 }
 
-export function OmniContentCardMaxLendingLTV({
+export function AjnaContentCardMaxLendingLTV({
   afterMaxLendingPercentage,
   changeVariant,
   collateralToken,
@@ -22,7 +22,7 @@ export function OmniContentCardMaxLendingLTV({
   maxLendingPercentage,
   modalTheme,
   quoteToken,
-}: OmniContentCardMaxLendingLTVProps) {
+}: AjnaContentCardMaxLendingLTVProps) {
   const { t } = useTranslation()
 
   const formatted = {
