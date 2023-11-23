@@ -77,7 +77,7 @@ export function getOmniIsFormEmpty({
 
       return !depositAmount && !generateAmount && !paybackAmount && !withdrawAmount && !loanToValue
     }
-    case OmniProductType.Multiply:
+    case OmniProductType.Multiply: {
       const { depositAmount, loanToValue, withdrawAmount, generateAmount, paybackAmount, action } =
         stateTypeWrapper.state
 
@@ -97,6 +97,7 @@ export function getOmniIsFormEmpty({
         default:
           return true
       }
+    }
     case OmniProductType.Earn:
       throw Error('Earn isFormEmpty has to be handled separately')
   }

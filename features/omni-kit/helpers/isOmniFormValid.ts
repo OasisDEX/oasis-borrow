@@ -52,7 +52,7 @@ export const isOmniFormValid = ({
       }
     }
 
-    case OmniProductType.Multiply:
+    case OmniProductType.Multiply: {
       const { action, depositAmount, withdrawAmount, loanToValue, paybackAmount, generateAmount } =
         state as OmniMultiplyFormState
 
@@ -81,6 +81,7 @@ export const isOmniFormValid = ({
         default:
           return true
       }
+    }
     // earn can be wild between protocols, that's why we need to handle it through dependency injection
     case OmniProductType.Earn: {
       return earnIsFormValid

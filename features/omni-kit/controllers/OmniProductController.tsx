@@ -2,14 +2,13 @@ import { getNetworkByName, type NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
-import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
 import type { GetOmniMetadata } from 'features/omni-kit/contexts'
 import { OmniGeneralContextProvider, OmniProductContextProvider } from 'features/omni-kit/contexts'
 import { OmniLayoutController } from 'features/omni-kit/controllers'
-import { getOmniHeadlineProps } from 'features/omni-kit/helpers'
-import { getOmniProductContextProviderData } from 'features/omni-kit/helpers/getOmniProductContextProviderData'
+import { getOmniHeadlineProps, getOmniProductContextProviderData } from 'features/omni-kit/helpers'
 import { useOmniProtocolData } from 'features/omni-kit/hooks'
-import type { ProductDataProps } from 'features/omni-kit/protocols/ajna/hooks/useAjnaOmniData'
+import type { DpmPositionData } from 'features/omni-kit/observables'
+import type { ProductDataProps } from 'features/omni-kit/protocols/ajna/hooks'
 import type {
   OmniFormDefaults,
   OmniProductType,

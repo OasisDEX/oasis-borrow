@@ -1,8 +1,8 @@
 import { negativeToZero, normalizeValue } from '@oasisdex/dma-library'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { resolveIfCachedPosition } from 'features/ajna/positions/common/helpers/resolveIfCachedPosition'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { resolveIfCachedPosition } from 'features/omni-kit/protocols/ajna/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import {
   formatAmount,

@@ -1,5 +1,5 @@
 import type { LendingPosition } from '@oasisdex/dma-library'
-import { LTVWarningThreshold } from 'features/ajna/common/consts'
+import { LTVWarningThreshold } from 'features/omni-kit/protocols/ajna/constants'
 
 export const getOmniBorrowishChangeVariant = ({
   isOracless,

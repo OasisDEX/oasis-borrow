@@ -14,7 +14,7 @@ import {
   getOmniSidebarPrimaryButtonActions,
   getOmniSidebarTransactionStatus,
 } from 'features/omni-kit/helpers'
-import { useOmniProductTypeTransition } from 'features/omni-kit/hooks/useOmniTransition'
+import { useOmniProductTypeTransition } from 'features/omni-kit/hooks'
 import { OmniSidebarStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useModalContext } from 'helpers/modalHook'

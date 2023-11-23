@@ -1,5 +1,5 @@
 import { MessageCard } from 'components/MessageCard'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
+import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { OmniProductType, type OmniValidationItem } from 'features/omni-kit/types'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'

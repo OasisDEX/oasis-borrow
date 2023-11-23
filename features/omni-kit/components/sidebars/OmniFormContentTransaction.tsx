@@ -1,5 +1,5 @@
 import { MessageCard } from 'components/MessageCard'
-import { useOmniGeneralContext } from 'features/omni-kit/contexts/OmniGeneralContext'
+import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import type { OmniIsCachedPosition } from 'features/omni-kit/types'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'

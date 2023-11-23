@@ -1,4 +1,6 @@
-import { OmniSidebarStep } from 'features/omni-kit/types'
+import { OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
+
+export const omniBorrowishProducts = [OmniProductType.Borrow, OmniProductType.Multiply]
 
 export const omniSidebarSharedSteps = [OmniSidebarStep.Dpm, OmniSidebarStep.Transaction]
 
