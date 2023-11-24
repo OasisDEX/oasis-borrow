@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { Rewards } from 'features/ajna/common/components/AjnaRewardCard'
-import { getAjnaRewards } from 'features/ajna/rewards/getAjnaRewards'
+import { getAjnaRewards } from 'features/ajna/rewards/helpers'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { getAjnaRewardsData } from 'handlers/ajna-rewards/getAjnaRewardsData'
 import { useAccount } from 'helpers/useAccount'

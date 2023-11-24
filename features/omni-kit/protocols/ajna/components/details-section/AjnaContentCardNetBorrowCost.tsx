@@ -5,7 +5,7 @@ import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionConte
 import { Icon } from 'components/Icon'
 import { Skeleton } from 'components/Skeleton'
 import { StatefulTooltip } from 'components/Tooltip'
-import { useAjnaRewards } from 'features/ajna/rewards/useAjnaRewards'
+import { useAjnaRewards } from 'features/ajna/rewards/hooks'
 import type { OmniContentCardCommonProps } from 'features/omni-kit/components/details-section/types'
 import { isPoolWithRewards } from 'features/omni-kit/protocols/ajna/helpers'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'

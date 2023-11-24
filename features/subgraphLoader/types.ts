@@ -1,5 +1,5 @@
 import type { NetworkIds } from 'blockchain/networks'
-import type { AjnaClaimedReward } from 'features/ajna/rewards/getAjnaRewards'
+import type { AjnaClaimedReward } from 'features/ajna/rewards/helpers'
 import type { AjnaPoolDataResponse } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaPoolsDataResponse } from 'features/omni-kit/protocols/ajna/helpers/getAjnaPoolsData'
 import type {
