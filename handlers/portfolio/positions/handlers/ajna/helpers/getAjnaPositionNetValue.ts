@@ -1,6 +1,6 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import type { AjnaGenericPosition } from 'features/ajna/common/types'
+import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType } from 'features/omni-kit/types'
 
 interface GetAjnaPositionNetValueParams {

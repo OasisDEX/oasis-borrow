@@ -6,11 +6,11 @@ import { NetworkIds, networksById } from 'blockchain/networks'
 import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
-import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import type { AjnaPoolsTableData } from 'features/omni-kit/protocols/ajna/helpers'
 import {
   getAjnaPoolsData,
+  isPoolOracless,
   isPoolSupportingMultiply,
   isPoolWithRewards,
 } from 'features/omni-kit/protocols/ajna/helpers'

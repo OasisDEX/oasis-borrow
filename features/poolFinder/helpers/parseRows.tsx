@@ -4,6 +4,7 @@ import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { getOraclessProductUrl } from 'features/poolFinder/helpers/getOraclessProductUrl'
 import type { OraclessPoolResult } from 'features/poolFinder/types'
 import { parseProduct } from 'features/productHub/helpers'
@@ -40,7 +41,7 @@ export function parseRows(
       chainId,
       collateralAddress,
       collateralToken,
-      productType: product,
+      productType: product as unknown as OmniProductType,
       quoteAddress,
       quoteToken,
     })

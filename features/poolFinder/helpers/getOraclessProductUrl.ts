@@ -1,12 +1,12 @@
 import type { NetworkIds } from 'blockchain/networks'
-import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import type { AjnaProduct } from 'features/ajna/common/types'
+import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
+import type { OmniProductType } from 'features/omni-kit/types'
 
 interface GetOraclessUrlParams {
   chainId: NetworkIds
   collateralAddress: string
   collateralToken: string
-  productType: AjnaProduct
+  productType: OmniProductType
   quoteAddress: string
   quoteToken: string
 }

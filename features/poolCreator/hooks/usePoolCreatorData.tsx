@@ -12,13 +12,13 @@ import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
-import type { AjnaValidationItem } from 'features/ajna/common/types'
 import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
 import { getOmniTxStatuses } from 'features/omni-kit/contexts'
 import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
+import { OmniProductType, type OmniValidationItem } from 'features/omni-kit/types'
 import type { PoolCreatorBoundries } from 'features/poolCreator/types'
 import { getOraclessProductUrl } from 'features/poolFinder/helpers'
-import type { SearchAjnaPoolData } from 'features/poolFinder/helpers/searchAjnaPool';
+import type { SearchAjnaPoolData } from 'features/poolFinder/helpers/searchAjnaPool'
 import { searchAjnaPool } from 'features/poolFinder/helpers/searchAjnaPool'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { handleTransaction } from 'helpers/handleTransaction'
@@ -56,7 +56,7 @@ export function usePoolCreatorData({
   const [boundries, setBoundries] = useState<PoolCreatorBoundries>()
   const [collateralToken, setCollateralToken] = useState<string>('')
   const [quoteToken, setQuoteToken] = useState<string>('')
-  const [errors, setErrors] = useState<AjnaValidationItem[]>([])
+  const [errors, setErrors] = useState<OmniValidationItem[]>([])
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
@@ -100,7 +100,7 @@ export function usePoolCreatorData({
   const chainId = useMemo(() => context?.chainId, [context?.chainId])
 
   useEffect(() => {
-    const localErrors: AjnaValidationItem[] = []
+    const localErrors: OmniValidationItem[] = []
 
     if (collateralAddress.length && !isAddress(collateralAddress))
       localErrors.push({
@@ -169,7 +169,7 @@ export function usePoolCreatorData({
                                     collateralAddress,
                                     collateralToken:
                                       identifiedTokens[collateralAddress.toLowerCase()].symbol,
-                                    productType: 'borrow',
+                                    productType: OmniProductType.Borrow,
                                     quoteAddress,
                                     quoteToken: identifiedTokens[quoteAddress.toLowerCase()].symbol,
                                   })}
@@ -181,7 +181,7 @@ export function usePoolCreatorData({
                                     collateralAddress,
                                     collateralToken:
                                       identifiedTokens[collateralAddress.toLowerCase()].symbol,
-                                    productType: 'earn',
+                                    productType: OmniProductType.Earn,
                                     quoteAddress,
                                     quoteToken: identifiedTokens[quoteAddress.toLowerCase()].symbol,
                                   })}
@@ -195,7 +195,7 @@ export function usePoolCreatorData({
                 },
               ])
             } else if (tokensKeys.length < 2) {
-              const identifyingErrors: AjnaValidationItem[] = []
+              const identifyingErrors: OmniValidationItem[] = []
 
               if (!tokensKeys.includes(collateralAddress.toLowerCase()))
                 identifyingErrors.push({

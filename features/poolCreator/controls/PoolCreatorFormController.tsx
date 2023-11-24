@@ -3,8 +3,8 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
-import type { AjnaValidationItem } from 'features/ajna/common/types'
 import type { TxStatuses } from 'features/omni-kit/contexts'
+import type { OmniValidationItem } from 'features/omni-kit/types'
 import { PoolCreatorFormOrder } from 'features/poolCreator/components/PoolCreatorFormOrder'
 import { INTEREST_RATE_STEP } from 'features/poolCreator/consts'
 import type { usePoolCreatorFormReducto } from 'features/poolCreator/state/poolCreatorFormReducto'
@@ -18,7 +18,7 @@ import { Flex, Grid, Image } from 'theme-ui'
 
 interface PoolCreatorFormControllerProps {
   collateralToken: string
-  errors: AjnaValidationItem[]
+  errors: OmniValidationItem[]
   form: ReturnType<typeof usePoolCreatorFormReducto>
   isFormValid: boolean
   isLoading: boolean
