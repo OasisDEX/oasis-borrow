@@ -3,7 +3,7 @@ import { WithConnection } from 'components/connectWallet'
 import { DetailsSection } from 'components/DetailsSection'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
-import { AjnaHeader } from 'features/ajna/common/components/AjnaHeader'
+import { AjnaHeader } from 'features/ajna/common/components'
 import { PoolCreatorLoadingState } from 'features/ajna/pool-creator/components'
 import { DEFAULT_POOL_INTEREST_RATE } from 'features/ajna/pool-creator/constants'
 import {
