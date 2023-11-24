@@ -2,7 +2,7 @@ import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
-import type { PoolCreatorBoundries } from 'features/poolCreator/types'
+import type { PoolCreatorBoundries } from 'features/ajna/pool-creator/types'
 import { AjnaErc20PoolFactory__factory as AjnaErc20PoolFactoryFactory } from 'types/ethers-contracts'
 
 export async function getAjnaPoolInterestRateBoundaries(
