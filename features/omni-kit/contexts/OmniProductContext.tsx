@@ -1,6 +1,5 @@
-import type { LendingPosition, SupplyPosition, SwapData } from '@oasisdex/dma-library'
+import type { LendingPosition, Strategy, SupplyPosition, SwapData } from '@oasisdex/dma-library'
 import { AjnaPosition } from '@oasisdex/dma-library'
-import type { AjnaSimulationData } from 'actions/ajna'
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
@@ -154,6 +153,18 @@ interface PositionSet<Position> {
   simulation?: Position
 }
 
+interface OmniValidationMessage {
+  name: string
+  data?: { [key: string]: string | number }
+}
+
+type OmniSimulationData<Position> = Strategy<Position>['simulation'] & {
+  errors: OmniValidationMessage[]
+  warnings: OmniValidationMessage[]
+  notices: OmniValidationMessage[]
+  successes: OmniValidationMessage[]
+}
+
 interface ProductContextPosition<Position, Auction> {
   cachedPosition?: PositionSet<Position>
   currentPosition: PositionSet<Position>
@@ -165,7 +176,7 @@ interface ProductContextPosition<Position, Auction> {
   resolvedId?: string
   setCachedPosition: (positionSet: PositionSet<OmniGenericPosition>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<SetStateAction<AjnaSimulationData<OmniGenericPosition> | undefined>>
+  setSimulation: Dispatch<SetStateAction<OmniSimulationData<OmniGenericPosition> | undefined>>
   setCachedSwap: (swap: SwapData) => void
   positionAuction: Auction
   history: PositionHistoryEvent[]
@@ -268,7 +279,7 @@ export function OmniProductContextProvider({
   // TODO these could be potentially generalized within single hook
   const [cachedPosition, setCachedPosition] = useState<PositionSet<typeof position>>()
   const [cachedSwap, setCachedSwap] = useState<SwapData>()
-  const [simulation, setSimulation] = useState<AjnaSimulationData<typeof position>>()
+  const [simulation, setSimulation] = useState<OmniSimulationData<typeof position>>()
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
   // TODO these could be potentially generalized within single hook
 

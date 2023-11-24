@@ -1,6 +1,5 @@
 import type { AjnaStrategy } from '@oasisdex/dma-library'
 import { TxStatus } from '@oasisdex/transactions'
-import type { AjnaTxData } from 'actions/ajna'
 import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import type { Context } from 'blockchain/network.types'
@@ -18,6 +17,17 @@ import { uiChanges } from 'helpers/uiChanges'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
+
+export interface OmniTxData {
+  data: string
+  to: string
+  value: string
+}
+
+export interface OmniActionCallData extends OmniTxData {
+  kind: TxMetaKind.libraryCall
+  proxyAddress: string
+}
 
 export function useOmniTxHandler<CustomState>({
   getOmniParameters,
@@ -52,7 +62,7 @@ export function useOmniTxHandler<CustomState>({
     },
   } = useOmniProductContext(productType)
 
-  const [txData, setTxData] = useState<AjnaTxData>()
+  const [txData, setTxData] = useState<OmniTxData>()
   const [cancelablePromise, setCancelablePromise] =
     useState<CancelablePromise<AjnaStrategy<typeof position> | undefined>>()
 

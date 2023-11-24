@@ -13,13 +13,13 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import type { AjnaValidationItem } from 'features/ajna/common/types'
-import { getTxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxManager'
-import { getAjnaSidebarTransactionStatus } from 'features/ajna/positions/common/helpers/getAjnaSidebarTransactionStatus'
-import { searchAjnaPool } from 'features/ajna/positions/common/helpers/searchAjnaPool'
-import type { SearchAjnaPoolData } from 'features/ajna/positions/common/helpers/searchAjnaPool.types'
 import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
+import { getOmniTxStatuses } from 'features/omni-kit/contexts'
+import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
 import type { PoolCreatorBoundries } from 'features/poolCreator/types'
 import { getOraclessProductUrl } from 'features/poolFinder/helpers'
+import type { SearchAjnaPoolData } from 'features/poolFinder/helpers/searchAjnaPool';
+import { searchAjnaPool } from 'features/poolFinder/helpers/searchAjnaPool'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
@@ -79,8 +79,8 @@ export function usePoolCreatorData({
       })
   }
 
-  const txStatuses = getTxStatuses(txDetails?.txStatus)
-  const txSidebarStatus = getAjnaSidebarTransactionStatus({
+  const txStatuses = getOmniTxStatuses(txDetails?.txStatus)
+  const txSidebarStatus = getOmniSidebarTransactionStatus({
     etherscan: getNetworkContracts(NetworkIds.MAINNET, context?.chainId).etherscan.url,
     isTxInProgress: txStatuses.isTxInProgress,
     isTxSuccess: txStatuses.isTxSuccess,

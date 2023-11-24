@@ -2,7 +2,16 @@ import type { NetworkIds } from 'blockchain/networks'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
-import type { GetAjnaRewards } from './getAjnaRewards.types'
+export interface AjnaClaimedReward {
+  id: number
+  user: string
+  week: number
+  amount: number
+}
+export type GetAjnaRewards = (
+  walletAddress: string,
+  networkId: NetworkIds,
+) => Promise<AjnaClaimedReward[]>
 
 export const getAjnaRewards: GetAjnaRewards = async (
   walletAddress: string,

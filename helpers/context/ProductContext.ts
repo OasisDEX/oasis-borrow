@@ -42,12 +42,6 @@ import {
   getLastCreatedPositionForProxy$,
 } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types/position-id'
-import { getAjnaPosition$ } from 'features/ajna/positions/common/observables/getAjnaPosition'
-import type { DpmPositionData } from 'features/ajna/positions/common/observables/getDpmPositionData'
-import {
-  getDpmPositionData$,
-  getDpmPositionDataV2$,
-} from 'features/ajna/positions/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
 import type { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.types'
@@ -78,6 +72,9 @@ import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
+import type { DpmPositionData } from 'features/omni-kit/observables'
+import { getDpmPositionData$, getDpmPositionDataV2$ } from 'features/omni-kit/observables'
+import { getAjnaPosition$ } from 'features/omni-kit/protocols/ajna/observables'
 import { getMorphoPosition$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import {

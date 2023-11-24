@@ -6,8 +6,8 @@ import type { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
-import type { SearchAjnaPoolData } from 'features/ajna/positions/common/helpers/searchAjnaPool.types'
+import { isPoolWithRewards } from 'features/omni-kit/protocols/ajna/helpers'
+import type { SearchAjnaPoolData } from 'features/poolFinder/helpers/searchAjnaPool'
 import type { OraclessPoolResult } from 'features/poolFinder/types'
 import {
   productHubAjnaRewardsTooltip,

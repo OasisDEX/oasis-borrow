@@ -1,7 +1,7 @@
 import { AppLink } from 'components/Links'
 import type { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
 import { SidebarSectionStatus } from 'components/sidebar/SidebarSectionStatus'
-import type { TxStatuses } from 'features/ajna/positions/common/contexts/ajnaTxManager'
+import type { TxStatuses } from 'features/omni-kit/contexts'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'

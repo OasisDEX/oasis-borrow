@@ -7,11 +7,13 @@ import { getTokenPrice } from 'blockchain/prices'
 import type { Tickers } from 'blockchain/prices.types'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import { isPoolOracless } from 'features/ajna/common/helpers/isOracless'
-import { getAjnaPoolsData } from 'features/ajna/positions/common/helpers/getAjnaPoolsData'
-import type { AjnaPoolsTableData } from 'features/ajna/positions/common/helpers/getAjnaPoolsData.types'
-import { isPoolSupportingMultiply } from 'features/ajna/positions/common/helpers/isPoolSupportingMultiply'
-import { isPoolWithRewards } from 'features/ajna/positions/common/helpers/isPoolWithRewards'
-import { isShortPosition } from 'features/ajna/positions/common/helpers/isShortPosition'
+import { isShortPosition } from 'features/omni-kit/helpers'
+import type { AjnaPoolsTableData } from 'features/omni-kit/protocols/ajna/helpers'
+import {
+  getAjnaPoolsData,
+  isPoolSupportingMultiply,
+  isPoolWithRewards,
+} from 'features/omni-kit/protocols/ajna/helpers'
 import {
   productHubAjnaRewardsTooltip,
   productHubEmptyPoolMaxLtvTooltip,
