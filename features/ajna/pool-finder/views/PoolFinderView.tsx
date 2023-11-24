@@ -2,14 +2,21 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
-import { PoolFinderFormLoadingState } from 'features/poolFinder/components/PoolFinderFormLoadingState'
-import { PoolFinderTableLoadingState } from 'features/poolFinder/components/PoolFinderTableLoadingState'
-import { PoolFinderContentController } from 'features/poolFinder/controls/PoolFinderContentController'
-import { PoolFinderFormController } from 'features/poolFinder/controls/PoolFinderFormController'
-import { PoolFinderNaturalLanguageSelectorController } from 'features/poolFinder/controls/PoolFinderNaturalLanguageSelectorController'
-import { getOraclessTokenAddress, parsePoolResponse } from 'features/poolFinder/helpers'
-import { searchAjnaPool } from 'features/poolFinder/helpers/searchAjnaPool'
-import type { OraclessPoolResult, PoolFinderFormState } from 'features/poolFinder/types'
+import {
+  PoolFinderFormLoadingState,
+  PoolFinderTableLoadingState,
+} from 'features/ajna/pool-finder/components'
+import {
+  PoolFinderContentController,
+  PoolFinderFormController,
+  PoolFinderNaturalLanguageSelectorController,
+} from 'features/ajna/pool-finder/controls'
+import {
+  getOraclessTokenAddress,
+  parsePoolResponse,
+  searchAjnaPool,
+} from 'features/ajna/pool-finder/helpers'
+import type { OraclessPoolResult, PoolFinderFormState } from 'features/ajna/pool-finder/types'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import type { ProductHubProductType } from 'features/productHub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'

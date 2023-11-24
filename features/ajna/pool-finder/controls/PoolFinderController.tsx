@@ -1,6 +1,6 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
-import { PoolFinderView } from 'features/poolFinder/views/PoolFinderView'
+import { PoolFinderView } from 'features/ajna/pool-finder/views'
 import type { ProductHubProductType } from 'features/productHub/types'
 import React from 'react'
 

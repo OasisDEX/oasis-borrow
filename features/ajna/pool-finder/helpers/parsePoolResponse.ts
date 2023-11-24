@@ -5,9 +5,9 @@ import type { IdentifiedTokens } from 'blockchain/identifyTokens.types'
 import type { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
+import type { SearchAjnaPoolData } from 'features/ajna/pool-finder/helpers'
+import type { OraclessPoolResult } from 'features/ajna/pool-finder/types'
 import { isPoolOracless, isPoolWithRewards } from 'features/omni-kit/protocols/ajna/helpers'
-import type { SearchAjnaPoolData } from 'features/poolFinder/helpers/searchAjnaPool'
-import type { OraclessPoolResult } from 'features/poolFinder/types'
 import {
   productHubAjnaRewardsTooltip,
   productHubEmptyPoolMaxLtvTooltip,
