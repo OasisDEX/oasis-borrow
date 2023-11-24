@@ -5,7 +5,7 @@ import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { DefinitionList } from 'components/DefinitionList'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
-import { type AaveHistoryEvent,hasTrigger } from 'features/omni-kit/protocols/ajna/history/types'
+import { type AaveHistoryEvent, hasTrigger } from 'features/omni-kit/protocols/ajna/history/types'
 import {
   formatAmountWithPrecision,
   formatCryptoBalance,
