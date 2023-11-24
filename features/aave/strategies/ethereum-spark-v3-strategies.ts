@@ -16,6 +16,7 @@ import { SparkEarnFaqV3 } from 'features/content/faqs/spark/earn'
 import { SparkMultiplyFaq } from 'features/content/faqs/spark/multiply'
 import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
+import { FeaturesEnum } from 'types/config'
 
 import { allActionsAvailableBorrow } from './all-actions-available-borrow'
 import { allActionsAvailableInMultiply } from './all-actions-available-in-multiply'
@@ -175,7 +176,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Multiply]: {
-        featureToggle: undefined,
+        featureToggle: FeaturesEnum.SparkWBTCDAI,
         additionalManageActions: [
           {
             action: 'switch-to-borrow',
@@ -184,7 +185,7 @@ const availableTokenPairs: TokenPairConfig[] = [
         ],
       },
       [ProductType.Borrow]: {
-        featureToggle: undefined,
+        featureToggle: FeaturesEnum.SparkWBTCDAI,
         additionalManageActions: [
           {
             action: 'switch-to-multiply',
