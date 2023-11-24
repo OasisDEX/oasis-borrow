@@ -4,11 +4,11 @@ import { PositionHistoryItemDetails } from 'components/history/PositionHistoryIt
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
-import type { AaveHistoryEvent } from 'features/ajna/history/types'
 import type {
+  AaveHistoryEvent,
   AjnaBorrowerEvent,
   AjnaHistoryEvent,
-} from 'features/ajna/history/types/AjnaHistoryEvent.types'
+} from 'features/omni-kit/protocols/ajna/history/types'
 import { getHistoryEventLabel } from 'features/positionHistory/getHistoryEventLabel'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'

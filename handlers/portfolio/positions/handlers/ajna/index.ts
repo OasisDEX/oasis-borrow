@@ -1,8 +1,10 @@
 import { views } from '@oasisdex/dma-library'
 import { getRpcProvider, NetworkIds, NetworkNames } from 'blockchain/networks'
-import { getAjnaCumulatives } from 'features/ajna/positions/common/helpers/getAjnaCumulatives'
-import { getAjnaPoolData } from 'features/ajna/positions/common/helpers/getAjnaPoolData'
-import { getAjnaEarnData } from 'features/ajna/positions/earn/helpers/getAjnaEarnData'
+import {
+  getAjnaCumulatives,
+  getAjnaEarnData,
+  getAjnaPoolData,
+} from 'features/omni-kit/protocols/ajna/helpers'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import {

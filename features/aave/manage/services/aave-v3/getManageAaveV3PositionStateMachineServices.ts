@@ -19,7 +19,7 @@ import type {
 } from 'features/aave/types'
 import { contextToEthersTransactions } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
-import type { AaveHistoryEvent } from 'features/ajna/history/types'
+import type { AaveHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'

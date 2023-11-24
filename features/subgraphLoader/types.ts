@@ -1,9 +1,12 @@
 import type { NetworkIds } from 'blockchain/networks'
-import type { AjnaBorrowerEventsResponse, AjnaHistoryResponse } from 'features/ajna/history/types'
-import type { AjnaPoolDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolData.types'
-import type { AjnaPoolsDataResponse } from 'features/ajna/positions/common/helpers/getAjnaPoolsData.types'
-import type { AjnaClaimedReward } from 'features/ajna/positions/common/helpers/getAjnaRewards.types'
-import type { SearchAjnaPoolResponse } from 'features/ajna/positions/common/helpers/searchAjnaPool.types'
+import type { SearchAjnaPoolResponse } from 'features/ajna/pool-finder/helpers'
+import type { AjnaClaimedReward } from 'features/ajna/rewards/helpers'
+import type { AjnaPoolDataResponse } from 'features/omni-kit/protocols/ajna/helpers'
+import type { AjnaPoolsDataResponse } from 'features/omni-kit/protocols/ajna/helpers/getAjnaPoolsData'
+import type {
+  AjnaBorrowerEventsResponse,
+  AjnaHistoryResponse,
+} from 'features/omni-kit/protocols/ajna/history/types'
 import type { AavePositionHistoryResponse } from 'features/positionHistory/types'
 import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'
 import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/ajna/types'

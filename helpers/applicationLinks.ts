@@ -113,6 +113,7 @@ export const EXTERNAL_LINKS = {
   AJNA: {
     HOME: 'https://www.ajna.finance/',
     AUDITS: 'https://github.com/ajna-finance/audits',
+    OLD: 'https://old-ajna.summer.fi',
   },
   WORKABLE: 'https://summerfi.workable.com/',
   TWITTER: 'https://twitter.com/summerfinance_',

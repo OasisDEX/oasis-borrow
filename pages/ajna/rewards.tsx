@@ -1,7 +1,7 @@
 import { WithConnection } from 'components/connectWallet'
 import { FunctionalContextHandler } from 'components/context/FunctionalContextHandler'
-import { AjnaRewardsController } from 'features/ajna/common/controls/AjnaRewardsController'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
+import { AjnaRewardsController } from 'features/ajna/rewards/controls'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
