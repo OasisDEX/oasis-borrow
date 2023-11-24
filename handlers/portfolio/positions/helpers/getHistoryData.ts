@@ -11,6 +11,10 @@ const historyQuery = gql`
         cumulativeDeposit
         cumulativeWithdraw
         cumulativeFees
+        cumulativeDepositInQuoteToken
+        cumulativeWithdrawInQuoteToken
+        cumulativeDespositInCollateralToken
+        cumulativeWithdrawInCollateralToken
       }
     }
   }
@@ -23,6 +27,10 @@ type HistoryQueryResponse = {
       cumulativeDeposit: string
       cumulativeWithdraw: string
       cumulativeFees: string
+      cumulativeDepositInQuoteToken: string
+      cumulativeWithdrawInQuoteToken: string
+      cumulativeDespositInCollateralToken: string
+      cumulativeWithdrawInCollateralToken: string
     }
   }[]
 }
@@ -33,6 +41,10 @@ export type HistoryResponse = {
   cumulativeDeposit: BigNumber
   cumulativeWithdraw: BigNumber
   cumulativeFees: BigNumber
+  cumulativeDepositInQuoteToken: BigNumber
+  cumulativeWithdrawInQuoteToken: BigNumber
+  cumulativeDespositInCollateralToken: BigNumber
+  cumulativeWithdrawInCollateralToken: BigNumber
 }[]
 
 export type HistorySupportedNetworks =
@@ -73,6 +85,18 @@ export const getHistoryData = async ({
             cumulativeDeposit: new BigNumber(pos.position.cumulativeDeposit),
             cumulativeWithdraw: new BigNumber(pos.position.cumulativeWithdraw),
             cumulativeFees: new BigNumber(pos.position.cumulativeFees),
+            cumulativeDepositInQuoteToken: new BigNumber(
+              pos.position.cumulativeDepositInQuoteToken,
+            ),
+            cumulativeWithdrawInQuoteToken: new BigNumber(
+              pos.position.cumulativeWithdrawInQuoteToken,
+            ),
+            cumulativeDespositInCollateralToken: new BigNumber(
+              pos.position.cumulativeDespositInCollateralToken,
+            ),
+            cumulativeWithdrawInCollateralToken: new BigNumber(
+              pos.position.cumulativeWithdrawInCollateralToken,
+            ),
           }
         })
         .flat()
