@@ -1,8 +1,11 @@
 import type { NetworkIds } from 'blockchain/networks'
-import type { AjnaBorrowerEventsResponse, AjnaHistoryResponse } from 'features/ajna/history/types'
 import type { AjnaClaimedReward } from 'features/ajna/rewards/getAjnaRewards'
 import type { AjnaPoolDataResponse } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaPoolsDataResponse } from 'features/omni-kit/protocols/ajna/helpers/getAjnaPoolsData'
+import type {
+  AjnaBorrowerEventsResponse,
+  AjnaHistoryResponse,
+} from 'features/omni-kit/protocols/ajna/history/types'
 import type { SearchAjnaPoolResponse } from 'features/poolFinder/helpers/searchAjnaPool'
 import type { AavePositionHistoryResponse } from 'features/positionHistory/types'
 import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'

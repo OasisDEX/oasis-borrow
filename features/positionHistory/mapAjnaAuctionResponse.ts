@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
-import type { AjnaBorrowerEventsResponse } from 'features/ajna/history/types'
+import type { AjnaBorrowerEventsResponse } from 'features/omni-kit/protocols/ajna/history/types'
 
 export const mapAjnaAuctionResponse = (event: AjnaBorrowerEventsResponse) => ({
   // blockNumber: new BigNumber(event.blockNumber),

@@ -34,8 +34,8 @@ import {
   ProxyType,
 } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
-import type { AaveHistoryEvent } from 'features/ajna/history/types'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
+import type { AaveHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import type { TransactionStateMachine } from 'features/stateMachines/transaction'
 import type {
