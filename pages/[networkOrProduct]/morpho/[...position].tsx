@@ -1,4 +1,4 @@
-import type { MorphoPosition } from '@oasisdex/dma-library'
+import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
@@ -34,7 +34,11 @@ function MorphoPositionPage(props: MorphoPositionPageProps) {
       <MorphoWrapper>
         <ProductContextHandler>
           <GasEstimationContextProvider>
-            <OmniProductController<MorphoPositionAuction, PositionHistoryEvent[], MorphoPosition>
+            <OmniProductController<
+              MorphoPositionAuction,
+              PositionHistoryEvent[],
+              MorphoBluePosition
+            >
               {...props}
               customState={MorphoOmniCustomStateProvider}
               protocol={LendingProtocol.MorphoBlue}

@@ -93,7 +93,6 @@ export const OmniProductController = <Auction, History, Position>({
     errors,
     tokensPrecision,
   } = useOmniProtocolData({
-    chainId: network.id,
     collateralToken,
     positionId,
     isOracless,

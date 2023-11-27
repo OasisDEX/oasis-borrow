@@ -1,4 +1,4 @@
-import type { MorphoPosition } from '@oasisdex/dma-library'
+import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -11,10 +11,10 @@ import React from 'react'
 
 interface MorphoDetailsSectionFooterProps {
   collateralToken: string
-  position: MorphoPosition
+  position: MorphoBluePosition
   productType: OmniProductType
   quoteToken: string
-  simulation?: MorphoPosition
+  simulation?: MorphoBluePosition
 }
 
 export const MorphoDetailsSectionFooter: FC<MorphoDetailsSectionFooterProps> = ({

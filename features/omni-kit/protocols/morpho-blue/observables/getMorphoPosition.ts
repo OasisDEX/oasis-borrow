@@ -1,4 +1,4 @@
-import type { MorphoPosition } from '@oasisdex/dma-library'
+import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { views } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { Context } from 'blockchain/network.types'
@@ -17,7 +17,7 @@ export function getMorphoPosition$(
   collateralPrice: BigNumber,
   quotePrice: BigNumber,
   { product, protocol, proxy }: DpmPositionData,
-): Observable<MorphoPosition> {
+): Observable<MorphoBluePosition> {
   return combineLatest(
     context$,
     iif(() => onEveryBlock$ !== undefined, onEveryBlock$, of(undefined)),

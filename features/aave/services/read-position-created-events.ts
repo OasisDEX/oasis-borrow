@@ -93,6 +93,7 @@ export function extractLendingProtocolFromPositionCreatedEvent(
       return LendingProtocol.SparkV3
     case 'Ajna':
     case 'AJNA_RC5':
+    case 'Ajna_rc9':
       return LendingProtocol.Ajna
     case 'MorphoBlue':
       return LendingProtocol.MorphoBlue
