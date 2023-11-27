@@ -2640,6 +2640,15 @@
       "details": {
         "current-market-price": "Current Market Price"
       }
+    },
+    "form": {
+      "transaction": {
+        "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} {{protocol}} {{productType}} Position.",
+        "progress-open": "Creating your {{collateralToken}}/{{quoteToken}} {{protocol}} Position",
+        "progress-manage": "Updating your {{collateralToken}}/{{quoteToken}} {{protocol}} Position",
+        "success-open": "Your {{collateralToken}}/{{quoteToken}} {{protocol}} Position was created",
+        "success-manage": "Your {{collateralToken}}/{{quoteToken}} {{protocol}} Position was updated"
+      }
     }
   },
   "ajna": {
