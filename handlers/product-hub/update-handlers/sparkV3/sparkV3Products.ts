@@ -157,4 +157,14 @@ export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
     multiplyStrategyType: 'long',
     multiplyStrategy: 'Long WBTC',
   },
+  {
+    product: [ProductHubProductType.Borrow],
+    primaryToken: 'WBTC',
+    primaryTokenGroup: 'BTC',
+    secondaryToken: 'DAI',
+    depositToken: 'DAI',
+    network: NetworkNames.ethereumMainnet,
+    protocol: LendingProtocol.SparkV3,
+    label: 'WBTC/DAI',
+  },
 ]
