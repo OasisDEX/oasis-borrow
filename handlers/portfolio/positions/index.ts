@@ -13,7 +13,7 @@ import { cacheObject } from 'helpers/api/cacheObject'
 import type { NextApiRequest } from 'next'
 import NodeCache from 'node-cache'
 
-const portfolioCacheTime = 0
+const portfolioCacheTime = 2 * 60
 export const getCachedTokensPrices = cacheObject(
   getTokensPrices,
   portfolioCacheTime,
