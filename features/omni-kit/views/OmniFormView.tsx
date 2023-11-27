@@ -21,6 +21,7 @@ import { useModalContext } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import type { PropsWithChildren } from 'react'
 import React, { useEffect, useState } from 'react'
@@ -215,9 +216,9 @@ export function OmniFormView({
     isTxSuccess,
     text: t(
       isTxSuccess
-        ? 'ajna.position-page.common.form.transaction.success'
-        : 'ajna.position-page.common.form.transaction.progress',
-      { collateralToken, quoteToken },
+        ? `omni-kit.form.transaction.success-${isOpening ? 'open' : 'manage'}`
+        : `omni-kit.form.transaction.progress-${isOpening ? 'open' : 'manage'}`,
+      { collateralToken, quoteToken, productType, protocol: LendingProtocolLabel[protocol] },
     ),
     txDetails,
   })

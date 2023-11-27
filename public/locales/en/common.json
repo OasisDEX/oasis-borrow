@@ -2640,6 +2640,15 @@
       "details": {
         "current-market-price": "Current Market Price"
       }
+    },
+    "form": {
+      "transaction": {
+        "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} {{protocol}} {{productType}} Position.",
+        "progress-open": "Creating your {{collateralToken}}/{{quoteToken}} {{protocol}} Position",
+        "progress-manage": "Updating your {{collateralToken}}/{{quoteToken}} {{protocol}} Position",
+        "success-open": "Your {{collateralToken}}/{{quoteToken}} {{protocol}} Position was created",
+        "success-manage": "Your {{collateralToken}}/{{quoteToken}} {{protocol}} Position was updated"
+      }
     }
   },
   "ajna": {
@@ -2756,13 +2765,6 @@
                 "Monitor your position closely and ensure you understand the risks before proceeding"
               ]
             }
-          },
-          "transaction": {
-            "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} Ajna {{productType}} Position.",
-            "progress-open": "Creating your {{collateralToken}}/{{quoteToken}} Ajna Position",
-            "progress-manage": "Updating your {{collateralToken}}/{{quoteToken}} Ajna Position",
-            "success-open": "Your {{collateralToken}}/{{quoteToken}} Ajna Position was created",
-            "success-manage": "Your {{collateralToken}}/{{quoteToken}} Ajna Position was updated"
           }
         },
         "dupe-modal": {
