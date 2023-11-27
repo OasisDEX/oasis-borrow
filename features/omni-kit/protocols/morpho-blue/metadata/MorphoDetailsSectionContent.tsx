@@ -1,4 +1,4 @@
-import type { MorphoPosition } from '@oasisdex/dma-library'
+import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import {
@@ -20,10 +20,10 @@ interface MorphoOmniDetailsSectionContentProps {
   isShort: boolean
   isSimulationLoading?: boolean
   liquidationPenalty: BigNumber
-  position: MorphoPosition
+  position: MorphoBluePosition
   quotePrice: BigNumber
   quoteToken: string
-  simulation?: MorphoPosition
+  simulation?: MorphoBluePosition
 }
 
 export const MorphoDetailsSectionContent: FC<MorphoOmniDetailsSectionContentProps> = ({

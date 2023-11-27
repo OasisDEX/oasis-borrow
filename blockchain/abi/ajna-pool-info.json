@@ -492,25 +492,6 @@
         "type": "address"
       }
     ],
-    "name": "momp",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "ajnaPool_",
-        "type": "address"
-      }
-    ],
     "name": "poolLoansInfo",
     "outputs": [
       {

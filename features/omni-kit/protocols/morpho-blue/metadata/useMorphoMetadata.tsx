@@ -1,4 +1,4 @@
-import type { MorphoPosition } from '@oasisdex/dma-library'
+import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
@@ -54,9 +54,9 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
   switch (productType) {
     case OmniProductType.Borrow:
     case OmniProductType.Multiply:
-      const position = productContext.position.currentPosition.position as MorphoPosition
+      const position = productContext.position.currentPosition.position as MorphoBluePosition
       const simulation = productContext.position.currentPosition.simulation as
-        | MorphoPosition
+        | MorphoBluePosition
         | undefined
 
       const changeVariant = getOmniBorrowishChangeVariant({ simulation, isOracless })

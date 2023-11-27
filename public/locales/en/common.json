@@ -2901,11 +2901,6 @@
             "total-earnings-modal-sub-desc": "Including gas costs, your net earnings on this pool are:"
           },
           "notifications": {
-            "deposit-is-not-withdrawable": {
-              "title": "Your selected price is too close to market price",
-              "message": "In case {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}",
-              "label": "Adjust lending price"
-            },
             "earning-no-apy": {
               "title": "Your position is not earning any yield",
               "message": "Your lending position is below the minimum yield bearing price",
@@ -2965,8 +2960,7 @@
       "collateral-to-claim": "There is collateral tokens for you to claim. These tokens don't earn any yield. <2>Read more about <1>Ajna Lending →</1></2>",
       "price-below-htp": "Unutilized Liquidity: Lending at this price means you are not earning any yield. <1>A deposit fee of 1 day's interest applies to all deposits below the active liquidity range.</1> <2><1>Help me pick correctly →</1></2>",
       "price-between-htp-and-lup": "Available Liquidity: Your deposit is earning yield but is not currently utilised by borrowers. <1>A deposit fee of 1 day's interest applies to all deposits below the active liquidity range.</1> <2><1>Help me pick correctly →</1></2>",
-      "price-between-lup-and-momp": "Active liquidity: You are actively lending and will earn a yield whenever there are loans above {{lup}} {{collateralToken}}/{{quoteToken}}. <2><1>Help me pick correctly →</1></2>",
-      "price-above-momp": "Boundary Liquidity: Your selected price is close to market price. If {{collateralToken}} price reaches your selected price you might be left with collateral tokens instead of {{quoteToken}}. You are selecting a riskier level for lending. <2><1>Help me pick correctly →</1></2>",
+      "price-above-lup": "Active liquidity: You are actively lending and will earn a yield whenever there are loans above {{lup}} {{collateralToken}}/{{quoteToken}}. <2><1>Help me pick correctly →</1></2>",
       "safety-switch-on": "Due to a technical issue we have currently disabled depositing tokens into empty Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
     },
     "rewards": {

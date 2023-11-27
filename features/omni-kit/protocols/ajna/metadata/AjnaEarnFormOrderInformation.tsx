@@ -1,5 +1,5 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
-import { normalizeValue } from '@oasisdex/dma-library'
+import { normalizeValue, protocols } from '@oasisdex/dma-library'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
@@ -40,9 +40,15 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
   const apyCurrentPosition = positionData.apy
   const apySimulation = simulationData?.apy
 
-  const feeWhenActionBelowLup = simulationData?.getFeeWhenBelowLup || zero
+  const earnDepositFee = protocols.ajna.getAjnaEarnDepositFee({
+    interestRate: positionData.pool.interestRate,
+    positionPrice: positionData.price,
+    positionQuoteAmount: positionData.quoteTokenAmount,
+    simulationPrice: simulationData?.price,
+    simulationQuoteAmount: simulationData?.quoteTokenAmount,
+  })
   const withAjnaFee =
-    feeWhenActionBelowLup.gt(zero) && !positionData.pool.lowestUtilizedPriceIndex.isZero()
+    earnDepositFee?.gt(zero) && !positionData.pool.lowestUtilizedPriceIndex.isZero()
 
   const isLoading = !cached && isSimulationLoading
   const formatted = {
@@ -70,7 +76,9 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
     afterMaxLtv:
       simulationData?.price &&
       formatDecimalAsPercent(simulationData?.price.div(collateralPrice.div(quotePrice))),
-    feeWhenActionBelowLup: `${formatCryptoBalance(feeWhenActionBelowLup)} ${quoteToken}`,
+    earnDepositFee: earnDepositFee
+      ? `${formatCryptoBalance(earnDepositFee)} ${quoteToken}`
+      : undefined,
     totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
     oneDayApy: simulationData?.apy.per1d && formatDecimalAsPercent(simulationData.apy.per1d),
   }
@@ -111,7 +119,7 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
           ? [
               {
                 label: t('deposit-fee'),
-                value: formatted.feeWhenActionBelowLup,
+                value: formatted.earnDepositFee,
                 isLoading,
                 tooltip: t('ajna.position-page.earn.common.form.deposit-fee-tooltip', {
                   value: formatted.oneDayApy,

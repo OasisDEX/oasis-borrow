@@ -42,8 +42,7 @@ export const OmniValidationWithLink: FC<OmniValidationWithLinkProps> = ({ name, 
   const linkMap: { [key: string]: string } = {
     'price-below-htp': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
     'price-between-htp-and-lup': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
-    'price-between-lup-and-momp': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
-    'price-above-momp': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
+    'price-above-lup': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_PICK_LENDING_PRICE,
     'collateral-to-claim': EXTERNAL_LINKS.DOCS.AJNA.HOW_TO_EARN,
     'is-being-liquidated': EXTERNAL_LINKS.DOCS.AJNA.LIQUIDATIONS,
   }
