@@ -42,7 +42,7 @@ export const portfolioPositionsHandler = async ({
 
   const prices = await getCachedTokensPrices()
 
-  if (prices) {
+  if (prices && prices.data.tokens) {
     const apiVaults = !positionsCount ? await getPositionsFromDatabase({ address }) : undefined
     const dpmList = await getAllDpmsForWallet({ address })
 
@@ -50,7 +50,7 @@ export const portfolioPositionsHandler = async ({
       address,
       apiVaults,
       dpmList,
-      prices: prices.data,
+      prices: prices.data.tokens,
       positionsCount,
     }
 
@@ -104,7 +104,7 @@ export const portfolioPositionsHandler = async ({
   } else {
     return {
       positions: [],
-      ...(debug && { error: 'Unable to load token prices' }),
+      error: prices?.data.error,
     }
   }
 }

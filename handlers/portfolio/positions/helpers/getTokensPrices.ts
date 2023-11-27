@@ -4,11 +4,14 @@ import type { Tickers } from 'blockchain/prices.types'
 import { tokensBySymbol } from 'blockchain/tokensMetadata.constants'
 import { tokenTickers } from 'helpers/api/tokenTickers'
 
+const MAX_RETRIES = 5
+
 export interface TokensPrices {
-  [key: string]: number
+  tokens?: { [key: string]: number }
+  error?: string
 }
 
-export async function getTokensPrices(): Promise<TokensPrices> {
+export async function getTokensPrices(retries: number = 0): Promise<TokensPrices> {
   const tickersResponse = await tokenTickers()
   const tickers = Object.entries(tickersResponse).reduce<Tickers>(
     (acc, [key, value]) => ({
@@ -19,21 +22,27 @@ export async function getTokensPrices(): Promise<TokensPrices> {
   )
 
   try {
-    return Object.keys(tokensBySymbol)
-      .filter((key) => getTokenPriceSources(key).filter((item) => item !== undefined).length)
-      .reduce<TokensPrices>(
-        (result, current) => ({
-          ...result,
-          [current]: getTokenPrice(current, tickers).toNumber(),
-        }),
-        {},
-      )
+    return {
+      tokens: Object.keys(tokensBySymbol)
+        .filter((key) => getTokenPriceSources(key).filter((item) => item !== undefined).length)
+        .reduce<{ [key: string]: number }>(
+          (result, current) => ({
+            ...result,
+            [current]: getTokenPrice(current, tickers).toNumber(),
+          }),
+          {},
+        ),
+    }
   } catch (e) {
     console.info('Error loading one of the prices')
     console.info(e)
 
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    if (retries < MAX_RETRIES) {
+      await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    return await getTokensPrices()
+      return await getTokensPrices(retries + 1)
+    } else {
+      return { error: (e as string).toString() }
+    }
   }
 }
