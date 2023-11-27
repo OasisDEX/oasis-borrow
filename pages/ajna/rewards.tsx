@@ -7,7 +7,7 @@ function AjnaRewardsPage() {
 
 export default AjnaRewardsPage
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   return {
     redirect: {
       permanent: true,
