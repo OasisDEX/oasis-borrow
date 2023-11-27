@@ -13,7 +13,7 @@ import { cacheObject } from 'helpers/api/cacheObject'
 import type { NextApiRequest } from 'next'
 import NodeCache from 'node-cache'
 
-const portfolioCacheTime = 2 * 60
+const portfolioCacheTime = 0
 export const getCachedTokensPrices = cacheObject(
   getTokensPrices,
   portfolioCacheTime,
@@ -77,8 +77,10 @@ export const portfolioPositionsHandler = async ({
             ...makerPositions,
           ],
           error: false,
-          errorJson: false,
-          ...(debug && { ...payload }),
+          ...(debug && {
+            errorJson: false,
+            ...payload,
+          }),
         }),
       )
       .catch((error) => {
@@ -86,7 +88,11 @@ export const portfolioPositionsHandler = async ({
 
         return {
           positions: [],
-          ...(debug && { ...payload, error: error.toString(), errorJson: JSON.stringify(error) }),
+          error: error.toString(),
+          ...(debug && {
+            errorJson: JSON.stringify(error),
+            ...payload,
+          }),
         }
       })
 
