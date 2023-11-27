@@ -241,7 +241,8 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
     details: [
       {
         type: 'netValue',
-        value: `$${formatCryptoBalance(netValueInDebtToken.times(secondaryTokenPrice))}`,
+        value: `${formatCryptoBalance(netValueInDebtToken)} ${commonData.secondaryToken}`,
+        subvalue: `$${formatCryptoBalance(netValueInDebtToken.times(secondaryTokenPrice))}`,
       },
       {
         type: 'earnings',
@@ -254,6 +255,19 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
                   ),
                 ),
               )} ${commonData.secondaryToken}`
+            : notAvailable
+        }`,
+        subvalue: `${
+          positionHistory
+            ? `$${formatCryptoBalance(
+                netValueInDebtToken
+                  .minus(
+                    positionHistory.cumulativeDepositInQuoteToken.minus(
+                      positionHistory.cumulativeWithdrawInQuoteToken,
+                    ),
+                  )
+                  .times(secondaryTokenPrice),
+              )}`
             : notAvailable
         }`,
       },
