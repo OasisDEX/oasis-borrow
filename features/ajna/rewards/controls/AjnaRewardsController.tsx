@@ -1,8 +1,10 @@
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { FloatingLabel } from 'components/FloatingLabel'
+import { AppLink } from 'components/Links'
 import { ProductCardsWrapper } from 'components/productCards/ProductCardsWrapper'
 import { WithArrow } from 'components/WithArrow'
 import { AjnaHaveSomeQuestions, AjnaHeader } from 'features/ajna/common/components'
+import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers'
 import { AjnaRewardCard } from 'features/ajna/rewards/components'
 import { useAjnaRewards } from 'features/ajna/rewards/hooks'
 import { useConnection } from 'features/web3OnBoard/useConnection'
@@ -50,15 +52,34 @@ export function AjnaRewardsController() {
 
   return (
     <AnimatedWrapper>
-      <AjnaHeader title={t('ajna.rewards.title')} intro={t('ajna.rewards.intro')} />
+      <AjnaHeader
+        title={t('ajna.rewards.title')}
+        intro={
+          <>
+            {t('ajna.rewards.intro')}
+            <br />
+            <AppLink href={EXTERNAL_LINKS.DOCS.AJNA.TOKEN_REWARDS}>
+              <WithArrow
+                sx={{
+                  ...getAjnaWithArrowColorScheme(),
+                  fontSize: 3,
+                  fontWeight: 'regular',
+                }}
+              >
+                {t('ajna.rewards.intro-link')}
+              </WithArrow>
+            </AppLink>
+          </>
+        }
+      />
       {!isConnected && (
         <Flex sx={{ justifyContent: 'center', mb: 5 }}>
-          <Button sx={{ fontSize: 3, py: 2 }} onClick={handleConnect}>
+          <Button variant="primary" sx={{ p: 0 }} onClick={handleConnect}>
             <WithArrow
               gap={1}
-              sx={{ color: 'inherit', fontSize: 'inherit', p: 2, pl: '24px', pr: '36px' }}
+              sx={{ color: 'inherit', fontSize: 'inherit', py: 3, pl: '40px', pr: '56px' }}
             >
-              {t('connect-wallet-button')}
+              {t('connect-wallet')}
             </WithArrow>
           </Button>
         </Flex>
