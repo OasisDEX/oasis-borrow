@@ -3,7 +3,7 @@ import { config } from 'server/config'
 import * as z from 'zod'
 
 const ROUTE_NAME = 'exchange'
-const AUTH_HEADER_KEY = 'auth-key'
+const AUTH_HEADER_KEY = 'Authorization'
 
 const oneInchSchema = z.object({
   apiVersion: z.string(),
