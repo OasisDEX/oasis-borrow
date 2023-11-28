@@ -5,6 +5,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { ajnaBrandGradient, getGradientColor } from 'helpers/getGradientColor'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useToggle } from 'helpers/useToggle'
+import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Image, Text } from 'theme-ui'
@@ -84,18 +85,23 @@ export function AjnaRewardCard({
           flexDirection: 'column',
           rowGap: '24px',
           mt: '24px',
-          px: '24px',
-          py: 4,
+          px: 3,
+          pt: 4,
+          pb: '24px',
           backgroundColor: 'rgba(255, 255, 255, 0.6)',
           borderRadius: 'mediumLarge',
         }}
       >
         <Text as="p" variant="paragraph2">
-          <Trans
-            i18nKey="ajna.rewards.claim"
-            values={{ amount: formatCryptoBalance(claimable) }}
-            components={{ strong: <strong /> }}
-          />
+          {isLoading ? (
+            <Skeleton height="24px" color="ajna" />
+          ) : (
+            <Trans
+              i18nKey="ajna.rewards.claim"
+              values={{ amount: formatCryptoBalance(claimable) }}
+              components={{ strong: <strong /> }}
+            />
+          )}
         </Text>
         <Button
           // TODO: should also be disabled while rewards transaction is running
@@ -107,42 +113,44 @@ export function AjnaRewardCard({
         >
           {t('ajna.rewards.cta')}
         </Button>
-        <Box>
-          <Button variant="unStyled" onClick={toggleIsBreakdownOpen}>
-            <Text variant="paragraph3">{t('ajna.rewards.see-breakdown')}</Text>
-            <ExpandableArrow
-              direction={isBreakdownOpen ? 'up' : 'down'}
-              sx={{ ml: 2, mb: '1px' }}
-            />
-          </Button>
-          {isBreakdownOpen && (
-            <Grid
-              sx={{
-                gridTemplateColumns: 'auto auto',
-                justifyContent: 'space-between',
-                gap: 3,
-                mt: 3,
-              }}
-            >
-              <AjnaRewardCardBreakdownItem
-                label={t('ajna.rewards.bonus-rewards')}
-                value={`${formatCryptoBalance(bonus)} $AJNA`}
+        {!isLoading && total.gt(zero) && (
+          <Box>
+            <Button variant="unStyled" onClick={toggleIsBreakdownOpen}>
+              <Text variant="paragraph3">{t('ajna.rewards.see-breakdown')}</Text>
+              <ExpandableArrow
+                direction={isBreakdownOpen ? 'up' : 'down'}
+                sx={{ ml: 2, mb: '1px' }}
               />
-              <AjnaRewardCardBreakdownItem
-                label={t('ajna.rewards.regular-rewards')}
-                value={`${formatCryptoBalance(regular)} $AJNA`}
-              />
-              <AjnaRewardCardBreakdownItem
-                label={t('ajna.rewards.total-rewards')}
-                value={`${formatCryptoBalance(total)} $AJNA`}
-              />
-              <AjnaRewardCardBreakdownItem
-                label={t('ajna.rewards.claimable-today')}
-                value={`${formatCryptoBalance(claimable)} $AJNA`}
-              />
-            </Grid>
-          )}
-        </Box>
+            </Button>
+            {isBreakdownOpen && (
+              <Grid
+                sx={{
+                  gridTemplateColumns: 'auto auto',
+                  justifyContent: 'space-between',
+                  gap: 3,
+                  mt: 3,
+                }}
+              >
+                <AjnaRewardCardBreakdownItem
+                  label={t('ajna.rewards.bonus-rewards')}
+                  value={`${formatCryptoBalance(bonus)} $AJNA`}
+                />
+                <AjnaRewardCardBreakdownItem
+                  label={t('ajna.rewards.regular-rewards')}
+                  value={`${formatCryptoBalance(regular)} $AJNA`}
+                />
+                <AjnaRewardCardBreakdownItem
+                  label={t('ajna.rewards.total-rewards')}
+                  value={`${formatCryptoBalance(total)} $AJNA`}
+                />
+                <AjnaRewardCardBreakdownItem
+                  label={t('ajna.rewards.claimable-today')}
+                  value={`${formatCryptoBalance(claimable)} $AJNA`}
+                />
+              </Grid>
+            )}
+          </Box>
+        )}
       </Flex>
     </Box>
   )
