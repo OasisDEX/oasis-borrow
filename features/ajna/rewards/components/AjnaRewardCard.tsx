@@ -1,11 +1,11 @@
 import type { TxStatus } from '@oasisdex/transactions'
-import type { BigNumber } from 'bignumber.js'
 import { Skeleton } from 'components/Skeleton'
 import { WithArrow } from 'components/WithArrow'
+import type { AjnaRewards } from 'features/ajna/rewards/types'
 import { failedStatuses, progressStatuses } from 'features/automation/common/consts'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import { ajnaBrandGradient, getGradientColor } from 'helpers/getGradientColor'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
@@ -23,15 +23,10 @@ interface BannerProps {
   footer?: string
 }
 
-export interface Rewards {
-  tokens: BigNumber
-  usd: BigNumber
-}
-
 interface AjnaRewardCardBannerPropsAvailable {
   notAvailable?: never
   ownerPageLink: Link
-  rewards: Rewards
+  rewards: AjnaRewards
   txStatus?: TxStatus
   walletAddress: string
   onBtnClick?: () => void
@@ -166,14 +161,14 @@ const AjnaRewardCardBanner: FC<AjnaRewardCardBannerProps> = ({
 
 interface AjnaRewardCardProps {
   isLoading: boolean
-  rewards: {
-    tokens: BigNumber
-    usd: BigNumber
-  }
+  rewards: AjnaRewards
 }
 
-export function AjnaRewardCard({ isLoading }: AjnaRewardCardProps) {
-  const { isConnected, walletAddress } = useAccount()
+export function AjnaRewardCard({
+  isLoading,
+  rewards: { balance, balanceUsd },
+}: AjnaRewardCardProps) {
+  const { t } = useTranslation()
 
   return (
     <Box
@@ -182,6 +177,7 @@ export function AjnaRewardCard({ isLoading }: AjnaRewardCardProps) {
         width: '420px',
         mx: 'auto',
         p: '24px',
+        textAlign: 'center',
         background: 'linear-gradient(90deg, #ffeffd 0%, #f5edff 100%), #fff',
         borderRadius: 'large',
       }}
@@ -190,6 +186,38 @@ export function AjnaRewardCard({ isLoading }: AjnaRewardCardProps) {
         sx={{ display: 'block', mx: 'auto', mb: '12px' }}
         src={staticFilesRuntimeUrl('/static/img/ajna-logo-color.svg')}
       />
+      <Text as="p" variant="boldParagraph3">
+        {t('ajna.rewards.balance')}
+      </Text>
+      {isLoading ? (
+        <>
+          <Skeleton width="75%" height="38px" color="ajna" sx={{ mx: 'auto', my: 2 }} />
+          <Skeleton width="50%" height="24px" color="ajna" sx={{ mx: 'auto' }} />
+        </>
+      ) : (
+        <>
+          <Text as="p" variant="header2" sx={getGradientColor(ajnaBrandGradient)}>
+            {formatCryptoBalance(balance)}{' '}
+            <Text as="small" variant="header3">
+              $AJNA
+            </Text>
+          </Text>
+          <Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>
+            ${formatCryptoBalance(balanceUsd)}
+          </Text>
+        </>
+      )}
+      <Box
+        sx={{
+          mt: '24px',
+          px: '24px',
+          py: 4,
+          backgroundColor: 'rgba(255, 255, 255, 0.6)',
+          borderRadius: 'mediumLarge',
+        }}
+      >
+        asd
+      </Box>
       {/* {walletAddress && !isLoading && (
         <AjnaRewardCardBanner
           banner={banner}
@@ -202,7 +230,7 @@ export function AjnaRewardCard({ isLoading }: AjnaRewardCardProps) {
           walletAddress={walletAddress}
         />
       )} */}
-      {isConnected && isLoading && <Skeleton sx={{ height: '220px', borderRadius: 'large' }} />}
+      {/* {isConnected && isLoading && <Skeleton sx={{ height: '220px', borderRadius: 'large' }} />} */}
     </Box>
   )
 }

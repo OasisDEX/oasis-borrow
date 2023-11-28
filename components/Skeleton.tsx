@@ -2,7 +2,7 @@ import React from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Grid } from 'theme-ui'
 
-type SkeletonColorTheme = 'default' | 'dark' | 'positive' | 'negative' | 'fancy'
+type SkeletonColorTheme = 'default' | 'dark' | 'positive' | 'negative' | 'fancy' | 'ajna'
 
 type SkeletonColorThemes = {
   [key in SkeletonColorTheme]: [string, string]
@@ -14,6 +14,7 @@ const skeletonColorTheme: SkeletonColorThemes = {
   negative: ['#ffeee9', '#fff9f7'],
   positive: ['#e7fcfa', '#f7fefd'],
   fancy: ['#ccf1fc', '#fcece3'], // based on the two main summer colors: #007DA3 + #E7A77F
+  ajna: ['#fcddf8', '#eadcfb'], // based on the ajna brand gradient colors: #f154db + #974eea
 }
 
 interface SkeletonProps {

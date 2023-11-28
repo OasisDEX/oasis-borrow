@@ -14,7 +14,7 @@ import { Button, Flex } from 'theme-ui'
 
 export function AjnaRewardsController() {
   const { t } = useTranslation()
-  const userAjnaRewards = useAjnaRewards()
+  const { isLoading, rewards } = useAjnaRewards()
 
   const { isConnected } = useAccount()
   const { connect } = useConnection()
@@ -47,7 +47,9 @@ export function AjnaRewardsController() {
           </>
         }
       />
-      {!isConnected && (
+      {isConnected ? (
+        <AjnaRewardCard isLoading={isLoading} rewards={rewards} />
+      ) : (
         <Flex sx={{ justifyContent: 'center', mb: [3, null, '48px'] }}>
           <Button variant="primary" sx={{ p: 0 }} onClick={handleConnect}>
             <WithArrow
@@ -59,10 +61,6 @@ export function AjnaRewardsController() {
           </Button>
         </Flex>
       )}
-      <AjnaRewardCard
-        isLoading={userAjnaRewards.isLoading}
-        rewards={userAjnaRewards.rewards}
-      />
       <AjnaHaveSomeQuestions />
     </AnimatedWrapper>
   )

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import type { Rewards } from 'features/ajna/rewards/components'
 import { getAjnaRewards } from 'features/ajna/rewards/helpers'
+import type { AjnaRewards } from 'features/ajna/rewards/types'
 import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { getAjnaRewardsData } from 'handlers/ajna-rewards/getAjnaRewardsData'
 import { useAccount } from 'helpers/useAccount'
@@ -8,15 +8,16 @@ import { zero } from 'helpers/zero'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 interface AjnaRewardsParamsState {
-  rewards: Rewards
   isError: boolean
   isLoading: boolean
+  rewards: AjnaRewards
   refetch(): void
 }
 
-const defaultRewards = {
-  tokens: zero,
-  usd: zero,
+const defaultRewards: AjnaRewards = {
+  balance: zero,
+  balanceUsd: zero,
+  claimable: zero,
 }
 const errorState = {
   rewards: defaultRewards,
@@ -58,9 +59,10 @@ export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
             setState({
               ...state,
               rewards: {
-                tokens: new BigNumber(parseApiResponse.amount).minus(claimed),
+                balance: new BigNumber(parseApiResponse.amount).minus(claimed),
                 // TODO: recalculate when Ajna Token value is available
-                usd: zero,
+                balanceUsd: zero,
+                claimable: zero,
               },
               isError: false,
               isLoading: false,
