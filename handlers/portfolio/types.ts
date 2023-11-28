@@ -1,7 +1,7 @@
 import type { Vault } from '@prisma/client'
 import type { NetworkNames } from 'blockchain/networks'
 import type { OmniProductType } from 'features/omni-kit/types'
-import type { TokensPrices } from 'handlers/portfolio/positions/helpers'
+import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import type { DpmList } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { LendingProtocol } from 'lendingProtocols'
 
@@ -65,7 +65,7 @@ export type PortfolioPositionsHandler = ({
   address: string
   apiVaults?: Vault[]
   dpmList: DpmList
-  prices: TokensPrices
+  prices: TokensPricesList
   positionsCount?: boolean
 }) => Promise<PortfolioPositionsReply | PortfolioPositionsCountReply>
 

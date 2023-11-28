@@ -6,7 +6,7 @@ import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import type { OmniProductBorrowishType } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { AjnaDpmPositionsPool } from 'handlers/portfolio/positions/handlers/ajna/types'
-import type { TokensPrices } from 'handlers/portfolio/positions/helpers'
+import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import { getBorrowishPositionType } from 'handlers/portfolio/positions/helpers'
 import type { DpmList } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
@@ -19,7 +19,7 @@ interface getAjnaPositionInfoParams {
   isEarn: boolean
   pool: AjnaDpmPositionsPool
   positionId: string
-  prices: TokensPrices
+  prices: TokensPricesList
   proxyAddress: string
 }
 

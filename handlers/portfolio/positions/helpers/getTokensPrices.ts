@@ -6,8 +6,12 @@ import { tokenTickers } from 'helpers/api/tokenTickers'
 
 const MAX_RETRIES = 5
 
+export interface TokensPricesList {
+  [key: string]: number
+}
+
 export interface TokensPrices {
-  tokens?: { [key: string]: number }
+  tokens?: TokensPricesList
   error?: string
 }
 

@@ -4,7 +4,7 @@ import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import type { OmniProductBorrowishType } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { MakerDiscoverPositionsIlk } from 'handlers/portfolio/positions/handlers/maker/types'
-import type { TokensPrices } from 'handlers/portfolio/positions/helpers'
+import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import { getBorrowishPositionType } from 'handlers/portfolio/positions/helpers'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import { LendingProtocol } from 'lendingProtocols'
@@ -14,7 +14,7 @@ interface getMakerPositionInfoParams {
   cdp: string
   ilk: MakerDiscoverPositionsIlk
   normalizedDebt: string
-  prices: TokensPrices
+  prices: TokensPricesList
   type: string
 }
 
