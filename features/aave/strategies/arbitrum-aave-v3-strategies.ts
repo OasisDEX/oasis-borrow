@@ -418,6 +418,9 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
       },
       executeTransactionWith: 'ethers' as const,
       strategyType: config.strategyType,
+      isOptimizationTabEnabled: () =>
+        config.strategyType === StrategyType.Long &&
+        getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationArbitrum],
     }
   })
 
@@ -465,6 +468,9 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers',
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Multiply.featureToggle,
+      isOptimizationTabEnabled: () =>
+        config.strategyType === StrategyType.Long &&
+        getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationArbitrum],
     }
   })
 
@@ -512,6 +518,9 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers',
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Earn.featureToggle,
+      isOptimizationTabEnabled: () =>
+        config.strategyType === StrategyType.Long &&
+        getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationArbitrum],
     }
   })
 

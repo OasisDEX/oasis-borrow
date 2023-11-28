@@ -204,5 +204,6 @@
     "minimumChangeThreshold": 500,
     "showDetails": true
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "packageManager": "yarn@1.22.1"
 }

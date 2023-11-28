@@ -18,7 +18,7 @@ import {
   ManageDebtActionsEnum,
 } from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers'
-import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import { defaultManageTokenInputValues } from 'features/aave/manage/contexts'
 import type {
   BaseAaveContext,
   BaseAaveEvent,
