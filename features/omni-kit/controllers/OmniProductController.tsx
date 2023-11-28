@@ -141,7 +141,7 @@ export const OmniProductController = <Auction, History, Position>({
   })
 
   return (
-    <WithConnection pageChainId={resolvedNetwork.hexId} includeTestNet={true}>
+    <WithConnection>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <WithErrorHandler error={[...errors, ...protocolDataErrors]}>
