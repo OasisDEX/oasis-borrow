@@ -743,6 +743,7 @@ export const theme = themeTypeSafe({
       color: 'inherit',
       cursor: 'pointer',
       fontFamily: 'body',
+      p: 0,
     },
     actionActive: {
       variant: 'buttons.action',

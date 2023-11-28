@@ -15,9 +15,11 @@ interface AjnaRewardsParamsState {
 }
 
 const defaultRewards: AjnaRewards = {
-  balance: zero,
-  balanceUsd: zero,
+  bonus: zero,
   claimable: zero,
+  regular: zero,
+  total: zero,
+  totalUsd: zero,
 }
 const errorState = {
   rewards: defaultRewards,
@@ -59,9 +61,11 @@ export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
             setState({
               ...state,
               rewards: {
-                balance: new BigNumber(parseApiResponse.amount).minus(claimed),
+                total: new BigNumber(parseApiResponse.amount).minus(claimed),
                 // TODO: recalculate when Ajna Token value is available
-                balanceUsd: zero,
+                totalUsd: zero,
+                bonus: zero,
+                regular: zero,
                 claimable: zero,
               },
               isError: false,

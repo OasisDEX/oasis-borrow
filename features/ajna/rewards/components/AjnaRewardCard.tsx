@@ -1,11 +1,13 @@
+import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'
 import type { AjnaRewards } from 'features/ajna/rewards/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { ajnaBrandGradient, getGradientColor } from 'helpers/getGradientColor'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useToggle } from 'helpers/useToggle'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Flex, Image, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Image, Text } from 'theme-ui'
 
 interface AjnaRewardCardProps {
   disabled?: boolean
@@ -13,12 +15,32 @@ interface AjnaRewardCardProps {
   rewards: AjnaRewards
 }
 
+interface AjnaRewardCardBreakdownItemProps {
+  label: string
+  value: string
+}
+
+export function AjnaRewardCardBreakdownItem({ label, value }: AjnaRewardCardBreakdownItemProps) {
+  return (
+    <>
+      <Text variant="paragraph4" sx={{ fontWeight: 'bold', color: 'neutral80', textAlign: 'left' }}>
+        {label}
+      </Text>
+      <Text variant="paragraph4" sx={{ fontWeight: 'bold', textAlign: 'right' }}>
+        {value}
+      </Text>
+    </>
+  )
+}
+
 export function AjnaRewardCard({
   disabled,
   isLoading,
-  rewards: { balance, balanceUsd, claimable },
+  rewards: { bonus, claimable, regular, total, totalUsd },
 }: AjnaRewardCardProps) {
   const { t } = useTranslation()
+
+  const [isBreakdownOpen, toggleIsBreakdownOpen] = useToggle(false)
 
   return (
     <Box
@@ -47,13 +69,13 @@ export function AjnaRewardCard({
       ) : (
         <>
           <Text as="p" variant="header2" sx={getGradientColor(ajnaBrandGradient)}>
-            {formatCryptoBalance(balance)}{' '}
+            {formatCryptoBalance(total)}{' '}
             <Text as="small" variant="header3">
               $AJNA
             </Text>
           </Text>
           <Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>
-            ${formatCryptoBalance(balanceUsd)}
+            ${formatCryptoBalance(totalUsd)}
           </Text>
         </>
       )}
@@ -85,6 +107,42 @@ export function AjnaRewardCard({
         >
           {t('ajna.rewards.cta')}
         </Button>
+        <Box>
+          <Button variant="unStyled" onClick={toggleIsBreakdownOpen}>
+            <Text variant="paragraph3">{t('ajna.rewards.see-breakdown')}</Text>
+            <ExpandableArrow
+              direction={isBreakdownOpen ? 'up' : 'down'}
+              sx={{ ml: 2, mb: '1px' }}
+            />
+          </Button>
+          {isBreakdownOpen && (
+            <Grid
+              sx={{
+                gridTemplateColumns: 'auto auto',
+                justifyContent: 'space-between',
+                gap: 3,
+                mt: 3,
+              }}
+            >
+              <AjnaRewardCardBreakdownItem
+                label={t('ajna.rewards.bonus-rewards')}
+                value={`${formatCryptoBalance(bonus)} $AJNA`}
+              />
+              <AjnaRewardCardBreakdownItem
+                label={t('ajna.rewards.regular-rewards')}
+                value={`${formatCryptoBalance(regular)} $AJNA`}
+              />
+              <AjnaRewardCardBreakdownItem
+                label={t('ajna.rewards.total-rewards')}
+                value={`${formatCryptoBalance(total)} $AJNA`}
+              />
+              <AjnaRewardCardBreakdownItem
+                label={t('ajna.rewards.claimable-today')}
+                value={`${formatCryptoBalance(claimable)} $AJNA`}
+              />
+            </Grid>
+          )}
+        </Box>
       </Flex>
     </Box>
   )

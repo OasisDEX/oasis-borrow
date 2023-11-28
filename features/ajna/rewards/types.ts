@@ -1,7 +1,9 @@
 import type BigNumber from 'bignumber.js'
 
 export interface AjnaRewards {
-  balance: BigNumber
-  balanceUsd: BigNumber
+  bonus: BigNumber
   claimable: BigNumber
+  regular: BigNumber
+  total: BigNumber
+  totalUsd: BigNumber
 }
