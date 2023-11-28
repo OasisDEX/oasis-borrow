@@ -15,7 +15,6 @@ import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
 
 interface OmniProtocolDataProps {
-  chainId: NetworkIds
   collateralToken?: string
   isOracless?: boolean
   positionId?: string
@@ -25,7 +24,6 @@ interface OmniProtocolDataProps {
 }
 
 export function useOmniProtocolData({
-  chainId,
   collateralToken,
   isOracless,
   positionId,
@@ -33,7 +31,7 @@ export function useOmniProtocolData({
   protocol,
   quoteToken,
 }: OmniProtocolDataProps) {
-  const { walletAddress } = useAccount()
+  const { walletAddress, chainId } = useAccount()
   const { gasPrice$ } = useMainContext()
   const { userSettings$ } = useAccountContext()
   const {

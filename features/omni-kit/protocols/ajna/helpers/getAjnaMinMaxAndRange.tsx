@@ -10,7 +10,7 @@ export const getAjnaMinMaxAndRange = ({
   lowestUtilizedPriceIndex,
   marketPrice,
   isOracless,
-  mompOffset, // 0 - 1, percentage value
+  lupOffset, // 0 - 1, percentage value
   htpOffset, // 0 - 1, percentage value
 }: {
   highestThresholdPrice: BigNumber
@@ -18,7 +18,7 @@ export const getAjnaMinMaxAndRange = ({
   lowestUtilizedPriceIndex: BigNumber
   marketPrice: BigNumber
   isOracless: boolean
-  mompOffset: number
+  lupOffset: number
   htpOffset: number
 }) => {
   // check whether pool contain liquidity and borrowers, if no generate default range from the lowest price to market price
@@ -57,7 +57,7 @@ export const getAjnaMinMaxAndRange = ({
   // Generate ranges from lup to max
   const lupToMaxRange = [lowestUtilizedPrice]
 
-  while (lupToMaxRange[lupToMaxRange.length - 1].lt(lupToMaxRange[0].times(one.plus(mompOffset)))) {
+  while (lupToMaxRange[lupToMaxRange.length - 1].lt(lupToMaxRange[0].times(one.plus(lupOffset)))) {
     lupToMaxRange.push(lupToMaxRange[lupToMaxRange.length - 1].times(1.005))
   }
 

@@ -4,7 +4,7 @@ import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { PillAccordion } from 'components/PillAccordion'
 import { omniLendingPriceColors } from 'features/omni-kit/constants'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { AJNA_HTP_OFFSET, AJNA_MOMP_OFFSET } from 'features/omni-kit/protocols/ajna/constants'
+import { AJNA_HTP_OFFSET, AJNA_LUP_OFFSET } from 'features/omni-kit/protocols/ajna/constants'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts'
 import {
   convertAjnaSliderThresholds,
@@ -58,7 +58,7 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({
         lowestUtilizedPriceIndex,
         marketPrice: position.marketPrice,
         isOracless,
-        mompOffset: AJNA_MOMP_OFFSET,
+        lupOffset: AJNA_LUP_OFFSET,
         htpOffset: AJNA_HTP_OFFSET,
       }),
     [

@@ -44,11 +44,6 @@ const AjnaLiquidationNotificationWithLink: FC<AjnaLiquidationNotificationWithLin
   />
 )
 
-type PriceAboveMompParams = {
-  message: { collateralToken: string; quoteToken: string }
-  action: () => void
-}
-
 type EarningNoApyParams = {
   action?: () => void
 }
@@ -70,31 +65,11 @@ const ajnaNotifications: {
   emptyPosition: NotificationCallbackWithParams<EmptyPositionParams>
   gotLiquidated: NotificationCallbackWithParams<null>
   lendingPriceFrozen: NotificationCallbackWithParams<LendingPriceFrozenParams>
-  priceAboveMomp: NotificationCallbackWithParams<PriceAboveMompParams>
   safetySwichOpen: NotificationCallbackWithParams<null>
   safetySwichManage: NotificationCallbackWithParams<null>
   nearLup: NotificationCallbackWithParams<null>
   aboveLup: NotificationCallbackWithParams<null>
 } = {
-  priceAboveMomp: ({ action, message }) => ({
-    title: {
-      translationKey:
-        'ajna.position-page.earn.manage.notifications.deposit-is-not-withdrawable.title',
-    },
-    message: {
-      translationKey:
-        'ajna.position-page.earn.manage.notifications.deposit-is-not-withdrawable.message',
-      params: message,
-    },
-    icon: coins_cross,
-    type: 'error',
-    closable: true,
-    link: {
-      translationKey:
-        'ajna.position-page.earn.manage.notifications.deposit-is-not-withdrawable.label',
-      action,
-    },
-  }),
   earningNoApy: ({ action }) => ({
     title: {
       translationKey: 'ajna.position-page.earn.manage.notifications.earning-no-apy.title',
@@ -243,7 +218,6 @@ const ajnaNotifications: {
 
 export function getAjnaNotifications({
   ajnaSafetySwitchOn,
-  collateralToken,
   dispatch,
   isOpening,
   isOracless,
@@ -254,7 +228,6 @@ export function getAjnaNotifications({
   updateState,
 }: {
   ajnaSafetySwitchOn: boolean
-  collateralToken: string
   isOpening: boolean
   position: AjnaGenericPosition
   positionAuction: AjnaPositionAuction
@@ -315,11 +288,10 @@ export function getAjnaNotifications({
       if (!isOpening) {
         const {
           price,
-          pool: { highestThresholdPrice, mostOptimisticMatchingPrice },
+          pool: { highestThresholdPrice },
           quoteTokenAmount,
         } = position as AjnaEarnPosition
         const earningNoApy = price.lt(highestThresholdPrice) && price.gt(zero)
-        const priceAboveMomp = price.gt(mostOptimisticMatchingPrice)
         const earnPositionAuction = positionAuction as AjnaEarnPositionAuction
         const emptyPosition =
           quoteTokenAmount.isZero() && !earnPositionAuction.isCollateralToWithdraw
@@ -330,14 +302,6 @@ export function getAjnaNotifications({
           updateState('uiPill', OmniEarnFormAction.DepositEarn)
         }
 
-        if (priceAboveMomp && !isOracless) {
-          notifications.push(
-            ajnaNotifications.priceAboveMomp({
-              message: { collateralToken, quoteToken },
-              action: moveToAdjust,
-            }),
-          )
-        }
         if (earningNoApy) {
           notifications.push(
             ajnaNotifications.earningNoApy({

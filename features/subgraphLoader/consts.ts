@@ -206,7 +206,6 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         htpIndex
         hpbIndex
         lupIndex
-        momp
         debt
         depositSize
         interestRate

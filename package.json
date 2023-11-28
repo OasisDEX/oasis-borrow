@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "12.1.0",
+  "version": "12.1.2",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=18.12"
@@ -42,9 +42,9 @@
     "@lifi/wallet-management": "^2.3.4",
     "@lifi/widget": "2.4.6",
     "@metamask/eth-sig-util": "^5.0.2",
-    "@oasisdex/addresses": "^0.1.13",
+    "@oasisdex/addresses": "^0.1.15",
     "@oasisdex/automation": "^1.5.8",
-    "@oasisdex/dma-library": "0.5.17",
+    "@oasisdex/dma-library": "0.5.19",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",

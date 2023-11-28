@@ -1,9 +1,5 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
-import {
-  calculateAjnaMaxLiquidityWithdraw,
-  getPoolLiquidity,
-  negativeToZero,
-} from '@oasisdex/dma-library'
+import { getPoolLiquidity, negativeToZero, protocols } from '@oasisdex/dma-library'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
@@ -142,7 +138,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
 
   const notifications = getAjnaNotifications({
     ajnaSafetySwitchOn,
-    collateralToken,
     dispatch: productContext.form.dispatch,
     isOpening,
     isOracless,
@@ -369,7 +364,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           earnWithdrawMax:
             productType === OmniProductType.Earn
               ? getAjnaEarnWithdrawMax({
-                  quoteTokenAmount: calculateAjnaMaxLiquidityWithdraw({
+                  quoteTokenAmount: protocols.ajna.calculateAjnaMaxLiquidityWithdraw({
                     pool: earnPosition.pool,
                     poolCurrentLiquidity: getPoolLiquidity(earnPosition.pool),
                     position: earnPosition,
@@ -408,7 +403,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               quoteToken={quoteToken}
               simulation={earnSimulation}
               withdrawAmount={earnContext.form.state.withdrawAmount}
-              availableToWithdraw={calculateAjnaMaxLiquidityWithdraw({
+              availableToWithdraw={protocols.ajna.calculateAjnaMaxLiquidityWithdraw({
                 pool: earnPosition.pool,
                 poolCurrentLiquidity: getPoolLiquidity(earnPosition.pool),
                 position: earnPosition,

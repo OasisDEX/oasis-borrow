@@ -1,4 +1,4 @@
-import type { AjnaEarnPosition, MorphoPosition } from '@oasisdex/dma-library'
+import type { AjnaEarnPosition, MorphoBluePosition } from '@oasisdex/dma-library'
 import type { OmniCustomStateParams } from 'features/omni-kit/controllers'
 import { AjnaCustomStateContextProvider } from 'features/omni-kit/protocols/ajna/contexts'
 import { getEarnDefaultPrice } from 'features/omni-kit/protocols/ajna/helpers'
@@ -13,7 +13,7 @@ import React from 'react'
 type MorphoOmniCustomStateProviderProps = OmniCustomStateParams<
   MorphoPositionAuction,
   PositionHistoryEvent[],
-  MorphoPosition
+  MorphoBluePosition
 >
 
 export const MorphoOmniCustomStateProvider: FC<MorphoOmniCustomStateProviderProps> = ({

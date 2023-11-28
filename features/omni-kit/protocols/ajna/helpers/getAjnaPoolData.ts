@@ -18,7 +18,6 @@ export interface AjnaPoolDataResponse {
   htpIndex: string
   hpbIndex: string
   lupIndex: string
-  momp: string
   debt: string
   depositSize: string
   interestRate: string
@@ -71,7 +70,6 @@ export const getAjnaPoolData: (networkId: NetworkIds) => GetPoolData =
             htpIndex,
             hpb,
             hpbIndex,
-            momp,
             interestRate,
             debt,
             depositSize,
@@ -112,8 +110,6 @@ export const getAjnaPoolData: (networkId: NetworkIds) => GetPoolData =
 
             highestPriceBucket: new BigNumber(hpb).shiftedBy(NEGATIVE_WAD_PRECISION),
             highestPriceBucketIndex: new BigNumber(hpbIndex),
-
-            mostOptimisticMatchingPrice: new BigNumber(momp).shiftedBy(NEGATIVE_WAD_PRECISION),
 
             poolMinDebtAmount: new BigNumber(poolMinDebtAmount).shiftedBy(NEGATIVE_WAD_PRECISION),
             poolCollateralization: new BigNumber(poolCollateralization).shiftedBy(
