@@ -12,8 +12,9 @@ import React from 'react'
 interface AjnaContentCardNetValueProps extends OmniContentCardCommonProps {
   netValue: BigNumber
   afterNetValue?: BigNumber
-  pnl: AjnaPosition['pnl']
+  position: AjnaPosition
   collateralPrice: BigNumber
+  collateralToken: string
   pnlNotAvailable?: boolean
   showPnl: boolean
 }
@@ -23,11 +24,12 @@ export function AjnaContentCardNetValue({
   changeVariant,
   isLoading,
   netValue,
-  pnl,
+  position,
   pnlNotAvailable = false,
   showPnl,
   modalTheme,
   collateralPrice,
+  collateralToken,
 }: AjnaContentCardNetValueProps) {
   const { t } = useTranslation()
 
@@ -35,7 +37,7 @@ export function AjnaContentCardNetValue({
     netValue: formatFiatBalance(netValue),
     afterNetValue: afterNetValue && `${formatFiatBalance(afterNetValue)} USD`,
     pnl: `${t('ajna.position-page.multiply.common.overview.pnl')}: ${
-      pnlNotAvailable ? 'n/a' : `$${formatFiatBalance(pnl.withFees)}`
+      pnlNotAvailable ? 'n/a' : `$${formatFiatBalance(position.pnl.withFees)}`
     }`,
   }
 
@@ -51,9 +53,11 @@ export function AjnaContentCardNetValue({
     modal: isLoading ? null : (
       <DetailsSectionContentSimpleModal
         theme={modalTheme}
-        title={t('ajna.position-page.common.headline.net-value-pnl')}
+        title={t('ajna.position-page.common.net-value-pnl-modal.headline')}
       >
-        <AjnaContentCardNetValueModal {...{ netValue, pnl, collateralPrice }} />
+        <AjnaContentCardNetValueModal
+          {...{ netValue, position, collateralPrice, collateralToken }}
+        />
       </DetailsSectionContentSimpleModal>
     ),
   }

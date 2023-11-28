@@ -1,33 +1,162 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { OmniContentCardCommonProps } from 'features/omni-kit/components/details-section/types'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid, Text } from 'theme-ui'
+import { Divider, Flex, Grid, Text } from 'theme-ui'
 
 interface AjnaContentCardNetValueProps extends OmniContentCardCommonProps {
   netValue: BigNumber
-  pnl: AjnaPosition['pnl']
+  position: AjnaPosition
   collateralPrice: BigNumber
+  collateralToken: string
+}
+
+function NetValueModalGridRow({
+  label,
+  firstColumn,
+  secondColumn,
+  firstColumnDetails,
+  secondColumnDetails,
+}: {
+  label: string
+  firstColumn: string
+  firstColumnDetails?: string
+  secondColumn: string
+  secondColumnDetails?: string
+}) {
+  return (
+    <>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
+        <Text variant="paragraph4" color="neutral80">
+          {label}
+        </Text>
+      </Flex>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end' }}>
+        <Text variant="boldParagraph2">{firstColumn}</Text>
+        {firstColumnDetails && (
+          <Text variant="paragraph4" color="neutral80">
+            {firstColumnDetails}
+          </Text>
+        )}
+      </Flex>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end' }}>
+        <Text variant="boldParagraph2">{secondColumn}</Text>
+        {secondColumnDetails && (
+          <Text variant="paragraph4" color="neutral80">
+            {secondColumnDetails}
+          </Text>
+        )}
+      </Flex>
+    </>
+  )
 }
 
 export function AjnaContentCardNetValueModal({
   netValue,
-  pnl,
+  position,
   collateralPrice,
+  collateralToken,
 }: AjnaContentCardNetValueProps) {
   const { t } = useTranslation()
+  const {
+    pnl: { cumulatives, withFees, withoutFees },
+    debtAmount,
+  } = position
+  // Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative deposits
+  const unrealisedPnl = netValue
+    .plus(cumulatives.borrowCumulativeWithdrawUSD)
+    .minus(cumulatives.borrowCumulativeFeesUSD)
+    .minus(cumulatives.borrowCumulativeDepositUSD)
+    .div(cumulatives.borrowCumulativeDepositUSD)
   return (
     <Grid gap={2}>
       <Text variant="paragraph3">
-        {`${t('ajna.position-page.common.headline.net-value-pnl-based-on-price')}`}
+        {`${t('ajna.position-page.common.net-value-pnl-modal.net-value-pnl-based-on-price')}`}
         &nbsp;
         <Text as="span" variant="boldParagraph2">{`$${formatAmount(collateralPrice, 'USD')}`}</Text>
       </Text>
-      Collateral price: {collateralPrice.toString()}
-      Net value: {netValue.toString()}
-      <pre>{JSON.stringify(pnl, null, 2)}</pre>
+      <Grid gap={2} columns="repeat(3, 1fr)">
+        <Flex />
+        <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end' }}>
+          <Text variant="paragraph4" color="neutral80">
+            {t('ajna.position-page.common.net-value-pnl-modal.collateral-value')}
+          </Text>
+        </Flex>
+        <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end' }}>
+          <Text variant="paragraph4" color="neutral80">
+            {t('ajna.position-page.common.net-value-pnl-modal.usd-value')}
+          </Text>
+        </Flex>
+
+        <NetValueModalGridRow
+          label={t('ajna.position-page.common.net-value-pnl-modal.net-value')}
+          firstColumn={`${formatCryptoBalance(netValue.div(collateralPrice))} ${collateralToken}`}
+          firstColumnDetails={`${t(
+            'ajna.position-page.common.net-value-pnl-modal.total-collateral',
+          )}: ${formatCryptoBalance(
+            cumulatives.borrowCumulativeDepositUSD.div(collateralPrice),
+          )} ${collateralToken}`}
+          secondColumn={`$${formatAmount(netValue, 'USD')}`}
+          secondColumnDetails={`${t(
+            'ajna.position-page.common.net-value-pnl-modal.debt',
+          )}: $${formatAmount(debtAmount, 'USD')}`}
+        />
+      </Grid>
+      <Divider />
+      <Grid gap={2} columns="repeat(3, 1fr)">
+        <NetValueModalGridRow
+          label={t('ajna.position-page.common.net-value-pnl-modal.deposits')}
+          firstColumn={`${formatCryptoBalance(
+            cumulatives.borrowCumulativeDepositUSD.div(collateralPrice),
+          )} ${collateralToken}`}
+          secondColumn={`$${formatAmount(cumulatives.borrowCumulativeDepositUSD, 'USD')}`}
+        />
+        <NetValueModalGridRow
+          label={t('ajna.position-page.common.net-value-pnl-modal.withdrawals')}
+          firstColumn={`${formatCryptoBalance(
+            cumulatives.borrowCumulativeWithdrawUSD.div(collateralPrice),
+          )} ${collateralToken}`}
+          secondColumn={`$${formatAmount(cumulatives.borrowCumulativeWithdrawUSD, 'USD')}`}
+        />
+        <NetValueModalGridRow
+          label={t('ajna.position-page.common.net-value-pnl-modal.gas-fees-spent')}
+          firstColumn={`${formatCryptoBalance(
+            cumulatives.borrowCumulativeFeesUSD.div(collateralPrice),
+          )} ${collateralToken}`}
+          secondColumn={`$${formatAmount(cumulatives.borrowCumulativeFeesUSD, 'USD')}`}
+        />
+      </Grid>
+      <Flex
+        sx={{
+          backgroundColor: 'neutral30',
+          borderRadius: 'large',
+          flexDirection: 'column',
+          p: 2,
+          my: 3,
+          textAlign: 'center',
+        }}
+      >
+        <Text variant="paragraph4" color="neutral80">
+          {t('ajna.position-page.common.net-value-pnl-modal.unrealised-pnl')}
+        </Text>
+        <Text variant="paragraph1">
+          {formatAmount(unrealisedPnl, 'USD')} | {formatAmount(withoutFees, 'USD')}
+        </Text>
+      </Flex>
+      <Flex
+        sx={{
+          flexDirection: 'column',
+        }}
+      >
+        <Text variant="paragraph3" sx={{ fontStyle: 'italic', mb: 3 }} color="neutral80">
+          {t('ajna.position-page.common.net-value-pnl-modal.formula')}
+        </Text>
+        <Text variant="paragraph3" sx={{ fontStyle: 'italic' }} color="neutral80">
+          {t('ajna.position-page.common.net-value-pnl-modal.note')}
+        </Text>
+      </Flex>
     </Grid>
   )
 }

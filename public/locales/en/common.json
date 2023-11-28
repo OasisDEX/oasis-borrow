@@ -2716,9 +2716,7 @@
         "headline": {
           "open": "{{collateralToken}}/{{quoteToken}} {{productType}} Position",
           "manage": "{{collateralToken}}/{{quoteToken}} {{productType}} #{{positionId}}",
-          "current-market-price": "Current Market Price",
-          "net-value-pnl": "Net Value & P&L",
-          "net-value-pnl-based-on-price": "The current net value is calculated based on the market price of"
+          "current-market-price": "Current Market Price"
         },
         "banners": {
           "tokens": {
@@ -2805,6 +2803,21 @@
             "message": "Adjust your position to ensure the Threshold price stays below the LUP in order to avoid being eligible for liquidation"
           },
           "read-more": "Read more about Ajna Liquidations"
+        },
+        "net-value-pnl-modal": {
+          "headline": "Net Value & P&L",
+          "net-value-pnl-based-on-price": "The current net value is calculated based on the market price of",
+          "collateral-value": "Collateral Value",
+          "usd-value": "$ Value",
+          "net-value": "Net Value",
+          "debt": "Debt",
+          "total-collateral": "Total Col",
+          "deposits": "Deposits",
+          "withdrawals": "Withdrawals",
+          "gas-fees-spent": "Gas Fees Spent",
+          "unrealised-pnl": "Unrealised Profit & Loss",
+          "formula": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative  deposits",
+          "note": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction."
         }
       },
       "borrow": {
