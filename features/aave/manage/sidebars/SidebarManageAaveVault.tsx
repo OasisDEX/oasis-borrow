@@ -12,7 +12,7 @@ import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarS
 import { Skeleton } from 'components/Skeleton'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave'
 import { ConnectedSidebarSection, StrategyInformationContainer } from 'features/aave/components'
-import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import { useManageAaveStateMachineContext } from 'features/aave/manage/contexts'
 import type {
   ManageAaveContext,
   ManageAaveEvent,

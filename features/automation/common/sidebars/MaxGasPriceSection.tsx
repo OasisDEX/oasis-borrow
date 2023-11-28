@@ -15,15 +15,17 @@ export function MaxGasPriceSection({ onChange, value, analytics }: MaxGasPriceSe
     (item: number) => {
       onChange(item)
 
-      trackingEvents.automation.buttonClick(
-        MixpanelAutomationEventIds.MaxGasFee,
-        analytics.page,
-        MixpanelCommonAnalyticsSections.Form,
-        {
-          ...analytics.additionalParams,
-          maxGasFee: item.toString(),
-        },
-      )
+      if (analytics) {
+        trackingEvents.automation.buttonClick(
+          MixpanelAutomationEventIds.MaxGasFee,
+          analytics.page,
+          MixpanelCommonAnalyticsSections.Form,
+          {
+            ...analytics.additionalParams,
+            maxGasFee: item.toString(),
+          },
+        )
+      }
     },
     [onChange],
   )

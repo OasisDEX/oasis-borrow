@@ -92,4 +92,5 @@ export interface IStrategyConfig {
   defaultSlippage?: BigNumber
   executeTransactionWith: 'web3' | 'ethers'
   strategyType: StrategyType
+  isOptimizationTabEnabled: () => boolean
 }

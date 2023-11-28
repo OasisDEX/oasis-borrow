@@ -70,7 +70,11 @@ export const protocolAutomations = {
     AutomationFeatures.CONSTANT_MULTIPLE,
     AutomationFeatures.AUTO_TAKE_PROFIT,
   ],
-  [VaultProtocol.Aave]: [AutomationFeatures.STOP_LOSS],
+  [VaultProtocol.Aave]: [
+    AutomationFeatures.STOP_LOSS,
+    AutomationFeatures.AUTO_BUY,
+    AutomationFeatures.AUTO_SELL,
+  ],
 }
 
 export const aaveTokenPairsAllowedAutomation = [

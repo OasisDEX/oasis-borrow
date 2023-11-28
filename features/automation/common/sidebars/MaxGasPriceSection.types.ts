@@ -3,7 +3,7 @@ import type { MixpanelAutomationEventsAdditionalParams, MixpanelPages } from 'an
 export interface MaxGasPriceSectionProps {
   onChange: (item: number) => void
   value: number
-  analytics: {
+  analytics?: {
     page: MixpanelPages
     additionalParams: Pick<MixpanelAutomationEventsAdditionalParams, 'vaultId' | 'ilk'>
   }
