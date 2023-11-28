@@ -66,6 +66,7 @@ export function useOmniProtocolData({
         positionId
           ? dpmPositionDataV2$(
               getPositionIdentity(positionId),
+              chainId,
               collateralToken,
               quoteToken,
               productType,
@@ -92,6 +93,7 @@ export function useOmniProtocolData({
       [
         isOracless,
         positionId,
+        chainId,
         collateralToken,
         quoteToken,
         productType,

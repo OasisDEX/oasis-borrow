@@ -1,3 +1,4 @@
+import type { NetworkIds } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ethers } from 'ethers'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
@@ -17,47 +18,6 @@ export interface DpmPositionData extends UserDpmAccount {
   protocol: string
   quoteToken: string
   quoteTokenAddress: string
-}
-
-export function getDpmPositionData$(
-  proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
-  lastCreatedPositionForProxy$: (proxyAddress: string) => Observable<PositionCreated>,
-  positionId: PositionId,
-): Observable<DpmPositionData> {
-  return proxiesForPosition$(positionId).pipe(
-    switchMap(({ dpmProxy }) => {
-      return combineLatest(
-        of(dpmProxy),
-        dpmProxy ? lastCreatedPositionForProxy$(dpmProxy.proxy) : of(undefined),
-      )
-    }),
-    switchMap(([dpmProxy, lastCreatedPosition]) => {
-      return combineLatest(
-        of(dpmProxy),
-        of(lastCreatedPosition),
-        dpmProxy && lastCreatedPosition
-          ? checkMultipleVaultsFromApi$([dpmProxy.vaultId], lastCreatedPosition.protocol)
-          : of(undefined),
-      )
-    }),
-    map(([dpmProxy, lastCreatedPosition, vaultsFromApi]) => {
-      return dpmProxy && lastCreatedPosition && vaultsFromApi
-        ? {
-            ...dpmProxy,
-            collateralToken: lastCreatedPosition.collateralTokenSymbol,
-            collateralTokenAddress: lastCreatedPosition.collateralTokenAddress,
-            product: (
-              vaultsFromApi[dpmProxy.vaultId] || lastCreatedPosition.positionType
-            ).toLowerCase(),
-            protocol: lastCreatedPosition.protocol,
-            quoteToken: lastCreatedPosition.debtTokenSymbol,
-            quoteTokenAddress: lastCreatedPosition.debtTokenAddress,
-          }
-        : null
-    }),
-    distinctUntilChanged(isEqual),
-    shareReplay(1),
-  )
 }
 
 const filterPositionWhenUrlParamsDefined = ({
@@ -104,6 +64,7 @@ export function getDpmPositionDataV2$(
   proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   readPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>,
   positionId: PositionId,
+  chainId: NetworkIds,
   collateralToken?: string,
   quoteToken?: string,
   product?: string,
@@ -136,8 +97,8 @@ export function getDpmPositionDataV2$(
       return combineLatest(
         of(dpmProxy),
         of(proxyPosition),
-        dpmProxy && proxyPosition
-          ? checkMultipleVaultsFromApi$([dpmProxy.vaultId], proxyPosition.protocol)
+        dpmProxy && proxyPosition && chainId
+          ? checkMultipleVaultsFromApi$([dpmProxy.vaultId], proxyPosition.protocol, chainId)
           : of(undefined),
         of(hasMultiplePositions),
       )
