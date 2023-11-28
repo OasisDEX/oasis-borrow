@@ -2970,7 +2970,7 @@
       "intro": "You can earn more $AJNA tokens on Summer.fi than anywhere else.",
       "intro-link": "Read more about $AJNA rewards",
       "balance": "$AJNA Token Balance",
-      "claim": "You can claim {{amount}} AJNA tokens now.",
+      "claim": "You can claim <strong>{{amount}} $AJNA</strong> tokens now.",
       "cta": "Claim Tokens",
       "see-breakdown": "See full token breakdown",
       "bonus-rewards": "Bonus rewards",

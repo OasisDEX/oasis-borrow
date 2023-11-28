@@ -9,7 +9,7 @@ import { useConnection } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Button, Flex } from 'theme-ui'
 
 export function AjnaRewardsController() {
@@ -18,12 +18,6 @@ export function AjnaRewardsController() {
 
   const { isConnected } = useAccount()
   const { connect } = useConnection()
-
-  const handleConnect = useCallback(() => {
-    if (!isConnected) {
-      connect()
-    }
-  }, [isConnected, connect])
 
   return (
     <AnimatedWrapper>
@@ -48,10 +42,15 @@ export function AjnaRewardsController() {
         }
       />
       {isConnected ? (
-        <AjnaRewardCard isLoading={isLoading} rewards={rewards} />
+        <AjnaRewardCard
+          // TODO: remove disabled when rewards are live and handler is ready
+          disabled
+          isLoading={isLoading}
+          rewards={rewards}
+        />
       ) : (
         <Flex sx={{ justifyContent: 'center', mb: [3, null, '48px'] }}>
-          <Button variant="primary" sx={{ p: 0 }} onClick={handleConnect}>
+          <Button variant="primary" sx={{ p: 0 }} onClick={() => connect()}>
             <WithArrow
               gap={1}
               sx={{ color: 'inherit', fontSize: 'inherit', py: 3, pl: '40px', pr: '56px' }}
