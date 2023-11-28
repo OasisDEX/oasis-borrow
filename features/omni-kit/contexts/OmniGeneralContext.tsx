@@ -111,6 +111,7 @@ export function OmniGeneralContextProvider({
     isOpening,
     isProxyWithManyPositions,
   } = props
+  console.log('isProxyWithManyPositions', isProxyWithManyPositions)
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<OmniSidebarStep>(steps[0])
   const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(false)

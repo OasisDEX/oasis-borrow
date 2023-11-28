@@ -156,8 +156,9 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
               .minus(position.debtAmount.times(quotePrice))}
             afterNetValue={simulation?.collateralAmount
               .times(collateralPrice)
-              .minus(simulation?.debtAmount.times(quotePrice))}
-            pnl={position.pnl.withoutFees}
+              .minus(simulation.debtAmount.times(quotePrice))}
+            pnl={position.pnl}
+            collateralPrice={collateralPrice}
             // For now we need to hide P&L for proxies with many positions
             // because subgraph doesn't support it yet
             pnlNotAvailable={isProxyWithManyPositions}
