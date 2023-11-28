@@ -1,79 +1,20 @@
 import type { TxStatus } from '@oasisdex/transactions'
 import type { BigNumber } from 'bignumber.js'
-import { AppLink } from 'components/Links'
 import { Skeleton } from 'components/Skeleton'
 import { WithArrow } from 'components/WithArrow'
-import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/consts'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useAccount } from 'helpers/useAccount'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import type { FC, ReactNode } from 'react'
+import type { FC } from 'react'
 import React from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 
 interface Link {
   title: string
   href: string
-}
-
-interface AjnaRewardCardListBoxProps {
-  title: string
-  list: string[]
-  link: Link
-}
-
-const AjnaRewardCardListBox: FC<AjnaRewardCardListBoxProps> = ({ title, list, link }) => {
-  const { t } = useTranslation()
-
-  return (
-    <Box sx={{ mb: [2, 4] }}>
-      <Heading
-        sx={{
-          mb: [0, 3],
-          fontSize: [3, 5],
-          fontWeight: 'regular',
-          color: ['neutral80', 'primary100'],
-        }}
-      >
-        {t(title)}
-      </Heading>
-      <Box
-        as="ul"
-        sx={{
-          display: ['none', 'flex'],
-          flexDirection: 'column',
-          rowGap: 1,
-          p: 0,
-          mb: 3,
-          listStylePosition: 'inside',
-        }}
-      >
-        {list.map((item) => (
-          <Text
-            key={item}
-            as="li"
-            variant="paragraph3"
-            sx={{
-              alignItems: 'flex-start',
-              display: 'list-item',
-              color: 'neutral80',
-              wordWrap: 'break-word',
-            }}
-          >
-            {t(item)}
-          </Text>
-        ))}
-      </Box>
-      <AppLink href={link.href} sx={{ display: ['none', 'block'], textAlign: 'center' }}>
-        <WithArrow gap={1} sx={{ ...getAjnaWithArrowColorScheme() }}>
-          {t(link.title)}
-        </WithArrow>
-      </AppLink>
-    </Box>
-  )
 }
 
 interface BannerProps {
@@ -224,79 +165,44 @@ const AjnaRewardCardBanner: FC<AjnaRewardCardBannerProps> = ({
 }
 
 interface AjnaRewardCardProps {
-  banner: BannerProps
-  claimingDisabled?: boolean
-  floatingLabel?: ReactNode
-  gradient: string
-  image: string
   isLoading: boolean
-  link: Link
-  list: string[]
-  notAvailable?: boolean
-  onBtnClick?: () => void
-  ownerPageLink: Link
-  rewards: Rewards
-  title: string
-  txStatus?: TxStatus
+  rewards: {
+    tokens: BigNumber
+    usd: BigNumber
+  }
 }
 
-export function AjnaRewardCard({
-  banner,
-  floatingLabel,
-  gradient,
-  image,
-  isLoading,
-  link,
-  list,
-  notAvailable,
-  onBtnClick,
-  ownerPageLink,
-  rewards,
-  title,
-  txStatus,
-}: AjnaRewardCardProps) {
+export function AjnaRewardCard({ isLoading }: AjnaRewardCardProps) {
   const { isConnected, walletAddress } = useAccount()
 
   return (
-    <Card p={4} sx={{ height: '100%', borderRadius: 'large', position: 'relative' }}>
-      {floatingLabel}
-      <Flex sx={{ flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-        <Flex
-          sx={{
-            width: '100px',
-            height: '100px',
-            justifyContent: 'center',
-            alignItems: 'center',
-            mb: [3, 4],
-            borderRadius: 'ellipse',
-            background: gradient,
-          }}
-        >
-          <Image src={staticFilesRuntimeUrl(image)} />
-        </Flex>
-        <AjnaRewardCardListBox title={title} list={list} link={link} />
-        {notAvailable ? (
-          <AjnaRewardCardBanner banner={banner} gradient={gradient} notAvailable claimingDisabled />
-        ) : (
-          <>
-            {walletAddress && !isLoading && (
-              <AjnaRewardCardBanner
-                banner={banner}
-                claimingDisabled
-                gradient={gradient}
-                onBtnClick={onBtnClick}
-                ownerPageLink={ownerPageLink}
-                rewards={rewards}
-                txStatus={txStatus}
-                walletAddress={walletAddress}
-              />
-            )}
-            {isConnected && isLoading && (
-              <Skeleton sx={{ height: '220px', borderRadius: 'large' }} />
-            )}
-          </>
-        )}
-      </Flex>
-    </Card>
+    <Box
+      sx={{
+        position: 'relative',
+        width: '420px',
+        mx: 'auto',
+        p: '24px',
+        background: 'linear-gradient(90deg, #ffeffd 0%, #f5edff 100%), #fff',
+        borderRadius: 'large',
+      }}
+    >
+      <Image
+        sx={{ display: 'block', mx: 'auto', mb: '12px' }}
+        src={staticFilesRuntimeUrl('/static/img/ajna-logo-color.svg')}
+      />
+      {/* {walletAddress && !isLoading && (
+        <AjnaRewardCardBanner
+          banner={banner}
+          claimingDisabled
+          gradient={gradient}
+          onBtnClick={onBtnClick}
+          ownerPageLink={ownerPageLink}
+          rewards={rewards}
+          txStatus={txStatus}
+          walletAddress={walletAddress}
+        />
+      )} */}
+      {isConnected && isLoading && <Skeleton sx={{ height: '220px', borderRadius: 'large' }} />}
+    </Box>
   )
 }
