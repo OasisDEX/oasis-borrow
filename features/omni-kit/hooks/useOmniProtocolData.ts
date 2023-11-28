@@ -1,5 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { useAccountContext } from 'components/context/AccountContextProvider'
@@ -21,6 +21,12 @@ interface OmniProtocolDataProps {
   productType?: OmniProductType
   protocol: LendingProtocol
   quoteToken?: string
+  networkId:
+    | NetworkIds.MAINNET
+    | NetworkIds.GOERLI
+    | NetworkIds.OPTIMISMMAINNET
+    | NetworkIds.ARBITRUMMAINNET
+    | NetworkIds.BASEMAINNET
 }
 
 export function useOmniProtocolData({
@@ -30,8 +36,9 @@ export function useOmniProtocolData({
   productType,
   protocol,
   quoteToken,
+  networkId,
 }: OmniProtocolDataProps) {
-  const { walletAddress, chainId } = useAccount()
+  const { walletAddress } = useAccount()
   const { gasPrice$ } = useMainContext()
   const { userSettings$ } = useAccountContext()
   const {
@@ -45,10 +52,7 @@ export function useOmniProtocolData({
   const [userSettingsData, userSettingsError] = useObservable(userSettings$)
   const [gasPriceData, gasPriceError] = useObservable(gasPrice$)
 
-  const tokensAddresses = useMemo(
-    () => getNetworkContracts(NetworkIds.MAINNET, chainId).tokens,
-    [chainId],
-  )
+  const tokensAddresses = useMemo(() => getNetworkContracts(networkId).tokens, [networkId])
 
   const [identifiedTokensData] = useObservable(
     useMemo(
@@ -66,7 +70,7 @@ export function useOmniProtocolData({
         positionId
           ? dpmPositionDataV2$(
               getPositionIdentity(positionId),
-              chainId,
+              networkId,
               collateralToken,
               quoteToken,
               productType,
@@ -93,7 +97,7 @@ export function useOmniProtocolData({
       [
         isOracless,
         positionId,
-        chainId,
+        networkId,
         collateralToken,
         quoteToken,
         productType,
