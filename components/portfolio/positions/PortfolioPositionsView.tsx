@@ -125,6 +125,11 @@ export const PortfolioPositionsView = ({
   return (
     <Grid variant="portfolio">
       <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
+        {portfolioPositionsData?.error && (
+          <EmptyState header={tPortfolio('empty-states.no-positions-error')} type="error">
+            {tPortfolio('empty-states.try-again')}
+          </EmptyState>
+        )}
         {portfolioPositionsData?.positions.length === 0 ? (
           <EmptyState header={tPortfolio('empty-states.no-positions')}>
             {isOwner && tPortfolio('empty-states.owner')}
