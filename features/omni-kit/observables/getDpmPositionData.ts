@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import type { PositionCreated } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types'
-import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
+import { getApiVault } from 'features/shared/vaultApi'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, EMPTY, of } from 'rxjs'
@@ -98,28 +98,34 @@ export function getDpmPositionDataV2$(
         of(dpmProxy),
         of(proxyPosition),
         dpmProxy && proxyPosition && chainId
-          ? checkMultipleVaultsFromApi$([dpmProxy.vaultId], proxyPosition.protocol, chainId)
+          ? getApiVault({
+              vaultId: Number(dpmProxy.vaultId),
+              protocol: proxyPosition.protocol,
+              chainId,
+              tokenPair: `${proxyPosition.collateralTokenSymbol}-${proxyPosition.debtTokenSymbol}`,
+            })
           : of(undefined),
         of(hasMultiplePositions),
+      ).pipe(
+        map(([dpmProxy, position, vaultsFromApi, hasMultiplePositions]) =>
+          dpmProxy && position
+            ? {
+                ...dpmProxy,
+                collateralToken: position.collateralTokenSymbol,
+                collateralTokenAddress: position.collateralTokenAddress,
+                product: (position.positionType === 'Earn'
+                  ? position.positionType
+                  : vaultsFromApi?.type || position.positionType
+                ).toLowerCase(),
+                protocol: position.protocol,
+                quoteToken: position.debtTokenSymbol,
+                quoteTokenAddress: position.debtTokenAddress,
+                hasMultiplePositions,
+              }
+            : null,
+        ),
       )
     }),
-    map(([dpmProxy, position, vaultsFromApi, hasMultiplePositions]) =>
-      dpmProxy && position && vaultsFromApi
-        ? {
-            ...dpmProxy,
-            collateralToken: position.collateralTokenSymbol,
-            collateralTokenAddress: position.collateralTokenAddress,
-            product: (position.positionType === 'Earn'
-              ? position.positionType
-              : vaultsFromApi[dpmProxy.vaultId] || position.positionType
-            ).toLowerCase(),
-            protocol: position.protocol,
-            quoteToken: position.debtTokenSymbol,
-            quoteTokenAddress: position.debtTokenAddress,
-            hasMultiplePositions,
-          }
-        : null,
-    ),
     distinctUntilChanged(isEqual),
     shareReplay(1),
   )

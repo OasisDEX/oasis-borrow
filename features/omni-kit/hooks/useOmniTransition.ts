@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 
 interface TransitionProps {
+  tokenPair: string
   action?: OmniFormAction
   positionId?: string
   productType?: string
@@ -25,6 +26,7 @@ export function useOmniProductTypeTransition({
   positionId,
   productType,
   protocol,
+  tokenPair,
 }: TransitionProps) {
   const { reload } = useRouter()
   const { chainId, walletAddress } = useAccount()
@@ -49,6 +51,7 @@ export function useOmniProductTypeTransition({
         vaultType,
         chainId,
         protocol.toLowerCase(),
+        tokenPair.toUpperCase(),
       ).subscribe(reload)
     } else throw new Error(`Not enough position data provided`)
   }
