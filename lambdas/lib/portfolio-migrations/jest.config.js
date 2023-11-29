@@ -1,5 +1,6 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
+  silent: true,
   maxWorkers: 1,
   testTimeout: 10000,
   preset: 'ts-jest',

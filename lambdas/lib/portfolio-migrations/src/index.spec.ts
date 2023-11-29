@@ -2,6 +2,9 @@ import { ChainId, ProtocolId } from 'shared/domain-types'
 import { serialize } from 'shared/serialize'
 import { handler } from './index'
 import { APIGatewayProxyEventV2 } from 'aws-lambda'
+import dotenv from 'dotenv'
+
+dotenv.config({ path: '../../../.env' })
 
 describe('handler', () => {
   it('should run handler sucessfully', async () => {
