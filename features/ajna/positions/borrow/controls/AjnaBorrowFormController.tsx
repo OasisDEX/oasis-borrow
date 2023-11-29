@@ -63,17 +63,6 @@ export function AjnaBorrowFormController() {
             ...(isPoolSupportingMultiply({ collateralToken, quoteToken })
               ? [
                   {
-                    label: t('system.actions.borrow.switch-to-multiply'),
-                    icon: 'circle_exchange',
-                    iconShrink: 2,
-                    panel: 'switch',
-                    action: () => {
-                      dispatch({ type: 'reset' })
-                      updateState('uiDropdown', 'switch')
-                      updateState('action', 'switch-borrow')
-                    },
-                  },
-                  {
                     label: t('system.actions.common.close-position'),
                     icon: 'circle_close',
                     iconShrink: 2,
