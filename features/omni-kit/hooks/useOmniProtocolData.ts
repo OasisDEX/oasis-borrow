@@ -1,12 +1,11 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getStaticDpmPositionData$ } from 'features/omni-kit/observables'
-import type { OmniProductType } from 'features/omni-kit/types'
+import type { OmniProductType, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
@@ -21,12 +20,7 @@ interface OmniProtocolDataProps {
   productType?: OmniProductType
   protocol: LendingProtocol
   quoteToken?: string
-  networkId:
-    | NetworkIds.MAINNET
-    | NetworkIds.GOERLI
-    | NetworkIds.OPTIMISMMAINNET
-    | NetworkIds.ARBITRUMMAINNET
-    | NetworkIds.BASEMAINNET
+  networkId: OmniSupportedNetworkIds
 }
 
 export function useOmniProtocolData({
