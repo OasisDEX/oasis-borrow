@@ -36,9 +36,14 @@ export function swapCall(
   { swapAddress }: Pick<ReturnType<typeof getAddresses>, 'swapAddress'>,
   network: NetworkIds,
 ) {
-  // this originally had a default value of 'v4.0' for
-  // mainnet and 'v5.0' for L2s, but 4.0 was deprecated
-  return getOneInchCall(swapAddress, network)
+  const oneInchVersion = [
+    NetworkIds.OPTIMISMMAINNET,
+    NetworkIds.ARBITRUMMAINNET,
+    NetworkIds.BASEMAINNET,
+  ].includes(network)
+    ? 'v5.0'
+    : 'v4.0'
+  return getOneInchCall(swapAddress, network, oneInchVersion)
 }
 
 export const getCurrentPositionLibCallData = (currentPosition: IPosition) => [

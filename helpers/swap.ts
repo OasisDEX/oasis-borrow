@@ -17,7 +17,7 @@ async function swapOneInchTokens(
   recipient: string,
   slippage: string,
   chainId: number,
-  oneInchVersion: 'v5.0',
+  oneInchVersion: 'v4.0' | 'v5.0',
   protocols: string[] = [],
 ): Promise<any> {
   const url = formatOneInchSwapUrl(
@@ -43,7 +43,7 @@ function formatOneInchSwapUrl(
   slippage: string,
   recepient: string,
   chainId: number,
-  oneInchVersion: 'v5.0',
+  oneInchVersion: 'v4.0' | 'v5.0',
   protocols: string[] = [],
 ) {
   const protocolsParam = !protocols?.length ? '' : `&protocols=${protocols.join(',')}`
@@ -84,7 +84,7 @@ export async function oneInchCallMock(
 export function getOneInchCall(
   swapAddress: string,
   networkId: NetworkIds = NetworkIds.MAINNET,
-  oneInchVersion: 'v5.0' = 'v5.0',
+  oneInchVersion: 'v4.0' | 'v5.0' = 'v4.0',
   debug?: true,
 ) {
   return async (
