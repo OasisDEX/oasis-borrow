@@ -13,6 +13,7 @@ const config: Config.InitialOptions = {
   setupFiles: ['jest-canvas-mock'],
   setupFilesAfterEnv: ['<rootDir>/test-configs/setup.ts'],
   collectCoverage: true,
+  testPathIgnorePatterns: ['lambdas'],
 }
 
 const createJestConfig = nextJest({

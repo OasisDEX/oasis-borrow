@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next'
 import { question_o, sparks } from 'theme/icons'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
-import type { PortfolioAssetsResponse } from 'lambdas/src/shared/domain-types'
+import type { PortfolioAssetsResponse } from 'lambdas/lib/shared/src/domain-types'
 
 interface PortfolioPositionsViewProps {
   address: string
