@@ -2966,24 +2966,17 @@
       "safety-switch-on": "Due to a technical issue we have currently disabled depositing tokens into empty Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
     },
     "rewards": {
-      "title": "Your Ajna token rewards",
-      "intro": "When using the Ajna protocol you are entitled to earn AJNA tokens. Read below to find out more.",
-      "cards": {
-        "token": {
-          "title": "Summer.fi × Ajna Token Rewards",
-          "list-1": "Rewards exclusive to Summer.fi users!",
-          "list-2": "Rewards for Borrowing, Lending and Multiplying",
-          "list-3": "Tokens will be claimable weekly in the near future",
-          "link": "Learn more about Ajna Token Rewards",
-          "banner": {
-            "title": "AJNA Token Rewards"
-          },
-          "floatingLabel": "Exclusive to Summer.fi"
-        },
-        "earning-across": "Earning across <1><2>{{value}} Ajna positions</2></1>",
-        "button": "Claim AJNA tokens",
-        "button-disabled": "Claiming available soon"
-      }
+      "title": "Earn more $AJNA on Summer.fi than any other platform",
+      "intro": "You can earn more $AJNA tokens on Summer.fi than anywhere else.",
+      "intro-link": "Read more about $AJNA rewards",
+      "balance": "$AJNA Token Balance",
+      "claim": "You can claim <strong>{{amount}} $AJNA</strong> tokens now.",
+      "cta": "Claim Tokens",
+      "see-breakdown": "See full token breakdown",
+      "bonus-rewards": "Bonus rewards",
+      "regular-rewards": "Regular rewards",
+      "total-rewards": "Total rewards",
+      "claimable-today": "Claimable today"
     },
     "product-hub-tooltips": {
       "no-max-ltv": "There are currently no borrow or multiply positions for this pool. Max LTV will be calculated following the creation of the first position.",

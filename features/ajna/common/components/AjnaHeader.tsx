@@ -11,6 +11,8 @@ export function AjnaHeader({ intro, title }: AjnaHeaderProps) {
   return (
     <Box
       sx={{
+        maxWidth: '740px',
+        mx: 'auto',
         my: [3, null, '48px'],
         textAlign: 'center',
       }}
@@ -23,8 +25,6 @@ export function AjnaHeader({ intro, title }: AjnaHeaderProps) {
           as="p"
           variant="paragraph2"
           sx={{
-            maxWidth: '740px',
-            mx: 'auto',
             mt: 3,
             color: 'neutral80',
           }}
