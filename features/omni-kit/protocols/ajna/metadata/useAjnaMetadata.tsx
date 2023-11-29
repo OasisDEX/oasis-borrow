@@ -112,17 +112,17 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     currentStep,
     ethBalance,
     ethPrice,
-    gasEstimationUsd: gasEstimation?.usdValue,
+    gasEstimationUsd: gasEstimation.usdValue,
     isOpening,
     position: productContext.position.currentPosition.position,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
     productType,
     quoteBalance,
     quoteToken,
-    simulationErrors: productContext.position.simulationCommon?.errors,
-    simulationNotices: productContext.position.simulationCommon?.notices,
-    simulationSuccesses: productContext.position.simulationCommon?.successes,
-    simulationWarnings: productContext.position.simulationCommon?.warnings,
+    simulationErrors: productContext.position.simulationCommon.errors,
+    simulationNotices: productContext.position.simulationCommon.notices,
+    simulationSuccesses: productContext.position.simulationCommon.successes,
+    simulationWarnings: productContext.position.simulationCommon.warnings,
     state: productContext.form.state,
     txError: txDetails?.txError,
     earnIsFormValid:
@@ -340,7 +340,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             },
           ],
           extraDropdownItems: [
-            ...(!earnPosition.collateralTokenAmount?.isZero()
+            ...(!earnPosition.collateralTokenAmount.isZero()
               ? [
                   {
                     label: t('system.claim-collateral'),
@@ -420,8 +420,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           extraEarnInput: (
             <AjnaEarnSlider
               isDisabled={
-                !earnContext.form.state.depositAmount ||
-                earnContext.form.state.depositAmount?.lte(0)
+                !earnContext.form.state.depositAmount || earnContext.form.state.depositAmount.lte(0)
               }
               nestedManualInput={
                 !(isOracless && earnPosition.pool.lowestUtilizedPriceIndex.isZero())
