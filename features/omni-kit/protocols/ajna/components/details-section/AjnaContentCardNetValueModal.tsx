@@ -47,7 +47,7 @@ export function AjnaContentCardNetValueModal({
 }: AjnaContentCardNetValueProps) {
   const { t } = useTranslation()
   const {
-    pnl: { cumulatives, withoutFees, withFees },
+    pnl: { cumulatives, withFees },
   } = position
   return (
     <Grid gap={2}>
