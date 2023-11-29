@@ -11,6 +11,7 @@ const vaultSchema = z.object({
   type: z.enum(['borrow', 'multiply', 'earn']),
   chainId: z.number(),
   protocol: z.string(),
+  tokenPair: z.string(),
 })
 
 export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) {
@@ -23,10 +24,11 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
     owner_address: user.address,
     chain_id: params.chainId,
     protocol: params.protocol,
+    token_pair: params.tokenPair,
   }
 
-  const insertQuery = `INSERT INTO vault (vault_id, chain_id, type, owner_address, protocol) VALUES (${vaultData.vault_id},${vaultData.chain_id},'${vaultData.type}','${vaultData.owner_address}', '${vaultData.protocol}')`
-  const updateQuery = `UPDATE vault SET type='${vaultData.type}' WHERE vault_id=${vaultData.vault_id} AND chain_id=${vaultData.chain_id} AND protocol='${vaultData.protocol}'`
+  const insertQuery = `INSERT INTO vault (vault_id, chain_id, type, owner_address, protocol, token_pair) VALUES (${vaultData.vault_id},${vaultData.chain_id},'${vaultData.type}','${vaultData.owner_address}', '${vaultData.protocol}', '${vaultData.token_pair}')`
+  const updateQuery = `UPDATE vault SET type='${vaultData.type}' WHERE vault_id=${vaultData.vault_id} AND chain_id=${vaultData.chain_id} AND protocol='${vaultData.protocol}' AND token_pair='${vaultData.token_pair}'`
 
   if (params.type !== 'borrow' && params.type !== 'multiply' && params.type !== 'earn') {
     return res.status(403).send('Incorrect type of vault')

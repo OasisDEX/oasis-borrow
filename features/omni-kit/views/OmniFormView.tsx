@@ -139,6 +139,7 @@ export function OmniFormView({
     positionId: resolvedId,
     protocol,
     productType,
+    tokenPair: `${collateralToken}-${quoteToken}`,
   })
 
   const {
