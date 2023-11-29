@@ -1,7 +1,7 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { OmniContentCardCommonProps } from 'features/omni-kit/components/details-section/types'
-import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Divider, Flex, Grid, Text } from 'theme-ui'
@@ -17,14 +17,10 @@ function NetValueModalGridRow({
   label,
   firstColumn,
   secondColumn,
-  firstColumnDetails,
-  secondColumnDetails,
 }: {
   label: string
   firstColumn: string
-  firstColumnDetails?: string
   secondColumn: string
-  secondColumnDetails?: string
 }) {
   return (
     <>
@@ -35,19 +31,9 @@ function NetValueModalGridRow({
       </Flex>
       <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end' }}>
         <Text variant="boldParagraph2">{firstColumn}</Text>
-        {firstColumnDetails && (
-          <Text variant="paragraph4" color="neutral80">
-            {firstColumnDetails}
-          </Text>
-        )}
       </Flex>
       <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end' }}>
         <Text variant="boldParagraph2">{secondColumn}</Text>
-        {secondColumnDetails && (
-          <Text variant="paragraph4" color="neutral80">
-            {secondColumnDetails}
-          </Text>
-        )}
       </Flex>
     </>
   )
@@ -61,15 +47,8 @@ export function AjnaContentCardNetValueModal({
 }: AjnaContentCardNetValueProps) {
   const { t } = useTranslation()
   const {
-    pnl: { cumulatives, withFees, withoutFees },
-    debtAmount,
+    pnl: { cumulatives, withoutFees, withFees },
   } = position
-  // Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative deposits
-  const unrealisedPnl = netValue
-    .plus(cumulatives.borrowCumulativeWithdrawUSD)
-    .minus(cumulatives.borrowCumulativeFeesUSD)
-    .minus(cumulatives.borrowCumulativeDepositUSD)
-    .div(cumulatives.borrowCumulativeDepositUSD)
   return (
     <Grid gap={2}>
       <Text variant="paragraph3">
@@ -93,15 +72,7 @@ export function AjnaContentCardNetValueModal({
         <NetValueModalGridRow
           label={t('ajna.position-page.common.net-value-pnl-modal.net-value')}
           firstColumn={`${formatCryptoBalance(netValue.div(collateralPrice))} ${collateralToken}`}
-          firstColumnDetails={`${t(
-            'ajna.position-page.common.net-value-pnl-modal.total-collateral',
-          )}: ${formatCryptoBalance(
-            cumulatives.borrowCumulativeDepositUSD.div(collateralPrice),
-          )} ${collateralToken}`}
           secondColumn={`$${formatAmount(netValue, 'USD')}`}
-          secondColumnDetails={`${t(
-            'ajna.position-page.common.net-value-pnl-modal.debt',
-          )}: $${formatAmount(debtAmount, 'USD')}`}
         />
       </Grid>
       <Divider />
@@ -142,7 +113,11 @@ export function AjnaContentCardNetValueModal({
           {t('ajna.position-page.common.net-value-pnl-modal.unrealised-pnl')}
         </Text>
         <Text variant="paragraph1">
-          {formatAmount(unrealisedPnl, 'USD')} | {formatAmount(withoutFees, 'USD')}
+          {formatPercent(withFees.div(netValue), {
+            plus: true,
+            precision: 2,
+          })}{' '}
+          / ${formatAmount(withFees, 'USD')}
         </Text>
       </Flex>
       <Flex
