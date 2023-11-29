@@ -21,8 +21,10 @@ interface GetOmniSidebarPrimaryButtonActionsParams {
   protocol: LendingProtocol
   quoteAddress: string
   quoteToken: string
+  shouldSwitchNetwork: boolean
   resolvedId?: string
   walletAddress?: string
+  onSwitchNetwork: () => void
 }
 
 export function getOmniSidebarPrimaryButtonActions({
@@ -48,10 +50,14 @@ export function getOmniSidebarPrimaryButtonActions({
   quoteToken,
   resolvedId,
   walletAddress,
+  shouldSwitchNetwork,
+  onSwitchNetwork,
 }: GetOmniSidebarPrimaryButtonActionsParams) {
   switch (true) {
     case !walletAddress && currentStep === editingStep:
       return { action: onDisconnected }
+    case shouldSwitchNetwork:
+      return { action: onSwitchNetwork }
     case isTxSuccess && isOpening:
       const resolvedCollateralUrl = isOracless ? collateralAddress : collateralToken
       const resolvedQuoteUrl = isOracless ? quoteAddress : quoteToken

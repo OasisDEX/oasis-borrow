@@ -36,6 +36,7 @@ interface OmniGeneralContextProviderProps {
   isOracless: boolean
   isProxyWithManyPositions: boolean
   network: NetworkConfig
+  walletNetwork: NetworkConfig
   owner: string
   positionId?: string
   productType: OmniProductType
@@ -53,6 +54,7 @@ interface OmniGeneralContextProviderProps {
 
 type OmniGeneralContextEnvironment = Omit<OmniGeneralContextProviderProps, 'steps'> & {
   isOwner: boolean
+  shouldSwitchNetwork: boolean
   isShort: boolean
   priceFormat: string
 }
@@ -110,6 +112,8 @@ export function OmniGeneralContextProvider({
     slippage,
     isOpening,
     isProxyWithManyPositions,
+    network,
+    walletNetwork,
   } = props
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<OmniSidebarStep>(steps[0])
@@ -147,33 +151,36 @@ export function OmniGeneralContextProvider({
     }
   }
 
-  const context: OmniGeneralContext = useMemo(
-    () => ({
+  const context: OmniGeneralContext = useMemo(() => {
+    const isOwner = isOpening || owner === walletAddress
+    return {
       environment: {
         ...props,
+        network,
         isShort,
         isProxyWithManyPositions,
         priceFormat: isShort
           ? `${quoteToken}/${collateralToken}`
           : `${collateralToken}/${quoteToken}`,
-        isOwner: isOpening || owner === walletAddress,
+        isOwner,
+        shouldSwitchNetwork: isOwner && network.id !== walletNetwork.id,
         slippage,
         collateralBalance,
         quoteBalance,
       },
       steps: setupStepManager(),
       tx: setupTxManager(),
-    }),
-    [
-      collateralBalance,
-      currentStep,
-      isFlowStateReady,
-      quoteBalance,
-      txDetails,
-      walletAddress,
-      slippage,
-    ],
-  )
+    }
+  }, [
+    collateralBalance,
+    currentStep,
+    isFlowStateReady,
+    quoteBalance,
+    txDetails,
+    walletAddress,
+    slippage,
+    walletNetwork,
+  ])
 
   return <omniGeneralContext.Provider value={context}>{children}</omniGeneralContext.Provider>
 }

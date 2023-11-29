@@ -73,7 +73,7 @@ import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manag
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import type { DpmPositionData } from 'features/omni-kit/observables'
-import { getDpmPositionData$, getDpmPositionDataV2$ } from 'features/omni-kit/observables'
+import { getDpmPositionDataV2$ } from 'features/omni-kit/observables'
 import { getAjnaPosition$ } from 'features/omni-kit/protocols/ajna/observables'
 import { getMorphoPosition$ } from 'features/omni-kit/protocols/morpho-blue/observables'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
@@ -693,18 +693,19 @@ export function setupProductContext(
     (token, spender) => `${token}-${spender}`,
   )
 
-  const dpmPositionData$ = memoize(
-    curry(getDpmPositionData$)(proxiesRelatedWithPosition$, lastCreatedPositionForProxy$),
-    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
-  )
-
   // v2 because it takes into account all positions created using specific proxies and filter them
   // out based on params from URL i.e. 2x positions with id 950 but on different pools, based on URL params
   // only single position should be picked to be displayed
   const dpmPositionDataV2$ = memoize(
     curry(getDpmPositionDataV2$)(proxiesRelatedWithPosition$, readPositionCreatedEvents$),
-    (positionId: PositionId, collateralToken?: string, quoteToken?: string, product?: string) =>
-      `${positionId.walletAddress}-${positionId.vaultId}-${collateralToken}-${quoteToken}-${product}`,
+    (
+      positionId: PositionId,
+      chainId: NetworkIds,
+      collateralToken?: string,
+      quoteToken?: string,
+      product?: string,
+    ) =>
+      `${positionId.walletAddress}-${positionId.vaultId}-${chainId}-${collateralToken}-${quoteToken}-${product}`,
   )
 
   const ajnaPosition$ = memoize(
@@ -752,7 +753,6 @@ export function setupProductContext(
     contextForAddress$,
     daiEthTokenPrice$,
     dpmAccountStateMachine,
-    dpmPositionData$,
     dpmPositionDataV2$,
     dsr$,
     dsrDeposit$,

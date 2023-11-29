@@ -56,6 +56,8 @@ export function OmniFormView({
       quoteAddress,
       quoteToken,
       protocol,
+      shouldSwitchNetwork,
+      network,
     },
     steps: {
       currentStep,
@@ -90,7 +92,7 @@ export function OmniFormView({
 
   const txHandler = _txHandler()
 
-  const { connect } = useConnection()
+  const { connect, setChain } = useConnection()
   const { walletAddress } = useAccount()
   const { openModal } = useModalContext()
   const [hasDupePosition, setHasDupePosition] = useState<boolean>(false)
@@ -173,6 +175,7 @@ export function OmniFormView({
     isTransitionInProgress,
     isTxError,
     isTxSuccess,
+    shouldSwitchNetwork,
     walletAddress,
   })
   const primaryButtonActions = getOmniSidebarPrimaryButtonActions({
@@ -199,12 +202,14 @@ export function OmniFormView({
       setStep(editingStep)
       txSuccessAction && txSuccessAction()
     },
+    onSwitchNetwork: () => setChain(network.hexId),
     productType,
     protocol,
     quoteAddress,
     quoteToken,
     resolvedId,
     walletAddress,
+    shouldSwitchNetwork,
   })
   const textButtonAction = () => {
     setisTransitionWaitingForApproval(false)

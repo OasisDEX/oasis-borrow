@@ -1,5 +1,5 @@
 import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
-import type { NetworkNames } from 'blockchain/networks'
+import type { NetworkIds, NetworkNames } from 'blockchain/networks'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
@@ -137,3 +137,10 @@ export interface OmniFlowStateFilterParams {
   productType: OmniProductType
   quoteAddress: string
 }
+
+export type OmniSupportedNetworkIds =
+  | NetworkIds.MAINNET
+  | NetworkIds.GOERLI
+  | NetworkIds.OPTIMISMMAINNET
+  | NetworkIds.ARBITRUMMAINNET
+  | NetworkIds.BASEMAINNET
