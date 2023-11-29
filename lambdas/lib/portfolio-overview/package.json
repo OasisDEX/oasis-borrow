@@ -19,6 +19,7 @@
   "dependencies": {
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
-    "shared": "file:../shared/dist"
+    "shared": "file:../shared/dist",
+    "zod": "^3.22.4"
   }
 }

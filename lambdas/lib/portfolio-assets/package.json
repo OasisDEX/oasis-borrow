@@ -17,6 +17,7 @@
   "devDependencies": {
   },
   "dependencies": {
-    "shared": "file:../shared/dist"
+    "shared": "file:../shared/dist",
+    "zod": "^3.22.4"
   }
 }

@@ -13,6 +13,6 @@
   "author": "Piter",
   "license": "UNLICENSED",
   "dependencies": {
-    "@wagmi/core": "^1.4.7-cjs"
+    "zod": "^3.22.4"
   }
 }

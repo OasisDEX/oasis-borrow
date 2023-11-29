@@ -30,6 +30,13 @@ export enum ChainId {
   SEPOLIA = 11155111,
 }
 
+export const isChainId = (chainId: unknown): chainId is ChainId => {
+  if (typeof chainId !== 'number') {
+    return false
+  }
+  return Object.values(ChainId).includes(chainId)
+}
+
 export const NetworkByChainID: Record<ChainId, Network> = {
   [ChainId.MAINNET]: Network.MAINNET,
   [ChainId.ARBITRUM]: Network.ARBITRUM,
@@ -41,6 +48,13 @@ export const NetworkByChainID: Record<ChainId, Network> = {
 export enum ProtocolId {
   AAVE3 = 'aave3',
   SPARK = 'spark',
+}
+
+export const isProtocolId = (protocolId: unknown): protocolId is ProtocolId => {
+  if (typeof protocolId !== 'string') {
+    return false
+  }
+  return Object.values(ProtocolId).includes(protocolId as ProtocolId)
 }
 
 export type Token = {

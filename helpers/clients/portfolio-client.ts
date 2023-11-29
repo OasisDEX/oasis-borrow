@@ -2,11 +2,8 @@ import type { PortfolioPositionsReply } from 'handlers/portfolio/types'
 import { useCallback, useMemo } from 'react'
 
 import {
-  ChainId,
   type PortfolioAssetsResponse,
-  type PortfolioMigrationsResponse,
   type PortfolioOverviewResponse,
-  ProtocolId,
 } from 'lambdas/lib/shared/src/domain-types'
 
 /**
@@ -51,33 +48,6 @@ export const usePortfolioClient = (baseUrl?: string, headers?: HeadersInit) => {
         fetchPortfolioGeneric<PortfolioAssetsResponse>('assets', address),
       fetchPortfolioPositions: (address: string) =>
         fetchPortfolioGeneric<PortfolioPositionsReply>('positions', address),
-      fetchPortfolioMigrations: (address: string): Promise<PortfolioMigrationsResponse> => {
-        address
-        return Promise.resolve({
-          migrations: [
-            {
-              chainId: ChainId.MAINNET,
-              protocolId: ProtocolId.AAVE3,
-              collateralAsset: {
-                symbol: 'WBTC',
-                balance: 150000001n,
-                balanceDecimals: 8n,
-                price: 6000000000000n,
-                priceDecimals: 8n,
-                usdValue: 90000.0006,
-              },
-              debtAsset: {
-                symbol: 'USDC',
-                balance: 55008759919n,
-                balanceDecimals: 6n,
-                price: 100000000n,
-                priceDecimals: 8n,
-                usdValue: 55008.759919,
-              },
-            },
-          ],
-        })
-      },
     }),
     [fetchPortfolioGeneric],
   )

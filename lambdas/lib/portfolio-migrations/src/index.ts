@@ -1,8 +1,8 @@
-/* eslint-disable no-relative-import-paths/no-relative-import-paths */
+import { z } from 'zod'
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 import { getDefaultErrorMessage } from 'shared/helpers'
 import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/responses'
-import { getAddressFromRequest } from 'shared/validators'
+import { chainIdsSchema, protocolIdsSchema, addressSchema } from 'shared/validators'
 import {
   Address,
   ChainId,
@@ -12,6 +12,14 @@ import {
 } from 'shared/domain-types'
 import { createClient } from './client'
 import { parseEligibleMigration } from './parseEligibleMigration'
+import { MIGRATION_SUPPORTED_CHAIN_IDS, MIGRATION_SUPPORTED_PROTOCOL_IDS } from 'shared/constants'
+
+const paramsSchema = z.object({
+  address: addressSchema,
+  chainIds: chainIdsSchema.optional(),
+  protocolIds: protocolIdsSchema.optional(),
+  rpcUrl: z.string().optional(),
+})
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs
@@ -19,11 +27,21 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     RPC_GATEWAY: process.env.RPC_GATEWAY,
   }
 
-  // validate the query
+  // params
   let address: Address | undefined
+  let chainIds: ChainId[] | undefined
+  let protocolIds: ProtocolId[] | undefined
+  let rpcUrl: string | undefined
+
+  // validation
   try {
-    address = getAddressFromRequest(event)
+    const params = paramsSchema.parse(event.queryStringParameters)
+    address = params.address
+    chainIds = params.chainIds
+    protocolIds = params.protocolIds
+    rpcUrl = params.rpcUrl
   } catch (error) {
+    console.log(error)
     const message = getDefaultErrorMessage(error)
     return ResponseBadRequest(message)
   }
@@ -32,22 +50,12 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     if (!RPC_GATEWAY) {
       throw new Error('RPC_GATEWAY env variable is not set')
     }
-    const rpcUrl = event.queryStringParameters?.rpcUrl ?? RPC_GATEWAY
+    const rpcUrlWithFallback = rpcUrl ?? RPC_GATEWAY
 
-    const supportedChainsIds = event.queryStringParameters?.chainIds
-      ?.split(',')
-      .map(Number) as any as ChainId[] // ?? [
-    //   ChainId.MAINNET,
-    //   ChainId.ARBITRUM,
-    //   ChainId.OPTIMISM,
-    //   ChainId.BASE,
-    //   ChainId.SEPOLIA,
-    // ]
-    const supportedProtocolsIds = event.queryStringParameters?.protocolIds?.split(
-      ',',
-    ) as any as ProtocolId[] // ?? [(ProtocolId.AAVE3, ProtocolId.SPARK)]
+    const supportedChainsIds = chainIds ?? MIGRATION_SUPPORTED_CHAIN_IDS
+    const supportedProtocolsIds = protocolIds ?? MIGRATION_SUPPORTED_PROTOCOL_IDS
 
-    const client = createClient(rpcUrl, supportedChainsIds, supportedProtocolsIds)
+    const client = createClient(rpcUrlWithFallback, supportedChainsIds, supportedProtocolsIds)
 
     let eligibleMigrations: PortfolioMigration[] = []
     const protocolAssetsToMigrate = await client.getProtocolAssetsToMigrate(address)

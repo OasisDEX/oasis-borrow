@@ -6,7 +6,8 @@
     "build:portfolio-assets": "zx build.mjs portfolio-assets",
     "build:portfolio-overview": "zx build.mjs portfolio-overview",
     "build:portfolio-migrations": "zx build.mjs portfolio-migrations",
-    "build": "zx build.mjs"
+    "build": "zx build.mjs",
+    "install": "zx install.mjs"
   },
   "author": "Piter",
   "license": "UNLICENSED",

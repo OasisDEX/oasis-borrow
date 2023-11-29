@@ -3,7 +3,7 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda
 
 import { getDefaultErrorMessage } from 'shared/helpers'
 import { ResponseBadRequest, ResponseOk } from 'shared/responses'
-import { getAddressFromRequest } from 'shared/validators'
+import { getAddressFromEvent } from 'shared/validators'
 import { DebankToken } from 'shared/debank-types'
 import { NetworkNames, PortfolioWalletAsset, PortfolioAssetsResponse } from 'shared/domain-types'
 import { DebankNetworkNameToOurs, DebankNetworkNames } from 'shared/debank-helpers'
@@ -23,7 +23,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   // validate the query
   let address: string | undefined
   try {
-    address = getAddressFromRequest(event)
+    address = getAddressFromEvent(event)
   } catch (error) {
     const message = getDefaultErrorMessage(error)
     return ResponseBadRequest(message)

@@ -17,6 +17,7 @@
   "dependencies": {
     "@oasisdex/addresses": "^0.1.14",
     "shared": "file:../shared/dist",
-    "viem": "^1.19.3"
+    "viem": "^1.19.3",
+    "zod": "^3.22.4"
   }
 }

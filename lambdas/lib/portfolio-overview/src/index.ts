@@ -3,14 +3,14 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda
 
 import { getDefaultErrorMessage } from 'shared/helpers'
 import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/responses'
-import { getAddressFromRequest } from 'shared/validators'
+import { getAddressFromEvent } from 'shared/validators'
 import {
   DebankComplexProtocol,
   DebankPortfolioItemObject,
   DebankSimpleProtocol,
 } from 'shared/debank-types'
 import { PortfolioOverviewResponse } from 'shared/domain-types'
-import { SUPPORTED_CHAIN_IDS } from 'shared/debank-helpers'
+import { DEBANK_SUPPORTED_CHAIN_IDS } from 'shared/debank-helpers'
 import { getSupportedPositions } from './utils'
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
@@ -28,7 +28,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   // validate the query
   let address: string | undefined
   try {
-    address = getAddressFromRequest(event)
+    address = getAddressFromEvent(event)
   } catch (error) {
     const message = getDefaultErrorMessage(error)
     return ResponseBadRequest(message)
@@ -82,7 +82,7 @@ const getAllProtocolAssets = async (
   address: string,
   headers: Record<string, string>,
 ): Promise<DebankSimpleProtocol[]> => {
-  const url = `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`
+  const url = `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${DEBANK_SUPPORTED_CHAIN_IDS.toString()}`
   const protocolAssets = await fetch(url, { headers })
     .then(async (_res) => {
       const json: DebankSimpleProtocol[] | undefined = await _res.json()
@@ -105,7 +105,7 @@ const getSummerProtocolAssets = async (
   address: string,
   headers: Record<string, string>,
 ): Promise<DebankPortfolioItemObject[]> => {
-  const url = `${serviceUrl}/v1/user/all_complex_protocol_list?id=${address}&chain_ids=${SUPPORTED_CHAIN_IDS.toString()}`
+  const url = `${serviceUrl}/v1/user/all_complex_protocol_list?id=${address}&chain_ids=${DEBANK_SUPPORTED_CHAIN_IDS.toString()}`
   const protocolAssets = await fetch(url, { headers })
     .then(async (_res) => {
       const json: DebankComplexProtocol[] | undefined = await _res.json()
