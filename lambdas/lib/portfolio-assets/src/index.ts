@@ -1,12 +1,17 @@
 /* eslint-disable no-relative-import-paths/no-relative-import-paths */
+import { z } from 'zod'
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 
 import { getDefaultErrorMessage } from 'shared/helpers'
 import { ResponseBadRequest, ResponseOk } from 'shared/responses'
-import { getAddressFromEvent } from 'shared/validators'
 import { DebankToken } from 'shared/debank-types'
 import { NetworkNames, PortfolioWalletAsset, PortfolioAssetsResponse } from 'shared/domain-types'
 import { DebankNetworkNameToOurs, DebankNetworkNames } from 'shared/debank-helpers'
+import { addressSchema } from 'shared/validators'
+
+const paramsSchema = z.object({
+  address: addressSchema,
+})
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs
@@ -23,8 +28,10 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   // validate the query
   let address: string | undefined
   try {
-    address = getAddressFromEvent(event)
+    const params = paramsSchema.parse(event.queryStringParameters)
+    address = params.address
   } catch (error) {
+    console.log(error)
     const message = getDefaultErrorMessage(error)
     return ResponseBadRequest(message)
   }
