@@ -1,9 +1,4 @@
-import {
-  getNetworkById,
-  getNetworkByName,
-  NetworkIds,
-  type NetworkNames,
-} from 'blockchain/networks'
+import { getNetworkById, getNetworkByName, type NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
@@ -11,6 +6,7 @@ import type { GetOmniMetadata } from 'features/omni-kit/contexts'
 import { OmniGeneralContextProvider, OmniProductContextProvider } from 'features/omni-kit/contexts'
 import { OmniLayoutController } from 'features/omni-kit/controllers'
 import { getOmniHeadlineProps, getOmniProductContextProviderData } from 'features/omni-kit/helpers'
+import { isOmniSupportedNetwork } from 'features/omni-kit/helpers/isOmniSupportedNetwork'
 import { useOmniProtocolData } from 'features/omni-kit/hooks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import type { ProductDataProps } from 'features/omni-kit/protocols/ajna/hooks'
@@ -92,15 +88,7 @@ export const OmniProductController = <Auction, History, Position>({
       ? walletNetwork
       : positionNetwork
 
-  if (
-    !(
-      resolvedNetwork.id === NetworkIds.MAINNET ||
-      resolvedNetwork.id === NetworkIds.GOERLI ||
-      resolvedNetwork.id === NetworkIds.OPTIMISMMAINNET ||
-      resolvedNetwork.id === NetworkIds.ARBITRUMMAINNET ||
-      resolvedNetwork.id === NetworkIds.BASEMAINNET
-    )
-  ) {
+  if (!isOmniSupportedNetwork(resolvedNetwork.id)) {
     throw new Error(`Unsupported network: ${resolvedNetwork.name}`)
   }
 
