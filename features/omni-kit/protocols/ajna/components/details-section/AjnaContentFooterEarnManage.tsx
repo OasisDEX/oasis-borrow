@@ -49,7 +49,7 @@ export function AjnaContentFooterEarnManage({
     totalAjnaRewards: userAjnaRewards.isLoading ? (
       <Skeleton width="64px" sx={{ mt: 1 }} />
     ) : (
-      `${formatCryptoBalance(userAjnaRewards.rewards.tokens)} AJNA`
+      `${formatCryptoBalance(userAjnaRewards.rewards.total)} AJNA`
     ),
   }
 

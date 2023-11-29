@@ -3,11 +3,25 @@ import type { PropsWithChildren } from 'react'
 import React from 'react'
 import { Flex, Heading, Image, Text } from 'theme-ui'
 
-interface EmptyStateProps {
-  header: string
+type EmptyStateTypes = 'notice' | 'error'
+
+const errorStateImages: { [key in EmptyStateTypes]: string } = {
+  error: '/static/img/no-positions-error.svg',
+  notice: '/static/img/no-positions.svg',
 }
 
-export function EmptyState({ header, children }: PropsWithChildren<EmptyStateProps>) {
+interface EmptyStateProps {
+  header: string
+  image?: string
+  type?: EmptyStateTypes
+}
+
+export function EmptyState({
+  children,
+  header,
+  image,
+  type = 'notice',
+}: PropsWithChildren<EmptyStateProps>) {
   return (
     <Flex
       sx={{
@@ -19,7 +33,7 @@ export function EmptyState({ header, children }: PropsWithChildren<EmptyStatePro
       }}
     >
       <Image
-        src={staticFilesRuntimeUrl('/static/img/no-positions.svg')}
+        src={staticFilesRuntimeUrl(image ?? errorStateImages[type])}
         sx={{ alignSelf: 'center' }}
       />
       <Heading variant="boldParagraph2" sx={{ mt: 4, mb: 1 }}>

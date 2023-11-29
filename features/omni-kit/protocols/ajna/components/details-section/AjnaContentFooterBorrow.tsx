@@ -74,7 +74,7 @@ export function AjnaContentFooterBorrow({
                       {userAjnaRewards.isLoading ? (
                         <Skeleton width="64px" />
                       ) : (
-                        `${formatCryptoBalance(userAjnaRewards.rewards.tokens)} AJNA ${t('earned')}`
+                        `${formatCryptoBalance(userAjnaRewards.rewards.total)} AJNA ${t('earned')}`
                       )}
                     </Text>
                   </>

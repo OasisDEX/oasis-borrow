@@ -1,5 +1,6 @@
 import type { UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
+import type { NetworkIds } from 'blockchain/networks'
 import type { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
@@ -30,10 +31,11 @@ BigNumber.config({
   POW_PRECISION: 100,
 })
 
-export function fetchVaultsType(vaults: Vault[]): Observable<VaultWithType[]> {
+function fetchVaultsType(vaults: Vault[], chainId: NetworkIds): Observable<VaultWithType[]> {
   return checkMultipleVaultsFromApi$(
     vaults.map((vault) => vault.id.toFixed(0)),
     LendingProtocol.Maker,
+    chainId,
   ).pipe(
     map((res) =>
       vaults.map((vault) => ({
@@ -59,28 +61,6 @@ export function createStandardCdps$(
       )
     }),
     distinctUntilChanged(isEqual),
-    shareReplay(1),
-  )
-}
-
-export function createVaults$(
-  refreshInterval: Observable<number>,
-  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
-  context$: Observable<Context>,
-  cdpIdResolvers: CdpIdsResolver[],
-  address: string,
-): Observable<VaultWithType[]> {
-  return combineLatest(refreshInterval, context$).pipe(
-    switchMap(([_, context]) =>
-      combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(
-        map((nestedIds) => nestedIds.flat()),
-        switchMap((ids) =>
-          ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(id, context.chainId))),
-        ),
-        distinctUntilChanged<Vault[]>(isEqual),
-        switchMap((vaults) => (vaults.length === 0 ? of([]) : fetchVaultsType(vaults))),
-      ),
-    ),
     shareReplay(1),
   )
 }
@@ -111,7 +91,9 @@ export function createVaultsFromIds$(
           return filteredVaults.length === 0 ? of([]) : combineLatest(filteredVaults)
         }),
         distinctUntilChanged<Vault[]>(isEqual),
-        switchMap((vaults) => (vaults.length === 0 ? of([]) : fetchVaultsType(vaults))),
+        switchMap((vaults) =>
+          vaults.length === 0 ? of([]) : fetchVaultsType(vaults, context.chainId),
+        ),
       ),
     ),
     shareReplay(1),

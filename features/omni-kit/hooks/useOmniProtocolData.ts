@@ -1,12 +1,11 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { useAccountContext } from 'components/context/AccountContextProvider'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getStaticDpmPositionData$ } from 'features/omni-kit/observables'
-import type { OmniProductType } from 'features/omni-kit/types'
+import type { OmniProductType, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
@@ -21,6 +20,7 @@ interface OmniProtocolDataProps {
   productType?: OmniProductType
   protocol: LendingProtocol
   quoteToken?: string
+  networkId: OmniSupportedNetworkIds
 }
 
 export function useOmniProtocolData({
@@ -30,8 +30,9 @@ export function useOmniProtocolData({
   productType,
   protocol,
   quoteToken,
+  networkId,
 }: OmniProtocolDataProps) {
-  const { walletAddress, chainId } = useAccount()
+  const { walletAddress } = useAccount()
   const { gasPrice$ } = useMainContext()
   const { userSettings$ } = useAccountContext()
   const {
@@ -45,10 +46,7 @@ export function useOmniProtocolData({
   const [userSettingsData, userSettingsError] = useObservable(userSettings$)
   const [gasPriceData, gasPriceError] = useObservable(gasPrice$)
 
-  const tokensAddresses = useMemo(
-    () => getNetworkContracts(NetworkIds.MAINNET, chainId).tokens,
-    [chainId],
-  )
+  const tokensAddresses = useMemo(() => getNetworkContracts(networkId).tokens, [networkId])
 
   const [identifiedTokensData] = useObservable(
     useMemo(
@@ -66,6 +64,7 @@ export function useOmniProtocolData({
         positionId
           ? dpmPositionDataV2$(
               getPositionIdentity(positionId),
+              networkId,
               collateralToken,
               quoteToken,
               productType,
@@ -92,6 +91,7 @@ export function useOmniProtocolData({
       [
         isOracless,
         positionId,
+        networkId,
         collateralToken,
         quoteToken,
         productType,

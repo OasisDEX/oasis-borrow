@@ -7,7 +7,7 @@ import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import { getSparkV3ReserveConfigurationData, getSparkV3ReserveData } from 'blockchain/spark-v3'
 import type { OmniProductBorrowishType } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
-import type { TokensPrices } from 'handlers/portfolio/positions/helpers'
+import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import {
   getBorrowishPositionType,
   getPositionsAutomations,
@@ -61,7 +61,7 @@ interface CommonDataMapperParams {
   automations?: AutomationResponse[number]
   dpm: DpmList[number]
   positionIdAsString?: boolean
-  prices: TokensPrices
+  prices: TokensPricesList
   apiVaults?: Vault[]
 }
 

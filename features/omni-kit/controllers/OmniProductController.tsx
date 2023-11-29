@@ -1,11 +1,15 @@
-import { getNetworkByName, type NetworkNames } from 'blockchain/networks'
+import { getNetworkById, getNetworkByName, type NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import type { GetOmniMetadata } from 'features/omni-kit/contexts'
 import { OmniGeneralContextProvider, OmniProductContextProvider } from 'features/omni-kit/contexts'
 import { OmniLayoutController } from 'features/omni-kit/controllers'
-import { getOmniHeadlineProps, getOmniProductContextProviderData } from 'features/omni-kit/helpers'
+import {
+  getOmniHeadlineProps,
+  getOmniProductContextProviderData,
+  isOmniSupportedNetwork,
+} from 'features/omni-kit/helpers'
 import { useOmniProtocolData } from 'features/omni-kit/hooks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import type { ProductDataProps } from 'features/omni-kit/protocols/ajna/hooks'
@@ -19,6 +23,7 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useAccount } from 'helpers/useAccount'
 import { one } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
@@ -76,8 +81,20 @@ export const OmniProductController = <Auction, History, Position>({
   steps,
 }: OmniProductControllerProps<Auction, History, Position>) => {
   const { t } = useTranslation()
+  const { chainId } = useAccount()
 
-  const network = getNetworkByName(networkName)
+  const positionNetwork = getNetworkByName(networkName)
+  const walletNetwork = getNetworkById(chainId || positionNetwork.id)
+
+  const resolvedNetwork =
+    walletNetwork.testnet && positionNetwork.testnetId === walletNetwork.id
+      ? walletNetwork
+      : positionNetwork
+
+  if (!isOmniSupportedNetwork(resolvedNetwork.id)) {
+    throw new Error(`Unsupported network: ${resolvedNetwork.name}`)
+  }
+
   const isOpening = !positionId
 
   const {
@@ -99,6 +116,7 @@ export const OmniProductController = <Auction, History, Position>({
     productType,
     protocol,
     quoteToken,
+    networkId: resolvedNetwork.id,
   })
 
   const {
@@ -114,7 +132,7 @@ export const OmniProductController = <Auction, History, Position>({
   })
 
   return (
-    <WithConnection pageChainId={network.hexId} includeTestNet={true}>
+    <WithConnection>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <WithErrorHandler error={[...errors, ...protocolDataErrors]}>
@@ -191,8 +209,9 @@ export const OmniProductController = <Auction, History, Position>({
                       isOpening={isOpening}
                       isOracless={!!isOracless}
                       isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
-                      network={network}
+                      network={resolvedNetwork}
                       owner={dpmPosition.user}
+                      walletNetwork={walletNetwork}
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}

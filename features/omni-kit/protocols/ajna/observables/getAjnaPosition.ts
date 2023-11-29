@@ -160,7 +160,7 @@ export function getAjnaPositionsWithDetails$(
                   const vaultId = idMap[proxyAddress]
 
                   return combineLatest(
-                    checkMultipleVaultsFromApi$([idMap[proxyAddress]], protocol),
+                    checkMultipleVaultsFromApi$([idMap[proxyAddress]], protocol, context.chainId),
                   ).pipe(
                     switchMap(([vaultsFromApi]) =>
                       getAjnaPositionDetails$(

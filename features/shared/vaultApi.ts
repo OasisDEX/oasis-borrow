@@ -50,9 +50,10 @@ interface CheckMultipleVaultsResponse {
 export function checkMultipleVaultsFromApi$(
   vaults: string[],
   protocol: string,
+  chainId: NetworkIds,
 ): Observable<CheckMultipleVaultsResponse> {
   return ajax({
-    url: `/api/vaults/1/${protocol.toLowerCase()}?${vaults
+    url: `/api/vaults/${chainId}/${protocol.toLowerCase()}?${vaults
       .map((vault) => `id=${vault}&`)
       .join('')}`,
     method: 'GET',
