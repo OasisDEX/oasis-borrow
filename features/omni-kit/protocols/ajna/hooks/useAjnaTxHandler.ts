@@ -1,6 +1,7 @@
 import type { Context } from 'blockchain/network.types'
 import { getRpcProvider } from 'blockchain/networks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { omniMetadataSupplyHandlerGuard } from 'features/omni-kit/helpers'
 import { useOmniTxHandler } from 'features/omni-kit/hooks'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
 import { getAjnaParameters } from 'features/omni-kit/protocols/ajna/helpers'
@@ -28,9 +29,16 @@ export function useAjnaTxHandler(): () => void {
     },
     dynamicMetadata: {
       validations: { isFormValid },
+      handlers,
     },
   } = useOmniProductContext(productType)
-  const { state: customState, dispatch: customDispatch } = useAjnaCustomState()
+  const { state: customState } = useAjnaCustomState()
+
+  let onSuccess: () => void = () => null
+
+  if (omniMetadataSupplyHandlerGuard(handlers)) {
+    onSuccess = handlers.customReset
+  }
 
   return useOmniTxHandler({
     getOmniParameters: (context: Context) =>
@@ -54,6 +62,6 @@ export function useAjnaTxHandler(): () => void {
         walletAddress: context.account,
       }),
     customState,
-    onSuccess: () => customDispatch({ type: 'reset' }),
+    onSuccess,
   })
 }
