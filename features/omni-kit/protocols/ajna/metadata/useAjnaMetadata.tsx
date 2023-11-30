@@ -125,15 +125,12 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     simulationWarnings: productContext.position.simulationCommon.warnings,
     state: productContext.form.state,
     txError: txDetails?.txError,
-    earnIsFormValid:
-      productType === OmniProductType.Earn
-        ? getAjnaEarnIsFormValid({
-            price,
-            position: productContext.position.currentPosition.position as AjnaEarnPosition,
-            currentStep,
-            state: (productContext as ProductContextWithEarn).form.state,
-          })
-        : false,
+    earnIsFormValid: getAjnaEarnIsFormValid({
+      price,
+      position: productContext.position.currentPosition.position as AjnaEarnPosition,
+      currentStep,
+      state: (productContext as ProductContextWithEarn).form.state,
+    }),
   })
 
   const notifications = getAjnaNotifications({
@@ -326,7 +323,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         handlers: {
           txSuccessEarnHandler: () =>
             earnContext.form.updateState('uiDropdown', OmniSidebarEarnPanel.Adjust),
-          customReset: () => dispatch({ type: 'reset' }),
+          customReset: () => dispatch({ type: 'reset', price: earnPosition.price }),
         },
         filters,
         values: {
@@ -376,7 +373,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
                         OmniSidebarEarnPanel.ClaimCollateral,
                       )
                       earnContext.form.updateState('action', OmniEarnFormAction.ClaimEarn)
-                      dispatch({ type: 'reset' })
+                      dispatch({ type: 'reset', price: earnPosition.price })
                     },
                   },
                 ]

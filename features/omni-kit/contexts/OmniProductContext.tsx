@@ -51,9 +51,13 @@ interface CommonMetadata {
   validations: OmniValidations
 }
 
-interface CommonMetadataHandlers {
+export interface OmniLendingMetadataHandlers {}
+
+export interface OmniSupplyMetadataHandlers {
+  txSuccessEarnHandler: () => void
   customReset?: () => void
 }
+
 interface CommonMetadataValues {
   footerColumns: number
   headlineDetails?: HeadlineDetailsProp[]
@@ -71,7 +75,7 @@ interface CommonMetadataElements {
 }
 
 export type LendingMetadata = CommonMetadata & {
-  handlers?: CommonMetadataHandlers
+  handlers?: OmniLendingMetadataHandlers
   values: CommonMetadataValues & {
     afterAvailableToBorrow: BigNumber | undefined
     afterBuyingPower: BigNumber | undefined
@@ -89,9 +93,7 @@ export type LendingMetadata = CommonMetadata & {
 }
 
 export type SupplyMetadata = CommonMetadata & {
-  handlers: CommonMetadataHandlers & {
-    txSuccessEarnHandler: () => void
-  }
+  handlers: OmniSupplyMetadataHandlers
   values: CommonMetadataValues & {
     earnWithdrawMax: BigNumber
     extraDropdownItems?: SidebarSectionHeaderSelectItem[]
