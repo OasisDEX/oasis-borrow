@@ -23,8 +23,8 @@ interface DetailsSectionContentCardTooltipProps {
 
 export interface DetailsSectionContentCardChangePillProps {
   isLoading?: boolean
-  tooltip?: string
-  value?: string | [string, string, string]
+  tooltip?: ReactNode
+  value?: string | string[]
   variant?: ChangeVariantType
 }
 
@@ -36,15 +36,14 @@ interface DetailsSectionContentCardLinkProps {
 
 export interface ContentCardProps {
   change?: DetailsSectionContentCardChangePillProps
-  changeTooltip?: ReactNode
   customBackground?: string
   customUnitStyle?: ThemeUIStyleObject
   customValueColor?: string
   extra?: ReactNode
-  footnote?: string | [string, string, string]
-  footnoteTooltip?: string
+  footnote?: string | string[]
+  footnoteTooltip?: ReactNode
   link?: DetailsSectionContentCardLinkProps
-  modal?: TranslateStringType | JSX.Element
+  modal?: ReactNode
   title: string
   unit?: TranslateStringType
   value?: ReactNode
@@ -88,7 +87,7 @@ export function DetailsSectionContentCardChangePill({
   value,
   variant = 'positive',
 }: DetailsSectionContentCardChangePillProps) {
-  const isValueArray = Array.isArray(value)
+  const valueArray = Array.isArray(value) ? value : [value]
 
   return (
     <>
@@ -121,14 +120,15 @@ export function DetailsSectionContentCardChangePill({
           >
             {tooltip ? (
               <>
-                {isValueArray && `${value[0]} `}
+                {valueArray.length > 2 && `${valueArray[0]} `}
                 <DetailsSectionContentCardTooltip value={tooltip}>
-                  {isValueArray ? value[1] : value}
+                  {' '}
+                  {valueArray.length > 2 ? valueArray[1] : valueArray[0]}{' '}
                 </DetailsSectionContentCardTooltip>
-                {isValueArray && ` ${value[2]}`}
+                {valueArray.slice(valueArray.length > 2 ? 2 : 1, valueArray.length).join(' ')}
               </>
             ) : (
-              <>{isValueArray ? value.join(' ') : value}</>
+              <>{valueArray.join(' ')}</>
             )}
           </Text>
         </>
@@ -193,7 +193,7 @@ export function DetailsSectionContentCard({
   const openModal = useModal()
   const [isHighlighted, setIsHighlighted] = useState(false)
   const modalHandler = () => {
-    if (modal) openModal(DetailsSectionContentCardModal, { children: modal })
+    if (modal) openModal(DetailsSectionContentCardModal, { children: <>{modal}</> })
   }
   const hightlightableItemEvents = {
     onMouseEnter: () => setIsHighlighted(true),
@@ -205,7 +205,7 @@ export function DetailsSectionContentCard({
     cardBackgroundColor = customBackground
   }
   const cursorStyle = { cursor: modal ? 'pointer' : 'auto' }
-  const isFootnoteArray = Array.isArray(footnote)
+  const footnoteArray = Array.isArray(footnote) ? footnote : [footnote]
 
   return (
     <Flex
@@ -283,14 +283,15 @@ export function DetailsSectionContentCard({
         >
           {footnoteTooltip ? (
             <>
-              {isFootnoteArray && `${footnote[0]} `}
+              {footnoteArray.length > 1 && `${footnoteArray[0]} `}
               <DetailsSectionContentCardTooltip value={footnoteTooltip}>
-                {isFootnoteArray ? footnote[1] : footnote}
+                {' '}
+                {footnoteArray.length > 1 ? footnoteArray[1] : footnoteArray[0]}{' '}
               </DetailsSectionContentCardTooltip>
-              {isFootnoteArray && ` ${footnote[2]}`}
+              {footnoteArray.slice(2, footnoteArray.length).join(' ')}
             </>
           ) : (
-            <>{isFootnoteArray ? footnote.join(' ') : footnote}</>
+            <>{footnoteArray.join(' ')}</>
           )}
         </Text>
       )}

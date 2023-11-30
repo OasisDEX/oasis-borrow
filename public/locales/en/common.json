@@ -2641,6 +2641,13 @@
         "current-market-price": "Current Market Price"
       }
     },
+    "content-card": {
+      "after": "after",
+      "ltv": {
+        "title": "Loan to Value",
+        "footer": "Max LTV:"
+      }
+    },
     "form": {
       "transaction": {
         "confirm": "Here you can review the details of the changes of your {{collateralToken}}/{{quoteToken}} {{protocol}} {{productType}} Position.",
