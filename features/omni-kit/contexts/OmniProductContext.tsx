@@ -55,7 +55,7 @@ export interface OmniLendingMetadataHandlers {}
 
 export interface OmniSupplyMetadataHandlers {
   txSuccessEarnHandler: () => void
-  customReset: () => void
+  customReset?: () => void
 }
 
 interface CommonMetadataValues {

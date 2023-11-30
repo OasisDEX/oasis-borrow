@@ -34,7 +34,7 @@ export function useAjnaTxHandler(): () => void {
   } = useOmniProductContext(productType)
   const { state: customState } = useAjnaCustomState()
 
-  let onSuccess: () => void = () => null
+  let onSuccess: (() => void) | undefined = () => null
 
   if (omniMetadataSupplyHandlerGuard(handlers)) {
     onSuccess = handlers.customReset
