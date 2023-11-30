@@ -25,8 +25,8 @@ export function useAjnaCardDataLiquidationPrice({
   return {
     modal: (
       <DetailsSectionContentSimpleModal
-        title={t('ajna.position-page.borrow.common.overview.liquidation-price')}
-        description={t('ajna.position-page.borrow.common.overview.liquidation-price-modal-desc')}
+        title={t('omni-kit.content-card.liquidation-price.title')}
+        description={t('ajna.content-card.liquidation-price.modal-description')}
         value={`${formatCryptoBalance(liquidationPrice)} ${priceFormat}`}
         theme={ajnaExtensionTheme}
       />

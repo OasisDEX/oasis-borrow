@@ -28,7 +28,7 @@ export function useOmniCardDataLiquidationPrice({
         footnote: [
           formatDecimalAsPercent(ratioToCurrentPrice),
           {
-            key: `omni-kit.content-card.liquidation-price.footer-${
+            key: `omni-kit.content-card.liquidation-price.footnote-${
               ratioToCurrentPrice.gt(zero) ? 'below' : 'above'
             }`,
           },

@@ -20,7 +20,7 @@ export function getOmniCardDataLtv({
       change: [formatDecimalAsPercent(afterLtv)],
     }),
     ...(maxLtv && {
-      footnote: [{ key: 'omni-kit.content-card.ltv.footer' }, formatDecimalAsPercent(maxLtv)],
+      footnote: [{ key: 'omni-kit.content-card.ltv.footnote' }, formatDecimalAsPercent(maxLtv)],
     }),
   }
 }

@@ -2,13 +2,14 @@ import type { AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import {
+  getOmniCardDataLtv,
   OmniContentCard,
   OmniContentCardCollateralLocked,
   OmniContentCardPositionDebt,
   useOmniCardDataLiquidationPrice,
 } from 'features/omni-kit/components/details-section'
 import {
-  AjnaContentCardLoanToValue,
+  AjnaCardDataLtvModal,
   AjnaContentCardNetBorrowCost,
   AjnaContentCardNetValue,
   AjnaContentCardThresholdPrice,
@@ -91,6 +92,22 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     priceFormat,
   })
 
+  const ltvContentCardCommonData = getOmniCardDataLtv({
+    ltv: position.riskRatio.loanToValue,
+    afterLtv: simulation?.riskRatio.loanToValue,
+    ...(shouldShowDynamicLtv && { maxLtv: position.maxRiskRatio.loanToValue }),
+  })
+  const ltvContentCardAjnaData = {
+    modal: (
+      <AjnaCardDataLtvModal
+        ltv={position.riskRatio.loanToValue}
+        maxLtv={position.maxRiskRatio.loanToValue}
+      />
+    ),
+  }
+  if (ltvContentCardCommonData.footnote && typeof ltvContentCardCommonData.footnote[0] !== 'string')
+    ltvContentCardCommonData.footnote[0].key = 'ajna.content-card.ltv.footnote'
+
   return (
     <>
       <OmniContentCard
@@ -114,15 +131,10 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
           modalTheme={ajnaExtensionTheme}
         />
       ) : (
-        <AjnaContentCardLoanToValue
-          isLoading={isSimulationLoading}
-          loanToValue={position.riskRatio.loanToValue}
-          afterLoanToValue={simulation?.riskRatio.loanToValue}
-          {...(shouldShowDynamicLtv && {
-            dynamicMaxLtv: position.maxRiskRatio.loanToValue,
-          })}
-          changeVariant={changeVariant}
-          modalTheme={ajnaExtensionTheme}
+        <OmniContentCard
+          {...commonContentCardData}
+          {...ltvContentCardCommonData}
+          {...ltvContentCardAjnaData}
         />
       )}
 

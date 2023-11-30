@@ -2645,12 +2645,12 @@
       "after": "after",
       "liquidation-price": {
         "title": "Liquidation Price",
-        "footer-below": "below current price",
-        "footer-above": "above current price"
+        "footnote-below": "below current price",
+        "footnote-above": "above current price"
       },
       "ltv": {
         "title": "Loan to Value",
-        "footer": "Max LTV:"
+        "footnote": "Max LTV:"
       }
     },
     "form": {
@@ -2665,12 +2665,6 @@
   },
   "ajna": {
     "title": "Ajna Website",
-    "navigation": {
-      "common": {
-        "other-assets": "Other assets you can borrow against"
-      }
-    },
-    "other-assets": "Other assets you can borrow against",
     "landing-banner": {
       "title": "Get exclusive Ajna tokens when you use Summer.fi",
       "description": "Summer.fi users are eligible for exclusive Ajna token rewards! Open an Ajna position through Summer.fi and automatically earn Ajna tokens.",
@@ -2685,20 +2679,19 @@
       "oasis-discord": "Summer.fi Discord",
       "oasis-twitter": "Summer.fi Twitter"
     },
-    "product-finder": {
-      "multiply-soon-title": "Ajna Multiply coming soon",
-      "multiply-soon-intro": "We're busy building Multiply for Ajna and will be releasing it shortly. For now you can <1>Borrow</1> and <2>Earn</2> on Ajna."
-    },
-    "product-cards": {
-      "borrow-against-your": "Borrow against your {{token}}",
-      "collaterals-you-can-borrow": "Collaterals you can borrow",
-      "lend-against-your": "Lend {{token }} to earn",
-      "collaterals-to-earn-on": "Collaterals to earn on",
-      "annual-variable-rates": "Annual variable rates"
-    },
     "history": {
       "title": "History is coming soon",
       "notice": "We're currently building human readable history for Ajna. Check back in a few weeks to see your position history"
+    },
+    "content-card": {
+      "liquidation-price": {
+        "modal-description": "The liquidation price represent the price at which it is expected that liquidators successfully action your collateral to repay your debt. Monitor this value compared to market price."
+      },
+      "ltv": {
+        "footnote": "Dynamic Max LTV:",
+        "modal-description": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
+        "modal-footnote-description": "Ajna Max LTV changes with lenders and borrowers activities. Pay attention to not go over the max and risk being liquidated."
+      }
     },
     "product-page": {
       "borrow": {

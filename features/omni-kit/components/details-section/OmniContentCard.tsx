@@ -111,7 +111,7 @@ export function OmniContentCard({
       footnoteTooltip: footnoteTooltip,
     }),
     extra,
-    modal,
+    modal: <>{modal}</>,
   }
 
   return <DetailsSectionContentCard {...contentCardSettings} />

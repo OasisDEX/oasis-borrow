@@ -13,7 +13,7 @@ export interface DetailsSectionContentSimpleModalProps {
 const DetailsSectionContentSimpleModalContent: FC<
   Omit<DetailsSectionContentSimpleModalProps, 'theme'>
 > = ({ title, children, description, value }) => (
-  <Grid gap={2}>
+  <Grid gap={3}>
     <Heading variant="header5" sx={{ fontWeight: 'bold' }}>
       {title}
     </Heading>
@@ -22,12 +22,12 @@ const DetailsSectionContentSimpleModalContent: FC<
         {description}
       </Text>
     )}
-    <>{children}</>
     {value && (
-      <Card variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
+      <Card variant="vaultDetailsCardModal">
         {value}
       </Card>
     )}
+    <>{children}</>
   </Grid>
 )
 
