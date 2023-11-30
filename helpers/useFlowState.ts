@@ -4,6 +4,7 @@ import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getPositionCreatedEventForProxyAddress } from 'features/aave/services'
+import { paybackAllAmountAllowanceMaxMultiplier } from 'features/omni-kit/constants'
 import { useEffect, useState } from 'react'
 import { combineLatest } from 'rxjs'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
@@ -74,7 +75,7 @@ export function useFlowState({
   }
 
   const baseAllowanceContext = {
-    minimumAmount: amount,
+    minimumAmount: amount?.times(paybackAllAmountAllowanceMaxMultiplier),
     allowanceType: 'unlimited',
     token,
     error: undefined,
