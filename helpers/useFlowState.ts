@@ -187,11 +187,13 @@ export function useFlowState({
       },
     )
     const allowanceMachineSubscription = allowanceMachine.subscribe(({ value, context, event }) => {
+      const allowanceAmountChanged =
+        baseAllowanceContext.minimumAmount &&
+        !context.minimumAmount?.eq(baseAllowanceContext.minimumAmount)
+      const tokenChanged = context.token !== token
+      const spenderChanged = context.spender !== spender
       const inputChange =
-        amount?.toString() &&
-        (context.spender !== spender ||
-          !context.minimumAmount?.eq(amount) ||
-          context.token !== token)
+        amount?.toString() && (spenderChanged || allowanceAmountChanged || tokenChanged)
 
       if (event.type === 'BACK') {
         !context.error &&
