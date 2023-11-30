@@ -299,6 +299,27 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         earnPosition.price.lt(earnPosition.pool.lowestUtilizedPrice) &&
         !earnPosition.pool.lowestUtilizedPriceIndex.isZero()
 
+      const availableToWithdraw = getAjnaEarnWithdrawMax({
+        quoteTokenAmount: protocols.ajna.calculateAjnaMaxLiquidityWithdraw({
+          pool: earnPosition.pool,
+          poolCurrentLiquidity: getPoolLiquidity(earnPosition.pool),
+          position: earnPosition,
+          simulation: earnSimulation,
+        }),
+        digits: quotePrecision,
+      })
+
+      const afterAvailableToWithdraw = earnSimulation
+        ? getAjnaEarnWithdrawMax({
+            quoteTokenAmount: protocols.ajna.calculateAjnaMaxLiquidityWithdraw({
+              pool: earnSimulation.pool,
+              poolCurrentLiquidity: getPoolLiquidity(earnSimulation.pool),
+              position: earnSimulation,
+            }),
+            digits: quotePrecision,
+          })
+        : undefined
+
       return {
         notifications,
         validations,
@@ -361,18 +382,8 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
                 ]
               : []),
           ],
-          earnWithdrawMax:
-            productType === OmniProductType.Earn
-              ? getAjnaEarnWithdrawMax({
-                  quoteTokenAmount: protocols.ajna.calculateAjnaMaxLiquidityWithdraw({
-                    pool: earnPosition.pool,
-                    poolCurrentLiquidity: getPoolLiquidity(earnPosition.pool),
-                    position: earnPosition,
-                    simulation: earnSimulation,
-                  }),
-                  digits: quotePrecision,
-                })
-              : zero,
+          earnWithdrawMax: availableToWithdraw,
+          earnAfterWithdrawMax: afterAvailableToWithdraw,
         },
         elements: {
           faq: faqEarn,
@@ -394,21 +405,14 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           overviewFooter: (
             <AjnaEarnDetailsSectionFooter
               collateralToken={collateralToken}
-              depositAmount={earnContext.form.state.depositAmount}
               isOpening={isOpening}
               isOracless={isOracless}
               isSimulationLoading={productContext.position.isSimulationLoading}
               position={earnPosition}
               quotePrice={quotePrice}
               quoteToken={quoteToken}
-              simulation={earnSimulation}
-              withdrawAmount={earnContext.form.state.withdrawAmount}
-              availableToWithdraw={protocols.ajna.calculateAjnaMaxLiquidityWithdraw({
-                pool: earnPosition.pool,
-                poolCurrentLiquidity: getPoolLiquidity(earnPosition.pool),
-                position: earnPosition,
-                simulation: earnSimulation,
-              })}
+              availableToWithdraw={availableToWithdraw}
+              afterAvailableToWithdraw={afterAvailableToWithdraw}
               owner={owner}
             />
           ),

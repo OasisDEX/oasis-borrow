@@ -95,6 +95,7 @@ export type SupplyMetadata = CommonMetadata & {
   values: CommonMetadataValues & {
     earnWithdrawMax: BigNumber
     extraDropdownItems?: SidebarSectionHeaderSelectItem[]
+    earnAfterWithdrawMax?: BigNumber
   }
   elements: CommonMetadataElements & {
     earnExtraUiDropdownContent?: ReactNode

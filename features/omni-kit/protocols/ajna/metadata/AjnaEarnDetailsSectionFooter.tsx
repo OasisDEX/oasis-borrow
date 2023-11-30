@@ -1,5 +1,4 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
-import { negativeToZero } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import {
   AjnaContentFooterEarnManage,
@@ -12,7 +11,6 @@ import React from 'react'
 interface AjnaEarnDetailsSectionFooterProps {
   availableToWithdraw: BigNumber
   collateralToken: string
-  depositAmount?: BigNumber
   isOpening: boolean
   isOracless: boolean
   isSimulationLoading?: boolean
@@ -20,14 +18,12 @@ interface AjnaEarnDetailsSectionFooterProps {
   position: AjnaEarnPosition
   quotePrice: BigNumber
   quoteToken: string
-  simulation?: AjnaEarnPosition
-  withdrawAmount?: BigNumber
+  afterAvailableToWithdraw?: BigNumber
 }
 
 export const AjnaEarnDetailsSectionFooter: FC<AjnaEarnDetailsSectionFooterProps> = ({
   availableToWithdraw,
   collateralToken,
-  depositAmount,
   isOpening,
   isOracless,
   isSimulationLoading,
@@ -35,8 +31,7 @@ export const AjnaEarnDetailsSectionFooter: FC<AjnaEarnDetailsSectionFooterProps>
   position,
   quotePrice,
   quoteToken,
-  simulation,
-  withdrawAmount,
+  afterAvailableToWithdraw,
 }) => {
   return (
     <>
@@ -59,17 +54,7 @@ export const AjnaEarnDetailsSectionFooter: FC<AjnaEarnDetailsSectionFooterProps>
           availableToWithdraw={availableToWithdraw}
           // TODO adjust once data available in subgraph
           projectedAnnualReward={zero}
-          afterAvailableToWithdraw={
-            simulation
-              ? negativeToZero(
-                  depositAmount
-                    ? availableToWithdraw.plus(depositAmount)
-                    : withdrawAmount
-                    ? availableToWithdraw.minus(withdrawAmount)
-                    : zero,
-                )
-              : undefined
-          }
+          afterAvailableToWithdraw={afterAvailableToWithdraw}
           isOracless={isOracless}
         />
       )}
