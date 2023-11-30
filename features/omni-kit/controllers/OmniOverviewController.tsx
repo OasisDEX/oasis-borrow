@@ -1,5 +1,4 @@
 import { DetailsSection } from 'components/DetailsSection'
-import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { useTranslation } from 'next-i18next'
@@ -24,9 +23,7 @@ export function OmniOverviewController() {
       <DetailsSection
         title={t('system.overview')}
         notifications={notifications}
-        content={
-          <DetailsSectionContentCardWrapper>{overviewContent}</DetailsSectionContentCardWrapper>
-        }
+        content={overviewContent}
         footer={
           <DetailsSectionFooterItemWrapper columns={footerColumns}>
             {overviewFooter}

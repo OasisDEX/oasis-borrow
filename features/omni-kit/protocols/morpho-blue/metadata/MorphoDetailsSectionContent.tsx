@@ -1,6 +1,7 @@
 import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import {
   OmniContentCardLiquidationPrice,
   OmniContentCardLtv,
@@ -41,7 +42,7 @@ export const MorphoDetailsSectionContent: FC<MorphoOmniDetailsSectionContentProp
   simulation,
 }) => {
   return (
-    <>
+    <DetailsSectionContentCardWrapper>
       <OmniContentCardLiquidationPrice
         liquidationPriceInDebt={position.liquidationPrice}
         afterLiquidationPriceInDebt={simulation?.liquidationPrice}
@@ -80,6 +81,6 @@ export const MorphoDetailsSectionContent: FC<MorphoOmniDetailsSectionContentProp
         pnl={position.pnl.withoutFees}
         showPnl={!isOpening}
       />
-    </>
+    </DetailsSectionContentCardWrapper>
   )
 }

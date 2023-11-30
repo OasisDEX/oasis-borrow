@@ -1,5 +1,6 @@
 import { type AjnaEarnPosition, normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import {
   AjnaContentCardEarnNetValue,
@@ -83,7 +84,7 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
         />
       )}
       {!isOpening && (
-        <>
+        <DetailsSectionContentCardWrapper>
           <AjnaContentCardTotalEarnings
             quoteToken={quoteToken}
             totalEarnings={position.totalEarnings.withFees}
@@ -135,7 +136,7 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
             withTooltips={isOracless}
             modalTheme={ajnaExtensionTheme}
           />
-        </>
+        </DetailsSectionContentCardWrapper>
       )}
     </>
   )

@@ -1,6 +1,7 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import {
   OmniContentCardCollateralLocked,
   OmniContentCardPositionDebt,
@@ -72,7 +73,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     simulation?.liquidationPrice &&
     (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
   return (
-    <>
+    <DetailsSectionContentCardWrapper>
       <AjnaContentCardLiquidationPrice
         isLoading={isSimulationLoading}
         priceFormat={priceFormat}
@@ -169,6 +170,6 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
           />
         </>
       )}
-    </>
+    </DetailsSectionContentCardWrapper>
   )
 }
