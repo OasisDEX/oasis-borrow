@@ -2,17 +2,18 @@ import type { AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import {
-  getOmniCardDataLtv,
   OmniContentCard,
   OmniContentCardCollateralLocked,
   OmniContentCardPositionDebt,
   useOmniCardDataLiquidationPrice,
+  useOmniCardDataLtv,
+  useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import {
-  AjnaCardDataLtvModal,
   AjnaContentCardNetBorrowCost,
   AjnaContentCardNetValue,
-  AjnaContentCardThresholdPrice,
+  useAjnaCardCardThresholdPrice,
+  useAjnaCardDataLoanToValue,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { useAjnaCardDataLiquidationPrice } from 'features/omni-kit/protocols/ajna/components/details-section/'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -60,7 +61,6 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   quoteToken,
   shouldShowDynamicLtv,
   simulation,
-  thresholdPrice,
 }) => {
   const liquidationPrice = isShort
     ? normalizeValue(one.div(position.liquidationPrice))
@@ -92,21 +92,42 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     priceFormat,
   })
 
-  const ltvContentCardCommonData = getOmniCardDataLtv({
-    ltv: position.riskRatio.loanToValue,
+  const ltvContentCardCommonData = useOmniCardDataLtv({
     afterLtv: simulation?.riskRatio.loanToValue,
+    ltv: position.riskRatio.loanToValue,
     ...(shouldShowDynamicLtv && { maxLtv: position.maxRiskRatio.loanToValue }),
   })
-  const ltvContentCardAjnaData = {
-    modal: (
-      <AjnaCardDataLtvModal
-        ltv={position.riskRatio.loanToValue}
-        maxLtv={position.maxRiskRatio.loanToValue}
-      />
-    ),
-  }
+  const ltvContentCardAjnaData = useAjnaCardDataLoanToValue({
+    ltv: position.riskRatio.loanToValue,
+    ...(shouldShowDynamicLtv && { maxLtv: position.maxRiskRatio.loanToValue }),
+  })
   if (ltvContentCardCommonData.footnote && typeof ltvContentCardCommonData.footnote[0] !== 'string')
     ltvContentCardCommonData.footnote[0].key = 'ajna.content-card.ltv.footnote'
+
+  const thresholdPriceContentCardData = useAjnaCardCardThresholdPrice({
+    collateralAmount: position.collateralAmount,
+    debtAmount: position.debtAmount,
+    afterThresholdPrice: simulation?.thresholdPrice,
+    thresholdPrice: position.thresholdPrice,
+    unit: priceFormat,
+    ...(shouldShowDynamicLtv && { lup: position.pool.lowestUtilizedPrice }),
+  })
+
+  const collateralDepositedContentCardCommonData = useOmniCardDataTokensValue({
+    afterTokensAmount: simulation?.collateralAmount,
+    tokensAmount: position.collateralAmount,
+    tokensSymbol: collateralToken,
+    translationCardName: 'collateral-deposited',
+    ...(!isOracless && { tokensPrice: collateralPrice }),
+  })
+
+  const positionDebtContentCardCommonData = useOmniCardDataTokensValue({
+    afterTokensAmount: simulation?.debtAmount,
+    tokensAmount: position.debtAmount,
+    tokensSymbol: quoteToken,
+    translationCardName: 'position-debt',
+    ...(!isOracless && { tokensPrice: quotePrice }),
+  })
 
   return (
     <>
@@ -116,20 +137,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
         {...liquidationPriceContentCardAjnaData}
       />
       {isOracless ? (
-        <AjnaContentCardThresholdPrice
-          isLoading={isSimulationLoading}
-          thresholdPrice={thresholdPrice}
-          debtAmount={position.debtAmount}
-          collateralAmount={position.collateralAmount}
-          afterThresholdPrice={simulation?.thresholdPrice}
-          priceFormat={priceFormat}
-          withTooltips
-          changeVariant={changeVariant}
-          {...(shouldShowDynamicLtv && {
-            lup: position.pool.lup,
-          })}
-          modalTheme={ajnaExtensionTheme}
-        />
+        <OmniContentCard {...commonContentCardData} {...thresholdPriceContentCardData} />
       ) : (
         <OmniContentCard
           {...commonContentCardData}
@@ -140,6 +148,11 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
 
       {productType === OmniProductType.Borrow && (
         <>
+          <OmniContentCard
+            {...commonContentCardData}
+            {...collateralDepositedContentCardCommonData}
+          />
+          <OmniContentCard {...commonContentCardData} {...positionDebtContentCardCommonData} />
           <OmniContentCardCollateralLocked
             isLoading={isSimulationLoading}
             collateralToken={collateralToken}

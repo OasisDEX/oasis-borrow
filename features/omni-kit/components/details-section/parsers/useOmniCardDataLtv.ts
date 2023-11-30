@@ -8,7 +8,7 @@ interface OmniCardDataLtvParams {
   maxLtv?: BigNumber
 }
 
-export function getOmniCardDataLtv({
+export function useOmniCardDataLtv({
   afterLtv,
   ltv,
   maxLtv,

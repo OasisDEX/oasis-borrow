@@ -2651,6 +2651,12 @@
       "ltv": {
         "title": "Loan to Value",
         "footnote": "Max LTV:"
+      },
+      "collateral-deposited": {
+        "title": "Collateral Deposited"
+      },
+      "position-debt": {
+        "title": "Position Debt"
       }
     },
     "form": {
@@ -2691,6 +2697,15 @@
         "footnote": "Dynamic Max LTV:",
         "modal-description": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
         "modal-footnote-description": "Ajna Max LTV changes with lenders and borrowers activities. Pay attention to not go over the max and risk being liquidated."
+      },
+      "threshold-price": {
+        "title": "Threshold Price",
+        "footnote": "LUP:",
+        "modal-description-1": "By taking the debt token amount and dividing it by the collateral token amount, the loan's threshold price, TP, can be calculated.",
+        "modal-description-2": "Your loan will be eligible to be kicked into the liquidation queue if the pool's Lowest Utilization Price (LUP) is less than your Threshold price.",
+        "modal-formula": "debt amount / collateral amount",
+        "modal-subtitle": "To avoid liquidation, always ensure your TP < LUP",
+        "modal-lup": "Lowest Utilization Price"
       }
     },
     "product-page": {

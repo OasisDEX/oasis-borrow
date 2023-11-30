@@ -24,6 +24,7 @@ export function useOmniCardDataLiquidationPrice({
       change: [formatCryptoBalance(afterLiquidationPrice), unit],
     }),
     ...(ratioToCurrentPrice &&
+      !liquidationPrice.isZero() &&
       !ratioToCurrentPrice.isZero() && {
         footnote: [
           formatDecimalAsPercent(ratioToCurrentPrice),
