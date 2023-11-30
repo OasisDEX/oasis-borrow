@@ -1,6 +1,7 @@
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniValidationMessagesController } from 'features/omni-kit/controllers'
+import { omniMetadataSupplyHandlerGuard } from 'features/omni-kit/helpers'
 import type { PropsWithChildren } from 'react'
 import React from 'react'
 
@@ -29,7 +30,7 @@ export function OmniFormContentSummary({
         <SidebarResetButton
           clear={() => {
             dispatch({ type: 'reset' })
-            handlers?.customReset?.()
+            omniMetadataSupplyHandlerGuard(handlers) && handlers.customReset?.()
           }}
         />
       )}

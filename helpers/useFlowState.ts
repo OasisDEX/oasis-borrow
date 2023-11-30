@@ -4,6 +4,7 @@ import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getPositionCreatedEventForProxyAddress } from 'features/aave/services'
+import { paybackAllAmountAllowanceMaxMultiplier } from 'features/omni-kit/constants'
 import { useEffect, useState } from 'react'
 import { combineLatest } from 'rxjs'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
@@ -74,7 +75,7 @@ export function useFlowState({
   }
 
   const baseAllowanceContext = {
-    minimumAmount: amount,
+    minimumAmount: amount?.times(paybackAllAmountAllowanceMaxMultiplier),
     allowanceType: 'unlimited',
     token,
     error: undefined,
@@ -186,11 +187,13 @@ export function useFlowState({
       },
     )
     const allowanceMachineSubscription = allowanceMachine.subscribe(({ value, context, event }) => {
+      const allowanceAmountChanged =
+        baseAllowanceContext.minimumAmount &&
+        !context.minimumAmount?.eq(baseAllowanceContext.minimumAmount)
+      const tokenChanged = context.token !== token
+      const spenderChanged = context.spender !== spender
       const inputChange =
-        amount?.toString() &&
-        (context.spender !== spender ||
-          !context.minimumAmount?.eq(amount) ||
-          context.token !== token)
+        amount?.toString() && (spenderChanged || allowanceAmountChanged || tokenChanged)
 
       if (event.type === 'BACK') {
         !context.error &&

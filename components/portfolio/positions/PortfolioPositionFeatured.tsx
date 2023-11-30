@@ -14,10 +14,10 @@ import { chevron_left, chevron_right } from 'theme/icons'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
-import type { PortfolioAsset } from 'lambdas/src/shared/domain-types'
+import type { PortfolioWalletAsset } from 'lambdas/lib/shared/src/domain-types'
 
 interface PortfolioPositionFeaturedProps {
-  assets?: PortfolioAsset[]
+  assets?: PortfolioWalletAsset[]
   positions?: PortfolioPosition[]
 }
 

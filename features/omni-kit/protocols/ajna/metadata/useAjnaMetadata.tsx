@@ -112,17 +112,17 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     currentStep,
     ethBalance,
     ethPrice,
-    gasEstimationUsd: gasEstimation?.usdValue,
+    gasEstimationUsd: gasEstimation.usdValue,
     isOpening,
     position: productContext.position.currentPosition.position,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
     productType,
     quoteBalance,
     quoteToken,
-    simulationErrors: productContext.position.simulationCommon?.errors,
-    simulationNotices: productContext.position.simulationCommon?.notices,
-    simulationSuccesses: productContext.position.simulationCommon?.successes,
-    simulationWarnings: productContext.position.simulationCommon?.warnings,
+    simulationErrors: productContext.position.simulationCommon.errors,
+    simulationNotices: productContext.position.simulationCommon.notices,
+    simulationSuccesses: productContext.position.simulationCommon.successes,
+    simulationWarnings: productContext.position.simulationCommon.warnings,
     state: productContext.form.state,
     txError: txDetails?.txError,
     earnIsFormValid:
@@ -299,13 +299,34 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         earnPosition.price.lt(earnPosition.pool.lowestUtilizedPrice) &&
         !earnPosition.pool.lowestUtilizedPriceIndex.isZero()
 
+      const availableToWithdraw = getAjnaEarnWithdrawMax({
+        quoteTokenAmount: protocols.ajna.calculateAjnaMaxLiquidityWithdraw({
+          pool: earnPosition.pool,
+          poolCurrentLiquidity: getPoolLiquidity(earnPosition.pool),
+          position: earnPosition,
+          simulation: earnSimulation,
+        }),
+        digits: quotePrecision,
+      })
+
+      const afterAvailableToWithdraw = earnSimulation
+        ? getAjnaEarnWithdrawMax({
+            quoteTokenAmount: protocols.ajna.calculateAjnaMaxLiquidityWithdraw({
+              pool: earnSimulation.pool,
+              poolCurrentLiquidity: getPoolLiquidity(earnSimulation.pool),
+              position: earnSimulation,
+            }),
+            digits: quotePrecision,
+          })
+        : undefined
+
       return {
         notifications,
         validations,
         handlers: {
           txSuccessEarnHandler: () =>
             earnContext.form.updateState('uiDropdown', OmniSidebarEarnPanel.Adjust),
-          customReset: () => dispatch({ type: 'reset' }),
+          customReset: () => dispatch({ type: 'reset', price: earnPosition.price }),
         },
         filters,
         values: {
@@ -340,7 +361,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             },
           ],
           extraDropdownItems: [
-            ...(!earnPosition.collateralTokenAmount?.isZero()
+            ...(!earnPosition.collateralTokenAmount.isZero()
               ? [
                   {
                     label: t('system.claim-collateral'),
@@ -355,24 +376,14 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
                         OmniSidebarEarnPanel.ClaimCollateral,
                       )
                       earnContext.form.updateState('action', OmniEarnFormAction.ClaimEarn)
-                      dispatch({ type: 'reset' })
+                      dispatch({ type: 'reset', price: earnPosition.price })
                     },
                   },
                 ]
               : []),
           ],
-          earnWithdrawMax:
-            productType === OmniProductType.Earn
-              ? getAjnaEarnWithdrawMax({
-                  quoteTokenAmount: protocols.ajna.calculateAjnaMaxLiquidityWithdraw({
-                    pool: earnPosition.pool,
-                    poolCurrentLiquidity: getPoolLiquidity(earnPosition.pool),
-                    position: earnPosition,
-                    simulation: earnSimulation,
-                  }),
-                  digits: quotePrecision,
-                })
-              : zero,
+          earnWithdrawMax: availableToWithdraw,
+          earnAfterWithdrawMax: afterAvailableToWithdraw,
         },
         elements: {
           faq: faqEarn,
@@ -394,21 +405,14 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           overviewFooter: (
             <AjnaEarnDetailsSectionFooter
               collateralToken={collateralToken}
-              depositAmount={earnContext.form.state.depositAmount}
               isOpening={isOpening}
               isOracless={isOracless}
               isSimulationLoading={productContext.position.isSimulationLoading}
               position={earnPosition}
               quotePrice={quotePrice}
               quoteToken={quoteToken}
-              simulation={earnSimulation}
-              withdrawAmount={earnContext.form.state.withdrawAmount}
-              availableToWithdraw={protocols.ajna.calculateAjnaMaxLiquidityWithdraw({
-                pool: earnPosition.pool,
-                poolCurrentLiquidity: getPoolLiquidity(earnPosition.pool),
-                position: earnPosition,
-                simulation: earnSimulation,
-              })}
+              availableToWithdraw={availableToWithdraw}
+              afterAvailableToWithdraw={afterAvailableToWithdraw}
               owner={owner}
             />
           ),
@@ -420,8 +424,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           extraEarnInput: (
             <AjnaEarnSlider
               isDisabled={
-                !earnContext.form.state.depositAmount ||
-                earnContext.form.state.depositAmount?.lte(0)
+                !earnContext.form.state.depositAmount || earnContext.form.state.depositAmount.lte(0)
               }
               nestedManualInput={
                 !(isOracless && earnPosition.pool.lowestUtilizedPriceIndex.isZero())

@@ -14,10 +14,10 @@ import { useTranslation } from 'react-i18next'
 import { arrow_decrease, arrow_increase } from 'theme/icons'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
-import type { PortfolioAsset } from 'lambdas/src/shared/domain-types'
+import type { PortfolioWalletAsset } from 'lambdas/lib/shared/src/domain-types'
 
 interface PortfolioWalletAssetsProps {
-  assets?: PortfolioAsset[]
+  assets?: PortfolioWalletAsset[]
 }
 
 export const PortfolioWalletAssets = ({ assets = [] }: PortfolioWalletAssetsProps) => {

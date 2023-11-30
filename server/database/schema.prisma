@@ -35,8 +35,9 @@ model Vault {
   owner_address String
   chain_id      Int?
   protocol      String
+  token_pair      String
 
-  @@unique([vault_id, chain_id, protocol], name: "vault_vault_id_chain_id_unique_constraint")
+  @@unique([vault_id, chain_id, protocol, token_pair], name: "vault_vault_id_chain_id_protocol_token_pair_unique_constraint")
   @@map("vault")
 }
 

@@ -15,6 +15,7 @@ yalc.lock
 .sentryclirc
 *.zip
 artifacts
+*.tsbuildinfo
 
 public/precache.*.*.js
 public/sw.js

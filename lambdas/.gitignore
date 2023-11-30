@@ -1,0 +1,21 @@
+node_modules
+.env
+.env_bak
+coverage
+coverage.json
+yarn-error.log
+tenderly.yaml
+.DS_Store
+
+#Hardhat files
+packages/abis/system/*
+cache
+artifacts
+typechain
+
+# Build outputs
+*.d.ts
+*.d.ts.map
+*.tsbuildinfo
+.parcel-cache
+dist

@@ -1,4 +1,4 @@
-import type { Vault, VaultType as VaultTypeDB } from '@prisma/client'
+import type { Vault } from '@prisma/client'
 import type BigNumber from 'bignumber.js'
 import type { Context } from 'blockchain/network.types'
 import type { NetworkIds } from 'blockchain/networks'
@@ -43,85 +43,19 @@ export function checkVaultTypeUsingApi$(
   )
 }
 
-interface CheckMultipleVaultsResponse {
-  [key: string]: VaultTypeDB
-}
-
-export function checkMultipleVaultsFromApi$(
-  vaults: string[],
-  protocol: string,
-  chainId: NetworkIds,
-): Observable<CheckMultipleVaultsResponse> {
-  return ajax({
-    url: `/api/vaults/${chainId}/${protocol.toLowerCase()}?${vaults
-      .map((vault) => `id=${vault}&`)
-      .join('')}`,
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).pipe(
-    map((resp) => {
-      const { vaults } = resp.response as { vaults: Vault[] }
-      const vaultTypeMapping: CheckMultipleVaultsResponse = {}
-
-      vaults.forEach(({ vault_id, type }) => {
-        vaultTypeMapping[vault_id] = type
-      })
-
-      return vaultTypeMapping
-    }),
-    catchError((err) => {
-      if (err.xhr.status === 404) {
-        return of({})
-      }
-      throw err
-    }),
-  )
-}
-
 export interface ApiVault {
   vaultId: number
   chainId: NetworkIds
   protocol: LendingProtocol
   ownerAddress: string
   type: VaultType
+  tokenPair: string
 }
 
 export interface ApiVaultsParams {
   vaultIds: number[]
   chainId: NetworkIds
   protocol: LendingProtocol
-}
-
-export async function getApiVaults({
-  vaultIds,
-  protocol,
-  chainId,
-}: ApiVaultsParams): Promise<ApiVault[]> {
-  if (vaultIds.length === 0) {
-    return []
-  }
-  const vaultsQuery = vaultIds.map((id) => `id=${id}`).join('&')
-  try {
-    const response = await fetch(`/api/vaults/${chainId}/${protocol}?${vaultsQuery}`)
-    if (response.status === 404) {
-      return []
-    }
-    const vaults = await response.json()
-    return vaults.vaults.map((vault: Vault) => {
-      return {
-        vaultId: vault.vault_id,
-        chainId: vault.chain_id,
-        protocol: vault.protocol,
-        ownerAddress: vault.owner_address,
-        type: vault.type,
-      }
-    })
-  } catch (error) {
-    console.warn(`Can't obtain vaults from API`, error)
-    return []
-  }
 }
 
 export function useApiVaults({ vaultIds, protocol, chainId }: ApiVaultsParams): ApiVault[] {
@@ -145,9 +79,35 @@ export function useApiVaults({ vaultIds, protocol, chainId }: ApiVaultsParams): 
         protocol: vault.protocol as LendingProtocol,
         ownerAddress: vault.owner_address,
         type: vault.type as VaultType,
+        tokenPair: vault.token_pair,
       }
     }) ?? []
   )
+}
+
+export interface ApiVaultParams {
+  vaultId: number
+  chainId: NetworkIds
+  protocol: LendingProtocol
+  tokenPair: string
+}
+
+export async function getApiVault({
+  vaultId,
+  protocol,
+  chainId,
+  tokenPair,
+}: ApiVaultParams): Promise<ApiVault | undefined> {
+  try {
+    const data = await fetch(`/api/vault/${vaultId}/${chainId}/${protocol}/${tokenPair}`)
+
+    const vault: ApiVault = await data.json()
+
+    return vault.vaultId ? vault : undefined
+  } catch (e) {
+    console.error(`Can't obtain vault from API`, e)
+    return undefined
+  }
 }
 
 export function getVaultFromApi$(
@@ -171,14 +131,15 @@ export function getVaultFromApi$(
     },
   }).pipe(
     map((resp) => {
-      const { vaultId, type, chainId, ownerAddress, protocol } = resp.response as {
+      const { vaultId, type, chainId, ownerAddress, protocol, tokenPair } = resp.response as {
         vaultId: number
         type: VaultType
         chainId: NetworkIds
         protocol: LendingProtocol
         ownerAddress: string
+        tokenPair: string
       }
-      return { vaultId, type, chainId, ownerAddress, protocol }
+      return { vaultId, type, chainId, ownerAddress, protocol, tokenPair }
     }),
   )
 }
@@ -189,6 +150,7 @@ export function saveVaultUsingApi$(
   vaultType: VaultType,
   chainId: number,
   protocol: string,
+  tokenPair?: string,
 ): Observable<void> {
   return ajax({
     url: `/api/vault`,
@@ -202,6 +164,7 @@ export function saveVaultUsingApi$(
       type: vaultType,
       chainId,
       protocol: protocol.toLowerCase(),
+      tokenPair: (tokenPair || '').toUpperCase(),
     },
   }).pipe(
     map(() => {

@@ -4,10 +4,9 @@ import { trackingEvents } from 'analytics/trackingEvents'
 import { BigNumber } from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { dogIlk } from 'blockchain/calls/dog'
-import { tokenAllowance, tokenBalance, tokenBalanceFromAddress } from 'blockchain/calls/erc20'
+import { tokenAllowance, tokenBalanceFromAddress } from 'blockchain/calls/erc20'
 import { jugIlk } from 'blockchain/calls/jug'
 import { observe } from 'blockchain/calls/observe'
-import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import { proxyActionsAdapterResolver$ } from 'blockchain/calls/proxyActions/proxyActionsAdapterResolver'
 import { spotIlk } from 'blockchain/calls/spot'
 import { vatIlk } from 'blockchain/calls/vat'
@@ -17,21 +16,14 @@ import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } fro
 import { every10Seconds$ } from 'blockchain/network.constants'
 import type { NetworkNames } from 'blockchain/networks'
 import { NetworkIds } from 'blockchain/networks'
-import { createOraclePriceData$, createTokenPriceInUSD$ } from 'blockchain/prices'
+import { createTokenPriceInUSD$ } from 'blockchain/prices'
 import { tokenPrices$ } from 'blockchain/prices.constants'
-import {
-  createAccountBalance$,
-  createAllowance$,
-  createBalance$,
-  createBalanceFromAddress$,
-  createCollateralTokens$,
-} from 'blockchain/tokens'
+import { createAllowance$, createBalanceFromAddress$ } from 'blockchain/tokens'
 import {
   getPositionIdFromDpmProxy$,
   getUserDpmProxies$,
   getUserDpmProxy$,
 } from 'blockchain/userDpmProxies'
-import { createVaultsFromIds$, decorateVaultsWithValue$ } from 'blockchain/vaults'
 import type { AccountContext } from 'components/context/AccountContextProvider'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
@@ -65,10 +57,8 @@ import {
 } from 'features/earn/makerOracleTokenPrices'
 import type { ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { createExchangeQuote$ } from 'features/exchange/exchange'
-import { followedVaults$ } from 'features/follow/api'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
-import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
@@ -94,8 +84,6 @@ import {
 import { getGasEstimation$ } from 'features/stateMachines/proxy/pipelines'
 import { transactionContextService } from 'features/stateMachines/transaction'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
-import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
-import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
 import { bigNumberTostring } from 'helpers/bigNumberToString'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation } from 'helpers/form'
@@ -119,7 +107,6 @@ import {
   switchMap,
 } from 'rxjs/operators'
 
-import { refreshInterval } from './constants'
 import type { MainContext } from './MainContext.types'
 import type { TxHelpers } from './TxHelpers'
 import type { ProtocolsServices } from './types'
@@ -135,7 +122,6 @@ export function setupProductContext(
     gasPrice$,
     once$,
     onEveryBlock$,
-    oracleContext$,
     txHelpers$,
   }: MainContext,
   {
@@ -145,7 +131,6 @@ export function setupProductContext(
     ilkToToken$,
     oraclePriceData$,
     proxyAddress$,
-    standardCdps$,
     userSettings$,
     vault$,
   }: AccountContext,
@@ -223,31 +208,7 @@ export function setupProductContext(
   const jugIlksLean$ = observe(once$, chainContext$, jugIlk)
   const dogIlksLean$ = observe(once$, chainContext$, dogIlk)
 
-  const pipZzzLean$ = observe(once$, chainContext$, pipZzz)
-  const pipHopLean$ = observe(once$, context$, pipHop)
-  const pipPeekLean$ = observe(once$, oracleContext$, pipPeek)
-  const pipPeepLean$ = observe(once$, oracleContext$, pipPeep)
-
-  const oraclePriceDataLean$ = memoize(
-    curry(createOraclePriceData$)(
-      chainContext$,
-      pipPeekLean$,
-      pipPeepLean$,
-      pipZzzLean$,
-      pipHopLean$,
-    ),
-    ({ token, requestedData }) => {
-      return `${token}-${requestedData.join(',')}`
-    },
-  )
-
-  const tokenBalanceLean$ = observe(once$, context$, tokenBalance)
   const tokenBalanceFromAddress$ = observe(onEveryBlock$, context$, tokenBalanceFromAddress)
-
-  const balanceLean$ = memoize(
-    curry(createBalance$)(once$, chainContext$, tokenBalanceLean$),
-    (token, address) => `${token}_${address}`,
-  )
 
   const balanceFromAddress$ = memoize(
     curry(createBalanceFromAddress$)(onEveryBlock$, chainContext$, tokenBalanceFromAddress$),
@@ -369,16 +330,7 @@ export function setupProductContext(
 
   const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(chainContext$)
 
-  const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
-
-  const accountBalances$ = curry(createAccountBalance$)(
-    balanceLean$,
-    collateralTokens$,
-    oraclePriceDataLean$,
-  )
-
   const ilkDataList$ = createIlkDataList$(ilkDataLean$, ilksSupportedOnNetwork$)
-  const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
   const priceInfo$ = curry(createPriceInfo$)(oraclePriceData$)
 
@@ -626,26 +578,6 @@ export function setupProductContext(
     ),
   )
 
-  const vaultsFromId$ = memoize(
-    curry(createVaultsFromIds$)(onEveryBlock$, followedVaults$, vault$, chainContext$, [
-      standardCdps$,
-    ]),
-  )
-
-  const followedList$ = memoize(
-    curry(createMakerPositionsList$)(
-      context$,
-      ilksWithBalance$,
-      memoize(
-        curry(vaultsWithHistory$)(
-          chainContext$,
-          curry(decorateVaultsWithValue$)(vaultsFromId$, exchangeQuote$, userSettings$),
-          refreshInterval,
-        ),
-      ),
-    ),
-  )
-
   const protocols: ProtocolsServices = {
     [LendingProtocol.AaveV2]: aaveV2Services,
     [LendingProtocol.AaveV3]: {
@@ -757,7 +689,6 @@ export function setupProductContext(
     dsr$,
     dsrDeposit$,
     exchangeQuote$,
-    followedList$,
     gasEstimation$,
     generalManageVault$,
     identifiedTokens$,

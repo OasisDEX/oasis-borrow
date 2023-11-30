@@ -4,8 +4,8 @@
     "baseUrl": ".",
     "outDir": "build/dist",
     "module": "esnext",
-    "target": "es2017",
-    "lib": ["dom", "es2018", "esnext"],
+    "target": "ES2020",
+    "lib": ["dom", "esnext"],
     "sourceMap": true,
     "allowJs": true,
     "moduleResolution": "node",
@@ -31,7 +31,7 @@
     "runtimeConfig.js",
     "next-i18next.config.js",
     "middleware.ts",
-    "lambdas/src/shared"
+    "lambdas/lib/shared"
   ],
   "exclude": ["node_modules", "types", "coverage", "infra", "lambdas"],
   "ts-node": {

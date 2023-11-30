@@ -1,0 +1,23 @@
+{
+  "name": "portfolio-migrations",
+  "version": "0.0.1",
+  "scripts": {
+    "tsc": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "build": "tsc -b -v",
+    "docker:build": "tar chzf files.tar.gz Dockerfile node_modules dist && docker build --platform linux/amd64 -t portfolio-migrations - < files.tar.gz && rm files.tar.gz",
+    "docker:run": "docker run --rm -p 9000:8080 portfolio-migrations",
+    "dev": "npm run tsc && npm run docker:build && npm run docker:run",
+    "invoke": "curl http://localhost:9000/2015-03-31/functions/function/invocations -d '{\"queryStringParameters\": {\"address\": \"0x10649c79428d718621821Cf6299e91920284743F\"}}' | jq",
+    "aws:deploy": "deploy zip file"
+  },
+  "author": "Piter",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@oasisdex/addresses": "^0.1.14",
+    "shared": "file:../shared/dist",
+    "viem": "^1.19.3",
+    "zod": "^3.22.4"
+  }
+}
