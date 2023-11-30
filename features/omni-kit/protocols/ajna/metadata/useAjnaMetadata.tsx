@@ -125,12 +125,15 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     simulationWarnings: productContext.position.simulationCommon.warnings,
     state: productContext.form.state,
     txError: txDetails?.txError,
-    earnIsFormValid: getAjnaEarnIsFormValid({
-      price,
-      position: productContext.position.currentPosition.position as AjnaEarnPosition,
-      currentStep,
-      state: (productContext as ProductContextWithEarn).form.state,
-    }),
+    earnIsFormValid:
+      productType === OmniProductType.Earn
+        ? getAjnaEarnIsFormValid({
+            price,
+            position: productContext.position.currentPosition.position as AjnaEarnPosition,
+            currentStep,
+            state: (productContext as ProductContextWithEarn).form.state,
+          })
+        : false,
   })
 
   const notifications = getAjnaNotifications({
