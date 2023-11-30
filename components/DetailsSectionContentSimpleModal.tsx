@@ -22,11 +22,7 @@ const DetailsSectionContentSimpleModalContent: FC<
         {description}
       </Text>
     )}
-    {value && (
-      <Card variant="vaultDetailsCardModal">
-        {value}
-      </Card>
-    )}
+    {value && <Card variant="vaultDetailsCardModal">{value}</Card>}
     <>{children}</>
   </Grid>
 )

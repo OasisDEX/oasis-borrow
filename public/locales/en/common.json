@@ -2849,7 +2849,8 @@
             "message": "Adjust your position to ensure the Threshold price stays below the LUP in order to avoid being eligible for liquidation"
           },
           "read-more": "Read more about Ajna Liquidations"
-        },
+        }
+      },
       "borrow": {
         "common": {
           "form": {

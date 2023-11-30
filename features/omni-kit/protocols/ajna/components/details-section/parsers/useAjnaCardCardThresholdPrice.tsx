@@ -6,6 +6,7 @@ import type {
 } from 'features/omni-kit/components/details-section'
 import { AjnaCardDataThresholdPriceModal } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import React from 'react'
 
 interface OmniCardDataLtvParams {
   afterThresholdPrice?: BigNumber

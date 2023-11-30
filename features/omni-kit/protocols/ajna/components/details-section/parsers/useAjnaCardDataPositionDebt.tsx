@@ -20,7 +20,7 @@ export function useAjnaCardDataPositionDebt({
   return {
     modal: (
       <DetailsSectionContentSimpleModal
-      title={t('omni-kit.content-card.position-debt.title')}
+        title={t('omni-kit.content-card.position-debt.title')}
         description={t('ajna.content-card.position-debt.modal-description')}
         value={`${formatCryptoBalance(debtAmount)} ${quoteToken}`}
         theme={ajnaExtensionTheme}
