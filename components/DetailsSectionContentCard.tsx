@@ -122,9 +122,8 @@ export function DetailsSectionContentCardChangePill({
               <>
                 {valueArray.length > 2 && `${valueArray[0]} `}
                 <DetailsSectionContentCardTooltip value={tooltip}>
-                  {' '}
-                  {valueArray.length > 2 ? valueArray[1] : valueArray[0]}{' '}
-                </DetailsSectionContentCardTooltip>
+                  {valueArray.length > 2 ? valueArray[1] : valueArray[0]}
+                </DetailsSectionContentCardTooltip>{' '}
                 {valueArray.slice(valueArray.length > 2 ? 2 : 1, valueArray.length).join(' ')}
               </>
             ) : (
@@ -285,9 +284,8 @@ export function DetailsSectionContentCard({
             <>
               {footnoteArray.length > 1 && `${footnoteArray[0]} `}
               <DetailsSectionContentCardTooltip value={footnoteTooltip}>
-                {' '}
-                {footnoteArray.length > 1 ? footnoteArray[1] : footnoteArray[0]}{' '}
-              </DetailsSectionContentCardTooltip>
+                {footnoteArray.length > 1 ? footnoteArray[1] : footnoteArray[0]}
+              </DetailsSectionContentCardTooltip>{' '}
               {footnoteArray.slice(2, footnoteArray.length).join(' ')}
             </>
           ) : (

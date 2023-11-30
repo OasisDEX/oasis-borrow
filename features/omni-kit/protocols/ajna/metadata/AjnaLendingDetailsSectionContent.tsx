@@ -2,16 +2,18 @@ import type { AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import {
+  OmniContentCard,
   OmniContentCardCollateralLocked,
   OmniContentCardPositionDebt,
+  useOmniCardDataLiquidationPrice,
 } from 'features/omni-kit/components/details-section'
 import {
-  AjnaContentCardLiquidationPrice,
   AjnaContentCardLoanToValue,
   AjnaContentCardNetBorrowCost,
   AjnaContentCardNetValue,
   AjnaContentCardThresholdPrice,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
+import { useAjnaCardDataLiquidationPrice } from 'features/omni-kit/protocols/ajna/components/details-section/'
 import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'
@@ -62,28 +64,39 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   const liquidationPrice = isShort
     ? normalizeValue(one.div(position.liquidationPrice))
     : position.liquidationPrice
-  const belowCurrentPrice = one.minus(
+  const afterLiquidationPrice =
+    simulation?.liquidationPrice &&
+    (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
+  const ratioToCurrentPrice = one.minus(
     isShort
       ? normalizeValue(one.div(position.liquidationToMarketPrice))
       : position.liquidationToMarketPrice,
   )
 
-  const afterLiquidationPrice =
-    simulation?.liquidationPrice &&
-    (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
+  const commonContentCardData = {
+    changeVariant,
+    isLoading: isSimulationLoading,
+  }
+
+  const liquidationPriceContentCardCommonData = useOmniCardDataLiquidationPrice({
+    afterLiquidationPrice,
+    liquidationPrice,
+    ratioToCurrentPrice,
+    unit: priceFormat,
+  })
+  const liquidationPriceContentCardAjnaData = useAjnaCardDataLiquidationPrice({
+    afterLiquidationPrice,
+    isOracless,
+    liquidationPrice,
+    priceFormat,
+  })
+
   return (
     <>
-      <AjnaContentCardLiquidationPrice
-        isLoading={isSimulationLoading}
-        priceFormat={priceFormat}
-        liquidationPrice={liquidationPrice}
-        afterLiquidationPrice={afterLiquidationPrice}
-        withTooltips={isOracless}
-        changeVariant={changeVariant}
-        {...(!isOracless && {
-          belowCurrentPrice,
-        })}
-        modalTheme={ajnaExtensionTheme}
+      <OmniContentCard
+        {...commonContentCardData}
+        {...liquidationPriceContentCardCommonData}
+        {...liquidationPriceContentCardAjnaData}
       />
       {isOracless ? (
         <AjnaContentCardThresholdPrice

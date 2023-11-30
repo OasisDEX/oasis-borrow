@@ -2643,6 +2643,11 @@
     },
     "content-card": {
       "after": "after",
+      "liquidation-price": {
+        "title": "Liquidation Price",
+        "footer-below": "below current price",
+        "footer-above": "above current price"
+      },
       "ltv": {
         "title": "Loan to Value",
         "footer": "Max LTV:"
