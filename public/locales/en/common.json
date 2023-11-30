@@ -2706,6 +2706,12 @@
         "modal-formula": "debt amount / collateral amount",
         "modal-subtitle": "To avoid liquidation, always ensure your TP < LUP",
         "modal-lup": "Lowest Utilization Price"
+      },
+      "collateral-deposited": {
+        "modal-description": "This is the amount of tokens you have as collateral for your debt."
+      },
+      "position-debt": {
+        "modal-description": "This is the total number of tokens you have borrowed plus any accrued interests."
       }
     },
     "product-page": {

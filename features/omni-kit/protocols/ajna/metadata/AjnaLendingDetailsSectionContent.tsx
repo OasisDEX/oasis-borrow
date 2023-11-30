@@ -3,8 +3,6 @@ import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import {
   OmniContentCard,
-  OmniContentCardCollateralLocked,
-  OmniContentCardPositionDebt,
   useOmniCardDataLiquidationPrice,
   useOmniCardDataLtv,
   useOmniCardDataTokensValue,
@@ -13,7 +11,9 @@ import {
   AjnaContentCardNetBorrowCost,
   AjnaContentCardNetValue,
   useAjnaCardCardThresholdPrice,
+  useAjnaCardDataCollateralDeposited,
   useAjnaCardDataLoanToValue,
+  useAjnaCardDataPositionDebt,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { useAjnaCardDataLiquidationPrice } from 'features/omni-kit/protocols/ajna/components/details-section/'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -23,7 +23,6 @@ import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 
 interface AjnaDetailsSectionContentProps {
-  afterPositionDebt?: BigNumber
   changeVariant: 'positive' | 'negative'
   collateralPrice: BigNumber
   collateralToken: string
@@ -40,11 +39,9 @@ interface AjnaDetailsSectionContentProps {
   quoteToken: string
   shouldShowDynamicLtv: boolean
   simulation?: AjnaPosition
-  thresholdPrice: BigNumber
 }
 
 export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps> = ({
-  afterPositionDebt,
   changeVariant,
   collateralPrice,
   collateralToken,
@@ -120,6 +117,10 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     translationCardName: 'collateral-deposited',
     ...(!isOracless && { tokensPrice: collateralPrice }),
   })
+  const collateralDepositedContentCardAjnaData = useAjnaCardDataCollateralDeposited({
+    collateralAmount: position.collateralAmount,
+    collateralToken,
+  })
 
   const positionDebtContentCardCommonData = useOmniCardDataTokensValue({
     afterTokensAmount: simulation?.debtAmount,
@@ -127,6 +128,10 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     tokensSymbol: quoteToken,
     translationCardName: 'position-debt',
     ...(!isOracless && { tokensPrice: quotePrice }),
+  })
+  const collateralPositionDebtAjnaData = useAjnaCardDataPositionDebt({
+    debtAmount: position.debtAmount,
+    quoteToken,
   })
 
   return (
@@ -151,29 +156,12 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
           <OmniContentCard
             {...commonContentCardData}
             {...collateralDepositedContentCardCommonData}
+            {...collateralDepositedContentCardAjnaData}
           />
-          <OmniContentCard {...commonContentCardData} {...positionDebtContentCardCommonData} />
-          <OmniContentCardCollateralLocked
-            isLoading={isSimulationLoading}
-            collateralToken={collateralToken}
-            collateralLocked={position.collateralAmount}
-            afterCollateralLocked={simulation?.collateralAmount}
-            changeVariant={changeVariant}
-            {...(!isOracless && {
-              collateralLockedUSD: position.collateralAmount.times(collateralPrice),
-            })}
-            modalTheme={ajnaExtensionTheme}
-          />
-          <OmniContentCardPositionDebt
-            isLoading={isSimulationLoading}
-            quoteToken={quoteToken}
-            positionDebt={position.debtAmount}
-            afterPositionDebt={afterPositionDebt}
-            changeVariant={changeVariant}
-            {...(!isOracless && {
-              positionDebtUSD: position.debtAmount.times(quotePrice),
-            })}
-            modalTheme={ajnaExtensionTheme}
+          <OmniContentCard
+            {...commonContentCardData}
+            {...positionDebtContentCardCommonData}
+            {...collateralPositionDebtAjnaData}
           />
         </>
       )}
