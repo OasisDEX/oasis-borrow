@@ -6,12 +6,12 @@ import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 import { Card, Heading, Text } from 'theme-ui'
 
-interface AjnaCardDataLtvParams {
+interface AjnaCardDataLtvProps {
   ltv: BigNumber
   maxLtv?: BigNumber
 }
 
-export function AjnaCardDataLtvModal({ ltv, maxLtv }: AjnaCardDataLtvParams) {
+export function AjnaCardDataLtvModal({ ltv, maxLtv }: AjnaCardDataLtvProps) {
   const { t } = useTranslation()
 
   return (

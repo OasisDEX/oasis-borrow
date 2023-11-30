@@ -243,7 +243,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           ) : undefined,
           overviewContent: (
             <AjnaLendingDetailsSectionContent
-              afterPositionDebt={afterPositionDebt}
               changeVariant={changeVariant}
               collateralPrice={collateralPrice}
               collateralToken={collateralToken}
@@ -260,7 +259,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               quoteToken={quoteToken}
               shouldShowDynamicLtv={shouldShowDynamicLtv}
               simulation={simulation}
-              thresholdPrice={position.thresholdPrice}
             />
           ),
           overviewFooter: (

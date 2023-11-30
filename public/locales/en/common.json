@@ -2657,6 +2657,13 @@
       },
       "position-debt": {
         "title": "Position Debt"
+      },
+      "net-value": {
+        "title": "Net Value",
+        "footnote": "Profit and Loss:"
+      },
+      "buying-power": {
+        "title": "Buying Power"
       }
     },
     "form": {
@@ -2712,6 +2719,19 @@
       },
       "position-debt": {
         "modal-description": "This is the total number of tokens you have borrowed plus any accrued interests."
+      },
+      "net-value": {
+        "modal-title": "Net Value & Profit and Loss",
+        "modal-description": "The current net value is calculated based on the market price of <strong>${{collateralPrice}}</strong>",
+        "modal-table-col-1": "Collateral Value",
+        "modal-table-col-2": "$ Value",
+        "modal-table-row-1": "Net Value",
+        "modal-table-row-2": "Depositse",
+        "modal-table-row-3": "Withdrawals",
+        "modal-table-row-4": "Gas Fees Spent",
+        "modal-value": "Unrealised Profit & Loss",
+        "modal-footnote-1": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative deposits",
+        "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction."
       }
     },
     "product-page": {
@@ -2830,45 +2850,8 @@
           },
           "read-more": "Read more about Ajna Liquidations"
         },
-        "net-value-pnl-modal": {
-          "headline": "Net Value & P&L",
-          "net-value-pnl-based-on-price": "The current net value is calculated based on the market price of",
-          "collateral-value": "Collateral Value",
-          "usd-value": "$ Value",
-          "net-value": "Net Value",
-          "debt": "Debt",
-          "total-collateral": "Total Col",
-          "deposits": "Deposits",
-          "withdrawals": "Withdrawals",
-          "gas-fees-spent": "Gas Fees Spent",
-          "unrealised-pnl": "Unrealised Profit & Loss",
-          "formula": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative  deposits",
-          "note": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction."
-        }
-      },
       "borrow": {
         "common": {
-          "overview": {
-            "above-current-price": "{{priceRatio}} above current price",
-            "below-current-price": "{{priceRatio}} below current price",
-            "collateral-locked": "Collateral locked",
-            "collateral-locked-modal-desc": "This is the amount of tokens you have as collateral for your debt.",
-            "dynamic-max-ltv": "Dynamic Max LTV",
-            "dynamic-max-ltv-modal-desc": "Ajna Max LTV changes with lenders and borrowers activities. Pay attention to not go over the max and risk being liquidated.",
-            "liquidation-price": "Liquidation Price",
-            "liquidation-price-modal-desc": "The liquidation price represent the price at which it is expected that liquidators successfully action your collateral to repay your debt. Monitor this value compared to market price.",
-            "loan-to-value": "Loan to value",
-            "loan-to-value-modal-desc": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
-            "threshold-price": "Threshold Price",
-            "threshold-price-modal-desc-part-1": "By taking the debt token amount and dividing it by the collateral token amount, the loan’s threshold price, TP, can be calculated.",
-            "threshold-price-modal-desc-part-2": "Your loan will be eligible to be kicked into the liquidation queue if the pool's Lowest Utilization Price (LUP) is less than your Threshold price.",
-            "threshold-price-modal-desc-part-3": "To avoid liquidation, always ensure your TP < LUP",
-            "threshold-price-modal-desc-formula": "debt amount / collateral amount",
-            "threshold-price-modal-desc-explanation-tp": "Threshold Price =",
-            "threshold-price-modal-desc-explanation-lup": "Lowest Utilization Price =",
-            "position-debt": "Position debt",
-            "position-debt-modal-desc": "This is the total number of tokens you have borrowed plus any accrued interests."
-          },
           "form": {
             "origination-fee": "{{quoteToken}} Origination Fee"
           },
@@ -2966,13 +2949,6 @@
       },
       "multiply": {
         "common": {
-          "overview": {
-            "net-borrow-cost": "Borrow rate",
-            "net-borrow-cost-modal-desc": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
-            "net-value": "Net Value",
-            "pnl": "P&L",
-            "net-value-pnl": "Net Value & P&L"
-          },
           "footer": {
             "total-exposure": "Total {{token}} Exposure",
             "position-debt": "Position debt",

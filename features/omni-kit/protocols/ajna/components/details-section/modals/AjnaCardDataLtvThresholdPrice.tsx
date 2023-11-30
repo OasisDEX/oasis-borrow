@@ -6,7 +6,7 @@ import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 import { Card, Text } from 'theme-ui'
 
-interface AjnaCardDataThresholdPriceParams {
+interface AjnaCardDataThresholdPriceProps {
   collateralAmount: BigNumber
   debtAmount: BigNumber
   lup?: BigNumber
@@ -18,7 +18,7 @@ export function AjnaCardDataThresholdPriceModal({
   debtAmount,
   lup,
   thresholdPrice,
-}: AjnaCardDataThresholdPriceParams) {
+}: AjnaCardDataThresholdPriceProps) {
   const { t } = useTranslation()
 
   return (

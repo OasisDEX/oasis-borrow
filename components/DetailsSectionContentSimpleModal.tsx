@@ -4,7 +4,7 @@ import type { Theme } from 'theme-ui'
 import { Card, Grid, Heading, Text, ThemeUIProvider } from 'theme-ui'
 
 export interface DetailsSectionContentSimpleModalProps {
-  description?: string
+  description?: ReactNode
   theme?: Theme
   title: string
   value?: ReactNode

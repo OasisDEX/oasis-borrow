@@ -3,16 +3,17 @@ import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import {
   OmniContentCard,
+  useOmniCardDataBuyingPower,
   useOmniCardDataLiquidationPrice,
   useOmniCardDataLtv,
+  useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import {
-  AjnaContentCardNetBorrowCost,
-  AjnaContentCardNetValue,
   useAjnaCardCardThresholdPrice,
   useAjnaCardDataCollateralDeposited,
   useAjnaCardDataLoanToValue,
+  useAjnaCardDataNetValue,
   useAjnaCardDataPositionDebt,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { useAjnaCardDataLiquidationPrice } from 'features/omni-kit/protocols/ajna/components/details-section/'
@@ -20,7 +21,6 @@ import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'
 import React from 'react'
-import { ajnaExtensionTheme } from 'theme'
 
 interface AjnaDetailsSectionContentProps {
   changeVariant: 'positive' | 'negative'
@@ -50,7 +50,6 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   isProxyWithManyPositions,
   isShort,
   isSimulationLoading,
-  owner,
   position,
   priceFormat,
   productType,
@@ -70,6 +69,13 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
       ? normalizeValue(one.div(position.liquidationToMarketPrice))
       : position.liquidationToMarketPrice,
   )
+
+  const netValue = position.collateralAmount
+    .times(collateralPrice)
+    .minus(position.debtAmount.times(quotePrice))
+  const afterNetValue = simulation?.collateralAmount
+    .times(collateralPrice)
+    .minus(simulation?.debtAmount.times(quotePrice))
 
   const commonContentCardData = {
     changeVariant,
@@ -134,6 +140,26 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     quoteToken,
   })
 
+  const netValueContentCardCommonData = useOmniCardDataNetValue({
+    afterNetValue,
+    netValue,
+    ...(!isOpening && !isProxyWithManyPositions && { pnl: position.pnl.withoutFees }),
+  })
+  const netValueContentCardAjnaData = useAjnaCardDataNetValue({
+    collateralPrice,
+    collateralToken,
+    cumulatives: position.pnl.cumulatives,
+    netValue,
+    ...(!isOpening && !isProxyWithManyPositions && { pnl: position.pnl.withoutFees }),
+  })
+
+  const buyingPowerContentCardCommonData = useOmniCardDataBuyingPower({
+    buyingPower: position.buyingPower,
+    collateralPrice,
+    collateralToken,
+    afterBuyingPower: simulation?.buyingPower,
+  })
+
   return (
     <>
       <OmniContentCard
@@ -167,32 +193,12 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
       )}
       {productType === OmniProductType.Multiply && (
         <>
-          <AjnaContentCardNetBorrowCost
-            collateralToken={collateralToken}
-            quoteToken={quoteToken}
-            owner={owner}
-            netBorrowCost={position.pool.interestRate}
-            changeVariant={changeVariant}
-            modalTheme={ajnaExtensionTheme}
+          <OmniContentCard
+            {...commonContentCardData}
+            {...netValueContentCardCommonData}
+            {...netValueContentCardAjnaData}
           />
-          <AjnaContentCardNetValue
-            isLoading={isSimulationLoading}
-            netValue={position.collateralAmount
-              .times(collateralPrice)
-              .minus(position.debtAmount.times(quotePrice))}
-            afterNetValue={simulation?.collateralAmount
-              .times(collateralPrice)
-              .minus(simulation.debtAmount.times(quotePrice))}
-            position={position}
-            collateralPrice={collateralPrice}
-            collateralToken={collateralToken}
-            // For now we need to hide P&L for proxies with many positions
-            // because subgraph doesn't support it yet
-            pnlNotAvailable={isProxyWithManyPositions}
-            showPnl={!isOpening}
-            changeVariant={changeVariant}
-            modalTheme={ajnaExtensionTheme}
-          />
+          <OmniContentCard {...commonContentCardData} {...buyingPowerContentCardCommonData} />
         </>
       )}
     </>
