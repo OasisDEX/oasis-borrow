@@ -9,7 +9,7 @@ import { Grid } from 'theme-ui'
 
 export function OmniOverviewController() {
   const {
-    environment: { productType },
+    environment: { productType, isOpening },
   } = useOmniGeneralContext()
   const { t } = useTranslation()
   const {
@@ -26,7 +26,7 @@ export function OmniOverviewController() {
         title={t('system.overview')}
         notifications={notifications}
         content={
-          productType === OmniProductType.Earn ? (
+          productType === OmniProductType.Earn && isOpening ? (
             overviewContent
           ) : (
             <DetailsSectionContentCardWrapper>{overviewContent}</DetailsSectionContentCardWrapper>
