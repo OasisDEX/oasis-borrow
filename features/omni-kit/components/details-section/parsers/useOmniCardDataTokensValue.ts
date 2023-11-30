@@ -23,7 +23,7 @@ export function useOmniCardDataTokensValue({
     value: formatCryptoBalance(tokensAmount),
     unit: tokensSymbol,
     ...(afterTokensAmount && {
-      change: [formatCryptoBalance(afterTokensAmount), tokensSymbol],
+      change: ['', formatCryptoBalance(afterTokensAmount), tokensSymbol],
     }),
     ...(tokensAmount.gt(zero) &&
       tokensPrice && {

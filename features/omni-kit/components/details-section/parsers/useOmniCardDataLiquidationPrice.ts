@@ -21,12 +21,13 @@ export function useOmniCardDataLiquidationPrice({
     value: formatCryptoBalance(liquidationPrice),
     unit,
     ...(afterLiquidationPrice && {
-      change: [formatCryptoBalance(afterLiquidationPrice), unit],
+      change: ['', formatCryptoBalance(afterLiquidationPrice), unit],
     }),
     ...(ratioToCurrentPrice &&
       !liquidationPrice.isZero() &&
       !ratioToCurrentPrice.isZero() && {
         footnote: [
+          '',
           formatDecimalAsPercent(ratioToCurrentPrice),
           {
             key: `omni-kit.content-card.liquidation-price.footnote-${

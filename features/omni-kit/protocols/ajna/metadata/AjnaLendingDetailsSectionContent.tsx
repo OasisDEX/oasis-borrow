@@ -198,7 +198,10 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
             {...netValueContentCardCommonData}
             {...netValueContentCardAjnaData}
           />
-          <OmniContentCard {...commonContentCardData} {...buyingPowerContentCardCommonData} />
+          <OmniContentCard
+            {...commonContentCardData}
+            {...buyingPowerContentCardCommonData}
+          />
         </>
       )}
     </>

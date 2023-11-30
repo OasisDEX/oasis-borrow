@@ -30,7 +30,7 @@ export function useAjnaCardCardThresholdPrice({
     unit,
     value: formatCryptoBalance(thresholdPrice),
     ...(afterThresholdPrice && {
-      change: [formatCryptoBalance(afterThresholdPrice), unit],
+      change: ['', formatCryptoBalance(afterThresholdPrice), unit],
     }),
     ...(lup && {
       footnote: [

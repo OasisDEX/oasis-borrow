@@ -17,7 +17,7 @@ export function useOmniCardDataNetValue({
     title: { key: 'omni-kit.content-card.net-value.title' },
     value: `$${formatCryptoBalance(netValue)}`,
     ...(afterNetValue && {
-      change: [`${formatCryptoBalance(afterNetValue)}`],
+      change: [`$${formatCryptoBalance(afterNetValue)}`],
     }),
     ...(pnl && {
       footnote: [
