@@ -21,7 +21,7 @@ export async function getVault(req: NextApiRequest, res: NextApiResponse) {
   })
 
   if (vault === undefined || vault == null) {
-    return res.status(200).json({})
+    return res.status(404).send('Not Found')
   } else {
     return res.status(200).json({
       vaultId: vault.vault_id,
