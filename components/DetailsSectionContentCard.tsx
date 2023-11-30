@@ -3,6 +3,7 @@ import { StatefulTooltip } from 'components/Tooltip'
 import type { ModalProps } from 'helpers/modalHook'
 import { useModal } from 'helpers/modalHook'
 import type { TranslateStringType } from 'helpers/translateStringType'
+import { useTranslation } from 'next-i18next'
 import type { PropsWithChildren, ReactNode } from 'react'
 import React, { useState } from 'react'
 import { question_o } from 'theme/icons'
@@ -26,6 +27,7 @@ export interface DetailsSectionContentCardChangePillProps {
   tooltip?: ReactNode
   value?: string | string[]
   variant?: ChangeVariantType
+  withAfter?: boolean
 }
 
 interface DetailsSectionContentCardLinkProps {
@@ -86,7 +88,10 @@ export function DetailsSectionContentCardChangePill({
   tooltip,
   value,
   variant = 'positive',
+  withAfter,
 }: DetailsSectionContentCardChangePillProps) {
+  const { t } = useTranslation()
+
   const valueArray = Array.isArray(value) ? value : [value]
 
   return (
@@ -120,15 +125,16 @@ export function DetailsSectionContentCardChangePill({
           >
             {tooltip ? (
               <>
-                {valueArray.length > 2 && `${valueArray[0]} `}
+                {valueArray.length > 1 && `${valueArray[0]} `}
                 <DetailsSectionContentCardTooltip value={tooltip}>
-                  {valueArray.length > 2 ? valueArray[1] : valueArray[0]}
+                  {valueArray.length > 1 ? valueArray[1] : valueArray[0]}
                 </DetailsSectionContentCardTooltip>{' '}
-                {valueArray.slice(valueArray.length > 2 ? 2 : 1, valueArray.length).join(' ')}
+                {valueArray.slice(2, valueArray.length).join(' ')}
               </>
             ) : (
               <>{valueArray.join(' ')}</>
             )}
+            {withAfter && ` ${t('omni-kit.content-card.after')}`}
           </Text>
         </>
       )}

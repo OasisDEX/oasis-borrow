@@ -62,13 +62,6 @@ export function OmniContentCard({
 }: OmniContentCardProps) {
   const { t } = useTranslation()
 
-  const changeValue = change && change.map((item) => getContentCardValue(item, t))
-  if (changeValue && changeValue.length === 1) changeValue.push(t('omni-kit.content-card.after'))
-  else if (changeValue && changeValue.length > 1)
-    changeValue[changeValue.length - 1] = `${changeValue[changeValue.length - 1]} ${t(
-      'omni-kit.content-card.after',
-    )}`
-
   const contentCardSettings: ContentCardProps = {
     title: getContentCardValue(title, t),
     value: (
@@ -102,9 +95,10 @@ export function OmniContentCard({
     unit,
     change: {
       isLoading,
-      value: changeValue,
+      value: change && change.map((item) => getContentCardValue(item, t)),
       variant: changeVariant,
       tooltip: changeTooltip,
+      withAfter: true,
     },
     ...(footnote && {
       footnote: footnote.map((item) => getContentCardValue(item, t)),
