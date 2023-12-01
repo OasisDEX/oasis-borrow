@@ -179,12 +179,12 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       const lendingContext = productContext as ProductContextWithBorrow
       const shouldShowDynamicLtv = position.pool.lowestUtilizedPriceIndex.gt(zero)
 
-      const afterPositionDebt = (simulation || cachedSimulation)?.debtAmount.plus(originationFee)
-      const afterAvailableToBorrow = simulation
-        ? negativeToZero(simulation.debtAvailable().minus(originationFee))
-        : cachedSimulation
-        ? negativeToZero(cachedSimulation.debtAvailable().minus(originationFee))
-        : undefined
+      const resolvedSimulation = simulation || cachedSimulation
+      const afterPositionDebt = resolvedSimulation?.debtAmount.plus(originationFee)
+      const afterAvailableToBorrow =
+        resolvedSimulation &&
+        negativeToZero(resolvedSimulation.debtAvailable().minus(originationFee))
+
       const interestRate = position.pool.interestRate
 
       const changeVariant = getOmniBorrowishChangeVariant({ simulation, isOracless })
