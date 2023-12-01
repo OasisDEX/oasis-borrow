@@ -165,6 +165,10 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         | AjnaPosition
         | undefined
 
+      const cachedSimulation = productContext.position.cachedPosition?.simulation as
+        | AjnaPosition
+        | undefined
+
       const originationFee = getOriginationFee(position, simulation)
       const originationFeeFormatted = `${formatCryptoBalance(originationFee)} ${quoteToken}`
       const originationFeeFormattedUSD = `($${formatAmount(
@@ -175,9 +179,12 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       const lendingContext = productContext as ProductContextWithBorrow
       const shouldShowDynamicLtv = position.pool.lowestUtilizedPriceIndex.gt(zero)
 
-      const afterPositionDebt = simulation?.debtAmount.plus(originationFee)
-      const afterAvailableToBorrow =
-        simulation && negativeToZero(simulation.debtAvailable().minus(originationFee))
+      const afterPositionDebt = (simulation || cachedSimulation)?.debtAmount.plus(originationFee)
+      const afterAvailableToBorrow = simulation
+        ? negativeToZero(simulation.debtAvailable().minus(originationFee))
+        : cachedSimulation
+        ? negativeToZero(cachedSimulation.debtAvailable().minus(originationFee))
+        : undefined
       const interestRate = position.pool.interestRate
 
       const changeVariant = getOmniBorrowishChangeVariant({ simulation, isOracless })
