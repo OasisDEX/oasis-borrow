@@ -6,6 +6,8 @@ import type {
   SubgraphsResponses,
 } from 'features/subgraphLoader/types'
 import request from 'graphql-request'
+import type { ConfigResponseType } from 'helpers/config'
+import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
 import { useEffect, useState } from 'react'
 
 interface UseSubgraphLoader<R> {
@@ -25,8 +27,9 @@ export async function loadSubgraph<
   params: P = {} as P,
 ): Promise<SubgraphsResponses[S][keyof SubgraphsResponses[S]]> {
   if (global.window === undefined) {
+    const subgraphUrl = await getSubgraphUrl(subgraph, networkId)
     const response = await request(
-      subgraphsRecord[subgraph][networkId],
+      subgraphUrl,
       subgraphMethodsRecord[method as keyof typeof subgraphMethodsRecord],
       params as P,
     )
@@ -100,4 +103,20 @@ export function useSubgraphLoader<
   }, [subgraph, method, stringifiedParams, networkId])
 
   return state
+}
+
+/**
+ * Retrieves the URL of a subgraph based on the provided subgraph name and network ID.
+ * @param subgraph - The name of the subgraph.
+ * @param networkId - The ID of the network.
+ * @returns The URL of the subgraph.
+ */
+export async function getSubgraphUrl(subgraph: keyof typeof subgraphsRecord, networkId: number) {
+  const appConfig: ConfigResponseType = await getRemoteConfigWithCache(
+    1000 * configCacheTime.backend,
+  )
+  const subgraphBaseUrl = appConfig.parameters.subgraphs.baseUrl
+  const subgraphName = subgraphsRecord[subgraph][networkId as NetworkIds]
+  const subgraphUrl = `${subgraphBaseUrl}/${subgraphName}`
+  return subgraphUrl
 }

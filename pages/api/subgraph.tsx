@@ -1,5 +1,5 @@
-import type { NetworkIds } from 'blockchain/networks'
-import { subgraphMethodsRecord, subgraphsRecord } from 'features/subgraphLoader/consts'
+import { subgraphMethodsRecord } from 'features/subgraphLoader/consts'
+import { getSubgraphUrl } from 'features/subgraphLoader/useSubgraphLoader'
 import request from 'graphql-request'
 import type { NextApiHandler, NextApiRequest } from 'next'
 
@@ -7,8 +7,8 @@ async function get({ req: { body } }: { req: NextApiRequest }) {
   try {
     const { subgraph, method, params, networkId } = JSON.parse(body)
 
-    const subgraphUrl =
-      subgraphsRecord[subgraph as keyof typeof subgraphsRecord][networkId as NetworkIds]
+    const subgraphUrl = await getSubgraphUrl(subgraph, networkId)
+
     const subgraphMethod = subgraphMethodsRecord[method as keyof typeof subgraphMethodsRecord]
 
     // error handling for missing subgraph url and method in dictionary
