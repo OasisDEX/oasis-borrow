@@ -1,20 +1,22 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
-import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
-import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
 import {
   OmniContentCard,
   useOmniCardDataBorrowRate,
+  useOmniCardDataNetValue,
+  useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
-import { useAjnaCardDataBorrowRate } from 'features/omni-kit/protocols/ajna/components/details-section'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { useTranslation } from 'next-i18next'
+import {
+  useAjnaCardDataAvailableToBorrow,
+  useAjnaCardDataAvailableToWithdraw,
+  useAjnaCardDataBorrowRate,
+} from 'features/omni-kit/protocols/ajna/components/details-section'
 import React from 'react'
-import { ajnaExtensionTheme } from 'theme'
 
 interface AjnaContentFooterBorrowProps {
   changeVariant?: ChangeVariantType
+  collateralPrice: BigNumber
   collateralToken: string
   cost: BigNumber
   isOracless: boolean
@@ -29,6 +31,7 @@ interface AjnaContentFooterBorrowProps {
 
 export function AjnaContentFooterBorrow({
   changeVariant,
+  collateralPrice,
   collateralToken,
   cost,
   isOracless,
@@ -40,10 +43,12 @@ export function AjnaContentFooterBorrow({
   quoteToken,
   simulation,
 }: AjnaContentFooterBorrowProps) {
-  const { t } = useTranslation()
-
-  const availableToBorrow = position.debtAvailable()
-  const afterAvailableToBorrow = simulation?.debtAvailable()
+  const netValue = position.collateralAmount
+    .times(collateralPrice)
+    .minus(position.debtAmount.times(quotePrice))
+  const afterNetValue = simulation?.collateralAmount
+    .times(collateralPrice)
+    .minus(simulation?.debtAmount.times(quotePrice))
 
   const commonContentCardData = {
     asFooter: true,
@@ -66,16 +71,32 @@ export function AjnaContentFooterBorrow({
     debtAmount: position.debtAmount,
   })
 
-  const formatted = {
-    cost: formatDecimalAsPercent(cost),
-    availableToBorrow: `${formatCryptoBalance(availableToBorrow)} ${quoteToken}`,
-    afterAvailableToBorrow:
-      afterAvailableToBorrow && `${formatCryptoBalance(afterAvailableToBorrow)} ${quoteToken}`,
-    availableToWithdraw: `${formatCryptoBalance(position.collateralAvailable)} ${collateralToken}`,
-    afterAvailableToWithdraw:
-      simulation?.collateralAvailable &&
-      `${formatCryptoBalance(simulation?.collateralAvailable)} ${collateralToken}`,
-  }
+  const netValueContentCardCommonData = useOmniCardDataNetValue({
+    afterNetValue,
+    netValue,
+  })
+
+  const availableToWithdrawContentCardCommonData = useOmniCardDataTokensValue({
+    afterTokensAmount: simulation?.collateralAvailable,
+    tokensAmount: position.collateralAvailable,
+    tokensSymbol: collateralToken,
+    translationCardName: 'available-to-withdraw',
+  })
+  const availableToWithdrawContentCardAjnaData = useAjnaCardDataAvailableToWithdraw({
+    availableToWithdraw: position.collateralAvailable,
+    collateralToken,
+  })
+
+  const availableToBorrowContentCardCommonData = useOmniCardDataTokensValue({
+    afterTokensAmount: simulation?.debtAvailable(),
+    tokensAmount: position.debtAvailable(),
+    tokensSymbol: quoteToken,
+    translationCardName: 'available-to-borrow',
+  })
+  const availableToBorrowContentCardAjnaData = useAjnaCardDataAvailableToBorrow({
+    availableToBorrow: position.debtAvailable(),
+    quoteToken,
+  })
 
   return (
     <>
@@ -84,47 +105,16 @@ export function AjnaContentFooterBorrow({
         {...borrowRateContentCardCommonData}
         {...borrowRateContentCardAjnaData}
       />
-      <DetailsSectionFooterItem
-        title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}
-        value={formatted.availableToWithdraw}
-        change={{
-          isLoading: isSimulationLoading,
-          value:
-            simulation?.collateralAvailable &&
-            `${formatted.afterAvailableToWithdraw} ${t('system.cards.common.after')}`,
-          variant: changeVariant,
-        }}
-        modal={
-          <DetailsSectionContentSimpleModal
-            title={t('ajna.position-page.borrow.common.footer.available-to-withdraw')}
-            description={t(
-              'ajna.position-page.borrow.common.footer.available-to-withdraw-modal-desc',
-            )}
-            value={formatted.availableToWithdraw}
-            theme={ajnaExtensionTheme}
-          />
-        }
+      <OmniContentCard {...commonContentCardData} {...netValueContentCardCommonData} />
+      <OmniContentCard
+        {...commonContentCardData}
+        {...availableToWithdrawContentCardCommonData}
+        {...availableToWithdrawContentCardAjnaData}
       />
-      <DetailsSectionFooterItem
-        title={t('ajna.position-page.borrow.common.footer.available-to-borrow')}
-        value={formatted.availableToBorrow}
-        change={{
-          isLoading: isSimulationLoading,
-          value:
-            afterAvailableToBorrow &&
-            `${formatted.afterAvailableToBorrow} ${t('system.cards.common.after')}`,
-          variant: changeVariant,
-        }}
-        modal={
-          <DetailsSectionContentSimpleModal
-            title={t('ajna.position-page.borrow.common.footer.available-to-borrow')}
-            description={t(
-              'ajna.position-page.borrow.common.footer.available-to-borrow-modal-desc',
-            )}
-            value={formatted.availableToBorrow}
-            theme={ajnaExtensionTheme}
-          />
-        }
+      <OmniContentCard
+        {...commonContentCardData}
+        {...availableToBorrowContentCardCommonData}
+        {...availableToBorrowContentCardAjnaData}
       />
     </>
   )

@@ -272,11 +272,14 @@ export function DetailsSectionContentCard({
         ) : (
           value || '-'
         )}
-        {unit && (
-          <Text as="small" sx={{ ml: 1, fontSize: 5, ...customUnitStyle }}>
-            {unit}
-          </Text>
-        )}
+        {unit &&
+          (asFooter ? (
+            ` ${unit}`
+          ) : (
+            <Text as="small" sx={{ ml: 1, fontSize: 5, ...customUnitStyle }}>
+              {unit}
+            </Text>
+          ))}
       </Text>
       {(change?.value || change?.isLoading) && (
         <Box sx={{ maxWidth: '100%', pt: 2, ...cursorStyle }} {...hightlightableItemEvents}>

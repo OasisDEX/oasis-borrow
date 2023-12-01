@@ -11,6 +11,7 @@ import React from 'react'
 interface AjnaLendingDetailsSectionFooterProps {
   afterBuyingPower?: BigNumber
   changeVariant: 'positive' | 'negative'
+  collateralPrice: BigNumber
   collateralToken: string
   interestRate: BigNumber
   isOracless: boolean
@@ -27,6 +28,7 @@ interface AjnaLendingDetailsSectionFooterProps {
 export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooterProps> = ({
   afterBuyingPower,
   changeVariant,
+  collateralPrice,
   collateralToken,
   interestRate,
   isOracless,
@@ -42,6 +44,7 @@ export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooter
   return productType === OmniProductType.Borrow ? (
     <AjnaContentFooterBorrow
       changeVariant={changeVariant}
+      collateralPrice={collateralPrice}
       collateralToken={collateralToken}
       cost={interestRate}
       isOracless={isOracless}
