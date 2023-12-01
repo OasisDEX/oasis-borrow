@@ -22,6 +22,7 @@ export type PositionCreated = {
   debtTokenAddress: string
   positionType: PositionType
   protocol: LendingProtocol
+  protocolRaw: string
   chainId: NetworkIds
   proxyAddress: string
 }
@@ -74,6 +75,7 @@ function mapEvent(
         debtTokenSymbol: getTokenSymbolBasedOnAddress(chainId, e.args.debtToken),
         debtTokenAddress: e.args.debtToken,
         protocol: extractLendingProtocolFromPositionCreatedEvent(e),
+        protocolRaw: e.args.protocol,
         chainId,
         proxyAddress: e.args.proxyAddress,
       }
@@ -140,6 +142,7 @@ export async function getLastCreatedPositionForProxy(
     debtTokenSymbol: getTokenSymbolBasedOnAddress(chainId, lastEvent!.args.debtToken),
     debtTokenAddress: lastEvent!.args.debtToken,
     protocol: extractLendingProtocolFromPositionCreatedEvent(lastEvent!),
+    protocolRaw: lastEvent.args.protocol,
     chainId,
     proxyAddress: lastEvent!.args.proxyAddress,
   }

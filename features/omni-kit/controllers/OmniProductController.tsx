@@ -43,13 +43,14 @@ export interface OmniCustomStateParams<Auction, History, Position> {
 }
 
 interface OmniProductControllerProps<Auction, History, Position> {
-  collateralToken?: string
+  collateralToken: string
   customState?: (params: OmniCustomStateParams<Auction, History, Position>) => ReactNode
   isOracless?: boolean
   networkName: NetworkNames
   positionId?: string
-  productType?: OmniProductType
+  productType: OmniProductType
   protocol: LendingProtocol
+  protocolRaw: string
   protocolHook: (params: ProductDataProps) => {
     data: {
       aggregatedData: { auction: Auction; history: History } | undefined
@@ -59,7 +60,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
     isOracless: boolean
     redirect: string | undefined
   }
-  quoteToken?: string
+  quoteToken: string
   seoTags: {
     productKey: string
     descriptionKey: string
@@ -75,6 +76,7 @@ export const OmniProductController = <Auction, History, Position>({
   positionId,
   productType,
   protocol,
+  protocolRaw,
   protocolHook,
   quoteToken,
   seoTags,
@@ -115,6 +117,7 @@ export const OmniProductController = <Auction, History, Position>({
     isOracless,
     productType,
     protocol,
+    protocolRaw,
     quoteToken,
     networkId: resolvedNetwork.id,
   })
