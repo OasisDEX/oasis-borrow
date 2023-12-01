@@ -9,11 +9,9 @@ import type { FC } from 'react'
 import React from 'react'
 
 interface AjnaLendingDetailsSectionFooterProps {
-  afterBuyingPower?: BigNumber
   changeVariant: 'positive' | 'negative'
   collateralPrice: BigNumber
   collateralToken: string
-  interestRate: BigNumber
   isOracless: boolean
   isOwner: boolean
   isSimulationLoading?: boolean
@@ -26,11 +24,9 @@ interface AjnaLendingDetailsSectionFooterProps {
 }
 
 export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooterProps> = ({
-  afterBuyingPower,
   changeVariant,
   collateralPrice,
   collateralToken,
-  interestRate,
   isOracless,
   isOwner,
   isSimulationLoading,
@@ -46,7 +42,6 @@ export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooter
       changeVariant={changeVariant}
       collateralPrice={collateralPrice}
       collateralToken={collateralToken}
-      cost={interestRate}
       isOracless={isOracless}
       isOwner={isOwner}
       isSimulationLoading={isSimulationLoading}
@@ -58,18 +53,16 @@ export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooter
     />
   ) : (
     <AjnaContentFooterMultiply
-      afterBuyingPower={afterBuyingPower}
-      afterMultiple={simulation?.riskRatio.multiple}
-      afterPositionDebt={simulation?.debtAmount}
-      afterTotalExposure={simulation?.collateralAmount}
-      buyingPower={position.buyingPower}
       changeVariant={changeVariant}
       collateralToken={collateralToken}
-      isLoading={isSimulationLoading}
-      multiple={position.riskRatio.multiple}
-      positionDebt={position.debtAmount}
+      isOracless={isOracless}
+      isOwner={isOwner}
+      isSimulationLoading={isSimulationLoading}
+      owner={owner}
+      position={position}
+      quotePrice={quotePrice}
       quoteToken={quoteToken}
-      totalExposure={position.collateralAmount}
+      simulation={simulation}
     />
   )
 }

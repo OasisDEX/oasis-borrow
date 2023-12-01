@@ -18,7 +18,6 @@ interface AjnaContentFooterBorrowProps {
   changeVariant?: ChangeVariantType
   collateralPrice: BigNumber
   collateralToken: string
-  cost: BigNumber
   isOracless: boolean
   isOwner: boolean
   isSimulationLoading?: boolean
@@ -33,7 +32,6 @@ export function AjnaContentFooterBorrow({
   changeVariant,
   collateralPrice,
   collateralToken,
-  cost,
   isOracless,
   isOwner,
   isSimulationLoading,
@@ -57,14 +55,14 @@ export function AjnaContentFooterBorrow({
   }
 
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
-    borrowRate: cost,
+    borrowRate: position.pool.interestRate,
   })
   const borrowRateContentCardAjnaData = useAjnaCardDataBorrowRate({
     collateralToken,
     isOwner,
     owner,
     quoteToken,
-    borrowRate: cost,
+    borrowRate: position.pool.interestRate,
     ...(!isOracless && {
       quotePrice,
     }),

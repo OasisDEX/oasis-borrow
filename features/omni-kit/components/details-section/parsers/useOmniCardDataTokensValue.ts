@@ -19,7 +19,7 @@ export function useOmniCardDataTokensValue({
   translationCardName,
 }: OmniCardDataTokensValueParams): OmniContentCardBase {
   return {
-    title: { key: `omni-kit.content-card.${translationCardName}.title` },
+    title: { key: `omni-kit.content-card.${translationCardName}.title`, values: { tokensSymbol } },
     value: formatCryptoBalance(tokensAmount),
     unit: tokensSymbol,
     ...(afterTokensAmount && {

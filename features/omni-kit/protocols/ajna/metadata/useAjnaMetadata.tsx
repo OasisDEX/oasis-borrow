@@ -264,11 +264,9 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           ),
           overviewFooter: (
             <AjnaLendingDetailsSectionFooter
-              afterBuyingPower={afterBuyingPower}
               changeVariant={changeVariant}
               collateralPrice={collateralPrice}
               collateralToken={collateralToken}
-              interestRate={interestRate}
               isOracless={isOracless}
               isOwner={isOwner}
               isSimulationLoading={productContext.position.isSimulationLoading}

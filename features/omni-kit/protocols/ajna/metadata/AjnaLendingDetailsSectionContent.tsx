@@ -135,7 +135,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     translationCardName: 'position-debt',
     ...(!isOracless && { tokensPrice: quotePrice }),
   })
-  const collateralPositionDebtAjnaData = useAjnaCardDataPositionDebt({
+  const positionDebtContentCardAjnaData = useAjnaCardDataPositionDebt({
     debtAmount: position.debtAmount,
     quoteToken,
   })
@@ -187,7 +187,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
           <OmniContentCard
             {...commonContentCardData}
             {...positionDebtContentCardCommonData}
-            {...collateralPositionDebtAjnaData}
+            {...positionDebtContentCardAjnaData}
           />
         </>
       )}
