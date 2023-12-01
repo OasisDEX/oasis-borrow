@@ -20,7 +20,7 @@ import { VaultHeadlineDetails } from './VaultHeadlineDetails'
 export type VaultHeadlineProps = {
   details: HeadlineDetailsProp[]
   followButton?: FollowButtonControlProps
-  header: ReactNode
+  header?: ReactNode
   loading?: boolean
   shareButton?: boolean
   tokens?: string[]
