@@ -5,13 +5,13 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 interface OmniCardDataNetValueParams {
   afterNetValue?: BigNumber
   netValue: BigNumber
-  pnl?: BigNumber
+  pnlUSD?: BigNumber
 }
 
 export function useOmniCardDataNetValue({
   afterNetValue,
   netValue,
-  pnl,
+  pnlUSD,
 }: OmniCardDataNetValueParams): OmniContentCardBase {
   return {
     title: { key: 'omni-kit.content-card.net-value.title' },
@@ -19,10 +19,10 @@ export function useOmniCardDataNetValue({
     ...(afterNetValue && {
       change: [`$${formatCryptoBalance(afterNetValue)}`],
     }),
-    ...(pnl && {
+    ...(pnlUSD && {
       footnote: [
         { key: 'omni-kit.content-card.net-value.footnote' },
-        `$${formatCryptoBalance(pnl)}`,
+        `$${formatCryptoBalance(pnlUSD)}`,
       ],
     }),
   }

@@ -10,6 +10,7 @@ interface AjnaCardDataNetValueParams {
   cumulatives: AjnaCumulativesData
   netValue: BigNumber
   pnl?: BigNumber
+  pnlUSD?: BigNumber
 }
 
 export function useAjnaCardDataNetValue({
@@ -18,6 +19,7 @@ export function useAjnaCardDataNetValue({
   cumulatives,
   netValue,
   pnl,
+  pnlUSD,
 }: AjnaCardDataNetValueParams): OmniContentCardExtra {
   return {
     modal: (
@@ -27,6 +29,7 @@ export function useAjnaCardDataNetValue({
         cumulatives={cumulatives}
         netValue={netValue}
         pnl={pnl}
+        pnlUSD={pnlUSD}
       />
     ),
   }
