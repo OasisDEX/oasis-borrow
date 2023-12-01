@@ -2,6 +2,8 @@ import { captureException } from '@sentry/nextjs'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import request, { gql } from 'graphql-request'
+import type { ConfigResponseType } from 'helpers/config'
+import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
 
 const historyQuery = gql`
   query historyProxies($proxyAddresses: [String]) {
@@ -67,7 +69,10 @@ export const getHistoryData = async ({
   addresses: string[]
   network: HistorySupportedNetworks
 }) => {
-  const subgraphUrl = `${process.env.SUBGRAPHS_BASE_URL}/${subgraphListDict[network]}`
+  const appConfig: ConfigResponseType = await getRemoteConfigWithCache(
+    1000 * configCacheTime.backend,
+  )
+  const subgraphUrl = `${appConfig.parameters.subgraphs.baseUrl}/${subgraphListDict[network]}`
   const params = { proxyAddresses: addresses.map((addr) => addr.toLowerCase()) }
   try {
     const historyCall = request<HistoryQueryResponse>(subgraphUrl, historyQuery, params).then(

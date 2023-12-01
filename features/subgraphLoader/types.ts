@@ -128,15 +128,15 @@ export type SubgraphsRecord = {
     [NetworkIds.MAINNET]: string
     [NetworkIds.HARDHAT]: string
     [NetworkIds.GOERLI]: string
-    [NetworkIds.ARBITRUMMAINNET]: ''
-    [NetworkIds.ARBITRUMGOERLI]: ''
-    [NetworkIds.POLYGONMAINNET]: ''
-    [NetworkIds.POLYGONMUMBAI]: ''
-    [NetworkIds.OPTIMISMMAINNET]: ''
-    [NetworkIds.OPTIMISMGOERLI]: ''
-    [NetworkIds.BASEMAINNET]: ''
-    [NetworkIds.BASEGOERLI]: ''
-    [NetworkIds.EMPTYNET]: ''
+    [NetworkIds.ARBITRUMMAINNET]: string
+    [NetworkIds.ARBITRUMGOERLI]: string
+    [NetworkIds.POLYGONMAINNET]: string
+    [NetworkIds.POLYGONMUMBAI]: string
+    [NetworkIds.OPTIMISMMAINNET]: string
+    [NetworkIds.OPTIMISMGOERLI]: string
+    [NetworkIds.BASEMAINNET]: string
+    [NetworkIds.BASEGOERLI]: string
+    [NetworkIds.EMPTYNET]: string
   }
 }
 export type SubgraphMethodsRecord = {
