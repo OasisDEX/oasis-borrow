@@ -94,6 +94,7 @@ export function extractLendingProtocolFromPositionCreatedEvent(
     case 'Ajna':
     case 'AJNA_RC5':
     case 'Ajna_rc9':
+    case 'Ajna_rc10':
       return LendingProtocol.Ajna
     case 'MorphoBlue':
       return LendingProtocol.MorphoBlue
