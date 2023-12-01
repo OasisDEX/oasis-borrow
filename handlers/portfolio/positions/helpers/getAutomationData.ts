@@ -1,5 +1,7 @@
 import { NetworkIds } from 'blockchain/networks'
 import request, { gql } from 'graphql-request'
+import type { ConfigResponseType } from 'helpers/config'
+import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
 
 const automationQuery = gql`
   query automationTriggers($proxyAddresses: [String]) {
@@ -53,7 +55,10 @@ export const getAutomationData = async ({
   addresses: string[]
   network: AutomationSupportedNetworks
 }) => {
-  const subgraphUrl = `${process.env.SUBGRAPHS_BASE_URL}/${subgraphListDict[network]}`
+  const appConfig: ConfigResponseType = await getRemoteConfigWithCache(
+    1000 * configCacheTime.backend,
+  )
+  const subgraphUrl = `${appConfig.parameters.subgraphs.baseUrl}/${subgraphListDict[network]}`
   const params = { proxyAddresses: addresses.map((addr) => addr.toLowerCase()) }
   const automationCall = request<AutomationQueryResponse>(
     subgraphUrl,

@@ -1,16 +1,18 @@
 import { NetworkIds } from 'blockchain/networks'
 import type { SubgraphMethodsRecord, SubgraphsRecord } from 'features/subgraphLoader/types'
 import { gql } from 'graphql-request'
-import getConfig from 'next/config'
 
+/**
+ * Record of subgraphs for different features.
+ */
 export const subgraphsRecord: SubgraphsRecord = {
   Ajna: {
-    [NetworkIds.MAINNET]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2Url,
-    [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2Url,
-    [NetworkIds.GOERLI]: getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2UrlGoerli,
+    [NetworkIds.MAINNET]: 'summer/ajna-v2',
+    [NetworkIds.HARDHAT]: 'summer/ajna-v2',
+    [NetworkIds.GOERLI]: 'summer/ajna-v2',
     [NetworkIds.ARBITRUMMAINNET]: '',
     [NetworkIds.ARBITRUMGOERLI]: '',
-    [NetworkIds.BASEMAINNET]: '',
+    [NetworkIds.BASEMAINNET]: 'summer/ajna-v2-base',
     [NetworkIds.BASEGOERLI]: '',
     [NetworkIds.POLYGONMAINNET]: '',
     [NetworkIds.POLYGONMUMBAI]: '',
@@ -19,22 +21,23 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.EMPTYNET]: '',
   },
   Aave: {
-    [NetworkIds.MAINNET]: getConfig()?.publicRuntimeConfig?.aaveSubgraphUrl,
-    [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.aaveSubgraphUrl,
+    [NetworkIds.MAINNET]: 'oasis-history',
+    [NetworkIds.HARDHAT]: 'oasis-history',
     [NetworkIds.GOERLI]: '',
-    [NetworkIds.ARBITRUMMAINNET]: '',
+    [NetworkIds.ARBITRUMMAINNET]: 'oasis-history-arbitrum',
     [NetworkIds.ARBITRUMGOERLI]: '',
-    [NetworkIds.BASEMAINNET]: '',
+    [NetworkIds.BASEMAINNET]: 'oasis-history-base',
     [NetworkIds.BASEGOERLI]: '',
     [NetworkIds.POLYGONMAINNET]: '',
     [NetworkIds.POLYGONMUMBAI]: '',
-    [NetworkIds.OPTIMISMMAINNET]: getConfig()?.publicRuntimeConfig?.aaveSubgraphUrlOptimism,
+    [NetworkIds.OPTIMISMMAINNET]: 'oasis-history-optimism',
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
+
   Discover: {
-    [NetworkIds.MAINNET]: `${process.env.SUBGRAPHS_BASE_URL}/oasis/discover`,
-    [NetworkIds.HARDHAT]: `${process.env.SUBGRAPHS_BASE_URL}/oasis/discover`,
+    [NetworkIds.MAINNET]: `oasis/discover`,
+    [NetworkIds.HARDHAT]: `oasis/discover`,
     [NetworkIds.GOERLI]: '',
     [NetworkIds.ARBITRUMMAINNET]: '',
     [NetworkIds.ARBITRUMGOERLI]: '',
@@ -46,6 +49,7 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
+
   TempGraph: {
     [NetworkIds.MAINNET]: '',
     [NetworkIds.HARDHAT]: '',
@@ -61,17 +65,17 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.EMPTYNET]: '',
   },
   Referral: {
-    [NetworkIds.MAINNET]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
-    [NetworkIds.HARDHAT]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
-    [NetworkIds.GOERLI]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
-    [NetworkIds.ARBITRUMMAINNET]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
-    [NetworkIds.ARBITRUMGOERLI]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
-    [NetworkIds.POLYGONMAINNET]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
-    [NetworkIds.POLYGONMUMBAI]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
-    [NetworkIds.OPTIMISMMAINNET]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
-    [NetworkIds.OPTIMISMGOERLI]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
-    [NetworkIds.BASEMAINNET]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
-    [NetworkIds.BASEGOERLI]: getConfig()?.publicRuntimeConfig?.referralSubgraphUrl,
+    [NetworkIds.MAINNET]: 'summer/referrals',
+    [NetworkIds.HARDHAT]: 'summer/referrals',
+    [NetworkIds.GOERLI]: 'summer/referrals',
+    [NetworkIds.ARBITRUMMAINNET]: 'summer/referrals',
+    [NetworkIds.ARBITRUMGOERLI]: 'summer/referrals',
+    [NetworkIds.POLYGONMAINNET]: 'summer/referrals',
+    [NetworkIds.POLYGONMUMBAI]: 'summer/referrals',
+    [NetworkIds.OPTIMISMMAINNET]: 'summer/referrals',
+    [NetworkIds.OPTIMISMGOERLI]: 'summer/referrals',
+    [NetworkIds.BASEMAINNET]: 'summer/referrals',
+    [NetworkIds.BASEGOERLI]: 'summer/referrals',
     [NetworkIds.EMPTYNET]: '',
   },
 }
