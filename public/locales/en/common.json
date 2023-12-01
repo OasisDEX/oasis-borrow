@@ -2664,6 +2664,21 @@
       },
       "buying-power": {
         "title": "Buying Power"
+      },
+      "borrow-rate": {
+        "title": "Borrow Rate"
+      },
+      "available-to-withdraw": {
+        "title": "Available to Withdraw"
+      },
+      "available-to-borrow": {
+        "title": "Available to Borrow"
+      },
+      "total-exposure": {
+        "title": "Total {{tokensSymbol}} exposure"
+      },
+      "multiple": {
+        "title": "Multiple"
       }
     },
     "form": {
@@ -2732,6 +2747,21 @@
         "modal-value": "Unrealised Profit & Loss",
         "modal-footnote-1": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative deposits",
         "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction."
+      },
+      "borrow-rate": {
+        "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
+        "tooltip-description-non-owner": "<strong>Earned Ajna tokens</strong>: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
+        "tooltip-value-1": "total",
+        "tooltip-value-2": "claimable today",
+        "modal-description": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
+        "modal-footnote-title": "Cost to borrow {{quoteToken}}",
+        "modal-footnote-description": "The borrow rate expressed in {{quoteToken}} amount over one year. The amount is an estimate that changes with the changes in the rates. Your effective cost will be determined by your P&L."
+      },
+      "available-to-withdraw": {
+        "modal-description": "This the the amount of collateral you can withdraw taking into account the current max LTV and debt of the position."
+      },
+      "available-to-borrow": {
+        "modal-description": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt."
       }
     },
     "product-page": {

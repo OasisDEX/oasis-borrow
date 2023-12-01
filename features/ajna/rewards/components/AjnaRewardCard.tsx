@@ -99,7 +99,7 @@ export function AjnaRewardCard({
             <Trans
               i18nKey="ajna.rewards.claim"
               values={{ amount: formatCryptoBalance(claimable) }}
-              components={{ strong: <strong /> }}
+              components={{ strong: <Text sx={{ fontWeight: 'semiBold' }} /> }}
             />
           )}
         </Text>
