@@ -14,12 +14,13 @@ import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
 
 interface OmniProtocolDataProps {
-  collateralToken?: string
+  collateralToken: string
   isOracless?: boolean
   positionId?: string
-  productType?: OmniProductType
+  productType: OmniProductType
   protocol: LendingProtocol
-  quoteToken?: string
+  protocolRaw: string
+  quoteToken: string
   networkId: OmniSupportedNetworkIds
 }
 
@@ -29,6 +30,7 @@ export function useOmniProtocolData({
   positionId,
   productType,
   protocol,
+  protocolRaw,
   quoteToken,
   networkId,
 }: OmniProtocolDataProps) {
@@ -68,6 +70,8 @@ export function useOmniProtocolData({
               collateralToken,
               quoteToken,
               productType,
+              protocol,
+              protocolRaw,
             )
           : !isOracless && productType && collateralToken && quoteToken
           ? getStaticDpmPositionData$({

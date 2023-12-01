@@ -5,6 +5,8 @@ import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import type { PositionCreated } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types'
 import { getApiVault } from 'features/shared/vaultApi'
+import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
+import type { LendingProtocol } from 'lendingProtocols'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, EMPTY, of } from 'rxjs'
@@ -24,50 +26,56 @@ const filterPositionWhenUrlParamsDefined = ({
   collateralToken,
   positions,
   product,
+  protocol,
+  protocolRaw,
   proxy,
   quoteToken,
 }: {
   collateralToken: string
   positions?: PositionCreated[]
   product: string
+  protocol: LendingProtocol
+  protocolRaw: string
   proxy: string
   quoteToken: string
 }) =>
   positions
     ?.map(({ collateralTokenSymbol, debtTokenSymbol, ...position }) => ({
       ...position,
-      collateralTokenSymbol: collateralTokenSymbol === 'WETH' ? 'ETH' : collateralTokenSymbol,
-      debtTokenSymbol: debtTokenSymbol === 'WETH' ? 'ETH' : debtTokenSymbol,
+      collateralTokenSymbol: getTokenDisplayName(collateralTokenSymbol),
+      debtTokenSymbol: getTokenDisplayName(debtTokenSymbol),
     }))
-    ?.filter(
-      (position) =>
-        position.proxyAddress.toLowerCase() === proxy.toLowerCase() &&
-        ((position.collateralTokenSymbol === collateralToken &&
-          position.debtTokenSymbol === quoteToken) ||
-          (position.collateralTokenAddress.toLowerCase() === collateralToken &&
-            position.debtTokenAddress.toLowerCase() === quoteToken)) &&
+    ?.find(
+      ({
+        collateralTokenAddress,
+        collateralTokenSymbol,
+        debtTokenAddress,
+        debtTokenSymbol,
+        positionType,
+        protocol: positionProtocol,
+        protocolRaw: positionProtocolRaw,
+        proxyAddress,
+      }) =>
+        positionProtocol === protocol &&
+        positionProtocolRaw === protocolRaw &&
+        proxyAddress.toLowerCase() === proxy.toLowerCase() &&
+        [collateralTokenAddress.toLowerCase(), collateralTokenSymbol].includes(collateralToken) &&
+        [debtTokenAddress.toLowerCase(), debtTokenSymbol].includes(quoteToken) &&
         (product.toLowerCase() === 'earn'
-          ? position.positionType.toLowerCase() === product.toLowerCase()
+          ? positionType.toLowerCase() === product.toLowerCase()
           : true),
-    )[0]
-
-const filterPositionWhenUrlParamsNotDefined = ({
-  positions,
-  proxy,
-}: {
-  positions?: PositionCreated[]
-  proxy?: string
-}) =>
-  positions?.filter((position) => position.proxyAddress.toLowerCase() === proxy?.toLowerCase())[0]
+    )
 
 export function getDpmPositionDataV2$(
   proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   readPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>,
   positionId: PositionId,
   chainId: NetworkIds,
-  collateralToken?: string,
-  quoteToken?: string,
-  product?: string,
+  collateralToken: string,
+  quoteToken: string,
+  product: string,
+  protocol: LendingProtocol,
+  protocolRaw: string,
 ): Observable<DpmPositionData> {
   return proxiesForPosition$(positionId).pipe(
     switchMap(({ dpmProxy }) =>
@@ -83,16 +91,15 @@ export function getDpmPositionDataV2$(
             (item) => item.proxyAddress.toLowerCase() === dpmProxy?.proxy.toLowerCase(),
           ).length > 1,
       )
-      const proxyPosition =
-        collateralToken && quoteToken && product && dpmProxy
-          ? filterPositionWhenUrlParamsDefined({
-              positions,
-              collateralToken,
-              quoteToken,
-              product,
-              proxy: dpmProxy.proxy,
-            })
-          : filterPositionWhenUrlParamsNotDefined({ positions, proxy: dpmProxy?.proxy })
+      const proxyPosition = filterPositionWhenUrlParamsDefined({
+        collateralToken,
+        positions,
+        product,
+        protocol,
+        protocolRaw,
+        proxy: dpmProxy?.proxy ?? ethers.constants.AddressZero,
+        quoteToken,
+      })
 
       return combineLatest(
         of(dpmProxy),

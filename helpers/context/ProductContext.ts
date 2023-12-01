@@ -633,11 +633,13 @@ export function setupProductContext(
     (
       positionId: PositionId,
       chainId: NetworkIds,
-      collateralToken?: string,
-      quoteToken?: string,
-      product?: string,
+      collateralToken: string,
+      quoteToken: string,
+      product: string,
+      protocol: LendingProtocol,
+      protocolRaw: string,
     ) =>
-      `${positionId.walletAddress}-${positionId.vaultId}-${chainId}-${collateralToken}-${quoteToken}-${product}`,
+      `${positionId.walletAddress}-${positionId.vaultId}-${chainId}-${collateralToken}-${quoteToken}-${product}-${protocol}-${protocolRaw}`,
   )
 
   const ajnaPosition$ = memoize(

@@ -6,6 +6,8 @@ import {
 } from 'features/omni-kit/constants'
 import { OmniSidebarStep, type OmniSidebarStepsSet } from 'features/omni-kit/types'
 
+export const AJNA_RAW_PROTOCOL_NAME = 'Ajna_rc10'
+
 export const ajnaOmniSteps: OmniSidebarStepsSet = {
   borrow: {
     setup: [OmniSidebarStep.Risk, ...omniSidebarSetupSteps],

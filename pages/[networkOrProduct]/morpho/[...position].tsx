@@ -43,6 +43,7 @@ function MorphoPositionPage(props: MorphoPositionPageProps) {
               customState={MorphoOmniCustomStateProvider}
               protocol={LendingProtocol.MorphoBlue}
               protocolHook={useMorphoOmniData}
+              protocolRaw={LendingProtocol.MorphoBlue}
               seoTags={morphoSeoTags}
               steps={morphoOmniSteps}
             />
