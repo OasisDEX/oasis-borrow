@@ -104,12 +104,7 @@ export function DetailsSectionFooterItem({
           />
         )}
       </Text>
-      <Text
-        as="p"
-        variant="paragraph2"
-        sx={{ fontWeight: 'semiBold', ...cursorStyle }}
-        {...hightlightableItemEvents}
-      >
+      <Text as="p" variant="boldParagraph2" sx={cursorStyle} {...hightlightableItemEvents}>
         {value}
       </Text>
       {(change?.value || change?.isLoading) && (

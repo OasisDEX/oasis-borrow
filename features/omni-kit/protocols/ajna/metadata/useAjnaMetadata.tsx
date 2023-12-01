@@ -84,6 +84,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       ethPrice,
       isOpening,
       isOracless,
+      isOwner,
       isProxyWithManyPositions,
       isShort,
       owner,
@@ -230,7 +231,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             position,
             isOracless,
           }),
-          footerColumns: productType === OmniProductType.Borrow ? 3 : 2,
+          footerColumns: 2,
         },
         elements: {
           faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,
@@ -263,15 +264,17 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           ),
           overviewFooter: (
             <AjnaLendingDetailsSectionFooter
-              afterAvailableToBorrow={afterAvailableToBorrow}
               afterBuyingPower={afterBuyingPower}
               changeVariant={changeVariant}
               collateralToken={collateralToken}
               interestRate={interestRate}
+              isOracless={isOracless}
+              isOwner={isOwner}
               isSimulationLoading={productContext.position.isSimulationLoading}
               owner={owner}
               position={position}
               productType={productType}
+              quotePrice={quotePrice}
               quoteToken={quoteToken}
               simulation={simulation}
             />

@@ -37,6 +37,7 @@ interface DetailsSectionContentCardLinkProps {
 }
 
 export interface ContentCardProps {
+  asFooter?: boolean
   change?: DetailsSectionContentCardChangePillProps
   customBackground?: string
   customUnitStyle?: ThemeUIStyleObject
@@ -181,6 +182,7 @@ export function DetailsSectionContentCardWrapper({ children }: { children: React
 }
 
 export function DetailsSectionContentCard({
+  asFooter,
   change,
   customBackground = '',
   customUnitStyle = {},
@@ -214,9 +216,11 @@ export function DetailsSectionContentCard({
 
   return (
     <Flex
+      as="li"
       sx={{
         flexDirection: 'column',
         alignItems: 'flex-start',
+        my: asFooter ? 1 : 0,
         p: '12px',
         borderRadius: 'medium',
         backgroundColor: cardBackgroundColor,
@@ -228,7 +232,10 @@ export function DetailsSectionContentCard({
         as="h3"
         variant="paragraph4"
         color="neutral80"
-        sx={cursorStyle}
+        sx={{
+          ...cursorStyle,
+          mb: asFooter ? 1 : 0,
+        }}
         {...hightlightableItemEvents}
       >
         {title}
@@ -245,11 +252,13 @@ export function DetailsSectionContentCard({
       </Text>
       <Text
         as="p"
-        variant="header3"
+        variant={asFooter ? 'boldParagraph2' : 'header3'}
         sx={{
           maxWidth: '100%',
-          lineHeight: 'loose',
           ...cursorStyle,
+          ...(!asFooter && {
+            lineHeight: 'loose',
+          }),
           ...(customValueColor && {
             color: customValueColor,
           }),
