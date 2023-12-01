@@ -165,6 +165,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 setSelectedFilters(_selectedFilters)
                 setQueryString(_queryString)
               }}
+              chainId={wallet?.chainId}
               limitRows={limitRows}
             />
             {limitRows && limitRows > 0 && (
