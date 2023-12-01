@@ -52,6 +52,10 @@ export interface ApiVault {
   tokenPair: string
 }
 
+interface ApiVaultFallback {
+  type: VaultType.Borrow
+}
+
 export interface ApiVaultsParams {
   vaultIds: number[]
   chainId: NetworkIds
@@ -114,7 +118,7 @@ export function getVaultFromApi$(
   vaultId: number,
   chainId: number,
   protocol: LendingProtocol,
-): Observable<ApiVault> {
+): Observable<ApiVault | ApiVaultFallback> {
   if (chainId === 0 || chainId < 1) {
     console.error('Invalid chainId')
     return EMPTY
@@ -131,6 +135,12 @@ export function getVaultFromApi$(
     },
   }).pipe(
     map((resp) => {
+      if (!resp.response.type) {
+        return {
+          type: VaultType.Borrow,
+        }
+      }
+
       const { vaultId, type, chainId, ownerAddress, protocol, tokenPair } = resp.response as {
         vaultId: number
         type: VaultType
