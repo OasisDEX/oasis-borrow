@@ -1,0 +1,36 @@
+schema: schema.graphql
+documents: './queries/**/*.graphql'
+generates:
+  src/types/graphql/generated.ts:
+    plugins:
+      - add:
+          content:
+            - "// @ts-nocheck"
+            - "// This file was automatically generated and should not be edited."
+      - typescript
+      - typescript-operations:
+          strictScalars: true
+          immutableTypes: true
+          scalars:
+            BigDecimal: string
+            BigInt: bigint
+            Int8: number
+            BooleanType: boolean
+            CustomData: Record<string, unknown>
+            Date: string
+            DateTime: string
+            FloatType: number
+            IntType: number
+            ItemId: string
+            JsonField: unknown
+            Bytes: string
+            MetaTagAttributes: Record<string, string>
+            UploadId: string
+      - typed-document-node
+extensions:
+  endpoints:
+    Default GraphQL Endpoint:
+      url: https://5twcsg71b5.execute-api.us-east-1.amazonaws.com/staging/summer-automation
+      headers:
+        user-agent: JS GraphQL
+      introspect: false

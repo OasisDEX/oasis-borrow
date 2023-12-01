@@ -1,0 +1,21 @@
+{
+  "name": "get-triggers",
+  "version": "0.0.1",
+  "scripts": {
+    "tsc": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "build": "esbuild --bundle src/index.ts --platform=node --target=node20 --outfile=dist/index.js"
+  },
+  "author": "Jacob",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@aws-lambda-powertools/logger": "^1.17.0",
+    "@aws-lambda-powertools/metrics": "^1.17.0",
+    "@aws-lambda-powertools/tracer": "^1.17.0",
+    "graphql-request": "^6.1.0",
+    "shared": "file:../shared/dist",
+    "automation-subgraph": "file:../automation-subgraph/dist",
+    "zod": "^3.22.4"
+  }
+}
