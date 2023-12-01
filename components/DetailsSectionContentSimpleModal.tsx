@@ -4,7 +4,7 @@ import type { Theme } from 'theme-ui'
 import { Card, Grid, Heading, Text, ThemeUIProvider } from 'theme-ui'
 
 export interface DetailsSectionContentSimpleModalProps {
-  description?: string
+  description?: ReactNode
   theme?: Theme
   title: string
   value?: ReactNode
@@ -13,7 +13,7 @@ export interface DetailsSectionContentSimpleModalProps {
 const DetailsSectionContentSimpleModalContent: FC<
   Omit<DetailsSectionContentSimpleModalProps, 'theme'>
 > = ({ title, children, description, value }) => (
-  <Grid gap={2}>
+  <Grid gap={3}>
     <Heading variant="header5" sx={{ fontWeight: 'bold' }}>
       {title}
     </Heading>
@@ -22,12 +22,8 @@ const DetailsSectionContentSimpleModalContent: FC<
         {description}
       </Text>
     )}
+    {value && <Card variant="vaultDetailsCardModal">{value}</Card>}
     <>{children}</>
-    {value && (
-      <Card variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
-        {value}
-      </Card>
-    )}
   </Grid>
 )
 

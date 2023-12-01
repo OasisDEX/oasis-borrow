@@ -3,6 +3,7 @@ import { StatefulTooltip } from 'components/Tooltip'
 import type { ModalProps } from 'helpers/modalHook'
 import { useModal } from 'helpers/modalHook'
 import type { TranslateStringType } from 'helpers/translateStringType'
+import { useTranslation } from 'next-i18next'
 import type { PropsWithChildren, ReactNode } from 'react'
 import React, { useState } from 'react'
 import { question_o } from 'theme/icons'
@@ -23,9 +24,10 @@ interface DetailsSectionContentCardTooltipProps {
 
 export interface DetailsSectionContentCardChangePillProps {
   isLoading?: boolean
-  tooltip?: string
-  value?: string | [string, string, string]
+  tooltip?: ReactNode
+  value?: string | string[]
   variant?: ChangeVariantType
+  withAfter?: boolean
 }
 
 interface DetailsSectionContentCardLinkProps {
@@ -36,15 +38,14 @@ interface DetailsSectionContentCardLinkProps {
 
 export interface ContentCardProps {
   change?: DetailsSectionContentCardChangePillProps
-  changeTooltip?: ReactNode
   customBackground?: string
   customUnitStyle?: ThemeUIStyleObject
   customValueColor?: string
   extra?: ReactNode
-  footnote?: string | [string, string, string]
-  footnoteTooltip?: string
+  footnote?: string | string[]
+  footnoteTooltip?: ReactNode
   link?: DetailsSectionContentCardLinkProps
-  modal?: TranslateStringType | JSX.Element
+  modal?: ReactNode
   title: string
   unit?: TranslateStringType
   value?: ReactNode
@@ -87,8 +88,11 @@ export function DetailsSectionContentCardChangePill({
   tooltip,
   value,
   variant = 'positive',
+  withAfter,
 }: DetailsSectionContentCardChangePillProps) {
-  const isValueArray = Array.isArray(value)
+  const { t } = useTranslation()
+
+  const valueArray = Array.isArray(value) ? value : [value]
 
   return (
     <>
@@ -121,15 +125,16 @@ export function DetailsSectionContentCardChangePill({
           >
             {tooltip ? (
               <>
-                {isValueArray && `${value[0]} `}
+                {valueArray.length > 1 && `${valueArray[0]} `}
                 <DetailsSectionContentCardTooltip value={tooltip}>
-                  {isValueArray ? value[1] : value}
-                </DetailsSectionContentCardTooltip>
-                {isValueArray && ` ${value[2]}`}
+                  {valueArray.length > 1 ? valueArray[1] : valueArray[0]}
+                </DetailsSectionContentCardTooltip>{' '}
+                {valueArray.slice(2, valueArray.length).join(' ')}
               </>
             ) : (
-              <>{isValueArray ? value.join(' ') : value}</>
+              <>{valueArray.join(' ')}</>
             )}
+            {withAfter && ` ${t('omni-kit.content-card.after')}`}
           </Text>
         </>
       )}
@@ -193,7 +198,7 @@ export function DetailsSectionContentCard({
   const openModal = useModal()
   const [isHighlighted, setIsHighlighted] = useState(false)
   const modalHandler = () => {
-    if (modal) openModal(DetailsSectionContentCardModal, { children: modal })
+    if (modal) openModal(DetailsSectionContentCardModal, { children: <>{modal}</> })
   }
   const hightlightableItemEvents = {
     onMouseEnter: () => setIsHighlighted(true),
@@ -205,7 +210,7 @@ export function DetailsSectionContentCard({
     cardBackgroundColor = customBackground
   }
   const cursorStyle = { cursor: modal ? 'pointer' : 'auto' }
-  const isFootnoteArray = Array.isArray(footnote)
+  const footnoteArray = Array.isArray(footnote) ? footnote : [footnote]
 
   return (
     <Flex
@@ -283,14 +288,14 @@ export function DetailsSectionContentCard({
         >
           {footnoteTooltip ? (
             <>
-              {isFootnoteArray && `${footnote[0]} `}
+              {footnoteArray.length > 1 && `${footnoteArray[0]} `}
               <DetailsSectionContentCardTooltip value={footnoteTooltip}>
-                {isFootnoteArray ? footnote[1] : footnote}
-              </DetailsSectionContentCardTooltip>
-              {isFootnoteArray && ` ${footnote[2]}`}
+                {footnoteArray.length > 1 ? footnoteArray[1] : footnoteArray[0]}
+              </DetailsSectionContentCardTooltip>{' '}
+              {footnoteArray.slice(2, footnoteArray.length).join(' ')}
             </>
           ) : (
-            <>{isFootnoteArray ? footnote.join(' ') : footnote}</>
+            <>{footnoteArray.join(' ')}</>
           )}
         </Text>
       )}
