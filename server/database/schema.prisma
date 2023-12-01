@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -35,7 +35,7 @@ model Vault {
   owner_address String
   chain_id      Int?
   protocol      String
-  token_pair      String
+  token_pair    String
 
   @@unique([vault_id, chain_id, protocol, token_pair], name: "vault_vault_id_chain_id_protocol_token_pair_unique_constraint")
   @@map("vault")
@@ -336,45 +336,64 @@ enum ProductHubStrategy {
 }
 
 model AjnaRewardsWeeklyClaim {
-  id           Int      @id @default(autoincrement())
-  timestamp    DateTime @default(now())
+  id           Int               @id @default(autoincrement())
+  timestamp    DateTime          @default(now())
   chain_id     Int
   user_address String
   amount       String
+  source       AjnaRewardsSource
 
   week_number Int
 
   proof String[]
 
-  @@unique([week_number, user_address, chain_id], name: "week_number_userAddress_chain_id_unique_id")
+  @@unique([week_number, user_address, chain_id, source], name: "week_number_userAddress_chain_id_source_unique_id")
   @@map("ajna_rewards_weekly_claim")
 }
 
 model AjnaRewardsDailyClaim {
-  id           Int      @id @default(autoincrement())
-  timestamp    DateTime @default(now())
-  chain_id     Int
-  user_address String
-  amount       String
+  id              Int                     @id @default(autoincrement())
+  timestamp       DateTime                @default(now())
+  chain_id        Int
+  account_address String
+  user_address    String
+  amount          String
+  source          AjnaRewardsSource
+  type            AjnaRewardsPositionType
 
   week_number Int
   day_number  Int
 
-  @@unique([day_number, user_address, chain_id], name: "day_number_userAddress_chain_id_unique_id")
+  @@unique([day_number, account_address, chain_id, source, type], name: "day_number_account_address_chain_id_source_type_unique_id")
   @@map("ajna_rewards_daily_claim")
 }
 
 model AjnaRewardsMerkleTree {
-  id        Int      @id @default(autoincrement())
-  timestamp DateTime @default(now())
+  id        Int               @id @default(autoincrement())
+  timestamp DateTime          @default(now())
   chain_id  Int
+  source    AjnaRewardsSource
 
   week_number  Int
   tree_root    String
   tx_processed Boolean @default(false)
 
-  @@unique([week_number, chain_id], name: "week_number_chain_id_unique_id")
+  @@unique([week_number, chain_id, source], name: "week_number_chain_id_source_unique_id")
   @@map("ajna_rewards_merkle_tree")
+}
+
+enum AjnaRewardsSource {
+  core
+  bonus
+
+  @@map("ajna_rewards_source")
+}
+
+enum AjnaRewardsPositionType {
+  earn
+  borrow
+
+  @@map("ajna_rewards_position_type")
 }
 
 model Tokens {
