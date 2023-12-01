@@ -1,4 +1,4 @@
-import type { NetworkIds } from 'blockchain/networks'
+import { NetworkIds } from 'blockchain/networks'
 import { subgraphMethodsRecord, subgraphsRecord } from 'features/subgraphLoader/consts'
 import type {
   SubgraphBaseResponse,
@@ -8,6 +8,7 @@ import type {
 import request from 'graphql-request'
 import type { ConfigResponseType } from 'helpers/config'
 import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
+import getConfig from 'next/config'
 import { useEffect, useState } from 'react'
 
 interface UseSubgraphLoader<R> {
@@ -117,6 +118,11 @@ export async function getSubgraphUrl(subgraph: keyof typeof subgraphsRecord, net
   )
   const subgraphBaseUrl = appConfig.parameters.subgraphs.baseUrl
   const subgraphName = subgraphsRecord[subgraph][networkId as NetworkIds]
+  // special case for Ajna goerli subgraph
+  if (subgraph === 'Ajna' && networkId === NetworkIds.GOERLI) {
+    const ajnaSubgraphUrlGoerli = getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2UrlGoerli
+    return ajnaSubgraphUrlGoerli
+  }
   const subgraphUrl = `${subgraphBaseUrl}/${subgraphName}`
   return subgraphUrl
 }
