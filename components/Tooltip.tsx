@@ -28,8 +28,10 @@ export function useTooltip() {
 export function Tooltip({ children, sx }: { children: ReactNode; sx?: ThemeUIStyleObject }) {
   return (
     <Card
+      as="span"
       sx={{
         variant: 'cards.tooltip',
+        display: 'block',
         ...sx,
       }}
     >

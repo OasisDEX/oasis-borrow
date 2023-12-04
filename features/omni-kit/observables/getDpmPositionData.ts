@@ -103,6 +103,7 @@ export function getDpmPositionDataV2$(
 
       return combineLatest(
         of(dpmProxy),
+        of(positions),
         of(proxyPosition),
         dpmProxy && proxyPosition && chainId
           ? getApiVault({
@@ -114,7 +115,7 @@ export function getDpmPositionDataV2$(
           : of(undefined),
         of(hasMultiplePositions),
       ).pipe(
-        map(([dpmProxy, position, vaultsFromApi, hasMultiplePositions]) =>
+        map(([dpmProxy, positions, position, vaultsFromApi, hasMultiplePositions]) =>
           dpmProxy && position
             ? {
                 ...dpmProxy,
@@ -129,7 +130,9 @@ export function getDpmPositionDataV2$(
                 quoteTokenAddress: position.debtTokenAddress,
                 hasMultiplePositions,
               }
-            : null,
+            : Array.isArray(positions) || !dpmProxy
+            ? null
+            : undefined,
         ),
       )
     }),

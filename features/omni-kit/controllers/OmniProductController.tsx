@@ -21,14 +21,16 @@ import type {
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useAccount } from 'helpers/useAccount'
 import { one } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import React, { type ReactNode } from 'react'
+import React, { type ReactNode, useEffect } from 'react'
 
 export interface OmniCustomStateParams<Auction, History, Position> {
   aggregatedData: { auction: Auction; history: History }
@@ -83,6 +85,8 @@ export const OmniProductController = <Auction, History, Position>({
   steps,
 }: OmniProductControllerProps<Auction, History, Position>) => {
   const { t } = useTranslation()
+
+  const { replace } = useRouter()
   const { chainId } = useAccount()
 
   const positionNetwork = getNetworkByName(networkName)
@@ -133,6 +137,10 @@ export const OmniProductController = <Auction, History, Position>({
     quoteToken,
     tokenPriceUSDData,
   })
+
+  useEffect(() => {
+    if (dpmPositionData === null) void replace(INTERNAL_LINKS.notFound)
+  }, [dpmPositionData])
 
   return (
     <WithConnection>
