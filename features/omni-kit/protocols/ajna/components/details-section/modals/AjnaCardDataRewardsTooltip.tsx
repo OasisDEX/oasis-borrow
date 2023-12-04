@@ -4,7 +4,7 @@ import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
-import { Card, Flex, Text, ThemeUIProvider } from 'theme-ui'
+import { Flex, Text, ThemeUIProvider } from 'theme-ui'
 
 interface AjnaCardDataRewardsTooltipProps {
   total: BigNumber
@@ -42,18 +42,18 @@ export function AjnaCardDataRewardsTooltip({
             <Skeleton width="64px" count={2} gap={1} />
           ) : (
             <>
-              <Card variant="vaultDetailsCardModalSmall" sx={{ mb: 2 }}>
+              <Text sx={{ fontWeight: 'semiBold', display: 'block', mb: 2 }}>
                 {formatCryptoBalance(claimable)} AJNA{' '}
                 {t('ajna.content-card.borrow-rate.tooltip-claimable-now')}
-              </Card>
-              <Card variant="vaultDetailsCardModalSmall" sx={{ mb: 2 }}>
+              </Text>
+              <Text sx={{ fontWeight: 'semiBold', display: 'block', mb: 2 }}>
                 {formatCryptoBalance(total.minus(claimable))} AJNA{' '}
                 {t('ajna.content-card.borrow-rate.tooltip-earned-claimable-next-period')}
-              </Card>
-              <Card variant="vaultDetailsCardModalSmall" sx={{ mb: 2 }}>
+              </Text>
+              <Text sx={{ fontWeight: 'semiBold', display: 'block', mb: 2 }}>
                 {formatCryptoBalance(total)} AJNA{' '}
                 {t('ajna.content-card.borrow-rate.tooltip-earned')}
-              </Card>
+              </Text>
             </>
           )}
         </Text>
