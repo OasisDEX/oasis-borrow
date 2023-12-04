@@ -100,6 +100,7 @@ export function OmniFormView({
   const flowState = useFlowState({
     ...(dpmProxy && { existingProxy: dpmProxy }),
     ...getOmniFlowStateConfig({
+      protocol,
       collateralToken,
       fee: interestRate,
       isOpening,

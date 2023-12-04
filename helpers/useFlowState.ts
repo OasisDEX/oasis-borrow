@@ -4,7 +4,6 @@ import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getPositionCreatedEventForProxyAddress } from 'features/aave/services'
-import { paybackAllAmountAllowanceMaxMultiplier } from 'features/omni-kit/constants'
 import { useEffect, useState } from 'react'
 import { combineLatest } from 'rxjs'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
@@ -29,6 +28,7 @@ export type UseFlowStateCBType = (params: UseFlowStateCBParamsType) => void
 
 export type UseFlowStateProps = {
   amount?: BigNumber
+  allowanceAmount?: BigNumber
   existingProxy?: string
   filterConsumedProxy?: (events: CreatePositionEvent[]) => boolean
   onEverythingReady?: UseFlowStateCBType
@@ -39,6 +39,7 @@ export type UseFlowStateProps = {
 
 export function useFlowState({
   amount,
+  allowanceAmount,
   existingProxy,
   filterConsumedProxy,
   onEverythingReady,
@@ -75,7 +76,7 @@ export function useFlowState({
   }
 
   const baseAllowanceContext = {
-    minimumAmount: amount?.times(paybackAllAmountAllowanceMaxMultiplier),
+    minimumAmount: allowanceAmount || amount,
     allowanceType: 'unlimited',
     token,
     error: undefined,
@@ -215,6 +216,7 @@ export function useFlowState({
         // do not update isAllowanceReady in the background if user started the allowance flow in the machine
         allowanceSubscription.unsubscribe()
       }
+
       if (value === 'txSuccess' && context.allowanceType && event.type === 'CONTINUE') {
         setAsUserAction(true)
         setAllowanceReady(true)
