@@ -13,7 +13,6 @@ import type {
   ProductHubQueryString,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
-import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { useAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import type { FC } from 'react'
@@ -29,6 +28,7 @@ interface ProductHubContentControllerProps {
   tableData: ProductHubItem[]
   onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
   limitRows?: number
+  chainId?: NetworkIds
 }
 
 export const ProductHubContentController: FC<ProductHubContentControllerProps> = ({
@@ -41,11 +41,10 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   tableData,
   onChange,
   limitRows,
+  chainId,
 }) => {
   const { AjnaSafetySwitch: ajnaSafetySwitchOn, AjnaPoolFinder: ajnaPoolFinderEnabled } =
     useAppConfig('features')
-
-  const { chainId } = useWalletManagement()
 
   const ajnaOraclessPoolPairsKeys = Object.keys(
     getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaOraclessPoolPairs,
@@ -102,6 +101,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
         selectedProduct={selectedProduct}
         selectedToken={selectedToken}
         onChange={onChange}
+        chainId={chainId}
       />
       <ProductHubTableController
         banner={banner}
