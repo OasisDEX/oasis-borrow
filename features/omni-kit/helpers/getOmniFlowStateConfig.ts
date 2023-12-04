@@ -10,7 +10,7 @@ import {
 } from 'features/omni-kit/types'
 import type { UseFlowStateProps } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
-import { LendingProtocol } from 'lendingProtocols'
+import type { LendingProtocol } from 'lendingProtocols'
 
 interface GetOmniFlowStateConfigParams {
   collateralToken: string
@@ -85,10 +85,7 @@ export function getOmniFlowStateConfig({
         }
       }
 
-      const allowanceMultiplier =
-        protocol === LendingProtocol.Ajna
-          ? paybackAllAmountAllowanceMaxMultiplier.ajna
-          : paybackAllAmountAllowanceMaxMultiplier.none
+      const allowanceMultiplier = paybackAllAmountAllowanceMaxMultiplier[protocol]
 
       return {
         amount: getMaxIncreasedValue(state.paybackAmount, fee),
