@@ -1,4 +1,5 @@
 import type BigNumber from 'bignumber.js'
+import { paybackAllAmountAllowanceMaxMultiplier } from 'features/omni-kit/constants'
 import { getMaxIncreasedValue } from 'features/omni-kit/protocols/ajna/helpers'
 import {
   OmniBorrowFormAction,
@@ -9,6 +10,7 @@ import {
 } from 'features/omni-kit/types'
 import type { UseFlowStateProps } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 
 interface GetOmniFlowStateConfigParams {
   collateralToken: string
@@ -16,6 +18,7 @@ interface GetOmniFlowStateConfigParams {
   isOpening: boolean
   quoteToken: string
   state: OmniFormState
+  protocol: LendingProtocol
 }
 
 export function getOmniFlowStateConfig({
@@ -24,8 +27,10 @@ export function getOmniFlowStateConfig({
   isOpening,
   quoteToken,
   state,
+  protocol,
 }: GetOmniFlowStateConfigParams): {
   amount: UseFlowStateProps['amount']
+  allowanceAmount?: UseFlowStateProps['amount']
   token: UseFlowStateProps['token']
 } {
   const { action } = state
@@ -72,8 +77,25 @@ export function getOmniFlowStateConfig({
         token: collateralToken,
       }
     case OmniBorrowFormAction.PaybackBorrow:
-    case OmniBorrowFormAction.WithdrawBorrow:
     case OmniMultiplyFormAction.PaybackMultiply:
+      if (!state.paybackAmount) {
+        return {
+          amount: zero,
+          token: 'ETH',
+        }
+      }
+
+      const allowanceMultiplier =
+        protocol === LendingProtocol.Ajna
+          ? paybackAllAmountAllowanceMaxMultiplier.ajna
+          : paybackAllAmountAllowanceMaxMultiplier.none
+
+      return {
+        amount: getMaxIncreasedValue(state.paybackAmount, fee),
+        allowanceAmount: getMaxIncreasedValue(state.paybackAmount, fee).times(allowanceMultiplier),
+        token: quoteToken,
+      }
+    case OmniBorrowFormAction.WithdrawBorrow:
     case OmniMultiplyFormAction.WithdrawMultiply:
       if (!state.paybackAmount) {
         return {

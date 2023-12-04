@@ -20,4 +20,7 @@ export const omniFormStepsWithTransaction: OmniSidebarStep[] = [OmniSidebarStep.
 
 export const omniLendingPriceColors = ['#D3D4D8', '#EABE4C', '#1ECBAE']
 
-export const paybackAllAmountAllowanceMaxMultiplier = one.plus(new BigNumber(0.00005)) // 1 + 0.005%
+export const paybackAllAmountAllowanceMaxMultiplier = {
+  none: one,
+  ajna: one.plus(new BigNumber(0.00005)), // 1 + 0.005%
+}
