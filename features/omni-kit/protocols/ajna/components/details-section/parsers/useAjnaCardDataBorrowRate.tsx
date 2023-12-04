@@ -8,7 +8,7 @@ import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { sparks } from 'theme/icons'
-import { Text } from 'theme-ui'
+import { Flex, Text } from 'theme-ui'
 
 interface AjnaCardDataBorrowRateParams {
   borrowRate: BigNumber
@@ -49,8 +49,8 @@ export function useAjnaCardDataBorrowRate({
       icon: sparks,
       tooltips: {
         icon: (
-          <>
-            <Text as="p">
+          <Flex as="span" sx={{ flexDirection: 'column', rowGap: 1 }}>
+            <Text>
               <Trans
                 i18nKey={
                   isOwner
@@ -61,7 +61,7 @@ export function useAjnaCardDataBorrowRate({
                 components={{ strong: <Text sx={{ fontWeight: 'semiBold' }} /> }}
               />
             </Text>
-            <Text as="p" sx={{ mt: 2 }}>
+            <Text sx={{ mt: 2 }}>
               {isLoading ? (
                 <Skeleton width="64px" count={2} gap={1} />
               ) : (
@@ -76,7 +76,7 @@ export function useAjnaCardDataBorrowRate({
                 </>
               )}
             </Text>
-          </>
+          </Flex>
         ),
       },
     }),

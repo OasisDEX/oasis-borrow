@@ -10,7 +10,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, EMPTY, of } from 'rxjs'
-import { catchError, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
+import { catchError, map, shareReplay, switchMap } from 'rxjs/operators'
 import { PositionCreated__factory } from 'types/ethers-contracts'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
@@ -179,7 +179,6 @@ export function createReadPositionCreatedEvents$(
     switchMap(([{ chainId }, positionCreatedEvents]) =>
       of(mapEvent(positionCreatedEvents, chainId)),
     ),
-    startWith([]),
     shareReplay(1),
   )
 }

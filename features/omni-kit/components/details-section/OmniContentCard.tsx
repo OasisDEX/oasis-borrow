@@ -71,6 +71,7 @@ export function OmniContentCard({
         {icon &&
           (iconTooltip ? (
             <StatefulTooltip
+              inline
               tooltip={iconTooltip}
               containerSx={{ position: 'relative', top: '2px', display: 'inline-block', mr: 1 }}
               tooltipSx={{
