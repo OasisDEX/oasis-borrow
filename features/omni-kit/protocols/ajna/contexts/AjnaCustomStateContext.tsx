@@ -39,7 +39,7 @@ export const AjnaCustomStateContextProvider: FC<AjnaCustomState> = ({ children, 
   // ensure that price will be updated once new position state is loaded
   useMemo(() => {
     dispatch({ type: 'price-change', price })
-  }, [price])
+  }, [price?.toString()])
 
   return (
     <ajnaCustomStateContext.Provider value={{ state, dispatch }}>
