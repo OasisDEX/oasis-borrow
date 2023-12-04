@@ -6,6 +6,7 @@ import type {
 } from 'features/omni-kit/components/details-section'
 import { AjnaCardDataThresholdPriceModal } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import React from 'react'
 
 interface OmniCardDataLtvParams {
@@ -40,8 +41,11 @@ export function useAjnaCardCardThresholdPrice({
       ],
     }),
     tooltips: {
-      value: `${thresholdPrice.dp(DEFAULT_TOKEN_DIGITS)} ${unit}`,
-      change: afterThresholdPrice && `${afterThresholdPrice.dp(DEFAULT_TOKEN_DIGITS)} ${unit}`,
+      value: thresholdPrice.gt(zero) && `${thresholdPrice.dp(DEFAULT_TOKEN_DIGITS)} ${unit}`,
+      change:
+        afterThresholdPrice &&
+        afterThresholdPrice.gt(zero) &&
+        `${afterThresholdPrice.dp(DEFAULT_TOKEN_DIGITS)} ${unit}`,
       footnote: lup && `${lup.dp(DEFAULT_TOKEN_DIGITS)} ${unit}`,
     },
     modal: (
