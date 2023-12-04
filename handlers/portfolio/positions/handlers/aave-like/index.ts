@@ -20,11 +20,7 @@ import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/position
 import { getAutomationData } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import type { PortfolioPositionsHandler, PositionDetail } from 'handlers/portfolio/types'
-import {
-  formatCryptoBalance,
-  formatDecimalAsPercent,
-  formatPercent,
-} from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 
@@ -153,8 +149,9 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
   const pnlValue =
     positionHistory?.cumulativeDeposit.gt(zero) &&
     calculations.netValue
-      .minus(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
-      .div(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
+      .minus(positionHistory.cumulativeDeposit)
+      .plus(positionHistory.cumulativeWithdraw)
+      .div(positionHistory.cumulativeDeposit)
   const isShort = isShortPosition({ collateralToken: commonData.primaryToken })
   const tokensLabel = isShort
     ? `${commonData.secondaryToken}/${commonData.primaryToken}`
@@ -169,7 +166,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'pnl',
-        value: pnlValue ? formatPercent(pnlValue, { precision: 2 }) : notAvailable,
+        value: pnlValue ? formatDecimalAsPercent(pnlValue, { precision: 2 }) : notAvailable,
         accent: pnlValue ? (pnlValue.gte(zero) ? 'positive' : 'negative') : undefined,
       },
       {
