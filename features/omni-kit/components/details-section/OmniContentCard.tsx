@@ -75,7 +75,7 @@ export function OmniContentCard({
               tooltip={iconTooltip}
               containerSx={{ position: 'relative', top: '2px', display: 'inline-block', mr: 1 }}
               tooltipSx={{
-                width: '300px',
+                width: '360px',
                 fontSize: 1,
                 whiteSpace: 'initial',
                 textAlign: 'left',

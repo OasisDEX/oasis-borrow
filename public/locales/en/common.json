@@ -2749,10 +2749,11 @@
         "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction."
       },
       "borrow-rate": {
-        "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
-        "tooltip-description-non-owner": "<strong>Earned Ajna tokens</strong>: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
-        "tooltip-value-1": "total",
-        "tooltip-value-2": "claimable today",
+        "tooltip-description": "Earned Ajna tokens: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
+        "tooltip-description-non-owner": "Earned Ajna tokens: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
+        "tooltip-claimable-now": "claimable now",
+        "tooltip-earned-claimable-next-period": "earned, claimable next period",
+        "tooltip-earned": "bonus tokens earned",
         "modal-description": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
         "modal-footnote-title": "Cost to borrow {{quoteToken}}",
         "modal-footnote-description": "The borrow rate expressed in {{quoteToken}} amount over one year. The amount is an estimate that changes with the changes in the rates. Your effective cost will be determined by your P&L."
