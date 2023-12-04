@@ -121,9 +121,7 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
                 label: t('deposit-fee'),
                 value: formatted.earnDepositFee,
                 isLoading,
-                tooltip: t('ajna.position-page.earn.common.form.deposit-fee-tooltip', {
-                  value: formatted.oneDayApy,
-                }),
+                tooltip: t('ajna.position-page.earn.common.form.deposit-fee-tooltip'),
               },
             ]
           : []),
