@@ -1,6 +1,5 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { getPoolLiquidity, negativeToZero, protocols } from '@oasisdex/dma-library'
-import { getToken } from 'blockchain/tokensMetadata'
 import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { PillAccordion } from 'components/PillAccordion'
@@ -92,6 +91,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       productType,
       quoteAddress,
       quoteBalance,
+      quoteDigits,
       quotePrecision,
       quotePrice,
       quoteToken,
@@ -211,9 +211,9 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           isFormEmpty,
           afterBuyingPower,
           shouldShowDynamicLtv,
-          debtMin: getAjnaBorrowDebtMin({ digits: getToken(quoteToken).digits, position }),
+          debtMin: getAjnaBorrowDebtMin({ digits: quoteDigits, position }),
           debtMax: getAjnaBorrowDebtMax({
-            digits: getToken(quoteToken).precision,
+            digits: quotePrecision,
             position,
             simulation,
           }),
@@ -221,7 +221,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           afterAvailableToBorrow,
           afterPositionDebt,
           collateralMax: getAjnaBorrowCollateralMax({
-            digits: getToken(collateralToken).digits,
+            digits: quoteDigits,
             position,
             simulation,
           }),
