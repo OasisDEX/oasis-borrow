@@ -92,7 +92,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       productType,
       quoteAddress,
       quoteBalance,
-      quoteDigits,
       quotePrecision,
       quotePrice,
       quoteToken,
@@ -228,7 +227,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           }),
           paybackMax: getOmniBorrowPaybackMax({
             balance: quoteBalance,
-            digits: quoteDigits,
             position,
           }),
           sidebarTitle: getAjnaSidebarTitle({
@@ -327,13 +325,22 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           })
         : undefined
 
+      const isEarnPositionEmpty =
+        earnPosition.price.isZero() && earnPosition.quoteTokenAmount.isZero()
+
+      const customReset = () =>
+        dispatch({
+          type: 'reset',
+          price: isEarnPositionEmpty ? earnPosition.pool.lowestUtilizedPrice : earnPosition.price,
+        })
+
       return {
         notifications,
         validations,
         handlers: {
           txSuccessEarnHandler: () =>
             earnContext.form.updateState('uiDropdown', OmniSidebarEarnPanel.Adjust),
-          customReset: () => dispatch({ type: 'reset', price: earnPosition.price }),
+          customReset,
         },
         filters,
         values: {
@@ -383,7 +390,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
                         OmniSidebarEarnPanel.ClaimCollateral,
                       )
                       earnContext.form.updateState('action', OmniEarnFormAction.ClaimEarn)
-                      dispatch({ type: 'reset', price: earnPosition.price })
+                      customReset()
                     },
                   },
                 ]

@@ -207,7 +207,6 @@ export function OmniFormFieldPayback({
       hasError={false}
       disabled={isDisabled || isFormFrozen}
       showMax={true}
-      // TODO: should be quoteBalance or total debt, whatever is lower, but debt is not yet available
       maxAmount={maxAmount}
       maxAuxiliaryAmount={maxAmount?.times(quotePrice)}
       maxAmountLabel={t(maxAmountLabel)}

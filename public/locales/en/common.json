@@ -2910,7 +2910,7 @@
             "token-pair-lending-price": "{{collateralToken}}/{{quoteToken}} lending price",
             "adjust-lending-price-bucket": "Adjust lending price bucket",
             "ajna-fee": "Ajna fee",
-            "deposit-fee-tooltip": "Ajna has deposit fee for deposits below current utilized liquidity as to incentivize lenders to actively lend out. The deposit fee is 1 day of interest: {{value}} of deposit",
+            "deposit-fee-tooltip": "Ajna has deposit fee of 8 hours of interest for all deposits, moving a position from a lower to higher price has no deposit fee",
             "total-deposited-into-position": "Total deposited into Position",
             "collateral-available-to-withdraw": "Collateral available to withdraw",
             "input-lending-price": "Input {{quoteToken}} Lending Price",

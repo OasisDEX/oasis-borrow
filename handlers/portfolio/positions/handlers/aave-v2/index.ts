@@ -10,11 +10,7 @@ import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/position
 import { getAaveV2DsProxyPosition } from 'handlers/portfolio/positions/handlers/aave-v2/ds-proxy-position'
 import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
-import {
-  formatCryptoBalance,
-  formatDecimalAsPercent,
-  formatPercent,
-} from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 
 const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
@@ -58,8 +54,9 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
   const pnlValue =
     positionHistory?.cumulativeDeposit.gt(zero) &&
     calculations.netValue
-      .minus(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
-      .div(positionHistory.cumulativeDeposit.minus(positionHistory.cumulativeWithdraw))
+      .minus(positionHistory.cumulativeDeposit)
+      .plus(positionHistory.cumulativeWithdraw)
+      .div(positionHistory.cumulativeDeposit)
 
   const tokensLabel = `${commonData.primaryToken}/${commonData.secondaryToken}`
   return {
@@ -71,7 +68,7 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
       },
       {
         type: 'pnl',
-        value: pnlValue ? formatPercent(pnlValue, { precision: 2 }) : notAvailable,
+        value: pnlValue ? formatDecimalAsPercent(pnlValue, { precision: 2 }) : notAvailable,
         accent: pnlValue ? (pnlValue.gte(zero) ? 'positive' : 'negative') : undefined,
       },
       {
