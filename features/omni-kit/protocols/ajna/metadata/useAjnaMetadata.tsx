@@ -92,7 +92,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       productType,
       quoteAddress,
       quoteBalance,
-      quoteDigits,
       quotePrecision,
       quotePrice,
       quoteToken,
@@ -228,7 +227,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           }),
           paybackMax: getOmniBorrowPaybackMax({
             balance: quoteBalance,
-            digits: quoteDigits,
             position,
           }),
           sidebarTitle: getAjnaSidebarTitle({
