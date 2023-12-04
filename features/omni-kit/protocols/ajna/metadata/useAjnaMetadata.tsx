@@ -362,15 +362,15 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           footerColumns: 3,
           headlineDetails: [
             {
-              label: t('ajna.position-page.earn.common.headline.current-yield'),
+              label: t('ajna.position-page.earn.common.headline.current-apy'),
               value: earnPosition.pool.lendApr
                 ? formatDecimalAsPercent(earnPosition.pool.lendApr)
                 : '-',
             },
             {
-              label: t('ajna.position-page.earn.common.headline.30-day-avg'),
-              value: earnPosition.poolApy.per30d
-                ? formatDecimalAsPercent(earnPosition.pool.apr30dAverage)
+              label: t('ajna.position-page.earn.common.headline.7-days-avg-apy'),
+              value: earnPosition.poolApy.per7d
+                ? formatDecimalAsPercent(earnPosition.poolApy.per7d)
                 : '-',
             },
           ],

@@ -2764,36 +2764,8 @@
         "modal-description": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt."
       }
     },
-    "product-page": {
-      "borrow": {
-        "heading": {
-          "pre": "Borrow against your",
-          "post": "exposure on Ajna"
-        },
-        "intro": "Select the crypto asset you want to borrow against your {{token}}"
-      },
-      "earn": {
-        "heading": {
-          "pre": "Lend",
-          "post": "to Earn on Ajna"
-        },
-        "intro": "Select the crypto asset you want to earn for lending your {{token}}"
-      },
-      "multiply": {
-        "heading": {
-          "pre": "Multiply your",
-          "post": "exposure on Ajna"
-        },
-        "intro": "Select the debt asset you want to go long on your {{token}} against"
-      }
-    },
     "position-page": {
       "common": {
-        "headline": {
-          "open": "{{collateralToken}}/{{quoteToken}} {{productType}} Position",
-          "manage": "{{collateralToken}}/{{quoteToken}} {{productType}} #{{positionId}}",
-          "current-market-price": "Current Market Price"
-        },
         "banners": {
           "tokens": {
             "title": "This position earns AJNA tokens",
@@ -2885,25 +2857,14 @@
         "common": {
           "form": {
             "origination-fee": "{{quoteToken}} Origination Fee"
-          },
-          "footer": {
-            "available-to-borrow": "Available to borrow",
-            "available-to-borrow-modal-desc": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt.",
-            "available-to-withdraw": "Available to withdraw",
-            "available-to-withdraw-modal-desc": "This the the amount of collateral you can withdraw taking into account the current max LTV and debt of the position.",
-            "borrow-rate": "Borrow Rate",
-            "borrow-rate-modal-desc": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
-            "earned-ajna-tokens": "Earned Ajna tokens",
-            "earned-ajna-tokens-tooltip-desc": "You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released."
           }
         }
       },
       "earn": {
         "common": {
           "headline": {
-            "current-yield": "Current yield",
-            "30-day-avg": "30 Day Avg",
-            "current-market-price": "Current Market Price"
+            "current-apy": "Current APY",
+            "7-days-avg-apy": "7 days average APY"
           },
           "form": {
             "max-ltv-to-lend-at": "Max LTV to lend at",
@@ -2975,16 +2936,6 @@
               "title": "This position has some collateral tokens to withdraw",
               "message": "This position deposit was traded for collateral tokens due to market changes. You won't be earning any yield for collateral tokens. <0>Read more about Ajna Lending →</0>"
             }
-          }
-        }
-      },
-      "multiply": {
-        "common": {
-          "footer": {
-            "total-exposure": "Total {{token}} Exposure",
-            "position-debt": "Position debt",
-            "multiple": "Multiple",
-            "buying-power": "Buying power"
           }
         }
       }
