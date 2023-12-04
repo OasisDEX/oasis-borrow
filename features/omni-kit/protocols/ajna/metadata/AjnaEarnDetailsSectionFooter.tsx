@@ -35,17 +35,14 @@ export const AjnaEarnDetailsSectionFooter: FC<AjnaEarnDetailsSectionFooterProps>
 }) => {
   return (
     <>
-      {isOpening && (
+      {isOpening ? (
         <AjnaContentFooterEarnOpen
-          days={30}
-          quoteToken={quoteToken}
           isOracless={isOracless}
-          totalValueLockedUsd={position.pool.depositSize.times(quotePrice)}
-          totalValueLocked={position.pool.depositSize}
-          apy={position.pool.apr30dAverage}
+          position={position}
+          quotePrice={quotePrice}
+          quoteToken={quoteToken}
         />
-      )}
-      {!isOpening && (
+      ) : (
         <AjnaContentFooterEarnManage
           isLoading={isSimulationLoading}
           collateralToken={collateralToken}

@@ -359,7 +359,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             position: earnPosition,
             isOracless,
           }),
-          footerColumns: 3,
+          footerColumns: isOpening ? 3 : 2,
           headlineDetails: [
             {
               label: t('ajna.position-page.earn.common.headline.current-apy'),

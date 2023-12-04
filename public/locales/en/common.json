@@ -2679,6 +2679,12 @@
       },
       "multiple": {
         "title": "Multiple"
+      },
+      "total-value-locked": {
+        "title": "Total Value Locked"
+      },
+      "average-apy": {
+        "title": "{{days}} days average APY"
       }
     },
     "form": {
