@@ -43,15 +43,15 @@ export function AjnaCardDataRewardsTooltip({
           ) : (
             <>
               <Text sx={{ fontWeight: 'semiBold', display: 'block', mb: 2 }}>
-                {formatCryptoBalance(claimable)} AJNA{' '}
+                {formatCryptoBalance(claimable)} $AJNA{' '}
                 {t('ajna.content-card.borrow-rate.tooltip-claimable-now')}
               </Text>
               <Text sx={{ fontWeight: 'semiBold', display: 'block', mb: 2 }}>
-                {formatCryptoBalance(total.minus(claimable))} AJNA{' '}
-                {t('ajna.content-card.borrow-rate.tooltip-earned-claimable-next-period')}
+                {formatCryptoBalance(total.minus(claimable))} $AJNA{' '}
+                {t('ajna.content-card.borrow-rate.tooltip-claimable-next-period')}
               </Text>
               <Text sx={{ fontWeight: 'semiBold', display: 'block', mb: 2 }}>
-                {formatCryptoBalance(total)} AJNA{' '}
+                {formatCryptoBalance(total)} $AJNA{' '}
                 {t('ajna.content-card.borrow-rate.tooltip-earned')}
               </Text>
             </>

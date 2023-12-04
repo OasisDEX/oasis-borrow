@@ -2752,7 +2752,7 @@
         "tooltip-description": "Earned Ajna tokens: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
         "tooltip-description-non-owner": "Earned Ajna tokens: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
         "tooltip-claimable-now": "claimable now",
-        "tooltip-earned-claimable-next-period": "earned, claimable next period",
+        "tooltip-claimable-next-period": "claimable next period",
         "tooltip-earned": "bonus tokens earned",
         "modal-description": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
         "modal-footnote-title": "Cost to borrow {{quoteToken}}",
