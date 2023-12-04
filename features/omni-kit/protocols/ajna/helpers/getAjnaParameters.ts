@@ -44,6 +44,7 @@ interface AjnaTxHandlerInput {
   quotePrecision: number
   quotePrice: BigNumber
   quoteToken: string
+  quoteBalance: BigNumber
   rpcProvider: ethers.providers.Provider
   simulation?: AjnaGenericPosition
   slippage: BigNumber
@@ -64,6 +65,7 @@ export async function getAjnaParameters({
   quotePrecision,
   quotePrice,
   quoteToken,
+  quoteBalance,
   rpcProvider,
   simulation,
   slippage,
@@ -127,6 +129,7 @@ export async function getAjnaParameters({
         dependencies,
         position,
         simulation,
+        quoteBalance,
       })
     }
 
@@ -221,6 +224,7 @@ export async function getAjnaParameters({
         dependencies,
         position,
         simulation,
+        quoteBalance,
       })
     }
     case OmniMultiplyFormAction.DepositQuoteMultiply: {

@@ -20,6 +20,7 @@ export function useAjnaTxHandler(): () => void {
       quoteToken,
       productType,
       slippage,
+      quoteBalance,
     },
   } = useOmniGeneralContext()
   const {
@@ -55,6 +56,7 @@ export function useAjnaTxHandler(): () => void {
         quotePrecision,
         quotePrice,
         quoteToken,
+        quoteBalance,
         rpcProvider: getRpcProvider(context.chainId),
         slippage,
         state,
