@@ -287,7 +287,7 @@ export function DetailsSectionContentCard({
         </Box>
       )}
       {extra && (
-        <Box sx={{ pt: '12px', ...cursorStyle }} {...hightlightableItemEvents}>
+        <Box sx={{ ...cursorStyle }} {...hightlightableItemEvents}>
           {extra}
         </Box>
       )}

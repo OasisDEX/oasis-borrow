@@ -21,7 +21,7 @@ export function useAjnaCardDataTotalEarnings({
   withoutFees,
 }: AjnaCardDataTotalEarningsParams): OmniContentCardBase & OmniContentCardExtra {
   return {
-    title: { key: `ajna.content-card.total-earnings.title` },
+    title: { key: 'ajna.content-card.total-earnings.title' },
     value: formatCryptoBalance(withoutFees),
     unit: quoteToken,
     ...(pnlUSD && {

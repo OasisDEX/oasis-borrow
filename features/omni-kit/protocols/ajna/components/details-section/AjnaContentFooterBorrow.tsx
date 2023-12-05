@@ -9,7 +9,7 @@ import {
 } from 'features/omni-kit/components/details-section'
 import {
   useAjnaCardDataAvailableToBorrow,
-  useAjnaCardDataAvailableToWithdraw,
+  useAjnaCardDataAvailableToWithdrawLending,
   useAjnaCardDataBorrowRate,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
 import React from 'react'
@@ -80,7 +80,7 @@ export function AjnaContentFooterBorrow({
     tokensSymbol: collateralToken,
     translationCardName: 'available-to-withdraw',
   })
-  const availableToWithdrawContentCardAjnaData = useAjnaCardDataAvailableToWithdraw({
+  const availableToWithdrawContentCardAjnaData = useAjnaCardDataAvailableToWithdrawLending({
     availableToWithdraw: position.collateralAvailable,
     collateralToken,
   })

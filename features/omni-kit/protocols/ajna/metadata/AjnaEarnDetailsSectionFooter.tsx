@@ -44,7 +44,8 @@ export const AjnaEarnDetailsSectionFooter: FC<AjnaEarnDetailsSectionFooterProps>
         />
       ) : (
         <AjnaContentFooterEarnManage
-          isLoading={isSimulationLoading}
+          position={position}
+          isSimulationLoading={isSimulationLoading}
           collateralToken={collateralToken}
           quoteToken={quoteToken}
           owner={owner}

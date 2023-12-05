@@ -21,7 +21,7 @@ export function AjnaCardDataTotalEarningsModal({
 
   return (
     <DetailsSectionContentSimpleModal
-      title={t('omni-kit.content-card.total-earnings.title')}
+      title={t('ajna.content-card.total-earnings.title')}
       description={t('ajna.content-card.total-earnings.modal-description', { quoteToken })}
       value={`${formatCryptoBalance(withoutFees)} ${quoteToken}`}
       theme={ajnaExtensionTheme}

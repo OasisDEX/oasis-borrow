@@ -19,7 +19,7 @@ export interface OmniContentCardBase {
   footnote?: OmniContentCardValue[]
   title: OmniContentCardValue
   unit?: string
-  value: OmniContentCardValue
+  value?: OmniContentCardValue
 }
 
 export interface OmniContentCardExtra {
@@ -103,7 +103,7 @@ export function OmniContentCard({
               sx={{ mt: asFooter ? 1 : 0, mr: 1 }}
             />
           ))}
-        {getContentCardValue(value, t)}
+        {value && getContentCardValue(value, t)}
       </>
     ),
     customValueColor,

@@ -2765,7 +2765,8 @@
         "modal-footnote-description": "The borrow rate expressed in {{quoteToken}} amount over one year. The amount is an estimate that changes with the changes in the rates. Your effective cost will be determined by your P&L."
       },
       "available-to-withdraw": {
-        "modal-description": "This the the amount of collateral you can withdraw taking into account the current max LTV and debt of the position."
+        "modal-description": "This the the amount of collateral you can withdraw taking into account the current max LTV and debt of the position.",
+        "modal-earn-description": "This the the amount of tokens you can withdraw that are not frozen in liquidation or being lent out."
       },
       "available-to-borrow": {
         "modal-description": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt."
@@ -2787,6 +2788,17 @@
         "modal-footnote-title-max": "Maximum Yield Price",
         "modal-footnote-description-min": "Below this lending price you will not earn any yield. Select a lending price above this level to earn.",
         "modal-footnote-description-max": "Above this lending price you will not earn any yield. Select a lending price below this level to earn."
+      },
+      "projected-annual-rewards": {
+        "title": "Projected Annual Rewards",
+        "modal-description": "At the current weekly distribution and AJNA token price the implied annual rewards rate is."
+      },
+      "total-ajna-rewards": {
+        "title": "Total AJNA Rewards",
+        "modal-description": "You have earned Ajna tokens from Summer.fi x Ajna token rewards. Claimable weekly after tokens are released.",
+        "modal-value-1": "$AJNA claimable now",
+        "modal-value-2": "$AJNA earned, claimable next period",
+        "modal-value-3": "$AJNA bonus tokens earned"
       }
     },
     "position-page": {

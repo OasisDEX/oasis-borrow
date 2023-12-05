@@ -6,23 +6,23 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 
-interface AjnaCardDataAvailableToWithdrawParams {
+interface AjnaCardDataAvailableToWithdrawEarnParams {
   availableToWithdraw: BigNumber
-  collateralToken: string
+  quoteToken: string
 }
 
-export function useAjnaCardDataAvailableToWithdraw({
+export function useAjnaCardDataAvailableToWithdrawEarn({
   availableToWithdraw,
-  collateralToken,
-}: AjnaCardDataAvailableToWithdrawParams): OmniContentCardExtra {
+  quoteToken,
+}: AjnaCardDataAvailableToWithdrawEarnParams): OmniContentCardExtra {
   const { t } = useTranslation()
 
   return {
     modal: (
       <DetailsSectionContentSimpleModal
         title={t('omni-kit.content-card.available-to-withdraw.title')}
-        description={t('ajna.content-card.available-to-withdraw.modal-description')}
-        value={`${formatCryptoBalance(availableToWithdraw)} ${collateralToken}`}
+        description={t('ajna.content-card.available-to-withdraw.modal-earn-description')}
+        value={`${formatCryptoBalance(availableToWithdraw)} ${quoteToken}`}
         theme={ajnaExtensionTheme}
       />
     ),

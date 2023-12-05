@@ -404,7 +404,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           faq: faqEarn,
           overviewContent: (
             <AjnaEarnDetailsSectionContent
-              collateralToken={collateralToken}
               depositAmount={earnContext.form.state.depositAmount}
               isOpening={isOpening}
               isOracless={isOracless}

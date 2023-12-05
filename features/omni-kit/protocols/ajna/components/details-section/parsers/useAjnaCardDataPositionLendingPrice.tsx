@@ -11,6 +11,7 @@ import { getLendingPriceColor } from 'features/omni-kit/protocols/ajna/helpers'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import React from 'react'
+import { Box } from 'theme-ui'
 
 interface AjnaCardDataPositionLendingPriceParams {
   afterLendingPrice?: BigNumber
@@ -60,7 +61,9 @@ export function useAjnaCardDataPositionLendingPrice({
       change: ['', formatCryptoBalance(resolvedAfterLendingPrice), priceFormat],
     }),
     extra: !isLoading && !resolvedAfterLendingPrice && (
-      <Steps active={lendingPriceColor.index} color={lendingPriceColor.color} count={3} />
+      <Box sx={{ pt: '12px' }}>
+        <Steps active={lendingPriceColor.index} color={lendingPriceColor.color} count={3} />
+      </Box>
     ),
     ...(isOracless && {
       tooltips: {

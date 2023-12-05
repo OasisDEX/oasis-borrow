@@ -14,5 +14,5 @@ export const getLendingPriceColor = ({
 }: GetLendingPriceColorParams): { color: string; index: number } => {
   if (price.lt(highestThresholdPrice)) return { color: omniLendingPriceColors[0], index: 0 }
   if (price.lt(lowestUtilizedPrice)) return { color: omniLendingPriceColors[1], index: 1 }
-  else return { color: omniLendingPriceColors[0], index: 3 }
+  else return { color: omniLendingPriceColors[0], index: 2 }
 }
