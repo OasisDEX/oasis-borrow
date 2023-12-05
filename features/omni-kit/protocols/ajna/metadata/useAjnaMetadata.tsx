@@ -21,6 +21,12 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
+import {
+  AjnaEarnDetailsSectionContent,
+  AjnaEarnDetailsSectionFooter,
+  AjnaLendingDetailsSectionContent,
+  AjnaLendingDetailsSectionFooter,
+} from 'features/omni-kit/protocols/ajna/components/details-section'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts'
 import { AjnaTokensBannerController } from 'features/omni-kit/protocols/ajna/controllers/AjnaTokensBannerController'
 import {
@@ -36,14 +42,10 @@ import {
   isPoolWithRewards,
 } from 'features/omni-kit/protocols/ajna/helpers'
 import {
-  AjnaEarnDetailsSectionContent,
-  AjnaEarnDetailsSectionFooter,
   AjnaEarnFormOrder,
   AjnaEarnSlider,
   AjnaExtraDropdownUiContent,
   AjnaFormContentRisk,
-  AjnaLendingDetailsSectionContent,
-  AjnaLendingDetailsSectionFooter,
   getAjnaEarnIsFormValid,
   getEarnIsFomEmpty,
 } from 'features/omni-kit/protocols/ajna/metadata'
