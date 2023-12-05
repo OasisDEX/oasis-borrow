@@ -1,47 +1,42 @@
+import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
 import {
-  formatCryptoBalance,
-  formatDecimalAsPercent,
-  formatFiatBalance,
-} from 'helpers/formatters/format'
-import { useTranslation } from 'next-i18next'
+  OmniContentCard,
+  useOmniCardDataAverageApy,
+  useOmniCardDataTokensValue,
+} from 'features/omni-kit/components/details-section'
 import React from 'react'
 
 interface AjnaContentFooterEarnOpenProps {
-  apy?: BigNumber
-  days: number
   isOracless: boolean
   quoteToken: string
-  totalValueLocked?: BigNumber
-  totalValueLockedUsd?: BigNumber
+  quotePrice: BigNumber
+  position: AjnaEarnPosition
 }
 
 export function AjnaContentFooterEarnOpen({
-  apy,
-  days,
   isOracless,
+  position,
   quoteToken,
-  totalValueLocked,
-  totalValueLockedUsd,
+  quotePrice,
 }: AjnaContentFooterEarnOpenProps) {
-  const { t } = useTranslation()
+  const totalValueLockedContentCardCommonData = useOmniCardDataTokensValue({
+    tokensAmount: position.pool.depositSize,
+    tokensSymbol: quoteToken,
+    translationCardName: 'total-value-locked',
+    usdAsDefault: true,
+    ...(!isOracless && { tokensPrice: quotePrice }),
+  })
 
-  const formatted = {
-    totalValueLocked: totalValueLocked
-      ? `${formatCryptoBalance(totalValueLocked)} ${quoteToken}`
-      : '-',
-    totalValueLockedUsd: totalValueLockedUsd ? `$${formatFiatBalance(totalValueLockedUsd)}` : '-',
-    apy: apy ? `${formatDecimalAsPercent(apy)}` : '-',
-  }
+  const averageApyContentCardCommonData = useOmniCardDataAverageApy({
+    averageApy: position.poolApy.per7d,
+    days: '7',
+  })
 
   return (
     <>
-      <DetailsSectionFooterItem
-        title={t('total-value-locked')}
-        value={isOracless ? formatted.totalValueLocked : formatted.totalValueLockedUsd}
-      />
-      <DetailsSectionFooterItem title={t('average-apy-in-days', { days })} value={formatted.apy} />
+      <OmniContentCard asFooter {...totalValueLockedContentCardCommonData} />
+      <OmniContentCard asFooter {...averageApyContentCardCommonData} />
     </>
   )
 }

@@ -1,22 +1,25 @@
-import { negativeToZero } from '@oasisdex/dma-library'
+import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
-import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
-import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
-import { Skeleton } from 'components/Skeleton'
-import { useAjnaRewards } from 'features/ajna/rewards/hooks'
+import {
+  OmniContentCard,
+  useOmniCardDataTokensValue,
+} from 'features/omni-kit/components/details-section'
+import {
+  useAjnaCardDataAvailableToWithdrawEarn,
+  useAjnaCardDataProjectedAnnualRewards,
+  useAjnaCardDataTotalAjnaRewards,
+} from 'features/omni-kit/protocols/ajna/components/details-section'
 import { isPoolWithRewards } from 'features/omni-kit/protocols/ajna/helpers'
-import { formatCryptoBalance } from 'helpers/formatters/format'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { ajnaExtensionTheme } from 'theme'
 
 interface AjnaContentFooterEarnManageProps {
+  position: AjnaEarnPosition
   afterAvailableToWithdraw?: BigNumber
   availableToWithdraw: BigNumber
   changeVariant?: ChangeVariantType
   collateralToken: string
-  isLoading?: boolean
+  isSimulationLoading?: boolean
   isOracless: boolean
   owner: string
   projectedAnnualReward: BigNumber
@@ -28,82 +31,45 @@ export function AjnaContentFooterEarnManage({
   availableToWithdraw,
   changeVariant,
   collateralToken,
-  isLoading,
+  isSimulationLoading,
   isOracless,
   owner,
   quoteToken,
 }: AjnaContentFooterEarnManageProps) {
-  const { t } = useTranslation()
-  const userAjnaRewards = useAjnaRewards(owner)
-
-  const formatted = {
-    availableToWithdraw: `${formatCryptoBalance(
-      negativeToZero(availableToWithdraw),
-    )} ${quoteToken}`,
-    afterAvailableToWithdraw:
-      afterAvailableToWithdraw &&
-      `${formatCryptoBalance(negativeToZero(afterAvailableToWithdraw))} ${quoteToken}`,
-    // projectedAnnualReward: `${formatDecimalAsPercent(projectedAnnualReward)}`,
-    // TODO: replace with value when available
-    projectedAnnualReward: 'n/a',
-    totalAjnaRewards: userAjnaRewards.isLoading ? (
-      <Skeleton width="64px" sx={{ mt: 1 }} />
-    ) : (
-      `${formatCryptoBalance(userAjnaRewards.rewards.total)} AJNA`
-    ),
+  const commonContentCardData = {
+    asFooter: true,
+    changeVariant,
+    isLoading: isSimulationLoading,
   }
+
+  const availableToWithdrawContentCardCommonData = useOmniCardDataTokensValue({
+    afterTokensAmount: afterAvailableToWithdraw,
+    tokensAmount: availableToWithdraw,
+    tokensSymbol: quoteToken,
+    translationCardName: 'available-to-withdraw',
+  })
+  const availableToWithdrawContentCardAjnaData = useAjnaCardDataAvailableToWithdrawEarn({
+    availableToWithdraw,
+    quoteToken,
+  })
+
+  const projectedAnnualRewardsContentCardAjnaData = useAjnaCardDataProjectedAnnualRewards()
+
+  const totalAjnaRewardsContentCardAjnaData = useAjnaCardDataTotalAjnaRewards({
+    owner,
+  })
 
   return (
     <>
-      <DetailsSectionFooterItem
-        title={t('system.available-to-withdraw')}
-        value={formatted.availableToWithdraw}
-        change={{
-          isLoading,
-          value: formatted.afterAvailableToWithdraw,
-          variant: changeVariant,
-        }}
-        modal={
-          <DetailsSectionContentSimpleModal
-            title={t('ajna.position-page.earn.manage.overview.available-to-withdraw')}
-            description={t(
-              'ajna.position-page.earn.manage.overview.available-to-withdraw-modal-desc',
-            )}
-            value={formatted.availableToWithdraw}
-            theme={ajnaExtensionTheme}
-          />
-        }
+      <OmniContentCard
+        {...commonContentCardData}
+        {...availableToWithdrawContentCardCommonData}
+        {...availableToWithdrawContentCardAjnaData}
       />
       {isPoolWithRewards({ collateralToken, quoteToken }) && !isOracless && (
         <>
-          <DetailsSectionFooterItem
-            title={t('ajna.position-page.earn.manage.overview.projected-annual-reward')}
-            value={formatted.projectedAnnualReward}
-            modal={
-              <DetailsSectionContentSimpleModal
-                title={t('ajna.position-page.earn.manage.overview.projected-annual-rewards')}
-                description={t(
-                  'ajna.position-page.earn.manage.overview.projected-annual-rewards-modal-desc',
-                )}
-                value={formatted.projectedAnnualReward}
-                theme={ajnaExtensionTheme}
-              />
-            }
-          />
-          <DetailsSectionFooterItem
-            title={t('ajna.position-page.earn.manage.overview.total-ajna-rewards')}
-            value={formatted.totalAjnaRewards}
-            modal={
-              <DetailsSectionContentSimpleModal
-                title={t('ajna.position-page.earn.manage.overview.total-ajna-rewards')}
-                description={t(
-                  'ajna.position-page.earn.manage.overview.total-ajna-rewards-modal-desc',
-                )}
-                value={`${formatted.totalAjnaRewards} ${t('earned')}`}
-                theme={ajnaExtensionTheme}
-              />
-            }
-          />
+          <OmniContentCard asFooter {...projectedAnnualRewardsContentCardAjnaData} />
+          <OmniContentCard asFooter {...totalAjnaRewardsContentCardAjnaData} />
         </>
       )}
     </>

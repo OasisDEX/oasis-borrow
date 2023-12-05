@@ -21,6 +21,12 @@ import {
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
 } from 'features/omni-kit/helpers'
+import {
+  AjnaEarnDetailsSectionContent,
+  AjnaEarnDetailsSectionFooter,
+  AjnaLendingDetailsSectionContent,
+  AjnaLendingDetailsSectionFooter,
+} from 'features/omni-kit/protocols/ajna/components/details-section'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts'
 import { AjnaTokensBannerController } from 'features/omni-kit/protocols/ajna/controllers/AjnaTokensBannerController'
 import {
@@ -36,20 +42,17 @@ import {
   isPoolWithRewards,
 } from 'features/omni-kit/protocols/ajna/helpers'
 import {
-  AjnaEarnDetailsSectionContent,
-  AjnaEarnDetailsSectionFooter,
   AjnaEarnFormOrder,
   AjnaEarnSlider,
   AjnaExtraDropdownUiContent,
   AjnaFormContentRisk,
-  AjnaLendingDetailsSectionContent,
-  AjnaLendingDetailsSectionFooter,
   getAjnaEarnIsFormValid,
   getEarnIsFomEmpty,
 } from 'features/omni-kit/protocols/ajna/metadata'
 import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniEarnFormAction, OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
+import { notAvailable } from 'handlers/portfolio/constants'
 import { useAppConfig } from 'helpers/config'
 import {
   formatAmount,
@@ -359,19 +362,19 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             position: earnPosition,
             isOracless,
           }),
-          footerColumns: 3,
+          footerColumns: isOpening ? 2 : 3,
           headlineDetails: [
             {
-              label: t('ajna.position-page.earn.common.headline.current-yield'),
+              label: t('ajna.position-page.earn.common.headline.current-apy'),
               value: earnPosition.pool.lendApr
                 ? formatDecimalAsPercent(earnPosition.pool.lendApr)
-                : '-',
+                : notAvailable,
             },
             {
-              label: t('ajna.position-page.earn.common.headline.30-day-avg'),
-              value: earnPosition.poolApy.per30d
-                ? formatDecimalAsPercent(earnPosition.pool.apr30dAverage)
-                : '-',
+              label: t('ajna.position-page.earn.common.headline.7-days-avg-apy'),
+              value: earnPosition.poolApy.per7d
+                ? formatDecimalAsPercent(earnPosition.poolApy.per7d)
+                : notAvailable,
             },
           ],
           extraDropdownItems: [
@@ -403,10 +406,10 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           faq: faqEarn,
           overviewContent: (
             <AjnaEarnDetailsSectionContent
-              collateralToken={collateralToken}
               depositAmount={earnContext.form.state.depositAmount}
               isOpening={isOpening}
               isOracless={isOracless}
+              isProxyWithManyPositions={isProxyWithManyPositions}
               isShort={isShort}
               isSimulationLoading={productContext.position.isSimulationLoading}
               position={earnPosition}

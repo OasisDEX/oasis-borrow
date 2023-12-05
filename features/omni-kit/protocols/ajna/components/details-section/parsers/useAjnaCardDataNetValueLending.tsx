@@ -1,10 +1,10 @@
 import type { AjnaCumulativesData } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { OmniContentCardExtra } from 'features/omni-kit/components/details-section'
-import { AjnaCardDataNetValueModal } from 'features/omni-kit/protocols/ajna/components/details-section'
+import { AjnaCardDataNetValueLendingModal } from 'features/omni-kit/protocols/ajna/components/details-section'
 import React from 'react'
 
-interface AjnaCardDataNetValueParams {
+interface AjnaCardDataNetValueLendingParams {
   collateralPrice: BigNumber
   collateralToken: string
   cumulatives: AjnaCumulativesData
@@ -13,17 +13,17 @@ interface AjnaCardDataNetValueParams {
   pnlUSD?: BigNumber
 }
 
-export function useAjnaCardDataNetValue({
+export function useAjnaCardDataNetValueLending({
   collateralPrice,
   collateralToken,
   cumulatives,
   netValue,
   pnl,
   pnlUSD,
-}: AjnaCardDataNetValueParams): OmniContentCardExtra {
+}: AjnaCardDataNetValueLendingParams): OmniContentCardExtra {
   return {
     modal: (
-      <AjnaCardDataNetValueModal
+      <AjnaCardDataNetValueLendingModal
         collateralPrice={collateralPrice}
         collateralToken={collateralToken}
         cumulatives={cumulatives}

@@ -9,7 +9,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
 
-interface OmniCardDataLtvParams {
+interface AjnaCardDataThresholdPriceParams {
   afterThresholdPrice?: BigNumber
   collateralAmount: BigNumber
   debtAmount: BigNumber
@@ -18,14 +18,14 @@ interface OmniCardDataLtvParams {
   unit: string
 }
 
-export function useAjnaCardCardThresholdPrice({
+export function useAjnaCardDataThresholdPrice({
   afterThresholdPrice,
   collateralAmount,
   debtAmount,
   lup,
   thresholdPrice,
   unit,
-}: OmniCardDataLtvParams): OmniContentCardBase & OmniContentCardExtra {
+}: AjnaCardDataThresholdPriceParams): OmniContentCardBase & OmniContentCardExtra {
   return {
     title: { key: 'ajna.content-card.threshold-price.title' },
     unit,
