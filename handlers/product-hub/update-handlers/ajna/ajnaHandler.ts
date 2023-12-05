@@ -167,9 +167,9 @@ async function getAjnaPoolData(
                 // }),
                 primaryTokenAddress: collateralTokenAddress.toLowerCase(),
                 secondaryTokenAddress: quoteTokenAddress.toLowerCase(),
-                hasRewards: isPoolWithRewards({ collateralToken, quoteToken }),
+                hasRewards: isPoolWithRewards({ collateralToken, networkId, quoteToken }),
                 tooltips: {
-                  ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
+                  ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
                     fee: productHubAjnaRewardsTooltip,
                     ...(isPoolNotEmpty && {
                       weeklyNetApy: productHubAjnaRewardsTooltip,
@@ -207,10 +207,10 @@ async function getAjnaPoolData(
                 reverseTokens: true,
                 primaryTokenAddress: quoteTokenAddress.toLowerCase(),
                 secondaryTokenAddress: collateralTokenAddress.toLowerCase(),
-                hasRewards: isPoolWithRewards({ collateralToken, quoteToken }),
+                hasRewards: isPoolWithRewards({ collateralToken, networkId, quoteToken }),
                 tooltips: {
                   ...(isPoolNotEmpty &&
-                    isPoolWithRewards({ collateralToken, quoteToken }) && {
+                    isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
                       weeklyNetApy: productHubAjnaRewardsTooltip,
                     }),
                   ...(!isPoolNotEmpty && {

@@ -1,5 +1,6 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import type { NetworkIds } from 'blockchain/networks'
 import {
   AjnaContentFooterEarnManage,
   AjnaContentFooterEarnOpen,
@@ -9,16 +10,17 @@ import type { FC } from 'react'
 import React from 'react'
 
 interface AjnaEarnDetailsSectionFooterProps {
+  afterAvailableToWithdraw?: BigNumber
   availableToWithdraw: BigNumber
   collateralToken: string
   isOpening: boolean
   isOracless: boolean
   isSimulationLoading?: boolean
+  networkId: NetworkIds
   owner: string
   position: AjnaEarnPosition
   quotePrice: BigNumber
   quoteToken: string
-  afterAvailableToWithdraw?: BigNumber
 }
 
 export const AjnaEarnDetailsSectionFooter: FC<AjnaEarnDetailsSectionFooterProps> = ({
@@ -27,6 +29,7 @@ export const AjnaEarnDetailsSectionFooter: FC<AjnaEarnDetailsSectionFooterProps>
   isOpening,
   isOracless,
   isSimulationLoading,
+  networkId,
   owner,
   position,
   quotePrice,
@@ -44,16 +47,17 @@ export const AjnaEarnDetailsSectionFooter: FC<AjnaEarnDetailsSectionFooterProps>
         />
       ) : (
         <AjnaContentFooterEarnManage
-          position={position}
-          isSimulationLoading={isSimulationLoading}
-          collateralToken={collateralToken}
-          quoteToken={quoteToken}
-          owner={owner}
+          afterAvailableToWithdraw={afterAvailableToWithdraw}
           availableToWithdraw={availableToWithdraw}
+          collateralToken={collateralToken}
+          isOracless={isOracless}
+          isSimulationLoading={isSimulationLoading}
+          networkId={networkId}
+          owner={owner}
+          position={position}
           // TODO adjust once data available in subgraph
           projectedAnnualReward={zero}
-          afterAvailableToWithdraw={afterAvailableToWithdraw}
-          isOracless={isOracless}
+          quoteToken={quoteToken}
         />
       )}
     </>

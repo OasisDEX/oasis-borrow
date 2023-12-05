@@ -89,6 +89,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       isOwner,
       isProxyWithManyPositions,
       isShort,
+      network: { id: networkId },
       owner,
       priceFormat,
       productType,
@@ -278,6 +279,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               isOracless={isOracless}
               isOwner={isOwner}
               isSimulationLoading={productContext.position.isSimulationLoading}
+              networkId={networkId}
               owner={owner}
               position={position}
               productType={productType}
@@ -286,7 +288,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               simulation={simulation}
             />
           ),
-          overviewBanner: isPoolWithRewards({ collateralToken, quoteToken }) ? (
+          overviewBanner: isPoolWithRewards({ collateralToken, networkId, quoteToken }) ? (
             <AjnaTokensBannerController isOpening={isOpening} />
           ) : undefined,
           riskSidebar,
@@ -425,6 +427,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               isOpening={isOpening}
               isOracless={isOracless}
               isSimulationLoading={productContext.position.isSimulationLoading}
+              networkId={networkId}
               position={earnPosition}
               quotePrice={quotePrice}
               quoteToken={quoteToken}
@@ -433,7 +436,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               owner={owner}
             />
           ),
-          overviewBanner: isPoolWithRewards({ collateralToken, quoteToken }) ? (
+          overviewBanner: isPoolWithRewards({ collateralToken, networkId, quoteToken }) ? (
             <AjnaTokensBannerController isOpening={isOpening} isPriceBelowLup={isPriceBelowLup} />
           ) : undefined,
           riskSidebar,

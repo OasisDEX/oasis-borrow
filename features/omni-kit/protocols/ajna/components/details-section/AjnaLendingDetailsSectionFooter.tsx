@@ -1,5 +1,6 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import type { NetworkIds } from 'blockchain/networks'
 import {
   AjnaContentFooterBorrow,
   AjnaContentFooterMultiply,
@@ -15,6 +16,7 @@ interface AjnaLendingDetailsSectionFooterProps {
   isOracless: boolean
   isOwner: boolean
   isSimulationLoading?: boolean
+  networkId: NetworkIds
   owner: string
   position: AjnaPosition
   productType: OmniProductType
@@ -30,6 +32,7 @@ export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooter
   isOracless,
   isOwner,
   isSimulationLoading,
+  networkId,
   owner,
   position,
   productType,
@@ -45,6 +48,7 @@ export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooter
       isOracless={isOracless}
       isOwner={isOwner}
       isSimulationLoading={isSimulationLoading}
+      networkId={networkId}
       owner={owner}
       position={position}
       quotePrice={quotePrice}
@@ -58,6 +62,7 @@ export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooter
       isOracless={isOracless}
       isOwner={isOwner}
       isSimulationLoading={isSimulationLoading}
+      networkId={networkId}
       owner={owner}
       position={position}
       quotePrice={quotePrice}
