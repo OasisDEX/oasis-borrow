@@ -61,9 +61,10 @@ const filterPositionWhenUrlParamsDefined = ({
         proxyAddress.toLowerCase() === proxy.toLowerCase() &&
         [collateralTokenAddress.toLowerCase(), collateralTokenSymbol].includes(collateralToken) &&
         [debtTokenAddress.toLowerCase(), debtTokenSymbol].includes(quoteToken) &&
-        (product.toLowerCase() === 'earn'
-          ? positionType.toLowerCase() === product.toLowerCase()
-          : true),
+        ((product.toLowerCase() === 'earn' &&
+          positionType.toLowerCase() === product.toLowerCase()) ||
+          (['borrow', 'multiply'].includes(product.toLocaleLowerCase()) &&
+            ['borrow', 'multiply'].includes(positionType.toLocaleLowerCase()))),
     )
 
 export function getDpmPositionDataV2$(

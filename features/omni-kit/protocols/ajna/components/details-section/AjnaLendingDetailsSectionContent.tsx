@@ -85,8 +85,10 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   const liquidationPriceContentCardCommonData = useOmniCardDataLiquidationPrice({
     afterLiquidationPrice,
     liquidationPrice,
-    ratioToCurrentPrice,
     unit: priceFormat,
+    ...(!isOracless && {
+      ratioToCurrentPrice,
+    }),
   })
   const liquidationPriceContentCardAjnaData = useAjnaCardDataLiquidationPrice({
     afterLiquidationPrice,
