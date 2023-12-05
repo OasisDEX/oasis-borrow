@@ -30,7 +30,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       productType,
       quoteAddress,
       quoteBalance,
-      quoteDigits,
       quotePrice,
       quoteToken,
     },
@@ -85,7 +84,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           collateralMax: new BigNumber(50),
           paybackMax: getOmniBorrowPaybackMax({
             balance: quoteBalance,
-            digits: quoteDigits,
             position,
           }),
           sidebarTitle: useMorphoSidebarTitle({

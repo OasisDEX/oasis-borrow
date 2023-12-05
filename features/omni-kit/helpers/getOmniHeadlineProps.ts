@@ -44,6 +44,6 @@ export function getOmniHeadlineProps({
             protocol,
           },
         }
-      : { header: '' }),
+      : {}),
   }
 }

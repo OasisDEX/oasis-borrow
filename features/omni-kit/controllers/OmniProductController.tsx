@@ -21,14 +21,16 @@ import type {
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useAccount } from 'helpers/useAccount'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import React, { type ReactNode } from 'react'
+import React, { type ReactNode, useEffect } from 'react'
 
 export interface OmniCustomStateParams<Auction, History, Position> {
   aggregatedData: { auction: Auction; history: History }
@@ -43,13 +45,14 @@ export interface OmniCustomStateParams<Auction, History, Position> {
 }
 
 interface OmniProductControllerProps<Auction, History, Position> {
-  collateralToken?: string
+  collateralToken: string
   customState?: (params: OmniCustomStateParams<Auction, History, Position>) => ReactNode
   isOracless?: boolean
   networkName: NetworkNames
   positionId?: string
-  productType?: OmniProductType
+  productType: OmniProductType
   protocol: LendingProtocol
+  protocolRaw: string
   protocolHook: (params: ProductDataProps) => {
     data: {
       aggregatedData: { auction: Auction; history: History } | undefined
@@ -59,7 +62,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
     isOracless: boolean
     redirect: string | undefined
   }
-  quoteToken?: string
+  quoteToken: string
   seoTags: {
     productKey: string
     descriptionKey: string
@@ -75,13 +78,16 @@ export const OmniProductController = <Auction, History, Position>({
   positionId,
   productType,
   protocol,
+  protocolRaw,
   protocolHook,
   quoteToken,
   seoTags,
   steps,
 }: OmniProductControllerProps<Auction, History, Position>) => {
   const { t } = useTranslation()
-  const { chainId } = useAccount()
+
+  const { replace } = useRouter()
+  const { chainId, isConnected } = useAccount()
 
   const positionNetwork = getNetworkByName(networkName)
   const walletNetwork = getNetworkById(chainId || positionNetwork.id)
@@ -115,6 +121,7 @@ export const OmniProductController = <Auction, History, Position>({
     isOracless,
     productType,
     protocol,
+    protocolRaw,
     quoteToken,
     networkId: resolvedNetwork.id,
   })
@@ -130,6 +137,10 @@ export const OmniProductController = <Auction, History, Position>({
     quoteToken,
     tokenPriceUSDData,
   })
+
+  useEffect(() => {
+    if (dpmPositionData === null) void replace(INTERNAL_LINKS.notFound)
+  }, [dpmPositionData])
 
   return (
     <WithConnection>
@@ -194,7 +205,7 @@ export const OmniProductController = <Auction, History, Position>({
                     />
                     <OmniGeneralContextProvider
                       collateralAddress={dpmPosition.collateralTokenAddress}
-                      collateralBalance={collateralBalance}
+                      collateralBalance={isConnected ? collateralBalance : zero}
                       collateralDigits={collateralDigits}
                       collateralIcon={tokensIcons.collateralToken}
                       collateralPrecision={collateralPrecision}
@@ -216,7 +227,7 @@ export const OmniProductController = <Auction, History, Position>({
                       productType={castedProductType}
                       protocol={protocol}
                       quoteAddress={dpmPosition.quoteTokenAddress}
-                      quoteBalance={quoteBalance}
+                      quoteBalance={isConnected ? quoteBalance : zero}
                       quoteDigits={quoteDigits}
                       quoteIcon={tokensIcons.quoteToken}
                       quotePrecision={quotePrecision}

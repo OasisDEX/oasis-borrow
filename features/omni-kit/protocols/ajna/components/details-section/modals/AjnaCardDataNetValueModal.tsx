@@ -14,6 +14,7 @@ interface AjnaCardDataNetValueModalProps {
   cumulatives: AjnaCumulativesData
   netValue: BigNumber
   pnl?: BigNumber
+  pnlUSD?: BigNumber
 }
 
 interface AjnaCardDataNetValueModalGridRowProps {
@@ -50,6 +51,7 @@ export function AjnaCardDataNetValueModal({
   cumulatives,
   netValue,
   pnl,
+  pnlUSD,
 }: AjnaCardDataNetValueModalProps) {
   const { t } = useTranslation()
 
@@ -60,7 +62,7 @@ export function AjnaCardDataNetValueModal({
         <Trans
           i18nKey="ajna.content-card.net-value.modal-description"
           values={{ collateralPrice: formatCryptoBalance(collateralPrice) }}
-          components={{ stron: <strong /> }}
+          components={{ strong: <Text sx={{ fontWeight: 'semiBold' }} /> }}
         />
       }
       theme={ajnaExtensionTheme}
@@ -117,15 +119,15 @@ export function AjnaCardDataNetValueModal({
           secondColumn={`$${formatCryptoBalance(cumulatives.borrowCumulativeFeesUSD)}`}
         />
       </Grid>
-      {pnl && (
+      {pnlUSD && pnl && (
         <>
           <Card variant="vaultDetailsCardModal" sx={{ textAlign: 'center' }}>
             <Text as="p" variant="paragraph4" sx={{ color: 'neutral80' }}>
               {t('ajna.content-card.net-value.modal-value')}
             </Text>
             <Text as="p" variant="paragraph1" sx={{ fontWeight: 'regular' }}>
-              {pnl.gte(zero) ? '+' : '-'}
-              {formatDecimalAsPercent(pnl)} / ${formatCryptoBalance(pnl)}
+              {pnlUSD.gte(zero) ? '+' : '-'}
+              {formatDecimalAsPercent(pnl)} / ${formatCryptoBalance(pnlUSD)}
             </Text>
           </Card>
 

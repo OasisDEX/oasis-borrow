@@ -23,6 +23,7 @@ export interface OmniContentCardBase {
 }
 
 export interface OmniContentCardExtra {
+  asFooter?: boolean
   changeVariant?: ChangeVariantType
   extra?: ReactNode
   icon?: IconProps['icon']
@@ -43,6 +44,7 @@ function getContentCardValue(value: string | OmniContentCardTranslation, t: Tran
 }
 
 export function OmniContentCard({
+  asFooter,
   change,
   changeVariant,
   extra,
@@ -69,6 +71,7 @@ export function OmniContentCard({
         {icon &&
           (iconTooltip ? (
             <StatefulTooltip
+              inline
               tooltip={iconTooltip}
               containerSx={{ position: 'relative', top: '2px', display: 'inline-block', mr: 1 }}
               tooltipSx={{
@@ -83,10 +86,20 @@ export function OmniContentCard({
                 lineHeight: 'body',
               }}
             >
-              <Icon size={24} icon={icon} color="interactive100" />
+              <Icon
+                size={asFooter ? 16 : 24}
+                icon={icon}
+                color="interactive100"
+                sx={{ mt: asFooter ? 1 : 0 }}
+              />
             </StatefulTooltip>
           ) : (
-            <Icon size={24} icon={icon} color="interactive100" sx={{ mr: 1 }} />
+            <Icon
+              size={asFooter ? 16 : 24}
+              icon={icon}
+              color="interactive100"
+              sx={{ mt: asFooter ? 1 : 0, mr: 1 }}
+            />
           ))}
         {getContentCardValue(value, t)}
       </>
@@ -106,6 +119,7 @@ export function OmniContentCard({
     }),
     extra,
     modal,
+    asFooter,
   }
 
   return <DetailsSectionContentCard {...contentCardSettings} />

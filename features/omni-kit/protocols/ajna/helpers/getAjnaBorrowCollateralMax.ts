@@ -1,4 +1,5 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
+import { protocols } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 
 interface AjnaBorrowCollateralMaxParams {
@@ -20,6 +21,10 @@ export function getAjnaBorrowCollateralMax({
   const resolvedLowestUtilizedPrice = simulation?.pool.lowestUtilizedPrice || lowestUtilizedPrice
 
   return collateralAmount
-    .minus(resolvedDebtAmount.div(resolvedLowestUtilizedPrice))
+    .minus(
+      resolvedDebtAmount
+        .times(protocols.ajna.ajnaCollateralizationFactor)
+        .div(resolvedLowestUtilizedPrice),
+    )
     .decimalPlaces(digits, BigNumber.ROUND_DOWN)
 }

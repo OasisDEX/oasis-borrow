@@ -10,7 +10,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, EMPTY, of } from 'rxjs'
-import { catchError, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
+import { catchError, map, shareReplay, switchMap } from 'rxjs/operators'
 import { PositionCreated__factory } from 'types/ethers-contracts'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
@@ -22,6 +22,7 @@ export type PositionCreated = {
   debtTokenAddress: string
   positionType: PositionType
   protocol: LendingProtocol
+  protocolRaw: string
   chainId: NetworkIds
   proxyAddress: string
 }
@@ -74,6 +75,7 @@ function mapEvent(
         debtTokenSymbol: getTokenSymbolBasedOnAddress(chainId, e.args.debtToken),
         debtTokenAddress: e.args.debtToken,
         protocol: extractLendingProtocolFromPositionCreatedEvent(e),
+        protocolRaw: e.args.protocol,
         chainId,
         proxyAddress: e.args.proxyAddress,
       }
@@ -94,6 +96,7 @@ export function extractLendingProtocolFromPositionCreatedEvent(
     case 'Ajna':
     case 'AJNA_RC5':
     case 'Ajna_rc9':
+    case 'Ajna_rc10':
       return LendingProtocol.Ajna
     case 'MorphoBlue':
       return LendingProtocol.MorphoBlue
@@ -139,6 +142,7 @@ export async function getLastCreatedPositionForProxy(
     debtTokenSymbol: getTokenSymbolBasedOnAddress(chainId, lastEvent!.args.debtToken),
     debtTokenAddress: lastEvent!.args.debtToken,
     protocol: extractLendingProtocolFromPositionCreatedEvent(lastEvent!),
+    protocolRaw: lastEvent.args.protocol,
     chainId,
     proxyAddress: lastEvent!.args.proxyAddress,
   }
@@ -175,7 +179,6 @@ export function createReadPositionCreatedEvents$(
     switchMap(([{ chainId }, positionCreatedEvents]) =>
       of(mapEvent(positionCreatedEvents, chainId)),
     ),
-    startWith([]),
     shareReplay(1),
   )
 }

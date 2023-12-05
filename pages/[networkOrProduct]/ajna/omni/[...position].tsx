@@ -6,7 +6,7 @@ import { isAddress } from 'ethers/lib/utils'
 import { ajnaSeoTags } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { OmniProductController } from 'features/omni-kit/controllers'
-import { ajnaOmniSteps } from 'features/omni-kit/protocols/ajna/constants'
+import { AJNA_RAW_PROTOCOL_NAME, ajnaOmniSteps } from 'features/omni-kit/protocols/ajna/constants'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
 import { useAjnaData } from 'features/omni-kit/protocols/ajna/hooks/useAjnaData'
@@ -43,6 +43,7 @@ function AjnaPositionPage(props: AjnaPositionPageProps) {
             isOracless={isOracless}
             protocol={LendingProtocol.Ajna}
             protocolHook={useAjnaData}
+            protocolRaw={AJNA_RAW_PROTOCOL_NAME}
             seoTags={ajnaSeoTags}
             steps={ajnaOmniSteps}
           />

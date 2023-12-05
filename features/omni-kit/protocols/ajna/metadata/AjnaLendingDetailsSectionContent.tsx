@@ -85,8 +85,10 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   const liquidationPriceContentCardCommonData = useOmniCardDataLiquidationPrice({
     afterLiquidationPrice,
     liquidationPrice,
-    ratioToCurrentPrice,
     unit: priceFormat,
+    ...(!isOracless && {
+      ratioToCurrentPrice,
+    }),
   })
   const liquidationPriceContentCardAjnaData = useAjnaCardDataLiquidationPrice({
     afterLiquidationPrice,
@@ -135,7 +137,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     translationCardName: 'position-debt',
     ...(!isOracless && { tokensPrice: quotePrice }),
   })
-  const collateralPositionDebtAjnaData = useAjnaCardDataPositionDebt({
+  const positionDebtContentCardAjnaData = useAjnaCardDataPositionDebt({
     debtAmount: position.debtAmount,
     quoteToken,
   })
@@ -143,14 +145,21 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   const netValueContentCardCommonData = useOmniCardDataNetValue({
     afterNetValue,
     netValue,
-    ...(!isOpening && !isProxyWithManyPositions && { pnl: position.pnl.withoutFees }),
+    ...(!isOpening &&
+      !isProxyWithManyPositions && {
+        pnlUSD: position.pnl.cumulatives.borrowCumulativeDepositUSD.times(position.pnl.withoutFees),
+      }),
   })
   const netValueContentCardAjnaData = useAjnaCardDataNetValue({
     collateralPrice,
     collateralToken,
     cumulatives: position.pnl.cumulatives,
     netValue,
-    ...(!isOpening && !isProxyWithManyPositions && { pnl: position.pnl.withoutFees }),
+    ...(!isOpening &&
+      !isProxyWithManyPositions && {
+        pnl: position.pnl.withoutFees,
+        pnlUSD: position.pnl.cumulatives.borrowCumulativeDepositUSD.times(position.pnl.withoutFees),
+      }),
   })
 
   const buyingPowerContentCardCommonData = useOmniCardDataBuyingPower({
@@ -187,7 +196,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
           <OmniContentCard
             {...commonContentCardData}
             {...positionDebtContentCardCommonData}
-            {...collateralPositionDebtAjnaData}
+            {...positionDebtContentCardAjnaData}
           />
         </>
       )}

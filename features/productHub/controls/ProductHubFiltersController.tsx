@@ -1,4 +1,4 @@
-import { isTestnetNetworkId } from 'blockchain/networks'
+import { isTestnetNetworkId, NetworkIds } from 'blockchain/networks'
 import { AssetsFiltersContainer } from 'components/assetsTable/AssetsFiltersContainer'
 import { GenericMultiselect } from 'components/GenericMultiselect'
 import { parseQueryString } from 'features/productHub/helpers'
@@ -19,7 +19,6 @@ import type {
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
-import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import type { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -37,6 +36,7 @@ interface ProductHubFiltersControllerProps {
   selectedFilters: ProductHubFilters
   selectedProduct: ProductHubProductType
   selectedToken: string
+  chainId?: NetworkIds
   onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
 }
 
@@ -48,12 +48,12 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
   selectedFilters,
   selectedProduct,
   selectedToken,
+  chainId,
   onChange,
 }) => {
   const { t } = useTranslation()
-  const { chainId } = useWalletManagement()
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
-  const isTestnet = isTestnetNetworkId(chainId)
+  const isTestnet = isTestnetNetworkId(chainId ?? NetworkIds.MAINNET)
 
   const debtTokens = useMemo(
     () =>

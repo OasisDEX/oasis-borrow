@@ -1,6 +1,5 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { getPoolLiquidity, negativeToZero, protocols } from '@oasisdex/dma-library'
-import { getToken } from 'blockchain/tokensMetadata'
 import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { PillAccordion } from 'components/PillAccordion'
@@ -84,6 +83,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       ethPrice,
       isOpening,
       isOracless,
+      isOwner,
       isProxyWithManyPositions,
       isShort,
       owner,
@@ -164,6 +164,10 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         | AjnaPosition
         | undefined
 
+      const cachedSimulation = productContext.position.cachedPosition?.simulation as
+        | AjnaPosition
+        | undefined
+
       const originationFee = getOriginationFee(position, simulation)
       const originationFeeFormatted = `${formatCryptoBalance(originationFee)} ${quoteToken}`
       const originationFeeFormattedUSD = `($${formatAmount(
@@ -174,9 +178,12 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       const lendingContext = productContext as ProductContextWithBorrow
       const shouldShowDynamicLtv = position.pool.lowestUtilizedPriceIndex.gt(zero)
 
-      const afterPositionDebt = simulation?.debtAmount.plus(originationFee)
+      const resolvedSimulation = simulation || cachedSimulation
+      const afterPositionDebt = resolvedSimulation?.debtAmount.plus(originationFee)
       const afterAvailableToBorrow =
-        simulation && negativeToZero(simulation.debtAvailable().minus(originationFee))
+        resolvedSimulation &&
+        negativeToZero(resolvedSimulation.debtAvailable().minus(originationFee))
+
       const interestRate = position.pool.interestRate
 
       const changeVariant = getOmniBorrowishChangeVariant({ simulation, isOracless })
@@ -204,9 +211,9 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           isFormEmpty,
           afterBuyingPower,
           shouldShowDynamicLtv,
-          debtMin: getAjnaBorrowDebtMin({ digits: getToken(quoteToken).digits, position }),
+          debtMin: getAjnaBorrowDebtMin({ digits: quoteDigits, position }),
           debtMax: getAjnaBorrowDebtMax({
-            digits: getToken(quoteToken).precision,
+            digits: quotePrecision,
             position,
             simulation,
           }),
@@ -214,13 +221,12 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           afterAvailableToBorrow,
           afterPositionDebt,
           collateralMax: getAjnaBorrowCollateralMax({
-            digits: getToken(collateralToken).digits,
+            digits: quoteDigits,
             position,
             simulation,
           }),
           paybackMax: getOmniBorrowPaybackMax({
             balance: quoteBalance,
-            digits: quoteDigits,
             position,
           }),
           sidebarTitle: getAjnaSidebarTitle({
@@ -230,7 +236,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             position,
             isOracless,
           }),
-          footerColumns: productType === OmniProductType.Borrow ? 3 : 2,
+          footerColumns: 2,
         },
         elements: {
           faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,
@@ -263,15 +269,16 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           ),
           overviewFooter: (
             <AjnaLendingDetailsSectionFooter
-              afterAvailableToBorrow={afterAvailableToBorrow}
-              afterBuyingPower={afterBuyingPower}
               changeVariant={changeVariant}
+              collateralPrice={collateralPrice}
               collateralToken={collateralToken}
-              interestRate={interestRate}
+              isOracless={isOracless}
+              isOwner={isOwner}
               isSimulationLoading={productContext.position.isSimulationLoading}
               owner={owner}
               position={position}
               productType={productType}
+              quotePrice={quotePrice}
               quoteToken={quoteToken}
               simulation={simulation}
             />
@@ -318,13 +325,22 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           })
         : undefined
 
+      const isEarnPositionEmpty =
+        earnPosition.price.isZero() && earnPosition.quoteTokenAmount.isZero()
+
+      const customReset = () =>
+        dispatch({
+          type: 'reset',
+          price: isEarnPositionEmpty ? earnPosition.pool.lowestUtilizedPrice : earnPosition.price,
+        })
+
       return {
         notifications,
         validations,
         handlers: {
           txSuccessEarnHandler: () =>
             earnContext.form.updateState('uiDropdown', OmniSidebarEarnPanel.Adjust),
-          customReset: () => dispatch({ type: 'reset', price: earnPosition.price }),
+          customReset,
         },
         filters,
         values: {
@@ -374,7 +390,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
                         OmniSidebarEarnPanel.ClaimCollateral,
                       )
                       earnContext.form.updateState('action', OmniEarnFormAction.ClaimEarn)
-                      dispatch({ type: 'reset', price: earnPosition.price })
+                      customReset()
                     },
                   },
                 ]
