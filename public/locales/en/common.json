@@ -2927,6 +2927,7 @@
             "disclaimer": "*Past performance is not indicative of future results."
           }
         },
+        "manage": {
           "notifications": {
             "earning-no-apy": {
               "title": "Your position is not earning any yield",
