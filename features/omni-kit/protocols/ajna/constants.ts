@@ -23,19 +23,6 @@ export const ajnaOmniSteps: OmniSidebarStepsSet = {
   },
 }
 
-export const AJNA_TOKENS_WITH_MULTIPLY = [
-  'CBETH',
-  'DAI',
-  'ETH',
-  'ETH',
-  'GHO',
-  'RETH',
-  'SDAI',
-  'USDC',
-  'WBTC',
-  'WSTETH',
-  'YFI',
-]
 export const AJNA_POOLS_WITH_REWARDS = [
   'CBETH-ETH',
   'ETH-USDC',

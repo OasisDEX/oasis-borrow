@@ -95,7 +95,11 @@ async function getAjnaPoolData(
           const isShort = isShortPosition({ collateralToken })
           // Temporary hidden yield loops products until APY solution is found
           // const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
-          const isWithMultiply = isPoolSupportingMultiply({ collateralToken, quoteToken })
+          const isWithMultiply = isPoolSupportingMultiply({
+            collateralToken,
+            networkId,
+            quoteToken,
+          })
           const collateralPrice = isOracless ? one : prices[collateralToken]
           const quotePrice = isOracless ? one : prices[quoteToken]
           const marketPrice = collateralPrice.div(quotePrice)
