@@ -9,6 +9,7 @@ interface OmniCardDataTokensValueParams {
   tokensPrice?: BigNumber
   tokensSymbol: string
   translationCardName: string
+  usdAsDefault?: boolean
 }
 
 export function useOmniCardDataTokensValue({
@@ -17,15 +18,24 @@ export function useOmniCardDataTokensValue({
   tokensPrice,
   tokensSymbol,
   translationCardName,
+  usdAsDefault,
 }: OmniCardDataTokensValueParams): OmniContentCardBase {
+  const value =
+    usdAsDefault && tokensPrice
+      ? `$${formatCryptoBalance(tokensAmount.times(tokensPrice))}`
+      : formatCryptoBalance(tokensAmount)
+
   return {
     title: { key: `omni-kit.content-card.${translationCardName}.title`, values: { tokensSymbol } },
-    value: formatCryptoBalance(tokensAmount),
-    unit: tokensSymbol,
+    value,
+    ...((!usdAsDefault || !tokensPrice) && {
+      unit: tokensSymbol,
+    }),
     ...(afterTokensAmount && {
       change: ['', formatCryptoBalance(afterTokensAmount), tokensSymbol],
     }),
-    ...(tokensAmount.gt(zero) &&
+    ...(!usdAsDefault &&
+      tokensAmount.gt(zero) &&
       tokensPrice && {
         footnote: [`$${formatCryptoBalance(tokensAmount.times(tokensPrice))}`],
       }),

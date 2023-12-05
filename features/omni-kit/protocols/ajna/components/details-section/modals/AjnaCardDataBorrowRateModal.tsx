@@ -30,7 +30,7 @@ export function AjnaCardDataBorrowRateModal({
     >
       {quotePrice && (
         <>
-          <Heading variant="header5" sx={{ fontWeight: 'bold' }}>
+          <Heading variant="header5" sx={{ fontWeight: 'semiBold' }}>
             {t('ajna.content-card.borrow-rate.modal-footnote-title', { quoteToken })}
           </Heading>
           <Text variant="paragraph3" as="p" sx={{ color: 'neutral80' }}>
