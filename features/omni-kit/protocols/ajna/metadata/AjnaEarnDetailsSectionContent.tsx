@@ -2,10 +2,15 @@ import { type AjnaEarnPosition, normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import {
+  OmniContentCard,
+  useOmniCardDataTokensValue,
+} from 'features/omni-kit/components/details-section'
+import {
   AjnaContentCardEarnNetValue,
   AjnaContentCardMaxLendingLTV,
   AjnaContentCardPositionLendingPrice,
   AjnaContentCardTotalEarnings,
+  useAjnaCardDataTotalEarnings,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
 import {
   getAjnaSimulationRows,
@@ -69,6 +74,22 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
     price: position.price,
   })
 
+  const commonContentCardData = {
+    isLoading: isSimulationLoading,
+  }
+
+  const totalEarningsContentCardCommonData = useOmniCardDataTokensValue({
+    tokensAmount: position.totalEarnings.withoutFees,
+    tokensSymbol: quoteToken,
+    translationCardName: 'total-earnings',
+    ...(!isOracless && { tokensPrice: quotePrice }),
+  })
+  const totalEarningsContentCardAjnaData = useAjnaCardDataTotalEarnings({
+    quoteToken,
+    withoutFees: position.totalEarnings.withoutFees,
+    ...(!isOracless && { withFees: position.totalEarnings.withFees }),
+  })
+
   return (
     <>
       {isOpening && (
@@ -84,6 +105,11 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
       )}
       {!isOpening && (
         <>
+          <OmniContentCard
+            {...commonContentCardData}
+            {...totalEarningsContentCardCommonData}
+            {...totalEarningsContentCardAjnaData}
+          />
           <AjnaContentCardTotalEarnings
             quoteToken={quoteToken}
             totalEarnings={position.totalEarnings.withFees}

@@ -99,7 +99,8 @@ export function AjnaContentFooterBorrow({
   return (
     <>
       <OmniContentCard
-        {...commonContentCardData}
+        asFooter
+        changeVariant={changeVariant}
         {...borrowRateContentCardCommonData}
         {...borrowRateContentCardAjnaData}
       />

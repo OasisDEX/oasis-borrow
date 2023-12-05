@@ -1,5 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import type { OmniContentCardBase } from 'features/omni-kit/components/details-section'
+import { notAvailable } from 'handlers/portfolio/constants'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 
 interface OmniCardDataAverageApyParams {
@@ -15,7 +16,7 @@ export function useOmniCardDataAverageApy({
 }: OmniCardDataAverageApyParams): OmniContentCardBase {
   return {
     title: { key: 'omni-kit.content-card.average-apy.title', values: { days } },
-    value: averageApy ? formatDecimalAsPercent(averageApy) : '-',
+    value: averageApy ? formatDecimalAsPercent(averageApy) : notAvailable,
     ...(afterAverageApy && {
       change: [formatDecimalAsPercent(afterAverageApy)],
     }),

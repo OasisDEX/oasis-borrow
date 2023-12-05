@@ -2685,6 +2685,9 @@
       },
       "average-apy": {
         "title": "{{days}} days average APY"
+      },
+      "total-earnings": {
+        "title": "Total Earnings"
       }
     },
     "form": {
@@ -2768,6 +2771,10 @@
       },
       "available-to-borrow": {
         "modal-description": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt."
+      },
+      "total-earnings": {
+        "modal-description": "The amount of {{quoteToken}} you have earned since this position was opened. The total earnings you have made from this position excluding any gas costs are:",
+        "modal-footnote-description": "Including gas costs, your net earnings on this pool are:"
       }
     },
     "position-page": {

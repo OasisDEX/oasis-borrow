@@ -50,6 +50,7 @@ import {
 import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniEarnFormAction, OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
+import { notAvailable } from 'handlers/portfolio/constants'
 import { useAppConfig } from 'helpers/config'
 import {
   formatAmount,
@@ -359,19 +360,19 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             position: earnPosition,
             isOracless,
           }),
-          footerColumns: isOpening ? 3 : 2,
+          footerColumns: isOpening ? 2 : 3,
           headlineDetails: [
             {
               label: t('ajna.position-page.earn.common.headline.current-apy'),
               value: earnPosition.pool.lendApr
                 ? formatDecimalAsPercent(earnPosition.pool.lendApr)
-                : '-',
+                : notAvailable,
             },
             {
               label: t('ajna.position-page.earn.common.headline.7-days-avg-apy'),
               value: earnPosition.poolApy.per7d
                 ? formatDecimalAsPercent(earnPosition.poolApy.per7d)
-                : '-',
+                : notAvailable,
             },
           ],
           extraDropdownItems: [

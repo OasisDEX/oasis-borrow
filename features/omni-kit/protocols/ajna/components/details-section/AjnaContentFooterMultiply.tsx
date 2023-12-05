@@ -85,7 +85,8 @@ export function AjnaContentFooterMultiply({
   return (
     <>
       <OmniContentCard
-        {...commonContentCardData}
+        asFooter
+        changeVariant={changeVariant}
         {...totalCollateralExposureContentCardCommonData}
       />
       <OmniContentCard
