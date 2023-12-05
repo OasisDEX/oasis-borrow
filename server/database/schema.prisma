@@ -356,6 +356,7 @@ model AjnaRewardsDailyClaim {
   timestamp       DateTime                @default(now())
   chain_id        Int
   account_address String
+  pool_address    String
   user_address    String
   amount          String
   source          AjnaRewardsSource
@@ -364,7 +365,7 @@ model AjnaRewardsDailyClaim {
   week_number Int
   day_number  Int
 
-  @@unique([day_number, account_address, chain_id, source, type], name: "day_number_account_address_chain_id_source_type_unique_id")
+  @@unique([day_number, pool_address, account_address, chain_id, source, type], name: "day_number_pool_address_account_address_chain_id_source_type_unique_id")
   @@map("ajna_rewards_daily_claim")
 }
 
