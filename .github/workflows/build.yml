@@ -24,6 +24,19 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+      - name: Check for duplicate migration prefixes
+        run: |
+          duplicates=$(ls server/database/migrations/*.sql | awk -F'-' '{print $1}' | sort | uniq -d)
+          if [[ -n "$duplicates" ]]; then
+            echo "Duplicate prefixes found: $duplicates"
+            exit 1
+          fi     
+          last_two_files=$(ls server/database/migrations/*.sql | sort | tail -n 2 | xargs -n 1 basename | cut -d'-' -f1)
+          readarray -t numbers <<< "$last_two_files"
+          if (( 10#${numbers[1]} != 10#${numbers[0]}+1 )); then
+            echo "The last two migration files do not have consecutive numbers: ${numbers[0]} and ${numbers[1]}"
+            exit 1
+          fi       
       - name: Install packages
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn --no-progress --non-interactive --frozen-lockfile
