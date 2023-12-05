@@ -103,7 +103,9 @@ export function AjnaContentFooterBorrow({
         {...borrowRateContentCardCommonData}
         {...borrowRateContentCardAjnaData}
       />
-      <OmniContentCard {...commonContentCardData} {...netValueContentCardCommonData} />
+      {!isOracless && (
+        <OmniContentCard {...commonContentCardData} {...netValueContentCardCommonData} />
+      )}
       <OmniContentCard
         {...commonContentCardData}
         {...availableToWithdrawContentCardCommonData}
