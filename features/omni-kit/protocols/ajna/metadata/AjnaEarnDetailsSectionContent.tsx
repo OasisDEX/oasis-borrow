@@ -1,4 +1,4 @@
-import { type AjnaEarnPosition, normalizeValue } from '@oasisdex/dma-library'
+import { type AjnaEarnPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import {
@@ -6,27 +6,21 @@ import {
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import {
-  AjnaContentCardEarnNetValue,
-  AjnaContentCardMaxLendingLTV,
-  AjnaContentCardPositionLendingPrice,
-  AjnaContentCardTotalEarnings,
+  useAjnaCardDataMaxLendingLtv,
+  useAjnaCardDataNetValueEarn,
+  useAjnaCardDataPositionLendingPrice,
   useAjnaCardDataTotalEarnings,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
-import {
-  getAjnaSimulationRows,
-  getLendingPriceColor,
-} from 'features/omni-kit/protocols/ajna/helpers'
-import { one } from 'helpers/zero'
+import { getAjnaSimulationRows } from 'features/omni-kit/protocols/ajna/helpers'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
-import { ajnaExtensionTheme } from 'theme'
 
 interface AjnaEarnDetailsSectionContentProps {
-  collateralToken: string
   depositAmount?: BigNumber
   isOpening: boolean
   isOracless: boolean
+  isProxyWithManyPositions: boolean
   isShort: boolean
   isSimulationLoading?: boolean
   position: AjnaEarnPosition
@@ -37,10 +31,10 @@ interface AjnaEarnDetailsSectionContentProps {
 }
 
 export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProps> = ({
-  collateralToken,
   depositAmount,
   isOpening,
   isOracless,
+  isProxyWithManyPositions,
   isShort,
   isSimulationLoading,
   position,
@@ -66,28 +60,46 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
     },
   ]
 
-  const { highestThresholdPrice, lowestUtilizedPrice } = position.pool
-
-  const lendingPriceColor = getLendingPriceColor({
-    highestThresholdPrice,
-    lowestUtilizedPrice,
-    price: position.price,
-  })
-
   const commonContentCardData = {
     isLoading: isSimulationLoading,
   }
-
-  const totalEarningsContentCardCommonData = useOmniCardDataTokensValue({
-    tokensAmount: position.totalEarnings.withoutFees,
-    tokensSymbol: quoteToken,
-    translationCardName: 'total-earnings',
-    ...(!isOracless && { tokensPrice: quotePrice }),
-  })
   const totalEarningsContentCardAjnaData = useAjnaCardDataTotalEarnings({
     quoteToken,
     withoutFees: position.totalEarnings.withoutFees,
-    ...(!isOracless && { withFees: position.totalEarnings.withFees }),
+    ...(!isOracless &&
+      !isProxyWithManyPositions && {
+        pnlUSD: position.pnl.withoutFees,
+        withFees: position.totalEarnings.withFees,
+      }),
+  })
+
+  const netValueContentCardCommonData = useOmniCardDataTokensValue({
+    afterTokensAmount: simulation?.quoteTokenAmount,
+    tokensAmount: position.quoteTokenAmount,
+    tokensSymbol: quoteToken,
+    translationCardName: 'net-value',
+    ...(!isOracless && { tokensPrice: quotePrice }),
+  })
+  const netValueContentCardAjnaData = useAjnaCardDataNetValueEarn({
+    netValue: position.quoteTokenAmount,
+    quoteToken,
+  })
+
+  const maxLendingLtvContentCardAjnaData = useAjnaCardDataMaxLendingLtv({
+    afterMaxLtv: simulation?.maxRiskRatio.loanToValue,
+    maxLtv: position.maxRiskRatio.loanToValue,
+  })
+
+  const positionLendingPriceContentCardAjnaData = useAjnaCardDataPositionLendingPrice({
+    afterLendingPrice: simulation?.price,
+    highestThresholdPrice: position.pool.highestThresholdPrice,
+    isLoading: isSimulationLoading,
+    isOracless,
+    isShort,
+    lendingPrice: position.price,
+    lowestUtilizedPrice: position.pool.lowestUtilizedPrice,
+    priceFormat,
+    quoteToken,
   })
 
   return (
@@ -105,61 +117,18 @@ export const AjnaEarnDetailsSectionContent: FC<AjnaEarnDetailsSectionContentProp
       )}
       {!isOpening && (
         <>
+          <OmniContentCard {...totalEarningsContentCardAjnaData} />
           <OmniContentCard
             {...commonContentCardData}
-            {...totalEarningsContentCardCommonData}
-            {...totalEarningsContentCardAjnaData}
-          />
-          <AjnaContentCardTotalEarnings
-            quoteToken={quoteToken}
-            totalEarnings={position.totalEarnings.withFees}
-            totalEarningsWithoutFees={position.totalEarnings.withoutFees}
-            netPnL={position.pnl.withoutFees}
-            modalTheme={ajnaExtensionTheme}
-          />
-          <AjnaContentCardEarnNetValue
-            isLoading={isSimulationLoading}
-            quoteToken={quoteToken}
-            netValue={position.quoteTokenAmount}
-            netValueUSD={!isOracless ? position.quoteTokenAmount.times(quotePrice) : undefined}
-            afterNetValue={simulation?.quoteTokenAmount}
-            modalTheme={ajnaExtensionTheme}
+            {...netValueContentCardCommonData}
+            {...netValueContentCardAjnaData}
           />
           {!isOracless && (
-            <AjnaContentCardMaxLendingLTV
-              isLoading={isSimulationLoading}
-              quoteToken={quoteToken}
-              collateralToken={collateralToken}
-              maxLendingPercentage={position.maxRiskRatio.loanToValue}
-              afterMaxLendingPercentage={simulation?.maxRiskRatio.loanToValue}
-              modalTheme={ajnaExtensionTheme}
-            />
+            <OmniContentCard {...commonContentCardData} {...maxLendingLtvContentCardAjnaData} />
           )}
-          <AjnaContentCardPositionLendingPrice
-            isLoading={isSimulationLoading}
-            quoteToken={quoteToken}
-            priceFormat={priceFormat}
-            positionLendingPrice={
-              isShort ? normalizeValue(one.div(position.price)) : position.price
-            }
-            highestThresholdPrice={
-              isShort
-                ? one.div(position.pool.highestThresholdPrice)
-                : position.pool.highestThresholdPrice
-            }
-            afterPositionLendingPrice={
-              simulation
-                ? isShort
-                  ? normalizeValue(one.div(simulation.price))
-                  : simulation?.price
-                : undefined
-            }
-            isShort={isShort}
-            priceColor={lendingPriceColor.color}
-            priceColorIndex={lendingPriceColor.index}
-            steps={3}
-            withTooltips={isOracless}
-            modalTheme={ajnaExtensionTheme}
+          <OmniContentCard
+            {...commonContentCardData}
+            {...positionLendingPriceContentCardAjnaData}
           />
         </>
       )}

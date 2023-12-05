@@ -2685,9 +2685,6 @@
       },
       "average-apy": {
         "title": "{{days}} days average APY"
-      },
-      "total-earnings": {
-        "title": "Total Earnings"
       }
     },
     "form": {
@@ -2755,7 +2752,8 @@
         "modal-table-row-4": "Gas Fees Spent",
         "modal-value": "Unrealised Profit & Loss",
         "modal-footnote-1": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative deposits",
-        "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction."
+        "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction.",
+        "modal-earn-description": "The total amount of tokens available in position, this includes the earned amount."
       },
       "borrow-rate": {
         "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
@@ -2773,8 +2771,22 @@
         "modal-description": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt."
       },
       "total-earnings": {
+        "title": "Total Earnings",
+        "footnote": "Profit and Loss:",
         "modal-description": "The amount of {{quoteToken}} you have earned since this position was opened. The total earnings you have made from this position excluding any gas costs are:",
         "modal-footnote-description": "Including gas costs, your net earnings on this pool are:"
+      },
+      "max-lending-ltv": {
+        "title": "Max Lending LTV",
+        "modal-description": "The max lending LTV represents the terms you are offering to borrowers. Your selected price divided the market price represents the maximum LTV you are allowing others to borrow against their collateral for your lent asset."
+      },
+      "position-lending-price": {
+        "title": "Position Lending Price",
+        "modal-description": "The lending price is akin to a limit order, if the market price hits the selected price you will be left with collateral tokens. It's expected that borrowers are liquidated some time before your price is reached, and you will be able to withdraw funds in the token you deposited.",
+        "modal-footnote-title-min": "Minimum Yield Price",
+        "modal-footnote-title-max": "Maximum Yield Price",
+        "modal-footnote-description-min": "Below this lending price you will not earn any yield. Select a lending price above this level to earn.",
+        "modal-footnote-description-max": "Above this lending price you will not earn any yield. Select a lending price below this level to earn."
       }
     },
     "position-page": {

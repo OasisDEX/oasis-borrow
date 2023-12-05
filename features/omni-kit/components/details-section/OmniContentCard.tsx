@@ -25,6 +25,7 @@ export interface OmniContentCardBase {
 export interface OmniContentCardExtra {
   asFooter?: boolean
   changeVariant?: ChangeVariantType
+  customValueColor?: string
   extra?: ReactNode
   icon?: IconProps['icon']
   isLoading?: boolean
@@ -47,6 +48,7 @@ export function OmniContentCard({
   asFooter,
   change,
   changeVariant,
+  customValueColor,
   extra,
   footnote,
   icon,
@@ -104,6 +106,7 @@ export function OmniContentCard({
         {getContentCardValue(value, t)}
       </>
     ),
+    customValueColor,
     valueTooltip: valueTooltip,
     unit,
     change: {

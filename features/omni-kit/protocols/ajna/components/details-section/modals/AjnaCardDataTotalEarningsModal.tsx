@@ -4,7 +4,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
-import { Card, Heading, Text } from 'theme-ui'
+import { Card, Text } from 'theme-ui'
 
 interface AjnaCardDataTotalEarningsModalProps {
   quoteToken: string

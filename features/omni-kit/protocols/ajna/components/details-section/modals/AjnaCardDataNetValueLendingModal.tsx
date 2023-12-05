@@ -8,7 +8,7 @@ import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 import { Box, Card, Divider, Flex, Grid, Text } from 'theme-ui'
 
-interface AjnaCardDataNetValueModalProps {
+interface AjnaCardDataNetValueLendingModalProps {
   collateralPrice: BigNumber
   collateralToken: string
   cumulatives: AjnaCumulativesData
@@ -17,17 +17,17 @@ interface AjnaCardDataNetValueModalProps {
   pnlUSD?: BigNumber
 }
 
-interface AjnaCardDataNetValueModalGridRowProps {
+interface AjnaCardDataNetValueLendingModalGridRowProps {
   firstColumn: string
   label: string
   secondColumn: string
 }
 
-function AjnaCardDataNetValueModalGridRow({
+function AjnaCardDataNetValueLendingModalGridRow({
   firstColumn,
   label,
   secondColumn,
-}: AjnaCardDataNetValueModalGridRowProps) {
+}: AjnaCardDataNetValueLendingModalGridRowProps) {
   return (
     <>
       <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
@@ -45,14 +45,14 @@ function AjnaCardDataNetValueModalGridRow({
   )
 }
 
-export function AjnaCardDataNetValueModal({
+export function AjnaCardDataNetValueLendingModal({
   collateralPrice,
   collateralToken,
   cumulatives,
   netValue,
   pnl,
   pnlUSD,
-}: AjnaCardDataNetValueModalProps) {
+}: AjnaCardDataNetValueLendingModalProps) {
   const { t } = useTranslation()
 
   return (
@@ -82,7 +82,7 @@ export function AjnaCardDataNetValueModal({
         <Text variant="paragraph4" sx={{ color: 'neutral80' }}>
           {t('ajna.content-card.net-value.modal-table-col-2')}
         </Text>
-        <AjnaCardDataNetValueModalGridRow
+        <AjnaCardDataNetValueLendingModalGridRow
           label={t('ajna.content-card.net-value.modal-table-row-1')}
           firstColumn={`${formatCryptoBalance(netValue.div(collateralPrice))} ${collateralToken}`}
           secondColumn={`$${formatCryptoBalance(netValue)}`}
@@ -97,21 +97,21 @@ export function AjnaCardDataNetValueModal({
           gap: 2,
         }}
       >
-        <AjnaCardDataNetValueModalGridRow
+        <AjnaCardDataNetValueLendingModalGridRow
           label={t('ajna.content-card.net-value.modal-table-row-2')}
           firstColumn={`${formatCryptoBalance(
             cumulatives.borrowCumulativeDepositUSD.div(collateralPrice),
           )} ${collateralToken}`}
           secondColumn={`$${formatCryptoBalance(cumulatives.borrowCumulativeDepositUSD)}`}
         />
-        <AjnaCardDataNetValueModalGridRow
+        <AjnaCardDataNetValueLendingModalGridRow
           label={t('ajna.content-card.net-value.modal-table-row-3')}
           firstColumn={`${formatCryptoBalance(
             cumulatives.borrowCumulativeWithdrawUSD.div(collateralPrice),
           )} ${collateralToken}`}
           secondColumn={`$${formatCryptoBalance(cumulatives.borrowCumulativeWithdrawUSD)}`}
         />
-        <AjnaCardDataNetValueModalGridRow
+        <AjnaCardDataNetValueLendingModalGridRow
           label={t('ajna.content-card.net-value.modal-table-row-4')}
           firstColumn={`${formatCryptoBalance(
             cumulatives.borrowCumulativeFeesUSD.div(collateralPrice),

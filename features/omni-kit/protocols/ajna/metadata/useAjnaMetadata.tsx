@@ -408,6 +408,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               depositAmount={earnContext.form.state.depositAmount}
               isOpening={isOpening}
               isOracless={isOracless}
+              isProxyWithManyPositions={isProxyWithManyPositions}
               isShort={isShort}
               isSimulationLoading={productContext.position.isSimulationLoading}
               position={earnPosition}
