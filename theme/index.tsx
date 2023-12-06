@@ -401,12 +401,6 @@ export const theme = themeTypeSafe({
       bg: 'neutral30',
       borderRadius: 'large',
     },
-    vaultDetailsCardModalSmall: {
-      variant: 'text.boldParagraph3',
-      p: 3,
-      bg: 'neutral30',
-      borderRadius: 'large',
-    },
     cookieBanner: {
       boxShadow: 'fixedBanner',
       bg: 'neutral10',
