@@ -16,6 +16,7 @@ export interface ProductDataProps {
   dpmPositionData?: DpmPositionData
   quoteToken?: string
   tokenPriceUSDData?: Tickers
+  networkId: NetworkIds
 }
 
 export function useAjnaData({
@@ -23,6 +24,7 @@ export function useAjnaData({
   dpmPositionData,
   quoteToken,
   tokenPriceUSDData,
+  networkId,
 }: ProductDataProps) {
   const { context$ } = useMainContext()
   const { ajnaPosition$ } = useProductContext()
@@ -43,11 +45,12 @@ export function useAjnaData({
               tokenPriceUSDData[dpmPositionData.collateralToken],
               tokenPriceUSDData[dpmPositionData.quoteToken],
               dpmPositionData,
+              networkId,
               dpmPositionData.collateralTokenAddress,
               dpmPositionData.quoteTokenAddress,
             )
           : isOracless && dpmPositionData && tokenPriceUSDData
-          ? ajnaPosition$(one, one, dpmPositionData, collateralToken, quoteToken)
+          ? ajnaPosition$(one, one, dpmPositionData, networkId, collateralToken, quoteToken)
           : EMPTY,
       [dpmPositionData, isOracless, tokenPriceUSDData],
     ),

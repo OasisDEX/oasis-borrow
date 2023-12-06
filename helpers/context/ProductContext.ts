@@ -643,15 +643,18 @@ export function setupProductContext(
   )
 
   const ajnaPosition$ = memoize(
-    curry(getAjnaPosition$)(context$, onEveryBlock$),
+    curry(getAjnaPosition$)(onEveryBlock$),
     (
       collateralPrice: BigNumber,
       quotePrice: BigNumber,
       dpmPositionData: DpmPositionData,
+      network: NetworkIds,
       collateralAddress?: string,
       quoteAddress?: string,
     ) =>
-      `${dpmPositionData.vaultId}-${collateralPrice.decimalPlaces(2).toString()}-${quotePrice
+      `${dpmPositionData.vaultId}-${network}-${collateralPrice
+        .decimalPlaces(2)
+        .toString()}-${quotePrice
         .decimalPlaces(2)
         .toString()}-${collateralAddress}-${quoteAddress}`,
   )

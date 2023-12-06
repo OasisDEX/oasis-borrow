@@ -1,8 +1,8 @@
 import { views } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { Context } from 'blockchain/network.types'
-import { getRpcProvider, NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
+import { getRpcProvider } from 'blockchain/networks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import {
   getAjnaCumulatives,
@@ -10,6 +10,7 @@ import {
   getAjnaPoolAddress,
   getAjnaPoolData,
 } from 'features/omni-kit/protocols/ajna/helpers'
+import { isAjnaSupportedNetwork } from 'features/omni-kit/protocols/ajna/helpers/isAjnaSupportedNetwork'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { LendingProtocol } from 'lendingProtocols'
@@ -19,24 +20,23 @@ import { combineLatest, iif, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
 export function getAjnaPosition$(
-  context$: Observable<Context>,
   onEveryBlock$: Observable<number> | undefined,
   collateralPrice: BigNumber,
   quotePrice: BigNumber,
   { collateralToken, product, protocol, proxy, quoteToken }: DpmPositionData,
+  networkId: NetworkIds,
   collateralAddress?: string,
   quoteAddress?: string,
 ): Observable<AjnaGenericPosition> {
-  return combineLatest(
-    context$,
-    iif(() => onEveryBlock$ !== undefined, onEveryBlock$, of(undefined)),
-  ).pipe(
-    switchMap(async ([context]) => {
+  return combineLatest(iif(() => onEveryBlock$ !== undefined, onEveryBlock$, of(undefined))).pipe(
+    switchMap(async () => {
       if (protocol.toLowerCase() !== LendingProtocol.Ajna) return null
-      const { ajnaPoolPairs, ajnaPoolInfo } = getNetworkContracts(
-        NetworkIds.MAINNET,
-        context.chainId,
-      )
+
+      if (!isAjnaSupportedNetwork(networkId)) {
+        throw new Error(`Ajna doesn't support this network: ${networkId}`)
+      }
+
+      const { ajnaPoolPairs, ajnaPoolInfo } = getNetworkContracts(networkId)
 
       const commonPayload = {
         collateralPrice,
@@ -44,16 +44,16 @@ export function getAjnaPosition$(
         proxyAddress: proxy,
         poolAddress:
           collateralAddress && quoteAddress
-            ? await getAjnaPoolAddress(collateralAddress, quoteAddress, context.chainId)
+            ? await getAjnaPoolAddress(collateralAddress, quoteAddress, networkId)
             : ajnaPoolPairs[`${collateralToken}-${quoteToken}` as keyof typeof ajnaPoolPairs]
                 .address,
       }
 
       const commonDependency = {
         poolInfoAddress: ajnaPoolInfo.address,
-        provider: getRpcProvider(context.chainId),
-        getPoolData: getAjnaPoolData(context.chainId),
-        getCumulatives: getAjnaCumulatives(context.chainId),
+        provider: getRpcProvider(networkId),
+        getPoolData: getAjnaPoolData(networkId),
+        getCumulatives: getAjnaCumulatives(networkId),
       }
 
       switch (product as OmniProductType) {
@@ -63,7 +63,7 @@ export function getAjnaPosition$(
         case OmniProductType.Earn:
           return await views.ajna.getEarnPosition(commonPayload, {
             ...commonDependency,
-            getEarnData: getAjnaEarnData(context.chainId),
+            getEarnData: getAjnaEarnData(networkId),
           })
       }
     }),

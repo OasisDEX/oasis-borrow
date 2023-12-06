@@ -5,6 +5,7 @@ import { omniMetadataSupplyHandlerGuard } from 'features/omni-kit/helpers'
 import { useOmniTxHandler } from 'features/omni-kit/hooks'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
 import { getAjnaParameters } from 'features/omni-kit/protocols/ajna/helpers'
+import { isAjnaSupportedNetwork } from 'features/omni-kit/protocols/ajna/helpers/isAjnaSupportedNetwork'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 
 export function useAjnaTxHandler(): () => void {
@@ -21,6 +22,7 @@ export function useAjnaTxHandler(): () => void {
       productType,
       slippage,
       quoteBalance,
+      network,
     },
   } = useOmniGeneralContext()
   const {
@@ -35,16 +37,22 @@ export function useAjnaTxHandler(): () => void {
   } = useOmniProductContext(productType)
   const { state: customState } = useAjnaCustomState()
 
+  const networkId = network.id
+
   let onSuccess: (() => void) | undefined = () => null
 
   if (omniMetadataSupplyHandlerGuard(handlers)) {
     onSuccess = handlers.customReset
   }
 
+  if (!isAjnaSupportedNetwork(networkId)) {
+    throw new Error(`Ajna doesn't support this network: ${networkId}`)
+  }
+
   return useOmniTxHandler({
     getOmniParameters: (context: Context) =>
       getAjnaParameters({
-        chainId: context.chainId,
+        networkId,
         collateralAddress,
         collateralPrecision,
         collateralPrice,
