@@ -46,6 +46,11 @@ export function useOmniMultiplyFormReducto({ ...rest }: Partial<OmniMultiplyForm
             withdrawAmount: action.withdrawAmount,
             withdrawAmountUSD: action.withdrawAmountUSD,
           }
+        case 'update-withdraw-max':
+          return {
+            ...state,
+            withdrawAmountMax: action.withdrawAmountMax,
+          }
         case 'update-dpm':
           return {
             ...state,

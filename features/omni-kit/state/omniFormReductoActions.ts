@@ -24,6 +24,10 @@ export interface FormActionsUpdateWithdraw {
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
 }
+export interface FormActionsUpdateWithdrawMax {
+  type: 'update-withdraw-max'
+  withdrawAmountMax: boolean
+}
 export interface FormActionsUpdateDpm {
   type: 'update-dpm'
   dpmAddress: string

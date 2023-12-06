@@ -22,6 +22,11 @@ export function useOmniBorrowFormReducto({ ...rest }: Partial<OmniBorrowFormStat
             withdrawAmount: action.withdrawAmount,
             withdrawAmountUSD: action.withdrawAmountUSD,
           }
+        case 'update-withdraw-max':
+          return {
+            ...state,
+            withdrawAmountMax: action.withdrawAmountMax,
+          }
         case 'update-generate':
           return {
             ...state,

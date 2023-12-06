@@ -4,6 +4,7 @@ import type {
   FormActionsUpdateDeposit,
   FormActionsUpdateDpm,
   FormActionsUpdateWithdraw,
+  FormActionsUpdateWithdrawMax,
 } from 'features/omni-kit/state'
 import type {
   OmniEarnFormAction,
@@ -16,6 +17,7 @@ export interface OmniEarnFormState {
   productType: OmniProductType.Earn
   action?: OmniEarnFormAction
   dpmAddress: string
+  withdrawAmountMax: boolean
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
@@ -26,5 +28,9 @@ export interface OmniEarnFormState {
 
 export type OmniEarnFormActions = ReductoActions<
   OmniEarnFormState,
-  FormActionsUpdateDeposit | FormActionsUpdateWithdraw | FormActionsUpdateDpm | FormActionsReset
+  | FormActionsUpdateDeposit
+  | FormActionsUpdateWithdraw
+  | FormActionsUpdateWithdrawMax
+  | FormActionsUpdateDpm
+  | FormActionsReset
 >

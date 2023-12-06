@@ -7,6 +7,7 @@ import type {
   FormActionsUpdatePayback,
   FormActionsUpdatePaybackMax,
   FormActionsUpdateWithdraw,
+  FormActionsUpdateWithdrawMax,
 } from 'features/omni-kit/state'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
@@ -258,7 +259,7 @@ export function OmniFormFieldWithdraw({
   token,
   tokenDigits,
   tokenPrice,
-}: OmniFormField<FormActionsUpdateWithdraw> &
+}: OmniFormField<FormActionsUpdateWithdraw | FormActionsUpdateWithdrawMax> &
   OmniFormFieldWithDefinedToken &
   OmniFormFieldWithMaxAmount) {
   const { t } = useTranslation()
@@ -294,6 +295,10 @@ export function OmniFormFieldWithdraw({
           withdrawAmount: n,
           withdrawAmountUSD: n?.times(tokenPrice),
         })
+        dispatchAmount({
+          type: 'update-withdraw-max',
+          withdrawAmountMax: false,
+        })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onAuxiliaryChange={handleNumericInput((n) => {
@@ -302,6 +307,10 @@ export function OmniFormFieldWithdraw({
           withdrawAmount: n?.dividedBy(tokenPrice),
           withdrawAmountUSD: n,
         })
+        dispatchAmount({
+          type: 'update-withdraw-max',
+          withdrawAmountMax: false,
+        })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onSetMax={() => {
@@ -309,6 +318,10 @@ export function OmniFormFieldWithdraw({
           type: 'update-withdraw',
           withdrawAmount: maxAmount,
           withdrawAmountUSD: maxAmount?.times(tokenPrice),
+        })
+        dispatchAmount({
+          type: 'update-withdraw-max',
+          withdrawAmountMax: true,
         })
       }}
     />

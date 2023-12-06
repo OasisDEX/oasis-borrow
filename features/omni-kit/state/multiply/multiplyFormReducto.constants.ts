@@ -12,6 +12,7 @@ export const omniMultiplyFormReset = {
   paybackAmountMax: false,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
+  withdrawAmountMax: false,
   loanToValue: undefined,
 }
 
