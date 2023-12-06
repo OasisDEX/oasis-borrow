@@ -1,5 +1,6 @@
 import type { Tokens } from '@prisma/client'
 import { extendTokensContracts, getNetworkContracts } from 'blockchain/contracts'
+import type { NetworkIds } from 'blockchain/networks'
 import { getToken, getTokenGuarded } from 'blockchain/tokensMetadata'
 import { uniq } from 'lodash'
 import type { Observable } from 'rxjs'
@@ -7,7 +8,6 @@ import { combineLatest, from, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
 import type { IdentifiedTokens } from './identifyTokens.types'
-import type { Context } from './network.types'
 
 function reduceIdentifiedTokens(
   total: IdentifiedTokens,
@@ -25,13 +25,13 @@ function reduceIdentifiedTokens(
 }
 
 export const identifyTokens$ = (
-  context$: Observable<Pick<Context, 'chainId'>>,
   once$: Observable<unknown>,
+  networkId: NetworkIds,
   tokensAddresses: string[],
 ): Observable<IdentifiedTokens> =>
-  combineLatest(context$, once$).pipe(
-    switchMap(([context]) => {
-      const contracts = getNetworkContracts(context.chainId)
+  combineLatest(once$).pipe(
+    switchMap(() => {
+      const contracts = getNetworkContracts(networkId)
 
       let identifiedTokens: Tokens[] = []
       let localTokensAddresses: string[] = []
@@ -61,7 +61,7 @@ export const identifyTokens$ = (
           symbol: getToken(token).symbol,
           precision: getToken(token).precision,
           address: tokensContracts[token].address,
-          chain_id: context.chainId,
+          chain_id: networkId,
           source: 'local',
         }))
 
@@ -79,7 +79,7 @@ export const identifyTokens$ = (
             addresses: tokensAddresses.filter(
               (address) => !localTokensAddresses.includes(address.toLowerCase()),
             ),
-            chainId: context.chainId,
+            chainId: networkId,
           }),
         }).then((resp) => resp.json()),
       ).pipe(

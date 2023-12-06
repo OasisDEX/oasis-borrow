@@ -36,10 +36,12 @@ export function parseRows(
     } = row
 
     const label = `${collateralToken}/${quoteToken}`
+    const networkName = getNetworkById(networkId).name
     const url = getOraclessProductUrl({
       collateralAddress,
       collateralToken,
       networkId,
+      networkName,
       productType: product as unknown as OmniProductType,
       quoteAddress,
       quoteToken,

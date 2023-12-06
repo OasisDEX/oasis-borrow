@@ -1,11 +1,7 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getNetworkById, NetworkIds } from 'blockchain/networks'
-import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
-import {
-  PoolFinderFormLoadingState,
-  PoolFinderTableLoadingState,
-} from 'features/ajna/pool-finder/components'
+import { PoolFinderTableLoadingState } from 'features/ajna/pool-finder/components'
 import {
   PoolFinderContentController,
   PoolFinderFormController,
@@ -16,7 +12,6 @@ import type { OraclessPoolResult, PoolFinderFormState } from 'features/ajna/pool
 import { AJNA_SUPPORTED_NETWORKS } from 'features/omni-kit/protocols/ajna/constants'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import type { ProductHubProductType } from 'features/productHub/types'
-import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
@@ -24,6 +19,7 @@ import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
 import type { FC } from 'react'
 import React, { useMemo, useState } from 'react'
+import { combineLatest } from 'rxjs'
 import { Box, Grid } from 'theme-ui'
 
 interface PoolFinderViewProps {
@@ -31,11 +27,9 @@ interface PoolFinderViewProps {
 }
 
 export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
-  const { context$ } = useMainContext()
   const { identifiedTokens$, tokenPriceUSDStatic$ } = useProductContext()
 
   const { chainId: walletNetworkId } = useAccount()
-  const [context] = useObservable(context$)
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
     useMemo(
       () => tokenPriceUSDStatic$(Object.keys(getNetworkContracts(NetworkIds.MAINNET).tokens)),
@@ -80,20 +74,23 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
           )
 
           if (pools.flat().length) {
-            const identifiedTokensSubscription = identifiedTokens$(
-              uniq(
-                pools
-                  .flat()
-                  .flatMap(({ collateralAddress, quoteTokenAddress }) => [
-                    collateralAddress,
-                    quoteTokenAddress,
-                  ]),
+            const identifiedTokensSubscription = combineLatest(
+              ...networkIds.map((networkId, i) =>
+                identifiedTokens$(
+                  networkId,
+                  uniq(
+                    pools[i].flatMap(({ collateralAddress, quoteTokenAddress }) => [
+                      collateralAddress,
+                      quoteTokenAddress,
+                    ]),
+                  ),
+                ),
               ),
             ).subscribe((identifiedTokens) => {
               setResults({
                 ...results,
                 [resultsKey]: pools.flatMap((_pools, i) =>
-                  parsePoolResponse(networkIds[i], identifiedTokens, _pools, tokenPriceUSDData),
+                  parsePoolResponse(networkIds[i], identifiedTokens[i], _pools, tokenPriceUSDData),
                 ),
               })
               try {
@@ -138,37 +135,29 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
         <ProductHubIntro selectedProduct={selectedProduct} />
       </Box>
       <WithErrorHandler error={[tokenPriceUSDError]}>
-        <WithLoadingIndicator
-          value={[context, tokenPriceUSDData]}
-          customLoader={<PoolFinderFormLoadingState />}
-        >
-          {([{ chainId }]) => (
-            <Grid gap="48px">
-              <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
-                <PoolFinderFormController
-                  chainId={chainId}
-                  onChange={(_addresses) => {
-                    setAddresses(_addresses)
-                    setResultsKey(
-                      _addresses.collateralToken || _addresses.poolAddress || _addresses.quoteToken
-                        ? Object.values(_addresses).join('-')
-                        : '',
-                    )
-                  }}
-                />
-              </Box>
-              {results[resultsKey] ? (
-                <PoolFinderContentController
-                  addresses={addresses}
-                  selectedProduct={selectedProduct}
-                  tableData={results[resultsKey]}
-                />
-              ) : (
-                <>{resultsKey && <PoolFinderTableLoadingState />}</>
-              )}
-            </Grid>
+        <Grid gap="48px">
+          <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
+            <PoolFinderFormController
+              onChange={(_addresses) => {
+                setAddresses(_addresses)
+                setResultsKey(
+                  _addresses.collateralToken || _addresses.poolAddress || _addresses.quoteToken
+                    ? Object.values(_addresses).join('-')
+                    : '',
+                )
+              }}
+            />
+          </Box>
+          {results[resultsKey] ? (
+            <PoolFinderContentController
+              addresses={addresses}
+              selectedProduct={selectedProduct}
+              tableData={results[resultsKey]}
+            />
+          ) : (
+            <>{resultsKey && <PoolFinderTableLoadingState />}</>
           )}
-        </WithLoadingIndicator>
+        </Grid>
       </WithErrorHandler>
     </>
   )

@@ -11,14 +11,10 @@ import React, { useState } from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
 
 interface PoolFinderFormControllerProps {
-  chainId: NetworkIds
   onChange: (addresses: PoolFinderFormState) => void
 }
 
-export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({
-  chainId,
-  onChange,
-}) => {
+export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({ onChange }) => {
   const { t } = useTranslation()
   const [addresses, setAddresses] = useState<PoolFinderFormState>({
     collateralToken: '',
@@ -57,8 +53,6 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({
           placeholder={formatAddress(
             getNetworkContracts(NetworkIds.MAINNET).ajnaPoolPairs['ETH-USDC'].address,
           )}
-          type="address"
-          chainId={chainId}
           value={addresses.poolAddress}
           onChange={(value) => {
             setAddresses({
@@ -74,8 +68,6 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({
         <PoolFinderAddressInput
           label={t('pool-finder.form.collateral-token')}
           placeholder={t('pool-finder.form.token-placeholder')}
-          type="token"
-          chainId={chainId}
           value={addresses.collateralToken}
           onChange={(value) => {
             setAddresses({
@@ -92,8 +84,6 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({
           label={t('pool-finder.form.quote-token')}
           placeholder={t('pool-finder.form.token-placeholder')}
           value={addresses.quoteToken}
-          type="token"
-          chainId={chainId}
           onChange={(value) => {
             setAddresses({
               ...addresses,
