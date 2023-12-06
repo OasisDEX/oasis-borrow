@@ -21,7 +21,14 @@ import { circle_close, circle_exchange } from 'theme/icons'
 export function OmniBorrowFormController({ txHandler }: { txHandler: () => () => void }) {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, isOpening, quoteToken, collateralIcon, quoteIcon },
+    environment: {
+      collateralIcon,
+      collateralToken,
+      isOpening,
+      network: { id: networkId },
+      quoteIcon,
+      quoteToken,
+    },
     steps: { currentStep },
   } = useOmniGeneralContext()
   const {
@@ -71,7 +78,7 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
               },
             },
             // TODO this should be in metadata man
-            ...(isPoolSupportingMultiply({ collateralToken, quoteToken })
+            ...(isPoolSupportingMultiply({ collateralToken, networkId, quoteToken })
               ? [
                   {
                     label: t('system.actions.borrow.switch-to-multiply'),

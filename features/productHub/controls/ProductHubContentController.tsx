@@ -1,5 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
+import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { ProductHubFiltersController } from 'features/productHub/controls/ProductHubFiltersController'
 import { ProductHubTableController } from 'features/productHub/controls/ProductHubTableController'
@@ -43,8 +43,11 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   limitRows,
   chainId,
 }) => {
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn, AjnaPoolFinder: ajnaPoolFinderEnabled } =
-    useAppConfig('features')
+  const {
+    AjnaBase: ajnaBaseEnabled,
+    AjnaPoolFinder: ajnaPoolFinderEnabled,
+    AjnaSafetySwitch: ajnaSafetySwitchOn,
+  } = useAppConfig('features')
 
   const ajnaOraclessPoolPairsKeys = Object.keys(
     getNetworkContracts(NetworkIds.MAINNET, chainId).ajnaOraclessPoolPairs,
@@ -56,7 +59,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
 
   const dataMatchedToFeatureFlags = useMemo(
     () =>
-      tableData.filter(({ label, protocol }) => {
+      tableData.filter(({ label, network, protocol }) => {
         const isAjna = protocol === LendingProtocol.Ajna
 
         const unalailableChecksList = [
@@ -65,6 +68,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
           isAjna &&
             !ajnaPoolFinderEnabled &&
             ajnaOraclessPoolPairsKeys.includes(label.replace('/', '-')),
+          isAjna && network === NetworkNames.baseMainnet && !ajnaBaseEnabled,
         ]
         if (unalailableChecksList.some((check) => !!check)) {
           return false

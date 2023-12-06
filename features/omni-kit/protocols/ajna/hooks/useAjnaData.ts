@@ -4,9 +4,7 @@ import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
-import { useAjnaRedirect } from 'features/omni-kit/protocols/ajna/hooks'
 import { getAjnaPositionAggregatedData$ } from 'features/omni-kit/protocols/ajna/observables'
-import type { OmniProductType } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
 import { one } from 'helpers/zero'
 import { useMemo } from 'react'
@@ -16,8 +14,6 @@ import { EMPTY } from 'rxjs'
 export interface ProductDataProps {
   collateralToken?: string
   dpmPositionData?: DpmPositionData
-  positionId?: string
-  productType?: OmniProductType
   quoteToken?: string
   tokenPriceUSDData?: Tickers
 }
@@ -25,8 +21,6 @@ export interface ProductDataProps {
 export function useAjnaData({
   collateralToken,
   dpmPositionData,
-  positionId,
-  productType,
   quoteToken,
   tokenPriceUSDData,
 }: ProductDataProps) {
@@ -73,15 +67,6 @@ export function useAjnaData({
     ),
   )
 
-  const redirect = useAjnaRedirect({
-    ajnaPositionData,
-    collateralToken,
-    dpmPositionData,
-    positionId,
-    productType,
-    quoteToken,
-  })
-
   return {
     data: {
       aggregatedData: ajnaPositionAggregatedData,
@@ -89,6 +74,5 @@ export function useAjnaData({
     },
     errors: [ajnaPositionAggregatedError, ajnaPositionError],
     isOracless,
-    redirect,
   }
 }

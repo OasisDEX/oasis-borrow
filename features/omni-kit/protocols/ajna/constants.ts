@@ -23,37 +23,6 @@ export const ajnaOmniSteps: OmniSidebarStepsSet = {
   },
 }
 
-export const AJNA_TOKENS_WITH_MULTIPLY = [
-  'CBETH',
-  'DAI',
-  'ETH',
-  'ETH',
-  'GHO',
-  'RETH',
-  'SDAI',
-  'USDC',
-  'WBTC',
-  'WSTETH',
-  'YFI',
-]
-export const AJNA_POOLS_WITH_REWARDS = [
-  'CBETH-ETH',
-  'ETH-USDC',
-  'RETH-DAI',
-  'RETH-ETH',
-  'SDAI-USDC',
-  'USDC-ETH',
-  'USDC-WBTC',
-  'WBTC-DAI',
-  'WBTC-USDC',
-  'WSTETH-DAI',
-  'WSTETH-ETH',
-  'WSTETH-USDC',
-  'YFI-DAI',
-  'YIELDBTC-WBTC',
-  'YIELDETH-ETH',
-]
-
 // safe defaults which should ensure reasonable slider range for newly created pools
 export const ajnaDefaultPoolRangeMarketPriceOffset = 0.99 // 99%
 

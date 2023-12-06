@@ -144,3 +144,7 @@ export type OmniSupportedNetworkIds =
   | NetworkIds.OPTIMISMMAINNET
   | NetworkIds.ARBITRUMMAINNET
   | NetworkIds.BASEMAINNET
+
+export type NetworkIdsWithArray<T> = {
+  [key in NetworkIds]?: T[]
+}

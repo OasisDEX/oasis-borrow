@@ -75,7 +75,7 @@ export function getActionUrl({
         ? `${collateralAddress}-${quoteAddress}`
         : `${collateralToken}-${quoteToken}`
 
-      return `/ethereum/ajna/${productInUrl}/${tokensInUrl}`
+      return `/${network}/ajna/${productInUrl}/${tokensInUrl}`
     case LendingProtocol.AaveV2:
       return getAaveLikeViewStrategyUrl({
         version: 'v2',

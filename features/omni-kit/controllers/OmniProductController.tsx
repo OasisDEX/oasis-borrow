@@ -60,7 +60,6 @@ interface OmniProductControllerProps<Auction, History, Position> {
     }
     errors: string[]
     isOracless: boolean
-    redirect: string | undefined
   }
   quoteToken: string
   seoTags: {
@@ -132,8 +131,6 @@ export const OmniProductController = <Auction, History, Position>({
   } = protocolHook({
     collateralToken,
     dpmPositionData,
-    positionId,
-    productType,
     quoteToken,
     tokenPriceUSDData,
   })

@@ -1,5 +1,6 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import type { NetworkIds } from 'blockchain/networks'
 import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import {
   OmniContentCard,
@@ -14,14 +15,15 @@ import { isPoolWithRewards } from 'features/omni-kit/protocols/ajna/helpers'
 import React from 'react'
 
 interface AjnaContentFooterEarnManageProps {
-  position: AjnaEarnPosition
   afterAvailableToWithdraw?: BigNumber
   availableToWithdraw: BigNumber
   changeVariant?: ChangeVariantType
   collateralToken: string
-  isSimulationLoading?: boolean
   isOracless: boolean
+  isSimulationLoading?: boolean
+  networkId: NetworkIds
   owner: string
+  position: AjnaEarnPosition
   projectedAnnualReward: BigNumber
   quoteToken: string
 }
@@ -31,8 +33,9 @@ export function AjnaContentFooterEarnManage({
   availableToWithdraw,
   changeVariant,
   collateralToken,
-  isSimulationLoading,
   isOracless,
+  isSimulationLoading,
+  networkId,
   owner,
   quoteToken,
 }: AjnaContentFooterEarnManageProps) {
@@ -66,7 +69,7 @@ export function AjnaContentFooterEarnManage({
         {...availableToWithdrawContentCardCommonData}
         {...availableToWithdrawContentCardAjnaData}
       />
-      {isPoolWithRewards({ collateralToken, quoteToken }) && !isOracless && (
+      {isPoolWithRewards({ collateralToken, networkId, quoteToken }) && !isOracless && (
         <>
           <OmniContentCard asFooter {...projectedAnnualRewardsContentCardAjnaData} />
           <OmniContentCard asFooter {...totalAjnaRewardsContentCardAjnaData} />
