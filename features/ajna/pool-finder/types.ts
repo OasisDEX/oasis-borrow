@@ -9,8 +9,8 @@ export interface SearchTokensResponse {
 
 export interface PoolFinderFormState {
   poolAddress: string
-  collateralAddress: string
-  quoteAddress: string
+  collateralToken: string
+  quoteToken: string
 }
 
 export interface OraclessPoolResult extends ProductHubItemTooltips {

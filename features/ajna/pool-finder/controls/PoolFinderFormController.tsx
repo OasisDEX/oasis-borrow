@@ -21,9 +21,9 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({
 }) => {
   const { t } = useTranslation()
   const [addresses, setAddresses] = useState<PoolFinderFormState>({
-    collateralAddress: '',
+    collateralToken: '',
     poolAddress: '',
-    quoteAddress: '',
+    quoteToken: '',
   })
 
   return (
@@ -76,47 +76,47 @@ export const PoolFinderFormController: FC<PoolFinderFormControllerProps> = ({
           placeholder={t('pool-finder.form.token-placeholder')}
           type="token"
           chainId={chainId}
-          value={addresses.collateralAddress}
+          value={addresses.collateralToken}
           onChange={(value) => {
             setAddresses({
               ...addresses,
-              collateralAddress: value,
+              collateralToken: value,
             })
             onChange({
               ...addresses,
-              collateralAddress: value,
+              collateralToken: value,
             })
           }}
         />
         <PoolFinderAddressInput
           label={t('pool-finder.form.quote-token')}
           placeholder={t('pool-finder.form.token-placeholder')}
-          value={addresses.quoteAddress}
+          value={addresses.quoteToken}
           type="token"
           chainId={chainId}
           onChange={(value) => {
             setAddresses({
               ...addresses,
-              quoteAddress: value,
+              quoteToken: value,
             })
             onChange({
               ...addresses,
-              quoteAddress: value,
+              quoteToken: value,
             })
           }}
         />
         <PoolFinderReplacer
-          isVisible={Boolean(addresses.collateralAddress || addresses.quoteAddress)}
+          isVisible={Boolean(addresses.collateralToken || addresses.quoteToken)}
           onClick={() => {
             setAddresses({
               ...addresses,
-              collateralAddress: addresses.quoteAddress,
-              quoteAddress: addresses.collateralAddress,
+              collateralToken: addresses.quoteToken,
+              quoteToken: addresses.collateralToken,
             })
             onChange({
               ...addresses,
-              collateralAddress: addresses.quoteAddress,
-              quoteAddress: addresses.collateralAddress,
+              collateralToken: addresses.quoteToken,
+              quoteToken: addresses.collateralToken,
             })
           }}
         />

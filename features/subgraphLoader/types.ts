@@ -1,5 +1,8 @@
 import type { NetworkIds } from 'blockchain/networks'
-import type { SearchAjnaPoolResponse } from 'features/ajna/pool-finder/helpers'
+import type {
+  SearchAjnaPoolFilters,
+  SearchAjnaPoolResponse,
+} from 'features/ajna/pool-finder/helpers'
 import type { AjnaClaimedReward } from 'features/ajna/rewards/helpers'
 import type { AjnaPoolDataResponse } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaPoolsDataResponse } from 'features/omni-kit/protocols/ajna/helpers/getAjnaPoolsData'
@@ -26,7 +29,9 @@ export type Subgraphs = {
     getAjnaPoolsData: {}
     getAjnaClaimedRewards: { walletAddress: string }
     getAjnaDpmPositions: { dpmProxyAddress: string[] }
-    searchAjnaPool: { collateralAddress: string[]; poolAddress: string[]; quoteAddress: string[] }
+    searchAjnaPool: {
+      where: SearchAjnaPoolFilters
+    }
   }
   Aave: {
     getAaveHistory: { dpmProxyAddress: string }

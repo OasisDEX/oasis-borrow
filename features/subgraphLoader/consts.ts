@@ -328,17 +328,13 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
-  searchAjnaPool: gql`
-    query searchPool($collateralAddress: [ID]!, $poolAddress: [ID]!, $quoteAddress: [ID]!) {
+    searchAjnaPool: gql`
+    query searchPool(
+      $where: Pool_filter
+    ) {
       pools(
         first: 111
-        where: {
-          or: [
-            { address_in: $poolAddress }
-            { collateralAddress_in: $collateralAddress }
-            { quoteTokenAddress_in: $quoteAddress }
-          ]
-        }
+        where: $where
       ) {
         address
         buckets {

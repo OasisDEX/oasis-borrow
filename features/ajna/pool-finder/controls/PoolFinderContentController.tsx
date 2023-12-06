@@ -20,7 +20,7 @@ interface PoolFinderContentControllerProps {
 }
 
 export const PoolFinderContentController: FC<PoolFinderContentControllerProps> = ({
-  addresses: { collateralAddress, quoteAddress },
+  addresses: { collateralToken, quoteToken },
   chainId,
   selectedProduct,
   tableData,
@@ -42,8 +42,8 @@ export const PoolFinderContentController: FC<PoolFinderContentControllerProps> =
           content={
             <Trans
               i18nKey={
-                (collateralAddress && !isAddress(collateralAddress)) ||
-                (quoteAddress && !isAddress(quoteAddress))
+                (collateralToken && !isAddress(collateralToken)) ||
+                (quoteToken && !isAddress(quoteToken))
                   ? 'pool-finder.validation.no-results-suggest-address'
                   : 'pool-finder.validation.no-results-description'
               }

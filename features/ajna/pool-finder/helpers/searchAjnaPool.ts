@@ -1,22 +1,33 @@
 import BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
-import type { AjnaPoolDataResponse } from 'features/omni-kit/protocols/ajna/helpers'
+import { isAddress } from 'ethers/lib/utils'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
-export type SearchAjnaPoolResponse = Pick<
-  AjnaPoolDataResponse,
-  | 'address'
-  | 'buckets'
-  | 'collateralAddress'
-  | 'debt'
-  | 'interestRate'
-  | 'lendApr'
-  | 'lup'
-  | 'lupIndex'
-  | 'quoteTokenAddress'
->
+export interface SearchAjnaPoolResponse {
+  address: string
+  buckets: {
+    price: string
+    index: string
+    quoteTokens: string
+    collateral: string
+    bucketLPs: string
+  }
+  collateralAddress: string
+  collateralToken: {
+    symbol: string
+  }
+  debt: string
+  interestRate: string
+  lendApr: string
+  lup: string
+  lupIndex: string
+  quoteTokenAddress: string
+  quoteToken: {
+    symbol: string
+  }
+}
 
 export interface SearchAjnaPoolData
   extends Omit<SearchAjnaPoolResponse, 'debt' | 'interestRate' | 'lendApr' | 'lup' | 'lupIndex'> {
@@ -27,36 +38,44 @@ export interface SearchAjnaPoolData
   lowestUtilizedPriceIndex: number
 }
 export interface SearchAjnaPoolParams {
-  collateralAddress?: string[]
-  poolAddress?: string[]
-  quoteAddress?: string[]
+  collateralToken?: string
+  poolAddress?: string
+  quoteToken?: string
+}
+
+export interface SearchAjnaPoolFilters {
+  and: (
+    | { address: string }
+    | { collateralAddress: string }
+    | { quoteTokenAddress: string }
+    | { collateralToken_: { symbol_contains_nocase: string } }
+    | { quoteToken_: { symbol_contains_nocase: string } }
+  )[]
 }
 
 export const searchAjnaPool = async (
   networkId: NetworkIds,
-  { collateralAddress = [], poolAddress = [], quoteAddress = [] }: SearchAjnaPoolParams,
+  { collateralToken, poolAddress, quoteToken }: SearchAjnaPoolParams,
 ): Promise<SearchAjnaPoolData[]> => {
-  const caseSensitiveCollateralAddress = collateralAddress.map((address) => address.toLowerCase())
-  const caseSensitivePoolAddress = poolAddress.map((address) => address.toLowerCase())
-  const caseSensitiveQuoteAddress = quoteAddress.map((address) => address.toLowerCase())
+  const where: SearchAjnaPoolFilters = {
+    and: [],
+  }
+
+  if (poolAddress) where.and.push({ address: poolAddress })
+  if (collateralToken) {
+    if (isAddress(collateralToken)) where.and.push({ collateralAddress: collateralToken })
+    else where.and.push({ collateralToken_: { symbol_contains_nocase: collateralToken } })
+  }
+  if (quoteToken) {
+    if (isAddress(quoteToken)) where.and.push({ quoteTokenAddress: quoteToken })
+    else where.and.push({ quoteToken_: { symbol_contains_nocase: quoteToken } })
+  }
+
   const { response } = (await loadSubgraph('Ajna', 'searchAjnaPool', networkId, {
-    collateralAddress: caseSensitiveCollateralAddress,
-    poolAddress: caseSensitivePoolAddress,
-    quoteAddress: caseSensitiveQuoteAddress,
+    where,
   })) as SubgraphsResponses['Ajna']['searchAjnaPool']
 
-  let pools = response?.pools || []
-
-  if (poolAddress.length)
-    pools = pools.filter((pool) => caseSensitivePoolAddress.includes(pool.address.toLowerCase()))
-  if (collateralAddress.length)
-    pools = pools.filter((pool) =>
-      caseSensitiveCollateralAddress.includes(pool.collateralAddress.toLowerCase()),
-    )
-  if (quoteAddress.length)
-    pools = pools.filter((pool) =>
-      caseSensitiveQuoteAddress.includes(pool.quoteTokenAddress.toLowerCase()),
-    )
+  const pools = response?.pools || []
 
   return pools.map(({ debt, interestRate, lendApr, lup, lupIndex, ...pool }) => ({
     ...pool,

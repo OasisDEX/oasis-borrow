@@ -12,7 +12,6 @@ import {
   PoolFinderNaturalLanguageSelectorController,
 } from 'features/ajna/pool-finder/controls'
 import {
-  getOraclessTokenAddress,
   parsePoolResponse,
   searchAjnaPool,
 } from 'features/ajna/pool-finder/helpers'
@@ -48,24 +47,19 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
   const [results, setResults] = useState<{ [key: string]: OraclessPoolResult[] }>({})
   const [resultsKey, setResultsKey] = useState<string>('')
   const [addresses, setAddresses] = useState<PoolFinderFormState>({
-    collateralAddress: '',
+    collateralToken: '',
     poolAddress: '',
-    quoteAddress: '',
+    quoteToken: '',
   })
 
   useDebouncedEffect(
     async () => {
       if (context?.chainId && tokenPriceUSDData && resultsKey && !results[resultsKey]) {
-        const { collateralToken, quoteToken } = await getOraclessTokenAddress({
-          collateralToken: addresses.collateralAddress,
-          quoteToken: addresses.quoteAddress,
-        })
-
-        if (addresses.poolAddress || collateralToken.length || quoteToken.length) {
+        if (addresses.poolAddress || addresses.collateralToken || addresses.quoteToken) {
           const pools = await searchAjnaPool(context.chainId, {
-            collateralAddress: collateralToken,
-            poolAddress: addresses.poolAddress ? [addresses.poolAddress] : [],
-            quoteAddress: quoteToken,
+            collateralToken: addresses.collateralToken,
+            poolAddress: addresses.poolAddress,
+            quoteToken: addresses.quoteToken,
           })
 
           if (pools.length) {
@@ -140,7 +134,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
                   onChange={(addresses) => {
                     setAddresses(addresses)
                     setResultsKey(
-                      addresses.collateralAddress || addresses.poolAddress || addresses.quoteAddress
+                      addresses.collateralToken || addresses.poolAddress || addresses.quoteToken
                         ? Object.values(addresses).join('-')
                         : '',
                     )

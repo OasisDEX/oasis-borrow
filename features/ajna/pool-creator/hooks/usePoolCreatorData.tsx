@@ -133,9 +133,9 @@ export function usePoolCreatorData({
         const promise = cancelable(
           Promise.all([
             searchAjnaPool(chainId, {
-              collateralAddress: [collateralAddress],
+              collateralToken: [collateralAddress],
               poolAddress: [],
-              quoteAddress: [quoteAddress],
+              quoteToken: [quoteAddress],
             }),
             identifiedTokens$([collateralAddress, quoteAddress]).pipe(first()).toPromise(),
           ]),
