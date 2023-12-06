@@ -17,6 +17,18 @@ const paramsSchema = z.object({
 export async function get(req: NextApiRequest, res: NextApiResponse) {
   const { addresses, chainId } = paramsSchema.parse(req.body)
 
+  console.log('---')
+  console.log('---')
+  console.log('---')
+  console.log('---')
+  console.log('---')
+  console.log({ addresses, chainId })
+  console.log('---')
+  console.log('---')
+  console.log('---')
+  console.log('---')
+  console.log('---')
+
   const lowerCasedAddresses = addresses
     .filter((address) => ethers.utils.isAddress(address))
     .map((address) => address.toLowerCase())
