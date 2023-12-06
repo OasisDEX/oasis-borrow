@@ -14,6 +14,7 @@ import { makeOneObservable } from 'lendingProtocols/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import type { Observable } from 'rxjs'
+import { of } from 'rxjs'
 import { distinctUntilKeyChanged, map, switchMap } from 'rxjs/operators'
 
 import { getProxiesRelatedWithPosition$ } from './helpers'
@@ -82,6 +83,16 @@ export function getCommonPartsFromProductContext(
     switchMap(({ account }) => getAvailableDPMProxy(account)),
   )
 
+  const unconsumedDpmForStrategyNetwork = context$.pipe(
+    map(({ chainId }) => chainId),
+    switchMap((chainId) => {
+      if (chainId === networkId) {
+        return unconsumedDpmProxyForConnectedAccount$
+      }
+      return of(undefined)
+    }),
+  )
+
   const chainlinkUsdcUsdOraclePrice = getChainlinkOraclePrice('USDCUSD', networkId)
   const chainlinkUSDCUSDOraclePrice$ = makeOneObservable(
     refresh$,
@@ -102,7 +113,7 @@ export function getCommonPartsFromProductContext(
     proxyForAccount$,
     proxyStateMachine,
     proxiesRelatedWithPosition$,
-    unconsumedDpmProxyForConnectedAccount$,
+    unconsumedDpmProxyForConnectedAccount$: unconsumedDpmForStrategyNetwork,
     contextForAddress$,
     disconnectedGraphQLClient$,
     chainlinkUSDCUSDOraclePrice$,
