@@ -4,8 +4,9 @@ export const aaveHistorySupport: Record<number, boolean> = {
   // Mainnets
   [NetworkIds.MAINNET]: true,
   [NetworkIds.OPTIMISMMAINNET]: true,
-  [NetworkIds.ARBITRUMMAINNET]: false,
+  [NetworkIds.ARBITRUMMAINNET]: true,
   [NetworkIds.POLYGONMAINNET]: false,
+  [NetworkIds.BASEMAINNET]: true,
 
   // Testnets
   [NetworkIds.GOERLI]: false,
