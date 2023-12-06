@@ -7,6 +7,7 @@ import type {
   FormActionsUpdatePayback,
   FormActionsUpdatePaybackMax,
   FormActionsUpdateWithdraw,
+  FormActionsUpdateWithdrawMax,
   UpdateLoanToValue,
 } from 'features/omni-kit/state'
 import type {
@@ -29,6 +30,7 @@ export interface OmniBorrowFormState {
   paybackAmountUSD?: BigNumber
   paybackAmountMax: boolean
   withdrawAmount?: BigNumber
+  withdrawAmountMax: boolean
   withdrawAmountUSD?: BigNumber
   loanToValue?: BigNumber
   closeTo: OmniCloseTo
@@ -43,6 +45,7 @@ export type OmniBorrowFormActions = ReductoActions<
   | FormActionsUpdatePayback
   | FormActionsUpdatePaybackMax
   | FormActionsUpdateWithdraw
+  | FormActionsUpdateWithdrawMax
   | FormActionsUpdateDpm
   | FormActionsReset
   | UpdateLoanToValue

@@ -7,6 +7,7 @@ export const omniEarnFormReset = {
   depositAmountUSD: undefined,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
+  withdrawAmountMax: false,
 }
 
 export const omniEarnFormDefault: OmniEarnFormState = {

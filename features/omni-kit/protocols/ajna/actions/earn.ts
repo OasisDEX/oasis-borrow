@@ -5,10 +5,11 @@ import type {
 } from '@oasisdex/dma-library'
 import { strategies } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import { getAjnaEarnData } from 'features/omni-kit/protocols/ajna/helpers'
+import { omniPaybackAllWithdrawAllValueOffset } from 'features/omni-kit/constants'
+import { getAjnaEarnData, getAjnaEarnWithdrawMax } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 
 export const ajnaActionOpenEarn = ({
   state,
@@ -78,15 +79,27 @@ export const ajnaActionWithdrawEarn = ({
   position: AjnaGenericPosition
   price?: BigNumber
 }) => {
-  const { withdrawAmount } = state
+  const { withdrawAmount, withdrawAmountMax } = state
+  const ajnaEarnPosition = position as AjnaEarnPosition
+
+  const isWithdrawingAllWithoutClosing =
+    withdrawAmountMax && state.withdrawAmount?.lt(ajnaEarnPosition.quoteTokenAmount)
+
+  const resolvedWithdrawAmount =
+    isWithdrawingAllWithoutClosing && withdrawAmount
+      ? getAjnaEarnWithdrawMax({
+          quoteTokenAmount: withdrawAmount.times(one.minus(omniPaybackAllWithdrawAllValueOffset)),
+          digits: commonPayload.quoteTokenPrecision,
+        })
+      : withdrawAmount || zero
 
   return strategies.ajna.earn.withdrawAndAdjust(
     {
       ...commonPayload,
       price: price!,
       collateralAmount: zero,
-      quoteAmount: withdrawAmount || zero,
-      position: position as AjnaEarnPosition,
+      quoteAmount: resolvedWithdrawAmount,
+      position: ajnaEarnPosition,
     },
     dependencies,
   )
