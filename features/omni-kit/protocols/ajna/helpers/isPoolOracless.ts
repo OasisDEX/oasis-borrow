@@ -3,17 +3,17 @@ import { NetworkIds } from 'blockchain/networks'
 import { isAddress } from 'ethers/lib/utils'
 
 interface IsPoolOraclessParams {
-  chainId?: NetworkIds
   collateralToken: string
+  networkId?: NetworkIds
   quoteToken: string
 }
 
 export function isPoolOracless({
-  chainId,
   collateralToken,
+  networkId,
   quoteToken,
 }: IsPoolOraclessParams): boolean {
-  const { ajnaPoolPairs } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+  const { ajnaPoolPairs } = getNetworkContracts(NetworkIds.MAINNET, networkId)
 
   return isAddress(collateralToken) && isAddress(quoteToken)
     ? true

@@ -345,12 +345,18 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           bucketLPs
         }
         collateralAddress
+        collateralToken {
+          symbol
+        }
         debt
         interestRate
         lendApr
         lup
         lupIndex
         quoteTokenAddress
+        quoteToken {
+          symbol
+        }
       }
     }
   `,

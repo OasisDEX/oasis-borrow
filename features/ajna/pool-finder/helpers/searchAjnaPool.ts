@@ -1,3 +1,4 @@
+import type { Bucket } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
@@ -7,13 +8,7 @@ import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface SearchAjnaPoolResponse {
   address: string
-  buckets: {
-    price: string
-    index: string
-    quoteTokens: string
-    collateral: string
-    bucketLPs: string
-  }
+  buckets: Bucket[]
   collateralAddress: string
   collateralToken: {
     symbol: string

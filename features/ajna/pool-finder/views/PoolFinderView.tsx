@@ -1,5 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
+import { getNetworkById, NetworkIds } from 'blockchain/networks'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import {
@@ -11,16 +11,15 @@ import {
   PoolFinderFormController,
   PoolFinderNaturalLanguageSelectorController,
 } from 'features/ajna/pool-finder/controls'
-import {
-  parsePoolResponse,
-  searchAjnaPool,
-} from 'features/ajna/pool-finder/helpers'
+import { parsePoolResponse, searchAjnaPool } from 'features/ajna/pool-finder/helpers'
 import type { OraclessPoolResult, PoolFinderFormState } from 'features/ajna/pool-finder/types'
+import { AJNA_SUPPORTED_NETWORKS } from 'features/omni-kit/protocols/ajna/constants'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import type { ProductHubProductType } from 'features/productHub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
+import { useAccount } from 'helpers/useAccount'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { uniq } from 'lodash'
 import type { FC } from 'react'
@@ -35,6 +34,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
   const { context$ } = useMainContext()
   const { identifiedTokens$, tokenPriceUSDStatic$ } = useProductContext()
 
+  const { chainId: walletNetworkId } = useAccount()
   const [context] = useObservable(context$)
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
     useMemo(
@@ -54,30 +54,46 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
 
   useDebouncedEffect(
     async () => {
-      if (context?.chainId && tokenPriceUSDData && resultsKey && !results[resultsKey]) {
+      if (tokenPriceUSDData && resultsKey && !results[resultsKey]) {
         if (addresses.poolAddress || addresses.collateralToken || addresses.quoteToken) {
-          const pools = await searchAjnaPool(context.chainId, {
-            collateralToken: addresses.collateralToken,
-            poolAddress: addresses.poolAddress,
-            quoteToken: addresses.quoteToken,
-          })
+          let networkIds = [...AJNA_SUPPORTED_NETWORKS]
 
-          if (pools.length) {
+          if (walletNetworkId) {
+            const walletNetwork = getNetworkById(walletNetworkId)
+
+            if (walletNetwork.testnet)
+              networkIds = [
+                ...networkIds.filter((networkId) => networkId !== walletNetwork.mainnetId),
+                walletNetworkId,
+              ]
+          }
+
+          const pools = await Promise.all(
+            networkIds.map(
+              async (networkId) =>
+                await searchAjnaPool(networkId, {
+                  collateralToken: addresses.collateralToken,
+                  poolAddress: addresses.poolAddress,
+                  quoteToken: addresses.quoteToken,
+                }),
+            ),
+          )
+
+          if (pools.flat().length) {
             const identifiedTokensSubscription = identifiedTokens$(
               uniq(
-                pools.flatMap(({ collateralAddress, quoteTokenAddress }) => [
-                  collateralAddress,
-                  quoteTokenAddress,
-                ]),
+                pools
+                  .flat()
+                  .flatMap(({ collateralAddress, quoteTokenAddress }) => [
+                    collateralAddress,
+                    quoteTokenAddress,
+                  ]),
               ),
             ).subscribe((identifiedTokens) => {
               setResults({
                 ...results,
-                [resultsKey]: parsePoolResponse(
-                  context.chainId,
-                  identifiedTokens,
-                  pools,
-                  tokenPriceUSDData,
+                [resultsKey]: pools.flatMap((_pools, i) =>
+                  parsePoolResponse(networkIds[i], identifiedTokens, _pools, tokenPriceUSDData),
                 ),
               })
               try {
@@ -98,7 +114,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
         }
       }
     },
-    [addresses, context?.chainId, resultsKey, tokenPriceUSDData],
+    [addresses, resultsKey, tokenPriceUSDData, walletNetworkId],
     250,
   )
 
@@ -131,11 +147,11 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
               <Box sx={{ maxWidth: '804px', mx: 'auto' }}>
                 <PoolFinderFormController
                   chainId={chainId}
-                  onChange={(addresses) => {
-                    setAddresses(addresses)
+                  onChange={(_addresses) => {
+                    setAddresses(_addresses)
                     setResultsKey(
-                      addresses.collateralToken || addresses.poolAddress || addresses.quoteToken
-                        ? Object.values(addresses).join('-')
+                      _addresses.collateralToken || _addresses.poolAddress || _addresses.quoteToken
+                        ? Object.values(_addresses).join('-')
                         : '',
                     )
                   }}
@@ -144,7 +160,6 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
               {results[resultsKey] ? (
                 <PoolFinderContentController
                   addresses={addresses}
-                  chainId={chainId}
                   selectedProduct={selectedProduct}
                   tableData={results[resultsKey]}
                 />

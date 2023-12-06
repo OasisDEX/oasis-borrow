@@ -91,7 +91,7 @@ async function getAjnaPoolData(
           },
         ) => {
           const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
-          const isOracless = isPoolOracless({ chainId: networkId, collateralToken, quoteToken })
+          const isOracless = isPoolOracless({ networkId: networkId, collateralToken, quoteToken })
           const isShort = isShortPosition({ collateralToken })
           // Temporary hidden yield loops products until APY solution is found
           // const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })

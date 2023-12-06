@@ -1,3 +1,4 @@
+import type { NetworkIds } from 'blockchain/networks'
 import type { ProductHubItemTooltips, ProductHubManagementType } from 'features/productHub/types'
 
 import type { EarnStrategies } from '.prisma/client'
@@ -22,6 +23,7 @@ export interface OraclessPoolResult extends ProductHubItemTooltips {
   liquidity?: string
   managementType?: ProductHubManagementType
   maxLtv?: string
+  networkId: NetworkIds
   quoteAddress: string
   quoteToken: string
   weeklyNetApy?: string
