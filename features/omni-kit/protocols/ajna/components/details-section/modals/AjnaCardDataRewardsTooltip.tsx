@@ -4,7 +4,7 @@ import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
-import { Flex, Text, ThemeUIProvider } from 'theme-ui'
+import { Box, Flex, Text, ThemeUIProvider } from 'theme-ui'
 
 interface AjnaCardDataRewardsTooltipProps {
   total: BigNumber
@@ -26,7 +26,7 @@ export function AjnaCardDataRewardsTooltip({
   return (
     <ThemeUIProvider theme={ajnaExtensionTheme}>
       <Flex as="span" sx={{ flexDirection: 'column', rowGap: 1 }}>
-        <Text variant="paragraph3">
+        <Text variant="paragraph4" sx={{ fontWeight: 'regular' }}>
           <Trans
             i18nKey={
               isOwner
@@ -42,18 +42,30 @@ export function AjnaCardDataRewardsTooltip({
             <Skeleton width="64px" count={2} gap={1} />
           ) : (
             <>
-              <Text sx={{ fontWeight: 'semiBold', display: 'block', mb: 2 }}>
-                {formatCryptoBalance(claimable)} $AJNA{' '}
-                {t('ajna.content-card.borrow-rate.tooltip-claimable-now')}
-              </Text>
-              <Text sx={{ fontWeight: 'semiBold', display: 'block', mb: 2 }}>
-                {formatCryptoBalance(total.minus(claimable))} $AJNA{' '}
-                {t('ajna.content-card.borrow-rate.tooltip-claimable-next-period')}
-              </Text>
-              <Text sx={{ fontWeight: 'semiBold', display: 'block', mb: 2 }}>
-                {formatCryptoBalance(total)} $AJNA{' '}
-                {t('ajna.content-card.borrow-rate.tooltip-earned')}
-              </Text>
+              <Box sx={{ mb: 2 }}>
+                <Text as="span" sx={{ fontWeight: 'semiBold' }}>
+                  {formatCryptoBalance(claimable)} $AJNA{' '}
+                </Text>
+                <Text as="span" sx={{ fontWeight: 'regular' }}>
+                  {t('ajna.content-card.borrow-rate.tooltip-claimable-now')}
+                </Text>
+              </Box>
+              <Box sx={{ mb: 2 }}>
+                <Text as="span" sx={{ fontWeight: 'semiBold' }}>
+                  {formatCryptoBalance(total.minus(claimable))} $AJNA{' '}
+                </Text>
+                <Text as="span" sx={{ fontWeight: 'regular' }}>
+                  {t('ajna.content-card.borrow-rate.tooltip-claimable-next-period')}
+                </Text>
+              </Box>
+              <Box sx={{ mb: 2 }}>
+                <Text as="span" sx={{ fontWeight: 'semiBold' }}>
+                  {formatCryptoBalance(total)} $AJNA{' '}
+                </Text>
+                <Text as="span" sx={{ fontWeight: 'regular' }}>
+                  {t('ajna.content-card.borrow-rate.tooltip-earned')}
+                </Text>
+              </Box>
             </>
           )}
         </Text>
