@@ -33,18 +33,6 @@ export const identifyTokens$ = (
     switchMap(() => {
       const contracts = getNetworkContracts(networkId)
 
-      console.log('---')
-      console.log('---')
-      console.log('---')
-      console.log('---')
-      console.log('---')
-      console.log({ tokensAddresses, networkId })
-      console.log('---')
-      console.log('---')
-      console.log('---')
-      console.log('---')
-      console.log('---')
-
       let identifiedTokens: Tokens[] = []
       let localTokensAddresses: string[] = []
 
