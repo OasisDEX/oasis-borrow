@@ -23,91 +23,89 @@ export function parsePoolResponse(
   pools: SearchAjnaPoolData[],
   prices: Tickers,
 ): OraclessPoolResult[] {
-  return (
-    pools
-      .filter(
-        ({ collateralAddress, quoteTokenAddress }) =>
-          Object.keys(identifiedTokens).includes(collateralAddress) &&
-          Object.keys(identifiedTokens).includes(quoteTokenAddress),
-      )
-      .map(
-        ({
-          buckets,
-          collateralAddress,
-          debt,
-          interestRate,
-          lendApr,
-          lowestUtilizedPrice,
-          lowestUtilizedPriceIndex,
-          quoteTokenAddress,
-        }) => {
-          const collateralToken = identifiedTokens[collateralAddress.toLowerCase()].symbol
-          const quoteToken = identifiedTokens[quoteTokenAddress.toLowerCase()].symbol
-          const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
-          const isOracless = isPoolOracless({ networkId, collateralToken, quoteToken })
-          const collateralPrice = isOracless ? one : prices[collateralToken]
-          const quotePrice = isOracless ? one : prices[quoteToken]
-          const marketPrice = collateralPrice.div(quotePrice)
-          const maxLtv = lowestUtilizedPrice.div(marketPrice).toString()
-          const liquidity = formatCryptoBalance(
-            getPoolLiquidity({
-              buckets: buckets.map((bucket) => ({
-                ...bucket,
-                index: new BigNumber(bucket.index),
-                quoteTokens: new BigNumber(bucket.quoteTokens),
-              })),
-              debt: debt.shiftedBy(WAD_PRECISION),
-            }).shiftedBy(NEGATIVE_WAD_PRECISION),
-          )
-          const fee = interestRate.toString()
-          const weeklyNetApy = lendApr.toString()
+  return pools
+    .filter(
+      ({ collateralAddress, quoteTokenAddress }) =>
+        Object.keys(identifiedTokens).includes(collateralAddress) &&
+        Object.keys(identifiedTokens).includes(quoteTokenAddress),
+    )
+    .map(
+      ({
+        buckets,
+        collateralAddress,
+        debt,
+        interestRate,
+        lendApr,
+        lowestUtilizedPrice,
+        lowestUtilizedPriceIndex,
+        quoteTokenAddress,
+      }) => {
+        const collateralToken = identifiedTokens[collateralAddress.toLowerCase()].symbol
+        const quoteToken = identifiedTokens[quoteTokenAddress.toLowerCase()].symbol
+        const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
+        const isOracless = isPoolOracless({ networkId, collateralToken, quoteToken })
+        const collateralPrice = isOracless ? one : prices[collateralToken]
+        const quotePrice = isOracless ? one : prices[quoteToken]
+        const marketPrice = collateralPrice.div(quotePrice)
+        const maxLtv = lowestUtilizedPrice.div(marketPrice).toString()
+        const liquidity = formatCryptoBalance(
+          getPoolLiquidity({
+            buckets: buckets.map((bucket) => ({
+              ...bucket,
+              index: new BigNumber(bucket.index),
+              quoteTokens: new BigNumber(bucket.quoteTokens),
+            })),
+            debt: debt.shiftedBy(WAD_PRECISION),
+          }).shiftedBy(NEGATIVE_WAD_PRECISION),
+        )
+        const fee = interestRate.toString()
+        const weeklyNetApy = lendApr.toString()
 
-          return {
-            ...(isPoolNotEmpty &&
-              !isOracless && {
-                maxLtv,
-              }),
-            ...(isPoolNotEmpty && {
-              weeklyNetApy,
+        return {
+          ...(isPoolNotEmpty &&
+            !isOracless && {
+              maxLtv,
             }),
-            liquidity,
-            earnStrategy: EarnStrategies.liquidity_provision,
-            earnStrategyDescription: `${collateralToken}/${quoteToken} LP`,
-            fee,
-            managementType: 'active',
-            networkId,
-            collateralAddress: collateralAddress,
-            collateralToken: identifiedTokens[collateralAddress.toLowerCase()].symbol,
-            collateralIcon:
-              identifiedTokens[collateralAddress.toLowerCase()].source === 'blockchain'
-                ? collateralAddress
-                : collateralToken,
-            quoteAddress: quoteTokenAddress,
-            quoteToken: identifiedTokens[quoteTokenAddress.toLowerCase()].symbol,
-            quoteIcon:
-              identifiedTokens[quoteTokenAddress.toLowerCase()].source === 'blockchain'
-                ? quoteTokenAddress
-                : quoteToken,
-            tooltips: {
-              ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
-                fee: productHubAjnaRewardsTooltip,
-                ...(isPoolNotEmpty && {
-                  weeklyNetApy: productHubAjnaRewardsTooltip,
-                }),
+          ...(isPoolNotEmpty && {
+            weeklyNetApy,
+          }),
+          liquidity,
+          earnStrategy: EarnStrategies.liquidity_provision,
+          earnStrategyDescription: `${collateralToken}/${quoteToken} LP`,
+          fee,
+          managementType: 'active',
+          networkId,
+          collateralAddress: collateralAddress,
+          collateralToken: identifiedTokens[collateralAddress.toLowerCase()].symbol,
+          collateralIcon:
+            identifiedTokens[collateralAddress.toLowerCase()].source === 'blockchain'
+              ? collateralAddress
+              : collateralToken,
+          quoteAddress: quoteTokenAddress,
+          quoteToken: identifiedTokens[quoteTokenAddress.toLowerCase()].symbol,
+          quoteIcon:
+            identifiedTokens[quoteTokenAddress.toLowerCase()].source === 'blockchain'
+              ? quoteTokenAddress
+              : quoteToken,
+          tooltips: {
+            ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
+              fee: productHubAjnaRewardsTooltip,
+              ...(isPoolNotEmpty && {
+                weeklyNetApy: productHubAjnaRewardsTooltip,
               }),
-              ...(!isOracless &&
-                !isPoolNotEmpty && {
-                  maxLtv: productHubEmptyPoolMaxLtvTooltip,
-                }),
-              ...(!isPoolNotEmpty && {
-                weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+            }),
+            ...(!isOracless &&
+              !isPoolNotEmpty && {
+                maxLtv: productHubEmptyPoolMaxLtvTooltip,
               }),
-              ...(isOracless && {
-                maxLtv: productHubOraclessLtvTooltip,
-              }),
-            },
-          }
-        },
-      )
-  )
+            ...(!isPoolNotEmpty && {
+              weeklyNetApy: productHubEmptyPoolWeeklyApyTooltip,
+            }),
+            ...(isOracless && {
+              maxLtv: productHubOraclessLtvTooltip,
+            }),
+          },
+        }
+      },
+    )
 }

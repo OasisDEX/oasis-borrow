@@ -328,14 +328,9 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
-    searchAjnaPool: gql`
-    query searchPool(
-      $where: Pool_filter
-    ) {
-      pools(
-        first: 111
-        where: $where
-      ) {
+  searchAjnaPool: gql`
+    query searchPool($where: Pool_filter) {
+      pools(first: 111, where: $where) {
         address
         buckets {
           price
