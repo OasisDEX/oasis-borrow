@@ -1,16 +1,39 @@
-import { AJNA_TOKENS_WITH_MULTIPLY } from 'features/omni-kit/protocols/ajna/constants'
+import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIdsWithArray } from 'features/omni-kit/types'
 
 interface IsPoolSupportingMultiplyParams {
   collateralToken: string
+  networkId: NetworkIds
   quoteToken: string
+}
+
+const tokensWithMultiplyEthereum = [
+  'CBETH',
+  'DAI',
+  'ETH',
+  'GHO',
+  'RETH',
+  'SDAI',
+  'USDC',
+  'WBTC',
+  'WSTETH',
+  'YFI',
+]
+const tokensWithMultiplyBase = ['CBETH', 'ETH', 'USDC', 'WSTETH']
+
+const tokensWithMultiply: NetworkIdsWithArray<string> = {
+  [NetworkIds.MAINNET]: tokensWithMultiplyEthereum,
+  [NetworkIds.GOERLI]: tokensWithMultiplyEthereum,
+  [NetworkIds.BASEMAINNET]: tokensWithMultiplyBase,
 }
 
 export function isPoolSupportingMultiply({
   collateralToken,
+  networkId,
   quoteToken,
 }: IsPoolSupportingMultiplyParams): boolean {
-  return (
-    AJNA_TOKENS_WITH_MULTIPLY.includes(collateralToken) &&
-    AJNA_TOKENS_WITH_MULTIPLY.includes(quoteToken)
+  return !!(
+    tokensWithMultiply[networkId]?.includes(collateralToken) &&
+    tokensWithMultiply[networkId]?.includes(quoteToken)
   )
 }

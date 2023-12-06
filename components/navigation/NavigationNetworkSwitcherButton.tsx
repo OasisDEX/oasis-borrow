@@ -98,8 +98,8 @@ export const NetworkButton = ({
               src={network.icon}
               sx={{
                 mr: 3,
-                minWidth: 4,
-                minHeight: 4,
+                width: 4,
+                height: 4,
                 position: 'relative',
                 zIndex: '2',
               }}

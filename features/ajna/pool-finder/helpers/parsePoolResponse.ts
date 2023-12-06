@@ -87,7 +87,7 @@ export function parsePoolResponse(
               ? quoteTokenAddress
               : quoteToken,
           tooltips: {
-            ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
+            ...(isPoolWithRewards({ collateralToken, networkId: chainId, quoteToken }) && {
               fee: productHubAjnaRewardsTooltip,
               ...(isPoolNotEmpty && {
                 weeklyNetApy: productHubAjnaRewardsTooltip,

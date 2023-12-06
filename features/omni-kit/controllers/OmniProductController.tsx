@@ -25,7 +25,7 @@ import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useAccount } from 'helpers/useAccount'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useRouter } from 'next/router'
@@ -60,7 +60,6 @@ interface OmniProductControllerProps<Auction, History, Position> {
     }
     errors: string[]
     isOracless: boolean
-    redirect: string | undefined
   }
   quoteToken: string
   seoTags: {
@@ -87,7 +86,7 @@ export const OmniProductController = <Auction, History, Position>({
   const { t } = useTranslation()
 
   const { replace } = useRouter()
-  const { chainId } = useAccount()
+  const { chainId, isConnected } = useAccount()
 
   const positionNetwork = getNetworkByName(networkName)
   const walletNetwork = getNetworkById(chainId || positionNetwork.id)
@@ -132,8 +131,6 @@ export const OmniProductController = <Auction, History, Position>({
   } = protocolHook({
     collateralToken,
     dpmPositionData,
-    positionId,
-    productType,
     quoteToken,
     tokenPriceUSDData,
   })
@@ -205,7 +202,7 @@ export const OmniProductController = <Auction, History, Position>({
                     />
                     <OmniGeneralContextProvider
                       collateralAddress={dpmPosition.collateralTokenAddress}
-                      collateralBalance={collateralBalance}
+                      collateralBalance={isConnected ? collateralBalance : zero}
                       collateralDigits={collateralDigits}
                       collateralIcon={tokensIcons.collateralToken}
                       collateralPrecision={collateralPrecision}
@@ -227,7 +224,7 @@ export const OmniProductController = <Auction, History, Position>({
                       productType={castedProductType}
                       protocol={protocol}
                       quoteAddress={dpmPosition.quoteTokenAddress}
-                      quoteBalance={quoteBalance}
+                      quoteBalance={isConnected ? quoteBalance : zero}
                       quoteDigits={quoteDigits}
                       quoteIcon={tokensIcons.quoteToken}
                       quotePrecision={quotePrecision}

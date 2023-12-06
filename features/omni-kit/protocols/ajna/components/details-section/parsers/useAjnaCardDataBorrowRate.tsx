@@ -1,4 +1,5 @@
 import type BigNumber from 'bignumber.js'
+import type { NetworkIds } from 'blockchain/networks'
 import { useAjnaRewards } from 'features/ajna/rewards/hooks'
 import type { OmniContentCardExtra } from 'features/omni-kit/components/details-section'
 import { AjnaCardDataBorrowRateModal } from 'features/omni-kit/protocols/ajna/components/details-section'
@@ -12,6 +13,7 @@ interface AjnaCardDataBorrowRateParams {
   collateralToken: string
   debtAmount: BigNumber
   isOwner: boolean
+  networkId: NetworkIds
   owner: string
   quotePrice?: BigNumber
   quoteToken: string
@@ -22,6 +24,7 @@ export function useAjnaCardDataBorrowRate({
   collateralToken,
   debtAmount,
   isOwner,
+  networkId,
   owner,
   quotePrice,
   quoteToken,
@@ -32,8 +35,15 @@ export function useAjnaCardDataBorrowRate({
   } = useAjnaRewards(owner)
 
   return {
-    modal: <AjnaCardDataBorrowRateModal {...{ borrowRate, debtAmount, quoteToken, quotePrice }} />,
-    ...(isPoolWithRewards({ collateralToken, quoteToken }) && {
+    modal: (
+      <AjnaCardDataBorrowRateModal
+        borrowRate={borrowRate}
+        debtAmount={debtAmount}
+        quoteToken={quoteToken}
+        quotePrice={quotePrice}
+      />
+    ),
+    ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
       icon: sparks,
       tooltips: {
         icon: <AjnaCardDataRewardsTooltip {...{ isLoading, claimable, total, isOwner, owner }} />,

@@ -23,7 +23,7 @@ export function AjnaCardDataLtvModal({ ltv, maxLtv }: AjnaCardDataLtvProps) {
     >
       {maxLtv && (
         <>
-          <Heading variant="header5" sx={{ fontWeight: 'bold' }}>
+          <Heading variant="header5" sx={{ fontWeight: 'semiBold' }}>
             {t('ajna.content-card.ltv.footnote')}
           </Heading>
           <Text variant="paragraph3" as="p" sx={{ color: 'neutral80' }}>

@@ -1,5 +1,6 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import type { NetworkIds } from 'blockchain/networks'
 import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import {
   OmniContentCard,
@@ -19,6 +20,7 @@ interface AjnaContentFooterMultiplyProps {
   isOracless: boolean
   isOwner: boolean
   isSimulationLoading?: boolean
+  networkId: NetworkIds
   owner: string
   position: AjnaPosition
   quotePrice: BigNumber
@@ -32,6 +34,7 @@ export function AjnaContentFooterMultiply({
   isOracless,
   isOwner,
   isSimulationLoading,
+  networkId,
   owner,
   position,
   quotePrice,
@@ -73,6 +76,7 @@ export function AjnaContentFooterMultiply({
   const borrowRateContentCardAjnaData = useAjnaCardDataBorrowRate({
     collateralToken,
     isOwner,
+    networkId,
     owner,
     quoteToken,
     borrowRate: position.pool.interestRate,
@@ -85,7 +89,8 @@ export function AjnaContentFooterMultiply({
   return (
     <>
       <OmniContentCard
-        {...commonContentCardData}
+        asFooter
+        changeVariant={changeVariant}
         {...totalCollateralExposureContentCardCommonData}
       />
       <OmniContentCard

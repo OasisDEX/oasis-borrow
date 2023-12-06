@@ -1,5 +1,6 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import type { NetworkIds } from 'blockchain/networks'
 import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import {
   OmniContentCard,
@@ -9,7 +10,7 @@ import {
 } from 'features/omni-kit/components/details-section'
 import {
   useAjnaCardDataAvailableToBorrow,
-  useAjnaCardDataAvailableToWithdraw,
+  useAjnaCardDataAvailableToWithdrawLending,
   useAjnaCardDataBorrowRate,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
 import React from 'react'
@@ -21,6 +22,7 @@ interface AjnaContentFooterBorrowProps {
   isOracless: boolean
   isOwner: boolean
   isSimulationLoading?: boolean
+  networkId: NetworkIds
   owner: string
   position: AjnaPosition
   quotePrice: BigNumber
@@ -35,6 +37,7 @@ export function AjnaContentFooterBorrow({
   isOracless,
   isOwner,
   isSimulationLoading,
+  networkId,
   owner,
   position,
   quotePrice,
@@ -60,6 +63,7 @@ export function AjnaContentFooterBorrow({
   const borrowRateContentCardAjnaData = useAjnaCardDataBorrowRate({
     collateralToken,
     isOwner,
+    networkId,
     owner,
     quoteToken,
     borrowRate: position.pool.interestRate,
@@ -80,7 +84,7 @@ export function AjnaContentFooterBorrow({
     tokensSymbol: collateralToken,
     translationCardName: 'available-to-withdraw',
   })
-  const availableToWithdrawContentCardAjnaData = useAjnaCardDataAvailableToWithdraw({
+  const availableToWithdrawContentCardAjnaData = useAjnaCardDataAvailableToWithdrawLending({
     availableToWithdraw: position.collateralAvailable,
     collateralToken,
   })
@@ -99,11 +103,14 @@ export function AjnaContentFooterBorrow({
   return (
     <>
       <OmniContentCard
-        {...commonContentCardData}
+        asFooter
+        changeVariant={changeVariant}
         {...borrowRateContentCardCommonData}
         {...borrowRateContentCardAjnaData}
       />
-      <OmniContentCard {...commonContentCardData} {...netValueContentCardCommonData} />
+      {!isOracless && (
+        <OmniContentCard {...commonContentCardData} {...netValueContentCardCommonData} />
+      )}
       <OmniContentCard
         {...commonContentCardData}
         {...availableToWithdrawContentCardCommonData}

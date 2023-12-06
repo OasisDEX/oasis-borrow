@@ -37,9 +37,6 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
   const positionData = _positionData as AjnaEarnPosition
   const simulationData = _simulationData as AjnaEarnPosition | undefined
 
-  const apyCurrentPosition = positionData.apy
-  const apySimulation = simulationData?.apy
-
   const earnDepositFee = protocols.ajna.getAjnaEarnDepositFee({
     interestRate: positionData.pool.interestRate,
     positionPrice: positionData.price,
@@ -56,13 +53,6 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
     afterAmountToLend:
       simulationData?.quoteTokenAmount &&
       `${formatCryptoBalance(simulationData.quoteTokenAmount)} ${quoteToken}`,
-    netApy:
-      positionData.isEarningFees && apyCurrentPosition.per365d
-        ? formatDecimalAsPercent(apyCurrentPosition.per365d)
-        : formatDecimalAsPercent(zero),
-    afterNetApy: apySimulation?.per365d
-      ? formatDecimalAsPercent(simulationData?.isEarningFees ? apySimulation.per365d : zero)
-      : undefined,
     lendingPrice: `${formatCryptoBalance(
       normalizeValue(isShort ? one.div(positionData.price) : positionData.price),
     )} ${priceFormat}`,
@@ -91,12 +81,6 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
           label: t('amount-to-lend'),
           value: formatted.amountToLend,
           change: formatted.afterAmountToLend,
-          isLoading,
-        },
-        {
-          label: t('net-apy'),
-          value: formatted.netApy,
-          change: formatted.afterNetApy,
           isLoading,
         },
         {

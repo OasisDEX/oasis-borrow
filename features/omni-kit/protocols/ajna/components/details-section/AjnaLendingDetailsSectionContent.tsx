@@ -10,11 +10,11 @@ import {
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import {
-  useAjnaCardCardThresholdPrice,
   useAjnaCardDataCollateralDeposited,
   useAjnaCardDataLoanToValue,
-  useAjnaCardDataNetValue,
+  useAjnaCardDataNetValueLending,
   useAjnaCardDataPositionDebt,
+  useAjnaCardDataThresholdPrice,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { useAjnaCardDataLiquidationPrice } from 'features/omni-kit/protocols/ajna/components/details-section/'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -85,8 +85,10 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   const liquidationPriceContentCardCommonData = useOmniCardDataLiquidationPrice({
     afterLiquidationPrice,
     liquidationPrice,
-    ratioToCurrentPrice,
     unit: priceFormat,
+    ...(!isOracless && {
+      ratioToCurrentPrice,
+    }),
   })
   const liquidationPriceContentCardAjnaData = useAjnaCardDataLiquidationPrice({
     afterLiquidationPrice,
@@ -107,7 +109,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   if (ltvContentCardCommonData.footnote && typeof ltvContentCardCommonData.footnote[0] !== 'string')
     ltvContentCardCommonData.footnote[0].key = 'ajna.content-card.ltv.footnote'
 
-  const thresholdPriceContentCardData = useAjnaCardCardThresholdPrice({
+  const thresholdPriceContentCardData = useAjnaCardDataThresholdPrice({
     collateralAmount: position.collateralAmount,
     debtAmount: position.debtAmount,
     afterThresholdPrice: simulation?.thresholdPrice,
@@ -148,7 +150,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
         pnlUSD: position.pnl.cumulatives.borrowCumulativeDepositUSD.times(position.pnl.withoutFees),
       }),
   })
-  const netValueContentCardAjnaData = useAjnaCardDataNetValue({
+  const netValueContentCardAjnaData = useAjnaCardDataNetValueLending({
     collateralPrice,
     collateralToken,
     cumulatives: position.pnl.cumulatives,
