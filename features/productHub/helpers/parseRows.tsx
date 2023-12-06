@@ -22,7 +22,7 @@ export function parseRows(
 
     if (reverseTokens) icons.reverse()
 
-    const url = getActionUrl({ ...row, networkId, product: [product] })
+    const url = getActionUrl({ ...row, networkId: chainId, product: [product] })
     const urlDisabled = url === '/'
 
     return {

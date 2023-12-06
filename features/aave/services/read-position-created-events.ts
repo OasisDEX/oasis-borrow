@@ -164,10 +164,16 @@ export function createReadPositionCreatedEvents$(
     switchMap((positionCreatedEvents) =>
       combineLatest(
         context$,
+        of(positionCreatedEvents)
+      ),
+    ),
+    switchMap(([{ chainId }, positionCreatedEvents]) =>
+      combineLatest(
+        of(chainId),
         of(positionCreatedEvents),
         identifyTokens$(
-          context$,
           of(undefined),
+          chainId,
           uniq(
             positionCreatedEvents
               .flatMap((e) => e)
@@ -176,7 +182,7 @@ export function createReadPositionCreatedEvents$(
         ),
       ),
     ),
-    switchMap(([{ chainId }, positionCreatedEvents]) =>
+    switchMap(([chainId, positionCreatedEvents]) =>
       of(mapEvent(positionCreatedEvents, chainId)),
     ),
     shareReplay(1),

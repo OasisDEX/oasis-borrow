@@ -54,7 +54,7 @@ export function useOmniProtocolData({
     useMemo(
       () =>
         isOracless && collateralToken && quoteToken
-          ? identifiedTokens$([collateralToken, quoteToken])
+          ? identifiedTokens$(networkId, [collateralToken, quoteToken])
           : EMPTY,
       [isOracless, collateralToken, quoteToken],
     ),

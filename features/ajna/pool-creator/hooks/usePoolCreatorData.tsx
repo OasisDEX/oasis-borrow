@@ -4,7 +4,7 @@ import { deployAjnaPool } from 'blockchain/calls/ajnaErc20PoolFactory.constants'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { IdentifiedTokens } from 'blockchain/identifyTokens.types'
-import { NetworkIds } from 'blockchain/networks'
+import { NetworkIds, networksById } from 'blockchain/networks'
 import { amountToWad } from 'blockchain/utils'
 import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
@@ -133,11 +133,11 @@ export function usePoolCreatorData({
         const promise = cancelable(
           Promise.all([
             searchAjnaPool(chainId, {
-              collateralToken: [collateralAddress],
-              poolAddress: [],
-              quoteToken: [quoteAddress],
+              collateralToken: collateralAddress,
+              poolAddress: '',
+              quoteToken: quoteAddress,
             }),
-            identifiedTokens$([collateralAddress, quoteAddress]).pipe(first()).toPromise(),
+            identifiedTokens$(chainId, [collateralAddress, quoteAddress]).pipe(first()).toPromise(),
           ]),
         )
         setCancelablePromise(promise)
@@ -164,7 +164,8 @@ export function usePoolCreatorData({
                                 <AppLink
                                   sx={{ color: 'inherit' }}
                                   href={getOraclessProductUrl({
-                                    chainId: context.chainId,
+                                    networkId: context.chainId,
+                                    networkName: networksById[context.chainId].name,
                                     collateralAddress,
                                     collateralToken:
                                       identifiedTokens[collateralAddress.toLowerCase()].symbol,
@@ -176,7 +177,8 @@ export function usePoolCreatorData({
                                 <AppLink
                                   sx={{ color: 'inherit' }}
                                   href={getOraclessProductUrl({
-                                    chainId: context.chainId,
+                                    networkId: context.chainId,
+                                    networkName: networksById[context.chainId].name,
                                     collateralAddress,
                                     collateralToken:
                                       identifiedTokens[collateralAddress.toLowerCase()].symbol,
