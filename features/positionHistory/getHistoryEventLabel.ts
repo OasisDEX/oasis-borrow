@@ -82,26 +82,26 @@ export const getHistoryEventLabel = ({ kind, isOpen }: { kind?: string; isOpen?:
     case 'DecreaseAAVEPosition':
       return t('position-history.decrease-multiple')
     case 'AutomationAdded-AaveStopLossToCollateralV2':
-    case 'AutomationAdded-SparkStopLossCommandV2':
+    case 'AutomationAdded-SparkStopLossToCollateralV2':
       return t('position-history.automation.stop-loss-collateral-added')
     case 'AutomationExecuted-AaveStopLossToCollateralV2':
-    case 'AutomationExecuted-SparkStopLossCommandV2':
+    case 'AutomationExecuted-SparkStopLossToCollateralV2':
       return t('position-history.automation.stop-loss-collateral-executed')
     case 'AutomationRemoved-AaveStopLossToCollateralV2':
-    case 'AutomationRemoved-SparkStopLossCommandV2':
+    case 'AutomationRemoved-SparkStopLossToCollateralV2':
       return t('position-history.automation.stop-loss-collateral-removed')
     case 'AutomationAdded-AaveStopLossToDebtV2':
-    case 'AutomationAdded-SparkStopLossDebtCommandV2':
+    case 'AutomationAdded-SparkStopLossToDebtV2':
       return t('position-history.automation.stop-loss-debt-added')
     case 'AutomationExecuted-AaveStopLossToDebtV2':
-    case 'AutomationExecuted-SparkStopLossDebtCommandV2':
+    case 'AutomationExecuted-SparkStopLossToDebtV2':
       return t('position-history.automation.stop-loss-debt-executed')
     case 'AutomationRemoved-AaveStopLossToDebtV2':
-    case 'AutomationRemoved-SparkStopLossDebtCommandV2':
+    case 'AutomationRemoved-SparkStopLossToDebtV2':
       return t('position-history.automation.stop-loss-debt-removed')
     case 'Liquidation':
       return t('position-history.liquidation')
     default:
-      return t('position-history.event')
+      return `${t('position-history.event')} ${kind || ''}`
   }
 }
