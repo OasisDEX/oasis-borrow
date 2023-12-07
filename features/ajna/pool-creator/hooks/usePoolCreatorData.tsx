@@ -12,12 +12,14 @@ import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
+import type { usePoolCreatorFormReducto } from 'features/ajna/pool-creator/state'
 import type { PoolCreatorBoundries } from 'features/ajna/pool-creator/types'
 import type { SearchAjnaPoolData } from 'features/ajna/pool-finder/helpers'
 import { getOraclessProductUrl, searchAjnaPool } from 'features/ajna/pool-finder/helpers'
 import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
 import { getOmniTxStatuses } from 'features/omni-kit/contexts'
 import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
+import { AJNA_SUPPORTED_NETWORKS } from 'features/omni-kit/protocols/ajna/constants'
 import { OmniProductType, type OmniValidationItem } from 'features/omni-kit/types'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { handleTransaction } from 'helpers/handleTransaction'
@@ -32,12 +34,14 @@ import { Text } from 'theme-ui'
 
 interface UsePoolCreatorDataProps {
   collateralAddress: string
+  form: ReturnType<typeof usePoolCreatorFormReducto>
   interestRate: BigNumber
   quoteAddress: string
 }
 
 export function usePoolCreatorData({
   collateralAddress,
+  form: { dispatch },
   interestRate,
   quoteAddress,
 }: UsePoolCreatorDataProps) {
@@ -59,6 +63,7 @@ export function usePoolCreatorData({
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
+  const [isOnSupportedNetwork, setIsOnSupportedNetwork] = useState<boolean>(false)
 
   const onSubmit = () => {
     txHelpers
@@ -93,7 +98,15 @@ export function usePoolCreatorData({
   })?.at(0)
 
   useEffect(() => {
-    if (context?.chainId) void getAjnaPoolInterestRateBoundaries(context.chainId).then(setBoundries)
+    const _isOnSupportedNetwork = !!(
+      context?.chainId && AJNA_SUPPORTED_NETWORKS.includes(context.chainId)
+    )
+
+    if (_isOnSupportedNetwork)
+      void getAjnaPoolInterestRateBoundaries(context.chainId).then(setBoundries)
+    else setBoundries(undefined)
+    setIsOnSupportedNetwork(_isOnSupportedNetwork)
+    dispatch({ type: 'reset' })
   }, [context?.chainId])
 
   const chainId = useMemo(() => context?.chainId, [context?.chainId])
@@ -233,8 +246,9 @@ export function usePoolCreatorData({
     collateralToken,
     errors,
     isLoading,
-    isFormReady: context && txHelpers ? true : undefined,
+    isFormReady: !!(context && boundries),
     isFormValid,
+    isOnSupportedNetwork,
     onSubmit,
     quoteToken,
     txSidebarStatus,

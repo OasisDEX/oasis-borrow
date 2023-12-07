@@ -1,3 +1,4 @@
+import { NetworkHexIds } from 'blockchain/networks'
 import { AppLink } from 'components/Links'
 import type { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
 import { SidebarSectionStatus } from 'components/sidebar/SidebarSectionStatus'
@@ -13,6 +14,7 @@ interface PoolCreatorActionControllerProps {
   collateralAddress: string
   isFormValid: boolean
   isLoading: boolean
+  isOnSupportedNetwork: boolean
   quoteAddress: string
   txSidebarStatus?: SidebarSectionStatusProps
   txStatuses: TxStatuses
@@ -23,6 +25,7 @@ export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> =
   collateralAddress,
   isFormValid,
   isLoading,
+  isOnSupportedNetwork,
   quoteAddress,
   txSidebarStatus,
   txStatuses: { isTxError, isTxInProgress, isTxSuccess, isTxWaitingForApproval },
@@ -30,15 +33,19 @@ export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> =
 }) => {
   const { t } = useTranslation()
 
-  const { connect } = useConnection()
+  const { connect, setChain } = useConnection()
   const { isConnected } = useAccount()
 
   const isPrimaryButtonDisabled =
-    isConnected && (!isFormValid || isTxInProgress || isTxWaitingForApproval)
+    isConnected &&
+    isOnSupportedNetwork &&
+    (!isFormValid || isTxInProgress || isTxWaitingForApproval)
   const isPrimaryButtonLoading =
     isLoading || (isConnected && (isTxInProgress || isTxWaitingForApproval))
   const primaryButtonLabel = !isConnected
     ? t('connect-wallet')
+    : !isOnSupportedNetwork
+    ? t('switch-network')
     : isTxError
     ? t('retry')
     : t('pool-creator.form.submit')
@@ -81,7 +88,8 @@ export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> =
             width: '100%',
           }}
           onClick={() => {
-            if (isConnected) onSubmit()
+            if (isConnected && isOnSupportedNetwork) onSubmit()
+            else if (!isOnSupportedNetwork) setChain(NetworkHexIds.MAINNET)
             else connect()
           }}
         >
