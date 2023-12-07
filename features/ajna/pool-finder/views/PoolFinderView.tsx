@@ -12,6 +12,7 @@ import type { OraclessPoolResult, PoolFinderFormState } from 'features/ajna/pool
 import { AJNA_SUPPORTED_NETWORKS } from 'features/omni-kit/protocols/ajna/constants'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import type { ProductHubProductType } from 'features/productHub/types'
+import { useAppConfig } from 'helpers/config'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
@@ -27,6 +28,8 @@ interface PoolFinderViewProps {
 }
 
 export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
+  const { AjnaBase: ajnaBaseEnabled } = useAppConfig('features')
+
   const { identifiedTokens$, tokenPriceUSDStatic$ } = useProductContext()
 
   const { chainId: walletNetworkId } = useAccount()
@@ -61,6 +64,8 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
                 walletNetworkId,
               ]
           }
+          if (!ajnaBaseEnabled)
+            networkIds = networkIds.filter((networkId) => networkId !== NetworkIds.BASEMAINNET)
 
           const pools = await Promise.all(
             networkIds.map(
