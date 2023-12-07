@@ -109,8 +109,9 @@ export function AjnaPoolCreatorController() {
                 isFormValid={isFormValid}
                 isLoading={isLoading}
                 isOnSupportedNetwork={isOnSupportedNetwork}
-                quoteAddress={quoteAddress}
+                networkId={networkId}
                 onSubmit={onSubmit}
+                quoteAddress={quoteAddress}
                 txSidebarStatus={txSidebarStatus}
                 txStatuses={txStatuses}
               />

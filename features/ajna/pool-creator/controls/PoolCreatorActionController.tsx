@@ -1,4 +1,4 @@
-import { NetworkHexIds } from 'blockchain/networks'
+import { NetworkHexIds, NetworkIds , networksById } from 'blockchain/networks'
 import { AppLink } from 'components/Links'
 import type { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
 import { SidebarSectionStatus } from 'components/sidebar/SidebarSectionStatus'
@@ -15,10 +15,11 @@ interface PoolCreatorActionControllerProps {
   isFormValid: boolean
   isLoading: boolean
   isOnSupportedNetwork: boolean
+  networkId?: NetworkIds
+  onSubmit: () => void
   quoteAddress: string
   txSidebarStatus?: SidebarSectionStatusProps
   txStatuses: TxStatuses
-  onSubmit: () => void
 }
 
 export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> = ({
@@ -26,10 +27,11 @@ export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> =
   isFormValid,
   isLoading,
   isOnSupportedNetwork,
+  networkId = NetworkIds.MAINNET,
+  onSubmit,
   quoteAddress,
   txSidebarStatus,
   txStatuses: { isTxError, isTxInProgress, isTxSuccess, isTxWaitingForApproval },
-  onSubmit,
 }) => {
   const { t } = useTranslation()
 
@@ -50,12 +52,14 @@ export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> =
     ? t('retry')
     : t('pool-creator.form.submit')
 
+  const networkName = networksById[networkId].name
+
   return (
     <Grid gap={3}>
       {isTxSuccess ? (
         <Flex sx={{ columnGap: 3 }}>
           <AppLink
-            href={`/ethereum/ajna/earn/${collateralAddress}-${quoteAddress}`}
+            href={`/${networkName}/ajna/earn/${collateralAddress}-${quoteAddress}`}
             sx={{ width: '100%' }}
           >
             <Button
@@ -71,7 +75,7 @@ export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> =
             </Button>
           </AppLink>
           <AppLink
-            href={`/ethereum/ajna/borrow/${collateralAddress}-${quoteAddress}`}
+            href={`/${networkName}/ajna/borrow/${collateralAddress}-${quoteAddress}`}
             sx={{ width: '100%' }}
           >
             <Button sx={{ width: '100%', height: '52px' }}>{t('nav.borrow')}</Button>
