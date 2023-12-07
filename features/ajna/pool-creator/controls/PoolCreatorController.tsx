@@ -1,7 +1,9 @@
+import { getNetworkById } from 'blockchain/networks'
 import { AnimatedWrapper } from 'components/AnimatedWrapper'
 import { WithConnection } from 'components/connectWallet'
 import { DetailsSection } from 'components/DetailsSection'
 import { AppLink } from 'components/Links'
+import { ProtocolLabel } from 'components/ProtocolLabel'
 import { WithArrow } from 'components/WithArrow'
 import { AjnaHeader } from 'features/ajna/common/components'
 import {
@@ -14,6 +16,7 @@ import {
   usePoolCreatorFormReducto,
 } from 'features/ajna/pool-creator/state'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { LendingProtocol } from 'lendingProtocols'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box } from 'theme-ui'
@@ -34,6 +37,7 @@ export function AjnaPoolCreatorController() {
     isFormValid,
     isLoading,
     isOnSupportedNetwork,
+    networkId,
     onSubmit,
     quoteToken,
     txSidebarStatus,
@@ -75,6 +79,16 @@ export function AjnaPoolCreatorController() {
         <Box sx={{ maxWidth: '584px', mx: 'auto' }}>
           <DetailsSection
             title={t('pool-creator.form.title')}
+            badge={true}
+            extra={
+              isOnSupportedNetwork &&
+              networkId && (
+                <ProtocolLabel
+                  network={getNetworkById(networkId).name}
+                  protocol={LendingProtocol.Ajna}
+                />
+              )
+            }
             loose
             content={
               <PoolCreatorFormController
