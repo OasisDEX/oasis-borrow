@@ -12,12 +12,14 @@ import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
+import type { usePoolCreatorFormReducto } from 'features/ajna/pool-creator/state'
 import type { PoolCreatorBoundries } from 'features/ajna/pool-creator/types'
 import type { SearchAjnaPoolData } from 'features/ajna/pool-finder/helpers'
 import { getOraclessProductUrl, searchAjnaPool } from 'features/ajna/pool-finder/helpers'
 import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
 import { getOmniTxStatuses } from 'features/omni-kit/contexts'
 import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
+import { AJNA_SUPPORTED_NETWORKS } from 'features/omni-kit/protocols/ajna/constants'
 import { OmniProductType, type OmniValidationItem } from 'features/omni-kit/types'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { handleTransaction } from 'helpers/handleTransaction'
@@ -25,19 +27,21 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { first } from 'rxjs/operators'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { Text } from 'theme-ui'
 
 interface UsePoolCreatorDataProps {
   collateralAddress: string
+  form: ReturnType<typeof usePoolCreatorFormReducto>
   interestRate: BigNumber
   quoteAddress: string
 }
 
 export function usePoolCreatorData({
   collateralAddress,
+  form: { dispatch },
   interestRate,
   quoteAddress,
 }: UsePoolCreatorDataProps) {
@@ -59,6 +63,7 @@ export function usePoolCreatorData({
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
+  const [isOnSupportedNetwork, setIsOnSupportedNetwork] = useState<boolean>(false)
 
   const onSubmit = () => {
     txHelpers
@@ -93,10 +98,21 @@ export function usePoolCreatorData({
   })?.at(0)
 
   useEffect(() => {
-    if (context?.chainId) void getAjnaPoolInterestRateBoundaries(context.chainId).then(setBoundries)
-  }, [context?.chainId])
+    const _isOnSupportedNetwork = !!(
+      // dirty workaround for temporary goerli support
+      // todo: remove second part of OR condition when goerli is discontinued
+      (
+        context?.chainId &&
+        (AJNA_SUPPORTED_NETWORKS.includes(context.chainId) || context.chainId === NetworkIds.GOERLI)
+      )
+    )
 
-  const chainId = useMemo(() => context?.chainId, [context?.chainId])
+    setBoundries(undefined)
+    setIsOnSupportedNetwork(_isOnSupportedNetwork)
+    dispatch({ type: 'reset' })
+    if (_isOnSupportedNetwork)
+      void getAjnaPoolInterestRateBoundaries(context.chainId).then(setBoundries)
+  }, [context?.chainId])
 
   useEffect(() => {
     const localErrors: OmniValidationItem[] = []
@@ -126,18 +142,20 @@ export function usePoolCreatorData({
         isAddress(collateralAddress) &&
         isAddress(quoteAddress) &&
         collateralAddress !== quoteAddress &&
-        chainId
+        context?.chainId
       ) {
         setErrors([])
 
         const promise = cancelable(
           Promise.all([
-            searchAjnaPool(chainId, {
+            searchAjnaPool(context.chainId, {
               collateralToken: collateralAddress,
               poolAddress: '',
               quoteToken: quoteAddress,
             }),
-            identifiedTokens$(chainId, [collateralAddress, quoteAddress]).pipe(first()).toPromise(),
+            identifiedTokens$(context.chainId, [collateralAddress, quoteAddress])
+              .pipe(first())
+              .toPromise(),
           ]),
         )
         setCancelablePromise(promise)
@@ -224,7 +242,7 @@ export function usePoolCreatorData({
         setIsLoading(false)
       }
     },
-    [collateralAddress, quoteAddress, chainId],
+    [collateralAddress, quoteAddress, context?.chainId],
     250,
   )
 
@@ -232,9 +250,11 @@ export function usePoolCreatorData({
     boundries,
     collateralToken,
     errors,
-    isLoading,
-    isFormReady: context && txHelpers ? true : undefined,
+    isFormReady: !!(context && boundries),
     isFormValid,
+    isLoading,
+    isOnSupportedNetwork,
+    networkId: context?.chainId,
     onSubmit,
     quoteToken,
     txSidebarStatus,

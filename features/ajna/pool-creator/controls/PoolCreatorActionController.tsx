@@ -1,3 +1,4 @@
+import { NetworkHexIds, NetworkIds, networksById } from 'blockchain/networks'
 import { AppLink } from 'components/Links'
 import type { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
 import { SidebarSectionStatus } from 'components/sidebar/SidebarSectionStatus'
@@ -13,42 +14,52 @@ interface PoolCreatorActionControllerProps {
   collateralAddress: string
   isFormValid: boolean
   isLoading: boolean
+  isOnSupportedNetwork: boolean
+  networkId?: NetworkIds
+  onSubmit: () => void
   quoteAddress: string
   txSidebarStatus?: SidebarSectionStatusProps
   txStatuses: TxStatuses
-  onSubmit: () => void
 }
 
 export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> = ({
   collateralAddress,
   isFormValid,
   isLoading,
+  isOnSupportedNetwork,
+  networkId = NetworkIds.MAINNET,
+  onSubmit,
   quoteAddress,
   txSidebarStatus,
   txStatuses: { isTxError, isTxInProgress, isTxSuccess, isTxWaitingForApproval },
-  onSubmit,
 }) => {
   const { t } = useTranslation()
 
-  const { connect } = useConnection()
+  const { connect, setChain } = useConnection()
   const { isConnected } = useAccount()
 
   const isPrimaryButtonDisabled =
-    isConnected && (!isFormValid || isTxInProgress || isTxWaitingForApproval)
+    isConnected &&
+    isOnSupportedNetwork &&
+    (!isFormValid || isTxInProgress || isTxWaitingForApproval)
   const isPrimaryButtonLoading =
     isLoading || (isConnected && (isTxInProgress || isTxWaitingForApproval))
   const primaryButtonLabel = !isConnected
     ? t('connect-wallet')
+    : !isOnSupportedNetwork
+    ? t('switch-network')
     : isTxError
     ? t('retry')
     : t('pool-creator.form.submit')
+
+  const networkName = networksById[networkId].name
 
   return (
     <Grid gap={3}>
       {isTxSuccess ? (
         <Flex sx={{ columnGap: 3 }}>
           <AppLink
-            href={`/ethereum/ajna/earn/${collateralAddress}-${quoteAddress}`}
+            href={`/${networkName}/ajna/earn/${collateralAddress}-${quoteAddress}`}
             sx={{ width: '100%' }}
           >
             <Button
@@ -64,7 +75,7 @@ export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> =
             </Button>
           </AppLink>
           <AppLink
-            href={`/ethereum/ajna/borrow/${collateralAddress}-${quoteAddress}`}
+            href={`/${networkName}/ajna/borrow/${collateralAddress}-${quoteAddress}`}
             sx={{ width: '100%' }}
           >
             <Button sx={{ width: '100%', height: '52px' }}>{t('nav.borrow')}</Button>
@@ -81,7 +92,8 @@ export const PoolCreatorActionController: FC<PoolCreatorActionControllerProps> =
             width: '100%',
           }}
           onClick={() => {
-            if (isConnected) onSubmit()
+            if (isConnected && isOnSupportedNetwork) onSubmit()
+            else if (!isOnSupportedNetwork) setChain(NetworkHexIds.MAINNET)
             else connect()
           }}
         >
