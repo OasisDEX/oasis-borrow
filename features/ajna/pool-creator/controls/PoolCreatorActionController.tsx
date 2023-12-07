@@ -1,4 +1,4 @@
-import { NetworkHexIds, NetworkIds , networksById } from 'blockchain/networks'
+import { NetworkHexIds, NetworkIds, networksById } from 'blockchain/networks'
 import { AppLink } from 'components/Links'
 import type { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
 import { SidebarSectionStatus } from 'components/sidebar/SidebarSectionStatus'
