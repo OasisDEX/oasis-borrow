@@ -14,18 +14,20 @@ interface DetailsSectionProps {
   badge?: boolean
   buttons?: DetailsSectionButtons
   content: ReactNode
-  loose?: boolean
+  extra?: ReactNode
   footer?: ReactNode
-  title?: ReactNode
+  loose?: boolean
   notifications?: DetailsSectionNotificationItem[]
+  title?: ReactNode
 }
 
 export function DetailsSection({
   badge,
   buttons,
   content,
-  loose,
+  extra,
   footer,
+  loose,
   notifications,
   title,
 }: DetailsSectionProps) {
@@ -51,7 +53,7 @@ export function DetailsSection({
         }}
       >
         {title && typeof title === 'string' && (
-          <DetailsSectionTitle badge={badge} buttons={buttons} loose={loose}>
+          <DetailsSectionTitle badge={badge} buttons={buttons} loose={loose} extra={extra}>
             {title}
           </DetailsSectionTitle>
         )}
@@ -83,6 +85,7 @@ interface DetailsSectionTitleProps {
   badge?: boolean
   buttons?: DetailsSectionButtons
   children: ReactNode
+  extra?: ReactNode
   loose?: boolean
 }
 
@@ -90,12 +93,14 @@ export function DetailsSectionTitle({
   badge,
   buttons,
   children,
+  extra,
   loose,
 }: PropsWithChildren<DetailsSectionTitleProps>) {
   return (
     <Flex
       sx={{
         flexDirection: ['column', null, 'row'],
+        alignItems: 'center',
         justifyContent: 'space-between',
         mx: [3, null, loose ? 4 : '24px'],
         pt: 3,
@@ -129,6 +134,7 @@ export function DetailsSectionTitle({
           ))}
         </Flex>
       )}
+      {extra}
     </Flex>
   )
 }
