@@ -58,6 +58,7 @@ export function AaveAutomationContext({
       overwriteTriggersDefaults={{
         stopLossTriggerData: defaultStopLossTriggerData,
       }}
+      networkId={aaveManageVault.context.strategyConfig.networkId}
     >
       {children}
     </AutomationContextInput>

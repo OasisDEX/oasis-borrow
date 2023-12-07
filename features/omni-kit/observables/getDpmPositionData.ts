@@ -3,6 +3,7 @@ import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ethers } from 'ethers'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import type { PositionCreated } from 'features/aave/services'
+import { readPositionCreatedEvents$ } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types'
 import { getApiVault } from 'features/shared/vaultApi'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
@@ -68,21 +69,23 @@ const filterPositionWhenUrlParamsDefined = ({
     )
 
 export function getDpmPositionDataV2$(
-  proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
-  readPositionCreatedEvents$: (walletAddress: string) => Observable<PositionCreated[]>,
+  proxiesForPosition$: (
+    positionId: PositionId,
+    networkId: NetworkIds,
+  ) => Observable<ProxiesRelatedWithPosition>,
   positionId: PositionId,
-  chainId: NetworkIds,
+  networkId: NetworkIds,
   collateralToken: string,
   quoteToken: string,
   product: string,
   protocol: LendingProtocol,
   protocolRaw: string,
 ): Observable<DpmPositionData> {
-  return proxiesForPosition$(positionId).pipe(
+  return proxiesForPosition$(positionId, networkId).pipe(
     switchMap(({ dpmProxy }) =>
       combineLatest(
         of(dpmProxy),
-        dpmProxy ? readPositionCreatedEvents$(dpmProxy.user) : of(undefined),
+        dpmProxy ? readPositionCreatedEvents$(dpmProxy.user, networkId) : of(undefined),
       ),
     ),
     switchMap(([dpmProxy, positions]) => {
@@ -106,11 +109,11 @@ export function getDpmPositionDataV2$(
         of(dpmProxy),
         of(positions),
         of(proxyPosition),
-        dpmProxy && proxyPosition && chainId
+        dpmProxy && proxyPosition && networkId
           ? getApiVault({
               vaultId: Number(dpmProxy.vaultId),
               protocol: proxyPosition.protocol,
-              chainId,
+              chainId: networkId,
               tokenPair: `${proxyPosition.collateralTokenSymbol}-${proxyPosition.debtTokenSymbol}`,
             })
           : of(undefined),

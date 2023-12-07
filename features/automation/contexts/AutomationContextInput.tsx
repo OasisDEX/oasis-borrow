@@ -1,3 +1,4 @@
+import type { NetworkIds } from 'blockchain/networks'
 import type {
   AutomationCommonData,
   AutomationPositionData,
@@ -22,6 +23,7 @@ interface GeneralManageControlProps {
   protocol: VaultProtocol
   metadata: AutomationDefinitionMetadata
   overwriteTriggersDefaults?: OverwriteTriggersDefaults
+  networkId: NetworkIds
 }
 
 export function AutomationContextInput({
@@ -31,6 +33,7 @@ export function AutomationContextInput({
   protocol,
   metadata,
   overwriteTriggersDefaults,
+  networkId,
 }: PropsWithChildren<GeneralManageControlProps>) {
   const { context$ } = useMainContext()
   const { tokenPriceUSD$, balanceInfo$ } = useProductContext()
@@ -67,6 +70,7 @@ export function AutomationContextInput({
             protocol={protocol}
             metadata={metadata}
             overwriteTriggersDefaults={overwriteTriggersDefaults}
+            networkId={networkId}
           >
             {children}
           </AutomationContextProvider>

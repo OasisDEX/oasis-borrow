@@ -1,5 +1,5 @@
-import type { NetworkNames } from 'blockchain/networks'
-import { networksByName } from 'blockchain/networks'
+import type { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { getNetworkByName, networksByName } from 'blockchain/networks'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { loadStrategyFromTokens } from 'features/aave'
 import type { PositionCreated } from 'features/aave/services'
@@ -17,14 +17,19 @@ import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 import type { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
 
 export function getStrategyConfig$(
-  proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
+  proxiesForPosition$: (
+    positionId: PositionId,
+    networkId: NetworkIds,
+  ) => Observable<ProxiesRelatedWithPosition>,
   aaveUserConfiguration$: (proxyAddress: string) => Observable<AaveUserConfigurationResults>,
   lastCreatedPositionForProxy$: (proxyAddress: string) => Observable<PositionCreated | undefined>,
   positionId: PositionId,
   networkName: NetworkNames,
   vaultType: VaultType,
 ): Observable<IStrategyConfig> {
-  return proxiesForPosition$(positionId).pipe(
+  const networkConfig = getNetworkByName(networkName)
+
+  return proxiesForPosition$(positionId, networkConfig.id).pipe(
     switchMap(({ dsProxy, dpmProxy }) => {
       const effectiveProxyAddress = dsProxy || dpmProxy?.proxy
       return combineLatest(

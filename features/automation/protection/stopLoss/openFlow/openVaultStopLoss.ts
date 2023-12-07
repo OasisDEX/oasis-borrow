@@ -4,7 +4,7 @@ import { removeAutomationBotAggregatorTriggers } from 'blockchain/calls/automati
 import type { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator.types'
 import type { IlkData } from 'blockchain/ilks.types'
 import type { Context } from 'blockchain/network.types'
-import { emptyNetworkConfig } from 'blockchain/networks'
+import { emptyNetworkConfig, NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import type { AutomationPositionData } from 'components/context/AutomationContextProvider'
@@ -248,6 +248,7 @@ export function getDataForStopLoss(
     metadata: {
       stopLoss: getOpenVaultStopLossMetadata,
     },
+    networkId: NetworkIds.MAINNET,
   }
 
   return { stopLossSidebarProps, automationContextProps }

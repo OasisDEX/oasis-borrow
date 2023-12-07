@@ -11,7 +11,6 @@ import { proxyActionsAdapterResolver$ } from 'blockchain/calls/proxyActions/prox
 import { spotIlk } from 'blockchain/calls/spot'
 import { vatIlk } from 'blockchain/calls/vat'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
-import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { every10Seconds$ } from 'blockchain/network.constants'
 import type { NetworkNames } from 'blockchain/networks'
@@ -19,20 +18,13 @@ import { NetworkIds } from 'blockchain/networks'
 import { createTokenPriceInUSD$ } from 'blockchain/prices'
 import { tokenPrices$ } from 'blockchain/prices.constants'
 import { createAllowance$, createBalanceFromAddress$ } from 'blockchain/tokens'
-import {
-  getPositionIdFromDpmProxy$,
-  getUserDpmProxies$,
-  getUserDpmProxy$,
-} from 'blockchain/userDpmProxies'
+import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
 import type { AccountContext } from 'components/context/AccountContextProvider'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
-import {
-  createReadPositionCreatedEvents$,
-  getLastCreatedPositionForProxy$,
-} from 'features/aave/services'
+import { getLastCreatedPositionForProxy$ } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types/position-id'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
@@ -215,9 +207,6 @@ export function setupProductContext(
     (token, address) => `${token.address}_${token.precision}_${address}`,
   )
 
-  const userDpmProxies$ = curry(getUserDpmProxies$)(context$)
-
-  const userDpmProxy$ = memoize(curry(getUserDpmProxy$)(context$), (vaultId) => vaultId)
   const positionIdFromDpmProxy$ = memoize(
     curry(getPositionIdFromDpmProxy$)(context$),
     (dpmProxy) => dpmProxy,
@@ -386,12 +375,8 @@ export function setupProductContext(
   )
 
   const proxiesRelatedWithPosition$ = memoize(
-    curry(getProxiesRelatedWithPosition$)(proxyAddress$, userDpmProxy$),
+    curry(getProxiesRelatedWithPosition$)(proxyAddress$),
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
-  )
-
-  const readPositionCreatedEvents$ = memoize(
-    curry(createReadPositionCreatedEvents$)(context$, userDpmProxies$),
   )
 
   const lastCreatedPositionForProxy$ = memoize(curry(getLastCreatedPositionForProxy$)(context$))
@@ -629,29 +614,32 @@ export function setupProductContext(
   // out based on params from URL i.e. 2x positions with id 950 but on different pools, based on URL params
   // only single position should be picked to be displayed
   const dpmPositionDataV2$ = memoize(
-    curry(getDpmPositionDataV2$)(proxiesRelatedWithPosition$, readPositionCreatedEvents$),
+    curry(getDpmPositionDataV2$)(proxiesRelatedWithPosition$),
     (
       positionId: PositionId,
-      chainId: NetworkIds,
+      networkId: NetworkIds,
       collateralToken: string,
       quoteToken: string,
       product: string,
       protocol: LendingProtocol,
       protocolRaw: string,
     ) =>
-      `${positionId.walletAddress}-${positionId.vaultId}-${chainId}-${collateralToken}-${quoteToken}-${product}-${protocol}-${protocolRaw}`,
+      `${positionId.walletAddress}-${positionId.vaultId}-${networkId}-${collateralToken}-${quoteToken}-${product}-${protocol}-${protocolRaw}`,
   )
 
   const ajnaPosition$ = memoize(
-    curry(getAjnaPosition$)(context$, onEveryBlock$),
+    curry(getAjnaPosition$)(onEveryBlock$),
     (
       collateralPrice: BigNumber,
       quotePrice: BigNumber,
       dpmPositionData: DpmPositionData,
+      network: NetworkIds,
       collateralAddress?: string,
       quoteAddress?: string,
     ) =>
-      `${dpmPositionData.vaultId}-${collateralPrice.decimalPlaces(2).toString()}-${quotePrice
+      `${dpmPositionData.vaultId}-${network}-${collateralPrice
+        .decimalPlaces(2)
+        .toString()}-${quotePrice
         .decimalPlaces(2)
         .toString()}-${collateralAddress}-${quoteAddress}`,
   )
@@ -662,11 +650,6 @@ export function setupProductContext(
       `${dpmPositionData.vaultId}-${collateralPrice.decimalPlaces(2).toString()}-${quotePrice
         .decimalPlaces(2)
         .toString()}`,
-  )
-
-  const identifiedTokens$ = memoize(
-    curry(identifyTokens$)(once$),
-    (networkId: NetworkIds, tokens: string[]) => `${networkId}-${tokens.join()}`,
   )
 
   return {
@@ -694,7 +677,6 @@ export function setupProductContext(
     exchangeQuote$,
     gasEstimation$,
     generalManageVault$,
-    identifiedTokens$,
     ilkDataList$,
     ilks$: ilksSupportedOnNetwork$,
     manageGuniVault$,
@@ -708,14 +690,11 @@ export function setupProductContext(
     potTotalValueLocked$,
     priceInfo$,
     protocols,
-    readPositionCreatedEvents$,
     reclaimCollateral$,
     strategyConfig$,
     tokenPriceUSD$,
     tokenPriceUSDStatic$,
     totalValueLocked$,
-    userDpmProxies$,
-    userDpmProxy$,
     vaultBanners$,
     vaultHistory$,
     yields$,

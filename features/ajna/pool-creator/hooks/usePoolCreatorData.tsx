@@ -3,13 +3,13 @@ import { getAjnaPoolInterestRateBoundaries } from 'blockchain/calls/ajnaErc20Poo
 import { deployAjnaPool } from 'blockchain/calls/ajnaErc20PoolFactory.constants'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { identifyTokens$ } from 'blockchain/identifyTokens'
 import type { IdentifiedTokens } from 'blockchain/identifyTokens.types'
 import { NetworkIds, networksById } from 'blockchain/networks'
 import { amountToWad } from 'blockchain/utils'
 import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context/MainContextProvider'
-import { useProductContext } from 'components/context/ProductContextProvider'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import type { usePoolCreatorFormReducto } from 'features/ajna/pool-creator/state'
@@ -47,7 +47,6 @@ export function usePoolCreatorData({
 }: UsePoolCreatorDataProps) {
   const { t } = useTranslation()
   const { context$, txHelpers$ } = useMainContext()
-  const { identifiedTokens$ } = useProductContext()
 
   const [context] = useObservable(context$)
   const [txHelpers] = useObservable(txHelpers$)
@@ -153,7 +152,7 @@ export function usePoolCreatorData({
               poolAddress: '',
               quoteToken: quoteAddress,
             }),
-            identifiedTokens$(context.chainId, [collateralAddress, quoteAddress])
+            identifyTokens$(context.chainId, [collateralAddress, quoteAddress])
               .pipe(first())
               .toPromise(),
           ]),

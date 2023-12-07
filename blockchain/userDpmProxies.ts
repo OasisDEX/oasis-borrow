@@ -1,96 +1,99 @@
 import type { Observable } from 'rxjs'
-import { of } from 'rxjs'
+import { from, of } from 'rxjs'
 import { catchError, first, shareReplay, switchMap } from 'rxjs/operators'
 import { AccountFactory__factory, AccountGuard__factory } from 'types/ethers-contracts'
 
 import { ensureContractsExist, extendContract, getNetworkContracts } from './contracts'
-import type { Context } from './network.types'
 import type { NetworkIds } from './networks'
 import { getRpcProvidersForLogs } from './networks'
 import type { UserDpmAccount } from './userDpmProxies.types'
 
-export function getUserDpmProxies$(
-  context$: Observable<Pick<Context, 'chainId'>>,
+const getUserDpmProxies = async (walletAddress: string, networkId: NetworkIds) => {
+  const contracts = getNetworkContracts(networkId)
+  ensureContractsExist(networkId, contracts, ['accountFactory', 'accountGuard'])
+  const { accountFactory, accountGuard } = contracts
+  const { mainProvider, forkProvider } = getRpcProvidersForLogs(networkId)
+
+  const accountFactoryContract = await extendContract(
+    accountFactory,
+    AccountFactory__factory,
+    mainProvider,
+    forkProvider,
+  )
+
+  const accountGuardContract = await extendContract(
+    accountGuard,
+    AccountGuard__factory,
+    mainProvider,
+    forkProvider,
+  )
+
+  const accountCreatedFilter = accountFactoryContract.filters.AccountCreated(
+    null,
+    walletAddress,
+    null,
+  )
+  const proxyOwnershipTransferredFilter = accountGuardContract.filters.ProxyOwnershipTransferred(
+    walletAddress,
+    null,
+    null,
+  )
+
+  const [userAccountCreatedEvents, userProxyOwnershipTransferredEvents] = await Promise.all([
+    accountFactoryContract.getLogs(accountCreatedFilter),
+    accountGuardContract.getLogs(proxyOwnershipTransferredFilter),
+  ])
+
+  const userAssumedProxies = [
+    ...userAccountCreatedEvents,
+    ...userProxyOwnershipTransferredEvents,
+  ].map((event) => {
+    return event.args.proxy
+  })
+
+  const userAssumedProxiesTransferredEvents = await Promise.all(
+    userAssumedProxies.map((proxyAddress) =>
+      accountGuardContract.getLogs(
+        accountGuardContract.filters.ProxyOwnershipTransferred(null, null, proxyAddress),
+      ),
+    ),
+  )
+
+  const proxiesNotOwnedAnymore = userAssumedProxiesTransferredEvents
+    .flatMap((x) => x[x.length - 1])
+    .filter((x) => x)
+    .flatMap((event) => event)
+    .filter((event) => event.args.newOwner.toLowerCase() !== walletAddress.toLowerCase())
+    .map((event) => event.args.proxy)
+
+  const userProxies = [
+    ...new Set(userAssumedProxies.filter((x) => !proxiesNotOwnedAnymore.includes(x))),
+  ]
+
+  const userProxiesData = await Promise.all(
+    userProxies.map((proxyAddress) =>
+      accountFactoryContract.getLogs(
+        accountFactoryContract.filters.AccountCreated(proxyAddress, null, null),
+      ),
+    ),
+  )
+
+  return userProxiesData.flatMap((item) => ({
+    proxy: item[0].args.proxy,
+    vaultId: item[0].args.vaultId.toString(),
+    user: walletAddress,
+  }))
+}
+
+export function userDpmProxies$(
   walletAddress: string,
+  networkId: NetworkIds,
 ): Observable<UserDpmAccount[]> {
   if (!walletAddress) {
     return of([])
   }
 
-  return context$.pipe(
-    switchMap(async ({ chainId }) => {
-      const contracts = getNetworkContracts(chainId)
-      ensureContractsExist(chainId, contracts, ['accountFactory', 'accountGuard'])
-      const { accountFactory, accountGuard } = contracts
-      const { mainProvider, forkProvider } = getRpcProvidersForLogs(chainId)
-
-      const accountFactoryContract = await extendContract(
-        accountFactory,
-        AccountFactory__factory,
-        mainProvider,
-        forkProvider,
-      )
-
-      const accountGuardContract = await extendContract(
-        accountGuard,
-        AccountGuard__factory,
-        mainProvider,
-        forkProvider,
-      )
-
-      const accountCreatedFilter = accountFactoryContract.filters.AccountCreated(
-        null,
-        walletAddress,
-        null,
-      )
-      const proxyOwnershipTransferredFilter =
-        accountGuardContract.filters.ProxyOwnershipTransferred(walletAddress, null, null)
-
-      const [userAccountCreatedEvents, userProxyOwnershipTransferredEvents] = await Promise.all([
-        accountFactoryContract.getLogs(accountCreatedFilter),
-        accountGuardContract.getLogs(proxyOwnershipTransferredFilter),
-      ])
-
-      const userAssumedProxies = [
-        ...userAccountCreatedEvents,
-        ...userProxyOwnershipTransferredEvents,
-      ].map((event) => {
-        return event.args.proxy
-      })
-
-      const userAssumedProxiesTransferredEvents = await Promise.all(
-        userAssumedProxies.map((proxyAddress) =>
-          accountGuardContract.getLogs(
-            accountGuardContract.filters.ProxyOwnershipTransferred(null, null, proxyAddress),
-          ),
-        ),
-      )
-
-      const proxiesNotOwnedAnymore = userAssumedProxiesTransferredEvents
-        .flatMap((x) => x[x.length - 1])
-        .filter((x) => x)
-        .flatMap((event) => event)
-        .filter((event) => event.args.newOwner.toLowerCase() !== walletAddress.toLowerCase())
-        .map((event) => event.args.proxy)
-
-      const userProxies = [
-        ...new Set(userAssumedProxies.filter((x) => !proxiesNotOwnedAnymore.includes(x))),
-      ]
-
-      const userProxiesData = await Promise.all(
-        userProxies.map((proxyAddress) =>
-          accountFactoryContract.getLogs(
-            accountFactoryContract.filters.AccountCreated(proxyAddress, null, null),
-          ),
-        ),
-      )
-
-      return userProxiesData.flatMap((item) => ({
-        proxy: item[0].args.proxy,
-        vaultId: item[0].args.vaultId.toString(),
-        user: walletAddress,
-      }))
-    }),
+  return from(getUserDpmProxies(walletAddress, networkId)).pipe(
     catchError((error) => {
       console.error(`Error getting user DPM proxies`, walletAddress, error)
       return of([])
@@ -99,26 +102,15 @@ export function getUserDpmProxies$(
   )
 }
 
-export function getUserDpmProxy$(
-  context$: Observable<Context>,
-  vaultId: number,
-): Observable<UserDpmAccount | undefined> {
-  return context$.pipe(
-    switchMap(({ chainId }) => {
-      return getUserDpmProxy(vaultId, chainId)
-    }),
-  )
-}
-
 export async function getUserDpmProxy(
   vaultId: number,
-  chainId: NetworkIds,
+  networkId: NetworkIds,
 ): Promise<UserDpmAccount | undefined> {
-  const contracts = getNetworkContracts(chainId)
-  ensureContractsExist(chainId, contracts, ['accountFactory', 'accountGuard'])
+  const contracts = getNetworkContracts(networkId)
+  ensureContractsExist(networkId, contracts, ['accountFactory', 'accountGuard'])
   const { accountFactory, accountGuard } = contracts
 
-  const { mainProvider, forkProvider } = getRpcProvidersForLogs(chainId)
+  const { mainProvider, forkProvider } = getRpcProvidersForLogs(networkId)
 
   const accountFactoryContract = await extendContract(
     accountFactory,

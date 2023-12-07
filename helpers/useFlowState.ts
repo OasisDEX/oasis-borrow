@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
+import { userDpmProxies$ } from 'blockchain/userDpmProxies'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
@@ -35,6 +36,7 @@ export type UseFlowStateProps = {
   onGoBack?: UseFlowStateCBType
   onProxiesAvailable?: (events: CreatePositionEvent[], dpmAccounts: UserDpmAccount[]) => void
   token?: string
+  networkId: NetworkIds
 }
 
 export function useFlowState({
@@ -46,18 +48,18 @@ export function useFlowState({
   onGoBack,
   onProxiesAvailable,
   token,
+  networkId,
 }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
   const [walletAddress, setWalletAddress] = useState<string>()
-  const [chainId, setChainId] = useState<NetworkIds>()
   const [userProxyList, setUserProxyList] = useState<UserDpmAccount[]>([])
   const [availableProxies, setAvailableProxies] = useState<string[]>(
     existingProxy ? [existingProxy] : [],
   )
   const [isAllowanceReady, setAllowanceReady] = useState<boolean>(false)
   const [isLoading, setLoading] = useState<boolean>(false)
-  const { dpmAccountStateMachine, allowanceStateMachine, userDpmProxies$, allowanceForAccount$ } =
+  const { dpmAccountStateMachine, allowanceStateMachine, allowanceForAccount$ } =
     useProductContext()
   const { context$ } = useMainContext()
   const { stateMachine: dpmMachine } = setupDpmContext(dpmAccountStateMachine)
@@ -86,10 +88,9 @@ export function useFlowState({
 
   // wallet connection + DPM proxy machine
   useEffect(() => {
-    const walletConnectionSubscription = context$.subscribe(({ account, chainId, status }) => {
+    const walletConnectionSubscription = context$.subscribe(({ account, status }) => {
       setWalletConnected(status === 'connected')
       setWalletAddress(status === 'connected' && account ? account : undefined)
-      setChainId(chainId)
     })
     if (existingProxy) {
       return () => {
@@ -121,7 +122,7 @@ export function useFlowState({
   // list of (all) DPM proxies
   useEffect(() => {
     if (!walletAddress) return
-    const userDpmProxies = userDpmProxies$(walletAddress).subscribe((userProxyList) => {
+    const userDpmProxies = userDpmProxies$(walletAddress, networkId).subscribe((userProxyList) => {
       setUserProxyList(userProxyList)
     })
     return () => {
@@ -131,12 +132,12 @@ export function useFlowState({
 
   // list of AVAILABLE DPM proxies (updated asynchronously)
   useEffect(() => {
-    if (!walletAddress || !userProxyList.length || existingProxy || !chainId) return
+    if (!walletAddress || !userProxyList.length || existingProxy || !networkId) return
     const proxyListAvailabilityMap = combineLatest(
       userProxyList.map(async ({ vaultId, proxy }) => ({
         proxyAddress: proxy,
         proxyId: vaultId,
-        events: await getPositionCreatedEventForProxyAddress({ chainId }, proxy),
+        events: await getPositionCreatedEventForProxyAddress(networkId, proxy),
       })),
     ).subscribe((userProxyEventsList) => {
       if (onProxiesAvailable && userProxyEventsList.length > 0)
