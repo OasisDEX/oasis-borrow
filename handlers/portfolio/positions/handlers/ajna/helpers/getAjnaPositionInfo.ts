@@ -55,7 +55,7 @@ export async function getAjnaPositionInfo({
   const secondaryToken = getTokenDisplayName(quoteToken.symbol)
   const secondaryTokenAddress = quoteToken.address
   const isOracless = isPoolOracless({
-    chainId: NetworkIds.MAINNET,
+    networkId: NetworkIds.MAINNET,
     collateralToken: primaryToken,
     quoteToken: secondaryToken,
   })

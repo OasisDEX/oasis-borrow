@@ -18,7 +18,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 
 export function parsePoolResponse(
-  chainId: NetworkIds,
+  networkId: NetworkIds,
   identifiedTokens: IdentifiedTokens,
   pools: SearchAjnaPoolData[],
   prices: Tickers,
@@ -43,7 +43,7 @@ export function parsePoolResponse(
         const collateralToken = identifiedTokens[collateralAddress.toLowerCase()].symbol
         const quoteToken = identifiedTokens[quoteTokenAddress.toLowerCase()].symbol
         const isPoolNotEmpty = lowestUtilizedPriceIndex > 0
-        const isOracless = isPoolOracless({ chainId, collateralToken, quoteToken })
+        const isOracless = isPoolOracless({ networkId, collateralToken, quoteToken })
         const collateralPrice = isOracless ? one : prices[collateralToken]
         const quotePrice = isOracless ? one : prices[quoteToken]
         const marketPrice = collateralPrice.div(quotePrice)
@@ -74,6 +74,7 @@ export function parsePoolResponse(
           earnStrategyDescription: `${collateralToken}/${quoteToken} LP`,
           fee,
           managementType: 'active',
+          networkId,
           collateralAddress: collateralAddress,
           collateralToken: identifiedTokens[collateralAddress.toLowerCase()].symbol,
           collateralIcon:
@@ -87,7 +88,7 @@ export function parsePoolResponse(
               ? quoteTokenAddress
               : quoteToken,
           tooltips: {
-            ...(isPoolWithRewards({ collateralToken, networkId: chainId, quoteToken }) && {
+            ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {
               fee: productHubAjnaRewardsTooltip,
               ...(isPoolNotEmpty && {
                 weeklyNetApy: productHubAjnaRewardsTooltip,

@@ -115,7 +115,7 @@ export function OmniFormView({
       if (!hasDupePosition && filteredEvents.length) {
         setHasDupePosition(true)
         openModal(dupeModal, {
-          chainId: context?.chainId,
+          networkId: context?.chainId,
           collateralAddress,
           collateralToken,
           dpmAccounts,
