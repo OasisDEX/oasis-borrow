@@ -1,8 +1,10 @@
+import type { NetworkIds } from 'blockchain/networks'
+import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import type { PositionId } from 'features/aave/types'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
-import { iif } from 'rxjs'
+import { from, iif } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 
 export interface ProxiesRelatedWithPosition {
@@ -13,12 +15,12 @@ export interface ProxiesRelatedWithPosition {
 
 export function getProxiesRelatedWithPosition$(
   proxyAddress$: (address: string) => Observable<string | undefined>,
-  dpmProxy$: (vaultId: number) => Observable<UserDpmAccount | undefined>,
   positionId: PositionId,
+  networkId: NetworkIds,
 ): Observable<ProxiesRelatedWithPosition> {
   return iif(
     () => positionId.vaultId !== undefined,
-    dpmProxy$(positionId.vaultId!).pipe(
+    from(getUserDpmProxy(positionId.vaultId!, networkId)).pipe(
       map((dpmProxy) => ({ dpmProxy: dpmProxy, dsProxy: undefined })),
     ),
     proxyAddress$(positionId.walletAddress!).pipe(

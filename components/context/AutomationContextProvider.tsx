@@ -106,6 +106,7 @@ export interface AutomationContextProviderProps {
   protocol: VaultProtocol
   metadata: AutomationDefinitionMetadata
   overwriteTriggersDefaults?: OverwriteTriggersDefaults
+  networkId: NetworkIds
 }
 
 const automationTriggersDataInitialState = {
@@ -140,6 +141,7 @@ export function AutomationContextProvider({
   commonData,
   metadata,
   overwriteTriggersDefaults = {},
+  networkId,
 }: PropsWithChildren<AutomationContextProviderProps>) {
   const { controller, nextCollateralPrice, token } = commonData
 
@@ -208,8 +210,8 @@ export function AutomationContextProvider({
 
   const { automationTriggersData$ } = useProductContext()
   const autoTriggersData$ = useMemo(
-    () => automationTriggersData$(positionData.id),
-    [positionData.id.toNumber()],
+    () => automationTriggersData$(positionData.id, networkId),
+    [positionData.id.toNumber(), networkId],
   )
   const [automationTriggersData] = useObservable(autoTriggersData$)
 

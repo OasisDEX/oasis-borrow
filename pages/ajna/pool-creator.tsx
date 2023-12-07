@@ -1,3 +1,4 @@
+import { NetworkIds } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
@@ -18,7 +19,8 @@ function AjnaPoolCreatorPage() {
         description="seo.ajnaPoolCreator.description"
         url={`/ajna/pool-creator`}
       />
-      <ProductContextHandler>
+      {/* TODO it should be based on url */}
+      <ProductContextHandler networkId={NetworkIds.MAINNET}>
         <WithConnection>
           <WithTermsOfService>
             <WithWalletAssociatedRisk>

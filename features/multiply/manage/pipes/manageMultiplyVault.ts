@@ -32,20 +32,13 @@ import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import type { CloseVaultTo } from './CloseVaultTo.types'
 import type { MainAction } from './MainAction.types'
-import {
-  applyExchange,
-  createExchangeChange$,
-  createInitialQuoteChange,
-} from './manageMultiplyQuote'
+import { applyExchange, createExchangeChange$, createInitialQuoteChange } from './manageMultiplyQuote'
 import { defaultMutableManageMultiplyVaultState } from './manageMultiplyVault.constants'
 import { applyManageVaultAllowance } from './manageMultiplyVaultAllowances'
 import { applyManageVaultCalculations } from './manageMultiplyVaultCalculations'
 import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations.constants'
 import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
-import {
-  applyManageVaultConditions,
-  applyManageVaultStageCategorisation,
-} from './manageMultiplyVaultConditions'
+import { applyManageVaultConditions, applyManageVaultStageCategorisation } from './manageMultiplyVaultConditions'
 import { defaultManageMultiplyVaultConditions } from './manageMultiplyVaultConditions.constants'
 import { applyManageVaultEnvironment } from './manageMultiplyVaultEnvironment'
 import { applyManageVaultForm } from './manageMultiplyVaultForm'
@@ -301,7 +294,7 @@ export function createManageMultiplyVault$(
   slippageLimit$: Observable<UserSettingsState>,
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   saveVaultType$: SaveVaultType,
-  automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
+  automationTriggersData$: (id: BigNumber, networkId: NetworkIds) => Observable<TriggersData>,
   vaultType: VaultType,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
@@ -398,7 +391,7 @@ export function createManageMultiplyVault$(
                     createExchangeChange$(exchangeQuote$, stateSubject$),
                     slippageChange$(slippageLimit$),
                     createHistoryChange$(vaultHistory$, id),
-                    createAutomationTriggersChange$(automationTriggersData$, id),
+                    createAutomationTriggersChange$(automationTriggersData$, id, NetworkIds.MAINNET),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)

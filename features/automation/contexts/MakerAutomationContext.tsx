@@ -1,3 +1,4 @@
+import { NetworkIds } from 'blockchain/networks'
 import { getAutomationMakerPositionData } from 'features/automation/common/context/getAutomationMakerPositionData'
 import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
 import { getMakerStopLossMetadata } from 'features/automation/metadata/maker/stopLossMetadata'
@@ -40,6 +41,7 @@ export function MakerAutomationContext({
       metadata={{
         stopLoss: getMakerStopLossMetadata,
       }}
+      networkId={NetworkIds.MAINNET}
     >
       {children}
     </AutomationContextInput>

@@ -28,13 +28,13 @@ export type PositionCreated = {
 }
 
 export async function getPositionCreatedEventForProxyAddress(
-  { chainId }: Pick<Context, 'chainId'>,
+  networkId: NetworkIds,
   proxyAddress: string,
 ): Promise<CreatePositionEvent[]> {
-  const { mainProvider, forkProvider } = getRpcProvidersForLogs(chainId)
+  const { mainProvider, forkProvider } = getRpcProvidersForLogs(networkId)
 
-  const contracts = getNetworkContracts(chainId)
-  ensureContractsExist(chainId, contracts, ['accountGuard'])
+  const contracts = getNetworkContracts(networkId)
+  ensureContractsExist(networkId, contracts, ['accountGuard'])
   const { accountGuard } = contracts
 
   const contractDesc: ContractDesc & { genesisBlock: number } = {
@@ -126,9 +126,9 @@ export function getLastCreatedPositionForProxy$(
 
 export async function getLastCreatedPositionForProxy(
   proxyAddress: string,
-  chainId: NetworkIds,
+  networkId: NetworkIds,
 ): Promise<PositionCreated | undefined> {
-  const events = await getPositionCreatedEventForProxyAddress({ chainId }, proxyAddress)
+  const events = await getPositionCreatedEventForProxyAddress(networkId, proxyAddress)
 
   const lastEvent = events.pop()
   if (lastEvent === undefined) {
@@ -138,36 +138,34 @@ export async function getLastCreatedPositionForProxy(
   return {
     collateralTokenAddress: lastEvent!.args.collateralToken,
     positionType: lastEvent!.args.positionType as 'Borrow' | 'Multiply' | 'Earn',
-    collateralTokenSymbol: getTokenSymbolBasedOnAddress(chainId, lastEvent!.args.collateralToken),
-    debtTokenSymbol: getTokenSymbolBasedOnAddress(chainId, lastEvent!.args.debtToken),
+    collateralTokenSymbol: getTokenSymbolBasedOnAddress(networkId, lastEvent!.args.collateralToken),
+    debtTokenSymbol: getTokenSymbolBasedOnAddress(networkId, lastEvent!.args.debtToken),
     debtTokenAddress: lastEvent!.args.debtToken,
     protocol: extractLendingProtocolFromPositionCreatedEvent(lastEvent!),
     protocolRaw: lastEvent.args.protocol,
-    chainId,
+    chainId: networkId,
     proxyAddress: lastEvent!.args.proxyAddress,
   }
 }
 
 export function createReadPositionCreatedEvents$(
-  context$: Observable<Pick<Context, 'chainId'>>,
-  userDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>,
+  userDpmProxies$: (walletAddress: string, networkId: NetworkIds) => Observable<UserDpmAccount[]>,
   walletAddress: string,
+  networkId: NetworkIds,
 ): Observable<Array<PositionCreated>> {
-  return combineLatest(context$, userDpmProxies$(walletAddress)).pipe(
-    switchMap(([context, dpmProxies]) =>
+  return combineLatest(userDpmProxies$(walletAddress, networkId)).pipe(
+    switchMap(([dpmProxies]) =>
       combineLatest(
         dpmProxies.map((dpmProxy) =>
-          getPositionCreatedEventForProxyAddress(context, dpmProxy.proxy),
+          getPositionCreatedEventForProxyAddress(networkId, dpmProxy.proxy),
         ),
       ),
     ),
     switchMap((positionCreatedEvents) =>
       combineLatest(
-        context$,
         of(positionCreatedEvents),
         identifyTokens$(
-          context$,
-          of(undefined),
+          networkId,
           uniq(
             positionCreatedEvents
               .flatMap((e) => e)
@@ -176,9 +174,7 @@ export function createReadPositionCreatedEvents$(
         ),
       ),
     ),
-    switchMap(([{ chainId }, positionCreatedEvents]) =>
-      of(mapEvent(positionCreatedEvents, chainId)),
-    ),
+    switchMap(([positionCreatedEvents]) => of(mapEvent(positionCreatedEvents, networkId))),
     shareReplay(1),
   )
 }
@@ -190,10 +186,7 @@ export function createProxyConsumed$(
 ): Observable<boolean> {
   return context$.pipe(
     switchMap(async (context) => {
-      return await getPositionCreatedEventForProxyAddress(
-        { chainId: context.chainId },
-        dpmProxyAddress,
-      )
+      return await getPositionCreatedEventForProxyAddress(context.chainId, dpmProxyAddress)
     }),
     map((events) => {
       return events.length > 0

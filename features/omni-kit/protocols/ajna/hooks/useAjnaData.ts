@@ -1,6 +1,5 @@
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
-import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
@@ -26,7 +25,6 @@ export function useAjnaData({
   tokenPriceUSDData,
   networkId,
 }: ProductDataProps) {
-  const { context$ } = useMainContext()
   const { ajnaPosition$ } = useProductContext()
 
   const isOracless = !!(
@@ -34,8 +32,6 @@ export function useAjnaData({
     quoteToken &&
     isPoolOracless({ collateralToken, quoteToken })
   )
-
-  const [context] = useObservable(context$)
 
   const [ajnaPositionData, ajnaPositionError] = useObservable(
     useMemo(
@@ -63,10 +59,10 @@ export function useAjnaData({
           ? getAjnaPositionAggregatedData$({
               dpmPositionData,
               position: ajnaPositionData,
-              networkId: context?.chainId ?? NetworkIds.MAINNET,
+              networkId,
             })
           : EMPTY,
-      [dpmPositionData, ajnaPositionData, context?.chainId],
+      [dpmPositionData, ajnaPositionData, networkId],
     ),
   )
 

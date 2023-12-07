@@ -22,7 +22,6 @@ import { createAllowance$, createBalanceFromAddress$ } from 'blockchain/tokens'
 import {
   getPositionIdFromDpmProxy$,
   getUserDpmProxies$,
-  getUserDpmProxy$,
 } from 'blockchain/userDpmProxies'
 import type { AccountContext } from 'components/context/AccountContextProvider'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
@@ -134,6 +133,7 @@ export function setupProductContext(
     userSettings$,
     vault$,
   }: AccountContext,
+  networkId: NetworkIds,
 ) {
   console.info('Product context setup')
   combineLatest(account$, connectedContext$)
@@ -217,7 +217,6 @@ export function setupProductContext(
 
   const userDpmProxies$ = curry(getUserDpmProxies$)(context$)
 
-  const userDpmProxy$ = memoize(curry(getUserDpmProxy$)(context$), (vaultId) => vaultId)
   const positionIdFromDpmProxy$ = memoize(
     curry(getPositionIdFromDpmProxy$)(context$),
     (dpmProxy) => dpmProxy,
@@ -386,12 +385,12 @@ export function setupProductContext(
   )
 
   const proxiesRelatedWithPosition$ = memoize(
-    curry(getProxiesRelatedWithPosition$)(proxyAddress$, userDpmProxy$),
+    curry(getProxiesRelatedWithPosition$)(proxyAddress$),
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
   const readPositionCreatedEvents$ = memoize(
-    curry(createReadPositionCreatedEvents$)(context$, userDpmProxies$),
+    curry(createReadPositionCreatedEvents$)(userDpmProxies$),
   )
 
   const lastCreatedPositionForProxy$ = memoize(curry(getLastCreatedPositionForProxy$)(context$))
@@ -632,14 +631,14 @@ export function setupProductContext(
     curry(getDpmPositionDataV2$)(proxiesRelatedWithPosition$, readPositionCreatedEvents$),
     (
       positionId: PositionId,
-      chainId: NetworkIds,
+      networkId: NetworkIds,
       collateralToken: string,
       quoteToken: string,
       product: string,
       protocol: LendingProtocol,
       protocolRaw: string,
     ) =>
-      `${positionId.walletAddress}-${positionId.vaultId}-${chainId}-${collateralToken}-${quoteToken}-${product}-${protocol}-${protocolRaw}`,
+      `${positionId.walletAddress}-${positionId.vaultId}-${networkId}-${collateralToken}-${quoteToken}-${product}-${protocol}-${protocolRaw}`,
   )
 
   const ajnaPosition$ = memoize(
@@ -667,7 +666,7 @@ export function setupProductContext(
         .toString()}`,
   )
 
-  const identifiedTokens$ = memoize(curry(identifyTokens$)(context$, once$), (tokens: string[]) =>
+  const identifiedTokens$ = memoize(curry(identifyTokens$)(networkId), (tokens: string[]) =>
     tokens.join(),
   )
 
@@ -717,7 +716,6 @@ export function setupProductContext(
     tokenPriceUSDStatic$,
     totalValueLocked$,
     userDpmProxies$,
-    userDpmProxy$,
     vaultBanners$,
     vaultHistory$,
     yields$,

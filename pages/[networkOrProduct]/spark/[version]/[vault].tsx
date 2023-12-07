@@ -1,5 +1,5 @@
 import type { NetworkNames } from 'blockchain/networks'
-import { isSupportedNetwork, networksByName } from 'blockchain/networks'
+import { getNetworkByName, isSupportedNetwork } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
@@ -62,9 +62,13 @@ function WithSparkStrategy({
 }) {
   const { push } = useRouter()
   const { t } = useTranslation()
-  const chainId = networksByName[network].id
+  const networkId = getNetworkByName(network).id
 
-  const apiVaults = useApiVaults({ vaultIds: [positionId.vaultId ?? -1], protocol, chainId })
+  const apiVaults = useApiVaults({
+    vaultIds: [positionId.vaultId ?? -1],
+    protocol,
+    chainId: networkId,
+  })
 
   const {
     strategyConfig$,
@@ -77,7 +81,7 @@ function WithSparkStrategy({
     strategyConfig$(positionId, network, apiVaults[0]?.type || VaultType.Unknown),
   )
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
-    proxiesRelatedWithPosition$(positionId),
+    proxiesRelatedWithPosition$(positionId, networkId),
   )
 
   if (strategyConfigError) {
@@ -161,9 +165,11 @@ function Position({
     void replace(INTERNAL_LINKS.notFound)
   }
 
+  const networkConfig = getNetworkByName(network)
+
   return (
     <AppLayout>
-      <ProductContextHandler>
+      <ProductContextHandler networkId={networkConfig.id}>
         <GasEstimationContextProvider>
           <AaveContextProvider>
             <WithConnection>

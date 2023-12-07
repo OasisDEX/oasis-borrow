@@ -35,6 +35,7 @@ export type UseFlowStateProps = {
   onGoBack?: UseFlowStateCBType
   onProxiesAvailable?: (events: CreatePositionEvent[], dpmAccounts: UserDpmAccount[]) => void
   token?: string
+  networkId: NetworkIds
 }
 
 export function useFlowState({
@@ -46,11 +47,12 @@ export function useFlowState({
   onGoBack,
   onProxiesAvailable,
   token,
+  networkId,
 }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
   const [walletAddress, setWalletAddress] = useState<string>()
-  const [chainId, setChainId] = useState<NetworkIds>()
+  // const [chainId, setChainId] = useState<NetworkIds>()
   const [userProxyList, setUserProxyList] = useState<UserDpmAccount[]>([])
   const [availableProxies, setAvailableProxies] = useState<string[]>(
     existingProxy ? [existingProxy] : [],
@@ -86,10 +88,9 @@ export function useFlowState({
 
   // wallet connection + DPM proxy machine
   useEffect(() => {
-    const walletConnectionSubscription = context$.subscribe(({ account, chainId, status }) => {
+    const walletConnectionSubscription = context$.subscribe(({ account, status }) => {
       setWalletConnected(status === 'connected')
       setWalletAddress(status === 'connected' && account ? account : undefined)
-      setChainId(chainId)
     })
     if (existingProxy) {
       return () => {
@@ -121,7 +122,7 @@ export function useFlowState({
   // list of (all) DPM proxies
   useEffect(() => {
     if (!walletAddress) return
-    const userDpmProxies = userDpmProxies$(walletAddress).subscribe((userProxyList) => {
+    const userDpmProxies = userDpmProxies$(walletAddress, networkId).subscribe((userProxyList) => {
       setUserProxyList(userProxyList)
     })
     return () => {
@@ -131,12 +132,12 @@ export function useFlowState({
 
   // list of AVAILABLE DPM proxies (updated asynchronously)
   useEffect(() => {
-    if (!walletAddress || !userProxyList.length || existingProxy || !chainId) return
+    if (!walletAddress || !userProxyList.length || existingProxy || !networkId) return
     const proxyListAvailabilityMap = combineLatest(
       userProxyList.map(async ({ vaultId, proxy }) => ({
         proxyAddress: proxy,
         proxyId: vaultId,
-        events: await getPositionCreatedEventForProxyAddress({ chainId }, proxy),
+        events: await getPositionCreatedEventForProxyAddress(networkId, proxy),
       })),
     ).subscribe((userProxyEventsList) => {
       if (onProxiesAvailable && userProxyEventsList.length > 0)

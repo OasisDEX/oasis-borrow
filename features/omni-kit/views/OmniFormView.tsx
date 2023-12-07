@@ -98,6 +98,7 @@ export function OmniFormView({
   const [hasDupePosition, setHasDupePosition] = useState<boolean>(false)
 
   const flowState = useFlowState({
+    networkId: network.id,
     ...(dpmProxy && { existingProxy: dpmProxy }),
     ...getOmniFlowStateConfig({
       protocol,

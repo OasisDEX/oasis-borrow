@@ -45,11 +45,15 @@ export async function loadTriggerDataFromCache({
 export function createAutomationTriggersData(
   context$: Observable<Context>,
   onEveryBlock$: Observable<number>,
-  proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
+  proxiesRelatedWithPosition$: (
+    positionId: PositionId,
+    networkId: NetworkIds,
+  ) => Observable<ProxiesRelatedWithPosition>,
   id: BigNumber,
+  networkId: NetworkIds,
 ): Observable<TriggersData> {
   return every5Seconds$.pipe(
-    withLatestFrom(context$, proxiesRelatedWithPosition$({ vaultId: id.toNumber() })),
+    withLatestFrom(context$, proxiesRelatedWithPosition$({ vaultId: id.toNumber() }, networkId)),
     mergeMap(([, context, proxies]) => {
       return loadTriggerDataFromCache({
         positionId: id.toNumber(),
@@ -66,10 +70,11 @@ export function createAutomationTriggersData(
 }
 
 export function createAutomationTriggersChange$(
-  automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
+  automationTriggersData$: (id: BigNumber, networkId: NetworkIds) => Observable<TriggersData>,
   id: BigNumber,
+  networkId: NetworkIds,
 ) {
-  return automationTriggersData$(id).pipe(
+  return automationTriggersData$(id, networkId).pipe(
     map((triggers) => ({
       kind: 'automationTriggersData',
       stopLossData: extractStopLossData(triggers),

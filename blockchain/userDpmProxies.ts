@@ -12,17 +12,18 @@ import type { UserDpmAccount } from './userDpmProxies.types'
 export function getUserDpmProxies$(
   context$: Observable<Pick<Context, 'chainId'>>,
   walletAddress: string,
+  networkId: NetworkIds,
 ): Observable<UserDpmAccount[]> {
   if (!walletAddress) {
     return of([])
   }
 
   return context$.pipe(
-    switchMap(async ({ chainId }) => {
-      const contracts = getNetworkContracts(chainId)
-      ensureContractsExist(chainId, contracts, ['accountFactory', 'accountGuard'])
+    switchMap(async () => {
+      const contracts = getNetworkContracts(networkId)
+      ensureContractsExist(networkId, contracts, ['accountFactory', 'accountGuard'])
       const { accountFactory, accountGuard } = contracts
-      const { mainProvider, forkProvider } = getRpcProvidersForLogs(chainId)
+      const { mainProvider, forkProvider } = getRpcProvidersForLogs(networkId)
 
       const accountFactoryContract = await extendContract(
         accountFactory,
@@ -99,26 +100,15 @@ export function getUserDpmProxies$(
   )
 }
 
-export function getUserDpmProxy$(
-  context$: Observable<Context>,
-  vaultId: number,
-): Observable<UserDpmAccount | undefined> {
-  return context$.pipe(
-    switchMap(({ chainId }) => {
-      return getUserDpmProxy(vaultId, chainId)
-    }),
-  )
-}
-
 export async function getUserDpmProxy(
   vaultId: number,
-  chainId: NetworkIds,
+  networkId: NetworkIds,
 ): Promise<UserDpmAccount | undefined> {
-  const contracts = getNetworkContracts(chainId)
-  ensureContractsExist(chainId, contracts, ['accountFactory', 'accountGuard'])
+  const contracts = getNetworkContracts(networkId)
+  ensureContractsExist(networkId, contracts, ['accountFactory', 'accountGuard'])
   const { accountFactory, accountGuard } = contracts
 
-  const { mainProvider, forkProvider } = getRpcProvidersForLogs(chainId)
+  const { mainProvider, forkProvider } = getRpcProvidersForLogs(networkId)
 
   const accountFactoryContract = await extendContract(
     accountFactory,

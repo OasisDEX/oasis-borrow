@@ -3,6 +3,7 @@ import { tokenAllowance } from 'blockchain/better-calls/erc20'
 import type { ChainlinkSupportedNetworks } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { getNetworkContracts } from 'blockchain/contracts'
+import type { NetworkIds } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import type { AccountContext } from 'components/context/AccountContextProvider'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
@@ -26,7 +27,6 @@ export function getCommonPartsFromProductContext(
   { proxyAddress$, proxyConsumed$ }: AccountContext,
   {
     gasEstimation$,
-    userDpmProxy$,
     userDpmProxies$,
     commonTransactionServices,
     dpmAccountStateMachine,
@@ -45,7 +45,7 @@ export function getCommonPartsFromProductContext(
   )
 
   const proxiesRelatedWithPosition$ = memoize(
-    curry(getProxiesRelatedWithPosition$)(proxyAddress$, userDpmProxy$),
+    curry(getProxiesRelatedWithPosition$)(proxyAddress$),
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
@@ -76,11 +76,15 @@ export function getCommonPartsFromProductContext(
     commonTransactionServices,
   )
 
-  const getAvailableDPMProxy: (walletAddress: string) => Observable<UserDpmAccount | undefined> =
-    memoize(curry(getAvailableDPMProxy$)(userDpmProxies$, proxyConsumed$))
+  const getAvailableDPMProxy: (
+    walletAddress: string,
+    networkId: NetworkIds,
+  ) => Observable<UserDpmAccount | undefined> = memoize(
+    curry(getAvailableDPMProxy$)(userDpmProxies$, proxyConsumed$),
+  )
 
   const unconsumedDpmProxyForConnectedAccount$ = contextForAddress$.pipe(
-    switchMap(({ account }) => getAvailableDPMProxy(account)),
+    switchMap(({ account }) => getAvailableDPMProxy(account, networkId)),
   )
 
   const unconsumedDpmForStrategyNetwork = context$.pipe(
