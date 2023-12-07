@@ -53,7 +53,6 @@ export function useFlowState({
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
   const [walletAddress, setWalletAddress] = useState<string>()
-  // const [chainId, setChainId] = useState<NetworkIds>()
   const [userProxyList, setUserProxyList] = useState<UserDpmAccount[]>([])
   const [availableProxies, setAvailableProxies] = useState<string[]>(
     existingProxy ? [existingProxy] : [],
