@@ -35,7 +35,8 @@ export function useOmniProtocolData({
   networkId,
 }: OmniProtocolDataProps) {
   const { walletAddress } = useAccount()
-  const { gasPrice$ } = useMainContext()
+  // TODO: remove context when switched to getting network from parameter
+  const { context$, gasPrice$ } = useMainContext()
   const { userSettings$ } = useAccountContext()
   const {
     balancesFromAddressInfoArray$,
@@ -45,6 +46,7 @@ export function useOmniProtocolData({
     tokenPriceUSD$,
   } = useProductContext()
 
+  const [context] = useObservable(context$)
   const [userSettingsData, userSettingsError] = useObservable(userSettings$)
   const [gasPriceData, gasPriceError] = useObservable(gasPrice$)
 
@@ -53,10 +55,10 @@ export function useOmniProtocolData({
   const [identifiedTokensData] = useObservable(
     useMemo(
       () =>
-        isOracless && collateralToken && quoteToken
-          ? identifiedTokens$([collateralToken, quoteToken])
+        context && isOracless && collateralToken && quoteToken
+          ? identifiedTokens$(context.chainId, [collateralToken, quoteToken])
           : EMPTY,
-      [isOracless, collateralToken, quoteToken],
+      [context, isOracless, collateralToken, quoteToken],
     ),
   )
 

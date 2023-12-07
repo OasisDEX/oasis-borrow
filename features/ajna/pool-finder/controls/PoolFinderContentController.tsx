@@ -1,4 +1,3 @@
-import type { NetworkIds } from 'blockchain/networks'
 import { AssetsResponsiveTable } from 'components/assetsTable/AssetsResponsiveTable'
 import { AssetsTableContainer } from 'components/assetsTable/AssetsTableContainer'
 import { AssetsTableNoResults } from 'components/assetsTable/AssetsTableNoResults'
@@ -14,23 +13,18 @@ import { Trans, useTranslation } from 'react-i18next'
 
 interface PoolFinderContentControllerProps {
   addresses: PoolFinderFormState
-  chainId: NetworkIds
   selectedProduct: ProductHubProductType
   tableData: OraclessPoolResult[]
 }
 
 export const PoolFinderContentController: FC<PoolFinderContentControllerProps> = ({
-  addresses: { collateralAddress, quoteAddress },
-  chainId,
+  addresses: { collateralToken, quoteToken },
   selectedProduct,
   tableData,
 }) => {
   const { t } = useTranslation()
 
-  const rows = useMemo(
-    () => parseRows(chainId, tableData, selectedProduct),
-    [chainId, tableData, selectedProduct],
-  )
+  const rows = useMemo(() => parseRows(tableData, selectedProduct), [tableData, selectedProduct])
 
   return (
     <AssetsTableContainer>
@@ -42,8 +36,8 @@ export const PoolFinderContentController: FC<PoolFinderContentControllerProps> =
           content={
             <Trans
               i18nKey={
-                (collateralAddress && !isAddress(collateralAddress)) ||
-                (quoteAddress && !isAddress(quoteAddress))
+                (collateralToken && !isAddress(collateralToken)) ||
+                (quoteToken && !isAddress(quoteToken))
                   ? 'pool-finder.validation.no-results-suggest-address'
                   : 'pool-finder.validation.no-results-description'
               }

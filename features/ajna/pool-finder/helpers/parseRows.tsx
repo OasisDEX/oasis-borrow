@@ -1,5 +1,4 @@
-import type { NetworkIds } from 'blockchain/networks'
-import { NetworkNames } from 'blockchain/networks'
+import { getNetworkById } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import type { AssetsTableRowData } from 'components/assetsTable/types'
@@ -14,7 +13,6 @@ import { upperFirst } from 'lodash'
 import React from 'react'
 
 export function parseRows(
-  chainId: NetworkIds,
   rows: OraclessPoolResult[],
   product: ProductHubProductType,
 ): AssetsTableRowData[] {
@@ -29,6 +27,7 @@ export function parseRows(
       liquidity,
       managementType,
       maxLtv,
+      networkId,
       quoteAddress,
       quoteIcon,
       quoteToken,
@@ -37,10 +36,12 @@ export function parseRows(
     } = row
 
     const label = `${collateralToken}/${quoteToken}`
+    const networkName = getNetworkById(networkId).name
     const url = getOraclessProductUrl({
-      chainId,
       collateralAddress,
       collateralToken,
+      networkId,
+      networkName,
       productType: product as unknown as OmniProductType,
       quoteAddress,
       quoteToken,
@@ -66,7 +67,7 @@ export function parseRows(
         quoteToken,
       ),
       protocolNetwork: (
-        <ProtocolLabel network={NetworkNames.ethereumMainnet} protocol={LendingProtocol.Ajna} />
+        <ProtocolLabel network={getNetworkById(networkId).name} protocol={LendingProtocol.Ajna} />
       ),
       action: <AssetsTableDataCellAction cta={upperFirst(product)} link={url} />,
     }

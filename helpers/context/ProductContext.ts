@@ -664,8 +664,9 @@ export function setupProductContext(
         .toString()}`,
   )
 
-  const identifiedTokens$ = memoize(curry(identifyTokens$)(context$, once$), (tokens: string[]) =>
-    tokens.join(),
+  const identifiedTokens$ = memoize(
+    curry(identifyTokens$)(once$),
+    (networkId: NetworkIds, tokens: string[]) => `${networkId}-${tokens.join()}`,
   )
 
   return {

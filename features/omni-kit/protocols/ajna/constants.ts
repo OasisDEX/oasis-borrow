@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import {
   omniSidebarManageBorrowishSteps,
   omniSidebarManageSteps,
@@ -7,6 +8,7 @@ import {
 import { OmniSidebarStep, type OmniSidebarStepsSet } from 'features/omni-kit/types'
 
 export const AJNA_RAW_PROTOCOL_NAME = 'Ajna_rc10'
+export const AJNA_SUPPORTED_NETWORKS = [NetworkIds.MAINNET, NetworkIds.BASEMAINNET]
 
 export const ajnaOmniSteps: OmniSidebarStepsSet = {
   borrow: {

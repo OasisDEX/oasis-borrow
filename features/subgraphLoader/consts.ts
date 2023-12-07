@@ -329,17 +329,8 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     }
   `,
   searchAjnaPool: gql`
-    query searchPool($collateralAddress: [ID]!, $poolAddress: [ID]!, $quoteAddress: [ID]!) {
-      pools(
-        first: 111
-        where: {
-          or: [
-            { address_in: $poolAddress }
-            { collateralAddress_in: $collateralAddress }
-            { quoteTokenAddress_in: $quoteAddress }
-          ]
-        }
-      ) {
+    query searchPool($where: Pool_filter) {
+      pools(first: 111, where: $where) {
         address
         buckets {
           price
@@ -349,12 +340,18 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           bucketLPs
         }
         collateralAddress
+        collateralToken {
+          symbol
+        }
         debt
         interestRate
         lendApr
         lup
         lupIndex
         quoteTokenAddress
+        quoteToken {
+          symbol
+        }
       }
     }
   `,

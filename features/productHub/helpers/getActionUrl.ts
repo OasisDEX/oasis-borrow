@@ -44,7 +44,7 @@ export const getAaveLikeViewStrategyUrl = ({
 
 export function getActionUrl({
   bypassFeatureFlag = false,
-  chainId,
+  networkId,
   earnStrategy,
   label,
   network,
@@ -54,7 +54,7 @@ export function getActionUrl({
   protocol,
   secondaryToken,
   secondaryTokenAddress,
-}: ProductHubItem & { bypassFeatureFlag?: boolean; chainId?: NetworkIds }): string {
+}: ProductHubItem & { bypassFeatureFlag?: boolean; networkId?: NetworkIds }): string {
   switch (protocol) {
     case LendingProtocol.Ajna:
       const isEarnProduct = product[0] === ProductHubProductType.Earn
@@ -65,7 +65,7 @@ export function getActionUrl({
       const isOracless = isPoolOracless({
         collateralToken,
         quoteToken,
-        chainId,
+        networkId,
       })
       const productInUrl =
         isEarnProduct && earnStrategy === EarnStrategies.yield_loop

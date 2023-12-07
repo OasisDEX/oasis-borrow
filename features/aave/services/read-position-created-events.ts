@@ -161,13 +161,16 @@ export function createReadPositionCreatedEvents$(
         ),
       ),
     ),
-    switchMap((positionCreatedEvents) =>
+    // TODO: remove context when switched to getting network from parameter
+    // this is temporary workaround
+    switchMap((positionCreatedEvents) => combineLatest(context$, of(positionCreatedEvents))),
+    switchMap(([{ chainId }, positionCreatedEvents]) =>
       combineLatest(
-        context$,
+        of(chainId),
         of(positionCreatedEvents),
         identifyTokens$(
-          context$,
           of(undefined),
+          chainId,
           uniq(
             positionCreatedEvents
               .flatMap((e) => e)
@@ -176,9 +179,7 @@ export function createReadPositionCreatedEvents$(
         ),
       ),
     ),
-    switchMap(([{ chainId }, positionCreatedEvents]) =>
-      of(mapEvent(positionCreatedEvents, chainId)),
-    ),
+    switchMap(([chainId, positionCreatedEvents]) => of(mapEvent(positionCreatedEvents, chainId))),
     shareReplay(1),
   )
 }

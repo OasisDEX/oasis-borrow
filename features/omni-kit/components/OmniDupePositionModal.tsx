@@ -1,4 +1,4 @@
-import { NetworkIds } from 'blockchain/networks'
+import { NetworkIds, networksById } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
@@ -14,11 +14,11 @@ import { Box, Button, Flex, Heading, Image, Text, ThemeUIProvider } from 'theme-
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export interface OmniDupePositionModalProps {
-  chainId?: NetworkIds
   collateralAddress: string
   collateralToken: string
   dpmAccounts: UserDpmAccount[]
   events: CreatePositionEvent[]
+  networkId?: NetworkIds
   productType: OmniProductType
   quoteAddress: string
   quoteToken: string
@@ -26,11 +26,11 @@ export interface OmniDupePositionModalProps {
 }
 
 export function OmniDupePositionModal({
-  chainId = NetworkIds.MAINNET,
   collateralAddress,
   collateralToken,
   dpmAccounts,
   events,
+  networkId = NetworkIds.MAINNET,
   productType,
   quoteAddress,
   quoteToken,
@@ -47,14 +47,16 @@ export function OmniDupePositionModal({
   )
 
   const hasMultiplyPositions = positionIds.length > 1
+  const networkName = networksById[networkId].name
   const amount = hasMultiplyPositions ? 'plural' : 'singular'
   const type = productType === OmniProductType.Earn ? 'lender' : 'borrower'
   const primaryLink = hasMultiplyPositions
     ? `/owner/${walletAddress}`
     : `${getOraclessProductUrl({
-        chainId,
         collateralAddress,
         collateralToken,
+        networkId,
+        networkName,
         productType,
         quoteAddress,
         quoteToken,
