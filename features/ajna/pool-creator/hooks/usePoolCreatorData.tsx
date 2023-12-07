@@ -27,7 +27,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { first } from 'rxjs/operators'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { Text } from 'theme-ui'
@@ -99,7 +99,12 @@ export function usePoolCreatorData({
 
   useEffect(() => {
     const _isOnSupportedNetwork = !!(
-      context?.chainId && AJNA_SUPPORTED_NETWORKS.includes(context.chainId)
+      // dirty workaround for temporary goerli support
+      // todo: remove second part of OR condition when goerli is discontinued
+      (
+        context?.chainId &&
+        (AJNA_SUPPORTED_NETWORKS.includes(context.chainId) || context.chainId === NetworkIds.GOERLI)
+      )
     )
 
     setBoundries(undefined)
@@ -108,8 +113,6 @@ export function usePoolCreatorData({
     if (_isOnSupportedNetwork)
       void getAjnaPoolInterestRateBoundaries(context.chainId).then(setBoundries)
   }, [context?.chainId])
-
-  const chainId = useMemo(() => context?.chainId, [context?.chainId])
 
   useEffect(() => {
     const localErrors: OmniValidationItem[] = []
@@ -139,18 +142,20 @@ export function usePoolCreatorData({
         isAddress(collateralAddress) &&
         isAddress(quoteAddress) &&
         collateralAddress !== quoteAddress &&
-        chainId
+        context?.chainId
       ) {
         setErrors([])
 
         const promise = cancelable(
           Promise.all([
-            searchAjnaPool(chainId, {
+            searchAjnaPool(context.chainId, {
               collateralToken: collateralAddress,
               poolAddress: '',
               quoteToken: quoteAddress,
             }),
-            identifiedTokens$(chainId, [collateralAddress, quoteAddress]).pipe(first()).toPromise(),
+            identifiedTokens$(context.chainId, [collateralAddress, quoteAddress])
+              .pipe(first())
+              .toPromise(),
           ]),
         )
         setCancelablePromise(promise)
@@ -237,7 +242,7 @@ export function usePoolCreatorData({
         setIsLoading(false)
       }
     },
-    [collateralAddress, quoteAddress, chainId],
+    [collateralAddress, quoteAddress, context?.chainId],
     250,
   )
 

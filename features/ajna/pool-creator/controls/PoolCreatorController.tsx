@@ -79,7 +79,6 @@ export function AjnaPoolCreatorController() {
         <Box sx={{ maxWidth: '584px', mx: 'auto' }}>
           <DetailsSection
             title={t('pool-creator.form.title')}
-            badge={true}
             extra={
               isOnSupportedNetwork &&
               networkId && (
