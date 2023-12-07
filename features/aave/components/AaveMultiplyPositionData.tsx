@@ -13,6 +13,8 @@ import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
+import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
+import type { AaveCumulativeData } from 'features/omni-kit/protocols/ajna/history/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatPrecision } from 'helpers/formatters/format'
@@ -39,6 +41,7 @@ type AaveMultiplyPositionDataProps = {
   aaveHistory: VaultHistoryEvent[]
   isAutomationAvailable?: boolean
   strategyType: StrategyType
+  cumulatives?: AaveCumulativeData
 }
 
 export function AaveMultiplyPositionData({
@@ -52,6 +55,7 @@ export function AaveMultiplyPositionData({
   aaveHistory,
   isAutomationAvailable,
   strategyType,
+  cumulatives,
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
@@ -85,6 +89,16 @@ export function AaveMultiplyPositionData({
     aaveHistory[0].eventType === 'executed' &&
     aaveHistory[0].autoKind === 'aave-stop-loss' &&
     currentPosition.debt.amount.isZero()
+
+  const netValue =
+    strategyType === StrategyType.Long
+      ? currentPositionThings.netValueInDebtToken
+      : currentPositionThings.netValueInCollateralToken
+
+  const pnlWithoutFees = cumulatives?.cumulativeWithdraw
+    .plus(netValue)
+    .minus(cumulatives.cumulativeDeposit)
+    .div(cumulatives.cumulativeDeposit)
 
   return (
     <Grid>
@@ -130,6 +144,22 @@ export function AaveMultiplyPositionData({
               currentPositionThings={currentPositionThings}
               currentPosition={currentPosition}
               nextPositionThings={nextPositionThings}
+              modal={
+                cumulatives ? (
+                  <OmniMultiplyNetValueModal
+                    collateralPrice={collateralTokenPrice}
+                    collateralToken={collateralToken.symbol}
+                    cumulatives={{
+                      cumulativeDepositUSD: cumulatives.cumulativeDeposit,
+                      cumulativeWithdrawUSD: cumulatives.cumulativeWithdraw,
+                      cumulativeFeesUSD: cumulatives.cumulativeFees,
+                    }}
+                    netValue={netValue}
+                    pnl={pnlWithoutFees}
+                    pnlUSD={pnlWithoutFees && cumulatives.cumulativeDeposit.times(pnlWithoutFees)}
+                  />
+                ) : undefined
+              }
             />
           </DetailsSectionContentCardWrapper>
         }

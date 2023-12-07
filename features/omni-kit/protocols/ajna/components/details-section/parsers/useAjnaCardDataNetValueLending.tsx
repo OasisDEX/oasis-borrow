@@ -1,7 +1,7 @@
 import type { AjnaCumulativesData } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { OmniContentCardExtra } from 'features/omni-kit/components/details-section'
-import { AjnaCardDataNetValueLendingModal } from 'features/omni-kit/protocols/ajna/components/details-section'
+import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
 import React from 'react'
 
 interface AjnaCardDataNetValueLendingParams {
@@ -23,10 +23,15 @@ export function useAjnaCardDataNetValueLending({
 }: AjnaCardDataNetValueLendingParams): OmniContentCardExtra {
   return {
     modal: (
-      <AjnaCardDataNetValueLendingModal
+      <OmniMultiplyNetValueModal
         collateralPrice={collateralPrice}
         collateralToken={collateralToken}
-        cumulatives={cumulatives}
+        cumulatives={{
+          cumulativeDepositUSD: cumulatives.borrowCumulativeDepositUSD,
+          cumulativeWithdrawUSD: cumulatives.borrowCumulativeWithdrawUSD,
+          cumulativeFeesUSD: cumulatives.borrowCumulativeFeesUSD,
+        }}
+        translatePrefix="ajna.content-card.net-value"
         netValue={netValue}
         pnl={pnl}
         pnlUSD={pnlUSD}

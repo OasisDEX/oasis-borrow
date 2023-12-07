@@ -21,7 +21,7 @@ export function useAjnaCardDataNetValueEarn({
     modal: (
       <DetailsSectionContentSimpleModal
         title={t('omni-kit.content-card.net-value.title')}
-        description={t('ajna.content-card.net-value.modal-earn-description')}
+        description={t('ajna.content-card.modal-earn-description')}
         value={`${formatCryptoBalance(netValue)} ${quoteToken}`}
         theme={ajnaExtensionTheme}
       />

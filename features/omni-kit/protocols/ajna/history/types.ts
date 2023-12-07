@@ -38,6 +38,16 @@ export interface AaveHistoryEvent extends PositionHistoryEvent {
   trigger?: Trigger
 }
 
+export type AaveCumulativeData = {
+  cumulativeDeposit: BigNumber
+  cumulativeWithdraw: BigNumber
+  cumulativeFees: BigNumber
+  cumulativeDepositInQuoteToken: BigNumber
+  cumulativeWithdrawInQuoteToken: BigNumber
+  cumulativeDespositInCollateralToken: BigNumber
+  cumulativeWithdrawInCollateralToken: BigNumber
+}
+
 export function hasTrigger(
   event: Partial<AjnaUnifiedHistoryEvent> | Partial<AaveHistoryEvent>,
 ): event is Partial<AaveHistoryEvent> & { trigger: Trigger } {

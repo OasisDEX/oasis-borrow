@@ -2685,6 +2685,19 @@
       },
       "average-apy": {
         "title": "{{days}} days average APY"
+      },
+      "net-value-modal": {
+        "modal-title": "Net Value & Profit and Loss",
+        "modal-description": "The current net value is calculated based on the market price of <strong>${{collateralPrice}}</strong>",
+        "modal-table-col-1": "Collateral Value",
+        "modal-table-col-2": "$ Value",
+        "modal-table-row-1": "Net Value",
+        "modal-table-row-2": "Deposits",
+        "modal-table-row-3": "Withdrawals",
+        "modal-table-row-4": "Gas Fees Spent",
+        "modal-value": "Unrealised Profit & Loss",
+        "modal-footnote-1": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative deposits",
+        "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction."
       }
     },
     "form": {
@@ -2741,20 +2754,7 @@
       "position-debt": {
         "modal-description": "This is the total number of tokens you have borrowed plus any accrued interests."
       },
-      "net-value": {
-        "modal-title": "Net Value & Profit and Loss",
-        "modal-description": "The current net value is calculated based on the market price of <strong>${{collateralPrice}}</strong>",
-        "modal-table-col-1": "Collateral Value",
-        "modal-table-col-2": "$ Value",
-        "modal-table-row-1": "Net Value",
-        "modal-table-row-2": "Deposits",
-        "modal-table-row-3": "Withdrawals",
-        "modal-table-row-4": "Gas Fees Spent",
-        "modal-value": "Unrealised Profit & Loss",
-        "modal-footnote-1": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative deposits",
-        "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction.",
-        "modal-earn-description": "The total amount of tokens available in position, this includes the earned amount."
-      },
+      "modal-earn-description": "The total amount of tokens available in position, this includes the earned amount.",
       "borrow-rate": {
         "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
         "tooltip-description-non-owner": "<strong>Earned Ajna tokens</strong>: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
