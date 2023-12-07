@@ -102,11 +102,11 @@ export function usePoolCreatorData({
       context?.chainId && AJNA_SUPPORTED_NETWORKS.includes(context.chainId)
     )
 
-    if (_isOnSupportedNetwork)
-      void getAjnaPoolInterestRateBoundaries(context.chainId).then(setBoundries)
-    else setBoundries(undefined)
+    setBoundries(undefined)
     setIsOnSupportedNetwork(_isOnSupportedNetwork)
     dispatch({ type: 'reset' })
+    if (_isOnSupportedNetwork)
+      void getAjnaPoolInterestRateBoundaries(context.chainId).then(setBoundries)
   }, [context?.chainId])
 
   const chainId = useMemo(() => context?.chainId, [context?.chainId])
