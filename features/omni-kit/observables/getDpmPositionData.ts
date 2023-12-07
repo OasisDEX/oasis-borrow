@@ -3,6 +3,7 @@ import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ethers } from 'ethers'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import type { PositionCreated } from 'features/aave/services'
+import { readPositionCreatedEvents$ } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types'
 import { getApiVault } from 'features/shared/vaultApi'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
@@ -72,10 +73,6 @@ export function getDpmPositionDataV2$(
     positionId: PositionId,
     networkId: NetworkIds,
   ) => Observable<ProxiesRelatedWithPosition>,
-  readPositionCreatedEvents$: (
-    walletAddress: string,
-    networkId: NetworkIds,
-  ) => Observable<PositionCreated[]>,
   positionId: PositionId,
   networkId: NetworkIds,
   collateralToken: string,

@@ -1,5 +1,4 @@
 import type { MorphoBluePosition } from '@oasisdex/dma-library'
-import { getNetworkByName } from 'blockchain/networks'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
@@ -30,12 +29,10 @@ const MorphoWrapper: FC = ({ children }) => {
 type MorphoPositionPageProps = OmniProductPage
 
 function MorphoPositionPage(props: MorphoPositionPageProps) {
-  const networkConfig = getNetworkByName(props.networkName)
-
   return (
     <AppLayout>
       <MorphoWrapper>
-        <ProductContextHandler networkId={networkConfig.id}>
+        <ProductContextHandler>
           <GasEstimationContextProvider>
             <OmniProductController<
               MorphoPositionAuction,

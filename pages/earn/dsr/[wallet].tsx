@@ -1,4 +1,4 @@
-import { ethereumMainnetHexId, NetworkIds } from 'blockchain/networks'
+import { ethereumMainnetHexId } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
@@ -29,7 +29,7 @@ function Dsr({ walletAddress }: { walletAddress: string }) {
   const { t } = useTranslation()
   return (
     <AppLayout>
-      <ProductContextHandler networkId={NetworkIds.MAINNET}>
+      <ProductContextHandler>
         <WithFeatureToggleRedirect feature={FeaturesEnum.DaiSavingsRate}>
           <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
             <WithTermsOfService>

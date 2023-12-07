@@ -4,6 +4,7 @@ import type { ChainlinkSupportedNetworks } from 'blockchain/calls/chainlink/chai
 import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkIds } from 'blockchain/networks'
+import { userDpmProxies$ } from 'blockchain/userDpmProxies'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import type { AccountContext } from 'components/context/AccountContextProvider'
 import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
@@ -27,7 +28,6 @@ export function getCommonPartsFromProductContext(
   { proxyAddress$, proxyConsumed$ }: AccountContext,
   {
     gasEstimation$,
-    userDpmProxies$,
     commonTransactionServices,
     dpmAccountStateMachine,
     contextForAddress$,

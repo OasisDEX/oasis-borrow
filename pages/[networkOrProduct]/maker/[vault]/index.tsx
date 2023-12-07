@@ -1,10 +1,5 @@
 import BigNumber from 'bignumber.js'
-import {
-  ethereumMainnetHexId,
-  isSupportedNetwork,
-  NetworkIds,
-  NetworkNames,
-} from 'blockchain/networks'
+import { ethereumMainnetHexId, isSupportedNetwork, NetworkNames } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
@@ -42,7 +37,7 @@ function Vault({ id }: { id: string }) {
 
   return (
     <AppLayout>
-      <ProductContextHandler networkId={NetworkIds.MAINNET}>
+      <ProductContextHandler>
         <GasEstimationContextProvider>
           <WithConnection pageChainId={ethereumMainnetHexId} includeTestNet={true}>
             <WithTermsOfService>

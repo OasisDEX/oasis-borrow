@@ -1,4 +1,3 @@
-import { NetworkIds } from 'blockchain/networks'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
@@ -33,7 +32,7 @@ function OpenVault({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
   return (
     <AppLayout>
-      <ProductContextHandler networkId={NetworkIds.MAINNET}>
+      <ProductContextHandler>
         <WithTermsOfService>
           <WithWalletAssociatedRisk>
             <PageSEOTags

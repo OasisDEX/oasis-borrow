@@ -4,7 +4,7 @@ import type { Context } from 'blockchain/network.types'
 import type { NetworkIds } from 'blockchain/networks'
 import { getRpcProvidersForLogs } from 'blockchain/networks'
 import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
-import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
+import { userDpmProxies$ } from 'blockchain/userDpmProxies'
 import type { ContractDesc } from 'features/web3Context'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
@@ -148,8 +148,7 @@ export async function getLastCreatedPositionForProxy(
   }
 }
 
-export function createReadPositionCreatedEvents$(
-  userDpmProxies$: (walletAddress: string, networkId: NetworkIds) => Observable<UserDpmAccount[]>,
+export function readPositionCreatedEvents$(
   walletAddress: string,
   networkId: NetworkIds,
 ): Observable<Array<PositionCreated>> {

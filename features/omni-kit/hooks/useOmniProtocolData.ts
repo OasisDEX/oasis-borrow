@@ -1,4 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
+import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { getToken } from 'blockchain/tokensMetadata'
 import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import { useAccountContext } from 'components/context/AccountContextProvider'
@@ -38,13 +39,8 @@ export function useOmniProtocolData({
   // TODO: remove context when switched to getting network from parameter
   const { context$, gasPrice$ } = useMainContext()
   const { userSettings$ } = useAccountContext()
-  const {
-    balancesFromAddressInfoArray$,
-    balancesInfoArray$,
-    dpmPositionDataV2$,
-    identifiedTokens$,
-    tokenPriceUSD$,
-  } = useProductContext()
+  const { balancesFromAddressInfoArray$, balancesInfoArray$, dpmPositionDataV2$, tokenPriceUSD$ } =
+    useProductContext()
 
   const [context] = useObservable(context$)
   const [userSettingsData, userSettingsError] = useObservable(userSettings$)
@@ -56,7 +52,7 @@ export function useOmniProtocolData({
     useMemo(
       () =>
         context && isOracless && collateralToken && quoteToken
-          ? identifiedTokens$(context.chainId, [collateralToken, quoteToken])
+          ? identifyTokens$(context.chainId, [collateralToken, quoteToken])
           : EMPTY,
       [context, isOracless, collateralToken, quoteToken],
     ),

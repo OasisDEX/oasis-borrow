@@ -165,11 +165,10 @@ function Position({
   if (address === undefined && vaultId === undefined) {
     void replace(INTERNAL_LINKS.notFound)
   }
-  const networkConfig = getNetworkByName(network)
 
   return (
     <AppLayout>
-      <ProductContextHandler networkId={networkConfig.id}>
+      <ProductContextHandler>
         <GasEstimationContextProvider>
           <AaveContextProvider>
             <WithConnection>

@@ -1,4 +1,3 @@
-import { NetworkIds } from 'blockchain/networks'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { PageSEOTags } from 'components/HeadTags'
@@ -18,8 +17,7 @@ function AjnaPoolFinderPage({ product }: { product: ProductHubProductType }) {
         description="seo.ajna.description"
         url={`/ajna/pool-finder/${product}`}
       />
-      {/* TODO not sure why product context is needed on this page */}
-      <ProductContextHandler networkId={NetworkIds.MAINNET}>
+      <ProductContextHandler>
         <WithFeatureToggleRedirect feature={FeaturesEnum.AjnaPoolFinder}>
           <AjnaPoolFinderController product={product} />
         </WithFeatureToggleRedirect>

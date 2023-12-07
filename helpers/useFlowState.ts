@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { NetworkIds } from 'blockchain/networks'
+import { userDpmProxies$ } from 'blockchain/userDpmProxies'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
@@ -59,7 +60,7 @@ export function useFlowState({
   )
   const [isAllowanceReady, setAllowanceReady] = useState<boolean>(false)
   const [isLoading, setLoading] = useState<boolean>(false)
-  const { dpmAccountStateMachine, allowanceStateMachine, userDpmProxies$, allowanceForAccount$ } =
+  const { dpmAccountStateMachine, allowanceStateMachine, allowanceForAccount$ } =
     useProductContext()
   const { context$ } = useMainContext()
   const { stateMachine: dpmMachine } = setupDpmContext(dpmAccountStateMachine)

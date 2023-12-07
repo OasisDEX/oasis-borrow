@@ -11,7 +11,6 @@ import { proxyActionsAdapterResolver$ } from 'blockchain/calls/proxyActions/prox
 import { spotIlk } from 'blockchain/calls/spot'
 import { vatIlk } from 'blockchain/calls/vat'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
-import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { every10Seconds$ } from 'blockchain/network.constants'
 import type { NetworkNames } from 'blockchain/networks'
@@ -19,19 +18,13 @@ import { NetworkIds } from 'blockchain/networks'
 import { createTokenPriceInUSD$ } from 'blockchain/prices'
 import { tokenPrices$ } from 'blockchain/prices.constants'
 import { createAllowance$, createBalanceFromAddress$ } from 'blockchain/tokens'
-import {
-  getPositionIdFromDpmProxy$,
-  getUserDpmProxies$,
-} from 'blockchain/userDpmProxies'
+import { getPositionIdFromDpmProxy$ } from 'blockchain/userDpmProxies'
 import type { AccountContext } from 'components/context/AccountContextProvider'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
-import {
-  createReadPositionCreatedEvents$,
-  getLastCreatedPositionForProxy$,
-} from 'features/aave/services'
+import { getLastCreatedPositionForProxy$ } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types/position-id'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
@@ -133,7 +126,6 @@ export function setupProductContext(
     userSettings$,
     vault$,
   }: AccountContext,
-  networkId: NetworkIds,
 ) {
   console.info('Product context setup')
   combineLatest(account$, connectedContext$)
@@ -214,8 +206,6 @@ export function setupProductContext(
     curry(createBalanceFromAddress$)(onEveryBlock$, chainContext$, tokenBalanceFromAddress$),
     (token, address) => `${token.address}_${token.precision}_${address}`,
   )
-
-  const userDpmProxies$ = curry(getUserDpmProxies$)(context$)
 
   const positionIdFromDpmProxy$ = memoize(
     curry(getPositionIdFromDpmProxy$)(context$),
@@ -387,10 +377,6 @@ export function setupProductContext(
   const proxiesRelatedWithPosition$ = memoize(
     curry(getProxiesRelatedWithPosition$)(proxyAddress$),
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
-  )
-
-  const readPositionCreatedEvents$ = memoize(
-    curry(createReadPositionCreatedEvents$)(userDpmProxies$),
   )
 
   const lastCreatedPositionForProxy$ = memoize(curry(getLastCreatedPositionForProxy$)(context$))
@@ -628,7 +614,7 @@ export function setupProductContext(
   // out based on params from URL i.e. 2x positions with id 950 but on different pools, based on URL params
   // only single position should be picked to be displayed
   const dpmPositionDataV2$ = memoize(
-    curry(getDpmPositionDataV2$)(proxiesRelatedWithPosition$, readPositionCreatedEvents$),
+    curry(getDpmPositionDataV2$)(proxiesRelatedWithPosition$),
     (
       positionId: PositionId,
       networkId: NetworkIds,
@@ -666,10 +652,6 @@ export function setupProductContext(
         .toString()}`,
   )
 
-  const identifiedTokens$ = memoize(curry(identifyTokens$)(networkId), (tokens: string[]) =>
-    tokens.join(),
-  )
-
   return {
     aaveLikeAvailableLiquidityInUSDC$: aaveV2Services.aaveLikeAvailableLiquidityInUSDC$,
     aaveLikeLiquidations$: aaveV2Services.aaveLikeLiquidations$, // @deprecated,
@@ -695,7 +677,6 @@ export function setupProductContext(
     exchangeQuote$,
     gasEstimation$,
     generalManageVault$,
-    identifiedTokens$,
     ilkDataList$,
     ilks$: ilksSupportedOnNetwork$,
     manageGuniVault$,
@@ -709,13 +690,11 @@ export function setupProductContext(
     potTotalValueLocked$,
     priceInfo$,
     protocols,
-    readPositionCreatedEvents$,
     reclaimCollateral$,
     strategyConfig$,
     tokenPriceUSD$,
     tokenPriceUSDStatic$,
     totalValueLocked$,
-    userDpmProxies$,
     vaultBanners$,
     vaultHistory$,
     yields$,

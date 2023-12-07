@@ -1,4 +1,3 @@
-import type { NetworkIds } from 'blockchain/networks'
 import { setupProductContext } from 'helpers/context/ProductContext'
 import type { ProductContext } from 'helpers/context/ProductContext.types'
 import type { PropsWithChildren } from 'react'
@@ -28,16 +27,13 @@ export function useProductContext(): ProductContext {
   on top of that page with isProductContextAvailable.
 */
 
-export function ProductContextProvider({
-  children,
-  networkId,
-}: PropsWithChildren<{ networkId: NetworkIds }>) {
+export function ProductContextProvider({ children }: PropsWithChildren<{}>) {
   const [context, setContext] = useState<ProductContext | undefined>(undefined)
   const mainContext = useMainContext()
   const accountContext = useAccountContext()
 
   useEffect(() => {
-    setContext(setupProductContext(mainContext, accountContext, networkId))
+    setContext(setupProductContext(mainContext, accountContext))
   }, [accountContext, mainContext])
 
   return <productContext.Provider value={context}>{children}</productContext.Provider>

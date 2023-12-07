@@ -1,5 +1,4 @@
 import type { NetworkNames } from 'blockchain/networks'
-import { getNetworkByName } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
@@ -63,11 +62,10 @@ function OpenPosition({
   if (!supported) {
     return void replace(INTERNAL_LINKS.notFound)
   }
-  const networkConfig = getNetworkByName(network)
 
   return (
     <AppLayout>
-      <ProductContextHandler networkId={networkConfig.id}>
+      <ProductContextHandler>
         <GasEstimationContextProvider>
           <AaveContextProvider>
             <WithConnection>

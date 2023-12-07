@@ -32,13 +32,20 @@ import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import type { CloseVaultTo } from './CloseVaultTo.types'
 import type { MainAction } from './MainAction.types'
-import { applyExchange, createExchangeChange$, createInitialQuoteChange } from './manageMultiplyQuote'
+import {
+  applyExchange,
+  createExchangeChange$,
+  createInitialQuoteChange,
+} from './manageMultiplyQuote'
 import { defaultMutableManageMultiplyVaultState } from './manageMultiplyVault.constants'
 import { applyManageVaultAllowance } from './manageMultiplyVaultAllowances'
 import { applyManageVaultCalculations } from './manageMultiplyVaultCalculations'
 import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations.constants'
 import type { ManageMultiplyVaultChange } from './ManageMultiplyVaultChange.types'
-import { applyManageVaultConditions, applyManageVaultStageCategorisation } from './manageMultiplyVaultConditions'
+import {
+  applyManageVaultConditions,
+  applyManageVaultStageCategorisation,
+} from './manageMultiplyVaultConditions'
 import { defaultManageMultiplyVaultConditions } from './manageMultiplyVaultConditions.constants'
 import { applyManageVaultEnvironment } from './manageMultiplyVaultEnvironment'
 import { applyManageVaultForm } from './manageMultiplyVaultForm'
@@ -391,7 +398,11 @@ export function createManageMultiplyVault$(
                     createExchangeChange$(exchangeQuote$, stateSubject$),
                     slippageChange$(slippageLimit$),
                     createHistoryChange$(vaultHistory$, id),
-                    createAutomationTriggersChange$(automationTriggersData$, id, NetworkIds.MAINNET),
+                    createAutomationTriggersChange$(
+                      automationTriggersData$,
+                      id,
+                      NetworkIds.MAINNET,
+                    ),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
