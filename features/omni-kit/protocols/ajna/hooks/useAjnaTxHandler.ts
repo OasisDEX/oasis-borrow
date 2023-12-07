@@ -4,8 +4,7 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { omniMetadataSupplyHandlerGuard } from 'features/omni-kit/helpers'
 import { useOmniTxHandler } from 'features/omni-kit/hooks'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
-import { getAjnaParameters } from 'features/omni-kit/protocols/ajna/helpers'
-import { isAjnaSupportedNetwork } from 'features/omni-kit/protocols/ajna/helpers/isAjnaSupportedNetwork'
+import { getAjnaParameters, isAjnaSupportedNetwork } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 
 export function useAjnaTxHandler(): () => void {

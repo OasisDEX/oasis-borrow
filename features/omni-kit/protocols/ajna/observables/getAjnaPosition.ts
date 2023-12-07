@@ -9,8 +9,8 @@ import {
   getAjnaEarnData,
   getAjnaPoolAddress,
   getAjnaPoolData,
+  isAjnaSupportedNetwork,
 } from 'features/omni-kit/protocols/ajna/helpers'
-import { isAjnaSupportedNetwork } from 'features/omni-kit/protocols/ajna/helpers/isAjnaSupportedNetwork'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { LendingProtocol } from 'lendingProtocols'
