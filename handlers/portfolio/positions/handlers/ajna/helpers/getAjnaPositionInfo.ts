@@ -47,7 +47,7 @@ export async function getAjnaPositionInfo({
     : getBorrowishPositionType({
         apiVaults,
         defaultType,
-        networkId: networkId,
+        networkId,
         positionId: Number(positionId),
         protocol: LendingProtocol.Ajna,
       })
@@ -58,7 +58,7 @@ export async function getAjnaPositionInfo({
   const secondaryToken = getTokenDisplayName(quoteToken.symbol)
   const secondaryTokenAddress = quoteToken.address
   const isOracless = isPoolOracless({
-    networkId: networkId,
+    networkId,
     collateralToken: primaryToken,
     quoteToken: secondaryToken,
   })
