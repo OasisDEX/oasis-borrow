@@ -7,7 +7,7 @@ import React from 'react'
 import type { Theme } from 'theme-ui'
 import { Box, Card, Divider, Flex, Grid, Text } from 'theme-ui'
 
-type OmniMultiplyNetValueModalProps = {
+interface OmniMultiplyNetValueModalProps {
   collateralPrice: BigNumber
   collateralToken: string
   cumulatives: {
@@ -21,7 +21,7 @@ type OmniMultiplyNetValueModalProps = {
   theme?: Theme
 }
 
-type OmniMultiplyNetValueModalGridRowProps = {
+interface OmniMultiplyNetValueModalGridRowProps {
   firstColumn: string
   label: string
   secondColumn: string

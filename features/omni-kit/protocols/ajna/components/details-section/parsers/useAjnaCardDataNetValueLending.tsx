@@ -3,6 +3,7 @@ import type BigNumber from 'bignumber.js'
 import type { OmniContentCardExtra } from 'features/omni-kit/components/details-section'
 import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
 import React from 'react'
+import { ajnaExtensionTheme } from 'theme'
 
 interface AjnaCardDataNetValueLendingParams {
   collateralPrice: BigNumber
@@ -34,6 +35,7 @@ export function useAjnaCardDataNetValueLending({
         netValue={netValue}
         pnl={pnl}
         pnlUSD={pnlUSD}
+        theme={ajnaExtensionTheme}
       />
     ),
   }
