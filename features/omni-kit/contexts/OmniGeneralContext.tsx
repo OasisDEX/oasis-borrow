@@ -8,11 +8,12 @@ import {
   isOmniExternalStep,
   isOmniStepWithTransaction,
 } from 'features/omni-kit/contexts'
-import { isShortPosition } from 'features/omni-kit/helpers'
+import { isOmniSupportedNetwork, isShortPosition } from 'features/omni-kit/helpers'
 import type {
   OmniProductType,
   OmniSidebarEditingStep,
   OmniSidebarStep,
+  OmniSupportedNetworkIds,
 } from 'features/omni-kit/types'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { useAccount } from 'helpers/useAccount'
@@ -36,6 +37,7 @@ interface OmniGeneralContextProviderProps {
   isOracless: boolean
   isProxyWithManyPositions: boolean
   network: NetworkConfig
+  networkId: OmniSupportedNetworkIds
   walletNetwork: NetworkConfig
   owner: string
   positionId?: string
@@ -151,12 +153,19 @@ export function OmniGeneralContextProvider({
     }
   }
 
+  const networkId = network.id
+
+  if (!isOmniSupportedNetwork(networkId)) {
+    throw new Error(`Unsupported network: ${network.name}`)
+  }
+
   const context: OmniGeneralContext = useMemo(() => {
     const isOwner = isOpening || owner === walletAddress
     return {
       environment: {
         ...props,
         network,
+        networkId,
         isShort,
         isProxyWithManyPositions,
         priceFormat: isShort

@@ -1,6 +1,4 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
-import { useMainContext } from 'components/context/MainContextProvider'
 import { FlowSidebar } from 'components/FlowSidebar'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
@@ -18,7 +16,6 @@ import { useOmniProductTypeTransition } from 'features/omni-kit/hooks'
 import { OmniSidebarStep } from 'features/omni-kit/types'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { useModalContext } from 'helpers/modalHook'
-import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
 import { LendingProtocolLabel } from 'lendingProtocols'
@@ -40,9 +37,6 @@ export function OmniFormView({
   txHandler: _txHandler,
 }: PropsWithChildren<OmniFormViewProps>) {
   const { t } = useTranslation()
-  const { context$ } = useMainContext()
-
-  const [context] = useObservable(context$)
 
   const {
     environment: {
@@ -58,6 +52,7 @@ export function OmniFormView({
       protocol,
       shouldSwitchNetwork,
       network,
+      networkId,
     },
     steps: {
       currentStep,
@@ -98,7 +93,7 @@ export function OmniFormView({
   const [hasDupePosition, setHasDupePosition] = useState<boolean>(false)
 
   const flowState = useFlowState({
-    networkId: network.id,
+    networkId,
     ...(dpmProxy && { existingProxy: dpmProxy }),
     ...getOmniFlowStateConfig({
       protocol,
@@ -115,7 +110,7 @@ export function OmniFormView({
       if (!hasDupePosition && filteredEvents.length) {
         setHasDupePosition(true)
         openModal(dupeModal, {
-          networkId: context?.chainId,
+          networkId,
           collateralAddress,
           collateralToken,
           dpmAccounts,
@@ -219,7 +214,7 @@ export function OmniFormView({
     setStep(editingStep)
   }
   const status = getOmniSidebarTransactionStatus({
-    etherscan: context && getNetworkContracts(NetworkIds.MAINNET, context.chainId).etherscan.url,
+    etherscan: getNetworkContracts(networkId).etherscan.url,
     isTxInProgress,
     isTxSuccess,
     text: t(

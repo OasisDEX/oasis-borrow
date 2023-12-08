@@ -2,8 +2,9 @@ import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import * as erc20 from 'blockchain/abi/erc20.json'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { contractDesc, NetworkIds } from 'blockchain/networks'
+import { contractDesc, getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { getToken } from 'blockchain/tokensMetadata'
+import { Erc20__factory } from 'types/ethers-contracts'
 import type { Erc20 } from 'types/web3-v1-contracts'
 
 import type { CallDef, TransactionDef } from './callsHelpers'
@@ -23,6 +24,23 @@ export const tokenBalance: CallDef<TokenBalanceArgs, BigNumber> = {
   prepareArgs: ({ account }) => [account],
   postprocess: (result, { token }) =>
     amountFromWei(new BigNumber(result), getToken(token).precision),
+}
+
+export const getTokenBalanceFromAddress = async ({
+  address,
+  account,
+  precision,
+  networkId,
+}: {
+  address: string
+  account: string
+  precision: number
+  networkId: NetworkIds
+}) => {
+  const provider = getRpcProvider(networkId)
+  const rawResult = await Erc20__factory.connect(address, provider).balanceOf(account)
+
+  return amountFromWei(new BigNumber(rawResult.toString()), precision)
 }
 
 export const tokenBalanceFromAddress: CallDef<TokenBalanceFromAddressArgs, BigNumber> = {

@@ -2,10 +2,11 @@ import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { Observable } from 'rxjs'
-import { bindNodeCallback, combineLatest, of } from 'rxjs'
+import { bindNodeCallback, combineLatest, from, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
-import type { tokenAllowance, tokenBalance, tokenBalanceFromAddress } from './calls/erc20'
+import type { tokenAllowance, tokenBalance } from './calls/erc20'
+import { getTokenBalanceFromAddress } from './calls/erc20'
 import { maxUint256 } from './calls/erc20.constants'
 import type { CallObservable } from './calls/observe'
 import type { Context } from './network.types'
@@ -38,15 +39,16 @@ export function createBalance$(
 export function createBalanceFromAddress$(
   updateInterval$: Observable<any>,
   context$: Observable<Context>,
-  tokenBalanceFromAddress$: CallObservable<typeof tokenBalanceFromAddress>,
   token: { address: string; precision: number },
   address: string,
+  networkId: NetworkIds,
 ) {
   return context$.pipe(
-    switchMap(({ chainId, web3 }) => {
+    switchMap(({ web3 }) => {
+      const contracts = getNetworkContracts(networkId)
       if (
-        token.address.toLowerCase() ===
-        getNetworkContracts(NetworkIds.MAINNET, chainId).tokens.ETH.address.toLowerCase()
+        'tokens' in contracts &&
+        token.address.toLowerCase() === contracts.tokens.ETH.address.toLowerCase()
       ) {
         return updateInterval$.pipe(
           switchMap(() => bindNodeCallback(web3.eth.getBalance)(address)),
@@ -55,7 +57,21 @@ export function createBalanceFromAddress$(
           shareReplay(1),
         )
       }
-      return tokenBalanceFromAddress$({ ...token, account: address })
+
+      return updateInterval$.pipe(
+        switchMap(() =>
+          from(
+            getTokenBalanceFromAddress({
+              address: token.address,
+              precision: token.precision,
+              account: address,
+              networkId,
+            }),
+          ),
+        ),
+        distinctUntilChanged((x: BigNumber, y: BigNumber) => x.eq(y)),
+        shareReplay(1),
+      )
     }),
   )
 }
