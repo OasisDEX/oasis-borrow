@@ -96,7 +96,9 @@ export const OmniProductController = <Auction, History, Position>({
       ? walletNetwork
       : positionNetwork
 
-  if (!isOmniSupportedNetwork(resolvedNetwork.id)) {
+  const resolvedNetworkId = resolvedNetwork.id
+
+  if (!isOmniSupportedNetwork(resolvedNetworkId)) {
     throw new Error(`Unsupported network: ${resolvedNetwork.name}`)
   }
 
@@ -122,7 +124,7 @@ export const OmniProductController = <Auction, History, Position>({
     protocol,
     protocolRaw,
     quoteToken,
-    networkId: resolvedNetwork.id,
+    networkId: resolvedNetworkId,
   })
 
   const {
@@ -168,6 +170,7 @@ export const OmniProductController = <Auction, History, Position>({
                     protocol,
                     quoteIcon: tokensIconsData?.quoteToken,
                     quoteToken: dpmPositionData?.quoteToken,
+                    networkName,
                   })}
                 />
               }
@@ -219,6 +222,7 @@ export const OmniProductController = <Auction, History, Position>({
                       isOracless={!!isOracless}
                       isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
                       network={resolvedNetwork}
+                      networkId={resolvedNetworkId}
                       owner={dpmPosition.user}
                       walletNetwork={walletNetwork}
                       positionId={positionId}

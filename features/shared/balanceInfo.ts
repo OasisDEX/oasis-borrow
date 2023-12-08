@@ -1,4 +1,5 @@
 import type { BigNumber } from 'bignumber.js'
+import type { NetworkIds } from 'blockchain/networks'
 import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
@@ -40,11 +41,15 @@ export function createBalancesFromAddressArrayInfo$(
   balance$: (
     token: { address: string; precision: number },
     address: string,
+    networkId: NetworkIds,
   ) => Observable<BigNumber>,
   tokens: { address: string; precision: number }[],
   address: string | undefined,
+  networkId: NetworkIds,
 ): Observable<BigNumber[]> {
-  return combineLatest(tokens.map((token) => (address ? balance$(token, address) : of(zero)))).pipe(
+  return combineLatest(
+    tokens.map((token) => (address ? balance$(token, address, networkId) : of(zero))),
+  ).pipe(
     map((balances) => balances),
     shareReplay(1),
   )
