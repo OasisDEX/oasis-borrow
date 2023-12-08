@@ -86,7 +86,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
         ]}
         handleClick={() => {
           if (proxyReveal)
-            console.info(`DPM proxy: ${dpmProxy?.toLowerCase()}, DPM owner: ${owner}`)
+            console.info(`DPM proxy: ${dpmProxy?.toLowerCase()}, DPM owner: ${owner.toLowerCase()}`)
         }}
       />
       <TabBar
