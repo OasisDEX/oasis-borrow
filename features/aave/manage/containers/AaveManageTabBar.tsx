@@ -83,6 +83,7 @@ export function AaveManageTabBar({
                 tokenPrice={state.context.tokenPrice}
                 debtPrice={state.context.debtPrice}
                 nextPosition={nextPosition}
+                cumulatives={state.context.cumulatives}
                 dpmProxy={state.context.effectiveProxyAddress}
               />
               <SidebarManageAaveVault />

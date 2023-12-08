@@ -10,7 +10,10 @@ import type {
   AjnaBorrowerEventsResponse,
   AjnaHistoryResponse,
 } from 'features/omni-kit/protocols/ajna/history/types'
-import type { AavePositionHistoryResponse } from 'features/positionHistory/types'
+import type {
+  AaveCumulativesResponse,
+  AavePositionHistoryResponse,
+} from 'features/positionHistory/types'
 import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'
 import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/ajna/types'
 import type { MakerDiscoverPositionsResponse } from 'handlers/portfolio/positions/handlers/maker/types'
@@ -113,6 +116,7 @@ export type SubgraphsResponses = {
   Aave: {
     getAaveHistory: SubgraphBaseResponse<{
       positionEvents: AavePositionHistoryResponse[]
+      positions: AaveCumulativesResponse[] // we only call one position with very specific ID, but only positions (not position) is case insensitive
     }>
   }
   Discover: {

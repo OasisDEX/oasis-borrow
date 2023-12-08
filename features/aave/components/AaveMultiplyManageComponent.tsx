@@ -4,6 +4,7 @@ import { useAaveContext } from 'features/aave'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import type { IStrategyConfig } from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
+import type { AaveCumulativeData } from 'features/omni-kit/protocols/ajna/history/types'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -20,6 +21,7 @@ export type AaveManageComponentProps = {
   tokenPrice?: BigNumber
   debtPrice?: BigNumber
   dpmProxy?: string
+  cumulatives?: AaveCumulativeData
 }
 
 export function AaveMultiplyManageComponent({
@@ -30,6 +32,7 @@ export function AaveMultiplyManageComponent({
   nextPosition,
   dpmProxy,
   isOpenView,
+  cumulatives,
 }: AaveManageComponentProps) {
   const { getAaveLikeReserveData$, aaveLikeReserveConfigurationData$, aaveHistory$ } =
     useAaveContext(strategyConfig.protocol, strategyConfig.network)
@@ -73,6 +76,7 @@ export function AaveMultiplyManageComponent({
           collateralTokenReserveData,
           debtTokenReserveConfigurationData,
           aaveHistory,
+          cumulatives,
         ]}
         customLoader={<AppSpinner />}
       >
@@ -84,6 +88,7 @@ export function AaveMultiplyManageComponent({
           _collateralTokenReserveData,
           _debtTokenReserveConfigurationData,
           _aaveHistory,
+          _cumulatives,
         ]) => {
           return (
             <AaveMultiplyPositionData
@@ -96,6 +101,7 @@ export function AaveMultiplyManageComponent({
               debtTokenReserveConfigurationData={_debtTokenReserveConfigurationData}
               nextPosition={nextPosition}
               aaveHistory={_aaveHistory}
+              cumulatives={_cumulatives}
               isAutomationAvailable={isAutomationAvailable}
             />
           )
