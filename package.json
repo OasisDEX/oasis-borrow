@@ -5,6 +5,7 @@
   "engines": {
     "node": ">=18.12"
   },
+  "packageManager": "yarn@1.20.21",
   "scripts": {
     "start": "yarn get-config-types && next dev",
     "get-config-types": "node scripts/get-config-types.js",
