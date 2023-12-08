@@ -68,7 +68,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
         <PositionHistoryRow
           label={t(
             event.collateralAfter.gt(event.collateralBefore)
-              ? 'position-history.deposited'
+              ? 'position-history.collateral-deposit'
               : 'position-history.withdrawn',
           )}
         >
@@ -81,7 +81,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
         <PositionHistoryRow
           label={t(
             event.debtAfter.gt(event.debtBefore)
-              ? 'position-history.generated'
+              ? 'position-history.debt-borrowed'
               : 'position-history.repaid',
           )}
         >
@@ -155,7 +155,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
         <PositionHistoryRow
           label={t(
             event.quoteTokensAfter.gt(event.quoteTokensBefore)
-              ? 'position-history.deposited'
+              ? 'position-history.collateral-deposit'
               : 'position-history.withdrawn',
           )}
         >

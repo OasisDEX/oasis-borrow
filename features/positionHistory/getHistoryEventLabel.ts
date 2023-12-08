@@ -72,6 +72,7 @@ export const getHistoryEventLabel = ({ kind, isOpen }: { kind?: string; isOpen?:
     case 'SparkOpenDepositBorrow':
       return t('position-history.open-position')
     case 'CloseAAVEPosition':
+    case 'CloseAAVEV3Position_3':
     case 'SparkClosePosition':
       return t('position-history.close-position')
     case 'IncreaseAAVEPosition':
