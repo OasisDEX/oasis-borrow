@@ -1,4 +1,3 @@
-import type { Context } from 'blockchain/network.types'
 import { getRpcProvider } from 'blockchain/networks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { omniMetadataSupplyHandlerGuard } from 'features/omni-kit/helpers'
@@ -22,6 +21,7 @@ export function useAjnaTxHandler(): () => void {
       slippage,
       quoteBalance,
       network,
+      owner,
     },
   } = useOmniGeneralContext()
   const {
@@ -49,7 +49,7 @@ export function useAjnaTxHandler(): () => void {
   }
 
   return useOmniTxHandler({
-    getOmniParameters: (context: Context) =>
+    getOmniParameters: () =>
       getAjnaParameters({
         networkId,
         collateralAddress,
@@ -64,11 +64,11 @@ export function useAjnaTxHandler(): () => void {
         quotePrice,
         quoteToken,
         quoteBalance,
-        rpcProvider: getRpcProvider(context.chainId),
+        rpcProvider: getRpcProvider(networkId),
         slippage,
         state,
         price: customState.price,
-        walletAddress: context.account,
+        walletAddress: owner,
       }),
     customState,
     onSuccess,

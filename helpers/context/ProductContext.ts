@@ -4,7 +4,7 @@ import { trackingEvents } from 'analytics/trackingEvents'
 import { BigNumber } from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { dogIlk } from 'blockchain/calls/dog'
-import { tokenAllowance, tokenBalanceFromAddress } from 'blockchain/calls/erc20'
+import { tokenAllowance } from 'blockchain/calls/erc20'
 import { jugIlk } from 'blockchain/calls/jug'
 import { observe } from 'blockchain/calls/observe'
 import { proxyActionsAdapterResolver$ } from 'blockchain/calls/proxyActions/proxyActionsAdapterResolver'
@@ -200,11 +200,9 @@ export function setupProductContext(
   const jugIlksLean$ = observe(once$, chainContext$, jugIlk)
   const dogIlksLean$ = observe(once$, chainContext$, dogIlk)
 
-  const tokenBalanceFromAddress$ = observe(onEveryBlock$, context$, tokenBalanceFromAddress)
-
   const balanceFromAddress$ = memoize(
-    curry(createBalanceFromAddress$)(onEveryBlock$, chainContext$, tokenBalanceFromAddress$),
-    (token, address) => `${token.address}_${token.precision}_${address}`,
+    curry(createBalanceFromAddress$)(onEveryBlock$, chainContext$),
+    (token, address, networkId) => `${token.address}_${token.precision}_${address}_${networkId}`,
   )
 
   const positionIdFromDpmProxy$ = memoize(

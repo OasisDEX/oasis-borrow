@@ -1,4 +1,4 @@
-import { NetworkNames } from 'blockchain/networks'
+import type { NetworkNames } from 'blockchain/networks'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
@@ -11,6 +11,7 @@ interface OmniHeadlinePropsParams {
   positionId?: string
   productType?: OmniProductType
   protocol: LendingProtocol
+  networkName: NetworkNames
   quoteAddress?: string
   quoteIcon?: string
   quoteToken?: string
@@ -24,6 +25,7 @@ export function getOmniHeadlineProps({
   protocol,
   quoteIcon,
   quoteToken,
+  networkName,
 }: OmniHeadlinePropsParams) {
   const { t } = useTranslation()
 
@@ -40,7 +42,7 @@ export function getOmniHeadlineProps({
           header: `${title}${id}`,
           tokens: [collateralIcon, quoteIcon],
           protocol: {
-            network: NetworkNames.ethereumMainnet,
+            network: networkName,
             protocol,
           },
         }

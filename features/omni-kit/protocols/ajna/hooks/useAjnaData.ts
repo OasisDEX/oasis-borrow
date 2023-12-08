@@ -30,7 +30,7 @@ export function useAjnaData({
   const isOracless = !!(
     collateralToken &&
     quoteToken &&
-    isPoolOracless({ collateralToken, quoteToken })
+    isPoolOracless({ collateralToken, quoteToken, networkId })
   )
 
   const [ajnaPositionData, ajnaPositionError] = useObservable(

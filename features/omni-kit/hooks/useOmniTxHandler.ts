@@ -2,7 +2,6 @@ import type { AjnaStrategy } from '@oasisdex/dma-library'
 import { TxStatus } from '@oasisdex/transactions'
 import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import type { Context } from 'blockchain/network.types'
 import type { CancelablePromise } from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context/MainContextProvider'
@@ -34,13 +33,12 @@ export function useOmniTxHandler<CustomState>({
   onSuccess,
   customState,
 }: {
-  getOmniParameters: (context: Context) => Promise<AjnaStrategy<OmniGenericPosition> | undefined>
+  getOmniParameters: () => Promise<AjnaStrategy<OmniGenericPosition> | undefined>
   customState: CustomState
   onSuccess?: () => void // for resetting custom state
 }): () => void {
-  const { txHelpers$, context$ } = useMainContext()
+  const { txHelpers$ } = useMainContext()
   const [txHelpers] = useObservable(txHelpers$)
-  const [context] = useObservable(context$)
 
   const {
     tx: { setTxDetails },
@@ -77,12 +75,12 @@ export function useOmniTxHandler<CustomState>({
     } else {
       setIsLoadingSimulation(true)
     }
-  }, [context?.chainId, state, isFormEmpty, slippage])
+  }, [state, isFormEmpty, slippage])
 
   useDebouncedEffect(
     () => {
-      if (context && !isExternalStep && currentStep !== OmniSidebarStep.Risk && !isFormEmpty) {
-        const promise = cancelable(getOmniParameters(context))
+      if (!isExternalStep && currentStep !== OmniSidebarStep.Risk && !isFormEmpty) {
+        const promise = cancelable(getOmniParameters())
         setCancelablePromise(promise)
 
         promise
@@ -108,7 +106,7 @@ export function useOmniTxHandler<CustomState>({
           })
       }
     },
-    [context?.chainId, state, isExternalStep, slippage, customState],
+    [state, isExternalStep, slippage, customState],
     250,
   )
 
