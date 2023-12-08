@@ -388,18 +388,24 @@ export default () => {
           <td>12 months</td>
         </tr>
       </table>
-      <Text variant="boldParagraph1">Amendments to this Policy</Text>
-      <Text>
+      <Text as="p" variant="boldParagraph1">
+        Amendments to this Policy
+      </Text>
+      <Text as="p">
         We may amend this Cookie Policy at any time by posting the amended version on the Site
         including the effective date of the amended version. We will post the updated Cookie Policy
         on the Site, and ask for your consent to the changes when legally required.
       </Text>
-      <Text variant="boldParagraph1">Conflict or Inconsistency</Text>
-      <Text>
+      <Text as="p" variant="boldParagraph1">
+        Conflict or Inconsistency
+      </Text>
+      <Text as="p">
         In the event of any conflict or inconsistency between this Cookie Policy and any non-English
         language translation thereof, the terms and provisions of this Cookie Policy shall control.
       </Text>
-      <Text variant="boldParagraph1">Contact</Text>
+      <Text as="p" variant="boldParagraph1">
+        Contact
+      </Text>
       <Text>
         Please contact us with questions, comments, or concerns regarding our Cookie Policy as well
         as with any requests at legal@summer.fi.
