@@ -11,11 +11,13 @@ export function NetValueCard({
   currentPosition,
   nextPositionThings,
   currentPositionThings,
+  modal,
 }: {
   strategyType: StrategyType
   currentPositionThings: ReturnType<typeof calculateViewValuesForPosition>
   currentPosition: IPosition
   nextPositionThings: ReturnType<typeof calculateViewValuesForPosition> | undefined
+  modal?: React.ReactNode
 }) {
   const { t } = useTranslation()
 
@@ -43,6 +45,7 @@ export function NetValueCard({
           value: `${formatPrecision(nextNetValue, 2)} ${t('after')}`,
         }
       }
+      modal={modal}
     />
   )
 }

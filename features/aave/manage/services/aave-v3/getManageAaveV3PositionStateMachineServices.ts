@@ -19,7 +19,10 @@ import type {
 } from 'features/aave/types'
 import { contextToEthersTransactions } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
-import type { AaveHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
+import type {
+  AaveCumulativeData,
+  AaveHistoryEvent,
+} from 'features/omni-kit/protocols/ajna/history/types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
@@ -45,7 +48,13 @@ export function getManageAaveV3PositionStateMachineServices(
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
-  getHistoryEvents: (proxyAccount: string, networkId: NetworkIds) => Promise<AaveHistoryEvent[]>,
+  getHistoryEvents: (
+    proxyAccount: string,
+    networkId: NetworkIds,
+  ) => Promise<{
+    events: AaveHistoryEvent[]
+    positionCumulatives?: AaveCumulativeData
+  }>,
   aaveReserveData$: (args: { token: string }) => Observable<AaveLikeReserveData>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
@@ -238,11 +247,15 @@ export function getManageAaveV3PositionStateMachineServices(
       }
       _onReceive(async (event) => {
         if (isProxyReceiveEvent(event)) {
-          const events = await getHistoryEvents(
+          const historyData = await getHistoryEvents(
             event.proxyAddress,
             context.strategyConfig.networkId,
           )
-          callback({ type: 'HISTORY_UPDATED', historyEvents: events })
+          callback({
+            type: 'HISTORY_UPDATED',
+            historyEvents: historyData.events,
+            cumulatives: historyData.positionCumulatives,
+          })
         }
       })
     },

@@ -60,6 +60,16 @@ export interface PositionHistoryResponse {
   withdrawnUSD: string
 }
 
+export type AaveCumulativesResponse = {
+  id: string
+  cumulativeDeposit: string
+  cumulativeWithdraw: string
+  cumulativeFees: string
+  cumulativeDepositInQuoteToken: string
+  cumulativeWithdrawInQuoteToken: string
+  cumulativeDespositInCollateralToken: string
+  cumulativeWithdrawInCollateralToken: string
+}
 export interface AavePositionHistoryResponse {
   depositTransfers: {
     amount: string

@@ -163,7 +163,8 @@ export function getNetworksHexIdsByHexId(networkHexId: NetworkConfigHexId): Netw
 }
 
 export function getNetworkByName(networkName: NetworkNames) {
-  const base = networkSetByName[networkName]
+  // with forks we need to also check for {networkname}-test
+  const base = networkSetByName[networkName] || networkSetByName[`${networkName}-test`]
   if (!base) throw new Error('Invalid network name provided or not implemented yet')
 
   const parent = base.getParentNetwork()
