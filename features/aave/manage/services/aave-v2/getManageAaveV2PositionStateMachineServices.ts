@@ -4,6 +4,7 @@ import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
 import { createExecuteTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network.types'
+import type { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { TokenBalances } from 'blockchain/tokens.types'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
@@ -33,7 +34,10 @@ export function getManageAaveV2PositionStateMachineServices(
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances | undefined>,
   connectedProxyAddress$: Observable<string | undefined>,
-  proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
+  proxiesRelatedWithPosition$: (
+    positionId: PositionId,
+    networkId: NetworkIds,
+  ) => Observable<ProxiesRelatedWithPosition>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
@@ -111,7 +115,7 @@ export function getManageAaveV2PositionStateMachineServices(
       )
     },
     positionProxyAddress$: (context) => {
-      return proxiesRelatedWithPosition$(context.positionId).pipe(
+      return proxiesRelatedWithPosition$(context.positionId, context.strategyConfig.networkId).pipe(
         map((result) => ({
           type: 'POSITION_PROXY_ADDRESS_RECEIVED',
           proxyAddress: result.dsProxy || result.dpmProxy?.proxy,
@@ -138,7 +142,7 @@ export function getManageAaveV2PositionStateMachineServices(
       )
     },
     currentPosition$: (context) => {
-      return proxiesRelatedWithPosition$(context.positionId).pipe(
+      return proxiesRelatedWithPosition$(context.positionId, context.strategyConfig.networkId).pipe(
         map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter((address) => !!address),
         switchMap((proxyAddress) =>
@@ -157,7 +161,7 @@ export function getManageAaveV2PositionStateMachineServices(
       )
     },
     allowance$: (context) => {
-      return proxiesRelatedWithPosition$(context.positionId).pipe(
+      return proxiesRelatedWithPosition$(context.positionId, context.strategyConfig.networkId).pipe(
         map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter(allDefined),
         switchMap((proxyAddress) => {

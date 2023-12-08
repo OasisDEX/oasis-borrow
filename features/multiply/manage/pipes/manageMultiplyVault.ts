@@ -301,7 +301,7 @@ export function createManageMultiplyVault$(
   slippageLimit$: Observable<UserSettingsState>,
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   saveVaultType$: SaveVaultType,
-  automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
+  automationTriggersData$: (id: BigNumber, networkId: NetworkIds) => Observable<TriggersData>,
   vaultType: VaultType,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
@@ -398,7 +398,11 @@ export function createManageMultiplyVault$(
                     createExchangeChange$(exchangeQuote$, stateSubject$),
                     slippageChange$(slippageLimit$),
                     createHistoryChange$(vaultHistory$, id),
-                    createAutomationTriggersChange$(automationTriggersData$, id),
+                    createAutomationTriggersChange$(
+                      automationTriggersData$,
+                      id,
+                      NetworkIds.MAINNET,
+                    ),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)

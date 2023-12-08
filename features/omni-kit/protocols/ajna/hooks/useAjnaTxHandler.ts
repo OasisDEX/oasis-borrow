@@ -1,10 +1,9 @@
-import type { Context } from 'blockchain/network.types'
 import { getRpcProvider } from 'blockchain/networks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { omniMetadataSupplyHandlerGuard } from 'features/omni-kit/helpers'
 import { useOmniTxHandler } from 'features/omni-kit/hooks'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
-import { getAjnaParameters } from 'features/omni-kit/protocols/ajna/helpers'
+import { getAjnaParameters, isAjnaSupportedNetwork } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 
 export function useAjnaTxHandler(): () => void {
@@ -21,6 +20,8 @@ export function useAjnaTxHandler(): () => void {
       productType,
       slippage,
       quoteBalance,
+      network,
+      owner,
     },
   } = useOmniGeneralContext()
   const {
@@ -35,16 +36,22 @@ export function useAjnaTxHandler(): () => void {
   } = useOmniProductContext(productType)
   const { state: customState } = useAjnaCustomState()
 
+  const networkId = network.id
+
   let onSuccess: (() => void) | undefined = () => null
 
   if (omniMetadataSupplyHandlerGuard(handlers)) {
     onSuccess = handlers.customReset
   }
 
+  if (!isAjnaSupportedNetwork(networkId)) {
+    throw new Error(`Ajna doesn't support this network: ${networkId}`)
+  }
+
   return useOmniTxHandler({
-    getOmniParameters: (context: Context) =>
+    getOmniParameters: () =>
       getAjnaParameters({
-        chainId: context.chainId,
+        networkId,
         collateralAddress,
         collateralPrecision,
         collateralPrice,
@@ -57,11 +64,11 @@ export function useAjnaTxHandler(): () => void {
         quotePrice,
         quoteToken,
         quoteBalance,
-        rpcProvider: getRpcProvider(context.chainId),
+        rpcProvider: getRpcProvider(networkId),
         slippage,
         state,
         price: customState.price,
-        walletAddress: context.account,
+        walletAddress: owner,
       }),
     customState,
     onSuccess,

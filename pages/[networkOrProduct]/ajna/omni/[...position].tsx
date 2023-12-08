@@ -1,5 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
+import { getNetworkByName, NetworkIds } from 'blockchain/networks'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { isAddress } from 'ethers/lib/utils'
@@ -22,11 +22,12 @@ import React from 'react'
 type AjnaPositionPageProps = OmniProductPage
 
 function AjnaPositionPage(props: AjnaPositionPageProps) {
-  const { collateralToken, quoteToken } = props
+  const { collateralToken, quoteToken, networkName } = props
+  const networkId = getNetworkByName(networkName).id
   const isOracless = !!(
     collateralToken &&
     quoteToken &&
-    isPoolOracless({ collateralToken, quoteToken })
+    isPoolOracless({ collateralToken, quoteToken, networkId })
   )
 
   return (

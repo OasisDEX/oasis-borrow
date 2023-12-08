@@ -22,6 +22,7 @@ export interface SidebarSectionStatusProps {
   text: string
   txHash: string
   etherscan: string
+  etherscanName?: string
   type: SidebarSectionStatusTypes
   description?: TranslateStringType
   icon?: IconProps['icon']
@@ -31,6 +32,7 @@ export function SidebarSectionStatus({
   text,
   txHash,
   etherscan,
+  etherscanName,
   type,
   description,
   icon,
@@ -89,7 +91,9 @@ export function SidebarSectionStatus({
                 variant="paragraph4"
                 sx={{ fontWeight: 'semiBold', color: types[type].color }}
               >
-                {t('view-on-etherscan')}
+                {etherscanName
+                  ? t('view-on-etherscan-custom', { etherscanName })
+                  : t('view-on-etherscan')}
               </Text>
             </Link>
           )}

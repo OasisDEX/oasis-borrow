@@ -7,7 +7,10 @@ import { strategies } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { omniPaybackAllWithdrawAllValueOffset } from 'features/omni-kit/constants'
 import { getAjnaEarnData, getAjnaEarnWithdrawMax } from 'features/omni-kit/protocols/ajna/helpers'
-import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
+import type {
+  AjnaGenericPosition,
+  AjnaSupportedNetworksIds,
+} from 'features/omni-kit/protocols/ajna/types'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import { one, zero } from 'helpers/zero'
 
@@ -15,13 +18,13 @@ export const ajnaActionOpenEarn = ({
   state,
   commonPayload,
   dependencies,
-  chainId,
+  networkId,
   price,
 }: {
   state: OmniEarnFormState
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
-  chainId: number
+  networkId: AjnaSupportedNetworksIds
   price?: BigNumber
 }) => {
   const { depositAmount } = state
@@ -34,7 +37,7 @@ export const ajnaActionOpenEarn = ({
     },
     {
       ...dependencies,
-      getEarnData: getAjnaEarnData(chainId),
+      getEarnData: getAjnaEarnData(networkId),
     },
   )
 }

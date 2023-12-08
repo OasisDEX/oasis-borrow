@@ -217,6 +217,7 @@ export const mainnetContracts = {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
+    name: 'Etherscan',
   },
   ethtx: {
     url: 'https://ethtx.info/mainnet',

@@ -1,4 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
+import { identifyTokens$ } from 'blockchain/identifyTokens'
 import { getNetworkById, NetworkIds } from 'blockchain/networks'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { PoolFinderTableLoadingState } from 'features/ajna/pool-finder/components'
@@ -30,7 +31,7 @@ interface PoolFinderViewProps {
 export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
   const { AjnaBase: ajnaBaseEnabled } = useAppConfig('features')
 
-  const { identifiedTokens$, tokenPriceUSDStatic$ } = useProductContext()
+  const { tokenPriceUSDStatic$ } = useProductContext()
 
   const { chainId: walletNetworkId } = useAccount()
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
@@ -81,7 +82,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
           if (pools.flat().length) {
             const identifiedTokensSubscription = combineLatest(
               ...networkIds.map((networkId, i) =>
-                identifiedTokens$(
+                identifyTokens$(
                   networkId,
                   uniq(
                     pools[i].flatMap(({ collateralAddress, quoteTokenAddress }) => [

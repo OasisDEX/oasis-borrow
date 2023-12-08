@@ -1,6 +1,5 @@
-import { NetworkIds } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
-import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
@@ -16,6 +15,7 @@ export interface ProductDataProps {
   dpmPositionData?: DpmPositionData
   quoteToken?: string
   tokenPriceUSDData?: Tickers
+  networkId: NetworkIds
 }
 
 export function useAjnaData({
@@ -23,17 +23,15 @@ export function useAjnaData({
   dpmPositionData,
   quoteToken,
   tokenPriceUSDData,
+  networkId,
 }: ProductDataProps) {
-  const { context$ } = useMainContext()
   const { ajnaPosition$ } = useProductContext()
 
   const isOracless = !!(
     collateralToken &&
     quoteToken &&
-    isPoolOracless({ collateralToken, quoteToken })
+    isPoolOracless({ collateralToken, quoteToken, networkId })
   )
-
-  const [context] = useObservable(context$)
 
   const [ajnaPositionData, ajnaPositionError] = useObservable(
     useMemo(
@@ -43,11 +41,12 @@ export function useAjnaData({
               tokenPriceUSDData[dpmPositionData.collateralToken],
               tokenPriceUSDData[dpmPositionData.quoteToken],
               dpmPositionData,
+              networkId,
               dpmPositionData.collateralTokenAddress,
               dpmPositionData.quoteTokenAddress,
             )
           : isOracless && dpmPositionData && tokenPriceUSDData
-          ? ajnaPosition$(one, one, dpmPositionData, collateralToken, quoteToken)
+          ? ajnaPosition$(one, one, dpmPositionData, networkId, collateralToken, quoteToken)
           : EMPTY,
       [dpmPositionData, isOracless, tokenPriceUSDData],
     ),
@@ -60,10 +59,10 @@ export function useAjnaData({
           ? getAjnaPositionAggregatedData$({
               dpmPositionData,
               position: ajnaPositionData,
-              networkId: context?.chainId ?? NetworkIds.MAINNET,
+              networkId,
             })
           : EMPTY,
-      [dpmPositionData, ajnaPositionData, context?.chainId],
+      [dpmPositionData, ajnaPositionData, networkId],
     ),
   )
 

@@ -188,6 +188,7 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
     overwriteTriggersDefaults: {
       stopLossTriggerData: defaultStopLossTriggerData,
     },
+    networkId: context.strategyConfig.networkId,
     ...notRequiredAutomationContext,
   }
 

@@ -2,7 +2,6 @@ import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaStrategy } from '@o
 import { Network } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
 import type { ethers } from 'ethers'
 import {
   ajnaActionDepositGenerateBorrow,
@@ -23,7 +22,10 @@ import {
   getAjnaPoolData,
   getMaxIncreasedValue,
 } from 'features/omni-kit/protocols/ajna/helpers'
-import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
+import type {
+  AjnaGenericPosition,
+  AjnaSupportedNetworksIds,
+} from 'features/omni-kit/protocols/ajna/types'
 import type { OmniFormState, OmniGenericPosition } from 'features/omni-kit/types'
 import {
   OmniBorrowFormAction,
@@ -32,7 +34,7 @@ import {
 } from 'features/omni-kit/types'
 
 interface AjnaTxHandlerInput {
-  chainId: NetworkIds
+  networkId: AjnaSupportedNetworksIds
   collateralAddress: string
   collateralPrecision: number
   collateralPrice: BigNumber
@@ -53,7 +55,7 @@ interface AjnaTxHandlerInput {
 }
 
 export async function getAjnaParameters({
-  chainId,
+  networkId,
   collateralAddress,
   collateralPrecision,
   collateralPrice,
@@ -75,16 +77,16 @@ export async function getAjnaParameters({
   const defaultPromise = Promise.resolve(undefined)
 
   const { action, dpmAddress } = state
-  const addressesConfig = getNetworkContracts(NetworkIds.MAINNET, chainId)
-  const poolAddress = await getAjnaPoolAddress(collateralAddress, quoteAddress, chainId)
+  const addressesConfig = getNetworkContracts(networkId)
+  const poolAddress = await getAjnaPoolAddress(collateralAddress, quoteAddress, networkId)
 
   const dependencies: AjnaCommonDependencies = {
     ajnaProxyActions: addressesConfig.ajnaProxyActions.address,
     poolInfoAddress: addressesConfig.ajnaPoolInfo.address,
     provider: rpcProvider,
     WETH: addressesConfig.tokens.ETH.address,
-    getPoolData: getAjnaPoolData(chainId),
-    getCumulatives: getAjnaCumulatives(chainId),
+    getPoolData: getAjnaPoolData(networkId),
+    getCumulatives: getAjnaCumulatives(networkId),
     network: Network.MAINNET,
   }
 
@@ -134,7 +136,7 @@ export async function getAjnaParameters({
     }
 
     case OmniEarnFormAction.OpenEarn: {
-      return ajnaActionOpenEarn({ state, commonPayload, dependencies, chainId, price })
+      return ajnaActionOpenEarn({ state, commonPayload, dependencies, networkId, price })
     }
     case OmniEarnFormAction.DepositEarn: {
       return ajnaActionDepositEarn({ state, commonPayload, dependencies, position, price })
@@ -151,7 +153,7 @@ export async function getAjnaParameters({
         state,
         commonPayload,
         dependencies,
-        chainId,
+        networkId,
         collateralToken,
         quoteToken,
         walletAddress,
