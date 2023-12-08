@@ -24,6 +24,8 @@ import {
   BalanceAfterClose,
   calculateMaxCollateralAmount,
   calculateMaxDebtAmount,
+  isLoading,
+  isLocked,
 } from './SidebarManageAaveVault'
 
 export function GetReviewingSidebarProps({
@@ -50,7 +52,12 @@ export function GetReviewingSidebarProps({
     send({ type: 'UPDATE_TOKEN_ACTION_VALUE', manageTokenActionValue })
   }
 
+  function loading(): boolean {
+    return isLoading(state)
+  }
+
   const closeToToken = state.context.manageTokenInput?.closingToken
+  const AdjustRisk = state.context.strategyConfig.viewComponents.adjustRiskInput
 
   switch (true) {
     case state.matches('frontend.reviewingClosing'):
@@ -117,6 +124,17 @@ export function GetReviewingSidebarProps({
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
+            {state.context.manageTokenInput?.manageTokenAction ===
+              ManageCollateralActionsEnum.DEPOSIT_COLLATERAL && (
+              <AdjustRisk
+                state={state}
+                onChainPosition={state.context.currentPosition}
+                isLoading={loading}
+                send={send}
+                viewLocked={isLocked(state)}
+                stopLossError={stopLossError}
+              />
+            )}
             {stopLossError && <StopLossAaveErrorMessage />}
             {amountCollateralTooHigh && (
               <>
