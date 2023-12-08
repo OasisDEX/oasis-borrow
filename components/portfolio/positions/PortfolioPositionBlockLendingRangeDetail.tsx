@@ -3,6 +3,7 @@ import { omniLendingPriceColors } from 'features/omni-kit/constants'
 import type { PositionDetailLendingRange } from 'handlers/portfolio/types'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Box } from 'theme-ui'
 
 export const PortfolioPositionBlockLendingRangeDetail = ({
   detail,
@@ -14,7 +15,9 @@ export const PortfolioPositionBlockLendingRangeDetail = ({
   return (
     <>
       {tPortfolio(`lending-range-types.${detail.value}`)}
-      <Steps count={3} active={detail.value} color={omniLendingPriceColors[detail.value]} />
+      <Box sx={{ mt: 1 }}>
+        <Steps count={3} active={detail.value} color={omniLendingPriceColors[detail.value]} />
+      </Box>
     </>
   )
 }
