@@ -177,21 +177,21 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatFiatBalance(event.netValueAfter)} USD
         </PositionHistoryRow>
       )}
-      {event.swapToAmount &&
-        event.swapToAmount.gt(zero) &&
-        event.swapFromAmount &&
-        event.swapFromAmount.gt(zero) && (
-          <PositionHistoryRow label={t('position-history.swaped')}>
-            {formatCryptoBalance(event.swapFromAmount)}{' '}
-            {getTokenSymbolBasedOnAddress(networkId, event.swapFromToken!)}
-            <VaultChangesInformationArrow />
-            {formatCryptoBalance(event.swapToAmount)}{' '}
-            {getTokenSymbolBasedOnAddress(networkId, event.swapToToken!)}
-          </PositionHistoryRow>
-        )}
+      {event.swapToAmount && event.swapFromAmount?.gt(zero) && (
+        <PositionHistoryRow label={t('position-history.swaped')}>
+          {formatCryptoBalance(event.swapFromAmount)}{' '}
+          {getTokenSymbolBasedOnAddress(networkId, event.swapFromToken!)}
+          <VaultChangesInformationArrow />
+          {formatCryptoBalance(event.swapToAmount)}{' '}
+          {getTokenSymbolBasedOnAddress(networkId, event.swapToToken!)}
+        </PositionHistoryRow>
+      )}
       {event.collateralTokenPriceUSD && (
         <PositionHistoryRow label={t('position-history.market-price')}>
-          {formatFiatBalance(event.collateralTokenPriceUSD)} USD
+          {isShort
+            ? formatCryptoBalance(event.debtTokenPriceUSD!.div(event.collateralTokenPriceUSD))
+            : formatCryptoBalance(event.collateralTokenPriceUSD.div(event.debtTokenPriceUSD!))}{' '}
+          {isShort ? `${quoteToken}/${collateralToken}` : `${collateralToken}/${quoteToken}`}
         </PositionHistoryRow>
       )}
       {!isOracless && event.totalFee && (

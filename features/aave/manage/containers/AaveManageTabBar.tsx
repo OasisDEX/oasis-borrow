@@ -10,6 +10,7 @@ import { useManageAaveStateMachineContext } from 'features/aave/manage/container
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
+import { isShortPosition } from 'features/omni-kit/helpers'
 import { useAppConfig } from 'helpers/config'
 import type {
   AaveLikeReserveConfigurationData,
@@ -126,6 +127,7 @@ export function AaveManageTabBar({
                     historyEvents={state.context.historyEvents}
                     quoteToken={debtToken}
                     networkId={strategyConfig.networkId}
+                    isShort={isShortPosition({ collateralToken })}
                   />
                 ),
               },
