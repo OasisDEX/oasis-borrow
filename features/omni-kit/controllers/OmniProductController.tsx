@@ -170,6 +170,7 @@ export const OmniProductController = <Auction, History, Position>({
                     protocol,
                     quoteIcon: tokensIconsData?.quoteToken,
                     quoteToken: dpmPositionData?.quoteToken,
+                    networkName,
                   })}
                 />
               }
