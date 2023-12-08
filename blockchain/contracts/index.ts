@@ -55,7 +55,9 @@ export function getNetworkContracts<NetworkId extends NetworkIds>(
     contracts = allNetworksContracts[parentConfig.id]
   }
   if (!contracts) {
-    throw new Error('Invalid contract chain id provided or not implemented yet')
+    throw new Error(
+      `Invalid contract chain id (${correctNetworkId}) provided or not implemented yet`,
+    )
   }
 
   const contractsForWithToknes = contracts
