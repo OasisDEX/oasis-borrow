@@ -3,12 +3,14 @@ import type { TxDetails } from 'helpers/handleTransaction'
 
 export function getOmniSidebarTransactionStatus({
   etherscan = '',
+  etherscanName,
   isTxInProgress,
   isTxSuccess,
   text,
   txDetails,
 }: {
   etherscan?: string
+  etherscanName?: string
   isTxInProgress: boolean
   isTxSuccess: boolean
   text: string
@@ -18,6 +20,7 @@ export function getOmniSidebarTransactionStatus({
     ? [
         {
           etherscan,
+          etherscanName,
           text,
           txHash: txDetails.txHash,
           type: isTxInProgress ? 'progress' : 'success',

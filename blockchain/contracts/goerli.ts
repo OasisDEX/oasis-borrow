@@ -204,6 +204,7 @@ export const goerliContracts: MainnetContractsWithOptional = {
     url: 'https://goerli.etherscan.io',
     apiUrl: 'https://api-goerli.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
+    name: 'Etherscan',
   },
   ethtx: {
     url: 'https://ethtx.info/goerli',
