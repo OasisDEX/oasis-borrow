@@ -41,7 +41,7 @@ export const PositionHistory: FC<PositionHistoryProps> = ({
           {historyEvents.map((item) => (
             <PositionHistoryItem
               collateralToken={collateralToken}
-              etherscanUrl={etherscan.url}
+              etherscanConfig={etherscan}
               ethtxUrl={ethtx.url}
               isOracless={isOracless}
               isShort={isShort}

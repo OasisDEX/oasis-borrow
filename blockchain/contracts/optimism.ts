@@ -206,7 +206,7 @@ export const optimismContracts: OptimismContracts = {
   openVaultSafeConfirmations: 6,
   taxProxyRegistries: [],
   etherscan: {
-    url: 'https://optimistic.etherscan.io/',
+    url: 'https://optimistic.etherscan.io',
     apiUrl: 'https://api-optimistic.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
     name: 'Optimistic Etherscan',
