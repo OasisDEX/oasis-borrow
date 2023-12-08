@@ -7,7 +7,6 @@ import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInfor
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
 import { type AaveHistoryEvent, hasTrigger } from 'features/omni-kit/protocols/ajna/history/types'
 import {
-  formatAmountWithPrecision,
   formatCryptoBalance,
   formatDecimalAsPercent,
   formatFiatBalance,
@@ -46,28 +45,19 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
   if (event.kind?.startsWith('AutomationAdded') && hasTrigger(event)) {
     return (
       <DefinitionList>
-        {event.trigger &&
-          event.trigger.decodedDataNames
-            .map((name, index) => [name, event.trigger?.decodedData[index]] as const)
-            .filter(([name]) => automationNames.includes(name))
-            .map(([name, value]) => {
-              switch (name) {
-                case 'maxCoverage':
-                  return (
-                    <PositionHistoryRow label={t('position-history.max-coverage')} key={name}>
-                      {formatAmountWithPrecision(new BigNumber(value), quoteToken)} {quoteToken}
-                    </PositionHistoryRow>
-                  )
-                case 'slLevel':
-                  return (
-                    <PositionHistoryRow label={t('position-history.sl-level')} key={name}>
-                      {value && formatPercent(new BigNumber(value).div(100))}
-                    </PositionHistoryRow>
-                  )
-                default:
-                  return <></>
-              }
-            })}
+        {event.trigger?.decodedDataNames
+          ?.map((name, index) => [name, event.trigger?.decodedData[index]] as const)
+          ?.filter(([name]) => automationNames.includes(name))
+          ?.map(([name, value]) => {
+            if (name === 'slLevel') {
+              return (
+                <PositionHistoryRow label={t('position-history.sl-level')} key={name}>
+                  {value && formatPercent(new BigNumber(value).div(100))}
+                </PositionHistoryRow>
+              )
+            }
+            return <></>
+          })}
       </DefinitionList>
     )
   }
