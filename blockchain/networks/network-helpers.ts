@@ -139,7 +139,7 @@ export const filterNetworksAccordingToSavedNetwork =
 export function getNetworkById(networkId: NetworkIds) {
   const base = networkSetById[networkId]
 
-  if (!base) throw new Error('Invalid contract chain id provided or not implemented yet')
+  if (!base) throw new Error(`Invalid contract chain id ${networkId} provided or not implemented yet`)
 
   const parent = base.getParentNetwork()
 

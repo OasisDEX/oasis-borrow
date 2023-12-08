@@ -1,8 +1,9 @@
 import type { Vault } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { networksById } from 'blockchain/networks'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
+import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniProductBorrowishType } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { AjnaDpmPositionsPool } from 'handlers/portfolio/positions/handlers/ajna/types'
@@ -17,6 +18,7 @@ interface getAjnaPositionInfoParams {
   apiVaults: Vault[]
   dpmList: DpmList
   isEarn: boolean
+  networkId: AjnaSupportedNetworksIds
   pool: AjnaDpmPositionsPool
   positionId: string
   prices: TokensPricesList
@@ -27,13 +29,14 @@ export async function getAjnaPositionInfo({
   apiVaults,
   dpmList,
   isEarn,
+  networkId,
   pool: { address: poolAddress, collateralToken, quoteToken },
   positionId,
   prices,
   proxyAddress,
 }: getAjnaPositionInfoParams) {
   // get pool info contract
-  const { ajnaPoolInfo } = getNetworkContracts(NetworkIds.MAINNET)
+  const { ajnaPoolInfo } = getNetworkContracts(networkId)
 
   // determine position type based on subgraph and db responses
   const defaultType = dpmList.filter(
@@ -44,7 +47,7 @@ export async function getAjnaPositionInfo({
     : getBorrowishPositionType({
         apiVaults,
         defaultType,
-        networkId: NetworkIds.MAINNET,
+        networkId: networkId,
         positionId: Number(positionId),
         protocol: LendingProtocol.Ajna,
       })
@@ -55,11 +58,11 @@ export async function getAjnaPositionInfo({
   const secondaryToken = getTokenDisplayName(quoteToken.symbol)
   const secondaryTokenAddress = quoteToken.address
   const isOracless = isPoolOracless({
-    networkId: NetworkIds.MAINNET,
+    networkId: networkId,
     collateralToken: primaryToken,
     quoteToken: secondaryToken,
   })
-  const url = `/${NetworkNames.ethereumMainnet}/${LendingProtocol.Ajna}/${type}/${
+  const url = `/${networksById[networkId].name}/${LendingProtocol.Ajna}/${type}/${
     isOracless ? primaryTokenAddress : primaryToken
   }-${isOracless ? secondaryTokenAddress : secondaryToken}/${positionId}`
 

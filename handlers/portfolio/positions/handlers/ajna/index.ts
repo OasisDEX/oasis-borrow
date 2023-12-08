@@ -1,10 +1,12 @@
 import { views } from '@oasisdex/dma-library'
-import { getRpcProvider, NetworkIds, NetworkNames } from 'blockchain/networks'
+import type { Vault } from '@prisma/client'
+import { getRpcProvider, NetworkIds, networksById } from 'blockchain/networks'
 import {
   getAjnaCumulatives,
   getAjnaEarnData,
   getAjnaPoolData,
 } from 'features/omni-kit/protocols/ajna/helpers'
+import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import {
@@ -12,18 +14,33 @@ import {
   getAjnaPositionInfo,
   getAjnaPositionNetValue,
 } from 'handlers/portfolio/positions/handlers/ajna/helpers'
-import type { PortfolioPosition, PortfolioPositionsHandler } from 'handlers/portfolio/types'
+import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
+import type { DpmList } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
+import type {
+  PortfolioPosition,
+  PortfolioPositionsCountReply,
+  PortfolioPositionsHandler,
+  PortfolioPositionsReply,
+} from 'handlers/portfolio/types'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
-  address,
+interface GetAjnaPositionsParams {
+  apiVaults?: Vault[]
+  dpmList: DpmList
+  prices: TokensPricesList
+  networkId: AjnaSupportedNetworksIds
+  positionsCount?: boolean
+}
+
+async function getAjnaPositions({
   apiVaults,
   dpmList,
-  prices,
+  networkId,
   positionsCount,
-}) => {
+  prices,
+}: GetAjnaPositionsParams): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
-  const subgraphPositions = (await loadSubgraph('Ajna', 'getAjnaDpmPositions', NetworkIds.MAINNET, {
+  const subgraphPositions = (await loadSubgraph('Ajna', 'getAjnaDpmPositions', networkId, {
     dpmProxyAddress,
   })) as SubgraphsResponses['Ajna']['getAjnaDpmPositions']
   const positionsArray = subgraphPositions.response.accounts.flatMap(
@@ -37,97 +54,120 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
       ...earnPositions.map((position) => ({ ...position, proxyAddress, isEarn: true, positionId })),
     ],
   )
+
   if (positionsCount || !apiVaults) {
     return {
       positions: positionsArray.map(({ positionId }) => ({ positionId })),
     }
-  }
-
-  const positions = await Promise.all(
-    positionsArray.map(
-      async ({
-        isEarn,
-        pool,
-        positionId,
-        protocolEvents,
-        proxyAddress,
-      }): Promise<PortfolioPosition> => {
-        const {
-          ajnaPoolInfo,
-          collateralPrice,
-          isOracless,
-          poolAddress,
-          primaryToken,
-          quotePrice,
-          secondaryToken,
-          type,
-          url,
-        } = await getAjnaPositionInfo({
-          apiVaults,
-          dpmList,
+  } else {
+    const positions = await Promise.all(
+      positionsArray.map(
+        async ({
           isEarn,
           pool,
           positionId,
-          prices,
+          protocolEvents,
           proxyAddress,
-        })
-
-        // proxies with more than one position doesn not support pnl calculation on subgraph so far
-        const isProxyWithManyPositions =
-          positionsArray.filter((item) => proxyAddress === item.proxyAddress).length > 1
-
-        // get Ajna position from dma
-        const commonPayload = { collateralPrice, quotePrice, proxyAddress, poolAddress }
-        const commonDependency = {
-          poolInfoAddress: ajnaPoolInfo.address,
-          provider: getRpcProvider(NetworkIds.MAINNET),
-          getPoolData: getAjnaPoolData(NetworkIds.MAINNET),
-          getCumulatives: getAjnaCumulatives(NetworkIds.MAINNET),
-        }
-
-        const position = isEarn
-          ? await views.ajna.getEarnPosition(commonPayload, {
-              ...commonDependency,
-              getEarnData: getAjnaEarnData(NetworkIds.MAINNET),
-            })
-          : await views.ajna.getPosition(commonPayload, commonDependency)
-
-        return {
-          availableToMigrate: false,
-          automations: {},
-          details: getAjnaPositionDetails({
+        }): Promise<PortfolioPosition> => {
+          const {
+            ajnaPoolInfo,
             collateralPrice,
             isOracless,
-            isProxyWithManyPositions,
-            position,
+            poolAddress,
             primaryToken,
             quotePrice,
             secondaryToken,
             type,
-          }),
-          ...(isEarn && { lendingType: 'active' }),
-          network: NetworkNames.ethereumMainnet,
-          netValue: getAjnaPositionNetValue({
-            collateralPrice,
-            isOracless,
-            position,
-            quotePrice,
-            type,
-          }),
-          openDate: Number(protocolEvents[0].timestamp),
-          positionId: Number(positionId),
-          primaryToken,
-          protocol: LendingProtocol.Ajna,
-          secondaryToken,
-          type,
-          url,
-        }
-      },
-    ),
-  )
+            url,
+          } = await getAjnaPositionInfo({
+            apiVaults,
+            dpmList,
+            isEarn,
+            networkId,
+            pool,
+            positionId,
+            prices,
+            proxyAddress,
+          })
 
-  return {
-    address,
-    positions,
+          // proxies with more than one position doesn not support pnl calculation on subgraph so far
+          const isProxyWithManyPositions =
+            positionsArray.filter((item) => proxyAddress === item.proxyAddress).length > 1
+
+          // get Ajna position from dma
+          const commonPayload = { collateralPrice, quotePrice, proxyAddress, poolAddress }
+          const commonDependency = {
+            poolInfoAddress: ajnaPoolInfo.address,
+            provider: getRpcProvider(networkId),
+            getPoolData: getAjnaPoolData(networkId),
+            getCumulatives: getAjnaCumulatives(networkId),
+          }
+
+          const position = isEarn
+            ? await views.ajna.getEarnPosition(commonPayload, {
+                ...commonDependency,
+                getEarnData: getAjnaEarnData(networkId),
+              })
+            : await views.ajna.getPosition(commonPayload, commonDependency)
+
+          return {
+            availableToMigrate: false,
+            automations: {},
+            details: getAjnaPositionDetails({
+              collateralPrice,
+              isOracless,
+              isProxyWithManyPositions,
+              position,
+              primaryToken,
+              quotePrice,
+              secondaryToken,
+              type,
+            }),
+            ...(isEarn && { lendingType: 'active' }),
+            network: networksById[networkId].name,
+            netValue: getAjnaPositionNetValue({
+              collateralPrice,
+              isOracless,
+              position,
+              quotePrice,
+              type,
+            }),
+            openDate: Number(protocolEvents[0].timestamp),
+            positionId: Number(positionId),
+            primaryToken,
+            protocol: LendingProtocol.Ajna,
+            secondaryToken,
+            type,
+            url,
+          }
+        },
+      ),
+    )
+
+    return { positions }
   }
+}
+
+export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
+  address,
+  apiVaults,
+  dpmList,
+  prices,
+  positionsCount,
+}) => {
+  return Promise.all([
+    getAjnaPositions({ apiVaults, dpmList, networkId: NetworkIds.MAINNET, prices, positionsCount }),
+    getAjnaPositions({
+      apiVaults,
+      dpmList,
+      networkId: NetworkIds.BASEMAINNET,
+      prices,
+      positionsCount,
+    }),
+  ]).then((responses) => {
+    return {
+      address,
+      positions: responses.flatMap(({ positions }) => positions),
+    }
+  })
 }
