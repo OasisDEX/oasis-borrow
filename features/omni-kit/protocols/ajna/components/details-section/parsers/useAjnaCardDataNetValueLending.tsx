@@ -31,7 +31,6 @@ export function useAjnaCardDataNetValueLending({
           cumulativeWithdrawUSD: cumulatives.borrowCumulativeWithdrawUSD,
           cumulativeFeesUSD: cumulatives.borrowCumulativeFeesUSD,
         }}
-        translatePrefix="ajna.content-card.net-value"
         netValue={netValue}
         pnl={pnl}
         pnlUSD={pnlUSD}

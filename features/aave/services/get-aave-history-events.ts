@@ -12,7 +12,7 @@ export async function getAaveHistoryEvents(
   _networkId: NetworkIds,
 ): Promise<{
   events: AaveHistoryEvent[]
-  positionCumulatives: AaveCumulativeData | null
+  positionCumulatives?: AaveCumulativeData
 }> {
   const resposne = await loadSubgraph('Aave', 'getAaveHistory', _networkId, {
     dpmProxyAddress: _proxyAdrress,
@@ -95,12 +95,11 @@ export async function getAaveHistoryEvents(
               positions[0].cumulativeWithdrawInCollateralToken,
             ),
           }
-        : null,
+        : undefined,
     }
   }
 
   return {
     events: [],
-    positionCumulatives: null,
   }
 }

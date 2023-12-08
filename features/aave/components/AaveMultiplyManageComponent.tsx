@@ -58,8 +58,6 @@ export function AaveMultiplyManageComponent({
     ) &&
     supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId)
 
-  console.log('cumulatives', cumulatives)
-
   return (
     <WithErrorHandler
       error={[

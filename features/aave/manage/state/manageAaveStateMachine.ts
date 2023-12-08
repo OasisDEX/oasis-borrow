@@ -108,7 +108,7 @@ export type ManageAaveEvent =
   | {
       type: 'HISTORY_UPDATED'
       historyEvents: AaveHistoryEvent[]
-      cumulatives: AaveCumulativeData | null
+      cumulatives?: AaveCumulativeData
     }
   | BaseAaveEvent
 

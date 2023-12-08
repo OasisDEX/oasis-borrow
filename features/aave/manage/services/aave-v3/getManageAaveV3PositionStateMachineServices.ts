@@ -53,7 +53,7 @@ export function getManageAaveV3PositionStateMachineServices(
     networkId: NetworkIds,
   ) => Promise<{
     events: AaveHistoryEvent[]
-    positionCumulatives: AaveCumulativeData | null
+    positionCumulatives?: AaveCumulativeData
   }>,
   aaveReserveData$: (args: { token: string }) => Observable<AaveLikeReserveData>,
 ): ManageAaveStateMachineServices {
