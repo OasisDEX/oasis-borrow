@@ -491,7 +491,7 @@
     "net-value": "Net value",
     "increase-multiple": "Increase multiple",
     "decrease-multiple": "Decrease multiple",
-    "sl-level": "Stop loss level",
+    "sl-level": "Stop loss LTV",
     "swaped": "Swapped",
     "automation": {
       "stop-loss-collateral-added": "Stop loss to collateral added",
@@ -499,7 +499,10 @@
       "stop-loss-collateral-executed": "Stop loss to collateral executed",
       "stop-loss-debt-added": "Stop loss to debt added",
       "stop-loss-debt-removed": "Stop loss to debt removed",
-      "stop-loss-debt-executed": "Stop loss to debt executed"
+      "stop-loss-debt-executed": "Stop loss to debt executed",
+      "stop-loss-token-added": "Stop loss to {{token}} added",
+      "stop-loss-token-removed": "Stop loss to {{token}} removed",
+      "stop-loss-token-executed": "Stop loss to {{token}} executed"
     }
   },
   "triggers": {

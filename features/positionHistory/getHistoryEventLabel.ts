@@ -1,6 +1,16 @@
 import { useTranslation } from 'next-i18next'
 
-export const getHistoryEventLabel = ({ kind, isOpen }: { kind?: string; isOpen?: boolean }) => {
+export const getHistoryEventLabel = ({
+  kind,
+  isOpen,
+  collateralToken,
+  quoteToken,
+}: {
+  kind?: string
+  collateralToken?: string
+  quoteToken?: string
+  isOpen?: boolean
+}) => {
   const { t } = useTranslation()
 
   switch (kind) {
@@ -84,22 +94,34 @@ export const getHistoryEventLabel = ({ kind, isOpen }: { kind?: string; isOpen?:
       return t('position-history.decrease-multiple')
     case 'AutomationAdded-AaveStopLossToCollateralV2':
     case 'AutomationAdded-SparkStopLossToCollateralV2':
-      return t('position-history.automation.stop-loss-collateral-added')
+      return collateralToken
+        ? t('position-history.automation.stop-loss-token-added', { token: collateralToken })
+        : t('position-history.automation.stop-loss-collateral-added')
     case 'AutomationExecuted-AaveStopLossToCollateralV2':
     case 'AutomationExecuted-SparkStopLossToCollateralV2':
-      return t('position-history.automation.stop-loss-collateral-executed')
+      return collateralToken
+        ? t('position-history.automation.stop-loss-token-executed', { token: collateralToken })
+        : t('position-history.automation.stop-loss-collateral-executed')
     case 'AutomationRemoved-AaveStopLossToCollateralV2':
     case 'AutomationRemoved-SparkStopLossToCollateralV2':
-      return t('position-history.automation.stop-loss-collateral-removed')
+      return collateralToken
+        ? t('position-history.automation.stop-loss-token-removed', { token: collateralToken })
+        : t('position-history.automation.stop-loss-collateral-removed')
     case 'AutomationAdded-AaveStopLossToDebtV2':
     case 'AutomationAdded-SparkStopLossToDebtV2':
-      return t('position-history.automation.stop-loss-debt-added')
+      return quoteToken
+        ? t('position-history.automation.stop-loss-token-added', { token: quoteToken })
+        : t('position-history.automation.stop-loss-debt-added')
     case 'AutomationExecuted-AaveStopLossToDebtV2':
     case 'AutomationExecuted-SparkStopLossToDebtV2':
-      return t('position-history.automation.stop-loss-debt-executed')
+      return quoteToken
+        ? t('position-history.automation.stop-loss-token-executed', { token: quoteToken })
+        : t('position-history.automation.stop-loss-debt-executed')
     case 'AutomationRemoved-AaveStopLossToDebtV2':
     case 'AutomationRemoved-SparkStopLossToDebtV2':
-      return t('position-history.automation.stop-loss-debt-removed')
+      return quoteToken
+        ? t('position-history.automation.stop-loss-token-removed', { token: quoteToken })
+        : t('position-history.automation.stop-loss-debt-removed')
     case 'Liquidation':
       return t('position-history.liquidation')
     default:

@@ -42,7 +42,10 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
 
   const automationNames = ['maxCoverage', 'slLevel']
 
-  if (event.kind?.startsWith('AutomationAdded') && hasTrigger(event)) {
+  if (
+    (event.kind?.startsWith('AutomationAdded') || event.kind?.startsWith('AutomationRemoved')) &&
+    hasTrigger(event)
+  ) {
     return (
       <DefinitionList>
         {event.trigger?.decodedDataNames

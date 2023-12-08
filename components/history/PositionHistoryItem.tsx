@@ -70,7 +70,12 @@ export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
         onClick={() => setOpened(!opened)}
       >
         <Text as="p" sx={{ fontWeight: 'semiBold', color: 'primary100' }}>
-          {getHistoryEventLabel({ kind: item.kind, isOpen: 'isOpen' in item && item.isOpen })}
+          {getHistoryEventLabel({
+            kind: item.kind,
+            collateralToken,
+            quoteToken,
+            isOpen: 'isOpen' in item && item.isOpen,
+          })}
         </Text>
         <Text as="time" sx={{ color: 'neutral80', whiteSpace: 'nowrap', fontWeight: 'semiBold' }}>
           {humanDate}
