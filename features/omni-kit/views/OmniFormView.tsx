@@ -215,6 +215,7 @@ export function OmniFormView({
   }
   const status = getOmniSidebarTransactionStatus({
     etherscan: getNetworkContracts(networkId).etherscan.url,
+    etherscanName: getNetworkContracts(networkId).etherscan.name,
     isTxInProgress,
     isTxSuccess,
     text: t(

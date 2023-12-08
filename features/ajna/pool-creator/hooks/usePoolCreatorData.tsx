@@ -64,6 +64,8 @@ export function usePoolCreatorData({
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
   const [isOnSupportedNetwork, setIsOnSupportedNetwork] = useState<boolean>(false)
 
+  const networkContracts = getNetworkContracts(context?.chainId ?? NetworkIds.MAINNET)
+
   const onSubmit = () => {
     txHelpers
       ?.sendWithGasEstimation(deployAjnaPool, {
@@ -83,8 +85,12 @@ export function usePoolCreatorData({
   }
 
   const txStatuses = getOmniTxStatuses(txDetails?.txStatus)
+
   const txSidebarStatus = getOmniSidebarTransactionStatus({
-    etherscan: getNetworkContracts(NetworkIds.MAINNET, context?.chainId).etherscan.url,
+    ...('etherscan' in networkContracts && {
+      etherscan: networkContracts.etherscan.url,
+      etherscanName: networkContracts.etherscan.name,
+    }),
     isTxInProgress: txStatuses.isTxInProgress,
     isTxSuccess: txStatuses.isTxSuccess,
     text: t(

@@ -179,9 +179,10 @@ export const baseContracts: MainnetContractsWithOptional = {
   openVaultSafeConfirmations: 6,
   taxProxyRegistries: [],
   etherscan: {
-    url: 'https://basescan.org',
+    url: 'https://basescan.org/',
     apiUrl: 'https://api.basescan.org/api',
     apiKey: etherscanAPIKey || '',
+    name: 'Basescan',
   },
   ethtx: {
     url: '',
