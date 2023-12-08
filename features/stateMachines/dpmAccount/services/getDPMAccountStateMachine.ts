@@ -18,7 +18,7 @@ export function getDPMAccountStateMachine(
 ) {
   const services = getDPMAccountStateMachineServices(context$, txHelpers$, gasEstimation$)
 
-  return createDPMAccountStateMachine(transactionStateMachine).withConfig({
+  return createDPMAccountStateMachine(transactionStateMachine, true).withConfig({
     services: {
       ...services,
     },
