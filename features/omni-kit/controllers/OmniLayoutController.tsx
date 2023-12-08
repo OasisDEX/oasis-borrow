@@ -43,6 +43,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
       quoteIcon,
       quotePrice,
       quoteToken,
+      network,
     },
   } = useOmniGeneralContext()
   const {
@@ -68,6 +69,7 @@ export function OmniLayoutController({ txHandler }: { txHandler: () => () => voi
           protocol,
           quoteIcon,
           quoteToken,
+          networkName: network.name,
         })}
         details={[
           ...(headlineDetails || []),
