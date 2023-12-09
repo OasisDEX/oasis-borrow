@@ -2,8 +2,10 @@ import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaPosition } from '@o
 import { RiskRatio, strategies } from '@oasisdex/dma-library'
 import type { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
-import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
+import type {
+  AjnaGenericPosition,
+  AjnaSupportedNetworksIds,
+} from 'features/omni-kit/protocols/ajna/types'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
 import { getOneInchCall } from 'helpers/swap'
@@ -17,6 +19,7 @@ export const ajnaActionClose = ({
   slippage,
   collateralToken,
   quoteToken,
+  networkId,
 }: {
   state: OmniMultiplyFormState | OmniBorrowFormState
   commonPayload: AjnaCommonPayload
@@ -25,6 +28,7 @@ export const ajnaActionClose = ({
   slippage: BigNumber
   collateralToken: string
   quoteToken: string
+  networkId: AjnaSupportedNetworksIds
 }) => {
   return strategies.ajna.multiply.close(
     {
@@ -38,15 +42,15 @@ export const ajnaActionClose = ({
     },
     {
       ...dependencies,
-      getSwapData: getOneInchCall(getNetworkContracts(NetworkIds.MAINNET, 1).swapAddress),
-      operationExecutor: getNetworkContracts(NetworkIds.MAINNET, 1).operationExecutor.address,
+      getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
+      operationExecutor: getNetworkContracts(networkId).operationExecutor.address,
       addresses: {
-        DAI: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.DAI.address,
+        DAI: getNetworkContracts(networkId).tokens.DAI.address,
         // Currently tokens.ETH is being mapped to WETH
-        ETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.ETH_ACTUAL.address,
-        WSTETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WSTETH.address,
-        USDC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.USDC.address,
-        WBTC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WBTC.address,
+        ETH: getNetworkContracts(networkId).tokens.ETH_ACTUAL.address,
+        WSTETH: getNetworkContracts(networkId).tokens.WSTETH.address,
+        USDC: getNetworkContracts(networkId).tokens.USDC.address,
+        WBTC: getNetworkContracts(networkId).tokens.WBTC.address,
       },
     },
   )
@@ -60,6 +64,7 @@ export const ajnaActionAdjust = ({
   slippage,
   collateralToken,
   quoteToken,
+  networkId,
 }: {
   state: OmniMultiplyFormState | OmniBorrowFormState
   commonPayload: AjnaCommonPayload
@@ -68,6 +73,7 @@ export const ajnaActionAdjust = ({
   slippage: BigNumber
   collateralToken: string
   quoteToken: string
+  networkId: AjnaSupportedNetworksIds
 }) => {
   const { loanToValue, depositAmount, withdrawAmount } = state
 
@@ -87,15 +93,15 @@ export const ajnaActionAdjust = ({
     },
     {
       ...dependencies,
-      getSwapData: getOneInchCall(getNetworkContracts(NetworkIds.MAINNET, 1).swapAddress),
-      operationExecutor: getNetworkContracts(NetworkIds.MAINNET, 1).operationExecutor.address,
+      getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
+      operationExecutor: getNetworkContracts(networkId).operationExecutor.address,
       addresses: {
-        DAI: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.DAI.address,
+        DAI: getNetworkContracts(networkId).tokens.DAI.address,
         // Currently tokens.ETH is being mapped to WETH
-        ETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.ETH_ACTUAL.address,
-        WSTETH: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WSTETH.address,
-        USDC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.USDC.address,
-        WBTC: getNetworkContracts(NetworkIds.MAINNET, 1).tokens.WBTC.address,
+        ETH: getNetworkContracts(networkId).tokens.ETH_ACTUAL.address,
+        WSTETH: getNetworkContracts(networkId).tokens.WSTETH.address,
+        USDC: getNetworkContracts(networkId).tokens.USDC.address,
+        WBTC: getNetworkContracts(networkId).tokens.WBTC.address,
       },
     },
   )
