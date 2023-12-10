@@ -34,8 +34,7 @@ export function useOmniTxHandler<CustomState>({
   customState: CustomState
   onSuccess?: () => void // for resetting custom state
 }): () => void {
-  const { txHelpers$, connectedContext$ } = useMainContext()
-  const [txHelpers] = useObservable(txHelpers$)
+  const { connectedContext$ } = useMainContext()
   const [context] = useObservable(connectedContext$)
   const signer = context?.transactionProvider
 
@@ -109,8 +108,8 @@ export function useOmniTxHandler<CustomState>({
     250,
   )
 
-  if (!txHelpers || !txData || !proxyAddress || !signer?.provider) {
-    return () => console.warn('no txHelpers or txData or proxyAddress or signer')
+  if (!txData || !proxyAddress || !signer?.provider) {
+    return () => console.warn('no txData or proxyAddress or signer provider')
   }
 
   return () =>
