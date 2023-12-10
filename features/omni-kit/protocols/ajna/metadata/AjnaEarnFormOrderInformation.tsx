@@ -1,7 +1,7 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import { normalizeValue, protocols } from '@oasisdex/dma-library'
-import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
+import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { resolveIfCachedPosition } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaIsCachedPosition } from 'features/omni-kit/protocols/ajna/types'
@@ -121,7 +121,7 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
           ? [
               {
                 label: t('system.max-transaction-cost'),
-                value: <GasEstimation />,
+                value: <OmniGasEstimation />,
                 isLoading,
               },
             ]

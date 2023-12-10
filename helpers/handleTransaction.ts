@@ -22,10 +22,12 @@ export function handleTransaction<T extends TxMeta>({
   setTxDetails: (txDetails: TxDetails) => void
 }) {
   const gasUsed =
-    txState.status === TxStatus.Success ? new BigNumber(txState.receipt.gasUsed) : zero
+    txState.status === TxStatus.Success ? new BigNumber(txState.receipt.gasUsed.toString()) : zero
 
   const effectiveGasPrice =
-    txState.status === TxStatus.Success ? new BigNumber(txState.receipt.effectiveGasPrice) : zero
+    txState.status === TxStatus.Success
+      ? new BigNumber(txState.receipt.effectiveGasPrice.toString())
+      : zero
 
   const totalCost =
     !gasUsed.eq(zero) && !effectiveGasPrice.eq(zero)

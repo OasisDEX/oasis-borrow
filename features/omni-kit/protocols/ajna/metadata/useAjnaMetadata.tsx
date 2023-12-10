@@ -1,6 +1,5 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { getPoolLiquidity, negativeToZero, protocols } from '@oasisdex/dma-library'
-import { useGasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import { HighlightedOrderInformation } from 'components/HighlightedOrderInformation'
 import { PillAccordion } from 'components/PillAccordion'
 import faqBorrow from 'features/content/faqs/ajna/borrow/en'
@@ -74,7 +73,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     suppressValidation: ajnaSuppressValidation,
   }
 
-  const gasEstimation = useGasEstimationContext()
   const {
     environment: {
       collateralAddress,
@@ -99,6 +97,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       quotePrecision,
       quotePrice,
       quoteToken,
+      gasEstimation,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -116,7 +115,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     currentStep,
     ethBalance,
     ethPrice,
-    gasEstimationUsd: gasEstimation.usdValue,
+    gasEstimationUsd: gasEstimation?.usdValue,
     isOpening,
     position: productContext.position.currentPosition.position,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
