@@ -149,6 +149,7 @@ export const baseContracts: MainnetContractsWithOptional = {
     'GHO-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_GHODAI),
     'RETH-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_RETHDAI),
     'RETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_RETHETH),
+    'CBETH-USDBC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_CBETHUSDBC),
     'RETH-GHO': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_RETHGHO),
     'RETH-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_RETHUSDC),
     'SDAI-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_SDAIUSDC),

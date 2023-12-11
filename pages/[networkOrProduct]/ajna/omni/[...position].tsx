@@ -57,6 +57,7 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
       const supportedPools = Object.keys({
         ...getNetworkContracts(NetworkIds.MAINNET).ajnaPoolPairs,
         ...getNetworkContracts(NetworkIds.GOERLI).ajnaPoolPairs,
+        ...getNetworkContracts(NetworkIds.BASEMAINNET).ajnaPoolPairs,
       })
 
       return (
