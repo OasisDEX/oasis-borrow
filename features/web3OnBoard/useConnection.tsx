@@ -1,4 +1,5 @@
 import type { NetworkConfigHexId, NetworkIds } from 'blockchain/networks'
+import { ethers } from 'ethers'
 
 import { useWeb3OnBoardConnectorContext } from './web3-on-board-connector-provider'
 
@@ -37,6 +38,7 @@ export interface WalletManagementState {
   connecting: boolean
   chainId: NetworkIds
   wallet: Wallet | undefined
+  signer: ethers.Signer | undefined
 }
 export function useWalletManagement(): WalletManagementState {
   const { state, disconnect } = useWeb3OnBoardConnectorContext()
@@ -50,6 +52,9 @@ export function useWalletManagement(): WalletManagementState {
           chainHexId: state.connector.hexChainId,
           chainId: state.connector.chainId,
         }
+      : undefined,
+    signer: state.connector
+      ? new ethers.providers.Web3Provider(state.connector.connectorInformation.provider).getSigner()
       : undefined,
   }
 }

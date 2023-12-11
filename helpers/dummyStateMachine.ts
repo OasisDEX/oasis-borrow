@@ -3,6 +3,8 @@ import type { NetworkIds } from 'blockchain/networks'
 import type { ethers } from 'ethers'
 import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import type { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
+import { useWalletManagement } from 'features/web3OnBoard/useConnection'
+import { useEffect } from 'react'
 import { createMachine, send } from 'xstate'
 
 import { zero } from './zero'
@@ -33,6 +35,12 @@ export function setupDpmContext(machine: DPMAccountStateMachine, networkId: Netw
       networkId,
     },
   }).start()
+  const { signer } = useWalletManagement()
+  useEffect(() => {
+    if (signer) {
+      service.send({ type: 'UPDATE_SIGNER', signer })
+    }
+  }, [service, signer])
   return {
     stateMachine: service,
   }
