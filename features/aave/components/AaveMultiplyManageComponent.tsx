@@ -76,7 +76,6 @@ export function AaveMultiplyManageComponent({
           collateralTokenReserveData,
           debtTokenReserveConfigurationData,
           aaveHistory,
-          cumulatives,
         ]}
         customLoader={<AppSpinner />}
       >
@@ -88,7 +87,6 @@ export function AaveMultiplyManageComponent({
           _collateralTokenReserveData,
           _debtTokenReserveConfigurationData,
           _aaveHistory,
-          _cumulatives,
         ]) => {
           return (
             <AaveMultiplyPositionData
@@ -101,7 +99,7 @@ export function AaveMultiplyManageComponent({
               debtTokenReserveConfigurationData={_debtTokenReserveConfigurationData}
               nextPosition={nextPosition}
               aaveHistory={_aaveHistory}
-              cumulatives={_cumulatives}
+              cumulatives={cumulatives}
               isAutomationAvailable={isAutomationAvailable}
             />
           )
