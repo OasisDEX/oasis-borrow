@@ -24,6 +24,7 @@ interface GetOmniSidebarButtonsStatusParams {
   isTxStarted: boolean
   isTxWaitingForApproval: boolean
   safetySwitch: boolean
+  shouldSwitchNetwork: boolean
   walletAddress?: string
 }
 
@@ -45,10 +46,12 @@ export function getOmniSidebarButtonsStatus({
   isTxStarted,
   isTxWaitingForApproval,
   safetySwitch,
+  shouldSwitchNetwork,
   walletAddress,
 }: GetOmniSidebarButtonsStatusParams) {
   const isPrimaryButtonDisabled =
     !!walletAddress &&
+    !shouldSwitchNetwork &&
     (!isFormValid ||
       hasErrors ||
       isFormFrozen ||
@@ -60,6 +63,7 @@ export function getOmniSidebarButtonsStatus({
 
   const isPrimaryButtonLoading =
     !!walletAddress &&
+    !shouldSwitchNetwork &&
     (isAllowanceLoading ||
       isSimulationLoading ||
       isTxInProgress ||

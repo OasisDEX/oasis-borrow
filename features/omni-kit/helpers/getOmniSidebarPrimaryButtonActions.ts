@@ -15,16 +15,16 @@ interface GetOmniSidebarPrimaryButtonActionsParams {
   onDefault: () => void
   onDisconnected: () => void
   onSelectTransition: () => void
+  onSwitchNetwork: () => void
   onTransition: () => void
   onUpdated: () => void
   productType: string
   protocol: LendingProtocol
   quoteAddress: string
   quoteToken: string
-  shouldSwitchNetwork: boolean
   resolvedId?: string
+  shouldSwitchNetwork: boolean
   walletAddress?: string
-  onSwitchNetwork: () => void
 }
 
 export function getOmniSidebarPrimaryButtonActions({
@@ -42,6 +42,7 @@ export function getOmniSidebarPrimaryButtonActions({
   onDefault,
   onDisconnected,
   onSelectTransition,
+  onSwitchNetwork,
   onTransition,
   onUpdated,
   productType,
@@ -49,14 +50,13 @@ export function getOmniSidebarPrimaryButtonActions({
   quoteAddress,
   quoteToken,
   resolvedId,
-  walletAddress,
   shouldSwitchNetwork,
-  onSwitchNetwork,
+  walletAddress,
 }: GetOmniSidebarPrimaryButtonActionsParams) {
   switch (true) {
     case !walletAddress && currentStep === editingStep:
       return { action: onDisconnected }
-    case shouldSwitchNetwork:
+    case shouldSwitchNetwork && currentStep === editingStep:
       return { action: onSwitchNetwork }
     case isTxSuccess && isOpening:
       const resolvedCollateralUrl = isOracless ? collateralAddress : collateralToken
