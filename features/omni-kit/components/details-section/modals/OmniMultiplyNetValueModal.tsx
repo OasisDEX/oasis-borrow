@@ -74,7 +74,7 @@ export function OmniMultiplyNetValueModal({
     >
       <Grid
         sx={{
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: '0.7fr 1.3fr 1fr',
           alignItems: 'end',
           justifyItems: 'end',
           gap: 2,
@@ -96,7 +96,7 @@ export function OmniMultiplyNetValueModal({
       <Divider />
       <Grid
         sx={{
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: '0.7fr 1.3fr 1fr',
           alignItems: 'end',
           justifyItems: 'end',
           gap: 2,

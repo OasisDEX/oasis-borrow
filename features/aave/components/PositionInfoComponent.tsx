@@ -11,13 +11,15 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
+import type { IStrategyInfo } from 'features/aave/types'
+import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
+import type { AaveCumulativeData } from 'features/omni-kit/protocols/ajna/history/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import type { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid, Text } from 'theme-ui'
 
 import { ManageSectionModal } from './ManageSectionModal'
 
@@ -35,6 +37,8 @@ type PositionInfoComponentProps = {
   aaveReserveDataDebtToken: AaveLikeReserveData
   apy?: BigNumber
   position: IPosition
+  cumulatives?: AaveCumulativeData
+  oracleAssetPrice: IStrategyInfo['oracleAssetPrice']
 }
 
 // todo: export and pull from oasisdex/oasis-actions
@@ -59,6 +63,8 @@ export const PositionInfoComponent = ({
   aaveReserveDataDebtToken,
   apy,
   position,
+  cumulatives,
+  oracleAssetPrice,
 }: PositionInfoComponentProps) => {
   const { t } = useTranslation()
 
@@ -76,6 +82,11 @@ export const PositionInfoComponent = ({
     .minus(position.liquidationPrice)
     .times(100)
 
+  const pnlWithoutFees = cumulatives?.cumulativeWithdrawInQuoteToken
+    .plus(formattedNetValueInDebtToken)
+    .minus(cumulatives.cumulativeDepositInQuoteToken)
+    .div(cumulatives.cumulativeDepositInQuoteToken)
+
   return (
     <DetailsSection
       title={t('manage-earn-vault.overview-earn-aave')}
@@ -86,38 +97,24 @@ export const PositionInfoComponent = ({
             value={formatBigNumber(formattedNetValueInDebtToken, 2)}
             unit={position.debt.symbol}
             modal={
-              <ManageSectionModal
-                heading={t('net-value')}
-                description={
-                  <>
-                    <Grid gap={2}>
-                      <Text as="p" variant="paragraph2" sx={{ mt: 2 }}>
-                        {t('manage-earn-vault.net-value-calculation', {
-                          oraclePrice: formatBigNumber(
-                            position.oraclePriceForCollateralDebtExchangeRate || zero,
-                            4,
-                          ),
-                          collateralSymbol: position.collateral.symbol,
-                          debtSymbol: position.debt.symbol,
-                        })}
-                      </Text>
-                    </Grid>
-                    <Grid gap={2} columns={[1, 2]}>
-                      <div />
-                      <Box>{t('manage-earn-vault.eth-value')}</Box>
-                      <Box>{t('manage-earn-vault.collateral-value-in-vault')}</Box>
-                      <Box>{formattedCollateralValue}</Box>
-                      <Box>{t('manage-earn-vault.debt-value-in-vault')}</Box>
-                      <Box>{formattedDebtValue}</Box>
-                      <Box>{t('net-value')}</Box>
-                      <Box>
-                        {formatAmount(formattedNetValueInDebtToken, position.debt.symbol)}{' '}
-                        {position.debt.symbol}
-                      </Box>
-                    </Grid>
-                  </>
-                }
-              />
+              cumulatives && (
+                <OmniMultiplyNetValueModal
+                  cumulatives={{
+                    cumulativeDepositUSD: cumulatives?.cumulativeDepositInQuoteToken.times(
+                      oracleAssetPrice.deposit,
+                    ),
+                    cumulativeWithdrawUSD: cumulatives.cumulativeWithdrawInQuoteToken.times(
+                      oracleAssetPrice.deposit,
+                    ),
+                    cumulativeFeesUSD: cumulatives.cumulativeFees,
+                  }}
+                  netValue={formattedNetValueInDebtToken.times(oracleAssetPrice.deposit)}
+                  pnl={pnlWithoutFees}
+                  pnlUSD={pnlWithoutFees && cumulatives.cumulativeDeposit.times(pnlWithoutFees)}
+                  collateralPrice={oracleAssetPrice.deposit}
+                  collateralToken={position.debt.symbol}
+                />
+              )
             }
           />
           <DetailsSectionContentCard

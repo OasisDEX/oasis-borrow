@@ -147,7 +147,7 @@ export function AaveMultiplyPositionData({
               footnote={
                 pnlWithoutFees &&
                 cumulatives &&
-                `${t('omni-kit.content-card.net-value.footnote')} ${pnlWithoutFees.gte(zero) && '+'}
+                `${t('omni-kit.content-card.net-value.footnote')} ${pnlWithoutFees.gte(zero) ?? '+'}
                 ${formatDecimalAsPercent(pnlWithoutFees)}`
               }
               modal={

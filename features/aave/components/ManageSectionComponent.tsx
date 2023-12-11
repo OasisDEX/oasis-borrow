@@ -2,7 +2,7 @@ import { useActor } from '@xstate/react'
 import { useSimulationYields } from 'features/aave/hooks'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import type { IStrategyConfig } from 'features/aave/types'
-import { AppSpinner } from 'helpers/AppSpinner'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveData,
@@ -25,6 +25,7 @@ export function ManageSectionComponent({
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
   const position = state.context.currentPosition
+  const cumulatives = state.context.cumulatives
 
   const simulations = useSimulationYields({
     amount: position?.collateral.amount,
@@ -34,15 +35,23 @@ export function ManageSectionComponent({
     token: state.context.tokens.deposit,
   })
 
-  if (!position || !aaveReserveState?.liquidationThreshold) {
-    return <AppSpinner />
-  }
-
   return (
-    <PositionInfoComponent
-      aaveReserveDataDebtToken={aaveReserveDataDebtToken}
-      apy={simulations?.apy}
-      position={position}
-    />
+    <WithLoadingIndicator
+      value={[
+        position,
+        aaveReserveState?.liquidationThreshold,
+        state.context.strategyInfo?.oracleAssetPrice,
+      ]}
+    >
+      {([_position, _liquidationThreshold, oracleAssetPrice]) => (
+        <PositionInfoComponent
+          aaveReserveDataDebtToken={aaveReserveDataDebtToken}
+          apy={simulations?.apy}
+          position={_position}
+          cumulatives={cumulatives}
+          oracleAssetPrice={oracleAssetPrice}
+        />
+      )}
+    </WithLoadingIndicator>
   )
 }
