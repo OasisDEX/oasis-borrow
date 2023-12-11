@@ -1,4 +1,12 @@
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
+import {
+  ARBITRUM_DEFAULT_LIQUIDITY_PROVIDERS,
+  BASE_DEFAULT_LIQUIDITY_PROVIDERS,
+  ETHEREUM_MAINNET_DEFAULT_PROTOCOLS,
+  OPTIMISM_DEFAULT_PROCOTOLS,
+} from 'features/exchange/exchange'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
@@ -33,4 +41,20 @@ export const paybackAllAmountAllowanceMaxMultiplier: Record<LendingProtocol, Big
   morphoblue: one,
   sparkv3: one,
   ajna: one.plus(omniPaybackAllWithdrawAllValueOffset),
+}
+
+export const omniSwapProtocolsMap = {
+  [NetworkIds.MAINNET]: ETHEREUM_MAINNET_DEFAULT_PROTOCOLS,
+  [NetworkIds.BASEMAINNET]: BASE_DEFAULT_LIQUIDITY_PROVIDERS,
+  [NetworkIds.OPTIMISMMAINNET]: OPTIMISM_DEFAULT_PROCOTOLS,
+  [NetworkIds.ARBITRUMMAINNET]: ARBITRUM_DEFAULT_LIQUIDITY_PROVIDERS,
+  [NetworkIds.GOERLI]: [],
+}
+
+export const omniSwapVersionMap: Record<OmniSupportedNetworkIds, 'v4.0' | 'v5.0'> = {
+  [NetworkIds.MAINNET]: 'v4.0',
+  [NetworkIds.BASEMAINNET]: 'v5.0',
+  [NetworkIds.OPTIMISMMAINNET]: 'v5.0',
+  [NetworkIds.ARBITRUMMAINNET]: 'v5.0',
+  [NetworkIds.GOERLI]: 'v4.0', // doesn't matter
 }

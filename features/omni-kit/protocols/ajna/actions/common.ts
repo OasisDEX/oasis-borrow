@@ -2,6 +2,7 @@ import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaPosition } from '@o
 import { RiskRatio, strategies } from '@oasisdex/dma-library'
 import type { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { omniSwapVersionMap } from 'features/omni-kit/constants'
 import type {
   AjnaGenericPosition,
   AjnaSupportedNetworksIds,
@@ -42,7 +43,11 @@ export const ajnaActionClose = ({
     },
     {
       ...dependencies,
-      getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
+      getSwapData: getOneInchCall(
+        getNetworkContracts(networkId).swapAddress,
+        networkId,
+        omniSwapVersionMap[networkId],
+      ),
       operationExecutor: getNetworkContracts(networkId).operationExecutor.address,
       addresses: {
         DAI: getNetworkContracts(networkId).tokens.DAI.address,
@@ -93,7 +98,11 @@ export const ajnaActionAdjust = ({
     },
     {
       ...dependencies,
-      getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
+      getSwapData: getOneInchCall(
+        getNetworkContracts(networkId).swapAddress,
+        networkId,
+        omniSwapVersionMap[networkId],
+      ),
       operationExecutor: getNetworkContracts(networkId).operationExecutor.address,
       addresses: {
         DAI: getNetworkContracts(networkId).tokens.DAI.address,

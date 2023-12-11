@@ -305,6 +305,7 @@ export function getQuote$(
   slippage: BigNumber,
   action: ExchangeAction,
   protocols?: string,
+  url?: string,
 ) {
   const fromTokenAddress = action === 'BUY_COLLATERAL' ? quote.address : collateral.address
   const toTokenAddress = action === 'BUY_COLLATERAL' ? collateral.address : quote.address
@@ -353,7 +354,7 @@ export function getQuote$(
     } as QuoteResult)
   }
 
-  return ajax(`${PROXY_API_ENDPOINT_SWAP}?${searchParams.toString()}`).pipe(
+  return ajax(`${url || PROXY_API_ENDPOINT_SWAP}?${searchParams.toString()}`).pipe(
     tap((response) => {
       if (response.status !== 200) throw new Error(response.responseText)
     }),
