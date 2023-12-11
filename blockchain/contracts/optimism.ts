@@ -176,6 +176,7 @@ export const optimismContracts: OptimismContracts = {
     'GHO-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_GHODAI),
     'RETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHDAI),
     'RETH-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHETH),
+    'CBETH-USDBC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_CBETHUSDBC),
     'RETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHGHO),
     'RETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RETHUSDC),
     'SDAI-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_SDAIUSDC),
