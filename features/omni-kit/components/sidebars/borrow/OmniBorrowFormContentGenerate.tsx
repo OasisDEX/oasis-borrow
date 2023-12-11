@@ -10,7 +10,13 @@ import React from 'react'
 
 export function OmniBorrowFormContentGenerate() {
   const {
-    environment: { collateralBalance, collateralDigits, collateralPrice, collateralToken, shouldSwitchNetwork },
+    environment: {
+      collateralBalance,
+      collateralDigits,
+      collateralPrice,
+      collateralToken,
+      shouldSwitchNetwork,
+    },
   } = useOmniGeneralContext()
   const {
     form: {
