@@ -17,7 +17,7 @@ import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/ajna/history/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { displayMultiple } from 'helpers/display-multiple'
-import { formatAmount, formatPrecision } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPrecision } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import type {
   AaveLikeReserveConfigurationData,
@@ -144,6 +144,13 @@ export function AaveMultiplyPositionData({
               currentPositionThings={currentPositionThings}
               currentPosition={currentPosition}
               nextPositionThings={nextPositionThings}
+              footnote={
+                pnlWithoutFees &&
+                cumulatives &&
+                `${t('omni-kit.content-card.net-value.footnote')} $${formatCryptoBalance(
+                  cumulatives.cumulativeDeposit.times(pnlWithoutFees),
+                )}`
+              }
               modal={
                 cumulatives ? (
                   <OmniMultiplyNetValueModal
