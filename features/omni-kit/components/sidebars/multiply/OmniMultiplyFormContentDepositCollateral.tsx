@@ -6,7 +6,7 @@ import React from 'react'
 
 export function OmniMultiplyFormContentDepositCollateral() {
   const {
-    environment: { collateralBalance, collateralPrice, collateralToken },
+    environment: { collateralBalance, collateralPrice, collateralToken, shouldSwitchNetwork },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -19,10 +19,10 @@ export function OmniMultiplyFormContentDepositCollateral() {
     <>
       <OmniFormFieldDeposit
         dispatchAmount={dispatch}
-        maxAmount={collateralBalance}
         resetOnClear
         token={collateralToken}
         tokenPrice={collateralPrice}
+        {...(!shouldSwitchNetwork && { maxAmount: collateralBalance })}
       />
       {/* DISABLED: We're currently unable to support this operation
        * in the library based on existing operation if the LTV decreases

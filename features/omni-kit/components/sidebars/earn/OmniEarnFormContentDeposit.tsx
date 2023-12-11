@@ -5,7 +5,7 @@ import React from 'react'
 
 export function OmniEarnFormContentDeposit() {
   const {
-    environment: { quotePrice, quoteToken, quoteBalance, quoteDigits },
+    environment: { quotePrice, quoteToken, quoteBalance, quoteDigits, shouldSwitchNetwork },
   } = useOmniGeneralContext()
   const {
     form: { dispatch },
@@ -22,8 +22,8 @@ export function OmniEarnFormContentDeposit() {
         resetOnClear
         token={quoteToken}
         tokenPrice={quotePrice}
-        maxAmount={quoteBalance}
         tokenDigits={quoteDigits}
+        {...(!shouldSwitchNetwork && { maxAmount: quoteBalance })}
       />
       {extraEarnInputDeposit}
       {isFormValid && <OmniFormContentSummary>{earnFormOrder}</OmniFormContentSummary>}

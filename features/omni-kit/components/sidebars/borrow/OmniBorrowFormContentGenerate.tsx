@@ -10,7 +10,7 @@ import React from 'react'
 
 export function OmniBorrowFormContentGenerate() {
   const {
-    environment: { collateralBalance, collateralDigits, collateralPrice, collateralToken },
+    environment: { collateralBalance, collateralDigits, collateralPrice, collateralToken, shouldSwitchNetwork },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -33,10 +33,10 @@ export function OmniBorrowFormContentGenerate() {
       />
       <OmniFormFieldDeposit
         dispatchAmount={dispatch}
-        maxAmount={collateralBalance}
         token={collateralToken}
         tokenPrice={collateralPrice}
         tokenDigits={collateralDigits}
+        {...(!shouldSwitchNetwork && { maxAmount: collateralBalance })}
       />
       {highlighterOrderInformation}
       {(generateAmount || depositAmount) && (
