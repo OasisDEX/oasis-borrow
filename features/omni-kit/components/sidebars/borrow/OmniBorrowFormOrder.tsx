@@ -1,6 +1,6 @@
 import { negativeToZero, normalizeValue } from '@oasisdex/dma-library'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { OmniGasEstimation } from 'features/omni-kit/components/sidebars/OmniGasEstimation'
+import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { resolveIfCachedPosition } from 'features/omni-kit/protocols/ajna/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
