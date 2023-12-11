@@ -131,7 +131,7 @@ export function OmniMultiplyNetValueModal({
               {t('omni-kit.content-card.net-value-modal.modal-value')}
             </Text>
             <Text as="p" variant="paragraph1" sx={{ fontWeight: 'regular' }}>
-              {pnlUSD.gte(zero) ? '+' : '-'}
+              {pnlUSD.gte(zero) && '+'}
               {formatDecimalAsPercent(pnl)} / ${formatCryptoBalance(pnlUSD)}
             </Text>
           </Card>
