@@ -7,7 +7,6 @@ import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInfor
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
 import { type AaveHistoryEvent, hasTrigger } from 'features/omni-kit/protocols/ajna/history/types'
 import {
-  formatAmountWithPrecision,
   formatCryptoBalance,
   formatDecimalAsPercent,
   formatFiatBalance,
@@ -43,31 +42,25 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
 
   const automationNames = ['maxCoverage', 'slLevel']
 
-  if (event.kind?.startsWith('AutomationAdded') && hasTrigger(event)) {
+  if (
+    (event.kind?.startsWith('AutomationAdded') || event.kind?.startsWith('AutomationRemoved')) &&
+    hasTrigger(event)
+  ) {
     return (
       <DefinitionList>
-        {event.trigger &&
-          event.trigger.decodedDataNames
-            .map((name, index) => [name, event.trigger?.decodedData[index]] as const)
-            .filter(([name]) => automationNames.includes(name))
-            .map(([name, value]) => {
-              switch (name) {
-                case 'maxCoverage':
-                  return (
-                    <PositionHistoryRow label={t('position-history.max-coverage')} key={name}>
-                      {formatAmountWithPrecision(new BigNumber(value), quoteToken)} {quoteToken}
-                    </PositionHistoryRow>
-                  )
-                case 'slLevel':
-                  return (
-                    <PositionHistoryRow label={t('position-history.sl-level')} key={name}>
-                      {value && formatPercent(new BigNumber(value).div(100))}
-                    </PositionHistoryRow>
-                  )
-                default:
-                  return <></>
-              }
-            })}
+        {event.trigger?.decodedDataNames
+          ?.map((name, index) => [name, event.trigger?.decodedData[index]] as const)
+          ?.filter(([name]) => automationNames.includes(name))
+          ?.map(([name, value]) => {
+            if (name === 'slLevel') {
+              return (
+                <PositionHistoryRow label={t('position-history.sl-level')} key={name}>
+                  {value && formatPercent(new BigNumber(value).div(100))}
+                </PositionHistoryRow>
+              )
+            }
+            return <></>
+          })}
       </DefinitionList>
     )
   }
@@ -78,7 +71,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
         <PositionHistoryRow
           label={t(
             event.collateralAfter.gt(event.collateralBefore)
-              ? 'position-history.deposited'
+              ? 'position-history.collateral-deposit'
               : 'position-history.withdrawn',
           )}
         >
@@ -91,7 +84,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
         <PositionHistoryRow
           label={t(
             event.debtAfter.gt(event.debtBefore)
-              ? 'position-history.generated'
+              ? 'position-history.debt-borrowed'
               : 'position-history.repaid',
           )}
         >
@@ -165,7 +158,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
         <PositionHistoryRow
           label={t(
             event.quoteTokensAfter.gt(event.quoteTokensBefore)
-              ? 'position-history.deposited'
+              ? 'position-history.collateral-deposit'
               : 'position-history.withdrawn',
           )}
         >
@@ -187,21 +180,21 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatFiatBalance(event.netValueAfter)} USD
         </PositionHistoryRow>
       )}
-      {event.swapToAmount &&
-        event.swapToAmount.gt(zero) &&
-        event.swapFromAmount &&
-        event.swapFromAmount.gt(zero) && (
-          <PositionHistoryRow label={t('position-history.swaped')}>
-            {formatCryptoBalance(event.swapFromAmount)}{' '}
-            {getTokenSymbolBasedOnAddress(networkId, event.swapFromToken!)}
-            <VaultChangesInformationArrow />
-            {formatCryptoBalance(event.swapToAmount)}{' '}
-            {getTokenSymbolBasedOnAddress(networkId, event.swapToToken!)}
-          </PositionHistoryRow>
-        )}
+      {event.swapToAmount && event.swapFromAmount?.gt(zero) && (
+        <PositionHistoryRow label={t('position-history.swaped')}>
+          {formatCryptoBalance(event.swapFromAmount)}{' '}
+          {getTokenSymbolBasedOnAddress(networkId, event.swapFromToken!)}
+          <VaultChangesInformationArrow />
+          {formatCryptoBalance(event.swapToAmount)}{' '}
+          {getTokenSymbolBasedOnAddress(networkId, event.swapToToken!)}
+        </PositionHistoryRow>
+      )}
       {event.collateralTokenPriceUSD && (
         <PositionHistoryRow label={t('position-history.market-price')}>
-          {formatFiatBalance(event.collateralTokenPriceUSD)} USD
+          {isShort
+            ? formatCryptoBalance(event.debtTokenPriceUSD!.div(event.collateralTokenPriceUSD))
+            : formatCryptoBalance(event.collateralTokenPriceUSD.div(event.debtTokenPriceUSD!))}{' '}
+          {isShort ? `${quoteToken}/${collateralToken}` : `${collateralToken}/${quoteToken}`}
         </PositionHistoryRow>
       )}
       {!isOracless && event.totalFee && (

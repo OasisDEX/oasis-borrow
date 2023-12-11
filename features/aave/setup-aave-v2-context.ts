@@ -22,6 +22,7 @@ import {
 } from './manage/services'
 import { getOpenAaveStateMachine, getOpenAaveV2PositionStateMachineServices } from './open/services'
 import {
+  getAaveHistoryEvents,
   getAaveSupportedTokenBalances$,
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -154,6 +155,7 @@ export function setupAaveV2Context(
     tokenPriceUSD$,
     strategyInfo$,
     allowanceForAccount$,
+    getAaveHistoryEvents,
     getAaveLikeReserveData$,
   )
 
