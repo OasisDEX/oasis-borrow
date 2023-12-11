@@ -109,10 +109,10 @@ export default () => (
         title: 'How much does it cost?',
         body: (
           <Text>
-            Lending in Ajna is free. The protocol charges a 1 day of interest for deposits below the
-            active liquidity range to incentivize meaningful lending activity. This means you will
-            pay in the no yield range and the backup liquidity range but nothing at the active
-            liquidity lending range or above.
+            There are no Summer.fi fees for lending into this pool on Ajna. The protocol charges 8
+            hours of interest for each new deposit to incentivize meaningful lending activity.
+            Moving your liquidity to a lending price does not charge this rate again, but moving it
+            to a lower lending price does.
           </Text>
         ),
       },
