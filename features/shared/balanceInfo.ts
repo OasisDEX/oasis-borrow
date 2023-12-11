@@ -1,10 +1,11 @@
 import type { BigNumber } from 'bignumber.js'
+import { tokenBalance } from 'blockchain/better-calls/erc20'
 import type { NetworkIds } from 'blockchain/networks'
 import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
-import { combineLatest, of } from 'rxjs'
+import { combineLatest, from, of } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
-import { shareReplay } from 'rxjs/operators'
+import { catchError, shareReplay } from 'rxjs/operators'
 
 import type { BalanceInfo, BalanceInfoChange } from './balanceInfo.types'
 
@@ -26,6 +27,9 @@ export function createBalanceInfo$(
   )
 }
 
+/**
+ * @deprecated This is old stuff. It uses `web3.js`. We want to move to `ethers.js`. Use getTokenBalances$ instead.
+ */
 export function createBalancesArrayInfo$(
   balance$: (token: string, address: string) => Observable<BigNumber>,
   tokens: string[],
@@ -34,6 +38,24 @@ export function createBalancesArrayInfo$(
   return combineLatest(tokens.map((token) => (address ? balance$(token, address) : of(zero)))).pipe(
     map((balances) => balances),
     shareReplay(1),
+  )
+}
+
+// observable that uses ethers
+export function getTokenBalances$(
+  tokens: string[],
+  account: string,
+  networkId: NetworkIds,
+): Observable<BigNumber[]> {
+  return combineLatest(
+    tokens.map((token) => from(tokenBalance({ token, account, networkId }))),
+  ).pipe(
+    map((balances) => balances),
+    shareReplay(1),
+    catchError((error) => {
+      console.warn('Getting token balances error', error)
+      return of(tokens.map(() => zero))
+    }),
   )
 }
 
