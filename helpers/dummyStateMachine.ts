@@ -31,7 +31,7 @@ export function setupDpmContext(machine: DPMAccountStateMachine, networkId: Netw
   const service = useInterpret(machine, {
     parent: parentService,
     context: {
-      // runWithEthers: true,
+      runWithEthers: true,
       networkId,
     },
   }).start()
