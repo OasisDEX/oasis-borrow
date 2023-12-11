@@ -10,6 +10,7 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { ContentCardLiquidationPriceV2 } from 'components/vault/detailsSection/ContentCardLiquidationPriceV2'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
+import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
@@ -172,6 +173,7 @@ export function AaveBorrowPositionData({
           </DetailsSectionFooterItemWrapper>
         }
       />
+      <SparkTokensBannerController />
     </Grid>
   )
 }
