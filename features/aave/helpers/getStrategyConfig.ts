@@ -118,14 +118,14 @@ export async function getAaveV3StrategyConfig(
     throw new Error(`Can't load strategy config for position without vaultId. VaultId: ${vaultId}`)
   }
 
-  const dmpProxy = await getUserDpmProxy(vaultId, networkId)
-  if (!dmpProxy) {
-    throw new Error(`Can't load strategy config for position without dmpProxy. VaultId: ${vaultId}`)
+  const dpmProxy = await getUserDpmProxy(vaultId, networkId)
+  if (!dpmProxy) {
+    throw new Error(`Can't load strategy config for position without dpmProxy. VaultId: ${vaultId}`)
   }
-  const lastCreatedPosition = await getLastCreatedPositionForProxy(dmpProxy.proxy, networkId)
+  const lastCreatedPosition = await getLastCreatedPositionForProxy(dpmProxy.proxy, networkId)
 
   if (!lastCreatedPosition) {
-    throw new Error(`Can't load strategy config for position without dmpProxy. VaultId: ${vaultId}`)
+    throw new Error(`Can't load strategy config for position without dpmProxy. VaultId: ${vaultId}`)
   }
   const _vaultType =
     vaultType === undefined || vaultType === VaultType.Unknown

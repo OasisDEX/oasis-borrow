@@ -18,6 +18,10 @@ import type {
 } from 'features/aave/types'
 import { contextToEthersTransactions } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
+import type {
+  AaveCumulativeData,
+  AaveHistoryEvent,
+} from 'features/omni-kit/protocols/ajna/history/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { allDefined } from 'helpers/allDefined'
@@ -27,6 +31,7 @@ import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
+import type { EventObject } from 'xstate'
 import { interpret } from 'xstate'
 
 export function getManageAaveV2PositionStateMachineServices(
@@ -42,6 +47,13 @@ export function getManageAaveV2PositionStateMachineServices(
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
+  getHistoryEvents: (
+    proxyAccount: string,
+    networkId: NetworkIds,
+  ) => Promise<{
+    events: AaveHistoryEvent[]
+    positionCumulatives?: AaveCumulativeData
+  }>,
   aaveReserveData$: (args: { token: string }) => Observable<AaveLikeReserveData>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
@@ -185,10 +197,29 @@ export function getManageAaveV2PositionStateMachineServices(
         distinctUntilChanged(isEqual),
       )
     },
-    historyCallback: () => () => {},
     savePositionToDb$: () => {
       // TODO: replace with actual implementation.
       return of({ type: 'SWITCH_SUCCESS' })
+    },
+    historyCallback: (context) => (callback, _onReceive) => {
+      const isProxyReceiveEvent = (
+        event: EventObject,
+      ): event is { type: 'PROXY_RECEIVED'; proxyAddress: string } => {
+        return event.type === 'PROXY_RECEIVED'
+      }
+      _onReceive(async (event) => {
+        if (isProxyReceiveEvent(event)) {
+          const historyData = await getHistoryEvents(
+            event.proxyAddress,
+            context.strategyConfig.networkId,
+          )
+          callback({
+            type: 'HISTORY_UPDATED',
+            historyEvents: historyData.events,
+            cumulatives: historyData.positionCumulatives,
+          })
+        }
+      })
     },
     reserveData$: xstateReserveDataService(aaveReserveData$),
   }
