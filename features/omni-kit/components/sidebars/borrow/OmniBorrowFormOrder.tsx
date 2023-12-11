@@ -1,6 +1,6 @@
 import { negativeToZero, normalizeValue } from '@oasisdex/dma-library'
-import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
+import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { resolveIfCachedPosition } from 'features/omni-kit/protocols/ajna/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -139,7 +139,7 @@ export function OmniBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           ? [
               {
                 label: t('system.max-transaction-cost'),
-                value: <GasEstimation />,
+                value: <OmniGasEstimation />,
                 isLoading,
               },
             ]

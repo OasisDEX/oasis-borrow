@@ -20,7 +20,7 @@ export interface DpmExecuteParameters {
   value: BigNumber
 }
 
-async function validateParameters({
+export async function validateParameters({
   signer,
   networkId,
   proxyAddress,

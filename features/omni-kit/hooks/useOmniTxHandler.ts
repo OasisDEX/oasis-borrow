@@ -1,21 +1,18 @@
 import type { AjnaStrategy } from '@oasisdex/dma-library'
+import type { TxMeta, TxState } from '@oasisdex/transactions'
 import { TxStatus } from '@oasisdex/transactions'
-import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
+import type { TxMetaKind } from 'blockchain/calls/txMeta'
 import type { CancelablePromise } from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context/MainContextProvider'
-import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { estimateOmniGas$, sendOmniTransaction$ } from 'features/omni-kit/observables'
 import type { OmniGenericPosition } from 'features/omni-kit/types'
 import { OmniSidebarStep } from 'features/omni-kit/types'
-import { TX_DATA_CHANGE } from 'helpers/gasEstimate.constants'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
-import { uiChanges } from 'helpers/uiChanges'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
-import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 export interface OmniTxData {
   data: string
@@ -37,12 +34,13 @@ export function useOmniTxHandler<CustomState>({
   customState: CustomState
   onSuccess?: () => void // for resetting custom state
 }): () => void {
-  const { txHelpers$ } = useMainContext()
-  const [txHelpers] = useObservable(txHelpers$)
+  const { connectedContext$ } = useMainContext()
+  const [context] = useObservable(connectedContext$)
+  const signer = context?.transactionProvider
 
   const {
-    tx: { setTxDetails },
-    environment: { ethPrice, productType, slippage },
+    tx: { setTxDetails, setGasEstimation },
+    environment: { ethPrice, productType, slippage, networkId, gasPrice },
     steps: { isExternalStep, currentStep },
   } = useOmniGeneralContext()
   const {
@@ -64,7 +62,7 @@ export function useOmniTxHandler<CustomState>({
   const [cancelablePromise, setCancelablePromise] =
     useState<CancelablePromise<AjnaStrategy<typeof position> | undefined>>()
 
-  const { dpmAddress } = state
+  const { dpmAddress: proxyAddress } = state
 
   useEffect(() => {
     cancelablePromise?.cancel()
@@ -72,10 +70,11 @@ export function useOmniTxHandler<CustomState>({
     if (isFormEmpty) {
       setSimulation(undefined)
       setIsLoadingSimulation(false)
+      setGasEstimation(undefined)
     } else {
       setIsLoadingSimulation(true)
     }
-  }, [state, isFormEmpty, slippage])
+  }, [state, isFormEmpty, slippage, customState])
 
   useDebouncedEffect(
     () => {
@@ -85,19 +84,18 @@ export function useOmniTxHandler<CustomState>({
 
         promise
           .then((data) => {
-            if (data) {
+            if (data && signer) {
               setTxData(data.tx)
               setSimulation(data.simulation)
               setIsLoadingSimulation(false)
-              uiChanges.publish(TX_DATA_CHANGE, {
-                type: 'tx-data',
-                transaction: callOasisActionsWithDpmProxy,
-                data: {
-                  kind: TxMetaKind.libraryCall,
-                  proxyAddress: dpmAddress,
-                  ...data?.tx,
-                },
-              })
+              estimateOmniGas$({
+                signer,
+                networkId,
+                txData: data.tx,
+                proxyAddress,
+                gasPrice,
+                ethPrice,
+              }).subscribe((value) => setGasEstimation(value))
             }
           })
           .catch((error) => {
@@ -106,35 +104,31 @@ export function useOmniTxHandler<CustomState>({
           })
       }
     },
-    [state, isExternalStep, slippage, customState],
+    [state, isExternalStep, slippage, customState, signer],
     250,
   )
 
-  if (!txHelpers || !txData || !dpmAddress) {
-    return () => console.warn('no txHelpers or txData or proxyAddress')
+  if (!txData || !proxyAddress || !signer?.provider) {
+    return () => console.warn('no txData or proxyAddress or signer provider')
   }
 
   return () =>
-    txHelpers
-      .send(callOasisActionsWithDpmProxy, {
-        kind: TxMetaKind.libraryCall,
-        proxyAddress: dpmAddress,
-        ...txData,
-      })
-      .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
-      .subscribe((txState) => {
-        if (txState.status === TxStatus.WaitingForConfirmation) {
-          setCachedPosition({
-            position,
-            simulation,
-          })
-          swap?.current && setCachedSwap(swap.current)
-        }
+    sendOmniTransaction$({ signer, networkId, txData, proxyAddress }).subscribe((txState) => {
+      if (txState.status === TxStatus.WaitingForConfirmation) {
+        setCachedPosition({
+          position,
+          simulation,
+        })
+        swap?.current && setCachedSwap(swap.current)
+      }
 
-        if (txState.status === TxStatus.Success) {
-          dispatch({ type: 'reset' })
-          onSuccess && onSuccess()
-        }
-        handleTransaction({ txState, ethPrice, setTxDetails })
-      })
+      if (txState.status === TxStatus.Success) {
+        dispatch({ type: 'reset' })
+        onSuccess && onSuccess()
+      }
+
+      const castedTxState = txState as TxState<TxMeta>
+
+      handleTransaction({ txState: castedTxState, ethPrice, setTxDetails })
+    })
 }

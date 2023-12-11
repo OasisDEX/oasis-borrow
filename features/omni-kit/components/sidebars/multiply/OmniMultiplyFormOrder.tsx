@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
-import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SecondaryVariantType } from 'components/infoSection/Item'
+import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
   resolveIfCachedPosition,
@@ -265,7 +265,7 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
                         <Box sx={{ mx: '4px' }}>+</Box>
                       </>
                     )}
-                    <GasEstimation />
+                    <OmniGasEstimation />
                   </>
                 ),
                 dropdownValues: !oasisFee.isZero()
@@ -276,7 +276,7 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
                       },
                       {
                         label: t('max-gas-fee'),
-                        value: <GasEstimation />,
+                        value: <OmniGasEstimation />,
                       },
                     ]
                   : undefined,

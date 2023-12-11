@@ -2,6 +2,7 @@ import type { TxStatus } from '@oasisdex/transactions'
 import type BigNumber from 'bignumber.js'
 import type { NetworkConfig } from 'blockchain/networks'
 import type { GasPriceParams } from 'blockchain/prices.types'
+import type { GasEstimationContext } from 'components/context/GasEstimationContextProvider'
 import {
   getOmniEditingStep,
   getOmniTxStatuses,
@@ -59,6 +60,7 @@ type OmniGeneralContextEnvironment = Omit<OmniGeneralContextProviderProps, 'step
   shouldSwitchNetwork: boolean
   isShort: boolean
   priceFormat: string
+  gasEstimation: GasEstimationContext | undefined
 }
 
 interface OmniGeneralContextSteps {
@@ -82,6 +84,7 @@ interface OmniGeneralContextTx {
   isTxSuccess: boolean
   isTxWaitingForApproval: boolean
   setTxDetails: Dispatch<SetStateAction<TxDetails | undefined>>
+  setGasEstimation: Dispatch<SetStateAction<GasEstimationContext | undefined>>
   txDetails?: TxDetails
 }
 
@@ -121,6 +124,7 @@ export function OmniGeneralContextProvider({
   const [currentStep, setCurrentStep] = useState<OmniSidebarStep>(steps[0])
   const [isFlowStateReady, setIsFlowStateReady] = useState<boolean>(false)
   const [txDetails, setTxDetails] = useState<TxDetails>()
+  const [gasEstimation, setGasEstimation] = useState<GasEstimationContext>()
   const isShort = isShortPosition({ collateralToken })
 
   const shiftStep = (direction: 'next' | 'prev') => {
@@ -149,6 +153,7 @@ export function OmniGeneralContextProvider({
     return {
       ...getOmniTxStatuses(txDetails?.txStatus),
       setTxDetails,
+      setGasEstimation,
       txDetails,
     }
   }
@@ -164,6 +169,7 @@ export function OmniGeneralContextProvider({
     return {
       environment: {
         ...props,
+        gasEstimation,
         network,
         networkId,
         isShort,
@@ -189,6 +195,7 @@ export function OmniGeneralContextProvider({
     walletAddress,
     slippage,
     walletNetwork,
+    gasEstimation,
   ])
 
   return <omniGeneralContext.Provider value={context}>{children}</omniGeneralContext.Provider>

@@ -1,6 +1,5 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getNetworkByName, NetworkIds } from 'blockchain/networks'
-import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { isAddress } from 'ethers/lib/utils'
 import { ajnaSeoTags } from 'features/ajna/common/consts'
@@ -33,22 +32,16 @@ function AjnaPositionPage(props: AjnaPositionPageProps) {
   return (
     <AjnaLayout>
       <ProductContextHandler>
-        <GasEstimationContextProvider>
-          <OmniProductController<
-            AjnaPositionAuction,
-            AjnaUnifiedHistoryEvent[],
-            AjnaGenericPosition
-          >
-            {...props}
-            customState={AjnaCustomStateProvider}
-            isOracless={isOracless}
-            protocol={LendingProtocol.Ajna}
-            protocolHook={useAjnaData}
-            protocolRaw={AJNA_RAW_PROTOCOL_NAME}
-            seoTags={ajnaSeoTags}
-            steps={ajnaOmniSteps}
-          />
-        </GasEstimationContextProvider>
+        <OmniProductController<AjnaPositionAuction, AjnaUnifiedHistoryEvent[], AjnaGenericPosition>
+          {...props}
+          customState={AjnaCustomStateProvider}
+          isOracless={isOracless}
+          protocol={LendingProtocol.Ajna}
+          protocolHook={useAjnaData}
+          protocolRaw={AJNA_RAW_PROTOCOL_NAME}
+          seoTags={ajnaSeoTags}
+          steps={ajnaOmniSteps}
+        />
       </ProductContextHandler>
     </AjnaLayout>
   )

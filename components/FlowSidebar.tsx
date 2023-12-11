@@ -123,7 +123,7 @@ export function FlowSidebar({
     switch (true) {
       case dpmState.matches('idle'):
       case dpmState.matches('txFailure'):
-      case dpmState.matches('txInProgress'):
+      case dpmState.matches('txInProgressEthers'):
       case dpmState.matches('txSuccess'):
         return (
           <CreateDPMAccountViewConsumed
@@ -140,7 +140,7 @@ export function FlowSidebar({
     switch (true) {
       case allowanceState.matches('idle'):
       case allowanceState.matches('txFailure'):
-      case allowanceState.matches('txInProgress'):
+      case allowanceState.matches('txInProgressEthers'):
       case allowanceState.matches('txSuccess'):
         return (
           <AllowanceView
