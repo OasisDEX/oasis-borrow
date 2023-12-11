@@ -2,6 +2,7 @@ import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaStrategy } from '@o
 import { Network } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
 import type { ethers } from 'ethers'
 import {
   ajnaActionDepositGenerateBorrow,
@@ -54,6 +55,12 @@ interface AjnaTxHandlerInput {
   walletAddress?: string
 }
 
+const networkMap = {
+  [NetworkIds.MAINNET]: Network.MAINNET,
+  [NetworkIds.GOERLI]: Network.GOERLI,
+  [NetworkIds.BASEMAINNET]: Network.BASE,
+}
+
 export async function getAjnaParameters({
   networkId,
   collateralAddress,
@@ -87,7 +94,7 @@ export async function getAjnaParameters({
     WETH: addressesConfig.tokens.ETH.address,
     getPoolData: getAjnaPoolData(networkId),
     getCumulatives: getAjnaCumulatives(networkId),
-    network: Network.MAINNET,
+    network: networkMap[networkId],
   }
 
   const commonPayload: AjnaCommonPayload = {
@@ -171,6 +178,7 @@ export async function getAjnaParameters({
         slippage,
         collateralToken,
         quoteToken,
+        networkId,
       })
     }
     case OmniMultiplyFormAction.GenerateMultiply:
@@ -186,6 +194,7 @@ export async function getAjnaParameters({
           slippage,
           collateralToken,
           quoteToken,
+          networkId,
         })
       }
 
@@ -217,6 +226,7 @@ export async function getAjnaParameters({
           slippage,
           collateralToken,
           quoteToken,
+          networkId,
         })
       }
 
@@ -243,6 +253,7 @@ export async function getAjnaParameters({
         collateralToken,
         quoteToken,
         slippage,
+        networkId,
       })
     }
     default:

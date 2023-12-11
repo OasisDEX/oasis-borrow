@@ -5,6 +5,7 @@ import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getPositionCreatedEventForProxyAddress } from 'features/aave/services'
+import { useObservable } from 'helpers/observableHook'
 import { useEffect, useState } from 'react'
 import { combineLatest } from 'rxjs'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
@@ -59,11 +60,18 @@ export function useFlowState({
   )
   const [isAllowanceReady, setAllowanceReady] = useState<boolean>(false)
   const [isLoading, setLoading] = useState<boolean>(false)
-  const { dpmAccountStateMachine, allowanceStateMachine, allowanceForAccount$ } =
+  const { dpmAccountStateMachine, allowanceStateMachine, allowanceForAccountEthers$ } =
     useProductContext()
-  const { context$ } = useMainContext()
-  const { stateMachine: dpmMachine } = setupDpmContext(dpmAccountStateMachine)
-  const { stateMachine: allowanceMachine } = setupAllowanceContext(allowanceStateMachine)
+  const { context$, connectedContext$ } = useMainContext()
+  const { stateMachine: dpmMachine } = setupDpmContext(dpmAccountStateMachine, networkId)
+  const [contextConnected] = useObservable(connectedContext$)
+  const signer = contextConnected?.transactionProvider
+  const { stateMachine: allowanceMachine } = setupAllowanceContext(
+    allowanceStateMachine,
+    networkId,
+    signer,
+    token,
+  )
 
   const isProxyReady = !!availableProxies.length
   const callbackParams = {
@@ -175,7 +183,7 @@ export function useFlowState({
       setAllowanceReady(true)
       return
     }
-    const allowanceSubscription = allowanceForAccount$(token!, spender).subscribe(
+    const allowanceSubscription = allowanceForAccountEthers$(token!, spender, networkId).subscribe(
       (allowanceData) => {
         if (allowanceData && allowanceMachineSubscription) {
           setLoading(false)

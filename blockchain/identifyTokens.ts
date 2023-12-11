@@ -1,7 +1,9 @@
+import { ADDRESS_ZERO } from '@oasisdex/addresses'
 import type { Tokens } from '@prisma/client'
 import { extendTokensContracts, getNetworkContracts } from 'blockchain/contracts'
 import type { NetworkIds } from 'blockchain/networks'
 import { getToken, getTokenGuarded } from 'blockchain/tokensMetadata'
+import type { SimplifiedTokenConfig } from 'blockchain/tokensMetadata.types'
 import { uniq } from 'lodash'
 import type { Observable } from 'rxjs'
 import { from, of } from 'rxjs'
@@ -63,7 +65,6 @@ export const identifyTokens$ = (
     if (tokensAddresses.length === localTokensAddresses.length)
       return of(identifiedTokens.reduce<IdentifiedTokens>(reduceIdentifiedTokens, {}))
   }
-
   return from(
     fetch(`/api/tokens-info`, {
       method: 'POST',
@@ -79,7 +80,16 @@ export const identifyTokens$ = (
     }).then((resp) => resp.json()),
   ).pipe(
     map((tokens) => {
-      void extendTokensContracts(tokens)
+      const resolvedTokens = tokens.filter(
+        (token: SimplifiedTokenConfig) =>
+          !(
+            'tokens' in contracts &&
+            Object.keys(contracts.tokens).includes(token.symbol) &&
+            contracts.tokens[token.symbol].address !== ADDRESS_ZERO
+          ),
+      )
+
+      void extendTokensContracts(resolvedTokens)
 
       return [...tokens, ...identifiedTokens].reduce<IdentifiedTokens>(reduceIdentifiedTokens, {})
     }),

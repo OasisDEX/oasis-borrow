@@ -7,6 +7,7 @@ import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getStaticDpmPositionData$ } from 'features/omni-kit/observables'
 import type { OmniProductType, OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import { getTokenBalances$ } from 'features/shared/balanceInfo'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
@@ -38,8 +39,7 @@ export function useOmniProtocolData({
   const { walletAddress } = useAccount()
   const { gasPrice$ } = useMainContext()
   const { userSettings$ } = useAccountContext()
-  const { balancesFromAddressInfoArray$, balancesInfoArray$, dpmPositionDataV2$, tokenPriceUSD$ } =
-    useProductContext()
+  const { balancesFromAddressInfoArray$, dpmPositionDataV2$, tokenPriceUSD$ } = useProductContext()
 
   const [userSettingsData, userSettingsError] = useObservable(userSettings$)
   const [gasPriceData, gasPriceError] = useObservable(gasPrice$)
@@ -105,7 +105,7 @@ export function useOmniProtocolData({
     useMemo(
       () =>
         dpmPositionData
-          ? balancesInfoArray$(['ETH'], walletAddress || dpmPositionData.user)
+          ? getTokenBalances$(['ETH'], walletAddress || dpmPositionData.user, networkId)
           : EMPTY,
       [dpmPositionData, walletAddress],
     ),
@@ -115,9 +115,10 @@ export function useOmniProtocolData({
     useMemo(
       () =>
         !isOracless && dpmPositionData
-          ? balancesInfoArray$(
+          ? getTokenBalances$(
               [dpmPositionData.collateralToken, dpmPositionData.quoteToken],
               walletAddress || dpmPositionData.user,
+              networkId,
             )
           : isOracless && dpmPositionData && identifiedTokensData && collateralToken && quoteToken
           ? balancesFromAddressInfoArray$(
