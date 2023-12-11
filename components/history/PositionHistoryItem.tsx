@@ -18,7 +18,10 @@ import { Box, Flex, Text } from 'theme-ui'
 
 interface PositionHistoryItemProps {
   collateralToken: string
-  etherscanUrl: string
+  etherscanConfig: {
+    url: string
+    name?: string
+  }
   ethtxUrl: string
   isOracless?: boolean
   isShort?: boolean
@@ -30,7 +33,7 @@ interface PositionHistoryItemProps {
 
 export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
   collateralToken,
-  etherscanUrl,
+  etherscanConfig,
   ethtxUrl,
   isOracless,
   isShort,
@@ -67,7 +70,12 @@ export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
         onClick={() => setOpened(!opened)}
       >
         <Text as="p" sx={{ fontWeight: 'semiBold', color: 'primary100' }}>
-          {getHistoryEventLabel({ kind: item.kind, isOpen: 'isOpen' in item && item.isOpen })}
+          {getHistoryEventLabel({
+            kind: item.kind,
+            collateralToken,
+            quoteToken,
+            isOpen: 'isOpen' in item && item.isOpen,
+          })}
         </Text>
         <Text as="time" sx={{ color: 'neutral80', whiteSpace: 'nowrap', fontWeight: 'semiBold' }}>
           {humanDate}
@@ -100,24 +108,33 @@ export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
               pl: 3,
             }}
           >
-            <AppLink sx={{ textDecoration: 'none' }} href={`${etherscanUrl}/tx/${item.txHash}`}>
-              <WithArrow
-                sx={{
-                  color: 'interactive100',
-                  mr: 4,
-                  mb: [1, null, null, 0],
-                  fontSize: 1,
-                  fontWeight: 'semiBold',
-                }}
+            {etherscanConfig.url && (
+              <AppLink
+                sx={{ textDecoration: 'none' }}
+                href={`${etherscanConfig.url}/tx/${item.txHash}`}
               >
-                {t('view-on-etherscan')}
-              </WithArrow>
-            </AppLink>
-            <AppLink sx={{ textDecoration: 'none' }} href={`${ethtxUrl}/${item.txHash}`}>
-              <WithArrow sx={{ color: 'interactive100', fontSize: 1, fontWeight: 'semiBold' }}>
-                {t('view-on-ethtx')}
-              </WithArrow>
-            </AppLink>
+                <WithArrow
+                  sx={{
+                    color: 'interactive100',
+                    mr: 4,
+                    mb: [1, null, null, 0],
+                    fontSize: 1,
+                    fontWeight: 'semiBold',
+                  }}
+                >
+                  {etherscanConfig.name
+                    ? t('view-on-etherscan-custom', { etherscanName: etherscanConfig.name })
+                    : t('view-on-etherscan')}
+                </WithArrow>
+              </AppLink>
+            )}
+            {ethtxUrl && (
+              <AppLink sx={{ textDecoration: 'none' }} href={`${ethtxUrl}/${item.txHash}`}>
+                <WithArrow sx={{ color: 'interactive100', fontSize: 1, fontWeight: 'semiBold' }}>
+                  {t('view-on-ethtx')}
+                </WithArrow>
+              </AppLink>
+            )}
           </Flex>
         </Box>
       )}

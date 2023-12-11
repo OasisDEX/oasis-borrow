@@ -16,7 +16,6 @@ import { EthersTransactionStateMachine, TransactionStateMachine } from 'features
 import { zero } from 'helpers/zero'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
-import { AaveCumulativesResponse } from 'features/positionHistory/types'
 import { AaveCumulativeData } from 'features/omni-kit/protocols/ajna/history/types'
 
 export type UserInput = {

@@ -8,8 +8,9 @@ import { isAaveHistorySupported } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
-import type { IStrategyConfig } from 'features/aave/types/strategy-config'
+import { type IStrategyConfig, ProxyType } from 'features/aave/types/strategy-config'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
+import { isShortPosition } from 'features/omni-kit/helpers'
 import { useAppConfig } from 'helpers/config'
 import type {
   AaveLikeReserveConfigurationData,
@@ -63,7 +64,11 @@ export function AaveManageTabBar({
       : undefined
 
   const historyIsSupported =
-    aaveHistory && isAaveHistorySupported(state.context.strategyConfig.networkId)
+    aaveHistory &&
+    isAaveHistorySupported(
+      state.context.strategyConfig.networkId,
+      state.context.strategyConfig.proxyType,
+    )
 
   return (
     <TabBar
@@ -126,6 +131,7 @@ export function AaveManageTabBar({
                     historyEvents={state.context.historyEvents}
                     quoteToken={debtToken}
                     networkId={strategyConfig.networkId}
+                    isShort={isShortPosition({ collateralToken })}
                   />
                 ),
               },
@@ -134,7 +140,18 @@ export function AaveManageTabBar({
               {
                 value: 'history',
                 label: t('system.history'),
-                content: <DisabledHistoryControl protocol={strategyConfig.protocol} />,
+                content: (
+                  <DisabledHistoryControl
+                    protocol={strategyConfig.protocol}
+                    networkName={strategyConfig.network}
+                    proxyVersion={
+                      {
+                        [ProxyType.DpmProxy]: 'DPM Proxy',
+                        [ProxyType.DsProxy]: 'DS Proxy',
+                      }[state.context.strategyConfig.proxyType]
+                    }
+                  />
+                ),
               },
             ]),
       ]}
