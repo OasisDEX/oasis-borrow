@@ -3142,7 +3142,8 @@
       "pools-interest-rate": "Initial pool interest rate",
       "min-interest-rate": "Min. {{minInterestRate}}%",
       "max-interest-rate": "Up to {{maxInterestRate}}%",
-      "submit": "Create pool"
+      "submit": "Create pool",
+      "success": "New Ajna pool created"
     },
     "order-information": {
       "pool": "Pool",
