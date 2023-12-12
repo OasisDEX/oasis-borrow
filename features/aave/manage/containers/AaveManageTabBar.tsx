@@ -70,6 +70,8 @@ export function AaveManageTabBar({
       state.context.strategyConfig.proxyType,
     )
 
+  console.log('state.context', state.context)
+
   return (
     <TabBar
       variant="underline"
@@ -84,9 +86,11 @@ export function AaveManageTabBar({
                 aaveReserveDataDebtToken={aaveReserveDataDebtToken}
                 strategyConfig={strategyConfig}
                 currentPosition={state.context.currentPosition!}
-                collateralPrice={state.context.collateralPrice}
+                collateralPrice={
+                  state.context.collateralPrice || state.context.balance?.collateral.price
+                }
                 tokenPrice={state.context.tokenPrice}
-                debtPrice={state.context.debtPrice}
+                debtPrice={state.context.debtPrice || state.context.balance?.debt.price}
                 nextPosition={nextPosition}
                 cumulatives={state.context.cumulatives}
                 dpmProxy={state.context.effectiveProxyAddress}

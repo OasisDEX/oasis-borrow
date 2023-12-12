@@ -315,7 +315,6 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
         headerView: AaveManageHeader,
         simulateSection: AaveBorrowManageComponent,
         vaultDetailsManage: AaveBorrowManageComponent,
-        vaultDetailsView: AaveBorrowManageComponent,
         secondaryInput: DebtInput,
         adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
         positionInfo: AaveBorrowFaq,

@@ -53,7 +53,6 @@ export function setupAaveV2Context(
     proxiesRelatedWithPosition$,
     unconsumedDpmProxyForConnectedAccount$,
     disconnectedGraphQLClient$,
-    chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
   } = getCommonPartsFromProductContext(
     mainContext,
@@ -194,7 +193,6 @@ export function setupAaveV2Context(
     aaveEarnYieldsQuery,
     strategyConfig$,
     proxiesRelatedWithPosition$,
-    chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
     earnCollateralsReserveData,
     dpmAccountStateMachine,

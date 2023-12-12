@@ -97,12 +97,6 @@ export function getCommonPartsFromProductContext(
     }),
   )
 
-  const chainlinkUsdcUsdOraclePrice = getChainlinkOraclePrice('USDCUSD', networkId)
-  const chainlinkUSDCUSDOraclePrice$ = makeOneObservable(
-    refresh$,
-    () => chainlinkUsdcUsdOraclePrice,
-  )
-
   const chainlinkEthUsdOraclePrice = getChainlinkOraclePrice('ETHUSD', networkId)
   const chainLinkETHUSDOraclePrice$ = makeOneObservable(refresh$, () => chainlinkEthUsdOraclePrice)
 
@@ -120,7 +114,6 @@ export function getCommonPartsFromProductContext(
     unconsumedDpmProxyForConnectedAccount$: unconsumedDpmForStrategyNetwork,
     contextForAddress$,
     disconnectedGraphQLClient$,
-    chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
   }
 }

@@ -11,7 +11,7 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
-import type { IStrategyInfo } from 'features/aave/types'
+import { calculateViewValuesForPosition } from 'features/aave/services'
 import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/ajna/history/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -37,8 +37,11 @@ type PositionInfoComponentProps = {
   aaveReserveDataDebtToken: AaveLikeReserveData
   apy?: BigNumber
   position: IPosition
+  collateralTokenPrice: BigNumber
+  debtTokenPrice: BigNumber
+  collateralTokenReserveData: AaveLikeReserveData
+  debtTokenReserveData: AaveLikeReserveData
   cumulatives?: AaveCumulativeData
-  oracleAssetPrice: IStrategyInfo['oracleAssetPrice']
 }
 
 // todo: export and pull from oasisdex/oasis-actions
@@ -64,9 +67,26 @@ export const PositionInfoComponent = ({
   apy,
   position,
   cumulatives,
-  oracleAssetPrice,
+  collateralTokenPrice,
+  debtTokenPrice,
+  collateralTokenReserveData,
+  debtTokenReserveData,
 }: PositionInfoComponentProps) => {
   const { t } = useTranslation()
+  console.log('currentPositionThings', {
+    collateralTokenPrice,
+    debtTokenPrice,
+    collateralTokenReserveData,
+    debtTokenReserveData,
+  })
+  const currentPositionThings = calculateViewValuesForPosition(
+    position,
+    collateralTokenPrice,
+    debtTokenPrice,
+    collateralTokenReserveData.liquidityRate,
+    debtTokenReserveData.variableBorrowRate,
+  )
+  console.log('currentPositionThings', currentPositionThings)
 
   // Todo: move to lib
   const netValueInDebtToken = position.collateral.normalisedAmount
@@ -100,18 +120,14 @@ export const PositionInfoComponent = ({
               cumulatives && (
                 <OmniMultiplyNetValueModal
                   cumulatives={{
-                    cumulativeDepositUSD: cumulatives?.cumulativeDepositInQuoteToken.times(
-                      oracleAssetPrice.deposit,
-                    ),
-                    cumulativeWithdrawUSD: cumulatives.cumulativeWithdrawInQuoteToken.times(
-                      oracleAssetPrice.deposit,
-                    ),
+                    cumulativeDepositUSD: cumulatives?.cumulativeDepositInQuoteToken,
+                    cumulativeWithdrawUSD: cumulatives.cumulativeWithdrawInQuoteToken,
                     cumulativeFeesUSD: cumulatives.cumulativeFees,
                   }}
-                  netValue={formattedNetValueInDebtToken.times(oracleAssetPrice.deposit)}
+                  netValue={formattedNetValueInDebtToken}
                   pnl={pnlWithoutFees}
                   pnlUSD={pnlWithoutFees && cumulatives.cumulativeDeposit.times(pnlWithoutFees)}
-                  collateralPrice={oracleAssetPrice.deposit}
+                  collateralPrice={cumulatives.cumulativeDeposit}
                   collateralToken={position.debt.symbol}
                 />
               )

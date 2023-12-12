@@ -69,7 +69,6 @@ export interface IStrategyConfig {
     headerView: ManageAaveHeader
     simulateSection: SimulateSection
     vaultDetailsManage: VaultDetails
-    vaultDetailsView: VaultDetails
     secondaryInput: SecondaryInput
     adjustRiskInput: SecondaryInput
     positionInfo: PositionInfo
