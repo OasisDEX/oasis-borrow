@@ -2821,7 +2821,7 @@
         "form": {
           "title": {
             "risk": "Things to know before opening an Ajna position",
-            "risk-oracless": "This pool is offered with Ajna Lite UI, things to know:",
+            "risk-oracless": "This pool is offered with Ajna Permissionless UI, things to know:",
             "setup": "Configure your Ajna {{productType}} Position",
             "manage": "Manage your Ajna {{productType}} Position",
             "transaction": "Confirm your Ajna {{productType}} Position",
@@ -2850,7 +2850,7 @@
               ],
               "oracless": [
                 "<5>Always do your own research and make sure you have selected the correct token contract address<5/>",
-                "This asset pair is supported with Ajna Lite UI, no price feed information will be available",
+                "This asset pair is supported with Ajna Permissionless UI, no price feed information will be available",
                 "Monitor your position closely and ensure you understand the risks before proceeding"
               ]
             }
@@ -3105,7 +3105,7 @@
     "banners": {
       "pool-finder": {
         "title": "Looking for a custom pool?",
-        "description": "Find any pool on Ajna and open a position using Ajna lite.",
+        "description": "Find any pool on Ajna and open a position using Ajna Permissionless.",
         "cta": "Search custom pools"
       }
     }
