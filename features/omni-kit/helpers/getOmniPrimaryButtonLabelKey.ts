@@ -4,7 +4,6 @@ interface GetPrimaryButtonLabelKeyParams {
   currentStep: OmniSidebarStep
   hasAllowance: boolean
   hasDpmAddress: boolean
-  isFormEmpty: boolean
   isOpening: boolean
   isTransitionInProgress: boolean
   isTxError: boolean
@@ -17,7 +16,6 @@ export function getOmniPrimaryButtonLabelKey({
   currentStep,
   hasAllowance,
   hasDpmAddress,
-  isFormEmpty,
   isOpening,
   isTransitionInProgress,
   isTxError,
@@ -37,8 +35,8 @@ export function getOmniPrimaryButtonLabelKey({
       if (isTransitionInProgress) return 'borrow-to-multiply.button-progress'
       else return 'confirm'
     default:
-      if (shouldSwitchNetwork) return 'switch-network'
-      else if (isFormEmpty || (walletAddress && hasDpmAddress && hasAllowance)) return 'confirm'
+      if (walletAddress && shouldSwitchNetwork) return 'switch-network'
+      else if (walletAddress && hasDpmAddress && hasAllowance) return 'confirm'
       else if (walletAddress && hasDpmAddress) return 'set-token-allowance'
       else if (walletAddress) return 'dpm.create-flow.welcome-screen.create-button'
       else return 'connect-wallet-button'

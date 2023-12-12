@@ -2,6 +2,7 @@ import { setUser } from '@sentry/react'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { trackingEvents } from 'analytics/trackingEvents'
 import { BigNumber } from 'bignumber.js'
+import { tokenAllowance as tokenAllowanceEthers } from 'blockchain/better-calls/erc20'
 import { call } from 'blockchain/calls/callsHelpers'
 import { dogIlk } from 'blockchain/calls/dog'
 import { tokenAllowance } from 'blockchain/calls/erc20'
@@ -608,6 +609,21 @@ export function setupProductContext(
     (token, spender) => `${token}-${spender}`,
   )
 
+  // temporary to not block ajna, it should be used globally instead of aave version allowanceForAccount$
+  const allowanceForAccountEthers$: (
+    token: string,
+    spender: string,
+    networkId: NetworkIds,
+  ) => Observable<BigNumber> = memoize(
+    (token: string, spender: string, networkId: NetworkIds) =>
+      contextForAddress$.pipe(
+        switchMap(({ account }) =>
+          tokenAllowanceEthers({ token, owner: account, spender, networkId }),
+        ),
+      ),
+    (token, spender, networkId) => `${token}-${spender}-${networkId}`,
+  )
+
   // v2 because it takes into account all positions created using specific proxies and filter them
   // out based on params from URL i.e. 2x positions with id 950 but on different pools, based on URL params
   // only single position should be picked to be displayed
@@ -659,6 +675,7 @@ export function setupProductContext(
     ajnaPosition$,
     allowance$,
     allowanceForAccount$,
+    allowanceForAccountEthers$,
     allowanceStateMachine,
     automationTriggersData$,
     balanceInfo$,

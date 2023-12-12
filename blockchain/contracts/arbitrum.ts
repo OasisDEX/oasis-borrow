@@ -154,6 +154,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     'GHO-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_GHODAI),
     'RETH-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHDAI),
     'RETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHETH),
+    'CBETH-USDBC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_CBETHUSDBC),
     'RETH-GHO': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHGHO),
     'RETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_RETHUSDC),
     'SDAI-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_SDAIUSDC),
@@ -184,7 +185,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
   openVaultSafeConfirmations: 6,
   taxProxyRegistries: [],
   etherscan: {
-    url: 'https://arbiscan.io/',
+    url: 'https://arbiscan.io',
     apiUrl: 'https://api.arbiscan.io/api',
     apiKey: etherscanAPIKey || '',
     name: 'Arbiscan',

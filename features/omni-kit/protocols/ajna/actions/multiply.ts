@@ -2,6 +2,7 @@ import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaPool } from '@oasis
 import { normalizeValue, RiskRatio, strategies } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { omniSwapVersionMap } from 'features/omni-kit/constants'
 import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
 import { getOneInchCall } from 'helpers/swap'
@@ -61,7 +62,11 @@ export const ajnaActionOpenMultiply = ({
     },
     {
       ...dependencies,
-      getSwapData: getOneInchCall(getNetworkContracts(networkId).swapAddress),
+      getSwapData: getOneInchCall(
+        getNetworkContracts(networkId).swapAddress,
+        networkId,
+        omniSwapVersionMap[networkId],
+      ),
       operationExecutor: getNetworkContracts(networkId).operationExecutor.address,
       addresses: {
         DAI: getNetworkContracts(networkId).tokens.DAI.address,

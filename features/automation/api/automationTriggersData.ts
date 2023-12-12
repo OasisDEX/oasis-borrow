@@ -12,7 +12,7 @@ import { extractAutoTakeProfitData } from 'features/automation/optimization/auto
 import { extractConstantMultipleData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { GraphQLClient } from 'graphql-request'
-import type { Observable } from 'rxjs'
+import { type Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
 import type { TriggersData } from './automationTriggersData.types'
@@ -52,6 +52,15 @@ export function createAutomationTriggersData(
   id: BigNumber,
   networkId: NetworkIds,
 ): Observable<TriggersData> {
+  if (id.isNaN()) {
+    // this is called on DS proxy and vault id (id) isnt a number (its an address)
+    // and we dont support automation on Aave V2 + DS proxy
+    return of({
+      isAutomationDataLoaded: false,
+      isAutomationEnabled: false,
+      chainId: networkId,
+    })
+  }
   return every5Seconds$.pipe(
     withLatestFrom(context$, proxiesRelatedWithPosition$({ vaultId: id.toNumber() }, networkId)),
     mergeMap(([, context, proxies]) => {

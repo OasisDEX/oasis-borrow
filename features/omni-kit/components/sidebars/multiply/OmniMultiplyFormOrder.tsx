@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
-import { useProductContext } from 'components/context/ProductContextProvider'
-import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SecondaryVariantType } from 'components/infoSection/Item'
+import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { omniExchangeQuote$ } from 'features/omni-kit/observables'
 import {
   resolveIfCachedPosition,
   resolveIfCachedSwap,
@@ -24,7 +24,7 @@ import { OAZO_FEE } from 'helpers/multiply/calculations.constants'
 import { useObservable } from 'helpers/observableHook'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Box } from 'theme-ui'
 
 const actionsWithSlippage = [
@@ -45,9 +45,16 @@ const actionsWithFee = [
 
 export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
-  const { exchangeQuote$ } = useProductContext()
   const {
-    environment: { collateralPrice, collateralToken, quoteToken, slippage, isShort, quotePrice },
+    environment: {
+      collateralPrice,
+      collateralToken,
+      quoteToken,
+      slippage,
+      isShort,
+      quotePrice,
+      networkId,
+    },
     steps: { isFlowStateReady },
     tx: { isTxSuccess, txDetails },
   } = useOmniGeneralContext()
@@ -89,14 +96,22 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
 
   const withOasisFee = withBuying || withSelling
 
-  const initialQuote$ = exchangeQuote$(
-    collateralToken,
-    slippage,
-    // use ~1$ worth amount of collateral or quote token
-    one.div(withBuying ? quotePrice : collateralPrice),
-    withBuying ? 'BUY_COLLATERAL' : 'SELL_COLLATERAL',
-    'defaultExchange',
-    quoteToken,
+  const quoteAction = withBuying ? 'BUY_COLLATERAL' : 'SELL_COLLATERAL'
+  // use ~1$ worth amount of collateral or quote token
+  const quoteAmount = one.div(withBuying ? quotePrice : collateralPrice)
+
+  const initialQuote$ = useMemo(
+    () =>
+      omniExchangeQuote$({
+        networkId,
+        collateralToken,
+        slippage,
+        amount: quoteAmount,
+        action: quoteAction,
+        exchangeType: 'defaultExchange',
+        quoteToken,
+      }),
+    [quoteAmount.toString(), quoteAction],
   )
 
   const [initialQuote] = useObservable(initialQuote$)
@@ -265,7 +280,7 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
                         <Box sx={{ mx: '4px' }}>+</Box>
                       </>
                     )}
-                    <GasEstimation />
+                    <OmniGasEstimation />
                   </>
                 ),
                 dropdownValues: !oasisFee.isZero()
@@ -276,7 +291,7 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
                       },
                       {
                         label: t('max-gas-fee'),
-                        value: <GasEstimation />,
+                        value: <OmniGasEstimation />,
                       },
                     ]
                   : undefined,

@@ -35,7 +35,10 @@ import {
 } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
-import type { AaveHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
+import type {
+  AaveCumulativeData,
+  AaveHistoryEvent,
+} from 'features/omni-kit/protocols/ajna/history/types'
 import type { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import type { TransactionStateMachine } from 'features/stateMachines/transaction'
 import type {
@@ -102,7 +105,11 @@ export type ManageAaveEvent =
     }
   | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: IPosition }
   | { type: 'STRATEGTY_UPDATED'; strategyConfig: IStrategyConfig }
-  | { type: 'HISTORY_UPDATED'; historyEvents: AaveHistoryEvent[] }
+  | {
+      type: 'HISTORY_UPDATED'
+      historyEvents: AaveHistoryEvent[]
+      cumulatives?: AaveCumulativeData
+    }
   | BaseAaveEvent
 
 export function createManageAaveStateMachine(

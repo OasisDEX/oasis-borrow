@@ -61,6 +61,7 @@ export type DPMAccountStateMachineEvents =
   | { type: 'GO_BACK' }
   | { type: 'GAS_COST_ESTIMATION'; gasData: HasGasEstimation }
   | { type: 'CREATED_MACHINE'; refTransactionMachine: RefTransactionMachine }
+  | { type: 'UPDATE_SIGNER'; signer: ethers.Signer }
 
 export function createDPMAccountStateMachine(
   transactionStateMachine: TransactionStateMachine<CreateDPMAccount, UserDpmAccount>,
@@ -90,6 +91,9 @@ export function createDPMAccountStateMachine(
       ],
       on: {
         GAS_COST_ESTIMATION: {
+          actions: ['updateContext'],
+        },
+        UPDATE_SIGNER: {
           actions: ['updateContext'],
         },
       },
@@ -238,7 +242,10 @@ export function getDPMAccountStateMachineServices(
             return web3Context.status === 'connected'
           }),
           switchMap(({ chainId, transactionProvider }: ContextConnected) =>
-            estimateGasCreateAccount({ networkId: chainId, signer: transactionProvider }),
+            estimateGasCreateAccount({
+              networkId: chainId,
+              signer: transactionProvider ?? context.signer,
+            }),
           ),
           switchMap((gas) => {
             if (!gas) {

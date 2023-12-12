@@ -5,6 +5,7 @@ import { useOmniTxHandler } from 'features/omni-kit/hooks'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
 import { getAjnaParameters, isAjnaSupportedNetwork } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
+import { useAccount } from 'helpers/useAccount'
 
 export function useAjnaTxHandler(): () => void {
   const {
@@ -21,7 +22,6 @@ export function useAjnaTxHandler(): () => void {
       slippage,
       quoteBalance,
       network,
-      owner,
     },
   } = useOmniGeneralContext()
   const {
@@ -35,6 +35,7 @@ export function useAjnaTxHandler(): () => void {
     },
   } = useOmniProductContext(productType)
   const { state: customState } = useAjnaCustomState()
+  const { walletAddress } = useAccount()
 
   const networkId = network.id
 
@@ -68,7 +69,7 @@ export function useAjnaTxHandler(): () => void {
         slippage,
         state,
         price: customState.price,
-        walletAddress: owner,
+        walletAddress,
       }),
     customState,
     onSuccess,

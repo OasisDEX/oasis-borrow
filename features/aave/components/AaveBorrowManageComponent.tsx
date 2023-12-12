@@ -83,6 +83,7 @@ export function AaveBorrowManageComponent({
               nextPosition={nextPosition}
               aaveHistory={_aaveHistory}
               isAutomationAvailable={isAutomationAvailable}
+              lendingProtocol={strategyConfig.protocol}
             />
           )
         }}

@@ -16,6 +16,7 @@ import { EthersTransactionStateMachine, TransactionStateMachine } from 'features
 import { zero } from 'helpers/zero'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
+import { AaveCumulativeData } from 'features/omni-kit/protocols/ajna/history/types'
 
 export type UserInput = {
   riskRatio?: IRiskRatio
@@ -110,6 +111,7 @@ export interface BaseAaveContext {
   stopLossSkipped?: boolean
   getSlippageFrom: 'userSettings' | 'strategyConfig'
   reserveData?: ReserveData
+  cumulatives?: AaveCumulativeData
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {

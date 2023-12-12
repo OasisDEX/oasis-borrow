@@ -8,18 +8,22 @@ import type { FeaturesEnum } from 'types/config'
 export type FeatureToggleRedirectProps = {
   feature: FeaturesEnum
   redirectUrl?: string
+  requireFalse?: boolean
 }
 
 export function WithFeatureToggleRedirect({
   children,
   feature,
   redirectUrl = INTERNAL_LINKS.homepage,
+  requireFalse = false,
 }: PropsWithChildren<FeatureToggleRedirectProps>) {
   const { replace } = useRouter()
   const features = useAppConfig('features')
   const featureEnabled = features[feature]
 
-  if (!featureEnabled) void replace(redirectUrl)
+  const isAccesible = (featureEnabled && !requireFalse) || (!featureEnabled && requireFalse)
 
-  return featureEnabled ? <>{children}</> : null
+  if (!isAccesible) void replace(redirectUrl)
+
+  return isAccesible ? <>{children}</> : null
 }

@@ -468,13 +468,13 @@
     "deposit-and-move-lending-price": "Deposit and move lending price",
     "withdraw-and-move-lending-price": "Withdraw and move lending price",
     "claim-collateral": "Claim collateral",
-    "deposited": "Deposited",
+    "collateral-deposit": "Collateral Deposit",
     "withdrawn": "Withdrawn",
     "repaid": "Repaid",
-    "generated": "Generated",
-    "ltv": "LTV",
+    "debt-borrowed": "Debt Borrowed",
+    "ltv": "Loan To Value",
     "liquidation-price": "Liquidation price",
-    "total-fees": "Total fees",
+    "total-fees": "Fees incl. gas",
     "origination-fee": "Origination fee",
     "lending-price": "Lending price",
     "event": "Event",
@@ -491,8 +491,7 @@
     "net-value": "Net value",
     "increase-multiple": "Increase multiple",
     "decrease-multiple": "Decrease multiple",
-    "max-coverage": "Max coverage",
-    "sl-level": "Stop loss level",
+    "sl-level": "Stop loss LTV",
     "swaped": "Swapped",
     "automation": {
       "stop-loss-collateral-added": "Stop loss to collateral added",
@@ -500,7 +499,10 @@
       "stop-loss-collateral-executed": "Stop loss to collateral executed",
       "stop-loss-debt-added": "Stop loss to debt added",
       "stop-loss-debt-removed": "Stop loss to debt removed",
-      "stop-loss-debt-executed": "Stop loss to debt executed"
+      "stop-loss-debt-executed": "Stop loss to debt executed",
+      "stop-loss-token-added": "Stop loss to {{token}} added",
+      "stop-loss-token-removed": "Stop loss to {{token}} removed",
+      "stop-loss-token-executed": "Stop loss to {{token}} executed"
     }
   },
   "triggers": {
@@ -1576,8 +1578,8 @@
       "button": "Learn more"
     },
     "history-coming-soon": {
-      "header": "History support coming soon",
-      "description": "We currently don't support {{protocol}} history on the Ethereum mainnet or L2 networks, but we'll be adding this feature soon."
+      "header": "History not supported",
+      "description": "We currently don't support {{protocol}} {{proxyVersion}} history on the {{network}}."
     }
   },
   "view": "View",
@@ -2686,6 +2688,19 @@
       },
       "average-apy": {
         "title": "{{days}} days average APY"
+      },
+      "net-value-modal": {
+        "modal-title": "Net Value & Profit and Loss",
+        "modal-description": "The current net value is calculated based on the market price of <strong>${{collateralPrice}}</strong>",
+        "modal-table-col-1": "Collateral Value",
+        "modal-table-col-2": "$ Value",
+        "modal-table-row-1": "Net Value",
+        "modal-table-row-2": "Deposits",
+        "modal-table-row-3": "Withdrawals",
+        "modal-table-row-4": "Gas Fees Spent",
+        "modal-value": "Unrealised Profit & Loss",
+        "modal-footnote-1": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative deposits",
+        "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction."
       }
     },
     "form": {
@@ -2742,20 +2757,7 @@
       "position-debt": {
         "modal-description": "This is the total number of tokens you have borrowed plus any accrued interests."
       },
-      "net-value": {
-        "modal-title": "Net Value & Profit and Loss",
-        "modal-description": "The current net value is calculated based on the market price of <strong>${{collateralPrice}}</strong>",
-        "modal-table-col-1": "Collateral Value",
-        "modal-table-col-2": "$ Value",
-        "modal-table-row-1": "Net Value",
-        "modal-table-row-2": "Deposits",
-        "modal-table-row-3": "Withdrawals",
-        "modal-table-row-4": "Gas Fees Spent",
-        "modal-value": "Unrealised Profit & Loss",
-        "modal-footnote-1": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative deposits",
-        "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction.",
-        "modal-earn-description": "The total amount of tokens available in position, this includes the earned amount."
-      },
+      "modal-earn-description": "The total amount of tokens available in position, this includes the earned amount.",
       "borrow-rate": {
         "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
         "tooltip-description-non-owner": "<strong>Earned Ajna tokens</strong>: {{address}} have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
@@ -3173,6 +3175,17 @@
       "target-ltv-exceeds-borrow-cap": "Your target LTV is too high due to the maximum borrowing cap. You cannot borrow more than {{cap}} {{token}}.",
       "target-ltv-too-high-due-to-flashloan-liquidity": "Your target LTV is too high due to insuffiecient liquidity in the flashloan pool.",
       "cannot-close-due-to-flashloan-liquidity": "You cannot close your position due to insufficient liquidity in the pool. Please try again later."
+    },
+    "position-page": {
+      "common": {
+        "banners": {
+          "tokens": {
+            "title": "This position earns SPK tokens",
+            "description": "This Spark position on Summer.fi makes you eligible for SPK token rewards. You are earning automatically, and we will support claiming once the SPK token gets distributed live.",
+            "button": "More info on SPK tokens"
+          }
+        }
+      }
     }
   }
 }
