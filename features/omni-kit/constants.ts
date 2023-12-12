@@ -1,4 +1,5 @@
-import BigNumber from 'bignumber.js'
+import { protocols } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import {
   ARBITRUM_DEFAULT_LIQUIDITY_PROVIDERS,
@@ -29,18 +30,13 @@ export const omniFormStepsWithTransaction: OmniSidebarStep[] = [OmniSidebarStep.
 
 export const omniLendingPriceColors = ['#D3D4D8', '#EABE4C', '#1ECBAE']
 
-// This offset is needed for actions like paybackAll and withdrawAll because of the debt that is constantly growing over time
-// performing these actions without this buffer would lead to issues with tx since params passed will be already out of date
-// while sending tx
-export const omniPaybackAllWithdrawAllValueOffset = new BigNumber(0.00005) // 0.005%
-
 export const paybackAllAmountAllowanceMaxMultiplier: Record<LendingProtocol, BigNumber> = {
   aavev2: one,
   aavev3: one,
   maker: one,
   morphoblue: one,
   sparkv3: one,
-  ajna: one.plus(omniPaybackAllWithdrawAllValueOffset),
+  ajna: one.plus(protocols.ajna.ajnaPaybackAllWithdrawAllValueOffset),
 }
 
 export const omniSwapProtocolsMap = {
