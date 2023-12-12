@@ -25,7 +25,7 @@ import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import dayjs from 'dayjs'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
-import { getLastCreatedPositionForProxy$ } from 'features/aave/services'
+import { readPositionCreatedEvents$ } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types/position-id'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange.constants'
@@ -378,13 +378,11 @@ export function setupProductContext(
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
-  const lastCreatedPositionForProxy$ = memoize(curry(getLastCreatedPositionForProxy$)(context$))
-
   const strategyConfig$ = memoize(
     curry(getStrategyConfig$)(
       proxiesRelatedWithPosition$,
       aaveV2Services.aaveLikeProxyConfiguration$,
-      lastCreatedPositionForProxy$,
+      readPositionCreatedEvents$,
     ),
     (positionId: PositionId, networkName: NetworkNames) =>
       `${positionId.walletAddress}-${positionId.vaultId}-${networkName}`,
