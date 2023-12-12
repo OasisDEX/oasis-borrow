@@ -5,7 +5,6 @@ import { PillAccordion } from 'components/PillAccordion'
 import faqBorrow from 'features/content/faqs/ajna/borrow/en'
 import faqEarn from 'features/content/faqs/ajna/earn/en'
 import faqMultiply from 'features/content/faqs/ajna/multiply/en'
-import { OmniDupePositionModal } from 'features/omni-kit/components/OmniDupePositionModal'
 import type {
   GetOmniMetadata,
   LendingMetadata,
@@ -61,6 +60,7 @@ import {
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { ajnaExtensionTheme } from 'theme'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
@@ -157,7 +157,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   }
 
   const riskSidebar = <AjnaFormContentRisk />
-  const dupeModal = OmniDupePositionModal
 
   switch (productType) {
     case OmniProductType.Borrow:
@@ -292,8 +291,8 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             <AjnaTokensBannerController isOpening={isOpening} />
           ) : undefined,
           riskSidebar,
-          dupeModal,
         },
+        theme: ajnaExtensionTheme,
         featureToggles,
       } as LendingMetadata
 
@@ -440,7 +439,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             <AjnaTokensBannerController isOpening={isOpening} isPriceBelowLup={isPriceBelowLup} />
           ) : undefined,
           riskSidebar,
-          dupeModal,
           extraEarnInput: (
             <AjnaEarnSlider
               isDisabled={
@@ -487,6 +485,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             />
           ),
         },
+        theme: ajnaExtensionTheme,
         featureToggles,
       } as SupplyMetadata
     }

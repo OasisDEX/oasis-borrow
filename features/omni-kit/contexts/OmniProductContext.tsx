@@ -5,7 +5,6 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
-import type { OmniDupePositionModalProps } from 'features/omni-kit/components'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { formatSwapData } from 'features/omni-kit/protocols/ajna/helpers'
 import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
@@ -24,15 +23,9 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import type {
-  Dispatch,
-  FC,
-  PropsWithChildren,
-  ReactElement,
-  ReactNode,
-  SetStateAction,
-} from 'react'
+import type { Dispatch, FC, PropsWithChildren, ReactNode, SetStateAction } from 'react'
 import React, { useContext, useMemo, useState } from 'react'
+import type { Theme } from 'theme-ui'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
 interface OmniFeatureToggles {
@@ -66,7 +59,6 @@ interface CommonMetadataValues {
   sidebarTitle: string
 }
 interface CommonMetadataElements {
-  dupeModal: (props: OmniDupePositionModalProps) => ReactElement
   faq: ReactNode
   overviewBanner?: ReactNode
   overviewContent: ReactNode
@@ -90,6 +82,7 @@ export type LendingMetadata = CommonMetadata & {
   elements: CommonMetadataElements & {
     highlighterOrderInformation: ReactNode
   }
+  theme?: Theme
 }
 
 export type SupplyMetadata = CommonMetadata & {
@@ -107,6 +100,7 @@ export type SupplyMetadata = CommonMetadata & {
     extraEarnInputDeposit?: ReactNode
     extraEarnInputWithdraw?: ReactNode
   }
+  theme?: Theme
 }
 
 export type OmniMetadataParams =
