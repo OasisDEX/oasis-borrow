@@ -2698,8 +2698,8 @@
         "modal-table-row-2": "Deposits",
         "modal-table-row-3": "Withdrawals",
         "modal-table-row-4": "Gas Fees Spent",
-        "modal-value": "Unrealised Profit & Loss",
-        "modal-footnote-1": "Unrealised P&L = ((Net value + Cumulative withdrawals) - Cumulative deposits) / Cumulative deposits",
+        "modal-value": "Profit & Loss",
+        "modal-footnote-1": "P&L = ((Net value + Cumulative withdrawals) - Cumulative deposits) / Cumulative deposits",
         "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction."
       }
     },

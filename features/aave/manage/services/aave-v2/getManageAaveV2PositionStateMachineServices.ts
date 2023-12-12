@@ -21,7 +21,7 @@ import type { PositionId } from 'features/aave/types/position-id'
 import type {
   AaveCumulativeData,
   AaveHistoryEvent,
-} from 'features/omni-kit/protocols/ajna/history/types'
+} from 'features/omni-kit/protocols/aave/history/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { allDefined } from 'helpers/allDefined'

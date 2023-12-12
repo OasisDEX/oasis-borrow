@@ -5,7 +5,7 @@ import { useAaveContext } from 'features/aave/aave-context-provider'
 import { useSimulationYields } from 'features/aave/hooks'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import type { IStrategyConfig } from 'features/aave/types'
-import type { AaveCumulativeData } from 'features/omni-kit/protocols/ajna/history/types'
+import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -48,7 +48,6 @@ export function ManageSectionComponent({
     strategy: strategyConfig,
     token: state.context.tokens.deposit,
   })
-  console.log('strategyConfig.protocol', strategyConfig.protocol)
   const { getAaveLikeReserveData$ } = useAaveContext(
     strategyConfig.protocol,
     strategyConfig.network,
