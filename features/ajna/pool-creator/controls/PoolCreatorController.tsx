@@ -78,7 +78,9 @@ export function AjnaPoolCreatorController() {
         />
         <Box sx={{ maxWidth: '584px', mx: 'auto' }}>
           <DetailsSection
-            title={t('pool-creator.form.title')}
+            title={
+              txStatuses.isTxSuccess ? t('pool-creator.form.success') : t('pool-creator.form.title')
+            }
             extra={
               isOnSupportedNetwork &&
               networkId && (

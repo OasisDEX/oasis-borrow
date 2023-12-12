@@ -2711,6 +2711,16 @@
         "success-open": "Your {{collateralToken}}/{{quoteToken}} {{protocol}} Position was created",
         "success-manage": "Your {{collateralToken}}/{{quoteToken}} {{protocol}} Position was updated"
       }
+    },
+    "dupe-modal": {
+      "title": "Are you sure you want to open a new {{collateralToken}}/{{quoteToken}} {{productType}} position on {{protocol}}?",
+      "description-borrower-singular": "You already have borrower position of this type.",
+      "description-borrower-plural": "You already have borrower positions of this type.",
+      "description-lender-singular": "You already have lender position of this type.",
+      "description-lender-plural": "You already have lender positions of this type.",
+      "help": "You can either create a new position or go to the existing one.",
+      "cta-primary": "Go to your Portfolio",
+      "cta-textual": "Open new position"
     }
   },
   "ajna": {
@@ -2821,7 +2831,7 @@
         "form": {
           "title": {
             "risk": "Things to know before opening an Ajna position",
-            "risk-oracless": "This pool is offered with Ajna Lite UI, things to know:",
+            "risk-oracless": "This pool is offered with Ajna Permissionless UI, things to know:",
             "setup": "Configure your Ajna {{productType}} Position",
             "manage": "Manage your Ajna {{productType}} Position",
             "transaction": "Confirm your Ajna {{productType}} Position",
@@ -2850,21 +2860,11 @@
               ],
               "oracless": [
                 "<5>Always do your own research and make sure you have selected the correct token contract address<5/>",
-                "This asset pair is supported with Ajna Lite UI, no price feed information will be available",
+                "This asset pair is supported with Ajna Permissionless UI, no price feed information will be available",
                 "Monitor your position closely and ensure you understand the risks before proceeding"
               ]
             }
           }
-        },
-        "dupe-modal": {
-          "title": "Are you sure you want to open a new {{productType}} position in the Ajna {{collateralToken}}/{{quoteToken}} pool?",
-          "description-borrower-singular": "You already have borrower position in this pool.",
-          "description-borrower-plural": "You already have borrower positions in this pool.",
-          "description-lender-singular": "You already have lender position in this pool.",
-          "description-lender-plural": "You already have lender positions in this pool.",
-          "help": "You can either create a new position in this pool or go to your existing position.",
-          "cta-primary": "Go to your Portfolio",
-          "cta-textual": "Open new position"
         },
         "notifications": {
           "being-liquidated": {
@@ -3105,7 +3105,7 @@
     "banners": {
       "pool-finder": {
         "title": "Looking for a custom pool?",
-        "description": "Find any pool on Ajna and open a position using Ajna lite.",
+        "description": "Find any pool on Ajna and open a position using Ajna Permissionless.",
         "cta": "Search custom pools"
       }
     }
@@ -3142,7 +3142,8 @@
       "pools-interest-rate": "Initial pool interest rate",
       "min-interest-rate": "Min. {{minInterestRate}}%",
       "max-interest-rate": "Up to {{maxInterestRate}}%",
-      "submit": "Create pool"
+      "submit": "Create pool",
+      "success": "New Ajna pool created"
     },
     "order-information": {
       "pool": "Pool",
