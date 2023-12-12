@@ -10,6 +10,8 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { ContentCardLiquidationPriceV2 } from 'components/vault/detailsSection/ContentCardLiquidationPriceV2'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
+import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
+import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
@@ -19,6 +21,7 @@ import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import type {
   AaveLikeReserveConfigurationData,
   AaveLikeReserveData,
@@ -42,6 +45,7 @@ type AaveMultiplyPositionDataProps = {
   isAutomationAvailable?: boolean
   strategyType: StrategyType
   cumulatives?: AaveCumulativeData
+  lendingProtocol: LendingProtocol
 }
 
 export function AaveMultiplyPositionData({
@@ -56,6 +60,7 @@ export function AaveMultiplyPositionData({
   isAutomationAvailable,
   strategyType,
   cumulatives,
+  lendingProtocol,
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
@@ -99,6 +104,12 @@ export function AaveMultiplyPositionData({
     .plus(netValue)
     .minus(cumulatives.cumulativeDeposit)
     .div(cumulatives.cumulativeDeposit)
+
+  const isSparkPosition = lendingProtocol === LendingProtocol.SparkV3
+  const isElligibleSparkPosition = checkElligibleSparkPosition(
+    collateralToken.symbol,
+    debtToken.symbol,
+  )
 
   return (
     <Grid>
@@ -237,6 +248,7 @@ export function AaveMultiplyPositionData({
           </DetailsSectionFooterItemWrapper>
         }
       />
+      {isSparkPosition && isElligibleSparkPosition && <SparkTokensBannerController />}
     </Grid>
   )
 }

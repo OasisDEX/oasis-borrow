@@ -3175,6 +3175,17 @@
       "target-ltv-exceeds-borrow-cap": "Your target LTV is too high due to the maximum borrowing cap. You cannot borrow more than {{cap}} {{token}}.",
       "target-ltv-too-high-due-to-flashloan-liquidity": "Your target LTV is too high due to insuffiecient liquidity in the flashloan pool.",
       "cannot-close-due-to-flashloan-liquidity": "You cannot close your position due to insufficient liquidity in the pool. Please try again later."
+    },
+    "position-page": {
+      "common": {
+        "banners": {
+          "tokens": {
+            "title": "This position earns SPK tokens",
+            "description": "This Spark position on Summer.fi makes you eligible for SPK token rewards. You are earning automatically, and we will support claiming once the SPK token gets distributed live.",
+            "button": "More info on SPK tokens"
+          }
+        }
+      }
     }
   }
 }

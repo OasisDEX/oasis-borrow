@@ -10,7 +10,7 @@ import React from 'react'
 
 export function OmniMultiplyFormContentOpen() {
   const {
-    environment: { collateralBalance, collateralPrice, collateralToken },
+    environment: { collateralBalance, collateralPrice, collateralToken, shouldSwitchNetwork },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -27,6 +27,7 @@ export function OmniMultiplyFormContentOpen() {
         resetOnClear
         token={collateralToken}
         tokenPrice={collateralPrice}
+        {...(!shouldSwitchNetwork && { maxAmount: collateralBalance })}
       />
       <OmniAdjustSlider disabled={!depositAmount} />
       {depositAmount && (

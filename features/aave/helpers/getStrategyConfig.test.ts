@@ -11,11 +11,11 @@ import { getStrategyConfig$ } from './getStrategyConfig'
 
 describe('getStrategyConfig', () => {
   const proxiesForPosition$ = jest.fn<Observable<ProxiesRelatedWithPosition>, [PositionId]>()
-  const lastCreatedPositionForProxy$ = jest.fn<Observable<PositionCreated | undefined>, [string]>()
+  const readPositionCreatedEvents$ = jest.fn<Observable<PositionCreated[]>, [string]>()
   const aaveUserConfiguration$ = jest.fn<Observable<AaveUserConfigurationResults>, [string]>()
 
   it('should return strategy based on assets when there is not PositionCreated Event', (done) => {
-    lastCreatedPositionForProxy$.mockReturnValue(of<PositionCreated | undefined>(undefined))
+    readPositionCreatedEvents$.mockReturnValue(of<PositionCreated[]>([]))
     proxiesForPosition$.mockReturnValue(
       of({ dsProxy: '0x123', dpmProxy: undefined, walletAddress: '0x123' }),
     )
@@ -24,7 +24,7 @@ describe('getStrategyConfig', () => {
     const observable$ = getStrategyConfig$(
       proxiesForPosition$,
       aaveUserConfiguration$,
-      lastCreatedPositionForProxy$,
+      readPositionCreatedEvents$,
       { walletAddress: '0x123' },
       NetworkNames.ethereumMainnet,
       VaultType.Earn,
