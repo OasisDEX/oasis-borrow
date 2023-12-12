@@ -125,6 +125,23 @@ export function getLastCreatedPositionForProxy$(
   )
 }
 
+export function mapCreatedPositionEventToPositionCreated(
+  event: CreatePositionEvent,
+  networkId: NetworkIds,
+): PositionCreated {
+  return {
+    collateralTokenAddress: event!.args.collateralToken,
+    positionType: event!.args.positionType as 'Borrow' | 'Multiply' | 'Earn',
+    collateralTokenSymbol: getTokenSymbolBasedOnAddress(networkId, event!.args.collateralToken),
+    debtTokenSymbol: getTokenSymbolBasedOnAddress(networkId, event!.args.debtToken),
+    debtTokenAddress: event!.args.debtToken,
+    protocol: extractLendingProtocolFromPositionCreatedEvent(event!),
+    protocolRaw: event.args.protocol,
+    chainId: networkId,
+    proxyAddress: event!.args.proxyAddress,
+  }
+}
+
 export async function getLastCreatedPositionForProxy(
   proxyAddress: string,
   networkId: NetworkIds,
@@ -136,17 +153,7 @@ export async function getLastCreatedPositionForProxy(
     return undefined
   }
 
-  return {
-    collateralTokenAddress: lastEvent!.args.collateralToken,
-    positionType: lastEvent!.args.positionType as 'Borrow' | 'Multiply' | 'Earn',
-    collateralTokenSymbol: getTokenSymbolBasedOnAddress(networkId, lastEvent!.args.collateralToken),
-    debtTokenSymbol: getTokenSymbolBasedOnAddress(networkId, lastEvent!.args.debtToken),
-    debtTokenAddress: lastEvent!.args.debtToken,
-    protocol: extractLendingProtocolFromPositionCreatedEvent(lastEvent!),
-    protocolRaw: lastEvent.args.protocol,
-    chainId: networkId,
-    proxyAddress: lastEvent!.args.proxyAddress,
-  }
+  return mapCreatedPositionEventToPositionCreated(lastEvent, networkId)
 }
 
 export function readPositionCreatedEvents$(
