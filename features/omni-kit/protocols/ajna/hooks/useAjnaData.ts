@@ -3,7 +3,10 @@ import type { Tickers } from 'blockchain/prices.types'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
+import { useAjnaRedirect } from 'features/omni-kit/protocols/ajna/hooks'
 import { getAjnaPositionAggregatedData$ } from 'features/omni-kit/protocols/ajna/observables'
+import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
 import { one } from 'helpers/zero'
 import { useMemo } from 'react'
@@ -32,6 +35,14 @@ export function useAjnaData({
     quoteToken &&
     isPoolOracless({ collateralToken, quoteToken, networkId })
   )
+
+  void useAjnaRedirect({
+    collateralToken,
+    isOracless,
+    networkId: networkId as AjnaSupportedNetworksIds,
+    productType: dpmPositionData?.product as OmniProductType,
+    quoteToken,
+  })
 
   const [ajnaPositionData, ajnaPositionError] = useObservable(
     useMemo(
