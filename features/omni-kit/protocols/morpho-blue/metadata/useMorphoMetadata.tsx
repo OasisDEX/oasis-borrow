@@ -121,7 +121,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
               productType={productType}
             />
           ),
-          dupeModal: () => <>Morpho dupe modal</>,
         },
         featureToggles: {
           safetySwitch: MorphoSafetySwitch,

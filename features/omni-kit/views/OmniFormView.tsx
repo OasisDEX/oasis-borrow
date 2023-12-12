@@ -4,6 +4,7 @@ import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ethers } from 'ethers'
+import { OmniDupePositionModal } from 'features/omni-kit/components'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import {
   getOmniFlowStateConfig,
@@ -80,8 +81,8 @@ export function OmniFormView({
       values: { interestRate, sidebarTitle },
       validations: { isFormValid, isFormFrozen, hasErrors },
       filters: { flowStateFilter },
-      elements: { dupeModal },
       featureToggles: { suppressValidation, safetySwitch },
+      theme,
     },
   } = useOmniProductContext(productType)
 
@@ -109,7 +110,7 @@ export function OmniFormView({
 
       if (!hasDupePosition && filteredEvents.length) {
         setHasDupePosition(true)
-        openModal(dupeModal, {
+        openModal(OmniDupePositionModal, {
           collateralAddress,
           collateralToken,
           dpmAccounts,
@@ -119,6 +120,7 @@ export function OmniFormView({
           protocol,
           quoteAddress,
           quoteToken,
+          theme,
           walletAddress,
         })
       }

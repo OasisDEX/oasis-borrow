@@ -10,7 +10,7 @@ import type { LendingProtocol } from 'lendingProtocols'
 import { startCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { ajnaExtensionTheme } from 'theme'
+import type { Theme } from 'theme-ui'
 import { Box, Button, Flex, Heading, Image, Text, ThemeUIProvider } from 'theme-ui'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
@@ -24,6 +24,7 @@ export interface OmniDupePositionModalProps {
   protocol: LendingProtocol
   quoteAddress: string
   quoteToken: string
+  theme?: Theme
   walletAddress?: string
 }
 
@@ -37,6 +38,7 @@ export function OmniDupePositionModal({
   protocol,
   quoteAddress,
   quoteToken,
+  theme = {},
   walletAddress,
 }: OmniDupePositionModalProps) {
   const { t } = useTranslation()
@@ -69,7 +71,7 @@ export function OmniDupePositionModal({
     : `${t('system.go-to-position')} #${positionIds[0]}`
 
   return (
-    <ThemeUIProvider theme={ajnaExtensionTheme}>
+    <ThemeUIProvider theme={theme}>
       <Modal sx={{ maxWidth: '445px', mx: 'auto' }} close={closeModal}>
         <Box sx={{ px: 4, pt: 5, pb: '24px' }}>
           <ModalCloseIcon close={closeModal} />
