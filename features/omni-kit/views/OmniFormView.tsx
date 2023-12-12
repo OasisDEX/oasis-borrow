@@ -187,6 +187,7 @@ export function OmniFormView({
     isTransitionAction,
     isTransitionWaitingForApproval,
     isTxSuccess,
+    network,
     onConfirmTransition: transitionHandler,
     onDefault: setNextStep,
     onDisconnected: connect,

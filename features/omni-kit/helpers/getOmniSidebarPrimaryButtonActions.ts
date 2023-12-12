@@ -1,3 +1,5 @@
+import type { NetworkConfig } from 'blockchain/networks'
+import type { OmniProductType } from 'features/omni-kit/types'
 import type { LendingProtocol } from 'lendingProtocols'
 
 interface GetOmniSidebarPrimaryButtonActionsParams {
@@ -11,13 +13,14 @@ interface GetOmniSidebarPrimaryButtonActionsParams {
   isTransitionAction: boolean
   isTransitionWaitingForApproval: boolean
   isTxSuccess: boolean
+  network: NetworkConfig
   onConfirmTransition: () => void
   onDefault: () => void
   onDisconnected: () => void
   onSelectTransition: () => void
   onTransition: () => void
   onUpdated: () => void
-  productType: string
+  productType: OmniProductType
   protocol: LendingProtocol
   quoteAddress: string
   quoteToken: string
@@ -38,6 +41,7 @@ export function getOmniSidebarPrimaryButtonActions({
   isTransitionAction,
   isTransitionWaitingForApproval,
   isTxSuccess,
+  network,
   onConfirmTransition,
   onDefault,
   onDisconnected,
@@ -62,7 +66,7 @@ export function getOmniSidebarPrimaryButtonActions({
       const resolvedCollateralUrl = isOracless ? collateralAddress : collateralToken
       const resolvedQuoteUrl = isOracless ? quoteAddress : quoteToken
       return {
-        url: `/ethereum/${protocol}/${productType.toLowerCase()}/${resolvedCollateralUrl}-${resolvedQuoteUrl}/${resolvedId}`,
+        url: `/${network.name}/${protocol}/${productType}/${resolvedCollateralUrl}-${resolvedQuoteUrl}/${resolvedId}`,
       }
     case isStepWithTransaction && isTxSuccess:
       return { action: onUpdated }

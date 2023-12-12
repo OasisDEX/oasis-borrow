@@ -17,7 +17,7 @@ interface TransitionProps {
   tokenPair: string
   action?: OmniFormAction
   positionId?: string
-  productType?: string
+  productType?: OmniProductType
   protocol?: LendingProtocol
 }
 
