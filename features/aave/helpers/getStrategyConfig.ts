@@ -2,8 +2,12 @@ import type { NetworkIds, NetworkNames } from 'blockchain/networks'
 import { getNetworkByName, networksByName } from 'blockchain/networks'
 import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import { loadStrategyFromTokens } from 'features/aave'
+import { aaveLikeProtocols } from 'features/aave/constants'
 import type { PositionCreated } from 'features/aave/services'
-import { getLastCreatedPositionForProxy } from 'features/aave/services'
+import {
+  getPositionCreatedEventForProxyAddress,
+  mapCreatedPositionEventToPositionCreated,
+} from 'features/aave/services'
 import type { IStrategyConfig, PositionId } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { productToVaultType } from 'helpers/productToVaultType'
@@ -22,7 +26,10 @@ export function getStrategyConfig$(
     networkId: NetworkIds,
   ) => Observable<ProxiesRelatedWithPosition>,
   aaveUserConfiguration$: (proxyAddress: string) => Observable<AaveUserConfigurationResults>,
-  lastCreatedPositionForProxy$: (proxyAddress: string) => Observable<PositionCreated | undefined>,
+  readPositionCreatedEvents$: (
+    walletAddress: string,
+    networkId: NetworkIds,
+  ) => Observable<PositionCreated[]>,
   positionId: PositionId,
   networkName: NetworkNames,
   vaultType: VaultType,
@@ -38,12 +45,17 @@ export function getStrategyConfig$(
           aaveUserConfiguration$(effectiveProxyAddress!),
           of(undefined),
         ),
-        effectiveProxyAddress && effectiveProxyAddress === dpmProxy?.proxy
-          ? lastCreatedPositionForProxy$(effectiveProxyAddress)
+        effectiveProxyAddress && effectiveProxyAddress === dpmProxy?.proxy && dpmProxy.user
+          ? readPositionCreatedEvents$(dpmProxy.user, networkConfig.id)
           : of(undefined),
       )
     }),
-    map(([aaveUserConfigurations, lastCreatedPosition]) => {
+    map(([aaveUserConfigurations, positions]) => {
+      const filteredPositions = positions?.filter((position) =>
+        aaveLikeProtocols.includes(position.protocol),
+      )
+
+      const lastCreatedPosition = filteredPositions?.pop()
       const vaultTypeIsUnknown = vaultType === VaultType.Unknown
       // event has a higher priority than assets
       if (lastCreatedPosition !== undefined) {
@@ -122,11 +134,17 @@ export async function getAaveV3StrategyConfig(
   if (!dpmProxy) {
     throw new Error(`Can't load strategy config for position without dpmProxy. VaultId: ${vaultId}`)
   }
-  const lastCreatedPosition = await getLastCreatedPositionForProxy(dpmProxy.proxy, networkId)
+  const createdPositions = await getPositionCreatedEventForProxyAddress(networkId, dpmProxy.proxy)
+
+  const lastCreatedPosition = createdPositions
+    .map((event) => mapCreatedPositionEventToPositionCreated(event, networkId))
+    .filter((position) => aaveLikeProtocols.includes(position.protocol))
+    .pop()
 
   if (!lastCreatedPosition) {
     throw new Error(`Can't load strategy config for position without dpmProxy. VaultId: ${vaultId}`)
   }
+
   const _vaultType =
     vaultType === undefined || vaultType === VaultType.Unknown
       ? productToVaultType(lastCreatedPosition.positionType)
