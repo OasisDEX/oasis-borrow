@@ -21,10 +21,10 @@ export type ManageSectionComponentProps = {
   aaveReserveState: AaveLikeReserveConfigurationData
   aaveReserveDataDebtToken: AaveLikeReserveData
   strategyConfig: IStrategyConfig
-  collateralPrice: BigNumber
-  debtPrice: BigNumber
-  collateralTokenReserveData: AaveLikeReserveData
-  debtTokenReserveData: AaveLikeReserveData
+  collateralPrice?: BigNumber
+  debtPrice?: BigNumber
+  collateralTokenReserveData?: AaveLikeReserveData
+  debtTokenReserveData?: AaveLikeReserveData
   cumulatives?: AaveCumulativeData
   currentPosition: IPosition
 }

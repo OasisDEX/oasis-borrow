@@ -82,6 +82,7 @@ export async function getAaveHistoryEvents(
             cumulativeDeposit: new BigNumber(positions[0].cumulativeDeposit),
             cumulativeWithdraw: new BigNumber(positions[0].cumulativeWithdraw),
             cumulativeFees: new BigNumber(positions[0].cumulativeFees),
+            cumulativeFeesInQuoteToken: new BigNumber(positions[0].cumulativeFeesInQuoteToken),
             cumulativeDepositInQuoteToken: new BigNumber(
               positions[0].cumulativeDepositInQuoteToken,
             ),

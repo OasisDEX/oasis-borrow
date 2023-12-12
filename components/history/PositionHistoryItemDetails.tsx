@@ -4,8 +4,9 @@ import type { NetworkIds } from 'blockchain/networks'
 import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { DefinitionList } from 'components/DefinitionList'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
+import { type AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
-import { type AaveHistoryEvent, hasTrigger } from 'features/omni-kit/protocols/ajna/history/types'
+import { hasTrigger } from 'features/omni-kit/protocols/ajna/history/types'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
