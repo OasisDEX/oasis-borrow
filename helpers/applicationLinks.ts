@@ -21,6 +21,8 @@ export const INTERNAL_LINKS = {
   ajnaRewards: '/ajna/rewards',
   ajnaPoolFinder: '/ajna/pool-finder',
   ajnaPoolCreator: '/ajna/pool-creator',
+  sparkRewards:
+    'https://forum.makerdao.com/t/sparkdao-spk-pre-farming-airdrop-general-subdao-farming-overview/21595',
 }
 
 export const EXTERNAL_LINKS = {
