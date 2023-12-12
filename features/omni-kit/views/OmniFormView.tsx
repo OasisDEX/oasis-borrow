@@ -77,7 +77,7 @@ export function OmniFormView({
     form: { dispatch, state },
     position: { isSimulationLoading, resolvedId },
     dynamicMetadata: {
-      values: { interestRate, sidebarTitle, isFormEmpty },
+      values: { interestRate, sidebarTitle },
       validations: { isFormValid, isFormFrozen, hasErrors },
       filters: { flowStateFilter },
       elements: { dupeModal },
@@ -162,13 +162,13 @@ export function OmniFormView({
     isTxStarted,
     isTxWaitingForApproval,
     safetySwitch,
+    shouldSwitchNetwork,
     walletAddress,
   })
   const primaryButtonLabel = getOmniPrimaryButtonLabelKey({
     currentStep,
     hasAllowance: flowState.isAllowanceReady,
     hasDpmAddress: flowState.isProxyReady,
-    isFormEmpty,
     isOpening,
     isTransitionInProgress,
     isTxError,
@@ -206,9 +206,9 @@ export function OmniFormView({
     protocol,
     quoteAddress,
     quoteToken,
+    shouldSwitchNetwork,
     resolvedId,
     walletAddress,
-    shouldSwitchNetwork,
   })
   const textButtonAction = () => {
     setisTransitionWaitingForApproval(false)
