@@ -7,7 +7,7 @@
   },
   "packageManager": "yarn@1.22.21",
   "scripts": {
-    "start": "yarn get-config-types && next dev",
+    "start": "yarn get-config-types && next dev & node ./scripts/notification-dummy",
     "get-config-types": "node scripts/get-config-types.js",
     "start:debug": "NODE_OPTIONS='--inspect' next dev",
     "start:prod": "yarn migrate && next start",
