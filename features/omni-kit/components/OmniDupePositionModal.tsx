@@ -6,6 +6,7 @@ import { getOraclessProductUrl } from 'features/ajna/pool-finder/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useModalContext } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import type { LendingProtocol } from 'lendingProtocols'
 import { startCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -20,6 +21,7 @@ export interface OmniDupePositionModalProps {
   events: CreatePositionEvent[]
   networkId?: NetworkIds
   productType: OmniProductType
+  protocol: LendingProtocol
   quoteAddress: string
   quoteToken: string
   walletAddress?: string
@@ -32,6 +34,7 @@ export function OmniDupePositionModal({
   events,
   networkId = NetworkIds.MAINNET,
   productType,
+  protocol,
   quoteAddress,
   quoteToken,
   walletAddress,
@@ -62,7 +65,7 @@ export function OmniDupePositionModal({
         quoteToken,
       })}/${positionIds[0]}`
   const primaryText = hasMultiplyPositions
-    ? t('ajna.position-page.common.dupe-modal.cta-primary')
+    ? t('omni-kit.dupe-modal.cta-primary')
     : `${t('system.go-to-position')} #${positionIds[0]}`
 
   return (
@@ -73,15 +76,16 @@ export function OmniDupePositionModal({
           <Flex sx={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
             <Image src={staticFilesRuntimeUrl('/static/img/safe.svg')} />
             <Heading variant="header5" sx={{ pt: 3, pb: 2 }}>
-              {t('ajna.position-page.common.dupe-modal.title', {
+              {t('omni-kit.dupe-modal.title', {
                 collateralToken,
                 productType: startCase(productType),
+                protocol: startCase(protocol),
                 quoteToken,
               })}
             </Heading>
             <Text as="p" variant="paragraph3" sx={{ pb: 4, color: 'neutral80' }}>
-              {t(`ajna.position-page.common.dupe-modal.description-${type}-${amount}`)}{' '}
-              {t('ajna.position-page.common.dupe-modal.help')}
+              {t(`omni-kit.dupe-modal.description-${type}-${amount}`)}{' '}
+              {t('omni-kit.dupe-modal.help')}
             </Text>
             <AppLink href={primaryLink} onClick={closeModal} sx={{ width: '100%' }}>
               <Button variant="primary" sx={{ width: '100%' }}>
@@ -89,7 +93,7 @@ export function OmniDupePositionModal({
               </Button>
             </AppLink>
             <Button variant="textual" onClick={closeModal} sx={{ mt: '24px', p: 0 }}>
-              {t('ajna.position-page.common.dupe-modal.cta-textual')}
+              {t('omni-kit.dupe-modal.cta-textual')}
             </Button>
           </Flex>
         </Box>

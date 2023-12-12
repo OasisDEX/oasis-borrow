@@ -2711,6 +2711,16 @@
         "success-open": "Your {{collateralToken}}/{{quoteToken}} {{protocol}} Position was created",
         "success-manage": "Your {{collateralToken}}/{{quoteToken}} {{protocol}} Position was updated"
       }
+    },
+    "dupe-modal": {
+      "title": "Are you sure you want to open a new {{collateralToken}}/{{quoteToken}} {{productType}} position on {{protocol}}?",
+      "description-borrower-singular": "You already have borrower position of this type.",
+      "description-borrower-plural": "You already have borrower positions of this type.",
+      "description-lender-singular": "You already have lender position of this type.",
+      "description-lender-plural": "You already have lender positions of this type.",
+      "help": "You can either create a new position or go to the existing one.",
+      "cta-primary": "Go to your Portfolio",
+      "cta-textual": "Open new position"
     }
   },
   "ajna": {
@@ -2855,16 +2865,6 @@
               ]
             }
           }
-        },
-        "dupe-modal": {
-          "title": "Are you sure you want to open a new {{productType}} position in the Ajna {{collateralToken}}/{{quoteToken}} pool?",
-          "description-borrower-singular": "You already have borrower position in this pool.",
-          "description-borrower-plural": "You already have borrower positions in this pool.",
-          "description-lender-singular": "You already have lender position in this pool.",
-          "description-lender-plural": "You already have lender positions in this pool.",
-          "help": "You can either create a new position in this pool or go to your existing position.",
-          "cta-primary": "Go to your Portfolio",
-          "cta-textual": "Open new position"
         },
         "notifications": {
           "being-liquidated": {
