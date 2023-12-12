@@ -22,6 +22,7 @@ interface AjnaLendingDetailsSectionFooterProps {
   productType: OmniProductType
   quotePrice: BigNumber
   quoteToken: string
+  afterAvailableToBorrow?: BigNumber
   simulation?: AjnaPosition
 }
 
@@ -38,6 +39,7 @@ export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooter
   productType,
   quotePrice,
   quoteToken,
+  afterAvailableToBorrow,
   simulation,
 }) => {
   return productType === OmniProductType.Borrow ? (
@@ -53,6 +55,7 @@ export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooter
       position={position}
       quotePrice={quotePrice}
       quoteToken={quoteToken}
+      afterAvailableToBorrow={afterAvailableToBorrow}
       simulation={simulation}
     />
   ) : (

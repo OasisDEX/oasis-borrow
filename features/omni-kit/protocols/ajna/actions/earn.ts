@@ -3,9 +3,8 @@ import type {
   AjnaCommonPayload,
   AjnaEarnPosition,
 } from '@oasisdex/dma-library'
-import { strategies } from '@oasisdex/dma-library'
+import { protocols, strategies } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import { omniPaybackAllWithdrawAllValueOffset } from 'features/omni-kit/constants'
 import { getAjnaEarnData, getAjnaEarnWithdrawMax } from 'features/omni-kit/protocols/ajna/helpers'
 import type {
   AjnaGenericPosition,
@@ -91,7 +90,9 @@ export const ajnaActionWithdrawEarn = ({
   const resolvedWithdrawAmount =
     isWithdrawingAllWithoutClosing && withdrawAmount
       ? getAjnaEarnWithdrawMax({
-          quoteTokenAmount: withdrawAmount.times(one.minus(omniPaybackAllWithdrawAllValueOffset)),
+          quoteTokenAmount: withdrawAmount.times(
+            one.minus(protocols.ajna.ajnaPaybackAllWithdrawAllValueOffset),
+          ),
           digits: commonPayload.quoteTokenPrecision,
         })
       : withdrawAmount || zero

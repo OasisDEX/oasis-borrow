@@ -285,6 +285,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               quotePrice={quotePrice}
               quoteToken={quoteToken}
               simulation={simulation}
+              afterAvailableToBorrow={afterAvailableToBorrow}
             />
           ),
           overviewBanner: isPoolWithRewards({ collateralToken, networkId, quoteToken }) ? (
