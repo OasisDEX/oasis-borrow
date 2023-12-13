@@ -1,4 +1,5 @@
 import type BigNumber from 'bignumber.js'
+import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
 import type {
   PositionHistoryEvent,
@@ -23,29 +24,6 @@ export interface AjnaBorrowerEventsResponse {
   auction: {
     id: string
   } | null
-}
-
-// TODO to be removed when implementing aave history, dummy aave history interface
-export interface AaveHistoryEvent extends PositionHistoryEvent {
-  quoteTokensAfter?: BigNumber
-  quoteTokensBefore?: BigNumber
-  quoteTokensDelta?: BigNumber
-  quoteTokensMoved?: BigNumber
-  moveQuoteFromPrice?: BigNumber
-  moveQuoteToPrice?: BigNumber
-  addOrRemovePrice?: BigNumber
-  totalFeeInQuoteToken?: BigNumber
-  trigger?: Trigger
-}
-
-export type AaveCumulativeData = {
-  cumulativeDeposit: BigNumber
-  cumulativeWithdraw: BigNumber
-  cumulativeFees: BigNumber
-  cumulativeDepositInQuoteToken: BigNumber
-  cumulativeWithdrawInQuoteToken: BigNumber
-  cumulativeDespositInCollateralToken: BigNumber
-  cumulativeWithdrawInCollateralToken: BigNumber
 }
 
 export function hasTrigger(

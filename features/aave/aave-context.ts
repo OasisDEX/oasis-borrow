@@ -43,7 +43,6 @@ export type AaveContext = AaveLikeServices & {
     positionId: PositionId,
     networkId: NetworkIds,
   ) => Observable<ProxiesRelatedWithPosition>
-  chainlinkUSDCUSDOraclePrice$: Observable<BigNumber>
   chainLinkETHUSDOraclePrice$: Observable<BigNumber>
   earnCollateralsReserveData: Record<string, Observable<AaveLikeReserveConfigurationData>>
   dpmAccountStateMachine: DPMAccountStateMachine

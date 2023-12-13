@@ -12,12 +12,14 @@ export function NetValueCard({
   nextPositionThings,
   currentPositionThings,
   modal,
+  footnote,
 }: {
   strategyType: StrategyType
   currentPositionThings: ReturnType<typeof calculateViewValuesForPosition>
   currentPosition: IPosition
   nextPositionThings: ReturnType<typeof calculateViewValuesForPosition> | undefined
   modal?: React.ReactNode
+  footnote?: string
 }) {
   const { t } = useTranslation()
 
@@ -39,6 +41,7 @@ export function NetValueCard({
     <DetailsSectionContentCard
       title={t('system.net-value')}
       value={`${formatPrecision(currentNetValue, 2)} ${netValueSymbol}`}
+      footnote={footnote}
       change={
         nextNetValue && {
           variant: nextNetValue.gt(currentNetValue) ? 'positive' : 'negative',

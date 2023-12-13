@@ -16,10 +16,10 @@ import { calculateViewValuesForPosition } from 'features/aave/services'
 import { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
-import type { AaveCumulativeData } from 'features/omni-kit/protocols/ajna/history/types'
+import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { displayMultiple } from 'helpers/display-multiple'
-import { formatAmount, formatPrecision } from 'helpers/formatters/format'
+import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import type {
@@ -155,6 +155,14 @@ export function AaveMultiplyPositionData({
               currentPositionThings={currentPositionThings}
               currentPosition={currentPosition}
               nextPositionThings={nextPositionThings}
+              footnote={
+                pnlWithoutFees &&
+                cumulatives &&
+                `${t('omni-kit.content-card.net-value.footnote')} ${
+                  pnlWithoutFees.gte(zero) ? '+' : ''
+                }
+                ${formatDecimalAsPercent(pnlWithoutFees)}`
+              }
               modal={
                 cumulatives ? (
                   <OmniMultiplyNetValueModal
