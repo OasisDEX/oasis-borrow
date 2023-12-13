@@ -1,3 +1,4 @@
+import type { AjnaRewardsWeeklyClaim } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { zero } from 'helpers/zero'
@@ -5,10 +6,62 @@ import type { NextApiRequest } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
+import { AjnaRewardsSource } from '.prisma/client'
+
 const querySchema = z.object({
   address: z.string(),
   networkId: z.string(),
+  claimedBonusWeeks: z.string().optional(),
+  claimedCoreWeeks: z.string().optional(),
 })
+
+const mapStringToNumberArray = (input: string) => input.split(',').map((item) => Number(item))
+
+const mapToAmount = <T extends { week_number: number; amount: string }[]>(records: T) => {
+  return records
+    .reduce<BigNumber>((total, current) => total.plus(new BigNumber(current.amount)), zero)
+    .shiftedBy(NEGATIVE_WAD_PRECISION)
+    .toString()
+}
+
+export type RewardsPayload = {
+  [AjnaRewardsSource.bonus]: {
+    proofs: string[]
+    weeks: string[]
+    amounts: string[]
+  }
+  [AjnaRewardsSource.core]: {
+    proofs: string[]
+    weeks: string[]
+    amounts: string[]
+  }
+}
+
+const initMapToProofes: RewardsPayload = {
+  bonus: {
+    proofs: [],
+    weeks: [],
+    amounts: [],
+  },
+  core: {
+    proofs: [],
+    weeks: [],
+    amounts: [],
+  },
+}
+
+const mapToPayload = (records: AjnaRewardsWeeklyClaim[]): RewardsPayload =>
+  records.reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr.source]: {
+        proofs: [...acc[curr.source].proofs, curr.proof],
+        weeks: [...acc[curr.source].weeks, curr.week_number],
+        amounts: [...acc[curr.source].amounts, curr.amount],
+      },
+    }),
+    initMapToProofes,
+  )
 
 export async function getAjnaRewardsData(query: NextApiRequest['query']) {
   try {
@@ -20,21 +73,63 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
     }
   }
 
-  const { address, networkId } = querySchema.parse(query)
+  const { address, networkId, claimedBonusWeeks, claimedCoreWeeks } = querySchema.parse(query)
+
+  const parsedClaimedBonusWeeks = claimedBonusWeeks?.length
+    ? mapStringToNumberArray(claimedBonusWeeks)
+    : []
+
+  const parsedClaimedCoreWeeks = claimedCoreWeeks?.length
+    ? mapStringToNumberArray(claimedCoreWeeks)
+    : []
+
+  const commonQuery = {
+    user_address: address,
+    chain_id: parseInt(networkId, 10),
+  }
 
   try {
-    return {
-      amount: (
-        await prisma.ajnaRewardsWeeklyClaim.findMany({
-          where: {
-            user_address: address,
-            chain_id: parseInt(networkId, 10),
+    const bonusAmount = mapToAmount(
+      await prisma.ajnaRewardsWeeklyClaim.findMany({
+        where: {
+          ...commonQuery,
+          week_number: {
+            notIn: parsedClaimedBonusWeeks,
           },
-        })
-      )
-        .reduce<BigNumber>((total, current) => total.plus(new BigNumber(current.amount)), zero)
-        .shiftedBy(NEGATIVE_WAD_PRECISION)
-        .toString(),
+          source: AjnaRewardsSource.bonus,
+        },
+      }),
+    )
+
+    const coreAmount = mapToAmount(
+      await prisma.ajnaRewardsDailyClaim.findMany({
+        where: {
+          ...commonQuery,
+          week_number: {
+            notIn: parsedClaimedCoreWeeks,
+          },
+          source: AjnaRewardsSource.core,
+        },
+      }),
+    )
+
+    const claimableTodayData = await prisma.ajnaRewardsWeeklyClaim.findMany({
+      where: {
+        ...commonQuery,
+        week_number: {
+          notIn: [...parsedClaimedBonusWeeks, ...parsedClaimedCoreWeeks],
+        },
+      },
+    })
+
+    const claimableToday = mapToAmount(claimableTodayData)
+    const payload = mapToPayload(claimableTodayData)
+
+    return {
+      bonusAmount,
+      coreAmount,
+      claimableToday,
+      payload,
     }
   } catch (error) {
     return {
