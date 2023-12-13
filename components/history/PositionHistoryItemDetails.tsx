@@ -68,6 +68,11 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
 
   return (
     <DefinitionList>
+      {event.depositAmount && (
+        <PositionHistoryRow label={t('position-history.collateral-deposit')}>
+          {formatCryptoBalance(event.depositAmount)} {collateralToken}
+        </PositionHistoryRow>
+      )}
       {event.collateralBefore && event.collateralAfter && (
         <PositionHistoryRow label={t('position-history.total-collateral')}>
           {formatCryptoBalance(event.collateralBefore)} {collateralToken}{' '}
