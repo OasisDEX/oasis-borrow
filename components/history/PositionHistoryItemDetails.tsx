@@ -69,26 +69,14 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
   return (
     <DefinitionList>
       {event.collateralBefore && event.collateralAfter && (
-        <PositionHistoryRow
-          label={t(
-            event.collateralAfter.gt(event.collateralBefore)
-              ? 'position-history.collateral-deposit'
-              : 'position-history.withdrawn',
-          )}
-        >
+        <PositionHistoryRow label={t('position-history.total-collateral')}>
           {formatCryptoBalance(event.collateralBefore)} {collateralToken}{' '}
           <VaultChangesInformationArrow />
           {formatCryptoBalance(event.collateralAfter)} {collateralToken}
         </PositionHistoryRow>
       )}
       {event.debtBefore && event.debtAfter && (
-        <PositionHistoryRow
-          label={t(
-            event.debtAfter.gt(event.debtBefore)
-              ? 'position-history.debt-borrowed'
-              : 'position-history.repaid',
-          )}
-        >
+        <PositionHistoryRow label={t('position-history.position-debt')}>
           {formatCryptoBalance(event.debtBefore)} {quoteToken} <VaultChangesInformationArrow />
           {formatCryptoBalance(event.debtAfter)} {quoteToken}
         </PositionHistoryRow>
@@ -156,13 +144,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
         </PositionHistoryRow>
       )}
       {event.quoteTokensBefore && event.quoteTokensAfter && (
-        <PositionHistoryRow
-          label={t(
-            event.quoteTokensAfter.gt(event.quoteTokensBefore)
-              ? 'position-history.collateral-deposit'
-              : 'position-history.withdrawn',
-          )}
-        >
+        <PositionHistoryRow label={t('position-history.total-collateral')}>
           {formatCryptoBalance(event.quoteTokensBefore)} {quoteToken}{' '}
           <VaultChangesInformationArrow />
           {formatCryptoBalance(event.quoteTokensAfter)} {quoteToken}

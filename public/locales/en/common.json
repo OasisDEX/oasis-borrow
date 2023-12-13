@@ -467,6 +467,8 @@
     "move-lending-price": "Move lending price",
     "deposit-and-move-lending-price": "Deposit and move lending price",
     "withdraw-and-move-lending-price": "Withdraw and move lending price",
+    "total-collateral": "Total collateral",
+    "position-debt": "Position debt",
     "claim-collateral": "Claim collateral",
     "collateral-deposit": "Collateral Deposit",
     "withdrawn": "Withdrawn",
