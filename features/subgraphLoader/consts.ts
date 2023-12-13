@@ -284,7 +284,9 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   getAjnaClaimedRewards: gql`
     query getClaimed($walletAddress: ID!) {
       claimeds(where: { user: $walletAddress }) {
-        amount
+        week {
+          week
+        }
       }
     }
   `,
