@@ -1,25 +1,23 @@
 import type BigNumber from 'bignumber.js'
-import { getAjnaPoolInterestRateBoundaries } from 'blockchain/calls/ajnaErc20PoolFactory'
-import { deployAjnaPool } from 'blockchain/calls/ajnaErc20PoolFactory.constants'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { identifyTokens$ } from 'blockchain/identifyTokens'
 import type { IdentifiedTokens } from 'blockchain/identifyTokens.types'
 import { NetworkIds, networksById } from 'blockchain/networks'
-import { amountToWad } from 'blockchain/utils'
 import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
+import { getAjnaPoolInterestRateBoundaries } from 'features/ajna/pool-creator/calls'
+import { sendPoolCreatorTransaction$ } from 'features/ajna/pool-creator/observables/sendPoolCreatorTransaction'
 import type { usePoolCreatorFormReducto } from 'features/ajna/pool-creator/state'
 import type { PoolCreatorBoundries } from 'features/ajna/pool-creator/types'
 import type { SearchAjnaPoolData } from 'features/ajna/pool-finder/helpers'
 import { getOraclessProductUrl, searchAjnaPool } from 'features/ajna/pool-finder/helpers'
-import { takeUntilTxState } from 'features/automation/api/takeUntilTxState'
 import { getOmniTxStatuses } from 'features/omni-kit/contexts'
 import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
 import { AJNA_SUPPORTED_NETWORKS } from 'features/omni-kit/protocols/ajna/constants'
+import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType, type OmniValidationItem } from 'features/omni-kit/types'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { handleTransaction } from 'helpers/handleTransaction'
@@ -29,7 +27,6 @@ import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { first } from 'rxjs/operators'
-import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { Text } from 'theme-ui'
 
 interface UsePoolCreatorDataProps {
@@ -46,11 +43,11 @@ export function usePoolCreatorData({
   quoteAddress,
 }: UsePoolCreatorDataProps) {
   const { t } = useTranslation()
-  const { context$, txHelpers$ } = useMainContext()
+  const { connectedContext$ } = useMainContext()
 
-  const [context] = useObservable(context$)
-  const [txHelpers] = useObservable(txHelpers$)
+  const [context] = useObservable(connectedContext$)
 
+  const signer = context?.transactionProvider
   const [txDetails, setTxDetails] = useState<TxDetails>()
   const [cancelablePromise, setCancelablePromise] =
     useState<CancelablePromise<[SearchAjnaPoolData[], IdentifiedTokens]>>()
@@ -67,21 +64,19 @@ export function usePoolCreatorData({
   const networkContracts = getNetworkContracts(context?.chainId ?? NetworkIds.MAINNET)
 
   const onSubmit = () => {
-    txHelpers
-      ?.sendWithGasEstimation(deployAjnaPool, {
-        kind: TxMetaKind.deployAjnaPool,
+    if (signer) {
+      sendPoolCreatorTransaction$({
+        signer,
+        networkId: context.chainId as AjnaSupportedNetworksIds,
         collateralAddress,
+        interestRate,
         quoteAddress,
-        interestRate: amountToWad(interestRate.div(100)).toString(),
+      }).subscribe((txState) => {
+        handleTransaction({ txState, ethPrice: zero, setTxDetails })
       })
-      .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
-      .subscribe((txState) => {
-        handleTransaction({
-          txState,
-          ethPrice: zero,
-          setTxDetails,
-        })
-      })
+    } else {
+      console.error('Signer is undefined')
+    }
   }
 
   const txStatuses = getOmniTxStatuses(txDetails?.txStatus)
