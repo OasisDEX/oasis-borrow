@@ -1,15 +1,16 @@
 import type BigNumber from 'bignumber.js'
+import { sendGenericTransaction$ } from 'blockchain/better-calls/send-generic-transaction'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { identifyTokens$ } from 'blockchain/identifyTokens'
 import type { IdentifiedTokens } from 'blockchain/identifyTokens.types'
 import { NetworkIds, networksById } from 'blockchain/networks'
+import { amountToWad } from 'blockchain/utils'
 import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { AppLink } from 'components/Links'
 import { isAddress } from 'ethers/lib/utils'
 import { getAjnaPoolInterestRateBoundaries } from 'features/ajna/pool-creator/calls'
-import { sendPoolCreatorTransaction$ } from 'features/ajna/pool-creator/observables/sendPoolCreatorTransaction'
 import type { usePoolCreatorFormReducto } from 'features/ajna/pool-creator/state'
 import type { PoolCreatorBoundries } from 'features/ajna/pool-creator/types'
 import type { SearchAjnaPoolData } from 'features/ajna/pool-finder/helpers'
@@ -17,7 +18,6 @@ import { getOraclessProductUrl, searchAjnaPool } from 'features/ajna/pool-finder
 import { getOmniTxStatuses } from 'features/omni-kit/contexts'
 import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
 import { AJNA_SUPPORTED_NETWORKS } from 'features/omni-kit/protocols/ajna/constants'
-import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType, type OmniValidationItem } from 'features/omni-kit/types'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { handleTransaction } from 'helpers/handleTransaction'
@@ -28,6 +28,7 @@ import { Trans, useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { first } from 'rxjs/operators'
 import { Text } from 'theme-ui'
+import { AjnaErc20PoolFactory__factory } from 'types/ethers-contracts'
 
 interface UsePoolCreatorDataProps {
   collateralAddress: string
@@ -64,18 +65,25 @@ export function usePoolCreatorData({
   const networkContracts = getNetworkContracts(context?.chainId ?? NetworkIds.MAINNET)
 
   const onSubmit = () => {
-    if (signer) {
-      sendPoolCreatorTransaction$({
+    if (signer && 'ajnaERC20PoolFactory' in networkContracts) {
+      const ajnaErc20PoolFactoryAddress = networkContracts.ajnaERC20PoolFactory.address
+      const ajnaErc20PoolFactoryContract = AjnaErc20PoolFactory__factory.connect(
+        ajnaErc20PoolFactoryAddress,
         signer,
-        networkId: context.chainId as AjnaSupportedNetworksIds,
-        collateralAddress,
-        interestRate,
-        quoteAddress,
+      )
+
+      sendGenericTransaction$({
+        signer,
+        contractTransaction: async () => {
+          return await ajnaErc20PoolFactoryContract.deployPool(
+            collateralAddress,
+            quoteAddress,
+            amountToWad(interestRate.div(100)).toString(),
+          )
+        },
       }).subscribe((txState) => {
         handleTransaction({ txState, ethPrice: zero, setTxDetails })
       })
-    } else {
-      console.error('Signer is undefined')
     }
   }
 
