@@ -8,13 +8,15 @@ import { from, of } from 'rxjs'
 import { catchError, map, startWith, switchMap } from 'rxjs/operators'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
-export const sendGenericTransaction$ = ({
-  signer,
-  contractTransaction,
-}: {
-  signer: Signer
+interface sendGenericTransactionProps {
   contractTransaction: () => Promise<ContractTransaction>
-}): Observable<TxState<TxMeta>> => {
+  signer: Signer
+}
+
+export const sendGenericTransaction$ = ({
+  contractTransaction,
+  signer,
+}: sendGenericTransactionProps): Observable<TxState<TxMeta>> => {
   return from(contractTransaction())
     .pipe(
       switchMap((tx) => {
