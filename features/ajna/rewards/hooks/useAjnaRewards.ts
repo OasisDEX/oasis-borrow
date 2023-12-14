@@ -1,3 +1,4 @@
+import { AjnaRewardsSource } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getAjnaRewards } from 'features/ajna/rewards/helpers'
 import type { AjnaRewards } from 'features/ajna/rewards/types'
@@ -20,6 +21,18 @@ const defaultRewards: AjnaRewards = {
   regular: zero,
   total: zero,
   totalUsd: zero,
+  payload: {
+    bonus: {
+      weeks: [],
+      amounts: [],
+      proofs: [],
+    },
+    core: {
+      weeks: [],
+      amounts: [],
+      proofs: [],
+    },
+  },
 }
 const errorState = {
   rewards: defaultRewards,
@@ -45,46 +58,67 @@ export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
     })
 
     if (resolvedAddress) {
-      Promise.all([
-        fetch(
-          `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${chainId}`,
-        ),
-        getAjnaRewards(resolvedAddress, chainId),
-      ])
-        .then(async ([apiResponse, subgraphResponse]) => {
-          const parseApiResponse = (await apiResponse.json()) as Awaited<
-            ReturnType<typeof getAjnaRewardsData>
-          >
-          const claimed = subgraphResponse.reduce((total, current) => total + current.amount, 0)
+      try {
+        const subgraphResponse = await getAjnaRewards(resolvedAddress, chainId)
 
-          if (parseApiResponse.amount) {
-            setState({
-              ...state,
-              rewards: {
-                total: new BigNumber(parseApiResponse.amount).minus(claimed),
-                // TODO: recalculate when Ajna Token value is available
-                totalUsd: zero,
-                bonus: zero,
-                regular: zero,
-                claimable: zero,
-              },
-              isError: false,
-              isLoading: false,
-            })
-          }
-          if (parseApiResponse.error) {
-            setState({
-              ...state,
-              ...errorState,
-            })
-          }
-        })
-        .catch(() => {
+        const claimedBonusWeeks = subgraphResponse
+          .filter((item) => item.type === AjnaRewardsSource.bonus)
+          .map((item) => item.week)
+
+        const claimedCoreWeeks = subgraphResponse
+          .filter((item) => item.type === AjnaRewardsSource.core)
+          .map((item) => item.week)
+
+        const bonusWeeksQuery = claimedBonusWeeks.length
+          ? `&claimedBonusWeeks=${claimedBonusWeeks}`
+          : ''
+        const regularWeeksQuery = claimedCoreWeeks.length
+          ? `&claimedCoreWeeks=${claimedCoreWeeks}`
+          : ''
+
+        const apiResponse = await fetch(
+          `/api/ajna-rewards?address=${resolvedAddress.toLocaleLowerCase()}&networkId=${chainId}${bonusWeeksQuery}${regularWeeksQuery}`,
+        )
+
+        const parseApiResponse = (await apiResponse.json()) as Awaited<
+          ReturnType<typeof getAjnaRewardsData>
+        >
+
+        if (parseApiResponse.bonusAmount) {
+          const bonus = new BigNumber(parseApiResponse.bonusAmount)
+          const regular = new BigNumber(parseApiResponse.coreAmount)
+          const claimable = new BigNumber(parseApiResponse.claimableToday)
+          const total = bonus.plus(regular)
+
+          const payload = parseApiResponse.payload
+
+          setState({
+            ...state,
+            rewards: {
+              total,
+              totalUsd: zero,
+              bonus,
+              regular,
+              claimable,
+              payload,
+            },
+            isError: false,
+            isLoading: false,
+          })
+        }
+        if (parseApiResponse.error) {
           setState({
             ...state,
             ...errorState,
           })
+        }
+      } catch (e) {
+        console.warn('Failed to fetch Ajna rewards data', e)
+        setState({
+          ...state,
+          ...errorState,
         })
+      }
     }
   }, [resolvedAddress])
 

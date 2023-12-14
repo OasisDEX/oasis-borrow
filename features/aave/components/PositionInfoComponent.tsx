@@ -11,13 +11,20 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
+import { calculateViewValuesForPosition } from 'features/aave/services'
+import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
+import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
+import {
+  formatAmount,
+  formatBigNumber,
+  formatDecimalAsPercent,
+  formatPercent,
+} from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import type { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid, Text } from 'theme-ui'
 
 import { ManageSectionModal } from './ManageSectionModal'
 
@@ -35,6 +42,11 @@ type PositionInfoComponentProps = {
   aaveReserveDataDebtToken: AaveLikeReserveData
   apy?: BigNumber
   position: IPosition
+  collateralTokenPrice: BigNumber
+  debtTokenPrice: BigNumber
+  collateralTokenReserveData: AaveLikeReserveData
+  debtTokenReserveData: AaveLikeReserveData
+  cumulatives?: AaveCumulativeData
 }
 
 // todo: export and pull from oasisdex/oasis-actions
@@ -59,15 +71,27 @@ export const PositionInfoComponent = ({
   aaveReserveDataDebtToken,
   apy,
   position,
+  cumulatives,
+  collateralTokenPrice,
+  debtTokenPrice,
+  collateralTokenReserveData,
+  debtTokenReserveData,
 }: PositionInfoComponentProps) => {
   const { t } = useTranslation()
+  const currentPositionThings = calculateViewValuesForPosition(
+    position,
+    collateralTokenPrice,
+    debtTokenPrice,
+    collateralTokenReserveData.liquidityRate,
+    debtTokenReserveData.variableBorrowRate,
+  )
 
-  // Todo: move to lib
-  const netValueInDebtToken = position.collateral.normalisedAmount
-    .times(position.oraclePriceForCollateralDebtExchangeRate)
-    .minus(position.debt.normalisedAmount)
+  const netValueInDebtToken = currentPositionThings.netValueInCollateralToken.times(
+    position.oraclePriceForCollateralDebtExchangeRate,
+  )
 
-  const formattedNetValueInDebtToken = (position && amountFromWei(netValueInDebtToken, 18)) || zero // TODO
+  const formattedNetValueInDebtToken = netValueInDebtToken || zero // TODO
+  const netValueUsd = netValueInDebtToken.times(debtTokenPrice)
 
   const formattedCollateralValue = formatPositionBalance(position.collateral)
   const formattedDebtValue = formatPositionBalance(position.debt)
@@ -75,6 +99,11 @@ export const PositionInfoComponent = ({
   const belowCurrentRatio = position.oraclePriceForCollateralDebtExchangeRate
     .minus(position.liquidationPrice)
     .times(100)
+
+  const pnlWithoutFees = cumulatives?.cumulativeWithdrawInQuoteToken
+    .plus(netValueInDebtToken)
+    .minus(cumulatives.cumulativeDepositInQuoteToken)
+    .div(cumulatives.cumulativeDepositInQuoteToken)
 
   return (
     <DetailsSection
@@ -84,40 +113,33 @@ export const PositionInfoComponent = ({
           <DetailsSectionContentCard
             title={t('net-value')}
             value={formatBigNumber(formattedNetValueInDebtToken, 2)}
+            footnote={
+              pnlWithoutFees &&
+              `${t('omni-kit.content-card.net-value.footnote')} ${
+                pnlWithoutFees.gte(zero) ? '+' : ''
+              }
+              ${formatDecimalAsPercent(pnlWithoutFees)}`
+            }
             unit={position.debt.symbol}
             modal={
-              <ManageSectionModal
-                heading={t('net-value')}
-                description={
-                  <>
-                    <Grid gap={2}>
-                      <Text as="p" variant="paragraph2" sx={{ mt: 2 }}>
-                        {t('manage-earn-vault.net-value-calculation', {
-                          oraclePrice: formatBigNumber(
-                            position.oraclePriceForCollateralDebtExchangeRate || zero,
-                            4,
-                          ),
-                          collateralSymbol: position.collateral.symbol,
-                          debtSymbol: position.debt.symbol,
-                        })}
-                      </Text>
-                    </Grid>
-                    <Grid gap={2} columns={[1, 2]}>
-                      <div />
-                      <Box>{t('manage-earn-vault.eth-value')}</Box>
-                      <Box>{t('manage-earn-vault.collateral-value-in-vault')}</Box>
-                      <Box>{formattedCollateralValue}</Box>
-                      <Box>{t('manage-earn-vault.debt-value-in-vault')}</Box>
-                      <Box>{formattedDebtValue}</Box>
-                      <Box>{t('net-value')}</Box>
-                      <Box>
-                        {formatAmount(formattedNetValueInDebtToken, position.debt.symbol)}{' '}
-                        {position.debt.symbol}
-                      </Box>
-                    </Grid>
-                  </>
-                }
-              />
+              cumulatives && (
+                <OmniMultiplyNetValueModal
+                  cumulatives={{
+                    cumulativeDepositUSD: cumulatives?.cumulativeDeposit,
+                    cumulativeWithdrawUSD: cumulatives.cumulativeWithdraw,
+                    cumulativeFeesUSD: cumulatives.cumulativeFees,
+                    cumulativeDeposit: cumulatives?.cumulativeDepositInQuoteToken,
+                    cumulativeWithdraw: cumulatives.cumulativeWithdrawInCollateralToken,
+                    cumulativeFees: cumulatives.cumulativeFeesInQuoteToken,
+                  }}
+                  netValue={netValueUsd}
+                  pnl={pnlWithoutFees}
+                  pnlInCollateralToken
+                  pnlUSD={pnlWithoutFees && cumulatives.cumulativeDeposit.times(pnlWithoutFees)}
+                  collateralPrice={debtTokenPrice}
+                  collateralToken={position.debt.symbol}
+                />
+              )
             }
           />
           <DetailsSectionContentCard
@@ -149,6 +171,7 @@ export const PositionInfoComponent = ({
                     i18nKey="manage-earn-vault.liquidation-price-ratio-modal-aave"
                     components={[
                       <AppLink
+                        key="DUNE_ORG_STETHETH_PEG_HISTORY"
                         target="_blank"
                         href={EXTERNAL_LINKS.DUNE_ORG_STETHETH_PEG_HISTORY}
                       />,

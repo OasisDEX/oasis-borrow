@@ -13,6 +13,7 @@ const historyQuery = gql`
         cumulativeDeposit
         cumulativeWithdraw
         cumulativeFees
+        cumulativeFeesInQuoteToken
         cumulativeDepositInQuoteToken
         cumulativeWithdrawInQuoteToken
         cumulativeDespositInCollateralToken
@@ -29,6 +30,7 @@ type HistoryQueryResponse = {
       cumulativeDeposit: string
       cumulativeWithdraw: string
       cumulativeFees: string
+      cumulativeFeesInQuoteToken: string
       cumulativeDepositInQuoteToken: string
       cumulativeWithdrawInQuoteToken: string
       cumulativeDespositInCollateralToken: string
@@ -43,6 +45,7 @@ export type HistoryResponse = {
   cumulativeDeposit: BigNumber
   cumulativeWithdraw: BigNumber
   cumulativeFees: BigNumber
+  cumulativeFeesInQuoteToken: BigNumber
   cumulativeDepositInQuoteToken: BigNumber
   cumulativeWithdrawInQuoteToken: BigNumber
   cumulativeDespositInCollateralToken: BigNumber
@@ -90,6 +93,7 @@ export const getHistoryData = async ({
             cumulativeDeposit: new BigNumber(pos.position.cumulativeDeposit),
             cumulativeWithdraw: new BigNumber(pos.position.cumulativeWithdraw),
             cumulativeFees: new BigNumber(pos.position.cumulativeFees),
+            cumulativeFeesInQuoteToken: new BigNumber(pos.position.cumulativeFeesInQuoteToken),
             cumulativeDepositInQuoteToken: new BigNumber(
               pos.position.cumulativeDepositInQuoteToken,
             ),

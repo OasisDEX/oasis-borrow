@@ -22,7 +22,7 @@ import type { PositionId } from 'features/aave/types/position-id'
 import type {
   AaveCumulativeData,
   AaveHistoryEvent,
-} from 'features/omni-kit/protocols/ajna/history/types'
+} from 'features/omni-kit/protocols/aave/history/types'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'

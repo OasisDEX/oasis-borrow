@@ -467,6 +467,8 @@
     "move-lending-price": "Move lending price",
     "deposit-and-move-lending-price": "Deposit and move lending price",
     "withdraw-and-move-lending-price": "Withdraw and move lending price",
+    "total-collateral": "Total collateral",
+    "position-debt": "Position debt",
     "claim-collateral": "Claim collateral",
     "collateral-deposit": "Collateral Deposit",
     "withdrawn": "Withdrawn",
@@ -2698,8 +2700,8 @@
         "modal-table-row-2": "Deposits",
         "modal-table-row-3": "Withdrawals",
         "modal-table-row-4": "Gas Fees Spent",
-        "modal-value": "Unrealised Profit & Loss",
-        "modal-footnote-1": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative deposits",
+        "modal-value": "Profit & Loss",
+        "modal-footnote-1": "P&L = ((Net value + Cumulative withdrawals) - Cumulative deposits) / Cumulative deposits",
         "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction."
       }
     },
@@ -2990,7 +2992,8 @@
       "bonus-rewards": "Bonus rewards",
       "regular-rewards": "Regular rewards",
       "total-rewards": "Total rewards",
-      "claimable-today": "Claimable today"
+      "claimable-today": "Claimable today",
+      "two-tx": "If you have Regular and Bonus rewards to claim, you will be asked to sign two transactions when claiming."
     },
     "product-hub-tooltips": {
       "no-max-ltv": "There are currently no borrow or multiply positions for this pool. Max LTV will be calculated following the creation of the first position.",

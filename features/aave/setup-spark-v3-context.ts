@@ -71,7 +71,6 @@ export function setupSparkV3Context(
     proxyStateMachine,
     unconsumedDpmProxyForConnectedAccount$,
     disconnectedGraphQLClient$,
-    chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
   } = getCommonPartsFromProductContext(
     mainContext,
@@ -257,7 +256,6 @@ export function setupSparkV3Context(
     strategyConfig$,
     updateStrategyConfig,
     proxiesRelatedWithPosition$,
-    chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
     earnCollateralsReserveData,
     dpmAccountStateMachine,

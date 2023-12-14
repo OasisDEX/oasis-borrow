@@ -4,8 +4,9 @@ import type { NetworkIds } from 'blockchain/networks'
 import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { DefinitionList } from 'components/DefinitionList'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
+import { type AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/types'
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
-import { type AaveHistoryEvent, hasTrigger } from 'features/omni-kit/protocols/ajna/history/types'
+import { hasTrigger } from 'features/omni-kit/protocols/ajna/history/types'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
@@ -67,27 +68,20 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
 
   return (
     <DefinitionList>
+      {event.depositAmount && (
+        <PositionHistoryRow label={t('position-history.collateral-deposit')}>
+          {formatCryptoBalance(event.depositAmount)} {collateralToken}
+        </PositionHistoryRow>
+      )}
       {event.collateralBefore && event.collateralAfter && (
-        <PositionHistoryRow
-          label={t(
-            event.collateralAfter.gt(event.collateralBefore)
-              ? 'position-history.collateral-deposit'
-              : 'position-history.withdrawn',
-          )}
-        >
+        <PositionHistoryRow label={t('position-history.total-collateral')}>
           {formatCryptoBalance(event.collateralBefore)} {collateralToken}{' '}
           <VaultChangesInformationArrow />
           {formatCryptoBalance(event.collateralAfter)} {collateralToken}
         </PositionHistoryRow>
       )}
       {event.debtBefore && event.debtAfter && (
-        <PositionHistoryRow
-          label={t(
-            event.debtAfter.gt(event.debtBefore)
-              ? 'position-history.debt-borrowed'
-              : 'position-history.repaid',
-          )}
-        >
+        <PositionHistoryRow label={t('position-history.position-debt')}>
           {formatCryptoBalance(event.debtBefore)} {quoteToken} <VaultChangesInformationArrow />
           {formatCryptoBalance(event.debtAfter)} {quoteToken}
         </PositionHistoryRow>
@@ -155,13 +149,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
         </PositionHistoryRow>
       )}
       {event.quoteTokensBefore && event.quoteTokensAfter && (
-        <PositionHistoryRow
-          label={t(
-            event.quoteTokensAfter.gt(event.quoteTokensBefore)
-              ? 'position-history.collateral-deposit'
-              : 'position-history.withdrawn',
-          )}
-        >
+        <PositionHistoryRow label={t('position-history.total-collateral')}>
           {formatCryptoBalance(event.quoteTokensBefore)} {quoteToken}{' '}
           <VaultChangesInformationArrow />
           {formatCryptoBalance(event.quoteTokensAfter)} {quoteToken}
