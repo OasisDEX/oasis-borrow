@@ -1,7 +1,7 @@
 import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
-import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
-import { createExecuteTransaction } from 'blockchain/better-calls/dpm-account'
+import type { DpmExecuteOperationExecutorActionParameters } from 'blockchain/better-calls/dpm-account'
+import { createExecuteOperationExecutorTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import type { Context } from 'blockchain/network.types'
 import type { NetworkIds } from 'blockchain/networks'
@@ -66,11 +66,14 @@ export function getManageAaveV3PositionStateMachineServices(
 
       const { etherscan } = contracts
 
-      const machine = createEthersTransactionStateMachine<DpmExecuteParameters>().withContext({
-        etherscanUrl: etherscan.url,
-        transaction: createExecuteTransaction,
-        transactionParameters: contextToEthersTransactions(context),
-      })
+      const machine =
+        createEthersTransactionStateMachine<DpmExecuteOperationExecutorActionParameters>().withContext(
+          {
+            etherscanUrl: etherscan.url,
+            transaction: createExecuteOperationExecutorTransaction,
+            transactionParameters: contextToEthersTransactions(context),
+          },
+        )
 
       const actor = interpret(machine, {
         id: 'ethersTransactionMachine',

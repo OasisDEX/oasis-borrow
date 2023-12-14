@@ -16,13 +16,22 @@ describe('get-trigger-execution-collateral-price-denominated-in-debt', () => {
     const positionValue = {
       ltv: 0, // doesn't matter for the calculations
       collateral: {
-        symbol: 'ETH',
+        token: {
+          symbol: 'ETH',
+          address: '0x0',
+          decimals: 18,
+        },
         amount: new BigNumber(10),
       },
       debt: {
-        symbol: 'DAI',
+        token: {
+          symbol: 'DAI',
+          address: '0x0',
+          decimals: 18,
+        },
         amount: new BigNumber(1400),
       },
+      dpm: '0x0',
     }
     const executionTriggerLTV = 50
     const result = getTriggerExecutionCollateralPriceDenominatedInDebt({

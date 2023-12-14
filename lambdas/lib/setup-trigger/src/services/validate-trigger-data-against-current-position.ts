@@ -4,15 +4,11 @@ import {
   priceSchema,
   aaveBasicBuyTriggerDataSchema,
   aaveBasicSellTriggerDataSchema,
+  mapZodResultToValidationResults,
+  ValidationResults,
+  CustomIssueCodes,
 } from '~types'
 import { z, ZodIssueCode } from 'zod'
-
-type Issue = { message: string; code: string; path: (string | number)[] }
-
-export interface ValidationResults {
-  success: boolean
-  error: Issue[]
-}
 
 const validationSchema = z
   .object({
@@ -30,7 +26,7 @@ const validationSchema = z
     {
       message: 'Execution price is bigger than max buy price',
       params: {
-        code: 'execution-price-bigger-than-max-buy-price',
+        code: CustomIssueCodes.ExecutionPriceBiggerThanMaxBuyPrice,
       },
       path: ['triggerData', 'maxBuyPrice'],
     },
@@ -45,7 +41,7 @@ const validationSchema = z
     {
       message: 'Execution price is smaller than min sell price',
       params: {
-        code: 'execution-price-smaller-than-min-sell-price',
+        code: CustomIssueCodes.ExecutionPriceSmallerThanMinSellPrice,
       },
       path: ['triggerData', 'minSellPrice'],
     },
@@ -57,7 +53,7 @@ const validationSchema = z
     {
       message: 'Execution LTV is smaller than target LTV',
       params: {
-        code: 'execution-ltv-smaller-than-target-ltv',
+        code: CustomIssueCodes.ExecutionLTVSmallerThanTargetLTV,
       },
     },
   )
@@ -68,7 +64,7 @@ const validationSchema = z
     {
       message: 'Execution LTV is bigger than current LTV',
       params: {
-        code: 'execution-ltv-bigger-than-current-ltv',
+        code: CustomIssueCodes.ExecutionLTVBiggerThanCurrentLTV,
       },
     },
   )
@@ -80,18 +76,12 @@ export function validateTriggerDataAgainstCurrentPosition(
 ): ValidationResults {
   const validationResult = validationSchema.safeParse(params)
 
-  const errors: Issue[] = !validationResult.success
-    ? validationResult.error.errors.map((error) => {
-        return {
-          message: error.message,
-          code: error.code === ZodIssueCode.custom ? error.params?.code : error.code,
-          path: error.path,
-        }
-      })
-    : []
-
-  return {
-    success: validationResult.success,
-    error: errors,
+  if (validationResult.success) {
+    return {
+      success: true,
+      errors: [],
+    }
   }
+
+  return mapZodResultToValidationResults(validationResult)
 }

@@ -11,7 +11,7 @@
     "build": "zx build.mjs",
     "install": "zx install.mjs",
     "prepare-env": "cp env.json.template env.json",
-    "sam:local": "sam local start-api --env-vars env.json -p 4000",
+    "sam:local": "sam local start-api --env-vars env.json  --host 0.0.0.0 -p 4000",
     "sam:docker": "sam local start-api --env-vars env.json --host 0.0.0.0 -p 3000"
   },
   "author": "Piter",

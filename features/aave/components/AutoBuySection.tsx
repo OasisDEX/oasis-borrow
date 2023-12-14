@@ -124,12 +124,12 @@ export function AutoBuySection({
           {/*}*/}
           <DetailsSectionContentCardWrapper>
             <ContentCardTriggerExecutionLTV
-              collateralToken={position.collateral.symbol}
+              collateralToken={position.collateral.token.symbol}
               currentExecutionLTV={currentTrigger?.executionLTV}
               afterTxExecutionLTV={afterTxTrigger?.executionLTV}
             />
             <ContentCardTriggerTargetLTV
-              collateralToken={position.collateral.symbol}
+              collateralToken={position.collateral.token.symbol}
               currentTargetLTV={currentTrigger?.targetLTV}
               afterTxTargetLTV={afterTxTrigger?.targetLTV}
             />

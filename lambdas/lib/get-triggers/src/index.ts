@@ -49,8 +49,6 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     return ResponseInternalServerError('SUBGRAPH_BASE is not set')
   }
 
-  logger.info('QUERY PARAMS', { params: event.queryStringParameters })
-
   const parseResult = paramsSchema.safeParse(event.queryStringParameters)
   if (!parseResult.success) {
     logger.warn('Incorrect query params', {
@@ -71,8 +69,6 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   })
 
   const triggers = await automationSubgraphClient.getTriggers(params)
-
-  logger.info('Received triggers for account', { account: params.dpm, triggers })
 
   const aaveStopLossToCollateral: AaveStopLossToCollateral | undefined = triggers.triggers
     .filter((trigger) => trigger.triggerType == AaveStopLossToCollateralV2ID)

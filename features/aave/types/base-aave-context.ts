@@ -1,6 +1,6 @@
-import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/dma-library'
+import { AaveLikePosition, IPosition, IRiskRatio, IStrategy } from "@oasisdex/dma-library";
 import BigNumber from 'bignumber.js'
-import { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
+import { DpmExecuteOperationExecutorActionParameters } from 'blockchain/better-calls/dpm-account'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context, ContextConnected } from 'blockchain/network.types'
@@ -70,7 +70,7 @@ export interface BaseAaveContext {
     debt: string
     deposit: string
   }
-  currentPosition?: IPosition
+  currentPosition?: AaveLikePosition
 
   currentStep: number
   totalSteps: number
@@ -135,7 +135,7 @@ export function contextToTransactionParameters(context: BaseAaveContext): Operat
   }
 }
 
-export function contextToEthersTransactions(context: BaseAaveContext): DpmExecuteParameters {
+export function contextToEthersTransactions(context: BaseAaveContext): DpmExecuteOperationExecutorActionParameters {
   const { amount, token } = getTxTokenAndAmount(context)
 
   return {

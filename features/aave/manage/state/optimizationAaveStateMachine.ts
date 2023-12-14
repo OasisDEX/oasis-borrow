@@ -1,7 +1,9 @@
-import type { IPosition } from '@oasisdex/dma-library'
+import type { AaveLikePosition } from '@oasisdex/dma-library'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { amountFromWei } from 'blockchain/utils'
 import type { IStrategyConfig } from 'features/aave/types'
+import type { GetTriggersResponse } from 'helpers/triggers'
+import { getTriggersRequest } from 'helpers/triggers'
 import type { ActorRefFrom } from 'xstate'
 import { actions, createMachine, sendTo } from 'xstate'
 
@@ -11,29 +13,46 @@ const { assign } = actions
 
 export type OptimizationAaveEvent =
   | { type: 'SHOW_AUTO_BUY' }
-  | { type: 'POSITION_UPDATED'; position: IPosition }
+  | { type: 'POSITION_UPDATED'; position: AaveLikePosition }
+  | { type: 'TRIGGERS_UPDATED'; currentTriggers: GetTriggersResponse }
 
 export type OptimizationAaveContext = {
   readonly strategyConfig: IStrategyConfig
   readonly positionOwner: string
-  position?: IPosition
+  position?: AaveLikePosition
   readonly dpm: UserDpmAccount
   currentView?: 'auto-buy' | undefined
   showAutoBuyBanner: boolean
+  currentTriggers: GetTriggersResponse
   autoBuyTrigger: ActorRefFrom<typeof autoBuyTriggerAaveStateMachine>
 }
 
-function mapPositionToAutoBuyPosition({ position }: { position: IPosition }): PositionLike {
+function mapPositionToAutoBuyPosition({
+  position,
+  dpm,
+}: {
+  position: AaveLikePosition
+  dpm: UserDpmAccount
+}): PositionLike {
   return {
     ltv: position.riskRatio.loanToValue.times(100).toNumber(),
     collateral: {
-      symbol: position.collateral.symbol,
+      token: {
+        symbol: position.collateral.symbol,
+        address: position.collateral.address,
+        decimals: position.collateral.precision,
+      },
       amount: amountFromWei(position.collateral.amount, position.collateral.precision),
     },
     debt: {
-      symbol: position.debt.symbol,
+      token: {
+        symbol: position.debt.symbol,
+        address: position.debt.address,
+        decimals: position.debt.precision,
+      },
       amount: amountFromWei(position.debt.amount, position.debt.precision),
     },
+    dpm: dpm.proxy,
   }
 }
 
@@ -44,11 +63,24 @@ export const optimizationAaveStateMachine = createMachine(
     schema: {
       context: {} as OptimizationAaveContext,
       events: {} as OptimizationAaveEvent,
+      services: {} as {
+        getTriggers: {
+          data: GetTriggersResponse
+        }
+      },
     },
     preserveActionOrder: true,
     predictableActionArguments: true,
     entry: [],
-    invoke: [],
+    invoke: [
+      {
+        src: 'getTriggers',
+        id: 'getTriggers',
+        onDone: {
+          actions: ['updateTriggers'],
+        },
+      },
+    ],
     id: 'optimizationAaveMachine',
     initial: 'idle',
     states: {
@@ -95,9 +127,12 @@ export const optimizationAaveStateMachine = createMachine(
         },
         (context, event) => ({
           type: 'UPDATE_POSITION_VALUE',
-          position: mapPositionToAutoBuyPosition(event),
+          position: mapPositionToAutoBuyPosition({ ...event, ...context }),
         }),
       ),
+      updateTriggers: assign((context, event) => ({
+        currentTriggers: event.data,
+      })),
       updateAutoBuyDefaults: sendTo(
         (context) => {
           return context.autoBuyTrigger
@@ -117,6 +152,12 @@ export const optimizationAaveStateMachine = createMachine(
           }
         },
       ),
+    },
+    services: {
+      getTriggers: async (context) => {
+        const { dpm, strategyConfig } = context
+        return await getTriggersRequest({ dpm, networkId: strategyConfig.networkId })
+      },
     },
   },
 )

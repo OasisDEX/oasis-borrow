@@ -19,6 +19,21 @@ import type {
 } from './prices.types'
 import { getToken } from './tokensMetadata'
 
+export async function getGasPrice(): Promise<GasPriceParams> {
+  const response = await fetch(`/api/gasPrice`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  })
+  if (response.status !== 200) throw new Error(await response.text())
+  const { maxFeePerGas, maxPriorityFeePerGas } = await response.json()
+  return {
+    maxFeePerGas: new BigNumber(maxFeePerGas),
+    maxPriorityFeePerGas: new BigNumber(maxPriorityFeePerGas),
+  }
+}
+
 export function createGasPrice$(
   onEveryBlock$: Observable<number>,
   context$: Observable<Context>,
