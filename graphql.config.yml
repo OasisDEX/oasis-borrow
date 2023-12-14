@@ -1,0 +1,13 @@
+schema: schema.graphql
+extensions:
+  endpoints:
+    Default GraphQL Endpoint:
+      url: https://cache-mainnet-staging.staging.summer.fi/api/v1
+      headers:
+        user-agent: JS GraphQL
+      introspect: false
+    Local GraphQL Endpoint:
+      url: http://localhost:3001/v1
+      headers:
+        user-agent: JS GraphQL
+      introspect: false

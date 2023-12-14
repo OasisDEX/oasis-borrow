@@ -7,7 +7,7 @@ import {
   useManageAaveStateMachineContext,
   useOptimizationAaveStateMachineContext,
 } from 'features/aave/manage/contexts'
-import { AutoBuySiderbarAaveVault } from 'features/aave/manage/sidebars/AutoBuySiderbarAaveVault'
+import { AutoBuySidebarAaveVault } from 'features/aave/manage/sidebars/AutoBuySidebarAaveVault'
 import type { AutoBuyTriggerAaveContext } from 'features/aave/manage/state'
 import React from 'react'
 import { Box, Container, Grid } from 'theme-ui'
@@ -45,7 +45,7 @@ export function OptimizationControl() {
 
   const autoBuyDetailsLayoutProps = getAutoBuyDetailsLayoutProps(
     autoBuyState.context,
-    autoBuyState.value === 'editing',
+    !autoBuyState.matches('idle'),
   )
 
   return (
@@ -61,10 +61,12 @@ export function OptimizationControl() {
         </Grid>
         {optimizationState.context.currentView === 'auto-buy' && autoBuyState.context.position && (
           <Box>
-            <AutoBuySiderbarAaveVault
+            <AutoBuySidebarAaveVault
               strategy={state.context.strategyConfig}
               state={{ ...autoBuyState.context, position: autoBuyState.context.position }}
               updateState={sendAutoBuyEvent}
+              isStateMatch={(s) => autoBuyState.matches(s)}
+              canTransitWith={(s) => autoBuyState.can(s)}
               isEditing={autoBuyState.value === 'editing'}
             />
           </Box>

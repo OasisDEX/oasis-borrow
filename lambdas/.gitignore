@@ -19,3 +19,5 @@ typechain
 *.tsbuildinfo
 .parcel-cache
 dist
+/**/types/graphql/
+env.json

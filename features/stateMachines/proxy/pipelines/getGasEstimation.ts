@@ -7,8 +7,8 @@ import { combineLatest } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
 
 export function getGasEstimation$(
-  gasPrice$: Observable<GasPriceParams>,
-  tokenPriceInUSD$: Observable<Tickers>,
+  gasPrice$: Observable<GasPriceParams> | Promise<GasPriceParams>,
+  tokenPriceInUSD$: Observable<Tickers> | Promise<Tickers>,
   estimatedGasQtyRequired: number,
 ): Observable<HasGasEstimation> {
   return combineLatest(gasPrice$, tokenPriceInUSD$).pipe(

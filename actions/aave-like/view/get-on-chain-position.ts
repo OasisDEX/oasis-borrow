@@ -1,4 +1,4 @@
-import type { IPosition, Tokens } from '@oasisdex/dma-library'
+import type { AaveLikePosition, Tokens } from '@oasisdex/dma-library'
 import { views } from '@oasisdex/dma-library'
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import type { GetOnChainPositionParams } from 'actions/aave-like/types'
@@ -12,7 +12,7 @@ export async function getOnChainPosition({
   collateralToken,
   debtToken,
   protocol,
-}: GetOnChainPositionParams): Promise<IPosition> {
+}: GetOnChainPositionParams): Promise<AaveLikePosition> {
   const provider = getRpcProvider(networkId)
 
   const _collateralToken = {

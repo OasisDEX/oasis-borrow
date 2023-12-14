@@ -5,7 +5,7 @@ import { exit } from 'process'
 
 // Constants
 
-const LAMBDA_NAMES = ['portfolio-assets', 'portfolio-migrations', 'portfolio-overview']
+const LAMBDA_NAMES = ['portfolio-assets', 'portfolio-migrations', 'portfolio-overview', 'get-triggers', 'setup-trigger']
 
 // Main
 const [lambdaName] = argv._

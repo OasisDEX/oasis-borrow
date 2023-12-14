@@ -22,6 +22,9 @@ function useSetupOptimizationStateContext(strategy: IStrategyConfig, dpm: DPMPro
       dpm: dpm.dpmProxy,
       showAutoBuyBanner: true,
       autoBuyTrigger: autobuyStateMachine,
+      currentTriggers: {
+        triggers: {},
+      },
     }),
     { devTools: env.NODE_ENV !== 'production' },
   ).start()
