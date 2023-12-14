@@ -24,17 +24,15 @@ const mapToAmount = <T extends { week_number: number; amount: string }[]>(record
     .toString()
 }
 
+type PayloadBase = {
+  proofs: string[][]
+  weeks: string[]
+  amounts: string[]
+}
+
 export type RewardsPayload = {
-  [AjnaRewardsSource.bonus]: {
-    proofs: string[]
-    weeks: string[]
-    amounts: string[]
-  }
-  [AjnaRewardsSource.core]: {
-    proofs: string[]
-    weeks: string[]
-    amounts: string[]
-  }
+  [AjnaRewardsSource.bonus]: PayloadBase
+  [AjnaRewardsSource.core]: PayloadBase
 }
 
 const initMapToProofes: RewardsPayload = {

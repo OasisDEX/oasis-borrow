@@ -6,10 +6,12 @@ import * as aaveV3Pool from 'blockchain/abi/aave-v3-pool.json'
 import * as aaveV3PoolDataProvider from 'blockchain/abi/aave-v3-pool-data-provider.json'
 import * as accountFactory from 'blockchain/abi/account-factory.json'
 import * as accountGuard from 'blockchain/abi/account-guard.json'
+import * as ajnaBonusRedeemer from 'blockchain/abi/ajna-bonus-redeemer.json'
 import * as ajnaERC20PoolFactory from 'blockchain/abi/ajna-erc20-pool-factory.json'
 import * as ajnaPool from 'blockchain/abi/ajna-pool.json'
 import * as ajnaPoolInfo from 'blockchain/abi/ajna-pool-info.json'
 import * as ajnaProxyActions from 'blockchain/abi/ajna-proxy-actions.json'
+import * as ajnaReedemer from 'blockchain/abi/ajna-reedemer.json'
 import * as automationBot from 'blockchain/abi/automation-bot.json'
 import * as automationBotAggregator from 'blockchain/abi/automation-bot-aggregator.json'
 import * as automationBotV2 from 'blockchain/abi/automation-bot-v2.json'
@@ -173,6 +175,8 @@ export const baseContracts: MainnetContractsWithOptional = {
     'YIELDETH-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_YIELDETHETH),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, base.ajna.ERC20PoolFactory),
+  ajnaRedeemer: contractDesc(ajnaReedemer, base.ajna.AjnaRewardsReedemer),
+  ajnaBonusRedeemer: contractDesc(ajnaBonusRedeemer, base.ajna.AjnaBonusRewardsReedemer),
   balancerVault: contractDesc(balancerVault, base.common.BalancerVault),
   // NOT contracts
   cacheApi: 'not-implemented',
