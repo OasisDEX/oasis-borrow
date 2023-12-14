@@ -132,6 +132,7 @@ const areParamsValid = (
 }
 
 export type AutoBuyTriggerAaveContext = {
+  isLoading: boolean
   defaults: AutoBuyFormDefaults
   position?: PositionLike
   executionTriggerLTV?: number
@@ -196,6 +197,7 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
       events: {} as AutoBuyTriggerAaveEvent,
     },
     context: {
+      isLoading: false,
       defaults: {
         minSliderValue: 0,
         maxSliderValue: 100,
@@ -263,19 +265,19 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
             target: 'idle',
           },
           SET_EXECUTION_TRIGGER_LTV: {
-            actions: ['setExecutionTriggerLTV', 'sendRequest'],
+            actions: ['setExecutionTriggerLTV', 'sendRequest', 'setLoading'],
           },
           SET_TARGET_TRIGGER_LTV: {
-            actions: ['setTargetTriggerLTV', 'sendRequest'],
+            actions: ['setTargetTriggerLTV', 'sendRequest', 'setLoading'],
           },
           SET_MAX_BUY_PRICE: {
-            actions: ['setMaxBuyPrice', 'sendRequest'],
+            actions: ['setMaxBuyPrice', 'sendRequest', 'setLoading'],
           },
           SET_USE_MAX_BUY_PRICE: {
-            actions: ['setUseMaxBuyPrice', 'sendRequest'],
+            actions: ['setUseMaxBuyPrice', 'sendRequest', 'setLoading'],
           },
           SET_MAX_GAS_FEE: {
-            actions: ['setMaxGasFee', 'sendRequest'],
+            actions: ['setMaxGasFee', 'sendRequest', 'setLoading'],
           },
           REVIEW_TRANSACTION: {
             cond: 'isReviewable',
@@ -327,7 +329,7 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
         actions: ['updatePositionValue'],
       },
       TRIGGER_RESPONSE_RECEIVED: {
-        actions: ['updateTriggerResponse'],
+        actions: ['updateTriggerResponse', 'setNotLoading'],
       },
       GAS_ESTIMATION_UPDATED: {
         actions: ['updateGasEstimation'],
@@ -340,10 +342,7 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
   {
     guards: {
       isReviewable: (context) => {
-        return (
-          context.setupTriggerResponse?.transaction !== undefined &&
-          context.setupTriggerResponse.errors?.length === 0
-        )
+        return context.setupTriggerResponse?.transaction !== undefined
       },
       canStartTransaction: (context) => {
         return (
@@ -400,6 +399,12 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
       })),
       updateGasEstimation: assign((_, event) => ({
         gasEstimation: event.gasEstimation,
+      })),
+      setNotLoading: assign(() => ({
+        isLoading: false,
+      })),
+      setLoading: assign(() => ({
+        isLoading: true,
       })),
     },
     services: {

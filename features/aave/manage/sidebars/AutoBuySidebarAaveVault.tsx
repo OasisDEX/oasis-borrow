@@ -103,6 +103,8 @@ function getAutoBuyInfoSectionProps({
   }
 
   return {
+    transactionCost: state.gasEstimation ?? { gasEstimationStatus: 'unset' },
+    isLoading: state.isLoading,
     collateralToBuy: amountFromWei(
       new BigNumber(state.setupTriggerResponse?.simulation.collateralAmountToBuy),
       state.position.collateral.token.decimals,
@@ -329,12 +331,14 @@ export function usePrimaryButton(
   switch (true) {
     case isStateMatch('idle'):
       return {
+        isLoading: props.state.isLoading,
         action: () => {},
         disabled: true,
         label: editingLabel,
       }
     case isStateMatch('editing'):
       return {
+        isLoading: props.state.isLoading,
         action: () => {
           props.updateState({ type: 'REVIEW_TRANSACTION' })
         },
@@ -343,6 +347,7 @@ export function usePrimaryButton(
       }
     case isStateMatch('review'):
       return {
+        isLoading: props.state.isLoading,
         action: () => {
           props.updateState({ type: 'START_TRANSACTION' })
         },
@@ -351,18 +356,21 @@ export function usePrimaryButton(
       }
     case isStateMatch('tx'):
       return {
+        isLoading: props.state.isLoading,
         action: () => {},
         disabled: true,
         label: 'automation.setting',
       }
     case isStateMatch('txDone'):
       return {
+        isLoading: props.state.isLoading,
         action: () => {},
         disabled: true,
         label: t('finished'),
       }
   }
   return {
+    isLoading: props.state.isLoading,
     action: () => {},
     disabled: true,
     label: '',
