@@ -2,7 +2,6 @@ import coinbaseModule from '@web3-onboard/coinbase'
 import type { Chain } from '@web3-onboard/common'
 import gnosisModule from '@web3-onboard/gnosis'
 import injectedModule from '@web3-onboard/injected-wallets'
-import ledgerModule from '@web3-onboard/ledger'
 import { init } from '@web3-onboard/react'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnectModule from '@web3-onboard/walletconnect'
@@ -21,10 +20,6 @@ const walletConnect = walletConnectModule({
   version: 2,
 })
 
-const ledger = ledgerModule({
-  projectId: '832580820193ff6bae62a15dc0feff03',
-  walletConnectVersion: 2,
-})
 const gnosis = gnosisModule()
 
 const trezorOptions = {
@@ -46,7 +41,7 @@ const getChains = () => {
 }
 
 export const initWeb3OnBoard = init({
-  wallets: [injected, walletConnect, walletLink, gnosis, ledger, trezor],
+  wallets: [injected, walletConnect, walletLink, gnosis, trezor],
   chains: getChains(),
   appMetadata: {
     name: 'Summer.fi',
