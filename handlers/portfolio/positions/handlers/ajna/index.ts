@@ -15,7 +15,7 @@ import {
   getAjnaPositionNetValue,
 } from 'handlers/portfolio/positions/handlers/ajna/helpers'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
-import type { DpmList } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
+import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type {
   PortfolioPosition,
   PortfolioPositionsCountReply,
@@ -26,7 +26,7 @@ import { LendingProtocol } from 'lendingProtocols'
 
 interface GetAjnaPositionsParams {
   apiVaults?: Vault[]
-  dpmList: DpmList
+  dpmList: DpmSubgraphData[]
   prices: TokensPricesList
   networkId: AjnaSupportedNetworksIds
   positionsCount?: boolean
