@@ -74,8 +74,18 @@ export function usePoolCreatorData({
 
       sendGenericTransaction$({
         signer,
-        contractTransaction: async () => {
+        contractTransaction: async (gasLimit) => {
           return await ajnaErc20PoolFactoryContract.deployPool(
+            collateralAddress,
+            quoteAddress,
+            amountToWad(interestRate.div(100)).toString(),
+            {
+              gasLimit,
+            },
+          )
+        },
+        gasLimitTransaction: async () => {
+          return await ajnaErc20PoolFactoryContract.estimateGas.deployPool(
             collateralAddress,
             quoteAddress,
             amountToWad(interestRate.div(100)).toString(),
