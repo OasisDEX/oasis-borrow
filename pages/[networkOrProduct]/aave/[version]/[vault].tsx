@@ -79,7 +79,7 @@ function WithAaveStrategy({
   } = useAaveContext(protocol, network)
   const [strategyConfig, strategyConfigError] = useObservable(
     /* If VaultType.Unknown specified then when loading config it'll try to respect position created type */
-    strategyConfig$(positionId, network, apiVaults[0]?.type || VaultType.Unknown),
+    strategyConfig$(positionId, network, apiVaults[0]?.type || VaultType.Unknown, protocol),
   )
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId, networkId),
