@@ -108,7 +108,7 @@ type InteralGasEsimtationEvent = {
 }
 
 const isInternalRequestEvent = (event: EventObject): event is InternalParametersRequestEvent =>
-  event.type === 'INTERNAL_REQUEST'
+  event.type === 'PARAMETERS_REQUESTED'
 
 const areInternalRequestParamsValid = (
   params: InternalRequestEventParams,
@@ -406,10 +406,11 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
       getParameters: () => (callback, onReceive) => {
         const machine = interpret(
           createDebouncingMachine((request: SetupAaveAutoBuyParams) => setupAaveAutoBuy(request)),
+          { id: 'autoBuyParametersDebounceMachine' },
         ).start()
 
         machine.onTransition((state) => {
-          if (state.matches('idle') && !!state.context?.currentResponse) {
+          if (state.matches('idle') && state.context?.currentResponse) {
             callback({
               type: 'TRIGGER_RESPONSE_RECEIVED',
               setupTriggerResponse: state.context.currentResponse,
@@ -421,8 +422,8 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
           if (isInternalRequestEvent(event) && areInternalRequestParamsValid(event.params)) {
             const request: SetupAaveAutoBuyParams = {
               dpm: event.params.position.dpm,
-              executionLTV: new BigNumber(event.params.executionTriggerLTV).times(10 ** 4),
-              targetLTV: new BigNumber(event.params.targetTriggerLTV).times(10 ** 4),
+              executionLTV: new BigNumber(event.params.executionTriggerLTV).times(10 ** 2),
+              targetLTV: new BigNumber(event.params.targetTriggerLTV).times(10 ** 2),
               maxBuyPrice: event.params.maxBuyPrice?.times(10 ** 6) ?? zero,
               maxBaseFee: new BigNumber(event.params.maxGasFee),
               protocol: LendingProtocol.AaveV3,

@@ -6,10 +6,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export interface BuyInfoSectionProps {
-  afterBuy: {
-    ltv: number
-    multiple: number
-  }
   targetLtv: number
   targetLtvWithDeviation: [number, number]
   executionLtv: number

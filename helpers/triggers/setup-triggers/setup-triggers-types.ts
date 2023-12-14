@@ -1,4 +1,9 @@
-export type TriggersApiErrorCode = 'custom' | 'invalid' | 'not_found' | 'required'
+export type TriggersApiErrorCode =
+  | 'custom'
+  | 'invalid'
+  | 'not_found'
+  | 'required'
+  | 'internal_error'
 
 export type TriggersApiError = {
   code: TriggersApiErrorCode

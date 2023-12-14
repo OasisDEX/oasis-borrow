@@ -19,6 +19,7 @@ export const createDebouncingMachine = <TRequest = unknown, TResponse = never>(
     {
       // eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./debouncingMachine.typegen').Typegen0,
+      id: 'debouncingMachine',
       preserveActionOrder: true,
       predictableActionArguments: true,
       schema: {
@@ -94,7 +95,7 @@ export const createDebouncingMachine = <TRequest = unknown, TResponse = never>(
         })),
       },
       services: {
-        invokeService: (context) => async (callback, onReceive) => {
+        invokeService: (context) => (callback, onReceive) => {
           onReceive(async (event) => {
             if (isInvokeServiceEvent<TRequest>(event)) {
               const result = await context.action(event.params)

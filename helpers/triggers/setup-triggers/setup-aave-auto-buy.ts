@@ -20,25 +20,41 @@ export interface SetupAaveAutoBuyParams {
   networkId: number
   protocol: LendingProtocol
 }
-export const setupAaveAutoBuy = async (params: SetupAaveAutoBuyParams) => {
-  const { url } = getSetupTriggerConfig({ ...params })
+export const setupAaveAutoBuy = async (
+  params: SetupAaveAutoBuyParams,
+): Promise<SetupAutoBuyResponse> => {
+  const { url, customRpc } = getSetupTriggerConfig({ ...params })
 
-  const response = await fetch(url, {
-    method: 'POST',
-    body: JSON.stringify({
-      dpm: params.dpm,
-      triggerData: {
-        executionLTV: params.executionLTV.integerValue().toString(),
-        targetLTV: params.targetLTV.integerValue().toString(),
-        maxBuyPrice: params.maxBuyPrice.integerValue().toString(),
-        maxBaseFee: params.maxBaseFee.integerValue().toString(),
-      },
-      position: {
-        collateral: params.strategy.collateralAddress,
-        debt: params.strategy.debtAddress,
-      },
-    }),
-  })
+  let response: Response
+  try {
+    response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({
+        dpm: params.dpm,
+        triggerData: {
+          executionLTV: params.executionLTV.integerValue().toString(),
+          targetLTV: params.targetLTV.integerValue().toString(),
+          maxBuyPrice: params.maxBuyPrice.integerValue().toString(),
+          maxBaseFee: params.maxBaseFee.integerValue().toString(),
+        },
+        position: {
+          collateral: params.strategy.collateralAddress,
+          debt: params.strategy.debtAddress,
+        },
+        rpc: customRpc,
+      }),
+    })
+  } catch (error) {
+    console.error('Error while setting up auto buy', error)
+    return {
+      errors: [
+        {
+          code: 'internal_error',
+          message: 'Internal error',
+        },
+      ],
+    }
+  }
 
   if (response.status === 400) {
     return (await response.json()) as Pick<SetupAutoBuyResponse, 'errors'>

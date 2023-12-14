@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+import { amountFromWei } from 'blockchain/utils'
 import { AppLink } from 'components/Links'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
@@ -100,7 +102,44 @@ function getAutoBuyInfoSectionProps({
     return undefined
   }
 
-  return undefined
+  return {
+    collateralToBuy: amountFromWei(
+      new BigNumber(state.setupTriggerResponse?.simulation.collateralAmountToBuy),
+      state.position.collateral.token.decimals,
+    ),
+    positionAfterBuy: {
+      debt: {
+        amount: amountFromWei(
+          new BigNumber(state.setupTriggerResponse?.simulation.debtAmountAfterBuy),
+          state.position.debt.token.decimals,
+        ),
+        symbol: state.position.debt.token.symbol,
+      },
+      collateral: {
+        amount: amountFromWei(
+          new BigNumber(state.setupTriggerResponse?.simulation.collateralAmountAfterBuy),
+          state.position.collateral.token.decimals,
+        ),
+        symbol: state.position.collateral.token.symbol,
+      },
+    },
+    currentPosition: {
+      debt: {
+        amount: state.position.debt.amount,
+        symbol: state.position.debt.token.symbol,
+      },
+      collateral: {
+        amount: state.position.collateral.amount,
+        symbol: state.position.collateral.token.symbol,
+      },
+    },
+    executionLtv: parseInt(state.setupTriggerResponse.simulation.executionLTV) / 100,
+    targetLtv: parseInt(state.setupTriggerResponse.simulation.targetLTV) / 100,
+    targetLtvWithDeviation: state.setupTriggerResponse.simulation.targetLTVWithDeviation.map(
+      (value) => parseInt(value) / 100,
+    ) as [number, number],
+    targetMultiple: parseInt(state.setupTriggerResponse.simulation.targetMultiple) / 100,
+  }
 }
 
 function mapErrorsToErrorVaults(errors: TriggersApiError[]): VaultErrorMessage[] {
@@ -153,7 +192,7 @@ function AutoBuySidebarAaveVaultEditingState({
             value0: 'primary100',
             value1: 'success100',
           }}
-          step={1}
+          step={0.01}
           leftDescription={t('auto-buy.trigger-ltv')}
           rightDescription={t('auto-buy.target-ltv')}
           leftThumbColor="primary100"
