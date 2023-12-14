@@ -68,23 +68,15 @@ const rewardsTransactionResolver = ({
     : ajnaReedemerFactoryContract
 
   const resolvedPayload = hasBonusRewardsToClaim ? AjnaRewardsSource.bonus : AjnaRewardsSource.core
+  const resolvedParams = [
+    rewards.payload[resolvedPayload].weeks,
+    rewards.payload[resolvedPayload].amounts,
+    rewards.payload[resolvedPayload].proofs,
+  ]
 
   return {
-    transaction: async (gasLimit: string) => {
-      return await resolvedContract.claimMultiple(
-        rewards.payload[resolvedPayload].weeks,
-        rewards.payload[resolvedPayload].amounts,
-        rewards.payload[resolvedPayload].proofs,
-        { gasLimit },
-      )
-    },
-    gasTransaction: async () => {
-      return await resolvedContract.estimateGas.claimMultiple(
-        rewards.payload[resolvedPayload].weeks,
-        rewards.payload[resolvedPayload].amounts,
-        rewards.payload[resolvedPayload].proofs,
-      )
-    },
+    resolvedContract,
+    resolvedParams,
   }
 }
 
@@ -103,16 +95,17 @@ export function AjnaRewardCard() {
 
   const onSubmit = () => {
     if (signer && networkId && isAjnaSupportedNetwork(networkId)) {
-      const { transaction, gasTransaction } = rewardsTransactionResolver({
+      const { resolvedContract, resolvedParams } = rewardsTransactionResolver({
         signer,
         rewards,
         networkId,
       })
 
       sendGenericTransaction$({
+        contract: resolvedContract,
+        method: 'claimMultiple',
+        params: resolvedParams,
         signer,
-        contractTransaction: transaction,
-        gasLimitTransaction: gasTransaction,
       }).subscribe((txState) => {
         handleTransaction({ txState, ethPrice: zero, setTxDetails })
 

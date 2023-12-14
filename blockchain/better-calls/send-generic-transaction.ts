@@ -11,25 +11,27 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 interface sendGenericTransactionProps {
-  contractTransaction: (gasLimit: string) => Promise<ContractTransaction>
-  gasLimitTransaction: () => Promise<ethers.BigNumber>
+  contract: ethers.Contract
+  method: string
+  params: unknown[]
   signer: Signer
 }
 
 export const sendGenericTransaction$ = ({
-  contractTransaction,
-  gasLimitTransaction,
+  contract,
+  method,
+  params,
   signer,
 }: sendGenericTransactionProps): Observable<TxState<TxMeta>> => {
   return from(
-    gasLimitTransaction().then((val) =>
+    contract.estimateGas[method](...params).then((val) =>
       new BigNumber(val.toString()).multipliedBy(GasMultiplier).toFixed(0),
     ),
   ).pipe(
     switchMap((gasLimit) =>
-      from(contractTransaction(gasLimit))
+      from(contract[method](...params, { gasLimit }))
         .pipe(
-          switchMap((tx) => {
+          switchMap((tx: ContractTransaction) => {
             return from((signer.provider as Provider).waitForTransaction(tx.hash)).pipe(
               map((receipt) => {
                 const status =
