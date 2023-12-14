@@ -261,6 +261,7 @@ export function SideBarContent(props: AutoBuySidebarAaveVaultProps) {
   const { isStateMatch } = props
   switch (true) {
     case isStateMatch('editing'):
+    case isStateMatch('idle'):
       return <AutoBuySidebarAaveVaultEditingState {...props} />
     case isStateMatch('review'):
       return <AutoBuySidebarAaveVaultReviewState {...props} />
@@ -277,21 +278,29 @@ export function usePrimaryButton(
 ): SidebarSectionFooterButtonSettings {
   const { isStateMatch, canTransitWith } = props
   const { t } = useTranslation()
+  const editingLabel =
+    props.state.flow === 'add'
+      ? t('automation.add-trigger', {
+          feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
+        })
+      : t('automation.update-trigger', {
+          feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
+        })
+
   switch (true) {
+    case isStateMatch('idle'):
+      return {
+        action: () => {},
+        disabled: true,
+        label: editingLabel,
+      }
     case isStateMatch('editing'):
       return {
         action: () => {
           props.updateState({ type: 'REVIEW_TRANSACTION' })
         },
         disabled: !canTransitWith({ type: 'REVIEW_TRANSACTION' }),
-        label:
-          props.state.flow === 'add'
-            ? t('automation.add-trigger', {
-                feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
-              })
-            : t('automation.update-trigger', {
-                feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
-              }),
+        label: editingLabel,
       }
     case isStateMatch('review'):
       return {
