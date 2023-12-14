@@ -117,8 +117,7 @@ const areInternalRequestParamsValid = (
     !!params.executionTriggerLTV &&
     !!params.targetTriggerLTV &&
     !!params.position &&
-    !!params.maxGasFee &&
-    !!params.useMaxBuyPrice
+    !!params.maxGasFee
   )
 }
 
