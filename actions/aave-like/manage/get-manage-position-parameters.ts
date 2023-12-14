@@ -68,7 +68,6 @@ export async function getManagePositionParameters(
 
   const provider = getRpcProvider(networkId)
 
-  // todo
   const [collateral, debt] = getTokensInBaseUnit(parameters)
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
 
@@ -152,7 +151,6 @@ export async function getManagePositionParameters(
         amountCollateralToDepositInBaseUnit: collateral,
         entryToken: collateralToken,
       }
-      console.log('borrowDepositStratArgs', borrowDepositStratArgs)
 
       const borrowDepositStratDeps: Omit<AaveLikeDepositBorrowStrategyDeps, 'addresses'> = {
         currentPosition,

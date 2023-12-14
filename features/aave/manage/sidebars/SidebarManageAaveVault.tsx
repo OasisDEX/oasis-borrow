@@ -68,7 +68,6 @@ export function isLocked(state: ManageAaveStateMachineState) {
   const { ownerAddress, web3Context, tokens, strategyConfig, manageTokenInput } = state.context
   const isClosing = state.matches('frontend.reviewingClosing')
   const isAdjusting = state.matches('frontend.reviewingAdjusting')
-  const isManagingCollateral = state.matches('frontend.manageCollateral')
   const { aaveLike } = getLocalAppConfig('parameters')
   if (isClosing) {
     if (

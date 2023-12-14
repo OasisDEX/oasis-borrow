@@ -334,8 +334,8 @@ export function createManageAaveStateMachine(
                     target: 'allowanceDebtSetting',
                   },
                   {
-                    target: 'txInProgressEthers',
                     cond: 'isEthersTransaction',
+                    target: 'txInProgressEthers',
                   },
                   {
                     cond: 'validTransactionParameters',
@@ -749,13 +749,11 @@ export function createManageAaveStateMachine(
           }),
           { to: (context) => context.refParametersMachine! },
         ),
-        // todo
         requestManageParameters: send(
           (
             context,
           ): TransactionParametersStateMachineEvent<ManageAaveParameters | CloseAaveParameters> => {
             const { token, amount } = getTxTokenAndAmount(context)
-            console.log('requestManageParameters', { token, amount })
             return {
               type: 'VARIABLES_RECEIVED',
               parameters: {
