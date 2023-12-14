@@ -29,7 +29,7 @@ export function NavigationMenuDropdownContentListItem({
   }
 
   return (
-    <Flex sx={{ alignItems: 'center', columnGap: '12px', lineHeight: '24px',  }}>
+    <Flex sx={{ alignItems: 'center', columnGap: '12px', lineHeight: '24px' }}>
       {icon && icon.position === 'global' && <NavigationMenuDropdownContentIcon {...icon} />}
       <Box>
         <Flex sx={{ alignItems: 'center', columnGap: 2 }}>
