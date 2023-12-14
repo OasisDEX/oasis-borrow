@@ -1,4 +1,5 @@
 import { TxStatus } from '@oasisdex/transactions'
+import { AjnaRewardsSource } from '@prisma/client'
 import { sendGenericTransaction$ } from 'blockchain/better-calls/send-generic-transaction'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { useMainContext } from 'components/context/MainContextProvider'
@@ -66,11 +67,13 @@ const rewardsTransactionResolver = ({
     ? ajnaBonusReedemerFactoryContract
     : ajnaReedemerFactoryContract
 
+  const resolvedPayload = hasBonusRewardsToClaim ? AjnaRewardsSource.bonus : AjnaRewardsSource.core
+
   return async () => {
     return await resolvedContract.claimMultiple(
-      rewards.payload.core.weeks,
-      rewards.payload.core.amounts,
-      [rewards.payload.core.proofs],
+      rewards.payload[resolvedPayload].weeks,
+      rewards.payload[resolvedPayload].amounts,
+      [rewards.payload[resolvedPayload].proofs],
     )
   }
 }
