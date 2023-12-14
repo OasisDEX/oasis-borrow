@@ -93,7 +93,10 @@ export const getNavProductsPanel = ({
                           protocol: item.protocol.toUpperCase(),
                         }),
                   tags: [
-                    [capitalize(item.protocol), lendingProtocolsByName[item.protocol].gradient],
+                    [
+                      lendingProtocolsByName[item.protocol].label,
+                      lendingProtocolsByName[item.protocol].gradient,
+                    ],
                     [capitalize(item.network), networksByName[item.network].gradient],
                   ] as NavigationMenuPanelListTags,
                   url: item.url,
@@ -119,7 +122,10 @@ export const getNavProductsPanel = ({
                   }),
                   description: t('nav.increase-your-exposure-against', { token: item.debtToken }),
                   tags: [
-                    [capitalize(item.protocol), lendingProtocolsByName[item.protocol].gradient],
+                    [
+                      lendingProtocolsByName[item.protocol].label,
+                      lendingProtocolsByName[item.protocol].gradient,
+                    ],
                     [capitalize(item.network), networksByName[item.network].gradient],
                   ] as NavigationMenuPanelListTags,
                   url: item.url,
@@ -149,7 +155,7 @@ export const getNavProductsPanel = ({
                   description: t('nav.discover-the-highest-ltv'),
                   tags: [
                     [
-                      capitalize(productBorrowNavItems.maxLtv.protocol),
+                      lendingProtocolsByName[productBorrowNavItems.maxLtv.protocol].label,
                       lendingProtocolsByName[productBorrowNavItems.maxLtv.protocol].gradient,
                     ],
                     [
@@ -174,7 +180,7 @@ export const getNavProductsPanel = ({
                   description: t('nav.find-the-lowest-rates'),
                   tags: [
                     [
-                      capitalize(productBorrowNavItems.fee.protocol),
+                      lendingProtocolsByName[productBorrowNavItems.fee.protocol].label,
                       lendingProtocolsByName[productBorrowNavItems.fee.protocol].gradient,
                     ],
                     [
@@ -196,7 +202,7 @@ export const getNavProductsPanel = ({
                   description: t('nav.get-paid-to-borrow'),
                   tags: [
                     [
-                      capitalize(productBorrowNavItems.liquidity.protocol),
+                      lendingProtocolsByName[productBorrowNavItems.liquidity.protocol].label,
                       lendingProtocolsByName[productBorrowNavItems.liquidity.protocol].gradient,
                     ],
                     [
