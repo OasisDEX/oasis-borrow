@@ -131,6 +131,8 @@ const areParamsValid = (
 }
 
 export type AutoBuyTriggerAaveContext = {
+  currentStep: number
+  steps: number
   isLoading: boolean
   defaults: AutoBuyFormDefaults
   position?: PositionLike
@@ -196,6 +198,8 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
       events: {} as AutoBuyTriggerAaveEvent,
     },
     context: {
+      currentStep: 1,
+      steps: 3,
       isLoading: false,
       defaults: {
         minSliderValue: 0,
