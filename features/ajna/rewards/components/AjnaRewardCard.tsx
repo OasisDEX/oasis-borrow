@@ -121,6 +121,7 @@ export function AjnaRewardCard() {
   }
 
   const isTxLoading = txDetails?.txStatus === TxStatus.WaitingForConfirmation
+  const isTxError = txDetails?.txStatus === TxStatus.Error
 
   return (
     <Box
@@ -193,7 +194,7 @@ export function AjnaRewardCard() {
             width: '100%',
           }}
         >
-          {t('ajna.rewards.cta')}
+          {isTxError ? t('retry') : t('ajna.rewards.cta')}
           {isTxLoading && <Spinner size={24} color="neutral10" sx={{ ml: 2, mb: '2px' }} />}
         </Button>
         {!isLoading && total.gt(zero) && (
