@@ -2,6 +2,8 @@ import type { Vault } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { networksById } from 'blockchain/networks'
+import { omniBorrowishProducts } from 'features/omni-kit/constants'
+import { AJNA_RAW_PROTOCOL_NAME } from 'features/omni-kit/protocols/ajna/constants'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniProductBorrowishType } from 'features/omni-kit/types'
@@ -9,14 +11,14 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { AjnaDpmPositionsPool } from 'handlers/portfolio/positions/handlers/ajna/types'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import { getBorrowishPositionType } from 'handlers/portfolio/positions/helpers'
-import type { DpmList } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
+import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 
 interface getAjnaPositionInfoParams {
   apiVaults: Vault[]
-  dpmList: DpmList
+  dpmList: DpmSubgraphData[]
   isEarn: boolean
   networkId: AjnaSupportedNetworksIds
   pool: AjnaDpmPositionsPool
@@ -39,9 +41,25 @@ export async function getAjnaPositionInfo({
   const { ajnaPoolInfo } = getNetworkContracts(networkId)
 
   // determine position type based on subgraph and db responses
-  const defaultType = dpmList.filter(
-    ({ id, positionType }) => id === proxyAddress && positionType !== OmniProductType.Earn,
-  )[0]?.positionType as OmniProductBorrowishType
+  const defaultType = dpmList
+    .find(({ id }) => id === proxyAddress)
+    ?.createEvents.find(
+      ({
+        collateralToken: eventCollateralToken,
+        debtToken: eventDebtToken,
+        positionType: eventPositionType,
+        protocol: eventProtocol,
+      }) => {
+        return (
+          eventCollateralToken === collateralToken.address &&
+          eventDebtToken === quoteToken.address &&
+          eventProtocol === AJNA_RAW_PROTOCOL_NAME &&
+          ((isEarn && eventPositionType === OmniProductType.Earn) ||
+            (!isEarn && omniBorrowishProducts.includes(eventPositionType)))
+        )
+      },
+    )?.positionType as OmniProductBorrowishType
+
   const type = isEarn
     ? OmniProductType.Earn
     : getBorrowishPositionType({

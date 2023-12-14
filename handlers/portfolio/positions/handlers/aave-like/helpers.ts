@@ -12,18 +12,18 @@ import {
   getBorrowishPositionType,
   getPositionsAutomations,
 } from 'handlers/portfolio/positions/helpers'
-import type { DpmList } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
+import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { AutomationResponse } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import { getTokenName } from 'handlers/portfolio/positions/helpers/getTokenName'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const filterAutomation = (dpm: DpmList[number]) => (position: AutomationResponse[number]) =>
+export const filterAutomation = (dpm: DpmSubgraphData) => (position: AutomationResponse[number]) =>
   position.triggers.account.toLowerCase() === dpm.id.toLowerCase() &&
   !position.triggers.executedBlock &&
   !position.triggers.removedBlock
 
-export const getReserveDataCall = (dpm: DpmList[number], token: string) => {
+export const getReserveDataCall = (dpm: DpmSubgraphData, token: string) => {
   switch (dpm.protocol) {
     case 'AAVE_V3':
       return getAaveV3ReserveData({
@@ -40,7 +40,7 @@ export const getReserveDataCall = (dpm: DpmList[number], token: string) => {
   }
 }
 
-export const getReserveConfigurationDataCall = (dpm: DpmList[number], token: string) => {
+export const getReserveConfigurationDataCall = (dpm: DpmSubgraphData, token: string) => {
   switch (dpm.protocol) {
     case 'AAVE_V3':
       return getAaveV3ReserveConfigurationData({
@@ -59,7 +59,7 @@ export const getReserveConfigurationDataCall = (dpm: DpmList[number], token: str
 
 interface CommonDataMapperParams {
   automations?: AutomationResponse[number]
-  dpm: DpmList[number]
+  dpm: DpmSubgraphData
   positionIdAsString?: boolean
   prices: TokensPricesList
   apiVaults?: Vault[]

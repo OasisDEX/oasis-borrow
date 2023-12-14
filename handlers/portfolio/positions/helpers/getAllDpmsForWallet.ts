@@ -7,44 +7,59 @@ import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
 const dpmListQuery = gql`
   query dpmData($walletAddress: String) {
     accounts(where: { user: $walletAddress }) {
+      createEvents {
+        debtToken
+        collateralToken
+        positionType
+        protocol
+      }
+      collateralToken
+      debtToken
       id
+      positionType
+      protocol
       user {
         id
       }
       vaultId
-      positionType
-      collateralToken
-      debtToken
-      protocol
     }
   }
 `
 
-type DpmListQueryResponse = {
+interface DpmSubgraphDataCreateEvents {
+  debtToken: string
+  collateralToken: string
+  positionType: OmniProductType
+  protocol: string
+}
+
+interface DpmSubgraphDataResponse {
   accounts: {
+    collateralToken: string
+    createEvents: DpmSubgraphDataCreateEvents[]
+    debtToken: string
     id: string
+    networkId: DpmSupportedNetworks
+    positionType: OmniProductType
+    protocol: string
     user: {
       id: string
     }
     vaultId: string
-    positionType: OmniProductType
-    collateralToken: string
-    debtToken: string
-    protocol: string
-    networkId: DpmSupportedNetworks
   }[]
 }
 
-export type DpmList = {
+export interface DpmSubgraphData {
+  collateralToken: string
+  createEvents: DpmSubgraphDataCreateEvents[]
+  debtToken: string
   id: string
+  networkId: DpmSupportedNetworks
+  positionType: OmniProductType
+  protocol: string
   user: string
   vaultId: string
-  positionType: OmniProductType
-  collateralToken: string
-  debtToken: string
-  protocol: string
-  networkId: DpmSupportedNetworks
-}[]
+}
 
 export type DpmSupportedNetworks =
   | NetworkIds.MAINNET
@@ -74,26 +89,44 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
       subgraphListDict[networkId as DpmSupportedNetworks]
     }`
     const params = { walletAddress: address.toLowerCase() }
-    return request<DpmListQueryResponse>(subgraphUrl, dpmListQuery, params).then((data) => ({
+
+    return request<DpmSubgraphDataResponse>(subgraphUrl, dpmListQuery, params).then((data) => ({
       networkId: networkId as DpmSupportedNetworks,
       accounts: data.accounts,
     }))
   })
+
   const dpmList = await Promise.all(dpmCallList).then((dpmNetworkList) => {
     return dpmNetworkList
       .map((dpm) => {
-        return dpm.accounts.map((account) => {
-          return {
-            networkId: dpm.networkId,
-            id: account.id,
-            user: account.user.id,
-            vaultId: account.vaultId,
-            positionType: account.positionType?.toLowerCase() as OmniProductType,
-            collateralToken: account.collateralToken,
-            debtToken: account.debtToken,
-            protocol: account.protocol,
-          }
-        })
+        return dpm.accounts.map(
+          ({
+            collateralToken,
+            debtToken,
+            id,
+            createEvents,
+            networkId,
+            positionType,
+            protocol,
+            vaultId,
+            user: { id: user },
+          }) => {
+            return {
+              collateralToken,
+              debtToken,
+              id,
+              networkId,
+              positionType: positionType?.toLowerCase() as OmniProductType,
+              protocol,
+              user,
+              vaultId,
+              createEvents: createEvents.map(({ positionType: eventPositionType, ...rest }) => ({
+                ...rest,
+                positionType: eventPositionType.toLowerCase() as OmniProductType,
+              })),
+            }
+          },
+        )
       })
       .flat()
   })

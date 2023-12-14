@@ -143,8 +143,8 @@ export function getAjnaPositionDetails({
         },
         {
           type: 'pnl',
-          value: isProxyWithManyPositions ? formatDecimalAsPercent(withoutFees) : notAvailable,
-          ...(isProxyWithManyPositions && {
+          value: isProxyWithManyPositions ? notAvailable : formatDecimalAsPercent(withoutFees),
+          ...(!isProxyWithManyPositions && {
             accent: withoutFees.gt(zero) ? 'positive' : 'negative',
           }),
         },
