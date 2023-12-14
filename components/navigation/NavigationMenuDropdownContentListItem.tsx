@@ -18,7 +18,7 @@ export function NavigationMenuDropdownContentListItem({
   tags,
   title,
 }: NavigationMenuDropdownContentListItemProps) {
-  const textHoverEffect = {
+  const textHoverEffect: ThemeUIStyleObject = {
     content: 'attr(data-value)',
     position: 'absolute',
     top: 0,
@@ -29,7 +29,7 @@ export function NavigationMenuDropdownContentListItem({
   }
 
   return (
-    <Flex sx={{ alignItems: 'center', columnGap: '12px' }}>
+    <Flex sx={{ alignItems: 'center', columnGap: '12px', lineHeight: '24px' }}>
       {icon && icon.position === 'global' && <NavigationMenuDropdownContentIcon {...icon} />}
       <Box>
         <Flex sx={{ alignItems: 'center', columnGap: 2 }}>
@@ -41,19 +41,17 @@ export function NavigationMenuDropdownContentListItem({
               'data-value': title,
               className: 'heading-with-effect',
             })}
-            sx={
-              {
-                color: 'primary100',
-                ...(hoverColor && {
-                  position: 'relative',
-                  transition: 'color 200ms',
-                  '&::after': {
-                    ...textHoverEffect,
-                    backgroundImage: hoverColor,
-                  },
-                }),
-              } as ThemeUIStyleObject
-            }
+            sx={{
+              color: 'primary100',
+              ...(hoverColor && {
+                position: 'relative',
+                transition: 'color 200ms',
+                '&::after': {
+                  ...textHoverEffect,
+                  backgroundImage: hoverColor,
+                },
+              }),
+            }}
           >
             {promoted && (
               <Box as="span" className="star-with-effect" sx={{ transition: 'color 200ms' }}>
