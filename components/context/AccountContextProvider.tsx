@@ -1,3 +1,6 @@
+import { setUser } from '@sentry/react'
+import { mixpanelIdentify } from 'analytics/mixpanel'
+import { trackingEvents } from 'analytics/trackingEvents'
 import type BigNumber from 'bignumber.js'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
@@ -47,10 +50,11 @@ import {
 import { bigNumberTostring } from 'helpers/bigNumberToString'
 import type { DepreciatedServices } from 'helpers/context/types'
 import { ilkUrnAddressToString } from 'helpers/ilkUrnAddressToString'
-import { memoize } from 'lodash'
+import { isEqual, memoize } from 'lodash'
 import type { PropsWithChildren } from 'react'
 import React, { useContext as checkContext, useContext, useEffect, useState } from 'react'
-import type { Observable } from 'rxjs'
+import { combineLatest, type Observable, of } from 'rxjs'
+import { distinctUntilChanged, mergeMap } from 'rxjs/operators'
 
 import { useMainContext } from './MainContextProvider'
 import curry from 'ramda/src/curry'
@@ -72,6 +76,7 @@ export function useAccountContext(): AccountContext {
 export function AccountContextProvider({ children }: PropsWithChildren<{}>) {
   const [context, setContext] = useState<AccountContext | undefined>(undefined)
   const {
+    account$,
     context$,
     web3Context$,
     onEveryBlock$,
@@ -85,6 +90,26 @@ export function AccountContextProvider({ children }: PropsWithChildren<{}>) {
   useEffect(() => {
     setContext(() => {
       console.info('Account context setup')
+      combineLatest(account$, connectedContext$)
+        .pipe(
+          mergeMap(([account, network]) => {
+            return of({
+              networkName: network.name,
+              connectionKind: network.connectionKind,
+              account: account?.toLowerCase(),
+              method: network.connectionMethod,
+              walletLabel: network.walletLabel,
+            })
+          }),
+          distinctUntilChanged(isEqual),
+        )
+        .subscribe(({ account, networkName, connectionKind, method, walletLabel }) => {
+          if (account) {
+            setUser({ id: account, walletLabel: walletLabel })
+            mixpanelIdentify(account, { walletType: connectionKind, walletLabel: walletLabel })
+            trackingEvents.accountChange(account, networkName, connectionKind, method, walletLabel)
+          }
+        })
       const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
       const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
       const proxyOwner$ = memoize(curry(createProxyOwner$)(onEveryBlock$, context$))
