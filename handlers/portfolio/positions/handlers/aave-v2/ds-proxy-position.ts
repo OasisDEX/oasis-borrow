@@ -48,6 +48,14 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
         positionType: OmniProductType.Earn,
         user: address,
         vaultId: address,
+        createEvents: [
+          {
+            collateralToken: contracts.tokens.STETH.address,
+            debtToken: contracts.tokens.ETH.address,
+            positionType: OmniProductType.Earn,
+            protocol: 'AAVE',
+          },
+        ],
       },
       positionIdAsString: true,
       prices,
