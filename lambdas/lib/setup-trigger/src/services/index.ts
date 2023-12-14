@@ -3,8 +3,8 @@ import { Addresses, getAddresses } from './get-addresses'
 import { Chain, createPublicClient, http } from 'viem'
 import { arbitrum, base, mainnet, optimism, sepolia } from 'viem/chains'
 import { Logger } from '@aws-lambda-powertools/logger'
-import { getPosition } from './get-position'
-import { simulatePosition } from './simulate-position'
+import { getPosition, GetPositionParams } from './get-position'
+import { SimulatedPosition, simulatePosition, SimulatePositionParams } from './simulate-position'
 import { triggerEncoders } from './trigger-encoders'
 import {
   EventBody,
@@ -14,11 +14,18 @@ import {
   TriggerData,
   isAaveAutoBuyTriggerData,
   isAaveAutoSellTriggerData,
+  Price,
+  isBigInt,
 } from '~types'
 import { calculateCollateralPriceInDebtBasedOnLtv } from './calculate-collateral-price-in-debt-based-on-ltv'
-import { encodeFunctionForDpm } from './encode-function-for-dpm'
-import { getAutomationSubgraphClient } from 'automation-subgraph'
+import {
+  encodeFunctionForDpm,
+  EncodeFunctionForDpmParams,
+  TransactionFragment,
+} from './encode-function-for-dpm'
 import { validateTriggerDataAgainstCurrentPosition } from './validate-trigger-data-against-current-position'
+import { CurrentTriggerLike, EncodedFunction } from './trigger-encoders/types'
+import type { GetTriggersResponse } from 'contracts/get-triggers-response'
 
 const rpcConfig = {
   skipCache: false,
@@ -48,15 +55,24 @@ const domainChainIdToViemChain: Record<ChainId, Chain> = {
   [ChainId.SEPOLIA]: sepolia,
 }
 
+export interface ServiceContainer {
+  getPosition: (params: GetPositionParams) => Promise<PositionLike>
+  simulatePosition: (params: SimulatePositionParams) => SimulatedPosition
+  getExecutionPrice: (params: PositionLike) => Price
+  validate: typeof validateTriggerDataAgainstCurrentPosition
+  encodeTrigger: (position: PositionLike, triggerData: TriggerData) => Promise<EncodedFunction>
+  encodeForDPM: (params: EncodeFunctionForDpmParams) => TransactionFragment
+}
+
 export function buildServiceContainer(
   chainId: ChainId,
   protocol: ProtocolId,
   trigger: SupportedTriggers,
   rpcGateway: string,
-  subgraphUrl: string,
+  getTriggersUrl: string,
   forkRpc?: string,
   logger?: Logger,
-) {
+): ServiceContainer {
   const rpc = forkRpc ?? getRpcGatewayEndpoint(chainId, rpcGateway)
   const transport = http(rpc, {
     batch: false,
@@ -68,12 +84,6 @@ export function buildServiceContainer(
   const publicClient = createPublicClient({
     transport,
     chain: domainChainIdToViemChain[chainId],
-  })
-
-  const automationSubgraphClient = getAutomationSubgraphClient({
-    urlBase: subgraphUrl,
-    chainId,
-    logger,
   })
 
   const addresses = getAddresses(chainId)
@@ -90,16 +100,22 @@ export function buildServiceContainer(
     },
     validate: validateTriggerDataAgainstCurrentPosition,
     encodeTrigger: async (position: PositionLike, triggerData: TriggerData) => {
-      const queryResult = await automationSubgraphClient.getOneTrigger({
-        dpm: position.address,
-        triggerType: triggerData.type,
-      })
-      const currentTrigger = queryResult.triggers[0]
-        ? {
-            id: BigInt(queryResult.triggers[0].id),
-            triggerData: queryResult.triggers[0].triggerData as `0x${string}`,
+      let currentTrigger: CurrentTriggerLike | undefined = undefined
+      try {
+        const triggers = await fetch(`${getTriggersUrl}?chainId=${chainId}&dpm=${position.address}`)
+        const triggersJson = (await triggers.json()) as GetTriggersResponse
+        const autoBuy = triggersJson.triggers.aaveBasicBuy
+        // TODO: For now, let's asume we want just auto-buy
+        if (autoBuy) {
+          currentTrigger = {
+            triggerData: autoBuy.triggerData as `0x${string}`,
+            id: isBigInt(autoBuy.triggerId) ? BigInt(autoBuy.triggerId) : 0n,
           }
-        : undefined
+        }
+      } catch (e) {
+        logger?.error('Error fetching triggers', { error: e, position })
+        throw e
+      }
 
       if (isAaveAutoBuyTriggerData(triggerData)) {
         return triggerEncoders[ProtocolId.AAVE3][SupportedTriggers.AutoBuy](
@@ -117,7 +133,7 @@ export function buildServiceContainer(
       }
       throw new Error('Unsupported trigger data')
     },
-    encodeForDPM: (params: Parameters<typeof encodeFunctionForDpm>[0]) => {
+    encodeForDPM: (params: EncodeFunctionForDpmParams) => {
       return encodeFunctionForDpm(params, addresses)
     },
   }

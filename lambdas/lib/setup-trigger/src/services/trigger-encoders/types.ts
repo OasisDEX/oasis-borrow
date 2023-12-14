@@ -7,14 +7,21 @@ import {
 } from '~types'
 import { ProtocolId } from 'shared/domain-types'
 
-export type EncoderFunction<TTriggerData extends TriggerData> = (
-  position: PositionLike,
-  triggerData: TTriggerData,
-  currentTrigger: { id: bigint; triggerData: `0x${string}` } | undefined,
-) => {
+export type EncodedFunction = {
   encodedTriggerData: `0x${string}`
   encodedTrigger: `0x${string}`
 }
+
+export type CurrentTriggerLike = {
+  id: bigint
+  triggerData: `0x${string}`
+}
+
+export type EncoderFunction<TTriggerData extends TriggerData> = (
+  position: PositionLike,
+  triggerData: TTriggerData,
+  currentTrigger: CurrentTriggerLike | undefined,
+) => EncodedFunction
 
 export type TriggerEncoders = {
   [ProtocolId.AAVE3]: {

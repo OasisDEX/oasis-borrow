@@ -7,10 +7,16 @@ export interface EncodeFunctionForDpmParams {
   dpm: Address
   encodedTrigger: `0x${string}`
 }
+
+export interface TransactionFragment {
+  to: `0x${string}`
+  data: `0x${string}`
+}
+
 export function encodeFunctionForDpm(
   { dpm, encodedTrigger }: EncodeFunctionForDpmParams,
   addresses: Addresses,
-) {
+): TransactionFragment {
   const dpmData = encodeFunctionData({
     abi: accountImplementationAbi,
     functionName: 'execute',

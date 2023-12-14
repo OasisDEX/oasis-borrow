@@ -1,12 +1,15 @@
 import { z } from 'zod'
 import { addressSchema, urlOptionalSchema, protocolIdsSchema } from 'shared/validators'
 import { ChainId, ProtocolId } from 'shared/domain-types'
+import { CustomIssueCodes } from './types'
 
 export const PRICE_DECIMALS = 6n
 export const PERCENT_DECIMALS = 4n
 export const ONE_PERCENT = 100n
 
 export const MULTIPLY_DECIMALS = 2n
+
+const maxUnit256: bigint = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffn
 
 export const bigIntSchema = z
   .string()
@@ -23,7 +26,7 @@ export const priceSchema = bigIntSchema.describe(`Price with ${PRICE_DECIMALS} d
 
 export const maxGasFeeSchema = bigIntSchema.describe('Max gas fee in Gwei')
 
-const isBigInt = (value: string) => {
+export const isBigInt = (value: string) => {
   try {
     BigInt(value)
     return true
@@ -42,27 +45,57 @@ export const ltvSchema = bigIntSchema.refine((ltv) => ltv > 0n && ltv < 10_000n,
   message: 'LTV must be between 0 and 10_000',
 })
 
-export const aaveBasicBuyTriggerDataSchema = z.object({
-  type: z
-    .any()
-    .optional()
-    .transform(() => 119n),
-  executionLTV: ltvSchema,
-  targetLTV: ltvSchema,
-  maxBuyPrice: priceSchema,
-  maxBaseFee: maxGasFeeSchema,
-})
+export const aaveBasicBuyTriggerDataSchema = z
+  .object({
+    type: z
+      .any()
+      .optional()
+      .transform(() => 119n),
+    executionLTV: ltvSchema,
+    targetLTV: ltvSchema,
+    maxBuyPrice: priceSchema.optional().default(maxUnit256),
+    useMaxBuyPrice: z.boolean().optional().default(true),
+    maxBaseFee: maxGasFeeSchema,
+  })
+  .refine(
+    ({ maxBuyPrice, useMaxBuyPrice }) => {
+      return useMaxBuyPrice ? maxBuyPrice !== maxUnit256 : true
+    },
+    {
+      params: {
+        code: CustomIssueCodes.MaxBuyPriceIsNotSet,
+      },
+      message:
+        'Max buy price is not set. Please set max buy price or explicitly disable it in trigger data',
+      path: ['triggerData', 'maxBuyPrice'],
+    },
+  )
 
-export const aaveBasicSellTriggerDataSchema = z.object({
-  type: z
-    .any()
-    .optional()
-    .transform(() => 120n),
-  executionLTV: ltvSchema,
-  targetLTV: ltvSchema,
-  minSellPrice: priceSchema,
-  maxBaseFee: maxGasFeeSchema,
-})
+export const aaveBasicSellTriggerDataSchema = z
+  .object({
+    type: z
+      .any()
+      .optional()
+      .transform(() => 120n),
+    executionLTV: ltvSchema,
+    targetLTV: ltvSchema,
+    minSellPrice: priceSchema.optional().default(0n),
+    useMinSellPrice: z.boolean().optional().default(true),
+    maxBaseFee: maxGasFeeSchema,
+  })
+  .refine(
+    ({ minSellPrice, useMinSellPrice }) => {
+      return useMinSellPrice ? minSellPrice !== 0n : true
+    },
+    {
+      params: {
+        code: CustomIssueCodes.MinSellPriceIsNotSet,
+      },
+      message:
+        'Min sell price is not set. Please set min sell price or explicitly disable it in trigger data',
+      path: ['triggerData', 'minSellPrice'],
+    },
+  )
 
 export const tokenSchema = z.object({
   address: addressSchema,

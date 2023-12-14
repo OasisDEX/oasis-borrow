@@ -335,6 +335,7 @@ export function usePrimaryButton(
         action: () => {},
         disabled: true,
         label: editingLabel,
+        steps: [1, 3],
       }
     case isStateMatch('editing'):
       return {
@@ -344,6 +345,7 @@ export function usePrimaryButton(
         },
         disabled: !canTransitWith({ type: 'REVIEW_TRANSACTION' }),
         label: editingLabel,
+        steps: [1, 3],
       }
     case isStateMatch('review'):
       return {
@@ -353,6 +355,7 @@ export function usePrimaryButton(
         },
         disabled: !canTransitWith({ type: 'START_TRANSACTION' }),
         label: props.state.retryCount > 0 ? t('retry') : t('protection.confirm'),
+        steps: [2, 3],
       }
     case isStateMatch('tx'):
       return {
@@ -360,6 +363,7 @@ export function usePrimaryButton(
         action: () => {},
         disabled: true,
         label: 'automation.setting',
+        steps: [3, 3],
       }
     case isStateMatch('txDone'):
       return {

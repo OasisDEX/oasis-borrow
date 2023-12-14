@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { extractResultFromContractReceipt } from 'blockchain/better-calls/account-factory'
 import type { DpmOperationParams } from 'blockchain/better-calls/dpm-account'
 import { estimateGas, executeTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
@@ -131,8 +130,6 @@ const areParamsValid = (
 }
 
 export type AutoBuyTriggerAaveContext = {
-  currentStep: number
-  steps: number
   isLoading: boolean
   defaults: AutoBuyFormDefaults
   position?: PositionLike
@@ -198,8 +195,6 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
       events: {} as AutoBuyTriggerAaveEvent,
     },
     context: {
-      currentStep: 1,
-      steps: 3,
       isLoading: false,
       defaults: {
         minSliderValue: 0,
@@ -519,7 +514,7 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
             to: context.setupTriggerResponse.transaction.to,
             proxyAddress: context.position.dpm,
           },
-          extract: extractResultFromContractReceipt,
+          extract: () => {},
         })
 
         const actor = interpret(machine, {

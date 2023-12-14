@@ -26,7 +26,6 @@ interface SubgraphClientConfig {
 }
 
 export interface GetTriggersParams {
-  wallet: string
   dpm: string
 }
 
@@ -42,7 +41,6 @@ export type GetOneTrigger = (params: GetOneTriggerParams) => Promise<TriggerByTy
 async function getTriggers(params: GetTriggersParams, config: SubgraphClientConfig) {
   const url = getEndpoint(ChainId.MAINNET, config.urlBase)
   const triggers = await request(url, TriggersDocument, {
-    wallet: params.wallet,
     dpm: params.dpm,
   })
 

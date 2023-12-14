@@ -15,9 +15,9 @@
     "@aws-lambda-powertools/logger": "^1.17.0",
     "@aws-lambda-powertools/metrics": "^1.17.0",
     "@aws-lambda-powertools/tracer": "^1.17.0",
-    "graphql-request": "^6.1.0",
+    "node-fetch": "^3.3.2",
     "shared": "file:../shared/dist",
-    "automation-subgraph": "file:../automation-subgraph/dist",
+    "contracts": "file:../contracts/dist",
     "viem": "^1.19.11",
     "zod": "^3.22.4"
   }

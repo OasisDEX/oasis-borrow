@@ -16,9 +16,8 @@ export interface SimulatedPosition {
   targetMultiple: bigint
   executionLTV: LTV
   targetLTVWithDeviation: [LTV, LTV]
-  collateralAmountAfterBuy: bigint
-  debtAmountAfterBuy: bigint
-  collateralAmountToBuy: bigint
+  collateralAmountAfterExecution: bigint
+  debtAmountAfterExecution: bigint
 }
 
 export interface SimulatePositionParams {
@@ -86,7 +85,6 @@ export function simulatePosition(
     },
   )
 
-  const amountCollateralToBuy = BigInt(result.delta.collateral.abs().toString())
   const collateralAmountAfterBuy = BigInt(result.position.collateral.amount.abs().toString())
   const debtAmountAfterBuy = BigInt(result.position.debt.amount.toString())
   const calculatedTargetLTV = BigInt(
@@ -94,17 +92,16 @@ export function simulatePosition(
   )
 
   logger?.debug('Current collateral amount', { collateral: position.collateral.balance })
-  logger?.debug('Collateral after buy', { collateral: result.position.collateral.amount })
-  logger?.debug('Debt after buy', { debt: result.position.debt.amount })
-  logger?.debug('Target LTV after simulation', { ltv: result.position.riskRatio.loanToValue })
-  logger?.debug('Multiple after simulation', { multiple: result.position.riskRatio.multiple })
+  logger?.debug('Collateral after execution', { collateral: result.position.collateral.amount })
+  logger?.debug('Debt after execution', { debt: result.position.debt.amount })
+  logger?.debug('Target LTV after execution', { ltv: result.position.riskRatio.loanToValue })
+  logger?.debug('Multiple after execution', { multiple: result.position.riskRatio.multiple })
 
   return {
-    collateralAmountToBuy: amountCollateralToBuy,
     executionLTV,
     targetLTV: calculatedTargetLTV,
-    collateralAmountAfterBuy: collateralAmountAfterBuy,
-    debtAmountAfterBuy: debtAmountAfterBuy,
+    collateralAmountAfterExecution: collateralAmountAfterBuy,
+    debtAmountAfterExecution: debtAmountAfterBuy,
     targetLTVWithDeviation: [calculatedTargetLTV - ONE_PERCENT, calculatedTargetLTV + ONE_PERCENT],
     targetMultiple: BigInt(
       result.position.riskRatio.multiple

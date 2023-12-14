@@ -26,12 +26,11 @@ import {
   SparkStopLossToCollateralV2ID,
   SparkStopLossToDebt,
   SparkStopLossToDebtV2ID,
-} from './types/GetTriggersResponse'
+} from 'contracts/get-triggers-response'
 
 const logger = new Logger({ serviceName: 'getTriggersFunction' })
 
 const paramsSchema = z.object({
-  wallet: addressSchema,
   dpm: addressSchema,
   chainId: chainIdsSchema,
   rpc: urlOptionalSchema,
@@ -39,10 +38,11 @@ const paramsSchema = z.object({
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   //set envs
-  const { RPC_GATEWAY, SUBGRAPH_BASE } = (event.stageVariables as Record<string, string>) || {
-    RPC_GATEWAY: process.env.RPC_GATEWAY,
+  const { SUBGRAPH_BASE } = (event.stageVariables as Record<string, string>) || {
     SUBGRAPH_BASE: process.env.SUBGRAPH_BASE,
   }
+
+  logger.info('Subgraph base', { SUBGRAPH_BASE })
 
   if (!SUBGRAPH_BASE) {
     logger.error('SUBGRAPH_BASE is not set')
@@ -77,6 +77,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
         triggerTypeName: 'AaveStopLossToCollateralV2' as const,
         triggerType: AaveStopLossToCollateralV2ID,
         triggerId: trigger.id,
+        triggerData: trigger.triggerData,
         decodedParams: {
           positionAddress: trigger.decodedData[trigger.decodedDataNames.indexOf('positionAddress')],
           triggerType: trigger.decodedData[trigger.decodedDataNames.indexOf('triggerType')],
@@ -95,6 +96,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
         triggerTypeName: 'AaveStopLossToDebtV2' as const,
         triggerType: AaveStopLossToDebtV2ID,
         triggerId: trigger.id,
+        triggerData: trigger.triggerData,
         decodedParams: {
           positionAddress: trigger.decodedData[trigger.decodedDataNames.indexOf('positionAddress')],
           triggerType: trigger.decodedData[trigger.decodedDataNames.indexOf('triggerType')],
@@ -113,6 +115,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
         triggerTypeName: 'SparkStopLossToCollateralV2' as const,
         triggerType: SparkStopLossToCollateralV2ID,
         triggerId: trigger.id,
+        triggerData: trigger.triggerData,
         decodedParams: {
           positionAddress: trigger.decodedData[trigger.decodedDataNames.indexOf('positionAddress')],
           triggerType: trigger.decodedData[trigger.decodedDataNames.indexOf('triggerType')],
@@ -131,6 +134,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
         triggerTypeName: 'SparkStopLossToDebtV2' as const,
         triggerType: SparkStopLossToDebtV2ID,
         triggerId: trigger.id,
+        triggerData: trigger.triggerData,
         decodedParams: {
           positionAddress: trigger.decodedData[trigger.decodedDataNames.indexOf('positionAddress')],
           triggerType: trigger.decodedData[trigger.decodedDataNames.indexOf('triggerType')],
@@ -149,6 +153,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
         triggerTypeName: 'AaveBasicBuyV2' as const,
         triggerType: AaveBasicBuyV2ID,
         triggerId: trigger.id,
+        triggerData: trigger.triggerData,
         decodedParams: {
           positionAddress: trigger.decodedData[trigger.decodedDataNames.indexOf('positionAddress')],
           triggerType: trigger.decodedData[trigger.decodedDataNames.indexOf('triggerType')],
@@ -173,6 +178,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
         triggerTypeName: 'AaveBasicSellV2' as const,
         triggerType: AaveBasicSellV2ID,
         triggerId: trigger.id,
+        triggerData: trigger.triggerData,
         decodedParams: {
           positionAddress: trigger.decodedData[trigger.decodedDataNames.indexOf('positionAddress')],
           triggerType: trigger.decodedData[trigger.decodedDataNames.indexOf('triggerType')],

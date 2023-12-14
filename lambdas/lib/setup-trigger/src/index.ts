@@ -15,9 +15,9 @@ import { ChainId, ProtocolId } from 'shared/domain-types'
 const logger = new Logger({ serviceName: 'setupTriggerFunction' })
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
-  const { RPC_GATEWAY, SUBGRAPH_BASE } = (event.stageVariables as Record<string, string>) || {
+  const { RPC_GATEWAY, GET_TRIGGERS_URL } = (event.stageVariables as Record<string, string>) || {
     RPC_GATEWAY: process.env.RPC_GATEWAY,
-    SUBGRAPH_BASE: process.env.SUBGRAPH_BASE,
+    GET_TRIGGERS_URL: process.env.GET_TRIGGERS_URL,
   }
 
   if (!RPC_GATEWAY) {
@@ -25,9 +25,9 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     return ResponseInternalServerError('RPC_GATEWAY is not set')
   }
 
-  if (!SUBGRAPH_BASE) {
-    logger.error('SUBGRAPH_BASE is not set')
-    return ResponseInternalServerError('SUBGRAPH_BASE is not set')
+  if (!GET_TRIGGERS_URL) {
+    logger.error('GET_TRIGGERS_URL is not set')
+    return ResponseInternalServerError('GET_TRIGGERS_URL is not set')
   }
 
   const pathParamsResult = pathParamsSchema.safeParse(event.pathParameters || {})
@@ -106,7 +106,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     pathParamsResult.data.protocol,
     pathParamsResult.data.trigger,
     RPC_GATEWAY,
-    SUBGRAPH_BASE,
+    GET_TRIGGERS_URL,
     params.rpc,
     logger,
   )

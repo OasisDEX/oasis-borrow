@@ -16,6 +16,7 @@
     "graphql-request": "^6.1.0",
     "shared": "file:../shared/dist",
     "automation-subgraph": "file:../automation-subgraph/dist",
+    "contracts": "file:../contracts/dist",
     "zod": "^3.22.4"
   }
 }

@@ -4,7 +4,7 @@ Description: Sample SAM Template for Lambda Functions
 
 Globals:
   Function:
-    Timeout: 5
+    Timeout: 10
 
 Parameters:
   SubgraphBase:
@@ -22,6 +22,9 @@ Parameters:
       - INFO
       - WARN
       - ERROR
+  GetTriggersUrl:
+    Type: String
+    Description: URL of the GetTriggers Lambda function
 
 Resources:
   GetTriggers:
@@ -38,8 +41,8 @@ Resources:
             Method: get
       Environment:
         Variables:
-          SUBGRAPH_BASE: !Ref SubgraphBase
-          POWERTOOLS_LOG_LEVEL: !Ref LogLevel
+          SUBGRAPH_BASE: '' # Update with your environment variables'
+          POWERTOOLS_LOG_LEVEL: DEBUG # Update with your environment variables'
   SetupTrigger:
     Type: AWS::Serverless::Function
     Properties:
@@ -54,9 +57,9 @@ Resources:
             Method: post
       Environment:
         Variables:
-              RPC_GATEWAY: !Ref RpcGateway
-              SUBGRAPH_BASE: !Ref SubgraphBase
-              POWERTOOLS_LOG_LEVEL: !Ref LogLevel
+              RPC_GATEWAY: '' # Update with your environment variables
+              POWERTOOLS_LOG_LEVEL: DEBUG
+              GET_TRIGGERS_URL: '' # Update with your environment variables
   # Add more Lambda function definitions as needed
 
 Outputs:
