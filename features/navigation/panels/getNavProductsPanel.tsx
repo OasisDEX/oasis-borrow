@@ -39,9 +39,8 @@ export const getNavProductsPanel = ({
   isConnected: boolean
   connect: () => void
 }): NavigationMenuPanelType => {
-  const productMultiplyNavItems = getProductMultiplyNavItems(promoCardsData, productHubItems)
-
   const productEarnNavItems = getProductEarnNavItems(promoCardsData, productHubItems)
+  const productMultiplyNavItems = getProductMultiplyNavItems(promoCardsData, productHubItems)
   const productBorrowNavItems = getProductBorrowNavItems(productHubItems)
 
   const widgetCallback = (variant: 'swap' | 'bridge') => {
