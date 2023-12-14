@@ -73,7 +73,7 @@ const rewardsTransactionResolver = ({
     return await resolvedContract.claimMultiple(
       rewards.payload[resolvedPayload].weeks,
       rewards.payload[resolvedPayload].amounts,
-      [rewards.payload[resolvedPayload].proofs],
+      rewards.payload[resolvedPayload].proofs,
     )
   }
 }
