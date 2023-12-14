@@ -216,7 +216,10 @@ export function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
   if (context.currentPosition === undefined) {
     return zero
   }
-  if (context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
+  if (
+    context.manageTokenInput?.manageAction === ManageDebtActionsEnum.BORROW_DEBT ||
+    context.manageTokenInput?.manageAction === ManageCollateralActionsEnum.DEPOSIT_COLLATERAL
+  ) {
     const position = context.currentPosition
     const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol)
     const debt = amountFromWei(position.debt.amount, position.debt.symbol)
@@ -238,7 +241,8 @@ export function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
 
 export function calculateMaxCollateralAmount(context: ManageAaveContext): BigNumber {
   if (
-    context.manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
+    context.manageTokenInput?.manageAction === ManageCollateralActionsEnum.WITHDRAW_COLLATERAL ||
+    context.manageTokenInput?.manageAction === ManageDebtActionsEnum.PAYBACK_DEBT
   ) {
     return amountFromWei(
       context.currentPosition?.maxCollateralToWithdraw || zero,

@@ -1,6 +1,6 @@
 import { IPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import { ManageTokenInput, ProxyType } from 'features/aave/types'
+import { ManagePositionForm, ProxyType } from 'features/aave/types'
 import { NetworkIds } from '../../../blockchain/networks'
 import { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 
@@ -9,7 +9,7 @@ export interface ManageAaveParameters {
   slippage: BigNumber
   proxyAddress: string
   userAddress: string,
-  manageTokenInput?: ManageTokenInput
+  manageTokenInput?: ManagePositionForm
   amount: BigNumber
   token?: string
   proxyType: ProxyType

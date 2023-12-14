@@ -29,14 +29,14 @@ export function isAllowanceNeeded(context: BaseAaveContext): boolean {
   const allowance = allowanceForToken(token, context)
 
   const isDepositingAction =
-    context.manageTokenInput?.manageTokenAction ===
+    context.manageTokenInput?.manageAction ===
     ManageCollateralActionsEnum.DEPOSIT_COLLATERAL ||
-    context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.PAYBACK_DEBT ||
+    context.manageTokenInput?.manageAction === ManageDebtActionsEnum.PAYBACK_DEBT ||
     (context.userInput.amount || zero).gt(zero)
 
   return (
     isDepositingAction &&
-    (context.userInput.amount || context.manageTokenInput?.manageTokenActionValue || zero).gt(
+    (context.userInput.amount || context.manageTokenInput?.manageInput1Value || zero).gt(
       allowance || zero,
     )
   )

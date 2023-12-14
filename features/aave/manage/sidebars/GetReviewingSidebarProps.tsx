@@ -24,8 +24,6 @@ import {
   BalanceAfterClose,
   calculateMaxCollateralAmount,
   calculateMaxDebtAmount,
-  isLoading,
-  isLocked,
 } from './SidebarManageAaveVault'
 
 export function GetReviewingSidebarProps({
@@ -48,16 +46,22 @@ export function GetReviewingSidebarProps({
   const updateDebtTokenAction = (manageTokenAction: ManageDebtActionsEnum) => {
     send({ type: 'UPDATE_DEBT_TOKEN_ACTION', manageTokenAction })
   }
-  const updateTokenActionValue = (manageTokenActionValue?: BigNumber) => {
-    send({ type: 'UPDATE_TOKEN_ACTION_VALUE', manageTokenActionValue })
+  const updateInput1ActionValue = (manageInput1Value?: BigNumber) => {
+    send({ type: 'UPDATE_INPUT1_ACTION_VALUE', manageInput1Value })
   }
-
-  function loading(): boolean {
-    return isLoading(state)
+  const updateInput2ActionValue = (manageInput2Value?: BigNumber) => {
+    send({ type: 'UPDATE_INPUT2_ACTION_VALUE', manageInput2Value })
   }
 
   const closeToToken = state.context.manageTokenInput?.closingToken
-  const AdjustRisk = state.context.strategyConfig.viewComponents.adjustRiskInput
+  const maxCollateralAmount = calculateMaxCollateralAmount(state.context)
+  const maxDebtAmount = calculateMaxDebtAmount(state.context)
+  const amountCollateralTooHigh = maxCollateralAmount.lt(
+    state.context.manageTokenInput?.manageInput1Value || zero,
+  )
+  const amountDebtTooHigh = maxDebtAmount.lt(
+    state.context.manageTokenInput?.manageInput2Value || zero,
+  )
 
   switch (true) {
     case state.matches('frontend.reviewingClosing'):
@@ -91,57 +95,59 @@ export function GetReviewingSidebarProps({
         ),
       }
     case state.matches('frontend.manageCollateral'):
-      const maxCollateralAmount = calculateMaxCollateralAmount(state.context)
-      const amountCollateralTooHigh = maxCollateralAmount.lt(
-        state.context.manageTokenInput?.manageTokenActionValue || zero,
-      )
+      const isDeposit =
+        state.context.manageTokenInput?.manageAction ===
+        ManageCollateralActionsEnum.DEPOSIT_COLLATERAL
+      const isWithdraw =
+        state.context.manageTokenInput?.manageAction ===
+        ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
+
       return {
         title: t('system.manage-collateral'),
         content: (
           <Grid gap={3}>
             <ActionPills
-              active={state.context.manageTokenInput?.manageTokenAction!}
+              active={state.context.manageTokenInput?.manageAction!}
               items={Object.values(ManageCollateralActionsEnum).map((action) => ({
                 id: action,
                 label: t(`system.actions.multiply.${action}`),
                 action: () => curry(updateCollateralTokenAction)(action),
               }))}
             />
-            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-              {t('system.manage-collateral')}
-            </Text>
             <VaultActionInput
-              action="Enter"
+              action={isDeposit ? 'Deposit' : 'Withdraw'}
               currencyCode={collateral}
               currencyDigits={getToken(collateral).digits}
-              maxAmountLabel={t('balance')}
+              maxAmountLabel={isDeposit ? t('balance') : t('max')}
               maxAmount={maxCollateralAmount}
               showMax={true}
               onSetMax={() => {
-                updateTokenActionValue(maxCollateralAmount)
+                updateInput1ActionValue(maxCollateralAmount)
               }}
-              amount={state.context.manageTokenInput?.manageTokenActionValue}
-              onChange={handleNumericInput(updateTokenActionValue)}
+              amount={state.context.manageTokenInput?.manageInput1Value}
+              onChange={handleNumericInput(updateInput1ActionValue)}
               hasError={false}
             />
-            {state.context.manageTokenInput?.manageTokenAction ===
-              ManageCollateralActionsEnum.DEPOSIT_COLLATERAL && (
-              <AdjustRisk
-                state={state}
-                onChainPosition={state.context.currentPosition}
-                isLoading={loading}
-                send={send}
-                viewLocked={isLocked(state)}
-                stopLossError={stopLossError}
-              />
-            )}
+            <VaultActionInput
+              action={isDeposit ? 'Borrow' : 'Payback'}
+              currencyCode={debt}
+              currencyDigits={getToken(debt).digits}
+              maxAmountLabel={isDeposit ? t('max') : t('balance')}
+              maxAmount={maxDebtAmount}
+              showMax={true}
+              onSetMax={() => {
+                updateInput2ActionValue(maxDebtAmount)
+              }}
+              amount={state.context.manageTokenInput?.manageInput2Value}
+              onChange={handleNumericInput(updateInput2ActionValue)}
+              hasError={false}
+            />
             {stopLossError && <StopLossAaveErrorMessage />}
             {amountCollateralTooHigh && (
               <>
                 <MessageCard
                   messages={
-                    state.context.manageTokenInput?.manageTokenAction ===
-                    ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
+                    isWithdraw
                       ? [
                           t('vault-errors.withdraw-amount-exceeds-free-collateral', {
                             maxWithdrawAmount: formatCryptoBalance(maxCollateralAmount),
@@ -166,37 +172,49 @@ export function GetReviewingSidebarProps({
         ),
       }
     case state.matches('frontend.manageDebt'):
-      const maxDebtAmount = calculateMaxDebtAmount(state.context)
-      const amountDebtTooHigh = maxDebtAmount.lt(
-        state.context.manageTokenInput?.manageTokenActionValue || zero,
-      )
+      const isPayback =
+        state.context.manageTokenInput?.manageAction === ManageDebtActionsEnum.PAYBACK_DEBT
+      const isBorrow =
+        state.context.manageTokenInput?.manageAction === ManageDebtActionsEnum.BORROW_DEBT
+
       return {
         title: t('system.manage-debt'),
         content: (
           <Grid gap={3}>
             <ActionPills
-              active={state.context.manageTokenInput?.manageTokenAction!}
+              active={state.context.manageTokenInput?.manageAction!}
               items={Object.values(ManageDebtActionsEnum).map((action) => ({
                 id: action,
                 label: t(`system.actions.multiply.${action}`),
                 action: () => curry(updateDebtTokenAction)(action),
               }))}
             />
-            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-              {t('system.manage-debt')}
-            </Text>
             <VaultActionInput
-              action="Enter"
+              action={isBorrow ? 'Borrow' : 'Payback'}
               currencyCode={debt}
               currencyDigits={getToken(debt).digits}
-              maxAmountLabel={t('balance')}
+              maxAmountLabel={isPayback ? t('balance') : t('max')}
               maxAmount={maxDebtAmount}
               showMax={true}
               onSetMax={() => {
-                updateTokenActionValue(maxDebtAmount)
+                updateInput1ActionValue(maxDebtAmount)
               }}
-              amount={state.context.manageTokenInput?.manageTokenActionValue}
-              onChange={handleNumericInput(updateTokenActionValue)}
+              amount={state.context.manageTokenInput?.manageInput1Value}
+              onChange={handleNumericInput(updateInput1ActionValue)}
+              hasError={false}
+            />
+            <VaultActionInput
+              action={isBorrow ? 'Deposit' : 'Withdraw'}
+              currencyCode={collateral}
+              currencyDigits={getToken(collateral).digits}
+              maxAmountLabel={isPayback ? t('max') : t('balance')}
+              maxAmount={maxCollateralAmount}
+              showMax={true}
+              onSetMax={() => {
+                updateInput2ActionValue(maxCollateralAmount)
+              }}
+              amount={state.context.manageTokenInput?.manageInput2Value}
+              onChange={handleNumericInput(updateInput2ActionValue)}
               hasError={false}
             />
             {stopLossError && <StopLossAaveErrorMessage />}
@@ -204,8 +222,7 @@ export function GetReviewingSidebarProps({
               <>
                 <MessageCard
                   messages={
-                    state.context.manageTokenInput?.manageTokenAction ===
-                    ManageDebtActionsEnum.PAYBACK_DEBT
+                    isPayback
                       ? [
                           t('vault-errors.payback-amount-exceeds', {
                             maxPaybackAmount: formatCryptoBalance(maxDebtAmount),

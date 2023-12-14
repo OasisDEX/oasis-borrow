@@ -57,7 +57,7 @@ export function AaveManageTabBar({
   const manageTouched =
     (state.matches('frontend.manageCollateral') || state.matches('frontend.manageDebt')) &&
     supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
-    state.context.manageTokenInput?.manageTokenActionValue
+    state.context.manageTokenInput?.manageInput1Value
   const nextPosition =
     adjustingTouched || manageTouched || (isClosingPosition && hasCloseTokenSet)
       ? state.context.transition?.simulation.position

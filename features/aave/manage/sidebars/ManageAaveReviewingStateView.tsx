@@ -40,5 +40,8 @@ export function ManageAaveReviewingStateView({
     dropdown: dropdownConfig,
   }
 
+  console.log('>>>>>>>>>>>\n')
+  console.log('transition', state.context.transition)
+
   return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
