@@ -60,6 +60,7 @@ export const getNavProductsPanel = ({
           {
             title: t('nav.earn'),
             description: t('nav.products-earn'),
+            url: INTERNAL_LINKS.earn,
             list: {
               items: [
                 ...productEarnNavItems.map((item) => ({
@@ -99,15 +100,12 @@ export const getNavProductsPanel = ({
                   url: item.url,
                 })),
               ],
-              link: {
-                label: t('nav.products-more', { product: t('nav.earn') }),
-                url: INTERNAL_LINKS.earn,
-              },
             },
           },
           {
             title: t('nav.multiply'),
             description: t('nav.products-multiply'),
+            url: INTERNAL_LINKS.multiply,
             list: {
               items: [
                 ...productMultiplyNavItems.map((item) => ({
@@ -128,15 +126,12 @@ export const getNavProductsPanel = ({
                   url: item.url,
                 })),
               ],
-              link: {
-                label: t('nav.products-more', { product: t('nav.multiply') }),
-                url: INTERNAL_LINKS.multiply,
-              },
             },
           },
           {
             title: t('nav.borrow'),
             description: t('nav.products-borrow'),
+            url: INTERNAL_LINKS.borrow,
             list: {
               items: [
                 {
@@ -213,10 +208,6 @@ export const getNavProductsPanel = ({
                   url: productBorrowNavItems.liquidity.url,
                 },
               ],
-              link: {
-                label: t('nav.products-more', { product: t('nav.borrow') }),
-                url: INTERNAL_LINKS.borrow,
-              },
             },
           },
           {
