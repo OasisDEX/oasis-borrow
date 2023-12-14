@@ -4,7 +4,6 @@ import { WithArrow } from 'components/WithArrow'
 import { AjnaHaveSomeQuestions, AjnaHeader } from 'features/ajna/common/components'
 import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers'
 import { AjnaRewardCard } from 'features/ajna/rewards/components'
-import { useAjnaRewards } from 'features/ajna/rewards/hooks'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAccount } from 'helpers/useAccount'
@@ -14,7 +13,6 @@ import { Button, Flex } from 'theme-ui'
 
 export function AjnaRewardsController() {
   const { t } = useTranslation()
-  const { isLoading, rewards } = useAjnaRewards()
 
   const { isConnected } = useAccount()
   const { connect } = useConnection()
@@ -42,12 +40,7 @@ export function AjnaRewardsController() {
         }
       />
       {isConnected ? (
-        <AjnaRewardCard
-          // TODO: remove disabled when rewards are live and handler is ready
-          disabled
-          isLoading={isLoading}
-          rewards={rewards}
-        />
+        <AjnaRewardCard />
       ) : (
         <Flex sx={{ justifyContent: 'center', mb: [3, null, '48px'] }}>
           <Button variant="primary" sx={{ p: 0 }} onClick={() => connect()}>
