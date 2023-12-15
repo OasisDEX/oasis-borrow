@@ -2703,7 +2703,7 @@
       },
       "net-value-modal": {
         "modal-title": "Net Value & Profit and Loss",
-        "modal-description": "The current net value is calculated based on the market price of <strong>${{collateralPrice}}</strong>",
+        "modal-description": "The current net value is calculated based on the market price of <strong>${{netValueTokenPrice}}</strong>",
         "modal-table-col-1": "Collateral Value",
         "modal-table-col-2": "$ Value",
         "modal-table-row-1": "Net Value",

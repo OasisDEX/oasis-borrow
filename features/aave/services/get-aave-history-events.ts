@@ -86,21 +86,24 @@ export async function getAaveHistoryEvents(
         .sort((a, b) => b.timestamp - a.timestamp),
       positionCumulatives: positions[0]
         ? {
-            cumulativeDeposit: new BigNumber(positions[0].cumulativeDeposit),
-            cumulativeWithdraw: new BigNumber(positions[0].cumulativeWithdraw),
-            cumulativeFees: new BigNumber(positions[0].cumulativeFees),
-            cumulativeFeesInQuoteToken: new BigNumber(positions[0].cumulativeFeesInQuoteToken),
+            cumulativeDepositUSD: new BigNumber(positions[0].cumulativeDepositUSD),
             cumulativeDepositInQuoteToken: new BigNumber(
               positions[0].cumulativeDepositInQuoteToken,
-            ),
-            cumulativeWithdrawInQuoteToken: new BigNumber(
-              positions[0].cumulativeWithdrawInQuoteToken,
             ),
             cumulativeDespositInCollateralToken: new BigNumber(
               positions[0].cumulativeDespositInCollateralToken,
             ),
+            cumulativeWithdrawUSD: new BigNumber(positions[0].cumulativeWithdrawUSD),
+            cumulativeWithdrawInQuoteToken: new BigNumber(
+              positions[0].cumulativeWithdrawInQuoteToken,
+            ),
             cumulativeWithdrawInCollateralToken: new BigNumber(
               positions[0].cumulativeWithdrawInCollateralToken,
+            ),
+            cumulativeFeesUSD: new BigNumber(positions[0].cumulativeFeesUSD),
+            cumulativeFeesInQuoteToken: new BigNumber(positions[0].cumulativeFeesInQuoteToken),
+            cumulativeFeesInCollateralToken: new BigNumber(
+              positions[0].cumulativeFeesInCollateralToken,
             ),
           }
         : undefined,
