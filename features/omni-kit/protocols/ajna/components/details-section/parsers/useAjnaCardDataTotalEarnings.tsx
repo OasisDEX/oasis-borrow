@@ -4,7 +4,7 @@ import type {
   OmniContentCardExtra,
 } from 'features/omni-kit/components/details-section'
 import { AjnaCardDataTotalEarningsModal } from 'features/omni-kit/protocols/ajna/components/details-section'
-import { formatCryptoBalance } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
 import React from 'react'
 
 interface AjnaCardDataTotalEarningsParams {
@@ -25,10 +25,7 @@ export function useAjnaCardDataTotalEarnings({
     value: formatCryptoBalance(withoutFees),
     unit: quoteToken,
     ...(pnlUSD && {
-      footnote: [
-        { key: 'ajna.content-card.total-earnings.footnote' },
-        `$${formatCryptoBalance(pnlUSD)}`,
-      ],
+      footnote: [{ key: 'ajna.content-card.total-earnings.footnote' }, formatUsdValue(pnlUSD)],
     }),
     modal: (
       <AjnaCardDataTotalEarningsModal

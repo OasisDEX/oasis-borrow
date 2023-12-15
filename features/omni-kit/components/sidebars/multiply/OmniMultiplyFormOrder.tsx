@@ -19,6 +19,7 @@ import {
   formatAmount,
   formatCryptoBalance,
   formatDecimalAsPercent,
+  formatUsdValue,
 } from 'helpers/formatters/format'
 import { OAZO_FEE } from 'helpers/multiply/calculations.constants'
 import { useObservable } from 'helpers/observableHook'
@@ -170,8 +171,8 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
         )} ${collateralToken}/${quoteToken}`
       : 'n/a',
     marketPriceImpact: priceImpact ? formatDecimalAsPercent(priceImpact) : 'n/a',
-    oasisFee: `$${formatAmount(oasisFee, 'USD')}`,
-    totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
+    oasisFee: formatUsdValue(oasisFee),
+    totalCost: txDetails?.txCost ? formatUsdValue(txDetails.txCost) : '-',
   }
 
   return (

@@ -5,7 +5,7 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { resolveIfCachedPosition } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaIsCachedPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType } from 'features/omni-kit/types'
-import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -43,7 +43,7 @@ export const AjnaClaimCollateralFormOrderInformation: FC<AjnaIsCachedPosition> =
       `${formatCryptoBalance(
         (simulationData as AjnaEarnPosition).collateralTokenAmount,
       )} ${collateralToken}`,
-    totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
+    totalCost: txDetails?.txCost ? formatUsdValue(txDetails.txCost) : '-',
   }
 
   return (

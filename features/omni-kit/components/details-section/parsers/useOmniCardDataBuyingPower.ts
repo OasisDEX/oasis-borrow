@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import type { OmniContentCardBase } from 'features/omni-kit/components/details-section'
-import { formatCryptoBalance } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 
 interface OmniCardDataBuyingPowerParams {
@@ -18,9 +18,9 @@ export function useOmniCardDataBuyingPower({
 }: OmniCardDataBuyingPowerParams): OmniContentCardBase {
   return {
     title: { key: 'omni-kit.content-card.buying-power.title' },
-    value: `$${formatCryptoBalance(buyingPower)}`,
+    value: formatUsdValue(buyingPower),
     ...(afterBuyingPower && {
-      change: [`$${formatCryptoBalance(afterBuyingPower)}`],
+      change: [formatUsdValue(afterBuyingPower)],
     }),
     ...(buyingPower.gt(zero) && {
       footnote: ['', formatCryptoBalance(buyingPower.div(collateralPrice)), collateralToken],
