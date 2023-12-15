@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { getRpcProvider,NetworkIds } from 'blockchain/networks'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { CHAIN_LINK_PRECISION } from 'components/constants'
 import type { PriceServiceResponse } from 'helpers/types'
 import { SdaiPriceOracle__factory as SdaiPriceOracleFactory } from 'types/ethers-contracts'
