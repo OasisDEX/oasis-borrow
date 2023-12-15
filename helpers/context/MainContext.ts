@@ -53,6 +53,9 @@ export function setupMainContext() {
     connectedContext$,
   )
 
+  /*
+   * @deprecated use `gasPriceOnNetwork$` instead
+   */
   const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
   const gasPriceOnNetwork$ = memoize(
     curry(createGasPriceOnNetwork$)(onEveryBlock$),

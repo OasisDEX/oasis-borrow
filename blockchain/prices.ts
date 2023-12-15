@@ -34,15 +34,17 @@ export async function getGasPrice(): Promise<GasPriceParams> {
   }
 }
 
+/*
+ * @deprecated use `createGasPriceOnNetwork$` instead
+ */
 export function createGasPrice$(
   onEveryBlock$: Observable<number>,
   context$: Observable<Context>,
-  networkId: NetworkIds = NetworkIds.MAINNET,
 ): GasPrice$ {
   const minersTip = new BigNumber(5000000000)
 
   const blockNativeRequest$ = ajax({
-    url: `/api/gasPrice?networkId=${networkId}`,
+    url: '/api/gasPrice',
     method: 'GET',
     headers: {
       Accept: 'application/json',
