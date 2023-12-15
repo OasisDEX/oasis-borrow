@@ -5,7 +5,7 @@ import { DimmedList } from 'components/DImmedList'
 import { Icon } from 'components/Icon'
 import { InfoSectionLoadingState } from 'components/infoSection/Item'
 import { Tooltip, useTooltip } from 'components/Tooltip'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatAmount, formatUsdValue } from 'helpers/formatters/format'
 import { isTouchDevice } from 'helpers/isTouchDevice'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
@@ -169,7 +169,7 @@ export function getEstimatedGasFeeText(
     case undefined:
       return <EstimationError withBrackets={false} />
     case GasEstimationStatus.calculated:
-      return `$${formatAmount(gasEstimation?.usdValue.plus(addition), 'USD')}`
+      return formatUsdValue(gasEstimation?.usdValue.plus(addition))
   }
 }
 

@@ -68,6 +68,10 @@ export function formatCryptoBalance(amount: BigNumber): string {
   return formatAsShorthandNumbers(amount, 2)
 }
 
+export function formatUsdValue(amount: BigNumber): string {
+  return amount.lt(0.01) ? '$<0.01' : `$${formatCryptoBalance(amount)}`
+}
+
 export function formatFiatBalance(amount: BigNumber): string {
   const absAmount = amount.absoluteValue()
 
