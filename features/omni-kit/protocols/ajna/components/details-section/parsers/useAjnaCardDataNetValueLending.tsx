@@ -31,6 +31,10 @@ export function useAjnaCardDataNetValueLending({
           cumulativeDepositUSD: cumulatives.borrowCumulativeDepositUSD,
           cumulativeWithdrawUSD: cumulatives.borrowCumulativeWithdrawUSD,
           cumulativeFeesUSD: cumulatives.borrowCumulativeFeesUSD,
+          cumulativeWithdrawInCollateralToken: cumulatives.borrowCumulativeCollateralWithdraw,
+          cumulativeDespositInCollateralToken: cumulatives.borrowCumulativeCollateralDeposit,
+          cumulativeFeesInCollateralToken:
+            cumulatives.borrowCumulativeFeesUSD.dividedBy(collateralPrice), // fix when cumulativeFeesInCollateralToken is available
         }}
         netValueUSD={netValue}
         pnl={pnl}

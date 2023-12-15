@@ -187,6 +187,8 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
           borrowCumulativeDepositUSD
           borrowCumulativeFeesUSD
           borrowCumulativeWithdrawUSD
+          borrowCumulativeCollateralDeposit
+          borrowCumulativeCollateralWithdraw
         }
       }
     }
