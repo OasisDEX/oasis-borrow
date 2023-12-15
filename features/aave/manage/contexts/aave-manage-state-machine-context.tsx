@@ -100,10 +100,10 @@ export function ManageAaveStateMachineContextProvider({
     <manageAaveStateContext.Provider value={context}>
       {createOptimizationMachine ? (
         <OptimizationAaveStateMachineContextProvider dpm={proxies} strategy={strategy}>
-          {children}
+          <>{children}</>
         </OptimizationAaveStateMachineContextProvider>
       ) : (
-        { children }
+        <>{children}</>
       )}
     </manageAaveStateContext.Provider>
   )
