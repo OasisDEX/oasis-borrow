@@ -124,20 +124,12 @@ export const PositionInfoComponent = ({
             modal={
               cumulatives && (
                 <OmniMultiplyNetValueModal
-                  cumulatives={{
-                    cumulativeDepositUSD: cumulatives?.cumulativeDeposit,
-                    cumulativeWithdrawUSD: cumulatives.cumulativeWithdraw,
-                    cumulativeFeesUSD: cumulatives.cumulativeFees,
-                    cumulativeDeposit: cumulatives?.cumulativeDepositInQuoteToken,
-                    cumulativeWithdraw: cumulatives.cumulativeWithdrawInCollateralToken,
-                    cumulativeFees: cumulatives.cumulativeFeesInQuoteToken,
-                  }}
-                  netValue={netValueUsd}
+                  cumulatives={cumulatives}
+                  netValueUSD={netValueUsd}
                   pnl={pnlWithoutFees}
-                  pnlInCollateralToken
-                  pnlUSD={pnlWithoutFees && cumulatives.cumulativeDeposit.times(pnlWithoutFees)}
-                  collateralPrice={debtTokenPrice}
-                  collateralToken={position.debt.symbol}
+                  pnlUSD={pnlWithoutFees && cumulatives.cumulativeDepositUSD.times(pnlWithoutFees)}
+                  netValueTokenPrice={debtTokenPrice}
+                  netValueToken={position.debt.symbol}
                 />
               )
             }
