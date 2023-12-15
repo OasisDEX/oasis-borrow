@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import type { OmniContentCardBase } from 'features/omni-kit/components/details-section'
-import { formatCryptoBalance } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 
 interface OmniCardDataTokensValueParams {
@@ -22,7 +22,7 @@ export function useOmniCardDataTokensValue({
 }: OmniCardDataTokensValueParams): OmniContentCardBase {
   const value =
     usdAsDefault && tokensPrice
-      ? `$${formatCryptoBalance(tokensAmount.times(tokensPrice))}`
+      ? formatUsdValue(tokensAmount.times(tokensPrice))
       : formatCryptoBalance(tokensAmount)
 
   return {
@@ -37,7 +37,7 @@ export function useOmniCardDataTokensValue({
     ...(!usdAsDefault &&
       tokensAmount.gt(zero) &&
       tokensPrice && {
-        footnote: [`$${formatCryptoBalance(tokensAmount.times(tokensPrice))}`],
+        footnote: [formatUsdValue(tokensAmount.times(tokensPrice))],
       }),
   }
 }

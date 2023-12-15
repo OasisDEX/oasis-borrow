@@ -3,7 +3,7 @@ import { HighlightedOrderInformation } from 'components/HighlightedOrderInformat
 import { OmniBorrowFormOrder } from 'features/omni-kit/components/sidebars/borrow'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { OmniProductType } from 'features/omni-kit/types'
-import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -36,7 +36,7 @@ export function OmniBorrowFormContentClose() {
   const formatted = {
     collateralOnClose: `${formatCryptoBalance(
       collateralOnClose,
-    )} ${collateralToken} ($${formatAmount(collateralOnClose.times(collateralPrice), 'USD')})`,
+    )} ${collateralToken} (${formatUsdValue(collateralOnClose.times(collateralPrice))})`,
     quoteOnClose: `${formatCryptoBalance(quoteOnClose)} ${quoteToken} ($${formatAmount(
       quoteOnClose.times(quotePrice),
       'USD',

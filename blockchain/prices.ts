@@ -34,6 +34,9 @@ export async function getGasPrice(): Promise<GasPriceParams> {
   }
 }
 
+/*
+ * @deprecated use `createGasPriceOnNetwork$` instead
+ */
 export function createGasPrice$(
   onEveryBlock$: Observable<number>,
   context$: Observable<Context>,
@@ -41,7 +44,7 @@ export function createGasPrice$(
   const minersTip = new BigNumber(5000000000)
 
   const blockNativeRequest$ = ajax({
-    url: `/api/gasPrice`,
+    url: '/api/gasPrice',
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -92,10 +95,36 @@ export function createGasPrice$(
           blockNative.maxPriorityFeePerGas,
         )
       }
+
       return gasFees
     }),
     distinctUntilChanged(isEqual),
     shareReplay(1),
+  )
+}
+
+export function createGasPriceOnNetwork$(
+  onEveryBlock$: Observable<number>,
+  networkId: NetworkIds,
+): GasPrice$ {
+  return ajax({
+    url: `/api/gasPrice?networkId=${networkId}`,
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  }).pipe(
+    tap((response) => {
+      if (response.status !== 200) throw new Error(response.responseText)
+
+      return response
+    }),
+    map(({ response }) => {
+      return {
+        maxFeePerGas: new BigNumber(response.maxFeePerGas).shiftedBy(9),
+        maxPriorityFeePerGas: new BigNumber(response.maxPriorityFeePerGas).shiftedBy(9),
+      }
+    }),
   )
 }
 

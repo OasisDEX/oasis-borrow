@@ -31,6 +31,7 @@ const publicRuntimeConfig = {
   grooveWidgetId: process.env.GROOVE_WIDGET_ID || `27241a63-86b5-47e2-a167-2e2a3e2a621e`,
   getTriggersUrl: process.env.GET_TRIGGERS_URL,
   setupTriggerUrl: process.env.SETUP_TRIGGER_URL,
+  awsGasPriceUrl: 'https://rjaw1lt1ch.execute-api.us-east-1.amazonaws.com/staging/',
 }
 
 module.exports = {

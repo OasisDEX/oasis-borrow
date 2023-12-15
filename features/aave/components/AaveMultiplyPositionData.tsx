@@ -95,15 +95,16 @@ export function AaveMultiplyPositionData({
     aaveHistory[0].autoKind === 'aave-stop-loss' &&
     currentPosition.debt.amount.isZero()
 
-  const netValue =
-    strategyType === StrategyType.Long
-      ? currentPositionThings.netValueInDebtToken
-      : currentPositionThings.netValueInCollateralToken
+  const isLongPosition = strategyType === StrategyType.Long
 
-  const pnlWithoutFees = cumulatives?.cumulativeWithdraw
-    .plus(netValue)
-    .minus(cumulatives.cumulativeDeposit)
-    .div(cumulatives.cumulativeDeposit)
+  const netValueUsd = isLongPosition
+    ? currentPositionThings.netValueInDebtToken.times(debtTokenPrice)
+    : currentPositionThings.netValueInCollateralToken.times(collateralTokenPrice)
+
+  const pnlWithoutFees = cumulatives?.cumulativeWithdrawUSD
+    .plus(netValueUsd)
+    .minus(cumulatives.cumulativeDepositUSD)
+    .div(cumulatives.cumulativeDepositUSD)
 
   const isSparkPosition = lendingProtocol === LendingProtocol.SparkV3
   const isElligibleSparkPosition = checkElligibleSparkPosition(
@@ -166,16 +167,14 @@ export function AaveMultiplyPositionData({
               modal={
                 cumulatives ? (
                   <OmniMultiplyNetValueModal
-                    collateralPrice={collateralTokenPrice}
-                    collateralToken={collateralToken.symbol}
-                    cumulatives={{
-                      cumulativeDepositUSD: cumulatives.cumulativeDeposit,
-                      cumulativeWithdrawUSD: cumulatives.cumulativeWithdraw,
-                      cumulativeFeesUSD: cumulatives.cumulativeFees,
-                    }}
-                    netValue={netValue}
+                    netValueTokenPrice={collateralTokenPrice}
+                    netValueToken={collateralToken.symbol}
+                    cumulatives={cumulatives}
+                    netValueUSD={netValueUsd}
                     pnl={pnlWithoutFees}
-                    pnlUSD={pnlWithoutFees && cumulatives.cumulativeDeposit.times(pnlWithoutFees)}
+                    pnlUSD={
+                      pnlWithoutFees && cumulatives.cumulativeDepositUSD.times(pnlWithoutFees)
+                    }
                   />
                 ) : undefined
               }

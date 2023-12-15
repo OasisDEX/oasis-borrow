@@ -362,14 +362,15 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     query AavePositionHistory($dpmProxyAddress: String) {
       positions(where: { account: $dpmProxyAddress }) {
         id
-        cumulativeDeposit
-        cumulativeWithdraw
-        cumulativeFees
-        cumulativeFeesInQuoteToken
+        cumulativeDepositUSD
         cumulativeDepositInQuoteToken
-        cumulativeWithdrawInQuoteToken
         cumulativeDespositInCollateralToken
+        cumulativeWithdrawUSD
+        cumulativeWithdrawInQuoteToken
         cumulativeWithdrawInCollateralToken
+        cumulativeFeesUSD
+        cumulativeFeesInQuoteToken
+        cumulativeFeesInCollateralToken
       }
       positionEvents(where: { account: $dpmProxyAddress }) {
         depositTransfers {
