@@ -9,7 +9,7 @@ const cache = new NodeCache({ stdTTL: 10 })
 
 const handler = async function ({ query }: NextApiRequest, res: NextApiResponse) {
   const config = getConfig()
-  const url = config?.publicRuntimeConfig.setupTriggerUrl
+  const url = config?.publicRuntimeConfig.awsGasPriceUrl
 
   const networkId =
     (Array.isArray(query.networkId) ? query.networkId[0] : query.networkId) ?? NetworkIds.MAINNET
