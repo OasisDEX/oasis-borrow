@@ -1,6 +1,10 @@
 import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatUsdValue,
+} from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -97,7 +101,7 @@ export function OmniMultiplyNetValueModal({
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-1')}
           firstColumn={`${formatCryptoBalance(netValueInCollateralToken)} ${collateralToken}`}
-          secondColumn={`$${formatCryptoBalance(netValue)}`}
+          secondColumn={`$${formatUsdValue(netValue)}`}
         />
       </Grid>
       <Divider />
@@ -116,7 +120,7 @@ export function OmniMultiplyNetValueModal({
               ? cumulatives.cumulativeDeposit
               : cumulatives.cumulativeDepositUSD.div(collateralPrice),
           )} ${collateralToken}`}
-          secondColumn={`$${formatCryptoBalance(cumulatives.cumulativeDepositUSD)}`}
+          secondColumn={formatUsdValue(cumulatives.cumulativeDepositUSD)}
         />
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-3')}
@@ -125,7 +129,7 @@ export function OmniMultiplyNetValueModal({
               ? cumulatives.cumulativeWithdraw
               : cumulatives.cumulativeWithdrawUSD.div(collateralPrice),
           )} ${collateralToken}`}
-          secondColumn={`$${formatCryptoBalance(cumulatives.cumulativeWithdrawUSD)}`}
+          secondColumn={formatUsdValue(cumulatives.cumulativeWithdrawUSD)}
         />
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-4')}
@@ -134,7 +138,7 @@ export function OmniMultiplyNetValueModal({
               ? cumulatives.cumulativeFees
               : cumulatives.cumulativeFeesUSD.div(collateralPrice),
           )} ${collateralToken}`}
-          secondColumn={`$${formatCryptoBalance(cumulatives.cumulativeFeesUSD)}`}
+          secondColumn={formatUsdValue(cumulatives.cumulativeFeesUSD)}
         />
       </Grid>
       {pnlUSD && pnl && (
@@ -150,7 +154,7 @@ export function OmniMultiplyNetValueModal({
                 ? ` ${formatCryptoBalance(
                     netValueInCollateralToken.minus(cumulatives.cumulativeDeposit),
                   )} ${collateralToken}`
-                : ` $${formatCryptoBalance(pnlUSD)}`}
+                : ` ${formatUsdValue(pnlUSD)}`}
             </Text>
           </Card>
 

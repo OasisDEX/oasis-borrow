@@ -20,7 +20,11 @@ import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/position
 import { getAutomationData } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import type { PortfolioPositionsHandler, PositionDetail } from 'handlers/portfolio/types'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatUsdValue,
+} from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 
@@ -162,7 +166,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
     details: [
       {
         type: 'netValue',
-        value: `$${formatCryptoBalance(calculations.netValue)}`,
+        value: formatUsdValue(calculations.netValue),
       },
       {
         type: 'pnl',
@@ -239,7 +243,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
       {
         type: 'netValue',
         value: `${formatCryptoBalance(netValueInDebtToken)} ${commonData.secondaryToken}`,
-        subvalue: `$${formatCryptoBalance(netValueInDebtToken.times(secondaryTokenPrice))}`,
+        subvalue: formatUsdValue(netValueInDebtToken.times(secondaryTokenPrice)),
       },
       {
         type: 'earnings',
@@ -256,7 +260,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
         }`,
         subvalue: `${
           positionHistory
-            ? `$${formatCryptoBalance(
+            ? formatUsdValue(
                 netValueInDebtToken
                   .minus(
                     positionHistory.cumulativeDepositInQuoteToken.minus(
@@ -264,7 +268,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
                     ),
                   )
                   .times(secondaryTokenPrice),
-              )}`
+              )
             : notAvailable
         }`,
       },

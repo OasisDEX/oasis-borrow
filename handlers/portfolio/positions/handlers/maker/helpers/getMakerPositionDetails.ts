@@ -6,7 +6,7 @@ import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import type { MakerDiscoverPositionsIlk } from 'handlers/portfolio/positions/handlers/maker/types'
 import { type PositionDetail } from 'handlers/portfolio/types'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 
 interface GetAjnaPositionDetailsParams {
@@ -68,8 +68,8 @@ export function getMakerPositionDetails({
         },
         {
           type: 'liquidationPrice',
-          value: `$${formatCryptoBalance(new BigNumber(liquidationPrice))}`,
-          subvalue: `Now $${formatCryptoBalance(new BigNumber(collateralPrice))}`,
+          value: formatUsdValue(new BigNumber(liquidationPrice)),
+          subvalue: `Now ${formatUsdValue(new BigNumber(collateralPrice))}`,
         },
         {
           type: 'ltv',
@@ -92,7 +92,7 @@ export function getMakerPositionDetails({
       return [
         {
           type: 'netValue',
-          value: `$${formatCryptoBalance(netValue)}`,
+          value: formatUsdValue(netValue),
         },
         {
           type: 'earnings',
@@ -114,7 +114,7 @@ export function getMakerPositionDetails({
       return [
         {
           type: 'netValue',
-          value: `$${formatCryptoBalance(netValue)}`,
+          value: formatUsdValue(netValue),
         },
         {
           type: 'pnl',
@@ -123,8 +123,8 @@ export function getMakerPositionDetails({
         },
         {
           type: 'liquidationPrice',
-          value: `$${formatCryptoBalance(new BigNumber(liquidationPrice))}`,
-          subvalue: `Now ${formatCryptoBalance(new BigNumber(collateralPrice))}`,
+          value: formatUsdValue(new BigNumber(liquidationPrice)),
+          subvalue: `Now ${formatUsdValue(new BigNumber(collateralPrice))}`,
         },
         {
           type: 'ltv',

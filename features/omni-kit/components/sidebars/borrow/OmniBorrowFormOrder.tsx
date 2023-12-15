@@ -5,9 +5,9 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { resolveIfCachedPosition } from 'features/omni-kit/protocols/ajna/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import {
-  formatAmount,
   formatCryptoBalance,
   formatDecimalAsPercent,
+  formatUsdValue,
 } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -70,7 +70,7 @@ export function OmniBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     afterAvailableToBorrow:
       afterAvailableToBorrow &&
       `${formatCryptoBalance(negativeToZero(afterAvailableToBorrow))} ${quoteToken}`,
-    totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
+    totalCost: txDetails?.txCost ? formatUsdValue(txDetails.txCost) : '-',
   }
 
   return (

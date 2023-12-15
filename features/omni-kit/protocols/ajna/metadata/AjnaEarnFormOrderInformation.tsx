@@ -7,9 +7,9 @@ import { resolveIfCachedPosition } from 'features/omni-kit/protocols/ajna/helper
 import type { AjnaIsCachedPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import {
-  formatAmount,
   formatCryptoBalance,
   formatDecimalAsPercent,
+  formatUsdValue,
 } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -69,7 +69,7 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
     earnDepositFee: earnDepositFee
       ? `${formatCryptoBalance(earnDepositFee)} ${quoteToken}`
       : undefined,
-    totalCost: txDetails?.txCost ? `$${formatAmount(txDetails.txCost, 'USD')}` : '-',
+    totalCost: txDetails?.txCost ? formatUsdValue(txDetails.txCost) : '-',
     oneDayApy: simulationData?.apy.per1d && formatDecimalAsPercent(simulationData.apy.per1d),
   }
 
