@@ -8,7 +8,10 @@ import { ajnaExtensionTheme } from 'theme'
 interface AjnaCardDataNetValueLendingParams {
   collateralPrice: BigNumber
   collateralToken: string
-  cumulatives: AjnaCumulativesData
+  cumulatives: AjnaCumulativesData & {
+    borrowCumulativeCollateralWithdraw: BigNumber
+    borrowCumulativeCollateralDeposit: BigNumber
+  } // update this in the lib
   netValue: BigNumber
   pnl?: BigNumber
   pnlUSD?: BigNumber
@@ -31,6 +34,10 @@ export function useAjnaCardDataNetValueLending({
           cumulativeDepositUSD: cumulatives.borrowCumulativeDepositUSD,
           cumulativeWithdrawUSD: cumulatives.borrowCumulativeWithdrawUSD,
           cumulativeFeesUSD: cumulatives.borrowCumulativeFeesUSD,
+          cumulativeWithdrawInCollateralToken: cumulatives.borrowCumulativeCollateralWithdraw,
+          cumulativeDespositInCollateralToken: cumulatives.borrowCumulativeCollateralDeposit,
+          cumulativeFeesInCollateralToken:
+            cumulatives.borrowCumulativeFeesUSD.dividedBy(collateralPrice), // fix when cumulativeFeesInCollateralToken is available
         }}
         netValueUSD={netValue}
         pnl={pnl}

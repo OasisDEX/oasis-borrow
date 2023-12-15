@@ -15,10 +15,12 @@ interface OmniMultiplyNetValueModalProps {
   netValueTokenPrice: BigNumber
   netValueToken: string
   cumulatives: {
-    cumulativeDepositUSD: BigNumber
     cumulativeWithdrawUSD: BigNumber
+    cumulativeWithdrawInCollateralToken: BigNumber
     cumulativeFeesUSD: BigNumber
-    cumulativeDepositInQuoteToken?: BigNumber
+    cumulativeFeesInCollateralToken: BigNumber
+    cumulativeDepositUSD: BigNumber
+    cumulativeDespositInCollateralToken: BigNumber
   }
   netValueUSD: BigNumber
   pnl?: BigNumber
@@ -112,21 +114,21 @@ export function OmniMultiplyNetValueModal({
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-2')}
           firstColumn={`${formatCryptoBalance(
-            cumulatives.cumulativeDepositUSD.div(netValueTokenPrice),
+            cumulatives.cumulativeDespositInCollateralToken,
           )} ${netValueToken}`}
           secondColumn={formatUsdValue(cumulatives.cumulativeDepositUSD)}
         />
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-3')}
           firstColumn={`${formatCryptoBalance(
-            cumulatives.cumulativeWithdrawUSD.div(netValueTokenPrice),
+            cumulatives.cumulativeWithdrawInCollateralToken,
           )} ${netValueToken}`}
           secondColumn={formatUsdValue(cumulatives.cumulativeWithdrawUSD)}
         />
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-4')}
           firstColumn={`${formatCryptoBalance(
-            cumulatives.cumulativeFeesUSD.div(netValueTokenPrice),
+            cumulatives.cumulativeFeesInCollateralToken,
           )} ${netValueToken}`}
           secondColumn={formatUsdValue(cumulatives.cumulativeFeesUSD)}
         />
