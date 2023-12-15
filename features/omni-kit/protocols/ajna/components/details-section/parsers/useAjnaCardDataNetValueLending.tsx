@@ -8,7 +8,10 @@ import { ajnaExtensionTheme } from 'theme'
 interface AjnaCardDataNetValueLendingParams {
   collateralPrice: BigNumber
   collateralToken: string
-  cumulatives: AjnaCumulativesData
+  cumulatives: AjnaCumulativesData & {
+    borrowCumulativeCollateralWithdraw: BigNumber
+    borrowCumulativeCollateralDeposit: BigNumber
+  } // update this in the lib
   netValue: BigNumber
   pnl?: BigNumber
   pnlUSD?: BigNumber
