@@ -41,3 +41,43 @@ export function isAllowanceNeeded(context: BaseAaveContext): boolean {
     )
   )
 }
+
+export function isAllowanceNeededManageActions(context: BaseAaveContext): boolean {
+  const token = context.transactionToken || context.tokens.deposit
+  console.log("token", context.transactionToken, context.tokens.deposit)
+  console.log("user input", context.userInput.amount)
+  if (token === 'ETH') {
+    return false
+  }
+
+  // switch (context.manageTokenInput?.manageAction) {
+  //   case ManageCollateralActionsEnum.WITHDRAW_COLLATERAL:
+  //     context.manageTokenInput?.manageInput2Value?.gt(zero)
+  //     break;
+
+  //   case ManageDebtActionsEnum.PAYBACK_DEBT:
+  //     break
+
+  //   default:
+  //     break;
+  // }
+
+
+
+  const allowance = allowanceForToken(token, context)
+
+  const isDepositingAction =
+    context.manageTokenInput?.manageAction ===
+    ManageCollateralActionsEnum.DEPOSIT_COLLATERAL ||
+    context.manageTokenInput?.manageAction === ManageDebtActionsEnum.PAYBACK_DEBT ||
+    (context.userInput.amount || zero).gt(zero)
+
+  const inputGtZero =
+    (context.userInput.amount || context.manageTokenInput?.manageInput1Value || zero).gt(
+      allowance || zero,
+    )
+
+  return (
+    isDepositingAction && inputGtZero
+  )
+}

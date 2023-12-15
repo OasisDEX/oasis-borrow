@@ -30,7 +30,7 @@ import type {
 import {
   contextToTransactionParameters,
   getSlippage,
-  isAllowanceNeeded,
+  isAllowanceNeededManageActions,
   ProxyType,
 } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
@@ -648,7 +648,7 @@ export function createManageAaveStateMachine(
         canChangePosition: ({ web3Context, ownerAddress, currentPosition }) =>
           allDefined(web3Context, ownerAddress, currentPosition) &&
           web3Context!.account === ownerAddress,
-        isAllowanceNeeded,
+        isAllowanceNeeded: isAllowanceNeededManageActions,
         canAdjustPosition: ({ strategyConfig }) =>
           strategyConfig.availableActions().includes('adjust'),
         isEthersTransaction: ({ strategyConfig, proxyAddress, transition }) =>
