@@ -22,7 +22,6 @@ import { hasTransaction } from 'helpers/triggers/setup-triggers'
 import { setupAaveAutoBuy } from 'helpers/triggers/setup-triggers/setup-aave-auto-buy'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
-import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import type { EventObject } from 'xstate'
 import { actions, createMachine, interpret } from 'xstate'
@@ -369,8 +368,9 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
       setMaxBuyPrice: assign((_, event) => ({
         maxBuyPrice: event.price,
       })),
-      setUseMaxBuyPrice: assign((_, event) => ({
+      setUseMaxBuyPrice: assign((context, event) => ({
         useMaxBuyPrice: event.enabled,
+        maxBuyPrice: event.enabled ? context.maxBuyPrice : undefined,
       })),
       setMaxGasFee: assign((_, event) => ({
         maxGasFee: event.maxGasFee,
@@ -427,7 +427,8 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
               dpm: event.params.position.dpm,
               executionLTV: new BigNumber(event.params.executionTriggerLTV).times(10 ** 2),
               targetLTV: new BigNumber(event.params.targetTriggerLTV).times(10 ** 2),
-              maxBuyPrice: event.params.maxBuyPrice?.times(10 ** 6) ?? zero,
+              maxBuyPrice: event.params.maxBuyPrice?.times(10 ** 6),
+              useMaxBuyPrice: event.params.useMaxBuyPrice,
               maxBaseFee: new BigNumber(event.params.maxGasFee),
               protocol: LendingProtocol.AaveV3,
               triggerType: 119,

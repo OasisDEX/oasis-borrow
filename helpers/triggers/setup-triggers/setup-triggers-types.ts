@@ -1,9 +1,13 @@
-export type TriggersApiErrorCode =
-  | 'custom'
-  | 'invalid'
-  | 'not_found'
-  | 'required'
-  | 'internal_error'
+export enum TriggersApiErrorCode {
+  MinSellPriceIsNotSet = 'min-sell-price-is-not-set',
+  MaxBuyPriceIsNotSet = 'max-buy-price-is-not-set',
+  ExecutionPriceBiggerThanMaxBuyPrice = 'execution-price-bigger-than-max-buy-price',
+  ExecutionPriceSmallerThanMinSellPrice = 'execution-price-smaller-than-min-sell-price',
+  ExecutionLTVSmallerThanTargetLTV = 'execution-ltv-smaller-than-target-ltv',
+  ExecutionLTVBiggerThanCurrentLTV = 'execution-ltv-bigger-than-current-ltv',
+  ExecutionLTVIsNearToTheAutoSellTrigger = 'execution-ltv-is-near-to-the-auto-sell-trigger',
+  InternalError = 'internal-error',
+}
 
 export type TriggersApiError = {
   code: TriggersApiErrorCode
@@ -16,9 +20,8 @@ export type SetupAutoBuyResponse = {
   errors?: TriggersApiError[]
   encodedTriggerData?: string
   simulation?: {
-    collateralAmountAfterBuy: string
-    collateralAmountToBuy: string
-    debtAmountAfterBuy: string
+    collateralAmountAfterExecution: string
+    debtAmountAfterExecution: string
     executionLTV: string
     targetLTV: string
     targetLTVWithDeviation: [string, string]

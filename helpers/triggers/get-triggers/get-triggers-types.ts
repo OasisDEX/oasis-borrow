@@ -17,6 +17,7 @@ export type AaveStopLossToCollateral = {
   triggerTypeName: 'AaveStopLossToCollateralV2'
   triggerType: typeof AaveStopLossToCollateralV2ID
   triggerId: string
+  triggerData: string
   decodedParams: {
     positionAddress: string
     triggerType: string
@@ -31,6 +32,7 @@ export type AaveStopLossToDebt = {
   triggerTypeName: 'AaveStopLossToDebtV2'
   triggerType: typeof AaveStopLossToDebtV2ID
   triggerId: string
+  triggerData: string
   decodedParams: {
     positionAddress: string
     triggerType: string
@@ -45,6 +47,7 @@ export type SparkStopLossToCollateral = {
   triggerTypeName: 'SparkStopLossToCollateralV2'
   triggerType: typeof SparkStopLossToCollateralV2ID
   triggerId: string
+  triggerData: string
   decodedParams: {
     positionAddress: string
     triggerType: string
@@ -59,6 +62,7 @@ export type SparkStopLossToDebt = {
   triggerTypeName: 'SparkStopLossToDebtV2'
   triggerType: typeof SparkStopLossToDebtV2ID
   triggerId: string
+  triggerData: string
   decodedParams: {
     positionAddress: string
     triggerType: string
@@ -73,6 +77,7 @@ export type AaveBasicBuy = {
   triggerTypeName: 'AaveBasicBuyV2'
   triggerType: typeof AaveBasicBuyV2ID
   triggerId: string
+  triggerData: string
   decodedParams: {
     positionAddress: string
     triggerType: string
@@ -92,6 +97,7 @@ export type AaveBasicSell = {
   triggerTypeName: 'AaveBasicSellV2'
   triggerType: typeof AaveBasicSellV2ID
   triggerId: string
+  triggerData: string
   decodedParams: {
     positionAddress: string
     triggerType: string

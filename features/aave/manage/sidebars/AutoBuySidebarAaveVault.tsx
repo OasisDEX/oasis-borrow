@@ -31,6 +31,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import type { TriggersApiError } from 'helpers/triggers/setup-triggers'
+import { TriggersApiErrorCode } from 'helpers/triggers/setup-triggers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { AddingStopLossAnimation } from 'theme/animations'
@@ -102,26 +103,25 @@ function getAutoBuyInfoSectionProps({
     return undefined
   }
 
+  const collateralAfterExecution = amountFromWei(
+    new BigNumber(state.setupTriggerResponse?.simulation.collateralAmountAfterExecution),
+    state.position.collateral.token.decimals,
+  )
+
   return {
     transactionCost: state.gasEstimation ?? { gasEstimationStatus: 'unset' },
     isLoading: state.isLoading,
-    collateralToBuy: amountFromWei(
-      new BigNumber(state.setupTriggerResponse?.simulation.collateralAmountToBuy),
-      state.position.collateral.token.decimals,
-    ),
+    collateralToBuy: collateralAfterExecution.minus(state.position.collateral.amount),
     positionAfterBuy: {
       debt: {
         amount: amountFromWei(
-          new BigNumber(state.setupTriggerResponse?.simulation.debtAmountAfterBuy),
+          new BigNumber(state.setupTriggerResponse?.simulation.debtAmountAfterExecution),
           state.position.debt.token.decimals,
         ),
         symbol: state.position.debt.token.symbol,
       },
       collateral: {
-        amount: amountFromWei(
-          new BigNumber(state.setupTriggerResponse?.simulation.collateralAmountAfterBuy),
-          state.position.collateral.token.decimals,
-        ),
+        amount: collateralAfterExecution,
         symbol: state.position.collateral.token.symbol,
       },
     },
@@ -147,8 +147,10 @@ function getAutoBuyInfoSectionProps({
 function mapErrorsToErrorVaults(errors: TriggersApiError[]): VaultErrorMessage[] {
   return errors.map((error) => {
     switch (error.code) {
-      case 'custom':
-        return 'generateAmountLessThanDebtFloor'
+      case TriggersApiErrorCode.MaxBuyPriceIsNotSet:
+        return 'autoBuyMaxBuyPriceNotSpecified'
+      case TriggersApiErrorCode.ExecutionPriceBiggerThanMaxBuyPrice:
+        return 'maxBuyPriceWillPreventBuyTrigger'
       default:
         return 'generateAmountLessThanDebtFloor'
     }
@@ -210,13 +212,13 @@ function AutoBuySidebarAaveVaultEditingState({
             updateState({ type: 'SET_MAX_BUY_PRICE', price: price })
           })}
           onToggle={(toggle) => {
-            updateState({ type: 'SET_USE_MAX_BUY_PRICE', enabled: !toggle })
+            updateState({ type: 'SET_USE_MAX_BUY_PRICE', enabled: toggle })
           }}
           showToggle={true}
           toggleOnLabel={t('protection.set-no-threshold')}
           toggleOffLabel={t('protection.set-threshold')}
           toggleOffPlaceholder={t('protection.no-threshold')}
-          defaultToggle={!state.useMaxBuyPrice}
+          defaultToggle={state.useMaxBuyPrice}
         />
       </>
       {isEditing && (
@@ -394,7 +396,11 @@ export function AutoBuySidebarAaveVault(props: AutoBuySidebarAaveVaultProps) {
       dropdown={dropdown}
       title={t('auto-buy.title')}
       primaryButton={primaryButton}
-      content={<SideBarContent {...props} />}
+      content={
+        <Grid gap={3}>
+          <SideBarContent {...props} />
+        </Grid>
+      }
       requireConnection={true}
       requiredChainHexId={strategy.networkHexId}
     />
