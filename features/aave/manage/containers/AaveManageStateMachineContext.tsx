@@ -1,12 +1,12 @@
 import { useInterpret } from '@xstate/react'
 import type { ManageAaveStateMachine } from 'features/aave/manage/state'
-import type { IStrategyConfig, ManagePositionForm, PositionId } from 'features/aave/types'
+import type { IStrategyConfig, ManageTokenInput, PositionId } from 'features/aave/types'
 import { ProxyType } from 'features/aave/types'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { env } from 'process'
 import React from 'react'
 
-export const defaultManageTokenInputValues: ManagePositionForm = {
+export const defaultManageTokenInputValues: ManageTokenInput = {
   // defaults for the manage collateral/debt are set here
   manageAction: undefined,
   manageInput1Value: undefined, // just to provide any value when debugging

@@ -85,13 +85,6 @@ export function isLocked(state: ManageAaveStateMachineState) {
       return true
     }
   }
-  // if (isManagingCollateral) {
-  //   if (
-
-  //   ) {
-  //     return false
-  //   }
-  // }
   return !(allDefined(ownerAddress, web3Context) && ownerAddress === web3Context!.account)
 }
 

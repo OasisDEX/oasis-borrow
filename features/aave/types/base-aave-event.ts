@@ -6,7 +6,7 @@ import { TransactionParametersStateMachineResponseEvent } from 'features/stateMa
 import { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
 import { AllowanceStateMachineResponseEvent } from 'features/stateMachines/allowance'
 import {
-  IStrategyInfo, ManagePositionForm,
+  IStrategyInfo, ManageTokenInput,
   RefTransactionMachine, ReserveData,
   StrategyTokenAllowance,
   StrategyTokenBalance,
@@ -40,12 +40,12 @@ export type UpdateDebtActionType = {
 
 export type UpdateInput1ValueType = {
   type: 'UPDATE_INPUT1_ACTION_VALUE'
-  manageInput1Value: ManagePositionForm['manageInput1Value']
+  manageInput1Value: ManageTokenInput['manageInput1Value']
 }
 
 export type UpdateInput2ActionValueType = {
   type: 'UPDATE_INPUT2_ACTION_VALUE'
-  manageInput2Value: ManagePositionForm['manageInput2Value']
+  manageInput2Value: ManageTokenInput['manageInput2Value']
 }
 
 export type BaseAaveEvent =

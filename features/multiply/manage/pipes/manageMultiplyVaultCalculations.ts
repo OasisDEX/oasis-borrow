@@ -22,7 +22,7 @@ import {
 import type { ManageMultiplyVaultState } from './ManageMultiplyVaultState.types'
 
 /*
- * Determines if on the basis of the user input the users intention to pay back
+ * Determines if on the basis of the user input the users intention to payback
  * all of their debt.
  */
 function determineShouldPaybackAll({

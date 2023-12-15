@@ -23,7 +23,7 @@ export type UserInput = {
   amount?: BigNumber
   debtAmount?: BigNumber
 }
-export type ManagePositionForm = {
+export type ManageTokenInput = {
   manageAction?: ManageDebtActionsEnum | ManageCollateralActionsEnum
   manageInput1Value?: BigNumber
   manageInput2Value?: BigNumber
@@ -64,7 +64,7 @@ export type RefTransactionMachine =
 export interface BaseAaveContext {
   strategyConfig: IStrategyConfig
   userInput: UserInput
-  manageTokenInput?: ManagePositionForm
+  manageTokenInput?: ManageTokenInput
   tokens: {
     collateral: string
     debt: string

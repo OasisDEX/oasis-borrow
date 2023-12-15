@@ -23,7 +23,7 @@ import type {
   BaseAaveContext,
   BaseAaveEvent,
   IStrategyConfig,
-  ManagePositionForm,
+  ManageTokenInput,
   ProductType,
   RefTransactionMachine,
 } from 'features/aave/types'
@@ -80,8 +80,8 @@ function getTransactionDef(context: ManageAaveContext): TransactionDef<Operation
 export type ManageAaveEvent =
   | { type: 'ADJUST_POSITION' }
   | { type: 'CLOSE_POSITION' }
-  | { type: 'MANAGE_COLLATERAL'; manageTokenAction: ManagePositionForm['manageAction'] }
-  | { type: 'MANAGE_DEBT'; manageTokenAction: ManagePositionForm['manageAction'] }
+  | { type: 'MANAGE_COLLATERAL'; manageTokenAction: ManageTokenInput['manageAction'] }
+  | { type: 'MANAGE_DEBT'; manageTokenAction: ManageTokenInput['manageAction'] }
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
   | { type: 'NEXT_STEP' }
@@ -290,7 +290,6 @@ export function createManageAaveStateMachine(
               entry: [
                 'reset',
                 'killCurrentParametersMachine',
-                'spawnAdjustParametersMachine',
                 'spawnDepositBorrowMachine',
                 'setActiveCollateralAction',
               ],
