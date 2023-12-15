@@ -87,19 +87,28 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
   }
 
   try {
-    const bonusAmount = mapToAmount(
-      await prisma.ajnaRewardsWeeklyClaim.findMany({
-        where: {
-          ...commonQuery,
-          week_number: {
-            notIn: parsedClaimedBonusWeeks,
-          },
-          source: AjnaRewardsSource.bonus,
+    const bonusClaimable = await prisma.ajnaRewardsWeeklyClaim.findMany({
+      where: {
+        ...commonQuery,
+        week_number: {
+          notIn: parsedClaimedBonusWeeks,
         },
-      }),
-    )
+        source: AjnaRewardsSource.bonus,
+      },
+    })
+    const bonusClaimableAmount = mapToAmount(bonusClaimable)
 
-    const coreAmount = mapToAmount(
+    const coreClaimable = await prisma.ajnaRewardsWeeklyClaim.findMany({
+      where: {
+        ...commonQuery,
+        week_number: {
+          notIn: parsedClaimedCoreWeeks,
+        },
+        source: AjnaRewardsSource.core,
+      },
+    })
+
+    const coreNotClaimableAmount = mapToAmount(
       await prisma.ajnaRewardsDailyClaim.findMany({
         where: {
           ...commonQuery,
@@ -111,21 +120,14 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
       }),
     )
 
-    const claimableTodayData = await prisma.ajnaRewardsWeeklyClaim.findMany({
-      where: {
-        ...commonQuery,
-        week_number: {
-          notIn: [...parsedClaimedBonusWeeks, ...parsedClaimedCoreWeeks],
-        },
-      },
-    })
+    const claimableTodayData = [...bonusClaimable, ...coreClaimable]
 
     const claimableToday = mapToAmount(claimableTodayData)
     const payload = mapToPayload(claimableTodayData)
 
     return {
-      bonusAmount,
-      coreAmount,
+      bonusAmount: bonusClaimableAmount,
+      coreAmount: coreNotClaimableAmount,
       claimableToday,
       payload,
     }

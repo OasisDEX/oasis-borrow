@@ -45,12 +45,14 @@ const rewardsTransactionResolver = ({
   signer,
   rewards,
   networkId,
+  claimedBonus,
 }: {
   signer: ethers.Signer
   rewards: AjnaRewards
   networkId: AjnaSupportedNetworksIds
+  claimedBonus: boolean
 }) => {
-  const hasBonusRewardsToClaim = !rewards.bonus.isZero()
+  const hasBonusRewardsToClaim = !rewards.bonus.isZero() && !claimedBonus
 
   const networkContracts = getNetworkContracts(networkId)
 
@@ -86,6 +88,7 @@ export function AjnaRewardCard() {
   const [txDetails, setTxDetails] = useState<TxDetails>()
   const [context] = useObservable(connectedContext$)
   const { isLoading, rewards, refetch } = useAjnaRewards()
+  const [claimedBonus, setClaimedBonus] = useState(false)
 
   const networkId = context?.chainId
   const signer = context?.transactionProvider
@@ -99,6 +102,7 @@ export function AjnaRewardCard() {
         signer,
         rewards,
         networkId,
+        claimedBonus,
       })
 
       sendGenericTransaction$({
@@ -108,6 +112,10 @@ export function AjnaRewardCard() {
         signer,
       }).subscribe((txState) => {
         handleTransaction({ txState, ethPrice: zero, setTxDetails })
+
+        if (rewards.bonus.gt(zero) && txState.status === TxStatus.Success) {
+          setClaimedBonus(true)
+        }
 
         // This condition should ensure that on tx success, the rewards are re-fetched and if there will
         // be a second tx (regular rewards) the whole process will start from the beginning
