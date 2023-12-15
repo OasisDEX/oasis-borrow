@@ -25,14 +25,14 @@ export function useAjnaCardDataNetValueLending({
   return {
     modal: (
       <OmniMultiplyNetValueModal
-        collateralPrice={collateralPrice}
-        collateralToken={collateralToken}
+        netValueTokenPrice={collateralPrice}
+        netValueToken={collateralToken}
         cumulatives={{
           cumulativeDepositUSD: cumulatives.borrowCumulativeDepositUSD,
           cumulativeWithdrawUSD: cumulatives.borrowCumulativeWithdrawUSD,
           cumulativeFeesUSD: cumulatives.borrowCumulativeFeesUSD,
         }}
-        netValue={netValue}
+        netValueUSD={netValue}
         pnl={pnl}
         pnlUSD={pnlUSD}
         theme={ajnaExtensionTheme}

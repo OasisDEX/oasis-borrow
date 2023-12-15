@@ -50,10 +50,13 @@ export function getStrategyConfig$(
         effectiveProxyAddress && effectiveProxyAddress === dpmProxy?.proxy && dpmProxy.user
           ? readPositionCreatedEvents$(dpmProxy.user, networkConfig.id)
           : of(undefined),
+        of(effectiveProxyAddress),
       )
     }),
-    map(([aaveUserConfigurations, positions]) => {
-      const filteredPositions = positions?.filter((position) => position.protocol === protocol)
+    map(([aaveUserConfigurations, positions, proxyAddress]) => {
+      const filteredPositions = positions?.filter(
+        (position) => position.protocol === protocol && position.proxyAddress === proxyAddress,
+      )
 
       const lastCreatedPosition = filteredPositions?.pop()
       const vaultTypeIsUnknown = vaultType === VaultType.Unknown
