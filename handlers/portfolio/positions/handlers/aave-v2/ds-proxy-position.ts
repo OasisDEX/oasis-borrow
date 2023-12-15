@@ -9,10 +9,7 @@ import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
 import { commonDataMapper } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
-import {
-  formatDecimalAsPercent,
-  formatUsdValue,
-} from 'helpers/formatters/format'
+import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'

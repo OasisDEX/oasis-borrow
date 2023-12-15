@@ -8,7 +8,7 @@ import { parseProductNumbers } from 'features/productHub/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { formatDecimalAsPercent, formatFiatBalance } from 'helpers/formatters/format'
+import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
 import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
 import { Trans } from 'react-i18next'
@@ -46,7 +46,7 @@ export function parseProduct(
 
   const resolved = {
     liquidity: liquidity ? (
-      `$${formatFiatBalance(negativeToZero(liquidity))}`
+      formatUsdValue(negativeToZero(liquidity))
     ) : (
       <AssetsTableDataCellInactive />
     ),

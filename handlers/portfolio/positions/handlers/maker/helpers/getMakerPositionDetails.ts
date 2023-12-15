@@ -6,7 +6,11 @@ import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import type { MakerDiscoverPositionsIlk } from 'handlers/portfolio/positions/handlers/maker/types'
 import { type PositionDetail } from 'handlers/portfolio/types'
-import { formatCryptoBalance, formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatUsdValue,
+} from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 
 interface GetAjnaPositionDetailsParams {
