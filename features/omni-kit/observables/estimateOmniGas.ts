@@ -37,7 +37,9 @@ export const estimateOmniGas$ = ({
             ...override,
             value: txData.value,
           })
-          .then((val) => new BigNumber(val.toString()).multipliedBy(GasMultiplier).toFixed(0)),
+          .then((val) =>
+            new BigNumber(val.toString()).multipliedBy(GasMultiplier).decimalPlaces(0),
+          ),
       ).pipe(
         map((gasAmount) => ({
           usdValue: amountFromWei(gasPrice.maxFeePerGas.times(gasAmount)).times(ethPrice),
