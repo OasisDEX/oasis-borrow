@@ -7,8 +7,8 @@ import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { getAddress } from 'ethers/lib/utils'
 import { AaveContextProvider, useAaveContext } from 'features/aave'
-import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
+import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/contexts'
 import type { PositionId } from 'features/aave/types/position-id'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { useApiVaults } from 'features/shared/vaultApi'
@@ -108,6 +108,7 @@ function WithSparkStrategy({
             machine={aaveManageStateMachine}
             positionId={positionId}
             strategy={_strategyConfig}
+            proxies={_proxies}
             updateStrategyConfig={_updateStrategyConfig}
           >
             <PageSEOTags

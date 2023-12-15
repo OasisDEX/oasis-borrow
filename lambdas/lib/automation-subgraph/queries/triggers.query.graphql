@@ -1,0 +1,13 @@
+query Triggers($dpm: Bytes!) {
+  triggers(where: { account: $dpm, triggerType_in: [111, 112, 117, 118, 119, 120] }) {
+    account
+    owner
+    id
+    protocol
+    triggerData
+    triggerType
+    addedTimestamp
+    decodedData
+    decodedDataNames
+  }
+}

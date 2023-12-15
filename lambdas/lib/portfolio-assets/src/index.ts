@@ -41,7 +41,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     headers,
   })
     .then(async (_res) => {
-      const json: DebankToken[] | undefined = await _res.json()
+      const json: DebankToken[] | undefined = (await _res.json()) as DebankToken[] | undefined
       if (json == null || Array.isArray(json) === false) {
         console.log('fetching: ', url, { headers })
         console.log('response: ', JSON.stringify(json))

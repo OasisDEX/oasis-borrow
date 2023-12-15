@@ -1,3 +1,4 @@
+import type { AaveLikeTokens } from '@oasisdex/dma-library'
 import { AaveLikePosition } from '@oasisdex/dma-library'
 import { useInterpret } from '@xstate/react'
 import type { OpenAaveStateMachine } from 'features/aave/open/state'
@@ -17,6 +18,7 @@ function setupOpenAaveStateContext({
     ...config,
     proxyType: ProxyType.DpmProxy,
   }
+
   const stateMachine = useInterpret(
     machine.withContext({
       strategyConfig: effectiveStrategy,
@@ -24,9 +26,19 @@ function setupOpenAaveStateContext({
       tokens: config.tokens,
       currentStep: 1,
       totalSteps: 4,
-      currentPosition: AaveLikePosition.emptyPosition(
-        { amount: zero, symbol: effectiveStrategy.tokens.debt },
-        { amount: zero, symbol: effectiveStrategy.tokens.collateral },
+      currentPosition: new AaveLikePosition(
+        { amount: zero, symbol: effectiveStrategy.tokens.debt as AaveLikeTokens, address: '' },
+        {
+          amount: zero,
+          symbol: effectiveStrategy.tokens.collateral as AaveLikeTokens,
+          address: '',
+        },
+        zero,
+        {
+          liquidationThreshold: zero,
+          maxLoanToValue: zero,
+          dustLimit: zero,
+        },
       ),
       getSlippageFrom:
         effectiveStrategy.defaultSlippage !== undefined ? 'strategyConfig' : 'userSettings',

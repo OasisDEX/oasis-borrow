@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Sample SAM Template for Lambda Functions
+
+Globals:
+  Function:
+    Timeout: 10
+
+Parameters:
+  SubgraphBase:
+    Type: String
+    Description: Base URL of the subgraphs
+  RpcGateway:
+    Type: String
+    Description: RPC Gateway URL
+  LogLevel:
+    Type: String
+    Description: Log level for the Lambda functions
+    Default: INFO
+    AllowedValues:
+      - DEBUG
+      - INFO
+      - WARN
+      - ERROR
+  GetTriggersUrl:
+    Type: String
+    Description: URL of the GetTriggers Lambda function
+
+Resources:
+  GetTriggers:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler # Update with your handler information
+      Runtime: nodejs20.x #
+      CodeUri: ./artifacts/get-triggers-0.0.1.zip # Path to the ZIP file of your Lambda function
+      Events:
+        GetTriggersApi:
+          Type: Api
+          Properties:
+            Path: /api/triggers
+            Method: get
+      Environment:
+        Variables:
+          SUBGRAPH_BASE: '' # Update with your environment variables'
+          POWERTOOLS_LOG_LEVEL: DEBUG # Update with your environment variables'
+  SetupTrigger:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler # Update with your handler information
+      Runtime: nodejs20.x #
+      CodeUri: ./artifacts/setup-trigger-0.0.1.zip # Path to the ZIP file of your Lambda function
+      Events:
+        SetupTriggerApi:
+          Type: Api
+          Properties:
+            Path: /api/{chainId}/{protocol}/{trigger}
+            Method: post
+      Environment:
+        Variables:
+              RPC_GATEWAY: '' # Update with your environment variables
+              POWERTOOLS_LOG_LEVEL: DEBUG
+              GET_TRIGGERS_URL: '' # Update with your environment variables
+  # Add more Lambda function definitions as needed
+
+Outputs:
+  GetTriggers:
+    Description: "GetTriggers ARN"
+    Value: !GetAtt GetTriggers.Arn
+  SetupTrigger:
+    Description: "SetupTrigger ARN"
+    Value: !GetAtt SetupTrigger.Arn

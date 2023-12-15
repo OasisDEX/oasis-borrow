@@ -601,6 +601,9 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
       },
       executeTransactionWith: 'ethers' as const,
       strategyType: config.strategyType,
+      isOptimizationTabEnabled: () =>
+        config.strategyType === StrategyType.Long &&
+        getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationEthereum],
     }
   })
 
@@ -648,6 +651,9 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers',
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Multiply.featureToggle,
+      isOptimizationTabEnabled: () =>
+        config.strategyType === StrategyType.Long &&
+        getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationEthereum],
     }
   })
 
@@ -696,6 +702,9 @@ const sdaiEarnStrategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers',
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Earn.featureToggle,
+      isOptimizationTabEnabled: () =>
+        config.strategyType === StrategyType.Long &&
+        getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationEthereum],
     }
   })
 
@@ -736,6 +745,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
+    isOptimizationTabEnabled: () => false,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -771,6 +781,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
+    isOptimizationTabEnabled: () => false,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -806,5 +817,6 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
+    isOptimizationTabEnabled: () => false,
   },
 ]

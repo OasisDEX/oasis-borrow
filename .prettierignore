@@ -13,3 +13,4 @@ coverage
 .vercel
 jest.config.js
 setup.js
+lambdas

@@ -18,7 +18,7 @@ const KbLink = (
 interface VaultErrorsProps {
   errorMessages: VaultErrorMessage[]
   maxGenerateAmount?: BigNumber
-  ilkData: { debtFloor: BigNumber; token: string }
+  ilkData?: { debtFloor: BigNumber; token: string }
   maxWithdrawAmount?: BigNumber
   autoType?: 'Auto-Buy' | 'Auto-Sell'
 }
@@ -27,7 +27,7 @@ export function VaultErrors({
   errorMessages,
   maxGenerateAmount = zero,
   maxWithdrawAmount = zero,
-  ilkData: { debtFloor, token },
+  ilkData: { debtFloor, token } = { debtFloor: zero, token: '' },
   autoType,
 }: VaultErrorsProps) {
   const { t } = useTranslation()

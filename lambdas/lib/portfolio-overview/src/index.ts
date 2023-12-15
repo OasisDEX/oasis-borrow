@@ -92,7 +92,9 @@ const getAllProtocolAssets = async (
   const url = `${serviceUrl}/v1/user/all_simple_protocol_list?id=${address}&chain_ids=${DEBANK_SUPPORTED_CHAIN_IDS.toString()}`
   const protocolAssets = await fetch(url, { headers })
     .then(async (_res) => {
-      const json: DebankSimpleProtocol[] | undefined = await _res.json()
+      const json: DebankSimpleProtocol[] | undefined = (await _res.json()) as
+        | DebankSimpleProtocol[]
+        | undefined
       if (json == null || Array.isArray(json) === false) {
         console.log('fetching 1: ', url, { headers })
         console.log('response 1: ', JSON.stringify(json))
@@ -115,7 +117,9 @@ const getSummerProtocolAssets = async (
   const url = `${serviceUrl}/v1/user/all_complex_protocol_list?id=${address}&chain_ids=${DEBANK_SUPPORTED_CHAIN_IDS.toString()}`
   const protocolAssets = await fetch(url, { headers })
     .then(async (_res) => {
-      const json: DebankComplexProtocol[] | undefined = await _res.json()
+      const json: DebankComplexProtocol[] | undefined = (await _res.json()) as
+        | DebankComplexProtocol[]
+        | undefined
       if (json == null || Array.isArray(json) === false) {
         console.log('fetching 2: ', url, { headers })
         console.log('response 2: ', JSON.stringify(json))

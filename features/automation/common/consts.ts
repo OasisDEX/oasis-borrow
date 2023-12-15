@@ -50,6 +50,14 @@ export const sidebarAutomationFeatureCopyMap = {
   [AutomationFeatures.AUTO_TAKE_PROFIT]: 'auto-take-profit.title',
 }
 
+export const sidebarAutomationLinkMap = {
+  [AutomationFeatures.STOP_LOSS]: 'what-is-automated-stop-loss',
+  [AutomationFeatures.AUTO_BUY]: 'setting-up-auto-buy-for-your-vault',
+  [AutomationFeatures.AUTO_SELL]: 'setting-up-auto-sell-for-your-vault',
+  [AutomationFeatures.CONSTANT_MULTIPLE]: 'what-is-constant-multiple',
+  [AutomationFeatures.AUTO_TAKE_PROFIT]: 'what-is-take-profit',
+}
+
 export const autoKindToCopyMap = {
   [AutomationKinds.STOP_LOSS]: 'protection.stop-loss-protection',
   [AutomationKinds.AUTO_BUY]: 'auto-buy.title',
@@ -70,7 +78,11 @@ export const protocolAutomations = {
     AutomationFeatures.CONSTANT_MULTIPLE,
     AutomationFeatures.AUTO_TAKE_PROFIT,
   ],
-  [VaultProtocol.Aave]: [AutomationFeatures.STOP_LOSS],
+  [VaultProtocol.Aave]: [
+    AutomationFeatures.STOP_LOSS,
+    AutomationFeatures.AUTO_BUY,
+    AutomationFeatures.AUTO_SELL,
+  ],
 }
 
 export const aaveTokenPairsAllowedAutomation = [

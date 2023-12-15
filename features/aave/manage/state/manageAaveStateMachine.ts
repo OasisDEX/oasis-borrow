@@ -1,4 +1,4 @@
-import type { IPosition } from '@oasisdex/dma-library'
+import type { AaveLikePosition } from '@oasisdex/dma-library'
 import type {
   AdjustAaveParameters,
   CloseAaveParameters,
@@ -18,7 +18,7 @@ import {
   ManageDebtActionsEnum,
 } from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers'
-import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import { defaultManageTokenInputValues } from 'features/aave/manage/contexts'
 import type {
   BaseAaveContext,
   BaseAaveEvent,
@@ -103,7 +103,7 @@ export type ManageAaveEvent =
       ownerAddress: string
       effectiveProxyAddress: string
     }
-  | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: IPosition }
+  | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: AaveLikePosition }
   | { type: 'STRATEGTY_UPDATED'; strategyConfig: IStrategyConfig }
   | {
       type: 'HISTORY_UPDATED'
@@ -562,7 +562,7 @@ export function createManageAaveStateMachine(
           actions: 'updateContext',
         },
         CURRENT_POSITION_CHANGED: {
-          actions: ['updateContext'],
+          actions: ['updateContext', 'logInfo'],
         },
         POSITION_PROXY_ADDRESS_RECEIVED: {
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'sendHistoryRequest'],
@@ -875,6 +875,10 @@ export function createManageAaveStateMachine(
         setTransactionTokenToCollateral: assign((context) => ({
           transactionToken: context.strategyConfig.tokens.collateral,
         })),
+        logInfo: pure((_context) => {
+          // You can use this method to log some informaton about the current state
+          return ''
+        }),
         updateLegacyTokenBalance: assign((context, event) => {
           if (!event.balance.deposit) {
             return {
