@@ -18,6 +18,10 @@ import {
   ManageDebtActionsEnum,
 } from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers'
+import {
+  getAllowanceTokenAmount,
+  getAllowanceTokenSymbol,
+} from 'features/aave/helpers/manage-inputs-helpers'
 import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import type {
   BaseAaveContext,
@@ -735,6 +739,7 @@ export function createManageAaveStateMachine(
                 context.strategyConfig.riskRatios.minimum,
               proxyAddress: context.proxyAddress!,
               token: context.tokens.deposit,
+              manageTokenInput: context.manageTokenInput,
               slippage: getSlippage(context),
               currentPosition: context.currentPosition!,
               proxyType: context.positionCreatedBy,
@@ -866,11 +871,10 @@ export function createManageAaveStateMachine(
         spawnAllowanceMachine: assign((context) => ({
           refAllowanceStateMachine: spawn(
             allowanceStateMachine.withContext({
-              token: context.transactionToken || context.tokens.deposit,
+              token: getAllowanceTokenSymbol(context) || context.tokens.deposit,
               spender: context.proxyAddress!,
               allowanceType: 'unlimited',
-              minimumAmount:
-                context.manageTokenInput?.manageInput1Value || context.userInput.amount || zero,
+              minimumAmount: getAllowanceTokenAmount(context) || context.userInput.amount || zero,
               runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
               signer: (context.web3Context as ContextConnected)?.transactionProvider,
               networkId: context.strategyConfig.networkId,

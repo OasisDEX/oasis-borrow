@@ -1,6 +1,7 @@
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { ConnectedSidebarSection } from 'features/aave/components'
-import { isAllowanceNeeded } from 'features/aave/types'
+import { getAllowanceTokenSymbol } from 'features/aave/helpers/manage-inputs-helpers'
+import { isAllowanceNeededManageActions } from 'features/aave/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -16,13 +17,14 @@ export function ManageAaveReviewingStateView({
 }: WithDropdownConfig<ManageAaveStateProps>) {
   const { t } = useTranslation()
 
-  const allowanceNeeded = isAllowanceNeeded(state.context)
+  const allowanceNeeded = isAllowanceNeededManageActions(state.context)
   // TODO validation suppressed for testing trigger execution
   const stopLossError = automation?.stopLoss?.stopLossError
 
   const label = allowanceNeeded
     ? t('set-allowance-for', {
-        token: state.context.transactionToken || state.context.strategyConfig.tokens.deposit,
+        token:
+          getAllowanceTokenSymbol(state.context) || state.context.strategyConfig.tokens.deposit,
       })
     : t('manage-earn.aave.vault-form.confirm-btn')
 
@@ -39,6 +41,8 @@ export function ManageAaveReviewingStateView({
       : undefined,
     dropdown: dropdownConfig,
   }
+
+  console.log('context', state.context)
 
   return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
