@@ -37,16 +37,16 @@ export const estimateOmniGas$ = ({
             ...override,
             value: txData.value,
           })
-          .then((val) => amountFromWei(new BigNumber(val.toString()).multipliedBy(GasMultiplier))),
+          .then((val) =>
+            new BigNumber(val.toString()).multipliedBy(GasMultiplier).decimalPlaces(0),
+          ),
       ).pipe(
-        map((gasAmount) => {
-          return {
-            usdValue: gasAmount.times(gasPrice.maxPriorityFeePerGas).times(ethPrice),
-            gasAmount: gasAmount.times(gasPrice.maxPriorityFeePerGas),
-            isSuccessful: true,
-            isCompleted: true,
-          }
-        }),
+        map((gasAmount) => ({
+          usdValue: amountFromWei(gasPrice.maxFeePerGas.times(gasAmount)).times(ethPrice),
+          gasAmount,
+          isSuccessful: true,
+          isCompleted: true,
+        })),
       ),
     ),
     first(),
