@@ -1,5 +1,5 @@
 import { NetworkNames } from 'blockchain/networks'
-
+/* @deprecated */
 export function getRpcNode(network: NetworkNames): string | undefined {
   switch (network) {
     // case 'hardhat': // hardhat does not request this one

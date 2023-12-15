@@ -21,6 +21,7 @@ const rpcBase = `${rpcGatewayUrl}`
 export function getRpcNodeGateway(
   network: NetworkNames,
   rpcConfig: AppConfigType['rpcConfig'],
+  rpcBase: string,
 ): string | undefined {
   const supportedNetworks = Object.values(NetworkNames)
   if (!supportedNetworks.includes(network)) {
@@ -59,7 +60,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   )
 
   const network = networkQuery.toString() as NetworkNames
-  const rpcUrl = getRpcNodeGateway(network, appConfig.rpcConfig)
+  const rpcUrl = getRpcNodeGateway(network, appConfig.rpcConfig, rpcBase)
   if (!rpcUrl) {
     res.status(400).send({ error: 'Invalid network' })
     return
