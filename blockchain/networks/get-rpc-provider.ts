@@ -1,6 +1,7 @@
 import type { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
 import { providerFactory } from 'blockchain/jsonRpcBatchProvider'
 import type { ethers } from 'ethers'
+import getConfig from 'next/config'
 import { getRpcNodeGateway } from 'pages/api/rpcGateway'
 
 import { networkSetById } from './network-helpers'
@@ -69,7 +70,7 @@ export function getBackendRpcProvider(networkId: NetworkIds): JsonRpcBatchProvid
     throw new Error(`Network with id ${networkId} does not exist`)
   }
 
-  const rpcGatewayUrl = process.env.RPC_GATEWAY
+  const rpcGatewayUrl = getConfig()?.publicRuntimeConfig.rpcGatewayUrl ?? process.env.RPC_GATEWAY
   if (!rpcGatewayUrl) {
     throw new Error('RPC Gateway URL is not defined')
   }
