@@ -10,9 +10,11 @@ import {
 } from 'blockchain/network'
 import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
-import { createGasPrice$ } from 'blockchain/prices'
+import { createGasPrice$, createGasPriceOnNetwork$ } from 'blockchain/prices'
 import { createWeb3Context$ } from 'features/web3Context'
 import { createTxHelpers$ } from 'helpers/createTxHelpers'
+import { memoize } from 'lodash'
+import { curry } from 'ramda'
 import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
@@ -52,6 +54,10 @@ export function setupMainContext() {
   )
 
   const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
+  const gasPriceOnNetwork$ = memoize(
+    curry(createGasPriceOnNetwork$)(onEveryBlock$),
+    (networkId: NetworkIds) => networkId,
+  )
 
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
 
@@ -62,6 +68,7 @@ export function setupMainContext() {
     context$,
     everyBlock$,
     gasPrice$,
+    gasPriceOnNetwork$,
     initializedAccount$,
     once$,
     onEveryBlock$,
