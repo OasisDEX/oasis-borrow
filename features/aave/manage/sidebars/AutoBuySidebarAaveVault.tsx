@@ -15,9 +15,9 @@ import { getTriggerExecutionCollateralPriceDenominatedInDebt } from 'features/aa
 import type {
   AutoBuyTriggerAaveContext,
   AutoBuyTriggerAaveEvent,
-  AutoBuyTriggerStates,
-  PositionLike,
+  BasicAutomationAaveState,
 } from 'features/aave/manage/state'
+import type { PositionLike } from 'features/aave/manage/state/triggersCommon'
 import type { IStrategyConfig } from 'features/aave/types'
 import {
   sidebarAutomationFeatureCopyMap,
@@ -45,7 +45,7 @@ type AutoBuyTriggerAaveContextWithPosition = AutoBuyTriggerAaveContext & {
 interface AutoBuySidebarAaveVaultProps {
   strategy: IStrategyConfig
   state: AutoBuyTriggerAaveContextWithPosition
-  isStateMatch: (state: AutoBuyTriggerStates) => boolean
+  isStateMatch: (state: BasicAutomationAaveState) => boolean
   canTransitWith: (event: AutoBuyTriggerAaveEvent) => boolean
   updateState: (event: AutoBuyTriggerAaveEvent) => void
   isEditing: boolean
@@ -79,13 +79,13 @@ function useDescriptionForAutoBuy({ state }: Pick<AutoBuySidebarAaveVaultProps, 
     return ''
   }
 
-  if (state.maxBuyPrice) {
+  if (state.price) {
     return t('auto-buy.set-trigger-description-ltv', {
       executionLTV: state.executionTriggerLTV,
       targetLTV: state.targetTriggerLTV,
       denomination: `${state.position.collateral.token.symbol}/${state.position.debt.token.symbol}`,
       executionPrice: formatCryptoBalance(executionPrice),
-      maxBuyPrice: formatCryptoBalance(state.maxBuyPrice),
+      maxBuyPrice: formatCryptoBalance(state.price),
     })
   }
   return t('auto-buy.set-trigger-description-ltv-no-threshold', {
@@ -204,21 +204,21 @@ function AutoBuySidebarAaveVaultEditingState({
         />
         <VaultActionInput
           action={t('auto-buy.set-max-buy-price')}
-          amount={state.maxBuyPrice}
+          amount={state.price}
           hasAuxiliary={false}
           hasError={false}
           currencyCode={state.position.debt.token.symbol}
           onChange={handleNumericInput((price) => {
-            updateState({ type: 'SET_MAX_BUY_PRICE', price: price })
+            updateState({ type: 'SET_PRICE', price: price })
           })}
           onToggle={(toggle) => {
-            updateState({ type: 'SET_USE_MAX_BUY_PRICE', enabled: toggle })
+            updateState({ type: 'SET_USE_PRICE', enabled: toggle })
           }}
           showToggle={true}
           toggleOnLabel={t('protection.set-no-threshold')}
           toggleOffLabel={t('protection.set-threshold')}
           toggleOffPlaceholder={t('protection.no-threshold')}
-          defaultToggle={state.useMaxBuyPrice}
+          defaultToggle={state.usePrice}
         />
       </>
       {isEditing && (

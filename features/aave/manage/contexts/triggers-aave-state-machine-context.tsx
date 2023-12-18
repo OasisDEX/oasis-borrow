@@ -2,6 +2,7 @@ import { useInterpret, useSelector } from '@xstate/react'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import {
   autoBuyTriggerAaveStateMachine,
+  autoSellTriggerAaveStateMachine,
   triggersAaveStateMachine,
 } from 'features/aave/manage/state'
 import type { IStrategyConfig } from 'features/aave/types'
@@ -18,12 +19,17 @@ function useSetupTriggersStateContext(
     devTools: env.NODE_ENV !== 'production',
   }).start()
 
+  const autosellStateMachine = useInterpret(autoSellTriggerAaveStateMachine, {
+    devTools: env.NODE_ENV !== 'production',
+  }).start()
+
   return useInterpret(
     triggersAaveStateMachine.withContext({
       strategyConfig: strategy,
       dpm: proxies?.dpmProxy,
       showAutoBuyBanner: true,
       autoBuyTrigger: autobuyStateMachine,
+      autoSellTrigger: autosellStateMachine,
       currentTriggers: {
         triggers: {},
       },

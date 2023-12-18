@@ -1,3 +1,4 @@
 export * from './manageAaveStateMachine'
 export * from './triggersAaveStateMachine'
-export * from './autoBuyTriggerAaveStateMachine'
+export * from './getBasicAutomationAaveStateMachine'
+export * from './triggersCommon'

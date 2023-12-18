@@ -1,3 +1,6 @@
+import type BigNumber from 'bignumber.js'
+import type { LendingProtocol } from 'lendingProtocols'
+
 export enum TriggersApiErrorCode {
   MinSellPriceIsNotSet = 'min-sell-price-is-not-set',
   MaxBuyPriceIsNotSet = 'max-buy-price-is-not-set',
@@ -16,7 +19,25 @@ export type TriggersApiError = {
   path?: string[]
 }
 
-export type SetupAutoBuyResponse = {
+interface StrategyLike {
+  collateralAddress: string
+  debtAddress: string
+}
+
+export interface SetupAaveBasicAutomationParams {
+  price: BigNumber | undefined
+  executionLTV: BigNumber
+  targetLTV: BigNumber
+  maxBaseFee: BigNumber
+  usePrice: boolean
+  dpm: string
+  strategy: StrategyLike
+  triggerType: number
+  networkId: number
+  protocol: LendingProtocol
+}
+
+export type SetupBasicAutoResponse = {
   errors?: TriggersApiError[]
   encodedTriggerData?: string
   simulation?: {
@@ -33,10 +54,10 @@ export type SetupAutoBuyResponse = {
   }
 }
 
-export type SetupAutoBuyResponseWithRequiredTransaction = SetupAutoBuyResponse & {
+export type SetupBasicAutoResponseWithRequiredTransaction = SetupBasicAutoResponse & {
   transaction: { data: string; to: string }
 }
 
 export const hasTransaction = (
-  response: SetupAutoBuyResponse,
-): response is SetupAutoBuyResponseWithRequiredTransaction => !!response.transaction
+  response: SetupBasicAutoResponse,
+): response is SetupBasicAutoResponseWithRequiredTransaction => !!response.transaction

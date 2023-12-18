@@ -7,7 +7,11 @@ import { getTriggersRequest } from 'helpers/triggers'
 import type { ActorRefFrom, StateFrom } from 'xstate'
 import { actions, createMachine } from 'xstate'
 
-import type { autoBuyTriggerAaveStateMachine, PositionLike } from './autoBuyTriggerAaveStateMachine'
+import type {
+  autoBuyTriggerAaveStateMachine,
+  autoSellTriggerAaveStateMachine,
+} from './getBasicAutomationAaveStateMachine'
+import type { PositionLike } from './triggersCommon'
 
 const { assign, sendTo } = actions
 
@@ -40,6 +44,7 @@ export type TriggersAaveContext = {
   showAutoBuyBanner: boolean
   currentTriggers: GetTriggersResponse
   autoBuyTrigger: ActorRefFrom<typeof autoBuyTriggerAaveStateMachine>
+  autoSellTrigger: ActorRefFrom<typeof autoSellTriggerAaveStateMachine>
 }
 
 function mapPositionToAutoBuyPosition({

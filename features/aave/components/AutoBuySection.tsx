@@ -113,15 +113,6 @@ export function AutoBuySection({
       badge={currentTrigger !== undefined}
       content={
         <>
-          {/*{*/}
-          {/*  <Box mb={3}>*/}
-          {/*    <MessageCard*/}
-          {/*      type="warning"*/}
-          {/*      messages={[t('vault-warnings.auto-buy-override')]}*/}
-          {/*      withBullet={false}*/}
-          {/*    />*/}
-          {/*  </Box>*/}
-          {/*}*/}
           <DetailsSectionContentCardWrapper>
             <ContentCardTriggerExecutionLTV
               collateralToken={position.collateral.token.symbol}
