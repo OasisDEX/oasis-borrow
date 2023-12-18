@@ -7,8 +7,16 @@ import { DisabledHistoryControl } from 'components/vault/HistoryControl'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { isAaveHistorySupported } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
-import { useManageAaveStateMachineContext } from 'features/aave/manage/contexts'
+import {
+  useManageAaveStateMachineContext,
+  useOptimizationAaveStateMachineContext,
+} from 'features/aave/manage/contexts'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
+import {
+  hasActiveOptimization,
+  isOptimizationEnabled,
+  isOptimizationLoading,
+} from 'features/aave/manage/state'
 import { type IStrategyConfig, ProxyType } from 'features/aave/types/strategy-config'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
 import { isShortPosition } from 'features/omni-kit/helpers'
@@ -42,6 +50,8 @@ export function AaveManageTabBar({
   } = useAutomationContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
+  const optimizationStateMachine = useOptimizationAaveStateMachineContext()
+  const [optimizationState] = useActor(optimizationStateMachine)
 
   const VaultDetails = strategyConfig.viewComponents.vaultDetailsManage
   const PositionInfo = strategyConfig.viewComponents.positionInfo
@@ -73,15 +83,19 @@ export function AaveManageTabBar({
       state.context.strategyConfig.proxyType,
     )
 
-  const optimizationTab: TabSection[] = strategyConfig.isOptimizationTabEnabled()
+  const isOptimizationTabEnabled = isOptimizationEnabled(optimizationState)
+  const isOptimizationTabLoading = isOptimizationLoading(optimizationState)
+  const hasActiveOptimizationTrigger = hasActiveOptimization(optimizationState)
+
+  const optimizationTab: TabSection[] = isOptimizationTabEnabled
     ? [
         {
           value: 'optimization',
           label: t('system.optimization'),
           content: <OptimizationControl />,
           tag: {
-            active: false,
-            isLoading: false,
+            active: hasActiveOptimizationTrigger,
+            isLoading: isOptimizationTabLoading,
             include: true,
           },
         },

@@ -4,7 +4,7 @@ import { amountFromWei } from 'blockchain/utils'
 import type { IStrategyConfig } from 'features/aave/types'
 import type { GetTriggersResponse } from 'helpers/triggers'
 import { getTriggersRequest } from 'helpers/triggers'
-import type { ActorRefFrom } from 'xstate'
+import type { ActorRefFrom, StateFrom } from 'xstate'
 import { actions, createMachine, sendTo } from 'xstate'
 
 import type { autoBuyTriggerAaveStateMachine, PositionLike } from './autoBuyTriggerAaveStateMachine'
@@ -16,11 +16,28 @@ export type OptimizationAaveEvent =
   | { type: 'POSITION_UPDATED'; position: AaveLikePosition }
   | { type: 'TRIGGERS_UPDATED'; currentTriggers: GetTriggersResponse }
 
+export const isOptimizationEnabled = ({
+  context,
+}: StateFrom<typeof optimizationAaveStateMachine>): boolean => {
+  return context.strategyConfig.isOptimizationTabEnabled() && context.dpm !== undefined
+}
+
+export const isOptimizationLoading = (
+  state: StateFrom<typeof optimizationAaveStateMachine>,
+): boolean => {
+  return state.matches('loading')
+}
+
+export const hasActiveOptimization = ({
+  context,
+}: StateFrom<typeof optimizationAaveStateMachine>): boolean => {
+  return context.currentTriggers.triggers.aaveBasicBuy !== undefined
+}
+
 export type OptimizationAaveContext = {
   readonly strategyConfig: IStrategyConfig
-  readonly positionOwner: string
+  readonly dpm?: UserDpmAccount
   position?: AaveLikePosition
-  readonly dpm: UserDpmAccount
   currentView?: 'auto-buy' | undefined
   showAutoBuyBanner: boolean
   currentTriggers: GetTriggersResponse
@@ -32,8 +49,11 @@ function mapPositionToAutoBuyPosition({
   dpm,
 }: {
   position: AaveLikePosition
-  dpm: UserDpmAccount
-}): PositionLike {
+  dpm?: UserDpmAccount
+}): PositionLike | undefined {
+  if (!dpm) {
+    return undefined
+  }
   return {
     ltv: position.riskRatio.loanToValue.times(100).toNumber(),
     collateral: {
@@ -72,17 +92,8 @@ export const optimizationAaveStateMachine = createMachine(
     preserveActionOrder: true,
     predictableActionArguments: true,
     entry: [],
-    invoke: [
-      {
-        src: 'getTriggers',
-        id: 'getTriggers',
-        onDone: {
-          actions: ['updateTriggers'],
-        },
-      },
-    ],
     id: 'optimizationAaveMachine',
-    initial: 'idle',
+    initial: 'loading',
     states: {
       idle: {
         on: {
@@ -91,18 +102,17 @@ export const optimizationAaveStateMachine = createMachine(
           },
         },
       },
-      dpm: {
-        on: {},
-        exit: [],
-      },
-      migration: {
-        on: {},
-      },
-      success: {
-        type: 'final',
-      },
-      failure: {
-        on: {},
+      loading: {
+        invoke: [
+          {
+            src: 'getTriggers',
+            id: 'getTriggers',
+            onDone: {
+              target: 'idle',
+              actions: ['updateTriggers', 'sendAutoBuyTrigger'],
+            },
+          },
+        ],
       },
     },
     on: {
@@ -138,8 +148,8 @@ export const optimizationAaveStateMachine = createMachine(
           return context.autoBuyTrigger
         },
         (context, event) => {
-          const ltv = parseInt(event.position.riskRatio.loanToValue.times(100).toFixed(2))
-          const maxLtv = parseInt(event.position.category.maxLoanToValue.times(100).toFixed(2))
+          const ltv = Number(event.position.riskRatio.loanToValue.times(100).toFixed(2))
+          const maxLtv = Number(event.position.category.maxLoanToValue.times(100).toFixed(2))
           return {
             type: 'UPDATE_DEFAULT_VALUES',
             defaults: {
@@ -152,14 +162,26 @@ export const optimizationAaveStateMachine = createMachine(
           }
         },
       ),
+      sendAutoBuyTrigger: sendTo(
+        (context) => context.autoBuyTrigger,
+        (_, event) => {
+          return {
+            type: 'CURRENT_TRIGGER_RECEIVED',
+            currentTrigger: event.data.triggers.aaveBasicBuy,
+          }
+        },
+      ),
     },
     services: {
-      getTriggers: async (context) => {
+      getTriggers: async (context): Promise<GetTriggersResponse> => {
         const { dpm, strategyConfig } = context
+        if (!dpm) {
+          return {
+            triggers: {},
+          }
+        }
         return await getTriggersRequest({ dpm, networkId: strategyConfig.networkId })
       },
     },
   },
 )
-
-export type MigrateAaveStateMachine = typeof optimizationAaveStateMachine

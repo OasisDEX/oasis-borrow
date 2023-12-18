@@ -19,6 +19,12 @@ function getAutoBuyDetailsLayoutProps(
   if (!context.position) {
     return undefined
   }
+  const currentTrigger = context.currentTrigger
+    ? {
+        executionLTV: new BigNumber(context.currentTrigger.decodedParams.execLtv).div(100),
+        targetLTV: new BigNumber(context.currentTrigger.decodedParams.targetLtv).div(100),
+      }
+    : undefined
 
   if (context.executionTriggerLTV && context.targetTriggerLTV && isEditing) {
     return {
@@ -27,11 +33,13 @@ function getAutoBuyDetailsLayoutProps(
         executionLTV: new BigNumber(context.executionTriggerLTV),
         targetLTV: new BigNumber(context.targetTriggerLTV),
       },
+      currentTrigger,
     }
   }
 
   return {
     position: context.position,
+    currentTrigger,
   }
 }
 

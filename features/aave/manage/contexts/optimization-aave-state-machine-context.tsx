@@ -1,4 +1,5 @@
 import { useInterpret, useSelector } from '@xstate/react'
+import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import {
   autoBuyTriggerAaveStateMachine,
   optimizationAaveStateMachine,
@@ -8,9 +9,11 @@ import { env } from 'process'
 import React, { useEffect } from 'react'
 
 import { useManageAaveStateMachineContext } from './aave-manage-state-machine-context'
-import type { DPMProxyForPosition } from './should-create-optimization-machine'
 
-function useSetupOptimizationStateContext(strategy: IStrategyConfig, dpm: DPMProxyForPosition) {
+function useSetupOptimizationStateContext(
+  strategy: IStrategyConfig,
+  proxies?: ProxiesRelatedWithPosition,
+) {
   const autobuyStateMachine = useInterpret(autoBuyTriggerAaveStateMachine, {
     devTools: env.NODE_ENV !== 'production',
   }).start()
@@ -18,8 +21,7 @@ function useSetupOptimizationStateContext(strategy: IStrategyConfig, dpm: DPMPro
   return useInterpret(
     optimizationAaveStateMachine.withContext({
       strategyConfig: strategy,
-      positionOwner: dpm.walletAddress,
-      dpm: dpm.dpmProxy,
+      dpm: proxies?.dpmProxy,
       showAutoBuyBanner: true,
       autoBuyTrigger: autobuyStateMachine,
       currentTriggers: {
@@ -60,10 +62,10 @@ function OptimizationStateUpdater({ children }: React.PropsWithChildren<{}>) {
 
 export function OptimizationAaveStateMachineContextProvider({
   strategy,
-  dpm,
+  proxies,
   children,
-}: React.PropsWithChildren<{ strategy: IStrategyConfig; dpm: DPMProxyForPosition }>) {
-  const context = useSetupOptimizationStateContext(strategy, dpm)
+}: React.PropsWithChildren<{ strategy: IStrategyConfig; proxies: ProxiesRelatedWithPosition }>) {
+  const context = useSetupOptimizationStateContext(strategy, proxies)
 
   return (
     <optimizationAaveStateContext.Provider value={context}>

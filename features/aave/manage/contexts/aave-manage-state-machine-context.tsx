@@ -8,7 +8,6 @@ import { env } from 'process'
 import React from 'react'
 
 import { OptimizationAaveStateMachineContextProvider } from './optimization-aave-state-machine-context'
-import { shouldCreateOptimizationMachine } from './should-create-optimization-machine'
 
 export const defaultManageTokenInputValues: ManageTokenInput = {
   // defaults for the manage collateral/debt are set here
@@ -90,22 +89,11 @@ export function ManageAaveStateMachineContextProvider({
     updateStrategyConfig,
   })
 
-  const createOptimizationMachine = shouldCreateOptimizationMachine(
-    strategy,
-    proxyType,
-    positionId,
-    proxies,
-  )
-
   return (
     <manageAaveStateContext.Provider value={context}>
-      {createOptimizationMachine ? (
-        <OptimizationAaveStateMachineContextProvider dpm={proxies} strategy={strategy}>
-          <>{children}</>
-        </OptimizationAaveStateMachineContextProvider>
-      ) : (
+      <OptimizationAaveStateMachineContextProvider proxies={proxies} strategy={strategy}>
         <>{children}</>
-      )}
+      </OptimizationAaveStateMachineContextProvider>
     </manageAaveStateContext.Provider>
   )
 }

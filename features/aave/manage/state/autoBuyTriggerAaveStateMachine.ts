@@ -38,9 +38,9 @@ export type AutoBuyTriggerAaveEvent =
   | { type: 'SET_MAX_BUY_PRICE'; price?: BigNumber }
   | { type: 'SET_USE_MAX_BUY_PRICE'; enabled: boolean }
   | { type: 'SET_MAX_GAS_FEE'; maxGasFee: number }
-  | { type: 'CURRENT_TRIGGER_RECEIVED'; currentTrigger: BigNumber }
+  | { type: 'CURRENT_TRIGGER_RECEIVED'; currentTrigger: AaveBasicBuy | undefined }
   | { type: 'UPDATE_DEFAULT_VALUES'; defaults: AutoBuyFormDefaults }
-  | { type: 'UPDATE_POSITION_VALUE'; position: PositionLike }
+  | { type: 'UPDATE_POSITION_VALUE'; position?: PositionLike }
   | { type: 'RESET' }
   | { type: 'TRIGGER_RESPONSE_RECEIVED'; setupTriggerResponse: SetupAutoBuyResponse }
   | { type: 'GAS_ESTIMATION_UPDATED'; gasEstimation: HasGasEstimation }
@@ -56,6 +56,12 @@ export type AutoBuyFormDefaults = {
   minSliderValue: number
   maxSliderValue: number
   maxGasFee: number
+}
+
+export enum TriggerFlow {
+  add = 'add',
+  edit = 'edit',
+  cancel = 'cancel',
 }
 
 export type PositionLike = {
@@ -143,7 +149,7 @@ export type AutoBuyTriggerAaveContext = {
   signer?: ethers.Signer
   networkId: NetworkIds
   retryCount: number
-  flow: 'add' | 'edit' | 'cancel'
+  flow: TriggerFlow
   feature: AutomationFeatures
 }
 
@@ -209,7 +215,7 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
       },
       networkId: NetworkIds.MAINNET,
       retryCount: 0,
-      flow: 'add',
+      flow: TriggerFlow.add,
       feature: AutomationFeatures.AUTO_BUY,
     },
     preserveActionOrder: true,
@@ -334,6 +340,9 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
       GO_TO_EDITING: {
         target: 'editing',
       },
+      CURRENT_TRIGGER_RECEIVED: {
+        actions: ['updateCurrentTrigger'],
+      },
     },
   },
   {
@@ -404,6 +413,18 @@ export const autoBuyTriggerAaveStateMachine = createMachine(
       setLoading: assign(() => ({
         isLoading: true,
       })),
+      updateCurrentTrigger: assign((_, event) => {
+        if (event.currentTrigger) {
+          return {
+            currentTrigger: event.currentTrigger,
+            flow: TriggerFlow.edit,
+          }
+        }
+        return {
+          currentTrigger: undefined,
+          flow: TriggerFlow.add,
+        }
+      }),
     },
     services: {
       getParameters: () => (callback, onReceive) => {

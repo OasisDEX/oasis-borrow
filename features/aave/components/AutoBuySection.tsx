@@ -110,7 +110,7 @@ export function AutoBuySection({
   return (
     <DetailsSection
       title={t('auto-buy.title')}
-      badge={false}
+      badge={currentTrigger !== undefined}
       content={
         <>
           {/*{*/}
