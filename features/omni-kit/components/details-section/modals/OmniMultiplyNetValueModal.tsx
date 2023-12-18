@@ -17,15 +17,19 @@ interface OmniMultiplyNetValueModalProps {
   cumulatives: {
     cumulativeWithdrawUSD: BigNumber
     cumulativeWithdrawInCollateralToken: BigNumber
+    cumulativeWithdrawInQuoteToken: BigNumber
     cumulativeFeesUSD: BigNumber
     cumulativeFeesInCollateralToken: BigNumber
+    cumulativeFeesInQuoteToken: BigNumber
     cumulativeDepositUSD: BigNumber
-    cumulativeDespositInCollateralToken: BigNumber
+    cumulativeDepositInCollateralToken: BigNumber
+    cumulativeDepositInQuoteToken: BigNumber
   }
   netValueUSD: BigNumber
   pnl?: BigNumber
   pnlUSD?: BigNumber
   theme?: Theme
+  isEarnPosition?: boolean
 }
 
 interface OmniMultiplyNetValueModalGridRowProps {
@@ -64,6 +68,7 @@ export function OmniMultiplyNetValueModal({
   pnl,
   pnlUSD,
   theme,
+  isEarnPosition = false,
 }: OmniMultiplyNetValueModalProps) {
   const { t } = useTranslation()
 
@@ -114,21 +119,27 @@ export function OmniMultiplyNetValueModal({
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-2')}
           firstColumn={`${formatCryptoBalance(
-            cumulatives.cumulativeDespositInCollateralToken,
+            isEarnPosition
+              ? cumulatives.cumulativeDepositInQuoteToken
+              : cumulatives.cumulativeDepositInCollateralToken,
           )} ${netValueToken}`}
           secondColumn={formatUsdValue(cumulatives.cumulativeDepositUSD)}
         />
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-3')}
           firstColumn={`${formatCryptoBalance(
-            cumulatives.cumulativeWithdrawInCollateralToken,
+            isEarnPosition
+              ? cumulatives.cumulativeWithdrawInQuoteToken
+              : cumulatives.cumulativeWithdrawInCollateralToken,
           )} ${netValueToken}`}
           secondColumn={formatUsdValue(cumulatives.cumulativeWithdrawUSD)}
         />
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-4')}
           firstColumn={`${formatCryptoBalance(
-            cumulatives.cumulativeFeesInCollateralToken,
+            isEarnPosition
+              ? cumulatives.cumulativeFeesInQuoteToken
+              : cumulatives.cumulativeFeesInCollateralToken,
           )} ${netValueToken}`}
           secondColumn={formatUsdValue(cumulatives.cumulativeFeesUSD)}
         />

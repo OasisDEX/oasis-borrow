@@ -12,6 +12,7 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
 import { calculateViewValuesForPosition } from 'features/aave/services'
+import { ProductType } from 'features/aave/types'
 import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -47,6 +48,7 @@ type PositionInfoComponentProps = {
   collateralTokenReserveData: AaveLikeReserveData
   debtTokenReserveData: AaveLikeReserveData
   cumulatives?: AaveCumulativeData
+  productType: ProductType
 }
 
 // todo: export and pull from oasisdex/oasis-actions
@@ -76,6 +78,7 @@ export const PositionInfoComponent = ({
   debtTokenPrice,
   collateralTokenReserveData,
   debtTokenReserveData,
+  productType,
 }: PositionInfoComponentProps) => {
   const { t } = useTranslation()
   const currentPositionThings = calculateViewValuesForPosition(
@@ -130,6 +133,7 @@ export const PositionInfoComponent = ({
                   pnlUSD={pnlWithoutFees && cumulatives.cumulativeDepositUSD.times(pnlWithoutFees)}
                   netValueTokenPrice={debtTokenPrice}
                   netValueToken={position.debt.symbol}
+                  isEarnPosition={productType === ProductType.Earn}
                 />
               )
             }

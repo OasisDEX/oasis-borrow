@@ -113,6 +113,7 @@ export function AaveMultiplyPositionData({
     collateralToken.symbol,
     debtToken.symbol,
   )
+  const isEarnPosition = productType === ProductType.Earn
 
   return (
     <Grid>
@@ -175,6 +176,7 @@ export function AaveMultiplyPositionData({
                     netValueToken={
                       productType === ProductType.Earn ? debtToken.symbol : collateralToken.symbol
                     }
+                    isEarnPosition={isEarnPosition}
                     cumulatives={cumulatives}
                     netValueUSD={netValueUsd}
                     pnl={pnlWithoutFees}

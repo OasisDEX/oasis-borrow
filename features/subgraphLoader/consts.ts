@@ -179,16 +179,31 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     query getAccount($dpmProxyAddress: ID!, $poolAddress: String!) {
       account(id: $dpmProxyAddress) {
         earnPositions(where: { pool: $poolAddress }) {
+          earnCumulativeDepositUSD
+          earnCumulativeDepositInQuoteToken
+          earnCumulativeDepositInCollateralToken
+          earnCumulativeWithdrawUSD
+          earnCumulativeWithdrawInQuoteToken
+          earnCumulativeWithdrawInCollateralToken
+          earnCumulativeFeesUSD
           earnCumulativeFeesInQuoteToken
+          earnCumulativeFeesInCollateralToken
           earnCumulativeQuoteTokenDeposit
           earnCumulativeQuoteTokenWithdraw
         }
         borrowPositions(where: { pool: $poolAddress }) {
           borrowCumulativeDepositUSD
-          borrowCumulativeFeesUSD
+          borrowCumulativeDepositInQuoteToken
+          borrowCumulativeDepositInCollateralToken
           borrowCumulativeWithdrawUSD
+          borrowCumulativeWithdrawInQuoteToken
+          borrowCumulativeWithdrawInCollateralToken
           borrowCumulativeCollateralDeposit
           borrowCumulativeCollateralWithdraw
+          borrowCumulativeDebtDeposit
+          borrowCumulativeDebtWithdraw
+          borrowCumulativeFeesUSD
+          borrowCumulativeFeesInQuoteToken
           borrowCumulativeFeesInCollateralToken
         }
       }
