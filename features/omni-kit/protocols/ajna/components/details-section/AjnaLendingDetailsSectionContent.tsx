@@ -154,9 +154,15 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     collateralPrice,
     collateralToken,
     cumulatives: position.pnl.cumulatives as AjnaCumulativesData & {
-      // fix after library update
-      borrowCumulativeCollateralWithdraw: BigNumber
+      borrowCumulativeDepositInQuoteToken: BigNumber
+      borrowCumulativeDepositInCollateralToken: BigNumber
+      borrowCumulativeWithdrawInQuoteToken: BigNumber
+      borrowCumulativeWithdrawInCollateralToken: BigNumber
       borrowCumulativeCollateralDeposit: BigNumber
+      borrowCumulativeCollateralWithdraw: BigNumber
+      borrowCumulativeDebtDeposit: BigNumber
+      borrowCumulativeDebtWithdraw: BigNumber
+      borrowCumulativeFeesInQuoteToken: BigNumber
       borrowCumulativeFeesInCollateralToken: BigNumber
     },
     netValue,
