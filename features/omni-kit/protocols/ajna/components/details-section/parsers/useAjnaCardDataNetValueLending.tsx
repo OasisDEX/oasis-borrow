@@ -11,6 +11,7 @@ interface AjnaCardDataNetValueLendingParams {
   cumulatives: AjnaCumulativesData & {
     borrowCumulativeCollateralWithdraw: BigNumber
     borrowCumulativeCollateralDeposit: BigNumber
+    borrowCumulativeFeesInCollateralToken: BigNumber
   } // update this in the lib
   netValue: BigNumber
   pnl?: BigNumber
@@ -36,8 +37,7 @@ export function useAjnaCardDataNetValueLending({
           cumulativeFeesUSD: cumulatives.borrowCumulativeFeesUSD,
           cumulativeWithdrawInCollateralToken: cumulatives.borrowCumulativeCollateralWithdraw,
           cumulativeDespositInCollateralToken: cumulatives.borrowCumulativeCollateralDeposit,
-          cumulativeFeesInCollateralToken:
-            cumulatives.borrowCumulativeFeesUSD.dividedBy(collateralPrice), // fix when cumulativeFeesInCollateralToken is available
+          cumulativeFeesInCollateralToken: cumulatives.borrowCumulativeFeesInCollateralToken,
         }}
         netValueUSD={netValue}
         pnl={pnl}

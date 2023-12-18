@@ -157,6 +157,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
       // fix after library update
       borrowCumulativeCollateralWithdraw: BigNumber
       borrowCumulativeCollateralDeposit: BigNumber
+      borrowCumulativeFeesInCollateralToken: BigNumber
     },
     netValue,
     ...(!isOpening &&
