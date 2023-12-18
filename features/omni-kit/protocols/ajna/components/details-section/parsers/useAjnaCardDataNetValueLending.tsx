@@ -31,7 +31,6 @@ export function useAjnaCardDataNetValueLending({
   cumulatives,
   netValue,
   pnl,
-  pnlUSD,
 }: AjnaCardDataNetValueLendingParams): OmniContentCardExtra {
   return {
     modal: (
@@ -51,7 +50,6 @@ export function useAjnaCardDataNetValueLending({
         }}
         netValueUSD={netValue}
         pnl={pnl}
-        pnlUSD={pnlUSD}
         theme={ajnaExtensionTheme}
       />
     ),

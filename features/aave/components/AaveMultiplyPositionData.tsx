@@ -98,22 +98,27 @@ export function AaveMultiplyPositionData({
     currentPosition.debt.amount.isZero()
 
   const isLongPosition = strategyType === StrategyType.Long
+  const isEarnPosition = productType === ProductType.Earn
 
   const netValueUsd = isLongPosition
     ? currentPositionThings.netValueInDebtToken.times(debtTokenPrice)
     : currentPositionThings.netValueInCollateralToken.times(collateralTokenPrice)
 
-  const pnlWithoutFees = cumulatives?.cumulativeWithdrawUSD
-    .plus(netValueUsd)
-    .minus(cumulatives.cumulativeDepositUSD)
-    .div(cumulatives.cumulativeDepositUSD)
+  const pnlWithoutFees = isEarnPosition
+    ? cumulatives?.cumulativeWithdrawInQuoteToken
+        .plus(currentPositionThings.netValueInDebtToken)
+        .minus(cumulatives.cumulativeDepositInQuoteToken)
+        .div(cumulatives.cumulativeDepositInQuoteToken)
+    : cumulatives?.cumulativeWithdrawInCollateralToken
+        .plus(currentPositionThings.netValueInCollateralToken)
+        .minus(cumulatives.cumulativeDepositInCollateralToken)
+        .div(cumulatives.cumulativeDepositInCollateralToken)
 
   const isSparkPosition = lendingProtocol === LendingProtocol.SparkV3
   const isElligibleSparkPosition = checkElligibleSparkPosition(
     collateralToken.symbol,
     debtToken.symbol,
   )
-  const isEarnPosition = productType === ProductType.Earn
 
   return (
     <Grid>
@@ -170,19 +175,12 @@ export function AaveMultiplyPositionData({
               modal={
                 cumulatives ? (
                   <OmniMultiplyNetValueModal
-                    netValueTokenPrice={
-                      productType === ProductType.Earn ? debtTokenPrice : collateralTokenPrice
-                    }
-                    netValueToken={
-                      productType === ProductType.Earn ? debtToken.symbol : collateralToken.symbol
-                    }
+                    netValueTokenPrice={isEarnPosition ? debtTokenPrice : collateralTokenPrice}
+                    netValueToken={isEarnPosition ? debtToken.symbol : collateralToken.symbol}
                     isEarnPosition={isEarnPosition}
                     cumulatives={cumulatives}
                     netValueUSD={netValueUsd}
                     pnl={pnlWithoutFees}
-                    pnlUSD={
-                      pnlWithoutFees && cumulatives.cumulativeDepositUSD.times(pnlWithoutFees)
-                    }
                   />
                 ) : undefined
               }

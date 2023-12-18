@@ -145,10 +145,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   const netValueContentCardCommonData = useOmniCardDataNetValue({
     afterNetValue,
     netValue,
-    ...(!isOpening &&
-      !isProxyWithManyPositions && {
-        pnlUSD: position.pnl.cumulatives.borrowCumulativeDepositUSD.times(position.pnl.withoutFees),
-      }),
+    ...(!isOpening && !isProxyWithManyPositions && {}),
   })
   const netValueContentCardAjnaData = useAjnaCardDataNetValueLending({
     collateralPrice,
@@ -169,7 +166,6 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     ...(!isOpening &&
       !isProxyWithManyPositions && {
         pnl: position.pnl.withoutFees,
-        pnlUSD: position.pnl.cumulatives.borrowCumulativeDepositUSD.times(position.pnl.withoutFees),
       }),
   })
 

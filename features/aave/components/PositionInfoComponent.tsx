@@ -102,11 +102,17 @@ export const PositionInfoComponent = ({
   const belowCurrentRatio = position.oraclePriceForCollateralDebtExchangeRate
     .minus(position.liquidationPrice)
     .times(100)
+  const isEarnPosition = productType === ProductType.Earn
 
-  const pnlWithoutFees = cumulatives?.cumulativeWithdrawInQuoteToken
-    .plus(netValueInDebtToken)
-    .minus(cumulatives.cumulativeDepositInQuoteToken)
-    .div(cumulatives.cumulativeDepositInQuoteToken)
+  const pnlWithoutFees = isEarnPosition
+    ? cumulatives?.cumulativeWithdrawInQuoteToken
+        .plus(currentPositionThings.netValueInDebtToken)
+        .minus(cumulatives.cumulativeDepositInQuoteToken)
+        .div(cumulatives.cumulativeDepositInQuoteToken)
+    : cumulatives?.cumulativeWithdrawInCollateralToken
+        .plus(currentPositionThings.netValueInCollateralToken)
+        .minus(cumulatives.cumulativeDepositInCollateralToken)
+        .div(cumulatives.cumulativeDepositInCollateralToken)
 
   return (
     <DetailsSection
@@ -130,10 +136,9 @@ export const PositionInfoComponent = ({
                   cumulatives={cumulatives}
                   netValueUSD={netValueUsd}
                   pnl={pnlWithoutFees}
-                  pnlUSD={pnlWithoutFees && cumulatives.cumulativeDepositUSD.times(pnlWithoutFees)}
-                  netValueTokenPrice={debtTokenPrice}
-                  netValueToken={position.debt.symbol}
-                  isEarnPosition={productType === ProductType.Earn}
+                  netValueTokenPrice={isEarnPosition ? debtTokenPrice : collateralTokenPrice}
+                  netValueToken={isEarnPosition ? position.debt.symbol : position.collateral.symbol}
+                  isEarnPosition={isEarnPosition}
                 />
               )
             }
