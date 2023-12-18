@@ -23,6 +23,7 @@ export const mapAjnaBorrowishEvents = (
 
     const basicMultiplyData = {
       collateralTokenPriceUSD: event.collateralTokenPriceUSD,
+      debtTokenPriceUSD: event.debtTokenPriceUSD,
       collateralBefore: event.collateralBefore,
       collateralAfter: event.collateralAfter,
       debtBefore: event.debtBefore,
