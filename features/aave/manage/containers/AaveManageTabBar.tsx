@@ -1,12 +1,13 @@
 import { useActor } from '@xstate/react'
 import { useAutomationContext } from 'components/context/AutomationContextProvider'
 import { PositionHistory } from 'components/history/PositionHistory'
+import type { TabSection } from 'components/TabBar'
 import { TabBar } from 'components/TabBar'
 import { DisabledHistoryControl } from 'components/vault/HistoryControl'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { isAaveHistorySupported } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
-import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import { useManageAaveStateMachineContext } from 'features/aave/manage/contexts'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { type IStrategyConfig, ProxyType } from 'features/aave/types/strategy-config'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
@@ -19,6 +20,8 @@ import type {
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid } from 'theme-ui'
+
+import { OptimizationControl } from './OptimizationControl'
 
 interface AaveManageTabBarProps {
   aaveReserveState: AaveLikeReserveConfigurationData
@@ -70,6 +73,21 @@ export function AaveManageTabBar({
       state.context.strategyConfig.proxyType,
     )
 
+  const optimizationTab: TabSection[] = strategyConfig.isOptimizationTabEnabled()
+    ? [
+        {
+          value: 'optimization',
+          label: t('system.optimization'),
+          content: <OptimizationControl />,
+          tag: {
+            active: false,
+            isLoading: false,
+            include: true,
+          },
+        },
+      ]
+    : []
+
   return (
     <TabBar
       variant="underline"
@@ -118,6 +136,7 @@ export function AaveManageTabBar({
               },
             ]
           : []),
+        ...optimizationTab,
         ...(historyIsSupported === undefined
           ? []
           : historyIsSupported

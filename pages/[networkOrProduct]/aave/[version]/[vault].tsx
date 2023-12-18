@@ -7,8 +7,8 @@ import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { getAddress } from 'ethers/lib/utils'
 import { AaveContextProvider, useAaveContext } from 'features/aave'
-import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
+import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/contexts'
 import type { PositionId } from 'features/aave/types/position-id'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { useApiVaults } from 'features/shared/vaultApi'
@@ -18,7 +18,7 @@ import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import type { AaveLendingProtocol } from 'lendingProtocols'
-import { checkIfAave } from 'lendingProtocols'
+import { checkIfAave, LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -79,7 +79,7 @@ function WithAaveStrategy({
   } = useAaveContext(protocol, network)
   const [strategyConfig, strategyConfigError] = useObservable(
     /* If VaultType.Unknown specified then when loading config it'll try to respect position created type */
-    strategyConfig$(positionId, network, apiVaults[0]?.type || VaultType.Unknown),
+    strategyConfig$(positionId, network, apiVaults[0]?.type || VaultType.Unknown, protocol),
   )
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId, networkId),
@@ -109,6 +109,7 @@ function WithAaveStrategy({
             machine={aaveManageStateMachine}
             positionId={positionId}
             strategy={_strategyConfig}
+            proxies={_proxies}
             updateStrategyConfig={_updateStrategyConfig}
           >
             <PageSEOTags
@@ -120,7 +121,13 @@ function WithAaveStrategy({
                 token2: _strategyConfig.tokens.debt,
               }}
               description="seo.multiply.description"
-              url={`/aave/v3/${positionId}`}
+              url={`/aave/${
+                {
+                  [LendingProtocol.AaveV2]: 'v2',
+                  [LendingProtocol.AaveV3]: 'v3',
+                  [LendingProtocol.SparkV3]: 'v3',
+                }[_strategyConfig.protocol]
+              }/${positionId}`}
             />
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />

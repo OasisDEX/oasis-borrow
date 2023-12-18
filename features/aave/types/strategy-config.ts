@@ -3,7 +3,7 @@ import { IPosition, IRiskRatio } from '@oasisdex/dma-library'
 import { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import BigNumber from 'bignumber.js'
 
-import { AaveManageComponentProps, ManageSectionComponentProps, ViewPositionSectionComponentProps } from '../components'
+import { AaveManageComponentProps, ManageSectionComponentProps } from '../components'
 import { ManagePositionAvailableActions } from './manage-position-available-actions'
 import { PositionId } from './position-id'
 import { BaseViewProps } from './base-aave-context'
@@ -16,7 +16,7 @@ type AaveHeader = (props: AaveHeaderProps) => JSX.Element
 type ManageAaveHeader = (props: ManageAaveHeaderProps) => JSX.Element
 type SimulateSection = (props: AaveManageComponentProps) => JSX.Element
 type VaultDetails = (
-  props: ManageSectionComponentProps & ViewPositionSectionComponentProps & AaveManageComponentProps,
+  props: ManageSectionComponentProps & AaveManageComponentProps,
 ) => JSX.Element
 
 type SecondaryInput = (props: SecondaryInputProps) => JSX.Element
@@ -69,7 +69,6 @@ export interface IStrategyConfig {
     headerView: ManageAaveHeader
     simulateSection: SimulateSection
     vaultDetailsManage: VaultDetails
-    vaultDetailsView: VaultDetails
     secondaryInput: SecondaryInput
     adjustRiskInput: SecondaryInput
     positionInfo: PositionInfo
@@ -92,4 +91,5 @@ export interface IStrategyConfig {
   defaultSlippage?: BigNumber
   executeTransactionWith: 'web3' | 'ethers'
   strategyType: StrategyType
+  isOptimizationTabEnabled: () => boolean
 }

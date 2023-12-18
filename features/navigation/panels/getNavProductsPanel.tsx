@@ -39,9 +39,8 @@ export const getNavProductsPanel = ({
   isConnected: boolean
   connect: () => void
 }): NavigationMenuPanelType => {
-  const productMultiplyNavItems = getProductMultiplyNavItems(promoCardsData, productHubItems)
-
   const productEarnNavItems = getProductEarnNavItems(promoCardsData, productHubItems)
+  const productMultiplyNavItems = getProductMultiplyNavItems(promoCardsData, productHubItems)
   const productBorrowNavItems = getProductBorrowNavItems(productHubItems)
 
   const widgetCallback = (variant: 'swap' | 'bridge') => {
@@ -60,6 +59,7 @@ export const getNavProductsPanel = ({
           {
             title: t('nav.earn'),
             description: t('nav.products-earn'),
+            url: INTERNAL_LINKS.earn,
             list: {
               items: [
                 ...productEarnNavItems.map((item) => ({
@@ -93,21 +93,21 @@ export const getNavProductsPanel = ({
                           protocol: item.protocol.toUpperCase(),
                         }),
                   tags: [
-                    [capitalize(item.protocol), lendingProtocolsByName[item.protocol].gradient],
+                    [
+                      lendingProtocolsByName[item.protocol].label,
+                      lendingProtocolsByName[item.protocol].gradient,
+                    ],
                     [capitalize(item.network), networksByName[item.network].gradient],
                   ] as NavigationMenuPanelListTags,
                   url: item.url,
                 })),
               ],
-              link: {
-                label: t('nav.products-more', { product: t('nav.earn') }),
-                url: INTERNAL_LINKS.earn,
-              },
             },
           },
           {
             title: t('nav.multiply'),
             description: t('nav.products-multiply'),
+            url: INTERNAL_LINKS.multiply,
             list: {
               items: [
                 ...productMultiplyNavItems.map((item) => ({
@@ -122,21 +122,21 @@ export const getNavProductsPanel = ({
                   }),
                   description: t('nav.increase-your-exposure-against', { token: item.debtToken }),
                   tags: [
-                    [capitalize(item.protocol), lendingProtocolsByName[item.protocol].gradient],
+                    [
+                      lendingProtocolsByName[item.protocol].label,
+                      lendingProtocolsByName[item.protocol].gradient,
+                    ],
                     [capitalize(item.network), networksByName[item.network].gradient],
                   ] as NavigationMenuPanelListTags,
                   url: item.url,
                 })),
               ],
-              link: {
-                label: t('nav.products-more', { product: t('nav.multiply') }),
-                url: INTERNAL_LINKS.multiply,
-              },
             },
           },
           {
             title: t('nav.borrow'),
             description: t('nav.products-borrow'),
+            url: INTERNAL_LINKS.borrow,
             list: {
               items: [
                 {
@@ -155,7 +155,7 @@ export const getNavProductsPanel = ({
                   description: t('nav.discover-the-highest-ltv'),
                   tags: [
                     [
-                      capitalize(productBorrowNavItems.maxLtv.protocol),
+                      lendingProtocolsByName[productBorrowNavItems.maxLtv.protocol].label,
                       lendingProtocolsByName[productBorrowNavItems.maxLtv.protocol].gradient,
                     ],
                     [
@@ -180,7 +180,7 @@ export const getNavProductsPanel = ({
                   description: t('nav.find-the-lowest-rates'),
                   tags: [
                     [
-                      capitalize(productBorrowNavItems.fee.protocol),
+                      lendingProtocolsByName[productBorrowNavItems.fee.protocol].label,
                       lendingProtocolsByName[productBorrowNavItems.fee.protocol].gradient,
                     ],
                     [
@@ -202,7 +202,7 @@ export const getNavProductsPanel = ({
                   description: t('nav.get-paid-to-borrow'),
                   tags: [
                     [
-                      capitalize(productBorrowNavItems.liquidity.protocol),
+                      lendingProtocolsByName[productBorrowNavItems.liquidity.protocol].label,
                       lendingProtocolsByName[productBorrowNavItems.liquidity.protocol].gradient,
                     ],
                     [
@@ -213,10 +213,6 @@ export const getNavProductsPanel = ({
                   url: productBorrowNavItems.liquidity.url,
                 },
               ],
-              link: {
-                label: t('nav.products-more', { product: t('nav.borrow') }),
-                url: INTERNAL_LINKS.borrow,
-              },
             },
           },
           {

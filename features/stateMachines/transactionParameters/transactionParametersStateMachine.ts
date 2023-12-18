@@ -4,8 +4,8 @@ import type {
   IStrategy,
 } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import type { DpmExecuteParameters } from 'blockchain/better-calls/dpm-account'
-import { estimateGasOnDpm } from 'blockchain/better-calls/dpm-account'
+import type { DpmExecuteOperationExecutorActionParameters } from 'blockchain/better-calls/dpm-account'
+import { estimateGasOnDpmForOperationExecutorAction } from 'blockchain/better-calls/dpm-account'
 import type { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
 import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -231,7 +231,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         getParameters: async (context) => libraryCall(context.parameters!),
         estimateGas: ({ txHelper, parameters, strategy, signer, networkId, runWithEthers }) => {
           if (signer && runWithEthers) {
-            const dpmParams: DpmExecuteParameters = {
+            const dpmParams: DpmExecuteOperationExecutorActionParameters = {
               calls: strategy!.transaction.calls,
               operationName: strategy!.transaction.operationName,
               signer: signer!,
@@ -239,7 +239,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               value: parameters!.token === 'ETH' ? parameters!.amount! : zero,
               networkId: networkId,
             }
-            return fromPromise(estimateGasOnDpm(dpmParams)).pipe(
+            return fromPromise(estimateGasOnDpmForOperationExecutorAction(dpmParams)).pipe(
               map((estimatedGas) => ({
                 type: 'ETHERS_GAS_ESTIMATION_CHANGED',
                 gasEstimationResult: estimatedGas,

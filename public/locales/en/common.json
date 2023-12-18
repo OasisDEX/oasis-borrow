@@ -467,6 +467,8 @@
     "move-lending-price": "Move lending price",
     "deposit-and-move-lending-price": "Deposit and move lending price",
     "withdraw-and-move-lending-price": "Withdraw and move lending price",
+    "total-collateral": "Total collateral",
+    "position-debt": "Position debt",
     "claim-collateral": "Claim collateral",
     "collateral-deposit": "Collateral Deposit",
     "withdrawn": "Withdrawn",
@@ -2179,9 +2181,14 @@
     "next-buy-price": "Next buy price: {{amount}}",
     "set-max-buy-price": "Set Max Buy Price",
     "target-col-ratio-after-buying": "Target Col. Ratio after buying",
+    "target-ltv-after-buying": "Target LTV after buying",
     "target-coll-ratio": "Buy Target Ratio",
+    "target-ltv": "Buy Target LTV",
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
+    "trigger-ltv-to-buy-token": "Trigger LTV to buy {{token}}",
+    "trigger-target-ltv": "Target LTV",
     "trigger-coll-ratio": "Buy Trigger Ratio",
+    "trigger-ltv": "Buy Trigger LTV",
     "buy-title": "Basic Auto-Buy Summary",
     "add-form-title": "Auto-Buy Setup",
     "edit-form-title": "Edit Auto-Buy",
@@ -2192,12 +2199,15 @@
     "trigger-cancelled": "Auto-Buy cancellation completed",
     "trigger-updated": "Auto-Buy Updated",
     "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
+    "target-ltv-each-buy": "Target LTV after each buy",
     "target-multiple-each-buy": "Target Multiple after each buy",
     "trigger-col-ratio-to-perform-buy": "Trigger Col. Ratio to perform each automated buy",
+    "trigger-ltv-to-perform-buy": "Trigger LTV to perform each automated buy",
     "next-buy-prices": "Next buy price(s)",
     "total-cost-of-next-buy": "Total cost of next ETH buy",
     "collateral-after-next-buy": "Collateral after next buy",
     "target-ratio-with-deviation": "Target ratio with deviation",
+    "target-ltv-with-deviation": "Target LTV with deviation",
     "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
     "col-to-be-purchased": "{{token}} to be purchased at next buy",
     "adding-new-triggers-disabled": "Creation of the new Auto-Buy trigger is currently disabled.",
@@ -2215,7 +2225,9 @@
     "setting-auto-buy": "Setting up your Auto-Buy",
     "cancelling-auto-buy": "Cancelling your Auto-Buy",
     "set-trigger-description": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}, with a Max Buy price of ${{minBuyPrice}}/{{token}}. Learn More ",
+    "set-trigger-description-ltv": "You are creating a recurring Buy action to trigger at a LTV of {{executionLTV}}%, increasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at {{executionPrice}} {{denomination}}, with a Max Buy price of {{maxBuyPrice}} {{denomination}}. Learn More ",
     "set-trigger-description-no-threshold": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min buy price. Learn More ",
+    "set-trigger-description-ltv-no-threshold": "You are creating a recurring Buy action to trigger at a LTV of {{executionLTV}}%, increasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at {{executionPrice}} {{denomination}}. With no min buy price. Learn More ",
     "sl-too-high": "Auto-Buy is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Buy.",
     "coll-ratio-too-high": "Auto-Buy is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Buy."
   },
@@ -2691,15 +2703,15 @@
       },
       "net-value-modal": {
         "modal-title": "Net Value & Profit and Loss",
-        "modal-description": "The current net value is calculated based on the market price of <strong>${{collateralPrice}}</strong>",
+        "modal-description": "The current net value is calculated based on the market price of <strong>${{netValueTokenPrice}}</strong>",
         "modal-table-col-1": "Collateral Value",
         "modal-table-col-2": "$ Value",
         "modal-table-row-1": "Net Value",
         "modal-table-row-2": "Deposits",
         "modal-table-row-3": "Withdrawals",
         "modal-table-row-4": "Gas Fees Spent",
-        "modal-value": "Unrealised Profit & Loss",
-        "modal-footnote-1": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative deposits",
+        "modal-value": "Profit & Loss",
+        "modal-footnote-1": "P&L = ((Net value + Cumulative withdrawals) - Cumulative deposits) / Cumulative deposits",
         "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction."
       }
     },
@@ -2990,7 +3002,8 @@
       "bonus-rewards": "Bonus rewards",
       "regular-rewards": "Regular rewards",
       "total-rewards": "Total rewards",
-      "claimable-today": "Claimable today"
+      "claimable-today": "Claimable today",
+      "two-tx": "If you have Regular and Bonus rewards to claim, you will be asked to sign two transactions when claiming."
     },
     "product-hub-tooltips": {
       "no-max-ltv": "There are currently no borrow or multiply positions for this pool. Max LTV will be calculated following the creation of the first position.",
@@ -3142,7 +3155,8 @@
       "pools-interest-rate": "Initial pool interest rate",
       "min-interest-rate": "Min. {{minInterestRate}}%",
       "max-interest-rate": "Up to {{maxInterestRate}}%",
-      "submit": "Create pool"
+      "submit": "Create pool",
+      "success": "New Ajna pool created"
     },
     "order-information": {
       "pool": "Pool",

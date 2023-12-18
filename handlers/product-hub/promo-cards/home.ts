@@ -27,7 +27,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     promoCardWBTCUSDCAaveV3EthereumMultiply,
     promoCardWSTETHUSDCAaveV3EthereumMultiply,
     promoCardETHUSDCAaveV3OptimismMultiply,
-    promoCardWBTCUSDCAaveV3OptimismMultiply,
+    promoCardWBTCUSDCAaveV3ArbitrumMultiply,
     promoCardWSTETHUSDCAaveV3EthereumEarn,
   } = getAaveV3PromoCards(table)
 
@@ -42,7 +42,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
     [ProductHubProductType.Multiply]: {
       default: [
         promoCardETHUSDCAaveV3EthereumMultiply,
-        promoCardWBTCUSDCAaveV3OptimismMultiply,
+        promoCardWBTCUSDCAaveV3ArbitrumMultiply,
         promoCardETHBMakerMultiply,
       ],
       tokens: {
@@ -54,7 +54,7 @@ export default function (table: ProductHubItem[]): ProductHubPromoCards {
         BTC: [
           promoCardWBTCBMakerMultiply,
           promoCardWBTCUSDCAaveV3EthereumMultiply,
-          promoCardWBTCUSDCAaveV3OptimismMultiply,
+          promoCardWBTCUSDCAaveV3ArbitrumMultiply,
         ],
         USDC: [
           promoCardETHUSDCAaveV3EthereumMultiply,

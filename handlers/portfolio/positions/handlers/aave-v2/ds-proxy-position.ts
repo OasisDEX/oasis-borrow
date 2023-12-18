@@ -9,7 +9,7 @@ import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
 import { commonDataMapper } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
@@ -48,6 +48,14 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
         positionType: OmniProductType.Earn,
         user: address,
         vaultId: address,
+        createEvents: [
+          {
+            collateralToken: contracts.tokens.STETH.address,
+            debtToken: contracts.tokens.ETH.address,
+            positionType: OmniProductType.Earn,
+            protocol: 'AAVE',
+          },
+        ],
       },
       positionIdAsString: true,
       prices,
@@ -74,7 +82,7 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
           details: [
             {
               type: 'netValue',
-              value: `$${formatCryptoBalance(calculations.netValue)}`,
+              value: formatUsdValue(calculations.netValue),
             },
             {
               type: 'earnings',

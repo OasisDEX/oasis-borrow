@@ -1,6 +1,10 @@
 import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatUsdValue,
+} from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -8,17 +12,23 @@ import type { Theme } from 'theme-ui'
 import { Box, Card, Divider, Flex, Grid, Text } from 'theme-ui'
 
 interface OmniMultiplyNetValueModalProps {
-  collateralPrice: BigNumber
-  collateralToken: string
+  netValueTokenPrice: BigNumber
+  netValueToken: string
   cumulatives: {
-    cumulativeDepositUSD: BigNumber
     cumulativeWithdrawUSD: BigNumber
+    cumulativeWithdrawInCollateralToken: BigNumber
+    cumulativeWithdrawInQuoteToken: BigNumber
     cumulativeFeesUSD: BigNumber
+    cumulativeFeesInCollateralToken: BigNumber
+    cumulativeFeesInQuoteToken: BigNumber
+    cumulativeDepositUSD: BigNumber
+    cumulativeDepositInCollateralToken: BigNumber
+    cumulativeDepositInQuoteToken: BigNumber
   }
-  netValue: BigNumber
+  netValueUSD: BigNumber
   pnl?: BigNumber
-  pnlUSD?: BigNumber
   theme?: Theme
+  isEarnPosition?: boolean
 }
 
 interface OmniMultiplyNetValueModalGridRowProps {
@@ -50,15 +60,23 @@ function OmniMultiplyNetValueModalGridRow({
 }
 
 export function OmniMultiplyNetValueModal({
-  collateralPrice,
-  collateralToken,
+  netValueTokenPrice,
+  netValueToken,
   cumulatives,
-  netValue,
+  netValueUSD,
   pnl,
-  pnlUSD,
   theme,
+  isEarnPosition = false,
 }: OmniMultiplyNetValueModalProps) {
   const { t } = useTranslation()
+
+  const netValueInCollateralToken = netValueUSD.div(netValueTokenPrice)
+  const pnlInToken = pnl
+    ? (isEarnPosition
+        ? cumulatives.cumulativeDepositInQuoteToken
+        : cumulatives.cumulativeDepositInCollateralToken
+      ).times(pnl)
+    : false
 
   return (
     <DetailsSectionContentSimpleModal
@@ -66,7 +84,7 @@ export function OmniMultiplyNetValueModal({
       description={
         <Trans
           i18nKey="omni-kit.content-card.net-value-modal.modal-description"
-          values={{ collateralPrice: formatCryptoBalance(collateralPrice) }}
+          values={{ netValueTokenPrice: formatCryptoBalance(netValueTokenPrice) }}
           components={{ strong: <Text sx={{ fontWeight: 'semiBold' }} /> }}
         />
       }
@@ -74,7 +92,7 @@ export function OmniMultiplyNetValueModal({
     >
       <Grid
         sx={{
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: '0.7fr 1.3fr 1fr',
           alignItems: 'end',
           justifyItems: 'end',
           gap: 2,
@@ -89,14 +107,14 @@ export function OmniMultiplyNetValueModal({
         </Text>
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-1')}
-          firstColumn={`${formatCryptoBalance(netValue.div(collateralPrice))} ${collateralToken}`}
-          secondColumn={`$${formatCryptoBalance(netValue)}`}
+          firstColumn={`${formatCryptoBalance(netValueInCollateralToken)} ${netValueToken}`}
+          secondColumn={formatUsdValue(netValueUSD)}
         />
       </Grid>
       <Divider />
       <Grid
         sx={{
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: '0.7fr 1.3fr 1fr',
           alignItems: 'end',
           justifyItems: 'end',
           gap: 2,
@@ -105,34 +123,41 @@ export function OmniMultiplyNetValueModal({
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-2')}
           firstColumn={`${formatCryptoBalance(
-            cumulatives.cumulativeDepositUSD.div(collateralPrice),
-          )} ${collateralToken}`}
-          secondColumn={`$${formatCryptoBalance(cumulatives.cumulativeDepositUSD)}`}
+            isEarnPosition
+              ? cumulatives.cumulativeDepositInQuoteToken
+              : cumulatives.cumulativeDepositInCollateralToken,
+          )} ${netValueToken}`}
+          secondColumn={formatUsdValue(cumulatives.cumulativeDepositUSD)}
         />
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-3')}
           firstColumn={`${formatCryptoBalance(
-            cumulatives.cumulativeWithdrawUSD.div(collateralPrice),
-          )} ${collateralToken}`}
-          secondColumn={`$${formatCryptoBalance(cumulatives.cumulativeWithdrawUSD)}`}
+            isEarnPosition
+              ? cumulatives.cumulativeWithdrawInQuoteToken
+              : cumulatives.cumulativeWithdrawInCollateralToken,
+          )} ${netValueToken}`}
+          secondColumn={formatUsdValue(cumulatives.cumulativeWithdrawUSD)}
         />
         <OmniMultiplyNetValueModalGridRow
           label={t('omni-kit.content-card.net-value-modal.modal-table-row-4')}
           firstColumn={`${formatCryptoBalance(
-            cumulatives.cumulativeFeesUSD.div(collateralPrice),
-          )} ${collateralToken}`}
-          secondColumn={`$${formatCryptoBalance(cumulatives.cumulativeFeesUSD)}`}
+            isEarnPosition
+              ? cumulatives.cumulativeFeesInQuoteToken
+              : cumulatives.cumulativeFeesInCollateralToken,
+          )} ${netValueToken}`}
+          secondColumn={formatUsdValue(cumulatives.cumulativeFeesUSD)}
         />
       </Grid>
-      {pnlUSD && pnl && (
+      {pnlInToken && pnl && (
         <>
           <Card variant="vaultDetailsCardModal" sx={{ textAlign: 'center' }}>
             <Text as="p" variant="paragraph4" sx={{ color: 'neutral80' }}>
               {t('omni-kit.content-card.net-value-modal.modal-value')}
             </Text>
             <Text as="p" variant="paragraph1" sx={{ fontWeight: 'regular' }}>
-              {pnlUSD.gte(zero) ? '+' : '-'}
-              {formatDecimalAsPercent(pnl)} / ${formatCryptoBalance(pnlUSD)}
+              {pnlInToken.gte(zero) && '+'}
+              {formatDecimalAsPercent(pnl)} /
+              {` ${formatCryptoBalance(pnlInToken)} ${netValueToken}`}
             </Text>
           </Card>
 

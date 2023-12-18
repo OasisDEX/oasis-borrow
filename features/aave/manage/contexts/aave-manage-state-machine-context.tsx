@@ -1,10 +1,14 @@
 import { useInterpret } from '@xstate/react'
+import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import type { ManageAaveStateMachine } from 'features/aave/manage/state'
 import type { IStrategyConfig, ManageTokenInput, PositionId } from 'features/aave/types'
 import { ProxyType } from 'features/aave/types'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { env } from 'process'
 import React from 'react'
+
+import { OptimizationAaveStateMachineContextProvider } from './optimization-aave-state-machine-context'
+import { shouldCreateOptimizationMachine } from './should-create-optimization-machine'
 
 export const defaultManageTokenInputValues: ManageTokenInput = {
   // defaults for the manage collateral/debt are set here
@@ -14,20 +18,19 @@ export const defaultManageTokenInputValues: ManageTokenInput = {
   closingToken: undefined,
 }
 
-function setupManageAaveStateContext({
+function useSetupManageAaveStateContext({
   machine,
   strategy,
   positionId,
+  proxyType,
   updateStrategyConfig,
 }: {
   machine: ManageAaveStateMachine
   strategy: IStrategyConfig
   positionId: PositionId
+  proxyType: ProxyType
   updateStrategyConfig?: (vaultType: VaultType) => void
 }) {
-  const positionCreatedBy =
-    positionId.vaultId !== undefined ? ProxyType.DpmProxy : ProxyType.DsProxy
-
   const stateMachine = useInterpret(
     machine.withContext({
       tokens: strategy.tokens,
@@ -36,7 +39,7 @@ function setupManageAaveStateContext({
       strategyConfig: strategy,
       userInput: {},
       manageTokenInput: defaultManageTokenInputValues,
-      positionCreatedBy: positionCreatedBy,
+      positionCreatedBy: proxyType,
       positionId: positionId,
       getSlippageFrom: strategy.defaultSlippage !== undefined ? 'strategyConfig' : 'userSettings',
       updateStrategyConfig,
@@ -49,7 +52,7 @@ function setupManageAaveStateContext({
   }
 }
 
-export type ManageAaveStateMachineContext = ReturnType<typeof setupManageAaveStateContext>
+export type ManageAaveStateMachineContext = ReturnType<typeof useSetupManageAaveStateContext>
 
 const manageAaveStateContext = React.createContext<ManageAaveStateMachineContext | undefined>(
   undefined,
@@ -68,20 +71,41 @@ export function ManageAaveStateMachineContextProvider({
   machine,
   strategy,
   positionId,
+  proxies,
   updateStrategyConfig,
 }: React.PropsWithChildren<{
   machine: ManageAaveStateMachine
   strategy: IStrategyConfig
   positionId: PositionId
+  proxies: ProxiesRelatedWithPosition
   updateStrategyConfig?: (vaultType: VaultType) => void
 }>) {
-  const context = setupManageAaveStateContext({
+  const proxyType = positionId.vaultId !== undefined ? ProxyType.DpmProxy : ProxyType.DsProxy
+
+  const context = useSetupManageAaveStateContext({
     machine,
     strategy,
     positionId,
+    proxyType,
     updateStrategyConfig,
   })
+
+  const createOptimizationMachine = shouldCreateOptimizationMachine(
+    strategy,
+    proxyType,
+    positionId,
+    proxies,
+  )
+
   return (
-    <manageAaveStateContext.Provider value={context}>{children}</manageAaveStateContext.Provider>
+    <manageAaveStateContext.Provider value={context}>
+      {createOptimizationMachine ? (
+        <OptimizationAaveStateMachineContextProvider dpm={proxies} strategy={strategy}>
+          <>{children}</>
+        </OptimizationAaveStateMachineContextProvider>
+      ) : (
+        <>{children}</>
+      )}
+    </manageAaveStateContext.Provider>
   )
 }

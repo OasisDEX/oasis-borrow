@@ -6,7 +6,11 @@ import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import { LendingRangeType, type PositionDetail } from 'handlers/portfolio/types'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatUsdValue,
+} from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 
 interface GetAjnaPositionDetailsParams {
@@ -94,7 +98,7 @@ export function getAjnaPositionDetails({
       return [
         {
           type: 'netValue',
-          value: `$${formatCryptoBalance(new BigNumber(netValue))}`,
+          value: formatUsdValue(new BigNumber(netValue)),
         },
         {
           type: 'lendingRange',
@@ -139,12 +143,12 @@ export function getAjnaPositionDetails({
       return [
         {
           type: 'netValue',
-          value: `$${formatCryptoBalance(new BigNumber(netValue))}`,
+          value: formatUsdValue(new BigNumber(netValue)),
         },
         {
           type: 'pnl',
-          value: isProxyWithManyPositions ? formatDecimalAsPercent(withoutFees) : notAvailable,
-          ...(isProxyWithManyPositions && {
+          value: isProxyWithManyPositions ? notAvailable : formatDecimalAsPercent(withoutFees),
+          ...(!isProxyWithManyPositions && {
             accent: withoutFees.gt(zero) ? 'positive' : 'negative',
           }),
         },

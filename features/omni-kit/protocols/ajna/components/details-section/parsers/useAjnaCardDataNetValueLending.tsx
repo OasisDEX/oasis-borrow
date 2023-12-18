@@ -8,7 +8,18 @@ import { ajnaExtensionTheme } from 'theme'
 interface AjnaCardDataNetValueLendingParams {
   collateralPrice: BigNumber
   collateralToken: string
-  cumulatives: AjnaCumulativesData
+  cumulatives: AjnaCumulativesData & {
+    borrowCumulativeDepositInQuoteToken: BigNumber
+    borrowCumulativeDepositInCollateralToken: BigNumber
+    borrowCumulativeWithdrawInQuoteToken: BigNumber
+    borrowCumulativeWithdrawInCollateralToken: BigNumber
+    borrowCumulativeCollateralDeposit: BigNumber
+    borrowCumulativeCollateralWithdraw: BigNumber
+    borrowCumulativeDebtDeposit: BigNumber
+    borrowCumulativeDebtWithdraw: BigNumber
+    borrowCumulativeFeesInQuoteToken: BigNumber
+    borrowCumulativeFeesInCollateralToken: BigNumber
+  } // update this in the lib
   netValue: BigNumber
   pnl?: BigNumber
   pnlUSD?: BigNumber
@@ -20,21 +31,25 @@ export function useAjnaCardDataNetValueLending({
   cumulatives,
   netValue,
   pnl,
-  pnlUSD,
 }: AjnaCardDataNetValueLendingParams): OmniContentCardExtra {
   return {
     modal: (
       <OmniMultiplyNetValueModal
-        collateralPrice={collateralPrice}
-        collateralToken={collateralToken}
+        netValueTokenPrice={collateralPrice}
+        netValueToken={collateralToken}
         cumulatives={{
           cumulativeDepositUSD: cumulatives.borrowCumulativeDepositUSD,
           cumulativeWithdrawUSD: cumulatives.borrowCumulativeWithdrawUSD,
           cumulativeFeesUSD: cumulatives.borrowCumulativeFeesUSD,
+          cumulativeWithdrawInCollateralToken: cumulatives.borrowCumulativeCollateralWithdraw,
+          cumulativeDepositInCollateralToken: cumulatives.borrowCumulativeCollateralDeposit,
+          cumulativeFeesInCollateralToken: cumulatives.borrowCumulativeFeesInCollateralToken,
+          cumulativeWithdrawInQuoteToken: cumulatives.borrowCumulativeWithdrawInQuoteToken,
+          cumulativeDepositInQuoteToken: cumulatives.borrowCumulativeDepositInQuoteToken,
+          cumulativeFeesInQuoteToken: cumulatives.borrowCumulativeFeesInQuoteToken,
         }}
-        netValue={netValue}
+        netValueUSD={netValue}
         pnl={pnl}
-        pnlUSD={pnlUSD}
         theme={ajnaExtensionTheme}
       />
     ),

@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "paths": {
+      "~abi": ["./src/abi/index.ts"],
+      "~types": ["./src/types/index.ts"]
+    }
+  },
+  "references": [
+    {
+      "path": "../shared"
+    },
+    {
+      "path": "../contracts"
+    }
+  ],
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}

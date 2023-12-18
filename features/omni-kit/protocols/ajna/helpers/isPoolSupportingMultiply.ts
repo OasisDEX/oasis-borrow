@@ -19,7 +19,7 @@ const tokensWithMultiplyEthereum = [
   'WSTETH',
   'YFI',
 ]
-const tokensWithMultiplyBase = ['CBETH', 'ETH', 'USDC', 'WSTETH']
+const tokensWithMultiplyBase = ['CBETH', 'ETH', 'USDC', 'USDBC', 'WSTETH']
 
 const tokensWithMultiply: NetworkIdsWithArray<string> = {
   [NetworkIds.MAINNET]: tokensWithMultiplyEthereum,

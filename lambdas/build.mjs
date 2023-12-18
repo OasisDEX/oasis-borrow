@@ -5,7 +5,7 @@ import { exit } from 'process'
 
 // Constants
 
-const LAMBDA_NAMES = ['portfolio-assets', 'portfolio-migrations', 'portfolio-overview']
+const LAMBDA_NAMES = ['portfolio-assets', 'portfolio-migrations', 'portfolio-overview', 'get-triggers', 'setup-trigger']
 
 // Main
 await within(async () => {
@@ -40,9 +40,15 @@ async function buildLambda(lambdaName) {
     await $`npm install`
     echo(`Build dist...`)
     await $`npm run build`
-    echo(`Package node_modules & dist...`)
-    await $`zip -rq ../../artifacts/${name}-${version}.zip node_modules`
-    cd(`dist`)
-    await $`zip -rq ../../../artifacts/${name}-${version}.zip *`
+    if (lambdaName === 'setup-trigger' || lambdaName === 'get-triggers') {
+      echo(`ZIP dist...`)
+      cd('dist')
+      await $`zip -rq ../../../artifacts/${name}-${version}.zip index.js`
+    } else {
+      echo(`Package node_modules & dist...`)
+      await $`zip -rq ../../artifacts/${name}-${version}.zip node_modules`
+      cd(`dist`)
+      await $`zip -rq ../../../artifacts/${name}-${version}.zip *`
+    }
   })
 }

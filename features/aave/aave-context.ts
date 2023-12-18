@@ -4,6 +4,7 @@ import type { NetworkIds, NetworkNames } from 'blockchain/networks'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import type {
   AaveLikeReserveConfigurationData,
   AaveLikeServices,
@@ -34,6 +35,7 @@ export type AaveContext = AaveLikeServices & {
     networkName: NetworkNames,
     /* Accepts vaultType to further filter retrieved strategy assuming the product type has changed since position creation */
     vaultType: VaultType,
+    protocol: AaveLikeLendingProtocol,
   ) => Observable<IStrategyConfig>
   updateStrategyConfig?: (
     positionId: PositionId,
@@ -43,7 +45,6 @@ export type AaveContext = AaveLikeServices & {
     positionId: PositionId,
     networkId: NetworkIds,
   ) => Observable<ProxiesRelatedWithPosition>
-  chainlinkUSDCUSDOraclePrice$: Observable<BigNumber>
   chainLinkETHUSDOraclePrice$: Observable<BigNumber>
   earnCollateralsReserveData: Record<string, Observable<AaveLikeReserveConfigurationData>>
   dpmAccountStateMachine: DPMAccountStateMachine

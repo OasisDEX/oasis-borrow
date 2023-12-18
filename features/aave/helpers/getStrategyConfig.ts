@@ -11,6 +11,7 @@ import {
 import type { IStrategyConfig, PositionId } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { productToVaultType } from 'helpers/productToVaultType'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import type { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
 import { isEqual } from 'lodash'
@@ -33,6 +34,7 @@ export function getStrategyConfig$(
   positionId: PositionId,
   networkName: NetworkNames,
   vaultType: VaultType,
+  protocol: AaveLikeLendingProtocol,
 ): Observable<IStrategyConfig> {
   const networkConfig = getNetworkByName(networkName)
 
@@ -48,11 +50,12 @@ export function getStrategyConfig$(
         effectiveProxyAddress && effectiveProxyAddress === dpmProxy?.proxy && dpmProxy.user
           ? readPositionCreatedEvents$(dpmProxy.user, networkConfig.id)
           : of(undefined),
+        of(effectiveProxyAddress),
       )
     }),
-    map(([aaveUserConfigurations, positions]) => {
-      const filteredPositions = positions?.filter((position) =>
-        aaveLikeProtocols.includes(position.protocol),
+    map(([aaveUserConfigurations, positions, proxyAddress]) => {
+      const filteredPositions = positions?.filter(
+        (position) => position.protocol === protocol && position.proxyAddress === proxyAddress,
       )
 
       const lastCreatedPosition = filteredPositions?.pop()

@@ -11,7 +11,6 @@ import {
   headerWithDetails,
   ManageSectionComponent,
   SimulateSectionComponent,
-  ViewPositionSectionComponent,
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
@@ -574,7 +573,6 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
         headerView: AaveManageHeader,
         simulateSection: AaveBorrowManageComponent,
         vaultDetailsManage: AaveBorrowManageComponent,
-        vaultDetailsView: AaveBorrowManageComponent,
         secondaryInput: DebtInput,
         adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
         positionInfo: AaveBorrowFaq,
@@ -603,6 +601,9 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
       },
       executeTransactionWith: 'ethers' as const,
       strategyType: config.strategyType,
+      isOptimizationTabEnabled: () =>
+        config.strategyType === StrategyType.Long &&
+        getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationEthereum],
     }
   })
 
@@ -622,7 +623,6 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
         headerView: AaveManageHeader,
         simulateSection: AaveMultiplyManageComponent,
         vaultDetailsManage: AaveMultiplyManageComponent,
-        vaultDetailsView: AaveMultiplyManageComponent,
         secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
         adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
         positionInfo: AaveMultiplyFaq,
@@ -651,6 +651,9 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers',
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Multiply.featureToggle,
+      isOptimizationTabEnabled: () =>
+        config.strategyType === StrategyType.Long &&
+        getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationEthereum],
     }
   })
 
@@ -671,7 +674,6 @@ const sdaiEarnStrategies: IStrategyConfig[] = availableTokenPairs
         headerView: AaveManageHeader,
         simulateSection: AaveMultiplyManageComponent,
         vaultDetailsManage: AaveMultiplyManageComponent,
-        vaultDetailsView: AaveMultiplyManageComponent,
         secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
         adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
         positionInfo: AaveMultiplyFaq,
@@ -700,6 +702,9 @@ const sdaiEarnStrategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers',
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Earn.featureToggle,
+      isOptimizationTabEnabled: () =>
+        config.strategyType === StrategyType.Long &&
+        getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationEthereum],
     }
   })
 
@@ -720,7 +725,6 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
       headerView: AavePositionHeaderNoDetails,
       simulateSection: SimulateSectionComponent,
       vaultDetailsManage: ManageSectionComponent,
-      vaultDetailsView: ViewPositionSectionComponent,
       secondaryInput: adjustRiskView(adjustRiskSliders.wstethEth),
       adjustRiskInput: adjustRiskView(adjustRiskSliders.wstethEth),
       positionInfo: AaveEarnFaqV3,
@@ -741,6 +745,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
+    isOptimizationTabEnabled: () => false,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -755,7 +760,6 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
       headerView: AaveManageHeader,
       simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
-      vaultDetailsView: AaveMultiplyManageComponent,
       secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
@@ -777,6 +781,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
+    isOptimizationTabEnabled: () => false,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -791,7 +796,6 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
       headerView: AaveManageHeader,
       simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
-      vaultDetailsView: AaveMultiplyManageComponent,
       secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
@@ -813,5 +817,6 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
+    isOptimizationTabEnabled: () => false,
   },
 ]

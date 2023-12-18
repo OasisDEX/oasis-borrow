@@ -1,0 +1,14 @@
+version: "3.8"
+name: "summer-fi-serverless-api"
+services:
+  summer-api:
+    image: public.ecr.aws/sam/build-nodejs20.x
+    ports:
+      - "4000:3000"
+    working_dir: /usr/src/app
+    command: >
+      bash -c "npm install && npm run build && npm run sam:docker"
+    volumes:
+      - .:/usr/src/app
+      - /var/run/docker.sock:/var/run/docker.sock # Mount the Docker socket
+

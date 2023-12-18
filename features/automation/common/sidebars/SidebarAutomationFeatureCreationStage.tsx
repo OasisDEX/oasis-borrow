@@ -1,7 +1,9 @@
 import { AppLink } from 'components/Links'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
-import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
-import { AutomationFeatures } from 'features/automation/common/types'
+import {
+  sidebarAutomationFeatureCopyMap,
+  sidebarAutomationLinkMap,
+} from 'features/automation/common/consts'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -18,14 +20,6 @@ export function SidebarAutomationFeatureCreationStage({
   customContent,
 }: SidebarAutomationFeatureCreationStageProps) {
   const { t } = useTranslation()
-
-  const linkMap = {
-    [AutomationFeatures.STOP_LOSS]: 'what-is-automated-stop-loss',
-    [AutomationFeatures.AUTO_BUY]: 'setting-up-auto-buy-for-your-vault',
-    [AutomationFeatures.AUTO_SELL]: 'setting-up-auto-sell-for-your-vault',
-    [AutomationFeatures.CONSTANT_MULTIPLE]: 'what-is-constant-multiple',
-    [AutomationFeatures.AUTO_TAKE_PROFIT]: 'what-is-take-profit',
-  }
 
   switch (stage) {
     case 'txInProgress':
@@ -59,7 +53,7 @@ export function SidebarAutomationFeatureCreationStage({
                   featureName: t(sidebarAutomationFeatureCopyMap[featureName]),
                 })}{' '}
                 <AppLink
-                  href={`https://docs.summer.fi/products/${linkMap[featureName]}`}
+                  href={`https://docs.summer.fi/products/${sidebarAutomationLinkMap[featureName]}`}
                   sx={{ fontSize: 2 }}
                 >
                   {t('here')}.

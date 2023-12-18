@@ -7,8 +7,8 @@ import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { getAddress } from 'ethers/lib/utils'
 import { AaveContextProvider, useAaveContext } from 'features/aave'
-import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
+import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/contexts'
 import type { PositionId } from 'features/aave/types/position-id'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import { useApiVaults } from 'features/shared/vaultApi'
@@ -78,7 +78,7 @@ function WithSparkStrategy({
   } = useAaveContext(protocol, network)
   const [strategyConfig, strategyConfigError] = useObservable(
     /* If VaultType.Unknown specified then when loading config it'll try to respect position created type */
-    strategyConfig$(positionId, network, apiVaults[0]?.type || VaultType.Unknown),
+    strategyConfig$(positionId, network, apiVaults[0]?.type || VaultType.Unknown, protocol),
   )
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId, networkId),
@@ -108,6 +108,7 @@ function WithSparkStrategy({
             machine={aaveManageStateMachine}
             positionId={positionId}
             strategy={_strategyConfig}
+            proxies={_proxies}
             updateStrategyConfig={_updateStrategyConfig}
           >
             <PageSEOTags

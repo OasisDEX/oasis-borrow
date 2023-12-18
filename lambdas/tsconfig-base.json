@@ -13,7 +13,8 @@
     "isolatedModules": true /* Transpile each file as a separate module */,
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node", "jest", "jest-extended"]
 
     // "baseUrl": "./", /* Base directory to resolve non-absolute module names. */
     // "paths": {}, /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */

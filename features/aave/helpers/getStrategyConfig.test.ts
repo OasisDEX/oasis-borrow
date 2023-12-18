@@ -2,6 +2,7 @@ import { NetworkNames } from 'blockchain/networks'
 import type { PositionCreated } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types/position-id'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
+import { LendingProtocol } from 'lendingProtocols'
 import type { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
 import type { Observable } from 'rxjs'
 import { of } from 'rxjs'
@@ -28,6 +29,7 @@ describe('getStrategyConfig', () => {
       { walletAddress: '0x123' },
       NetworkNames.ethereumMainnet,
       VaultType.Earn,
+      LendingProtocol.AaveV2,
     )
 
     observable$.subscribe((strategy) => {

@@ -13,9 +13,10 @@ const historyQuery = gql`
         cumulativeDeposit
         cumulativeWithdraw
         cumulativeFees
+        cumulativeFeesInQuoteToken
         cumulativeDepositInQuoteToken
         cumulativeWithdrawInQuoteToken
-        cumulativeDespositInCollateralToken
+        cumulativeDepositInCollateralToken
         cumulativeWithdrawInCollateralToken
       }
     }
@@ -29,9 +30,10 @@ type HistoryQueryResponse = {
       cumulativeDeposit: string
       cumulativeWithdraw: string
       cumulativeFees: string
+      cumulativeFeesInQuoteToken: string
       cumulativeDepositInQuoteToken: string
       cumulativeWithdrawInQuoteToken: string
-      cumulativeDespositInCollateralToken: string
+      cumulativeDepositInCollateralToken: string
       cumulativeWithdrawInCollateralToken: string
     }
   }[]
@@ -43,9 +45,10 @@ export type HistoryResponse = {
   cumulativeDeposit: BigNumber
   cumulativeWithdraw: BigNumber
   cumulativeFees: BigNumber
+  cumulativeFeesInQuoteToken: BigNumber
   cumulativeDepositInQuoteToken: BigNumber
   cumulativeWithdrawInQuoteToken: BigNumber
-  cumulativeDespositInCollateralToken: BigNumber
+  cumulativeDepositInCollateralToken: BigNumber
   cumulativeWithdrawInCollateralToken: BigNumber
 }[]
 
@@ -90,14 +93,15 @@ export const getHistoryData = async ({
             cumulativeDeposit: new BigNumber(pos.position.cumulativeDeposit),
             cumulativeWithdraw: new BigNumber(pos.position.cumulativeWithdraw),
             cumulativeFees: new BigNumber(pos.position.cumulativeFees),
+            cumulativeFeesInQuoteToken: new BigNumber(pos.position.cumulativeFeesInQuoteToken),
             cumulativeDepositInQuoteToken: new BigNumber(
               pos.position.cumulativeDepositInQuoteToken,
             ),
             cumulativeWithdrawInQuoteToken: new BigNumber(
               pos.position.cumulativeWithdrawInQuoteToken,
             ),
-            cumulativeDespositInCollateralToken: new BigNumber(
-              pos.position.cumulativeDespositInCollateralToken,
+            cumulativeDepositInCollateralToken: new BigNumber(
+              pos.position.cumulativeDepositInCollateralToken,
             ),
             cumulativeWithdrawInCollateralToken: new BigNumber(
               pos.position.cumulativeWithdrawInCollateralToken,

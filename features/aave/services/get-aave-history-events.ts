@@ -3,9 +3,16 @@ import type { NetworkIds } from 'blockchain/networks'
 import type {
   AaveCumulativeData,
   AaveHistoryEvent,
-} from 'features/omni-kit/protocols/ajna/history/types'
+} from 'features/omni-kit/protocols/aave/history/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
+
+const sumStringNumbersArray = (numbersArray: { amount: string }[]): BigNumber =>
+  numbersArray
+    .map(({ amount }: { amount: string }) => new BigNumber(amount))
+    .reduce((acc, curr) => {
+      return new BigNumber(acc).plus(curr)
+    }, new BigNumber(0))
 
 export async function getAaveHistoryEvents(
   _proxyAdrress: string,
@@ -25,10 +32,10 @@ export async function getAaveHistoryEvents(
         .map(
           (event): AaveHistoryEvent => ({
             depositAmount: event.depositTransfers[0]
-              ? new BigNumber(event.depositTransfers[0].amount)
+              ? sumStringNumbersArray(event.depositTransfers)
               : zero,
             withdrawAmount: event.withdrawTransfers[0]
-              ? new BigNumber(event.withdrawTransfers[0].amount)
+              ? sumStringNumbersArray(event.withdrawTransfers)
               : zero,
             blockNumber: new BigNumber(event.blockNumber),
             collateralAddress: event.collateralAddress,
@@ -79,20 +86,24 @@ export async function getAaveHistoryEvents(
         .sort((a, b) => b.timestamp - a.timestamp),
       positionCumulatives: positions[0]
         ? {
-            cumulativeDeposit: new BigNumber(positions[0].cumulativeDeposit),
-            cumulativeWithdraw: new BigNumber(positions[0].cumulativeWithdraw),
-            cumulativeFees: new BigNumber(positions[0].cumulativeFees),
+            cumulativeDepositUSD: new BigNumber(positions[0].cumulativeDepositUSD),
             cumulativeDepositInQuoteToken: new BigNumber(
               positions[0].cumulativeDepositInQuoteToken,
             ),
+            cumulativeDepositInCollateralToken: new BigNumber( // a typo, yes, fixing it here so we don't have to fix it in the subgraph
+              positions[0].cumulativeDespositInCollateralToken, // this is now cumulativeDepositInCollateralToken
+            ),
+            cumulativeWithdrawUSD: new BigNumber(positions[0].cumulativeWithdrawUSD),
             cumulativeWithdrawInQuoteToken: new BigNumber(
               positions[0].cumulativeWithdrawInQuoteToken,
             ),
-            cumulativeDespositInCollateralToken: new BigNumber(
-              positions[0].cumulativeDespositInCollateralToken,
-            ),
             cumulativeWithdrawInCollateralToken: new BigNumber(
               positions[0].cumulativeWithdrawInCollateralToken,
+            ),
+            cumulativeFeesUSD: new BigNumber(positions[0].cumulativeFeesUSD),
+            cumulativeFeesInQuoteToken: new BigNumber(positions[0].cumulativeFeesInQuoteToken),
+            cumulativeFeesInCollateralToken: new BigNumber(
+              positions[0].cumulativeFeesInCollateralToken,
             ),
           }
         : undefined,

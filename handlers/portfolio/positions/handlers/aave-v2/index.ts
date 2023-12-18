@@ -10,7 +10,11 @@ import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/position
 import { getAaveV2DsProxyPosition } from 'handlers/portfolio/positions/handlers/aave-v2/ds-proxy-position'
 import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatUsdValue,
+} from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 
 const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
@@ -64,7 +68,7 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
     details: [
       {
         type: 'netValue',
-        value: `$${formatCryptoBalance(calculations.netValue)}`,
+        value: formatUsdValue(calculations.netValue),
       },
       {
         type: 'pnl',

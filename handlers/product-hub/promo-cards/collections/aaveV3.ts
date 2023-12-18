@@ -21,6 +21,10 @@ export function getAaveV3PromoCards(table: ProductHubItem[]) {
     ({ network, protocol }) =>
       protocol === LendingProtocol.AaveV3 && network === NetworkNames.optimismMainnet,
   )
+  const aaveV3ArbitrumProducts = table.filter(
+    ({ network, protocol }) =>
+      protocol === LendingProtocol.AaveV3 && network === NetworkNames.arbitrumMainnet,
+  )
   const aaveV3EthereumMultiplyProducts = aaveV3EthereumProducts.filter(({ product }) =>
     product.includes(ProductHubProductType.Multiply),
   )
@@ -28,6 +32,9 @@ export function getAaveV3PromoCards(table: ProductHubItem[]) {
     product.includes(ProductHubProductType.Earn),
   )
   const aaveV3OptimismMultiplyProducts = aaveV3OptimismProducts.filter(({ product }) =>
+    product.includes(ProductHubProductType.Multiply),
+  )
+  const aaveV3ArbitrumMultiplyProducts = aaveV3ArbitrumProducts.filter(({ product }) =>
     product.includes(ProductHubProductType.Multiply),
   )
 
@@ -52,6 +59,10 @@ export function getAaveV3PromoCards(table: ProductHubItem[]) {
     'USDC',
   ])
   const WBTCUSDCAaveV3OptimismMultiplyProduct = findByTokenPair(aaveV3OptimismMultiplyProducts, [
+    'WBTC',
+    'USDC',
+  ])
+  const WBTCUSDCAaveV3ArbitrumMultiplyProduct = findByTokenPair(aaveV3ArbitrumMultiplyProducts, [
     'WBTC',
     'USDC',
   ])
@@ -105,6 +116,14 @@ export function getAaveV3PromoCards(table: ProductHubItem[]) {
     protocol: LendingProtocol.AaveV3,
     network: NetworkNames.optimismMainnet,
   })
+  const promoCardWBTCUSDCAaveV3ArbitrumMultiply = parseMultiplyPromoCard({
+    collateralToken: 'WBTC',
+    debtToken: 'USDC',
+    pills: [getHighestMultiplePill(), getLongTokenPill('WBTC')],
+    product: WBTCUSDCAaveV3ArbitrumMultiplyProduct,
+    protocol: LendingProtocol.AaveV3,
+    network: NetworkNames.arbitrumMainnet,
+  })
 
   const promoCardWSTETHUSDCAaveV3EthereumEarn = parseEarnYieldLoopPromoCard({
     collateralToken: 'WSTETH',
@@ -123,5 +142,6 @@ export function getAaveV3PromoCards(table: ProductHubItem[]) {
     promoCardETHUSDCAaveV3OptimismMultiply,
     promoCardWSTETHUSDCAaveV3EthereumEarn,
     promoCardWBTCUSDCAaveV3OptimismMultiply,
+    promoCardWBTCUSDCAaveV3ArbitrumMultiply,
   }
 }

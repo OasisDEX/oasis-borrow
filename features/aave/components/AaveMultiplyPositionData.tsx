@@ -13,13 +13,13 @@ import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { StrategyType } from 'features/aave/types'
+import { ProductType, StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
-import type { AaveCumulativeData } from 'features/omni-kit/protocols/ajna/history/types'
+import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { displayMultiple } from 'helpers/display-multiple'
-import { formatAmount, formatPrecision } from 'helpers/formatters/format'
+import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import type {
@@ -46,6 +46,7 @@ type AaveMultiplyPositionDataProps = {
   strategyType: StrategyType
   cumulatives?: AaveCumulativeData
   lendingProtocol: LendingProtocol
+  productType: ProductType
 }
 
 export function AaveMultiplyPositionData({
@@ -61,6 +62,7 @@ export function AaveMultiplyPositionData({
   strategyType,
   cumulatives,
   lendingProtocol,
+  productType,
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
@@ -95,15 +97,22 @@ export function AaveMultiplyPositionData({
     aaveHistory[0].autoKind === 'aave-stop-loss' &&
     currentPosition.debt.amount.isZero()
 
-  const netValue =
-    strategyType === StrategyType.Long
-      ? currentPositionThings.netValueInDebtToken
-      : currentPositionThings.netValueInCollateralToken
+  const isLongPosition = strategyType === StrategyType.Long
+  const isEarnPosition = productType === ProductType.Earn
 
-  const pnlWithoutFees = cumulatives?.cumulativeWithdraw
-    .plus(netValue)
-    .minus(cumulatives.cumulativeDeposit)
-    .div(cumulatives.cumulativeDeposit)
+  const netValueUsd = isLongPosition
+    ? currentPositionThings.netValueInDebtToken.times(debtTokenPrice)
+    : currentPositionThings.netValueInCollateralToken.times(collateralTokenPrice)
+
+  const pnlWithoutFees = isEarnPosition
+    ? cumulatives?.cumulativeWithdrawInQuoteToken
+        .plus(currentPositionThings.netValueInDebtToken)
+        .minus(cumulatives.cumulativeDepositInQuoteToken)
+        .div(cumulatives.cumulativeDepositInQuoteToken)
+    : cumulatives?.cumulativeWithdrawInCollateralToken
+        .plus(currentPositionThings.netValueInCollateralToken)
+        .minus(cumulatives.cumulativeDepositInCollateralToken)
+        .div(cumulatives.cumulativeDepositInCollateralToken)
 
   const isSparkPosition = lendingProtocol === LendingProtocol.SparkV3
   const isElligibleSparkPosition = checkElligibleSparkPosition(
@@ -155,19 +164,23 @@ export function AaveMultiplyPositionData({
               currentPositionThings={currentPositionThings}
               currentPosition={currentPosition}
               nextPositionThings={nextPositionThings}
+              footnote={
+                pnlWithoutFees &&
+                cumulatives &&
+                `${t('omni-kit.content-card.net-value.footnote')} ${
+                  pnlWithoutFees.gte(zero) ? '+' : ''
+                }
+                ${formatDecimalAsPercent(pnlWithoutFees)}`
+              }
               modal={
                 cumulatives ? (
                   <OmniMultiplyNetValueModal
-                    collateralPrice={collateralTokenPrice}
-                    collateralToken={collateralToken.symbol}
-                    cumulatives={{
-                      cumulativeDepositUSD: cumulatives.cumulativeDeposit,
-                      cumulativeWithdrawUSD: cumulatives.cumulativeWithdraw,
-                      cumulativeFeesUSD: cumulatives.cumulativeFees,
-                    }}
-                    netValue={netValue}
+                    netValueTokenPrice={isEarnPosition ? debtTokenPrice : collateralTokenPrice}
+                    netValueToken={isEarnPosition ? debtToken.symbol : collateralToken.symbol}
+                    isEarnPosition={isEarnPosition}
+                    cumulatives={cumulatives}
+                    netValueUSD={netValueUsd}
                     pnl={pnlWithoutFees}
-                    pnlUSD={pnlWithoutFees && cumulatives.cumulativeDeposit.times(pnlWithoutFees)}
                   />
                 ) : undefined
               }

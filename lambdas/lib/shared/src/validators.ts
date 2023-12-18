@@ -34,3 +34,5 @@ export const protocolIdsSchema = z
     },
     { message: 'Unsupported protocol id' },
   )
+
+export const urlOptionalSchema = z.string().url().optional()

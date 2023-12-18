@@ -1,5 +1,4 @@
 import type { CreateDPMAccount } from 'blockchain/calls/accountFactory.types'
-import type { DeployAjnaPoolTxData } from 'blockchain/calls/ajnaErc20PoolFactory.types'
 import type {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
@@ -53,4 +52,3 @@ export type TxData =
   | OperationExecutorTxMeta
   | CreateDPMAccount
   | OasisActionsTxData
-  | DeployAjnaPoolTxData

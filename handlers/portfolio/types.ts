@@ -2,7 +2,7 @@ import type { Vault } from '@prisma/client'
 import type { NetworkNames } from 'blockchain/networks'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
-import type { DpmList } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
+import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type { LendingProtocol } from 'lendingProtocols'
 
 type AutomationType = {
@@ -64,7 +64,7 @@ export type PortfolioPositionsHandler = ({
 }: {
   address: string
   apiVaults?: Vault[]
-  dpmList: DpmList
+  dpmList: DpmSubgraphData[]
   prices: TokensPricesList
   positionsCount?: boolean
 }) => Promise<PortfolioPositionsReply | PortfolioPositionsCountReply>

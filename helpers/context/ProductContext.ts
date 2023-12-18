@@ -1,6 +1,3 @@
-import { setUser } from '@sentry/react'
-import { mixpanelIdentify } from 'analytics/mixpanel'
-import { trackingEvents } from 'analytics/trackingEvents'
 import { BigNumber } from 'bignumber.js'
 import { tokenAllowance as tokenAllowanceEthers } from 'blockchain/better-calls/erc20'
 import { call } from 'blockchain/calls/callsHelpers'
@@ -87,18 +84,11 @@ import { LendingProtocol } from 'lendingProtocols'
 import { getAaveV2Services } from 'lendingProtocols/aave-v2'
 import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { getSparkV3Services } from 'lendingProtocols/spark-v3'
-import { isEqual, memoize } from 'lodash'
+import { memoize } from 'lodash'
 import { equals } from 'ramda'
 import type { Observable } from 'rxjs'
 import { combineLatest, defer, of } from 'rxjs'
-import {
-  distinctUntilChanged,
-  distinctUntilKeyChanged,
-  map,
-  mergeMap,
-  shareReplay,
-  switchMap,
-} from 'rxjs/operators'
+import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import type { MainContext } from './MainContext.types'
 import type { TxHelpers } from './TxHelpers'
@@ -107,7 +97,6 @@ import curry from 'ramda/src/curry'
 
 export function setupProductContext(
   {
-    account$,
     chainContext$,
     connectedContext$,
     context$,
@@ -129,26 +118,6 @@ export function setupProductContext(
   }: AccountContext,
 ) {
   console.info('Product context setup')
-  combineLatest(account$, connectedContext$)
-    .pipe(
-      mergeMap(([account, network]) => {
-        return of({
-          networkName: network.name,
-          connectionKind: network.connectionKind,
-          account: account?.toLowerCase(),
-          method: network.connectionMethod,
-          walletLabel: network.walletLabel,
-        })
-      }),
-      distinctUntilChanged(isEqual),
-    )
-    .subscribe(({ account, networkName, connectionKind, method, walletLabel }) => {
-      if (account) {
-        setUser({ id: account, walletLabel: walletLabel })
-        mixpanelIdentify(account, { walletType: connectionKind, walletLabel: walletLabel })
-        trackingEvents.accountChange(account, networkName, connectionKind, method, walletLabel)
-      }
-    })
 
   const tokenPriceUSD$ = memoize(
     curry(createTokenPriceInUSD$)(every10Seconds$, tokenPrices$),

@@ -37,12 +37,12 @@ export function useOmniProtocolData({
   networkId,
 }: OmniProtocolDataProps) {
   const { walletAddress } = useAccount()
-  const { gasPrice$ } = useMainContext()
+  const { gasPriceOnNetwork$ } = useMainContext()
   const { userSettings$ } = useAccountContext()
   const { balancesFromAddressInfoArray$, dpmPositionDataV2$, tokenPriceUSD$ } = useProductContext()
 
   const [userSettingsData, userSettingsError] = useObservable(userSettings$)
-  const [gasPriceData, gasPriceError] = useObservable(gasPrice$)
+  const [gasPriceData, gasPriceError] = useObservable(gasPriceOnNetwork$(networkId))
 
   const tokensAddresses = useMemo(() => getNetworkContracts(networkId).tokens, [networkId])
 

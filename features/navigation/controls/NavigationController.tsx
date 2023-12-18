@@ -8,16 +8,10 @@ import { getNavProductsPanel } from 'features/navigation/panels/getNavProductsPa
 import { getNavProtocolsPanel } from 'features/navigation/panels/getNavProtocolsPanel'
 import { getNavTokensPanel } from 'features/navigation/panels/getNavTokensPanel'
 import { getNavUseCasesPanel } from 'features/navigation/panels/getNavUseCasesPanel'
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT,
-  type SwapWidgetChangeAction,
-} from 'features/swapWidget/SwapWidgetChange'
 import { useConnection } from 'features/web3OnBoard/useConnection'
 import { PROMO_CARD_COLLECTIONS_PARSERS } from 'handlers/product-hub/promo-cards'
-import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useAppConfig } from 'helpers/config'
 import { getPortfolioLink } from 'helpers/get-portfolio-link'
-import { uiChanges } from 'helpers/uiChanges'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
@@ -25,7 +19,6 @@ import { useMediaQuery } from 'usehooks-ts'
 
 export function NavigationController() {
   const { t } = useTranslation()
-  const { NewNavigation: isNewNavigationEnabled } = useAppConfig('features')
   const {
     productHub,
     config: { navigation },
@@ -56,34 +49,6 @@ export function NavigationController() {
     <>
       <Navigation
         links={[
-          ...(!isNewNavigationEnabled
-            ? [
-                {
-                  label: 'Borrow',
-                  link: INTERNAL_LINKS.borrow,
-                },
-                {
-                  label: 'Multiply',
-                  link: INTERNAL_LINKS.multiply,
-                },
-                {
-                  label: 'Earn',
-                  link: INTERNAL_LINKS.earn,
-                },
-              ]
-            : []),
-          ...(!isNewNavigationEnabled && isConnected && !isViewBelowXl
-            ? [
-                {
-                  label: 'Swap',
-                  onClick: () => {
-                    uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
-                      type: 'open',
-                    })
-                  },
-                },
-              ]
-            : []),
           ...(isConnected && !isViewBelowXl
             ? [
                 {
@@ -93,9 +58,7 @@ export function NavigationController() {
               ]
             : []),
         ]}
-        {...(isNewNavigationEnabled && {
-          panels: [navProductsPanel, navProtocolsPanel, navTokensPanel, navUseCasesPanel],
-        })}
+        panels={[navProductsPanel, navProtocolsPanel, navTokensPanel, navUseCasesPanel]}
         actions={<NavigationActionsController isConnected={isConnected} />}
       />
       <SwapWidgetShowHide />

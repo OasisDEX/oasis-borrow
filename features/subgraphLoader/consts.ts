@@ -179,14 +179,32 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     query getAccount($dpmProxyAddress: ID!, $poolAddress: String!) {
       account(id: $dpmProxyAddress) {
         earnPositions(where: { pool: $poolAddress }) {
+          earnCumulativeDepositUSD
+          earnCumulativeDepositInQuoteToken
+          earnCumulativeDepositInCollateralToken
+          earnCumulativeWithdrawUSD
+          earnCumulativeWithdrawInQuoteToken
+          earnCumulativeWithdrawInCollateralToken
+          earnCumulativeFeesUSD
           earnCumulativeFeesInQuoteToken
+          earnCumulativeFeesInCollateralToken
           earnCumulativeQuoteTokenDeposit
           earnCumulativeQuoteTokenWithdraw
         }
         borrowPositions(where: { pool: $poolAddress }) {
           borrowCumulativeDepositUSD
-          borrowCumulativeFeesUSD
+          borrowCumulativeDepositInQuoteToken
+          borrowCumulativeDepositInCollateralToken
           borrowCumulativeWithdrawUSD
+          borrowCumulativeWithdrawInQuoteToken
+          borrowCumulativeWithdrawInCollateralToken
+          borrowCumulativeCollateralDeposit
+          borrowCumulativeCollateralWithdraw
+          borrowCumulativeDebtDeposit
+          borrowCumulativeDebtWithdraw
+          borrowCumulativeFeesUSD
+          borrowCumulativeFeesInQuoteToken
+          borrowCumulativeFeesInCollateralToken
         }
       }
     }
@@ -284,7 +302,10 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
   getAjnaClaimedRewards: gql`
     query getClaimed($walletAddress: ID!) {
       claimeds(where: { user: $walletAddress }) {
-        amount
+        type
+        week {
+          week
+        }
       }
     }
   `,
@@ -359,13 +380,15 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     query AavePositionHistory($dpmProxyAddress: String) {
       positions(where: { account: $dpmProxyAddress }) {
         id
-        cumulativeDeposit
-        cumulativeWithdraw
-        cumulativeFees
+        cumulativeDepositUSD
         cumulativeDepositInQuoteToken
-        cumulativeWithdrawInQuoteToken
         cumulativeDespositInCollateralToken
+        cumulativeWithdrawUSD
+        cumulativeWithdrawInQuoteToken
         cumulativeWithdrawInCollateralToken
+        cumulativeFeesUSD
+        cumulativeFeesInQuoteToken
+        cumulativeFeesInCollateralToken
       }
       positionEvents(where: { account: $dpmProxyAddress }) {
         depositTransfers {

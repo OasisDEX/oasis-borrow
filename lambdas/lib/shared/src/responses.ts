@@ -29,11 +29,11 @@ export function ResponseOk<T extends Record<string, any>>({
   }
 }
 
-export function ResponseBadRequest(message: string): APIGatewayProxyResultV2 {
+export function ResponseBadRequest(message: string | object): APIGatewayProxyResultV2 {
   return {
     statusCode: 400,
     headers: createHeaders(),
-    body: createErrorBody(message),
+    body: typeof message === 'object' ? serialize(message) : createErrorBody(message),
   }
 }
 

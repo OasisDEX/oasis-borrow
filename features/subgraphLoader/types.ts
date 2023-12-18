@@ -1,9 +1,9 @@
+import type { AjnaRewardsSource } from '@prisma/client'
 import type { NetworkIds } from 'blockchain/networks'
 import type {
   SearchAjnaPoolFilters,
   SearchAjnaPoolResponse,
 } from 'features/ajna/pool-finder/helpers'
-import type { AjnaClaimedReward } from 'features/ajna/rewards/helpers'
 import type { AjnaPoolDataResponse } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaPoolsDataResponse } from 'features/omni-kit/protocols/ajna/helpers/getAjnaPoolsData'
 import type {
@@ -80,14 +80,32 @@ export type SubgraphsResponses = {
     getAjnaCumulatives: SubgraphBaseResponse<{
       account: {
         earnPositions: {
+          earnCumulativeDepositUSD: number
+          earnCumulativeDepositInQuoteToken: number
+          earnCumulativeDepositInCollateralToken: number
+          earnCumulativeWithdrawUSD: number
+          earnCumulativeWithdrawInQuoteToken: number
+          earnCumulativeWithdrawInCollateralToken: number
+          earnCumulativeFeesUSD: number
           earnCumulativeFeesInQuoteToken: number
+          earnCumulativeFeesInCollateralToken: number
           earnCumulativeQuoteTokenDeposit: number
           earnCumulativeQuoteTokenWithdraw: number
         }[]
         borrowPositions: {
           borrowCumulativeDepositUSD: number
-          borrowCumulativeFeesUSD: number
+          borrowCumulativeDepositInQuoteToken: number
+          borrowCumulativeDepositInCollateralToken: number
           borrowCumulativeWithdrawUSD: number
+          borrowCumulativeWithdrawInQuoteToken: number
+          borrowCumulativeWithdrawInCollateralToken: number
+          borrowCumulativeCollateralDeposit: number
+          borrowCumulativeCollateralWithdraw: number
+          borrowCumulativeDebtDeposit: number
+          borrowCumulativeDebtWithdraw: number
+          borrowCumulativeFeesUSD: number
+          borrowCumulativeFeesInQuoteToken: number
+          borrowCumulativeFeesInCollateralToken: number
         }[]
       }
     }>
@@ -107,7 +125,12 @@ export type SubgraphsResponses = {
         }[]
       }
     }>
-    getAjnaClaimedRewards: SubgraphBaseResponse<{ claimeds: AjnaClaimedReward[] }>
+    getAjnaClaimedRewards: SubgraphBaseResponse<{
+      claimeds: {
+        week: { week: number }
+        type: AjnaRewardsSource
+      }[]
+    }>
     getAjnaDpmPositions: SubgraphBaseResponse<AjnaDpmPositionsResponse>
     searchAjnaPool: SubgraphBaseResponse<{
       pools: SearchAjnaPoolResponse[]

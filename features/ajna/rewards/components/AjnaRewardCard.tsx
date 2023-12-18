@@ -1,20 +1,27 @@
+import { TxStatus } from '@oasisdex/transactions'
+import { AjnaRewardsSource } from '@prisma/client'
+import { sendGenericTransaction$ } from 'blockchain/better-calls/send-generic-transaction'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'
+import type { ethers } from 'ethers'
+import { useAjnaRewards } from 'features/ajna/rewards/hooks'
 import type { AjnaRewards } from 'features/ajna/rewards/types'
+import { isAjnaSupportedNetwork } from 'features/omni-kit/protocols/ajna/helpers'
+import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { ajnaBrandGradient, getGradientColor } from 'helpers/getGradientColor'
+import type { TxDetails } from 'helpers/handleTransaction'
+import { handleTransaction } from 'helpers/handleTransaction'
+import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useToggle } from 'helpers/useToggle'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
-import { Box, Button, Flex, Grid, Image, Text } from 'theme-ui'
-
-interface AjnaRewardCardProps {
-  disabled?: boolean
-  isLoading: boolean
-  rewards: AjnaRewards
-}
+import React, { useState } from 'react'
+import { Box, Button, Flex, Grid, Image, Spinner, Text } from 'theme-ui'
+import { AjnaBonusRedeemer__factory, AjnaReedemer__factory } from 'types/ethers-contracts'
 
 interface AjnaRewardCardBreakdownItemProps {
   label: string
@@ -34,14 +41,101 @@ export function AjnaRewardCardBreakdownItem({ label, value }: AjnaRewardCardBrea
   )
 }
 
-export function AjnaRewardCard({
-  disabled,
-  isLoading,
-  rewards: { bonus, claimable, regular, total, totalUsd },
-}: AjnaRewardCardProps) {
-  const { t } = useTranslation()
+const rewardsTransactionResolver = ({
+  signer,
+  rewards,
+  networkId,
+  claimedBonus,
+}: {
+  signer: ethers.Signer
+  rewards: AjnaRewards
+  networkId: AjnaSupportedNetworksIds
+  claimedBonus: boolean
+}) => {
+  const hasBonusRewardsToClaim = !rewards.bonus.isZero() && !claimedBonus
 
+  const networkContracts = getNetworkContracts(networkId)
+
+  const ajnaRedeemerAddress = networkContracts.ajnaRedeemer.address
+  const ajnaReedemerFactoryContract = AjnaReedemer__factory.connect(ajnaRedeemerAddress, signer)
+
+  const ajnaBonusRedeemerAddress = networkContracts.ajnaBonusRedeemer.address
+  const ajnaBonusReedemerFactoryContract = AjnaBonusRedeemer__factory.connect(
+    ajnaBonusRedeemerAddress,
+    signer,
+  )
+
+  const resolvedContract = hasBonusRewardsToClaim
+    ? ajnaBonusReedemerFactoryContract
+    : ajnaReedemerFactoryContract
+
+  const resolvedPayload = hasBonusRewardsToClaim ? AjnaRewardsSource.bonus : AjnaRewardsSource.core
+  const resolvedParams = [
+    rewards.payload[resolvedPayload].weeks,
+    rewards.payload[resolvedPayload].amounts,
+    rewards.payload[resolvedPayload].proofs,
+  ]
+
+  return {
+    resolvedContract,
+    resolvedParams,
+  }
+}
+
+export function AjnaRewardCard() {
+  const { t } = useTranslation()
+  const { connectedContext$ } = useMainContext()
+  const [txDetails, setTxDetails] = useState<TxDetails>()
+  const [context] = useObservable(connectedContext$)
+  const { isLoading, rewards, refetch } = useAjnaRewards()
+  const [claimedBonus, setClaimedBonus] = useState(false)
+
+  const networkId = context?.chainId
+  const signer = context?.transactionProvider
   const [isBreakdownOpen, toggleIsBreakdownOpen] = useToggle(false)
+
+  const { total, totalUsd, claimable, bonus, regular } = rewards
+
+  const onSubmit = () => {
+    if (signer && networkId && isAjnaSupportedNetwork(networkId)) {
+      const { resolvedContract, resolvedParams } = rewardsTransactionResolver({
+        signer,
+        rewards,
+        networkId,
+        claimedBonus,
+      })
+
+      sendGenericTransaction$({
+        contract: resolvedContract,
+        method: 'claimMultiple',
+        params: resolvedParams,
+        signer,
+      }).subscribe((txState) => {
+        handleTransaction({ txState, ethPrice: zero, setTxDetails })
+
+        if (rewards.bonus.gt(zero) && txState.status === TxStatus.Success) {
+          setClaimedBonus(true)
+        }
+
+        // This condition should ensure that on tx success, the rewards are re-fetched and if there will
+        // be a second tx (regular rewards) the whole process will start from the beginning
+        // ensuring proper UX
+        if (txState.status === TxStatus.Success) {
+          refetch()
+          setTxDetails(undefined)
+        }
+      })
+    }
+
+    console.warn(
+      `Lack of signer, networkId, or Ajna network not supported for claiming rewards. Network id: ${networkId}`,
+    )
+
+    return () => null
+  }
+
+  const isTxLoading = txDetails?.txStatus === TxStatus.WaitingForConfirmation
+  const isTxError = txDetails?.txStatus === TxStatus.Error
 
   return (
     <Box
@@ -104,14 +198,18 @@ export function AjnaRewardCard({
           )}
         </Text>
         <Button
-          // TODO: should also be disabled while rewards transaction is running
-          disabled={disabled || claimable.isZero()}
+          disabled={isTxLoading || claimable.isZero()}
           variant="primary"
-          onClick={() => {
-            // TODO: create rewards handler
+          onClick={onSubmit}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
           }}
         >
-          {t('ajna.rewards.cta')}
+          {isTxError ? t('retry') : t('ajna.rewards.cta')}
+          {isTxLoading && <Spinner size={24} color="neutral10" sx={{ ml: 2, mb: '2px' }} />}
         </Button>
         {!isLoading && total.gt(zero) && (
           <Box>
@@ -152,6 +250,9 @@ export function AjnaRewardCard({
           </Box>
         )}
       </Flex>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mt: '24px' }}>
+        {t('ajna.rewards.two-tx')}
+      </Text>
     </Box>
   )
 }

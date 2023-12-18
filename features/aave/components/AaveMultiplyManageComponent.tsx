@@ -4,7 +4,7 @@ import { useAaveContext } from 'features/aave'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import type { IStrategyConfig } from 'features/aave/types'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
-import type { AaveCumulativeData } from 'features/omni-kit/protocols/ajna/history/types'
+import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -102,6 +102,7 @@ export function AaveMultiplyManageComponent({
               cumulatives={cumulatives}
               isAutomationAvailable={isAutomationAvailable}
               lendingProtocol={strategyConfig.protocol}
+              productType={strategyConfig.type}
             />
           )
         }}

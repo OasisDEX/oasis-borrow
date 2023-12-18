@@ -8,7 +8,6 @@ import {
   headerWithDetails,
   ManageSectionComponent,
   SimulateSectionComponent,
-  ViewPositionSectionComponent,
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
@@ -34,7 +33,6 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
       headerView: AavePositionHeaderNoDetails,
       simulateSection: SimulateSectionComponent,
       vaultDetailsManage: ManageSectionComponent,
-      vaultDetailsView: ViewPositionSectionComponent,
       secondaryInput: adjustRiskView(adjustRiskSliders.stethEth),
       adjustRiskInput: adjustRiskView(adjustRiskSliders.stethEth),
       positionInfo: AaveEarnFaqV2,
@@ -52,6 +50,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     availableActions: () => allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
+    isOptimizationTabEnabled: () => false,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -66,7 +65,6 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
       headerView: AaveManageHeader,
       simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
-      vaultDetailsView: AaveMultiplyManageComponent,
       secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
@@ -84,6 +82,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     availableActions: () => allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
+    isOptimizationTabEnabled: () => false,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -98,7 +97,6 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
       headerView: AaveManageHeader,
       simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
-      vaultDetailsView: AaveMultiplyManageComponent,
       secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
@@ -116,6 +114,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     availableActions: () => allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
+    isOptimizationTabEnabled: () => false,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -130,7 +129,6 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
       headerView: AaveManageHeader,
       simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
-      vaultDetailsView: AaveMultiplyManageComponent,
       secondaryInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       adjustRiskInput: adjustRiskView(multiplyAdjustRiskSliderConfig),
       positionInfo: AaveMultiplyFaq,
@@ -148,5 +146,6 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     availableActions: () => allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
+    isOptimizationTabEnabled: () => false,
   },
 ]
