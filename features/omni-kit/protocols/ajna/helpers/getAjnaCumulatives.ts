@@ -21,6 +21,15 @@ export const getAjnaCumulatives: (networkId: NetworkIds) => GetCumulativesData =
       borrowCumulativeFeesUSD: new BigNumber(
         response.account?.borrowPositions[0]?.borrowCumulativeFeesUSD || 0,
       ),
+      borrowCumulativeCollateralDeposit: new BigNumber(
+        response.account?.borrowPositions[0]?.borrowCumulativeCollateralDeposit || 0,
+      ),
+      borrowCumulativeCollateralWithdraw: new BigNumber(
+        response.account?.borrowPositions[0]?.borrowCumulativeCollateralWithdraw || 0,
+      ),
+      borrowCumulativeFeesInCollateralToken: new BigNumber(
+        response.account?.borrowPositions[0]?.borrowCumulativeFeesInCollateralToken || 0,
+      ),
       earnCumulativeFeesInQuoteToken: new BigNumber(
         response.account?.earnPositions[0]?.earnCumulativeFeesInQuoteToken || 0,
       ),

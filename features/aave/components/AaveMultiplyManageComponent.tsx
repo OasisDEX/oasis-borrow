@@ -102,6 +102,7 @@ export function AaveMultiplyManageComponent({
               cumulatives={cumulatives}
               isAutomationAvailable={isAutomationAvailable}
               lendingProtocol={strategyConfig.protocol}
+              productType={strategyConfig.type}
             />
           )
         }}

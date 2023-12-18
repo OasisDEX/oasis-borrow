@@ -88,6 +88,9 @@ export type SubgraphsResponses = {
           borrowCumulativeDepositUSD: number
           borrowCumulativeFeesUSD: number
           borrowCumulativeWithdrawUSD: number
+          borrowCumulativeCollateralDeposit: number
+          borrowCumulativeCollateralWithdraw: number
+          borrowCumulativeFeesInCollateralToken: number
         }[]
       }
     }>
