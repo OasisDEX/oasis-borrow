@@ -2,16 +2,7 @@ import { NetworkNames } from 'blockchain/networks'
 import { getRemoteConfigWithCache } from 'helpers/config'
 import { configCacheTime, type ConfigResponseType } from 'helpers/config'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import getConfig from 'next/config'
 import type { AppConfigType } from 'types/config'
-
-const rpcGatewayUrl = getConfig()?.publicRuntimeConfig.rpcGatewayUrl ?? process.env.RPC_GATEWAY
-
-if (!rpcGatewayUrl) {
-  throw new Error('RPC Gateway URL is not defined')
-}
-
-const rpcBase = `${rpcGatewayUrl}`
 
 /**
  * Returns the RPC node for the given network.
@@ -19,7 +10,7 @@ const rpcBase = `${rpcGatewayUrl}`
  * @param rpcConfig - The RPC config.
  * @returns The RPC node URL or undefined if the network is not supported.
  */
-export function getRpcNodeGateway(
+export function getRpcGatewayUrl(
   network: NetworkNames,
   rpcConfig: AppConfigType['rpcConfig'],
   rpcBase: string,
@@ -59,10 +50,11 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   const appConfig: ConfigResponseType = await getRemoteConfigWithCache(
     1000 * configCacheTime.backend,
   )
+  const rpcBase = getRpcGatewayBaseUrl()
 
   const network = networkQuery.toString() as NetworkNames
-  const rpcUrl = getRpcNodeGateway(network, appConfig.rpcConfig, rpcBase)
-  if (!rpcUrl) {
+  const rpcGatewayUrl = getRpcGatewayUrl(network, appConfig.rpcConfig, rpcBase)
+  if (!rpcGatewayUrl) {
     res.status(400).send({ error: 'Invalid network' })
     return
   }
@@ -76,7 +68,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   if (typeof req.body !== 'string') {
     req.body = JSON.stringify(req.body)
   }
-  const request = new Request(rpcUrl, {
+  const request = new Request(rpcGatewayUrl, {
     method: req.method,
     body: req.body,
     headers: {
@@ -93,3 +85,19 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 }
 
 export default rpc
+
+/**
+ * Retrieves the base URL for the RPC gateway.
+ * @returns The base URL for the RPC gateway.
+ * @throws If the RPC Gateway URL is not defined.
+ */
+export function getRpcGatewayBaseUrl() {
+  const rpcGatewayUrl = process.env.RPC_GATEWAY
+
+  if (!rpcGatewayUrl) {
+    throw new Error('RPC Gateway URL is not defined')
+  }
+
+  const rpcBase = `${rpcGatewayUrl}`
+  return rpcBase
+}

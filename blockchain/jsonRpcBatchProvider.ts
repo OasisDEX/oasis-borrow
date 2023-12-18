@@ -121,7 +121,7 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
               },
             )
           })
-      }, 200)
+      }, 100)
     }
 
     return promise

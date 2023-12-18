@@ -1,8 +1,7 @@
 import type { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
 import { providerFactory } from 'blockchain/jsonRpcBatchProvider'
 import type { ethers } from 'ethers'
-import getConfig from 'next/config'
-import { getRpcNodeGateway } from 'pages/api/rpcGateway'
+import { getRpcGatewayBaseUrl, getRpcGatewayUrl } from 'pages/api/rpcGateway'
 
 import { networkSetById } from './network-helpers'
 import type { NetworkIds } from './network-ids'
@@ -70,12 +69,15 @@ export function getBackendRpcProvider(networkId: NetworkIds): JsonRpcBatchProvid
     throw new Error(`Network with id ${networkId} does not exist`)
   }
 
-  const rpcGatewayUrl = getConfig()?.publicRuntimeConfig.rpcGatewayUrl ?? process.env.RPC_GATEWAY
-  if (!rpcGatewayUrl) {
-    throw new Error('RPC Gateway URL is not defined')
-  }
-  const rpcBase = `${rpcGatewayUrl}`
-
+  /**
+   * Configuration object for RPC provider.
+   * We skip fetching it from remote config to skip the async call.
+   * @property {boolean} skipCache - Whether to skip caching.
+   * @property {boolean} skipMulticall - Whether to skip multicall.
+   * @property {boolean} skipGraph - Whether to skip graph.
+   * @property {string} stage - The stage of the environment ('prod' or 'dev').
+   * @property {string} source - The source of the RPC calls.
+   */
   const rpcConfig = {
     skipCache: false,
     skipMulticall: false,
@@ -84,12 +86,13 @@ export function getBackendRpcProvider(networkId: NetworkIds): JsonRpcBatchProvid
     source: 'backend',
   }
 
-  const node = getRpcNodeGateway(network.name, rpcConfig, rpcBase)
+  const rpcBase = getRpcGatewayBaseUrl()
+  const rpcGatewayUrl = getRpcGatewayUrl(network.name, rpcConfig, rpcBase)
 
-  if (!node) {
+  if (!rpcGatewayUrl) {
     throw new Error('RPC provider is not available')
   }
-  return providerFactory.getProvider(node, {
+  return providerFactory.getProvider(rpcGatewayUrl, {
     chainId: networkId,
     name: network.name,
   })
