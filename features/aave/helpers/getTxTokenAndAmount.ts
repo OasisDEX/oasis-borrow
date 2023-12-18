@@ -27,8 +27,8 @@ export function getTxTokenAndAmount(context: BaseAaveContext) {
     amountAndToken.token = context.tokens.debt
   }
   // if we are borrowing and also depositing collateral, we need to use manageInput2Value and set token to collateral
-  const isDepositWithBorrow = context.manageTokenInput?.manageInput2Value?.gt(zero)
-  if (isBorrowingDebt && isDepositWithBorrow) {
+  const isDepositWithBorrowNotEmpty = context.manageTokenInput?.manageInput2Value?.gt(zero)
+  if (isBorrowingDebt && isDepositWithBorrowNotEmpty) {
     amountAndToken.amount = context.manageTokenInput?.manageInput2Value || zero
     amountAndToken.token = context.tokens.collateral
   }
