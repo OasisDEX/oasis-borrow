@@ -42,7 +42,5 @@ export function ManageAaveReviewingStateView({
     dropdown: dropdownConfig,
   }
 
-  console.log('context', state.context)
-
   return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
