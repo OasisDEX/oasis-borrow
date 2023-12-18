@@ -1,5 +1,7 @@
-import { ethers } from 'ethers'
-import { getRpcNode } from 'helpers/getRpcNode'
+import type { JsonRpcBatchProvider } from 'blockchain/jsonRpcBatchProvider'
+import { providerFactory } from 'blockchain/jsonRpcBatchProvider'
+import type { ethers } from 'ethers'
+import { getRpcGatewayBaseUrl, getRpcGatewayUrl } from 'pages/api/rpcGateway'
 
 import { networkSetById } from './network-helpers'
 import type { NetworkIds } from './network-ids'
@@ -12,17 +14,10 @@ export function getRpcProvider(networkId: NetworkIds): ethers.providers.Provider
     throw new Error(`Network with id ${networkId} does not exist`)
   }
 
-  // check if server
   if (typeof window === 'undefined') {
-    const node = getRpcNode(network.name)
-    if (!node) {
-      throw new Error('RPC provider is not available')
-    }
-    return new ethers.providers.JsonRpcProvider(node, {
-      chainId: networkId,
-      name: network.name,
-    })
+    return getBackendRpcProvider(networkId)
   }
+
   const provider = network.getReadProvider()
 
   if (provider) {
@@ -59,4 +54,46 @@ export function getRpcProvidersForLogs(networkId: NetworkIds): {
   const parentNetworkProvider = parentNetwork?.getReadProvider()
   ensureRpcProvider(parentNetworkProvider, parentNetwork.id)
   return { mainProvider: parentNetworkProvider, forkProvider: givenNetworkProvider }
+}
+
+/**
+ * Retrieves the backend RPC provider for the specified network.
+ * @param networkId The ID of the network.
+ * @returns The JSON-RPC batch provider for the network.
+ * @throws Error if the network does not exist, RPC Gateway URL is not defined, or RPC provider is not available.
+ */
+export function getBackendRpcProvider(networkId: NetworkIds): JsonRpcBatchProvider {
+  const network = networkSetById[networkId] ?? networksById[networkId] // check if maybe we should use disabled provider.
+
+  if (!network) {
+    throw new Error(`Network with id ${networkId} does not exist`)
+  }
+
+  /**
+   * Configuration object for RPC provider.
+   * We skip fetching it from remote config to skip the async call.
+   * @property {boolean} skipCache - Whether to skip caching.
+   * @property {boolean} skipMulticall - Whether to skip multicall.
+   * @property {boolean} skipGraph - Whether to skip graph.
+   * @property {string} stage - The stage of the environment ('prod' or 'dev').
+   * @property {string} source - The source of the RPC calls.
+   */
+  const rpcConfig = {
+    skipCache: false,
+    skipMulticall: false,
+    skipGraph: true,
+    stage: process.env.NODE_ENV === 'production' ? 'prod' : 'dev',
+    source: 'backend',
+  }
+
+  const rpcBase = getRpcGatewayBaseUrl()
+  const rpcGatewayUrl = getRpcGatewayUrl(network.name, rpcConfig, rpcBase)
+
+  if (!rpcGatewayUrl) {
+    throw new Error('RPC provider is not available')
+  }
+  return providerFactory.getProvider(rpcGatewayUrl, {
+    chainId: networkId,
+    name: network.name,
+  })
 }

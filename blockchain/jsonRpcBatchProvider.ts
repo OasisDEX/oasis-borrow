@@ -1,6 +1,8 @@
 import { deepCopy } from '@ethersproject/properties'
+import type { Networkish } from '@ethersproject/providers'
 import { fetchJson } from '@ethersproject/web'
 import { ethers } from 'ethers'
+import type { ConnectionInfo } from 'ethers/lib/utils'
 
 // Experimental
 type PendingBatch = Record<
@@ -119,9 +121,32 @@ export class JsonRpcBatchProvider extends ethers.providers.JsonRpcProvider {
               },
             )
           })
-      }, 200)
+      }, 100)
     }
 
     return promise
   }
 }
+
+/**
+ * Factory class for creating instances of JsonRpcBatchProvider.
+ */
+class ProviderFactory {
+  private providers: Map<string, JsonRpcBatchProvider> = new Map()
+
+  /**
+   * Retrieves or creates a JsonRpcBatchProvider instance based on the provided URL and network.
+   * @param url The URL or ConnectionInfo object of the provider.
+   * @param network The network identifier.
+   * @returns The JsonRpcBatchProvider instance.
+   */
+  getProvider(url: ConnectionInfo | string, network: Networkish): JsonRpcBatchProvider {
+    const key = `${url}-${network}`
+    if (!this.providers.has(key)) {
+      this.providers.set(key, new JsonRpcBatchProvider(url, network))
+    }
+    return this.providers.get(key)!
+  }
+}
+
+export const providerFactory = new ProviderFactory()
