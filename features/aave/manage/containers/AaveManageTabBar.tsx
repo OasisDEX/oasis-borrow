@@ -9,13 +9,13 @@ import { isAaveHistorySupported } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import {
   useManageAaveStateMachineContext,
-  useOptimizationAaveStateMachineContext,
+  useTriggersAaveStateMachineContext,
 } from 'features/aave/manage/contexts'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import {
+  areTriggersLoading,
   hasActiveOptimization,
   isOptimizationEnabled,
-  isOptimizationLoading,
 } from 'features/aave/manage/state'
 import { type IStrategyConfig, ProxyType } from 'features/aave/types/strategy-config'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
@@ -50,8 +50,8 @@ export function AaveManageTabBar({
   } = useAutomationContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
-  const optimizationStateMachine = useOptimizationAaveStateMachineContext()
-  const [optimizationState] = useActor(optimizationStateMachine)
+  const triggersStateMachine = useTriggersAaveStateMachineContext()
+  const [triggersState] = useActor(triggersStateMachine)
 
   const VaultDetails = strategyConfig.viewComponents.vaultDetailsManage
   const PositionInfo = strategyConfig.viewComponents.positionInfo
@@ -83,9 +83,9 @@ export function AaveManageTabBar({
       state.context.strategyConfig.proxyType,
     )
 
-  const isOptimizationTabEnabled = isOptimizationEnabled(optimizationState)
-  const isOptimizationTabLoading = isOptimizationLoading(optimizationState)
-  const hasActiveOptimizationTrigger = hasActiveOptimization(optimizationState)
+  const isOptimizationTabEnabled = isOptimizationEnabled(triggersState)
+  const isOptimizationTabLoading = areTriggersLoading(triggersState)
+  const hasActiveOptimizationTrigger = hasActiveOptimization(triggersState)
 
   const optimizationTab: TabSection[] = isOptimizationTabEnabled
     ? [

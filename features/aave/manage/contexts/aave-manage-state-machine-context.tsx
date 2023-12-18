@@ -7,7 +7,7 @@ import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { env } from 'process'
 import React from 'react'
 
-import { OptimizationAaveStateMachineContextProvider } from './optimization-aave-state-machine-context'
+import { TriggersAaveStateMachineContextProvider } from './triggers-aave-state-machine-context'
 
 export const defaultManageTokenInputValues: ManageTokenInput = {
   // defaults for the manage collateral/debt are set here
@@ -91,9 +91,9 @@ export function ManageAaveStateMachineContextProvider({
 
   return (
     <manageAaveStateContext.Provider value={context}>
-      <OptimizationAaveStateMachineContextProvider proxies={proxies} strategy={strategy}>
+      <TriggersAaveStateMachineContextProvider proxies={proxies} strategy={strategy}>
         <>{children}</>
-      </OptimizationAaveStateMachineContextProvider>
+      </TriggersAaveStateMachineContextProvider>
     </manageAaveStateContext.Provider>
   )
 }

@@ -1,4 +1,4 @@
-export { useOptimizationAaveStateMachineContext } from './optimization-aave-state-machine-context'
+export { useTriggersAaveStateMachineContext } from './triggers-aave-state-machine-context'
 export {
   useManageAaveStateMachineContext,
   ManageAaveStateMachineContextProvider,

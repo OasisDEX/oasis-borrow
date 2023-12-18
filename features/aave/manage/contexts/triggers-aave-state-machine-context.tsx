@@ -2,7 +2,7 @@ import { useInterpret, useSelector } from '@xstate/react'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import {
   autoBuyTriggerAaveStateMachine,
-  optimizationAaveStateMachine,
+  triggersAaveStateMachine,
 } from 'features/aave/manage/state'
 import type { IStrategyConfig } from 'features/aave/types'
 import { env } from 'process'
@@ -10,7 +10,7 @@ import React, { useEffect } from 'react'
 
 import { useManageAaveStateMachineContext } from './aave-manage-state-machine-context'
 
-function useSetupOptimizationStateContext(
+function useSetupTriggersStateContext(
   strategy: IStrategyConfig,
   proxies?: ProxiesRelatedWithPosition,
 ) {
@@ -19,7 +19,7 @@ function useSetupOptimizationStateContext(
   }).start()
 
   return useInterpret(
-    optimizationAaveStateMachine.withContext({
+    triggersAaveStateMachine.withContext({
       strategyConfig: strategy,
       dpm: proxies?.dpmProxy,
       showAutoBuyBanner: true,
@@ -32,25 +32,23 @@ function useSetupOptimizationStateContext(
   ).start()
 }
 
-export type OptimizationAaveStateMachineContext = ReturnType<
-  typeof useSetupOptimizationStateContext
->
-const optimizationAaveStateContext = React.createContext<
-  OptimizationAaveStateMachineContext | undefined
->(undefined)
+export type TriggersAaveStateMachineContext = ReturnType<typeof useSetupTriggersStateContext>
+const triggersAaveStateContext = React.createContext<TriggersAaveStateMachineContext | undefined>(
+  undefined,
+)
 
-export function useOptimizationAaveStateMachineContext(): OptimizationAaveStateMachineContext {
-  const ac = React.useContext(optimizationAaveStateContext)
+export function useTriggersAaveStateMachineContext(): TriggersAaveStateMachineContext {
+  const ac = React.useContext(triggersAaveStateContext)
   if (!ac) {
-    throw new Error('OptimizationAaveStateMachineContext not available!')
+    throw new Error('TriggersAaveStateMachineContext not available!')
   }
   return ac
 }
 
-function OptimizationStateUpdater({ children }: React.PropsWithChildren<{}>) {
+function TriggersStateUpdater({ children }: React.PropsWithChildren<{}>) {
   const { stateMachine } = useManageAaveStateMachineContext()
   const position = useSelector(stateMachine, (state) => state.context.currentPosition)
-  const context = useOptimizationAaveStateMachineContext()
+  const context = useTriggersAaveStateMachineContext()
 
   useEffect(() => {
     if (position) {
@@ -60,16 +58,16 @@ function OptimizationStateUpdater({ children }: React.PropsWithChildren<{}>) {
   return <>{children}</>
 }
 
-export function OptimizationAaveStateMachineContextProvider({
+export function TriggersAaveStateMachineContextProvider({
   strategy,
   proxies,
   children,
 }: React.PropsWithChildren<{ strategy: IStrategyConfig; proxies: ProxiesRelatedWithPosition }>) {
-  const context = useSetupOptimizationStateContext(strategy, proxies)
+  const context = useSetupTriggersStateContext(strategy, proxies)
 
   return (
-    <optimizationAaveStateContext.Provider value={context}>
-      <OptimizationStateUpdater>{children}</OptimizationStateUpdater>
-    </optimizationAaveStateContext.Provider>
+    <triggersAaveStateContext.Provider value={context}>
+      <TriggersStateUpdater>{children}</TriggersStateUpdater>
+    </triggersAaveStateContext.Provider>
   )
 }

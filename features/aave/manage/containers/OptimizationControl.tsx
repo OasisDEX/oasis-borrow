@@ -5,7 +5,7 @@ import { AutoBuySection } from 'features/aave/components/AutoBuySection'
 import { AutoBuyBanner } from 'features/aave/components/banners'
 import {
   useManageAaveStateMachineContext,
-  useOptimizationAaveStateMachineContext,
+  useTriggersAaveStateMachineContext,
 } from 'features/aave/manage/contexts'
 import { AutoBuySidebarAaveVault } from 'features/aave/manage/sidebars/AutoBuySidebarAaveVault'
 import type { AutoBuyTriggerAaveContext } from 'features/aave/manage/state'
@@ -47,7 +47,7 @@ export function OptimizationControl() {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
 
-  const optimizationStateMachine = useOptimizationAaveStateMachineContext()
+  const optimizationStateMachine = useTriggersAaveStateMachineContext()
   const [optimizationState, sendOptimizationEvent] = useActor(optimizationStateMachine)
   const [autoBuyState, sendAutoBuyEvent] = useActor(optimizationState.context.autoBuyTrigger)
 

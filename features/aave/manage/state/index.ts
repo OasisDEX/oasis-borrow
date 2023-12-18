@@ -1,3 +1,3 @@
 export * from './manageAaveStateMachine'
-export * from './optimizationAaveStateMachine'
+export * from './triggersAaveStateMachine'
 export * from './autoBuyTriggerAaveStateMachine'

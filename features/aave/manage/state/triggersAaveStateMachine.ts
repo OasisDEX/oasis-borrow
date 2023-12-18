@@ -5,36 +5,34 @@ import type { IStrategyConfig } from 'features/aave/types'
 import type { GetTriggersResponse } from 'helpers/triggers'
 import { getTriggersRequest } from 'helpers/triggers'
 import type { ActorRefFrom, StateFrom } from 'xstate'
-import { actions, createMachine, sendTo } from 'xstate'
+import { actions, createMachine } from 'xstate'
 
 import type { autoBuyTriggerAaveStateMachine, PositionLike } from './autoBuyTriggerAaveStateMachine'
 
-const { assign } = actions
+const { assign, sendTo } = actions
 
-export type OptimizationAaveEvent =
+export type TriggersAaveEvent =
   | { type: 'SHOW_AUTO_BUY' }
   | { type: 'POSITION_UPDATED'; position: AaveLikePosition }
   | { type: 'TRIGGERS_UPDATED'; currentTriggers: GetTriggersResponse }
 
 export const isOptimizationEnabled = ({
   context,
-}: StateFrom<typeof optimizationAaveStateMachine>): boolean => {
+}: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   return context.strategyConfig.isOptimizationTabEnabled() && context.dpm !== undefined
 }
 
-export const isOptimizationLoading = (
-  state: StateFrom<typeof optimizationAaveStateMachine>,
-): boolean => {
+export const areTriggersLoading = (state: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   return state.matches('loading')
 }
 
 export const hasActiveOptimization = ({
   context,
-}: StateFrom<typeof optimizationAaveStateMachine>): boolean => {
+}: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   return context.currentTriggers.triggers.aaveBasicBuy !== undefined
 }
 
-export type OptimizationAaveContext = {
+export type TriggersAaveContext = {
   readonly strategyConfig: IStrategyConfig
   readonly dpm?: UserDpmAccount
   position?: AaveLikePosition
@@ -76,13 +74,13 @@ function mapPositionToAutoBuyPosition({
   }
 }
 
-export const optimizationAaveStateMachine = createMachine(
+export const triggersAaveStateMachine = createMachine(
   {
     // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-    tsTypes: {} as import('./optimizationAaveStateMachine.typegen').Typegen0,
+    tsTypes: {} as import('./triggersAaveStateMachine.typegen').Typegen0,
     schema: {
-      context: {} as OptimizationAaveContext,
-      events: {} as OptimizationAaveEvent,
+      context: {} as TriggersAaveContext,
+      events: {} as TriggersAaveEvent,
       services: {} as {
         getTriggers: {
           data: GetTriggersResponse
@@ -92,7 +90,7 @@ export const optimizationAaveStateMachine = createMachine(
     preserveActionOrder: true,
     predictableActionArguments: true,
     entry: [],
-    id: 'optimizationAaveMachine',
+    id: 'triggersStateMachine',
     initial: 'loading',
     states: {
       idle: {
