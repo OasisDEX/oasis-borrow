@@ -13,7 +13,7 @@ import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { StrategyType } from 'features/aave/types'
+import { ProductType, StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
@@ -46,6 +46,7 @@ type AaveMultiplyPositionDataProps = {
   strategyType: StrategyType
   cumulatives?: AaveCumulativeData
   lendingProtocol: LendingProtocol
+  productType: ProductType
 }
 
 export function AaveMultiplyPositionData({
@@ -61,6 +62,7 @@ export function AaveMultiplyPositionData({
   strategyType,
   cumulatives,
   lendingProtocol,
+  productType,
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
@@ -167,8 +169,12 @@ export function AaveMultiplyPositionData({
               modal={
                 cumulatives ? (
                   <OmniMultiplyNetValueModal
-                    netValueTokenPrice={collateralTokenPrice}
-                    netValueToken={collateralToken.symbol}
+                    netValueTokenPrice={
+                      productType === ProductType.Earn ? debtTokenPrice : collateralTokenPrice
+                    }
+                    netValueToken={
+                      productType === ProductType.Earn ? debtToken.symbol : collateralToken.symbol
+                    }
                     cumulatives={cumulatives}
                     netValueUSD={netValueUsd}
                     pnl={pnlWithoutFees}
