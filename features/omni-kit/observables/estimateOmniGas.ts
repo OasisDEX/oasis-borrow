@@ -47,12 +47,12 @@ export const estimateOmniGas$ = ({
           let usdValue = amountFromWei(gasPrice.maxFeePerGas.times(gasAmount)).times(ethPrice)
 
           if (omniL2SupportedNetworks.includes(networkId)) {
-            const optimisTxFeeData = await getOptimismTransactionFee({
+            const optimismTxFeeData = await getOptimismTransactionFee({
               estimatedGas: gasAmount.toString(),
               transactionData: txData.data,
             })
 
-            if (!optimisTxFeeData) {
+            if (!optimismTxFeeData) {
               return {
                 usdValue: zero,
                 gasAmount,
@@ -62,7 +62,7 @@ export const estimateOmniGas$ = ({
             }
 
             usdValue = amountFromWei(
-              new BigNumber(optimisTxFeeData.l1Fee).plus(optimisTxFeeData.l2Fee),
+              new BigNumber(optimismTxFeeData.l1Fee).plus(optimismTxFeeData.l2Fee),
             ).times(ethPrice)
           }
 
