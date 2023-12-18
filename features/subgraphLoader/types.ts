@@ -80,16 +80,31 @@ export type SubgraphsResponses = {
     getAjnaCumulatives: SubgraphBaseResponse<{
       account: {
         earnPositions: {
+          earnCumulativeDepositUSD: number
+          earnCumulativeDepositInQuoteToken: number
+          earnCumulativeDepositInCollateralToken: number
+          earnCumulativeWithdrawUSD: number
+          earnCumulativeWithdrawInQuoteToken: number
+          earnCumulativeWithdrawInCollateralToken: number
+          earnCumulativeFeesUSD: number
           earnCumulativeFeesInQuoteToken: number
+          earnCumulativeFeesInCollateralToken: number
           earnCumulativeQuoteTokenDeposit: number
           earnCumulativeQuoteTokenWithdraw: number
         }[]
         borrowPositions: {
           borrowCumulativeDepositUSD: number
-          borrowCumulativeFeesUSD: number
+          borrowCumulativeDepositInQuoteToken: number
+          borrowCumulativeDepositInCollateralToken: number
           borrowCumulativeWithdrawUSD: number
+          borrowCumulativeWithdrawInQuoteToken: number
+          borrowCumulativeWithdrawInCollateralToken: number
           borrowCumulativeCollateralDeposit: number
           borrowCumulativeCollateralWithdraw: number
+          borrowCumulativeDebtDeposit: number
+          borrowCumulativeDebtWithdraw: number
+          borrowCumulativeFeesUSD: number
+          borrowCumulativeFeesInQuoteToken: number
           borrowCumulativeFeesInCollateralToken: number
         }[]
       }

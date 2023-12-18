@@ -17,7 +17,7 @@ export interface AaveHistoryEvent extends PositionHistoryEvent {
 export type AaveCumulativeData = {
   cumulativeDepositUSD: BigNumber
   cumulativeDepositInQuoteToken: BigNumber
-  cumulativeDespositInCollateralToken: BigNumber
+  cumulativeDepositInCollateralToken: BigNumber
   cumulativeWithdrawUSD: BigNumber
   cumulativeWithdrawInQuoteToken: BigNumber
   cumulativeWithdrawInCollateralToken: BigNumber

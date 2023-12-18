@@ -12,6 +12,7 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
 import { calculateViewValuesForPosition } from 'features/aave/services'
+import { ProductType } from 'features/aave/types'
 import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -47,6 +48,7 @@ type PositionInfoComponentProps = {
   collateralTokenReserveData: AaveLikeReserveData
   debtTokenReserveData: AaveLikeReserveData
   cumulatives?: AaveCumulativeData
+  productType: ProductType
 }
 
 // todo: export and pull from oasisdex/oasis-actions
@@ -76,6 +78,7 @@ export const PositionInfoComponent = ({
   debtTokenPrice,
   collateralTokenReserveData,
   debtTokenReserveData,
+  productType,
 }: PositionInfoComponentProps) => {
   const { t } = useTranslation()
   const currentPositionThings = calculateViewValuesForPosition(
@@ -99,11 +102,17 @@ export const PositionInfoComponent = ({
   const belowCurrentRatio = position.oraclePriceForCollateralDebtExchangeRate
     .minus(position.liquidationPrice)
     .times(100)
+  const isEarnPosition = productType === ProductType.Earn
 
-  const pnlWithoutFees = cumulatives?.cumulativeWithdrawInQuoteToken
-    .plus(netValueInDebtToken)
-    .minus(cumulatives.cumulativeDepositInQuoteToken)
-    .div(cumulatives.cumulativeDepositInQuoteToken)
+  const pnlWithoutFees = isEarnPosition
+    ? cumulatives?.cumulativeWithdrawInQuoteToken
+        .plus(currentPositionThings.netValueInDebtToken)
+        .minus(cumulatives.cumulativeDepositInQuoteToken)
+        .div(cumulatives.cumulativeDepositInQuoteToken)
+    : cumulatives?.cumulativeWithdrawInCollateralToken
+        .plus(currentPositionThings.netValueInCollateralToken)
+        .minus(cumulatives.cumulativeDepositInCollateralToken)
+        .div(cumulatives.cumulativeDepositInCollateralToken)
 
   return (
     <DetailsSection
@@ -127,9 +136,9 @@ export const PositionInfoComponent = ({
                   cumulatives={cumulatives}
                   netValueUSD={netValueUsd}
                   pnl={pnlWithoutFees}
-                  pnlUSD={pnlWithoutFees && cumulatives.cumulativeDepositUSD.times(pnlWithoutFees)}
-                  netValueTokenPrice={debtTokenPrice}
-                  netValueToken={position.debt.symbol}
+                  netValueTokenPrice={isEarnPosition ? debtTokenPrice : collateralTokenPrice}
+                  netValueToken={isEarnPosition ? position.debt.symbol : position.collateral.symbol}
+                  isEarnPosition={isEarnPosition}
                 />
               )
             }
