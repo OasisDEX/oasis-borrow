@@ -15,24 +15,40 @@ function getTokensInBaseUnit({
   manageTokenInput,
   currentPosition,
 }: ManageAaveParameters): [BigNumber, BigNumber] {
-  if (!manageTokenInput?.manageTokenAction) {
+  if (!manageTokenInput?.manageAction) {
     return [zero, zero]
   }
 
-  const collateralInBaseUnit =
-    manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.WITHDRAW_COLLATERAL ||
-    manageTokenInput.manageTokenAction === ManageCollateralActionsEnum.DEPOSIT_COLLATERAL
-      ? amountToWei(
-          manageTokenInput?.manageTokenActionValue || zero,
-          currentPosition.collateral.symbol,
-        )
-      : zero
+  let collateralInBaseUnit, debtInBaseUnit
 
-  const debtInBaseUnit =
-    manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT ||
-    manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.PAYBACK_DEBT
-      ? amountToWei(manageTokenInput?.manageTokenActionValue || zero, currentPosition.debt.symbol)
-      : zero
+  switch (manageTokenInput.manageAction) {
+    case ManageCollateralActionsEnum.WITHDRAW_COLLATERAL:
+    case ManageCollateralActionsEnum.DEPOSIT_COLLATERAL:
+      collateralInBaseUnit = amountToWei(
+        manageTokenInput?.manageInput1Value || zero,
+        currentPosition.collateral.symbol,
+      )
+      debtInBaseUnit = amountToWei(
+        manageTokenInput?.manageInput2Value || zero,
+        currentPosition.debt.symbol,
+      )
+      break
+
+    case ManageDebtActionsEnum.BORROW_DEBT:
+    case ManageDebtActionsEnum.PAYBACK_DEBT:
+      collateralInBaseUnit = amountToWei(
+        manageTokenInput?.manageInput2Value || zero,
+        currentPosition.collateral.symbol,
+      )
+      debtInBaseUnit = amountToWei(
+        manageTokenInput?.manageInput1Value || zero,
+        currentPosition.debt.symbol,
+      )
+      break
+
+    default:
+      throw Error('Unsupported manageAction')
+  }
 
   return [collateralInBaseUnit, debtInBaseUnit]
 }
@@ -61,7 +77,7 @@ export async function getManagePositionParameters(
     [LendingProtocol.SparkV3]: strategies.spark.borrow,
   }[protocol as AaveLendingProtocol]
 
-  switch (manageTokenInput?.manageTokenAction) {
+  switch (manageTokenInput?.manageAction) {
     case ManageDebtActionsEnum.PAYBACK_DEBT:
     case ManageCollateralActionsEnum.WITHDRAW_COLLATERAL:
       type AaveLikePaybackWithdrawStrategyArgs = Parameters<
@@ -75,8 +91,8 @@ export async function getManagePositionParameters(
         slippage,
         debtToken,
         collateralToken,
-        amountCollateralToWithdrawInBaseUnit: collateral,
         amountDebtToPaybackInBaseUnit: debt,
+        amountCollateralToWithdrawInBaseUnit: collateral,
       }
 
       const paybackWithdrawStratDeps: Omit<
@@ -115,7 +131,7 @@ export async function getManagePositionParameters(
       }
 
       throw new Error(
-        `Unsupported protocol ${protocol} for action ${manageTokenInput?.manageTokenAction}`,
+        `Unsupported protocol ${protocol} for action ${manageTokenInput?.manageAction}`,
       )
 
     case ManageDebtActionsEnum.BORROW_DEBT:
@@ -128,9 +144,9 @@ export async function getManagePositionParameters(
       >[1]
 
       const borrowDepositStratArgs: AaveLikeDepositBorrowStrategyArgs = {
+        slippage,
         debtToken,
         collateralToken,
-        slippage,
         amountDebtToBorrowInBaseUnit: debt,
         amountCollateralToDepositInBaseUnit: collateral,
         entryToken: collateralToken,
@@ -167,7 +183,7 @@ export async function getManagePositionParameters(
       }
 
       throw new Error(
-        `Unsupported protocol ${protocol} for action ${manageTokenInput?.manageTokenAction}`,
+        `Unsupported protocol ${protocol} for action ${manageTokenInput?.manageAction}`,
       )
 
     default:

@@ -420,7 +420,7 @@
     "move_dest": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt to the vault",
     "move_src": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt from the vault",
     "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",
-    "payback": "Pay back <0>{{daiAmount}}</0> Dai to Vault",
+    "payback": "Payback <0>{{daiAmount}}</0> Dai to Vault",
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
     "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
     "open_multiply_vault": "Opened multiply Vault",
@@ -1278,10 +1278,10 @@
         "borrow": "Borrow",
         "paybck": "Payback",
         "switch-to-borrow": "Switch to Borrow",
-        "deposit-collateral": "Deposit collateral",
-        "withdraw-collateral": "Withdraw collateral",
-        "payback-debt": "Pay back debt",
-        "borrow-debt": "Borrow debt"
+        "deposit-collateral": "Deposit",
+        "withdraw-collateral": "Withdraw",
+        "payback-debt": "Payback",
+        "borrow-debt": "Borrow"
       },
       "earn": {
         "vault-overview": "Vault overview",
@@ -1467,7 +1467,7 @@
     "borrow": "Borrow",
     "deposit": "Deposit",
     "generate": "Generate",
-    "payback": "Pay back",
+    "payback": "Payback",
     "withdraw": "Withdraw"
   },
   "vault-changed": "Vault changed!",

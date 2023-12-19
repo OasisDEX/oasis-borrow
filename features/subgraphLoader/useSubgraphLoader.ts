@@ -95,7 +95,6 @@ export function useSubgraphLoader<
         }))
       })
       .finally(() => {
-        // console.log('finally')
         setState((prev) => ({
           ...prev,
           isLoading: false,

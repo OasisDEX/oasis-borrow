@@ -38,9 +38,14 @@ export type UpdateDebtActionType = {
   manageTokenAction: ManageDebtActionsEnum
 }
 
-export type UpdateTokenActionValueType = {
-  type: 'UPDATE_TOKEN_ACTION_VALUE'
-  manageTokenActionValue: ManageTokenInput['manageTokenActionValue']
+export type UpdateInput1ValueType = {
+  type: 'UPDATE_INPUT1_ACTION_VALUE'
+  manageInput1Value: ManageTokenInput['manageInput1Value']
+}
+
+export type UpdateInput2ActionValueType = {
+  type: 'UPDATE_INPUT2_ACTION_VALUE'
+  manageInput2Value: ManageTokenInput['manageInput2Value']
 }
 
 export type BaseAaveEvent =
@@ -56,7 +61,8 @@ export type BaseAaveEvent =
   | UpdateCollateralActionType
   | UpdateClosingAction
   | UpdateDebtActionType
-  | UpdateTokenActionValueType
+  | UpdateInput1ValueType
+  | UpdateInput2ActionValueType
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
   | { type: 'UPDATE_ALLOWANCE'; allowance: StrategyTokenAllowance }
   | { type: 'USE_SLIPPAGE'; getSlippageFrom: 'userSettings' | 'strategyConfig' }

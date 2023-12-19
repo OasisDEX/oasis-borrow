@@ -24,8 +24,9 @@ export type UserInput = {
   debtAmount?: BigNumber
 }
 export type ManageTokenInput = {
-  manageTokenAction?: ManageDebtActionsEnum | ManageCollateralActionsEnum
-  manageTokenActionValue?: BigNumber
+  manageAction?: ManageDebtActionsEnum | ManageCollateralActionsEnum
+  manageInput1Value?: BigNumber
+  manageInput2Value?: BigNumber
   closingToken?: string
 }
 

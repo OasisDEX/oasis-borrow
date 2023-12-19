@@ -1,7 +1,7 @@
 import { useInterpret } from '@xstate/react'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import type { ManageAaveStateMachine } from 'features/aave/manage/state'
-import type { IStrategyConfig, PositionId } from 'features/aave/types'
+import type { IStrategyConfig, ManageTokenInput, PositionId } from 'features/aave/types'
 import { ProxyType } from 'features/aave/types'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
 import { env } from 'process'
@@ -10,10 +10,11 @@ import React from 'react'
 import { OptimizationAaveStateMachineContextProvider } from './optimization-aave-state-machine-context'
 import { shouldCreateOptimizationMachine } from './should-create-optimization-machine'
 
-export const defaultManageTokenInputValues = {
+export const defaultManageTokenInputValues: ManageTokenInput = {
   // defaults for the manage collateral/debt are set here
-  manageTokenAction: undefined,
-  manageTokenActionValue: undefined, // just to provide any value when debugging
+  manageAction: undefined,
+  manageInput1Value: undefined, // just to provide any value when debugging
+  manageInput2Value: undefined, // just to provide any value when debugging
   closingToken: undefined,
 }
 

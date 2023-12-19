@@ -18,6 +18,10 @@ import {
   ManageDebtActionsEnum,
 } from 'features/aave'
 import { getTxTokenAndAmount } from 'features/aave/helpers'
+import {
+  getAllowanceTokenAmount,
+  getAllowanceTokenSymbol,
+} from 'features/aave/helpers/manage-inputs-helpers'
 import { defaultManageTokenInputValues } from 'features/aave/manage/contexts'
 import type {
   BaseAaveContext,
@@ -30,7 +34,7 @@ import type {
 import {
   contextToTransactionParameters,
   getSlippage,
-  isAllowanceNeeded,
+  isAllowanceNeededManageActions,
   ProxyType,
 } from 'features/aave/types'
 import type { PositionId } from 'features/aave/types/position-id'
@@ -80,8 +84,8 @@ function getTransactionDef(context: ManageAaveContext): TransactionDef<Operation
 export type ManageAaveEvent =
   | { type: 'ADJUST_POSITION' }
   | { type: 'CLOSE_POSITION' }
-  | { type: 'MANAGE_COLLATERAL'; manageTokenAction: ManageTokenInput['manageTokenAction'] }
-  | { type: 'MANAGE_DEBT'; manageTokenAction: ManageTokenInput['manageTokenAction'] }
+  | { type: 'MANAGE_COLLATERAL'; manageTokenAction: ManageTokenInput['manageAction'] }
+  | { type: 'MANAGE_DEBT'; manageTokenAction: ManageTokenInput['manageAction'] }
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
   | { type: 'NEXT_STEP' }
@@ -122,9 +126,9 @@ export function createManageAaveStateMachine(
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
   depositBorrowAaveMachine: TransactionParametersStateMachine<ManageAaveParameters>,
 ) {
-  /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOhgBdyCoAFAe1lyrvwBF1z0yxLqaAnOgA8AngEEIEfnFgBiCCzAkCANzoBrJRQHDxk6bHhIQABwZNcLRKCGIAbABYAnCQCsDgBxOHAdg8OARncAJicAGhARRGDPEgBmAAYnOI84gLiUgKdgnwBfXIi0LDxCUgoqfFpzZjYOLnLqMXQVMHpGGvlFZXw1TW5yJpa2iytjM3bLfGsQWwQAhITXEicnBICfDOyEuLtgiKiEV22SXdc-VyOEhxiHfMKMHAJiEkgLStkAZQBRABUAfQAQmIADJiAByAGEvtNxiMpsZZkFgh54g5XE4jikMtsfPtEIEfCRPHENg44pd3AE7iAio9Si8IG8oLIwV8ABr-D4-L40GHVSbTWZ2HwuZxxVYrZLrBwOPEIZJLAIedbBIIJUIZOLU2klZ6vCrMiHAgDy3z+NFNAEkfpbjWC+RNRjZEOknAESAFgq47AEAnYEj4fD6AnL-YTkeiAmi4sEch5gtqHrrSNIVLgwAB3ags9mc7m8sb8p0zfF+okeeNpJyBnzojxynxkkheBwJDx2RIkrK3Ao0pNPFNgNOZ7NAiEAaT+P2Nfy+rGtlrBAHEHXDBYgUii7EdvWda44PLjIi7PXYSF6Y2k7B2smdE8UByRU+ms+8fgAlcEfMQQm1281iJ+ACyvxfO+Hx-O+XxQpaABqc6rjU64IMESTLCSyJtqEqR+nK6SBCQ6oBm20rItW950s85BCJa+A6FABhyD8bJ-B8ACqEJQh8HyIQKCKIK4ezHnMZIogsCxOMqboONeFHJiQ1EAGLoLgAA2ACu0iyFBH4AJq8cWiIXMskrKsKbr+q4cRyhiRKSiKuwJB2CpyY+z4jpUEKqeY7xGlay4AcBoHgZB0FfHBCGFo68LOnMFzujuyTbB22ypHhAbun6Ti7NG4peHkvY6m5Q4vtQXk+cyrIcqx+YGTFJZzFkmVkY4CzosSeFxDJzZnE56SCes26ufS7mvlA5WMO8Y6TtOs7zjay51chKrBPEQTKj4qqHsE1nCXYHgJOh6TksEPpJKd+S9vgdAQHA0xFfSDSVMMNTsJw-QGjoogSFIMhLfxKFnMsvgpB2PhtsldhyjtZ6JMkklnDkZEJoV-aPTwn1FrU71PVAgytFj-2xYeDhuEkh5ZMG7hHgcF4nNcGyqr60lksNzy4y9kxvegRMNTtcTAxs7YkhDOxQ8Jfqk3DeXeMqKQFfcD70vq1C84iMarWS1yodGzjbKGorJMKtZBlG6IK32SvPKNqtRWuANZIddgrGsKS+JtAb1sJqwC-t6xWfGwphmzpDUbR9GMWr9jpCQgZkosKzitcu0HJ47pkr68xRl4Cwo4rlGh0IylqZpYBRwg1w2Yd4kLKb27IvGIcKUIHzqZgmB-XbSEAzEq2Nqqpt+OkoRCQcUYxoRCyZ2LudNzbnneZNUDl-hZ4+H6-oyeqSXiwch5iVW2zIo4kkhyvXsHAAtKtRwdrGVz+DKXo9vkQA */
   return createMachine(
     {
+      /** @xstate-layout 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-QpSppiA-YRGH2n3Jw+4-DJTrTcuI5Ufls7KOIWoySujDHDHhlQqm5DMkOMqq41knjeHUUEf8ZW6ti0w1-xA0K3ilDQi9HcsJSE3cGPRGROsQYTlbGpQ-dhwtuGbB8b-dp9gunGZWAM5Gl20QMbYmOoiIuAMGPOv6L2C8hc9bKpzdCjpBbh2ucCiUDQCKEVHFkWWvUBYgI8HELOhsQ1-YJFmIsf2sQHDbSbGGAMYcTo9C7E55Le73FpYy1l2puWeD5fYIVuQvnLLkeSiVh1URmxzBlL3GrP1l6IU9K4f2IMYhrFa2pmwnXMvZd6-13gRW3B+YbQiUrk2Kszeq9tO+S9XCrGGJGOMnG7mqZcx1z86Wds9cDXVRq+9ZDtT4MVqME3yvTaq62Bjb6USWBiTw2ISmEuYaS5t7b3XLllrUYBzR4bjujd6iDyDYPKuze2rnH5fY0JA18vF25zKNmo4+113bgaLgLmrrXeuHFRNonE5CST-J6M3ibNYPa5gAwhFbEOZ79P3WM5HJ99HOXA1Ed5cJ0jePnafN52AmjsYpM-SCLYO+QowQcjlEbJHKmGdvYKWjlnzABNBLV2EtcPOqP89o4Lhjzgwz8VmAGLwuCS7KZezblL72RySC8cQZgeXCwDaK2RrXp3QdTZJ1dzWTZkQzOiPd1KqUrAbdt1tz80fxGx-jwVorw2zX49T0T9Pl3Iea2mz2OUgYYiRD1sXiPduy8x7j31hPB25BHZGynqYhOytN4h3NnOx4wwEt5IDRpvRe-tf71Hwfv2v5tXuB1ZPuip9neJ83+fejUKITMYiLsr5xKI7p3QuXJfArl9j1j7zWjNfH-G43i7c+0qMw9gawIM5gwcCQj+lUYeL+fepe2+Fe5wVcNcdcDcR+M8YmuuAu8Qbkfk-QskDW4urYdgG+I6AaSKAA7hgNQEQGAMQJpuWk9NFLFDcKICUGUDaLOlECDDYNNuNKmm2NMFDp4DDkHEiD5OtjLs-oOiXuQRoFQfsmAO-oQHQQwZFMwQ8GUKweweUIQMVheOzDhIXoDDJB2g1rhFSg1mJHgqQa5nIQoTQYriziofQSUuoTFJoezmwRwXoegSjAYd6I2MYU2PevzKsIhFEKDCEMeJIaHrLjIXAbABQToHQGwBoJSBoLIvIhQawDvKPLmOBEUBwBQKahnPXtfJKrWMHA2FrOJNweSp6ISpECJLEDNqmrYe4kkSkbQGkRQAogiroGoAin4LkR-A9A8IUcUaUQAuUaSn0I0jUbGEEYiL7J7PYGhE4AtmhA2B0QUl0cQKkRoDwKgLIugKMbvJ-AUUUSUegmUZPnMVUeQrUcsQ0Y2NJBhPGiJGsCHlbjAQkZvjYLAJkOIB9GkZIOIswBAPoE4owHgBoFIk4k-nmjuiXkCQQCCd1GCeIggLCRoNQGQP8I0LOkiJEOGKmn7PKAkLGB2mbqEFMt8XKJyIiLsYCcCaCRoOCcwJcvIrIjYEMWQFUpkcgPAbmmqp+qiWyZiRydibifia6ESX4bxOJCIXfqVMeA2F2A0YKDZsvP6AqMMI4CQVIcieKYkckQcacP4mUhUtUrUnUmQs0q0tAfESiWad0X4sSYFrWMFuJIqgGCsKsZyO7DFl2GSq4DECyWiUQOaXQOBKgPQAigorIiwFUJwCIJSBPAZGmDcHka8MDqfrPqTgNKiAYiNDJMHLGD8UiWKc5okWODGbQHGQmUmSmYEhwCIIfMfLXGfDmR-PmWngAUWfPLyPeGKHeGMByNmtWVhm1iOlGYQA2U2YmcmY7m2SIN-L-L2Rcf2f-uDkOa3HrPZGKC6gXOCFWc6dIa6QCcmXgPQGAMkUMtgBAAAFYKLlIlK77-b76PBA6KkbQPELHU51GprkpAztzxD6yppaz8Isk3l3kPlQBPmvnvl-pV6J6zoAXVFAUvHbRxDDSuBLCEVjBTkXkmm1nXlgC3n3l+JIVvkMFoWj6153HH6YVPFLH1EMZoR9DWAQixgLb1iwWUXwV+IlBIraCoXD7V4YWVGAXPEcUPqBgSiBhdziTYhNiCVUUIWiXMgSX7aDZMUzH3EyVYVyUgXbQuDij+n8KyhVa8gaXCVDLaXiX+KfktQA4H6-k-4zysWLHAUrE-SgKBiFTNgjAzAsnEBGBFDoDiDyJyJwCwA8DEC0CXKwBclZGZF8ndaCmyLCmyJKKJXJWyKwBsA5boBAnUDyl-kuxChcirZRhCgtjUm4UhBITEGdyoQhhQFMqXmmkAkRVRUxUaBxWwAJVJUpWqJVAyCGgrhvCPBpxeWHj+6LaLC8hLFOAyhCHzbjJYwRgiQ9ATTGk1mzmub9XRWxXJkjUFXjXAQPCED0yJzagUCnyBLTGgYsw1Vkn1WUngj8QMYES8G8g7UgxOQ9zhWRVnVDUXWjWFWpU3V3UOx6TgTYBFA0ivWGYbQkm1XxBfWNW-U-Tgg57EGChzAxAuBg0DXnXxXMBw33W6QPRPWo0GjEkfV1UUm40dpRgrDrGoiuxpIgjk0Q3DWw1cC3W03rhI0o1o3+ZAgs3Y1s1Ul42TAggxAA3LxgjNiAzr6HUzmbYRVLktmrlpnM2kms0NUK0rqjB0nEEPaehUrmBg360rmpntlDYLVYIzLX4vg80yjHTyicVBAoiA3NgoToiW7Tko4l563xnLksCuWtSA6enBDekrC+lhYBnC4zKGGOANjYgeCoTJDvjoAaCeLwDNDh2OIT6-5NjBgQjIhTahWwggxdWikzmsqaoQCV0YH7TJ1UoQjoh4IMZrC2DLJIhRhgjiytZt3bKjoQAIpgCd3CoKjihOQNWUZeDWBox1jJLSjQa9xh2kVHVT29LPIDJ+IL28SLBb0r3yhr31jSoq2tiRiOBD1QiT0uLt19IvKHKfjn0UapQGJqXGL91mJAqhAgpQj66jBv3dIf3apn116T7amhBrDrCL62VC4WJNggHrB50Qr+jQPwparIo6rf0ji-3JQXgQjDRBC8gJBeAeB5ReDrG36L6gHN2Jbca27kOfKEociRi11iSQi+yWDIhNgoR+yOB+zPza0R1wFjoBrcP4pMN8N6zByCMX7dAF7hgNY0Y0PnndVkXHW8YabwPMUzwgjYgTKrZYwzI4QRaLxUpERdprDCQsn27faKNTC9rt4+2oicgzKejbRjC2C8KRA+gyhPZxE9XkUjpv4x6eOeBmLcirCnldhQippowJDt5d7ZSIj80yOcNwH2HUG0GuFDKeO919BCytiWJggb3C5d4A0Va9CQhmJF4FOvZFOZbyElPKGqGmOGW-64K64B4SNRCBhuSIhVO9CxBeB4xvhROGObbFOKFOHfYuGaYJPDPUajMmKpSAo-STK3ZQi2LcyRCRkNlpEZHpUUEJP8ihCQj8gEKAwgihGtyuC4RIhiycguDxC04H062omXMaB9EDH0BDGTBmOXzBw9iTlNgfOOBwYDR4WJPhmwYBgXPdFpHHGnF3NMNAyh0yQQogibXzxQa8G6m+QyociRmSlWRYmeNzAyQ9guAnNRAhD1Pzzlkdw4jLAuCraYsWkDNvVYJRBhg2OtNB5sxuCBlpTNj8gciWLmDrC0sHCLnR0tkJN521jnZcX1UyS+yogBwLae68hmL2XUWPkvl0XCvo1jZ4XHh8GB59QYOICTKIa0ZIaAz+wWtaViW2vS2BDbOQi7M+gTMBVjAUuGzrBmJewC2DVC1XVFWMt56fXKnrBoTkqrBUpKXOBrBlQrDxuU0jWMuog2b8PhnLyIiktutBBchLCeTpOIj8QO0avJmePmDgh7Qa28XysJIZ2KVLAJBTbQX2IdPh59VGCEAKLUA0ElsIPH6dsCR8PtpCh9sMZ1ESgxAChYghEF2JBAA */
       //eslint-disable-next-line @typescript-eslint/consistent-type-imports
       tsTypes: {} as import('./manageAaveStateMachine.typegen').Typegen0,
       schema: {
@@ -300,8 +304,8 @@ export function createManageAaveStateMachine(
                     target: 'allowanceCollateralSetting',
                   },
                   {
-                    target: 'txInProgressEthers',
                     cond: 'isEthersTransaction',
+                    target: 'txInProgressEthers',
                   },
                   {
                     cond: 'validTransactionParameters',
@@ -333,8 +337,8 @@ export function createManageAaveStateMachine(
                     target: 'allowanceDebtSetting',
                   },
                   {
-                    target: 'txInProgressEthers',
                     cond: 'isEthersTransaction',
+                    target: 'txInProgressEthers',
                   },
                   {
                     cond: 'validTransactionParameters',
@@ -606,10 +610,15 @@ export function createManageAaveStateMachine(
           cond: 'canChangePosition',
           actions: ['resetTokenActionValue', 'updateDebtTokenAction', 'reset'],
         },
-        UPDATE_TOKEN_ACTION_VALUE: {
+        UPDATE_INPUT1_ACTION_VALUE: {
           cond: 'canChangePosition',
           target: '#manageAaveStateMachine.background.debouncingManage',
-          actions: ['updateTokenActionValue', 'reset'],
+          actions: ['updateInput1ActionValue', 'reset'],
+        },
+        UPDATE_INPUT2_ACTION_VALUE: {
+          cond: 'canChangePosition',
+          target: '#manageAaveStateMachine.background.debouncingManage',
+          actions: ['updateInput2ActionValue', 'reset'],
         },
         USE_SLIPPAGE: {
           target: ['background.debouncing'],
@@ -643,7 +652,7 @@ export function createManageAaveStateMachine(
         canChangePosition: ({ web3Context, ownerAddress, currentPosition }) =>
           allDefined(web3Context, ownerAddress, currentPosition) &&
           web3Context!.account === ownerAddress,
-        isAllowanceNeeded,
+        isAllowanceNeeded: isAllowanceNeededManageActions,
         canAdjustPosition: ({ strategyConfig }) =>
           strategyConfig.availableActions().includes('adjust'),
         isEthersTransaction: ({ strategyConfig, proxyAddress, transition }) =>
@@ -653,8 +662,9 @@ export function createManageAaveStateMachine(
       actions: {
         resetTokenActionValue: assign((_) => ({
           manageTokenInput: {
-            manageTokenAction: defaultManageTokenInputValues.manageTokenAction,
-            manageTokenActionValue: defaultManageTokenInputValues.manageTokenActionValue,
+            manageAction: defaultManageTokenInputValues.manageAction,
+            manageInput1Value: defaultManageTokenInputValues.manageInput1Value,
+            manageInput2Value: defaultManageTokenInputValues.manageInput2Value,
             closingToken: defaultManageTokenInputValues.closingToken,
           },
           strategy: undefined,
@@ -669,36 +679,43 @@ export function createManageAaveStateMachine(
           return {
             manageTokenInput: {
               ...manageTokenInput,
-              manageTokenAction:
-                manageTokenInput?.manageTokenAction ??
-                ManageCollateralActionsEnum.DEPOSIT_COLLATERAL,
+              manageAction:
+                manageTokenInput?.manageAction ?? ManageCollateralActionsEnum.DEPOSIT_COLLATERAL,
             },
           }
         }),
         updateCollateralTokenAction: assign(({ manageTokenInput }, { manageTokenAction }) => ({
           manageTokenInput: {
             ...manageTokenInput,
-            manageTokenAction: manageTokenAction || ManageCollateralActionsEnum.DEPOSIT_COLLATERAL,
+            manageAction: manageTokenAction || ManageCollateralActionsEnum.DEPOSIT_COLLATERAL,
           },
         })),
         updateDebtTokenAction: assign(({ manageTokenInput }, { manageTokenAction }) => ({
           manageTokenInput: {
             ...manageTokenInput,
-            manageTokenAction: manageTokenAction || ManageDebtActionsEnum.BORROW_DEBT,
+            manageAction: manageTokenAction || ManageDebtActionsEnum.BORROW_DEBT,
           },
         })),
-        updateTokenActionValue: assign(({ manageTokenInput }, { manageTokenActionValue }) => ({
+        updateInput1ActionValue: assign(({ manageTokenInput }, { manageInput1Value }) => ({
           manageTokenInput: {
             ...manageTokenInput,
-            manageTokenActionValue,
+            manageInput1Value,
           },
         })),
-        userInputRiskRatio: assign((context, event) => ({
-          userInput: {
-            ...context.userInput,
-            riskRatio: event.riskRatio,
+        updateInput2ActionValue: assign(({ manageTokenInput }, { manageInput2Value }) => ({
+          manageTokenInput: {
+            ...manageTokenInput,
+            manageInput2Value,
           },
         })),
+        userInputRiskRatio: assign((context, event) => {
+          return {
+            userInput: {
+              ...context.userInput,
+              riskRatio: event.riskRatio,
+            },
+          }
+        }),
         reset: assign((context) => ({
           userInput: {
             ...context.userInput,
@@ -722,9 +739,9 @@ export function createManageAaveStateMachine(
                 context.strategyConfig.riskRatios.minimum,
               proxyAddress: context.proxyAddress!,
               token: context.tokens.deposit,
+              manageTokenInput: context.manageTokenInput,
               slippage: getSlippage(context),
               currentPosition: context.currentPosition!,
-              manageTokenInput: context.manageTokenInput,
               proxyType: context.positionCreatedBy,
               protocol: context.strategyConfig.protocol,
               shouldCloseToCollateral:
@@ -840,9 +857,11 @@ export function createManageAaveStateMachine(
           }
           return undefined
         }),
-        updateContext: assign((_, event) => ({
-          ...event,
-        })),
+        updateContext: assign((_, event) => {
+          return {
+            ...event,
+          }
+        }),
         killAllowanceMachine: pure((context) => {
           if (context.refAllowanceStateMachine && context.refAllowanceStateMachine.stop) {
             context.refAllowanceStateMachine.stop()
@@ -852,13 +871,10 @@ export function createManageAaveStateMachine(
         spawnAllowanceMachine: assign((context) => ({
           refAllowanceStateMachine: spawn(
             allowanceStateMachine.withContext({
-              token: context.transactionToken || context.tokens.deposit,
+              token: getAllowanceTokenSymbol(context) || context.tokens.deposit,
               spender: context.proxyAddress!,
               allowanceType: 'unlimited',
-              minimumAmount:
-                context.manageTokenInput?.manageTokenActionValue ||
-                context.userInput.amount ||
-                zero,
+              minimumAmount: getAllowanceTokenAmount(context) || context.userInput.amount || zero,
               runWithEthers: context.strategyConfig.executeTransactionWith === 'ethers',
               signer: (context.web3Context as ContextConnected)?.transactionProvider,
               networkId: context.strategyConfig.networkId,

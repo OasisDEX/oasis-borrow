@@ -205,39 +205,61 @@ function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveSta
 }
 
 export function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
-  if (context.currentPosition === undefined) {
+  const position = context.currentPosition
+  if (position === undefined) {
     return zero
   }
-  if (context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
-    const position = context.currentPosition
-    const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol)
+  const isBorrow = context.manageTokenInput?.manageAction === ManageDebtActionsEnum.BORROW_DEBT
+  const isDeposit =
+    context.manageTokenInput?.manageAction === ManageCollateralActionsEnum.DEPOSIT_COLLATERAL
+  if (isBorrow || isDeposit) {
+    const inputCollateralAmount =
+      (isBorrow
+        ? context.manageTokenInput?.manageInput2Value
+        : isDeposit
+        ? context.manageTokenInput?.manageInput1Value
+        : zero) ?? zero
+    const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol).plus(
+      inputCollateralAmount,
+    )
     const debt = amountFromWei(position.debt.amount, position.debt.symbol)
     return collateral
-      .times(context.collateralPrice || zero)
+      .times(context.balance?.collateral.price || zero)
       .times(position.category.maxLoanToValue)
-      .minus(debt.times(context.debtPrice || zero))
+      .minus(debt.times(context.balance?.debt.price || zero))
+  } else {
+    const currentDebt = amountFromWei(position.debtToPaybackAll, position.debt.symbol)
+    const currentBalance = context.balance?.debt?.balance || zero
+    return currentDebt.lte(currentBalance) ? currentDebt : currentBalance
   }
-
-  const currentDebt = amountFromWei(
-    context.currentPosition.debtToPaybackAll,
-    context.currentPosition?.debt.symbol,
-  )
-
-  const currentBalance = context.balance?.debt?.balance || zero
-
-  return currentDebt.lte(currentBalance) ? currentDebt : currentBalance
 }
 
 export function calculateMaxCollateralAmount(context: ManageAaveContext): BigNumber {
-  if (
-    context.manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
-  ) {
-    return amountFromWei(
-      context.currentPosition?.maxCollateralToWithdraw || zero,
-      context.currentPosition?.collateral.symbol || '',
-    )
+  const position = context.currentPosition
+  if (position === undefined) {
+    return zero
   }
-  return context.balance?.collateral.balance || zero
+  const isPayback = context.manageTokenInput?.manageAction === ManageDebtActionsEnum.PAYBACK_DEBT
+  const isWithdraw =
+    context.manageTokenInput?.manageAction === ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
+  if (isPayback || isWithdraw) {
+    const inputDebtAmount =
+      (isPayback
+        ? context.manageTokenInput?.manageInput1Value
+        : isWithdraw
+        ? context.manageTokenInput?.manageInput2Value
+        : zero) ?? zero
+    const debt = amountFromWei(position.debt.amount, position.debt.symbol).minus(inputDebtAmount)
+    const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol)
+    const minimumCollateral = debt
+      .dividedBy(context.balance?.debt.price || zero)
+      .dividedBy(position.category.maxLoanToValue)
+      .dividedBy(context.balance?.collateral.price || zero)
+
+    return collateral.minus(minimumCollateral)
+  } else {
+    return context.balance?.collateral.balance || zero
+  }
 }
 
 export function ManageAaveSaveSwitchFailureStateView({ state, send }: ManageAaveStateProps) {
