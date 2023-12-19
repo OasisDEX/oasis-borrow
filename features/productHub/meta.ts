@@ -67,7 +67,7 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
   },
   ETH: {
     title: 'Ether',
-    description: 'ETH/stETH/rETH',
+    description: 'ETH/stETH/cbETH/rETH',
     value: 'ETH',
     icon: getToken('ETH').iconCircle,
   },
@@ -79,7 +79,7 @@ export const productHubTokenOptions: { [key: string]: HeaderSelectorOption } = {
   },
   USDC: {
     title: 'USDCoin',
-    description: 'USDC',
+    description: 'USDC/USDbC',
     value: 'USDC',
     icon: getToken('USDC').iconCircle,
   },

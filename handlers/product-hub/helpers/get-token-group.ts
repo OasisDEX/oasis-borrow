@@ -16,6 +16,8 @@ export function getTokenGroup(token: string): string {
       return 'BTC'
     case 'SDAI':
       return 'DAI'
+    case 'USDBC':
+      return 'USDC'
     default:
       return token
   }
