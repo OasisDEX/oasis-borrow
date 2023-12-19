@@ -64,7 +64,7 @@ export type AaveCumulativesResponse = {
   id: string
   cumulativeDepositUSD: string
   cumulativeDepositInQuoteToken: string
-  cumulativeDespositInCollateralToken: string
+  cumulativeDepositInCollateralToken: string
   cumulativeWithdrawUSD: string
   cumulativeWithdrawInQuoteToken: string
   cumulativeWithdrawInCollateralToken: string

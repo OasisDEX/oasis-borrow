@@ -90,8 +90,8 @@ export async function getAaveHistoryEvents(
             cumulativeDepositInQuoteToken: new BigNumber(
               positions[0].cumulativeDepositInQuoteToken,
             ),
-            cumulativeDepositInCollateralToken: new BigNumber( // a typo, yes, fixing it here so we don't have to fix it in the subgraph
-              positions[0].cumulativeDespositInCollateralToken, // this is now cumulativeDepositInCollateralToken
+            cumulativeDepositInCollateralToken: new BigNumber(
+              positions[0].cumulativeDepositInCollateralToken,
             ),
             cumulativeWithdrawUSD: new BigNumber(positions[0].cumulativeWithdrawUSD),
             cumulativeWithdrawInQuoteToken: new BigNumber(
