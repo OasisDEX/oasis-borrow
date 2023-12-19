@@ -1321,7 +1321,6 @@
       "button": "了解更多"
     }
   },
-  "view-on-ethtx": "在 Ethtx 查看",
   "open-vault-deployment-confirming": "金库已创建。正在等待确认 {{openVaultConfirmations}}/{{safeConfirmations}}",
   "set-up-stop-loss-tx": "设置 Stop-Loss 交易",
   "open-vault-two-tx-setup-requirement": "你将会被要求签署两笔交易。一笔是设置金库，另一笔是设置 Stop-Loss。",

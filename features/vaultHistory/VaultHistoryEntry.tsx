@@ -584,11 +584,9 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
 export function VaultHistoryEntry({
   item,
   etherscan,
-  ethtx,
 }: {
   item: VaultHistoryEvent
   etherscan?: { url: string }
-  ethtx?: { url: string }
 }) {
   const { t } = useTranslation()
   const [opened, setOpened] = useState(false)
@@ -664,13 +662,6 @@ export function VaultHistoryEntry({
                 {t('view-on-etherscan')}
               </WithArrow>
             </AppLink>
-            {ethtx && (
-              <AppLink sx={{ textDecoration: 'none' }} href={`${ethtx.url}/${item.hash}`}>
-                <WithArrow sx={{ color: 'interactive100', fontSize: 1, fontWeight: 'semiBold' }}>
-                  {t('view-on-ethtx')}
-                </WithArrow>
-              </AppLink>
-            )}
           </Flex>
         </Box>
       )}

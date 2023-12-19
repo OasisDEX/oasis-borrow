@@ -447,7 +447,7 @@ export function createVaultHistory$(
   )
   return combineLatest(context$, vault$(vaultId)).pipe(
     switchMap(([{ chainId }, { token, address, id }]) => {
-      const { etherscan, cacheApi, ethtx } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+      const { etherscan, cacheApi } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       return onEveryBlock$.pipe(
         switchMap(() => {
           const apiClient = makeClient(cacheApi)
@@ -458,7 +458,7 @@ export function createVaultHistory$(
           )
         }),
         mapEventsToVaultEvents,
-        map((events) => events.map((event) => ({ etherscan, ethtx, ...event, token }))),
+        map((events) => events.map((event) => ({ etherscan, ...event, token }))),
         map(addReclaimFlag),
         catchError(() => of([])),
       )
@@ -477,7 +477,7 @@ export function createAaveHistory$(
   )
   return combineLatest(context$).pipe(
     switchMap(([{ chainId }]) => {
-      const { etherscan, cacheApi, ethtx } = getNetworkContracts(NetworkIds.MAINNET, chainId)
+      const { etherscan, cacheApi } = getNetworkContracts(NetworkIds.MAINNET, chainId)
       return onEveryBlock$.pipe(
         switchMap(() => {
           const apiClient = makeClient(cacheApi)
@@ -488,7 +488,7 @@ export function createAaveHistory$(
         }),
         mapEventsToVaultEvents,
         map((events) =>
-          events.map((event) => ({ etherscan, ethtx, autoKind: event.kind, ...event })),
+          events.map((event) => ({ etherscan, autoKind: event.kind, ...event })),
         ),
         catchError(() => of([])),
       )

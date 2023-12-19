@@ -194,9 +194,6 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     apiKey: etherscanAPIKey || '',
     name: 'Arbiscan',
   },
-  ethtx: {
-    url: '',
-  },
   magicLink: {
     apiKey: '',
   },

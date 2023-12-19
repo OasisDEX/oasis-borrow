@@ -211,9 +211,6 @@ export const goerliContracts: MainnetContractsWithOptional = {
     apiKey: etherscanAPIKey || '',
     name: 'Etherscan',
   },
-  ethtx: {
-    url: 'https://ethtx.info/goerli',
-  },
   magicLink: {
     apiKey: '',
   },

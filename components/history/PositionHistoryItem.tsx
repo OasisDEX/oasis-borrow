@@ -22,7 +22,6 @@ interface PositionHistoryItemProps {
     url: string
     name?: string
   }
-  ethtxUrl: string
   isOracless?: boolean
   isShort?: boolean
   item: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent> | Partial<AjnaBorrowerEvent>
@@ -34,7 +33,6 @@ interface PositionHistoryItemProps {
 export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
   collateralToken,
   etherscanConfig,
-  ethtxUrl,
   isOracless,
   isShort,
   item,
@@ -125,13 +123,6 @@ export const PositionHistoryItem: FC<PositionHistoryItemProps> = ({
                   {etherscanConfig.name
                     ? t('view-on-etherscan-custom', { etherscanName: etherscanConfig.name })
                     : t('view-on-etherscan')}
-                </WithArrow>
-              </AppLink>
-            )}
-            {ethtxUrl && (
-              <AppLink sx={{ textDecoration: 'none' }} href={`${ethtxUrl}/${item.txHash}`}>
-                <WithArrow sx={{ color: 'interactive100', fontSize: 1, fontWeight: 'semiBold' }}>
-                  {t('view-on-ethtx')}
                 </WithArrow>
               </AppLink>
             )}

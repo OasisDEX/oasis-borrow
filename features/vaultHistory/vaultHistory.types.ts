@@ -9,9 +9,6 @@ export type VaultHistoryEvent = VaultEvent & {
     apiUrl: string
     apiKey: string
   }
-  ethx?: {
-    url: string
-  }
   daiAmount?: BigNumber
   collateralAmount?: BigNumber
   gasFee?: BigNumber
