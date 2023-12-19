@@ -88,7 +88,7 @@ export function OmniFormFieldDeposit({
       onAuxiliaryChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-deposit',
-          depositAmount: n?.dividedBy(tokenPrice).decimalPlaces(tokenPrecision),
+          depositAmount: n?.dividedBy(tokenPrice).dp(tokenPrecision),
           depositAmountUSD: n,
         })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
