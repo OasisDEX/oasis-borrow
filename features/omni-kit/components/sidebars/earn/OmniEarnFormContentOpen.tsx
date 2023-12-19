@@ -5,7 +5,7 @@ import React from 'react'
 
 export function OmniEarnFormContentOpen() {
   const {
-    environment: { quotePrice, quoteToken, quoteBalance, quoteDigits },
+    environment: { quotePrice, quoteToken, quoteBalance, quoteDigits, quotePrecision },
   } = useOmniGeneralContext()
   const {
     form: { dispatch },
@@ -23,6 +23,7 @@ export function OmniEarnFormContentOpen() {
         tokenPrice={quotePrice}
         maxAmount={quoteBalance}
         tokenDigits={quoteDigits}
+        tokenPrecision={quotePrecision}
         resetOnClear
       />
       {extraEarnInput}

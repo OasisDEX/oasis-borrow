@@ -10,7 +10,13 @@ import React from 'react'
 
 export function OmniBorrowFormContentWithdraw() {
   const {
-    environment: { collateralDigits, collateralPrice, collateralToken, quoteBalance },
+    environment: {
+      collateralDigits,
+      collateralPrice,
+      collateralToken,
+      quoteBalance,
+      collateralPrecision,
+    },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -36,6 +42,7 @@ export function OmniBorrowFormContentWithdraw() {
         token={collateralToken}
         tokenPrice={collateralPrice}
         tokenDigits={collateralDigits}
+        tokenPrecision={collateralPrecision}
       />
       <OmniFormFieldPayback
         dispatchAmount={dispatch}

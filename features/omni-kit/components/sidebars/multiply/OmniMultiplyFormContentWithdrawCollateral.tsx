@@ -9,7 +9,7 @@ import React from 'react'
 
 export function OmniMultiplyFormContentWithdrawCollateral() {
   const {
-    environment: { collateralPrice, collateralToken },
+    environment: { collateralPrice, collateralToken, collateralPrecision },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -29,6 +29,7 @@ export function OmniMultiplyFormContentWithdrawCollateral() {
         resetOnClear
         token={collateralToken}
         tokenPrice={collateralPrice}
+        tokenPrecision={collateralPrecision}
       />
       {/* DISABLED: We're currently unable to support this operation
        * in the library based on existing operation if the LTV increases

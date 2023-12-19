@@ -10,7 +10,13 @@ import React from 'react'
 
 export function OmniBorrowFormContentPayback() {
   const {
-    environment: { collateralDigits, collateralPrice, collateralToken, quoteBalance },
+    environment: {
+      collateralDigits,
+      collateralPrice,
+      collateralToken,
+      quoteBalance,
+      collateralPrecision,
+    },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -41,6 +47,7 @@ export function OmniBorrowFormContentPayback() {
         token={collateralToken}
         tokenPrice={collateralPrice}
         tokenDigits={collateralDigits}
+        tokenPrecision={collateralPrecision}
       />
       {(paybackAmount || withdrawAmount) && (
         <OmniFormContentSummary>

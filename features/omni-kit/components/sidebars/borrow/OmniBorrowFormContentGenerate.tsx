@@ -13,6 +13,7 @@ export function OmniBorrowFormContentGenerate() {
     environment: {
       collateralBalance,
       collateralDigits,
+      collateralPrecision,
       collateralPrice,
       collateralToken,
       shouldSwitchNetwork,
@@ -42,6 +43,7 @@ export function OmniBorrowFormContentGenerate() {
         token={collateralToken}
         tokenPrice={collateralPrice}
         tokenDigits={collateralDigits}
+        tokenPrecision={collateralPrecision}
         {...(!shouldSwitchNetwork && { maxAmount: collateralBalance })}
       />
       {highlighterOrderInformation}
