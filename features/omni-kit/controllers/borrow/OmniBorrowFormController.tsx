@@ -109,6 +109,12 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
         },
       })}
       txHandler={txHandler}
+      txSuccessAction={() => {
+        if (uiDropdown === OmniSidebarBorrowPanel.Close) {
+          updateState('uiDropdown', OmniSidebarBorrowPanel.Collateral)
+          updateState('action', OmniBorrowFormAction.DepositBorrow)
+        }
+      }}
     >
       {currentStep === OmniSidebarStep.Risk && riskSidebar}
       {currentStep === OmniSidebarStep.Setup && <OmniBorrowFormContentDeposit />}
