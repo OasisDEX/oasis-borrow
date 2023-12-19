@@ -223,10 +223,12 @@ export function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
       inputCollateralAmount,
     )
     const debt = amountFromWei(position.debt.amount, position.debt.symbol)
+
     return collateral
       .times(context.balance?.collateral.price || zero)
       .times(position.category.maxLoanToValue)
-      .minus(debt.times(context.balance?.debt.price || zero))
+      .dividedBy(context.balance?.debt.price || zero)
+      .minus(debt)
   } else {
     const currentDebt = amountFromWei(position.debtToPaybackAll, position.debt.symbol)
     const currentBalance = context.balance?.debt?.balance || zero
