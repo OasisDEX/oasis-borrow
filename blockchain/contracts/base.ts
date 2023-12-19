@@ -189,9 +189,6 @@ export const baseContracts: MainnetContractsWithOptional = {
     apiKey: etherscanAPIKey || '',
     name: 'Basescan',
   },
-  ethtx: {
-    url: '',
-  },
   magicLink: {
     apiKey: '',
   },

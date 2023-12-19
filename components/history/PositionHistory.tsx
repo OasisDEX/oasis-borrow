@@ -32,7 +32,7 @@ export const PositionHistory: FC<PositionHistoryProps> = ({
 
   const contracts = getNetworkContracts(networkId)
   ensureEtherscanExist(networkId, contracts)
-  const { etherscan, ethtx } = contracts
+  const { etherscan } = contracts
   return (
     <DetailsSection
       title={t('position-history.header')}
@@ -42,7 +42,6 @@ export const PositionHistory: FC<PositionHistoryProps> = ({
             <PositionHistoryItem
               collateralToken={collateralToken}
               etherscanConfig={etherscan}
-              ethtxUrl={ethtx.url}
               isOracless={isOracless}
               isShort={isShort}
               item={item}

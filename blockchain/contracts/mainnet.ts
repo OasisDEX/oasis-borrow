@@ -223,9 +223,6 @@ export const mainnetContracts = {
     apiKey: etherscanAPIKey || '',
     name: 'Etherscan',
   },
-  ethtx: {
-    url: 'https://ethtx.info/mainnet',
-  },
   magicLink: {
     apiKey: '',
   },

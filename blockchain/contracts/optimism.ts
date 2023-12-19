@@ -216,9 +216,6 @@ export const optimismContracts: OptimismContracts = {
     apiKey: etherscanAPIKey || '',
     name: 'Optimistic Etherscan',
   },
-  ethtx: {
-    url: '',
-  },
   magicLink: {
     apiKey: '',
   },

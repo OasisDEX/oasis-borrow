@@ -123,7 +123,6 @@ export const EXTERNAL_LINKS = {
   GITHUB: 'https://github.com/OasisDEX/oasis-borrow',
   BUG_BOUNTY: 'https://immunefi.com/bounty/summerfi',
   ETHERSCAN: 'https://etherscan.io',
-  ETHTX: 'https://ethtx.info',
   DUNE_ORG_STETHETH_PEG_HISTORY: 'https://dune.com/oasisapp/steth-eth-peg-history',
   METAMASK_12130_ISSUE: 'https://github.com/MetaMask/metamask-extension/issues/12130',
   ETHEREUM_ORG_MERKLING: 'https://blog.ethereum.org/2015/11/15/merkling-in-ethereum',

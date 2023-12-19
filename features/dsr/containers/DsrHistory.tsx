@@ -34,7 +34,6 @@ function DsrHistoryView({ history }: { history?: DsrEvent[] }) {
                 timestamp: item.timestamp * 1000,
               }}
               etherscan={{ url: EXTERNAL_LINKS.ETHERSCAN }}
-              ethtx={{ url: EXTERNAL_LINKS.ETHTX }}
               e
               key={idx}
             />

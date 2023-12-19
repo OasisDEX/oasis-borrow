@@ -1,6 +1,5 @@
 import { PositionHistory } from 'components/history/PositionHistory'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { useWalletManagement } from 'features/web3OnBoard/useConnection'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -9,13 +8,19 @@ import { Flex, Grid, Heading, Image, Text } from 'theme-ui'
 export function OmniHistoryController() {
   const { t } = useTranslation()
   const {
-    environment: { isOracless, productType, isShort, priceFormat, collateralToken, quoteToken },
+    environment: {
+      isOracless,
+      productType,
+      isShort,
+      priceFormat,
+      collateralToken,
+      quoteToken,
+      networkId,
+    },
   } = useOmniGeneralContext()
   const {
     position: { history },
   } = useOmniProductContext(productType)
-
-  const { chainId } = useWalletManagement()
 
   return history.length ? (
     <Grid variant="vaultContainer">
@@ -26,7 +31,7 @@ export function OmniHistoryController() {
         isShort={isShort}
         priceFormat={priceFormat}
         quoteToken={quoteToken}
-        networkId={chainId}
+        networkId={networkId}
       />
     </Grid>
   ) : (
