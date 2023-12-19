@@ -1,7 +1,6 @@
 import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
-import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
+import { type ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
 import { LendingProtocol } from 'lendingProtocols'
 
 export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddress[] = [
@@ -76,7 +75,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'ETH',
-    primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
@@ -87,7 +85,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   {
     product: [ProductHubProductType.Borrow],
     primaryToken: 'ETH',
-    primaryTokenGroup: 'ETH',
     secondaryToken: 'USDC',
     depositToken: 'ETH',
     label: 'ETH/USDC',
@@ -175,7 +172,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'DAI',
-    primaryTokenGroup: 'DAI',
     secondaryToken: 'ETH',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
@@ -186,7 +182,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   {
     product: [ProductHubProductType.Borrow],
     primaryToken: 'DAI',
-    primaryTokenGroup: 'DAI',
     secondaryToken: 'ETH',
     depositToken: 'DAI',
     label: 'DAI/ETH',
@@ -196,8 +191,8 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'DAI',
-    primaryTokenGroup: 'DAI',
     secondaryToken: 'WBTC',
+    secondaryTokenGroup: 'BTC',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'DAI/WBTC',
@@ -207,8 +202,8 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   {
     product: [ProductHubProductType.Borrow],
     primaryToken: 'DAI',
-    primaryTokenGroup: 'DAI',
     secondaryToken: 'WBTC',
+    secondaryTokenGroup: 'BTC',
     depositToken: 'DAI',
     label: 'DAI/WBTC',
     network: NetworkNames.ethereumMainnet,
@@ -217,7 +212,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'ETH',
-    primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
@@ -228,7 +222,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   {
     product: [ProductHubProductType.Borrow],
     primaryToken: 'ETH',
-    primaryTokenGroup: 'ETH',
     secondaryToken: 'DAI',
     depositToken: 'ETH',
     label: 'ETH/DAI',
@@ -280,7 +273,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'USDC',
-    primaryTokenGroup: 'USDC',
     secondaryToken: 'ETH',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
@@ -291,7 +283,6 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   {
     product: [ProductHubProductType.Borrow],
     primaryToken: 'USDC',
-    primaryTokenGroup: 'USDC',
     secondaryToken: 'ETH',
     depositToken: 'USDC',
     label: 'USDC/ETH',
@@ -301,8 +292,8 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'USDC',
-    primaryTokenGroup: 'USDC',
     secondaryToken: 'WBTC',
+    secondaryTokenGroup: 'BTC',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
     label: 'USDC/WBTC',
@@ -312,8 +303,8 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
   {
     product: [ProductHubProductType.Borrow],
     primaryToken: 'USDC',
-    primaryTokenGroup: 'USDC',
     secondaryToken: 'WBTC',
+    secondaryTokenGroup: 'BTC',
     depositToken: 'USDC',
     label: 'USDC/WBTC',
     network: NetworkNames.ethereumMainnet,

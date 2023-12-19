@@ -108,6 +108,12 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
         },
       })}
       txHandler={txHandler}
+      txSuccessAction={() => {
+        if (uiDropdown === OmniMultiplyPanel.Close) {
+          updateState('uiDropdown', OmniMultiplyPanel.Adjust)
+          updateState('action', OmniMultiplyFormAction.AdjustMultiply)
+        }
+      }}
     >
       {currentStep === OmniSidebarStep.Risk && riskSidebar}
       {currentStep === OmniSidebarStep.Setup && <OmniMultiplyFormContentOpen />}

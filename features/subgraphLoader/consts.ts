@@ -382,7 +382,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         id
         cumulativeDepositUSD
         cumulativeDepositInQuoteToken
-        cumulativeDespositInCollateralToken
+        cumulativeDepositInCollateralToken
         cumulativeWithdrawUSD
         cumulativeWithdrawInQuoteToken
         cumulativeWithdrawInCollateralToken

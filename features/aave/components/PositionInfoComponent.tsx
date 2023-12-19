@@ -12,7 +12,7 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { ProductType } from 'features/aave/types'
+import { ProductType, StrategyType } from 'features/aave/types'
 import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -49,6 +49,7 @@ type PositionInfoComponentProps = {
   debtTokenReserveData: AaveLikeReserveData
   cumulatives?: AaveCumulativeData
   productType: ProductType
+  strategyType: StrategyType
 }
 
 // todo: export and pull from oasisdex/oasis-actions
@@ -79,6 +80,7 @@ export const PositionInfoComponent = ({
   collateralTokenReserveData,
   debtTokenReserveData,
   productType,
+  strategyType,
 }: PositionInfoComponentProps) => {
   const { t } = useTranslation()
   const currentPositionThings = calculateViewValuesForPosition(
@@ -88,13 +90,22 @@ export const PositionInfoComponent = ({
     collateralTokenReserveData.liquidityRate,
     debtTokenReserveData.variableBorrowRate,
   )
+  const isLongPosition = strategyType === StrategyType.Long
+  const isEarnPosition = productType === ProductType.Earn
 
-  const netValueInDebtToken = currentPositionThings.netValueInCollateralToken.times(
-    position.oraclePriceForCollateralDebtExchangeRate,
-  )
+  const netValueInToken =
+    isLongPosition && isEarnPosition
+      ? // case for earn (so everything except aave v2 dpm)
+        amountFromWei(
+          position.collateral.normalisedAmount
+            .times(position.oraclePriceForCollateralDebtExchangeRate)
+            .minus(position.debt.normalisedAmount),
+          18,
+        )
+      : currentPositionThings.netValueInCollateralToken
 
-  const formattedNetValueInDebtToken = netValueInDebtToken || zero // TODO
-  const netValueUsd = netValueInDebtToken.times(debtTokenPrice)
+  const formattedNetValueInToken = netValueInToken || zero // TODO
+  const netValueUsd = netValueInToken.times(isLongPosition ? debtTokenPrice : collateralTokenPrice)
 
   const formattedCollateralValue = formatPositionBalance(position.collateral)
   const formattedDebtValue = formatPositionBalance(position.debt)
@@ -102,7 +113,6 @@ export const PositionInfoComponent = ({
   const belowCurrentRatio = position.oraclePriceForCollateralDebtExchangeRate
     .minus(position.liquidationPrice)
     .times(100)
-  const isEarnPosition = productType === ProductType.Earn
 
   const pnlWithoutFees = isEarnPosition
     ? cumulatives?.cumulativeWithdrawInQuoteToken
@@ -121,7 +131,7 @@ export const PositionInfoComponent = ({
         <DetailsSectionContentCardWrapper>
           <DetailsSectionContentCard
             title={t('net-value')}
-            value={formatBigNumber(formattedNetValueInDebtToken, 2)}
+            value={formatBigNumber(formattedNetValueInToken, 2)}
             footnote={
               pnlWithoutFees &&
               `${t('omni-kit.content-card.net-value.footnote')} ${
@@ -129,7 +139,7 @@ export const PositionInfoComponent = ({
               }
               ${formatDecimalAsPercent(pnlWithoutFees)}`
             }
-            unit={position.debt.symbol}
+            unit={isEarnPosition ? position.debt.symbol : position.collateral.symbol}
             modal={
               cumulatives && (
                 <OmniMultiplyNetValueModal
