@@ -8,7 +8,7 @@ import React from 'react'
 
 export function OmniEarnFormContentWithdraw() {
   const {
-    environment: { quotePrice, quoteToken, quoteDigits },
+    environment: { quotePrice, quoteToken, quoteDigits, quotePrecision },
   } = useOmniGeneralContext()
   const {
     form: { dispatch },
@@ -29,6 +29,7 @@ export function OmniEarnFormContentWithdraw() {
         tokenPrice={quotePrice}
         maxAmount={earnWithdrawMax}
         tokenDigits={quoteDigits}
+        tokenPrecision={quotePrecision}
       />
       {extraEarnInputWithdraw}
       {isFormValid && <OmniFormContentSummary>{earnFormOrder}</OmniFormContentSummary>}

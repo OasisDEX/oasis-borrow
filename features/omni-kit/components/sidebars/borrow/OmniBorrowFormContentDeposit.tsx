@@ -15,6 +15,7 @@ export function OmniBorrowFormContentDeposit() {
       collateralDigits,
       collateralPrice,
       collateralToken,
+      collateralPrecision,
       shouldSwitchNetwork,
     },
   } = useOmniGeneralContext()
@@ -38,6 +39,7 @@ export function OmniBorrowFormContentDeposit() {
         token={collateralToken}
         tokenPrice={collateralPrice}
         tokenDigits={collateralDigits}
+        tokenPrecision={collateralPrecision}
         {...(!shouldSwitchNetwork && { maxAmount: collateralBalance })}
       />
       <OmniFormFieldGenerate dispatchAmount={dispatch} maxAmount={debtMax} minAmount={debtMin} />

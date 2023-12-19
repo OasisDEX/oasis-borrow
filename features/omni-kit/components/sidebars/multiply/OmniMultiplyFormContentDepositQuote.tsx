@@ -6,7 +6,7 @@ import React from 'react'
 
 export function OmniMultiplyFormContentDepositQuote() {
   const {
-    environment: { quoteBalance, quotePrice, quoteToken },
+    environment: { quoteBalance, quotePrice, quoteToken, quotePrecision },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -23,6 +23,7 @@ export function OmniMultiplyFormContentDepositQuote() {
         resetOnClear
         token={quoteToken}
         tokenPrice={quotePrice}
+        tokenPrecision={quotePrecision}
       />
       {/* TODO uncomment once action will be handled */}
       {/*<PillAccordion title={t('adjust-your-position-additional')}>*/}

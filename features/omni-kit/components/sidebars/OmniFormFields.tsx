@@ -24,6 +24,7 @@ interface OmniFormField<D> {
 interface OmniFormFieldWithDefinedToken {
   token: string
   tokenDigits?: number
+  tokenPrecision: number
   tokenPrice: BigNumber
 }
 
@@ -45,6 +46,7 @@ export function OmniFormFieldDeposit({
   resetOnClear,
   token,
   tokenDigits,
+  tokenPrecision,
   tokenPrice,
 }: OmniFormField<FormActionsUpdateDeposit> &
   OmniFormFieldWithDefinedToken &
@@ -86,7 +88,7 @@ export function OmniFormFieldDeposit({
       onAuxiliaryChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-deposit',
-          depositAmount: n?.dividedBy(tokenPrice),
+          depositAmount: n?.dividedBy(tokenPrice).decimalPlaces(tokenPrecision),
           depositAmountUSD: n,
         })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
@@ -115,7 +117,7 @@ export function OmniFormFieldGenerate({
   OmniFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
-    environment: { isOracless, productType, quoteDigits, quotePrice, quoteToken },
+    environment: { isOracless, productType, quoteDigits, quotePrice, quoteToken, quotePrecision },
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
@@ -154,7 +156,7 @@ export function OmniFormFieldGenerate({
       onAuxiliaryChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-generate',
-          generateAmount: n?.dividedBy(quotePrice),
+          generateAmount: n?.dividedBy(quotePrice).dp(quotePrecision),
           generateAmountUSD: n,
         })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
@@ -187,7 +189,7 @@ export function OmniFormFieldPayback({
   OmniFormFieldWithMaxAmount) {
   const { t } = useTranslation()
   const {
-    environment: { isOracless, quoteDigits, quotePrice, quoteToken, productType },
+    environment: { isOracless, quoteDigits, quotePrice, quoteToken, productType, quotePrecision },
   } = useOmniGeneralContext()
   const {
     form: { dispatch, state },
@@ -226,7 +228,7 @@ export function OmniFormFieldPayback({
       onAuxiliaryChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-payback',
-          paybackAmount: n?.dividedBy(quotePrice),
+          paybackAmount: n?.dividedBy(quotePrice).dp(quotePrecision),
           paybackAmountUSD: n,
         })
         dispatchAmount({
@@ -259,6 +261,7 @@ export function OmniFormFieldWithdraw({
   token,
   tokenDigits,
   tokenPrice,
+  tokenPrecision,
 }: OmniFormField<FormActionsUpdateWithdraw | FormActionsUpdateWithdrawMax> &
   OmniFormFieldWithDefinedToken &
   OmniFormFieldWithMaxAmount) {
@@ -304,7 +307,7 @@ export function OmniFormFieldWithdraw({
       onAuxiliaryChange={handleNumericInput((n) => {
         dispatchAmount({
           type: 'update-withdraw',
-          withdrawAmount: n?.dividedBy(tokenPrice),
+          withdrawAmount: n?.dividedBy(tokenPrice).dp(tokenPrecision),
           withdrawAmountUSD: n,
         })
         dispatchAmount({

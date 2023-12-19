@@ -5,7 +5,14 @@ import React from 'react'
 
 export function OmniEarnFormContentDeposit() {
   const {
-    environment: { quotePrice, quoteToken, quoteBalance, quoteDigits, shouldSwitchNetwork },
+    environment: {
+      quotePrice,
+      quoteToken,
+      quoteBalance,
+      quoteDigits,
+      quotePrecision,
+      shouldSwitchNetwork,
+    },
   } = useOmniGeneralContext()
   const {
     form: { dispatch },
@@ -23,6 +30,7 @@ export function OmniEarnFormContentDeposit() {
         token={quoteToken}
         tokenPrice={quotePrice}
         tokenDigits={quoteDigits}
+        tokenPrecision={quotePrecision}
         {...(!shouldSwitchNetwork && { maxAmount: quoteBalance })}
       />
       {extraEarnInputDeposit}
