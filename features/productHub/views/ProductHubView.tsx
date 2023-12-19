@@ -131,9 +131,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 token,
               }),
             )
-            setQueryString(
-              getStrippedQueryString({ selectedProduct: _selectedProduct, queryString }),
-            )
+            setQueryString(getStrippedQueryString({ queryString }))
           }}
         />
         {intro ? (
