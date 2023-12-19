@@ -1,6 +1,9 @@
 import type BigNumber from 'bignumber.js'
 import { paybackAllAmountAllowanceMaxMultiplier } from 'features/omni-kit/constants'
-import { getMaxIncreasedValue } from 'features/omni-kit/protocols/ajna/helpers'
+import {
+  getMaxIncreasedValue,
+  INCREASED_VALUE_PRECISSION,
+} from 'features/omni-kit/protocols/ajna/helpers'
 import {
   OmniBorrowFormAction,
   OmniEarnFormAction,
@@ -89,7 +92,9 @@ export function getOmniFlowStateConfig({
 
       return {
         amount: getMaxIncreasedValue(state.paybackAmount, fee),
-        allowanceAmount: getMaxIncreasedValue(state.paybackAmount, fee).times(allowanceMultiplier),
+        allowanceAmount: getMaxIncreasedValue(state.paybackAmount, fee)
+          .times(allowanceMultiplier)
+          .dp(INCREASED_VALUE_PRECISSION),
         token: quoteToken,
       }
     case OmniBorrowFormAction.WithdrawBorrow:
