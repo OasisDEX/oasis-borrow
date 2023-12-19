@@ -487,9 +487,7 @@ export function createAaveHistory$(
           )
         }),
         mapEventsToVaultEvents,
-        map((events) =>
-          events.map((event) => ({ etherscan, autoKind: event.kind, ...event })),
-        ),
+        map((events) => events.map((event) => ({ etherscan, autoKind: event.kind, ...event }))),
         catchError(() => of([])),
       )
     }),
