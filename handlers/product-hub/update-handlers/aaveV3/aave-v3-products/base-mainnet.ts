@@ -1,30 +1,26 @@
 import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
-import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
-import { ProductHubProductType } from 'features/productHub/types'
+import { type ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
+import { getTokenGroup } from 'handlers/product-hub/helpers'
+import type { AaveProductHubItemSeed } from 'handlers/product-hub/update-handlers/aaveV3/aave-v3-products/types'
 import { LendingProtocol } from 'lendingProtocols'
-
-import type { AaveProductHubItemSeed } from './aave-product-hub-item-seed'
 
 const aaveSeed: AaveProductHubItemSeed[] = [
   {
     collateral: 'ETH',
     debt: 'USDbC',
-    group: 'ETH',
     strategyType: 'long',
     types: ['borrow', 'multiply'],
   },
   {
     collateral: 'cbETH',
     debt: 'USDbC',
-    group: 'ETH',
     strategyType: 'long',
     types: ['borrow', 'multiply'],
   },
   {
     collateral: 'cbETH',
     debt: 'ETH',
-    group: 'ETH',
     strategyType: 'long',
     types: ['earn'],
   },
@@ -36,8 +32,9 @@ const borrowProducts = aaveSeed
     return {
       product: [ProductHubProductType.Borrow],
       primaryToken: strategy.collateral.toUpperCase(),
-      primaryTokenGroup: strategy.group.toUpperCase(),
+      primaryTokenGroup: getTokenGroup(strategy.collateral.toUpperCase()),
       secondaryToken: strategy.debt.toUpperCase(),
+      secondaryTokenGroup: getTokenGroup(strategy.debt.toUpperCase()),
       depositToken: strategy.deposit?.toUpperCase() ?? strategy.collateral.toUpperCase(),
       label: `${strategy.collateral.toUpperCase()}/${strategy.debt.toUpperCase()}`,
       network: NetworkNames.baseMainnet,
@@ -51,8 +48,9 @@ const earnProducts = aaveSeed
     return {
       product: [ProductHubProductType.Earn],
       primaryToken: strategy.collateral.toUpperCase(),
-      primaryTokenGroup: strategy.group.toUpperCase(),
+      primaryTokenGroup: getTokenGroup(strategy.collateral.toUpperCase()),
       secondaryToken: strategy.debt.toUpperCase(),
+      secondaryTokenGroup: getTokenGroup(strategy.debt.toUpperCase()),
       label: `${strategy.collateral.toUpperCase()}/${strategy.debt.toUpperCase()}`,
       network: NetworkNames.baseMainnet,
       protocol: LendingProtocol.AaveV3,
@@ -68,8 +66,9 @@ const multiplyProducts = aaveSeed
     return {
       product: [ProductHubProductType.Multiply],
       primaryToken: strategy.collateral.toUpperCase(),
-      primaryTokenGroup: strategy.group.toUpperCase(),
+      primaryTokenGroup: getTokenGroup(strategy.collateral.toUpperCase()),
       secondaryToken: strategy.debt.toUpperCase(),
+      secondaryTokenGroup: getTokenGroup(strategy.debt.toUpperCase()),
       network: NetworkNames.baseMainnet,
       protocol: LendingProtocol.AaveV3,
       label: `${strategy.collateral.toUpperCase()}/${strategy.debt.toUpperCase()}`,

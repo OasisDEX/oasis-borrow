@@ -58,12 +58,12 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
   const debtTokens = useMemo(
     () =>
       uniq(data.map((item) => item.secondaryToken))
+        .sort()
         .map((item) => ({
           label: item,
           value: item,
           token: item,
-        }))
-        .sort((a, b) => (a.value > b.value ? 1 : -1)),
+        })),
     [data],
   )
   const secondaryTokens = useMemo(
@@ -77,11 +77,13 @@ export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> =
             ? [item.primaryToken]
             : []),
         ]),
-      ).map((item) => ({
-        label: item,
-        value: item,
-        token: item,
-      })),
+      )
+        .sort()
+        .map((item) => ({
+          label: item,
+          value: item,
+          token: item,
+        })),
     [data, selectedToken],
   )
 
