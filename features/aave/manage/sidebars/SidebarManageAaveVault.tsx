@@ -254,7 +254,7 @@ export function calculateMaxCollateralAmount(context: ManageAaveContext): BigNum
     const debt = amountFromWei(position.debt.amount, position.debt.symbol).minus(inputDebtAmount)
     const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol)
     const minimumCollateral = debt
-      .dividedBy(context.balance?.debt.price || zero)
+      .times(context.balance?.debt.price || zero)
       .dividedBy(position.category.maxLoanToValue)
       .dividedBy(context.balance?.collateral.price || zero)
 
