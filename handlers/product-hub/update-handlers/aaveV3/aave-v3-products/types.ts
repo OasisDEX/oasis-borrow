@@ -3,6 +3,5 @@ export interface AaveProductHubItemSeed {
   debt: string
   deposit?: string
   strategyType: 'long' | 'short'
-  group: string
   types: Array<'borrow' | 'earn' | 'multiply'>
 }
