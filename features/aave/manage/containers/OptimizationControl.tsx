@@ -1,8 +1,9 @@
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
-import type { AutoBuyDetailsLayoutProps } from 'features/aave/components/AutoBuySection'
-import { AutoBuySection } from 'features/aave/components/AutoBuySection'
 import { AutoBuyBanner } from 'features/aave/components/banners'
+import type { BasicAutomationDetailsViewProps } from 'features/aave/components/BasicAutomationDetailsView'
+import { BasicAutomationDetailsView } from 'features/aave/components/BasicAutomationDetailsView'
+import { useOptimizationSidebarDropdown } from 'features/aave/hooks'
 import {
   useManageAaveStateMachineContext,
   useTriggersAaveStateMachineContext,
@@ -15,7 +16,7 @@ import { Box, Container, Grid } from 'theme-ui'
 function getAutoBuyDetailsLayoutProps(
   context: AutoBuyTriggerAaveContext,
   isEditing: boolean,
-): AutoBuyDetailsLayoutProps | undefined {
+): BasicAutomationDetailsViewProps | undefined {
   if (!context.position) {
     return undefined
   }
@@ -28,6 +29,7 @@ function getAutoBuyDetailsLayoutProps(
 
   if (context.executionTriggerLTV && context.targetTriggerLTV && isEditing) {
     return {
+      automationFeature: context.feature,
       position: context.position,
       afterTxTrigger: {
         executionLTV: new BigNumber(context.executionTriggerLTV),
@@ -38,6 +40,7 @@ function getAutoBuyDetailsLayoutProps(
   }
 
   return {
+    automationFeature: context.feature,
     position: context.position,
     currentTrigger,
   }
@@ -47,38 +50,43 @@ export function OptimizationControl() {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
 
-  const optimizationStateMachine = useTriggersAaveStateMachineContext()
-  const [optimizationState, sendOptimizationEvent] = useActor(optimizationStateMachine)
-  const [autoBuyState, sendAutoBuyEvent] = useActor(optimizationState.context.autoBuyTrigger)
+  const triggersStateMachine = useTriggersAaveStateMachineContext()
+  const [triggersState, sendTriggerEvent] = useActor(triggersStateMachine)
+  const [autoBuyState, sendAutoBuyEvent] = useActor(triggersState.context.autoBuyTrigger)
 
   const autoBuyDetailsLayoutProps = getAutoBuyDetailsLayoutProps(
     autoBuyState.context,
     !autoBuyState.matches('idle'),
   )
 
+  const dropdown = useOptimizationSidebarDropdown(triggersState, sendTriggerEvent)
+
   return (
     <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
       <Grid variant="vaultContainer">
         <Grid gap={3} mb={[0, 5]}>
-          {optimizationState.context.currentView === 'auto-buy' && autoBuyDetailsLayoutProps && (
-            <AutoBuySection {...autoBuyDetailsLayoutProps} />
-          )}
-          {optimizationState.context.showAutoBuyBanner && (
-            <AutoBuyBanner buttonClicked={() => sendOptimizationEvent({ type: 'SHOW_AUTO_BUY' })} />
+          {triggersState.context.optimizationCurrentView === 'auto-buy' &&
+            autoBuyDetailsLayoutProps && (
+              <BasicAutomationDetailsView {...autoBuyDetailsLayoutProps} />
+            )}
+          {triggersState.context.showAutoBuyBanner && (
+            <AutoBuyBanner buttonClicked={() => sendTriggerEvent({ type: 'SHOW_AUTO_BUY' })} />
           )}
         </Grid>
-        {optimizationState.context.currentView === 'auto-buy' && autoBuyState.context.position && (
-          <Box>
-            <AutoBuySidebarAaveVault
-              strategy={state.context.strategyConfig}
-              state={{ ...autoBuyState.context, position: autoBuyState.context.position }}
-              updateState={sendAutoBuyEvent}
-              isStateMatch={(s) => autoBuyState.matches(s)}
-              canTransitWith={(s) => autoBuyState.can(s)}
-              isEditing={autoBuyState.value === 'editing'}
-            />
-          </Box>
-        )}
+        {triggersState.context.optimizationCurrentView === 'auto-buy' &&
+          autoBuyState.context.position && (
+            <Box>
+              <AutoBuySidebarAaveVault
+                strategy={state.context.strategyConfig}
+                state={{ ...autoBuyState.context, position: autoBuyState.context.position }}
+                updateState={sendAutoBuyEvent}
+                isStateMatch={(s) => autoBuyState.matches(s)}
+                canTransitWith={(s) => autoBuyState.can(s)}
+                isEditing={autoBuyState.value === 'editing'}
+                dropdown={dropdown}
+              />
+            </Box>
+          )}
       </Grid>
     </Container>
   )

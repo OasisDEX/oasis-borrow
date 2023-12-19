@@ -4,7 +4,6 @@ import { PositionHistory } from 'components/history/PositionHistory'
 import type { TabSection } from 'components/TabBar'
 import { TabBar } from 'components/TabBar'
 import { DisabledHistoryControl } from 'components/vault/HistoryControl'
-import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { isAaveHistorySupported } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import {
@@ -30,6 +29,7 @@ import React from 'react'
 import { Card, Grid } from 'theme-ui'
 
 import { OptimizationControl } from './OptimizationControl'
+import { ProtectionControlWrapper } from './ProtectionControlWrapper'
 
 interface AaveManageTabBarProps {
   aaveReserveState: AaveLikeReserveConfigurationData
@@ -146,7 +146,7 @@ export function AaveManageTabBar({
                   active: protectionEnabled,
                   isLoading: !isAutomationDataLoaded,
                 },
-                content: <ProtectionControl />,
+                content: <ProtectionControlWrapper />,
               },
             ]
           : []),

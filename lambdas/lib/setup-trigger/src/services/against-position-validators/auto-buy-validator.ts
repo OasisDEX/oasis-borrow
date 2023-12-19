@@ -7,6 +7,7 @@ import {
   mapZodResultToValidationResults,
   ValidationResults,
   CustomIssueCodes,
+  eventBodyAaveBasicBuySchema,
 } from '~types'
 import { z, ZodIssueCode } from 'zod'
 
@@ -14,14 +15,11 @@ const validationSchema = z
   .object({
     position: positionSchema,
     executionPrice: priceSchema,
-    triggerData: z.union([aaveBasicBuyTriggerDataSchema, aaveBasicSellTriggerDataSchema]),
+    body: eventBodyAaveBasicBuySchema,
   })
   .refine(
-    ({ executionPrice, triggerData }) => {
-      if ('maxBuyPrice' in triggerData) {
-        return triggerData.maxBuyPrice && triggerData.maxBuyPrice > executionPrice
-      }
-      return true
+    ({ executionPrice, body }) => {
+      return body.triggerData.maxBuyPrice && body.triggerData.maxBuyPrice > executionPrice
     },
     {
       message: 'Execution price is bigger than max buy price',
@@ -32,23 +30,8 @@ const validationSchema = z
     },
   )
   .refine(
-    ({ executionPrice, triggerData }) => {
-      if ('minSellPrice' in triggerData) {
-        return triggerData.minSellPrice && triggerData.minSellPrice < executionPrice
-      }
-      return true
-    },
-    {
-      message: 'Execution price is smaller than min sell price',
-      params: {
-        code: CustomIssueCodes.ExecutionPriceSmallerThanMinSellPrice,
-      },
-      path: ['triggerData', 'minSellPrice'],
-    },
-  )
-  .refine(
-    ({ triggerData }) => {
-      return triggerData.executionLTV < triggerData.targetLTV
+    ({ body }) => {
+      return body.triggerData.executionLTV < body.triggerData.targetLTV
     },
     {
       message: 'Execution LTV is smaller than target LTV',
@@ -58,8 +41,8 @@ const validationSchema = z
     },
   )
   .refine(
-    ({ position, triggerData }) => {
-      return triggerData.executionLTV <= position.ltv - ONE_PERCENT
+    ({ position, body }) => {
+      return body.triggerData.executionLTV <= position.ltv - ONE_PERCENT
     },
     {
       message: 'Execution LTV is bigger than current LTV',
@@ -69,11 +52,9 @@ const validationSchema = z
     },
   )
 
-export type ValidateParams = z.infer<typeof validationSchema>
+export type AutoBuyValidationParams = z.infer<typeof validationSchema>
 
-export function validateTriggerDataAgainstCurrentPosition(
-  params: ValidateParams,
-): ValidationResults {
+export function autoBuyValidator(params: AutoBuyValidationParams): ValidationResults {
   const validationResult = validationSchema.safeParse(params)
 
   if (validationResult.success) {

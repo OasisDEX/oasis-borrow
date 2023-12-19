@@ -6,11 +6,13 @@ import {
   DetailsSectionContentCardWrapper,
 } from 'components/DetailsSectionContentCard'
 import type { PositionLike } from 'features/aave/manage/state'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { formatPercent } from 'helpers/formatters/format'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-export interface AutoBuyDetailsLayoutProps {
+export interface BasicAutomationDetailsViewProps {
+  automationFeature: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY
   position: PositionLike
   currentTrigger?: {
     executionLTV: BigNumber
@@ -23,18 +25,21 @@ export interface AutoBuyDetailsLayoutProps {
 }
 
 interface ContentCardTriggerLTVProp {
+  automationFeature: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY
   collateralToken: string
   currentExecutionLTV?: BigNumber
   afterTxExecutionLTV?: BigNumber
 }
 
 interface ContentCardTriggerTargetLTVProp {
+  automationFeature: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY
   collateralToken: string
   currentTargetLTV?: BigNumber
   afterTxTargetLTV?: BigNumber
 }
 
 export function ContentCardTriggerExecutionLTV({
+  automationFeature,
   collateralToken,
   currentExecutionLTV,
   afterTxExecutionLTV,
@@ -56,8 +61,13 @@ export function ContentCardTriggerExecutionLTV({
       }),
   }
 
+  const titleKey =
+    automationFeature === AutomationFeatures.AUTO_SELL
+      ? 'auto-sell.trigger-ltv-to-sell-token'
+      : 'auto-buy.trigger-ltv-to-buy-token'
+
   const contentCardSettings: ContentCardProps = {
-    title: t('auto-buy.trigger-ltv-to-buy-token', { token: collateralToken }),
+    title: t(titleKey, { token: collateralToken }),
     value: formatted.current,
     change: afterTxExecutionLTV && {
       value: `${formatted.afterTx} ${t('system.cards.common.after')}`,
@@ -69,6 +79,7 @@ export function ContentCardTriggerExecutionLTV({
 }
 
 function ContentCardTriggerTargetLTV({
+  automationFeature,
   currentTargetLTV,
   afterTxTargetLTV,
 }: ContentCardTriggerTargetLTVProp) {
@@ -89,8 +100,13 @@ function ContentCardTriggerTargetLTV({
       }),
   }
 
+  const titleKey =
+    automationFeature === AutomationFeatures.AUTO_SELL
+      ? 'auto-sell.target-ltv-after-selling'
+      : 'auto-buy.target-ltv-after-buying'
+
   const contentCardSettings: ContentCardProps = {
-    title: t('auto-buy.target-ltv-after-buying'),
+    title: t(titleKey),
     value: formatted.current,
     change: afterTxTargetLTV && {
       value: `${formatted.afterTx} ${t('system.cards.common.after')}`,
@@ -101,25 +117,31 @@ function ContentCardTriggerTargetLTV({
   return <DetailsSectionContentCard {...contentCardSettings} />
 }
 
-export function AutoBuySection({
+export function BasicAutomationDetailsView({
+  automationFeature,
   position,
   currentTrigger,
   afterTxTrigger,
-}: AutoBuyDetailsLayoutProps) {
+}: BasicAutomationDetailsViewProps) {
   const { t } = useTranslation()
+  const titleKey =
+    automationFeature === AutomationFeatures.AUTO_SELL ? 'auto-sell.title' : 'auto-buy.title'
+
   return (
     <DetailsSection
-      title={t('auto-buy.title')}
+      title={t(titleKey)}
       badge={currentTrigger !== undefined}
       content={
         <>
           <DetailsSectionContentCardWrapper>
             <ContentCardTriggerExecutionLTV
+              automationFeature={automationFeature}
               collateralToken={position.collateral.token.symbol}
               currentExecutionLTV={currentTrigger?.executionLTV}
               afterTxExecutionLTV={afterTxTrigger?.executionLTV}
             />
             <ContentCardTriggerTargetLTV
+              automationFeature={automationFeature}
               collateralToken={position.collateral.token.symbol}
               currentTargetLTV={currentTrigger?.targetLTV}
               afterTxTargetLTV={afterTxTrigger?.targetLTV}

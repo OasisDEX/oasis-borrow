@@ -50,7 +50,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     availableActions: () => allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
-    isOptimizationTabEnabled: () => false,
+    isAutomationFeatureEnabled: () => false,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -82,7 +82,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     availableActions: () => allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
-    isOptimizationTabEnabled: () => false,
+    isAutomationFeatureEnabled: () => false,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -114,7 +114,7 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     availableActions: () => allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
-    isOptimizationTabEnabled: () => false,
+    isAutomationFeatureEnabled: () => false,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -146,6 +146,6 @@ export const ethereumAaveV2Strategies: Array<IStrategyConfig> = [
     availableActions: () => allActionsAvailableInMultiply,
     executeTransactionWith: 'web3',
     strategyType: StrategyType.Long,
-    isOptimizationTabEnabled: () => false,
+    isAutomationFeatureEnabled: () => false,
   },
 ]

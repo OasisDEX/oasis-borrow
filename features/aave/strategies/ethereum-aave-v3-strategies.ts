@@ -16,6 +16,7 @@ import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'featur
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
 import type { IStrategyConfig } from 'features/aave/types'
 import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
@@ -559,7 +560,7 @@ const availableTokenPairs: TokenPairConfig[] = [
 
 const borrowStrategies: IStrategyConfig[] = availableTokenPairs
   .filter(hasBorrowProductType)
-  .map((config) => {
+  .map((config): IStrategyConfig => {
     return {
       network: NetworkNames.ethereumMainnet,
       networkId: NetworkIds.MAINNET,
@@ -601,15 +602,26 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
       },
       executeTransactionWith: 'ethers' as const,
       strategyType: config.strategyType,
-      isOptimizationTabEnabled: () =>
-        config.strategyType === StrategyType.Long &&
-        getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationEthereum],
+      isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
+        if (config.strategyType === StrategyType.Short) {
+          return false
+        }
+        if (feature === AutomationFeatures.STOP_LOSS) {
+          return true
+        }
+
+        if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationEthereum]
+        }
+
+        return false
+      },
     }
   })
 
 const multiplyStategies: IStrategyConfig[] = availableTokenPairs
   .filter(hasMultiplyProductType)
-  .map((config) => {
+  .map((config): IStrategyConfig => {
     return {
       network: NetworkNames.ethereumMainnet,
       networkId: NetworkIds.MAINNET,
@@ -651,16 +663,27 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers',
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Multiply.featureToggle,
-      isOptimizationTabEnabled: () =>
-        config.strategyType === StrategyType.Long &&
-        getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationEthereum],
+      isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
+        if (config.strategyType === StrategyType.Short) {
+          return false
+        }
+        if (feature === AutomationFeatures.STOP_LOSS) {
+          return true
+        }
+
+        if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationEthereum]
+        }
+
+        return false
+      },
     }
   })
 
 const sdaiEarnStrategies: IStrategyConfig[] = availableTokenPairs
   .filter(hasEarnProductType)
   .filter((config) => config.collateral === 'SDAI')
-  .map((config) => {
+  .map((config): IStrategyConfig => {
     return {
       network: NetworkNames.ethereumMainnet,
       networkId: NetworkIds.MAINNET,
@@ -702,9 +725,9 @@ const sdaiEarnStrategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers',
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Earn.featureToggle,
-      isOptimizationTabEnabled: () =>
-        config.strategyType === StrategyType.Long &&
-        getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationEthereum],
+      isAutomationFeatureEnabled: () => {
+        return false
+      },
     }
   })
 
@@ -745,7 +768,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
-    isOptimizationTabEnabled: () => false,
+    isAutomationFeatureEnabled: (_feature: AutomationFeatures) => false,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -781,7 +804,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
-    isOptimizationTabEnabled: () => false,
+    isAutomationFeatureEnabled: (_feature: AutomationFeatures) => false,
   },
   {
     network: NetworkNames.ethereumMainnet,
@@ -817,6 +840,6 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     defaultSlippage: new BigNumber(0.001),
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
-    isOptimizationTabEnabled: () => false,
+    isAutomationFeatureEnabled: (_feature: AutomationFeatures) => false,
   },
 ]

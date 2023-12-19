@@ -241,9 +241,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
       },
       executeTransactionWith: 'ethers' as const,
       strategyType: config.strategyType,
-      isOptimizationTabEnabled: () =>
-        config.strategyType === StrategyType.Long &&
-        getLocalAppConfig('features')[FeaturesEnum.SparkOptimization],
+      isAutomationFeatureEnabled: () => false,
     }
   })
 
@@ -291,9 +289,7 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers',
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Multiply.featureToggle,
-      isOptimizationTabEnabled: () =>
-        config.strategyType === StrategyType.Long &&
-        getLocalAppConfig('features')[FeaturesEnum.SparkOptimization],
+      isAutomationFeatureEnabled: () => false,
     }
   })
 
@@ -342,9 +338,7 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
       defaultSlippage: config.productTypes.Earn.defaultSlippage,
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Earn.featureToggle,
-      isOptimizationTabEnabled: () =>
-        config.strategyType === StrategyType.Long &&
-        getLocalAppConfig('features')[FeaturesEnum.SparkOptimization],
+      isAutomationFeatureEnabled: () => false,
     }
   })
 

@@ -4,6 +4,7 @@ import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'sha
 import {
   eventBodyAaveBasicBuySchema,
   eventBodyAaveBasicSellSchema,
+  getBodySchema,
   Issue,
   mapZodResultToValidationResults,
   pathParamsSchema,
@@ -72,12 +73,9 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     })
   }
 
-  const body = JSON.parse(event.body || '{}')
+  const body = JSON.parse(event.body ?? '{}')
 
-  const bodySchema =
-    pathParamsResult.data.trigger === 'auto-buy'
-      ? eventBodyAaveBasicBuySchema
-      : eventBodyAaveBasicSellSchema
+  const bodySchema = getBodySchema(pathParamsResult.data.trigger)
 
   const parseResult = bodySchema.safeParse(body)
   if (!parseResult.success) {
@@ -105,6 +103,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     pathParamsResult.data.chainId,
     pathParamsResult.data.protocol,
     pathParamsResult.data.trigger,
+    bodySchema,
     RPC_GATEWAY,
     GET_TRIGGERS_URL,
     params.rpc,
@@ -122,7 +121,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   const validation = validate({
     position,
     executionPrice,
-    triggerData: params.triggerData,
+    body: params,
   })
 
   if (!validation.success) {

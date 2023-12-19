@@ -7,7 +7,9 @@ export enum TriggersApiErrorCode {
   ExecutionPriceBiggerThanMaxBuyPrice = 'execution-price-bigger-than-max-buy-price',
   ExecutionPriceSmallerThanMinSellPrice = 'execution-price-smaller-than-min-sell-price',
   ExecutionLTVSmallerThanTargetLTV = 'execution-ltv-smaller-than-target-ltv',
+  ExecutionLTVBiggerThanTargetLTV = 'execution-ltv-bigger-than-target-ltv',
   ExecutionLTVBiggerThanCurrentLTV = 'execution-ltv-bigger-than-current-ltv',
+  ExecutionLTVSmallerThanCurrentLTV = 'execution-ltv-smaller-than-current-ltv',
   ExecutionLTVIsNearToTheAutoSellTrigger = 'execution-ltv-is-near-to-the-auto-sell-trigger',
   InternalError = 'internal-error',
 }

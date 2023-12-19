@@ -130,7 +130,7 @@ export type BasicAutomationAaveContext<Trigger extends BasicAutoTrigger> = {
   networkId: NetworkIds
   retryCount: number
   flow: TriggerFlow
-  feature: AutomationFeatures
+  feature: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL
 }
 
 type ContextForTransaction = {
@@ -188,7 +188,7 @@ const getDefaults = (
 }
 
 const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
-  automationFeature: AutomationFeatures,
+  automationFeature: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL,
   action: (params: SetupAaveBasicAutomationParams) => Promise<SetupBasicAutoResponse>,
   triggerType: 119 | 120,
 ) =>

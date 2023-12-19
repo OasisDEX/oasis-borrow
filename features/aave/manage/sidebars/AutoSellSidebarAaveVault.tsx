@@ -9,12 +9,13 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
-import type { BuyInfoSectionProps } from 'features/aave/components/AutoBuyInfoSection'
-import { AutoBuyInfoSection } from 'features/aave/components/AutoBuyInfoSection'
+import type { AutoSellInfoSectionProps } from 'features/aave/components/AutoSellInfoSection'
+import { AutoSellInfoSection } from 'features/aave/components/AutoSellInfoSection'
+import { mapErrorsToErrorVaults } from 'features/aave/helpers'
 import { getTriggerExecutionCollateralPriceDenominatedInDebt } from 'features/aave/manage/services/calculations'
 import type {
-  AutoBuyTriggerAaveContext,
-  AutoBuyTriggerAaveEvent,
+  AutoSellTriggerAaveContext,
+  AutoSellTriggerAaveEvent,
   BasicAutomationAaveState,
 } from 'features/aave/manage/state'
 import type { PositionLike } from 'features/aave/manage/state/triggersCommon'
@@ -24,33 +25,30 @@ import {
   sidebarAutomationLinkMap,
 } from 'features/automation/common/consts'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
-import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import type { TriggersApiError } from 'helpers/triggers/setup-triggers'
-import { TriggersApiErrorCode } from 'helpers/triggers/setup-triggers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { AddingStopLossAnimation } from 'theme/animations'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 
-type AutoBuyTriggerAaveContextWithPosition = AutoBuyTriggerAaveContext & {
+type AutoSellTriggerAaveContextWithPosition = AutoSellTriggerAaveContext & {
   position: PositionLike
 }
 
-interface AutoBuySidebarAaveVaultProps {
+interface AutoSellSidebarAaveVaultProps {
   strategy: IStrategyConfig
-  state: AutoBuyTriggerAaveContextWithPosition
+  state: AutoSellTriggerAaveContextWithPosition
   isStateMatch: (state: BasicAutomationAaveState) => boolean
-  canTransitWith: (event: AutoBuyTriggerAaveEvent) => boolean
-  updateState: (event: AutoBuyTriggerAaveEvent) => void
+  canTransitWith: (event: AutoSellTriggerAaveEvent) => boolean
+  updateState: (event: AutoSellTriggerAaveEvent) => void
   isEditing: boolean
   dropdown: SidebarSectionHeaderDropdown
 }
 
-function useDescriptionForAutoBuy({ state }: Pick<AutoBuySidebarAaveVaultProps, 'state'>) {
+function useDescriptionForAutoSell({ state }: Pick<AutoSellSidebarAaveVaultProps, 'state'>) {
   const { t } = useTranslation()
 
   if (!state.executionTriggerLTV || !state.targetTriggerLTV) {
@@ -63,15 +61,15 @@ function useDescriptionForAutoBuy({ state }: Pick<AutoBuySidebarAaveVaultProps, 
   }
 
   if (state.price) {
-    return t('auto-buy.set-trigger-description-ltv', {
+    return t('auto-sell.set-trigger-description-ltv', {
       executionLTV: state.executionTriggerLTV,
       targetLTV: state.targetTriggerLTV,
       denomination: `${state.position.collateral.token.symbol}/${state.position.debt.token.symbol}`,
       executionPrice: formatCryptoBalance(executionPrice),
-      maxBuyPrice: formatCryptoBalance(state.price),
+      minSellPrice: formatCryptoBalance(state.price),
     })
   }
-  return t('auto-buy.set-trigger-description-ltv-no-threshold', {
+  return t('auto-sell.set-trigger-description-ltv-no-threshold', {
     executionLTV: state.executionTriggerLTV,
     targetLTV: state.targetTriggerLTV,
     denomination: `${state.position.collateral.token.symbol}/${state.position.debt.token.symbol}`,
@@ -79,9 +77,9 @@ function useDescriptionForAutoBuy({ state }: Pick<AutoBuySidebarAaveVaultProps, 
   })
 }
 
-function getAutoBuyInfoSectionProps({
+function getAutoSellInfoSectionProps({
   state,
-}: Pick<AutoBuySidebarAaveVaultProps, 'state'>): BuyInfoSectionProps | undefined {
+}: Pick<AutoSellSidebarAaveVaultProps, 'state'>): AutoSellInfoSectionProps | undefined {
   if (!state.setupTriggerResponse?.simulation) {
     return undefined
   }
@@ -94,8 +92,8 @@ function getAutoBuyInfoSectionProps({
   return {
     transactionCost: state.gasEstimation ?? { gasEstimationStatus: 'unset' },
     isLoading: state.isLoading,
-    collateralToBuy: collateralAfterExecution.minus(state.position.collateral.amount),
-    positionAfterBuy: {
+    collateralToSell: state.position.collateral.amount.minus(collateralAfterExecution),
+    positionAfterSell: {
       debt: {
         amount: amountFromWei(
           new BigNumber(state.setupTriggerResponse?.simulation.debtAmountAfterExecution),
@@ -127,34 +125,21 @@ function getAutoBuyInfoSectionProps({
   }
 }
 
-function mapErrorsToErrorVaults(errors: TriggersApiError[]): VaultErrorMessage[] {
-  return errors.map((error) => {
-    switch (error.code) {
-      case TriggersApiErrorCode.MaxBuyPriceIsNotSet:
-        return 'autoBuyMaxBuyPriceNotSpecified'
-      case TriggersApiErrorCode.ExecutionPriceBiggerThanMaxBuyPrice:
-        return 'maxBuyPriceWillPreventBuyTrigger'
-      default:
-        return 'generateAmountLessThanDebtFloor'
-    }
-  })
-}
-
-function AutoBuySidebarAaveVaultEditingState({
+function AutoSellSidebarAaveVaultEditingState({
   state,
   isEditing,
   updateState,
-}: AutoBuySidebarAaveVaultProps) {
+}: AutoSellSidebarAaveVaultProps) {
   const { t } = useTranslation()
-  const description = useDescriptionForAutoBuy({ state })
+  const description = useDescriptionForAutoSell({ state })
 
-  const autoBuyInfoProps = getAutoBuyInfoSectionProps({ state })
+  const autoSellInfoProps = getAutoSellInfoSectionProps({ state })
   return (
     <>
       <>
         <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
           {description}{' '}
-          <AppLink href={EXTERNAL_LINKS.KB.SETTING_AUTO_BUY} sx={{ fontSize: 2 }}>
+          <AppLink href={EXTERNAL_LINKS.KB.SETTING_AUTO_SELL} sx={{ fontSize: 2 }}>
             {t('here')}.
           </AppLink>
         </Text>{' '}
@@ -164,29 +149,29 @@ function AutoBuySidebarAaveVaultEditingState({
           onChange={(change) => {
             updateState({
               type: 'SET_EXECUTION_TRIGGER_LTV',
-              executionTriggerLTV: change.value0,
+              executionTriggerLTV: change.value1,
             })
             updateState({
               type: 'SET_TARGET_TRIGGER_LTV',
-              targetTriggerLTV: change.value1,
+              targetTriggerLTV: change.value0,
             })
           }}
           value={{
-            value0: state.executionTriggerLTV ?? state.defaults.executionTriggerLTV,
-            value1: state.targetTriggerLTV ?? state.defaults.targetTriggerLTV,
+            value0: state.targetTriggerLTV ?? state.defaults.targetTriggerLTV,
+            value1: state.executionTriggerLTV ?? state.defaults.executionTriggerLTV,
           }}
           valueColors={{
             value0: 'primary100',
             value1: 'success100',
           }}
           step={0.01}
-          leftDescription={t('auto-buy.trigger-ltv')}
-          rightDescription={t('auto-buy.target-ltv')}
+          leftDescription={t('auto-sell.target-ltv')}
+          rightDescription={t('auto-sell.trigger-ltv')}
           leftThumbColor="primary100"
           rightThumbColor="success100"
         />
         <VaultActionInput
-          action={t('auto-buy.set-max-buy-price')}
+          action={t('auto-sell.set-min-sell-price')}
           amount={state.price}
           hasAuxiliary={false}
           hasError={false}
@@ -226,29 +211,29 @@ function AutoBuySidebarAaveVaultEditingState({
               updateState({ type: 'RESET' })
             }}
           />
-          {autoBuyInfoProps && <AutoBuyInfoSection {...autoBuyInfoProps} />}
+          {autoSellInfoProps && <AutoSellInfoSection {...autoSellInfoProps} />}
         </>
       )}
     </>
   )
 }
 
-function AutoBuySidebarAaveVaultReviewState({ state }: AutoBuySidebarAaveVaultProps) {
-  const autoBuyInfoProps = getAutoBuyInfoSectionProps({ state })
-  return <>{autoBuyInfoProps && <AutoBuyInfoSection {...autoBuyInfoProps} />}</>
+function AutoBuySidebarAaveVaultReviewState({ state }: AutoSellSidebarAaveVaultProps) {
+  const autoSellInfoProps = getAutoSellInfoSectionProps({ state })
+  return <>{autoSellInfoProps && <AutoSellInfoSection {...autoSellInfoProps} />}</>
 }
 
-function AutoBuySidebarAaveVaultTxState({ state }: AutoBuySidebarAaveVaultProps) {
-  const autoBuyInfoProps = getAutoBuyInfoSectionProps({ state })
+function AutoBuySidebarAaveVaultTxState({ state }: AutoSellSidebarAaveVaultProps) {
+  const autoSellInfoProps = getAutoSellInfoSectionProps({ state })
   return (
     <Grid gap={3}>
       <AddingStopLossAnimation />
-      {autoBuyInfoProps && <AutoBuyInfoSection {...autoBuyInfoProps} />}
+      {autoSellInfoProps && <AutoSellInfoSection {...autoSellInfoProps} />}
     </Grid>
   )
 }
 
-function AutoBuySidebarAaveVaultTxDoneState({ state }: AutoBuySidebarAaveVaultProps) {
+function AutoBuySidebarAaveVaultTxDoneState({ state }: AutoSellSidebarAaveVaultProps) {
   const { t } = useTranslation()
   return (
     <>
@@ -283,12 +268,12 @@ function AutoBuySidebarAaveVaultTxDoneState({ state }: AutoBuySidebarAaveVaultPr
   )
 }
 
-export function SideBarContent(props: AutoBuySidebarAaveVaultProps) {
+export function SideBarContent(props: AutoSellSidebarAaveVaultProps) {
   const { isStateMatch } = props
   switch (true) {
     case isStateMatch('editing'):
     case isStateMatch('idle'):
-      return <AutoBuySidebarAaveVaultEditingState {...props} />
+      return <AutoSellSidebarAaveVaultEditingState {...props} />
     case isStateMatch('review'):
       return <AutoBuySidebarAaveVaultReviewState {...props} />
     case isStateMatch('tx'):
@@ -300,7 +285,7 @@ export function SideBarContent(props: AutoBuySidebarAaveVaultProps) {
 }
 
 export function usePrimaryButton(
-  props: AutoBuySidebarAaveVaultProps,
+  props: AutoSellSidebarAaveVaultProps,
 ): SidebarSectionFooterButtonSettings {
   const { isStateMatch, canTransitWith } = props
   const { t } = useTranslation()
@@ -366,7 +351,7 @@ export function usePrimaryButton(
   }
 }
 
-export function AutoBuySidebarAaveVault(props: AutoBuySidebarAaveVaultProps) {
+export function AutoSellSidebarAaveVault(props: AutoSellSidebarAaveVaultProps) {
   const { t } = useTranslation()
 
   const { strategy } = props
@@ -376,7 +361,7 @@ export function AutoBuySidebarAaveVault(props: AutoBuySidebarAaveVaultProps) {
   return (
     <SidebarSection
       dropdown={props.dropdown}
-      title={t('auto-buy.title')}
+      title={t('auto-sell.title')}
       primaryButton={primaryButton}
       content={
         <Grid gap={3}>

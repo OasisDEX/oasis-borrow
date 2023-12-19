@@ -1,4 +1,4 @@
-import { useInterpret, useSelector } from '@xstate/react'
+import { useActor, useInterpret, useSelector } from '@xstate/react'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import {
   autoBuyTriggerAaveStateMachine,
@@ -6,6 +6,11 @@ import {
   triggersAaveStateMachine,
 } from 'features/aave/manage/state'
 import type { IStrategyConfig } from 'features/aave/types'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange.constants'
+import type { AutomationChangeFeature } from 'features/automation/common/state/automationFeatureChange.types'
+import { AutomationFeatures } from 'features/automation/common/types'
+import { uiChanges } from 'helpers/uiChanges'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { env } from 'process'
 import React, { useEffect } from 'react'
 
@@ -28,6 +33,7 @@ function useSetupTriggersStateContext(
       strategyConfig: strategy,
       dpm: proxies?.dpmProxy,
       showAutoBuyBanner: true,
+      showAutoSellBanner: true,
       autoBuyTrigger: autobuyStateMachine,
       autoSellTrigger: autosellStateMachine,
       currentTriggers: {
@@ -54,13 +60,42 @@ export function useTriggersAaveStateMachineContext(): TriggersAaveStateMachineCo
 function TriggersStateUpdater({ children }: React.PropsWithChildren<{}>) {
   const { stateMachine } = useManageAaveStateMachineContext()
   const position = useSelector(stateMachine, (state) => state.context.currentPosition)
-  const context = useTriggersAaveStateMachineContext()
+  const triggerStateMachine = useTriggersAaveStateMachineContext()
+  const [, triggersSend] = useActor(triggerStateMachine)
+  const protectionCurrentView = useSelector(
+    triggerStateMachine,
+    (state) => state.context.protectionCurrentView,
+  )
+  const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
   useEffect(() => {
     if (position) {
-      context.send({ type: 'POSITION_UPDATED', position })
+      triggersSend({ type: 'POSITION_UPDATED', position })
     }
-  }, [context, position])
+  }, [position, triggersSend])
+
+  useEffect(() => {
+    if (protectionCurrentView === 'stop-loss') {
+      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+        type: 'Protection',
+        currentProtectionFeature: AutomationFeatures.STOP_LOSS,
+      })
+    }
+    if (protectionCurrentView === 'auto-sell') {
+      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+        type: 'Protection',
+        currentProtectionFeature: AutomationFeatures.AUTO_SELL,
+      })
+    }
+  }, [protectionCurrentView])
+
+  useEffect(() => {
+    if (activeAutomationFeature?.currentProtectionFeature === AutomationFeatures.AUTO_SELL) {
+      triggerStateMachine.send({ type: 'SHOW_AUTO_SELL' })
+    } else if (activeAutomationFeature?.currentProtectionFeature === AutomationFeatures.STOP_LOSS) {
+      triggerStateMachine.send({ type: 'RESET_PROTECTION' })
+    }
+  }, [activeAutomationFeature?.currentProtectionFeature])
   return <>{children}</>
 }
 

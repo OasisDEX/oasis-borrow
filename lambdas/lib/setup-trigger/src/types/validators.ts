@@ -139,6 +139,22 @@ export enum SupportedTriggers {
   AutoSell = 'auto-sell',
 }
 
+export type SupportedTriggersSchema =
+  | typeof eventBodyAaveBasicBuySchema
+  | typeof eventBodyAaveBasicSellSchema
+
+export const getBodySchema = <
+  Trigger extends SupportedTriggers,
+  Schema extends SupportedTriggersSchema,
+>(
+  trigger: Trigger,
+): Schema => {
+  if (trigger === SupportedTriggers.AutoBuy) {
+    return eventBodyAaveBasicBuySchema as Schema
+  }
+  return eventBodyAaveBasicSellSchema as Schema
+}
+
 const supportedTriggersSchema = z.nativeEnum(SupportedTriggers)
 const supportedChainsSchema = z
   .string()
