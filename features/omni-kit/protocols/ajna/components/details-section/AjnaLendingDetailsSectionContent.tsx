@@ -1,4 +1,4 @@
-import type { AjnaCumulativesData, AjnaPosition } from '@oasisdex/dma-library'
+import type { AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import {
@@ -150,18 +150,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
   const netValueContentCardAjnaData = useAjnaCardDataNetValueLending({
     collateralPrice,
     collateralToken,
-    cumulatives: position.pnl.cumulatives as AjnaCumulativesData & {
-      borrowCumulativeDepositInQuoteToken: BigNumber
-      borrowCumulativeDepositInCollateralToken: BigNumber
-      borrowCumulativeWithdrawInQuoteToken: BigNumber
-      borrowCumulativeWithdrawInCollateralToken: BigNumber
-      borrowCumulativeCollateralDeposit: BigNumber
-      borrowCumulativeCollateralWithdraw: BigNumber
-      borrowCumulativeDebtDeposit: BigNumber
-      borrowCumulativeDebtWithdraw: BigNumber
-      borrowCumulativeFeesInQuoteToken: BigNumber
-      borrowCumulativeFeesInCollateralToken: BigNumber
-    },
+    cumulatives: position.pnl.cumulatives,
     netValue,
     ...(!isOpening &&
       !isProxyWithManyPositions && {
