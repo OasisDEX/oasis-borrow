@@ -14,9 +14,13 @@ import React, { useEffect } from 'react'
 
 interface ProtectionFormControlProps {
   txHelpers?: TxHelpers
+  CustomAutoSellFormControl?: () => JSX.Element | null
 }
 
-export function ProtectionFormControl({ txHelpers }: ProtectionFormControlProps) {
+export function ProtectionFormControl({
+  txHelpers,
+  CustomAutoSellFormControl,
+}: ProtectionFormControlProps) {
   const {
     automationTriggersData,
     protocol,
@@ -51,6 +55,19 @@ export function ProtectionFormControl({ txHelpers }: ProtectionFormControlProps)
 
   const { isStopLossAvailable, isAutoSellAvailable } = getAvailableAutomation(protocol)
 
+  const AutoSellControl = () => {
+    if (CustomAutoSellFormControl) {
+      return <CustomAutoSellFormControl />
+    }
+    return (
+      <AutoSellFormControl
+        isAutoSellActive={isAutoSellActive}
+        shouldRemoveAllowance={shouldRemoveAllowance}
+        txHelpers={txHelpers}
+      />
+    )
+  }
+
   return (
     <>
       {isStopLossAvailable && (
@@ -60,13 +77,7 @@ export function ProtectionFormControl({ txHelpers }: ProtectionFormControlProps)
           shouldRemoveAllowance={shouldRemoveAllowance}
         />
       )}
-      {isAutoSellAvailable && (
-        <AutoSellFormControl
-          isAutoSellActive={isAutoSellActive}
-          txHelpers={txHelpers}
-          shouldRemoveAllowance={shouldRemoveAllowance}
-        />
-      )}
+      {isAutoSellAvailable && <AutoSellControl />}
     </>
   )
 }

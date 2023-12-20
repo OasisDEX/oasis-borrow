@@ -10,6 +10,7 @@ import { BaseViewProps } from './base-aave-context'
 import { BaseAaveEvent } from './base-aave-event'
 import { ProductType } from './is-supported-product-type'
 import { FeaturesEnum } from 'types/config'
+import { AutomationFeatures } from "../../automation/common/types";
 
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element
@@ -91,5 +92,5 @@ export interface IStrategyConfig {
   defaultSlippage?: BigNumber
   executeTransactionWith: 'web3' | 'ethers'
   strategyType: StrategyType
-  isOptimizationTabEnabled: () => boolean
+  isAutomationFeatureEnabled: (feature: AutomationFeatures) => boolean
 }

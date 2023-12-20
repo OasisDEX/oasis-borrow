@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { addressSchema, urlOptionalSchema, protocolIdsSchema } from 'shared/validators'
+import { addressSchema, urlOptionalSchema } from 'shared/validators'
 import { ChainId, ProtocolId } from 'shared/domain-types'
-import { CustomIssueCodes } from './types'
+import { CustomErrorCodes } from './types'
 
 export const PRICE_DECIMALS = 6n
 export const PERCENT_DECIMALS = 4n
@@ -63,7 +63,7 @@ export const aaveBasicBuyTriggerDataSchema = z
     },
     {
       params: {
-        code: CustomIssueCodes.MaxBuyPriceIsNotSet,
+        code: CustomErrorCodes.MaxBuyPriceIsNotSet,
       },
       message:
         'Max buy price is not set. Please set max buy price or explicitly disable it in trigger data',
@@ -89,7 +89,7 @@ export const aaveBasicSellTriggerDataSchema = z
     },
     {
       params: {
-        code: CustomIssueCodes.MinSellPriceIsNotSet,
+        code: CustomErrorCodes.MinSellPriceIsNotSet,
       },
       message:
         'Min sell price is not set. Please set min sell price or explicitly disable it in trigger data',
@@ -137,6 +137,22 @@ export const eventBodyAaveBasicSellSchema = z.object({
 export enum SupportedTriggers {
   AutoBuy = 'auto-buy',
   AutoSell = 'auto-sell',
+}
+
+export type SupportedTriggersSchema =
+  | typeof eventBodyAaveBasicBuySchema
+  | typeof eventBodyAaveBasicSellSchema
+
+export const getBodySchema = <
+  Trigger extends SupportedTriggers,
+  Schema extends SupportedTriggersSchema,
+>(
+  trigger: Trigger,
+): Schema => {
+  if (trigger === SupportedTriggers.AutoBuy) {
+    return eventBodyAaveBasicBuySchema as Schema
+  }
+  return eventBodyAaveBasicSellSchema as Schema
 }
 
 const supportedTriggersSchema = z.nativeEnum(SupportedTriggers)

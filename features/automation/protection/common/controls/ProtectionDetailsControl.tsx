@@ -8,7 +8,12 @@ import { StopLossDetailsControl } from 'features/automation/protection/stopLoss/
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
-export function ProtectionDetailsControl() {
+export interface ProtectionDetailsControlProps {
+  AutoSell?: () => JSX.Element | null
+}
+export function ProtectionDetailsControl({
+  AutoSell = AutoSellDetailsControl,
+}: ProtectionDetailsControlProps) {
   const {
     protocol,
     triggerData: { autoSellTriggerData, stopLossTriggerData },
@@ -28,7 +33,7 @@ export function ProtectionDetailsControl() {
   return (
     <>
       {isStopLossAvailable && <StopLossDetailsControl isStopLossActive={isStopLossActive} />}
-      {isAutoSellAvailable && <AutoSellDetailsControl />}
+      {isAutoSellAvailable && <AutoSell />}
     </>
   )
 }

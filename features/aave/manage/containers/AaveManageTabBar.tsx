@@ -4,11 +4,18 @@ import { PositionHistory } from 'components/history/PositionHistory'
 import type { TabSection } from 'components/TabBar'
 import { TabBar } from 'components/TabBar'
 import { DisabledHistoryControl } from 'components/vault/HistoryControl'
-import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { isAaveHistorySupported } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
-import { useManageAaveStateMachineContext } from 'features/aave/manage/contexts'
+import {
+  useManageAaveStateMachineContext,
+  useTriggersAaveStateMachineContext,
+} from 'features/aave/manage/contexts'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
+import {
+  areTriggersLoading,
+  hasActiveOptimization,
+  isOptimizationEnabled,
+} from 'features/aave/manage/state'
 import { type IStrategyConfig, ProxyType } from 'features/aave/types/strategy-config'
 import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
 import { isShortPosition } from 'features/omni-kit/helpers'
@@ -22,6 +29,7 @@ import React from 'react'
 import { Card, Grid } from 'theme-ui'
 
 import { OptimizationControl } from './OptimizationControl'
+import { ProtectionControlWrapper } from './ProtectionControlWrapper'
 
 interface AaveManageTabBarProps {
   aaveReserveState: AaveLikeReserveConfigurationData
@@ -42,6 +50,8 @@ export function AaveManageTabBar({
   } = useAutomationContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
+  const triggersStateMachine = useTriggersAaveStateMachineContext()
+  const [triggersState] = useActor(triggersStateMachine)
 
   const VaultDetails = strategyConfig.viewComponents.vaultDetailsManage
   const PositionInfo = strategyConfig.viewComponents.positionInfo
@@ -73,15 +83,19 @@ export function AaveManageTabBar({
       state.context.strategyConfig.proxyType,
     )
 
-  const optimizationTab: TabSection[] = strategyConfig.isOptimizationTabEnabled()
+  const isOptimizationTabEnabled = isOptimizationEnabled(triggersState)
+  const isOptimizationTabLoading = areTriggersLoading(triggersState)
+  const hasActiveOptimizationTrigger = hasActiveOptimization(triggersState)
+
+  const optimizationTab: TabSection[] = isOptimizationTabEnabled
     ? [
         {
           value: 'optimization',
           label: t('system.optimization'),
           content: <OptimizationControl />,
           tag: {
-            active: false,
-            isLoading: false,
+            active: hasActiveOptimizationTrigger,
+            isLoading: isOptimizationTabLoading,
             include: true,
           },
         },
@@ -132,7 +146,7 @@ export function AaveManageTabBar({
                   active: protectionEnabled,
                   isLoading: !isAutomationDataLoaded,
                 },
-                content: <ProtectionControl />,
+                content: <ProtectionControlWrapper />,
               },
             ]
           : []),

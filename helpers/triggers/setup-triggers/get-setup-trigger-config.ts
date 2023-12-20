@@ -7,6 +7,7 @@ export interface GetSetupTriggerConfigParams {
   triggerType: TriggerType
   networkId: NetworkIds
   protocol: LendingProtocol
+  path: 'auto-buy' | 'auto-sell'
 }
 
 export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {
@@ -28,7 +29,7 @@ export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {
   // TODO: Add proper triggers.
 
   return {
-    url: `${baseUrl}/${params.networkId}/aave3/auto-buy`,
+    url: `${baseUrl}/${params.networkId}/aave3/${params.path}`,
     customRpc: rpc,
   }
 }

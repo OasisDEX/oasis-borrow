@@ -36,6 +36,18 @@ export function VaultErrors({
   function applyErrorMessageTranslation(message: VaultErrorMessage) {
     const translate = (key: string, args?: Dictionary<any>) => t(`vault-errors.${key}`, args || {})
     switch (message) {
+      case 'internalError':
+        return translate('internal-error')
+      case 'executionLTVSmallerThanTargetLTV':
+        return translate('auto-sell-execution-ltv-smaller-than-target')
+      case 'executionLTVBiggerThanTargetLTV':
+        return translate('auto-buy-execution-ltv-bigger-than-target')
+      case 'executionLTVBiggerThanCurrentLTV':
+        return translate('auto-buy-execution-ltv-bigger-than-current-ltv')
+      case 'executionLTVSmallerThanCurrentLTV':
+        return translate('auto-sell-execution-ltv-smaller-than-current-ltv')
+      case 'executionLTVNearToAutoSellTrigger':
+        return translate('auto-buy-execution-ltv-near-to-auto-sell-trigger')
       case 'depositAmountExceedsCollateralBalance':
         return translate('deposit-amount-exceeds-collateral-balance')
       case 'depositDaiAmountExceedsDaiBalance':

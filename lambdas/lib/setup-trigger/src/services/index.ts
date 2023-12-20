@@ -1,6 +1,6 @@
 import { ChainId, NetworkByChainID, ProtocolId } from 'shared/domain-types'
 import { Addresses, getAddresses } from './get-addresses'
-import { Chain, createPublicClient, http } from 'viem'
+import { Chain as ViemChain, createPublicClient, http, HttpTransport, PublicClient } from 'viem'
 import { arbitrum, base, mainnet, optimism, sepolia } from 'viem/chains'
 import { Logger } from '@aws-lambda-powertools/logger'
 import { getPosition, GetPositionParams } from './get-position'
@@ -16,6 +16,7 @@ import {
   isAaveAutoSellTriggerData,
   Price,
   isBigInt,
+  SupportedTriggersSchema,
 } from '~types'
 import { calculateCollateralPriceInDebtBasedOnLtv } from './calculate-collateral-price-in-debt-based-on-ltv'
 import {
@@ -23,9 +24,13 @@ import {
   EncodeFunctionForDpmParams,
   TransactionFragment,
 } from './encode-function-for-dpm'
-import { validateTriggerDataAgainstCurrentPosition } from './validate-trigger-data-against-current-position'
+import { autoBuyValidator } from './against-position-validators/auto-buy-validator'
 import { CurrentTriggerLike, EncodedFunction } from './trigger-encoders/types'
 import type { GetTriggersResponse } from 'contracts/get-triggers-response'
+import {
+  AgainstPositionValidator,
+  getAgainstPositionValidator,
+} from './against-position-validators'
 
 const rpcConfig = {
   skipCache: false,
@@ -47,7 +52,7 @@ function getRpcGatewayEndpoint(chainId: ChainId, rpcGateway: string) {
   )
 }
 
-const domainChainIdToViemChain: Record<ChainId, Chain> = {
+const domainChainIdToViemChain: Record<ChainId, ViemChain> = {
   [ChainId.MAINNET]: mainnet,
   [ChainId.ARBITRUM]: arbitrum,
   [ChainId.OPTIMISM]: optimism,
@@ -55,24 +60,35 @@ const domainChainIdToViemChain: Record<ChainId, Chain> = {
   [ChainId.SEPOLIA]: sepolia,
 }
 
-export interface ServiceContainer {
+export interface ServiceContainer<
+  Trigger extends SupportedTriggers,
+  Schema extends SupportedTriggersSchema,
+  Protocol extends ProtocolId,
+  Chain extends ChainId,
+> {
   getPosition: (params: GetPositionParams) => Promise<PositionLike>
   simulatePosition: (params: SimulatePositionParams) => SimulatedPosition
   getExecutionPrice: (params: PositionLike) => Price
-  validate: typeof validateTriggerDataAgainstCurrentPosition
+  validate: AgainstPositionValidator<Trigger, Schema>
   encodeTrigger: (position: PositionLike, triggerData: TriggerData) => Promise<EncodedFunction>
   encodeForDPM: (params: EncodeFunctionForDpmParams) => TransactionFragment
 }
 
-export function buildServiceContainer(
-  chainId: ChainId,
-  protocol: ProtocolId,
-  trigger: SupportedTriggers,
+export function buildServiceContainer<
+  Trigger extends SupportedTriggers,
+  Schema extends SupportedTriggersSchema,
+  Protocol extends ProtocolId,
+  Chain extends ChainId,
+>(
+  chainId: Chain,
+  protocol: Protocol,
+  trigger: Trigger,
+  schema: Schema,
   rpcGateway: string,
   getTriggersUrl: string,
   forkRpc?: string,
   logger?: Logger,
-): ServiceContainer {
+): ServiceContainer<Trigger, Schema, Protocol, Chain> {
   const rpc = forkRpc ?? getRpcGatewayEndpoint(chainId, rpcGateway)
   const transport = http(rpc, {
     batch: false,
@@ -81,9 +97,11 @@ export function buildServiceContainer(
     },
   })
 
-  const publicClient = createPublicClient({
+  const viemChain: ViemChain = domainChainIdToViemChain[chainId]
+
+  const publicClient: PublicClient = createPublicClient({
     transport,
-    chain: domainChainIdToViemChain[chainId],
+    chain: viemChain,
   })
 
   const addresses = getAddresses(chainId)
@@ -98,7 +116,7 @@ export function buildServiceContainer(
     getExecutionPrice: (params: Parameters<typeof calculateCollateralPriceInDebtBasedOnLtv>[0]) => {
       return calculateCollateralPriceInDebtBasedOnLtv(params)
     },
-    validate: validateTriggerDataAgainstCurrentPosition,
+    validate: getAgainstPositionValidator(trigger, schema),
     encodeTrigger: async (position: PositionLike, triggerData: TriggerData) => {
       let currentTrigger: CurrentTriggerLike | undefined = undefined
       try {

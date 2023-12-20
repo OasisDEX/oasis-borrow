@@ -2,11 +2,10 @@
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/responses'
 import {
-  eventBodyAaveBasicBuySchema,
-  eventBodyAaveBasicSellSchema,
-  Issue,
+  getBodySchema,
   mapZodResultToValidationResults,
   pathParamsSchema,
+  ValidationIssue,
 } from '~types'
 import { Logger } from '@aws-lambda-powertools/logger'
 import { buildServiceContainer } from './services'
@@ -49,7 +48,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     pathParamsResult.data.protocol !== ProtocolId.AAVE3 &&
     pathParamsResult.data.trigger !== 'auto-buy'
   ) {
-    const errors: Issue[] = [
+    const errors: ValidationIssue[] = [
       {
         code: 'not-supported-chain',
         message: 'Only Mainnet is supported',
@@ -72,12 +71,9 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     })
   }
 
-  const body = JSON.parse(event.body || '{}')
+  const body = JSON.parse(event.body ?? '{}')
 
-  const bodySchema =
-    pathParamsResult.data.trigger === 'auto-buy'
-      ? eventBodyAaveBasicBuySchema
-      : eventBodyAaveBasicSellSchema
+  const bodySchema = getBodySchema(pathParamsResult.data.trigger)
 
   const parseResult = bodySchema.safeParse(body)
   if (!parseResult.success) {
@@ -85,10 +81,12 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     logger.warn('Incorrect data', {
       params: body,
       errors: validationResults.errors,
+      warnings: validationResults.warnings,
     })
     return ResponseBadRequest({
       message: 'Validation Errors',
       errors: validationResults.errors,
+      warnings: validationResults.warnings,
     })
   }
 
@@ -105,6 +103,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     pathParamsResult.data.chainId,
     pathParamsResult.data.protocol,
     pathParamsResult.data.trigger,
+    bodySchema,
     RPC_GATEWAY,
     GET_TRIGGERS_URL,
     params.rpc,
@@ -122,7 +121,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   const validation = validate({
     position,
     executionPrice,
-    triggerData: params.triggerData,
+    body: params,
   })
 
   if (!validation.success) {

@@ -4,9 +4,8 @@ import {
   TriggerData,
   ValidationResults,
 } from './types'
-import { z, ZodIssueCode } from 'zod'
-import { tokenSchema } from './validators'
-import { SafeParseError, SafeParseReturnType } from 'zod/lib/types'
+import { ZodIssueCode } from 'zod'
+import { SafeParseError } from 'zod/lib/types'
 
 export const isAaveAutoBuyTriggerData = (
   triggerData: TriggerData,
@@ -30,5 +29,6 @@ export const mapZodResultToValidationResults = <TInput>(
       code: error.code === ZodIssueCode.custom ? error.params?.code : error.code,
       path: error.path,
     })),
+    warnings: [],
   }
 }

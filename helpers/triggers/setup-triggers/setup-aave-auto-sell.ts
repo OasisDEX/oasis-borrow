@@ -2,19 +2,19 @@ import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type { SetupAaveBasicAutomationParams, SetupBasicAutoResponse } from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
-export const setupAaveAutoBuy = async (
+export const setupAaveAutoSell = async (
   params: SetupAaveBasicAutomationParams,
 ): Promise<SetupBasicAutoResponse> => {
-  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'auto-buy' })
+  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'auto-sell' })
 
   const body = JSON.stringify({
     dpm: params.dpm,
     triggerData: {
       executionLTV: params.executionLTV.integerValue().toString(),
       targetLTV: params.targetLTV.integerValue().toString(),
-      maxBuyPrice: params.price?.integerValue().toString(),
+      minSellPrice: params.price?.integerValue().toString(),
       maxBaseFee: params.maxBaseFee.integerValue().toString(),
-      useMaxBuyPrice: params.usePrice,
+      useMinSellPrice: params.usePrice,
     },
     position: {
       collateral: params.strategy.collateralAddress,

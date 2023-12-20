@@ -113,6 +113,8 @@ export type AaveBasicSell = {
   }
 }
 
+export type AaveBasicBuyOrSell = AaveBasicBuy | AaveBasicSell
+
 export type GetTriggersResponse = {
   triggers: {
     aaveStopLossToCollateral?: AaveStopLossToCollateral
