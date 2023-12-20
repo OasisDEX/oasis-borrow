@@ -63,7 +63,7 @@ export const estimateOmniGas$ = ({
 
             usdValue = amountFromWei(
               new BigNumber(optimismTxFeeData.l1Fee).plus(optimismTxFeeData.l2Fee),
-            ).times(ethPrice)
+            ).times(optimismTxFeeData.ethUsdPriceUSD)
           }
 
           return {

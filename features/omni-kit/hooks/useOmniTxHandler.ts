@@ -129,6 +129,12 @@ export function useOmniTxHandler<CustomState>({
 
       const castedTxState = txState as TxState<TxMeta>
 
-      handleTransaction({ txState: castedTxState, ethPrice, setTxDetails })
+      void handleTransaction({
+        txState: castedTxState,
+        ethPrice,
+        setTxDetails,
+        networkId,
+        txData: txData.data,
+      })
     })
 }

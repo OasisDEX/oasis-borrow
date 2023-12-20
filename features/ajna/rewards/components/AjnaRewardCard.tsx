@@ -111,7 +111,7 @@ export function AjnaRewardCard() {
         params: resolvedParams,
         signer,
       }).subscribe((txState) => {
-        handleTransaction({ txState, ethPrice: zero, setTxDetails })
+        void handleTransaction({ txState, ethPrice: zero, setTxDetails })
 
         if (rewards.bonus.gt(zero) && txState.status === TxStatus.Success) {
           setClaimedBonus(true)

@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import type { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
@@ -7,6 +8,7 @@ export interface OptimismTransactionFee {
   l2Fee: string
   l1Fee: string
   ethUsdPrice: string
+  ethUsdPriceUSD: BigNumber
 }
 
 export async function getOptimismTransactionFee(
@@ -35,5 +37,7 @@ export async function getOptimismTransactionFee(
     l2Fee: l2Fee.toString(),
     l1Fee: l1Fee.toString(),
     ethUsdPrice: ethUsdPrice.toString(),
+    // 8 decimals read from this contract to avoid extra calls
+    ethUsdPriceUSD: new BigNumber(ethUsdPrice.toString()).shiftedBy(-8),
   }
 }

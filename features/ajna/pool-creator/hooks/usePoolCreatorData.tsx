@@ -77,9 +77,7 @@ export function usePoolCreatorData({
         contract: ajnaErc20PoolFactoryContract,
         method: 'deployPool',
         params: [collateralAddress, quoteAddress, amountToWad(interestRate.div(100)).toString()],
-      }).subscribe((txState) => {
-        handleTransaction({ txState, ethPrice: zero, setTxDetails })
-      })
+      }).subscribe((txState) => handleTransaction({ txState, ethPrice: zero, setTxDetails }))
     }
   }
 
