@@ -84,6 +84,7 @@ export const PortfolioPositionsView = ({
     const allSelected =
       filterState['product']?.length === Object.values(PortfolioProductType).length // all selected manually
     const includeMigrated = filterState['product']?.includes(PortfolioProductType.migrate) // include migrated positions
+
     const filteredProductPositions = filteredEmptyPositions.filter((position) => {
       if (noneSelected || allSelected) {
         return true
@@ -96,6 +97,7 @@ export const PortfolioPositionsView = ({
         (includeMigrated && position.availableToMigrate) // special case for migration positions
       )
     })
+
     return filteredProductPositions
   }, [filterState, filteredEmptyPositions])
 
@@ -192,7 +194,7 @@ export const PortfolioPositionsView = ({
                       {sortedPositions.length > 0 ? (
                         sortedPositions.map((position) => (
                           <PortfolioPositionBlock
-                            key={`${position.positionId}-${position.protocol}-${position.network}`}
+                            key={`${position.positionId}-${position.protocol}-${position.network}-${position.type}-${position.primaryToken}-${position.secondaryToken}`}
                             position={position}
                           />
                         ))
