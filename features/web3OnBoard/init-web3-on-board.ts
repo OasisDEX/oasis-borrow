@@ -1,5 +1,5 @@
 import coinbaseModule from '@web3-onboard/coinbase'
-import type { Chain } from '@web3-onboard/common'
+import type { Chain, WalletInit } from '@web3-onboard/common'
 import gnosisModule from '@web3-onboard/gnosis'
 import injectedModule from '@web3-onboard/injected-wallets'
 import ledgerModule from '@web3-onboard/ledger'
@@ -8,6 +8,7 @@ import trezorModule from '@web3-onboard/trezor'
 import walletConnectModule from '@web3-onboard/walletconnect'
 import type { NetworkConfig } from 'blockchain/networks'
 import { enableNetworksSet } from 'blockchain/networks'
+import { getLocalAppConfig } from 'helpers/config'
 
 const injected = injectedModule({
   custom: [],
@@ -45,8 +46,24 @@ const getChains = () => {
   return enableNetworksSet.map(mapNetwork)
 }
 
+const config = getLocalAppConfig('parameters').connectionMethods
+
+const getWallets = () => {
+  const wallets: WalletInit[] = []
+  if (!config) {
+    return wallets
+  }
+  if (config.gnosis) wallets.push(gnosis)
+  if (config.injected) wallets.push(injected)
+  if (config.walletConnect) wallets.push(walletConnect)
+  if (config.walletLink) wallets.push(walletLink)
+  if (config.ledger) wallets.push(ledger)
+  if (config.trezor) wallets.push(trezor)
+  return wallets
+}
+
 export const initWeb3OnBoard = init({
-  wallets: [injected, walletConnect, walletLink, gnosis, ledger, trezor],
+  wallets: getWallets(),
   chains: getChains(),
   appMetadata: {
     name: 'Summer.fi',
