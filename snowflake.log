@@ -1,0 +1,1 @@
+{"level":"INFO","message":"[2:17:35.1735 PM]: WARNING!!! using fail-open to connect. Driver is connecting to an HTTPS endpoint without OCSP based Certificated Revocation checking as it could not obtain a valid OCSP Response to use from the CA OCSP responder. Details:"}

@@ -1,5 +1,7 @@
 import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
 import type { NetworkIds, NetworkNames } from 'blockchain/networks'
+import type { Tickers } from 'blockchain/prices.types'
+import type { DpmPositionData } from 'features/omni-kit/observables'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
@@ -34,6 +36,15 @@ export type OmniSidebarStepsSet = {
     setup: OmniSidebarStep[]
     manage: OmniSidebarStep[]
   }
+}
+
+export interface OmniProtocolHookProps {
+  collateralToken?: string
+  dpmPositionData?: DpmPositionData
+  networkId: NetworkIds
+  product?: OmniProductType
+  quoteToken?: string
+  tokenPriceUSDData?: Tickers
 }
 
 export type OmniCloseTo = 'collateral' | 'quote'

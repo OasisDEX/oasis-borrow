@@ -12,10 +12,10 @@ import {
 } from 'features/omni-kit/helpers'
 import { useOmniProtocolData } from 'features/omni-kit/hooks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
-import type { ProductDataProps } from 'features/omni-kit/protocols/ajna/hooks'
 import type {
   OmniFormDefaults,
   OmniProductType,
+  OmniProtocolHookProps,
   OmniSidebarStepsSet,
 } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
@@ -53,13 +53,12 @@ interface OmniProductControllerProps<Auction, History, Position> {
   productType: OmniProductType
   protocol: LendingProtocol
   protocolRaw: string
-  protocolHook: (params: ProductDataProps) => {
+  protocolHook: (params: OmniProtocolHookProps) => {
     data: {
       aggregatedData: { auction: Auction; history: History } | undefined
       positionData: Position | undefined
     }
     errors: string[]
-    isOracless: boolean
   }
   quoteToken: string
   seoTags: {

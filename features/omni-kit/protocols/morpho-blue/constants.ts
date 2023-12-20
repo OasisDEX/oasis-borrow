@@ -1,8 +1,4 @@
-import {
-  omniSidebarManageBorrowishSteps,
-  omniSidebarManageSteps,
-  omniSidebarSetupSteps,
-} from 'features/omni-kit/constants'
+import { omniSidebarManageBorrowishSteps, omniSidebarSetupSteps } from 'features/omni-kit/constants'
 import { OmniProductType, type OmniSidebarStepsSet } from 'features/omni-kit/types'
 
 export const morphoSeoTags = {
@@ -16,8 +12,8 @@ export const morphoOmniSteps: OmniSidebarStepsSet = {
     manage: omniSidebarManageBorrowishSteps,
   },
   earn: {
-    setup: omniSidebarSetupSteps,
-    manage: omniSidebarManageSteps,
+    setup: [],
+    manage: [],
   },
   multiply: {
     setup: omniSidebarSetupSteps,

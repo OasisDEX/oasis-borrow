@@ -1,33 +1,21 @@
-import type { NetworkIds } from 'blockchain/networks'
-import type { Tickers } from 'blockchain/prices.types'
 import { useProductContext } from 'components/context/ProductContextProvider'
-import type { DpmPositionData } from 'features/omni-kit/observables'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import { useAjnaRedirect } from 'features/omni-kit/protocols/ajna/hooks'
 import { getAjnaPositionAggregatedData$ } from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
-import type { OmniProductType } from 'features/omni-kit/types'
+import type { OmniProductType, OmniProtocolHookProps } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
 import { one } from 'helpers/zero'
 import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
 
-// TODO this interface won't be protocol specific and could be easily extended with the rest of protocol data
-export interface ProductDataProps {
-  collateralToken?: string
-  dpmPositionData?: DpmPositionData
-  quoteToken?: string
-  tokenPriceUSDData?: Tickers
-  networkId: NetworkIds
-}
-
 export function useAjnaData({
   collateralToken,
   dpmPositionData,
+  networkId,
   quoteToken,
   tokenPriceUSDData,
-  networkId,
-}: ProductDataProps) {
+}: OmniProtocolHookProps) {
   const { ajnaPosition$ } = useProductContext()
 
   const isOracless = !!(
@@ -83,6 +71,5 @@ export function useAjnaData({
       positionData: ajnaPositionData,
     },
     errors: [ajnaPositionAggregatedError, ajnaPositionError],
-    isOracless,
   }
 }
