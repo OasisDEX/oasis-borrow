@@ -13,9 +13,11 @@ import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { ProductType, StrategyType } from 'features/aave/types'
+import type { ProductType } from 'features/aave/types'
+import { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { displayMultiple } from 'helpers/display-multiple'
@@ -97,28 +99,21 @@ export function AaveMultiplyPositionData({
     aaveHistory[0].autoKind === 'aave-stop-loss' &&
     currentPosition.debt.amount.isZero()
 
-  const isLongPosition = strategyType === StrategyType.Long
-  const isEarnPosition = productType === ProductType.Earn
-
-  const netValueUsd = isLongPosition
-    ? currentPositionThings.netValueInDebtToken.times(debtTokenPrice)
-    : currentPositionThings.netValueInCollateralToken.times(collateralTokenPrice)
-
-  const pnlWithoutFees = isEarnPosition
-    ? cumulatives?.cumulativeWithdrawInQuoteToken
-        .plus(currentPositionThings.netValueInDebtToken)
-        .minus(cumulatives.cumulativeDepositInQuoteToken)
-        .div(cumulatives.cumulativeDepositInQuoteToken)
-    : cumulatives?.cumulativeWithdrawInCollateralToken
-        .plus(currentPositionThings.netValueInCollateralToken)
-        .minus(cumulatives.cumulativeDepositInCollateralToken)
-        .div(cumulatives.cumulativeDepositInCollateralToken)
-
   const isSparkPosition = lendingProtocol === LendingProtocol.SparkV3
   const isElligibleSparkPosition = checkElligibleSparkPosition(
     collateralToken.symbol,
     debtToken.symbol,
   )
+
+  const netValuePnlModalData = getOmniNetValuePnlData({
+    cumulatives,
+    productType,
+    collateralTokenPrice,
+    netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,
+    collateralToken: currentPosition.collateral.symbol,
+    oraclePriceForCollateralDebtExchangeRate:
+      currentPosition.oraclePriceForCollateralDebtExchangeRate,
+  })
 
   return (
     <Grid>
@@ -165,24 +160,14 @@ export function AaveMultiplyPositionData({
               currentPosition={currentPosition}
               nextPositionThings={nextPositionThings}
               footnote={
-                pnlWithoutFees &&
-                cumulatives &&
+                netValuePnlModalData.pnl?.percentage &&
                 `${t('omni-kit.content-card.net-value.footnote')} ${
-                  pnlWithoutFees.gte(zero) ? '+' : ''
+                  netValuePnlModalData.pnl.percentage.gte(zero) ? '+' : ''
                 }
-                ${formatDecimalAsPercent(pnlWithoutFees)}`
+                ${formatDecimalAsPercent(netValuePnlModalData.pnl.percentage)}`
               }
               modal={
-                cumulatives ? (
-                  <OmniMultiplyNetValueModal
-                    netValueTokenPrice={isEarnPosition ? debtTokenPrice : collateralTokenPrice}
-                    netValueToken={isEarnPosition ? debtToken.symbol : collateralToken.symbol}
-                    isEarnPosition={isEarnPosition}
-                    cumulatives={cumulatives}
-                    netValueUSD={netValueUsd}
-                    pnl={pnlWithoutFees}
-                  />
-                ) : undefined
+                cumulatives ? <OmniMultiplyNetValueModal {...netValuePnlModalData} /> : undefined
               }
             />
           </DetailsSectionContentCardWrapper>
