@@ -10,6 +10,10 @@ import {
   StopLossAaveErrorMessage,
   StrategyInformationContainer,
 } from 'features/aave/components'
+import {
+  getCollateralInputValue,
+  getDebtInputValue,
+} from 'features/aave/helpers/manage-inputs-helpers'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -56,12 +60,11 @@ export function GetReviewingSidebarProps({
   const closeToToken = state.context.manageTokenInput?.closingToken
   const maxCollateralAmount = calculateMaxCollateralAmount(state.context)
   const maxDebtAmount = calculateMaxDebtAmount(state.context)
+
   const amountCollateralTooHigh = maxCollateralAmount.lt(
-    state.context.manageTokenInput?.manageInput1Value || zero,
+    getCollateralInputValue(state.context) || zero,
   )
-  const amountDebtTooHigh = maxDebtAmount.lt(
-    state.context.manageTokenInput?.manageInput2Value || zero,
-  )
+  const amountDebtTooHigh = maxDebtAmount.lt(getDebtInputValue(state.context) || zero)
 
   switch (true) {
     case state.matches('frontend.reviewingClosing'):
@@ -162,6 +165,30 @@ export function GetReviewingSidebarProps({
                 <ErrorMessageCannotDepositDueToProtocolCap context={state.context} />
               </>
             )}
+            {amountDebtTooHigh && (
+              <>
+                <MessageCard
+                  messages={
+                    isWithdraw
+                      ? [
+                          t('vault-errors.payback-amount-exceeds', {
+                            maxPaybackAmount: formatCryptoBalance(maxDebtAmount),
+                            token: state.context.tokens.debt,
+                          }),
+                        ]
+                      : [
+                          t('vault-errors.borrow-amount-exceeds-max', {
+                            maxBorrowAmount: formatCryptoBalance(maxDebtAmount),
+                            token: state.context.tokens.debt,
+                          }),
+                        ]
+                  }
+                  type="error"
+                  withBullet={false}
+                />
+                <ErrorMessageCannotDepositDueToProtocolCap context={state.context} />
+              </>
+            )}
             <StrategyInformationContainer
               state={state}
               changeSlippageSource={(from) => {
@@ -240,6 +267,25 @@ export function GetReviewingSidebarProps({
                   withBullet={false}
                 />
                 <ErrorMessageCannotBorrowDueToProtocolCap context={state.context} />
+              </>
+            )}
+            {amountCollateralTooHigh && (
+              <>
+                <MessageCard
+                  messages={
+                    isPayback
+                      ? [
+                          t('vault-errors.withdraw-amount-exceeds-free-collateral', {
+                            maxWithdrawAmount: formatCryptoBalance(maxCollateralAmount),
+                            token: state.context.tokens.collateral,
+                          }),
+                        ]
+                      : [t('vault-errors.deposit-amount-exceeds-collateral-balance')]
+                  }
+                  type="error"
+                  withBullet={false}
+                />
+                <ErrorMessageCannotDepositDueToProtocolCap context={state.context} />
               </>
             )}
             <StrategyInformationContainer
