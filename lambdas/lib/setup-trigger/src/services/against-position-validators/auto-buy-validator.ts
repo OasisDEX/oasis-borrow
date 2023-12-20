@@ -2,14 +2,12 @@ import {
   ONE_PERCENT,
   positionSchema,
   priceSchema,
-  aaveBasicBuyTriggerDataSchema,
-  aaveBasicSellTriggerDataSchema,
   mapZodResultToValidationResults,
   ValidationResults,
-  CustomIssueCodes,
+  CustomErrorCodes,
   eventBodyAaveBasicBuySchema,
 } from '~types'
-import { z, ZodIssueCode } from 'zod'
+import { z } from 'zod'
 
 const validationSchema = z
   .object({
@@ -24,7 +22,7 @@ const validationSchema = z
     {
       message: 'Execution price is bigger than max buy price',
       params: {
-        code: CustomIssueCodes.ExecutionPriceBiggerThanMaxBuyPrice,
+        code: CustomErrorCodes.ExecutionPriceBiggerThanMaxBuyPrice,
       },
       path: ['triggerData', 'maxBuyPrice'],
     },
@@ -36,7 +34,7 @@ const validationSchema = z
     {
       message: 'Execution LTV is smaller than target LTV',
       params: {
-        code: CustomIssueCodes.ExecutionLTVSmallerThanTargetLTV,
+        code: CustomErrorCodes.ExecutionLTVSmallerThanTargetLTV,
       },
     },
   )
@@ -47,7 +45,7 @@ const validationSchema = z
     {
       message: 'Execution LTV is bigger than current LTV',
       params: {
-        code: CustomIssueCodes.ExecutionLTVBiggerThanCurrentLTV,
+        code: CustomErrorCodes.ExecutionLTVBiggerThanCurrentLTV,
       },
     },
   )
@@ -61,6 +59,7 @@ export function autoBuyValidator(params: AutoBuyValidationParams): ValidationRes
     return {
       success: true,
       errors: [],
+      warnings: [],
     }
   }
 

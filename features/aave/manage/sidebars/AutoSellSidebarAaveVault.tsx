@@ -9,9 +9,10 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import type { AutoSellInfoSectionProps } from 'features/aave/components/AutoSellInfoSection'
 import { AutoSellInfoSection } from 'features/aave/components/AutoSellInfoSection'
-import { mapErrorsToErrorVaults } from 'features/aave/helpers'
+import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
 import { getTriggerExecutionCollateralPriceDenominatedInDebt } from 'features/aave/manage/services/calculations'
 import type {
   AutoSellTriggerAaveContext,
@@ -192,10 +193,12 @@ function AutoSellSidebarAaveVaultEditingState({
       {isEditing && (
         <>
           <VaultErrors
-            errorMessages={mapErrorsToErrorVaults(state.setupTriggerResponse?.errors ?? [])}
-            autoType="Auto-Buy"
+            errorMessages={mapErrorsToErrorVaults(state.setupTriggerResponse?.errors)}
+            autoType="Auto-Sell"
           />
-          {/*<VaultWarnings warningMessages={[]} ilkData={{ debtFloor }} />*/}
+          <VaultWarnings
+            warningMessages={mapWarningsToWarningVaults(state.setupTriggerResponse?.warnings)}
+          />
         </>
       )}
       <MaxGasPriceSection

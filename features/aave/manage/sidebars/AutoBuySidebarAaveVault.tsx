@@ -9,8 +9,10 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import type { BuyInfoSectionProps } from 'features/aave/components/AutoBuyInfoSection'
 import { AutoBuyInfoSection } from 'features/aave/components/AutoBuyInfoSection'
+import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
 import { getTriggerExecutionCollateralPriceDenominatedInDebt } from 'features/aave/manage/services/calculations'
 import type {
   AutoBuyTriggerAaveContext,
@@ -24,13 +26,10 @@ import {
   sidebarAutomationLinkMap,
 } from 'features/automation/common/consts'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
-import type { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import type { TriggersApiError } from 'helpers/triggers/setup-triggers'
-import { TriggersApiErrorCode } from 'helpers/triggers/setup-triggers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { AddingStopLossAnimation } from 'theme/animations'
@@ -127,19 +126,6 @@ function getAutoBuyInfoSectionProps({
   }
 }
 
-function mapErrorsToErrorVaults(errors: TriggersApiError[]): VaultErrorMessage[] {
-  return errors.map((error) => {
-    switch (error.code) {
-      case TriggersApiErrorCode.MaxBuyPriceIsNotSet:
-        return 'autoBuyMaxBuyPriceNotSpecified'
-      case TriggersApiErrorCode.ExecutionPriceBiggerThanMaxBuyPrice:
-        return 'maxBuyPriceWillPreventBuyTrigger'
-      default:
-        return 'generateAmountLessThanDebtFloor'
-    }
-  })
-}
-
 function AutoBuySidebarAaveVaultEditingState({
   state,
   isEditing,
@@ -207,10 +193,12 @@ function AutoBuySidebarAaveVaultEditingState({
       {isEditing && (
         <>
           <VaultErrors
-            errorMessages={mapErrorsToErrorVaults(state.setupTriggerResponse?.errors ?? [])}
+            errorMessages={mapErrorsToErrorVaults(state.setupTriggerResponse?.errors)}
             autoType="Auto-Buy"
           />
-          {/*<VaultWarnings warningMessages={[]} ilkData={{ debtFloor }} />*/}
+          <VaultWarnings
+            warningMessages={mapWarningsToWarningVaults(state.setupTriggerResponse?.warnings)}
+          />
         </>
       )}
       <MaxGasPriceSection

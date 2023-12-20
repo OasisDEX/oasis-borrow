@@ -5,6 +5,7 @@ import type { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import type { Dictionary } from 'ts-essentials'
@@ -19,14 +20,14 @@ const AutoTakeProfitKBLink = (
 
 interface VaultWarningsProps {
   warningMessages: VaultWarningMessage[]
-  ilkData: { debtFloor: BigNumber }
+  ilkData?: { debtFloor: BigNumber }
   isAutoSellEnabled?: boolean
   isAutoBuyEnabled?: boolean
 }
 
 export function VaultWarnings({
   warningMessages,
-  ilkData: { debtFloor },
+  ilkData: { debtFloor } = { debtFloor: zero },
   isAutoSellEnabled,
   isAutoBuyEnabled,
 }: VaultWarningsProps) {

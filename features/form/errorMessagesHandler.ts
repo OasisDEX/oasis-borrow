@@ -48,6 +48,12 @@ export type VaultErrorMessage =
   | 'maxBuyPriceWillPreventBuyTrigger'
   | 'autoTakeProfitTriggeredImmediately'
   | 'takeProfitWillTriggerImmediatelyAfterVaultReopen'
+  | 'internalError'
+  | 'executionLTVSmallerThanTargetLTV'
+  | 'executionLTVBiggerThanTargetLTV'
+  | 'executionLTVBiggerThanCurrentLTV'
+  | 'executionLTVSmallerThanCurrentLTV'
+  | 'executionLTVNearToAutoSellTrigger'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean

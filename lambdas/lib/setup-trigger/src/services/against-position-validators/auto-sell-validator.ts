@@ -1,5 +1,5 @@
 import {
-  CustomIssueCodes,
+  CustomErrorCodes,
   eventBodyAaveBasicSellSchema,
   mapZodResultToValidationResults,
   positionSchema,
@@ -21,7 +21,7 @@ const validationSchema = z
     {
       message: 'Execution price is smaller than min sell price',
       params: {
-        code: CustomIssueCodes.ExecutionPriceSmallerThanMinSellPrice,
+        code: CustomErrorCodes.ExecutionPriceSmallerThanMinSellPrice,
       },
       path: ['triggerData', 'minSellPrice'],
     },
@@ -33,7 +33,7 @@ const validationSchema = z
     {
       message: 'Execution LTV is bigger than target LTV',
       params: {
-        code: CustomIssueCodes.ExecutionLTVBiggerThanTargetLTV,
+        code: CustomErrorCodes.ExecutionLTVBiggerThanTargetLTV,
       },
     },
   )
@@ -47,6 +47,7 @@ export function autoSellValidator(params: AutoSellTriggerParams): ValidationResu
     return {
       success: true,
       errors: [],
+      warnings: [],
     }
   }
 

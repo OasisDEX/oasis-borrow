@@ -2,12 +2,10 @@
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 import { ResponseBadRequest, ResponseInternalServerError, ResponseOk } from 'shared/responses'
 import {
-  eventBodyAaveBasicBuySchema,
-  eventBodyAaveBasicSellSchema,
   getBodySchema,
-  Issue,
   mapZodResultToValidationResults,
   pathParamsSchema,
+  ValidationIssue,
 } from '~types'
 import { Logger } from '@aws-lambda-powertools/logger'
 import { buildServiceContainer } from './services'
@@ -50,7 +48,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     pathParamsResult.data.protocol !== ProtocolId.AAVE3 &&
     pathParamsResult.data.trigger !== 'auto-buy'
   ) {
-    const errors: Issue[] = [
+    const errors: ValidationIssue[] = [
       {
         code: 'not-supported-chain',
         message: 'Only Mainnet is supported',
@@ -83,10 +81,12 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     logger.warn('Incorrect data', {
       params: body,
       errors: validationResults.errors,
+      warnings: validationResults.warnings,
     })
     return ResponseBadRequest({
       message: 'Validation Errors',
       errors: validationResults.errors,
+      warnings: validationResults.warnings,
     })
   }
 
