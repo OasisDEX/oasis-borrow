@@ -1,6 +1,7 @@
 import type { AaveLikePosition } from '@oasisdex/dma-library'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { amountFromWei } from 'blockchain/utils'
+import type { ethers } from 'ethers'
 import type { IStrategyConfig } from 'features/aave/types'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { GetTriggersResponse } from 'helpers/triggers'
@@ -23,6 +24,7 @@ export type TriggersAaveEvent =
   | { type: 'RESET_PROTECTION' }
   | { type: 'POSITION_UPDATED'; position: AaveLikePosition }
   | { type: 'TRIGGERS_UPDATED'; currentTriggers: GetTriggersResponse }
+  | { type: 'SIGNER_UPDATED'; signer?: ethers.Signer }
 
 export const isOptimizationEnabled = ({
   context,
@@ -61,6 +63,7 @@ export type TriggersAaveContext = {
   showAutoBuyBanner: boolean
   showAutoSellBanner: boolean
   currentTriggers: GetTriggersResponse
+  signer?: ethers.Signer
   autoBuyTrigger: ActorRefFrom<typeof autoBuyTriggerAaveStateMachine>
   autoSellTrigger: ActorRefFrom<typeof autoSellTriggerAaveStateMachine>
 }
@@ -154,6 +157,9 @@ export const triggersAaveStateMachine = createMachine(
           'updateAutoSellPosition',
           'updateAutoSellDefaults',
         ],
+      },
+      SIGNER_UPDATED: {
+        actions: ['updateSigner', 'sendSignerToAutoBuy', 'sendSignerToAutoSell'],
       },
     },
   },
@@ -253,6 +259,27 @@ export const triggersAaveStateMachine = createMachine(
           return {
             type: 'CURRENT_TRIGGER_RECEIVED',
             currentTrigger: event.data.triggers.aaveBasicSell,
+          }
+        },
+      ),
+      updateSigner: assign((_, event) => ({
+        signer: event.signer,
+      })),
+      sendSignerToAutoBuy: sendTo(
+        (context) => context.autoBuyTrigger,
+        (_, event) => {
+          return {
+            type: 'SIGNER_UPDATED',
+            signer: event.signer,
+          }
+        },
+      ),
+      sendSignerToAutoSell: sendTo(
+        (context) => context.autoSellTrigger,
+        (_, event) => {
+          return {
+            type: 'SIGNER_UPDATED',
+            signer: event.signer,
           }
         },
       ),

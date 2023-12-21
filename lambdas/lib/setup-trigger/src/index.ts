@@ -136,6 +136,8 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 
   const { encodedTrigger, encodedTriggerData } = await encodeTrigger(position, params.triggerData)
 
+  logger.debug('Encoded trigger', { encodedTrigger, encodedTriggerData })
+
   const simulation = simulatePosition({
     position: position,
     executionLTV: params.triggerData.executionLTV,

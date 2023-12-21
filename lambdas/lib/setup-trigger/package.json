@@ -10,8 +10,8 @@
   "author": "Jacob",
   "license": "UNLICENSED",
   "dependencies": {
-    "@oasisdex/addresses": "^0.1.18",
-    "@oasisdex/dma-library": "0.5.26-beta.2",
+    "@oasisdex/addresses": "0.1.16-dma-v2-workers.1",
+    "@oasisdex/dma-library": "0.5.21-dma-v2-workers.2",
     "@aws-lambda-powertools/logger": "^1.17.0",
     "@aws-lambda-powertools/metrics": "^1.17.0",
     "@aws-lambda-powertools/tracer": "^1.17.0",

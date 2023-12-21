@@ -76,8 +76,8 @@ export type AaveBasicBuy = {
     maxCoverage: string
     debtToken: string
     collateralToken: string
-    opHash: string
-    execLtv: string
+    operationName: string
+    executionLtv: string
     targetLtv: string
     maxBuyPrice: string
     deviation: string
@@ -96,8 +96,8 @@ export type AaveBasicSell = {
     maxCoverage: string
     debtToken: string
     collateralToken: string
-    opHash: string
-    execLtv: string
+    operationName: string
+    executionLtv: string
     targetLtv: string
     minSellPrice: string
     deviation: string
