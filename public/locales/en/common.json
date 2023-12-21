@@ -761,7 +761,7 @@
       "gas-fees": "Gas Fees spent",
       "market-price-unavailable": "Market price temporally unavailable, please check later",
       "formula": "P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative  deposits",
-      "formula-note": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction.",
+      "formula-note": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction. Gas fees are not taken into account for the PnL.",
       "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai. The Net Value is calculated using the market price for the collateral using 1Inch.",
       "profit-and-loss": "P&L",
       "profit-and-loss-description": "TBD",
@@ -2726,7 +2726,7 @@
         "modal-table-row-4": "Gas Fees Spent",
         "modal-value": "Profit & Loss",
         "modal-footnote-1": "P&L = ((Net value + Cumulative withdrawals) - Cumulative deposits) / Cumulative deposits",
-        "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction."
+        "modal-footnote-2": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction. Gas fees are not taken into account for the PnL."
       }
     },
     "form": {
