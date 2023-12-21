@@ -16,6 +16,16 @@ export async function getOmniServerSideProps({
 }) {
   const networkName = query.networkOrProduct as NetworkNames
   const [productType, pair, positionId = undefined] = query.position as string[]
+
+  if (!productType || !pair) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/not-found',
+      },
+    }
+  }
+
   const [collateralToken, quoteToken] = pair.split('-')
 
   const castedProductType = productType as OmniProductType
