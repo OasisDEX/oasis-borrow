@@ -120,7 +120,7 @@ export function getStrategyConfig$(
   )
 }
 
-export async function getAaveV3StrategyConfig(
+export async function getAaveLikeStrategyConfig(
   positionId: PositionId,
   networkName: NetworkNames,
   vaultType?: VaultType,
