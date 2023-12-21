@@ -78,9 +78,11 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
           }),
         }}
       >
-        {position.details.map((detail) => (
-          <PortfolioPositionBlockDetail detail={detail} key={detail.type} />
-        ))}
+        {position.details
+          .filter((detail) => !['earnings', 'pnl'].includes(detail.type))
+          .map((detail) => (
+            <PortfolioPositionBlockDetail detail={detail} key={detail.type} />
+          ))}
       </Flex>
       {!position.availableToMigrate && (
         <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
