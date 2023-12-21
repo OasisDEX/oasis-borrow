@@ -36,10 +36,10 @@ CREATE OR REPLACE FUNCTION vaultAfterUpdate()
 AS
 $$
 BEGIN
-    IF NEW.type <> old.type THEN
+    IF NEW.type <> OLD.type THEN
         INSERT INTO vault_change_log(vault_id, chain_id, token_pair, owner_address, protocol, old_vault_type,
                                      new_vault_type)
-        VALUES (NEW.vault_id, NEW.chain_id, NEW.token_pair, NEW.owner_address, NEW.protocol, OLD.type, NEW.type);
+        VALUES (NEW.vault_id, NEW.chain_id, new.token_pair, NEW.owner_address, NEW.protocol, OLD.type, NEW.type);
     END IF;
     RETURN NEW;
 END;
