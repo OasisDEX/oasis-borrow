@@ -12,7 +12,7 @@ describe('checkOasisPositionType', () => {
       createCheckOasisCDPType$(
         () => of(VaultType.Multiply),
         () => of('ETH-A'),
-        { id: new BigNumber(1), protocol: LendingProtocol.Maker },
+        { id: new BigNumber(1), protocol: LendingProtocol.Maker, owner: '0x0' },
       ),
     )
     expect(state()).toBe(VaultType.Multiply)

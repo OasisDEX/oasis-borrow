@@ -16,7 +16,7 @@ import type { Observable } from 'rxjs'
 import type { ProxiesRelatedWithPosition } from './helpers'
 import type { ManageAaveStateMachine } from './manage/state'
 import type { OpenAaveStateMachine } from './open/state'
-import type { IStrategyConfig, PositionId } from './types'
+import type { IStrategyConfig, ManageViewInfo, PositionId } from './types'
 
 type AaveTotalValueLocked = {
   totalValueLocked: BigNumber
@@ -49,4 +49,5 @@ export type AaveContext = AaveLikeServices & {
   earnCollateralsReserveData: Record<string, Observable<AaveLikeReserveConfigurationData>>
   dpmAccountStateMachine: DPMAccountStateMachine
   aaveHistory$: (proxyAddress: string) => Observable<VaultHistoryEvent[]>
+  manageViewInfo$: (args: { positionId: PositionId }) => Observable<ManageViewInfo>
 }
