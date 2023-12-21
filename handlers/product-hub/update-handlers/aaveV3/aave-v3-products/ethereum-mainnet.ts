@@ -451,5 +451,5 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     label: 'WSTETH/USDT',
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
-  },  
+  },
 ]
