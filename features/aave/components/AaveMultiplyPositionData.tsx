@@ -15,7 +15,6 @@ import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spar
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { ProductType, StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
-import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { displayMultiple } from 'helpers/display-multiple'
@@ -97,12 +96,7 @@ export function AaveMultiplyPositionData({
     aaveHistory[0].autoKind === 'aave-stop-loss' &&
     currentPosition.debt.amount.isZero()
 
-  const isLongPosition = strategyType === StrategyType.Long
   const isEarnPosition = productType === ProductType.Earn
-
-  const netValueUsd = isLongPosition
-    ? currentPositionThings.netValueInDebtToken.times(debtTokenPrice)
-    : currentPositionThings.netValueInCollateralToken.times(collateralTokenPrice)
 
   const pnlWithoutFees = isEarnPosition
     ? cumulatives?.cumulativeWithdrawInQuoteToken
@@ -171,18 +165,6 @@ export function AaveMultiplyPositionData({
                   pnlWithoutFees.gte(zero) ? '+' : ''
                 }
                 ${formatDecimalAsPercent(pnlWithoutFees)}`
-              }
-              modal={
-                cumulatives ? (
-                  <OmniMultiplyNetValueModal
-                    netValueTokenPrice={isEarnPosition ? debtTokenPrice : collateralTokenPrice}
-                    netValueToken={isEarnPosition ? debtToken.symbol : collateralToken.symbol}
-                    isEarnPosition={isEarnPosition}
-                    cumulatives={cumulatives}
-                    netValueUSD={netValueUsd}
-                    pnl={pnlWithoutFees}
-                  />
-                ) : undefined
               }
             />
           </DetailsSectionContentCardWrapper>
