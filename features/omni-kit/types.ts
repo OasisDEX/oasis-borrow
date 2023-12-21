@@ -38,6 +38,13 @@ export type OmniSidebarStepsSet = {
   }
 }
 
+export interface OmniTokensPrecision {
+  collateralDigits: number
+  collateralPrecision: number
+  quoteDigits: number
+  quotePrecision: number
+}
+
 export interface OmniProtocolHookProps {
   collateralToken?: string
   dpmPositionData?: DpmPositionData
@@ -45,6 +52,7 @@ export interface OmniProtocolHookProps {
   product?: OmniProductType
   quoteToken?: string
   tokenPriceUSDData?: Tickers
+  tokensPrecision?: OmniTokensPrecision
 }
 
 export type OmniCloseTo = 'collateral' | 'quote'

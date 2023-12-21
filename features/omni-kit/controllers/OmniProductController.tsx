@@ -135,6 +135,7 @@ export const OmniProductController = <Auction, History, Position>({
     networkId: resolvedNetwork.id,
     quoteToken,
     tokenPriceUSDData,
+    tokensPrecision,
   })
 
   useEffect(() => {

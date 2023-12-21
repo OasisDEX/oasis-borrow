@@ -4,7 +4,12 @@ import { useObservable } from 'helpers/observableHook'
 import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
 
-export function useMorphoData({ dpmPositionData, tokenPriceUSDData }: OmniProtocolHookProps) {
+export function useMorphoData({
+  dpmPositionData,
+  networkId,
+  tokenPriceUSDData,
+  tokensPrecision,
+}: OmniProtocolHookProps) {
   const { morphoPosition$ } = useProductContext()
 
   const [morphoPositionData, morphoPositionError] = useObservable(
@@ -15,6 +20,8 @@ export function useMorphoData({ dpmPositionData, tokenPriceUSDData }: OmniProtoc
               tokenPriceUSDData[dpmPositionData.collateralToken],
               tokenPriceUSDData[dpmPositionData.quoteToken],
               dpmPositionData,
+              networkId,
+              tokensPrecision,
             )
           : EMPTY,
       [dpmPositionData, tokenPriceUSDData],
