@@ -13,7 +13,6 @@ import {
 import { AppLink } from 'components/Links'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { ProductType, StrategyType } from 'features/aave/types'
-import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import {
@@ -105,7 +104,6 @@ export const PositionInfoComponent = ({
       : currentPositionThings.netValueInCollateralToken
 
   const formattedNetValueInToken = netValueInToken || zero // TODO
-  const netValueUsd = netValueInToken.times(isLongPosition ? debtTokenPrice : collateralTokenPrice)
 
   const formattedCollateralValue = formatPositionBalance(position.collateral)
   const formattedDebtValue = formatPositionBalance(position.debt)
@@ -140,18 +138,6 @@ export const PositionInfoComponent = ({
               ${formatDecimalAsPercent(pnlWithoutFees)}`
             }
             unit={isEarnPosition ? position.debt.symbol : position.collateral.symbol}
-            modal={
-              cumulatives && (
-                <OmniMultiplyNetValueModal
-                  cumulatives={cumulatives}
-                  netValueUSD={netValueUsd}
-                  pnl={pnlWithoutFees}
-                  netValueTokenPrice={isEarnPosition ? debtTokenPrice : collateralTokenPrice}
-                  netValueToken={isEarnPosition ? position.debt.symbol : position.collateral.symbol}
-                  isEarnPosition={isEarnPosition}
-                />
-              )
-            }
           />
           <DetailsSectionContentCard
             title={t('manage-earn-vault.net-apy')}
