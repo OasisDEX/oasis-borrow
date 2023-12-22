@@ -1,9 +1,13 @@
-import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaStrategy } from '@oasisdex/dma-library'
-import { Network } from '@oasisdex/dma-library'
+import type {
+  AjnaCommonDependencies,
+  AjnaCommonPayload,
+  AjnaStrategy,
+  Network,
+} from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
 import type { ethers } from 'ethers'
+import { omniNetworkMap } from 'features/omni-kit/constants'
 import {
   ajnaActionDepositGenerateBorrow,
   ajnaActionOpenBorrow,
@@ -25,7 +29,6 @@ import {
 } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import type {
-  NetworkIdsWithValues,
   OmniFormState,
   OmniGenericPosition,
   OmniSupportedNetworkIds,
@@ -55,12 +58,6 @@ interface AjnaTxHandlerInput {
   slippage: BigNumber
   state: OmniFormState
   walletAddress?: string
-}
-
-const networkMap: NetworkIdsWithValues<Network> = {
-  [NetworkIds.ARBITRUMMAINNET]: Network.ARBITRUM,
-  [NetworkIds.BASEMAINNET]: Network.BASE,
-  [NetworkIds.GOERLI]: Network.GOERLI,
 }
 
 export async function getAjnaParameters({
@@ -96,7 +93,7 @@ export async function getAjnaParameters({
     WETH: tokens.ETH.address,
     getPoolData: getAjnaPoolData(networkId),
     getCumulatives: getAjnaCumulatives(networkId),
-    network: networkMap[networkId] as Network,
+    network: omniNetworkMap[networkId] as Network,
   }
 
   const commonPayload: AjnaCommonPayload = {

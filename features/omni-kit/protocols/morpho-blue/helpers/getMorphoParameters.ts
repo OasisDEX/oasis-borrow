@@ -2,12 +2,12 @@ import type {
   MorphoBlueCommonDependencies,
   MorphoblueDepositBorrowPayload,
   MorphoBluePosition,
+  Network,
 } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { NetworkIds } from 'blockchain/networks'
-import { networkIdNameMap } from 'blockchain/networks'
 import type { ethers } from 'ethers'
+import { omniNetworkMap } from 'features/omni-kit/constants'
 import { getMaxIncreasedValue } from 'features/omni-kit/protocols/ajna/helpers'
 import {
   morphoActionDepositBorrow,
@@ -15,7 +15,7 @@ import {
   morphoActionPaybackWithdraw,
 } from 'features/omni-kit/protocols/morpho-blue/actions/borrow'
 import { getMorphoCumulatives } from 'features/omni-kit/protocols/morpho-blue/helpers/getMorphoCumulatives'
-import type { OmniFormState } from 'features/omni-kit/types'
+import type { OmniFormState, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniBorrowFormAction } from 'features/omni-kit/types'
 
 export const getMorphoParameters = async ({
@@ -33,7 +33,7 @@ export const getMorphoParameters = async ({
 }: {
   state: OmniFormState
   rpcProvider: ethers.providers.Provider
-  networkId: NetworkIds.MAINNET | NetworkIds.GOERLI
+  networkId: OmniSupportedNetworkIds
   isFormValid: boolean
   walletAddress?: string
   quoteBalance: BigNumber
@@ -67,7 +67,7 @@ export const getMorphoParameters = async ({
 
   const dependencies: MorphoBlueCommonDependencies = {
     provider: rpcProvider,
-    network: networkIdNameMap[networkId],
+    network: omniNetworkMap[networkId] as Network,
     getCumulatives: getMorphoCumulatives(),
     operationExecutor: addressesConfig.operationExecutor.address, // duplicated
     addresses: {
