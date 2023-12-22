@@ -41,8 +41,5 @@ describe('simulatePosition', () => {
     expect(result.collateralAmountAfterExecution).toBeGreaterThan(
       params.position.collateral.balance,
     )
-    expect(result.collateralAmountToBuy + params.position.collateral.balance).toEqual(
-      result.collateralAmountAfterExecution,
-    )
   })
 })

@@ -14,10 +14,16 @@ import { ChainId, ProtocolId } from 'shared/domain-types'
 const logger = new Logger({ serviceName: 'setupTriggerFunction' })
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
-  const { RPC_GATEWAY, GET_TRIGGERS_URL } = (event.stageVariables as Record<string, string>) || {
+  const { RPC_GATEWAY, GET_TRIGGERS_URL, SKIP_VALIDATION } = (event.stageVariables as Record<
+    string,
+    string
+  >) || {
     RPC_GATEWAY: process.env.RPC_GATEWAY,
     GET_TRIGGERS_URL: process.env.GET_TRIGGERS_URL,
+    SKIP_VALIDATION: process.env.SKIP_VALIDATION,
   }
+
+  const skipValidation = SKIP_VALIDATION === 'true'
 
   if (!RPC_GATEWAY) {
     logger.error('RPC_GATEWAY is not set')
@@ -118,20 +124,24 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 
   const executionPrice = getExecutionPrice(position)
 
-  const validation = validate({
-    position,
-    executionPrice,
-    body: params,
-  })
+  if (!skipValidation) {
+    const validation = validate({
+      position,
+      executionPrice,
+      body: params,
+    })
 
-  if (!validation.success) {
-    logger.warn('Validation Errors', {
-      errors: validation.errors,
-    })
-    return ResponseBadRequest({
-      message: 'Validation Errors',
-      errors: validation.errors,
-    })
+    if (!validation.success) {
+      logger.warn('Validation Errors', {
+        errors: validation.errors,
+      })
+      return ResponseBadRequest({
+        message: 'Validation Errors',
+        errors: validation.errors,
+      })
+    }
+  } else {
+    logger.warn('Skipping validation')
   }
 
   const { encodedTrigger, encodedTriggerData } = await encodeTrigger(position, params.triggerData)

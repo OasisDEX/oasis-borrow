@@ -7,10 +7,10 @@ import {
   toHex,
 } from 'viem'
 import { automationBotAbi } from '~abi'
-import { EventBody, PositionLike, AaveAutoBuyTriggerData } from '~types'
+import { EventBody, PositionLike, AaveAutoBuyTriggerData, PRICE_DECIMALS } from '~types'
 import { OPERATION_NAMES, OperationNames } from '@oasisdex/dma-library'
 import { DEFAULT_DEVIATION, MAX_COVERAGE_BASE } from './defaults'
-import { EncoderFunction } from './types'
+import { AAVE_TRANSACTION_PRICE_DECIMALS, EncoderFunction } from './types'
 
 export const encodeAaveAutoBuy: EncoderFunction<AaveAutoBuyTriggerData> = (
   position,

@@ -3,7 +3,7 @@ import { addressSchema, urlOptionalSchema } from 'shared/validators'
 import { ChainId, ProtocolId } from 'shared/domain-types'
 import { CustomErrorCodes } from './types'
 
-export const PRICE_DECIMALS = 6n
+export const PRICE_DECIMALS = 8n
 export const PERCENT_DECIMALS = 4n
 export const ONE_PERCENT = 100n
 

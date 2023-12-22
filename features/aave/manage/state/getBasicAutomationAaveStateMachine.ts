@@ -466,7 +466,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
                 dpm: event.params.position.dpm,
                 executionLTV: new BigNumber(event.params.executionTriggerLTV).times(10 ** 2),
                 targetLTV: new BigNumber(event.params.targetTriggerLTV).times(10 ** 2),
-                price: event.params.price?.times(10 ** 6),
+                price: event.params.price?.times(10 ** 8),
                 usePrice: event.params.usePrice,
                 maxBaseFee: new BigNumber(event.params.maxGasFee),
                 protocol: LendingProtocol.AaveV3,
