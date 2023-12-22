@@ -1,6 +1,8 @@
+import BigNumber from 'bignumber.js'
 import type { AaveV3ReserveCap, AaveV3ReserveDataReply } from 'blockchain/aave-v3'
 import { maxUint256 } from 'blockchain/calls/erc20.constants'
 import type { SparkReserveCap, SparkV3ReserveDataReply } from 'blockchain/spark-v3'
+import { zero } from 'helpers/zero'
 import type { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
 import type { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
@@ -28,11 +30,14 @@ export function getAaveLikeReserveData(
         availableToSupply: reserveCaps.supply.isZero()
           ? maxUint256
           : reserveCaps.supply.minus(reserveData.totalToken),
-        availableToBorrow: reserveCaps.borrow.isZero()
-          ? reserveData.availableLiquidity
-          : reserveCaps.borrow.minus(
-              reserveData.totalStableDebt.plus(reserveData.totalVariableDebt),
-            ),
+        availableToBorrow: BigNumber.maximum(
+          reserveCaps.borrow.isZero()
+            ? reserveData.availableLiquidity
+            : reserveCaps.borrow.minus(
+                reserveData.totalStableDebt.plus(reserveData.totalVariableDebt),
+              ),
+          zero,
+        ),
       }
     }),
   )
