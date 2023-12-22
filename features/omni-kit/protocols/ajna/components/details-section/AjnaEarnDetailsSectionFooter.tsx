@@ -1,10 +1,10 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import type { NetworkIds } from 'blockchain/networks'
 import {
   AjnaContentFooterEarnManage,
   AjnaContentFooterEarnOpen,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import type { FC } from 'react'
 import React from 'react'
@@ -16,7 +16,7 @@ interface AjnaEarnDetailsSectionFooterProps {
   isOpening: boolean
   isOracless: boolean
   isSimulationLoading?: boolean
-  networkId: NetworkIds
+  networkId: OmniSupportedNetworkIds
   owner: string
   position: AjnaEarnPosition
   quotePrice: BigNumber

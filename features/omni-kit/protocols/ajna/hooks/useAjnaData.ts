@@ -2,7 +2,6 @@ import { useProductContext } from 'components/context/ProductContextProvider'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import { useAjnaRedirect } from 'features/omni-kit/protocols/ajna/hooks'
 import { getAjnaPositionAggregatedData$ } from 'features/omni-kit/protocols/ajna/observables'
-import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniProductType, OmniProtocolHookProps } from 'features/omni-kit/types'
 import { useObservable } from 'helpers/observableHook'
 import { one } from 'helpers/zero'
@@ -27,7 +26,7 @@ export function useAjnaData({
   void useAjnaRedirect({
     collateralToken,
     isOracless,
-    networkId: networkId as AjnaSupportedNetworksIds,
+    networkId,
     productType: dpmPositionData?.product as OmniProductType,
     quoteToken,
   })

@@ -8,8 +8,8 @@ import { Skeleton } from 'components/Skeleton'
 import type { ethers } from 'ethers'
 import { useAjnaRewards } from 'features/ajna/rewards/hooks'
 import type { AjnaRewards } from 'features/ajna/rewards/types'
-import { isAjnaSupportedNetwork } from 'features/omni-kit/protocols/ajna/helpers'
-import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
+import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
+import type { AjnaSupportedNetworkIds } from 'features/omni-kit/protocols/ajna/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { ajnaBrandGradient, getGradientColor } from 'helpers/getGradientColor'
 import type { TxDetails } from 'helpers/handleTransaction'
@@ -49,7 +49,7 @@ const rewardsTransactionResolver = ({
 }: {
   signer: ethers.Signer
   rewards: AjnaRewards
-  networkId: AjnaSupportedNetworksIds
+  networkId: AjnaSupportedNetworkIds
   claimedBonus: boolean
 }) => {
   const hasBonusRewardsToClaim = !rewards.bonus.isZero() && !claimedBonus
@@ -97,11 +97,13 @@ export function AjnaRewardCard() {
   const { total, totalUsd, claimable, bonus, regular } = rewards
 
   const onSubmit = () => {
-    if (signer && networkId && isAjnaSupportedNetwork(networkId)) {
+    const castedNetworkId = networkId as AjnaSupportedNetworkIds
+
+    if (signer && networkId && ajnaSettings.supportedNetworkIds.includes(castedNetworkId)) {
       const { resolvedContract, resolvedParams } = rewardsTransactionResolver({
         signer,
         rewards,
-        networkId,
+        networkId: castedNetworkId,
         claimedBonus,
       })
 

@@ -1,16 +1,16 @@
 import { getNetworkContracts } from 'blockchain/contracts'
-import { getNetworkByName, NetworkIds } from 'blockchain/networks'
+import { NetworkIds } from 'blockchain/networks'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { isAddress } from 'ethers/lib/utils'
 import { ajnaSeoTags } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { OmniProductController } from 'features/omni-kit/controllers'
-import { AJNA_RAW_PROTOCOL_NAME, ajnaOmniSteps } from 'features/omni-kit/protocols/ajna/constants'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
 import { useAjnaData } from 'features/omni-kit/protocols/ajna/hooks/useAjnaData'
 import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
+import { settings } from 'features/omni-kit/protocols/ajna/settings'
 import { AjnaCustomStateProvider } from 'features/omni-kit/protocols/ajna/state/AjnaCustomStateProvider'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
@@ -24,8 +24,7 @@ import { FeaturesEnum } from 'types/config'
 type AjnaPositionPageProps = OmniProductPage
 
 function AjnaPositionPage(props: AjnaPositionPageProps) {
-  const { collateralToken, networkName, positionId, productType, quoteToken } = props
-  const networkId = getNetworkByName(networkName).id
+  const { collateralToken, networkId, positionId, productType, quoteToken } = props
   const isOracless = !!(
     collateralToken &&
     quoteToken &&
@@ -54,9 +53,9 @@ function AjnaPositionPage(props: AjnaPositionPageProps) {
             isOracless={isOracless}
             protocol={LendingProtocol.Ajna}
             protocolHook={useAjnaData}
-            protocolRaw={AJNA_RAW_PROTOCOL_NAME}
+            protocolRaw={settings.rawName}
             seoTags={ajnaSeoTags}
-            steps={ajnaOmniSteps}
+            steps={settings.steps}
           />
         </ProductContextHandler>
       </AjnaLayout>
@@ -83,6 +82,7 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
       )
     },
     locale,
+    protocol: LendingProtocol.Ajna,
     query,
   })
 }

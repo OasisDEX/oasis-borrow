@@ -1,10 +1,10 @@
-import type { NetworkIds } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { ethers } from 'ethers'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import type { PositionCreated } from 'features/aave/services'
 import { readPositionCreatedEvents$ } from 'features/aave/services'
 import type { PositionId } from 'features/aave/types'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getApiVault } from 'features/shared/vaultApi'
 import { getTokenDisplayName } from 'helpers/getTokenDisplayName'
 import type { LendingProtocol } from 'lendingProtocols'
@@ -71,10 +71,10 @@ const filterPositionWhenUrlParamsDefined = ({
 export function getDpmPositionDataV2$(
   proxiesForPosition$: (
     positionId: PositionId,
-    networkId: NetworkIds,
+    networkId: OmniSupportedNetworkIds,
   ) => Observable<ProxiesRelatedWithPosition>,
   positionId: PositionId,
-  networkId: NetworkIds,
+  networkId: OmniSupportedNetworkIds,
   collateralToken: string,
   quoteToken: string,
   product: string,

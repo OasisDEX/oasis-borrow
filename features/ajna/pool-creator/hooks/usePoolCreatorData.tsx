@@ -17,7 +17,8 @@ import type { SearchAjnaPoolData } from 'features/ajna/pool-finder/helpers'
 import { getOraclessProductUrl, searchAjnaPool } from 'features/ajna/pool-finder/helpers'
 import { getOmniTxStatuses } from 'features/omni-kit/contexts'
 import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
-import { AJNA_SUPPORTED_NETWORKS } from 'features/omni-kit/protocols/ajna/constants'
+import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
+import type { AjnaSupportedNetworkIds } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType, type OmniValidationItem } from 'features/omni-kit/types'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { handleTransaction } from 'helpers/handleTransaction'
@@ -101,12 +102,8 @@ export function usePoolCreatorData({
 
   useEffect(() => {
     const _isOnSupportedNetwork = !!(
-      // dirty workaround for temporary goerli support
-      // todo: remove second part of OR condition when goerli is discontinued
-      (
-        context?.chainId &&
-        (AJNA_SUPPORTED_NETWORKS.includes(context.chainId) || context.chainId === NetworkIds.GOERLI)
-      )
+      context?.chainId &&
+      ajnaSettings.supportedNetworkIds.includes(context.chainId as AjnaSupportedNetworkIds)
     )
 
     setBoundries(undefined)

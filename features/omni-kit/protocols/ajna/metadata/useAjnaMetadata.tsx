@@ -87,7 +87,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       isOwner,
       isProxyWithManyPositions,
       isShort,
-      network: { id: networkId },
+      networkId,
       owner,
       priceFormat,
       productType,
