@@ -88,7 +88,6 @@ export function ManageSectionComponent({
             collateralTokenReserveData={_collateralTokenReserveData}
             debtTokenReserveData={_debtTokenReserveData}
             productType={strategyConfig.type}
-            strategyType={strategyConfig.strategyType}
           />
         )}
       </WithLoadingIndicator>

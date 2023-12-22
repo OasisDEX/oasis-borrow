@@ -10,6 +10,7 @@ import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
 import { commonDataMapper } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
+import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
 import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -18,16 +19,9 @@ import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYi
 import { DsProxyRegistry__factory } from 'types/ethers-contracts'
 const DsProxyFactory = DsProxyRegistry__factory
 
-export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({
-  address,
-  prices,
-  allPositionsHistory,
-}) => {
+export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ address, prices }) => {
   const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
   const contracts = getNetworkContracts(NetworkIds.MAINNET)
-  const positionHistory = allPositionsHistory!.filter(
-    (position) => position.id.toLowerCase() === address.toLowerCase(),
-  )[0]
 
   const DsProxyContract = DsProxyFactory.connect(contracts.dsProxyRegistry.address, rpcProvider)
 
@@ -37,6 +31,13 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({
       positions: [],
     }
   }
+  const allPositionsHistory = await getHistoryData({
+    network: NetworkIds.MAINNET,
+    addresses: [dsProxyAddress],
+  })
+  const positionHistory = allPositionsHistory.filter(
+    (position) => position.id.toLowerCase() === dsProxyAddress.toLowerCase(),
+  )[0]
 
   const stEthPosition = await getOnChainPosition({
     networkId: NetworkIds.MAINNET,

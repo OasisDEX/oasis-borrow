@@ -61,10 +61,10 @@ export const getOmniNetValuePnlData = ({
       } as OmniNetValuePnlDataReturnType
     }
     case ProductType.Earn: {
-      const pnlPercentage = cumulatives?.cumulativeWithdrawInCollateralToken
+      const pnlPercentage = cumulatives?.cumulativeWithdrawInQuoteToken
         .plus(netValueInDebtToken)
-        .minus(cumulatives.cumulativeDepositInCollateralToken)
-        .div(cumulatives.cumulativeDepositInCollateralToken)
+        .minus(cumulatives.cumulativeDepositInQuoteToken)
+        .div(cumulatives.cumulativeDepositInQuoteToken)
       return {
         pnl: {
           pnlToken: debtToken,
@@ -76,15 +76,15 @@ export const getOmniNetValuePnlData = ({
         pnlCumulatives: {
           deposit: {
             inUsd: cumulatives?.cumulativeDepositUSD,
-            inToken: cumulatives?.cumulativeDepositInCollateralToken,
+            inToken: cumulatives?.cumulativeDepositInQuoteToken,
           },
           withdraw: {
             inUsd: cumulatives?.cumulativeWithdrawUSD,
-            inToken: cumulatives?.cumulativeWithdrawInCollateralToken,
+            inToken: cumulatives?.cumulativeWithdrawInQuoteToken,
           },
           fees: {
             inUsd: cumulatives?.cumulativeFeesUSD,
-            inToken: cumulatives?.cumulativeFeesInCollateralToken,
+            inToken: cumulatives?.cumulativeFeesInQuoteToken,
           },
         },
       } as OmniNetValuePnlDataReturnType

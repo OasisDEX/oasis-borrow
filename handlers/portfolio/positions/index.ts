@@ -48,8 +48,8 @@ export const portfolioPositionsHandler = async ({
 
     const payload = {
       address,
-      apiVaults,
       dpmList,
+      apiVaults,
       prices: prices.data.tokens,
       positionsCount,
     }

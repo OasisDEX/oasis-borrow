@@ -3,7 +3,6 @@ import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { amountFromWei } from 'blockchain/utils'
 import dayjs from 'dayjs'
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { ProductType } from 'features/aave/types'
@@ -261,12 +260,6 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
   const positionHistory = allPositionsHistory.filter(
     (position) => position.id === dpm.id.toLowerCase(),
   )[0]
-  const netValueInDebtToken = amountFromWei(
-    onChainPositionData.collateral.normalisedAmount
-      .times(onChainPositionData.oraclePriceForCollateralDebtExchangeRate)
-      .minus(onChainPositionData.debt.normalisedAmount),
-    18,
-  )
 
   const netValuePnlModalData = getOmniNetValuePnlData({
     cumulatives: {
@@ -280,7 +273,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
     collateralTokenPrice: primaryTokenPrice,
     debtTokenPrice: secondaryTokenPrice,
     netValueInCollateralToken: calculations.netValueInCollateralToken,
-    netValueInDebtToken,
+    netValueInDebtToken: calculations.netValueInDebtToken,
     collateralToken: commonData.primaryToken,
     debtToken: commonData.secondaryToken,
   })
@@ -318,7 +311,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
         subvalue: `Max ${formatDecimalAsPercent(onChainPositionData.category.maxLoanToValue)}`,
       },
     ].filter(Boolean) as PositionDetail[],
-    netValue: netValueInDebtToken.times(secondaryTokenPrice).toNumber(),
+    netValue: netValuePnlModalData.netValue.inToken.toNumber(),
   }
 }
 

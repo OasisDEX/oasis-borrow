@@ -127,6 +127,7 @@ export function AaveMultiplyPositionData({
         debtToken: nextPosition.debt.symbol,
       }).netValue.inToken
     : undefined
+
   return (
     <Grid>
       {stopLossTriggered && (

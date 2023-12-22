@@ -141,7 +141,7 @@ export const aaveV2PositionHandler: PortfolioPositionsHandler = async ({
     }),
   ])
   const [dsProxyPositions] = await Promise.all([
-    getAaveV2DsProxyPosition({ address, prices, dpmList, allPositionsHistory, ...rest }),
+    getAaveV2DsProxyPosition({ address, prices, dpmList, ...rest }),
   ])
   const positions = await Promise.all(
     aaveV2DpmList.map(async (dpm) =>
