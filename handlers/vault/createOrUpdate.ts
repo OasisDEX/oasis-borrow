@@ -21,7 +21,7 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
   const vaultData = {
     vault_id: params.id,
     type: params.type as VaultType,
-    owner_address: user.address,
+    owner_address: user.address.toLowerCase(),
     chain_id: params.chainId,
     protocol: params.protocol,
     token_pair: params.tokenPair,
