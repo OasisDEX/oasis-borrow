@@ -4,6 +4,8 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import dayjs from 'dayjs'
 import { calculateViewValuesForPosition } from 'features/aave/services'
+import { ProductType } from 'features/aave/types'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -16,9 +18,16 @@ import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYi
 import { DsProxyRegistry__factory } from 'types/ethers-contracts'
 const DsProxyFactory = DsProxyRegistry__factory
 
-export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ address, prices }) => {
+export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({
+  address,
+  prices,
+  allPositionsHistory,
+}) => {
   const rpcProvider = getRpcProvider(NetworkIds.MAINNET)
   const contracts = getNetworkContracts(NetworkIds.MAINNET)
+  const positionHistory = allPositionsHistory!.filter(
+    (position) => position.id.toLowerCase() === address.toLowerCase(),
+  )[0]
 
   const DsProxyContract = DsProxyFactory.connect(contracts.dsProxyRegistry.address, rpcProvider)
 
@@ -74,6 +83,22 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
       primaryTokenReserveData.liquidityRate,
       secondaryTokenReserveData.variableBorrowRate,
     )
+    const netValuePnlModalData = getOmniNetValuePnlData({
+      cumulatives: {
+        ...positionHistory,
+        cumulativeWithdrawUSD: positionHistory.cumulativeWithdraw,
+        cumulativeFeesUSD: positionHistory.cumulativeFees,
+        cumulativeDepositUSD: positionHistory.cumulativeDeposit,
+        cumulativeFeesInCollateralToken: positionHistory.cumulativeFeesInQuoteToken,
+      },
+      productType: ProductType.Earn,
+      collateralTokenPrice: primaryTokenPrice,
+      debtTokenPrice: secondaryTokenPrice,
+      netValueInCollateralToken: calculations.netValueInCollateralToken,
+      netValueInDebtToken: calculations.netValueInDebtToken,
+      collateralToken: commonData.primaryToken,
+      debtToken: commonData.secondaryToken,
+    })
     return {
       positions: [
         {
@@ -82,7 +107,7 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
           details: [
             {
               type: 'netValue',
-              value: formatUsdValue(calculations.netValue),
+              value: formatUsdValue(netValuePnlModalData.netValue.inUsd),
             },
             {
               type: 'earnings',

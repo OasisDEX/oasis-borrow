@@ -4,6 +4,8 @@ import BigNumber from 'bignumber.js'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
 import { NetworkIds } from 'blockchain/networks'
 import { calculateViewValuesForPosition } from 'features/aave/services'
+import { ProductType } from 'features/aave/types'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
 import { notAvailable } from 'handlers/portfolio/constants'
 import { commonDataMapper } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/positions/handlers/aave-like/types'
@@ -55,25 +57,43 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
   const positionHistory = allPositionsHistory.filter(
     (position) => position.id.toLowerCase() === dpm.id.toLowerCase(),
   )[0]
-  const pnlValue =
-    positionHistory?.cumulativeDeposit.gt(zero) &&
-    calculations.netValue
-      .minus(positionHistory.cumulativeDeposit)
-      .plus(positionHistory.cumulativeWithdraw)
-      .div(positionHistory.cumulativeDeposit)
-
   const tokensLabel = `${commonData.primaryToken}/${commonData.secondaryToken}`
+  const netValuePnlModalData = getOmniNetValuePnlData({
+    cumulatives: {
+      ...positionHistory,
+      cumulativeWithdrawUSD: positionHistory.cumulativeWithdraw,
+      cumulativeFeesUSD: positionHistory.cumulativeFees,
+      cumulativeDepositUSD: positionHistory.cumulativeDeposit,
+      cumulativeFeesInCollateralToken: positionHistory.cumulativeFeesInQuoteToken,
+    },
+    productType: ProductType.Multiply,
+    collateralTokenPrice: primaryTokenPrice,
+    debtTokenPrice: secondaryTokenPrice,
+    netValueInCollateralToken: calculations.netValueInCollateralToken,
+    netValueInDebtToken: calculations.netValueInDebtToken,
+    collateralToken: commonData.primaryToken,
+    debtToken: commonData.secondaryToken,
+  })
   return {
     ...commonData,
     details: [
       {
         type: 'netValue',
-        value: formatUsdValue(calculations.netValue),
+        value: `${formatCryptoBalance(netValuePnlModalData.netValue.inToken)} ${
+          netValuePnlModalData.netValue.netValueToken
+        }`,
+        subvalue: formatUsdValue(netValuePnlModalData.netValue.inUsd),
       },
       {
         type: 'pnl',
-        value: pnlValue ? formatDecimalAsPercent(pnlValue, { precision: 2 }) : notAvailable,
-        accent: pnlValue ? (pnlValue.gte(zero) ? 'positive' : 'negative') : undefined,
+        value: netValuePnlModalData.pnl?.percentage
+          ? formatDecimalAsPercent(netValuePnlModalData.pnl?.percentage, { precision: 2 })
+          : notAvailable,
+        accent: netValuePnlModalData.pnl?.percentage
+          ? netValuePnlModalData.pnl?.percentage.gte(zero)
+            ? 'positive'
+            : 'negative'
+          : undefined,
       },
       {
         type: 'liquidationPrice',
@@ -114,12 +134,14 @@ export const aaveV2PositionHandler: PortfolioPositionsHandler = async ({
       ],
     }
   }
-  const [allPositionsHistory, dsProxyPositions] = await Promise.all([
+  const [allPositionsHistory] = await Promise.all([
     getHistoryData({
       network: NetworkIds.MAINNET,
       addresses: aaveV2DpmList.map(({ id }) => id),
     }),
-    getAaveV2DsProxyPosition({ address, prices, dpmList, ...rest }),
+  ])
+  const [dsProxyPositions] = await Promise.all([
+    getAaveV2DsProxyPosition({ address, prices, dpmList, allPositionsHistory, ...rest }),
   ])
   const positions = await Promise.all(
     aaveV2DpmList.map(async (dpm) =>

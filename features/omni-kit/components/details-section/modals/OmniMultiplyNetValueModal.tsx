@@ -124,8 +124,9 @@ export function OmniMultiplyNetValueModal({
             </Text>
             <Text as="p" variant="paragraph1" sx={{ fontWeight: 'regular' }}>
               {pnl.percentage.gte(zero) && '+'}
-              {formatDecimalAsPercent(pnl.percentage)} /
-              {` ${formatCryptoBalance(pnl.inToken)} ${netValue.netValueToken}`}
+              {`${formatDecimalAsPercent(pnl.percentage)} / ${formatCryptoBalance(pnl.inToken)} ${
+                netValue.netValueToken
+              }`}
             </Text>
           </Card>
 

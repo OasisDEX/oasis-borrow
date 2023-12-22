@@ -1,6 +1,7 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import { ProductType } from 'features/aave/types'
 import {
   OmniContentCard,
   useOmniCardDataBuyingPower,
@@ -9,6 +10,7 @@ import {
   useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
 import {
   useAjnaCardDataCollateralDeposited,
   useAjnaCardDataLoanToValue,
@@ -147,16 +149,39 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     netValue,
     ...(!isOpening && !isProxyWithManyPositions && {}),
   })
-  const netValueContentCardAjnaData = useAjnaCardDataNetValueLending({
-    collateralPrice,
-    collateralToken,
-    cumulatives: position.pnl.cumulatives,
-    netValue,
-    ...(!isOpening &&
-      !isProxyWithManyPositions && {
-        pnl: position.pnl.withoutFees,
-      }),
-  })
+  const netValueContentCardAjnaData = useAjnaCardDataNetValueLending(
+    !isOpening && !isProxyWithManyPositions
+      ? getOmniNetValuePnlData({
+          cumulatives: {
+            cumulativeDepositUSD: position.pnl.cumulatives.borrowCumulativeDepositUSD,
+            cumulativeWithdrawUSD: position.pnl.cumulatives.borrowCumulativeWithdrawUSD,
+            cumulativeFeesUSD: position.pnl.cumulatives.borrowCumulativeFeesUSD,
+            cumulativeWithdrawInCollateralToken:
+              position.pnl.cumulatives.borrowCumulativeCollateralWithdraw,
+            cumulativeDepositInCollateralToken:
+              position.pnl.cumulatives.borrowCumulativeCollateralDeposit,
+            cumulativeFeesInCollateralToken:
+              position.pnl.cumulatives.borrowCumulativeFeesInCollateralToken,
+            cumulativeWithdrawInQuoteToken:
+              position.pnl.cumulatives.borrowCumulativeWithdrawInQuoteToken,
+            cumulativeDepositInQuoteToken:
+              position.pnl.cumulatives.borrowCumulativeDepositInQuoteToken,
+            cumulativeFeesInQuoteToken: position.pnl.cumulatives.borrowCumulativeFeesInQuoteToken,
+          },
+          productType: {
+            [OmniProductType.Borrow]: ProductType.Borrow,
+            [OmniProductType.Multiply]: ProductType.Multiply,
+            [OmniProductType.Earn]: ProductType.Earn,
+          }[productType],
+          collateralTokenPrice: collateralPrice,
+          debtTokenPrice: quotePrice,
+          netValueInCollateralToken: netValue.div(collateralPrice),
+          netValueInDebtToken: netValue.div(quotePrice),
+          collateralToken,
+          debtToken: quoteToken,
+        })
+      : undefined,
+  )
 
   const buyingPowerContentCardCommonData = useOmniCardDataBuyingPower({
     buyingPower: position.buyingPower,

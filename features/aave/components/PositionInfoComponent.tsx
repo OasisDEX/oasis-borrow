@@ -101,9 +101,11 @@ export const PositionInfoComponent = ({
     cumulatives,
     productType,
     collateralTokenPrice,
+    debtTokenPrice,
     netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,
+    netValueInDebtToken: currentPositionThings.netValueInDebtToken,
     collateralToken: position.collateral.symbol,
-    oraclePriceForCollateralDebtExchangeRate: position.oraclePriceForCollateralDebtExchangeRate,
+    debtToken: position.debt.symbol,
   })
   return (
     <DetailsSection
