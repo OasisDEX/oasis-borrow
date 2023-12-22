@@ -54,5 +54,3 @@ export const omniSwapVersionMap: NetworkIdsWithValues<'v4.0' | 'v5.0'> = {
   [NetworkIds.ARBITRUMMAINNET]: 'v5.0',
   [NetworkIds.GOERLI]: 'v4.0', // doesn't matter
 }
-
-export const omniL2SupportedNetworks = [NetworkIds.BASEMAINNET, NetworkIds.OPTIMISMMAINNET]

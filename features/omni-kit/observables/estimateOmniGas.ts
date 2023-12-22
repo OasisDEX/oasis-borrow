@@ -6,7 +6,6 @@ import { getOverrides } from 'blockchain/better-calls/utils/get-overrides'
 import type { GasPriceParams } from 'blockchain/prices.types'
 import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
 import type { ethers } from 'ethers'
-import { omniL2SupportedNetworks } from 'features/omni-kit/constants'
 import type { OmniTxData } from 'features/omni-kit/hooks'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
@@ -14,18 +13,20 @@ import { combineLatest, from, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
 
 export const estimateOmniGas$ = ({
-  signer,
+  ethPrice,
+  gasPrice,
+  isL2,
   networkId,
   proxyAddress,
+  signer,
   txData,
-  gasPrice,
-  ethPrice,
 }: {
-  gasPrice: GasPriceParams
   ethPrice: BigNumber
-  signer: ethers.Signer
+  gasPrice: GasPriceParams
+  isL2: boolean
   networkId: OmniSupportedNetworkIds
   proxyAddress: string
+  signer: ethers.Signer
   txData: OmniTxData
 }) =>
   combineLatest(
@@ -46,7 +47,7 @@ export const estimateOmniGas$ = ({
         switchMap(async (gasAmount) => {
           let usdValue = amountFromWei(gasPrice.maxFeePerGas.times(gasAmount)).times(ethPrice)
 
-          if (omniL2SupportedNetworks.includes(networkId)) {
+          if (isL2) {
             const optimismTxFeeData = await getOptimismTransactionFee({
               estimatedGas: gasAmount.toString(),
               transactionData: txData.data,
