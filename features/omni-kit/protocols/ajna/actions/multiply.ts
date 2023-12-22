@@ -3,8 +3,8 @@ import { normalizeValue, RiskRatio, strategies } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { omniSwapVersionMap } from 'features/omni-kit/constants'
-import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getOneInchCall } from 'helpers/swap'
 
 const DEFAULT_LTV_ON_NEW_POOL = new BigNumber(0.05)
@@ -25,7 +25,7 @@ export const ajnaActionOpenMultiply = ({
   dependencies: AjnaCommonDependencies
   collateralToken: string
   quoteToken: string
-  networkId: AjnaSupportedNetworksIds
+  networkId: OmniSupportedNetworkIds
   walletAddress: string
   pool: AjnaPool
   slippage: BigNumber

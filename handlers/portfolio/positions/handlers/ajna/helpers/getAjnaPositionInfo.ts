@@ -3,10 +3,9 @@ import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { networksById } from 'blockchain/networks'
 import { omniBorrowishProducts } from 'features/omni-kit/constants'
-import { AJNA_RAW_PROTOCOL_NAME } from 'features/omni-kit/protocols/ajna/constants'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
-import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
-import type { OmniProductBorrowishType } from 'features/omni-kit/types'
+import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
+import type { OmniProductBorrowishType, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { AjnaDpmPositionsPool } from 'handlers/portfolio/positions/handlers/ajna/types'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
@@ -20,7 +19,7 @@ interface getAjnaPositionInfoParams {
   apiVaults: Vault[]
   dpmList: DpmSubgraphData[]
   isEarn: boolean
-  networkId: AjnaSupportedNetworksIds
+  networkId: OmniSupportedNetworkIds
   pool: AjnaDpmPositionsPool
   positionId: string
   prices: TokensPricesList
@@ -53,7 +52,7 @@ export async function getAjnaPositionInfo({
         return (
           eventCollateralToken === collateralToken.address &&
           eventDebtToken === quoteToken.address &&
-          eventProtocol === AJNA_RAW_PROTOCOL_NAME &&
+          eventProtocol === ajnaSettings.rawName &&
           ((isEarn && eventPositionType === OmniProductType.Earn) ||
             (!isEarn && omniBorrowishProducts.includes(eventPositionType)))
         )

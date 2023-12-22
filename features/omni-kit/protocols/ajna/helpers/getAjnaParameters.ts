@@ -1,7 +1,8 @@
 import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaStrategy } from '@oasisdex/dma-library'
+import { Network } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { networkIdNameMap } from 'blockchain/networks'
+import { NetworkIds } from 'blockchain/networks'
 import type { ethers } from 'ethers'
 import {
   ajnaActionDepositGenerateBorrow,
@@ -22,11 +23,13 @@ import {
   getAjnaPoolData,
   getMaxIncreasedValue,
 } from 'features/omni-kit/protocols/ajna/helpers'
+import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import type {
-  AjnaGenericPosition,
-  AjnaSupportedNetworksIds,
-} from 'features/omni-kit/protocols/ajna/types'
-import type { OmniFormState, OmniGenericPosition } from 'features/omni-kit/types'
+  NetworkIdsWithValues,
+  OmniFormState,
+  OmniGenericPosition,
+  OmniSupportedNetworkIds,
+} from 'features/omni-kit/types'
 import {
   OmniBorrowFormAction,
   OmniEarnFormAction,
@@ -34,7 +37,7 @@ import {
 } from 'features/omni-kit/types'
 
 interface AjnaTxHandlerInput {
-  networkId: AjnaSupportedNetworksIds
+  networkId: OmniSupportedNetworkIds
   collateralAddress: string
   collateralPrecision: number
   collateralPrice: BigNumber
@@ -52,6 +55,12 @@ interface AjnaTxHandlerInput {
   slippage: BigNumber
   state: OmniFormState
   walletAddress?: string
+}
+
+const networkMap: NetworkIdsWithValues<Network> = {
+  [NetworkIds.ARBITRUMMAINNET]: Network.ARBITRUM,
+  [NetworkIds.BASEMAINNET]: Network.BASE,
+  [NetworkIds.GOERLI]: Network.GOERLI,
 }
 
 export async function getAjnaParameters({
@@ -77,17 +86,17 @@ export async function getAjnaParameters({
   const defaultPromise = Promise.resolve(undefined)
 
   const { action, dpmAddress } = state
-  const addressesConfig = getNetworkContracts(networkId)
+  const { ajnaPoolInfo, ajnaProxyActions, tokens } = getNetworkContracts(networkId)
   const poolAddress = await getAjnaPoolAddress(collateralAddress, quoteAddress, networkId)
 
   const dependencies: AjnaCommonDependencies = {
-    ajnaProxyActions: addressesConfig.ajnaProxyActions.address,
-    poolInfoAddress: addressesConfig.ajnaPoolInfo.address,
+    ajnaProxyActions: ajnaProxyActions.address,
+    poolInfoAddress: ajnaPoolInfo.address,
     provider: rpcProvider,
-    WETH: addressesConfig.tokens.ETH.address,
+    WETH: tokens.ETH.address,
     getPoolData: getAjnaPoolData(networkId),
     getCumulatives: getAjnaCumulatives(networkId),
-    network: networkIdNameMap[networkId],
+    network: networkMap[networkId] as Network,
   }
 
   const commonPayload: AjnaCommonPayload = {

@@ -1,11 +1,26 @@
 import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
-import type { NetworkIds, NetworkNames } from 'blockchain/networks'
+import { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
+import { LendingProtocol } from 'lendingProtocols'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
+
+const omniSupportedNetworkIds = [
+  NetworkIds.ARBITRUMMAINNET,
+  NetworkIds.BASEMAINNET,
+  NetworkIds.GOERLI,
+  NetworkIds.MAINNET,
+  NetworkIds.OPTIMISMMAINNET,
+] as const
+
+export type OmniSupportedNetworkIds = (typeof omniSupportedNetworkIds)[number]
+
+const omniSupportedProtocols = [LendingProtocol.Ajna, LendingProtocol.MorphoBlue] as const
+
+export type OmniSupportedProtocols = (typeof omniSupportedProtocols)[number]
 
 export type OmniGenericPosition = LendingPosition | SupplyPosition
 
@@ -38,6 +53,18 @@ export type OmniSidebarStepsSet = {
   }
 }
 
+export interface OmniProtocolSettings {
+  rawName: string
+  steps: OmniSidebarStepsSet
+  supportedNetworkIds: OmniSupportedNetworkIds[]
+  supportedMainnetNetworkIds: OmniSupportedNetworkIds[]
+  supportedProducts: OmniProductType[]
+}
+
+export type OmniProtocolsSettings = {
+  [key in OmniSupportedProtocols]: OmniProtocolSettings
+}
+
 export interface OmniTokensPrecision {
   collateralDigits: number
   collateralPrecision: number
@@ -48,7 +75,7 @@ export interface OmniTokensPrecision {
 export interface OmniProtocolHookProps {
   collateralToken?: string
   dpmPositionData?: DpmPositionData
-  networkId: NetworkIds
+  networkId: OmniSupportedNetworkIds
   product?: OmniProductType
   quoteToken?: string
   tokenPriceUSDData?: Tickers
@@ -117,8 +144,8 @@ export type OmniFormAction = OmniBorrowFormAction | OmniEarnFormAction | OmniMul
 export type OmniFormState = OmniBorrowFormState | OmniMultiplyFormState | OmniEarnFormState
 export interface OmniProductPage {
   collateralToken: string
-  networkName: NetworkNames
-  positionId?: string
+  networkId: OmniSupportedNetworkIds
+  positionId?: string 
   productType: OmniProductType
   quoteToken: string
 }
@@ -157,13 +184,6 @@ export interface OmniFlowStateFilterParams {
   quoteAddress: string
 }
 
-export type OmniSupportedNetworkIds =
-  | NetworkIds.MAINNET
-  | NetworkIds.GOERLI
-  | NetworkIds.OPTIMISMMAINNET
-  | NetworkIds.ARBITRUMMAINNET
-  | NetworkIds.BASEMAINNET
-
-export type NetworkIdsWithArray<T> = {
-  [key in NetworkIds]?: T[]
+export type NetworkIdsWithValues<T> = {
+  [key in OmniSupportedNetworkIds]?: T
 }

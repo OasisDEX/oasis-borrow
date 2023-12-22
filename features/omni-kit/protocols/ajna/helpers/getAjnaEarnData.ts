@@ -1,6 +1,6 @@
 import type { GetEarnData } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import type { NetworkIds } from 'blockchain/networks'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
@@ -13,7 +13,7 @@ const defaultResponse = {
   earnCumulativeQuoteTokenWithdraw: zero,
 }
 
-export const getAjnaEarnData: (networkId: NetworkIds) => GetEarnData =
+export const getAjnaEarnData: (networkId: OmniSupportedNetworkIds) => GetEarnData =
   (networkId) => async (proxy: string, poolAddress: string) => {
     const { response } = (await loadSubgraph('Ajna', 'getAjnaEarnPositionData', networkId, {
       dpmProxyAddress: proxy.toLowerCase(),

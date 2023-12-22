@@ -6,7 +6,7 @@ import {
   getAjnaEarnData,
   getAjnaPoolData,
 } from 'features/omni-kit/protocols/ajna/helpers'
-import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import {
@@ -28,7 +28,7 @@ interface GetAjnaPositionsParams {
   apiVaults?: Vault[]
   dpmList: DpmSubgraphData[]
   prices: TokensPricesList
-  networkId: AjnaSupportedNetworksIds
+  networkId: OmniSupportedNetworkIds
   positionsCount?: boolean
 }
 
