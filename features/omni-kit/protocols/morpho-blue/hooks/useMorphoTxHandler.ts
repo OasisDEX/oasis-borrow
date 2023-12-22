@@ -1,7 +1,6 @@
 import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { getRpcProvider } from 'blockchain/networks'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
-import { omniMetadataSupplyHandlerGuard } from 'features/omni-kit/helpers'
 import { useOmniTxHandler } from 'features/omni-kit/hooks'
 import {
   getMorphoParameters,
@@ -28,18 +27,11 @@ export function useMorphoTxHandler(): () => void {
     },
     dynamicMetadata: {
       validations: { isFormValid },
-      handlers,
     },
   } = useOmniProductContext(productType)
   const { walletAddress } = useAccount()
 
   const networkId = network.id
-
-  let onSuccess: (() => void) | undefined = () => null
-
-  if (omniMetadataSupplyHandlerGuard(handlers)) {
-    onSuccess = handlers.customReset
-  }
 
   if (!isMorphoSupportedNetwork(networkId)) {
     throw new Error(`Morpho doesn't support this network: ${networkId}`)
@@ -60,6 +52,5 @@ export function useMorphoTxHandler(): () => void {
         state,
         walletAddress,
       }),
-    onSuccess,
   })
 }
