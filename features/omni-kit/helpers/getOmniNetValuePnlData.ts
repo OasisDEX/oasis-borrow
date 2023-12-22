@@ -1,35 +1,37 @@
 import { ProductType } from 'features/aave/types'
+import { getOmniNetValue } from 'features/omni-kit/helpers/getOmniNetValue'
 import type {
   OmniNetValuePnlData,
   OmniNetValuePnlDataReturnType,
 } from 'features/omni-kit/helpers/getOmniNetValuePnlData.types'
-import { getOmniUnderlyingToken } from 'features/omni-kit/helpers/getOmniUnderlyingToken'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 
 export const getOmniNetValuePnlData = ({
   cumulatives,
   productType,
   collateralTokenPrice,
+  debtTokenPrice,
   netValueInCollateralToken,
+  netValueInDebtToken,
   collateralToken,
-  oraclePriceForCollateralDebtExchangeRate,
+  debtToken,
 }: OmniNetValuePnlData) => {
+  const netValue = getOmniNetValue({
+    productType,
+    collateralTokenPrice,
+    debtTokenPrice,
+    netValueInCollateralToken,
+    netValueInDebtToken,
+    collateralToken,
+    debtToken,
+  })
   switch (productType) {
     case ProductType.Borrow: {
-      // borrow just needs proper net value
-      // no pnl + no modal
       return {
-        netValue: {
-          netValueToken: collateralToken,
-          netValueTokenPrice: collateralTokenPrice,
-          inToken: netValueInCollateralToken,
-          inUsd: netValueInCollateralToken.times(collateralTokenPrice),
-        },
+        netValue,
       } as OmniNetValuePnlDataReturnType
     }
     case ProductType.Multiply: {
-      // multiply: net value in collateral + subline in USD
-      // pnl modal: pnl in collateral + in USD
       const pnlPercentage = cumulatives?.cumulativeWithdrawInCollateralToken
         .plus(netValueInCollateralToken)
         .minus(cumulatives.cumulativeDepositInCollateralToken)
@@ -38,14 +40,10 @@ export const getOmniNetValuePnlData = ({
         pnl: {
           pnlToken: collateralToken,
           percentage: pnlPercentage,
-          inToken: netValueInCollateralToken.times(pnlPercentage || zero),
+          inToken: netValueInCollateralToken.times(pnlPercentage ?? zero),
+          inUsd: netValueInCollateralToken.times(pnlPercentage ?? zero).times(collateralTokenPrice),
         },
-        netValue: {
-          netValueToken: collateralToken,
-          netValueTokenPrice: collateralTokenPrice,
-          inToken: netValueInCollateralToken,
-          inUsd: netValueInCollateralToken.times(collateralTokenPrice),
-        },
+        netValue,
         pnlCumulatives: {
           deposit: {
             inUsd: cumulatives?.cumulativeDepositUSD,
@@ -63,46 +61,30 @@ export const getOmniNetValuePnlData = ({
       } as OmniNetValuePnlDataReturnType
     }
     case ProductType.Earn: {
-      // earn: net value in UNDERLYING collateral/quote (remember to pass quotetoken  as collateral here) + subline in USD
-      // netValueInCollateralToken should be in underlying collateral token
-      // same goes for pnl modal - all underlying collateral + in USD
-      const underlyingCollateralToken = getOmniUnderlyingToken(collateralToken)
-      const underlyingTokenOraclePrice = oraclePriceForCollateralDebtExchangeRate || one
       const pnlPercentage = cumulatives?.cumulativeWithdrawInCollateralToken
-        .plus(netValueInCollateralToken.div(underlyingTokenOraclePrice))
+        .plus(netValueInDebtToken)
         .minus(cumulatives.cumulativeDepositInCollateralToken)
         .div(cumulatives.cumulativeDepositInCollateralToken)
-      const netValueInUnderlyingCollateralToken = netValueInCollateralToken.div(
-        underlyingTokenOraclePrice,
-      )
       return {
         pnl: {
-          pnlToken: underlyingCollateralToken,
+          pnlToken: debtToken,
           percentage: pnlPercentage,
-          inToken: netValueInUnderlyingCollateralToken.times(pnlPercentage || zero),
+          inToken: netValueInDebtToken.times(pnlPercentage ?? zero),
+          inUsd: netValueInDebtToken.times(pnlPercentage ?? zero).times(debtTokenPrice),
         },
-        netValue: {
-          netValueToken: underlyingCollateralToken,
-          netValueTokenPrice: collateralTokenPrice,
-          inToken: netValueInUnderlyingCollateralToken,
-          inUsd: netValueInUnderlyingCollateralToken.times(collateralTokenPrice),
-        },
+        netValue,
         pnlCumulatives: {
           deposit: {
             inUsd: cumulatives?.cumulativeDepositUSD,
-            inToken: cumulatives?.cumulativeDepositInCollateralToken.div(
-              underlyingTokenOraclePrice,
-            ),
+            inToken: cumulatives?.cumulativeDepositInCollateralToken,
           },
           withdraw: {
             inUsd: cumulatives?.cumulativeWithdrawUSD,
-            inToken: cumulatives?.cumulativeWithdrawInCollateralToken.div(
-              underlyingTokenOraclePrice,
-            ),
+            inToken: cumulatives?.cumulativeWithdrawInCollateralToken,
           },
           fees: {
             inUsd: cumulatives?.cumulativeFeesUSD,
-            inToken: cumulatives?.cumulativeFeesInCollateralToken.div(underlyingTokenOraclePrice),
+            inToken: cumulatives?.cumulativeFeesInCollateralToken,
           },
         },
       } as OmniNetValuePnlDataReturnType

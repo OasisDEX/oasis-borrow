@@ -15,15 +15,19 @@ export interface OmniNetValuePnlData {
   }
   productType: ProductType
   collateralTokenPrice: BigNumber
+  debtTokenPrice: BigNumber
   netValueInCollateralToken: BigNumber
-  oraclePriceForCollateralDebtExchangeRate?: BigNumber
+  netValueInDebtToken: BigNumber
   collateralToken: string
+  debtToken: string
 }
 
 export interface OmniNetValuePnlDataReturnType {
   pnl?: {
+    pnlToken: string
     percentage: BigNumber
     inToken: BigNumber
+    inUsd: BigNumber
   }
   netValue: {
     netValueToken: string

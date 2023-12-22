@@ -1,9 +1,13 @@
+import axios from 'axios'
 import { getCoinbaseTickers } from 'server/services/coinbase'
 import { getCoingeckoTickers } from 'server/services/coingecko'
 import { getCoinPaprikaTickers } from 'server/services/coinPaprika'
 import { getSDaiOracleTicker } from 'server/services/sdaiOracle'
 
 export async function tokenTickers() {
+  if (process.env.TOKEN_TICKERS_OVERRIDE) {
+    return (await axios.get(process.env.TOKEN_TICKERS_OVERRIDE)).data
+  }
   const results = await Promise.all([
     getCoinPaprikaTickers().catch((error) => {
       console.error('Error getting coinpaprika tickers', error)

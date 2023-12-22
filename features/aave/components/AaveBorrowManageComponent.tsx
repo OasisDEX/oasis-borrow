@@ -17,6 +17,7 @@ export function AaveBorrowManageComponent({
   nextPosition,
   dpmProxy,
   isOpenView,
+  cumulatives,
 }: AaveManageComponentProps) {
   const { getAaveLikeReserveData$, aaveLikeReserveConfigurationData$, aaveHistory$ } =
     useAaveContext(strategyConfig.protocol, strategyConfig.network)
@@ -82,6 +83,7 @@ export function AaveBorrowManageComponent({
               debtTokenReserveConfigurationData={_debtTokenReserveConfigurationData}
               nextPosition={nextPosition}
               aaveHistory={_aaveHistory}
+              cumulatives={cumulatives}
               isAutomationAvailable={isAutomationAvailable}
               lendingProtocol={strategyConfig.protocol}
             />

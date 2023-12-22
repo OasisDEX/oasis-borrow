@@ -13,8 +13,10 @@ import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { StrategyType } from 'features/aave/types'
+import { ProductType, StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
+import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { formatAmount, formatPrecision } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -42,6 +44,7 @@ type AaveBorrowPositionDataProps = {
   isAutomationAvailable?: boolean
   strategyType: StrategyType
   lendingProtocol: LendingProtocol
+  cumulatives?: AaveCumulativeData
 }
 
 export function AaveBorrowPositionData({
@@ -56,6 +59,7 @@ export function AaveBorrowPositionData({
   isAutomationAvailable,
   strategyType,
   lendingProtocol,
+  cumulatives,
 }: AaveBorrowPositionDataProps) {
   const { t } = useTranslation()
   const [collateralToken, debtToken] = getCurrentPositionLibCallData(currentPosition)
@@ -95,6 +99,28 @@ export function AaveBorrowPositionData({
     collateralToken.symbol,
     debtToken.symbol,
   )
+  const netValuePnlModalData = getOmniNetValuePnlData({
+    cumulatives,
+    productType: ProductType.Borrow,
+    collateralTokenPrice,
+    debtTokenPrice,
+    netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,
+    netValueInDebtToken: currentPositionThings.netValueInDebtToken,
+    collateralToken: currentPosition.collateral.symbol,
+    debtToken: currentPosition.debt.symbol,
+  })
+  const nextNetValue = nextPositionThings
+    ? getOmniNetValuePnlData({
+        cumulatives,
+        productType: ProductType.Borrow,
+        collateralTokenPrice,
+        debtTokenPrice,
+        netValueInCollateralToken: nextPositionThings.netValueInCollateralToken,
+        netValueInDebtToken: nextPositionThings.netValueInDebtToken,
+        collateralToken: nextPosition.collateral.symbol,
+        debtToken: nextPosition.debt.symbol,
+      }).netValue.inToken
+    : undefined
 
   return (
     <Grid>
@@ -135,12 +161,7 @@ export function AaveBorrowPositionData({
               nextPositionThings={nextPositionThings}
               debtTokenPrice={debtTokenPrice}
             />
-            <NetValueCard
-              strategyType={strategyType}
-              currentPositionThings={currentPositionThings}
-              currentPosition={currentPosition}
-              nextPositionThings={nextPositionThings}
-            />
+            <NetValueCard {...netValuePnlModalData} nextNetValue={nextNetValue} />
           </DetailsSectionContentCardWrapper>
         }
         footer={

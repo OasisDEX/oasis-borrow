@@ -109,11 +109,24 @@ export function AaveMultiplyPositionData({
     cumulatives,
     productType,
     collateralTokenPrice,
+    debtTokenPrice,
     netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,
+    netValueInDebtToken: currentPositionThings.netValueInDebtToken,
     collateralToken: currentPosition.collateral.symbol,
-    oraclePriceForCollateralDebtExchangeRate:
-      currentPosition.oraclePriceForCollateralDebtExchangeRate,
+    debtToken: currentPosition.debt.symbol,
   })
+  const nextNetValue = nextPositionThings
+    ? getOmniNetValuePnlData({
+        cumulatives,
+        productType,
+        collateralTokenPrice,
+        debtTokenPrice,
+        netValueInCollateralToken: nextPositionThings.netValueInCollateralToken,
+        netValueInDebtToken: nextPositionThings.netValueInDebtToken,
+        collateralToken: nextPosition.collateral.symbol,
+        debtToken: nextPosition.debt.symbol,
+      }).netValue.inToken
+    : undefined
 
   return (
     <Grid>
@@ -155,10 +168,8 @@ export function AaveMultiplyPositionData({
               debtTokenPrice={debtTokenPrice}
             />
             <NetValueCard
-              strategyType={strategyType}
-              currentPositionThings={currentPositionThings}
-              currentPosition={currentPosition}
-              nextPositionThings={nextPositionThings}
+              {...netValuePnlModalData}
+              nextNetValue={nextNetValue}
               footnote={
                 netValuePnlModalData.pnl?.percentage &&
                 `${t('omni-kit.content-card.net-value.footnote')} ${
