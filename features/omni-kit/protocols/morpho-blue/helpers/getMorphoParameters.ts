@@ -69,10 +69,10 @@ export const getMorphoParameters = async ({
     provider: rpcProvider,
     network: networkIdNameMap[networkId],
     getCumulatives: getMorphoCumulatives(),
-    operationExecutor: '',
+    operationExecutor: addressesConfig.operationExecutor.address, // duplicated
     addresses: {
-      morphoblue: '',
-      operationExecutor: '',
+      morphoblue: addressesConfig.morphoBlue.address,
+      operationExecutor: addressesConfig.operationExecutor.address,
       tokens: {
         WETH: addressesConfig.tokens.WETH.address,
         DAI: addressesConfig.tokens.DAI.address,
