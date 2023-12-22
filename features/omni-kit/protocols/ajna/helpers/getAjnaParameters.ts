@@ -1,8 +1,7 @@
 import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaStrategy } from '@oasisdex/dma-library'
-import { Network } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import { NetworkIds } from 'blockchain/networks'
+import { networkIdNameMap } from 'blockchain/networks'
 import type { ethers } from 'ethers'
 import {
   ajnaActionDepositGenerateBorrow,
@@ -55,12 +54,6 @@ interface AjnaTxHandlerInput {
   walletAddress?: string
 }
 
-const networkMap = {
-  [NetworkIds.MAINNET]: Network.MAINNET,
-  [NetworkIds.GOERLI]: Network.GOERLI,
-  [NetworkIds.BASEMAINNET]: Network.BASE,
-}
-
 export async function getAjnaParameters({
   networkId,
   collateralAddress,
@@ -94,7 +87,7 @@ export async function getAjnaParameters({
     WETH: addressesConfig.tokens.ETH.address,
     getPoolData: getAjnaPoolData(networkId),
     getCumulatives: getAjnaCumulatives(networkId),
-    network: networkMap[networkId],
+    network: networkIdNameMap[networkId],
   }
 
   const commonPayload: AjnaCommonPayload = {
