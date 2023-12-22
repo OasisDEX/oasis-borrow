@@ -85,6 +85,10 @@ export function getAddresses(
     sharedAddresses.tokens.USDBC = contracts.tokens['USDBC'].address
   }
 
+  if (networkId === NetworkIds.OPTIMISMMAINNET || networkId === NetworkIds.ARBITRUMMAINNET) {
+    sharedAddresses.tokens['USDC.E'] = contracts.tokens['USDC.E'].address
+  }
+
   switch (lendingProtocol) {
     case LendingProtocol.AaveV2:
       return {

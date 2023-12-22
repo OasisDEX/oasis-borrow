@@ -13,14 +13,32 @@ const aaveSeed: AaveProductHubItemSeed[] = [
     types: ['borrow', 'multiply'],
   },
   {
+    collateral: 'ETH',
+    debt: 'USDC.E',
+    strategyType: 'long',
+    types: ['borrow', 'multiply'],
+  },
+  {
     collateral: 'wstETH',
     debt: 'USDC',
     strategyType: 'long',
     types: ['borrow', 'multiply'],
   },
   {
+    collateral: 'wstETH',
+    debt: 'USDC.E',
+    strategyType: 'long',
+    types: ['borrow', 'multiply'],
+  },
+  {
     collateral: 'wBTC',
     debt: 'USDC',
+    strategyType: 'long',
+    types: ['borrow', 'multiply'],
+  },
+  {
+    collateral: 'wBTC',
+    debt: 'USDC.E',
     strategyType: 'long',
     types: ['borrow', 'multiply'],
   },
@@ -67,7 +85,19 @@ const aaveSeed: AaveProductHubItemSeed[] = [
     types: ['borrow', 'multiply'],
   },
   {
+    collateral: 'USDC.E',
+    debt: 'ETH',
+    strategyType: 'short',
+    types: ['borrow', 'multiply'],
+  },
+  {
     collateral: 'USDC',
+    debt: 'wBTC',
+    strategyType: 'short',
+    types: ['borrow', 'multiply'],
+  },
+  {
+    collateral: 'USDC.E',
     debt: 'wBTC',
     strategyType: 'short',
     types: ['borrow', 'multiply'],
