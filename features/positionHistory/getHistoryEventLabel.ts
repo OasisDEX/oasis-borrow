@@ -23,23 +23,18 @@ export const getHistoryEventLabel = ({
       return t('position-history.generate')
     case 'AjnaRepay':
       return t('position-history.repay')
-    case 'AjnaDepositBorrow':
+    case 'AjnaDepositBorrow_3':
       return isOpen ? t('position-history.open-position') : t('position-history.deposit-generate')
-    case 'AjnaRepayWithdraw':
+    case 'AjnaRepayWithdraw_3':
       return t('position-history.repay-withdraw')
-    case 'AjnaOpenMultiplyPosition_2':
     case 'AjnaOpenMultiplyPosition_3':
       return t('position-history.open-position')
-    case 'AjnaAdjustRiskUp_2':
     case 'AjnaAdjustRiskUp_3':
     case 'SparkAdjustRiskUp':
       return t('position-history.increase-multiple')
-    case 'AjnaAdjustRiskDown_2':
     case 'AjnaAdjustRiskDown_3':
     case 'SparkAdjustRiskDown':
       return t('position-history.decrease-multiple')
-    case 'AjnaCloseToQuotePosition_2':
-    case 'AjnaCloseToCollateralPosition_2':
     case 'AjnaCloseToQuotePosition_3':
     case 'AjnaCloseToCollateralPosition_3':
       return t('position-history.close-position')
