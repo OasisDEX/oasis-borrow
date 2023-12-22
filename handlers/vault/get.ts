@@ -5,6 +5,7 @@ import * as z from 'zod'
 
 const paramsSchema = z.object({
   id: z.string(),
+  owner: z.string(),
   chainId: z.string(),
   protocol: z.string(),
   tokenPair: z.string().optional(),
@@ -18,6 +19,7 @@ export async function getVault(req: NextApiRequest, res: NextApiResponse) {
     chain_id: parseInt(params.chainId),
     protocol: params.protocol,
     token_pair: params.tokenPair || '',
+    owner_address: params.owner,
   })
 
   if (vault === undefined || vault == null) {
@@ -39,19 +41,22 @@ export async function selectVaultByIdAndChainId({
   chain_id,
   protocol,
   token_pair,
+  owner_address,
 }: {
   vault_id: number
   chain_id: number
   protocol: string
   token_pair: string
+  owner_address: string
 }): Promise<Vault | null> {
   return prisma.vault.findUnique({
     where: {
-      vault_vault_id_chain_id_protocol_token_pair_unique_constraint: {
+      vault_unique_constraint: {
         vault_id,
         chain_id,
         protocol,
         token_pair,
+        owner_address,
       },
     },
   })

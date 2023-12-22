@@ -6,6 +6,7 @@ import { getUserDpmProxy } from 'blockchain/userDpmProxies'
 import type { AccountContext } from 'components/context/AccountContextProvider'
 import dayjs from 'dayjs'
 import type { VaultType } from 'features/generalManageVault/vaultType.types'
+import { getApiVault } from 'features/shared/vaultApi'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import type { MainContext } from 'helpers/context/MainContext.types'
@@ -24,7 +25,7 @@ import { filter, switchMap } from 'rxjs/operators'
 import type { AaveContext } from './aave-context'
 import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
 import type { ProxiesRelatedWithPosition } from './helpers'
-import { getAaveV3StrategyConfig } from './helpers'
+import { getAaveLikeStrategyConfig, getManageViewInfo } from './helpers'
 import {
   getManageAaveStateMachine,
   getManageAaveV3PositionStateMachineServices,
@@ -231,7 +232,7 @@ export function setupSparkV3Context(
         of({ positionId, networkName, vaultType }),
       ).pipe(
         switchMap((params) =>
-          getAaveV3StrategyConfig(params.positionId, params.networkName, params.vaultType),
+          getAaveLikeStrategyConfig(params.positionId, params.networkName, params.vaultType),
         ),
       ),
     (positionId, networkName, vaultType) => JSON.stringify({ positionId, networkName, vaultType }),
@@ -247,6 +248,18 @@ export function setupSparkV3Context(
     }
   }
 
+  const manageViewInfo$ = memoize(
+    curry(getManageViewInfo)({
+      strategyConfig$,
+      proxiesRelatedWithPosition$,
+      getApiVault,
+      chainId: networkId,
+      networkName: network,
+      lendingProtocol: LendingProtocol.SparkV3,
+    }),
+    (args: { positionId: PositionId }) => JSON.stringify(args),
+  )
+
   return {
     ...protocolData,
     aaveStateMachine,
@@ -260,5 +273,6 @@ export function setupSparkV3Context(
     earnCollateralsReserveData,
     dpmAccountStateMachine,
     aaveHistory$,
+    manageViewInfo$,
   }
 }

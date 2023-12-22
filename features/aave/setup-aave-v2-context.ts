@@ -2,6 +2,7 @@ import { NetworkIds, NetworkNames } from 'blockchain/networks'
 import type { TokenBalances } from 'blockchain/tokens.types'
 import type { AccountContext } from 'components/context/AccountContextProvider'
 import dayjs from 'dayjs'
+import { getApiVault } from 'features/shared/vaultApi'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import type { MainContext } from 'helpers/context/MainContext.types'
@@ -16,6 +17,7 @@ import { switchMap } from 'rxjs/operators'
 
 import type { AaveContext } from './aave-context'
 import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
+import { getManageViewInfo } from './helpers'
 import {
   getManageAaveStateMachine,
   getManageAaveV2PositionStateMachineServices,
@@ -31,7 +33,7 @@ import {
   getStrategyInfo$,
 } from './services'
 import { getSupportedTokens } from './strategies'
-import type { IStrategyConfig } from './types'
+import type { IStrategyConfig, PositionId } from './types'
 
 export function setupAaveV2Context(
   mainContext: MainContext,
@@ -185,6 +187,18 @@ export function setupAaveV2Context(
 
   const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
 
+  const manageViewInfo$ = memoize(
+    curry(getManageViewInfo)({
+      strategyConfig$,
+      proxiesRelatedWithPosition$,
+      getApiVault,
+      chainId: NetworkIds.MAINNET,
+      networkName: NetworkNames.ethereumMainnet,
+      lendingProtocol: LendingProtocol.AaveV2,
+    }),
+    (args: { positionId: PositionId }) => JSON.stringify(args),
+  )
+
   return {
     ...protocols[LendingProtocol.AaveV2],
     aaveStateMachine,
@@ -197,5 +211,6 @@ export function setupAaveV2Context(
     earnCollateralsReserveData,
     dpmAccountStateMachine,
     aaveHistory$,
+    manageViewInfo$,
   }
 }

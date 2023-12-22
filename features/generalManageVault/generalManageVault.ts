@@ -18,18 +18,20 @@ export function createGeneralManageVault$(
   checkVaultType$: ({
     id,
     protocol,
+    owner,
   }: {
     id: BigNumber
     protocol: LendingProtocol
+    owner: string
   }) => Observable<VaultType>,
   vault$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<GeneralManageVaultState> {
-  return checkVaultType$({ id, protocol: LendingProtocol.Maker }).pipe(
-    switchMap((type) => {
-      return vault$(id).pipe(
-        filter((vault) => vault !== undefined),
-        switchMap(() => {
+  return vault$(id).pipe(
+    filter((vault) => vault !== undefined),
+    switchMap((vault) => {
+      return checkVaultType$({ id, protocol: LendingProtocol.Maker, owner: vault.owner }).pipe(
+        switchMap((type) => {
           switch (type) {
             case VaultType.Borrow:
             case VaultType.Multiply:

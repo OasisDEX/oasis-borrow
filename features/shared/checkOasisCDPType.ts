@@ -10,9 +10,13 @@ export type CDPIdToTypeMapping = {
 }
 
 export function createCheckOasisCDPType$(
-  checkCdpTypeFromApi$: (data: { id: BigNumber; protocol: string }) => Observable<VaultType>,
+  checkCdpTypeFromApi$: (data: {
+    id: BigNumber
+    protocol: string
+    owner: string
+  }) => Observable<VaultType>,
   mapCdpToIlk$: (cdpId: BigNumber) => Observable<string>,
-  positionInfo: { id: BigNumber; protocol: LendingProtocol },
+  positionInfo: { id: BigNumber; protocol: LendingProtocol; owner: string },
 ): Observable<VaultType> {
   return combineLatest(checkCdpTypeFromApi$(positionInfo), mapCdpToIlk$(positionInfo.id)).pipe(
     map(([vaultTypeFromApi, ilk]) => {
