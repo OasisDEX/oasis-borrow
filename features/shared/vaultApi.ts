@@ -1,4 +1,3 @@
-import type { Vault } from '@prisma/client'
 import type BigNumber from 'bignumber.js'
 import type { Context } from 'blockchain/network.types'
 import type { NetworkIds } from 'blockchain/networks'
@@ -6,17 +5,15 @@ import type { MultiplyPillChange } from 'features/automation/protection/stopLoss
 import { VaultType } from 'features/generalManageVault/vaultType.types'
 import type { LendingProtocol } from 'lendingProtocols'
 import { of } from 'ramda'
-import { useEffect } from 'react'
 import type { Observable } from 'rxjs'
 import { combineLatest, EMPTY } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map, startWith, switchMap } from 'rxjs/operators'
-import { useFetch } from 'usehooks-ts'
 
 export function checkVaultTypeUsingApi$(
   context$: Observable<Context>,
   pillChange: Observable<MultiplyPillChange>,
-  positionInfo: { id: BigNumber; protocol: LendingProtocol },
+  positionInfo: { id: BigNumber; protocol: LendingProtocol; owner: string },
 ): Observable<VaultType> {
   const pillChange$ = pillChange.pipe(
     startWith({ currentChange: '' } as unknown as MultiplyPillChange),
@@ -31,6 +28,7 @@ export function checkVaultTypeUsingApi$(
       return getVaultFromApi$(
         positionInfo.id.toNumber(),
         context.chainId,
+        positionInfo.owner,
         positionInfo.protocol,
       ).pipe(
         map((vault) => vault.type),
@@ -56,54 +54,25 @@ interface ApiVaultFallback {
   type: VaultType.Borrow
 }
 
-export interface ApiVaultsParams {
-  vaultIds: number[]
-  chainId: NetworkIds
-  protocol: LendingProtocol
-}
-
-export function useApiVaults({ vaultIds, protocol, chainId }: ApiVaultsParams): ApiVault[] {
-  const vaultsQuery = vaultIds.map((id) => `id=${id}`).join('&')
-
-  const { data, error } = useFetch<{ vaults: Vault[] }>(
-    `/api/vaults/${chainId}/${protocol}?${vaultsQuery}`,
-  )
-
-  useEffect(() => {
-    if (error) {
-      console.warn(`Can't obtain vaults from API`, error)
-    }
-  }, [error])
-
-  return (
-    data?.vaults.map((vault: Vault) => {
-      return {
-        vaultId: vault.vault_id,
-        chainId: vault.chain_id as NetworkIds,
-        protocol: vault.protocol as LendingProtocol,
-        ownerAddress: vault.owner_address,
-        type: vault.type as VaultType,
-        tokenPair: vault.token_pair,
-      }
-    }) ?? []
-  )
-}
-
 export interface ApiVaultParams {
   vaultId: number
+  owner: string
   chainId: NetworkIds
   protocol: LendingProtocol
   tokenPair: string
 }
+
+export type GetApiVault = (params: ApiVaultParams) => Promise<ApiVault | undefined>
 
 export async function getApiVault({
   vaultId,
   protocol,
   chainId,
   tokenPair,
+  owner,
 }: ApiVaultParams): Promise<ApiVault | undefined> {
   try {
-    const data = await fetch(`/api/vault/${vaultId}/${chainId}/${protocol}/${tokenPair}`)
+    const data = await fetch(`/api/vault/${vaultId}/${owner}/${chainId}/${protocol}/${tokenPair}`)
 
     const vault: ApiVault = await data.json()
 
@@ -117,6 +86,7 @@ export async function getApiVault({
 export function getVaultFromApi$(
   vaultId: number,
   chainId: number,
+  owner: string,
   protocol: LendingProtocol,
 ): Observable<ApiVault | ApiVaultFallback> {
   if (chainId === 0 || chainId < 1) {
@@ -128,7 +98,7 @@ export function getVaultFromApi$(
     return EMPTY
   }
   return ajax({
-    url: `/api/vault/${vaultId}/${chainId}/${protocol.toLowerCase()}`,
+    url: `/api/vault/${vaultId}/${owner}/${chainId}/${protocol.toLowerCase()}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

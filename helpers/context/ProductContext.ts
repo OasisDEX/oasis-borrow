@@ -444,9 +444,11 @@ export function setupProductContext(
   const checkOasisCDPType$: ({
     id,
     protocol,
+    owner,
   }: {
     id: BigNumber
     protocol: string
+    owner: string
   }) => Observable<VaultType> = curry(createCheckOasisCDPType$)(
     curry(checkVaultTypeUsingApi$)(
       context$,

@@ -48,6 +48,31 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
+    collateral: 'ETH',
+    debt: 'USDC.E',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+          },
+        ],
+      },
+    },
+  },
+  {
     collateral: 'WSTETH',
     debt: 'USDC',
     strategyType: StrategyType.Long,
@@ -73,8 +98,58 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
+    collateral: 'WSTETH',
+    debt: 'USDC.E',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+          },
+        ],
+      },
+    },
+  },
+  {
     collateral: 'WBTC',
     debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'WBTC',
+    debt: 'USDC.E',
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
@@ -248,6 +323,31 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
+    collateral: 'USDC.E',
+    debt: 'ETH',
+    strategyType: StrategyType.Short,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+          },
+        ],
+      },
+    },
+  },
+  {
     collateral: 'USDC',
     debt: 'ETH',
     strategyType: StrategyType.Short,
@@ -274,6 +374,31 @@ const availableTokenPairs: TokenPairConfig[] = [
   },
   {
     collateral: 'USDC',
+    debt: 'WBTC',
+    strategyType: StrategyType.Short,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: undefined,
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: undefined,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.AaveV3OptimismBorrow,
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'USDC.E',
     debt: 'WBTC',
     strategyType: StrategyType.Short,
     productTypes: {
