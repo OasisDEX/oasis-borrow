@@ -70,6 +70,11 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 
   const triggers = await automationSubgraphClient.getTriggers(params)
 
+  logger.info(`Got ${triggers.triggers.length} triggers`, {
+    triggers: triggers.triggers,
+    account: params.dpm,
+  })
+
   const aaveStopLossToCollateral: AaveStopLossToCollateral | undefined = triggers.triggers
     .filter((trigger) => trigger.triggerType == AaveStopLossToCollateralV2ID)
     .map((trigger) => {
@@ -161,7 +166,13 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
           debtToken: trigger.decodedData[trigger.decodedDataNames.indexOf('debtToken')],
           collateralToken: trigger.decodedData[trigger.decodedDataNames.indexOf('collateralToken')],
           operationName: trigger.decodedData[trigger.decodedDataNames.indexOf('operationName')],
-          executionLtv: trigger.decodedData[trigger.decodedDataNames.indexOf('executionLTV')],
+          executionLtv:
+            trigger.decodedData[
+              Math.max(
+                trigger.decodedDataNames.indexOf('execLtv'),
+                trigger.decodedData.indexOf('executionLtv'),
+              )
+            ],
           targetLtv: trigger.decodedData[trigger.decodedDataNames.indexOf('targetLtv')],
           maxBuyPrice: trigger.decodedData[trigger.decodedDataNames.indexOf('maxBuyPrice')],
           deviation: trigger.decodedData[trigger.decodedDataNames.indexOf('deviation')],
@@ -186,7 +197,13 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
           debtToken: trigger.decodedData[trigger.decodedDataNames.indexOf('debtToken')],
           collateralToken: trigger.decodedData[trigger.decodedDataNames.indexOf('collateralToken')],
           operationName: trigger.decodedData[trigger.decodedDataNames.indexOf('operationName')],
-          executionLtv: trigger.decodedData[trigger.decodedDataNames.indexOf('executionLTV')],
+          executionLtv:
+            trigger.decodedData[
+              Math.max(
+                trigger.decodedDataNames.indexOf('execLtv'),
+                trigger.decodedData.indexOf('executionLtv'),
+              )
+            ],
           targetLtv: trigger.decodedData[trigger.decodedDataNames.indexOf('targetLtv')],
           minSellPrice: trigger.decodedData[trigger.decodedDataNames.indexOf('minSellPrice')],
           deviation: trigger.decodedData[trigger.decodedDataNames.indexOf('deviation')],

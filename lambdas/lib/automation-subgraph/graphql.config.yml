@@ -27,10 +27,3 @@ generates:
             MetaTagAttributes: Record<string, string>
             UploadId: string
       - typed-document-node
-extensions:
-  endpoints:
-    Default GraphQL Endpoint:
-      url: https://5twcsg71b5.execute-api.us-east-1.amazonaws.com/staging/summer-automation
-      headers:
-        user-agent: JS GraphQL
-      introspect: false
