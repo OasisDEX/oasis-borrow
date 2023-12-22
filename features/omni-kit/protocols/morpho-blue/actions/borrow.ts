@@ -4,6 +4,7 @@ import type {
 } from '@oasisdex/dma-library'
 import { strategies } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import { resolvePaybackAmount } from 'features/omni-kit/helpers'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import { zero } from 'helpers/zero'
 
@@ -62,9 +63,7 @@ export const morphoActionPaybackWithdraw = ({
 }) => {
   const { withdrawAmount, paybackAmount } = state
 
-  const resolvedPaybackAmount = paybackAmount?.gt(quoteBalance)
-    ? quoteBalance
-    : paybackAmount || zero
+  const resolvedPaybackAmount = resolvePaybackAmount({ paybackAmount, quoteBalance })
 
   return strategies.morphoblue.borrow.paybackWithdraw(
     {
