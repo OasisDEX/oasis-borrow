@@ -50,13 +50,11 @@ const getChains = () => {
 const config = getLocalAppConfig('parameters').connectionMethods
 
 const getWallets = () => {
-  const wallets: WalletInit[] = []
+  const wallets: WalletInit[] = [injected, walletConnect]
   if (!config) {
     return wallets
   }
   if (config.gnosis) wallets.push(gnosis)
-  if (config.injected) wallets.push(injected)
-  if (config.walletConnect) wallets.push(walletConnect)
   if (config.walletLink) wallets.push(walletLink)
   if (config.ledger) wallets.push(ledger)
   if (config.trezor) wallets.push(trezor)
