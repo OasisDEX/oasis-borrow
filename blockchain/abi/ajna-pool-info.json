@@ -136,6 +136,75 @@
         "type": "address"
       }
     ],
+    "name": "auctionInfo",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "kicker_",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bondFactor_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bondSize_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "kickTime_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "referencePrice_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "neutralPrice_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "debtToCollateral_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "head_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "next_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "prev_",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "ajnaPool_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "borrower_",
+        "type": "address"
+      }
+    ],
     "name": "auctionStatus",
     "outputs": [
       {
@@ -166,6 +235,21 @@
       {
         "internalType": "uint256",
         "name": "neutralPrice_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "referencePrice_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "debtToCollateral_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bondFactor_",
         "type": "uint256"
       }
     ],
@@ -239,6 +323,11 @@
         "internalType": "uint256",
         "name": "t0Np_",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "thresholdPrice_",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -287,6 +376,25 @@
       {
         "internalType": "uint256",
         "name": "exchangeRate_",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "ajnaPool_",
+        "type": "address"
+      }
+    ],
+    "name": "depositFeeRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
         "type": "uint256"
       }
     ],
@@ -487,6 +595,25 @@
   {
     "inputs": [
       {
+        "internalType": "bytes[]",
+        "name": "data",
+        "type": "bytes[]"
+      }
+    ],
+    "name": "multicall",
+    "outputs": [
+      {
+        "internalType": "bytes[]",
+        "name": "results",
+        "type": "bytes[]"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "ajnaPool_",
         "type": "address"
@@ -657,25 +784,6 @@
       }
     ],
     "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "ajnaPool_",
-        "type": "address"
-      }
-    ],
-    "name": "unutilizedDepositFeeRate",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   }
 ]
