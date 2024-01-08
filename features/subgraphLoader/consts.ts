@@ -85,7 +85,6 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     query getAccount($dpmProxyAddress: ID!, $collateralAddress: String!, $quoteAddress: String!) {
       auctions(where: { account_: { id: $dpmProxyAddress } }) {
         inLiquidation
-        alreadyTaken
         debtToCover
         collateral
       }
