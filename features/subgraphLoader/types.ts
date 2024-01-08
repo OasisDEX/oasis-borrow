@@ -60,7 +60,6 @@ export type SubgraphsResponses = {
   Ajna: {
     getAjnaPositionAggregatedData: SubgraphBaseResponse<{
       auctions: {
-        alreadyTaken: boolean
         collateral: number
         debtToCover: number
         id: string
