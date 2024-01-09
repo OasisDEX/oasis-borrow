@@ -7,7 +7,7 @@ import {
 } from 'features/omni-kit/constants'
 import { OmniSidebarStep, type OmniSidebarStepsSet } from 'features/omni-kit/types'
 
-export const AJNA_RAW_PROTOCOL_NAME = 'Ajna_rc12'
+export const AJNA_RAW_PROTOCOL_NAME = 'Ajna_rc13'
 export const AJNA_SUPPORTED_NETWORKS = [NetworkIds.MAINNET, NetworkIds.BASEMAINNET]
 
 export const ajnaOmniSteps: OmniSidebarStepsSet = {
