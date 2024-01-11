@@ -2839,6 +2839,9 @@
         "modal-value-1": "$AJNA claimable now",
         "modal-value-2": "$AJNA earned, claimable next period",
         "modal-value-3": "$AJNA bonus tokens earned"
+      },
+      "buying-power": {
+        "tooltip": "There is currently no debt drawed for this pool. Buying power can be calculated after any position draws debt for the first time."
       }
     },
     "position-page": {
