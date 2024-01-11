@@ -10,6 +10,7 @@ import type {
   LendingMetadata,
   ProductContextWithBorrow,
   ProductContextWithEarn,
+  ShouldShowDynamicLtvMetadata,
   SupplyMetadata,
 } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
@@ -38,6 +39,7 @@ import {
   getAjnaValidation,
   getOriginationFee,
   isPoolWithRewards,
+  resolveIfCachedPosition,
 } from 'features/omni-kit/protocols/ajna/helpers'
 import {
   AjnaEarnFormOrder,
@@ -100,7 +102,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       gasEstimation,
     },
     steps: { currentStep },
-    tx: { txDetails },
+    tx: { isTxSuccess, txDetails },
   } = useOmniGeneralContext()
 
   const {
@@ -166,6 +168,9 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         | AjnaPosition
         | undefined
 
+      const cachedPosition = productContext.position.cachedPosition?.position as
+        | AjnaPosition
+        | undefined
       const cachedSimulation = productContext.position.cachedPosition?.simulation as
         | AjnaPosition
         | undefined
@@ -178,7 +183,15 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       )})`
 
       const lendingContext = productContext as ProductContextWithBorrow
-      const shouldShowDynamicLtv = position.pool.lowestUtilizedPriceIndex.gt(zero)
+      const shouldShowDynamicLtv: ShouldShowDynamicLtvMetadata = ({ includeCache }) => {
+        return (
+          resolveIfCachedPosition({
+            cached: includeCache && isTxSuccess,
+            cachedPosition: { position: cachedPosition, simulation: cachedSimulation },
+            currentPosition: { position, simulation },
+          }).positionData?.pool.lowestUtilizedPriceIndex.gt(zero) ?? false
+        )
+      }
 
       const resolvedSimulation = simulation || cachedSimulation
       const afterPositionDebt = resolvedSimulation?.debtAmount.plus(originationFee)
@@ -265,7 +278,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               productType={productType}
               quotePrice={quotePrice}
               quoteToken={quoteToken}
-              shouldShowDynamicLtv={shouldShowDynamicLtv}
+              shouldShowDynamicLtv={shouldShowDynamicLtv({ includeCache: false })}
               simulation={simulation}
             />
           ),

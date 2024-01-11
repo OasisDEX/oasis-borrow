@@ -4,7 +4,6 @@ import { InfoSection } from 'components/infoSection/InfoSection'
 import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { resolveIfCachedPosition } from 'features/omni-kit/protocols/ajna/helpers'
-import type { AjnaIsCachedPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import {
   formatCryptoBalance,
@@ -16,7 +15,7 @@ import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 
-export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached = false }) => {
+export const AjnaEarnFormOrderInformation: FC = () => {
   const { t } = useTranslation()
 
   const {
@@ -29,7 +28,7 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
   } = useOmniProductContext(OmniProductType.Earn)
 
   const { positionData: _positionData, simulationData: _simulationData } = resolveIfCachedPosition({
-    cached,
+    cached: isTxSuccess,
     cachedPosition,
     currentPosition,
   })
@@ -47,7 +46,7 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
   const withAjnaFee =
     earnDepositFee?.gt(zero) && !positionData.pool.lowestUtilizedPriceIndex.isZero()
 
-  const isLoading = !cached && isSimulationLoading
+  const isLoading = !isTxSuccess && isSimulationLoading
   const formatted = {
     amountToLend: `${formatCryptoBalance(positionData.quoteTokenAmount)} ${quoteToken}`,
     afterAmountToLend:
@@ -109,7 +108,7 @@ export const AjnaEarnFormOrderInformation: FC<AjnaIsCachedPosition> = ({ cached 
               },
             ]
           : []),
-        ...(isTxSuccess && cached
+        ...(isTxSuccess
           ? [
               {
                 label: t('system.total-cost'),
