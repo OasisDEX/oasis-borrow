@@ -22,6 +22,7 @@ export function useAjnaCardDataBuyingPower({
     }),
     icon: question_o,
     iconColor: 'neutral80',
+    iconPosition: 'after',
     customValueColor: 'neutral80',
     tooltips: {
       icon: t('ajna.content-card.buying-power.tooltip'),

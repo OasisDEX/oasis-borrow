@@ -29,6 +29,7 @@ export interface OmniContentCardExtra {
   extra?: ReactNode
   icon?: IconProps['icon']
   iconColor?: string
+  iconPosition?: 'before' | 'after'
   isLoading?: boolean
   modal?: ReactNode
   tooltips?: {
@@ -54,6 +55,7 @@ export function OmniContentCard({
   footnote,
   icon,
   iconColor = 'interactive100',
+  iconPosition = 'before',
   isLoading,
   modal,
   title,
@@ -68,44 +70,57 @@ export function OmniContentCard({
 }: OmniContentCardProps) {
   const { t } = useTranslation()
 
-  const contentCardSettings: ContentCardProps = {
-    title: getContentCardValue(title, t),
-    value: (
-      <>
-        {icon &&
-          (iconTooltip ? (
-            <StatefulTooltip
-              inline
-              tooltip={iconTooltip}
-              containerSx={{ position: 'relative', top: '2px', display: 'inline-block', mr: 1 }}
-              tooltipSx={{
-                width: '300px',
-                fontSize: 1,
-                whiteSpace: 'initial',
-                textAlign: 'left',
-                border: 'none',
-                borderRadius: 'medium',
-                boxShadow: 'buttonMenu',
-                fontWeight: 'regular',
-                lineHeight: 'body',
-              }}
-            >
-              <Icon
-                size={asFooter ? 16 : 24}
-                icon={icon}
-                color={iconColor}
-                sx={{ mt: asFooter ? 1 : 0 }}
-              />
-            </StatefulTooltip>
-          ) : (
+  const valueIcon = (
+    <>
+      {icon &&
+        (iconTooltip ? (
+          <StatefulTooltip
+            inline
+            tooltip={iconTooltip}
+            containerSx={{
+              position: 'relative',
+              top: '2px',
+              display: 'inline-block',
+              mr: iconPosition === 'before' ? 1 : 0,
+              ml: iconPosition === 'after' ? 1 : 0,
+            }}
+            tooltipSx={{
+              width: '300px',
+              fontSize: 1,
+              whiteSpace: 'initial',
+              textAlign: 'left',
+              border: 'none',
+              borderRadius: 'medium',
+              boxShadow: 'buttonMenu',
+              fontWeight: 'regular',
+              lineHeight: 'body',
+            }}
+          >
             <Icon
               size={asFooter ? 16 : 24}
               icon={icon}
               color={iconColor}
-              sx={{ mt: asFooter ? 1 : 0, mr: 1 }}
+              sx={{ mt: asFooter ? 1 : 0 }}
             />
-          ))}
+          </StatefulTooltip>
+        ) : (
+          <Icon
+            size={asFooter ? 16 : 24}
+            icon={icon}
+            color={iconColor}
+            sx={{ mt: asFooter ? 1 : 0, mr: 1 }}
+          />
+        ))}
+    </>
+  )
+
+  const contentCardSettings: ContentCardProps = {
+    title: getContentCardValue(title, t),
+    value: (
+      <>
+        {iconPosition === 'before' && valueIcon}
         {value && getContentCardValue(value, t)}
+        {iconPosition === 'after' && valueIcon}
       </>
     ),
     customValueColor,
