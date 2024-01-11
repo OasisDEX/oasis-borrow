@@ -27,7 +27,6 @@ interface AjnaContentFooterBorrowProps {
   position: AjnaPosition
   quotePrice: BigNumber
   quoteToken: string
-  afterAvailableToBorrow?: BigNumber
   simulation?: AjnaPosition
 }
 
@@ -43,7 +42,6 @@ export function AjnaContentFooterBorrow({
   position,
   quotePrice,
   quoteToken,
-  afterAvailableToBorrow,
   simulation,
 }: AjnaContentFooterBorrowProps) {
   const netValue = position.collateralAmount
@@ -92,7 +90,7 @@ export function AjnaContentFooterBorrow({
   })
 
   const availableToBorrowContentCardCommonData = useOmniCardDataTokensValue({
-    afterTokensAmount: afterAvailableToBorrow,
+    afterTokensAmount: simulation?.debtAvailable(),
     tokensAmount: position.debtAvailable(),
     tokensSymbol: quoteToken,
     translationCardName: 'available-to-borrow',
