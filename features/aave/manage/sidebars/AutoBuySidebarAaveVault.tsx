@@ -65,7 +65,7 @@ function useDescriptionForAutoBuy({ state }: Pick<AutoBuySidebarAaveVaultProps, 
     return t('auto-buy.set-trigger-description-ltv', {
       executionLTV: state.executionTriggerLTV,
       targetLTV: state.targetTriggerLTV,
-      denomination: `${state.position.collateral.token.symbol}/${state.position.debt.token.symbol}`,
+      denomination: `USD`,
       executionPrice: formatCryptoBalance(executionPrice),
       maxBuyPrice: formatCryptoBalance(state.price),
     })
@@ -73,7 +73,7 @@ function useDescriptionForAutoBuy({ state }: Pick<AutoBuySidebarAaveVaultProps, 
   return t('auto-buy.set-trigger-description-ltv-no-threshold', {
     executionLTV: state.executionTriggerLTV,
     targetLTV: state.targetTriggerLTV,
-    denomination: `${state.position.collateral.token.symbol}/${state.position.debt.token.symbol}`,
+    denomination: `USD`,
     executionPrice: formatCryptoBalance(executionPrice),
   })
 }
@@ -176,7 +176,7 @@ function AutoBuySidebarAaveVaultEditingState({
           amount={state.price}
           hasAuxiliary={false}
           hasError={false}
-          currencyCode={state.position.debt.token.symbol}
+          currencyCode={'USD'}
           onChange={handleNumericInput((price) => {
             updateState({ type: 'SET_PRICE', price: price })
           })}
@@ -335,7 +335,9 @@ export function usePrimaryButton(
         isLoading: props.state.isLoading,
         action: () => {},
         disabled: true,
-        label: 'automation.setting',
+        label: t('automation.setting', {
+          feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
+        }),
         steps: [3, 3],
       }
     case isStateMatch('txDone'):
@@ -354,12 +356,32 @@ export function usePrimaryButton(
   }
 }
 
+export function useTextButton(
+  props: AutoBuySidebarAaveVaultProps,
+): SidebarSectionFooterButtonSettings | undefined {
+  const { isStateMatch, canTransitWith } = props
+  const { t } = useTranslation()
+
+  if (isStateMatch('review')) {
+    return {
+      isLoading: props.state.isLoading,
+      action: () => {
+        props.updateState({ type: 'GO_TO_EDITING' })
+      },
+      label: t('back-to-editing'),
+    }
+  }
+
+  return undefined
+}
+
 export function AutoBuySidebarAaveVault(props: AutoBuySidebarAaveVaultProps) {
   const { t } = useTranslation()
 
   const { strategy } = props
 
   const primaryButton = usePrimaryButton(props)
+  const textButton = useTextButton(props)
 
   return (
     <SidebarSection
@@ -373,6 +395,7 @@ export function AutoBuySidebarAaveVault(props: AutoBuySidebarAaveVaultProps) {
       }
       requireConnection={true}
       requiredChainHexId={strategy.networkHexId}
+      textButton={textButton}
     />
   )
 }
