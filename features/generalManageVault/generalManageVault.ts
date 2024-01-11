@@ -30,7 +30,11 @@ export function createGeneralManageVault$(
   return vault$(id).pipe(
     filter((vault) => vault !== undefined),
     switchMap((vault) => {
-      return checkVaultType$({ id, protocol: LendingProtocol.Maker, owner: vault.owner }).pipe(
+      return checkVaultType$({
+        id,
+        protocol: LendingProtocol.Maker,
+        owner: vault.controller ?? vault.owner,
+      }).pipe(
         switchMap((type) => {
           switch (type) {
             case VaultType.Borrow:

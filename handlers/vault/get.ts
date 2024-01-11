@@ -19,7 +19,7 @@ export async function getVault(req: NextApiRequest, res: NextApiResponse) {
     chain_id: parseInt(params.chainId),
     protocol: params.protocol,
     token_pair: params.tokenPair || '',
-    owner_address: params.owner,
+    owner_address: params.owner.toLowerCase(),
   })
 
   if (vault === undefined || vault == null) {

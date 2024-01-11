@@ -23,6 +23,7 @@ export const tokensOptimism = {
   STETH: contractDesc(erc20, optimism.common.STETH),
   TBTC: contractDesc(erc20, optimism.common.TBTC),
   USDT: contractDesc(erc20, optimism.common.USDT),
+  'USDC.E': contractDesc(erc20, optimism.common['USDC.E']),
   USDC: contractDesc(erc20, optimism.common.USDC),
   USDP: contractDesc(erc20, optimism.common.PAXUSD),
   WBTC: contractDesc(erc20, optimism.common.WBTC),

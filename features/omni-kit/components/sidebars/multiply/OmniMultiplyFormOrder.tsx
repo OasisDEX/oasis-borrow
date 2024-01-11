@@ -65,7 +65,7 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     },
     position: { cachedPosition, isSimulationLoading, currentPosition, swap },
     dynamicMetadata: {
-      values: { shouldShowDynamicLtv },
+      values: { shouldShowDynamicLtv, afterPositionDebt },
     },
   } = useOmniProductContext(OmniProductType.Multiply)
 
@@ -143,8 +143,7 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     slippageLimit: formatDecimalAsPercent(slippage),
     positionDebt: `${formatCryptoBalance(positionData.debtAmount)} ${quoteToken}`,
     afterPositionDebt:
-      simulationData?.debtAmount &&
-      `${formatCryptoBalance(simulationData?.debtAmount)} ${quoteToken}`,
+      afterPositionDebt && `${formatCryptoBalance(afterPositionDebt)} ${quoteToken}`,
     loanToValue: formatDecimalAsPercent(positionData.riskRatio.loanToValue),
     afterLoanToValue:
       simulationData?.riskRatio &&

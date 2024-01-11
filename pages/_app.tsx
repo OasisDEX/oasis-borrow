@@ -152,12 +152,11 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         {process.env.NODE_ENV !== 'production' && (
           <Script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
-        {cookiesValue?.enabledCookies?.marketing && (
-          <Script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />
-        )}
-
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
+      {cookiesValue?.enabledCookies?.marketing && (
+        <Script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />
+      )}
       <ThemeUIProvider theme={theme}>
         <CacheProvider value={cache}>
           <Global styles={globalStyles} />

@@ -20,6 +20,7 @@ const walletLink = coinbaseModule()
 const walletConnect = walletConnectModule({
   projectId: '832580820193ff6bae62a15dc0feff03',
   version: 2,
+  dappUrl: 'https://summer.fi',
 })
 
 const ledger = ledgerModule({
@@ -49,13 +50,11 @@ const getChains = () => {
 const config = getLocalAppConfig('parameters').connectionMethods
 
 const getWallets = () => {
-  const wallets: WalletInit[] = []
+  const wallets: WalletInit[] = [injected, walletConnect]
   if (!config) {
     return wallets
   }
   if (config.gnosis) wallets.push(gnosis)
-  if (config.injected) wallets.push(injected)
-  if (config.walletConnect) wallets.push(walletConnect)
   if (config.walletLink) wallets.push(walletLink)
   if (config.ledger) wallets.push(ledger)
   if (config.trezor) wallets.push(trezor)

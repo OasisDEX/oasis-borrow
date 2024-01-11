@@ -48,8 +48,58 @@ const availableTokenPairs: TokenPairConfig[] = [
     },
   },
   {
+    collateral: 'CBETH',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.BaseNetworkEnabled,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: FeaturesEnum.BaseNetworkEnabled,
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: FeaturesEnum.BaseNetworkEnabled,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.BaseNetworkEnabled,
+          },
+        ],
+      },
+    },
+  },
+  {
     collateral: 'ETH',
     debt: 'USDBC',
+    strategyType: StrategyType.Long,
+    productTypes: {
+      [ProductType.Borrow]: {
+        featureToggle: FeaturesEnum.BaseNetworkEnabled,
+        additionalManageActions: [
+          {
+            action: 'switch-to-multiply',
+            featureToggle: FeaturesEnum.BaseNetworkEnabled,
+          },
+        ],
+      },
+      [ProductType.Multiply]: {
+        featureToggle: FeaturesEnum.BaseNetworkEnabled,
+        additionalManageActions: [
+          {
+            action: 'switch-to-borrow',
+            featureToggle: FeaturesEnum.BaseNetworkEnabled,
+          },
+        ],
+      },
+    },
+  },
+  {
+    collateral: 'ETH',
+    debt: 'USDC',
     strategyType: StrategyType.Long,
     productTypes: {
       [ProductType.Borrow]: {
