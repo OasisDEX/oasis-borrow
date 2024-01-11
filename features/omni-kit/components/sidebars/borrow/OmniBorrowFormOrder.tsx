@@ -83,6 +83,12 @@ export function OmniBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           change: formatted.afterCollateralLocked,
           isLoading,
         },
+        {
+          label: t('system.liquidation-price'),
+          value: formatted.liquidationPrice,
+          change: formatted.afterLiquidationPrice,
+          isLoading,
+        },
         ...(!isOracless
           ? [
               {
@@ -93,12 +99,6 @@ export function OmniBorrowFormOrder({ cached = false }: { cached?: boolean }) {
               },
             ]
           : []),
-        {
-          label: t('system.liquidation-price'),
-          value: formatted.liquidationPrice,
-          change: formatted.afterLiquidationPrice,
-          isLoading,
-        },
         ...(!isOracless && shouldShowDynamicLtv
           ? [
               {

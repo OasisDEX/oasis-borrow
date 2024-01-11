@@ -112,6 +112,7 @@ export function getDpmPositionDataV2$(
         dpmProxy && proxyPosition && networkId
           ? getApiVault({
               vaultId: Number(dpmProxy.vaultId),
+              owner: dpmProxy.user,
               protocol: proxyPosition.protocol,
               chainId: networkId,
               tokenPair: `${proxyPosition.collateralTokenSymbol}-${proxyPosition.debtTokenSymbol}`,

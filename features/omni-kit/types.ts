@@ -145,7 +145,7 @@ export type OmniFormState = OmniBorrowFormState | OmniMultiplyFormState | OmniEa
 export interface OmniProductPage {
   collateralToken: string
   networkId: OmniSupportedNetworkIds
-  positionId?: string 
+  positionId?: string
   productType: OmniProductType
   quoteToken: string
 }

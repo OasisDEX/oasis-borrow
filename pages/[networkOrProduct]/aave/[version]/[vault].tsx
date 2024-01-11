@@ -1,5 +1,5 @@
 import type { NetworkNames } from 'blockchain/networks'
-import { getNetworkByName, isSupportedNetwork } from 'blockchain/networks'
+import { isSupportedNetwork } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
@@ -10,8 +10,6 @@ import { AaveContextProvider, useAaveContext } from 'features/aave'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
 import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/contexts'
 import type { PositionId } from 'features/aave/types/position-id'
-import { VaultType } from 'features/generalManageVault/vaultType.types'
-import { useApiVaults } from 'features/shared/vaultApi'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -63,33 +61,29 @@ function WithAaveStrategy({
   const { push } = useRouter()
   const { t } = useTranslation()
 
-  const networkId = getNetworkByName(network).id
-
-  const apiVaults = useApiVaults({
-    vaultIds: [positionId.vaultId ?? -1],
+  const { updateStrategyConfig, aaveManageStateMachine, manageViewInfo$ } = useAaveContext(
     protocol,
-    chainId: networkId,
-  })
-
-  const {
-    strategyConfig$,
-    updateStrategyConfig,
-    aaveManageStateMachine,
-    proxiesRelatedWithPosition$,
-  } = useAaveContext(protocol, network)
-  const [strategyConfig, strategyConfigError] = useObservable(
-    /* If VaultType.Unknown specified then when loading config it'll try to respect position created type */
-    strategyConfig$(positionId, network, apiVaults[0]?.type || VaultType.Unknown, protocol),
+    network,
   )
-  const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
-    proxiesRelatedWithPosition$(positionId, networkId),
-  )
+  // const [strategyConfig, strategyConfigError] = useObservable(
+  //   /* If VaultType.Unknown specified then when loading config it'll try to respect position created type */
+  //   strategyConfig$(positionId, network, apiVault?.type || VaultType.Unknown, protocol),
+  // )
+  // const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
+  //   proxiesRelatedWithPosition$(positionId, networkId).pipe(
+  //     map((proxies) => {
+  //       proxies.dpmProxy
+  //     }),
+  //   ),
+  // )
 
-  if (strategyConfigError) {
+  const [info, infoError] = useObservable(manageViewInfo$({ positionId }))
+
+  if (infoError) {
     console.warn(
-      `Strategy config not found for network: ${network} and positionId`,
+      `Cannot obtain position information. network: ${network} and positionId`,
       positionId,
-      strategyConfigError,
+      infoError,
     )
     void push(INTERNAL_LINKS.notFound)
     return <></>
@@ -99,26 +93,23 @@ function WithAaveStrategy({
     ? updateStrategyConfig(positionId, network)
     : undefined
   return (
-    <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
-      <WithLoadingIndicator
-        value={[strategyConfig, proxiesRelatedWithPosition]}
-        customLoader={<VaultContainerSpinner />}
-      >
-        {([_strategyConfig, _proxies]) => (
+    <WithErrorHandler error={[infoError]}>
+      <WithLoadingIndicator value={[info]} customLoader={<VaultContainerSpinner />}>
+        {([_info]) => (
           <ManageAaveStateMachineContextProvider
             machine={aaveManageStateMachine}
-            positionId={positionId}
-            strategy={_strategyConfig}
-            proxies={_proxies}
+            positionId={_info.positionId}
+            strategy={_info.strategyConfig}
+            proxies={_info.proxiesRelatedWithPosition}
             updateStrategyConfig={_updateStrategyConfig}
           >
             <PageSEOTags
               title="seo.title-product-w-tokens"
               titleParams={{
-                product: t(`seo.${_strategyConfig.type.toLocaleLowerCase()}.title`),
-                protocol: _strategyConfig.protocol,
-                token1: _strategyConfig.tokens.collateral,
-                token2: _strategyConfig.tokens.debt,
+                product: t(`seo.${_info.strategyConfig.type.toLocaleLowerCase()}.title`),
+                protocol: _info.strategyConfig.protocol,
+                token1: _info.strategyConfig.tokens.collateral,
+                token2: _info.strategyConfig.tokens.debt,
               }}
               description="seo.multiply.description"
               url={`/aave/${
@@ -126,14 +117,14 @@ function WithAaveStrategy({
                   [LendingProtocol.AaveV2]: 'v2',
                   [LendingProtocol.AaveV3]: 'v3',
                   [LendingProtocol.SparkV3]: 'v3',
-                }[_strategyConfig.protocol]
+                }[_info.strategyConfig.protocol]
               }/${positionId}`}
             />
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />
               <AaveManagePositionView
-                address={_proxies.walletAddress}
-                strategyConfig={_strategyConfig}
+                address={_info.proxiesRelatedWithPosition.walletAddress}
+                strategyConfig={_info.strategyConfig}
               />
             </Grid>
           </ManageAaveStateMachineContextProvider>
