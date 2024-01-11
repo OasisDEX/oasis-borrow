@@ -31,7 +31,7 @@ export function useOmniTxHandler<CustomState>({
   customState,
 }: {
   getOmniParameters: () => Promise<AjnaStrategy<OmniGenericPosition> | undefined>
-  customState: CustomState
+  customState?: CustomState
   onSuccess?: () => void // for resetting custom state
 }): () => void {
   const { connectedContext$ } = useMainContext()

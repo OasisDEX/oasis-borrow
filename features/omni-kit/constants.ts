@@ -1,4 +1,4 @@
-import { protocols } from '@oasisdex/dma-library'
+import { Network, protocols } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import {
@@ -53,4 +53,11 @@ export const omniSwapVersionMap: NetworkIdsWithValues<'v4.0' | 'v5.0'> = {
   [NetworkIds.OPTIMISMMAINNET]: 'v5.0',
   [NetworkIds.ARBITRUMMAINNET]: 'v5.0',
   [NetworkIds.GOERLI]: 'v4.0', // doesn't matter
+}
+
+export const omniNetworkMap: NetworkIdsWithValues<Network> = {
+  [NetworkIds.MAINNET]: Network.MAINNET,
+  [NetworkIds.ARBITRUMMAINNET]: Network.ARBITRUM,
+  [NetworkIds.BASEMAINNET]: Network.BASE,
+  [NetworkIds.GOERLI]: Network.GOERLI,
 }
