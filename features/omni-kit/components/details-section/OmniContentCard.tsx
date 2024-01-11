@@ -28,6 +28,7 @@ export interface OmniContentCardExtra {
   customValueColor?: string
   extra?: ReactNode
   icon?: IconProps['icon']
+  iconColor?: string
   isLoading?: boolean
   modal?: ReactNode
   tooltips?: {
@@ -52,6 +53,7 @@ export function OmniContentCard({
   extra,
   footnote,
   icon,
+  iconColor = 'interactive100',
   isLoading,
   modal,
   title,
@@ -91,7 +93,7 @@ export function OmniContentCard({
               <Icon
                 size={asFooter ? 16 : 24}
                 icon={icon}
-                color="interactive100"
+                color={iconColor}
                 sx={{ mt: asFooter ? 1 : 0 }}
               />
             </StatefulTooltip>
@@ -99,7 +101,7 @@ export function OmniContentCard({
             <Icon
               size={asFooter ? 16 : 24}
               icon={icon}
-              color="interactive100"
+              color={iconColor}
               sx={{ mt: asFooter ? 1 : 0, mr: 1 }}
             />
           ))}
