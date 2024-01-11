@@ -13,7 +13,7 @@ import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export function OmniBorrowFormOrder({ cached = false }: { cached?: boolean }) {
+export function OmniBorrowFormOrder() {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, isOracless, isShort, priceFormat, quoteToken },
@@ -28,7 +28,7 @@ export function OmniBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   } = useOmniProductContext(OmniProductType.Borrow)
 
   const { positionData, simulationData } = resolveIfCachedPosition({
-    cached,
+    cached: isTxSuccess,
     cachedPosition,
     currentPosition,
   })
@@ -42,7 +42,7 @@ export function OmniBorrowFormOrder({ cached = false }: { cached?: boolean }) {
       ? normalizeValue(one.div(simulationData.liquidationPrice))
       : simulationData.liquidationPrice)
 
-  const isLoading = !cached && isSimulationLoading
+  const isLoading = !isTxSuccess && isSimulationLoading
   const formatted = {
     collateralLocked: `${formatCryptoBalance(positionData.collateralAmount)} ${collateralToken}`,
     afterCollateralLocked:
@@ -127,7 +127,7 @@ export function OmniBorrowFormOrder({ cached = false }: { cached?: boolean }) {
           change: formatted.afterAvailableToBorrow,
           isLoading,
         },
-        ...(isTxSuccess && cached
+        ...(isTxSuccess
           ? [
               {
                 label: t('system.total-cost'),

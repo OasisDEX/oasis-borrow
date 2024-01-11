@@ -3,16 +3,13 @@ import { InfoSection } from 'components/infoSection/InfoSection'
 import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { resolveIfCachedPosition } from 'features/omni-kit/protocols/ajna/helpers'
-import type { AjnaIsCachedPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
 
-export const AjnaClaimCollateralFormOrderInformation: FC<AjnaIsCachedPosition> = ({
-  cached = false,
-}) => {
+export const AjnaClaimCollateralFormOrderInformation: FC = () => {
   const { t } = useTranslation()
   const {
     environment: { quoteToken, collateralToken },
@@ -23,12 +20,12 @@ export const AjnaClaimCollateralFormOrderInformation: FC<AjnaIsCachedPosition> =
   } = useOmniProductContext(OmniProductType.Earn)
 
   const { positionData, simulationData } = resolveIfCachedPosition({
-    cached,
+    cached: isTxSuccess,
     cachedPosition,
     currentPosition,
   })
 
-  const isLoading = !cached && isSimulationLoading
+  const isLoading = !isTxSuccess && isSimulationLoading
   const formatted = {
     totalDeposited: `${formatCryptoBalance(
       (positionData as AjnaEarnPosition).collateralTokenAmount.times(
@@ -58,7 +55,7 @@ export const AjnaClaimCollateralFormOrderInformation: FC<AjnaIsCachedPosition> =
           label: t('ajna.position-page.earn.common.form.collateral-available-to-withdraw'),
           value: formatted.availableToWithdraw,
         },
-        ...(isTxSuccess && cached
+        ...(isTxSuccess
           ? [
               {
                 label: t('system.total-cost'),

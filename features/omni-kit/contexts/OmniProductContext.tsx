@@ -15,7 +15,6 @@ import type {
 } from 'features/omni-kit/state/multiply'
 import type {
   OmniGenericPosition,
-  OmniIsCachedPosition,
   OmniSimulationCommon,
   OmniValidations,
 } from 'features/omni-kit/types'
@@ -95,7 +94,7 @@ export type SupplyMetadata = CommonMetadata & {
   elements: CommonMetadataElements & {
     earnExtraUiDropdownContent?: ReactNode
     earnFormOrder: ReactNode
-    earnFormOrderAsElement: FC<OmniIsCachedPosition>
+    earnFormOrderAsElement: FC
     extraEarnInput?: ReactNode
     extraEarnInputDeposit?: ReactNode
     extraEarnInputWithdraw?: ReactNode
