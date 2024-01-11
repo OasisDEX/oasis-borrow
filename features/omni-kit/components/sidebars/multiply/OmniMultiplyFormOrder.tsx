@@ -44,7 +44,7 @@ const actionsWithFee = [
   OmniMultiplyFormAction.WithdrawMultiply,
 ]
 
-export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) {
+export function OmniMultiplyFormOrder() {
   const { t } = useTranslation()
   const {
     environment: {
@@ -70,13 +70,13 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
   } = useOmniProductContext(OmniProductType.Multiply)
 
   const { positionData, simulationData } = resolveIfCachedPosition({
-    cached,
+    cached: isTxSuccess,
     cachedPosition,
     currentPosition,
   })
 
   const swapData = resolveIfCachedSwap({
-    cached,
+    cached: isTxSuccess,
     currentSwap: swap?.current,
     cachedSwap: swap?.cached,
   })
@@ -132,7 +132,7 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
     ? buyingOrSellingCollateral.times(OAZO_FEE.times(collateralPrice))
     : zero
 
-  const isLoading = !cached && isSimulationLoading
+  const isLoading = !isTxSuccess && isSimulationLoading
   const formatted = {
     totalExposure: `${formatCryptoBalance(positionData.collateralAmount)} ${collateralToken}`,
     afterTotalExposure:
@@ -250,7 +250,7 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
           change: formatted.afterLoanToValue,
           isLoading,
         },
-        ...(shouldShowDynamicLtv
+        ...(shouldShowDynamicLtv({ includeCache: true })
           ? [
               {
                 label: t('system.dynamic-max-ltv'),
@@ -260,7 +260,7 @@ export function OmniMultiplyFormOrder({ cached = false }: { cached?: boolean }) 
               },
             ]
           : []),
-        ...(isTxSuccess && cached
+        ...(isTxSuccess
           ? [
               {
                 label: t('system.total-cost'),

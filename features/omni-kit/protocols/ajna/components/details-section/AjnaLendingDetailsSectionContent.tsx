@@ -12,6 +12,7 @@ import {
 } from 'features/omni-kit/components/details-section'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
 import {
+  useAjnaCardDataBuyingPower,
   useAjnaCardDataCollateralDeposited,
   useAjnaCardDataLoanToValue,
   useAjnaCardDataNetValueLending,
@@ -189,6 +190,9 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     collateralToken,
     afterBuyingPower: simulation?.buyingPower,
   })
+  const buyingPowerContentCardAjnaData = useAjnaCardDataBuyingPower({
+    shouldShowDynamicLtv,
+  })
 
   return (
     <>
@@ -228,7 +232,11 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
             {...netValueContentCardCommonData}
             {...netValueContentCardAjnaData}
           />
-          <OmniContentCard {...commonContentCardData} {...buyingPowerContentCardCommonData} />
+          <OmniContentCard
+            {...commonContentCardData}
+            {...buyingPowerContentCardCommonData}
+            {...buyingPowerContentCardAjnaData}
+          />
         </>
       )}
     </>

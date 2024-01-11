@@ -38,10 +38,6 @@ export type OmniSidebarStepsSet = {
 
 export type OmniCloseTo = 'collateral' | 'quote'
 
-export interface OmniIsCachedPosition {
-  cached?: boolean
-}
-
 export enum OmniSidebarBorrowPanel {
   Adjust = 'adjust',
   Close = 'close',

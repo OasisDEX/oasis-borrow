@@ -15,7 +15,6 @@ import type {
 } from 'features/omni-kit/state/multiply'
 import type {
   OmniGenericPosition,
-  OmniIsCachedPosition,
   OmniSimulationCommon,
   OmniValidations,
 } from 'features/omni-kit/types'
@@ -66,6 +65,8 @@ interface CommonMetadataElements {
   riskSidebar?: ReactNode
 }
 
+export type ShouldShowDynamicLtvMetadata = (params: { includeCache: boolean }) => boolean
+
 export type LendingMetadata = CommonMetadata & {
   handlers?: OmniLendingMetadataHandlers
   values: CommonMetadataValues & {
@@ -77,7 +78,7 @@ export type LendingMetadata = CommonMetadata & {
     debtMax: BigNumber
     debtMin: BigNumber
     paybackMax: BigNumber
-    shouldShowDynamicLtv: boolean
+    shouldShowDynamicLtv: ShouldShowDynamicLtvMetadata
   }
   elements: CommonMetadataElements & {
     highlighterOrderInformation: ReactNode
@@ -95,7 +96,7 @@ export type SupplyMetadata = CommonMetadata & {
   elements: CommonMetadataElements & {
     earnExtraUiDropdownContent?: ReactNode
     earnFormOrder: ReactNode
-    earnFormOrderAsElement: FC<OmniIsCachedPosition>
+    earnFormOrderAsElement: FC
     extraEarnInput?: ReactNode
     extraEarnInputDeposit?: ReactNode
     extraEarnInputWithdraw?: ReactNode
