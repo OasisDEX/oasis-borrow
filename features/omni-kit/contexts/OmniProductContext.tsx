@@ -65,6 +65,8 @@ interface CommonMetadataElements {
   riskSidebar?: ReactNode
 }
 
+export type ShouldShowDynamicLtvMetadata = (params: { includeCache: boolean }) => boolean
+
 export type LendingMetadata = CommonMetadata & {
   handlers?: OmniLendingMetadataHandlers
   values: CommonMetadataValues & {
@@ -76,7 +78,7 @@ export type LendingMetadata = CommonMetadata & {
     debtMax: BigNumber
     debtMin: BigNumber
     paybackMax: BigNumber
-    shouldShowDynamicLtv: boolean
+    shouldShowDynamicLtv: ShouldShowDynamicLtvMetadata
   }
   elements: CommonMetadataElements & {
     highlighterOrderInformation: ReactNode

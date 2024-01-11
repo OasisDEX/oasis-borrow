@@ -250,7 +250,7 @@ export function OmniMultiplyFormOrder() {
           change: formatted.afterLoanToValue,
           isLoading,
         },
-        ...(shouldShowDynamicLtv
+        ...(shouldShowDynamicLtv({ includeCache: true })
           ? [
               {
                 label: t('system.dynamic-max-ltv'),

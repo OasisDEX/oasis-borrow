@@ -10,6 +10,7 @@ import type {
   LendingMetadata,
   ProductContextWithBorrow,
   ProductContextWithEarn,
+  ShouldShowDynamicLtvMetadata,
   SupplyMetadata,
 } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
@@ -182,12 +183,15 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       )})`
 
       const lendingContext = productContext as ProductContextWithBorrow
-      const shouldShowDynamicLtv =
-        resolveIfCachedPosition({
-          cached: isTxSuccess,
-          cachedPosition: { position: cachedPosition, simulation: cachedSimulation },
-          currentPosition: { position, simulation },
-        }).positionData?.pool.lowestUtilizedPriceIndex.gt(zero) ?? false
+      const shouldShowDynamicLtv: ShouldShowDynamicLtvMetadata = ({ includeCache }) => {
+        return (
+          resolveIfCachedPosition({
+            cached: includeCache && isTxSuccess,
+            cachedPosition: { position: cachedPosition, simulation: cachedSimulation },
+            currentPosition: { position, simulation },
+          }).positionData?.pool.lowestUtilizedPriceIndex.gt(zero) ?? false
+        )
+      }
 
       const resolvedSimulation = simulation || cachedSimulation
       const afterPositionDebt = resolvedSimulation?.debtAmount.plus(originationFee)
@@ -274,7 +278,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               productType={productType}
               quotePrice={quotePrice}
               quoteToken={quoteToken}
-              shouldShowDynamicLtv={shouldShowDynamicLtv}
+              shouldShowDynamicLtv={shouldShowDynamicLtv({ includeCache: false })}
               simulation={simulation}
             />
           ),

@@ -99,7 +99,7 @@ export function OmniBorrowFormOrder() {
               },
             ]
           : []),
-        ...(!isOracless && shouldShowDynamicLtv
+        ...(!isOracless && shouldShowDynamicLtv({ includeCache: true })
           ? [
               {
                 label: t('system.dynamic-max-ltv'),
