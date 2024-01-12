@@ -138,12 +138,14 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
     const claimableTodayData = [...bonusClaimable, ...coreClaimable]
 
     const claimableToday = mapToAmount(claimableTodayData)
+    const claimableBonusToday = mapToAmount(bonusClaimable)
     const payload = mapToPayload(claimableTodayData)
 
     return {
       bonusAmount: bonusNotClaimableAmount,
       coreAmount: coreNotClaimableAmount,
       claimableToday,
+      claimableBonusToday,
       payload,
     }
   } catch (error) {
