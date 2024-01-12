@@ -53,7 +53,7 @@ const rewardsTransactionResolver = ({
   networkId: AjnaSupportedNetworksIds
   claimedBonus: boolean
 }) => {
-  const hasBonusRewardsToClaim = !rewards.bonus.isZero() && !claimedBonus
+  const hasBonusRewardsToClaim = !rewards.claimableBonus.isZero() && !claimedBonus
 
   const networkContracts = getNetworkContracts(networkId)
 
@@ -114,7 +114,7 @@ export function AjnaRewardCard() {
       }).subscribe((txState) => {
         void handleTransaction({ txState, ethPrice: zero, setTxDetails })
 
-        if (rewards.bonus.gt(zero) && txState.status === TxStatus.Success) {
+        if (rewards.claimableBonus.gt(zero) && txState.status === TxStatus.Success) {
           setClaimedBonus(true)
         }
 
