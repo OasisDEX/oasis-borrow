@@ -3003,8 +3003,8 @@
       "liquidation-price-close-to-market-price": "Warning your Liquidation Price is close to Market price please check that your liquidation Price is not above Market price to avoid being liquidated with this action.",
       "is-being-liquidated": "Your position is currently being liquidated. A penalty has been applied increasing your debt. You still can <1>Deposit Collateral</1> or <1>Repay your Debt</1> to remove it from the liquidation auction. <2>Read more about <1>Ajna Liquidations →</1></2>",
       "collateral-to-claim": "There is collateral tokens for you to claim. These tokens don't earn any yield. <2>Read more about <1>Ajna Lending →</1></2>",
-      "price-below-htp": "Unutilized Liquidity: Lending at this price means you are not earning any yield. <1>A deposit fee of 1 day's interest applies to all deposits below the active liquidity range.</1> <2><1>Help me pick correctly →</1></2>",
-      "price-between-htp-and-lup": "Available Liquidity: Your deposit is earning yield but is not currently utilised by borrowers. <1>A deposit fee of 1 day's interest applies to all deposits below the active liquidity range.</1> <2><1>Help me pick correctly →</1></2>",
+      "price-below-htp": "Unutilized Liquidity: Lending at this price means you are not earning any yield. <1>A deposit fee of 8 hours interest applies to all deposits.</1> <2><1>Help me pick correctly →</1></2>",
+      "price-between-htp-and-lup": "Available Liquidity: Your deposit is earning yield but is not currently utilised by borrowers. <1>A deposit fee of 8 hours interest applies to all deposits</1> <2><1>Help me pick correctly →</1></2>",
       "price-above-lup": "Active liquidity: You are actively lending and will earn a yield whenever there are loans above {{lup}} {{collateralToken}}/{{quoteToken}}. <2><1>Help me pick correctly →</1></2>",
       "safety-switch-on": "Due to a technical issue we have currently disabled depositing tokens into empty Ajna positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
     },
