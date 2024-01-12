@@ -1,8 +1,12 @@
-import { Grid, Slider, Text } from '@theme-ui/components'
+import 'rc-slider/assets/index.css'
+
+import { Grid, Slider as ThemeSlider, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import type { TranslateStringType } from 'helpers/translateStringType'
+import Slider from 'rc-slider'
 import type { ReactNode } from 'react'
 import React from 'react'
+import { theme } from 'theme'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Flex, useThemeUI } from 'theme-ui'
 
@@ -27,6 +31,7 @@ export interface SliderValuePickerProps {
   rightLabel?: TranslateStringType | JSX.Element
   direction?: 'rtl' | 'ltr'
   colorfulRanges?: string
+  useRcSlider?: boolean
 }
 
 export function SliderValuePicker(props: SliderValuePickerProps) {
@@ -86,23 +91,62 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
           )}
         </Flex>
       )}
-      <Slider
-        sx={{
-          background: props.colorfulRanges || background,
-          direction: props.direction || 'ltr',
-          '&:disabled': {
-            opacity: 1,
-          },
-        }}
-        disabled={props.disabled}
-        step={props.step}
-        min={props.minBoundry?.toNumber()}
-        max={props.maxBoundry?.toNumber()}
-        value={props.lastValue?.toNumber()}
-        onChange={(e) => {
-          props.onChange(new BigNumber(e.target.value))
-        }}
-      />
+      {props.useRcSlider ? (
+        <Flex sx={{ justifyContent: 'center' }}>
+          <Slider
+            activeDotStyle={{
+              background: 'unset',
+            }}
+            styles={{
+              handle: {
+                background: theme.colors.primary100,
+                border: 'unset',
+                opacity: 1,
+                width: 19,
+                height: 19,
+                marginTop: '-7px',
+              },
+              track: {
+                background: 'unset',
+              },
+              rail: {
+                background: props.colorfulRanges || background,
+                height: '5px',
+              },
+            }}
+            disabled={props.disabled}
+            step={props.step}
+            min={props.minBoundry?.toNumber()}
+            max={props.maxBoundry?.toNumber()}
+            value={props.lastValue?.toNumber()}
+            onChange={(e) => {
+              props.onChange(new BigNumber(e as number))
+            }}
+            style={{
+              width: '95%',
+            }}
+          />
+        </Flex>
+      ) : (
+        <ThemeSlider
+          sx={{
+            background: props.colorfulRanges || background,
+            direction: props.direction || 'ltr',
+            '&:disabled': {
+              opacity: 1,
+            },
+          }}
+          disabled={props.disabled}
+          step={props.step}
+          min={props.minBoundry?.toNumber()}
+          max={props.maxBoundry?.toNumber()}
+          value={props.lastValue?.toNumber()}
+          onChange={(e) => {
+            props.onChange(new BigNumber(e.target.value))
+          }}
+        />
+      )}
+
       {props.leftBottomLabel && props.rightBottomLabel && (
         <Flex
           sx={{
