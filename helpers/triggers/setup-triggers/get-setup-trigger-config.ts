@@ -1,7 +1,6 @@
 import type { TriggerType } from '@oasisdex/automation'
 import { NetworkIds, networkSetById } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols'
-import getConfig from 'next/config'
 
 export interface GetSetupTriggerConfigParams {
   triggerType: TriggerType
@@ -22,14 +21,8 @@ export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {
   const networkConfig = networkSetById[params.networkId]
   const rpc = networkConfig?.isCustomFork ? networkConfig.rpcUrl : undefined
 
-  const config = getConfig()
-
-  const baseUrl = config?.publicRuntimeConfig.setupTriggerUrl
-
-  // TODO: Add proper triggers.
-
   return {
-    url: `${baseUrl}/${params.networkId}/aave3/${params.path}`,
+    url: `/api/triggers/${params.networkId}/aave3/${params.path}`,
     customRpc: rpc,
   }
 }

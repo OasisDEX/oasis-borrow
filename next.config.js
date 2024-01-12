@@ -171,6 +171,14 @@ const baseConfig = {
       },
     ]
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/triggers/:path*',
+        destination: `${process.env.TRIGGERS_API_URL}/${process.env.NODE_ENV}/:path*`,
+      },
+    ]
+  },
   transpilePackages: ['@lifi/widget', '@lifi/wallet-management', 'ramda'],
   experimental: {
     largePageDataBytes: 280 * 1024, // 280 KB. The default one is 128 KB, but we have a lot of that kind of errors, so we increase it.
