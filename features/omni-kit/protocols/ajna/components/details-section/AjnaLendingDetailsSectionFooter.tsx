@@ -22,7 +22,6 @@ interface AjnaLendingDetailsSectionFooterProps {
   productType: OmniProductType
   quotePrice: BigNumber
   quoteToken: string
-  afterAvailableToBorrow?: BigNumber
   simulation?: AjnaPosition
 }
 

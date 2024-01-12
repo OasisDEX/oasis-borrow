@@ -16,7 +16,6 @@ import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import React from 'react'
 
 interface AjnaContentFooterBorrowProps {
-  afterAvailableToBorrow?: BigNumber
   changeVariant?: ChangeVariantType
   collateralPrice: BigNumber
   collateralToken: string
@@ -32,7 +31,6 @@ interface AjnaContentFooterBorrowProps {
 }
 
 export function AjnaContentFooterBorrow({
-  afterAvailableToBorrow,
   changeVariant,
   collateralPrice,
   collateralToken,
