@@ -12,8 +12,11 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { ProductType, StrategyType } from 'features/aave/types'
+import { ProductType } from 'features/aave/types'
+import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import {
   formatAmount,
@@ -48,7 +51,6 @@ type PositionInfoComponentProps = {
   debtTokenReserveData: AaveLikeReserveData
   cumulatives?: AaveCumulativeData
   productType: ProductType
-  strategyType: StrategyType
 }
 
 // todo: export and pull from oasisdex/oasis-actions
@@ -79,7 +81,6 @@ export const PositionInfoComponent = ({
   collateralTokenReserveData,
   debtTokenReserveData,
   productType,
-  strategyType,
 }: PositionInfoComponentProps) => {
   const { t } = useTranslation()
   const currentPositionThings = calculateViewValuesForPosition(
@@ -89,21 +90,6 @@ export const PositionInfoComponent = ({
     collateralTokenReserveData.liquidityRate,
     debtTokenReserveData.variableBorrowRate,
   )
-  const isLongPosition = strategyType === StrategyType.Long
-  const isEarnPosition = productType === ProductType.Earn
-
-  const netValueInToken =
-    isLongPosition && isEarnPosition
-      ? // case for earn (so everything except aave v2 dpm)
-        amountFromWei(
-          position.collateral.normalisedAmount
-            .times(position.oraclePriceForCollateralDebtExchangeRate)
-            .minus(position.debt.normalisedAmount),
-          18,
-        )
-      : currentPositionThings.netValueInCollateralToken
-
-  const formattedNetValueInToken = netValueInToken || zero // TODO
 
   const formattedCollateralValue = formatPositionBalance(position.collateral)
   const formattedDebtValue = formatPositionBalance(position.debt)
@@ -112,16 +98,22 @@ export const PositionInfoComponent = ({
     .minus(position.liquidationPrice)
     .times(100)
 
-  const pnlWithoutFees = isEarnPosition
-    ? cumulatives?.cumulativeWithdrawInQuoteToken
-        .plus(currentPositionThings.netValueInDebtToken)
-        .minus(cumulatives.cumulativeDepositInQuoteToken)
-        .div(cumulatives.cumulativeDepositInQuoteToken)
-    : cumulatives?.cumulativeWithdrawInCollateralToken
-        .plus(currentPositionThings.netValueInCollateralToken)
-        .minus(cumulatives.cumulativeDepositInCollateralToken)
-        .div(cumulatives.cumulativeDepositInCollateralToken)
+  const omniProduct = {
+    [ProductType.Borrow]: OmniProductType.Borrow,
+    [ProductType.Earn]: OmniProductType.Earn,
+    [ProductType.Multiply]: OmniProductType.Multiply,
+  }[productType]
 
+  const netValuePnlModalData = getOmniNetValuePnlData({
+    cumulatives,
+    productType: omniProduct,
+    collateralTokenPrice,
+    debtTokenPrice,
+    netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,
+    netValueInDebtToken: currentPositionThings.netValueInDebtToken,
+    collateralToken: position.collateral.symbol,
+    debtToken: position.debt.symbol,
+  })
   return (
     <DetailsSection
       title={t('manage-earn-vault.overview-earn-aave')}
@@ -129,15 +121,16 @@ export const PositionInfoComponent = ({
         <DetailsSectionContentCardWrapper>
           <DetailsSectionContentCard
             title={t('net-value')}
-            value={formatBigNumber(formattedNetValueInToken, 2)}
+            value={formatBigNumber(netValuePnlModalData.netValue.inToken, 2)}
             footnote={
-              pnlWithoutFees &&
+              netValuePnlModalData.pnl?.percentage &&
               `${t('omni-kit.content-card.net-value.footnote')} ${
-                pnlWithoutFees.gte(zero) ? '+' : ''
+                netValuePnlModalData.pnl.percentage.gte(zero) ? '+' : ''
               }
-              ${formatDecimalAsPercent(pnlWithoutFees)}`
+              ${formatDecimalAsPercent(netValuePnlModalData.pnl.percentage)}`
             }
-            unit={isEarnPosition ? position.debt.symbol : position.collateral.symbol}
+            unit={netValuePnlModalData.netValue.netValueToken}
+            modal={cumulatives && <OmniMultiplyNetValueModal {...netValuePnlModalData} />}
           />
           <DetailsSectionContentCard
             title={t('manage-earn-vault.net-apy')}

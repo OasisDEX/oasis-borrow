@@ -93,6 +93,7 @@ export const tokenConfigs: TokenConfig[] = [
     coinpaprikaTicker: 'steth-lido-staked-ether',
     coinGeckoTicker: 'staked-ether',
     color: '#0B91DD',
+    rootToken: 'ETH',
     background: 'linear-gradient(143.37deg, #00A3FF 15.97%, #0B91DD 81.1%), #FFFFFF',
     tags: [],
   },

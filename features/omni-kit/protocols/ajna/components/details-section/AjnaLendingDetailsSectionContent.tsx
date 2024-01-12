@@ -9,6 +9,7 @@ import {
   useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import {
   useAjnaCardDataBuyingPower,
   useAjnaCardDataCollateralDeposited,
@@ -148,16 +149,35 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     netValue,
     ...(!isOpening && !isProxyWithManyPositions && {}),
   })
-  const netValueContentCardAjnaData = useAjnaCardDataNetValueLending({
-    collateralPrice,
-    collateralToken,
-    cumulatives: position.pnl.cumulatives,
-    netValue,
-    ...(!isOpening &&
-      !isProxyWithManyPositions && {
-        pnl: position.pnl.withoutFees,
-      }),
-  })
+  const netValueContentCardAjnaData = useAjnaCardDataNetValueLending(
+    !isOpening && !isProxyWithManyPositions
+      ? getOmniNetValuePnlData({
+          cumulatives: {
+            cumulativeDepositUSD: position.pnl.cumulatives.borrowCumulativeDepositUSD,
+            cumulativeWithdrawUSD: position.pnl.cumulatives.borrowCumulativeWithdrawUSD,
+            cumulativeFeesUSD: position.pnl.cumulatives.borrowCumulativeFeesUSD,
+            cumulativeWithdrawInCollateralToken:
+              position.pnl.cumulatives.borrowCumulativeCollateralWithdraw,
+            cumulativeDepositInCollateralToken:
+              position.pnl.cumulatives.borrowCumulativeCollateralDeposit,
+            cumulativeFeesInCollateralToken:
+              position.pnl.cumulatives.borrowCumulativeFeesInCollateralToken,
+            cumulativeWithdrawInQuoteToken:
+              position.pnl.cumulatives.borrowCumulativeWithdrawInQuoteToken,
+            cumulativeDepositInQuoteToken:
+              position.pnl.cumulatives.borrowCumulativeDepositInQuoteToken,
+            cumulativeFeesInQuoteToken: position.pnl.cumulatives.borrowCumulativeFeesInQuoteToken,
+          },
+          productType,
+          collateralTokenPrice: collateralPrice,
+          debtTokenPrice: quotePrice,
+          netValueInCollateralToken: netValue.div(collateralPrice),
+          netValueInDebtToken: netValue.div(quotePrice),
+          collateralToken,
+          debtToken: quoteToken,
+        })
+      : undefined,
+  )
 
   const buyingPowerContentCardCommonData = useOmniCardDataBuyingPower({
     buyingPower: position.buyingPower,

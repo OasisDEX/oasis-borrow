@@ -3,10 +3,9 @@ import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { amountFromWei } from 'blockchain/utils'
 import dayjs from 'dayjs'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { isShortPosition } from 'features/omni-kit/helpers'
+import { getOmniNetValuePnlData, isShortPosition } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -150,28 +149,48 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
   const positionHistory = allPositionsHistory.filter(
     (position) => position.id.toLowerCase() === dpm.id.toLowerCase(),
   )[0]
-  const pnlValue =
-    positionHistory?.cumulativeDeposit.gt(zero) &&
-    calculations.netValue
-      .minus(positionHistory.cumulativeDeposit)
-      .plus(positionHistory.cumulativeWithdraw)
-      .div(positionHistory.cumulativeDeposit)
   const isShort = isShortPosition({ collateralToken: commonData.primaryToken })
   const tokensLabel = isShort
     ? `${commonData.secondaryToken}/${commonData.primaryToken}`
     : `${commonData.primaryToken}/${commonData.secondaryToken}`
+
+  const netValuePnlModalData = getOmniNetValuePnlData({
+    cumulatives: {
+      ...positionHistory,
+      cumulativeWithdrawUSD: positionHistory.cumulativeWithdraw,
+      cumulativeFeesUSD: positionHistory.cumulativeFees,
+      cumulativeDepositUSD: positionHistory.cumulativeDeposit,
+      cumulativeFeesInCollateralToken: positionHistory.cumulativeFeesInQuoteToken,
+    },
+    productType: OmniProductType.Multiply,
+    collateralTokenPrice: primaryTokenPrice,
+    debtTokenPrice: secondaryTokenPrice,
+    netValueInCollateralToken: calculations.netValueInCollateralToken,
+    netValueInDebtToken: calculations.netValueInDebtToken,
+    collateralToken: commonData.primaryToken,
+    debtToken: commonData.secondaryToken,
+  })
 
   return {
     ...commonData,
     details: [
       {
         type: 'netValue',
-        value: formatUsdValue(calculations.netValue),
+        value: `${formatCryptoBalance(netValuePnlModalData.netValue.inToken)} ${
+          netValuePnlModalData.netValue.netValueToken
+        }`,
+        subvalue: formatUsdValue(netValuePnlModalData.netValue.inUsd),
       },
       {
         type: 'pnl',
-        value: pnlValue ? formatDecimalAsPercent(pnlValue, { precision: 2 }) : notAvailable,
-        accent: pnlValue ? (pnlValue.gte(zero) ? 'positive' : 'negative') : undefined,
+        value: netValuePnlModalData.pnl?.percentage
+          ? formatDecimalAsPercent(netValuePnlModalData.pnl?.percentage, { precision: 2 })
+          : notAvailable,
+        accent: netValuePnlModalData.pnl?.percentage
+          ? netValuePnlModalData.pnl?.percentage.gte(zero)
+            ? 'positive'
+            : 'negative'
+          : undefined,
       },
       {
         type: 'liquidationPrice',
@@ -204,16 +223,26 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
   prices,
   allPositionsHistory,
 ) => {
-  const { commonData, secondaryTokenPrice } = commonDataMapper({ dpm, prices })
-  const [onChainPositionData] = await Promise.all([
-    getOnChainPosition({
-      networkId: dpm.networkId,
-      collateralToken: commonData.primaryToken,
-      debtToken: commonData.secondaryToken,
-      protocol: commonData.protocol,
-      proxyAddress: dpm.id.toLowerCase(),
-    }),
-  ])
+  const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({ dpm, prices })
+  const [onChainPositionData, primaryTokenReserveData, secondaryTokenReserveData] =
+    await Promise.all([
+      getOnChainPosition({
+        networkId: dpm.networkId,
+        collateralToken: commonData.primaryToken,
+        debtToken: commonData.secondaryToken,
+        protocol: commonData.protocol,
+        proxyAddress: dpm.id.toLowerCase(),
+      }),
+      getReserveDataCall(dpm, commonData.primaryToken),
+      getReserveDataCall(dpm, commonData.secondaryToken),
+    ])
+  const calculations = calculateViewValuesForPosition(
+    onChainPositionData,
+    primaryTokenPrice,
+    secondaryTokenPrice,
+    primaryTokenReserveData.liquidityRate,
+    secondaryTokenReserveData.variableBorrowRate,
+  )
   const isWstethEthEarn =
     commonData.primaryToken === 'WSTETH' && commonData.secondaryToken === 'ETH'
   let wstEthYield
@@ -229,12 +258,23 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
   const positionHistory = allPositionsHistory.filter(
     (position) => position.id === dpm.id.toLowerCase(),
   )[0]
-  const netValueInDebtToken = amountFromWei(
-    onChainPositionData.collateral.normalisedAmount
-      .times(onChainPositionData.oraclePriceForCollateralDebtExchangeRate)
-      .minus(onChainPositionData.debt.normalisedAmount),
-    18,
-  )
+
+  const netValuePnlModalData = getOmniNetValuePnlData({
+    cumulatives: {
+      ...positionHistory,
+      cumulativeWithdrawUSD: positionHistory.cumulativeWithdraw,
+      cumulativeFeesUSD: positionHistory.cumulativeFees,
+      cumulativeDepositUSD: positionHistory.cumulativeDeposit,
+      cumulativeFeesInCollateralToken: positionHistory.cumulativeFeesInQuoteToken,
+    },
+    productType: OmniProductType.Multiply,
+    collateralTokenPrice: primaryTokenPrice,
+    debtTokenPrice: secondaryTokenPrice,
+    netValueInCollateralToken: calculations.netValueInCollateralToken,
+    netValueInDebtToken: calculations.netValueInDebtToken,
+    collateralToken: commonData.primaryToken,
+    debtToken: commonData.secondaryToken,
+  })
 
   return {
     ...commonData,
@@ -242,33 +282,18 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
     details: [
       {
         type: 'netValue',
-        value: `${formatCryptoBalance(netValueInDebtToken)} ${commonData.secondaryToken}`,
-        subvalue: formatUsdValue(netValueInDebtToken.times(secondaryTokenPrice)),
+        value: `${formatCryptoBalance(netValuePnlModalData.netValue.inToken)} ${
+          netValuePnlModalData.netValue.netValueToken
+        }`,
+        subvalue: formatUsdValue(netValuePnlModalData.netValue.inUsd),
       },
       {
         type: 'earnings',
         value: `${
-          positionHistory
-            ? `${formatCryptoBalance(
-                netValueInDebtToken.minus(
-                  positionHistory.cumulativeDepositInQuoteToken.minus(
-                    positionHistory.cumulativeWithdrawInQuoteToken,
-                  ),
-                ),
-              )} ${commonData.secondaryToken}`
-            : notAvailable
-        }`,
-        subvalue: `${
-          positionHistory
-            ? formatUsdValue(
-                netValueInDebtToken
-                  .minus(
-                    positionHistory.cumulativeDepositInQuoteToken.minus(
-                      positionHistory.cumulativeWithdrawInQuoteToken,
-                    ),
-                  )
-                  .times(secondaryTokenPrice),
-              )
+          netValuePnlModalData.pnl
+            ? `${formatCryptoBalance(netValuePnlModalData.pnl?.inToken)} ${
+                netValuePnlModalData.pnl.pnlToken
+              }`
             : notAvailable
         }`,
       },
@@ -284,7 +309,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
         subvalue: `Max ${formatDecimalAsPercent(onChainPositionData.category.maxLoanToValue)}`,
       },
     ].filter(Boolean) as PositionDetail[],
-    netValue: netValueInDebtToken.times(secondaryTokenPrice).toNumber(),
+    netValue: netValuePnlModalData.netValue.inToken.toNumber(),
   }
 }
 
