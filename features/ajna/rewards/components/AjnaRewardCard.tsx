@@ -2,6 +2,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import { AjnaRewardsSource } from '@prisma/client'
 import { sendGenericTransaction$ } from 'blockchain/better-calls/send-generic-transaction'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'
@@ -52,7 +53,7 @@ const rewardsTransactionResolver = ({
   networkId: AjnaSupportedNetworkIds
   claimedBonus: boolean
 }) => {
-  const hasBonusRewardsToClaim = !rewards.bonus.isZero() && !claimedBonus
+  const hasBonusRewardsToClaim = !rewards.claimableBonus.isZero() && !claimedBonus
 
   const networkContracts = getNetworkContracts(networkId)
 
@@ -115,7 +116,7 @@ export function AjnaRewardCard() {
       }).subscribe((txState) => {
         void handleTransaction({ txState, ethPrice: zero, setTxDetails })
 
-        if (rewards.bonus.gt(zero) && txState.status === TxStatus.Success) {
+        if (rewards.claimableBonus.gt(zero) && txState.status === TxStatus.Success) {
           setClaimedBonus(true)
         }
 
@@ -200,7 +201,7 @@ export function AjnaRewardCard() {
           )}
         </Text>
         <Button
-          disabled={isTxLoading || claimable.isZero()}
+          disabled={isTxLoading || claimable.isZero() || networkId !== NetworkIds.MAINNET}
           variant="primary"
           onClick={onSubmit}
           sx={{

@@ -18,6 +18,7 @@ interface AjnaRewardsParamsState {
 const defaultRewards: AjnaRewards = {
   bonus: zero,
   claimable: zero,
+  claimableBonus: zero,
   regular: zero,
   total: zero,
   totalUsd: zero,
@@ -88,6 +89,7 @@ export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
           const bonus = new BigNumber(parseApiResponse.bonusAmount)
           const regular = new BigNumber(parseApiResponse.coreAmount)
           const claimable = new BigNumber(parseApiResponse.claimableToday)
+          const claimableBonus = new BigNumber(parseApiResponse.claimableBonusToday)
           const total = bonus.plus(regular)
 
           const payload = parseApiResponse.payload
@@ -101,6 +103,7 @@ export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
               regular,
               claimable,
               payload,
+              claimableBonus,
             },
             isError: false,
             isLoading: false,

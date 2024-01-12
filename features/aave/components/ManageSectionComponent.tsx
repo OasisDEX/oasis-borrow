@@ -58,7 +58,6 @@ export function ManageSectionComponent({
   const [debtTokenReserveData, debtTokenReserveDataError] = useObservable(
     getAaveLikeReserveData$({ token: strategyConfig.tokens.debt }),
   )
-
   return (
     <WithErrorHandler error={[debtTokenReserveDataError, collateralTokenReserveDataError]}>
       <WithLoadingIndicator
@@ -89,7 +88,6 @@ export function ManageSectionComponent({
             collateralTokenReserveData={_collateralTokenReserveData}
             debtTokenReserveData={_debtTokenReserveData}
             productType={strategyConfig.type}
-            strategyType={strategyConfig.strategyType}
           />
         )}
       </WithLoadingIndicator>
