@@ -1,5 +1,6 @@
 import type { AjnaRewardsWeeklyClaim } from '@prisma/client'
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { zero } from 'helpers/zero'
 import type { NextApiRequest } from 'next'
@@ -83,7 +84,9 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
 
   const commonQuery = {
     user_address: address,
-    chain_id: parseInt(networkId, 10),
+    chain_id: {
+      notIn: [NetworkIds.GOERLI],
+    },
   }
 
   try {
@@ -96,11 +99,11 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
         source: AjnaRewardsSource.bonus,
       },
     })
-    const bonusClaimableAmount = mapToAmount(bonusClaimable)
 
     const coreClaimable = await prisma.ajnaRewardsWeeklyClaim.findMany({
       where: {
-        ...commonQuery,
+        user_address: address,
+        chain_id: parseInt(networkId, 10),
         week_number: {
           notIn: parsedClaimedCoreWeeks,
         },
@@ -120,13 +123,25 @@ export async function getAjnaRewardsData(query: NextApiRequest['query']) {
       }),
     )
 
+    const bonusNotClaimableAmount = mapToAmount(
+      await prisma.ajnaRewardsDailyClaim.findMany({
+        where: {
+          ...commonQuery,
+          week_number: {
+            notIn: parsedClaimedBonusWeeks,
+          },
+          source: AjnaRewardsSource.bonus,
+        },
+      }),
+    )
+
     const claimableTodayData = [...bonusClaimable, ...coreClaimable]
 
     const claimableToday = mapToAmount(claimableTodayData)
     const payload = mapToPayload(claimableTodayData)
 
     return {
-      bonusAmount: bonusClaimableAmount,
+      bonusAmount: bonusNotClaimableAmount,
       coreAmount: coreNotClaimableAmount,
       claimableToday,
       payload,

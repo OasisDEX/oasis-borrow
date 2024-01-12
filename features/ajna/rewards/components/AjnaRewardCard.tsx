@@ -2,6 +2,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import { AjnaRewardsSource } from '@prisma/client'
 import { sendGenericTransaction$ } from 'blockchain/better-calls/send-generic-transaction'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'
@@ -198,7 +199,7 @@ export function AjnaRewardCard() {
           )}
         </Text>
         <Button
-          disabled={isTxLoading || claimable.isZero()}
+          disabled={isTxLoading || claimable.isZero() || networkId !== NetworkIds.MAINNET}
           variant="primary"
           onClick={onSubmit}
           sx={{
