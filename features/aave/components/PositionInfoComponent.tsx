@@ -12,10 +12,11 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import type { ProductType } from 'features/aave/types'
-import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
-import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
+import { ProductType } from 'features/aave/types'
+import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import {
   formatAmount,
@@ -97,9 +98,15 @@ export const PositionInfoComponent = ({
     .minus(position.liquidationPrice)
     .times(100)
 
+  const omniProduct = {
+    [ProductType.Borrow]: OmniProductType.Borrow,
+    [ProductType.Earn]: OmniProductType.Earn,
+    [ProductType.Multiply]: OmniProductType.Multiply,
+  }[productType]
+
   const netValuePnlModalData = getOmniNetValuePnlData({
     cumulatives,
-    productType,
+    productType: omniProduct,
     collateralTokenPrice,
     debtTokenPrice,
     netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,

@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { ProductType } from 'features/aave/types'
+import type { OmniProductType } from 'features/omni-kit/types'
 
 export interface OmniNetValuePnlData {
   cumulatives?: {
@@ -13,7 +13,7 @@ export interface OmniNetValuePnlData {
     cumulativeDepositInCollateralToken: BigNumber
     cumulativeDepositInQuoteToken: BigNumber
   }
-  productType: ProductType
+  productType: OmniProductType
   collateralTokenPrice: BigNumber
   debtTokenPrice: BigNumber
   netValueInCollateralToken: BigNumber

@@ -1,7 +1,6 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import { ProductType } from 'features/aave/types'
 import {
   OmniContentCard,
   useOmniCardDataBuyingPower,
@@ -10,7 +9,7 @@ import {
   useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
-import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import {
   useAjnaCardDataBuyingPower,
   useAjnaCardDataCollateralDeposited,
@@ -169,11 +168,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
               position.pnl.cumulatives.borrowCumulativeDepositInQuoteToken,
             cumulativeFeesInQuoteToken: position.pnl.cumulatives.borrowCumulativeFeesInQuoteToken,
           },
-          productType: {
-            [OmniProductType.Borrow]: ProductType.Borrow,
-            [OmniProductType.Multiply]: ProductType.Multiply,
-            [OmniProductType.Earn]: ProductType.Earn,
-          }[productType],
+          productType,
           collateralTokenPrice: collateralPrice,
           debtTokenPrice: quotePrice,
           netValueInCollateralToken: netValue.div(collateralPrice),

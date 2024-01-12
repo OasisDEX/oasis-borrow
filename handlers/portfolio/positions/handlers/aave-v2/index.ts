@@ -4,8 +4,8 @@ import BigNumber from 'bignumber.js'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
 import { NetworkIds } from 'blockchain/networks'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { ProductType } from 'features/aave/types'
-import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
+import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import { commonDataMapper } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/positions/handlers/aave-like/types'
@@ -66,7 +66,7 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
       cumulativeDepositUSD: positionHistory.cumulativeDeposit,
       cumulativeFeesInCollateralToken: positionHistory.cumulativeFeesInQuoteToken,
     },
-    productType: ProductType.Multiply,
+    productType: OmniProductType.Multiply,
     collateralTokenPrice: primaryTokenPrice,
     debtTokenPrice: secondaryTokenPrice,
     netValueInCollateralToken: calculations.netValueInCollateralToken,

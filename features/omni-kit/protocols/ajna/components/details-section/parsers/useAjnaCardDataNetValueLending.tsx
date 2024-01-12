@@ -1,6 +1,6 @@
 import type { OmniContentCardExtra } from 'features/omni-kit/components/details-section'
-import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
-import type { OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers/getOmniNetValuePnlData.types'
+import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section'
+import type { OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'

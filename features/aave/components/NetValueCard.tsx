@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
-import type { OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers/getOmniNetValuePnlData.types'
+import type { OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers'
 import { formatPrecision } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

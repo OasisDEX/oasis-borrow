@@ -1,8 +1,5 @@
-import { ProductType } from 'features/aave/types'
-import type {
-  OmniNetValuePnlData,
-  OmniNetValuePnlDataReturnType,
-} from 'features/omni-kit/helpers/getOmniNetValuePnlData.types'
+import type { OmniNetValuePnlData, OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers'
+import { OmniProductType } from 'features/omni-kit/types'
 
 export const getOmniNetValue = ({
   productType,
@@ -14,8 +11,8 @@ export const getOmniNetValue = ({
   debtToken,
 }: OmniNetValuePnlData) => {
   switch (productType) {
-    case ProductType.Multiply:
-    case ProductType.Borrow: {
+    case OmniProductType.Multiply:
+    case OmniProductType.Borrow: {
       return {
         netValueToken: collateralToken,
         netValueTokenPrice: collateralTokenPrice,
@@ -23,7 +20,7 @@ export const getOmniNetValue = ({
         inUsd: netValueInCollateralToken.times(collateralTokenPrice),
       } as OmniNetValuePnlDataReturnType['netValue']
     }
-    case ProductType.Earn: {
+    case OmniProductType.Earn: {
       return {
         netValueToken: debtToken,
         netValueTokenPrice: debtTokenPrice,

@@ -1,5 +1,5 @@
 import { DetailsSectionContentSimpleModal } from 'components/DetailsSectionContentSimpleModal'
-import type { OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers/getOmniNetValuePnlData.types'
+import type { OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,

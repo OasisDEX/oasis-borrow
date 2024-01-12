@@ -4,8 +4,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import dayjs from 'dayjs'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { ProductType } from 'features/aave/types'
-import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -92,7 +91,7 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
         cumulativeDepositUSD: positionHistory.cumulativeDeposit,
         cumulativeFeesInCollateralToken: positionHistory.cumulativeFeesInQuoteToken,
       },
-      productType: ProductType.Earn,
+      productType: OmniProductType.Earn,
       collateralTokenPrice: primaryTokenPrice,
       debtTokenPrice: secondaryTokenPrice,
       netValueInCollateralToken: calculations.netValueInCollateralToken,

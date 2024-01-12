@@ -13,10 +13,11 @@ import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { ProductType, StrategyType } from 'features/aave/types'
+import { StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
-import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { formatAmount, formatPrecision } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -101,7 +102,7 @@ export function AaveBorrowPositionData({
   )
   const netValuePnlModalData = getOmniNetValuePnlData({
     cumulatives,
-    productType: ProductType.Borrow,
+    productType: OmniProductType.Borrow,
     collateralTokenPrice,
     debtTokenPrice,
     netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,
@@ -112,7 +113,7 @@ export function AaveBorrowPositionData({
   const nextNetValue = nextPositionThings
     ? getOmniNetValuePnlData({
         cumulatives,
-        productType: ProductType.Borrow,
+        productType: OmniProductType.Borrow,
         collateralTokenPrice,
         debtTokenPrice,
         netValueInCollateralToken: nextPositionThings.netValueInCollateralToken,

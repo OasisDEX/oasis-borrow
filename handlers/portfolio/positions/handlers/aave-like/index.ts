@@ -5,9 +5,7 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import dayjs from 'dayjs'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { ProductType } from 'features/aave/types'
-import { isShortPosition } from 'features/omni-kit/helpers'
-import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
+import { getOmniNetValuePnlData, isShortPosition } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -164,7 +162,7 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
       cumulativeDepositUSD: positionHistory.cumulativeDeposit,
       cumulativeFeesInCollateralToken: positionHistory.cumulativeFeesInQuoteToken,
     },
-    productType: ProductType.Multiply,
+    productType: OmniProductType.Multiply,
     collateralTokenPrice: primaryTokenPrice,
     debtTokenPrice: secondaryTokenPrice,
     netValueInCollateralToken: calculations.netValueInCollateralToken,
@@ -269,7 +267,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
       cumulativeDepositUSD: positionHistory.cumulativeDeposit,
       cumulativeFeesInCollateralToken: positionHistory.cumulativeFeesInQuoteToken,
     },
-    productType: ProductType.Earn,
+    productType: OmniProductType.Multiply,
     collateralTokenPrice: primaryTokenPrice,
     debtTokenPrice: secondaryTokenPrice,
     netValueInCollateralToken: calculations.netValueInCollateralToken,

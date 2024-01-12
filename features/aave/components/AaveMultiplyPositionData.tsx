@@ -13,12 +13,12 @@ import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { SparkTokensBannerController } from 'features/aave/components/SparkTokensBannerController'
 import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spark-position'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import type { ProductType } from 'features/aave/types'
-import { StrategyType } from 'features/aave/types'
+import { ProductType, StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
-import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
-import { getOmniNetValuePnlData } from 'features/omni-kit/helpers/getOmniNetValuePnlData'
+import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
@@ -104,10 +104,15 @@ export function AaveMultiplyPositionData({
     collateralToken.symbol,
     debtToken.symbol,
   )
+  const omniProduct = {
+    [ProductType.Borrow]: OmniProductType.Borrow,
+    [ProductType.Earn]: OmniProductType.Earn,
+    [ProductType.Multiply]: OmniProductType.Multiply,
+  }[productType]
 
   const netValuePnlModalData = getOmniNetValuePnlData({
     cumulatives,
-    productType,
+    productType: omniProduct,
     collateralTokenPrice,
     debtTokenPrice,
     netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,
@@ -118,7 +123,7 @@ export function AaveMultiplyPositionData({
   const nextNetValue = nextPositionThings
     ? getOmniNetValuePnlData({
         cumulatives,
-        productType,
+        productType: omniProduct,
         collateralTokenPrice,
         debtTokenPrice,
         netValueInCollateralToken: nextPositionThings.netValueInCollateralToken,
