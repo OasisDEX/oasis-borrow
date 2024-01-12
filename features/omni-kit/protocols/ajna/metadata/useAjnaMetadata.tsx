@@ -158,8 +158,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
   }
 
-  const riskSidebar = <AjnaFormContentRisk />
-
   switch (productType) {
     case OmniProductType.Borrow:
     case OmniProductType.Multiply:
@@ -302,7 +300,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           overviewBanner: isPoolWithRewards({ collateralToken, networkId, quoteToken }) ? (
             <AjnaTokensBannerController isOpening={isOpening} />
           ) : undefined,
-          riskSidebar,
+          riskSidebar: <AjnaFormContentRisk />,
         },
         theme: ajnaExtensionTheme,
         featureToggles,
@@ -450,7 +448,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           overviewBanner: isPoolWithRewards({ collateralToken, networkId, quoteToken }) ? (
             <AjnaTokensBannerController isOpening={isOpening} isPriceBelowLup={isPriceBelowLup} />
           ) : undefined,
-          riskSidebar,
+          riskSidebar: <AjnaFormContentRisk />,
           extraEarnInput: (
             <AjnaEarnSlider
               isDisabled={

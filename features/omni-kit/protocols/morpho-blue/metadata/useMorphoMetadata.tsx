@@ -1,39 +1,37 @@
 import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
+import { RAY_PRECISION } from 'components/constants'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
-import { getOmniBorrowishChangeVariant, getOmniBorrowPaybackMax } from 'features/omni-kit/helpers'
-import { morphoFlowStateFilter } from 'features/omni-kit/protocols/morpho-blue/helpers'
-import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks'
+import {
+  getOmniBorrowishChangeVariant,
+  getOmniBorrowPaybackMax,
+  getOmniIsFormEmpty,
+  getOmniIsFormEmptyStateGuard,
+} from 'features/omni-kit/helpers'
 import {
   MorphoDetailsSectionContent,
   MorphoDetailsSectionFooter,
-} from 'features/omni-kit/protocols/morpho-blue/metadata'
+} from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
+import { morphoFlowStateFilter } from 'features/omni-kit/protocols/morpho-blue/helpers'
+import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
 export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
-  const { MorphoSafetySwitch, MorphoSuppressValidation } = useAppConfig('features')
+  const {
+    MorphoSafetySwitch: morphoSafetySwitchOn,
+    MorphoSuppressValidation: morphoSuppressValidation,
+  } = useAppConfig('features')
 
   const {
-    environment: {
-      collateralAddress,
-      collateralPrice,
-      collateralToken,
-      isOpening,
-      isOracless,
-      isShort,
-      productType,
-      quoteAddress,
-      quoteBalance,
-      quotePrice,
-      quoteToken,
-    },
+    environment: { collateralAddress, isOracless, productType, quoteAddress, quoteBalance },
     steps: { currentStep },
+    tx: { txDetails },
   } = useOmniGeneralContext()
 
   const validations = {
@@ -48,8 +46,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
 
   const notifications: DetailsSectionNotificationItem[] = []
 
-  const interestRate = new BigNumber(0.01)
-
   switch (productType) {
     case OmniProductType.Borrow:
     case OmniProductType.Multiply:
@@ -57,6 +53,8 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       const simulation = productContext.position.currentPosition.simulation as
         | MorphoBluePosition
         | undefined
+
+      const interestRate = position.rate.shiftedBy(RAY_PRECISION)
 
       const changeVariant = getOmniBorrowishChangeVariant({ simulation, isOracless })
 
@@ -72,8 +70,15 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         },
         values: {
           interestRate,
-          isFormEmpty: false,
-          afterBuyingPower: simulation ? simulation.buyingPower : undefined,
+          isFormEmpty: getOmniIsFormEmpty({
+            stateTypeWrapper: getOmniIsFormEmptyStateGuard({
+              type: productType,
+              state: productContext.form.state,
+            }),
+            currentStep,
+            txStatus: txDetails?.txStatus,
+          }),
+          afterBuyingPower: simulation?.buyingPower,
           shouldShowDynamicLtv: () => true,
           debtMin: new BigNumber(20),
           debtMax: new BigNumber(3000),
@@ -94,36 +99,12 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         elements: {
           faq: <></>,
           highlighterOrderInformation: undefined,
-          overviewContent: (
-            <MorphoDetailsSectionContent
-              changeVariant={changeVariant}
-              collateralPrice={collateralPrice}
-              collateralToken={collateralToken}
-              interestRate={interestRate}
-              isOpening={isOpening}
-              isShort={isShort}
-              isSimulationLoading={productContext.position.isSimulationLoading}
-              position={position}
-              quotePrice={quotePrice}
-              quoteToken={quoteToken}
-              simulation={simulation}
-              // TODO to be defined
-              liquidationPenalty={new BigNumber(0.01)}
-            />
-          ),
-          overviewFooter: (
-            <MorphoDetailsSectionFooter
-              position={position}
-              simulation={simulation}
-              collateralToken={collateralToken}
-              quoteToken={quoteToken}
-              productType={productType}
-            />
-          ),
+          overviewContent: <MorphoDetailsSectionContent />,
+          overviewFooter: <MorphoDetailsSectionFooter />,
         },
         featureToggles: {
-          safetySwitch: MorphoSafetySwitch,
-          suppressValidation: MorphoSuppressValidation,
+          safetySwitch: morphoSafetySwitchOn,
+          suppressValidation: morphoSuppressValidation,
         },
       } as LendingMetadata
     case OmniProductType.Earn:
