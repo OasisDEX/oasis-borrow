@@ -92,7 +92,15 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
         </Flex>
       )}
       {props.useRcSlider ? (
-        <Flex sx={{ justifyContent: 'center' }}>
+        <Flex
+          sx={{
+            justifyContent: 'center',
+            '.rc-slider-handle-dragging': {
+              borderColor: 'unset !important',
+              boxShadow: 'unset !important',
+            },
+          }}
+        >
           <Slider
             activeDotStyle={{
               background: 'unset',
@@ -111,7 +119,6 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
               },
               rail: {
                 background: props.colorfulRanges || background,
-                height: '5px',
               },
             }}
             disabled={props.disabled}
