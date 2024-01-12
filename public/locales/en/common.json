@@ -3020,7 +3020,8 @@
       "regular-rewards": "Regular rewards",
       "total-rewards": "Total rewards",
       "claimable-today": "Claimable today",
-      "two-tx": "If you have Regular and Bonus rewards to claim, you will be asked to sign two transactions when claiming."
+      "two-tx": "If you have Regular and Bonus rewards to claim, you will be asked to sign two transactions when claiming.",
+      "previous-deployment-rewards": "Please note that the previous deployment token rewards are not yet displayed, these will be shown when they become claimable."
     },
     "product-hub-tooltips": {
       "no-max-ltv": "There are currently no borrow or multiply positions for this pool. Max LTV will be calculated following the creation of the first position.",
