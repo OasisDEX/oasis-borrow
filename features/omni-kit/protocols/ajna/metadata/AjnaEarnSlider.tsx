@@ -106,7 +106,10 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({
           lastValue={resolvedValue}
           minBoundry={min}
           maxBoundry={max}
-          step={range.at(-1)!.minus(range.at(-2)!).toNumber()}
+          step={max
+            .minus(min)
+            .div(range.length - 1)
+            .toNumber()}
           leftBoundry={leftBoundry}
           rightBoundry={maxLtv}
           leftBoundryFormatter={(v) => `${formatCryptoBalance(v)}`}

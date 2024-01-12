@@ -59,7 +59,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         | undefined
 
       const changeVariant = getOmniBorrowishChangeVariant({ simulation, isOracless })
-      const shouldShowDynamicLtv = true
 
       return {
         notifications,
@@ -75,7 +74,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           interestRate,
           isFormEmpty: false,
           afterBuyingPower: simulation ? simulation.buyingPower : undefined,
-          shouldShowDynamicLtv,
+          shouldShowDynamicLtv: () => true,
           debtMin: new BigNumber(20),
           debtMax: new BigNumber(3000),
           changeVariant,

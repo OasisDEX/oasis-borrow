@@ -92,7 +92,7 @@ export function AjnaContentFooterBorrow({
   })
 
   const availableToBorrowContentCardCommonData = useOmniCardDataTokensValue({
-    afterTokensAmount: afterAvailableToBorrow,
+    afterTokensAmount: simulation?.debtAvailable(),
     tokensAmount: position.debtAvailable(),
     tokensSymbol: quoteToken,
     translationCardName: 'available-to-borrow',
