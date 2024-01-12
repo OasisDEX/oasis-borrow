@@ -93,8 +93,8 @@ type DetailsTypeLendingRange = 'lendingRange'
 export type DetailsType = DetailsTypeCommon | DetailsTypeLendingRange
 
 export enum LendingRangeType {
-  Available = 0,
-  Unutilized = 1,
+  Unutilized = 0,
+  Available = 1,
   Active = 2,
 }
 
