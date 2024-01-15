@@ -2747,6 +2747,9 @@
       "help": "You can either create a new position or go to the existing one.",
       "cta-primary": "Go to your Portfolio",
       "cta-textual": "Open new position"
+    },
+    "validations": {
+      "safety-switch-on": "Due to a technical issue we have currently disabled depositing tokens into empty {{protocolLabel}} positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
     }
   },
   "ajna": {

@@ -20,6 +20,7 @@ import {
   getOmniBorrowPaybackMax,
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
+  getOmniValidations,
 } from 'features/omni-kit/helpers'
 import {
   AjnaEarnDetailsSectionContent,
@@ -49,7 +50,10 @@ import {
   getAjnaEarnIsFormValid,
   getEarnIsFormEmpty,
 } from 'features/omni-kit/protocols/ajna/metadata'
-import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
+import type {
+  AjnaEarnPositionAuction,
+  AjnaPositionAuction,
+} from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniEarnFormAction, OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -60,6 +64,7 @@ import {
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
@@ -110,8 +115,17 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     state: { price },
   } = useAjnaCustomState()
 
-  const validations = getAjnaValidation({
-    ajnaSafetySwitchOn,
+  const ajnaValidations = getAjnaValidation({
+    safetySwitchOn: ajnaSafetySwitchOn,
+    isOpening,
+    position: productContext.position.currentPosition.position,
+    positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
+    productType,
+    state: productContext.form.state,
+  })
+
+  const validations = getOmniValidations({
+    safetySwitchOn: ajnaSafetySwitchOn,
     collateralBalance,
     collateralToken,
     currentStep,
@@ -120,7 +134,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     gasEstimationUsd: gasEstimation?.usdValue,
     isOpening,
     position: productContext.position.currentPosition.position,
-    positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
     productType,
     quoteBalance,
     quoteToken,
@@ -139,6 +152,12 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             state: (productContext as ProductContextWithEarn).form.state,
           })
         : false,
+    isFormFrozen:
+      productType === OmniProductType.Earn &&
+      (productContext.position.positionAuction as AjnaEarnPositionAuction).isBucketFrozen,
+    customErrors: ajnaValidations.localErrors,
+    customWarnings: ajnaValidations.localWarnings,
+    protocolLabel: LendingProtocolLabel.ajna,
   })
 
   const notifications = getAjnaNotifications({

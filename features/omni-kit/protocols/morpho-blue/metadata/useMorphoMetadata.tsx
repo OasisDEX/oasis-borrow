@@ -9,6 +9,7 @@ import {
   getOmniBorrowPaybackMax,
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
+  getOmniValidations,
 } from 'features/omni-kit/helpers'
 import {
   MorphoDetailsSectionContent,
@@ -19,6 +20,7 @@ import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/h
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
@@ -36,20 +38,40 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       quoteAddress,
       quoteBalance,
       quotePrecision,
+      collateralBalance,
+      collateralToken,
+      ethBalance,
+      ethPrice,
+      isOpening,
+      quoteToken,
+      gasEstimation,
     },
     steps: { currentStep },
     tx: { txDetails },
   } = useOmniGeneralContext()
 
-  const validations = {
-    isFormValid: true,
-    hasErrors: false,
+  const validations = getOmniValidations({
+    safetySwitchOn: morphoSafetySwitchOn,
+    collateralBalance,
+    collateralToken,
+    currentStep,
+    ethBalance,
+    ethPrice,
+    gasEstimationUsd: gasEstimation?.usdValue,
+    isOpening,
+    position: productContext.position.currentPosition.position,
+    productType,
+    quoteBalance,
+    quoteToken,
+    simulationErrors: productContext.position.simulationCommon.errors,
+    simulationNotices: productContext.position.simulationCommon.notices,
+    simulationSuccesses: productContext.position.simulationCommon.successes,
+    simulationWarnings: productContext.position.simulationCommon.warnings,
+    state: productContext.form.state,
+    txError: txDetails?.txError,
     isFormFrozen: false,
-    errors: [],
-    warnings: [],
-    notices: [],
-    successes: [],
-  }
+    protocolLabel: LendingProtocolLabel.morphoblue,
+  })
 
   const notifications: DetailsSectionNotificationItem[] = []
 
