@@ -124,10 +124,15 @@ export function AaveOpenView({ config }: { config: IStrategyConfig }) {
   return (
     <>
       <PageSEOTags
-        title="seo.title-product-w-tokens"
+        title={
+          config.tokens.debt !== config.tokens.collateral
+            ? 'seo.title-product-w-tokens'
+            : 'seo.title-single-token'
+        }
         titleParams={{
           product: t(`seo.${config.type.toLocaleLowerCase()}.title`),
           protocol: LendingProtocolLabel[config.protocol],
+          token: config.tokens.deposit,
           token1: config.tokens.collateral,
           token2: config.tokens.debt,
         }}

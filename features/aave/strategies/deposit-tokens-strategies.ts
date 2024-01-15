@@ -56,8 +56,8 @@ export const depositTokensStrategies: IStrategyConfig[] = availableTokenDeposits
     },
     tokens: {
       deposit: config.deposit,
-      collateral: '',
-      debt: '',
+      collateral: config.deposit,
+      debt: config.deposit,
     },
     riskRatios: adjustRiskSliders.empty,
     availableActions: () => [],
