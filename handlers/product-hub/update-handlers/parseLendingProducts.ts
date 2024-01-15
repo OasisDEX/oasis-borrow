@@ -6,7 +6,7 @@ import type {
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
-import { getTokenGroup } from 'handlers/product-hub/helpers'
+import { getTokenGroup } from 'handlers/product-hub/helpers/get-token-group'
 import type { LendingProtocol } from 'lendingProtocols'
 
 export function parseLendingProducts(
