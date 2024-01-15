@@ -1,23 +1,36 @@
-import { isSupportedNetwork, type NetworkNames } from 'blockchain/networks'
+import type { NetworkNames } from 'blockchain/networks'
+import { getNetworkByName } from 'blockchain/networks'
 import { isAddress } from 'ethers/lib/utils'
-import type { OmniProductPage } from 'features/omni-kit/types'
-import { OmniProductType } from 'features/omni-kit/types'
+import { isOmniSupportedNetworkId } from 'features/omni-kit/helpers'
+import { omniProtocolSettings } from 'features/omni-kit/settings'
+import type {
+  OmniProductPage,
+  OmniProductType,
+  OmniSupportedProtocols,
+} from 'features/omni-kit/types'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import type { ParsedUrlQuery } from 'querystring'
 
 export async function getOmniServerSideProps({
   isProductPageValid = () => true,
   locale,
+  protocol,
   query,
 }: {
-  locale?: string
-  query: ParsedUrlQuery
   isProductPageValid?: (params: OmniProductPage) => boolean
+  locale?: string
+  protocol: OmniSupportedProtocols
+  query: ParsedUrlQuery
 }) {
-  const networkName = query.networkOrProduct as NetworkNames
-  const [productType, pair, positionId = undefined] = query.position as string[]
+  const networkId = getNetworkByName(query.networkOrProduct as unknown as NetworkNames).id
+  const [productType, pair, positionId] = query.position as string[]
+  const castedProductType = productType as OmniProductType
 
-  if (!productType || !pair) {
+  if (
+    !isOmniSupportedNetworkId(networkId, omniProtocolSettings[protocol].supportedNetworkIds) ||
+    !omniProtocolSettings[protocol].supportedProducts.includes(castedProductType) ||
+    !pair
+  ) {
     return {
       redirect: {
         permanent: false,
@@ -27,8 +40,6 @@ export async function getOmniServerSideProps({
   }
 
   const [collateralToken, quoteToken] = pair.split('-')
-
-  const castedProductType = productType as OmniProductType
   const caseSensitiveCollateralToken = isAddress(collateralToken)
     ? collateralToken.toLowerCase()
     : collateralToken.toUpperCase()
@@ -38,33 +49,26 @@ export async function getOmniServerSideProps({
 
   const omniProductPage = {
     collateralToken: caseSensitiveCollateralToken,
-    networkName,
-    positionId: positionId || undefined,
+    networkId,
+    positionId,
     productType: castedProductType,
     quoteToken: caseSensitiveQuoteToken,
   }
 
-  if (
-    isSupportedNetwork(networkName) &&
-    Object.values(OmniProductType).includes(castedProductType) &&
-    isProductPageValid(omniProductPage)
-  ) {
+  if (!isProductPageValid(omniProductPage)) {
     return {
-      props: {
-        ...(await serverSideTranslations(locale || 'en', ['common'])),
-        collateralToken: caseSensitiveCollateralToken,
-        networkName,
-        positionId: positionId || null,
-        productType: castedProductType,
-        quoteToken: caseSensitiveQuoteToken,
+      redirect: {
+        permanent: false,
+        destination: '/not-found',
       },
     }
   }
 
   return {
-    redirect: {
-      permanent: false,
-      destination: '/not-found',
+    props: {
+      ...(await serverSideTranslations(locale || 'en', ['common'])),
+      ...omniProductPage,
+      positionId: positionId ?? null,
     },
   }
 }

@@ -3,33 +3,31 @@ import { RiskRatio, strategies } from '@oasisdex/dma-library'
 import type { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { omniSwapVersionMap } from 'features/omni-kit/constants'
-import type {
-  AjnaGenericPosition,
-  AjnaSupportedNetworksIds,
-} from 'features/omni-kit/protocols/ajna/types'
+import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getOneInchCall } from 'helpers/swap'
 import { zero } from 'helpers/zero'
 
 export const ajnaActionClose = ({
-  state,
+  collateralToken,
   commonPayload,
   dependencies,
-  position,
-  slippage,
-  collateralToken,
-  quoteToken,
   networkId,
+  position,
+  quoteToken,
+  slippage,
+  state,
 }: {
-  state: OmniMultiplyFormState | OmniBorrowFormState
+  collateralToken: string
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
+  networkId: OmniSupportedNetworkIds
   position: AjnaGenericPosition
-  slippage: BigNumber
-  collateralToken: string
   quoteToken: string
-  networkId: AjnaSupportedNetworksIds
+  slippage: BigNumber
+  state: OmniMultiplyFormState | OmniBorrowFormState
 }) => {
   return strategies.ajna.multiply.close(
     {
@@ -62,23 +60,23 @@ export const ajnaActionClose = ({
 }
 
 export const ajnaActionAdjust = ({
-  state,
+  collateralToken,
   commonPayload,
   dependencies,
-  position,
-  slippage,
-  collateralToken,
-  quoteToken,
   networkId,
+  position,
+  quoteToken,
+  slippage,
+  state,
 }: {
-  state: OmniMultiplyFormState | OmniBorrowFormState
+  collateralToken: string
   commonPayload: AjnaCommonPayload
   dependencies: AjnaCommonDependencies
+  networkId: OmniSupportedNetworkIds
   position: AjnaGenericPosition
-  slippage: BigNumber
-  collateralToken: string
   quoteToken: string
-  networkId: AjnaSupportedNetworksIds
+  slippage: BigNumber
+  state: OmniMultiplyFormState | OmniBorrowFormState
 }) => {
   const { loanToValue, depositAmount, withdrawAmount } = state
 

@@ -5,6 +5,7 @@ import { getRpcProvider, NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import { ethers } from 'ethers'
 import { ajnaLastIndexBucketPrice } from 'features/omni-kit/protocols/ajna/constants'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
 
@@ -37,7 +38,7 @@ export interface AjnaPoolDataResponse {
   t0debt: string
 }
 
-export const getAjnaPoolData: (networkId: NetworkIds) => GetPoolData =
+export const getAjnaPoolData: (networkId: OmniSupportedNetworkIds) => GetPoolData =
   (networkId) => async (poolAddress: string) => {
     switch (networkId) {
       case NetworkIds.MAINNET:

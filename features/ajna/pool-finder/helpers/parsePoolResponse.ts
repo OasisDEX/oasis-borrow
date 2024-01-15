@@ -2,12 +2,12 @@ import { getPoolLiquidity } from '@oasisdex/dma-library'
 import { EarnStrategies } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import type { IdentifiedTokens } from 'blockchain/identifyTokens.types'
-import type { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
 import type { SearchAjnaPoolData } from 'features/ajna/pool-finder/helpers'
 import type { OraclessPoolResult } from 'features/ajna/pool-finder/types'
 import { isPoolOracless, isPoolWithRewards } from 'features/omni-kit/protocols/ajna/helpers'
+import type { AjnaSupportedNetworkIds } from 'features/omni-kit/protocols/ajna/types'
 import {
   productHubAjnaRewardsTooltip,
   productHubEmptyPoolMaxLtvTooltip,
@@ -18,7 +18,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 
 export function parsePoolResponse(
-  networkId: NetworkIds,
+  networkId: AjnaSupportedNetworkIds,
   identifiedTokens: IdentifiedTokens,
   pools: SearchAjnaPoolData[],
   prices: Tickers,

@@ -1,5 +1,6 @@
 import { Grid, Slider, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { RcSlider } from 'components/RcSlider'
 import type { TranslateStringType } from 'helpers/translateStringType'
 import type { ReactNode } from 'react'
 import React from 'react'
@@ -27,6 +28,7 @@ export interface SliderValuePickerProps {
   rightLabel?: TranslateStringType | JSX.Element
   direction?: 'rtl' | 'ltr'
   colorfulRanges?: string
+  useRcSlider?: boolean
 }
 
 export function SliderValuePicker(props: SliderValuePickerProps) {
@@ -86,23 +88,38 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
           )}
         </Flex>
       )}
-      <Slider
-        sx={{
-          background: props.colorfulRanges || background,
-          direction: props.direction || 'ltr',
-          '&:disabled': {
-            opacity: 1,
-          },
-        }}
-        disabled={props.disabled}
-        step={props.step}
-        min={props.minBoundry?.toNumber()}
-        max={props.maxBoundry?.toNumber()}
-        value={props.lastValue?.toNumber()}
-        onChange={(e) => {
-          props.onChange(new BigNumber(e.target.value))
-        }}
-      />
+      {props.useRcSlider ? (
+        <RcSlider
+          disabled={props.disabled}
+          step={props.step}
+          min={props.minBoundry.toNumber()}
+          max={props.maxBoundry.toNumber()}
+          value={props.lastValue.toNumber()}
+          onChange={(e) => {
+            props.onChange(new BigNumber(e as number))
+          }}
+          background={props.colorfulRanges || background}
+        />
+      ) : (
+        <Slider
+          sx={{
+            background: props.colorfulRanges || background,
+            direction: props.direction || 'ltr',
+            '&:disabled': {
+              opacity: 1,
+            },
+          }}
+          disabled={props.disabled}
+          step={props.step}
+          min={props.minBoundry.toNumber()}
+          max={props.maxBoundry.toNumber()}
+          value={props.lastValue.toNumber()}
+          onChange={(e) => {
+            props.onChange(new BigNumber(e.target.value))
+          }}
+        />
+      )}
+
       {props.leftBottomLabel && props.rightBottomLabel && (
         <Flex
           sx={{

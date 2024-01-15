@@ -63,6 +63,7 @@ export type NetworkConfig = {
   gradient: string
   testnet: boolean
   isEnabled: () => boolean
+  isL2: boolean
   token: string
   rpcUrl: string
   getReadProvider: () => ethers.providers.Provider | undefined
@@ -103,6 +104,7 @@ const mainnetConfig: NetworkConfig = {
   gradient: ethereumMainnetGradient,
   testnet: false,
   isEnabled: () => true,
+  isL2: false,
   rpcUrl: mainnetRpc,
   getReadProvider: memoize(
     () =>
@@ -133,6 +135,7 @@ const goerliConfig: NetworkConfig = {
   gradient: ethereumMainnetGradient,
   testnet: true,
   isEnabled: () => true,
+  isL2: false,
   rpcUrl: goerliRpc,
   getReadProvider: memoize(
     () =>
@@ -163,6 +166,7 @@ const arbitrumMainnetConfig: NetworkConfig = {
   gradient: arbitrumMainnetGradient,
   testnet: false,
   isEnabled: () => true,
+  isL2: true,
   token: 'ETH',
   rpcUrl: arbitrumMainnetRpc,
   getReadProvider: memoize(
@@ -197,6 +201,7 @@ const arbitrumGoerliConfig: NetworkConfig = {
   gradient: arbitrumMainnetGradient,
   testnet: true,
   isEnabled: () => true,
+  isL2: true,
   token: 'AGOR',
   rpcUrl: arbitrumGoerliRpc,
   getReadProvider: memoize(
@@ -226,6 +231,7 @@ const polygonMainnetConfig: NetworkConfig = {
   gradient: '',
   testnet: false,
   isEnabled: () => false,
+  isL2: false,
   token: 'ETH',
   rpcUrl: polygonMainnetRpc,
   getReadProvider: () => undefined,
@@ -249,6 +255,7 @@ const polygonMumbaiConfig: NetworkConfig = {
   gradient: '',
   testnet: true,
   isEnabled: () => false,
+  isL2: false,
   token: 'ETH',
   rpcUrl: polygonMumbaiRpc,
   getReadProvider: () => undefined,
@@ -272,6 +279,7 @@ const optimismMainnetConfig: NetworkConfig = {
   gradient: optimismMainnetGradient,
   testnet: false,
   isEnabled: () => true,
+  isL2: true,
   token: 'ETH',
   rpcUrl: optimismMainnetRpc,
   getReadProvider: memoize(
@@ -306,6 +314,7 @@ const optimismGoerliConfig: NetworkConfig = {
   gradient: optimismMainnetGradient,
   testnet: true,
   isEnabled: () => true,
+  isL2: true,
   token: 'ETH',
   rpcUrl: optimismGoerliRpc,
   getReadProvider: () => undefined,
@@ -329,6 +338,7 @@ const baseMainnetConfig: NetworkConfig = {
   gradient: baseMainnetGradient,
   testnet: false,
   isEnabled: () => getLocalAppConfig('features').BaseNetworkEnabled,
+  isL2: true,
   token: 'ETH',
   rpcUrl: baseMainnetRpc,
   getReadProvider: memoize(
@@ -363,6 +373,7 @@ const baseGoerliConfig: NetworkConfig = {
   gradient: baseMainnetGradient,
   testnet: true,
   isEnabled: () => getLocalAppConfig('features').BaseNetworkEnabled,
+  isL2: true,
   token: 'ETH',
   rpcUrl: baseGoerliRpc,
   getReadProvider: memoize(
@@ -388,6 +399,7 @@ export const emptyNetworkConfig: NetworkConfig = {
   gradient: '',
   testnet: false,
   isEnabled: () => true,
+  isL2: false,
   id: NetworkIds.EMPTYNET,
   token: 'ETH',
   rpcUrl: 'empty',
@@ -421,6 +433,7 @@ export const defaultForkSettings: NetworkConfig = {
   gradient: ethereumMainnetGradient,
   testnet: true,
   isEnabled: () => false,
+  isL2: false,
   token: 'ETH',
   rpcUrl: '',
   getReadProvider: () => undefined,

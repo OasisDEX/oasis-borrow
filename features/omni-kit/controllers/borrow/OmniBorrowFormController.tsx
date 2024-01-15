@@ -21,14 +21,7 @@ import { circle_close, circle_exchange } from 'theme/icons'
 export function OmniBorrowFormController({ txHandler }: { txHandler: () => () => void }) {
   const { t } = useTranslation()
   const {
-    environment: {
-      collateralIcon,
-      collateralToken,
-      isOpening,
-      network: { id: networkId },
-      quoteIcon,
-      quoteToken,
-    },
+    environment: { collateralIcon, collateralToken, isOpening, networkId, quoteIcon, quoteToken },
     steps: { currentStep },
   } = useOmniGeneralContext()
   const {

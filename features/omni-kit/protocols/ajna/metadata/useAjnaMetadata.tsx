@@ -89,7 +89,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       isOwner,
       isProxyWithManyPositions,
       isShort,
-      network: { id: networkId },
+      networkId,
       owner,
       priceFormat,
       productType,
@@ -297,7 +297,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               quotePrice={quotePrice}
               quoteToken={quoteToken}
               simulation={simulation}
-              afterAvailableToBorrow={afterAvailableToBorrow}
             />
           ),
           overviewBanner: isPoolWithRewards({ collateralToken, networkId, quoteToken }) ? (

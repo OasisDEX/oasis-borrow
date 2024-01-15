@@ -1,4 +1,4 @@
-import { protocols } from '@oasisdex/dma-library'
+import { Network, protocols } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import {
@@ -7,7 +7,7 @@ import {
   ETHEREUM_MAINNET_DEFAULT_PROTOCOLS,
   OPTIMISM_DEFAULT_PROCOTOLS,
 } from 'features/exchange/exchange'
-import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import type { NetworkIdsWithValues } from 'features/omni-kit/types'
 import { OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
@@ -39,7 +39,7 @@ export const paybackAllAmountAllowanceMaxMultiplier: Record<LendingProtocol, Big
   ajna: one.plus(protocols.ajna.ajnaPaybackAllWithdrawAllValueOffset),
 }
 
-export const omniSwapProtocolsMap = {
+export const omniSwapProtocolsMap: NetworkIdsWithValues<string[]> = {
   [NetworkIds.MAINNET]: ETHEREUM_MAINNET_DEFAULT_PROTOCOLS,
   [NetworkIds.BASEMAINNET]: BASE_DEFAULT_LIQUIDITY_PROVIDERS,
   [NetworkIds.OPTIMISMMAINNET]: OPTIMISM_DEFAULT_PROCOTOLS,
@@ -47,7 +47,7 @@ export const omniSwapProtocolsMap = {
   [NetworkIds.GOERLI]: [],
 }
 
-export const omniSwapVersionMap: Record<OmniSupportedNetworkIds, 'v4.0' | 'v5.0'> = {
+export const omniSwapVersionMap: NetworkIdsWithValues<'v4.0' | 'v5.0'> = {
   [NetworkIds.MAINNET]: 'v4.0',
   [NetworkIds.BASEMAINNET]: 'v5.0',
   [NetworkIds.OPTIMISMMAINNET]: 'v5.0',
@@ -55,4 +55,9 @@ export const omniSwapVersionMap: Record<OmniSupportedNetworkIds, 'v4.0' | 'v5.0'
   [NetworkIds.GOERLI]: 'v4.0', // doesn't matter
 }
 
-export const omniL2SupportedNetworks = [NetworkIds.BASEMAINNET, NetworkIds.OPTIMISMMAINNET]
+export const omniNetworkMap: NetworkIdsWithValues<Network> = {
+  [NetworkIds.MAINNET]: Network.MAINNET,
+  [NetworkIds.ARBITRUMMAINNET]: Network.ARBITRUM,
+  [NetworkIds.BASEMAINNET]: Network.BASE,
+  [NetworkIds.GOERLI]: Network.GOERLI,
+}

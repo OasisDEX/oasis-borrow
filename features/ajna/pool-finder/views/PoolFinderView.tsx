@@ -10,7 +10,7 @@ import {
 } from 'features/ajna/pool-finder/controls'
 import { parsePoolResponse, searchAjnaPool } from 'features/ajna/pool-finder/helpers'
 import type { OraclessPoolResult, PoolFinderFormState } from 'features/ajna/pool-finder/types'
-import { AJNA_SUPPORTED_NETWORKS } from 'features/omni-kit/protocols/ajna/constants'
+import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import type { ProductHubProductType } from 'features/productHub/types'
 import { useAppConfig } from 'helpers/config'
@@ -54,7 +54,7 @@ export const PoolFinderView: FC<PoolFinderViewProps> = ({ product }) => {
     async () => {
       if (tokenPriceUSDData && resultsKey && !results[resultsKey]) {
         if (addresses.poolAddress || addresses.collateralToken || addresses.quoteToken) {
-          let networkIds = [...AJNA_SUPPORTED_NETWORKS]
+          let networkIds = [...ajnaSettings.supportedMainnetNetworkIds]
 
           if (walletNetworkId) {
             const walletNetwork = getNetworkById(walletNetworkId)

@@ -1,7 +1,7 @@
 import type { Bucket } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import type { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION, WAD_PRECISION } from 'components/constants'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
@@ -41,7 +41,9 @@ export interface AjnaPoolsTableData {
   buckets: Bucket[]
 }
 
-export const getAjnaPoolsData = async (networkId: NetworkIds): Promise<AjnaPoolsTableData[]> => {
+export const getAjnaPoolsData = async (
+  networkId: OmniSupportedNetworkIds,
+): Promise<AjnaPoolsTableData[]> => {
   const { response } = (await loadSubgraph(
     'Ajna',
     'getAjnaPoolsData',

@@ -2,9 +2,8 @@ import type { TxMeta, TxState } from '@oasisdex/transactions'
 import { TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import type { NetworkIds } from 'blockchain/networks'
+import { getNetworkById, type NetworkIds } from 'blockchain/networks'
 import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
-import { omniL2SupportedNetworks } from 'features/omni-kit/constants'
 import type { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 
@@ -16,18 +15,19 @@ export interface TxDetails {
 }
 
 export async function handleTransaction<T extends TxMeta>({
-  txState,
   ethPrice,
-  setTxDetails,
   networkId,
+  setTxDetails,
   txData,
+  txState,
 }: {
-  txState: TxState<T>
   ethPrice: BigNumber
-  setTxDetails: (txDetails: TxDetails) => void
   networkId?: NetworkIds
+  setTxDetails: (txDetails: TxDetails) => void
   txData?: string
+  txState: TxState<T>
 }) {
+  const isL2 = networkId ? getNetworkById(networkId) : false
   const gasUsed =
     txState.status === TxStatus.Success ? new BigNumber(txState.receipt.gasUsed.toString()) : zero
 
@@ -41,7 +41,7 @@ export async function handleTransaction<T extends TxMeta>({
       ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(ethPrice)
       : zero
 
-  if (networkId && txData && omniL2SupportedNetworks.includes(networkId)) {
+  if (networkId && txData && isL2) {
     const optimismTxFeeData = await getOptimismTransactionFee({
       estimatedGas: gasUsed.toString(),
       transactionData: txData,
