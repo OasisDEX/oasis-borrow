@@ -15,6 +15,7 @@ import type {
 } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
+  getOmniBorrowDebtMax,
   getOmniBorrowishChangeVariant,
   getOmniBorrowPaybackMax,
   getOmniIsFormEmpty,
@@ -31,7 +32,6 @@ import { AjnaTokensBannerController } from 'features/omni-kit/protocols/ajna/con
 import {
   ajnaFlowStateFilter,
   getAjnaBorrowCollateralMax,
-  getAjnaBorrowDebtMax,
   getAjnaBorrowDebtMin,
   getAjnaEarnWithdrawMax,
   getAjnaNotifications,
@@ -47,7 +47,7 @@ import {
   AjnaExtraDropdownUiContent,
   AjnaFormContentRisk,
   getAjnaEarnIsFormValid,
-  getEarnIsFomEmpty,
+  getEarnIsFormEmpty,
 } from 'features/omni-kit/protocols/ajna/metadata'
 import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
@@ -158,8 +158,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
   }
 
-  const riskSidebar = <AjnaFormContentRisk />
-
   switch (productType) {
     case OmniProductType.Borrow:
     case OmniProductType.Multiply:
@@ -227,7 +225,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           afterBuyingPower,
           shouldShowDynamicLtv,
           debtMin: getAjnaBorrowDebtMin({ digits: quoteDigits, position }),
-          debtMax: getAjnaBorrowDebtMax({
+          debtMax: getOmniBorrowDebtMax({
             digits: quotePrecision,
             position,
             simulation,
@@ -302,7 +300,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           overviewBanner: isPoolWithRewards({ collateralToken, networkId, quoteToken }) ? (
             <AjnaTokensBannerController isOpening={isOpening} />
           ) : undefined,
-          riskSidebar,
+          riskSidebar: <AjnaFormContentRisk />,
         },
         theme: ajnaExtensionTheme,
         featureToggles,
@@ -361,7 +359,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         filters,
         values: {
           interestRate: zero,
-          isFormEmpty: getEarnIsFomEmpty({
+          isFormEmpty: getEarnIsFormEmpty({
             price,
             position: productContext.position.currentPosition.position as AjnaEarnPosition,
             currentStep,
@@ -450,7 +448,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           overviewBanner: isPoolWithRewards({ collateralToken, networkId, quoteToken }) ? (
             <AjnaTokensBannerController isOpening={isOpening} isPriceBelowLup={isPriceBelowLup} />
           ) : undefined,
-          riskSidebar,
+          riskSidebar: <AjnaFormContentRisk />,
           extraEarnInput: (
             <AjnaEarnSlider
               isDisabled={
