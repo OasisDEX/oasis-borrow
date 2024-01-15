@@ -1,7 +1,6 @@
 import { views } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
-import type { NetworkIds } from 'blockchain/networks'
 import { getRpcProvider } from 'blockchain/networks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import {
@@ -9,10 +8,9 @@ import {
   getAjnaEarnData,
   getAjnaPoolAddress,
   getAjnaPoolData,
-  isAjnaSupportedNetwork,
 } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
-import { OmniProductType } from 'features/omni-kit/types'
+import { OmniProductType, type OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
@@ -24,17 +22,13 @@ export function getAjnaPosition$(
   collateralPrice: BigNumber,
   quotePrice: BigNumber,
   { collateralToken, product, protocol, proxy, quoteToken }: DpmPositionData,
-  networkId: NetworkIds,
+  networkId: OmniSupportedNetworkIds,
   collateralAddress?: string,
   quoteAddress?: string,
 ): Observable<AjnaGenericPosition> {
   return combineLatest(iif(() => onEveryBlock$ !== undefined, onEveryBlock$, of(undefined))).pipe(
     switchMap(async () => {
       if (protocol.toLowerCase() !== LendingProtocol.Ajna) return null
-
-      if (!isAjnaSupportedNetwork(networkId)) {
-        throw new Error(`Ajna doesn't support this network: ${networkId}`)
-      }
 
       const { ajnaPoolPairs, ajnaPoolInfo } = getNetworkContracts(networkId)
 

@@ -31,7 +31,7 @@ export function useOmniTxHandler<CustomState>({
   customState,
 }: {
   getOmniParameters: () => Promise<AjnaStrategy<OmniGenericPosition> | undefined>
-  customState: CustomState
+  customState?: CustomState
   onSuccess?: () => void // for resetting custom state
 }): () => void {
   const { connectedContext$ } = useMainContext()
@@ -40,7 +40,14 @@ export function useOmniTxHandler<CustomState>({
 
   const {
     tx: { setTxDetails, setGasEstimation },
-    environment: { ethPrice, productType, slippage, networkId, gasPrice },
+    environment: {
+      ethPrice,
+      productType,
+      slippage,
+      network: { isL2 },
+      networkId,
+      gasPrice,
+    },
     steps: { isExternalStep, currentStep },
   } = useOmniGeneralContext()
   const {
@@ -89,12 +96,13 @@ export function useOmniTxHandler<CustomState>({
               setSimulation(data.simulation)
               setIsLoadingSimulation(false)
               estimateOmniGas$({
-                signer,
-                networkId,
-                txData: data.tx,
-                proxyAddress,
-                gasPrice,
                 ethPrice,
+                gasPrice,
+                isL2,
+                networkId,
+                proxyAddress,
+                signer,
+                txData: data.tx,
               }).subscribe((value) => setGasEstimation(value))
             }
           })

@@ -1,6 +1,6 @@
 import { extractLendingProtocolFromPositionCreatedEvent } from 'features/aave/services'
 import { omniBorrowishProducts } from 'features/omni-kit/constants'
-import { AJNA_RAW_PROTOCOL_NAME } from 'features/omni-kit/protocols/ajna/constants'
+import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
 import type { OmniProductType } from 'features/omni-kit/types'
 import { LendingProtocol } from 'lendingProtocols'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
@@ -23,7 +23,7 @@ export function ajnaFlowStateFilter({
 }: AjnaFlowStateFilterParams): boolean {
   return (
     extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.Ajna &&
-    event.args.protocol === AJNA_RAW_PROTOCOL_NAME &&
+    event.args.protocol === ajnaSettings.rawName &&
     collateralAddress.toLowerCase() === event.args.collateralToken.toLowerCase() &&
     quoteAddress.toLocaleLowerCase() === event.args.debtToken.toLowerCase() &&
     ((productType.toLowerCase() === 'earn' &&

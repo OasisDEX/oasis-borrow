@@ -1,6 +1,6 @@
 import { networksById } from 'blockchain/networks'
 import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
-import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useRouter } from 'next/router'
 
@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 export interface AjnaRedirectProps {
   collateralToken?: string
   isOracless: boolean
-  networkId: AjnaSupportedNetworksIds
+  networkId: OmniSupportedNetworkIds
   productType?: OmniProductType
   quoteToken?: string
 }
