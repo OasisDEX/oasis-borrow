@@ -20,7 +20,7 @@ export function getMorphoPosition$(
   quotePrice: BigNumber,
   { collateralToken, protocol, proxy, quoteToken }: DpmPositionData,
   networkId: OmniSupportedNetworkIds,
-  tokensPrecision?: OmniTokensPrecision,
+  tokensPrecision: OmniTokensPrecision,
 ): Observable<MorphoBluePosition> {
   return combineLatest(iif(() => onEveryBlock$ !== undefined, onEveryBlock$, of(undefined))).pipe(
     switchMap(async () => {
