@@ -1,12 +1,9 @@
-import 'rc-slider/assets/index.css'
-
-import { Grid, Slider as ThemeSlider, Text } from '@theme-ui/components'
+import { Grid, Slider, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { RcSlider } from 'components/RcSlider'
 import type { TranslateStringType } from 'helpers/translateStringType'
-import Slider from 'rc-slider'
 import type { ReactNode } from 'react'
 import React from 'react'
-import { theme } from 'theme'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Flex, useThemeUI } from 'theme-ui'
 
@@ -92,50 +89,19 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
         </Flex>
       )}
       {props.useRcSlider ? (
-        <Flex
-          sx={{
-            justifyContent: 'center',
-            '.rc-slider-handle-dragging': {
-              borderColor: 'unset !important',
-              boxShadow: 'unset !important',
-            },
+        <RcSlider
+          disabled={props.disabled}
+          step={props.step}
+          min={props.minBoundry.toNumber()}
+          max={props.maxBoundry.toNumber()}
+          value={props.lastValue.toNumber()}
+          onChange={(e) => {
+            props.onChange(new BigNumber(e as number))
           }}
-        >
-          <Slider
-            activeDotStyle={{
-              background: 'unset',
-            }}
-            styles={{
-              handle: {
-                background: theme.colors.primary100,
-                border: 'unset',
-                opacity: 1,
-                width: 19,
-                height: 19,
-                marginTop: '-7px',
-              },
-              track: {
-                background: 'unset',
-              },
-              rail: {
-                background: props.colorfulRanges || background,
-              },
-            }}
-            disabled={props.disabled}
-            step={props.step}
-            min={props.minBoundry?.toNumber()}
-            max={props.maxBoundry?.toNumber()}
-            value={props.lastValue?.toNumber()}
-            onChange={(e) => {
-              props.onChange(new BigNumber(e as number))
-            }}
-            style={{
-              width: '95%',
-            }}
-          />
-        </Flex>
+          background={props.colorfulRanges || background}
+        />
       ) : (
-        <ThemeSlider
+        <Slider
           sx={{
             background: props.colorfulRanges || background,
             direction: props.direction || 'ltr',
@@ -145,9 +111,9 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
           }}
           disabled={props.disabled}
           step={props.step}
-          min={props.minBoundry?.toNumber()}
-          max={props.maxBoundry?.toNumber()}
-          value={props.lastValue?.toNumber()}
+          min={props.minBoundry.toNumber()}
+          max={props.maxBoundry.toNumber()}
+          value={props.lastValue.toNumber()}
           onChange={(e) => {
             props.onChange(new BigNumber(e.target.value))
           }}
