@@ -15,13 +15,11 @@ export interface TokenConfig {
   coinpaprikaTicker?: string
   coinpaprikaFallbackTicker?: string
   tags: CoinTag[]
-  color: string
   token0?: string
   token1?: string
   coinbaseTicker?: string
   coinGeckoTicker?: string
   coinGeckoId?: string
-  background: string
   digitsInstant?: number
   safeCollRatio?: number
   oracleTicker?: string

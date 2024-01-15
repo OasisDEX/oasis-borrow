@@ -25,7 +25,7 @@ export const depositTokensList = {
     'ETH',
     'WBTC',
     'LINK',
-    'sUSD',
+    'SUSD',
     'RETH',
     'OP',
     'LUSD',
