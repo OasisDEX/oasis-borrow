@@ -2,6 +2,7 @@ import type { NetworkNames } from 'blockchain/networks'
 import { EmptyState } from 'components/EmptyState'
 import { GenericMultiselect } from 'components/GenericMultiselect'
 import { BlogPosts } from 'components/portfolio/blog-posts/BlogPosts'
+import type { PortfolioAssetsResponse } from 'components/portfolio/types/domain-types'
 import { PortfolioWalletAssets } from 'components/portfolio/wallet/PortfolioWalletAssets'
 import { PortfolioWalletBanner } from 'components/portfolio/wallet/PortfolioWalletBanner'
 import { PortfolioWalletSummary } from 'components/portfolio/wallet/PortfolioWalletSummary'
@@ -10,8 +11,6 @@ import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex, Grid, Heading } from 'theme-ui'
-
-import type { PortfolioAssetsResponse } from 'lambdas/lib/shared/src/domain-types'
 
 export const PortfolioWalletView = ({
   portfolioWalletData,

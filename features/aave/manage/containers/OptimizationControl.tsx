@@ -22,7 +22,7 @@ function getAutoBuyDetailsLayoutProps(
   }
   const currentTrigger = context.currentTrigger
     ? {
-        executionLTV: new BigNumber(context.currentTrigger.decodedParams.execLtv).div(100),
+        executionLTV: new BigNumber(context.currentTrigger.decodedParams.executionLtv).div(100),
         targetLTV: new BigNumber(context.currentTrigger.decodedParams.targetLtv).div(100),
       }
     : undefined

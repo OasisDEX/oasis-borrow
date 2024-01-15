@@ -29,8 +29,8 @@ export async function getGasPrice(): Promise<GasPriceParams> {
   if (response.status !== 200) throw new Error(await response.text())
   const { maxFeePerGas, maxPriorityFeePerGas } = await response.json()
   return {
-    maxFeePerGas: new BigNumber(maxFeePerGas),
-    maxPriorityFeePerGas: new BigNumber(maxPriorityFeePerGas),
+    maxFeePerGas: new BigNumber(maxFeePerGas).shiftedBy(9),
+    maxPriorityFeePerGas: new BigNumber(maxPriorityFeePerGas).shiftedBy(9),
   }
 }
 

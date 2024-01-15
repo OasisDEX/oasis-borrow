@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "12.4.2",
+  "version": "12.4.3",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=18.12"
@@ -32,20 +32,20 @@
     "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn typechain:generate && yarn xstate:typegen && yarn get-config-types",
     "xstate:typegen": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" ",
     "xstate:typegen:watch": "xstate typegen \"@(features|pages|components|utils)/**/*.ts?(x)\" --watch",
-    "update-product-hub": "npx ts-node scripts/update-product-hub.ts",
-    "lambdas-dependencies": "cd lambdas && yarn && cd .."
+    "update-product-hub": "npx ts-node scripts/update-product-hub.ts"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
     "@emotion/react": "^11.11.1",
+    "rc-slider": "^10.5.0",
     "@gnosis.pm/safe-apps-sdk": "^7.7.0",
     "@gnosis.pm/safe-apps-web3-react": "^1.3.0",
     "@lifi/wallet-management": "^2.3.4",
     "@lifi/widget": "2.4.6",
     "@metamask/eth-sig-util": "^5.0.2",
-    "@oasisdex/addresses": "0.1.30",
+    "@oasisdex/addresses": "0.1.31",
     "@oasisdex/automation": "^1.5.9-alpha5",
-    "@oasisdex/dma-library": "0.6.0",
+    "@oasisdex/dma-library": "0.6.1",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",

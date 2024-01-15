@@ -83,6 +83,8 @@ const rewardsTransactionResolver = ({
   }
 }
 
+const disclaimerKeys = ['ajna.rewards.two-tx', 'ajna.rewards.previous-deployment-rewards']
+
 export function AjnaRewardCard() {
   const { t } = useTranslation()
   const { connectedContext$ } = useMainContext()
@@ -253,9 +255,11 @@ export function AjnaRewardCard() {
           </Box>
         )}
       </Flex>
-      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mt: '24px' }}>
-        {t('ajna.rewards.two-tx')}
-      </Text>
+      {disclaimerKeys.map((item) => (
+        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mt: '24px' }} key={item}>
+          {t(item)}
+        </Text>
+      ))}
     </Box>
   )
 }

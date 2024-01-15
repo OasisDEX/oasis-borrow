@@ -8,7 +8,7 @@ import React from 'react'
 
 const getRiskRatio = (type: keyof ConfigResponseType['parameters']['aaveLike']['riskRatios']) => {
   const { aaveLike } = getLocalAppConfig('parameters')
-  return new BigNumber(aaveLike?.riskRatios[type] ?? 5) // 5 as fallback, optional for the tests to pass
+  return new BigNumber(aaveLike?.riskRatios?.[type] ?? 5) // 5 as fallback, optional for the tests to pass
 }
 
 export const adjustRiskSliderConfig: AdjustRiskViewConfig = {

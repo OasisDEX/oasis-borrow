@@ -511,6 +511,13 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
+"@babel/runtime@^7.10.1":
+  version "7.23.8"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.8.tgz#8ee6fe1ac47add7122902f257b8ddf55c898f650"
+  integrity sha512-Y7KbAP984rn1VGMbGqKmBLio9V7y5Je9GvU4rQPCPinCyNfUcToxIXl06d59URp/F3LwinvODxab5N/G6qggkw==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
 "@babel/runtime@^7.12.1", "@babel/runtime@^7.20.6", "@babel/runtime@^7.21.0":
   version "7.21.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.21.0.tgz#5b55c9d394e5fcf304909a8b00c07dc217b56673"
@@ -2366,10 +2373,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oasisdex/addresses@0.1.30":
-  version "0.1.30"
-  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.30.tgz#1e9fdcdc19d1d50e6a8353b4f85c5eb01c1d1324"
-  integrity sha512-Gl1ez3g9DL7NwzW+UZdOz6Wi+MWJ7XOp1cxIBs5H+UDULkCp20jsoSrrwaGD1/zxJLU5VGFhA3/68YvbKHdP0w==
+"@oasisdex/addresses@0.1.31":
+  version "0.1.31"
+  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.31.tgz#3b2a34f59b38ae35150c20cd1004b814bf32d901"
+  integrity sha512-9MJ/ndh3tN6pM5SJLXEHaHnxgmvI3eGP4dwEW0uAFc8W4fXjYnPyAwdxZ5khydl6KG6b8QvaoX9y/KnvTw29MA==
 
 "@oasisdex/automation@^1.5.9-alpha5":
   version "1.5.9-alpha5"
@@ -2378,10 +2385,10 @@
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.0.tgz#7e0e6376d037be292eec5fe86c44af4e125174ce"
-  integrity sha512-wgtl3P484zMBUx07REivnWu5qPLKsL+aeGL9654GFDHDO+N1w/V+0txc5kjuOnindDitFq+7Nd176LL6kt2Gjg==
+"@oasisdex/dma-library@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.1.tgz#deeca07e9f54b91d60c017be8dfc390f87197dc6"
+  integrity sha512-4RoQQxWtZWi7ZNLFYjIO2O9PRqCYn/aX39l/7j7uzlujUurdZ0ZmESQFDqVRqnfbQrsH/IX8fBMesvr7ErJQAA==
   dependencies:
     bignumber.js "9.0.1"
     ethers "^5.7.2"
@@ -7056,6 +7063,11 @@ class-is@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/class-is/-/class-is-1.1.0.tgz#9d3c0fba0440d211d843cec3dedfa48055005825"
   integrity sha512-rhjH9AG1fvabIDoGRVH587413LPjTZgmDF9fOFCbFJQV4yuocX1mHxxvXI4g3cGwbVY9wAYIoKlg1N79frJKQw==
+
+classnames@^2.2.5:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.5.1.tgz#ba774c614be0f016da105c858e7159eae8e7687b"
+  integrity sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==
 
 classnames@^2.3.2:
   version "2.3.2"
@@ -13281,6 +13293,23 @@ raw-body@2.5.2:
     http-errors "2.0.0"
     iconv-lite "0.4.24"
     unpipe "1.0.0"
+
+rc-slider@^10.5.0:
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-10.5.0.tgz#1bd4853d114cb3403b67c485125887adb6a2a117"
+  integrity sha512-xiYght50cvoODZYI43v3Ylsqiw14+D7ELsgzR40boDZaya1HFa1Etnv9MDkQE8X/UrXAffwv2AcNAhslgYuDTw==
+  dependencies:
+    "@babel/runtime" "^7.10.1"
+    classnames "^2.2.5"
+    rc-util "^5.27.0"
+
+rc-util@^5.27.0:
+  version "5.38.1"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.38.1.tgz#4915503b89855f5c5cd9afd4c72a7a17568777bb"
+  integrity sha512-e4ZMs7q9XqwTuhIK7zBIVFltUtMSjphuPPQXHoHlzRzNdOwUxDejo0Zls5HYaJfRKNURcsS/ceKVULlhjBrxng==
+  dependencies:
+    "@babel/runtime" "^7.18.3"
+    react-is "^18.2.0"
 
 react-countdown-circle-timer@^2.5.1:
   version "2.5.1"

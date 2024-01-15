@@ -1,6 +1,7 @@
 import type { AaveLikePosition } from '@oasisdex/dma-library'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { amountFromWei } from 'blockchain/utils'
+import type { ethers } from 'ethers'
 import type { IStrategyConfig } from 'features/aave/types'
 import { AutomationFeatures } from 'features/automation/common/types'
 import type { GetTriggersResponse } from 'helpers/triggers'
@@ -23,6 +24,8 @@ export type TriggersAaveEvent =
   | { type: 'RESET_PROTECTION' }
   | { type: 'POSITION_UPDATED'; position: AaveLikePosition }
   | { type: 'TRIGGERS_UPDATED'; currentTriggers: GetTriggersResponse }
+  | { type: 'SIGNER_UPDATED'; signer?: ethers.Signer }
+  | { type: 'TRANSACTION_DONE' }
 
 export const isOptimizationEnabled = ({
   context,
@@ -61,6 +64,7 @@ export type TriggersAaveContext = {
   showAutoBuyBanner: boolean
   showAutoSellBanner: boolean
   currentTriggers: GetTriggersResponse
+  signer?: ethers.Signer
   autoBuyTrigger: ActorRefFrom<typeof autoBuyTriggerAaveStateMachine>
   autoSellTrigger: ActorRefFrom<typeof autoSellTriggerAaveStateMachine>
 }
@@ -115,6 +119,12 @@ export const triggersAaveStateMachine = createMachine(
     entry: [],
     id: 'triggersStateMachine',
     initial: 'loading',
+    // invoke: [
+    //   {
+    //     src: 'checkTheTransactions',
+    //     id: 'checkTheTransactions',
+    //   },
+    // ],
     states: {
       idle: {
         on: {
@@ -154,6 +164,12 @@ export const triggersAaveStateMachine = createMachine(
           'updateAutoSellPosition',
           'updateAutoSellDefaults',
         ],
+      },
+      SIGNER_UPDATED: {
+        actions: ['updateSigner', 'sendSignerToAutoBuy', 'sendSignerToAutoSell'],
+      },
+      TRANSACTION_DONE: {
+        target: 'loading',
       },
     },
   },
@@ -256,6 +272,27 @@ export const triggersAaveStateMachine = createMachine(
           }
         },
       ),
+      updateSigner: assign((_, event) => ({
+        signer: event.signer,
+      })),
+      sendSignerToAutoBuy: sendTo(
+        (context) => context.autoBuyTrigger,
+        (_, event) => {
+          return {
+            type: 'SIGNER_UPDATED',
+            signer: event.signer,
+          }
+        },
+      ),
+      sendSignerToAutoSell: sendTo(
+        (context) => context.autoSellTrigger,
+        (_, event) => {
+          return {
+            type: 'SIGNER_UPDATED',
+            signer: event.signer,
+          }
+        },
+      ),
     },
     services: {
       getTriggers: async (context): Promise<GetTriggersResponse> => {
@@ -267,6 +304,24 @@ export const triggersAaveStateMachine = createMachine(
         }
         return await getTriggersRequest({ dpm, networkId: strategyConfig.networkId })
       },
+      // checkTheTransactions: (context) => (callback) => {
+      //   const autoSellTriggerListener = context.autoSellTrigger.subscribe((state) => {
+      //     if (state.matches('txDone')) {
+      //       callback({ type: 'TRANSACTION_DONE' })
+      //     }
+      //   })
+      //
+      //   const autoBuyTriggerListener = context.autoBuyTrigger.subscribe((state) => {
+      //     if (state.matches('txDone')) {
+      //       callback({ type: 'TRANSACTION_DONE' })
+      //     }
+      //   })
+      //
+      //   return () => {
+      //     autoSellTriggerListener.unsubscribe()
+      //     autoBuyTriggerListener.unsubscribe()
+      //   }
+      // },
     },
   },
 )

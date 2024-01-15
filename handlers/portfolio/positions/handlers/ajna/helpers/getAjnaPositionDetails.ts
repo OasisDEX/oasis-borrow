@@ -103,9 +103,9 @@ export function getAjnaPositionDetails({
         {
           type: 'lendingRange',
           value: price.lt(highestThresholdPrice)
-            ? LendingRangeType.Available
-            : price.lt(lowestUtilizedPrice)
             ? LendingRangeType.Unutilized
+            : price.lt(lowestUtilizedPrice)
+            ? LendingRangeType.Available
             : LendingRangeType.Active,
           ...(price.gte(lowestUtilizedPrice) && { accent: 'positive' }),
         },

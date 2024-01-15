@@ -1,8 +1,16 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
+import { handleRewrite } from 'server/rewrites'
 
 export function middleware(request: NextRequest) {
   const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || []
+
+  const possibleRewrite = handleRewrite(request)
+
+  if (possibleRewrite) {
+    return possibleRewrite
+  }
+
   const response = NextResponse.next()
   const origin = request.headers.get('origin') || ''
 
