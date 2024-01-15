@@ -1,11 +1,10 @@
 import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
-import { RAY_PRECISION } from 'components/constants'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
+  getOmniBorrowDebtMax,
   getOmniBorrowishChangeVariant,
   getOmniBorrowPaybackMax,
   getOmniIsFormEmpty,
@@ -19,6 +18,7 @@ import { morphoFlowStateFilter } from 'features/omni-kit/protocols/morpho-blue/h
 import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
+import { zero } from 'helpers/zero'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
@@ -29,7 +29,14 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
   } = useAppConfig('features')
 
   const {
-    environment: { collateralAddress, isOracless, productType, quoteAddress, quoteBalance },
+    environment: {
+      collateralAddress,
+      isOracless,
+      productType,
+      quoteAddress,
+      quoteBalance,
+      quotePrecision,
+    },
     steps: { currentStep },
     tx: { txDetails },
   } = useOmniGeneralContext()
@@ -54,10 +61,6 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
         | MorphoBluePosition
         | undefined
 
-      const interestRate = position.rate.shiftedBy(RAY_PRECISION)
-
-      const changeVariant = getOmniBorrowishChangeVariant({ simulation, isOracless })
-
       return {
         notifications,
         validations,
@@ -69,7 +72,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
             morphoFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
         },
         values: {
-          interestRate,
+          interestRate: position.rate,
           isFormEmpty: getOmniIsFormEmpty({
             stateTypeWrapper: getOmniIsFormEmptyStateGuard({
               type: productType,
@@ -80,12 +83,16 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           }),
           afterBuyingPower: simulation?.buyingPower,
           shouldShowDynamicLtv: () => true,
-          debtMin: new BigNumber(20),
-          debtMax: new BigNumber(3000),
-          changeVariant,
+          debtMin: zero,
+          debtMax: getOmniBorrowDebtMax({
+            digits: quotePrecision,
+            position,
+            simulation,
+          }),
+          changeVariant: getOmniBorrowishChangeVariant({ simulation, isOracless }),
           afterAvailableToBorrow: simulation && negativeToZero(simulation.debtAvailable()),
           afterPositionDebt: simulation?.debtAmount,
-          collateralMax: new BigNumber(50),
+          collateralMax: simulation?.collateralAvailable ?? position.collateralAmount,
           paybackMax: getOmniBorrowPaybackMax({
             balance: quoteBalance,
             position,

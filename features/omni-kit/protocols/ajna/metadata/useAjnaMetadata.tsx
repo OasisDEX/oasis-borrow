@@ -15,6 +15,7 @@ import type {
 } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
+  getOmniBorrowDebtMax,
   getOmniBorrowishChangeVariant,
   getOmniBorrowPaybackMax,
   getOmniIsFormEmpty,
@@ -31,7 +32,6 @@ import { AjnaTokensBannerController } from 'features/omni-kit/protocols/ajna/con
 import {
   ajnaFlowStateFilter,
   getAjnaBorrowCollateralMax,
-  getAjnaBorrowDebtMax,
   getAjnaBorrowDebtMin,
   getAjnaEarnWithdrawMax,
   getAjnaNotifications,
@@ -225,7 +225,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           afterBuyingPower,
           shouldShowDynamicLtv,
           debtMin: getAjnaBorrowDebtMin({ digits: quoteDigits, position }),
-          debtMax: getAjnaBorrowDebtMax({
+          debtMax: getOmniBorrowDebtMax({
             digits: quotePrecision,
             position,
             simulation,
