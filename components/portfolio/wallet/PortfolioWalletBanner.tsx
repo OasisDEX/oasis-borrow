@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { usePortfolioMatchingAssets } from 'components/portfolio/helpers/usePortfolioMatchingAssets'
+import type { PortfolioWalletAsset } from 'components/portfolio/types/domain-types'
 import { TokenBanner } from 'components/TokenBanner'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount } from 'helpers/formatters/format'
@@ -7,8 +8,6 @@ import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Text } from 'theme-ui'
-
-import type { PortfolioWalletAsset } from 'lambdas/lib/shared/src/domain-types'
 
 interface PortfolioWalletBannerProps {
   assets: PortfolioWalletAsset[]

@@ -1,4 +1,4 @@
-import { useActor, useInterpret, useSelector } from '@xstate/react'
+import { useInterpret, useSelector } from '@xstate/react'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import {
   autoBuyTriggerAaveStateMachine,
@@ -60,8 +60,12 @@ export function useTriggersAaveStateMachineContext(): TriggersAaveStateMachineCo
 function TriggersStateUpdater({ children }: React.PropsWithChildren<{}>) {
   const { stateMachine } = useManageAaveStateMachineContext()
   const position = useSelector(stateMachine, (state) => state.context.currentPosition)
+  const signer = useSelector(stateMachine, (state) =>
+    state.context.web3Context && 'transactionProvider' in state.context.web3Context
+      ? state.context.web3Context.transactionProvider
+      : null,
+  )
   const triggerStateMachine = useTriggersAaveStateMachineContext()
-  const [, triggersSend] = useActor(triggerStateMachine)
   const protectionCurrentView = useSelector(
     triggerStateMachine,
     (state) => state.context.protectionCurrentView,
@@ -70,9 +74,15 @@ function TriggersStateUpdater({ children }: React.PropsWithChildren<{}>) {
 
   useEffect(() => {
     if (position) {
-      triggersSend({ type: 'POSITION_UPDATED', position })
+      triggerStateMachine.send({ type: 'POSITION_UPDATED', position })
     }
-  }, [position, triggersSend])
+  }, [position])
+
+  useEffect(() => {
+    if (signer) {
+      triggerStateMachine.send({ type: 'SIGNER_UPDATED', signer })
+    }
+  }, [signer])
 
   useEffect(() => {
     if (protectionCurrentView === 'stop-loss') {

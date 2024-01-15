@@ -3,6 +3,7 @@ import type { DpmOperationParams } from 'blockchain/better-calls/dpm-account'
 import { estimateGas, executeTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
+import type { EthereumTransactionFee } from 'blockchain/transaction-fee/get-ethereum-transaction-fee'
 import { getEthereumTransactionFee } from 'blockchain/transaction-fee/get-ethereum-transaction-fee'
 import type { ethers } from 'ethers'
 import { AutomationFeatures } from 'features/automation/common/types'
@@ -51,6 +52,7 @@ export type BasicAutomationAaveEvent<Trigger extends BasicAutoTrigger> =
   | { type: 'RESET' }
   | { type: 'TRIGGER_RESPONSE_RECEIVED'; setupTriggerResponse: SetupBasicAutoResponse }
   | { type: 'GAS_ESTIMATION_UPDATED'; gasEstimation: HasGasEstimation }
+  | { type: 'SIGNER_UPDATED'; signer?: ethers.Signer }
   | { type: 'GO_TO_EDITING' }
   | { type: 'REVIEW_TRANSACTION' }
   | { type: 'START_TRANSACTION' }
@@ -86,7 +88,7 @@ type InternalGasEstimationEventParams = {
   position?: PositionLike
 }
 
-type InteralGasEsimtationEvent = {
+type InternalGasEstimationEvent = {
   type: 'INTERNAL_GAS_ESTIMATION'
   params: InternalGasEstimationEventParams
 }
@@ -105,7 +107,7 @@ const areInternalRequestParamsValid = (
   )
 }
 
-const isInternalGasEstimationEvent = (event: EventObject): event is InteralGasEsimtationEvent =>
+const isInternalGasEstimationEvent = (event: EventObject): event is InternalGasEstimationEvent =>
   event.type === 'INTERNAL_GAS_ESTIMATION'
 
 const areParamsValid = (
@@ -175,7 +177,7 @@ const getDefaults = (
       getMaxGasFeeFromDecodedParam(context.currentTrigger?.decodedParams.maxBaseFeeInGwei) ?? 300,
     usePrice: true,
     executionTriggerLTV:
-      getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.execLtv) ??
+      getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.executionLtv) ??
       context.defaults.executionTriggerLTV,
     targetTriggerLTV:
       getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.targetLtv) ??
@@ -317,9 +319,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
             },
           },
         },
-        txDone: {
-          type: 'final',
-        },
+        txDone: {},
         txFailed: {
           entry: ['incrementRetryCount'],
           always: [{ target: 'review' }],
@@ -333,7 +333,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
           actions: ['updatePositionValue'],
         },
         TRIGGER_RESPONSE_RECEIVED: {
-          actions: ['updateTriggerResponse', 'setNotLoading'],
+          actions: ['updateTriggerResponse', 'setNotLoading', 'getGasEstimation'],
         },
         GAS_ESTIMATION_UPDATED: {
           actions: ['updateGasEstimation'],
@@ -343,6 +343,9 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
         },
         CURRENT_TRIGGER_RECEIVED: {
           actions: ['updateCurrentTrigger'],
+        },
+        SIGNER_UPDATED: {
+          actions: ['updateSigner'],
         },
       },
     },
@@ -354,7 +357,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
         canStartTransaction: (context) => {
           return (
             context.setupTriggerResponse?.transaction !== undefined &&
-            context.setupTriggerResponse.errors?.length === 0 &&
+            (context.setupTriggerResponse.errors ?? []).length === 0 &&
             context.gasEstimation.gasEstimationStatus === GasEstimationStatus.calculated
           )
         },
@@ -402,6 +405,16 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
             },
           }),
         ),
+        getGasEstimation: sendTo(
+          'gasEstimation',
+          (context, event): InternalGasEstimationEvent => ({
+            type: 'INTERNAL_GAS_ESTIMATION',
+            params: {
+              ...context,
+              setupTriggerResponse: event.setupTriggerResponse,
+            },
+          }),
+        ),
         updateTriggerResponse: assign((_, event) => ({
           setupTriggerResponse: event.setupTriggerResponse,
         })),
@@ -426,6 +439,9 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
             flow: TriggerFlow.add,
           }
         }),
+        updateSigner: assign((_, event) => ({
+          signer: event.signer,
+        })),
       },
       services: {
         getParameters: () => (callback, onReceive) => {
@@ -448,7 +464,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
                 dpm: event.params.position.dpm,
                 executionLTV: new BigNumber(event.params.executionTriggerLTV).times(10 ** 2),
                 targetLTV: new BigNumber(event.params.targetTriggerLTV).times(10 ** 2),
-                price: event.params.price?.times(10 ** 6),
+                price: event.params.price?.times(10 ** 8),
                 usePrice: event.params.usePrice,
                 maxBaseFee: new BigNumber(event.params.maxGasFee),
                 protocol: LendingProtocol.AaveV3,
@@ -478,7 +494,6 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
                 gasEstimationStatus: GasEstimationStatus.calculating,
               },
             })
-
             if (
               isInternalGasEstimationEvent(event) &&
               areParamsValid(event.params) &&
@@ -486,14 +501,28 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
             ) {
               const { signer, networkId, setupTriggerResponse, position } = event.params
 
-              const gas = await estimateGas({
-                ...setupTriggerResponse.transaction,
-                signer,
-                networkId,
-                proxyAddress: position.dpm,
-              })
+              let gas: string = ''
+              let fee: EthereumTransactionFee | undefined = undefined
 
-              const fee = await getEthereumTransactionFee({ estimatedGas: gas })
+              try {
+                gas = await estimateGas({
+                  ...setupTriggerResponse.transaction,
+                  signer,
+                  networkId,
+                  proxyAddress: position.dpm,
+                })
+
+                fee = await getEthereumTransactionFee({ estimatedGas: gas })
+              } catch (error) {
+                console.error(error)
+
+                callback({
+                  type: 'GAS_ESTIMATION_UPDATED',
+                  gasEstimation: {
+                    gasEstimationStatus: GasEstimationStatus.error,
+                  },
+                })
+              }
 
               if (fee === undefined) {
                 callback({

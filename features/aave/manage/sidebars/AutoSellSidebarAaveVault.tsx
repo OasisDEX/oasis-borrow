@@ -65,7 +65,7 @@ function useDescriptionForAutoSell({ state }: Pick<AutoSellSidebarAaveVaultProps
     return t('auto-sell.set-trigger-description-ltv', {
       executionLTV: state.executionTriggerLTV,
       targetLTV: state.targetTriggerLTV,
-      denomination: `${state.position.collateral.token.symbol}/${state.position.debt.token.symbol}`,
+      denomination: `USD`,
       executionPrice: formatCryptoBalance(executionPrice),
       minSellPrice: formatCryptoBalance(state.price),
     })
@@ -73,7 +73,7 @@ function useDescriptionForAutoSell({ state }: Pick<AutoSellSidebarAaveVaultProps
   return t('auto-sell.set-trigger-description-ltv-no-threshold', {
     executionLTV: state.executionTriggerLTV,
     targetLTV: state.targetTriggerLTV,
-    denomination: `${state.position.collateral.token.symbol}/${state.position.debt.token.symbol}`,
+    denomination: `USD`,
     executionPrice: formatCryptoBalance(executionPrice),
   })
 }
@@ -176,7 +176,7 @@ function AutoSellSidebarAaveVaultEditingState({
           amount={state.price}
           hasAuxiliary={false}
           hasError={false}
-          currencyCode={state.position.debt.token.symbol}
+          currencyCode={'USD'}
           onChange={handleNumericInput((price) => {
             updateState({ type: 'SET_PRICE', price: price })
           })}
@@ -335,14 +335,18 @@ export function usePrimaryButton(
         isLoading: props.state.isLoading,
         action: () => {},
         disabled: true,
-        label: 'automation.setting',
+        label: t('automation.setting', {
+          feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
+        }),
         steps: [3, 3],
       }
     case isStateMatch('txDone'):
       return {
         isLoading: props.state.isLoading,
-        action: () => {},
-        disabled: true,
+        action: () => {
+          props.updateState({ type: 'RESET' })
+        },
+        disabled: false,
         label: t('finished'),
       }
   }
@@ -354,12 +358,33 @@ export function usePrimaryButton(
   }
 }
 
+export function useTextButton(
+  props: AutoSellSidebarAaveVaultProps,
+): SidebarSectionFooterButtonSettings | undefined {
+  const { isStateMatch } = props
+  const { t } = useTranslation()
+
+  if (isStateMatch('review')) {
+    return {
+      isLoading: props.state.isLoading,
+      action: () => {
+        props.updateState({ type: 'GO_TO_EDITING' })
+      },
+      label: t('back-to-editing'),
+      steps: [2, 3],
+    }
+  }
+
+  return undefined
+}
+
 export function AutoSellSidebarAaveVault(props: AutoSellSidebarAaveVaultProps) {
   const { t } = useTranslation()
 
   const { strategy } = props
 
   const primaryButton = usePrimaryButton(props)
+  const textButton = useTextButton(props)
 
   return (
     <SidebarSection
@@ -373,6 +398,7 @@ export function AutoSellSidebarAaveVault(props: AutoSellSidebarAaveVaultProps) {
       }
       requireConnection={true}
       requiredChainHexId={strategy.networkHexId}
+      textButton={textButton}
     />
   )
 }

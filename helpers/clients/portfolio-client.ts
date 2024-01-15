@@ -1,10 +1,9 @@
+import type {
+  PortfolioAssetsResponse,
+  PortfolioOverviewResponse,
+} from 'components/portfolio/types/domain-types'
 import type { PortfolioPositionsReply } from 'handlers/portfolio/types'
 import { useCallback, useMemo } from 'react'
-
-import {
-  type PortfolioAssetsResponse,
-  type PortfolioOverviewResponse,
-} from 'lambdas/lib/shared/src/domain-types'
 
 /**
  * typed client for fetching portfolio data from aws gateway

@@ -9,10 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Flex, Heading } from 'theme-ui'
 
-import type {
-  PortfolioAssetsResponse,
-  PortfolioOverviewResponse,
-} from 'lambdas/lib/shared/src/domain-types'
+import type { PortfolioAssetsResponse, PortfolioOverviewResponse } from './types/domain-types'
 
 export const PortfolioOverview = ({
   overviewData,
