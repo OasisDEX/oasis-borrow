@@ -47,7 +47,7 @@ import {
   AjnaExtraDropdownUiContent,
   AjnaFormContentRisk,
   getAjnaEarnIsFormValid,
-  getEarnIsFomEmpty,
+  getEarnIsFormEmpty,
 } from 'features/omni-kit/protocols/ajna/metadata'
 import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
@@ -359,7 +359,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         filters,
         values: {
           interestRate: zero,
-          isFormEmpty: getEarnIsFomEmpty({
+          isFormEmpty: getEarnIsFormEmpty({
             price,
             position: productContext.position.currentPosition.position as AjnaEarnPosition,
             currentStep,
