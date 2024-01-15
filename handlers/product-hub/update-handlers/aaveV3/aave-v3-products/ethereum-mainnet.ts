@@ -1,33 +1,45 @@
 import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
 import { type ProductHubItemWithoutAddress, ProductHubProductType } from 'features/productHub/types'
+import type { AaveProductHubItemSeed } from 'handlers/product-hub/update-handlers/aaveV3/aave-v3-products/types'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddress[] = [
-  // ethereum products
+export const aaveSeed: AaveProductHubItemSeed[] = [
   {
-    product: [ProductHubProductType.Earn],
-    primaryToken: 'WSTETH',
-    primaryTokenGroup: 'ETH',
-    secondaryToken: 'ETH',
-    depositToken: 'ETH',
-    network: NetworkNames.ethereumMainnet,
-    protocol: LendingProtocol.AaveV3,
-    label: 'WSTETH/ETH',
-    earnStrategy: EarnStrategies.yield_loop,
-    earnStrategyDescription: 'WSTETH/ETH Yield Loop',
-    managementType: 'active',
+    collateral: 'WSTETH',
+    debt: 'ETH',
+    strategyType: 'long',
+    types: ['borrow', 'earn'],
   },
-  {
-    product: [ProductHubProductType.Borrow],
-    primaryToken: 'WSTETH',
-    primaryTokenGroup: 'ETH',
-    secondaryToken: 'ETH',
-    depositToken: 'WSTETH',
-    label: 'WSTETH/ETH',
-    network: NetworkNames.ethereumMainnet,
-    protocol: LendingProtocol.AaveV3,
-  },
+]
+
+export const borrowProducts: ProductHubItemWithoutAddress[] = []
+export const earnProducts: ProductHubItemWithoutAddress[] = []
+
+export const multiplyProducts: ProductHubItemWithoutAddress[] = [
+  // {
+  //   product: [ProductHubProductType.Earn],
+  //   primaryToken: 'WSTETH',
+  //   primaryTokenGroup: 'ETH',
+  //   secondaryToken: 'ETH',
+  //   depositToken: 'ETH',
+  //   network: NetworkNames.ethereumMainnet,
+  //   protocol: LendingProtocol.AaveV3,
+  //   label: 'WSTETH/ETH',
+  //   earnStrategy: EarnStrategies.yield_loop,
+  //   earnStrategyDescription: 'WSTETH/ETH Yield Loop',
+  //   managementType: 'active',
+  // },
+  // {
+  //   product: [ProductHubProductType.Borrow],
+  //   primaryToken: 'WSTETH',
+  //   primaryTokenGroup: 'ETH',
+  //   secondaryToken: 'ETH',
+  //   depositToken: 'WSTETH',
+  //   label: 'WSTETH/ETH',
+  //   network: NetworkNames.ethereumMainnet,
+  //   protocol: LendingProtocol.AaveV3,
+  // },
   {
     product: [ProductHubProductType.Earn],
     primaryToken: 'RETH',
@@ -452,4 +464,10 @@ export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddre
     network: NetworkNames.ethereumMainnet,
     protocol: LendingProtocol.AaveV3,
   },
+]
+
+export const aaveV3EthereumMainnetProductHubProducts: ProductHubItemWithoutAddress[] = [
+  ...borrowProducts,
+  ...earnProducts,
+  ...multiplyProducts,
 ]
