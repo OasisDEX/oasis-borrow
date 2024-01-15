@@ -343,8 +343,10 @@ export function usePrimaryButton(
     case isStateMatch('txDone'):
       return {
         isLoading: props.state.isLoading,
-        action: () => {},
-        disabled: true,
+        action: () => {
+          props.updateState({ type: 'RESET' })
+        },
+        disabled: false,
         label: t('finished'),
       }
   }

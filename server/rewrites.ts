@@ -53,8 +53,10 @@ export function handleRewrite(request: NextRequest): NextResponse | null {
       url.host = destinationUrl.host
       url.port = destinationUrl.port
       url.pathname = destinationUrl.pathname
-      const response = NextResponse.rewrite(url)
-      return response
+      // console.info(
+      //   `rewriting ${request.nextUrl.pathname} to ${url.pathname}. With search: ${url.search}. And original search: ${request.nextUrl.search}`,
+      // )
+      return NextResponse.rewrite(url)
     }
   }
   return null // no rewrite

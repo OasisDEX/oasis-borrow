@@ -25,6 +25,7 @@ export type TriggersAaveEvent =
   | { type: 'POSITION_UPDATED'; position: AaveLikePosition }
   | { type: 'TRIGGERS_UPDATED'; currentTriggers: GetTriggersResponse }
   | { type: 'SIGNER_UPDATED'; signer?: ethers.Signer }
+  | { type: 'TRANSACTION_DONE' }
 
 export const isOptimizationEnabled = ({
   context,
@@ -118,6 +119,12 @@ export const triggersAaveStateMachine = createMachine(
     entry: [],
     id: 'triggersStateMachine',
     initial: 'loading',
+    // invoke: [
+    //   {
+    //     src: 'checkTheTransactions',
+    //     id: 'checkTheTransactions',
+    //   },
+    // ],
     states: {
       idle: {
         on: {
@@ -160,6 +167,9 @@ export const triggersAaveStateMachine = createMachine(
       },
       SIGNER_UPDATED: {
         actions: ['updateSigner', 'sendSignerToAutoBuy', 'sendSignerToAutoSell'],
+      },
+      TRANSACTION_DONE: {
+        target: 'loading',
       },
     },
   },
@@ -294,6 +304,24 @@ export const triggersAaveStateMachine = createMachine(
         }
         return await getTriggersRequest({ dpm, networkId: strategyConfig.networkId })
       },
+      // checkTheTransactions: (context) => (callback) => {
+      //   const autoSellTriggerListener = context.autoSellTrigger.subscribe((state) => {
+      //     if (state.matches('txDone')) {
+      //       callback({ type: 'TRANSACTION_DONE' })
+      //     }
+      //   })
+      //
+      //   const autoBuyTriggerListener = context.autoBuyTrigger.subscribe((state) => {
+      //     if (state.matches('txDone')) {
+      //       callback({ type: 'TRANSACTION_DONE' })
+      //     }
+      //   })
+      //
+      //   return () => {
+      //     autoSellTriggerListener.unsubscribe()
+      //     autoBuyTriggerListener.unsubscribe()
+      //   }
+      // },
     },
   },
 )

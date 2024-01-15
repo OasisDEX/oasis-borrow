@@ -319,9 +319,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
             },
           },
         },
-        txDone: {
-          type: 'final',
-        },
+        txDone: {},
         txFailed: {
           entry: ['incrementRetryCount'],
           always: [{ target: 'review' }],
