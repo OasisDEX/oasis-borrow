@@ -359,7 +359,7 @@ export function usePrimaryButton(
 export function useTextButton(
   props: AutoBuySidebarAaveVaultProps,
 ): SidebarSectionFooterButtonSettings | undefined {
-  const { isStateMatch, canTransitWith } = props
+  const { isStateMatch } = props
   const { t } = useTranslation()
 
   if (isStateMatch('review')) {

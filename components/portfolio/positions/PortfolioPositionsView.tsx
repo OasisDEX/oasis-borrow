@@ -10,6 +10,7 @@ import { PortfolioPositionLearn } from 'components/portfolio/positions/Portfolio
 import { PortfolioPositionsProductSelect } from 'components/portfolio/positions/PortfolioPositionsProductSelect'
 import { PortfolioPositionsSortingSelect } from 'components/portfolio/positions/PortfolioPositionsSortingSelect'
 import { PortfolioProductType, PortfolioSortingType } from 'components/portfolio/positions/types'
+import type { PortfolioAssetsResponse } from 'components/portfolio/types/domain-types'
 import { Toggle } from 'components/Toggle'
 import { StatefulTooltip } from 'components/Tooltip'
 import { WithArrow } from 'components/WithArrow'
@@ -22,8 +23,6 @@ import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { question_o, sparks } from 'theme/icons'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
-
-import type { PortfolioAssetsResponse } from 'lambdas/lib/shared/src/domain-types'
 
 interface PortfolioPositionsViewProps {
   address: string

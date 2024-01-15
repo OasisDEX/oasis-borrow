@@ -359,16 +359,8 @@ export function usePrimaryButton(
 export function useTextButton(
   props: AutoSellSidebarAaveVaultProps,
 ): SidebarSectionFooterButtonSettings | undefined {
-  const { isStateMatch, canTransitWith } = props
+  const { isStateMatch } = props
   const { t } = useTranslation()
-  const editingLabel =
-    props.state.flow === 'add'
-      ? t('automation.add-trigger', {
-          feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
-        })
-      : t('automation.update-trigger', {
-          feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
-        })
 
   if (isStateMatch('review')) {
     return {

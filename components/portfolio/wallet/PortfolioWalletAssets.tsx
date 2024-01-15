@@ -5,6 +5,7 @@ import { usePreloadAppDataContext } from 'components/context/PreloadAppDataConte
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { getPortfolioChangeColor, getPortfolioTokenProducts } from 'components/portfolio/helpers'
+import type { PortfolioWalletAsset } from 'components/portfolio/types/domain-types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { getGradientColor } from 'helpers/getGradientColor'
@@ -13,8 +14,6 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { arrow_decrease, arrow_increase } from 'theme/icons'
 import { Box, Button, Flex, Text } from 'theme-ui'
-
-import type { PortfolioWalletAsset } from 'lambdas/lib/shared/src/domain-types'
 
 interface PortfolioWalletAssetsProps {
   assets?: PortfolioWalletAsset[]

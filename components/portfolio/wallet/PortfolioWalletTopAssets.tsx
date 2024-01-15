@@ -1,11 +1,10 @@
 import BigNumber from 'bignumber.js'
+import type { PortfolioWalletAsset } from 'components/portfolio/types/domain-types'
 import { Skeleton } from 'components/Skeleton'
 import { TokensGroup } from 'components/TokensGroup'
 import { formatFiatBalance } from 'helpers/formatters/format'
 import React from 'react'
 import { Flex, Grid, Text } from 'theme-ui'
-
-import type { PortfolioWalletAsset } from 'lambdas/lib/shared/src/domain-types'
 
 interface PortfolioWalletTopAssetsProps {
   assets?: PortfolioWalletAsset[]

@@ -1,5 +1,6 @@
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { Icon } from 'components/Icon'
+import type { PortfolioWalletAsset } from 'components/portfolio/types/domain-types'
 import { PromoCard, PromoCardLoadingState } from 'components/PromoCard'
 import { Skeleton } from 'components/Skeleton'
 import useEmblaCarousel from 'embla-carousel-react'
@@ -13,8 +14,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { chevron_left, chevron_right } from 'theme/icons'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Box, Button, Flex, Text } from 'theme-ui'
-
-import type { PortfolioWalletAsset } from 'lambdas/lib/shared/src/domain-types'
 
 interface PortfolioPositionFeaturedProps {
   assets?: PortfolioWalletAsset[]

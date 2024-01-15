@@ -10,7 +10,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { non_owner_notice_icon } from 'theme/icons'
 import { Box, Text } from 'theme-ui'
 
-import type { PortfolioWalletAsset } from 'lambdas/lib/shared/src/domain-types'
+import type { PortfolioWalletAsset } from './types/domain-types'
 
 interface PortfolioNonOwnerNoticeProps {
   address: string
