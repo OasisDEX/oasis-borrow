@@ -39,7 +39,7 @@ export const EXTERNAL_LINKS = {
     WHAT_IS_BORROW: 'https://docs.summer.fi/products/borrow',
     WHAT_IS_DPM: 'https://docs.summer.fi/general/what-is-a-smart-defi-account',
     WHAT_IS_PROXY:
-      'https://docs.summer.fi/protocols/maker/tutorials-and-guides/how-to-open-a-borrow-vault-with-maker',
+      'https://docs.summer.fi/protocols/maker/what-is-a-proxy-contract',
     WHAT_IS_CONSTANT_MULTIPLE: 'https://docs.summer.fi/automation/constant-multiple',
     REFER_A_FRIEND: 'https://docs.summer.fi/general/referrals-program/how-to-refer-a-friend',
     STOP_LOSS: 'https://docs.summer.fi/automation/stop-loss',
