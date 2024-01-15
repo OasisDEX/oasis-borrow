@@ -59,6 +59,9 @@ function OpenPosition({
   const { replace } = useRouter()
 
   const [supported, definedStrategy] = isSupportedStrategy(network, protocol, product, strategy)
+  console.log('network, protocol, product, strategy', { network, protocol, product, strategy })
+  console.log('supported', supported)
+  console.log('definedStrategy', definedStrategy)
   if (!supported) {
     return void replace(INTERNAL_LINKS.notFound)
   }

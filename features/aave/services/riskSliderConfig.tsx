@@ -50,4 +50,8 @@ const adjustRiskSliderConfigForWstethEth: AdjustRiskViewConfig = {
 export const adjustRiskSliders = {
   stethEth: adjustRiskSliderConfigForStethEth,
   wstethEth: adjustRiskSliderConfigForWstethEth,
+  empty: {
+    minimum: new RiskRatio(new BigNumber('1'), RiskRatio.TYPE.MULITPLE),
+    default: new RiskRatio(new BigNumber('1'), RiskRatio.TYPE.MULITPLE),
+  },
 }
