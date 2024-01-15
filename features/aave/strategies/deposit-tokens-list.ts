@@ -2,13 +2,15 @@ import { NetworkIds } from 'blockchain/networks'
 import type { AaveLendingProtocol, SparkLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 
-type DepositTokensList = {
+export type DepositTokensConfig = {
   protocol: AaveLendingProtocol | SparkLendingProtocol
   networkId: NetworkIds
   list: string[]
-}[]
+}
 
-export const depositTokensList: DepositTokensList = [
+type DepositTokensConfigList = DepositTokensConfig[]
+
+export const depositTokensList: DepositTokensConfigList = [
   {
     protocol: LendingProtocol.AaveV3,
     networkId: NetworkIds.MAINNET,
