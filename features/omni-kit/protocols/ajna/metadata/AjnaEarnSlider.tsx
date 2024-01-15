@@ -131,6 +131,7 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({
         ${omniLendingPriceColors[0]} 0 ${htpPercentage}%,
         ${omniLendingPriceColors[1]} ${htpPercentage}% ${lupPercentage}%,
         ${omniLendingPriceColors[2]} ${lupPercentage}% 100%)`}
+          useRcSlider
         />
       )}
       {nestedManualInput ? (
