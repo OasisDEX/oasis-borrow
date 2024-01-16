@@ -206,6 +206,7 @@ export const optimismContracts: OptimismContracts = {
   ajnaRedeemer: contractDesc(ajnaReedemer, optimism.ajna.AjnaRewardsReedemer),
   ajnaBonusRedeemer: contractDesc(ajnaBonusRedeemer, optimism.ajna.AjnaBonusRewardsReedemer),
   morphoBlue: contractDesc(morphoBlue, optimism.morphoblue.MorphoBlue),
+  adaptiveCurveIrm: contractDesc(morphoBlue, optimism.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(balancerVault, optimism.common.BalancerVault),
   // NOT contracts
   cacheApi: 'not-implemented',

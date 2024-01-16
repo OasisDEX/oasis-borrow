@@ -1,3 +1,4 @@
+import { getMarketRate } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider, NetworkIds, networksById } from 'blockchain/networks'
@@ -16,7 +17,10 @@ import type {
 } from 'handlers/product-hub/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
-import { MorphoBlue__factory as MorphoBlueFactory } from 'types/ethers-contracts'
+import {
+  AdaptiveCurveIrm__factory as AdaptiveCurveIrmFactory,
+  MorphoBlue__factory as MorphoBlueFactory,
+} from 'types/ethers-contracts'
 
 async function getMorphoMarketData(
   networkId: OmniSupportedNetworkIds,
@@ -24,6 +28,10 @@ async function getMorphoMarketData(
 ): Promise<ProductHubHandlerResponseData> {
   const rpcProvider = getRpcProvider(networkId)
 
+  const AdaptiveCurveIrmContract = AdaptiveCurveIrmFactory.connect(
+    getNetworkContracts(networkId).adaptiveCurveIrm.address,
+    rpcProvider,
+  )
   const MorphoBlueContract = MorphoBlueFactory.connect(
     getNetworkContracts(networkId).morphoBlue.address,
     rpcProvider,
@@ -47,6 +55,7 @@ async function getMorphoMarketData(
 
         const market = await MorphoBlueContract.market(marketId)
         const marketParams = await MorphoBlueContract.idToMarketParams(marketId)
+        const rate = await AdaptiveCurveIrmContract.borrowRateView(marketParams, market)
 
         const totalSupplyAssets = amountFromWei(
           new BigNumber(market.totalSupplyAssets.toString()),
@@ -66,7 +75,7 @@ async function getMorphoMarketData(
           .shiftedBy(NEGATIVE_WAD_PRECISION)
           .toString()
         const liquidity = totalSupplyAssets.minus(totalBorrowAssets).times(quotePrice).toString()
-        const fee = '0'
+        const fee = getMarketRate(rate.toString()).toString()
         const primaryTokenAddress = marketParams.collateralToken.toLowerCase()
         const secondaryTokenAddress = marketParams.loanToken.toLowerCase()
 

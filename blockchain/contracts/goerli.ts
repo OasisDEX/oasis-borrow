@@ -201,6 +201,7 @@ export const goerliContracts: MainnetContractsWithOptional = {
   ajnaRedeemer: contractDesc(ajnaReedemer, goerli.ajna.AjnaRewardsReedemer),
   ajnaBonusRedeemer: contractDesc(ajnaBonusRedeemer, goerli.ajna.AjnaBonusRewardsReedemer),
   morphoBlue: contractDesc(morphoBlue, goerli.morphoblue.MorphoBlue),
+  adaptiveCurveIrm: contractDesc(morphoBlue, goerli.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(balancerVault, goerli.common.BalancerVault),
   // NOT contracts
   cacheApi: 'https://cache-goerli-staging.staging.summer.fi/api/v1',
