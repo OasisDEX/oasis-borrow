@@ -2,7 +2,6 @@ export const INTERNAL_LINKS = {
   appUrl: 'https://summer.fi',
   homepage: '/',
   about: '/about',
-  discover: '/discover',
   notFound: '/not-found',
   privacy: '/privacy',
   cookie: '/cookie',
@@ -34,7 +33,6 @@ export const EXTERNAL_LINKS = {
     TUTORIALS: 'https://docs.summer.fi/protocols/maker/tutorials-and-guides',
     BORROW:
       'https://docs.summer.fi/protocols/maker/tutorials-and-guides/how-to-open-a-borrow-vault-with-maker',
-    DISCOVER: 'https://docs.summer.fi/products/discover',
     WHAT_IS_MULTIPLY: 'https://docs.summer.fi/products/multiply',
     WHAT_IS_BORROW: 'https://docs.summer.fi/products/borrow',
     WHAT_IS_DPM: 'https://docs.summer.fi/general/what-is-a-smart-defi-account',
