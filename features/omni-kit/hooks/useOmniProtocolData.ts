@@ -55,7 +55,6 @@ export function useOmniProtocolData({
       [networkId, isOracless, collateralToken, quoteToken],
     ),
   )
-
   const [dpmPositionData, dpmPositionError] = useObservable(
     useMemo(
       () =>

@@ -18,7 +18,12 @@ const omniSupportedNetworkIds = [
 
 export type OmniSupportedNetworkIds = (typeof omniSupportedNetworkIds)[number]
 
-const omniSupportedProtocols = [LendingProtocol.Ajna, LendingProtocol.MorphoBlue] as const
+const omniSupportedProtocols = [
+  LendingProtocol.Ajna,
+  LendingProtocol.MorphoBlue,
+  LendingProtocol.AaveV3,
+  LendingProtocol.SparkV3,
+] as const
 
 export type OmniSupportedProtocols = (typeof omniSupportedProtocols)[number]
 

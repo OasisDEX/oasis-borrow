@@ -45,6 +45,7 @@ interface OmniProductControllerProps<Auction, History, Position> {
   collateralToken: string
   customState?: (params: OmniCustomStateParams<Auction, History, Position>) => ReactNode
   isOracless?: boolean
+  singleToken?: boolean
   networkId: OmniSupportedNetworkIds
   positionId?: string
   productType: OmniProductType
@@ -78,6 +79,7 @@ export const OmniProductController = <Auction, History, Position>({
   quoteToken,
   seoTags,
   steps,
+  singleToken,
 }: OmniProductControllerProps<Auction, History, Position>) => {
   const { t } = useTranslation()
 
@@ -216,6 +218,7 @@ export const OmniProductController = <Auction, History, Position>({
                       quoteAddress={dpmPosition.quoteTokenAddress}
                       quoteBalance={isConnected ? quoteBalance : zero}
                       quoteDigits={quoteDigits}
+                      singleToken={singleToken}
                       quoteIcon={tokensIcons.quoteToken}
                       quotePrecision={quotePrecision}
                       quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}

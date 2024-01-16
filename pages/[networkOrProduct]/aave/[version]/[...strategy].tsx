@@ -1,38 +1,50 @@
 import type { NetworkNames } from 'blockchain/networks'
-import { WithConnection } from 'components/connectWallet'
-import { DeferedContextProvider } from 'components/context/DeferedContextProvider'
-import { GasEstimationContextProvider } from 'components/context/GasEstimationContextProvider'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { AppLayout } from 'components/layouts/AppLayout'
-import { aaveContext, AaveContextProvider, isSupportedStrategy } from 'features/aave'
-import { AaveOpenView } from 'features/aave/open/containers/AaveOpenView'
+import { isSupportedStrategy } from 'features/aave'
+import { OmniKitAaveContainer } from 'features/aave/containers/OmniKitAaveContainer'
+import { XStateContainer } from 'features/aave/containers/xStateContainer'
+import { isAaveLikeSimpleEarn } from 'features/aave/helpers/isAaveLikeSimpleEarn'
 import type { ProductType } from 'features/aave/types'
-import { getSurveyType } from 'features/aave/types'
-import { Survey } from 'features/survey'
-import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
+import { getOmniServerSideProps } from 'features/omni-kit/server'
+import type { OmniProductPage, OmniSupportedProtocols } from 'features/omni-kit/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import type { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { BackgroundLight } from 'theme/BackgroundLight'
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const networkOrProduct = ctx.query.networkOrProduct as string
-  const [product, strategy] = ctx.query.strategy as string[]
-  const version = ctx.query.version as string
+interface OpenPositionProps extends OmniProductPage {
+  network: NetworkNames
+  protocol: LendingProtocol
+  product: ProductType
+  strategy: string
+}
+
+export async function getServerSideProps({ locale, query }: GetServerSidePropsContext) {
+  const networkOrProduct = query.networkOrProduct as string
+  const [product, strategy] = query.strategy as string[]
+  const version = query.version as string
   const protocol = `aave${version.toLowerCase()}`
 
   const [supported] = isSupportedStrategy(networkOrProduct, protocol, product, strategy)
   if (supported) {
     return {
       props: {
-        ...(await serverSideTranslations(ctx.locale!, ['common'])),
         network: networkOrProduct,
-        protocol: protocol,
-        product: product,
-        strategy: strategy,
+        protocol,
+        product,
+        strategy,
+        ...(
+          await getOmniServerSideProps({
+            locale,
+            protocol: protocol as OmniSupportedProtocols,
+            query: {
+              position: query.strategy,
+              networkOrProduct,
+            },
+          })
+        ).props,
       },
     }
   }
@@ -45,17 +57,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-function OpenPosition({
-  network,
-  protocol,
-  product,
-  strategy,
-}: {
-  network: NetworkNames
-  protocol: LendingProtocol
-  product: ProductType
-  strategy: string
-}) {
+function OpenPosition({ network, protocol, product, strategy, ...props }: OpenPositionProps) {
   const { replace } = useRouter()
 
   const [supported, definedStrategy] = isSupportedStrategy(network, protocol, product, strategy)
@@ -63,22 +65,20 @@ function OpenPosition({
     return void replace(INTERNAL_LINKS.notFound)
   }
 
+  if (isAaveLikeSimpleEarn(definedStrategy)) {
+    return (
+      <AppLayout>
+        <ProductContextHandler>
+          <OmniKitAaveContainer product={product} definedStrategy={definedStrategy} {...props} />
+        </ProductContextHandler>
+      </AppLayout>
+    )
+  }
+
   return (
     <AppLayout>
       <ProductContextHandler>
-        <GasEstimationContextProvider>
-          <AaveContextProvider>
-            <WithConnection>
-              <WithTermsOfService>
-                <BackgroundLight />
-                <DeferedContextProvider context={aaveContext}>
-                  <AaveOpenView config={definedStrategy} />
-                </DeferedContextProvider>
-                <Survey for={getSurveyType(product)} />
-              </WithTermsOfService>
-            </WithConnection>
-          </AaveContextProvider>
-        </GasEstimationContextProvider>
+        <XStateContainer product={product} definedStrategy={definedStrategy} {...props} />
       </ProductContextHandler>
     </AppLayout>
   )

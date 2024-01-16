@@ -39,7 +39,8 @@ export async function getOmniServerSideProps({
     }
   }
 
-  const [collateralToken, quoteToken] = pair.split('-')
+  const [collateralToken, quoteToken] =
+    pair.split('-').length === 2 ? pair.split('-') : [pair, pair]
   const caseSensitiveCollateralToken = isAddress(collateralToken)
     ? collateralToken.toLowerCase()
     : collateralToken.toUpperCase()

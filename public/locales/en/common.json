@@ -2666,6 +2666,7 @@
   "omni-kit": {
     "headline": {
       "title": "{{collateralToken}}/{{quoteToken}} {{productType}}",
+      "title-single": "{{collateralToken}} {{productType}}",
       "details": {
         "current-market-price": "Current Market Price"
       }
@@ -3215,6 +3216,15 @@
             "title": "This position earns SPK tokens",
             "description": "This Spark position on Summer.fi makes you eligible for SPK token rewards. You are earning automatically, and we will support claiming once the SPK token gets distributed live.",
             "button": "More info on SPK tokens"
+          }
+        },
+        "form": {
+          "title": {
+            "risk": "Things to know before opening an Aave position",
+            "setup": "Configure your Aave {{productType}} Position",
+            "manage": "Manage your Aave {{productType}} Position",
+            "transaction": "Confirm your Aave {{productType}} Position",
+            "transition": "Switch your Aave {{productType}} Position"
           }
         }
       }
