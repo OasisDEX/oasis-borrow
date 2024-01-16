@@ -45,9 +45,15 @@ export const getAjnaEarnData: (networkId: OmniSupportedNetworkIds) => GetEarnDat
         }
       }
 
+      // In case when user accidentally deposits into two or more separate buckets, take the one with the highest lps
+      const bucketWithTheHighestLps = earnPosition.bucketPositions.reduce(
+        (max, current) => (Number(current.lps) > Number(max.lps) ? current : max),
+        earnPosition.bucketPositions[0],
+      )
+
       return {
-        lps: new BigNumber(earnPosition.bucketPositions[0].lps),
-        priceIndex: new BigNumber(earnPosition.bucketPositions[0].index),
+        lps: new BigNumber(bucketWithTheHighestLps.lps),
+        priceIndex: new BigNumber(bucketWithTheHighestLps.index),
         ...cumulativeValues,
       }
     }
