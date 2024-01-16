@@ -169,6 +169,7 @@ export interface OmniSimulationCommon {
   notices: { name: string; data?: { [key: string]: string } }[]
   successes: { name: string; data?: { [key: string]: string } }[]
   warnings: { name: string; data?: { [key: string]: string } }[]
+  getValidations: (params: GetOmniValidationResolverParams) => OmniValidations
 }
 
 export interface OmniValidationItem {
@@ -192,8 +193,9 @@ export type NetworkIdsWithValues<T> = {
   [key in OmniSupportedNetworkIds]?: T
 }
 
+type SimulationValidations = { name: string; data?: { [key: string]: string } }[]
+
 export interface GetOmniValidationsParams {
-  safetySwitchOn: boolean
   collateralBalance: BigNumber
   collateralToken: string
   currentStep: OmniSidebarStep
@@ -205,15 +207,23 @@ export interface GetOmniValidationsParams {
   productType: OmniProductType
   quoteBalance: BigNumber
   quoteToken: string
-  simulationErrors?: OmniSimulationCommon['errors']
-  simulationNotices?: OmniSimulationCommon['notices']
-  simulationSuccesses?: OmniSimulationCommon['successes']
-  simulationWarnings?: OmniSimulationCommon['warnings']
+  simulationErrors?: SimulationValidations
+  simulationNotices?: SimulationValidations
+  simulationSuccesses?: SimulationValidations
+  simulationWarnings?: SimulationValidations
   state: OmniFormState
-  earnIsFormValid?: boolean
   txError?: TxError
   customErrors?: OmniValidationItem[]
   customWarnings?: OmniValidationItem[]
-  isFormFrozen: boolean
+}
+
+export interface GetOmniValidationResolverParams {
   protocolLabel: LendingProtocolLabel
+  safetySwitchOn: boolean
+  isFormFrozen: boolean
+  earnIsFormValid?: boolean
+  customErrors?: OmniValidationItem[]
+  customWarnings?: OmniValidationItem[]
+  customNotices?: OmniValidationItem[]
+  customSuccesses?: OmniValidationItem[]
 }

@@ -20,7 +20,6 @@ import {
   getOmniBorrowPaybackMax,
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
-  getOmniValidations,
 } from 'features/omni-kit/helpers'
 import {
   AjnaEarnDetailsSectionContent,
@@ -83,12 +82,9 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   const {
     environment: {
       collateralAddress,
-      collateralBalance,
       collateralIcon,
       collateralPrice,
       collateralToken,
-      ethBalance,
-      ethPrice,
       isOpening,
       isOracless,
       isOwner,
@@ -104,7 +100,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       quotePrecision,
       quotePrice,
       quoteToken,
-      gasEstimation,
     },
     steps: { currentStep },
     tx: { isTxSuccess, txDetails },
@@ -115,7 +110,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     state: { price },
   } = useAjnaCustomState()
 
-  const ajnaValidations = getAjnaValidation({
+  const ajnaCustomValidations = getAjnaValidation({
     safetySwitchOn: ajnaSafetySwitchOn,
     isOpening,
     position: productContext.position.currentPosition.position,
@@ -124,25 +119,8 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     state: productContext.form.state,
   })
 
-  const validations = getOmniValidations({
+  const validations = productContext.position.simulationCommon.getValidations({
     safetySwitchOn: ajnaSafetySwitchOn,
-    collateralBalance,
-    collateralToken,
-    currentStep,
-    ethBalance,
-    ethPrice,
-    gasEstimationUsd: gasEstimation?.usdValue,
-    isOpening,
-    position: productContext.position.currentPosition.position,
-    productType,
-    quoteBalance,
-    quoteToken,
-    simulationErrors: productContext.position.simulationCommon.errors,
-    simulationNotices: productContext.position.simulationCommon.notices,
-    simulationSuccesses: productContext.position.simulationCommon.successes,
-    simulationWarnings: productContext.position.simulationCommon.warnings,
-    state: productContext.form.state,
-    txError: txDetails?.txError,
     earnIsFormValid:
       productType === OmniProductType.Earn
         ? getAjnaEarnIsFormValid({
@@ -155,8 +133,8 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     isFormFrozen:
       productType === OmniProductType.Earn &&
       (productContext.position.positionAuction as AjnaEarnPositionAuction).isBucketFrozen,
-    customErrors: ajnaValidations.localErrors,
-    customWarnings: ajnaValidations.localWarnings,
+    customErrors: ajnaCustomValidations.localErrors,
+    customWarnings: ajnaCustomValidations.localWarnings,
     protocolLabel: LendingProtocolLabel.ajna,
   })
 

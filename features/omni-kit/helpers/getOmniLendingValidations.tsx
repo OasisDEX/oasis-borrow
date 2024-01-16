@@ -12,7 +12,6 @@ import React from 'react'
 
 interface GetOmniValidationsParams {
   safetySwitchOn: boolean
-  collateralBalance: BigNumber
   isOpening: boolean
   position: OmniGenericPosition
   quoteBalance: BigNumber
@@ -22,7 +21,6 @@ interface GetOmniValidationsParams {
 
 export function getOmniLendingValidations({
   safetySwitchOn,
-  collateralBalance,
   isOpening,
   position,
   quoteBalance,
@@ -31,9 +29,6 @@ export function getOmniLendingValidations({
 }: GetOmniValidationsParams): OmniPartialValidations {
   const localErrors: OmniValidationItem[] = []
 
-  if ('depositAmount' in state && state.depositAmount?.gt(collateralBalance)) {
-    localErrors.push({ message: { translationKey: 'deposit-amount-exceeds-collateral-balance' } })
-  }
   if ('paybackAmount' in state && state.paybackAmount?.gt(quoteBalance)) {
     localErrors.push({ message: { translationKey: 'payback-amount-exceeds-debt-token-balance' } })
   }

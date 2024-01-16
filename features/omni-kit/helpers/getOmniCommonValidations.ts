@@ -12,6 +12,8 @@ import { zero } from 'helpers/zero'
 interface GetOmniValidationsParams {
   collateralToken: string
   ethBalance: BigNumber
+  quoteBalance: BigNumber
+  collateralBalance: BigNumber
   ethPrice: BigNumber
   gasEstimationUsd?: BigNumber
   productType: OmniProductType
@@ -23,6 +25,8 @@ interface GetOmniValidationsParams {
 export function getOmniCommonValidations({
   collateralToken,
   ethBalance,
+  collateralBalance,
+  quoteBalance,
   ethPrice,
   gasEstimationUsd,
   productType,
@@ -33,6 +37,11 @@ export function getOmniCommonValidations({
   const localErrors: OmniValidationItem[] = []
   const localWarnings: OmniValidationItem[] = []
   const isEarnProduct = productType === OmniProductType.Earn
+  const depositBalance = isEarnProduct ? quoteBalance : collateralBalance
+
+  if ('depositAmount' in state && state.depositAmount?.gt(depositBalance)) {
+    localErrors.push({ message: { translationKey: 'deposit-amount-exceeds-collateral-balance' } })
+  }
 
   if (ethFundsForTxValidator({ txError })) {
     localErrors.push({

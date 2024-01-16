@@ -9,7 +9,6 @@ import {
   getOmniBorrowPaybackMax,
   getOmniIsFormEmpty,
   getOmniIsFormEmptyStateGuard,
-  getOmniValidations,
 } from 'features/omni-kit/helpers'
 import {
   MorphoDetailsSectionContent,
@@ -38,37 +37,13 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       quoteAddress,
       quoteBalance,
       quotePrecision,
-      collateralBalance,
-      collateralToken,
-      ethBalance,
-      ethPrice,
-      isOpening,
-      quoteToken,
-      gasEstimation,
     },
     steps: { currentStep },
     tx: { txDetails },
   } = useOmniGeneralContext()
 
-  const validations = getOmniValidations({
+  const validations = productContext.position.simulationCommon.getValidations({
     safetySwitchOn: morphoSafetySwitchOn,
-    collateralBalance,
-    collateralToken,
-    currentStep,
-    ethBalance,
-    ethPrice,
-    gasEstimationUsd: gasEstimation?.usdValue,
-    isOpening,
-    position: productContext.position.currentPosition.position,
-    productType,
-    quoteBalance,
-    quoteToken,
-    simulationErrors: productContext.position.simulationCommon.errors,
-    simulationNotices: productContext.position.simulationCommon.notices,
-    simulationSuccesses: productContext.position.simulationCommon.successes,
-    simulationWarnings: productContext.position.simulationCommon.warnings,
-    state: productContext.form.state,
-    txError: txDetails?.txError,
     isFormFrozen: false,
     protocolLabel: LendingProtocolLabel.morphoblue,
   })

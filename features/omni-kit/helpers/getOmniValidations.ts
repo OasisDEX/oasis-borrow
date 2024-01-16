@@ -1,94 +1,105 @@
+import { mapSimulationValidation } from 'features/omni-kit/components'
 import {
   getOmniCommonValidations,
   getOmniLendingValidations,
-  mapOmniValidations,
+  isOmniFormValid,
 } from 'features/omni-kit/helpers'
-import { resolveOmniValidations } from 'features/omni-kit/helpers/resolveOmniValidations'
 import type {
+  GetOmniValidationResolverParams,
   GetOmniValidationsParams,
-  OmniValidationItem,
   OmniValidations,
 } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 
-export function getOmniValidations({
-  safetySwitchOn,
-  collateralBalance,
-  collateralToken,
-  currentStep,
-  earnIsFormValid = false,
-  ethBalance,
-  ethPrice,
-  gasEstimationUsd,
-  isOpening,
-  position,
-  productType,
-  quoteBalance,
-  quoteToken,
-  simulationErrors = [],
-  simulationNotices = [],
-  simulationSuccesses = [],
-  simulationWarnings = [],
-  state,
-  txError,
-  isFormFrozen,
-  customErrors = [],
-  customWarnings = [],
-  protocolLabel,
-}: GetOmniValidationsParams): OmniValidations {
-  const localErrors: OmniValidationItem[] = [...customErrors]
-  const localWarnings: OmniValidationItem[] = [...customWarnings]
-  const localNotices: OmniValidationItem[] = []
-  const localSuccesses: OmniValidationItem[] = []
-  const isEarnProduct = productType === OmniProductType.Earn
-  const token = isEarnProduct ? quoteToken : collateralToken
-
-  const commonValidations = getOmniCommonValidations({
+export const getOmniValidations =
+  ({
+    collateralBalance,
     collateralToken,
-    quoteToken,
-    state,
-    txError,
-    productType,
+    currentStep,
     ethBalance,
     ethPrice,
     gasEstimationUsd,
-  })
-
-  const lendingValidations = getOmniLendingValidations({
-    safetySwitchOn,
-    collateralBalance,
     isOpening,
     position,
-    state,
-    quoteBalance,
-    protocolLabel,
-  })
-
-  const { errors, warnings, notices, successes } = mapOmniValidations({
-    localErrors,
-    localWarnings,
-    localSuccesses,
-    localNotices,
-    commonValidations,
-    lendingValidations,
-    simulationWarnings,
-    simulationSuccesses,
-    simulationNotices,
-    simulationErrors,
-    collateralToken,
-    quoteToken,
-    token,
-  })
-
-  return resolveOmniValidations({
-    currentStep,
     productType,
-    errors,
-    earnIsFormValid,
-    isFormFrozen,
-    successes,
-    notices,
+    quoteBalance,
+    quoteToken,
+    simulationErrors = [],
+    simulationNotices = [],
+    simulationSuccesses = [],
+    simulationWarnings = [],
     state,
-    warnings,
-  })
-}
+    txError,
+  }: GetOmniValidationsParams) =>
+  ({
+    safetySwitchOn,
+    isFormFrozen,
+    customErrors = [],
+    customWarnings = [],
+    customNotices = [],
+    customSuccesses = [],
+    earnIsFormValid = false,
+    protocolLabel,
+  }: GetOmniValidationResolverParams): OmniValidations => {
+    const isEarnProduct = productType === OmniProductType.Earn
+    const token = isEarnProduct ? quoteToken : collateralToken
+
+    const commonValidations = getOmniCommonValidations({
+      collateralToken,
+      quoteToken,
+      state,
+      txError,
+      productType,
+      ethBalance,
+      collateralBalance,
+      quoteBalance,
+      ethPrice,
+      gasEstimationUsd,
+    })
+
+    const lendingValidations = getOmniLendingValidations({
+      safetySwitchOn,
+      isOpening,
+      position,
+      state,
+      quoteBalance,
+      protocolLabel,
+    })
+
+    const errors = [
+      ...customErrors,
+      ...commonValidations.localErrors,
+      ...lendingValidations.localErrors,
+      ...mapSimulationValidation({ items: simulationErrors, collateralToken, quoteToken, token }),
+    ]
+
+    const warnings = [
+      ...customWarnings,
+      ...commonValidations.localWarnings,
+      ...lendingValidations.localWarnings,
+      ...mapSimulationValidation({ items: simulationWarnings, collateralToken, quoteToken, token }),
+    ]
+    const notices = [
+      ...customNotices,
+      ...mapSimulationValidation({ items: simulationNotices, collateralToken, quoteToken, token }),
+    ]
+    const successes = [
+      ...customSuccesses,
+      ...mapSimulationValidation({
+        items: simulationSuccesses,
+        collateralToken,
+        quoteToken,
+        token,
+      }),
+    ]
+
+    return {
+      isFormValid: isOmniFormValid({ currentStep, productType, state, earnIsFormValid }),
+      hasErrors: errors.length > 0,
+      isFormFrozen,
+      errors,
+      warnings: errors.length > 0 ? [] : warnings,
+      notices,
+      successes,
+    }
+  }
