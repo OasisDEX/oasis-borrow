@@ -3,7 +3,7 @@ import { ProductContextHandler } from 'components/context/ProductContextHandler'
 import { AppLayout } from 'components/layouts/AppLayout'
 import { OmniProductController } from 'features/omni-kit/controllers'
 import { morphoSeoTags } from 'features/omni-kit/protocols/morpho-blue/constants'
-import { useMorphoData } from 'features/omni-kit/protocols/morpho-blue/hooks'
+import { useMorphoData, useMorphoTxHandler } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { morphoPageSeoTags, MorphoWrapper } from 'features/omni-kit/protocols/morpho-blue/layout'
 import { useMorphoMetadata } from 'features/omni-kit/protocols/morpho-blue/metadata'
 import { settings } from 'features/omni-kit/protocols/morpho-blue/settings'
@@ -27,7 +27,7 @@ function MorphoPositionPage(props: MorphoPositionPageProps) {
             customState={({ children }) =>
               children({
                 useDynamicMetadata: useMorphoMetadata,
-                useTxHandler: () => () => {},
+                useTxHandler: useMorphoTxHandler,
               })
             }
             protocol={LendingProtocol.MorphoBlue}

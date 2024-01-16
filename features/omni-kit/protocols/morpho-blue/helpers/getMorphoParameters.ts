@@ -60,7 +60,7 @@ export const getMorphoParameters = async ({
     collateralPrice,
     quotePrice,
     quotePrecision,
-    morphoBlueMarket: '',
+    morphoBlueMarket: position.marketPatams.id,
     proxyAddress: dpmAddress,
     user: walletAddress,
   }
