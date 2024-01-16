@@ -18,16 +18,8 @@ export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) =
     AaveLikeSimpleEarnSuppressValidation: aaveLikeSimpleEarnSuppressValidation,
   } = useAppConfig('features')
   const {
-    environment: {
-      collateralAddress,
-      isOracless,
-      productType,
-      quoteAddress,
-      quoteBalance,
-      quotePrecision,
-    },
+    environment: { collateralAddress, isOracless, productType, quoteAddress },
     steps: { currentStep },
-    tx: { txDetails },
   } = useOmniGeneralContext()
 
   const validations = {

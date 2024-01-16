@@ -6,10 +6,10 @@ import { zero } from 'helpers/zero'
 
 export function useAaveLikeSimpleEarnData({ strategy }: { strategy: IStrategyConfig }) {
   return function ({
-    dpmPositionData,
-    networkId,
-    tokenPriceUSDData,
-    tokensPrecision,
+    dpmPositionData: _dpmPositionData,
+    networkId: _networkId,
+    tokenPriceUSDData: _tokenPriceUSDData,
+    tokensPrecision: _tokensPrecision,
   }: OmniProtocolHookProps) {
     const aggregatedData = {
       auction: {},
