@@ -6,6 +6,7 @@ import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNo
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { getOmniValidations } from 'features/omni-kit/helpers'
 import { formatSwapData } from 'features/omni-kit/protocols/ajna/helpers'
 import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState, useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
@@ -261,6 +262,10 @@ export function OmniProductContextProvider({
       ethPrice,
       quoteBalance,
       quotePrecision,
+      collateralToken,
+      quoteToken,
+      isOpening,
+      gasEstimation,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -297,10 +302,24 @@ export function OmniProductContextProvider({
       form,
       position: {
         simulationCommon: {
-          errors: simulation?.errors as OmniSimulationCommon['errors'],
-          warnings: simulation?.warnings as OmniSimulationCommon['warnings'],
-          notices: simulation?.notices as OmniSimulationCommon['notices'],
-          successes: simulation?.successes as OmniSimulationCommon['successes'],
+          getValidations: getOmniValidations({
+            collateralBalance,
+            collateralToken,
+            currentStep,
+            ethBalance,
+            ethPrice,
+            gasEstimationUsd: gasEstimation?.usdValue,
+            isOpening,
+            position,
+            productType,
+            quoteBalance,
+            quoteToken,
+            simulationErrors: simulation?.errors as OmniSimulationCommon['errors'],
+            simulationWarnings: simulation?.warnings as OmniSimulationCommon['warnings'],
+            simulationNotices: simulation?.notices as OmniSimulationCommon['notices'],
+            simulationSuccesses: simulation?.successes as OmniSimulationCommon['successes'],
+            state,
+          }),
         },
         setCachedPosition: (positionSet: PositionSet<typeof position>) =>
           setCachedPosition(positionSet),
