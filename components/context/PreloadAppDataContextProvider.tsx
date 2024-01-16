@@ -37,7 +37,7 @@ export function usePreloadAppDataContext(): PreloadAppDataContext {
 
 export function PreloadAppDataContextProvider({ children }: PropsWithChildren<{}>) {
   const [context, setContext] = useState<PreloadAppDataContext | undefined>(undefined)
-  const { AjnaSafetySwitch } = getLocalAppConfig('features')
+  const { AjnaSafetySwitch, MorphoSafetySwitch } = getLocalAppConfig('features')
 
   const [config, setConfig] = useState<ConfigResponseType | undefined>(undefined)
   const { data: productHub } = useProductHubData({
@@ -46,6 +46,7 @@ export function PreloadAppDataContextProvider({ children }: PropsWithChildren<{}
       LendingProtocol.AaveV2,
       LendingProtocol.AaveV3,
       LendingProtocol.Maker,
+      ...(MorphoSafetySwitch ? [] : [LendingProtocol.MorphoBlue]),
       LendingProtocol.SparkV3,
     ].filter((p) => p) as LendingProtocol[],
   })
