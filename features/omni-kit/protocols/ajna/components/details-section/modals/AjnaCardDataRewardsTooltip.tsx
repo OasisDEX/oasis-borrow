@@ -52,7 +52,7 @@ export function AjnaCardDataRewardsTooltip({
               </Box>
               <Box sx={{ mb: 2 }}>
                 <Text as="span" sx={{ fontWeight: 'semiBold' }}>
-                  {formatCryptoBalance(total.minus(claimable))} $AJNA{' '}
+                  {formatCryptoBalance(total)} $AJNA{' '}
                 </Text>
                 <Text as="span" sx={{ fontWeight: 'regular' }}>
                   {t('ajna.content-card.borrow-rate.tooltip-claimable-next-period')}
