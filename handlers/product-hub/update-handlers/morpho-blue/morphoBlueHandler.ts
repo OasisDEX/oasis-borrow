@@ -48,10 +48,10 @@ async function getMorphoMarketData(
   )
 
   try {
-    return await Object.keys(markets).reduce<Promise<{ table: any[]; warnings: [] }>>(
-      async (v, curr) => {
-        const [collateralToken, quoteToken] = curr.split('-')
-        const marketId = markets[curr]
+    return await Object.keys(markets).reduce<Promise<ProductHubHandlerResponseData>>(
+      async (v, pair) => {
+        const [collateralToken, quoteToken] = pair.split('-')
+        const marketId = markets[pair]
 
         const market = await MorphoBlueContract.market(marketId)
         const marketParams = await MorphoBlueContract.idToMarketParams(marketId)
