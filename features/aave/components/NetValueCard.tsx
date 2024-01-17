@@ -1,50 +1,29 @@
-import type { IPosition } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
 import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
-import type { calculateViewValuesForPosition } from 'features/aave/services'
-import { StrategyType } from 'features/aave/types'
+import type { OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers'
 import { formatPrecision } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export function NetValueCard({
-  strategyType,
-  currentPosition,
-  nextPositionThings,
-  currentPositionThings,
+  netValue,
+  nextNetValue,
   modal,
   footnote,
-}: {
-  strategyType: StrategyType
-  currentPositionThings: ReturnType<typeof calculateViewValuesForPosition>
-  currentPosition: IPosition
-  nextPositionThings: ReturnType<typeof calculateViewValuesForPosition> | undefined
+}: OmniNetValuePnlDataReturnType & {
+  nextNetValue?: BigNumber
   modal?: React.ReactNode
   footnote?: string
 }) {
   const { t } = useTranslation()
-
-  const currentNetValue =
-    strategyType === StrategyType.Long
-      ? currentPositionThings.netValueInDebtToken
-      : currentPositionThings.netValueInCollateralToken
-  const nextNetValue =
-    nextPositionThings &&
-    (strategyType === StrategyType.Long
-      ? nextPositionThings.netValueInDebtToken
-      : nextPositionThings.netValueInCollateralToken)
-  const netValueSymbol =
-    strategyType === StrategyType.Long
-      ? currentPosition.debt.symbol
-      : currentPosition.collateral.symbol
-
   return (
     <DetailsSectionContentCard
       title={t('system.net-value')}
-      value={`${formatPrecision(currentNetValue, 2)} ${netValueSymbol}`}
+      value={`${formatPrecision(netValue.inToken, 2)} ${netValue.netValueToken}`}
       footnote={footnote}
       change={
         nextNetValue && {
-          variant: nextNetValue.gt(currentNetValue) ? 'positive' : 'negative',
+          variant: nextNetValue.gt(netValue.inToken) ? 'positive' : 'negative',
           value: `${formatPrecision(nextNetValue, 2)} ${t('after')}`,
         }
       }

@@ -1,5 +1,4 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
-import type { NetworkIds } from 'blockchain/networks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import {
   type AjnaPositionAggregatedDataAuctions,
@@ -11,6 +10,7 @@ import {
   mapAjnaEarnEvents,
 } from 'features/omni-kit/protocols/ajna/history'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
@@ -107,7 +107,7 @@ export const getAjnaPositionAggregatedData$ = ({
 }: {
   dpmPositionData: DpmPositionData
   position: AjnaGenericPosition
-  networkId: NetworkIds
+  networkId: OmniSupportedNetworkIds
 }): Observable<AjnaPositionAggregatedDataResponse> => {
   const { proxy } = dpmPositionData
 

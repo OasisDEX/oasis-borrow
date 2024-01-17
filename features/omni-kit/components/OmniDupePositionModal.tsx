@@ -1,8 +1,9 @@
-import { NetworkIds, networksById } from 'blockchain/networks'
+import { networksById } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { getOraclessProductUrl } from 'features/ajna/pool-finder/helpers'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useModalContext } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -19,7 +20,7 @@ export interface OmniDupePositionModalProps {
   collateralToken: string
   dpmAccounts: UserDpmAccount[]
   events: CreatePositionEvent[]
-  networkId?: NetworkIds
+  networkId: OmniSupportedNetworkIds
   productType: OmniProductType
   protocol: LendingProtocol
   quoteAddress: string
@@ -33,7 +34,7 @@ export function OmniDupePositionModal({
   collateralToken,
   dpmAccounts,
   events,
-  networkId = NetworkIds.MAINNET,
+  networkId,
   productType,
   protocol,
   quoteAddress,

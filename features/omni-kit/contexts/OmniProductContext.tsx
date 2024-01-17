@@ -6,6 +6,7 @@ import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNo
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { getOmniValidations } from 'features/omni-kit/helpers'
 import { formatSwapData } from 'features/omni-kit/protocols/ajna/helpers'
 import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState, useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
@@ -15,7 +16,6 @@ import type {
 } from 'features/omni-kit/state/multiply'
 import type {
   OmniGenericPosition,
-  OmniIsCachedPosition,
   OmniSimulationCommon,
   OmniValidations,
 } from 'features/omni-kit/types'
@@ -66,6 +66,8 @@ interface CommonMetadataElements {
   riskSidebar?: ReactNode
 }
 
+export type ShouldShowDynamicLtvMetadata = (params: { includeCache: boolean }) => boolean
+
 export type LendingMetadata = CommonMetadata & {
   handlers?: OmniLendingMetadataHandlers
   values: CommonMetadataValues & {
@@ -77,7 +79,7 @@ export type LendingMetadata = CommonMetadata & {
     debtMax: BigNumber
     debtMin: BigNumber
     paybackMax: BigNumber
-    shouldShowDynamicLtv: boolean
+    shouldShowDynamicLtv: ShouldShowDynamicLtvMetadata
   }
   elements: CommonMetadataElements & {
     highlighterOrderInformation: ReactNode
@@ -95,7 +97,7 @@ export type SupplyMetadata = CommonMetadata & {
   elements: CommonMetadataElements & {
     earnExtraUiDropdownContent?: ReactNode
     earnFormOrder: ReactNode
-    earnFormOrderAsElement: FC<OmniIsCachedPosition>
+    earnFormOrderAsElement: FC
     extraEarnInput?: ReactNode
     extraEarnInputDeposit?: ReactNode
     extraEarnInputWithdraw?: ReactNode
@@ -260,6 +262,10 @@ export function OmniProductContextProvider({
       ethPrice,
       quoteBalance,
       quotePrecision,
+      collateralToken,
+      quoteToken,
+      isOpening,
+      gasEstimation,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -296,10 +302,24 @@ export function OmniProductContextProvider({
       form,
       position: {
         simulationCommon: {
-          errors: simulation?.errors as OmniSimulationCommon['errors'],
-          warnings: simulation?.warnings as OmniSimulationCommon['warnings'],
-          notices: simulation?.notices as OmniSimulationCommon['notices'],
-          successes: simulation?.successes as OmniSimulationCommon['successes'],
+          getValidations: getOmniValidations({
+            collateralBalance,
+            collateralToken,
+            currentStep,
+            ethBalance,
+            ethPrice,
+            gasEstimationUsd: gasEstimation?.usdValue,
+            isOpening,
+            position,
+            productType,
+            quoteBalance,
+            quoteToken,
+            simulationErrors: simulation?.errors as OmniSimulationCommon['errors'],
+            simulationWarnings: simulation?.warnings as OmniSimulationCommon['warnings'],
+            simulationNotices: simulation?.notices as OmniSimulationCommon['notices'],
+            simulationSuccesses: simulation?.successes as OmniSimulationCommon['successes'],
+            state,
+          }),
         },
         setCachedPosition: (positionSet: PositionSet<typeof position>) =>
           setCachedPosition(positionSet),

@@ -1,9 +1,9 @@
 import { NetworkIds } from 'blockchain/networks'
-import type { NetworkIdsWithArray } from 'features/omni-kit/types'
+import type { NetworkIdsWithValues, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 
 interface IsPoolSupportingMultiplyParams {
   collateralToken: string
-  networkId: NetworkIds
+  networkId: OmniSupportedNetworkIds
   quoteToken: string
 }
 
@@ -21,7 +21,7 @@ const tokensWithMultiplyEthereum = [
 ]
 const tokensWithMultiplyBase = ['CBETH', 'ETH', 'USDC', 'USDBC', 'WSTETH']
 
-const tokensWithMultiply: NetworkIdsWithArray<string> = {
+const tokensWithMultiply: NetworkIdsWithValues<string[]> = {
   [NetworkIds.MAINNET]: tokensWithMultiplyEthereum,
   [NetworkIds.GOERLI]: tokensWithMultiplyEthereum,
   [NetworkIds.BASEMAINNET]: tokensWithMultiplyBase,

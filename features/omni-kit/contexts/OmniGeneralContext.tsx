@@ -9,7 +9,7 @@ import {
   isOmniExternalStep,
   isOmniStepWithTransaction,
 } from 'features/omni-kit/contexts'
-import { isOmniSupportedNetwork, isShortPosition } from 'features/omni-kit/helpers'
+import { isShortPosition } from 'features/omni-kit/helpers'
 import type {
   OmniProductType,
   OmniSidebarEditingStep,
@@ -118,6 +118,7 @@ export function OmniGeneralContextProvider({
     isOpening,
     isProxyWithManyPositions,
     network,
+    networkId,
     walletNetwork,
   } = props
   const { walletAddress } = useAccount()
@@ -156,12 +157,6 @@ export function OmniGeneralContextProvider({
       setGasEstimation,
       txDetails,
     }
-  }
-
-  const networkId = network.id
-
-  if (!isOmniSupportedNetwork(networkId)) {
-    throw new Error(`Unsupported network: ${network.name}`)
   }
 
   const context: OmniGeneralContext = useMemo(() => {

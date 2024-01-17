@@ -1,6 +1,7 @@
 import type { AjnaCommonDependencies, AjnaCommonPayload, AjnaPosition } from '@oasisdex/dma-library'
 import { strategies } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
+import { resolvePaybackAmount } from 'features/omni-kit/helpers'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import { zero } from 'helpers/zero'
@@ -78,9 +79,7 @@ export const ajnaActionPaybackWithdrawBorrow = ({
   const borrowishPosition = position as AjnaPosition
   const borrowishSimulation = simulation as AjnaPosition | undefined
 
-  const resolvedPaybackAmount = paybackAmount?.gt(quoteBalance)
-    ? quoteBalance
-    : paybackAmount || zero
+  const resolvedPaybackAmount = resolvePaybackAmount({ paybackAmount, quoteBalance })
 
   return strategies.ajna.borrow.paybackWithdraw(
     {

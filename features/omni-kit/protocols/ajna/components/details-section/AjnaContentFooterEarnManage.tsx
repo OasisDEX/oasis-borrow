@@ -1,6 +1,5 @@
 import type { AjnaEarnPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import type { NetworkIds } from 'blockchain/networks'
 import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import {
   OmniContentCard,
@@ -12,6 +11,7 @@ import {
   useAjnaCardDataTotalAjnaRewards,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { isPoolWithRewards } from 'features/omni-kit/protocols/ajna/helpers'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import React from 'react'
 
 interface AjnaContentFooterEarnManageProps {
@@ -21,7 +21,7 @@ interface AjnaContentFooterEarnManageProps {
   collateralToken: string
   isOracless: boolean
   isSimulationLoading?: boolean
-  networkId: NetworkIds
+  networkId: OmniSupportedNetworkIds
   owner: string
   position: AjnaEarnPosition
   projectedAnnualReward: BigNumber

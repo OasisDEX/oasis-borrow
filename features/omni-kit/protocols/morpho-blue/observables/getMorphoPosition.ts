@@ -1,10 +1,13 @@
 import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { views } from '@oasisdex/dma-library'
-import BigNumber from 'bignumber.js'
-import type { Context } from 'blockchain/network.types'
+import type BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
 import { getRpcProvider } from 'blockchain/networks'
+import { DEFAULT_TOKEN_DIGITS } from 'components/constants'
 import type { DpmPositionData } from 'features/omni-kit/observables'
-import { OmniProductType } from 'features/omni-kit/types'
+import { getMorphoCumulatives } from 'features/omni-kit/protocols/morpho-blue/helpers'
+import { morphoMarkets } from 'features/omni-kit/protocols/morpho-blue/settings'
+import type { OmniSupportedNetworkIds, OmniTokensPrecision } from 'features/omni-kit/types'
 import { LendingProtocol } from 'lendingProtocols'
 import { isEqual } from 'lodash'
 import type { Observable } from 'rxjs'
@@ -12,40 +15,32 @@ import { combineLatest, iif, of } from 'rxjs'
 import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
 
 export function getMorphoPosition$(
-  context$: Observable<Context>,
   onEveryBlock$: Observable<number> | undefined,
   collateralPrice: BigNumber,
   quotePrice: BigNumber,
-  { product, protocol, proxy }: DpmPositionData,
+  { collateralToken, protocol, proxy, quoteToken }: DpmPositionData,
+  networkId: OmniSupportedNetworkIds,
+  tokensPrecision: OmniTokensPrecision,
 ): Observable<MorphoBluePosition> {
-  return combineLatest(
-    context$,
-    iif(() => onEveryBlock$ !== undefined, onEveryBlock$, of(undefined)),
-  ).pipe(
-    switchMap(async ([context]) => {
+  return combineLatest(iif(() => onEveryBlock$ !== undefined, onEveryBlock$, of(undefined))).pipe(
+    switchMap(async () => {
       if (protocol.toLowerCase() !== LendingProtocol.MorphoBlue) return null
-      const commonPayload = {
-        collateralPrice,
-        quotePrice,
-        proxyAddress: proxy,
-      }
 
-      const commonDependency = {
-        provider: getRpcProvider(context.chainId),
-        getCumulatives: () => ({
-          borrowCumulativeDepositUSD: new BigNumber(200),
-          borrowCumulativeFeesUSD: new BigNumber(5),
-          borrowCumulativeWithdrawUSD: new BigNumber(0),
-        }),
-      }
-
-      switch (product as OmniProductType) {
-        case OmniProductType.Borrow:
-        case OmniProductType.Multiply:
-          return await views.morpho.getPosition(commonPayload, commonDependency)
-        case OmniProductType.Earn:
-          return null
-      }
+      return await views.morpho.getPosition(
+        {
+          collateralPrecision: tokensPrecision?.collateralPrecision ?? DEFAULT_TOKEN_DIGITS,
+          collateralPriceUSD: collateralPrice,
+          marketId: morphoMarkets[networkId]?.[`${collateralToken}-${quoteToken}`] as string,
+          proxyAddress: proxy,
+          quotePrecision: tokensPrecision?.quotePrecision ?? DEFAULT_TOKEN_DIGITS,
+          quotePriceUSD: quotePrice,
+        },
+        {
+          getCumulatives: getMorphoCumulatives(),
+          morphoAddress: getNetworkContracts(networkId).morphoBlue.address,
+          provider: getRpcProvider(networkId),
+        },
+      )
     }),
     distinctUntilChanged(isEqual),
     shareReplay(1),

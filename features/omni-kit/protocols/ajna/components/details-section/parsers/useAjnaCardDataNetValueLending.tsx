@@ -1,57 +1,28 @@
-import type { AjnaCumulativesData } from '@oasisdex/dma-library'
-import type BigNumber from 'bignumber.js'
 import type { OmniContentCardExtra } from 'features/omni-kit/components/details-section'
-import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section/modals/OmniMultiplyNetValueModal'
+import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section'
+import type { OmniNetValuePnlDataReturnType } from 'features/omni-kit/helpers'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ajnaExtensionTheme } from 'theme'
 
-interface AjnaCardDataNetValueLendingParams {
-  collateralPrice: BigNumber
-  collateralToken: string
-  cumulatives: AjnaCumulativesData
-  netValue: BigNumber
-  pnl?: BigNumber
-  pnlUSD?: BigNumber
-}
-
-export function useAjnaCardDataNetValueLending({
-  collateralPrice,
-  collateralToken,
-  cumulatives,
-  netValue,
-  pnl,
-}: AjnaCardDataNetValueLendingParams): OmniContentCardExtra {
+export function useAjnaCardDataNetValueLending(
+  netValuePnlData?: OmniNetValuePnlDataReturnType,
+): OmniContentCardExtra | undefined {
   const { t } = useTranslation()
-  return {
-    extra: (
-      <>
-        {pnl &&
-          `${t('omni-kit.content-card.net-value.footnote')} ${pnl.gte(zero) ? '+' : ''}
-      ${formatDecimalAsPercent(pnl)}`}
-      </>
-    ),
-    modal: (
-      <OmniMultiplyNetValueModal
-        netValueTokenPrice={collateralPrice}
-        netValueToken={collateralToken}
-        cumulatives={{
-          cumulativeDepositUSD: cumulatives.borrowCumulativeDepositUSD,
-          cumulativeWithdrawUSD: cumulatives.borrowCumulativeWithdrawUSD,
-          cumulativeFeesUSD: cumulatives.borrowCumulativeFeesUSD,
-          cumulativeWithdrawInCollateralToken: cumulatives.borrowCumulativeCollateralWithdraw,
-          cumulativeDepositInCollateralToken: cumulatives.borrowCumulativeCollateralDeposit,
-          cumulativeFeesInCollateralToken: cumulatives.borrowCumulativeFeesInCollateralToken,
-          cumulativeWithdrawInQuoteToken: cumulatives.borrowCumulativeWithdrawInQuoteToken,
-          cumulativeDepositInQuoteToken: cumulatives.borrowCumulativeDepositInQuoteToken,
-          cumulativeFeesInQuoteToken: cumulatives.borrowCumulativeFeesInQuoteToken,
-        }}
-        netValueUSD={netValue}
-        pnl={pnl}
-        theme={ajnaExtensionTheme}
-      />
-    ),
-  }
+  return netValuePnlData
+    ? {
+        extra: (
+          <>
+            {netValuePnlData.pnl?.percentage &&
+              `${t('omni-kit.content-card.net-value.footnote')} ${
+                netValuePnlData.pnl.percentage.gte(zero) ? '+' : ''
+              }
+      ${formatDecimalAsPercent(netValuePnlData.pnl.percentage)}`}
+          </>
+        ),
+        modal: <OmniMultiplyNetValueModal {...netValuePnlData} theme={ajnaExtensionTheme} />,
+      }
+    : undefined
 }

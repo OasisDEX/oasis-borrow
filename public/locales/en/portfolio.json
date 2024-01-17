@@ -77,8 +77,8 @@
     "staking": "Staking"
   },
   "lending-range-types": {
-    "0": "Available",
-    "1": "Unutilized",
+    "0": "Unutilized",
+    "1": "Available",
     "2": "Active"
   },
   "details-tooltips": {

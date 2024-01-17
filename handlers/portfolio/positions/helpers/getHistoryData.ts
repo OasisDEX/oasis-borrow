@@ -7,35 +7,33 @@ import { configCacheTime, getRemoteConfigWithCache } from 'helpers/config'
 
 const historyQuery = gql`
   query historyProxies($proxyAddresses: [String]) {
-    proxies(where: { id_in: $proxyAddresses }) {
-      position {
-        id
-        cumulativeDeposit
-        cumulativeWithdraw
-        cumulativeFees
-        cumulativeFeesInQuoteToken
-        cumulativeDepositInQuoteToken
-        cumulativeWithdrawInQuoteToken
-        cumulativeDepositInCollateralToken
-        cumulativeWithdrawInCollateralToken
-      }
+    positions(where: { account_in: $proxyAddresses }) {
+      id
+      cumulativeDeposit
+      cumulativeWithdraw
+      cumulativeFees
+      cumulativeFeesInQuoteToken
+      cumulativeFeesInCollateralToken
+      cumulativeDepositInQuoteToken
+      cumulativeWithdrawInQuoteToken
+      cumulativeDepositInCollateralToken
+      cumulativeWithdrawInCollateralToken
     }
   }
 `
 
 type HistoryQueryResponse = {
-  proxies: {
-    position: {
-      id: string
-      cumulativeDeposit: string
-      cumulativeWithdraw: string
-      cumulativeFees: string
-      cumulativeFeesInQuoteToken: string
-      cumulativeDepositInQuoteToken: string
-      cumulativeWithdrawInQuoteToken: string
-      cumulativeDepositInCollateralToken: string
-      cumulativeWithdrawInCollateralToken: string
-    }
+  positions: {
+    id: string
+    cumulativeDeposit: string
+    cumulativeWithdraw: string
+    cumulativeFees: string
+    cumulativeFeesInQuoteToken: string
+    cumulativeFeesInCollateralToken: string
+    cumulativeDepositInQuoteToken: string
+    cumulativeWithdrawInQuoteToken: string
+    cumulativeDepositInCollateralToken: string
+    cumulativeWithdrawInCollateralToken: string
   }[]
 }
 
@@ -46,6 +44,7 @@ export type HistoryResponse = {
   cumulativeWithdraw: BigNumber
   cumulativeFees: BigNumber
   cumulativeFeesInQuoteToken: BigNumber
+  cumulativeFeesInCollateralToken: BigNumber
   cumulativeDepositInQuoteToken: BigNumber
   cumulativeWithdrawInQuoteToken: BigNumber
   cumulativeDepositInCollateralToken: BigNumber
@@ -81,7 +80,7 @@ export const getHistoryData = async ({
     const historyCall = request<HistoryQueryResponse>(subgraphUrl, historyQuery, params).then(
       (data) => ({
         networkId: network,
-        positions: data.proxies,
+        positions: data.positions,
       }),
     )
     const positionsHistoryList = await historyCall.then(({ networkId, positions }) => {
@@ -89,23 +88,20 @@ export const getHistoryData = async ({
         .map((pos) => {
           return {
             networkId,
-            id: pos.position.id,
-            cumulativeDeposit: new BigNumber(pos.position.cumulativeDeposit),
-            cumulativeWithdraw: new BigNumber(pos.position.cumulativeWithdraw),
-            cumulativeFees: new BigNumber(pos.position.cumulativeFees),
-            cumulativeFeesInQuoteToken: new BigNumber(pos.position.cumulativeFeesInQuoteToken),
-            cumulativeDepositInQuoteToken: new BigNumber(
-              pos.position.cumulativeDepositInQuoteToken,
-            ),
-            cumulativeWithdrawInQuoteToken: new BigNumber(
-              pos.position.cumulativeWithdrawInQuoteToken,
-            ),
+            id: pos.id,
+            cumulativeDeposit: new BigNumber(pos.cumulativeDeposit),
+            cumulativeWithdraw: new BigNumber(pos.cumulativeWithdraw),
+            cumulativeFees: new BigNumber(pos.cumulativeFees),
+            cumulativeFeesInQuoteToken: new BigNumber(pos.cumulativeFeesInQuoteToken),
+            cumulativeDepositInQuoteToken: new BigNumber(pos.cumulativeDepositInQuoteToken),
+            cumulativeWithdrawInQuoteToken: new BigNumber(pos.cumulativeWithdrawInQuoteToken),
             cumulativeDepositInCollateralToken: new BigNumber(
-              pos.position.cumulativeDepositInCollateralToken,
+              pos.cumulativeDepositInCollateralToken,
             ),
             cumulativeWithdrawInCollateralToken: new BigNumber(
-              pos.position.cumulativeWithdrawInCollateralToken,
+              pos.cumulativeWithdrawInCollateralToken,
             ),
+            cumulativeFeesInCollateralToken: new BigNumber(pos.cumulativeFeesInCollateralToken),
           }
         })
         .flat()

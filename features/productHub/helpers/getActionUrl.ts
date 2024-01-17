@@ -106,8 +106,7 @@ export function getActionUrl({
 
       return `/vaults/${openUrl}/${ilkInUrl}`
     case LendingProtocol.MorphoBlue:
-      // TODO: add Morpho Blue handler
-      return '/'
+      return `/${network}/morpho/${product[0]}/${primaryToken}-${secondaryToken}`
     case LendingProtocol.SparkV3:
       return getAaveLikeViewStrategyUrl({
         version: 'v3',

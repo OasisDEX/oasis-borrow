@@ -1,6 +1,6 @@
 import type { GetEarnData } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
-import type { NetworkIds } from 'blockchain/networks'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import { zero } from 'helpers/zero'
@@ -13,7 +13,7 @@ const defaultResponse = {
   earnCumulativeQuoteTokenWithdraw: zero,
 }
 
-export const getAjnaEarnData: (networkId: NetworkIds) => GetEarnData =
+export const getAjnaEarnData: (networkId: OmniSupportedNetworkIds) => GetEarnData =
   (networkId) => async (proxy: string, poolAddress: string) => {
     const { response } = (await loadSubgraph('Ajna', 'getAjnaEarnPositionData', networkId, {
       dpmProxyAddress: proxy.toLowerCase(),
@@ -45,9 +45,15 @@ export const getAjnaEarnData: (networkId: NetworkIds) => GetEarnData =
         }
       }
 
+      // In case when user accidentally deposits into two or more separate buckets, take the one with the highest lps
+      const bucketWithTheHighestLps = earnPosition.bucketPositions.reduce(
+        (max, current) => (Number(current.lps) > Number(max.lps) ? current : max),
+        earnPosition.bucketPositions[0],
+      )
+
       return {
-        lps: new BigNumber(earnPosition.bucketPositions[0].lps),
-        priceIndex: new BigNumber(earnPosition.bucketPositions[0].index),
+        lps: new BigNumber(bucketWithTheHighestLps.lps),
+        priceIndex: new BigNumber(bucketWithTheHighestLps.index),
         ...cumulativeValues,
       }
     }

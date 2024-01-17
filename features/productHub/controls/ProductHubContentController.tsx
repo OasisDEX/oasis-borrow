@@ -47,6 +47,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     AjnaBase: ajnaBaseEnabled,
     AjnaPoolFinder: ajnaPoolFinderEnabled,
     AjnaSafetySwitch: ajnaSafetySwitchOn,
+    MorphoBlue: morphoBlueEnabled,
   } = useAppConfig('features')
 
   const ajnaOraclessPoolPairsKeys = Object.keys(
@@ -61,6 +62,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
     () =>
       tableData.filter(({ label, network, protocol }) => {
         const isAjna = protocol === LendingProtocol.Ajna
+        const isMorpho = protocol === LendingProtocol.MorphoBlue
 
         const unalailableChecksList = [
           // these checks predicate that the pool/strategy is UNAVAILABLE
@@ -69,6 +71,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
             !ajnaPoolFinderEnabled &&
             ajnaOraclessPoolPairsKeys.includes(label.replace('/', '-')),
           isAjna && network === NetworkNames.baseMainnet && !ajnaBaseEnabled,
+          isMorpho && !morphoBlueEnabled,
         ]
         if (unalailableChecksList.some((check) => !!check)) {
           return false

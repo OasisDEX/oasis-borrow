@@ -1,9 +1,8 @@
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { getPortfolioTokenProducts } from 'components/portfolio/helpers/getPortfolioTokenProducts'
+import type { PortfolioWalletAsset } from 'components/portfolio/types/domain-types'
 import { uniq } from 'lodash'
 import { useMemo } from 'react'
-
-import type { PortfolioWalletAsset } from 'lambdas/lib/shared/src/domain-types'
 
 export const usePortfolioMatchingAssets = ({ assets }: { assets?: PortfolioWalletAsset[] }) => {
   const {

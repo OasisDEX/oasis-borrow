@@ -1,6 +1,5 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import type { NetworkIds } from 'blockchain/networks'
 import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import {
   OmniContentCard,
@@ -13,6 +12,7 @@ import {
   useAjnaCardDataAvailableToWithdrawLending,
   useAjnaCardDataBorrowRate,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import React from 'react'
 
 interface AjnaContentFooterBorrowProps {
@@ -22,12 +22,11 @@ interface AjnaContentFooterBorrowProps {
   isOracless: boolean
   isOwner: boolean
   isSimulationLoading?: boolean
-  networkId: NetworkIds
+  networkId: OmniSupportedNetworkIds
   owner: string
   position: AjnaPosition
   quotePrice: BigNumber
   quoteToken: string
-  afterAvailableToBorrow?: BigNumber
   simulation?: AjnaPosition
 }
 
@@ -43,7 +42,6 @@ export function AjnaContentFooterBorrow({
   position,
   quotePrice,
   quoteToken,
-  afterAvailableToBorrow,
   simulation,
 }: AjnaContentFooterBorrowProps) {
   const netValue = position.collateralAmount
@@ -92,7 +90,7 @@ export function AjnaContentFooterBorrow({
   })
 
   const availableToBorrowContentCardCommonData = useOmniCardDataTokensValue({
-    afterTokensAmount: afterAvailableToBorrow,
+    afterTokensAmount: simulation?.debtAvailable(),
     tokensAmount: position.debtAvailable(),
     tokensSymbol: quoteToken,
     translationCardName: 'available-to-borrow',

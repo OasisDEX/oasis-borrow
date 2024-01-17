@@ -38,6 +38,7 @@ import * as mcdJug from 'blockchain/abi/mcd-jug.json'
 import * as mcdPot from 'blockchain/abi/mcd-pot.json'
 import * as mcdSpot from 'blockchain/abi/mcd-spot.json'
 import * as merkleRedeemer from 'blockchain/abi/merkle-redeemer.json'
+import * as morphoBlue from 'blockchain/abi/morpho-blue.json'
 import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.json'
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
@@ -177,6 +178,8 @@ export const baseContracts: MainnetContractsWithOptional = {
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, base.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, base.ajna.AjnaRewardsReedemer),
   ajnaBonusRedeemer: contractDesc(ajnaBonusRedeemer, base.ajna.AjnaBonusRewardsReedemer),
+  morphoBlue: contractDesc(morphoBlue, base.morphoblue.MorphoBlue),
+  adaptiveCurveIrm: contractDesc(morphoBlue, base.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(balancerVault, base.common.BalancerVault),
   // NOT contracts
   cacheApi: 'not-implemented',

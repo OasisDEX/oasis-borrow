@@ -1,15 +1,14 @@
 import BigNumber from 'bignumber.js'
-import type { NetworkIds } from 'blockchain/networks'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
 import { ajnaUnifiedHistoryItem } from 'features/omni-kit/protocols/ajna/history'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { mapAjnaAuctionResponse } from 'features/positionHistory/mapAjnaAuctionResponse'
 import { mapPositionHistoryResponseEvent } from 'features/positionHistory/mapPositionHistoryResponseEvent'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface AjnaPositionAggregatedDataAuctions {
-  alreadyTaken: boolean
   collateral: BigNumber
   debtToCover: BigNumber
   id: string
@@ -23,7 +22,7 @@ export interface AjnaPositionAggregatedData {
 
 export const getAjnaPositionAggregatedData = async (
   proxy: string,
-  networkId: NetworkIds,
+  networkId: OmniSupportedNetworkIds,
   collateralTokenAddress: string,
   quoteTokenAddress: string,
 ): Promise<AjnaPositionAggregatedData> => {
@@ -40,15 +39,12 @@ export const getAjnaPositionAggregatedData = async (
   if (errors.length) throw new Error([`Missing data for ${proxy} proxy:`, ...errors].join('\n'))
 
   return {
-    auctions: response.auctions.map(
-      ({ alreadyTaken, collateral, debtToCover, id, inLiquidation }) => ({
-        alreadyTaken,
-        collateral: new BigNumber(collateral).shiftedBy(NEGATIVE_WAD_PRECISION),
-        debtToCover: new BigNumber(debtToCover).shiftedBy(NEGATIVE_WAD_PRECISION),
-        id,
-        inLiquidation,
-      }),
-    ),
+    auctions: response.auctions.map(({ collateral, debtToCover, id, inLiquidation }) => ({
+      collateral: new BigNumber(collateral).shiftedBy(NEGATIVE_WAD_PRECISION),
+      debtToCover: new BigNumber(debtToCover).shiftedBy(NEGATIVE_WAD_PRECISION),
+      id,
+      inLiquidation,
+    })),
     history: [
       ...response.oasisEvents.map((event) => ({
         ...ajnaUnifiedHistoryItem,

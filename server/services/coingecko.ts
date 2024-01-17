@@ -14,13 +14,20 @@ const requiredTickers = tokens
   .map((token) => token.coinGeckoTicker)
 
 async function fetchTicker(ticker: string): Promise<{ data: CoingeckoApiResponse }> {
+  const key = process.env.COINGECKO_API_KEY
+  const baseUrl = key
+    ? 'https://pro-api.coingecko.com/api/v3/'
+    : 'https://api.coingecko.com/api/v3/'
+
+  const baseHeaders: Record<string, string> = key ? { 'x-cg-pro-api-key': key } : {}
   return axios({
     method: 'get',
     timeout: 1000,
-    url: `https://api.coingecko.com/api/v3/simple/price?ids=${ticker}&vs_currencies=usd`,
+    url: `${baseUrl}/simple/price?ids=${ticker}&vs_currencies=usd`,
     responseType: 'json',
     headers: {
       Accept: 'application/json',
+      ...baseHeaders,
     },
   })
 }

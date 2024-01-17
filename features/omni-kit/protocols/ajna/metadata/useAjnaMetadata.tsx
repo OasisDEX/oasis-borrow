@@ -10,10 +10,12 @@ import type {
   LendingMetadata,
   ProductContextWithBorrow,
   ProductContextWithEarn,
+  ShouldShowDynamicLtvMetadata,
   SupplyMetadata,
 } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
+  getOmniBorrowDebtMax,
   getOmniBorrowishChangeVariant,
   getOmniBorrowPaybackMax,
   getOmniIsFormEmpty,
@@ -30,7 +32,6 @@ import { AjnaTokensBannerController } from 'features/omni-kit/protocols/ajna/con
 import {
   ajnaFlowStateFilter,
   getAjnaBorrowCollateralMax,
-  getAjnaBorrowDebtMax,
   getAjnaBorrowDebtMin,
   getAjnaEarnWithdrawMax,
   getAjnaNotifications,
@@ -38,6 +39,7 @@ import {
   getAjnaValidation,
   getOriginationFee,
   isPoolWithRewards,
+  resolveIfCachedPosition,
 } from 'features/omni-kit/protocols/ajna/helpers'
 import {
   AjnaEarnFormOrder,
@@ -45,9 +47,12 @@ import {
   AjnaExtraDropdownUiContent,
   AjnaFormContentRisk,
   getAjnaEarnIsFormValid,
-  getEarnIsFomEmpty,
+  getEarnIsFormEmpty,
 } from 'features/omni-kit/protocols/ajna/metadata'
-import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
+import type {
+  AjnaEarnPositionAuction,
+  AjnaPositionAuction,
+} from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniEarnFormAction, OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -58,6 +63,7 @@ import {
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
@@ -76,18 +82,15 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   const {
     environment: {
       collateralAddress,
-      collateralBalance,
       collateralIcon,
       collateralPrice,
       collateralToken,
-      ethBalance,
-      ethPrice,
       isOpening,
       isOracless,
       isOwner,
       isProxyWithManyPositions,
       isShort,
-      network: { id: networkId },
+      networkId,
       owner,
       priceFormat,
       productType,
@@ -97,10 +100,9 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       quotePrecision,
       quotePrice,
       quoteToken,
-      gasEstimation,
     },
     steps: { currentStep },
-    tx: { txDetails },
+    tx: { isTxSuccess, txDetails },
   } = useOmniGeneralContext()
 
   const {
@@ -108,26 +110,17 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     state: { price },
   } = useAjnaCustomState()
 
-  const validations = getAjnaValidation({
-    ajnaSafetySwitchOn,
-    collateralBalance,
-    collateralToken,
-    currentStep,
-    ethBalance,
-    ethPrice,
-    gasEstimationUsd: gasEstimation?.usdValue,
+  const ajnaCustomValidations = getAjnaValidation({
+    safetySwitchOn: ajnaSafetySwitchOn,
     isOpening,
     position: productContext.position.currentPosition.position,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
     productType,
-    quoteBalance,
-    quoteToken,
-    simulationErrors: productContext.position.simulationCommon.errors,
-    simulationNotices: productContext.position.simulationCommon.notices,
-    simulationSuccesses: productContext.position.simulationCommon.successes,
-    simulationWarnings: productContext.position.simulationCommon.warnings,
     state: productContext.form.state,
-    txError: txDetails?.txError,
+  })
+
+  const validations = productContext.position.simulationCommon.getValidations({
+    safetySwitchOn: ajnaSafetySwitchOn,
     earnIsFormValid:
       productType === OmniProductType.Earn
         ? getAjnaEarnIsFormValid({
@@ -137,6 +130,12 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             state: (productContext as ProductContextWithEarn).form.state,
           })
         : false,
+    isFormFrozen:
+      productType === OmniProductType.Earn &&
+      (productContext.position.positionAuction as AjnaEarnPositionAuction).isBucketFrozen,
+    customErrors: ajnaCustomValidations.localErrors,
+    customWarnings: ajnaCustomValidations.localWarnings,
+    protocolLabel: LendingProtocolLabel.ajna,
   })
 
   const notifications = getAjnaNotifications({
@@ -156,8 +155,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
   }
 
-  const riskSidebar = <AjnaFormContentRisk />
-
   switch (productType) {
     case OmniProductType.Borrow:
     case OmniProductType.Multiply:
@@ -166,6 +163,9 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         | AjnaPosition
         | undefined
 
+      const cachedPosition = productContext.position.cachedPosition?.position as
+        | AjnaPosition
+        | undefined
       const cachedSimulation = productContext.position.cachedPosition?.simulation as
         | AjnaPosition
         | undefined
@@ -178,7 +178,15 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       )})`
 
       const lendingContext = productContext as ProductContextWithBorrow
-      const shouldShowDynamicLtv = position.pool.lowestUtilizedPriceIndex.gt(zero)
+      const shouldShowDynamicLtv: ShouldShowDynamicLtvMetadata = ({ includeCache }) => {
+        return (
+          resolveIfCachedPosition({
+            cached: includeCache && isTxSuccess,
+            cachedPosition: { position: cachedPosition, simulation: cachedSimulation },
+            currentPosition: { position, simulation },
+          }).positionData?.pool.lowestUtilizedPriceIndex.gt(zero) ?? false
+        )
+      }
 
       const resolvedSimulation = simulation || cachedSimulation
       const afterPositionDebt = resolvedSimulation?.debtAmount.plus(originationFee)
@@ -214,7 +222,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           afterBuyingPower,
           shouldShowDynamicLtv,
           debtMin: getAjnaBorrowDebtMin({ digits: quoteDigits, position }),
-          debtMax: getAjnaBorrowDebtMax({
+          debtMax: getOmniBorrowDebtMax({
             digits: quotePrecision,
             position,
             simulation,
@@ -265,7 +273,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               productType={productType}
               quotePrice={quotePrice}
               quoteToken={quoteToken}
-              shouldShowDynamicLtv={shouldShowDynamicLtv}
+              shouldShowDynamicLtv={shouldShowDynamicLtv({ includeCache: false })}
               simulation={simulation}
             />
           ),
@@ -284,13 +292,12 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
               quotePrice={quotePrice}
               quoteToken={quoteToken}
               simulation={simulation}
-              afterAvailableToBorrow={afterAvailableToBorrow}
             />
           ),
           overviewBanner: isPoolWithRewards({ collateralToken, networkId, quoteToken }) ? (
             <AjnaTokensBannerController isOpening={isOpening} />
           ) : undefined,
-          riskSidebar,
+          riskSidebar: <AjnaFormContentRisk />,
         },
         theme: ajnaExtensionTheme,
         featureToggles,
@@ -349,7 +356,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
         filters,
         values: {
           interestRate: zero,
-          isFormEmpty: getEarnIsFomEmpty({
+          isFormEmpty: getEarnIsFormEmpty({
             price,
             position: productContext.position.currentPosition.position as AjnaEarnPosition,
             currentStep,
@@ -438,7 +445,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           overviewBanner: isPoolWithRewards({ collateralToken, networkId, quoteToken }) ? (
             <AjnaTokensBannerController isOpening={isOpening} isPriceBelowLup={isPriceBelowLup} />
           ) : undefined,
-          riskSidebar,
+          riskSidebar: <AjnaFormContentRisk />,
           extraEarnInput: (
             <AjnaEarnSlider
               isDisabled={

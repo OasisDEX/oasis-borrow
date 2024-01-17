@@ -27,7 +27,7 @@ export function omniExchangeQuote$({
   const contracts = getNetworkContracts(networkId)
   const tokens = contracts.tokens
   const exchange = contracts[exchangeType]
-  const protocols = omniSwapProtocolsMap[networkId].join(',')
+  const protocols = (omniSwapProtocolsMap[networkId] ?? []).join(',')
   const swapVersion = omniSwapVersionMap[networkId]
   const quote = getTokenMetaData(quoteToken, tokens)
   const collateral = getTokenMetaData(collateralToken, tokens)

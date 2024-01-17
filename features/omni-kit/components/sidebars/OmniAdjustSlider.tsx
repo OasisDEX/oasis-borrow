@@ -13,7 +13,7 @@ import { arrow_right } from 'theme/icons'
 import { Flex, Text } from 'theme-ui'
 
 const min = new BigNumber(0.01)
-const max = new BigNumber(1)
+const max = new BigNumber(0.99)
 const openFlowInitialLtv = new BigNumber(0.1)
 
 interface OmniAdjustSliderProps {
