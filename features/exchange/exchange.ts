@@ -209,7 +209,7 @@ export const OPTIMISM_DEFAULT_PROCOTOLS = [
   'OPTIMISM_KYBER_DMM_STATIC',
   'OPTIMISM_AAVE_V3',
   'OPTIMISM_ELK',
-  'OPTIMISM_WOOFI_V2',
+  // 'OPTIMISM_WOOFI_V2', - There seems to be an issue with this exchange at the moment
   'OPTIMISM_TRIDENT',
   'OPTIMISM_MUMMY_FINANCE',
   'OPTIMISM_NOMISWAPEPCS',
