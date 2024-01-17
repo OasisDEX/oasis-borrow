@@ -1,9 +1,5 @@
-import type { RiskRatio } from '@oasisdex/dma-library'
-import type {
-  AaveLikeYieldsResponse,
-  FilterYieldFieldsType,
-} from 'lendingProtocols/aave-like-common'
+import type { AaveLikeYieldsResponse } from 'lendingProtocols/aave-like-common'
 
-export const emptyYields = (_risk: RiskRatio, _fields: FilterYieldFieldsType[]) => {
+export const emptyYields = () => {
   return Promise.resolve<AaveLikeYieldsResponse>({})
 }
