@@ -100,6 +100,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       quotePrecision,
       quotePrice,
       quoteToken,
+      protocolRaw,
     },
     steps: { currentStep },
     tx: { isTxSuccess, txDetails },
@@ -152,7 +153,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
 
   const filters = {
     flowStateFilter: (event: CreatePositionEvent) =>
-      ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
+      ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress, protocolRaw }),
   }
 
   switch (productType) {

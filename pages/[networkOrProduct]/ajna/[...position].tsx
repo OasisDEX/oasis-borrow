@@ -31,15 +31,15 @@ function AjnaPositionPage(props: AjnaPositionPageProps) {
     isPoolOracless({ collateralToken, quoteToken, networkId })
   )
 
-  const positionUrl = `/ethereum/ajna/${productType}/${collateralToken}-${quoteToken}${
+  const positionUrl = `/base/ajna/${productType}/${collateralToken}-${quoteToken}${
     positionId ? `$/{positionId}` : ''
   }`
 
   return (
     <WithFeatureToggleRedirect
-      feature={FeaturesEnum.AjnaSafetySwitch}
+      feature={FeaturesEnum.AjnaBase}
       redirectUrl={`${EXTERNAL_LINKS.AJNA.OLD}${positionUrl}`}
-      requireFalse
+      shouldRedirect={networkId === NetworkIds.BASEMAINNET}
     >
       <AjnaLayout>
         <ProductContextHandler>
@@ -53,7 +53,7 @@ function AjnaPositionPage(props: AjnaPositionPageProps) {
             isOracless={isOracless}
             protocol={LendingProtocol.Ajna}
             protocolHook={useAjnaData}
-            protocolRaw={settings.rawName}
+            protocolRaw={settings.rawName[props.networkId] as string}
             seoTags={ajnaSeoTags}
             steps={settings.steps}
           />

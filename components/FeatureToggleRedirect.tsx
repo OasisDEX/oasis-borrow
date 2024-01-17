@@ -9,6 +9,7 @@ export type FeatureToggleRedirectProps = {
   feature: FeaturesEnum
   redirectUrl?: string
   requireFalse?: boolean
+  shouldRedirect?: boolean
 }
 
 export function WithFeatureToggleRedirect({
@@ -16,6 +17,7 @@ export function WithFeatureToggleRedirect({
   feature,
   redirectUrl = INTERNAL_LINKS.homepage,
   requireFalse = false,
+  shouldRedirect = true,
 }: PropsWithChildren<FeatureToggleRedirectProps>) {
   const { replace } = useRouter()
   const features = useAppConfig('features')
@@ -23,7 +25,7 @@ export function WithFeatureToggleRedirect({
 
   const isAccesible = (featureEnabled && !requireFalse) || (!featureEnabled && requireFalse)
 
-  if (!isAccesible) void replace(redirectUrl)
+  if (!isAccesible && shouldRedirect) void replace(redirectUrl)
 
   return isAccesible ? <>{children}</> : null
 }

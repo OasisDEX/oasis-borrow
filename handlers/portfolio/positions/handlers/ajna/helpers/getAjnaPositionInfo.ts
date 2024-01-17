@@ -4,7 +4,6 @@ import { getNetworkContracts } from 'blockchain/contracts'
 import { networksById } from 'blockchain/networks'
 import { omniBorrowishProducts } from 'features/omni-kit/constants'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
-import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
 import type { OmniProductBorrowishType, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { AjnaDpmPositionsPool } from 'handlers/portfolio/positions/handlers/ajna/types'
@@ -24,6 +23,7 @@ interface getAjnaPositionInfoParams {
   positionId: string
   prices: TokensPricesList
   proxyAddress: string
+  protocolRaw: string
 }
 
 export async function getAjnaPositionInfo({
@@ -35,6 +35,7 @@ export async function getAjnaPositionInfo({
   positionId,
   prices,
   proxyAddress,
+  protocolRaw,
 }: getAjnaPositionInfoParams) {
   // get pool info contract
   const { ajnaPoolInfo } = getNetworkContracts(networkId)
@@ -52,7 +53,7 @@ export async function getAjnaPositionInfo({
         return (
           eventCollateralToken === collateralToken.address &&
           eventDebtToken === quoteToken.address &&
-          eventProtocol === ajnaSettings.rawName &&
+          eventProtocol === protocolRaw &&
           ((isEarn && eventPositionType === OmniProductType.Earn) ||
             (!isEarn && omniBorrowishProducts.includes(eventPositionType)))
         )
