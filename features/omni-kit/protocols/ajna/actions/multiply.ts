@@ -71,7 +71,7 @@ export const ajnaActionOpenMultiply = ({
       addresses: {
         DAI: getNetworkContracts(networkId).tokens.DAI.address,
         // Currently tokens.ETH is being mapped to WETH
-        ETH: getNetworkContracts(networkId, 1).tokens.ETH_ACTUAL.address,
+        ETH: getNetworkContracts(networkId).tokens.ETH_ACTUAL.address,
         WSTETH: getNetworkContracts(networkId).tokens.WSTETH.address,
         USDC: getNetworkContracts(networkId).tokens.USDC.address,
         WBTC: getNetworkContracts(networkId).tokens.WBTC.address,
