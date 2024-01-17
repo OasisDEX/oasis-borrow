@@ -15,7 +15,7 @@ import {
 import { OmniFormView } from 'features/omni-kit/views'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { circle_close, circle_exchange, circle_slider } from 'theme/icons'
+import { circle_close, circle_slider } from 'theme/icons'
 
 export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () => void }) {
   const { t } = useTranslation()
@@ -79,17 +79,6 @@ export function OmniMultiplyFormController({ txHandler }: { txHandler: () => () 
                 updateState('uiDropdown', OmniMultiplyPanel.Quote)
                 updateState('uiPill', OmniMultiplyFormAction.PaybackMultiply)
                 updateState('action', OmniMultiplyFormAction.PaybackMultiply)
-              },
-            },
-            {
-              label: t('system.actions.multiply.switch-to-borrow'),
-              icon: circle_exchange,
-              iconShrink: 2,
-              panel: OmniMultiplyPanel.Switch,
-              action: () => {
-                dispatch({ type: 'reset' })
-                updateState('uiDropdown', OmniMultiplyPanel.Switch)
-                updateState('action', OmniMultiplyFormAction.SwitchMultiply)
               },
             },
             {

@@ -16,7 +16,7 @@ import {
 import { OmniFormView } from 'features/omni-kit/views'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { circle_close, circle_exchange } from 'theme/icons'
+import { circle_close } from 'theme/icons'
 
 export function OmniBorrowFormController({ txHandler }: { txHandler: () => () => void }) {
   const { t } = useTranslation()
@@ -73,17 +73,6 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
             // TODO this should be in metadata man
             ...(isPoolSupportingMultiply({ collateralToken, networkId, quoteToken })
               ? [
-                  {
-                    label: t('system.actions.borrow.switch-to-multiply'),
-                    icon: circle_exchange,
-                    iconShrink: 2,
-                    panel: OmniSidebarBorrowPanel.Switch,
-                    action: () => {
-                      dispatch({ type: 'reset' })
-                      updateState('uiDropdown', OmniSidebarBorrowPanel.Switch)
-                      updateState('action', OmniBorrowFormAction.SwitchBorrow)
-                    },
-                  },
                   {
                     label: t('system.actions.common.close-position'),
                     icon: circle_close,

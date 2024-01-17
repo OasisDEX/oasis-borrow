@@ -71,11 +71,10 @@ import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyAction
 
 export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   const { t } = useTranslation()
-  const { AjnaSafetySwitch: ajnaSafetySwitchOn, AjnaSuppressValidation: ajnaSuppressValidation } =
-    useAppConfig('features')
+  const { AjnaSuppressValidation: ajnaSuppressValidation } = useAppConfig('features')
 
   const featureToggles = {
-    safetySwitch: ajnaSafetySwitchOn,
+    safetySwitch: true,
     suppressValidation: ajnaSuppressValidation,
   }
 
@@ -111,7 +110,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   } = useAjnaCustomState()
 
   const ajnaCustomValidations = getAjnaValidation({
-    safetySwitchOn: ajnaSafetySwitchOn,
+    safetySwitchOn: featureToggles.safetySwitch,
     isOpening,
     position: productContext.position.currentPosition.position,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
@@ -120,7 +119,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   })
 
   const validations = productContext.position.simulationCommon.getValidations({
-    safetySwitchOn: ajnaSafetySwitchOn,
+    safetySwitchOn: featureToggles.safetySwitch,
     earnIsFormValid:
       productType === OmniProductType.Earn
         ? getAjnaEarnIsFormValid({
@@ -139,7 +138,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   })
 
   const notifications = getAjnaNotifications({
-    ajnaSafetySwitchOn,
+    ajnaSafetySwitchOn: featureToggles.safetySwitch,
     dispatch: productContext.form.dispatch,
     isOpening,
     isOracless,

@@ -122,6 +122,10 @@ export async function getSubgraphUrl(subgraph: keyof typeof subgraphsRecord, net
     const ajnaSubgraphUrlGoerli = getConfig()?.publicRuntimeConfig?.ajnaSubgraphV2UrlGoerli
     return ajnaSubgraphUrlGoerli
   }
+
+  if (subgraph === 'Ajna' && networkId === NetworkIds.BASEMAINNET) {
+    return getConfig()?.publicRuntimeConfig?.ajnaSubgraphUrl
+  }
   const subgraphUrl = `${subgraphBaseUrl}/${subgraphName}`
   return subgraphUrl
 }
