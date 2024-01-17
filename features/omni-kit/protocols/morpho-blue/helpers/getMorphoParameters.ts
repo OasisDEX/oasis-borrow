@@ -76,7 +76,7 @@ export const getMorphoParameters = async ({
       tokens: {
         WETH: addressesConfig.tokens.WETH.address,
         DAI: addressesConfig.tokens.DAI.address,
-        ETH: addressesConfig.tokens.ETH.address,
+        ETH: addressesConfig.tokens.ETH_ACTUAL.address,
         USDC: addressesConfig.tokens.USDC.address,
         USDT: addressesConfig.tokens.USDT.address,
         WBTC: addressesConfig.tokens.WBTC.address,
