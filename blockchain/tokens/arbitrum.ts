@@ -8,12 +8,14 @@ export const AAVE_V3_POOL_GENESIS_GOERLI = 4365693
 const { arbitrum } = ADDRESSES
 
 export const tokensArbitrum = {
+  ARB: contractDesc(erc20, arbitrum.common.ARB),
   ETH: contractDesc(erc20, arbitrum.common.WETH),
   CBETH: contractDesc(erc20, arbitrum.common.CBETH),
   DAI: contractDesc(erc20, arbitrum.common.DAI),
   FRAX: contractDesc(erc20, arbitrum.common.FRAX),
   GHO: contractDesc(erc20, arbitrum.common.GHO),
   LDO: contractDesc(erc20, arbitrum.common.LDO),
+  LINK: contractDesc(erc20, arbitrum.common.LINK),
   LUSD: contractDesc(erc20, arbitrum.common.LUSD),
   RENBTC: contractDesc(erc20, arbitrum.common.RENBTC),
   RETH: contractDesc(erc20, arbitrum.common.RETH),

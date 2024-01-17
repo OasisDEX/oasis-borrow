@@ -28,6 +28,7 @@ export function parseLendingProducts(
           primaryTokenGroup: getTokenGroup(token.toUpperCase()),
           secondaryToken: token.toUpperCase(),
           secondaryTokenGroup: getTokenGroup(token.toUpperCase()),
+          depositToken: token.toUpperCase(),
           label: `${token.toUpperCase()}`,
           network: networkName,
           protocol: lendingeProtocol,
