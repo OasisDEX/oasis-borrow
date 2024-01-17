@@ -1116,6 +1116,11 @@
     "morphoProductPage": {
       "title": "{{productType}} - Summer.fi × Morpho"
     },
+    "aaveProductPage": {
+      "title": "Summer.fi × Aave",
+      "title-product": "{{productType}} - Summer.fi × Aave",
+      "description": "Aave is a decentralized finance protocol that allows users lend and borrow crypto."
+    },
     "multiply": {
       "title": "Multiply - Summer.fi",
       "description": "Multiply your exposure to your favorite crypto assets. Browse our featured products or select a asset."

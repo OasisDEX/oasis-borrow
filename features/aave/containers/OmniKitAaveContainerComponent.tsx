@@ -4,14 +4,14 @@ import { OmniProductController } from 'features/omni-kit/controllers'
 import { aaveOmniProductType } from 'features/omni-kit/protocols/aave-like/helpers/aaveOmniProductType'
 import { useAaveLikeSimpleEarnData } from 'features/omni-kit/protocols/aave-like/hooks'
 import { useAaveLikeSimpleEarnMetadata } from 'features/omni-kit/protocols/aave-like/hooks/useAaveLikeSimpleEarnMetadata'
-import { omniKitAaveSettings } from 'features/omni-kit/protocols/aave-like/settings'
-import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import type { OmniSidebarStepsSet, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import React from 'react'
 
 export default function OmniKitAaveContainerComponent({
   definedStrategy,
   product,
+  settings,
   ...props
 }: AaveContainerProps) {
   return (
@@ -30,12 +30,12 @@ export default function OmniKitAaveContainerComponent({
       }
       singleToken
       protocolHook={useAaveLikeSimpleEarnData({ strategy: definedStrategy })}
-      protocolRaw={omniKitAaveSettings.rawName}
+      protocolRaw={settings?.rawName || ''}
       seoTags={{
-        productKey: `seo.morphoProductPage.title`,
-        descriptionKey: 'seo.morpho.description',
+        productKey: `seo.aaveProductPage.title-product`,
+        descriptionKey: 'seo.aaveProductPage.description',
       }}
-      steps={omniKitAaveSettings.steps}
+      steps={settings?.steps || ([] as unknown as OmniSidebarStepsSet)}
     />
   )
 }

@@ -4,6 +4,9 @@ import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNo
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import { getOmniBorrowishChangeVariant } from 'features/omni-kit/helpers'
+import { SimpleEarnFooter } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnFooter'
+import { SimpleEarnHeader } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnHeader'
+import { SimpleEarnOverview } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnOverview'
 import { useAaveLikeSidebarTitle } from 'features/omni-kit/protocols/aave-like/hooks/useAaveLikeSidebarTitle'
 import { morphoFlowStateFilter } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
@@ -72,8 +75,10 @@ export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) =
         elements: {
           faq: <></>,
           highlighterOrderInformation: undefined,
-          overviewContent: <div>Overview</div>,
-          overviewFooter: <div>Overview footer</div>,
+          overviewHeader: <SimpleEarnHeader />,
+          overviewContent: <SimpleEarnOverview />,
+          overviewFooter: <SimpleEarnFooter />,
+          earnFormOrderAsElement: <div>asd</div>,
         },
         featureToggles: {
           safetySwitch: aaveLikeSimpleEarnSafetySwitchOn,

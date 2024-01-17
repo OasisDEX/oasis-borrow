@@ -6,10 +6,12 @@ import { OmniKitAaveContainer } from 'features/aave/containers/OmniKitAaveContai
 import { XStateContainer } from 'features/aave/containers/xStateContainer'
 import { isAaveLikeSimpleEarn } from 'features/aave/helpers/isAaveLikeSimpleEarn'
 import type { ProductType } from 'features/aave/types'
+import { omniKitAaveSettings } from 'features/omni-kit/protocols/aave-like/settings'
+import { omniKitSparkSettings } from 'features/omni-kit/protocols/spark/settings'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import type { OmniProductPage, OmniSupportedProtocols } from 'features/omni-kit/types'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
-import type { LendingProtocol } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import React from 'react'
@@ -66,10 +68,20 @@ function OpenPosition({ network, protocol, product, strategy, ...props }: OpenPo
   }
 
   if (isAaveLikeSimpleEarn(definedStrategy)) {
+    const settings = {
+      [LendingProtocol.AaveV2]: omniKitAaveSettings,
+      [LendingProtocol.AaveV3]: omniKitAaveSettings,
+      [LendingProtocol.SparkV3]: omniKitSparkSettings,
+    }[definedStrategy.protocol]
     return (
       <AppLayout>
         <ProductContextHandler>
-          <OmniKitAaveContainer product={product} definedStrategy={definedStrategy} {...props} />
+          <OmniKitAaveContainer
+            product={product}
+            definedStrategy={definedStrategy}
+            settings={settings}
+            {...props}
+          />
         </ProductContextHandler>
       </AppLayout>
     )
