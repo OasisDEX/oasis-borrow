@@ -27,6 +27,7 @@ export const settings: OmniProtocolSettings = {
 export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string }> = {
   [NetworkIds.MAINNET]: {
     'WSTETH-ETH': '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
+    'WSTETH-USDC': '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
   },
   [NetworkIds.GOERLI]: {
     'DAI-ETH': '0x3098a46de09dd8d9a8c6fa1ab7b3f943b6f13e5ea72a4e475d9e48f222bfd5a0',

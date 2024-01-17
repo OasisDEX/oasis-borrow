@@ -179,6 +179,7 @@ export const baseContracts: MainnetContractsWithOptional = {
   ajnaRedeemer: contractDesc(ajnaReedemer, base.ajna.AjnaRewardsReedemer),
   ajnaBonusRedeemer: contractDesc(ajnaBonusRedeemer, base.ajna.AjnaBonusRewardsReedemer),
   morphoBlue: contractDesc(morphoBlue, base.morphoblue.MorphoBlue),
+  adaptiveCurveIrm: contractDesc(morphoBlue, base.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(balancerVault, base.common.BalancerVault),
   // NOT contracts
   cacheApi: 'not-implemented',
