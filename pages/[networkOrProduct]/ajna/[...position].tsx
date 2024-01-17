@@ -39,6 +39,7 @@ function AjnaPositionPage(props: AjnaPositionPageProps) {
     <WithFeatureToggleRedirect
       feature={FeaturesEnum.AjnaBase}
       redirectUrl={`${EXTERNAL_LINKS.AJNA.OLD}${positionUrl}`}
+      requireFalse
       shouldRedirect={networkId === NetworkIds.BASEMAINNET}
     >
       <AjnaLayout>
