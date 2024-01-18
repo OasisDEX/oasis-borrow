@@ -1,3 +1,4 @@
+import { normalizeValue } from '@oasisdex/dma-library'
 import {
   OmniContentCard,
   useOmniCardDataLiquidationPrice,
@@ -15,6 +16,7 @@ export const MorphoDetailsSectionContent: FC = () => {
     environment: {
       collateralPrice,
       collateralToken,
+      isShort,
       priceFormat,
       productType,
       quotePrice,
@@ -31,16 +33,28 @@ export const MorphoDetailsSectionContent: FC = () => {
     },
   } = useOmniProductContext(OmniProductType.Borrow || OmniProductType.Multiply)
 
+  const liquidationPrice = isShort
+    ? normalizeValue(one.div(position.liquidationPrice))
+    : position.liquidationPrice
+  const afterLiquidationPrice =
+    simulation?.liquidationPrice &&
+    (isShort ? normalizeValue(one.div(simulation.liquidationPrice)) : simulation.liquidationPrice)
+  const ratioToCurrentPrice = one.minus(
+    isShort
+      ? normalizeValue(one.div(position.liquidationToMarketPrice))
+      : position.liquidationToMarketPrice,
+  )
+
   const commonContentCardData = {
     changeVariant,
     isLoading: isSimulationLoading,
   }
 
   const liquidationPriceContentCardCommonData = useOmniCardDataLiquidationPrice({
-    afterLiquidationPrice: simulation?.liquidationPrice,
-    liquidationPrice: position.liquidationPrice,
+    afterLiquidationPrice: afterLiquidationPrice,
+    liquidationPrice: liquidationPrice,
     unit: priceFormat,
-    ratioToCurrentPrice: one.minus(position.liquidationToMarketPrice),
+    ratioToCurrentPrice: ratioToCurrentPrice,
   })
 
   const ltvContentCardCommonData = useOmniCardDataLtv({

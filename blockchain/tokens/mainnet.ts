@@ -68,6 +68,7 @@ export const tokensMainnet = {
   GUNIV3DAIUSDC1: contractDesc(guniToken, mainnet.common.GUNIV3DAIUSDC1),
   GUNIV3DAIUSDC2: contractDesc(guniToken, mainnet.common.GUNIV3DAIUSDC2),
   LDO: contractDesc(erc20, mainnet.common.LDO),
+  LINK: contractDesc(erc20, mainnet.common.LINK),
   LUSD: contractDesc(erc20, mainnet.common.LUSD),
   MKR: contractDesc(erc20, mainnet.maker.common.McdGov),
   RENBTC: contractDesc(erc20, mainnet.common.RENBTC),

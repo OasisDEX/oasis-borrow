@@ -53,6 +53,7 @@ interface OmniGeneralContextProviderProps {
   quoteToken: string
   slippage: BigNumber
   steps: OmniSidebarStep[]
+  singleToken?: boolean
 }
 
 type OmniGeneralContextEnvironment = Omit<OmniGeneralContextProviderProps, 'steps'> & {
@@ -120,6 +121,7 @@ export function OmniGeneralContextProvider({
     network,
     networkId,
     walletNetwork,
+    singleToken,
   } = props
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<OmniSidebarStep>(steps[0])
@@ -177,6 +179,7 @@ export function OmniGeneralContextProvider({
         slippage,
         collateralBalance,
         quoteBalance,
+        singleToken,
       },
       steps: setupStepManager(),
       tx: setupTxManager(),

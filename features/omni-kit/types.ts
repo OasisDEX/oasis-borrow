@@ -1,10 +1,13 @@
 import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
+import type BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/networks'
 import type { Tickers } from 'blockchain/prices.types'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
+import type { TxError } from 'helpers/types'
+import type { LendingProtocolLabel } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
@@ -18,7 +21,12 @@ const omniSupportedNetworkIds = [
 
 export type OmniSupportedNetworkIds = (typeof omniSupportedNetworkIds)[number]
 
-const omniSupportedProtocols = [LendingProtocol.Ajna, LendingProtocol.MorphoBlue] as const
+const omniSupportedProtocols = [
+  LendingProtocol.Ajna,
+  LendingProtocol.MorphoBlue,
+  LendingProtocol.AaveV3,
+  LendingProtocol.SparkV3,
+] as const
 
 export type OmniSupportedProtocols = (typeof omniSupportedProtocols)[number]
 
@@ -156,11 +164,17 @@ export type OmniValidations = {
   warnings: OmniValidationItem[]
 }
 
+export type OmniPartialValidations = {
+  localErrors: OmniValidationItem[]
+  localWarnings: OmniValidationItem[]
+}
+
 export interface OmniSimulationCommon {
   errors: { name: string; data?: { [key: string]: string } }[]
   notices: { name: string; data?: { [key: string]: string } }[]
   successes: { name: string; data?: { [key: string]: string } }[]
   warnings: { name: string; data?: { [key: string]: string } }[]
+  getValidations: (params: GetOmniValidationResolverParams) => OmniValidations
 }
 
 export interface OmniValidationItem {
@@ -182,4 +196,39 @@ export interface OmniFlowStateFilterParams {
 
 export type NetworkIdsWithValues<T> = {
   [key in OmniSupportedNetworkIds]?: T
+}
+
+type SimulationValidations = { name: string; data?: { [key: string]: string } }[]
+
+export interface GetOmniValidationsParams {
+  collateralBalance: BigNumber
+  collateralToken: string
+  currentStep: OmniSidebarStep
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  gasEstimationUsd?: BigNumber
+  isOpening: boolean
+  position: OmniGenericPosition
+  productType: OmniProductType
+  quoteBalance: BigNumber
+  quoteToken: string
+  simulationErrors?: SimulationValidations
+  simulationNotices?: SimulationValidations
+  simulationSuccesses?: SimulationValidations
+  simulationWarnings?: SimulationValidations
+  state: OmniFormState
+  txError?: TxError
+  customErrors?: OmniValidationItem[]
+  customWarnings?: OmniValidationItem[]
+}
+
+export interface GetOmniValidationResolverParams {
+  protocolLabel: LendingProtocolLabel
+  safetySwitchOn: boolean
+  isFormFrozen: boolean
+  earnIsFormValid?: boolean
+  customErrors?: OmniValidationItem[]
+  customWarnings?: OmniValidationItem[]
+  customNotices?: OmniValidationItem[]
+  customSuccesses?: OmniValidationItem[]
 }

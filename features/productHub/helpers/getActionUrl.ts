@@ -154,8 +154,7 @@ export function getActionUrl({
 
       return `/vaults/${openUrl}/${ilkInUrl}`
     case LendingProtocol.MorphoBlue:
-      // TODO: add Morpho Blue handler
-      return '/'
+      return `/${network}/${LendingProtocol.MorphoBlue}/${product[0]}/${primaryToken}-${secondaryToken}`
     case LendingProtocol.SparkV3:
       // basic lending strategy
       console.log({ earnStrategy, depositToken })

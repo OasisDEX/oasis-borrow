@@ -57,7 +57,7 @@ export enum StrategyType {
   Long = 'long',
 }
 
-interface IStrategyBase {
+export interface IStrategyConfig {
   network: NetworkNames
   networkId: NetworkIds
   networkHexId: NetworkConfigHexId
@@ -70,21 +70,11 @@ interface IStrategyBase {
     headerView: ManageAaveHeader
     simulateSection: SimulateSection
     vaultDetailsManage: VaultDetails
+    secondaryInput: SecondaryInput
+    adjustRiskInput: SecondaryInput
     positionInfo: PositionInfo
     sidebarTitle: string
     sidebarButton: string
-  }
-  type: ProductType
-  protocol: AaveLendingProtocol | SparkLendingProtocol
-  executeTransactionWith: 'web3' | 'ethers'
-  strategyType: StrategyType
-  isAutomationFeatureEnabled: (feature: AutomationFeatures) => boolean
-}
-
-export interface IStrategyConfig extends IStrategyBase {
-  viewComponents: IStrategyBase['viewComponents'] & {
-    secondaryInput: SecondaryInput
-    adjustRiskInput: SecondaryInput
   }
   availableActions: () => ManagePositionAvailableActions[]
   tokens: {
@@ -96,16 +86,11 @@ export interface IStrategyConfig extends IStrategyBase {
     minimum: IRiskRatio
     default: IRiskRatio | 'slightlyLessThanMaxRisk'
   }
+  type: ProductType
+  protocol: AaveLendingProtocol | SparkLendingProtocol
   featureToggle?: FeaturesEnum
   defaultSlippage?: BigNumber
-}
-
-
-export interface IStrategyDepositConfig extends IStrategyBase {
-  availableActions: () => ManagePositionAvailableActions[]
-  tokens: {
-    deposit: string
-  }
-  featureToggle?: FeaturesEnum
-  defaultSlippage?: BigNumber
+  executeTransactionWith: 'web3' | 'ethers'
+  strategyType: StrategyType
+  isAutomationFeatureEnabled: (feature: AutomationFeatures) => boolean
 }

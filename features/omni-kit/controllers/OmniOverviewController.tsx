@@ -15,7 +15,7 @@ export function OmniOverviewController() {
   const {
     dynamicMetadata: {
       values: { footerColumns },
-      elements: { overviewContent, overviewBanner, overviewFooter },
+      elements: { overviewContent, overviewBanner, overviewFooter, overviewHeader },
       notifications,
     },
   } = useOmniProductContext(productType)
@@ -23,7 +23,7 @@ export function OmniOverviewController() {
   return (
     <Grid gap={2}>
       <DetailsSection
-        title={t('system.overview')}
+        title={overviewHeader ?? t('system.overview')}
         notifications={notifications}
         content={
           productType === OmniProductType.Earn && isOpening ? (

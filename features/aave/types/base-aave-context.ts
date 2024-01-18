@@ -16,7 +16,7 @@ import { EthersTransactionStateMachine, TransactionStateMachine } from 'features
 import { zero } from 'helpers/zero'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 import { AaveLikeReserveData } from 'lendingProtocols/aave-like-common'
-import { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import { AaveCumulativeData } from 'features/omni-kit/protocols/aave-like/history/types'
 
 export type UserInput = {
   riskRatio?: IRiskRatio
