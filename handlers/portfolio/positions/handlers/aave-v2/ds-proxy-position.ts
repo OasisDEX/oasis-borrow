@@ -46,7 +46,9 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
     collateralToken: 'STETH',
   })
   if (!positionHistory || !stEthPosition) {
-    console.warn(`summer/portfolio: No AAVE v2 position history or no stEth position for ${address}, proxy:${dsProxyAddress}}`)
+    console.warn(
+      `summer/portfolio: No AAVE v2 position history or no stEth position for ${address}, proxy:${dsProxyAddress}}`,
+    )
     return {
       positions: [],
     }
