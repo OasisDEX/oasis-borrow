@@ -3,8 +3,9 @@ import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
-import { getOraclessProductUrl } from 'features/ajna/pool-finder/helpers'
 import type { OraclessPoolResult } from 'features/ajna/pool-finder/types'
+import { getOmniPositionUrl } from 'features/omni-kit/helpers'
+import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import type { OmniProductType } from 'features/omni-kit/types'
 import { parseProduct } from 'features/productHub/helpers'
 import type { ProductHubProductType } from 'features/productHub/types'
@@ -37,12 +38,13 @@ export function parseRows(
 
     const label = `${collateralToken}/${quoteToken}`
     const networkName = getNetworkById(networkId).name
-    const url = getOraclessProductUrl({
+    const url = getOmniPositionUrl({
       collateralAddress,
       collateralToken,
-      networkId,
+      isPoolOracless: isPoolOracless({ collateralToken, quoteToken, networkId }),
       networkName,
       productType: product as unknown as OmniProductType,
+      protocol: LendingProtocol.Ajna,
       quoteAddress,
       quoteToken,
     })

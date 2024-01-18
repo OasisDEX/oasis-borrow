@@ -1,7 +1,6 @@
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
 import { ProductContextHandler } from 'components/context/ProductContextHandler'
-import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { isAddress } from 'ethers/lib/utils'
 import { ajnaSeoTags } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
@@ -16,14 +15,17 @@ import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import type { OmniProductPage } from 'features/omni-kit/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
+import { useAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { FeaturesEnum } from 'types/config'
 
 type AjnaPositionPageProps = OmniProductPage
 
 function AjnaPositionPage(props: AjnaPositionPageProps) {
+  const { replace } = useRouter()
   const { collateralToken, networkId, positionId, productType, quoteToken } = props
   const isOracless = !!(
     collateralToken &&
@@ -31,35 +33,32 @@ function AjnaPositionPage(props: AjnaPositionPageProps) {
     isPoolOracless({ collateralToken, quoteToken, networkId })
   )
 
-  const positionUrl = `/ethereum/ajna/${productType}/${collateralToken}-${quoteToken}${
-    positionId ? `$/{positionId}` : ''
+  const positionUrl = `/base/ajna/${productType}/${collateralToken}-${quoteToken}${
+    positionId ? `/${positionId}` : ''
   }`
+  const features = useAppConfig('features')
+
+  const ajnaBaseEnabled = features[FeaturesEnum.AjnaBase]
+
+  if (!ajnaBaseEnabled && networkId === NetworkIds.BASEMAINNET) {
+    void replace(`${EXTERNAL_LINKS.AJNA.OLD}${positionUrl}`)
+  }
 
   return (
-    <WithFeatureToggleRedirect
-      feature={FeaturesEnum.AjnaSafetySwitch}
-      redirectUrl={`${EXTERNAL_LINKS.AJNA.OLD}${positionUrl}`}
-      requireFalse
-    >
-      <AjnaLayout>
-        <ProductContextHandler>
-          <OmniProductController<
-            AjnaPositionAuction,
-            AjnaUnifiedHistoryEvent[],
-            AjnaGenericPosition
-          >
-            {...props}
-            customState={AjnaCustomStateProvider}
-            isOracless={isOracless}
-            protocol={LendingProtocol.Ajna}
-            protocolHook={useAjnaData}
-            protocolRaw={settings.rawName}
-            seoTags={ajnaSeoTags}
-            steps={settings.steps}
-          />
-        </ProductContextHandler>
-      </AjnaLayout>
-    </WithFeatureToggleRedirect>
+    <AjnaLayout>
+      <ProductContextHandler>
+        <OmniProductController<AjnaPositionAuction, AjnaUnifiedHistoryEvent[], AjnaGenericPosition>
+          {...props}
+          customState={AjnaCustomStateProvider}
+          isOracless={isOracless}
+          protocol={LendingProtocol.Ajna}
+          protocolHook={useAjnaData}
+          protocolRaw={settings.rawName}
+          seoTags={ajnaSeoTags}
+          steps={settings.steps}
+        />
+      </ProductContextHandler>
+    </AjnaLayout>
   )
 }
 
