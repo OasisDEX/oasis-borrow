@@ -18,6 +18,7 @@ import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
 import { memoize } from 'lodash'
+import { match } from 'ts-pattern'
 
 import { sparkV3ProductHubProducts } from './sparkV3Products'
 
@@ -94,8 +95,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     memoizedTokensData(networkName as SparkV3Networks, tickers),
   )
 
-  const getYieldsForProduct = (_a: any, _b: any) => {
-    return emptyYields()
+  const resolveYields = (label: string, network: NetworkNames) => {
+    return match({ label, network }).otherwise(() => emptyYields)
   }
 
   // getting the APYs
@@ -127,7 +128,7 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
           ),
         )[product.primaryToken].riskRatio
 
-    const response = await getYieldsForProduct(product.label, riskRatio)
+    const response = await resolveYields(product.label, product.network)(riskRatio, ['7Days'])
     return {
       [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
     }

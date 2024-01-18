@@ -7,12 +7,12 @@ import {
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import type { TokenDepositConfig } from 'features/aave/strategies/common'
-import { depositTokensList } from 'features/aave/strategies/deposit-tokens-list'
+import { depositTokensConfigList } from 'features/aave/strategies/deposit-tokens-config-list'
 import type { IStrategyDepositConfig } from 'features/aave/types'
 import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 
-const availableTokenDeposits: TokenDepositConfig[] = depositTokensList
+const availableTokenDeposits: TokenDepositConfig[] = depositTokensConfigList
   .map((depositTokensListConfig) => {
     return depositTokensListConfig.list
       .map((token) => [
@@ -23,7 +23,7 @@ const availableTokenDeposits: TokenDepositConfig[] = depositTokensList
           strategyType: StrategyType.Long,
           productTypes: {
             [ProductType.Earn]: {
-              featureToggle: undefined,
+              featureToggle: depositTokensListConfig.featureToggle?.[token],
             },
           },
         },

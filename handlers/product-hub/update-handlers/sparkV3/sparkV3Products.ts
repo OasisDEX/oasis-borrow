@@ -1,13 +1,13 @@
 import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
-import { depositTokensList } from 'features/aave/strategies/deposit-tokens-list'
+import { depositTokensConfigList } from 'features/aave/strategies/deposit-tokens-config-list'
 import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
-import { parseLendingProducts } from 'handlers/product-hub/update-handlers/parseLendingProducts'
+import { parseLendingProducts } from 'helpers/parseLendingProducts'
 import { LendingProtocol } from 'lendingProtocols'
 
 const lendingProducts = parseLendingProducts(
-  depositTokensList,
+  depositTokensConfigList,
   NetworkNames.ethereumMainnet,
   LendingProtocol.SparkV3,
 )

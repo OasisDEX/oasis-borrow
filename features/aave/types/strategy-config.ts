@@ -102,7 +102,10 @@ export interface IStrategyConfig extends IStrategyBase {
 
 
 export interface IStrategyDepositConfig extends IStrategyBase {
+  availableActions: () => ManagePositionAvailableActions[]
   tokens: {
     deposit: string
   }
+  featureToggle?: FeaturesEnum
+  defaultSlippage?: BigNumber
 }

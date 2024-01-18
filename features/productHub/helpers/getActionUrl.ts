@@ -1,6 +1,7 @@
 import { EarnStrategies } from '@prisma/client'
 import type { NetworkIds } from 'blockchain/networks'
 import { strategies as aaveStrategyList } from 'features/aave'
+import { aaveLikeLendingStrategies } from 'features/aave/strategies'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
 import type { ProductHubItem } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
@@ -42,6 +43,40 @@ export const getAaveLikeViewStrategyUrl = ({
       }`
 }
 
+export const getAaveLikeViewLendingStrategyUrl = ({
+  aaveLikeProduct,
+  bypassFeatureFlag,
+  version,
+  product,
+  protocol,
+  depositToken,
+  network,
+}: Partial<ProductHubItem> & {
+  version: 'v2' | 'v3'
+  bypassFeatureFlag: boolean
+  aaveLikeProduct: 'aave' | 'spark'
+}) => {
+  const search = aaveLikeLendingStrategies.find(
+    (strategy) =>
+      product
+        ?.map((prod) => prod.toLocaleLowerCase())
+        ?.includes(strategy.type.toLocaleLowerCase() as ProductHubProductType) &&
+      strategy.protocol === protocol &&
+      strategy.tokens.deposit.toLocaleLowerCase() === depositToken?.toLocaleLowerCase() &&
+      strategy.network === network,
+  )
+  console.log({ search, depositToken1: strategy.tokens.deposit, depositToken })
+
+  return !search?.urlSlug ||
+    (!bypassFeatureFlag &&
+      search?.featureToggle &&
+      !getLocalAppConfig('features')[search?.featureToggle])
+    ? '/'
+    : `/${network}/${aaveLikeProduct}/${version}/${search.type.toLocaleLowerCase()}/${
+        search!.urlSlug
+      }`
+}
+
 export function getActionUrl({
   bypassFeatureFlag = false,
   networkId,
@@ -54,6 +89,7 @@ export function getActionUrl({
   protocol,
   secondaryToken,
   secondaryTokenAddress,
+  depositToken,
 }: ProductHubItem & { bypassFeatureFlag?: boolean; networkId?: NetworkIds }): string {
   switch (protocol) {
     case LendingProtocol.Ajna:
@@ -88,6 +124,18 @@ export function getActionUrl({
         aaveLikeProduct: 'aave',
       })
     case LendingProtocol.AaveV3:
+      // basic lending strategy
+      if (earnStrategy === EarnStrategies.lending) {
+        return getAaveLikeViewLendingStrategyUrl({
+          version: 'v3',
+          bypassFeatureFlag,
+          network,
+          product,
+          protocol,
+          depositToken,
+          aaveLikeProduct: 'aave',
+        })
+      }
       return getAaveLikeViewStrategyUrl({
         version: 'v3',
         bypassFeatureFlag,
@@ -109,6 +157,20 @@ export function getActionUrl({
       // TODO: add Morpho Blue handler
       return '/'
     case LendingProtocol.SparkV3:
+      // basic lending strategy
+      console.log({ earnStrategy, depositToken })
+      // TODO: add lending earn strategy type to prisma
+      if (earnStrategy === EarnStrategies.lending) {
+        return getAaveLikeViewLendingStrategyUrl({
+          version: 'v3',
+          bypassFeatureFlag,
+          network,
+          depositToken,
+          product,
+          protocol,
+          aaveLikeProduct: 'spark',
+        })
+      }
       return getAaveLikeViewStrategyUrl({
         version: 'v3',
         bypassFeatureFlag,
