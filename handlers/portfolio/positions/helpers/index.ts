@@ -1,4 +1,5 @@
 export * from './getBorrowishPositionType'
+export * from './getDefaultBorrowishPositionType'
 export * from './getPositionsAutomations'
 export * from './getPositionsFromDatabase'
 export * from './getTokensPrices'
