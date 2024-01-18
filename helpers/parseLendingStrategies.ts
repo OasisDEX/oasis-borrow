@@ -6,13 +6,15 @@ import {
   adjustRiskView,
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
+import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
 import type { DepositTokensConfig } from 'features/aave/strategies/deposit-tokens-config-list'
-import type { IStrategyDepositConfig } from 'features/aave/types'
+import type { IStrategyConfig } from 'features/aave/types'
 import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { SparkEarnFaqV3 } from 'features/content/faqs/spark/earn'
 import type { ProductHubSupportedNetworks } from 'features/productHub/types'
 import { getLocalAppConfig } from 'helpers/config'
+import type { AaveLikeLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 
 const getPositionInfo = (lendingeProtocol: LendingProtocol) => {
@@ -29,8 +31,8 @@ const getPositionInfo = (lendingeProtocol: LendingProtocol) => {
 export function parseLendingStrategies(
   tokensConfig: DepositTokensConfig[],
   networkName: ProductHubSupportedNetworks,
-  lendingeProtocol: LendingProtocol,
-): IStrategyDepositConfig[] {
+  lendingeProtocol: AaveLikeLendingProtocol,
+): IStrategyConfig[] {
   return tokensConfig
     .filter(
       (config) =>
@@ -59,10 +61,12 @@ export function parseLendingStrategies(
           },
           tokens: {
             deposit: token,
+            collateral: token,
+            debt: token,
           },
-          riskRatios: null,
+          riskRatios: adjustRiskSliders.empty,
           type: ProductType.Earn,
-          protocol: LendingProtocol.SparkV3,
+          protocol: lendingeProtocol,
           availableActions: () => {
             const additionalAction =
               config.additionalManageActions?.[token]

@@ -10,7 +10,7 @@ import {
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { depositTokensConfigList } from 'features/aave/strategies/deposit-tokens-config-list'
-import type { IStrategyConfig, IStrategyDepositConfig } from 'features/aave/types'
+import type { IStrategyConfig } from 'features/aave/types'
 import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { SparkBorrowFaq } from 'features/content/faqs/spark/borrow'
 import { SparkEarnFaqV3 } from 'features/content/faqs/spark/earn'
@@ -344,14 +344,14 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
     }
   })
 
-export const ethereumSparkV3lendingStrategies: IStrategyDepositConfig[] = parseLendingStrategies(
-  depositTokensConfigList,
-  NetworkNames.ethereumMainnet,
-  LendingProtocol.SparkV3,
-)
-
 export const ethereumSparkV3Strategies: IStrategyConfig[] = [
   ...borrowStrategies,
   ...multiplyStategies,
   ...earnStrategies,
 ]
+
+export const ethereumSparkV3lendingStrategies: IStrategyConfig[] = parseLendingStrategies(
+  depositTokensConfigList,
+  NetworkNames.ethereumMainnet,
+  LendingProtocol.SparkV3,
+)

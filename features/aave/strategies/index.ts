@@ -2,7 +2,6 @@ import { RiskRatio } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import { isSupportedNetwork } from 'blockchain/networks'
-import { depositTokensStrategies } from 'features/aave/strategies/deposit-tokens-strategies'
 import type { IStrategyConfig, ProductType } from 'features/aave/types'
 import { isSupportedProductType } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
@@ -15,7 +14,10 @@ import { isLendingProtocol } from 'lendingProtocols'
 import { arbitrumAaveV3Strategies } from './arbitrum-aave-v3-strategies'
 import { baseAaveV3Strategies } from './base-aave-v3-strategies'
 import { ethereumAaveV2Strategies } from './ethereum-aave-v2-strategies'
-import { ethereumAaveV3Strategies } from './ethereum-aave-v3-strategies'
+import {
+  ethereumAaveV3lendingStrategies,
+  ethereumAaveV3Strategies,
+} from './ethereum-aave-v3-strategies'
 import {
   ethereumSparkV3lendingStrategies,
   ethereumSparkV3Strategies,
@@ -29,10 +31,9 @@ export const aaveLikeStrategies: IStrategyConfig[] = [
   ...ethereumAaveV3Strategies,
   ...ethereumSparkV3Strategies,
   ...baseAaveV3Strategies,
-  ...depositTokensStrategies,
+  ...ethereumSparkV3lendingStrategies,
+  ...ethereumAaveV3lendingStrategies,
 ]
-
-export const aaveLikeLendingStrategies: IStrategyConfig[] = [...ethereumSparkV3lendingStrategies]
 
 export function aaveStrategiesList(
   filterProduct?: IStrategyConfig['type'],
