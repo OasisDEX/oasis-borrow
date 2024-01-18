@@ -64,7 +64,7 @@
     "@web3-react/core": "^6.1.1",
     "@web3-react/network-connector": "^6.1.5",
     "@xstate/react": "^3.2.2",
-    "axios": "^0.22.0",
+    "axios": "^1.6.0",
     "bignumber.js": "9.0.1",
     "boring-avatars": "1.10.1",
     "browser-detect": "^0.2.28",
@@ -82,7 +82,7 @@
     "graphql": "^15.5.0",
     "graphql-request": "^3.4.0",
     "i18next": "^22.4.2",
-    "jsonwebtoken": "^9.0.0",
+    "jsonwebtoken": "^9.0.1",
     "lodash": "^4.17.21",
     "mixpanel": "^0.13.0",
     "mixpanel-browser": "^2.29.1",
@@ -109,7 +109,7 @@
     "rxjs": "^6.2.0",
     "rxjs-take-while-inclusive": "^2.1.0",
     "sass": "^1.49.4",
-    "snowflake-sdk": "^1.6.10",
+    "snowflake-sdk": "^1.6.21",
     "socket.io": "^4.5.1",
     "terser-webpack-plugin": "^5.3.9",
     "text-mask-addons": "^3.7.2",
@@ -121,7 +121,7 @@
     "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",
     "xstate": "^4.37.2",
-    "zod": "^1.5.0"
+    "zod": "^3.22.3"
   },
   "resolutions": {
     "@emotion/react": "11.11.1",
