@@ -2,12 +2,12 @@ import { networksById } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
-import { getOraclessProductUrl } from 'features/ajna/pool-finder/helpers'
+import { getOmniPositionUrl } from 'features/omni-kit/helpers'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useModalContext } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import type { LendingProtocol } from 'lendingProtocols'
+import { type LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
 import { startCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -20,6 +20,7 @@ export interface OmniDupePositionModalProps {
   collateralToken: string
   dpmAccounts: UserDpmAccount[]
   events: CreatePositionEvent[]
+  isOracless: boolean
   networkId: OmniSupportedNetworkIds
   productType: OmniProductType
   protocol: LendingProtocol
@@ -34,6 +35,7 @@ export function OmniDupePositionModal({
   collateralToken,
   dpmAccounts,
   events,
+  isOracless,
   networkId,
   productType,
   protocol,
@@ -58,10 +60,11 @@ export function OmniDupePositionModal({
   const type = productType === OmniProductType.Earn ? 'lender' : 'borrower'
   const primaryLink = hasMultiplyPositions
     ? `/owner/${walletAddress}`
-    : `${getOraclessProductUrl({
+    : `${getOmniPositionUrl({
+        protocol,
+        isPoolOracless: isOracless,
         collateralAddress,
         collateralToken,
-        networkId,
         networkName,
         productType,
         quoteAddress,
@@ -82,7 +85,7 @@ export function OmniDupePositionModal({
               {t('omni-kit.dupe-modal.title', {
                 collateralToken,
                 productType: startCase(productType),
-                protocol: startCase(protocol),
+                protocol: LendingProtocolLabel[protocol],
                 quoteToken,
               })}
             </Heading>

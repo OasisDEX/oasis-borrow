@@ -213,6 +213,7 @@ export const mainnetContracts = {
   ajnaRedeemer: contractDesc(ajnaReedemer, mainnet.ajna.AjnaRewardsReedemer),
   ajnaBonusRedeemer: contractDesc(ajnaBonusRedeemer, mainnet.ajna.AjnaBonusRewardsReedemer),
   morphoBlue: contractDesc(morphoBlue, mainnet.morphoblue.MorphoBlue),
+  adaptiveCurveIrm: contractDesc(morphoBlue, mainnet.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(ajnaReedemer, mainnet.common.BalancerVault),
   // not contracts
   cacheApi: mainnetCacheUrl,

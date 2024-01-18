@@ -115,6 +115,7 @@ export function OmniFormView({
           collateralToken,
           dpmAccounts,
           events: filteredEvents,
+          isOracless,
           networkId,
           productType,
           protocol,

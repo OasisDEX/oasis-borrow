@@ -49,7 +49,10 @@ import {
   getAjnaEarnIsFormValid,
   getEarnIsFormEmpty,
 } from 'features/omni-kit/protocols/ajna/metadata'
-import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
+import type {
+  AjnaEarnPositionAuction,
+  AjnaPositionAuction,
+} from 'features/omni-kit/protocols/ajna/observables'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniEarnFormAction, OmniProductType, OmniSidebarEarnPanel } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -60,6 +63,7 @@ import {
   formatDecimalAsPercent,
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
@@ -78,12 +82,9 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
   const {
     environment: {
       collateralAddress,
-      collateralBalance,
       collateralIcon,
       collateralPrice,
       collateralToken,
-      ethBalance,
-      ethPrice,
       isOpening,
       isOracless,
       isOwner,
@@ -99,7 +100,6 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       quotePrecision,
       quotePrice,
       quoteToken,
-      gasEstimation,
     },
     steps: { currentStep },
     tx: { isTxSuccess, txDetails },
@@ -110,26 +110,17 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
     state: { price },
   } = useAjnaCustomState()
 
-  const validations = getAjnaValidation({
-    ajnaSafetySwitchOn,
-    collateralBalance,
-    collateralToken,
-    currentStep,
-    ethBalance,
-    ethPrice,
-    gasEstimationUsd: gasEstimation?.usdValue,
+  const ajnaCustomValidations = getAjnaValidation({
+    safetySwitchOn: ajnaSafetySwitchOn,
     isOpening,
     position: productContext.position.currentPosition.position,
     positionAuction: productContext.position.positionAuction as AjnaPositionAuction,
     productType,
-    quoteBalance,
-    quoteToken,
-    simulationErrors: productContext.position.simulationCommon.errors,
-    simulationNotices: productContext.position.simulationCommon.notices,
-    simulationSuccesses: productContext.position.simulationCommon.successes,
-    simulationWarnings: productContext.position.simulationCommon.warnings,
     state: productContext.form.state,
-    txError: txDetails?.txError,
+  })
+
+  const validations = productContext.position.simulationCommon.getValidations({
+    safetySwitchOn: ajnaSafetySwitchOn,
     earnIsFormValid:
       productType === OmniProductType.Earn
         ? getAjnaEarnIsFormValid({
@@ -139,6 +130,12 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
             state: (productContext as ProductContextWithEarn).form.state,
           })
         : false,
+    isFormFrozen:
+      productType === OmniProductType.Earn &&
+      (productContext.position.positionAuction as AjnaEarnPositionAuction).isBucketFrozen,
+    customErrors: ajnaCustomValidations.localErrors,
+    customWarnings: ajnaCustomValidations.localWarnings,
+    protocolLabel: LendingProtocolLabel.ajna,
   })
 
   const notifications = getAjnaNotifications({

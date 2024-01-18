@@ -184,6 +184,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
   ajnaRedeemer: contractDesc(ajnaReedemer, arbitrum.ajna.AjnaRewardsReedemer),
   ajnaBonusRedeemer: contractDesc(ajnaBonusRedeemer, arbitrum.ajna.AjnaBonusRewardsReedemer),
   morphoBlue: contractDesc(morphoBlue, arbitrum.morphoblue.MorphoBlue),
+  adaptiveCurveIrm: contractDesc(morphoBlue, arbitrum.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(balancerVault, arbitrum.common.BalancerVault),
   // NOT contracts
   cacheApi: 'not-implemented',

@@ -19,6 +19,7 @@ import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/h
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'
+import { LendingProtocolLabel } from 'lendingProtocols'
 import React from 'react'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
 
@@ -41,15 +42,11 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
     tx: { txDetails },
   } = useOmniGeneralContext()
 
-  const validations = {
-    isFormValid: true,
-    hasErrors: false,
+  const validations = productContext.position.simulationCommon.getValidations({
+    safetySwitchOn: morphoSafetySwitchOn,
     isFormFrozen: false,
-    errors: [],
-    warnings: [],
-    notices: [],
-    successes: [],
-  }
+    protocolLabel: LendingProtocolLabel.morphoblue,
+  })
 
   const notifications: DetailsSectionNotificationItem[] = []
 

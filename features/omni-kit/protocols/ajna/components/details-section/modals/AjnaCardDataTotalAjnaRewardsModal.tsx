@@ -30,8 +30,7 @@ export function AjnaCardDataTotalAjnaRewardsModal({
         {formatCryptoBalance(claimable)} {t('ajna.content-card.total-ajna-rewards.modal-value-1')}
       </Card>
       <Card variant="vaultDetailsCardModal">
-        {formatCryptoBalance(total.minus(claimable))}{' '}
-        {t('ajna.content-card.total-ajna-rewards.modal-value-2')}
+        {formatCryptoBalance(total)} {t('ajna.content-card.total-ajna-rewards.modal-value-2')}
       </Card>
       <Card variant="vaultDetailsCardModal">
         {formatCryptoBalance(bonus)} {t('ajna.content-card.total-ajna-rewards.modal-value-3')}
