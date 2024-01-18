@@ -18,6 +18,8 @@ export default function OmniKitAaveContainerComponent({
     <OmniProductController<{}, PositionHistoryEvent[], IPosition>
       {...{
         ...props,
+        collateralToken: definedStrategy.tokens.collateral,
+        quoteToken: definedStrategy.tokens.debt,
         networkId: definedStrategy.networkId as OmniSupportedNetworkIds,
         protocol: definedStrategy.protocol,
         productType: aaveOmniProductType(product),

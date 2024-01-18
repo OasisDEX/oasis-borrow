@@ -1,19 +1,18 @@
-import type { MorphoBluePosition } from '@oasisdex/dma-library'
-import { negativeToZero } from '@oasisdex/dma-library'
+import type { SupplyPosition } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
-import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
+import { extractLendingProtocolFromPositionCreatedEvent } from 'features/aave/services'
+import type { GetOmniMetadata, SupplyMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
-import { getOmniBorrowishChangeVariant } from 'features/omni-kit/helpers'
 import { SimpleEarnFooter } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnFooter'
 import { SimpleEarnHeader } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnHeader'
 import { SimpleEarnOverview } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnOverview'
 import { useAaveLikeSidebarTitle } from 'features/omni-kit/protocols/aave-like/hooks/useAaveLikeSidebarTitle'
-import { morphoFlowStateFilter } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import React from 'react'
-import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
+import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
 
 export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) => {
   const {
@@ -21,7 +20,7 @@ export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) =
     AaveLikeSimpleEarnSuppressValidation: aaveLikeSimpleEarnSuppressValidation,
   } = useAppConfig('features')
   const {
-    environment: { collateralAddress, isOracless, productType, quoteAddress },
+    environment: { productType },
     steps: { currentStep },
   } = useOmniGeneralContext()
 
@@ -39,38 +38,42 @@ export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) =
 
   switch (productType) {
     case OmniProductType.Earn:
-      const position = productContext.position.currentPosition.position as MorphoBluePosition
-      const simulation = productContext.position.currentPosition.simulation as
-        | MorphoBluePosition
+      const _position = productContext.position.currentPosition.position as SupplyPosition
+      const _simulation = productContext.position.currentPosition.simulation as
+        | SupplyPosition
         | undefined
+
+      const TempFormOrder = () => <div>Form order</div>
 
       return {
         notifications,
         validations,
         handlers: {
           customReset: () => null,
+          txSuccessEarnHandler: () => null,
         },
         filters: {
-          flowStateFilter: (event: CreatePositionEvent) =>
-            morphoFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
+          flowStateFilter: (event: CreatePositionEvent) => {
+            return (
+              extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.AaveV3 &&
+              (event.args.positionType.toLocaleLowerCase() as OmniProductType) ===
+                OmniProductType.Earn
+            )
+          },
         },
         values: {
-          interestRate: position.rate,
+          interestRate: zero,
           isFormEmpty: true,
-          afterBuyingPower: simulation?.buyingPower,
           shouldShowDynamicLtv: () => true,
           debtMin: zero,
           debtMax: zero,
-          changeVariant: getOmniBorrowishChangeVariant({ simulation, isOracless }),
-          afterAvailableToBorrow: simulation && negativeToZero(simulation.debtAvailable()),
-          afterPositionDebt: simulation?.debtAmount,
-          collateralMax: simulation?.collateralAvailable ?? position.collateralAmount,
           paybackMax: zero,
           sidebarTitle: useAaveLikeSidebarTitle({
             currentStep,
             productType,
           }),
-          footerColumns: 2,
+          footerColumns: 3,
+          earnWithdrawMax: zero,
         },
         elements: {
           faq: <></>,
@@ -78,13 +81,14 @@ export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) =
           overviewHeader: <SimpleEarnHeader />,
           overviewContent: <SimpleEarnOverview />,
           overviewFooter: <SimpleEarnFooter />,
-          earnFormOrderAsElement: <div>asd</div>,
+          earnFormOrder: <TempFormOrder />,
+          earnFormOrderAsElement: TempFormOrder,
         },
         featureToggles: {
           safetySwitch: aaveLikeSimpleEarnSafetySwitchOn,
           suppressValidation: aaveLikeSimpleEarnSuppressValidation,
         },
-      } as LendingMetadata
+      } as SupplyMetadata
 
     case OmniProductType.Borrow:
     case OmniProductType.Multiply:
