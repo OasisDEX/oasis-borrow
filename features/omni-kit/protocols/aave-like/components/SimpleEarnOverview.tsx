@@ -2,9 +2,9 @@ import { DetailsSectionContentTable } from 'components/DetailsSectionContentTabl
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export function SimpleEarnOverview({ ...props }: any) {
+export function SimpleEarnOverview() {
   const { t } = useTranslation()
-  console.log('SimpleEarnOverview props', props)
+  // console.log('SimpleEarnOverview props', props)
   return (
     <DetailsSectionContentTable
       headers={[
