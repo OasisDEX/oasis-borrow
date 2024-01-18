@@ -3000,7 +3000,7 @@
       "debt-less-then-dust-limit": "The minimum debt for a position in this pool is {{minDebtAmount}}. Please update the parameters of this action to ensure the position has debt above {{minDebtAmount}} or no debt",
       "debt-less-then-dust-limit-multiply": "Minimum debt generated is below the pool minimum. Please increase your deposit size or increase the LTV (if available).",
       "repay-more-then-debt": "You cannot repay more than the total debt amount {{amount}} {{quoteToken}}.",
-      "not-enough-liquidity": "You cannot generate more debt than is available in the pool {{amount}} {{collateralToken}}/{{quoteToken}}.",
+      "not-enough-liquidity": "You cannot generate more debt than available liquidity. Current liquidity for {{collateralToken}}/{{quoteToken}} is {{amount}} {{quoteToken}}.",
       "withdraw-close-to-max-ltv": "Withdrawing {{amount}} {{collateralToken}}, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
       "generate-close-to-max-ltv": "Generating {{amount}} {{quoteToken}} of debt, would take your position close to the maximum LTV. To reduce your risk of liquidation, please enter a lower amount.",
       "liquidation-price-close-to-market-price": "Warning your Liquidation Price is close to Market price please check that your liquidation Price is not above Market price to avoid being liquidated with this action.",
