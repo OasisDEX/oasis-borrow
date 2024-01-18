@@ -457,6 +457,25 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     query getDpmPositions($dpmProxyAddress: [String!]) {
       accounts(where: { address_in: $dpmProxyAddress }) {
         address
+        borrowPositions {
+          market {
+            collateralToken {
+              address
+              decimals
+              symbol
+            }
+            id
+            latestInterestRates {
+              rate
+            }
+            liquidataionLTV
+            quoteToken {
+              address
+              decimals
+              symbol
+            }
+          }
+        }
         vaultId
       }
     }

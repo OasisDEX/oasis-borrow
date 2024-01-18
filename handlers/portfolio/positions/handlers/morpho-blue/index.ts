@@ -1,15 +1,26 @@
+import { views } from '@oasisdex/dma-library'
 import type { Vault } from '@prisma/client'
-import { NetworkIds } from 'blockchain/networks'
-import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
-import { SubgraphsResponses } from 'features/subgraphLoader/types'
+import BigNumber from 'bignumber.js'
+import { getNetworkContracts } from 'blockchain/contracts'
+import { getRpcProvider, NetworkIds } from 'blockchain/networks'
+import { NEGATIVE_WAD_PRECISION } from 'components/constants'
+import { getMorphoCumulatives } from 'features/omni-kit/protocols/morpho-blue/helpers'
+import { type OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
-import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
+import {
+  getMorphoPositionDetails,
+  getMorphoPositionInfo,
+} from 'handlers/portfolio/positions/handlers/morpho-blue/helpers'
+import { type TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type {
+  PortfolioPosition,
   PortfolioPositionsCountReply,
   PortfolioPositionsHandler,
   PortfolioPositionsReply,
 } from 'handlers/portfolio/types'
+import { LendingProtocol } from 'lendingProtocols'
 
 interface GetMorphoPositionsParams {
   apiVaults?: Vault[]
@@ -30,16 +41,97 @@ async function getMorphoPositions({
   const subgraphPositions = (await loadSubgraph('Morpho', 'getMorphoDpmPositions', networkId, {
     dpmProxyAddress,
   })) as SubgraphsResponses['Morpho']['getMorphoDpmPositions']
-
-  console.log(dpmProxyAddress)
-  console.log(subgraphPositions)
+  const positionsArray = subgraphPositions.response.accounts.flatMap(
+    ({ address: proxyAddress, borrowPositions, vaultId: positionId }) =>
+      borrowPositions.map((position) => ({
+        ...position,
+        proxyAddress,
+        positionId,
+      })),
+  )
 
   if (positionsCount || !apiVaults) {
     return {
-      positions: [],
+      positions: positionsArray.map(({ positionId }) => ({ positionId })),
     }
   } else {
-    return { positions: [] }
+    const positions = await Promise.all(
+      positionsArray.map(
+        async ({ market, positionId, proxyAddress }): Promise<PortfolioPosition> => {
+          const {
+            collateralToken,
+            id: marketId,
+            latestInterestRates: [{ rate }],
+            liquidataionLTV,
+            quoteToken,
+          } = market
+  
+          const {
+            collateralPrice,
+            networkName,
+            primaryToken,
+            quotePrice,
+            secondaryToken,
+            type,
+            url,
+          } = getMorphoPositionInfo({
+            apiVaults,
+            dpmList,
+            market,
+            networkId,
+            positionId,
+            prices,
+            proxyAddress,
+          })
+
+          const position = await views.morpho.getPosition(
+            {
+              collateralPrecision: Number(collateralToken.decimals),
+              collateralPriceUSD: collateralPrice,
+              marketId,
+              proxyAddress: proxyAddress,
+              quotePrecision: Number(quoteToken.decimals),
+              quotePriceUSD: quotePrice,
+            },
+            {
+              getCumulatives: getMorphoCumulatives(),
+              morphoAddress: getNetworkContracts(networkId).morphoBlue.address,
+              provider: getRpcProvider(networkId),
+            },
+          )
+
+          const netValue = position.collateralAmount
+            .times(collateralPrice)
+            .minus(position.debtAmount.times(quotePrice))
+            .toNumber()
+
+          return {
+            availableToMigrate: false,
+            automations: {},
+            details: getMorphoPositionDetails({
+              collateralPrice,
+              liquidataionLtv: new BigNumber(liquidataionLTV).shiftedBy(NEGATIVE_WAD_PRECISION),
+              position,
+              primaryToken,
+              quotePrice,
+              rate: new BigNumber(rate),
+              secondaryToken,
+              type,
+            }),
+            network: networkName,
+            netValue,
+            positionId: Number(positionId),
+            primaryToken,
+            protocol: LendingProtocol.MorphoBlue,
+            secondaryToken,
+            type,
+            url,
+          }
+        },
+      ),
+    )
+
+    return { positions }
   }
 }
 
