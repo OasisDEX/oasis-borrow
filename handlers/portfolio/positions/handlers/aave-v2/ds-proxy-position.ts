@@ -45,7 +45,12 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
     debtToken: 'ETH',
     collateralToken: 'STETH',
   })
-
+  if (!positionHistory || !stEthPosition) {
+    console.warn(`summer/portfolio: No AAVE v2 position history or no stEth position for ${address}, proxy:${dsProxyAddress}}`)
+    return {
+      positions: [],
+    }
+  }
   if (stEthPosition.collateral.amount.gt(zero)) {
     const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({
       dpm: {
