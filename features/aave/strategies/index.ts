@@ -2,6 +2,7 @@ import { RiskRatio } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import { isSupportedNetwork } from 'blockchain/networks'
+import { depositTokensStrategies } from 'features/aave/strategies/deposit-tokens-strategies'
 import type { IStrategyConfig, ProductType } from 'features/aave/types'
 import { isSupportedProductType } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
@@ -25,6 +26,7 @@ export const strategies = [
   ...ethereumAaveV3Strategies,
   ...ethereumSparkV3Strategies,
   ...baseAaveV3Strategies,
+  ...depositTokensStrategies,
 ]
 
 export function aaveStrategiesList(
@@ -101,7 +103,8 @@ export function getSupportedTokens(protocol: LendingProtocol, network: NetworkNa
       Object.values(strategies)
         .filter(({ protocol: p, network: n }) => p === protocol && n === network)
         .map((strategy) => Object.values(strategy.tokens))
-        .flatMap((tokens) => tokens),
+        .flatMap((tokens) => tokens)
+        .filter(Boolean), // some strategies (simple deposit) have empty strings instead of debt tokens, so we filter them out
     ),
   )
 }

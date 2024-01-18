@@ -4,7 +4,7 @@ import { PositionHistoryItemDetails } from 'components/history/PositionHistoryIt
 import { Icon } from 'components/Icon'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
-import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/types'
+import type { AaveHistoryEvent } from 'features/omni-kit/protocols/aave-like/history/types'
 import type {
   AjnaBorrowerEvent,
   AjnaHistoryEvent,
