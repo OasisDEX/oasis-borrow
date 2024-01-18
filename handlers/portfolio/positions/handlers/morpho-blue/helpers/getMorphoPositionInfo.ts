@@ -52,7 +52,7 @@ export function getMorphoPositionInfo({
     defaultType,
     networkId,
     positionId: Number(positionId),
-    protocol: LendingProtocol.Ajna,
+    protocol: LendingProtocol.MorphoBlue,
   })
   const url = getOmniPositionUrl({
     collateralToken: primaryToken,
