@@ -65,7 +65,7 @@ async function getMorphoPositions({
             liquidataionLTV,
             quoteToken,
           } = market
-  
+
           const {
             collateralPrice,
             networkName,
