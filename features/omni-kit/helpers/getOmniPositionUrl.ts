@@ -7,6 +7,7 @@ interface GetOmniPositionUrlParams {
   collateralToken: string
   isPoolOracless?: boolean
   networkName: NetworkNames
+  positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
   quoteAddress?: string
@@ -18,12 +19,15 @@ export function getOmniPositionUrl({
   collateralToken,
   isPoolOracless,
   networkName,
+  positionId,
   productType,
   protocol,
   quoteAddress,
   quoteToken,
 }: GetOmniPositionUrlParams) {
-  return isPoolOracless
+  const productUrl = isPoolOracless
     ? `/${networkName}/${protocol}/${productType}/${collateralAddress}-${quoteAddress}`
     : `/${networkName}/${protocol}/${productType}/${collateralToken}-${quoteToken}`
+
+  return `${productUrl}${positionId ? `/${positionId}` : ''}`
 }
