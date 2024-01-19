@@ -8,7 +8,10 @@ import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { ethers } from 'ethers'
 import { omniNetworkMap } from 'features/omni-kit/constants'
-import { getMaxIncreasedValue } from 'features/omni-kit/protocols/ajna/helpers'
+import {
+  getMaxIncreasedOrDecreasedValue,
+  MaxValueResolverMode,
+} from 'features/omni-kit/protocols/ajna/helpers'
 import {
   morphoActionDepositBorrow,
   morphoActionOpenBorrow,
@@ -76,7 +79,7 @@ export const getMorphoParameters = async ({
       tokens: {
         WETH: addressesConfig.tokens.WETH.address,
         DAI: addressesConfig.tokens.DAI.address,
-        ETH: addressesConfig.tokens.ETH.address,
+        ETH: addressesConfig.tokens.ETH_ACTUAL.address,
         USDC: addressesConfig.tokens.USDC.address,
         USDT: addressesConfig.tokens.USDT.address,
         WBTC: addressesConfig.tokens.WBTC.address,
@@ -92,7 +95,17 @@ export const getMorphoParameters = async ({
     case OmniBorrowFormAction.DepositBorrow:
     case OmniBorrowFormAction.GenerateBorrow: {
       return morphoActionDepositBorrow({
-        state,
+        state: {
+          ...state,
+          generateAmount:
+            state.generateAmount && state.generateAmountMax
+              ? getMaxIncreasedOrDecreasedValue(
+                  state.generateAmount,
+                  position.borrowRate,
+                  MaxValueResolverMode.DECREASED,
+                )
+              : state.generateAmount,
+        },
         commonPayload,
         dependencies,
       })
@@ -102,10 +115,19 @@ export const getMorphoParameters = async ({
       return morphoActionPaybackWithdraw({
         state: {
           ...state,
-          paybackAmount:
-            state.paybackAmount && state.paybackAmountMax
-              ? getMaxIncreasedValue(state.paybackAmount, position.borrowRate)
-              : state.paybackAmount,
+          // In general, we should use this mechanism do be able to payback all without leaving dust.
+          // paybackAmount:
+          //   state.paybackAmount && state.paybackAmountMax
+          //     ? getMaxIncreasedOrDecreasedValue(state.paybackAmount, position.borrowRate)
+          //     : state.paybackAmount,
+          withdrawAmount:
+            state.withdrawAmount && state.withdrawAmountMax
+              ? getMaxIncreasedOrDecreasedValue(
+                  state.withdrawAmount,
+                  position.borrowRate,
+                  MaxValueResolverMode.DECREASED,
+                )
+              : state.withdrawAmount,
         },
         commonPayload,
         dependencies,

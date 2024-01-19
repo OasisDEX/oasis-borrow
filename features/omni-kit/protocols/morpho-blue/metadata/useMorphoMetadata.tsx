@@ -1,6 +1,7 @@
 import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import faqBorrow from 'features/content/faqs/morphoblue/borrow/en'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
@@ -14,7 +15,10 @@ import {
   MorphoDetailsSectionContent,
   MorphoDetailsSectionFooter,
 } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
-import { morphoFlowStateFilter } from 'features/omni-kit/protocols/morpho-blue/helpers'
+import {
+  getMorphoBorrowCollateralMax,
+  morphoFlowStateFilter,
+} from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
@@ -79,7 +83,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
             txStatus: txDetails?.txStatus,
           }),
           afterBuyingPower: simulation?.buyingPower,
-          shouldShowDynamicLtv: () => true,
+          shouldShowDynamicLtv: () => false,
           debtMin: zero,
           debtMax: getOmniBorrowDebtMax({
             digits: quotePrecision,
@@ -89,7 +93,11 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           changeVariant: getOmniBorrowishChangeVariant({ simulation, isOracless }),
           afterAvailableToBorrow: simulation && negativeToZero(simulation.debtAvailable()),
           afterPositionDebt: simulation?.debtAmount,
-          collateralMax: simulation?.collateralAvailable ?? position.collateralAmount,
+          collateralMax: getMorphoBorrowCollateralMax({
+            precision: quotePrecision,
+            position,
+            simulation,
+          }),
           paybackMax: getOmniBorrowPaybackMax({
             balance: quoteBalance,
             position,
@@ -101,7 +109,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           footerColumns: 2,
         },
         elements: {
-          faq: <></>,
+          faq: faqBorrow,
           highlighterOrderInformation: undefined,
           overviewContent: <MorphoDetailsSectionContent />,
           overviewFooter: <MorphoDetailsSectionFooter />,

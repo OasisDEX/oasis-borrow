@@ -34,7 +34,6 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
-
   Discover: {
     [NetworkIds.MAINNET]: `oasis/discover`,
     [NetworkIds.HARDHAT]: `oasis/discover`,
@@ -49,10 +48,9 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
-
-  TempGraph: {
-    [NetworkIds.MAINNET]: '',
-    [NetworkIds.HARDHAT]: '',
+  Morpho: {
+    [NetworkIds.MAINNET]: 'summer/morpho-blue',
+    [NetworkIds.HARDHAT]: 'summer/morpho-blue',
     [NetworkIds.GOERLI]: '',
     [NetworkIds.ARBITRUMMAINNET]: '',
     [NetworkIds.ARBITRUMGOERLI]: '',
@@ -455,6 +453,33 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getMorphoDpmPositions: gql`
+    query getDpmPositions($dpmProxyAddress: [String!]) {
+      accounts(where: { address_in: $dpmProxyAddress }) {
+        address
+        borrowPositions {
+          market {
+            collateralToken {
+              address
+              decimals
+              symbol
+            }
+            id
+            latestInterestRates {
+              rate
+            }
+            liquidataionLTV
+            quoteToken {
+              address
+              decimals
+              symbol
+            }
+          }
+        }
+        vaultId
+      }
+    }
+  `,
   getMakerDiscoverPositions: gql`
     query getDiscoverPositions($walletAddress: Bytes!) {
       cdps(where: { owner_: { address: $walletAddress } }) {
@@ -486,7 +511,6 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
-  tempMethod: '',
   getClaimedReferralRewards: gql`
     query getClaimed($walletAddress: String!) {
       claimeds(where: { user: $walletAddress }) {

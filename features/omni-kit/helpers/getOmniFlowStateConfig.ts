@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { paybackAllAmountAllowanceMaxMultiplier } from 'features/omni-kit/constants'
 import {
-  getMaxIncreasedValue,
+  getMaxIncreasedOrDecreasedValue,
   INCREASED_VALUE_PRECISSION,
 } from 'features/omni-kit/protocols/ajna/helpers'
 import {
@@ -91,8 +91,8 @@ export function getOmniFlowStateConfig({
       const allowanceMultiplier = paybackAllAmountAllowanceMaxMultiplier[protocol]
 
       return {
-        amount: getMaxIncreasedValue(state.paybackAmount, fee),
-        allowanceAmount: getMaxIncreasedValue(state.paybackAmount, fee)
+        amount: getMaxIncreasedOrDecreasedValue(state.paybackAmount, fee),
+        allowanceAmount: getMaxIncreasedOrDecreasedValue(state.paybackAmount, fee)
           .times(allowanceMultiplier)
           .dp(INCREASED_VALUE_PRECISSION),
         token: quoteToken,
@@ -107,7 +107,7 @@ export function getOmniFlowStateConfig({
       }
 
       return {
-        amount: getMaxIncreasedValue(state.paybackAmount, fee),
+        amount: getMaxIncreasedOrDecreasedValue(state.paybackAmount, fee),
         token: quoteToken,
       }
     case OmniMultiplyFormAction.DepositQuoteMultiply:

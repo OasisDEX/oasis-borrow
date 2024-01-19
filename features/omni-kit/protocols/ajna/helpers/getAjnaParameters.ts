@@ -25,7 +25,7 @@ import {
   getAjnaCumulatives,
   getAjnaPoolAddress,
   getAjnaPoolData,
-  getMaxIncreasedValue,
+  getMaxIncreasedOrDecreasedValue,
 } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import type {
@@ -130,7 +130,7 @@ export async function getAjnaParameters({
           ...state,
           paybackAmount:
             state.paybackAmount && state.paybackAmountMax
-              ? getMaxIncreasedValue(state.paybackAmount, position.pool.interestRate)
+              ? getMaxIncreasedOrDecreasedValue(state.paybackAmount, position.pool.interestRate)
               : state.paybackAmount,
         },
         commonPayload,
@@ -212,7 +212,7 @@ export async function getAjnaParameters({
         ...state,
         paybackAmount:
           state.paybackAmount && state.paybackAmountMax
-            ? getMaxIncreasedValue(state.paybackAmount, position.pool.interestRate)
+            ? getMaxIncreasedOrDecreasedValue(state.paybackAmount, position.pool.interestRate)
             : state.paybackAmount,
       }
 

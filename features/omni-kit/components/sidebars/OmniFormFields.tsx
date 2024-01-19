@@ -4,6 +4,7 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import type {
   FormActionsUpdateDeposit,
   FormActionsUpdateGenerate,
+  FormActionsUpdateGenerateMax,
   FormActionsUpdatePayback,
   FormActionsUpdatePaybackMax,
   FormActionsUpdateWithdraw,
@@ -112,7 +113,7 @@ export function OmniFormFieldGenerate({
   minAmount,
   minAmountLabel = 'field-from',
   resetOnClear,
-}: OmniFormField<FormActionsUpdateGenerate> &
+}: OmniFormField<FormActionsUpdateGenerate | FormActionsUpdateGenerateMax> &
   OmniFormFieldWithMinAmount &
   OmniFormFieldWithMaxAmount) {
   const { t } = useTranslation()
@@ -151,6 +152,10 @@ export function OmniFormFieldGenerate({
           generateAmount: n,
           generateAmountUSD: n?.times(quotePrice),
         })
+        dispatchAmount({
+          type: 'update-generate-max',
+          generateAmountMax: false,
+        })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onAuxiliaryChange={handleNumericInput((n) => {
@@ -173,6 +178,10 @@ export function OmniFormFieldGenerate({
           type: 'update-generate',
           generateAmount: maxAmount,
           generateAmountUSD: maxAmount?.times(quotePrice),
+        })
+        dispatchAmount({
+          type: 'update-generate-max',
+          generateAmountMax: true,
         })
       }}
     />
@@ -230,10 +239,6 @@ export function OmniFormFieldPayback({
           type: 'update-payback',
           paybackAmount: n?.dividedBy(quotePrice).dp(quotePrecision),
           paybackAmountUSD: n,
-        })
-        dispatchAmount({
-          type: 'update-payback-max',
-          paybackAmountMax: false,
         })
         if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
