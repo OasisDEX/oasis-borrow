@@ -6,6 +6,7 @@ import { useAaveLikeSimpleEarnMetadata } from 'features/omni-kit/protocols/aave-
 import type { AaveSimpleSupplyPosition } from 'features/omni-kit/protocols/aave-like/types/AaveSimpleSupply'
 import type { OmniSidebarStepsSet, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
+import { thousand } from 'helpers/zero'
 import React from 'react'
 
 export default function OmniKitAaveContainerComponent({
@@ -28,6 +29,13 @@ export default function OmniKitAaveContainerComponent({
         children({
           useDynamicMetadata: useAaveLikeSimpleEarnMetadata,
           useTxHandler: () => () => {},
+          formDefaults: {
+            earn: {
+              depositAmount: thousand,
+            },
+            borrow: {},
+            multiply: {},
+          },
         })
       }
       singleToken

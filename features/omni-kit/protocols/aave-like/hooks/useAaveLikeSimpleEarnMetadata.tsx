@@ -6,7 +6,6 @@ import { SimpleEarnFooter } from 'features/omni-kit/protocols/aave-like/componen
 import { SimpleEarnHeader } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnHeader'
 import { SimpleEarnOverview } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnOverview'
 import { useAaveLikeSidebarTitle } from 'features/omni-kit/protocols/aave-like/hooks/useAaveLikeSidebarTitle'
-import type { AaveSimpleSupplyPosition } from 'features/omni-kit/protocols/aave-like/types/AaveSimpleSupply'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'
@@ -38,14 +37,7 @@ export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) =
 
   switch (productType) {
     case OmniProductType.Earn:
-      const position = productContext.position.currentPosition.position as AaveSimpleSupplyPosition
-      const simulation = productContext.position.currentPosition.simulation as
-        | AaveSimpleSupplyPosition
-        | undefined
-
       const TempFormOrder = () => <div>Form order</div>
-      // console.log('position', position)
-      // console.log('simulation', simulation)
 
       return {
         notifications,
