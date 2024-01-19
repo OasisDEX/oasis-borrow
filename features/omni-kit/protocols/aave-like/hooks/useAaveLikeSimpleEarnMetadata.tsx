@@ -44,8 +44,8 @@ export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) =
         | undefined
 
       const TempFormOrder = () => <div>Form order</div>
-      console.log('position', position)
-      console.log('simulation', simulation)
+      // console.log('position', position)
+      // console.log('simulation', simulation)
 
       return {
         notifications,
