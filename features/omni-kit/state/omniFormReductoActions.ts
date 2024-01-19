@@ -10,6 +10,10 @@ export interface FormActionsUpdateGenerate {
   generateAmount?: BigNumber
   generateAmountUSD?: BigNumber
 }
+export interface FormActionsUpdateGenerateMax {
+  type: 'update-generate-max'
+  generateAmountMax: boolean
+}
 export interface FormActionsUpdatePayback {
   type: 'update-payback'
   paybackAmount?: BigNumber

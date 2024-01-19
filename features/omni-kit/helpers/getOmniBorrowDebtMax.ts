@@ -8,7 +8,10 @@ interface OmniBorrowDebtMaxParams {
 }
 
 export function getOmniBorrowDebtMax({ digits, position, simulation }: OmniBorrowDebtMaxParams) {
-  const maxDebt = position.debtAvailable(simulation?.collateralAmount || position.collateralAmount)
+  const maxDebt = position.debtAvailable(
+    simulation?.collateralAmount || position.collateralAmount,
+    position.debtAmount,
+  )
 
   return maxDebt.decimalPlaces(digits, BigNumber.ROUND_DOWN)
 }

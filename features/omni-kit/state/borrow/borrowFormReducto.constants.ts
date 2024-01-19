@@ -10,6 +10,7 @@ export const omniBorrowFormReset = {
   depositAmount: undefined,
   depositAmountUSD: undefined,
   generateAmount: undefined,
+  generateAmountMax: false,
   generateAmountUSD: undefined,
   paybackAmount: undefined,
   paybackAmountUSD: undefined,
