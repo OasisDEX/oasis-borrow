@@ -11,8 +11,11 @@ import { zero } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 import { isLendingProtocol } from 'lendingProtocols'
 
-import { arbitrumAaveV3Strategies } from './arbitrum-aave-v3-strategies'
-import { baseAaveV3Strategies } from './base-aave-v3-strategies'
+import {
+  arbitrumAaveV3lendingStrategies,
+  arbitrumAaveV3Strategies,
+} from './arbitrum-aave-v3-strategies'
+import { baseAaveV3lendingStrategies, baseAaveV3Strategies } from './base-aave-v3-strategies'
 import { ethereumAaveV2Strategies } from './ethereum-aave-v2-strategies'
 import {
   ethereumAaveV3lendingStrategies,
@@ -22,7 +25,10 @@ import {
   ethereumSparkV3lendingStrategies,
   ethereumSparkV3Strategies,
 } from './ethereum-spark-v3-strategies'
-import { optimismAaveV3Strategies } from './optimism-aave-v3-strategies'
+import {
+  optimismAaveV3lendingStrategies,
+  optimismAaveV3Strategies,
+} from './optimism-aave-v3-strategies'
 
 export const aaveLikeStrategies: IStrategyConfig[] = [
   ...ethereumAaveV2Strategies,
@@ -33,6 +39,9 @@ export const aaveLikeStrategies: IStrategyConfig[] = [
   ...baseAaveV3Strategies,
   ...ethereumSparkV3lendingStrategies,
   ...ethereumAaveV3lendingStrategies,
+  ...optimismAaveV3lendingStrategies,
+  ...baseAaveV3lendingStrategies,
+  ...arbitrumAaveV3lendingStrategies,
 ]
 
 export function aaveStrategiesList(

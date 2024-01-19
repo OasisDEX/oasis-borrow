@@ -7,7 +7,7 @@ import { ProductHubProductType } from 'features/productHub/types'
 import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const getAaveLikeViewStrategyUrl = ({
+const getAaveLikeViewStrategyUrl = ({
   aaveLikeProduct,
   bypassFeatureFlag,
   version,
@@ -18,24 +18,35 @@ export const getAaveLikeViewStrategyUrl = ({
   depositToken,
   network,
   earnStrategy,
-}: Partial<ProductHubItem> & {
+}: Pick<
+  ProductHubItem,
+  | 'product'
+  | 'protocol'
+  | 'primaryToken'
+  | 'secondaryToken'
+  | 'depositToken'
+  | 'network'
+  | 'earnStrategy'
+> & {
   version: 'v2' | 'v3'
   bypassFeatureFlag: boolean
   aaveLikeProduct: 'aave' | 'spark'
 }) => {
-  let search
+  let correspondingStrategy
   if (earnStrategy === EarnStrategies.lending) {
-    search = aaveStrategyList.find(
+    correspondingStrategy = aaveStrategyList.find(
       (strategy) =>
         product
           ?.map((prod) => prod.toLocaleLowerCase())
           ?.includes(strategy.type.toLocaleLowerCase() as ProductHubProductType) &&
         strategy.protocol === protocol &&
+        strategy.tokens.collateral.toLocaleLowerCase() === primaryToken?.toLocaleLowerCase() &&
+        strategy.tokens.debt.toLocaleLowerCase() === secondaryToken?.toLocaleLowerCase() &&
         strategy.tokens.deposit.toLocaleLowerCase() === depositToken?.toLocaleLowerCase() &&
         strategy.network === network,
     )
   } else {
-    search = aaveStrategyList.find(
+    correspondingStrategy = aaveStrategyList.find(
       (strategy) =>
         product
           ?.map((prod) => prod.toLocaleLowerCase())
@@ -47,13 +58,15 @@ export const getAaveLikeViewStrategyUrl = ({
     )
   }
 
-  return !search?.urlSlug ||
-    (!bypassFeatureFlag &&
-      search?.featureToggle &&
-      !getLocalAppConfig('features')[search?.featureToggle])
+  const isFeatureToggle =
+    !bypassFeatureFlag &&
+    correspondingStrategy?.featureToggle &&
+    !getLocalAppConfig('features')[correspondingStrategy?.featureToggle]
+
+  return !correspondingStrategy?.urlSlug || isFeatureToggle
     ? '/'
-    : `/${network}/${aaveLikeProduct}/${version}/${search.type.toLocaleLowerCase()}/${
-        search!.urlSlug
+    : `/${network}/${aaveLikeProduct}/${version}/${correspondingStrategy.type.toLocaleLowerCase()}/${
+        correspondingStrategy!.urlSlug
       }`
 }
 
@@ -103,6 +116,7 @@ export function getActionUrl({
         secondaryToken,
         aaveLikeProduct: 'aave',
         earnStrategy,
+        depositToken,
       })
     case LendingProtocol.AaveV3:
       return getAaveLikeViewStrategyUrl({

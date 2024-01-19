@@ -874,5 +874,5 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
 export const ethereumAaveV3lendingStrategies: IStrategyConfig[] = parseLendingStrategies(
   depositTokensConfigList,
   NetworkNames.ethereumMainnet,
-  LendingProtocol.SparkV3,
+  LendingProtocol.AaveV3,
 )
