@@ -79,7 +79,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
             txStatus: txDetails?.txStatus,
           }),
           afterBuyingPower: simulation?.buyingPower,
-          shouldShowDynamicLtv: () => true,
+          shouldShowDynamicLtv: () => false,
           debtMin: zero,
           debtMax: getOmniBorrowDebtMax({
             digits: quotePrecision,
