@@ -44,6 +44,7 @@ interface OmniGeneralContextProviderProps {
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
+  protocolRaw: string
   quoteAddress: string
   quoteBalance: BigNumber
   quoteDigits: number

@@ -50,7 +50,9 @@ export const mapAjnaBorrowishEvents = (
           ...basicData,
         }
       case 'AjnaDepositBorrow_4':
+      case 'AjnaDepositBorrow_5':
       case 'AjnaRepayWithdraw_4':
+      case 'AjnaRepayWithdraw_5':
         return {
           collateralBefore: event.collateralBefore,
           collateralAfter: event.collateralAfter,
@@ -59,7 +61,9 @@ export const mapAjnaBorrowishEvents = (
           ...basicData,
         }
       case 'AjnaOpenMultiplyPosition_4':
-      case 'AjnaAdjustRiskUp_4': {
+      case 'AjnaOpenMultiplyPosition_5':
+      case 'AjnaAdjustRiskUp_4':
+      case 'AjnaAdjustRiskUp_5': {
         return {
           ...basicData,
           ...basicMultiplyData,
@@ -67,8 +71,11 @@ export const mapAjnaBorrowishEvents = (
         }
       }
       case 'AjnaAdjustRiskDown_4':
+      case 'AjnaAdjustRiskDown_5':
       case 'AjnaCloseToCollateralPosition_4':
-      case 'AjnaCloseToQuotePosition_4': {
+      case 'AjnaCloseToCollateralPosition_5':
+      case 'AjnaCloseToQuotePosition_4':
+      case 'AjnaCloseToQuotePosition_5': {
         return {
           ...basicData,
           ...basicMultiplyData,

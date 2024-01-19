@@ -14,35 +14,19 @@ import { AjnaCustomStateProvider } from 'features/omni-kit/protocols/ajna/state/
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { getOmniServerSideProps } from 'features/omni-kit/server'
 import type { OmniProductPage } from 'features/omni-kit/types'
-import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
-import { useAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
-import { useRouter } from 'next/router'
 import React from 'react'
-import { FeaturesEnum } from 'types/config'
 
 type AjnaPositionPageProps = OmniProductPage
 
 function AjnaPositionPage(props: AjnaPositionPageProps) {
-  const { replace } = useRouter()
-  const { collateralToken, networkId, positionId, productType, quoteToken } = props
+  const { collateralToken, networkId, quoteToken } = props
   const isOracless = !!(
     collateralToken &&
     quoteToken &&
     isPoolOracless({ collateralToken, quoteToken, networkId })
   )
-
-  const positionUrl = `/base/ajna/${productType}/${collateralToken}-${quoteToken}${
-    positionId ? `/${positionId}` : ''
-  }`
-  const features = useAppConfig('features')
-
-  const ajnaBaseEnabled = features[FeaturesEnum.AjnaBase]
-
-  if (!ajnaBaseEnabled && networkId === NetworkIds.BASEMAINNET) {
-    void replace(`${EXTERNAL_LINKS.AJNA.OLD}${positionUrl}`)
-  }
 
   return (
     <AjnaLayout>
@@ -53,7 +37,7 @@ function AjnaPositionPage(props: AjnaPositionPageProps) {
           isOracless={isOracless}
           protocol={LendingProtocol.Ajna}
           protocolHook={useAjnaData}
-          protocolRaw={settings.rawName}
+          protocolRaw={settings.rawName[props.networkId] as string}
           seoTags={ajnaSeoTags}
           steps={settings.steps}
         />

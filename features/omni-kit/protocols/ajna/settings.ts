@@ -11,7 +11,11 @@ import {
 } from 'features/omni-kit/types'
 
 export const settings: OmniProtocolSettings = {
-  rawName: 'Ajna_rc13',
+  rawName: {
+    [NetworkIds.MAINNET]: 'Ajna_rc13',
+    [NetworkIds.GOERLI]: 'Ajna_rc13',
+    [NetworkIds.BASEMAINNET]: 'Ajna_rc14',
+  },
   supportedNetworkIds: [NetworkIds.BASEMAINNET, NetworkIds.GOERLI, NetworkIds.MAINNET],
   supportedMainnetNetworkIds: [NetworkIds.BASEMAINNET, NetworkIds.MAINNET],
   supportedProducts: [OmniProductType.Borrow, OmniProductType.Earn, OmniProductType.Multiply],

@@ -2,7 +2,6 @@ import type { Vault } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/networks'
 import { getOmniPositionUrl } from 'features/omni-kit/helpers'
-import { settings as morphoSettings } from 'features/omni-kit/protocols/morpho-blue/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { MorphoDpmPositionsMarket } from 'handlers/portfolio/positions/handlers/morpho-blue/types'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
@@ -22,6 +21,7 @@ interface GetMorphoPositionInfoParams {
   positionId: string
   prices: TokensPricesList
   proxyAddress: string
+  protocolRaw: string
 }
 
 export function getMorphoPositionInfo({
@@ -32,6 +32,7 @@ export function getMorphoPositionInfo({
   positionId,
   prices,
   proxyAddress,
+  protocolRaw,
 }: GetMorphoPositionInfoParams) {
   const primaryToken = getTokenDisplayName(collateralToken.symbol)
   const secondaryToken = getTokenDisplayName(quoteToken.symbol)
@@ -42,7 +43,7 @@ export function getMorphoPositionInfo({
   const defaultType = getDefaultBorrowishPositionType({
     collateralTokenAddress: collateralToken.address,
     dpmList,
-    protocolRaw: morphoSettings.rawName,
+    protocolRaw,
     proxyAddress,
     quoteTokenAddress: quoteToken.address,
   })
