@@ -16,7 +16,6 @@ interface AjnaCardDataBorrowRateModalProps {
 export function AjnaCardDataBorrowRateModal({
   debtAmount,
   borrowRate,
-  quotePrice,
   quoteToken,
 }: AjnaCardDataBorrowRateModalProps) {
   const { t } = useTranslation()
@@ -28,19 +27,15 @@ export function AjnaCardDataBorrowRateModal({
       value={formatDecimalAsPercent(borrowRate)}
       theme={ajnaExtensionTheme}
     >
-      {quotePrice && (
-        <>
-          <Heading variant="header5" sx={{ fontWeight: 'semiBold' }}>
-            {t('ajna.content-card.borrow-rate.modal-footnote-title', { quoteToken })}
-          </Heading>
-          <Text variant="paragraph3" as="p" sx={{ color: 'neutral80' }}>
-            {t('ajna.content-card.borrow-rate.modal-footnote-description', { quoteToken })}
-          </Text>
-          <Card variant="vaultDetailsCardModal">
-            {formatCryptoBalance(debtAmount.times(borrowRate))} {quoteToken}
-          </Card>
-        </>
-      )}
+      <Heading variant="header5" sx={{ fontWeight: 'semiBold' }}>
+        {t('ajna.content-card.borrow-rate.modal-footnote-title', { quoteToken })}
+      </Heading>
+      <Text variant="paragraph3" as="p" sx={{ color: 'neutral80' }}>
+        {t('ajna.content-card.borrow-rate.modal-footnote-description', { quoteToken })}
+      </Text>
+      <Card variant="vaultDetailsCardModal">
+        {formatCryptoBalance(debtAmount.times(borrowRate))} {quoteToken}
+      </Card>
     </DetailsSectionContentSimpleModal>
   )
 }

@@ -15,7 +15,6 @@ interface AjnaCardDataBorrowRateParams {
   isOwner: boolean
   networkId: OmniSupportedNetworkIds
   owner: string
-  quotePrice?: BigNumber
   quoteToken: string
 }
 
@@ -26,7 +25,6 @@ export function useAjnaCardDataBorrowRate({
   isOwner,
   networkId,
   owner,
-  quotePrice,
   quoteToken,
 }: AjnaCardDataBorrowRateParams): OmniContentCardExtra {
   const {
@@ -40,7 +38,6 @@ export function useAjnaCardDataBorrowRate({
         borrowRate={borrowRate}
         debtAmount={debtAmount}
         quoteToken={quoteToken}
-        quotePrice={quotePrice}
       />
     ),
     ...(isPoolWithRewards({ collateralToken, networkId, quoteToken }) && {

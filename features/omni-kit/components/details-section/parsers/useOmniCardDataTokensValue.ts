@@ -1,9 +1,12 @@
 import type BigNumber from 'bignumber.js'
-import type { OmniContentCardBase } from 'features/omni-kit/components/details-section'
+import type {
+  OmniContentCardBase,
+  OmniContentCardDataWithModal,
+} from 'features/omni-kit/components/details-section'
 import { formatCryptoBalance, formatUsdValue } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 
-interface OmniCardDataTokensValueParams {
+interface OmniCardDataTokensValueParams extends OmniContentCardDataWithModal {
   afterTokensAmount?: BigNumber
   tokensAmount: BigNumber
   tokensPrice?: BigNumber
@@ -14,6 +17,7 @@ interface OmniCardDataTokensValueParams {
 
 export function useOmniCardDataTokensValue({
   afterTokensAmount,
+  modal,
   tokensAmount,
   tokensPrice,
   tokensSymbol,
@@ -39,5 +43,6 @@ export function useOmniCardDataTokensValue({
       tokensPrice && {
         footnote: [formatUsdValue(tokensAmount.times(tokensPrice))],
       }),
+    modal,
   }
 }

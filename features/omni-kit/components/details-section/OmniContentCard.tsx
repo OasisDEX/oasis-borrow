@@ -5,6 +5,7 @@ import type { IconProps } from 'components/Icon.types'
 import { StatefulTooltip } from 'components/Tooltip'
 import { useTranslation } from 'next-i18next'
 import React, { type ReactNode } from 'react'
+import type { Theme } from 'theme-ui'
 import type { TranslationType } from 'ts_modules/i18next'
 
 export interface OmniContentCardTranslation {
@@ -17,6 +18,7 @@ export type OmniContentCardValue = string | OmniContentCardTranslation
 export interface OmniContentCardBase {
   change?: OmniContentCardValue[]
   footnote?: OmniContentCardValue[]
+  modal?: ReactNode
   title: OmniContentCardValue
   unit?: string
   value?: OmniContentCardValue
@@ -38,6 +40,14 @@ export interface OmniContentCardExtra {
     icon?: ReactNode
     value?: ReactNode
   }
+}
+
+export interface OmniContentCardDataWithModal {
+  modal?: ReactNode
+}
+
+export interface OmniContentCardDataWithTheme {
+  theme?: Theme
 }
 
 type OmniContentCardProps = OmniContentCardBase & OmniContentCardExtra
