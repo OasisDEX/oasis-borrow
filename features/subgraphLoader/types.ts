@@ -17,6 +17,7 @@ import type {
 import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'
 import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/ajna/types'
 import type { MakerDiscoverPositionsResponse } from 'handlers/portfolio/positions/handlers/maker/types'
+import type { MorphoDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/morpho-blue/types'
 
 export type Subgraphs = {
   Ajna: {
@@ -42,8 +43,8 @@ export type Subgraphs = {
   Discover: {
     getMakerDiscoverPositions: { walletAddress: string }
   }
-  TempGraph: {
-    tempMethod: undefined
+  Morpho: {
+    getMorphoDpmPositions: { dpmProxyAddress: string[] }
   }
   Referral: {
     getClaimedReferralRewards: { walletAddress: string }
@@ -144,8 +145,8 @@ export type SubgraphsResponses = {
   Discover: {
     getMakerDiscoverPositions: SubgraphBaseResponse<MakerDiscoverPositionsResponse>
   }
-  TempGraph: {
-    tempMethod: SubgraphBaseResponse<undefined>
+  Morpho: {
+    getMorphoDpmPositions: SubgraphBaseResponse<MorphoDpmPositionsResponse>
   }
   Referral: {
     getClaimedReferralRewards: SubgraphBaseResponse<{
@@ -174,6 +175,6 @@ export type SubgraphMethodsRecord = {
   [key in keyof (Subgraphs['Aave'] &
     Subgraphs['Ajna'] &
     Subgraphs['Discover'] &
-    Subgraphs['TempGraph'] &
+    Subgraphs['Morpho'] &
     Subgraphs['Referral'])]: string
 }
