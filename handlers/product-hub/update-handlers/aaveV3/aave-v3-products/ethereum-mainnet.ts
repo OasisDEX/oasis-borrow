@@ -15,12 +15,6 @@ export const aaveSeed: AaveProductHubItemSeed[] = [
     types: ['borrow', 'earn'],
   },
   {
-    collateral: 'WSTETH',
-    debt: 'ETH',
-    strategyType: 'long',
-    types: ['borrow', 'earn'],
-  },
-  {
     collateral: 'CBETH',
     debt: 'ETH',
     strategyType: 'long',
