@@ -1,7 +1,7 @@
 import type BigNumber from 'bignumber.js'
 
 const FEE_FRACTION = 0.05
-export const INCREASED_VALUE_PRECISSION = 8
+export const INCREASED_VALUE_PRECISSION = 6
 
 export enum MaxValueResolverMode {
   DECREASED = 'decreased',

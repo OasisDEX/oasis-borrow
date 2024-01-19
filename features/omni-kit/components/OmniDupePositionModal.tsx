@@ -1,6 +1,5 @@
 import { networksById } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
-import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { getOmniPositionUrl } from 'features/omni-kit/helpers'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
@@ -46,7 +45,6 @@ export function OmniDupePositionModal({
 }: OmniDupePositionModalProps) {
   const { t } = useTranslation()
   const { closeModal } = useModalContext()
-
   const positionIds = events.map(
     (event) =>
       dpmAccounts.find(
@@ -93,11 +91,11 @@ export function OmniDupePositionModal({
               {t(`omni-kit.dupe-modal.description-${type}-${amount}`)}{' '}
               {t('omni-kit.dupe-modal.help')}
             </Text>
-            <AppLink href={primaryLink} onClick={closeModal} sx={{ width: '100%' }}>
+            <a href={primaryLink} onClick={closeModal} style={{ width: '100%' }}>
               <Button variant="primary" sx={{ width: '100%' }}>
                 {primaryText}
               </Button>
-            </AppLink>
+            </a>
             <Button variant="textual" onClick={closeModal} sx={{ mt: '24px', p: 0 }}>
               {t('omni-kit.dupe-modal.cta-textual')}
             </Button>
