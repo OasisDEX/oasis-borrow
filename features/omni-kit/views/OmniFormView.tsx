@@ -257,8 +257,9 @@ export function OmniFormView({
       dpmAddress: flowState.availableProxies.length
         ? flowState.availableProxies[0]
         : ethers.constants.AddressZero,
+      lendingOnlyProxies: flowState.lendingOnlyProxies.length ? flowState.lendingOnlyProxies : [],
     })
-  }, [flowState.availableProxies])
+  }, [flowState.availableProxies, flowState.lendingOnlyProxies])
   useEffect(() => setIsFlowStateReady(flowState.isEverythingReady), [flowState.isEverythingReady])
 
   return (

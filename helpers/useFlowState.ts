@@ -1,11 +1,16 @@
 import BigNumber from 'bignumber.js'
+import * as aaveBlockchainCalls from 'blockchain/aave-v3'
 import type { NetworkIds } from 'blockchain/networks'
+import * as sparkBlockchainCalls from 'blockchain/spark-v3'
 import { userDpmProxies$ } from 'blockchain/userDpmProxies'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import { getPositionCreatedEventForProxyAddress } from 'features/aave/services'
 import { useObservable } from 'helpers/observableHook'
+import { mapAaveUserAccountData$ } from 'lendingProtocols/aave-v3/pipelines'
+import { mapSparkUserAccountData$ } from 'lendingProtocols/spark-v3/pipelines'
+import { curry } from 'lodash'
 import { useEffect, useState } from 'react'
 import { combineLatest } from 'rxjs'
 import type { CreatePositionEvent } from 'types/ethers-contracts/PositionCreated'
@@ -40,6 +45,13 @@ export type UseFlowStateProps = {
   networkId: NetworkIds
 }
 
+function hasAaveOrSparkProtocol(events: CreatePositionEvent[]) {
+  return events.filter(({ args }) => ['AAVE_V3', 'Spark'].includes(args.protocol)).length > 0
+}
+function hasAaveProtocol(events: CreatePositionEvent[]) {
+  return events.filter(({ args }) => ['AAVE_V3'].includes(args.protocol)).length > 0
+}
+
 export function useFlowState({
   amount,
   allowanceAmount,
@@ -58,6 +70,7 @@ export function useFlowState({
   const [availableProxies, setAvailableProxies] = useState<string[]>(
     existingProxy ? [existingProxy] : [],
   )
+  const [lendingOnlyProxies, setLendingOnlyProxies] = useState<string[]>([])
   const [isAllowanceReady, setAllowanceReady] = useState<boolean>(false)
   const [isLoading, setLoading] = useState<boolean>(false)
   const { dpmAccountStateMachine, allowanceStateMachine, allowanceForAccountEthers$ } =
@@ -166,6 +179,46 @@ export function useFlowState({
     }
   }, [walletAddress, userProxyList])
 
+  // list of AVAILABLE DPM which are lending only (just deposit to aave/spark, no debt; updated asynchronously)
+  useEffect(() => {
+    if (!walletAddress || !userProxyList.length || existingProxy || !networkId) return
+    const proxyListAvailabilityMap = combineLatest(
+      userProxyList.map(async ({ vaultId, proxy }) => ({
+        proxyAddress: proxy,
+        proxyId: vaultId,
+        events: await getPositionCreatedEventForProxyAddress(networkId, proxy),
+      })),
+    ).subscribe(async (userProxyEventsList) => {
+      const lendingOnlyProxiesTemp = userProxyEventsList.filter(({ events }) =>
+        hasAaveOrSparkProtocol(events),
+      )
+      if (lendingOnlyProxiesTemp.length > 0) {
+        // get a list of all proxies with aave/spark protocol
+        // then create a list of calls to get user account data for each proxy
+        const userPositionDataCalls = lendingOnlyProxiesTemp.map((proxyData) =>
+          hasAaveProtocol(proxyData.events)
+            ? curry(mapAaveUserAccountData$)(aaveBlockchainCalls.getAaveV3UserAccountData)({
+                networkId: networkId as aaveBlockchainCalls.AaveV3SupportedNetwork,
+                address: proxyData.proxyAddress,
+              })
+            : curry(mapSparkUserAccountData$)(sparkBlockchainCalls.getSparkV3UserAccountData)({
+                networkId: networkId as sparkBlockchainCalls.SparkV3SupportedNetwork,
+                address: proxyData.proxyAddress,
+              }),
+        )
+        // filter out proxies with debt
+        const userPositionsData = (await Promise.all(userPositionDataCalls))
+          .filter(({ totalDebt, address }) => totalDebt.eq(zero) && address)
+          .map(({ address }) => address as string)
+
+        setLendingOnlyProxies(userPositionsData)
+      }
+    })
+    return () => {
+      proxyListAvailabilityMap.unsubscribe()
+    }
+  }, [walletAddress, userProxyList])
+
   // a case when proxy is ready and amount/token is not provided (skipping allowance)
   useEffect(() => {
     if (!isProxyReady || !allDefined(walletAddress, amount, token)) return
@@ -247,6 +300,7 @@ export function useFlowState({
       allowanceMachine,
     },
     availableProxies,
+    lendingOnlyProxies, // simple earn - currently only aave/spark
     walletAddress,
     amount,
     token,

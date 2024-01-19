@@ -7,6 +7,7 @@ export interface AaveLikeUserAccountData {
   currentLiquidationThreshold: BigNumber
   ltv: BigNumber
   healthFactor: BigNumber
+  address?: string // position DPM address
 }
 
 export interface AaveLikeUserAccountDataArgs {

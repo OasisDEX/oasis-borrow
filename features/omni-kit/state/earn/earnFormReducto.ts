@@ -31,6 +31,7 @@ export function useOmniEarnFormReducto({ ...rest }: Partial<OmniEarnFormState>) 
           return {
             ...state,
             dpmAddress: action.dpmAddress,
+            lendingOnlyProxies: action.lendingOnlyProxies,
           }
         case 'reset':
           return { ...state, ...omniEarnFormReset }

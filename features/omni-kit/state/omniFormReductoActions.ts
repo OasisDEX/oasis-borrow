@@ -31,6 +31,7 @@ export interface FormActionsUpdateWithdrawMax {
 export interface FormActionsUpdateDpm {
   type: 'update-dpm'
   dpmAddress: string
+  lendingOnlyProxies: string[]
 }
 export interface FormActionsReset {
   type: 'reset'
