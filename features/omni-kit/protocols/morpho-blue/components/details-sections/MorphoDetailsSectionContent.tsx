@@ -1,12 +1,15 @@
 import { normalizeValue } from '@oasisdex/dma-library'
 import {
+  OmniCardDataCollateralDepositedModal,
   OmniCardDataLiquidationPriceModal,
+  OmniCardDataPositionDebtModal,
   OmniContentCard,
   useOmniCardDataLiquidationPrice,
   useOmniCardDataLtv,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { MorphoCardDataLtvModal } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import { getMorphoLiquidationPenalty } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
@@ -74,6 +77,12 @@ export const MorphoDetailsSectionContent: FC = () => {
     afterLtv: simulation?.riskRatio.loanToValue,
     ltv: position.riskRatio.loanToValue,
     maxLtv: position.maxRiskRatio.loanToValue,
+    modal: (
+      <MorphoCardDataLtvModal
+        ltv={position.riskRatio.loanToValue}
+        maxLtv={position.maxRiskRatio.loanToValue}
+      />
+    ),
   })
 
   const collateralDepositedContentCardCommonData = useOmniCardDataTokensValue({
@@ -82,6 +91,12 @@ export const MorphoDetailsSectionContent: FC = () => {
     tokensPrice: collateralPrice,
     tokensSymbol: collateralToken,
     translationCardName: 'collateral-deposited',
+    modal: (
+      <OmniCardDataCollateralDepositedModal
+        collateralAmount={position.collateralAmount}
+        collateralToken={collateralToken}
+      />
+    ),
   })
 
   const positionDebtContentCardCommonData = useOmniCardDataTokensValue({
@@ -90,6 +105,9 @@ export const MorphoDetailsSectionContent: FC = () => {
     tokensPrice: quotePrice,
     tokensSymbol: quoteToken,
     translationCardName: 'position-debt',
+    modal: (
+      <OmniCardDataPositionDebtModal debtAmount={position.debtAmount} quoteToken={quoteToken} />
+    ),
   })
 
   return (

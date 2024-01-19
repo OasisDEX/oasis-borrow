@@ -1,4 +1,6 @@
+export * from './modals/OmniCardDataCollateralDepositedModal'
 export * from './modals/OmniCardDataLiquidationPriceModal'
+export * from './modals/OmniCardDataPositionDebtModal'
 export * from './modals/OmniMultiplyNetValueModal'
 export * from './OmniContentCard'
 export * from './parsers/useOmniCardDataAverageApy'
