@@ -2687,11 +2687,11 @@
         "footnote": "Max LTV:"
       },
       "collateral-deposited": {
-        "title": "Collateral Deposited",        
+        "title": "Collateral Deposited",
         "modal-description": "This is the amount of tokens you have as collateral for your debt."
       },
       "position-debt": {
-        "title": "Position Debt",        
+        "title": "Position Debt",
         "modal-description": "This is the total number of tokens you have borrowed plus any accrued interests."
       },
       "net-value": {
@@ -2760,6 +2760,10 @@
     },
     "validations": {
       "safety-switch-on": "Due to a technical issue we have currently disabled depositing tokens into empty {{protocolLabel}} positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
+    },
+    "history": {
+      "title": "History is coming soon",
+      "notice": "We're currently building human readable history for {{protocol}}. Check back in a few weeks to see your position history."
     }
   },
   "ajna": {
@@ -2777,10 +2781,6 @@
       "ajna-twitter": "Ajna Twitter",
       "oasis-discord": "Summer.fi Discord",
       "oasis-twitter": "Summer.fi Twitter"
-    },
-    "history": {
-      "title": "History is coming soon",
-      "notice": "We're currently building human readable history for Ajna. Check back in a few weeks to see your position history"
     },
     "content-card": {
       "liquidation-price": {
