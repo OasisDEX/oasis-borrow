@@ -33,6 +33,11 @@ export function useOmniBorrowFormReducto({ ...rest }: Partial<OmniBorrowFormStat
             generateAmount: action.generateAmount,
             generateAmountUSD: action.generateAmountUSD,
           }
+        case 'update-generate-max':
+          return {
+            ...state,
+            generateAmountMax: action.generateAmountMax,
+          }
         case 'update-payback':
           return {
             ...state,
