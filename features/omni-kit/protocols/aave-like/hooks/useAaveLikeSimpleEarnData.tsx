@@ -7,6 +7,7 @@ import { YEAR_DAYS } from 'components/constants'
 import type { IStrategyConfig } from 'features/aave/types'
 import type { AaveSimpleSupplyPosition } from 'features/omni-kit/protocols/aave-like/types/AaveSimpleSupply'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
+import { aaveLikeAprToApyBN } from 'handlers/product-hub/helpers'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { useEffect, useMemo, useState } from 'react'
@@ -50,15 +51,9 @@ export function useAaveLikeSimpleEarnData({ strategy }: { strategy: IStrategyCon
         return undefined
       }
 
-      console.log('reserveData rates', {
-        networkId,
-        variableBorrowRate: reserveData.variableBorrowRate.toString(),
-        stableBorrowRate: reserveData.stableBorrowRate.toString(),
-        averageStableBorrowRate: reserveData.averageStableBorrowRate.toString(),
-        liquidityRate: reserveData.liquidityRate.toString(),
-      })
-
-      const per1d = reserveData.variableBorrowRate.times(100).div(new BigNumber(YEAR_DAYS))
+      const per1d = aaveLikeAprToApyBN(reserveData.liquidityRate)
+        .times(100)
+        .div(new BigNumber(YEAR_DAYS))
 
       const position: AaveSimpleSupplyPosition = {
         apy: {
