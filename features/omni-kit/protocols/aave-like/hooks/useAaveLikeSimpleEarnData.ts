@@ -1,26 +1,31 @@
 import type { AaveLikeTokens } from '@oasisdex/dma-library'
 import { AaveLikePosition } from '@oasisdex/dma-library'
+import { useProductContext } from 'components/context/ProductContextProvider'
 import type { IStrategyConfig } from 'features/aave/types'
 import type { AaveSimpleSupplyPosition } from 'features/omni-kit/protocols/aave-like/types/AaveSimpleSupply'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
+import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
+import { useMemo } from 'react'
+import { EMPTY } from 'rxjs'
 
 export function useAaveLikeSimpleEarnData({ strategy }: { strategy: IStrategyConfig }) {
   return function ({
-    dpmPositionData: _dpmPositionData,
-    networkId: _networkId,
-    tokenPriceUSDData: _tokenPriceUSDData,
-    tokensPrecision: _tokensPrecision,
+    dpmPositionData,
+    networkId,
+    tokenPriceUSDData,
+    tokensPrecision,
   }: OmniProtocolHookProps) {
     const aggregatedData = {
       auction: {},
       history: [],
     }
+    const { morphoPosition$ } = useProductContext()
     console.log('useAaveLikeSimpleEarnData', {
-      dpmPositionData: _dpmPositionData,
-      networkId: _networkId,
-      tokenPriceUSDData: _tokenPriceUSDData,
-      tokensPrecision: _tokensPrecision,
+      dpmPositionData,
+      networkId,
+      tokenPriceUSDData,
+      tokensPrecision,
     })
     const positionData = new AaveLikePosition(
       { amount: zero, symbol: strategy.tokens.debt as AaveLikeTokens, address: '' },
@@ -37,23 +42,26 @@ export function useAaveLikeSimpleEarnData({ strategy }: { strategy: IStrategyCon
       },
     ) as unknown as AaveSimpleSupplyPosition
 
-    // const { morphoPosition$ } = useProductContext()
-
-    // const [morphoPositionData, morphoPositionError] = useObservable(
-    //   useMemo(
-    //     () =>
-    //       dpmPositionData && tokenPriceUSDData
-    //         ? morphoPosition$(
-    //             tokenPriceUSDData[dpmPositionData.collateralToken],
-    //             tokenPriceUSDData[dpmPositionData.quoteToken],
-    //             dpmPositionData,
-    //             networkId,
-    //             tokensPrecision,
-    //           )
-    //         : EMPTY,
-    //     [dpmPositionData, tokenPriceUSDData],
-    //   ),
-    // )
+    const [aaveLikePositionData, aaveLikePositionError] = useObservable(
+      useMemo(
+        () =>
+          dpmPositionData && tokenPriceUSDData
+            ? morphoPosition$(
+                tokenPriceUSDData[dpmPositionData.collateralToken],
+                tokenPriceUSDData[dpmPositionData.quoteToken],
+                dpmPositionData,
+                networkId,
+                tokensPrecision,
+              )
+            : EMPTY,
+        [dpmPositionData, tokenPriceUSDData],
+      ),
+    )
+    console.log(
+      'aaveLikePositionData, aaveLikePositionError',
+      aaveLikePositionData,
+      aaveLikePositionError,
+    )
     return {
       data: {
         aggregatedData,

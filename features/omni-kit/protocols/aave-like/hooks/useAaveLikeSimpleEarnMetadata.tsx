@@ -76,7 +76,7 @@ export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) =
             currentStep,
             productType,
           }),
-          footerColumns: 2,
+          footerColumns: 3,
           earnWithdrawMax: zero,
         },
         elements: {
