@@ -2705,10 +2705,13 @@
         "title": "Borrow Rate"
       },
       "available-to-withdraw": {
-        "title": "Available to Withdraw"
+        "title": "Available to Withdraw",
+        "modal-description-lend": "This the the amount of collateral you can withdraw taking into account the current max LTV and debt of the position.",
+        "modal-description-supply": "This the the amount of tokens you can withdraw that are not frozen in liquidation or being lent out."
       },
       "available-to-borrow": {
-        "title": "Available to Borrow"
+        "title": "Available to Borrow",
+        "modal-description": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt."
       },
       "total-exposure": {
         "title": "Total {{tokensSymbol}} exposure"
@@ -2807,13 +2810,6 @@
         "modal-description": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
         "modal-footnote-title": "Cost to borrow {{quoteToken}}",
         "modal-footnote-description": "The borrow rate expressed in {{quoteToken}} amount over one year. The amount is an estimate that changes with the changes in the rates. Your effective cost will be determined by your P&L."
-      },
-      "available-to-withdraw": {
-        "modal-description": "This the the amount of collateral you can withdraw taking into account the current max LTV and debt of the position.",
-        "modal-earn-description": "This the the amount of tokens you can withdraw that are not frozen in liquidation or being lent out."
-      },
-      "available-to-borrow": {
-        "modal-description": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt."
       },
       "total-earnings": {
         "title": "Total Earnings",
@@ -3048,6 +3044,11 @@
         "footnote": "Max Loan to Value",
         "modal-description": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
         "modal-footnote-description": "The Max Loan to Value (LTV) ratio defines the maximum amount that can be borrowed with your collateral. If your LTV rises above the Max Loan to Value, the position is undercollateralised and could be liquidated."
+      },
+      "borrow-rate": {
+        "modal-description": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing with utilization of the pool.",
+        "modal-footnote": "Cost to borrow",
+        "modal-footnote-description": "The borrow rate expressed in TKN amount over one year. The amount is an estimate that changes with the changes in the rates. Your effective cost will be determined by your P&L."
       }
     },
     "position-page": {

@@ -1,10 +1,13 @@
 import {
+  OmniCardDataAvailableToBorrow,
+  OmniCardDataAvailableToWithdraw,
   OmniContentCard,
   useOmniCardDataBorrowRate,
   useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { MorphoCardDataBorrowRateModal } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import { OmniProductType } from 'features/omni-kit/types'
 import React from 'react'
 
@@ -37,6 +40,13 @@ export function MorphoContentFooterBorrow() {
 
   const borrowRateContentCardCommonData = useOmniCardDataBorrowRate({
     borrowRate: interestRate,
+    modal: (
+      <MorphoCardDataBorrowRateModal
+        borrowRate={interestRate}
+        debtAmount={position.debtAmount}
+        quoteToken={quoteToken}
+      />
+    ),
   })
 
   const netValueContentCardCommonData = useOmniCardDataNetValue({
@@ -49,6 +59,12 @@ export function MorphoContentFooterBorrow() {
     tokensAmount: position.collateralAvailable,
     tokensSymbol: collateralToken,
     translationCardName: 'available-to-withdraw',
+    modal: (
+      <OmniCardDataAvailableToWithdraw
+        availableToWithdraw={position.collateralAvailable}
+        tokenSymbol={collateralToken}
+      />
+    ),
   })
 
   const availableToBorrowContentCardCommonData = useOmniCardDataTokensValue({
@@ -56,6 +72,12 @@ export function MorphoContentFooterBorrow() {
     tokensAmount: position.debtAvailable(),
     tokensSymbol: quoteToken,
     translationCardName: 'available-to-borrow',
+    modal: (
+      <OmniCardDataAvailableToBorrow
+        availableToBorrow={position.debtAvailable()}
+        quoteToken={quoteToken}
+      />
+    ),
   })
 
   return (

@@ -1,3 +1,5 @@
+export * from './modals/OmniCardDataAvailableToBorrow'
+export * from './modals/OmniCardDataAvailableToWithdraw'
 export * from './modals/OmniCardDataCollateralDepositedModal'
 export * from './modals/OmniCardDataLiquidationPriceModal'
 export * from './modals/OmniCardDataPositionDebtModal'
