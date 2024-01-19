@@ -2675,7 +2675,12 @@
       "liquidation-price": {
         "title": "Liquidation Price",
         "footnote-below": "below current price",
-        "footnote-above": "above current price"
+        "footnote-above": "above current price",
+        "modal-description": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
+        "modal-footnote-title": "Liquidation Penalty",
+        "modal-footnote-description": "The Liquidation Penalty is the % that will be added to the debt as a penalty in case of liquidation.",
+        "modal-footnote-below": "This is {{ratioToCurrentPrice}} below current price",
+        "modal-footnote-above": "This is {{ratioToCurrentPrice}} above current price"
       },
       "ltv": {
         "title": "Loan to Value",

@@ -1,11 +1,13 @@
 import { normalizeValue } from '@oasisdex/dma-library'
 import {
+  OmniCardDataLiquidationPriceModal,
   OmniContentCard,
   useOmniCardDataLiquidationPrice,
   useOmniCardDataLtv,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
+import { getMorphoLiquidationPenalty } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'
@@ -44,6 +46,9 @@ export const MorphoDetailsSectionContent: FC = () => {
       ? normalizeValue(one.div(position.liquidationToMarketPrice))
       : position.liquidationToMarketPrice,
   )
+  const liquidationPenalty = getMorphoLiquidationPenalty({
+    maxLtv: position.maxRiskRatio.loanToValue,
+  })
 
   const commonContentCardData = {
     changeVariant,
@@ -54,7 +59,15 @@ export const MorphoDetailsSectionContent: FC = () => {
     afterLiquidationPrice: afterLiquidationPrice,
     liquidationPrice: liquidationPrice,
     unit: priceFormat,
-    ratioToCurrentPrice: ratioToCurrentPrice,
+    ratioToCurrentPrice,
+    modal: (
+      <OmniCardDataLiquidationPriceModal
+        liquidationPenalty={liquidationPenalty}
+        liquidationPrice={liquidationPrice}
+        priceFormat={priceFormat}
+        ratioToCurrentPrice={ratioToCurrentPrice}
+      />
+    ),
   })
 
   const ltvContentCardCommonData = useOmniCardDataLtv({
