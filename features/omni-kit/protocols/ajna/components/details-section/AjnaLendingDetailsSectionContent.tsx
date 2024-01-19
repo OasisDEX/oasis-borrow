@@ -23,6 +23,7 @@ import { OmniProductType } from 'features/omni-kit/types'
 import { one } from 'helpers/zero'
 import type { FC } from 'react'
 import React from 'react'
+import { ajnaExtensionTheme } from 'theme'
 
 interface AjnaDetailsSectionContentProps {
   changeVariant: 'positive' | 'negative'
@@ -132,6 +133,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
       <OmniCardDataCollateralDepositedModal
         collateralAmount={position.collateralAmount}
         collateralToken={collateralToken}
+        theme={ajnaExtensionTheme}
       />
     ),
   })
@@ -143,7 +145,11 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     translationCardName: 'position-debt',
     ...(!isOracless && { tokensPrice: quotePrice }),
     modal: (
-      <OmniCardDataPositionDebtModal debtAmount={position.debtAmount} quoteToken={quoteToken} />
+      <OmniCardDataPositionDebtModal
+        debtAmount={position.debtAmount}
+        quoteToken={quoteToken}
+        theme={ajnaExtensionTheme}
+      />
     ),
   })
 
