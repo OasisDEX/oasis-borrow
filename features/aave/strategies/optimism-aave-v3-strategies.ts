@@ -8,11 +8,13 @@ import {
 } from 'features/aave/components'
 import { AaveMultiplyManageComponent } from 'features/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
+import { depositTokensConfigList } from 'features/aave/strategies/deposit-tokens-config-list'
 import type { IStrategyConfig } from 'features/aave/types'
 import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { getLocalAppConfig } from 'helpers/config'
+import { parseLendingStrategies } from 'helpers/parseLendingStrategies'
 import { LendingProtocol } from 'lendingProtocols'
 import { FeaturesEnum } from 'types/config'
 
@@ -575,3 +577,9 @@ export const optimismAaveV3Strategies: Array<IStrategyConfig> = [
   ...multiplyStategies,
   ...earnStrategies,
 ]
+
+export const optimismAaveV3lendingStrategies: IStrategyConfig[] = parseLendingStrategies(
+  depositTokensConfigList,
+  NetworkNames.optimismMainnet,
+  LendingProtocol.AaveV3,
+)

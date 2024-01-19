@@ -1,8 +1,8 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { depositTokensList } from 'features/aave/strategies/deposit-tokens-list'
+import { depositTokensConfigList } from 'features/aave/strategies/deposit-tokens-config-list'
 
 describe('Deposit tokens list', () => {
-  depositTokensList.forEach((depositTokensConfig) => {
+  depositTokensConfigList.forEach((depositTokensConfig) => {
     it(`All tokens should be configured for ${depositTokensConfig.networkId}/${depositTokensConfig.protocol} in the tokenConfigs`, () => {
       const notFoundList = [] as string[]
       depositTokensConfig.list.forEach((token) => {

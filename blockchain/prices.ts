@@ -160,7 +160,7 @@ export function getTokenPriceSources(token: string) {
 
 export function getTokenPrice(token: string, tickers: Tickers) {
   const priceSources = getTokenPriceSources(token)
-
+  priceSources.filter(Boolean).length === 0 && console.warn('No price sources set for ', token)
   return getPrice(tickers, priceSources)
 }
 

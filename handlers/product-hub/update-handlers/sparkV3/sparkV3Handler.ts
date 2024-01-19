@@ -17,11 +17,8 @@ import { aaveLikeAprToApy } from 'handlers/product-hub/helpers'
 import { emptyYields } from 'handlers/product-hub/helpers/empty-yields'
 import type { ProductHubHandlerResponse } from 'handlers/product-hub/types'
 import { ensureFind } from 'helpers/ensure-find'
-import type {
-  AaveLikeYieldsResponse,
-  FilterYieldFieldsType,
-} from 'lendingProtocols/aave-like-common'
 import { memoize } from 'lodash'
+import { match } from 'ts-pattern'
 
 import { sparkV3ProductHubProducts } from './sparkV3Products'
 
@@ -98,15 +95,10 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
     memoizedTokensData(networkName as SparkV3Networks, tickers),
   )
 
-  const yieldsPromisesMap: Record<
-    string,
-    (risk: RiskRatio, fields: FilterYieldFieldsType[]) => Promise<AaveLikeYieldsResponse>
-  > = {
-    'WSTETH/ETH': emptyYields,
-    'RETH/ETH': emptyYields,
-    'SDAI/USDC': emptyYields,
-    'SDAI/USDT': emptyYields,
+  const resolveYields = (label: string, network: NetworkNames) => {
+    return match({ label, network }).otherwise(() => emptyYields)
   }
+
   // getting the APYs
   const earnProducts = sparkV3ProductHubProducts.filter(({ product }) =>
     product.includes(ProductHubProductType.Earn),
@@ -135,7 +127,8 @@ export default async function (tickers: Tickers): ProductHubHandlerResponse {
             (data) => data[product.primaryToken],
           ),
         )[product.primaryToken].riskRatio
-    const response = await yieldsPromisesMap[product.label](riskRatio, ['7Days'])
+
+    const response = await resolveYields(product.label, product.network)(riskRatio, ['7Days'])
     return {
       [product.label]: response.annualisedYield7days?.div(100), // we do 5 as 5% and FE needs 0.05 as 5%
     }

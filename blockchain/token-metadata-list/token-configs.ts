@@ -362,6 +362,7 @@ export const tokenConfigs: TokenConfig[] = [
     name: 'Aave',
     icon: aave_circle_color,
     iconCircle: aave_circle_color,
+    coinGeckoTicker: 'aave',
     tags: [],
   },
   {
@@ -593,6 +594,7 @@ export const tokenConfigs: TokenConfig[] = [
     name: 'Rocket Pool',
     icon: deprecated_icon,
     iconCircle: deprecated_icon,
+    coinGeckoTicker: 'rocket-pool',
     tags: [],
   },
   {
@@ -602,6 +604,7 @@ export const tokenConfigs: TokenConfig[] = [
     name: 'Curve',
     icon: deprecated_icon,
     iconCircle: deprecated_icon,
+    coinGeckoTicker: 'curve-dao-token',
     tags: [],
   },
   {
@@ -611,6 +614,7 @@ export const tokenConfigs: TokenConfig[] = [
     name: 'Balancer',
     icon: deprecated_icon,
     iconCircle: deprecated_icon,
+    coinGeckoTicker: 'balancer',
     tags: [],
   },
   {
@@ -620,6 +624,7 @@ export const tokenConfigs: TokenConfig[] = [
     name: 'Lido DAO',
     icon: deprecated_icon,
     iconCircle: deprecated_icon,
+    coinGeckoTicker: 'lido-dao',
     tags: [],
   },
   {
@@ -629,6 +634,7 @@ export const tokenConfigs: TokenConfig[] = [
     name: 'Synth sUSD',
     icon: deprecated_icon,
     iconCircle: deprecated_icon,
+    coinGeckoTicker: 'nusd',
     tags: [],
   },
   {
@@ -638,6 +644,7 @@ export const tokenConfigs: TokenConfig[] = [
     name: 'Optimism',
     icon: deprecated_icon,
     iconCircle: deprecated_icon,
+    coinGeckoTicker: 'optimism',
     tags: [],
   },
   {
@@ -647,6 +654,7 @@ export const tokenConfigs: TokenConfig[] = [
     name: 'Arbitrum',
     icon: deprecated_icon,
     iconCircle: deprecated_icon,
+    coinGeckoTicker: 'arbitrum',
     tags: [],
   },
   ...deprecatedTokens.map((deprecatedToken) => ({

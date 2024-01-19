@@ -1,10 +1,19 @@
 import { EarnStrategies } from '@prisma/client'
 import { NetworkNames } from 'blockchain/networks'
+import { depositTokensConfigList } from 'features/aave/strategies/deposit-tokens-config-list'
 import type { ProductHubItemWithoutAddress } from 'features/productHub/types'
 import { ProductHubProductType } from 'features/productHub/types'
+import { parseLendingProducts } from 'helpers/parseLendingProducts'
 import { LendingProtocol } from 'lendingProtocols'
 
+const lendingProducts = parseLendingProducts(
+  depositTokensConfigList,
+  NetworkNames.ethereumMainnet,
+  LendingProtocol.SparkV3,
+)
+
 export const sparkV3ProductHubProducts: ProductHubItemWithoutAddress[] = [
+  ...lendingProducts,
   {
     product: [ProductHubProductType.Multiply],
     primaryToken: 'WSTETH',

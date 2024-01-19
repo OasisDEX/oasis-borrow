@@ -39,6 +39,7 @@ export function sortByDefault(
         protocol,
         secondaryToken,
         secondaryTokenAddress,
+        depositToken,
       } = current
 
       return getActionUrl({
@@ -52,6 +53,7 @@ export function sortByDefault(
         protocol,
         secondaryToken,
         secondaryTokenAddress,
+        depositToken,
       }) === '/'
         ? { available, comingSoon: [...comingSoon, current] }
         : { available: [...available, current], comingSoon }
