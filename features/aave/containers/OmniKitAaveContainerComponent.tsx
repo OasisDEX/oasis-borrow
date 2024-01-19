@@ -1,9 +1,9 @@
-import type { IPosition } from '@oasisdex/dma-library'
 import type { AaveContainerProps } from 'features/aave/containers/types'
 import { OmniProductController } from 'features/omni-kit/controllers'
 import { aaveOmniProductType } from 'features/omni-kit/protocols/aave-like/helpers/aaveOmniProductType'
 import { useAaveLikeSimpleEarnData } from 'features/omni-kit/protocols/aave-like/hooks'
 import { useAaveLikeSimpleEarnMetadata } from 'features/omni-kit/protocols/aave-like/hooks/useAaveLikeSimpleEarnMetadata'
+import type { AaveSimpleSupplyPosition } from 'features/omni-kit/protocols/aave-like/types/AaveSimpleSupply'
 import type { OmniSidebarStepsSet, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import React from 'react'
@@ -15,7 +15,7 @@ export default function OmniKitAaveContainerComponent({
   ...props
 }: AaveContainerProps) {
   return (
-    <OmniProductController<{}, PositionHistoryEvent[], IPosition>
+    <OmniProductController<{}, PositionHistoryEvent[], AaveSimpleSupplyPosition>
       {...{
         ...props,
         collateralToken: definedStrategy.tokens.collateral,

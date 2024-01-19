@@ -1,4 +1,3 @@
-import type { SupplyPosition } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import { extractLendingProtocolFromPositionCreatedEvent } from 'features/aave/services'
 import type { GetOmniMetadata, SupplyMetadata } from 'features/omni-kit/contexts'
@@ -7,6 +6,7 @@ import { SimpleEarnFooter } from 'features/omni-kit/protocols/aave-like/componen
 import { SimpleEarnHeader } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnHeader'
 import { SimpleEarnOverview } from 'features/omni-kit/protocols/aave-like/components/SimpleEarnOverview'
 import { useAaveLikeSidebarTitle } from 'features/omni-kit/protocols/aave-like/hooks/useAaveLikeSidebarTitle'
+import type { AaveSimpleSupplyPosition } from 'features/omni-kit/protocols/aave-like/types/AaveSimpleSupply'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
 import { zero } from 'helpers/zero'
@@ -38,12 +38,14 @@ export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) =
 
   switch (productType) {
     case OmniProductType.Earn:
-      const _position = productContext.position.currentPosition.position as SupplyPosition
-      const _simulation = productContext.position.currentPosition.simulation as
-        | SupplyPosition
+      const position = productContext.position.currentPosition.position as AaveSimpleSupplyPosition
+      const simulation = productContext.position.currentPosition.simulation as
+        | AaveSimpleSupplyPosition
         | undefined
 
       const TempFormOrder = () => <div>Form order</div>
+      console.log('position', position)
+      console.log('simulation', simulation)
 
       return {
         notifications,
@@ -64,15 +66,17 @@ export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) =
         values: {
           interestRate: zero,
           isFormEmpty: true,
+          afterBuyingPower: zero,
           shouldShowDynamicLtv: () => true,
           debtMin: zero,
           debtMax: zero,
+          changeVariant: '',
           paybackMax: zero,
           sidebarTitle: useAaveLikeSidebarTitle({
             currentStep,
             productType,
           }),
-          footerColumns: 3,
+          footerColumns: 2,
           earnWithdrawMax: zero,
         },
         elements: {
@@ -81,8 +85,8 @@ export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) =
           overviewHeader: <SimpleEarnHeader />,
           overviewContent: <SimpleEarnOverview />,
           overviewFooter: <SimpleEarnFooter />,
-          earnFormOrder: <TempFormOrder />,
-          earnFormOrderAsElement: TempFormOrder,
+          earnFormOrder: TempFormOrder,
+          earnFormOrderAsElement: () => <TempFormOrder />,
         },
         featureToggles: {
           safetySwitch: aaveLikeSimpleEarnSafetySwitchOn,

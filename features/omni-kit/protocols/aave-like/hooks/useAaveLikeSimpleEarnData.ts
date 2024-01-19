@@ -1,6 +1,7 @@
 import type { AaveLikeTokens } from '@oasisdex/dma-library'
 import { AaveLikePosition } from '@oasisdex/dma-library'
 import type { IStrategyConfig } from 'features/aave/types'
+import type { AaveSimpleSupplyPosition } from 'features/omni-kit/protocols/aave-like/types/AaveSimpleSupply'
 import type { OmniProtocolHookProps } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 
@@ -34,7 +35,7 @@ export function useAaveLikeSimpleEarnData({ strategy }: { strategy: IStrategyCon
         maxLoanToValue: zero,
         dustLimit: zero,
       },
-    )
+    ) as unknown as AaveSimpleSupplyPosition
 
     // const { morphoPosition$ } = useProductContext()
 
