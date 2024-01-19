@@ -15,6 +15,12 @@ export function useAaveLikeSimpleEarnData({ strategy }: { strategy: IStrategyCon
       auction: {},
       history: [],
     }
+    console.log('useAaveLikeSimpleEarnData', {
+      dpmPositionData: _dpmPositionData,
+      networkId: _networkId,
+      tokenPriceUSDData: _tokenPriceUSDData,
+      tokensPrecision: _tokensPrecision,
+    })
     const positionData = new AaveLikePosition(
       { amount: zero, symbol: strategy.tokens.debt as AaveLikeTokens, address: '' },
       {
@@ -29,6 +35,24 @@ export function useAaveLikeSimpleEarnData({ strategy }: { strategy: IStrategyCon
         dustLimit: zero,
       },
     )
+
+    // const { morphoPosition$ } = useProductContext()
+
+    // const [morphoPositionData, morphoPositionError] = useObservable(
+    //   useMemo(
+    //     () =>
+    //       dpmPositionData && tokenPriceUSDData
+    //         ? morphoPosition$(
+    //             tokenPriceUSDData[dpmPositionData.collateralToken],
+    //             tokenPriceUSDData[dpmPositionData.quoteToken],
+    //             dpmPositionData,
+    //             networkId,
+    //             tokensPrecision,
+    //           )
+    //         : EMPTY,
+    //     [dpmPositionData, tokenPriceUSDData],
+    //   ),
+    // )
     return {
       data: {
         aggregatedData,
