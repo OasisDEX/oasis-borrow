@@ -1,6 +1,7 @@
 import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { negativeToZero } from '@oasisdex/dma-library'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import faqBorrow from 'features/content/faqs/morphoblue/borrow/en'
 import type { GetOmniMetadata, LendingMetadata } from 'features/omni-kit/contexts'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
 import {
@@ -101,7 +102,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           footerColumns: 2,
         },
         elements: {
-          faq: <></>,
+          faq: faqBorrow,
           highlighterOrderInformation: undefined,
           overviewContent: <MorphoDetailsSectionContent />,
           overviewFooter: <MorphoDetailsSectionFooter />,
