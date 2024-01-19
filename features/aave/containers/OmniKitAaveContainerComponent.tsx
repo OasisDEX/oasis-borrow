@@ -31,6 +31,7 @@ export default function OmniKitAaveContainerComponent({
         })
       }
       singleToken
+      lendingOnly
       protocolHook={useAaveLikeSimpleEarnData({ strategy: definedStrategy })}
       protocolRaw={settings?.rawName || ''}
       seoTags={{

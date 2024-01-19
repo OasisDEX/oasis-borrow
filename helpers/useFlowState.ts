@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
-import * as aaveBlockchainCalls from 'blockchain/aave-v3'
+import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
+import { getAaveV3UserAccountData } from 'blockchain/aave-v3'
 import type { NetworkIds } from 'blockchain/networks'
-import * as sparkBlockchainCalls from 'blockchain/spark-v3'
+import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
+import { getSparkV3UserAccountData } from 'blockchain/spark-v3'
 import { userDpmProxies$ } from 'blockchain/userDpmProxies'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { useMainContext } from 'components/context/MainContextProvider'
@@ -50,6 +52,9 @@ function hasAaveOrSparkProtocol(events: CreatePositionEvent[]) {
 }
 function hasAaveProtocol(events: CreatePositionEvent[]) {
   return events.filter(({ args }) => ['AAVE_V3'].includes(args.protocol)).length > 0
+}
+function hasMultiplyPosition(events: CreatePositionEvent[]) {
+  return events.filter(({ args }) => ['Multiply'].includes(args.positionType)).length > 0
 }
 
 export function useFlowState({
@@ -195,29 +200,33 @@ export function useFlowState({
       if (lendingOnlyProxiesTemp.length > 0) {
         // get a list of all proxies with aave/spark protocol
         // then create a list of calls to get user account data for each proxy
-        const userPositionDataCalls = lendingOnlyProxiesTemp.map((proxyData) =>
-          hasAaveProtocol(proxyData.events)
-            ? curry(mapAaveUserAccountData$)(aaveBlockchainCalls.getAaveV3UserAccountData)({
-                networkId: networkId as aaveBlockchainCalls.AaveV3SupportedNetwork,
-                address: proxyData.proxyAddress,
-              })
-            : curry(mapSparkUserAccountData$)(sparkBlockchainCalls.getSparkV3UserAccountData)({
-                networkId: networkId as sparkBlockchainCalls.SparkV3SupportedNetwork,
-                address: proxyData.proxyAddress,
-              }),
-        )
-        // filter out proxies with debt
-        const userPositionsData = (await Promise.all(userPositionDataCalls))
+        // simple earn can reuse non-multiply, aave/spark DPMs with no debt
+        // so we filter out proxies withmultiply positions (!hasMultiplyPosition)...
+        const userPositionDataCalls = lendingOnlyProxiesTemp
+          .filter(({ events }) => !hasMultiplyPosition(events))
+          .map(({ events, proxyAddress }) =>
+            hasAaveProtocol(events)
+              ? curry(mapAaveUserAccountData$)(getAaveV3UserAccountData)({
+                  networkId: networkId as AaveV3SupportedNetwork,
+                  address: proxyAddress,
+                })
+              : curry(mapSparkUserAccountData$)(getSparkV3UserAccountData)({
+                  networkId: networkId as SparkV3SupportedNetwork,
+                  address: proxyAddress,
+                }),
+          )
+        // ...and debt (totalDebt.eq(zero))
+        const lendingOnlyProxiesList = (await Promise.all(userPositionDataCalls))
           .filter(({ totalDebt, address }) => totalDebt.eq(zero) && address)
           .map(({ address }) => address as string)
 
-        setLendingOnlyProxies(userPositionsData)
+        setLendingOnlyProxies(lendingOnlyProxiesList)
       }
     })
     return () => {
       proxyListAvailabilityMap.unsubscribe()
     }
-  }, [walletAddress, userProxyList])
+  }, [walletAddress, userProxyList, existingProxy, networkId])
 
   // a case when proxy is ready and amount/token is not provided (skipping allowance)
   useEffect(() => {
