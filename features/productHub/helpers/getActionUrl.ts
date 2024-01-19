@@ -7,7 +7,7 @@ import { ProductHubProductType } from 'features/productHub/types'
 import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 
-export const getAaveLikeViewStrategyUrl = ({
+const getAaveLikeViewStrategyUrl = ({
   aaveLikeProduct,
   bypassFeatureFlag,
   version,
@@ -15,30 +15,58 @@ export const getAaveLikeViewStrategyUrl = ({
   protocol,
   primaryToken,
   secondaryToken,
+  depositToken,
   network,
-}: Partial<ProductHubItem> & {
+  earnStrategy,
+}: Pick<
+  ProductHubItem,
+  | 'product'
+  | 'protocol'
+  | 'primaryToken'
+  | 'secondaryToken'
+  | 'depositToken'
+  | 'network'
+  | 'earnStrategy'
+> & {
   version: 'v2' | 'v3'
   bypassFeatureFlag: boolean
   aaveLikeProduct: 'aave' | 'spark'
 }) => {
-  const search = aaveStrategyList.find(
-    (strategy) =>
-      product
-        ?.map((prod) => prod.toLocaleLowerCase())
-        ?.includes(strategy.type.toLocaleLowerCase() as ProductHubProductType) &&
-      strategy.protocol === protocol &&
-      strategy.tokens.collateral.toLocaleLowerCase() === primaryToken?.toLocaleLowerCase() &&
-      strategy.tokens.debt.toLocaleLowerCase() === secondaryToken?.toLocaleLowerCase() &&
-      strategy.network === network,
-  )
+  let correspondingStrategy
+  if (earnStrategy === EarnStrategies.lending) {
+    correspondingStrategy = aaveStrategyList.find(
+      (strategy) =>
+        product
+          ?.map((prod) => prod.toLocaleLowerCase())
+          ?.includes(strategy.type.toLocaleLowerCase() as ProductHubProductType) &&
+        strategy.protocol === protocol &&
+        strategy.tokens.collateral.toLocaleLowerCase() === primaryToken?.toLocaleLowerCase() &&
+        strategy.tokens.debt.toLocaleLowerCase() === secondaryToken?.toLocaleLowerCase() &&
+        strategy.tokens.deposit.toLocaleLowerCase() === depositToken?.toLocaleLowerCase() &&
+        strategy.network === network,
+    )
+  } else {
+    correspondingStrategy = aaveStrategyList.find(
+      (strategy) =>
+        product
+          ?.map((prod) => prod.toLocaleLowerCase())
+          ?.includes(strategy.type.toLocaleLowerCase() as ProductHubProductType) &&
+        strategy.protocol === protocol &&
+        strategy.tokens.collateral.toLocaleLowerCase() === primaryToken?.toLocaleLowerCase() &&
+        strategy.tokens.debt.toLocaleLowerCase() === secondaryToken?.toLocaleLowerCase() &&
+        strategy.network === network,
+    )
+  }
 
-  return !search?.urlSlug ||
-    (!bypassFeatureFlag &&
-      search?.featureToggle &&
-      !getLocalAppConfig('features')[search?.featureToggle])
+  const isFeatureToggle =
+    !bypassFeatureFlag &&
+    correspondingStrategy?.featureToggle &&
+    !getLocalAppConfig('features')[correspondingStrategy?.featureToggle]
+
+  return !correspondingStrategy?.urlSlug || isFeatureToggle
     ? '/'
-    : `/${network}/${aaveLikeProduct}/${version}/${search.type.toLocaleLowerCase()}/${
-        search!.urlSlug
+    : `/${network}/${aaveLikeProduct}/${version}/${correspondingStrategy.type.toLocaleLowerCase()}/${
+        correspondingStrategy!.urlSlug
       }`
 }
 
@@ -54,6 +82,7 @@ export function getActionUrl({
   protocol,
   secondaryToken,
   secondaryTokenAddress,
+  depositToken,
 }: ProductHubItem & { bypassFeatureFlag?: boolean; networkId?: NetworkIds }): string {
   switch (protocol) {
     case LendingProtocol.Ajna:
@@ -86,6 +115,8 @@ export function getActionUrl({
         protocol,
         secondaryToken,
         aaveLikeProduct: 'aave',
+        earnStrategy,
+        depositToken,
       })
     case LendingProtocol.AaveV3:
       return getAaveLikeViewStrategyUrl({
@@ -97,6 +128,8 @@ export function getActionUrl({
         protocol,
         secondaryToken,
         aaveLikeProduct: 'aave',
+        depositToken,
+        earnStrategy,
       })
     case LendingProtocol.Maker:
       if (label === 'DSR') return '/earn/dsr/'
@@ -117,6 +150,8 @@ export function getActionUrl({
         protocol,
         secondaryToken,
         aaveLikeProduct: 'spark',
+        depositToken,
+        earnStrategy,
       })
   }
 }

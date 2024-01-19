@@ -32,6 +32,12 @@ export function getCollaterals(addresses: Dictionary<string>, ilks: readonly str
     .map(([key]) => key.replace('PIP_', ''))
 }
 
+/**
+ *
+ * @param addresses this method takes token with address from maker strategies - e.g. WBTC-A
+ * @param ilks
+ * @returns
+ */
 export function getCollateralTokens(addresses: Dictionary<string>, ilks: readonly string[]) {
   return getCollaterals(addresses, ilks)
     .map((token) => ({ [token]: contractDesc(erc20, addresses[token]) }))

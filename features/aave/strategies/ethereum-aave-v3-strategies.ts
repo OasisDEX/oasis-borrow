@@ -14,6 +14,7 @@ import {
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
+import { depositTokensConfigList } from 'features/aave/strategies/deposit-tokens-config-list'
 import type { IStrategyConfig } from 'features/aave/types'
 import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AutomationFeatures } from 'features/automation/common/types'
@@ -21,6 +22,7 @@ import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { getLocalAppConfig } from 'helpers/config'
+import { parseLendingStrategies } from 'helpers/parseLendingStrategies'
 import type { AaveLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
 import { FeaturesEnum } from 'types/config'
@@ -868,3 +870,9 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     isAutomationFeatureEnabled: (_feature: AutomationFeatures) => false,
   },
 ]
+
+export const ethereumAaveV3lendingStrategies: IStrategyConfig[] = parseLendingStrategies(
+  depositTokensConfigList,
+  NetworkNames.ethereumMainnet,
+  LendingProtocol.AaveV3,
+)

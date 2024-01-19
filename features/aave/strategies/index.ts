@@ -2,7 +2,6 @@ import { RiskRatio } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import type { NetworkNames } from 'blockchain/networks'
 import { isSupportedNetwork } from 'blockchain/networks'
-import { depositTokensStrategies } from 'features/aave/strategies/deposit-tokens-strategies'
 import type { IStrategyConfig, ProductType } from 'features/aave/types'
 import { isSupportedProductType } from 'features/aave/types'
 import { VaultType } from 'features/generalManageVault/vaultType.types'
@@ -12,28 +11,44 @@ import { zero } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 import { isLendingProtocol } from 'lendingProtocols'
 
-import { arbitrumAaveV3Strategies } from './arbitrum-aave-v3-strategies'
-import { baseAaveV3Strategies } from './base-aave-v3-strategies'
+import {
+  arbitrumAaveV3lendingStrategies,
+  arbitrumAaveV3Strategies,
+} from './arbitrum-aave-v3-strategies'
+import { baseAaveV3lendingStrategies, baseAaveV3Strategies } from './base-aave-v3-strategies'
 import { ethereumAaveV2Strategies } from './ethereum-aave-v2-strategies'
-import { ethereumAaveV3Strategies } from './ethereum-aave-v3-strategies'
-import { ethereumSparkV3Strategies } from './ethereum-spark-v3-strategies'
-import { optimismAaveV3Strategies } from './optimism-aave-v3-strategies'
+import {
+  ethereumAaveV3lendingStrategies,
+  ethereumAaveV3Strategies,
+} from './ethereum-aave-v3-strategies'
+import {
+  ethereumSparkV3lendingStrategies,
+  ethereumSparkV3Strategies,
+} from './ethereum-spark-v3-strategies'
+import {
+  optimismAaveV3lendingStrategies,
+  optimismAaveV3Strategies,
+} from './optimism-aave-v3-strategies'
 
-export const strategies = [
+export const aaveLikeStrategies: IStrategyConfig[] = [
   ...ethereumAaveV2Strategies,
   ...optimismAaveV3Strategies,
   ...arbitrumAaveV3Strategies,
   ...ethereumAaveV3Strategies,
   ...ethereumSparkV3Strategies,
   ...baseAaveV3Strategies,
-  ...depositTokensStrategies,
+  ...ethereumSparkV3lendingStrategies,
+  ...ethereumAaveV3lendingStrategies,
+  ...optimismAaveV3lendingStrategies,
+  ...baseAaveV3lendingStrategies,
+  ...arbitrumAaveV3lendingStrategies,
 ]
 
 export function aaveStrategiesList(
   filterProduct?: IStrategyConfig['type'],
   filterProtocol?: IStrategyConfig['protocol'],
 ): IStrategyConfig[] {
-  return Object.values(strategies)
+  return Object.values(aaveLikeStrategies)
     .filter(({ featureToggle }) =>
       featureToggle ? getLocalAppConfig('features')[featureToggle] : true,
     )
@@ -42,7 +57,7 @@ export function aaveStrategiesList(
 }
 
 export function getAaveStrategy(strategyName: IStrategyConfig['name']) {
-  return Object.values(strategies).filter(({ name }) => strategyName === name)
+  return Object.values(aaveLikeStrategies).filter(({ name }) => strategyName === name)
 }
 
 export function loadStrategyFromUrl(
@@ -50,7 +65,7 @@ export function loadStrategyFromUrl(
   protocol: string,
   positionType: string,
 ): IStrategyConfig {
-  const strategy = strategies.find(
+  const strategy = aaveLikeStrategies.find(
     (s) =>
       s.urlSlug.toUpperCase() === slug.toUpperCase() &&
       s.type.toUpperCase() === positionType.toUpperCase() &&
@@ -74,7 +89,7 @@ export function loadStrategyFromTokens(
   // this is then converted back to WETH using wethToEthAddress
   const actualCollateralToken = collateralToken === 'WETH' ? 'ETH' : collateralToken
   const actualDebtToken = debtToken === 'WETH' ? 'ETH' : debtToken
-  const strategy = strategies.find((s) => {
+  const strategy = aaveLikeStrategies.find((s) => {
     /* Enhances for strategies to be filtered by product type */
     const matchesVaultType =
       vaultType === undefined ||
@@ -100,7 +115,7 @@ export function loadStrategyFromTokens(
 export function getSupportedTokens(protocol: LendingProtocol, network: NetworkNames): string[] {
   return Array.from(
     new Set(
-      Object.values(strategies)
+      Object.values(aaveLikeStrategies)
         .filter(({ protocol: p, network: n }) => p === protocol && n === network)
         .map((strategy) => Object.values(strategy.tokens))
         .flatMap((tokens) => tokens)
@@ -120,7 +135,7 @@ export function isSupportedStrategy(
     isLendingProtocol(protocol) &&
     isSupportedProductType(product)
   ) {
-    const definedStrategy = strategies.find(
+    const definedStrategy = aaveLikeStrategies.find(
       (s) =>
         s.network === network &&
         s.protocol === protocol &&
