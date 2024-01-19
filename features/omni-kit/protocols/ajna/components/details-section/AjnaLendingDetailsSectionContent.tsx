@@ -2,6 +2,8 @@ import type { AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import {
+  OmniCardDataCollateralDepositedModal,
+  OmniCardDataPositionDebtModal,
   OmniContentCard,
   useOmniCardDataBuyingPower,
   useOmniCardDataLiquidationPrice,
@@ -11,11 +13,9 @@ import {
 } from 'features/omni-kit/components/details-section'
 import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import {
+  AjnaCardDataLtvModal,
   useAjnaCardDataBuyingPower,
-  useAjnaCardDataCollateralDeposited,
-  useAjnaCardDataLoanToValue,
   useAjnaCardDataNetValueLending,
-  useAjnaCardDataPositionDebt,
   useAjnaCardDataThresholdPrice,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
 import { useAjnaCardDataLiquidationPrice } from 'features/omni-kit/protocols/ajna/components/details-section/'
@@ -103,10 +103,12 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     afterLtv: simulation?.riskRatio.loanToValue,
     ltv: position.riskRatio.loanToValue,
     ...(shouldShowDynamicLtv && { maxLtv: position.maxRiskRatio.loanToValue }),
-  })
-  const ltvContentCardAjnaData = useAjnaCardDataLoanToValue({
-    ltv: position.riskRatio.loanToValue,
-    ...(shouldShowDynamicLtv && { maxLtv: position.maxRiskRatio.loanToValue }),
+    modal: (
+      <AjnaCardDataLtvModal
+        ltv={position.riskRatio.loanToValue}
+        {...(shouldShowDynamicLtv && { maxLtv: position.maxRiskRatio.loanToValue })}
+      />
+    ),
   })
   if (ltvContentCardCommonData.footnote && typeof ltvContentCardCommonData.footnote[0] !== 'string')
     ltvContentCardCommonData.footnote[0].key = 'ajna.content-card.ltv.footnote'
@@ -126,10 +128,12 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     tokensSymbol: collateralToken,
     translationCardName: 'collateral-deposited',
     ...(!isOracless && { tokensPrice: collateralPrice }),
-  })
-  const collateralDepositedContentCardAjnaData = useAjnaCardDataCollateralDeposited({
-    collateralAmount: position.collateralAmount,
-    collateralToken,
+    modal: (
+      <OmniCardDataCollateralDepositedModal
+        collateralAmount={position.collateralAmount}
+        collateralToken={collateralToken}
+      />
+    ),
   })
 
   const positionDebtContentCardCommonData = useOmniCardDataTokensValue({
@@ -138,10 +142,9 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
     tokensSymbol: quoteToken,
     translationCardName: 'position-debt',
     ...(!isOracless && { tokensPrice: quotePrice }),
-  })
-  const positionDebtContentCardAjnaData = useAjnaCardDataPositionDebt({
-    debtAmount: position.debtAmount,
-    quoteToken,
+    modal: (
+      <OmniCardDataPositionDebtModal debtAmount={position.debtAmount} quoteToken={quoteToken} />
+    ),
   })
 
   const netValueContentCardCommonData = useOmniCardDataNetValue({
@@ -199,11 +202,7 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
       {isOracless ? (
         <OmniContentCard {...commonContentCardData} {...thresholdPriceContentCardData} />
       ) : (
-        <OmniContentCard
-          {...commonContentCardData}
-          {...ltvContentCardCommonData}
-          {...ltvContentCardAjnaData}
-        />
+        <OmniContentCard {...commonContentCardData} {...ltvContentCardCommonData} />
       )}
 
       {productType === OmniProductType.Borrow && (
@@ -211,13 +210,8 @@ export const AjnaLendingDetailsSectionContent: FC<AjnaDetailsSectionContentProps
           <OmniContentCard
             {...commonContentCardData}
             {...collateralDepositedContentCardCommonData}
-            {...collateralDepositedContentCardAjnaData}
           />
-          <OmniContentCard
-            {...commonContentCardData}
-            {...positionDebtContentCardCommonData}
-            {...positionDebtContentCardAjnaData}
-          />
+          <OmniContentCard {...commonContentCardData} {...positionDebtContentCardCommonData} />
         </>
       )}
       {productType === OmniProductType.Multiply && (
