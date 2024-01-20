@@ -58,8 +58,8 @@ export async function tokenAllowance({
 
   const contract = Erc20__factory.connect(tokens[token].address, rpcProvider)
 
-  // Reading decimals from chain instead of local config because of oracless mode,
-  // amountFromWei reads data about precision from local, predefined tokens
+  // Reading decimals from chain instead of local config because of oracless mode.
+  // amountFromWei uses local config to determine token precision which doesn't have all tokens defined
   const decimals = await contract.decimals()
   const allowance = await contract.allowance(owner, spender)
 
