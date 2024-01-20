@@ -26,7 +26,7 @@ export function useAjnaRedirect({
   if (productType && collateralToken && quoteToken) {
     // redirect to borrow is multiply is open when it's not allowed
     if (
-      isOracless ||
+      (isOracless && productType === OmniProductType.Multiply) ||
       (productType === OmniProductType.Multiply &&
         !isPoolSupportingMultiply({ collateralToken, networkId, quoteToken }))
     )
