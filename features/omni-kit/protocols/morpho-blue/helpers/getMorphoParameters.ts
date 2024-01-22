@@ -143,7 +143,7 @@ export const getMorphoParameters = async ({
                   apy: position.borrowRate,
                   mode: MaxValueResolverMode.DECREASED,
                   precision: collateralPrecision,
-                  customDayApy: 1,
+                  customDayApy: 0.1,
                 })
               : state.withdrawAmount,
         },
