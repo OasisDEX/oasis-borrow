@@ -83,7 +83,7 @@ const rewardsTransactionResolver = ({
   }
 }
 
-const disclaimerKeys = ['ajna.rewards.two-tx', 'ajna.rewards.previous-deployment-rewards']
+const disclaimerKeys = ['ajna.rewards.two-tx']
 
 export function AjnaRewardCard() {
   const { t } = useTranslation()
