@@ -34,7 +34,6 @@ const FOOTER_SECTIONS = [
   {
     titleKey: 'nav.resources',
     links: [
-      { labelKey: 'nav.discover', url: INTERNAL_LINKS.discover, target: '_self' },
       { labelKey: 'nav.blog', url: EXTERNAL_LINKS.BLOG.MAIN, target: '_self' },
       { labelKey: 'nav.knowledge-centre', url: EXTERNAL_LINKS.KB.HELP, target: '_blank' },
       { labelKey: 'nav.bug-bounty', url: EXTERNAL_LINKS.BUG_BOUNTY, target: '_blank' },
