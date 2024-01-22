@@ -177,17 +177,22 @@ export const OmniProductController = <Auction, History, Position>({
                 { slippage },
               ]) => {
                 const castedProductType = dpmPosition.product as OmniProductType
+                const pageSeoTitle =
+                  dpmPosition.collateralToken === dpmPosition.quoteToken
+                    ? 'seo.title-single-token'
+                    : 'seo.title-product-w-tokens'
 
                 return (
                   <>
                     <PageSEOTags
-                      title="seo.title-product-w-tokens"
+                      title={pageSeoTitle}
                       titleParams={{
                         product: t(seoTags.productKey, {
                           productType: upperFirst(castedProductType),
                         }),
                         protocol: upperFirst(protocol),
                         token1: dpmPosition.collateralToken,
+                        token: dpmPosition.collateralToken,
                         token2: dpmPosition.quoteToken,
                       }}
                       description={seoTags.descriptionKey}

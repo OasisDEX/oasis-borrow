@@ -47,17 +47,14 @@ export const useAaveLikeSimpleEarnMetadata: GetOmniMetadata = (productContext) =
           txSuccessEarnHandler: () => null,
         },
         filters: {
-          flowStateFilter: (event: CreatePositionEvent) => {
-            return (
-              extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.AaveV3 &&
-              (event.args.positionType.toLocaleLowerCase() as OmniProductType) ===
-                OmniProductType.Earn
-            )
-          },
+          flowStateFilter: (event: CreatePositionEvent) =>
+            extractLendingProtocolFromPositionCreatedEvent(event) === LendingProtocol.AaveV3 &&
+            (event.args.positionType.toLocaleLowerCase() as OmniProductType) ===
+              OmniProductType.Earn,
         },
         values: {
           interestRate: zero,
-          isFormEmpty: true,
+          isFormEmpty: productContext.form.state.depositAmount?.eq(zero) ?? false,
           afterBuyingPower: zero,
           shouldShowDynamicLtv: () => true,
           debtMin: zero,

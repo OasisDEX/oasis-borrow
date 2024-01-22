@@ -3,6 +3,7 @@ import { OmniProductController } from 'features/omni-kit/controllers'
 import { aaveOmniProductType } from 'features/omni-kit/protocols/aave-like/helpers/aaveOmniProductType'
 import { useAaveLikeSimpleEarnData } from 'features/omni-kit/protocols/aave-like/hooks'
 import { useAaveLikeSimpleEarnMetadata } from 'features/omni-kit/protocols/aave-like/hooks/useAaveLikeSimpleEarnMetadata'
+import { useAaveLikeSimpleEarnTxHandler } from 'features/omni-kit/protocols/aave-like/hooks/useAaveLikeSimpleEarnTxHandler'
 import type { AaveSimpleSupplyPosition } from 'features/omni-kit/protocols/aave-like/types/AaveSimpleSupply'
 import type { OmniSidebarStepsSet, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
@@ -28,7 +29,7 @@ export default function OmniKitAaveContainerComponent({
       customState={({ children }) =>
         children({
           useDynamicMetadata: useAaveLikeSimpleEarnMetadata,
-          useTxHandler: () => () => {},
+          useTxHandler: useAaveLikeSimpleEarnTxHandler,
           formDefaults: {
             earn: {
               depositAmount: thousand,
@@ -43,8 +44,8 @@ export default function OmniKitAaveContainerComponent({
       protocolHook={useAaveLikeSimpleEarnData({ strategy: definedStrategy })}
       protocolRaw={settings?.rawName || ''}
       seoTags={{
-        productKey: `seo.aaveProductPage.title-product`,
-        descriptionKey: 'seo.aaveProductPage.description',
+        productKey: `seo.aaveProductPage.simple-earn.title-product`,
+        descriptionKey: 'seo.aaveProductPage.simple-earn.description',
       }}
       steps={settings?.steps || ([] as unknown as OmniSidebarStepsSet)}
     />

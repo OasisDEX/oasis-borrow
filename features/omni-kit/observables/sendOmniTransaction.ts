@@ -26,14 +26,18 @@ export const sendOmniTransaction$ = ({
   status: TxStatus
   receipt: ethers.providers.TransactionReceipt
   txHash: string
-}> =>
-  combineLatest(
+}> => {
+  return combineLatest(
     from(validateParameters({ signer, networkId, proxyAddress })),
     from(getOverrides(signer)),
   )
     .pipe(
-      switchMap(([{ dpm }, override]) =>
-        from(
+      switchMap(([{ dpm }, override]) => {
+        console.log('sendOmniTransaction dpm.estimateGas', txData.to, txData.data, {
+          ...override,
+          value: txData.value,
+        })
+        return from(
           dpm.estimateGas
             .execute(txData.to, txData.data, {
               ...override,
@@ -42,6 +46,11 @@ export const sendOmniTransaction$ = ({
             .then((val) => new BigNumber(val.toString()).multipliedBy(GasMultiplier).toFixed(0)),
         ).pipe(
           switchMap((gasLimit) => {
+            console.log('sendOmniTransaction dpm.execute', txData.to, txData.data, {
+              ...override,
+              value: txData.value,
+              gasLimit: gasLimit ?? undefined,
+            })
             return from(
               dpm.execute(txData.to, txData.data, {
                 ...override,
@@ -86,8 +95,8 @@ export const sendOmniTransaction$ = ({
               }),
             )
           }),
-        ),
-      ),
+        )
+      }),
     )
     .pipe(
       startWith({
@@ -105,3 +114,4 @@ export const sendOmniTransaction$ = ({
         })
       }),
     )
+}

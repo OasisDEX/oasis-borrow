@@ -45,6 +45,7 @@ export type UseFlowStateProps = {
   onProxiesAvailable?: (events: CreatePositionEvent[], dpmAccounts: UserDpmAccount[]) => void
   token?: string
   networkId: NetworkIds
+  lendingOnly?: boolean
 }
 
 function hasAaveOrSparkProtocol(events: CreatePositionEvent[]) {
@@ -67,6 +68,7 @@ export function useFlowState({
   onProxiesAvailable,
   token,
   networkId,
+  lendingOnly,
 }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [asUserAction, setAsUserAction] = useState<boolean>(false)
@@ -110,7 +112,9 @@ export function useFlowState({
     error: undefined,
   }
 
-  const spender = availableProxies[0] // probably needs further thoguht
+  const spender = lendingOnly ? lendingOnlyProxies[0] : availableProxies[0] // probably needs further thought
+  // further thought: changed to lendingOnlyProxies[0] for simple earn, but this is still not ideal
+  console.log('spender', spender)
 
   // wallet connection + DPM proxy machine
   useEffect(() => {
@@ -239,7 +243,7 @@ export function useFlowState({
 
   // allowance machine
   useEffect(() => {
-    if (!isProxyReady || !allDefined(walletAddress, amount, token)) return
+    if (!isProxyReady || !allDefined(spender, walletAddress, amount, token)) return
     if (token === 'ETH') {
       setLoading(false)
       setAllowanceReady(true)

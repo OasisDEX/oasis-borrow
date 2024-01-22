@@ -20,7 +20,6 @@ export function SimpleEarnFooter({ breakevenAnnotation }: { breakevenAnnotation?
       },
     },
   } = useOmniProductContext(OmniProductType.Earn)
-  console.log('apy', apy)
   const formatted = {
     // breakeven: breakeven.gt(zero) ? breakeven.toFixed(0, BigNumber.ROUND_UP) : '1',
     // entryFees: entryFees.gt(zero) ? `${formatCryptoBalance(entryFees)} ${token}` : '-',

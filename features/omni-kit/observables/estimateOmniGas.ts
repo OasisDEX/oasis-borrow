@@ -33,8 +33,15 @@ export const estimateOmniGas$ = ({
     from(validateParameters({ signer, networkId, proxyAddress })),
     from(getOverrides(signer)),
   ).pipe(
-    switchMap(([{ dpm }, override]) =>
-      from(
+    switchMap(([{ dpm }, override]) => {
+      console.log('estimateOmniGas dpm.estimateGas', {
+        ...override,
+        dpm,
+        to: txData.to,
+        data: txData.data,
+        value: txData.value,
+      })
+      return from(
         dpm.estimateGas
           .execute(txData.to, txData.data, {
             ...override,
@@ -45,6 +52,7 @@ export const estimateOmniGas$ = ({
           ),
       ).pipe(
         switchMap(async (gasAmount) => {
+          console.log('estimateOmniGas gasAmount', gasAmount)
           let usdValue = amountFromWei(gasPrice.maxFeePerGas.times(gasAmount)).times(ethPrice)
 
           if (isL2) {
@@ -74,8 +82,8 @@ export const estimateOmniGas$ = ({
             isCompleted: true,
           }
         }),
-      ),
-    ),
+      )
+    }),
     first(),
     startWith({
       isSuccessful: false,

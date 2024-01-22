@@ -96,6 +96,7 @@ export function OmniFormView({
 
   const flowState = useFlowState({
     networkId,
+    lendingOnly,
     ...(dpmProxy && { existingProxy: dpmProxy }),
     ...getOmniFlowStateConfig({
       protocol,
