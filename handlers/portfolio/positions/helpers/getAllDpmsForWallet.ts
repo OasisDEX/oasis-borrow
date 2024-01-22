@@ -96,9 +96,9 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
     }))
   })
 
-  const dpmList = await Promise.all(dpmCallList).then((dpmNetworkList) => {
+  return await Promise.all(dpmCallList).then((dpmNetworkList) => {
     return dpmNetworkList
-      .map((dpm) => {
+      .flatMap((dpm) => {
         return dpm.accounts.map(
           ({
             collateralToken,
@@ -106,28 +106,28 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
             id,
             createEvents,
             positionType,
-            protocol,
             vaultId,
             user: { id: user },
           }) => {
-            return {
-              collateralToken,
-              debtToken,
-              id,
-              networkId: dpm.networkId,
-              positionType: positionType?.toLowerCase() as OmniProductType,
-              protocol,
-              user,
-              vaultId,
-              createEvents: createEvents.map(({ positionType: eventPositionType, ...rest }) => ({
-                ...rest,
-                positionType: eventPositionType.toLowerCase() as OmniProductType,
-              })),
-            }
+            return createEvents.map(({ positionType: eventPositionType, ...rest2 }) => {
+              return {
+                collateralToken,
+                debtToken,
+                id,
+                networkId: dpm.networkId,
+                positionType: positionType?.toLowerCase() as OmniProductType,
+                protocol: rest2.protocol,
+                user,
+                vaultId,
+                createEvents: createEvents.map(({ positionType: eventPositionType, ...rest }) => ({
+                  ...rest,
+                  positionType: eventPositionType.toLowerCase() as OmniProductType,
+                })),
+              }
+            })
           },
         )
       })
       .flat()
   })
-  return dpmList
 }
