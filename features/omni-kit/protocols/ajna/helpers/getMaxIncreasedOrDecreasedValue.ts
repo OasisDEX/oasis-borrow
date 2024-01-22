@@ -1,8 +1,5 @@
 import type BigNumber from 'bignumber.js'
 
-const FEE_FRACTION = 0.05
-export const INCREASED_VALUE_PRECISSION = 6
-
 export enum MaxValueResolverMode {
   DECREASED = 'decreased',
   INCREASED = 'increased',
@@ -16,10 +13,17 @@ const modeMap: {
   [MaxValueResolverMode.INCREASED]: 'plus',
 }
 
-export function getMaxIncreasedOrDecreasedValue(
-  value: BigNumber,
-  fee: BigNumber,
-  mode: MaxValueResolverMode = MaxValueResolverMode.INCREASED,
-) {
-  return value[modeMap[mode]](value.times(fee.times(FEE_FRACTION))).dp(INCREASED_VALUE_PRECISSION)
+export function getMaxIncreasedOrDecreasedValue({
+  value,
+  apy,
+  precision,
+  mode = MaxValueResolverMode.INCREASED,
+}: {
+  value: BigNumber
+  apy: BigNumber
+  precision: number
+  mode?: MaxValueResolverMode
+}) {
+  // simplified 5 days apy to calculate offset from given value
+  return value[modeMap[mode]](value.times(apy.div(365).times(5))).dp(precision)
 }

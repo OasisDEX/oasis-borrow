@@ -14,14 +14,6 @@ export const mapAjnaEarnEvents = (
       collateralAddress: event.collateralAddress,
       addOrRemovePrice: event.addOrRemovePrice,
       isOpen: event.isOpen,
-
-      // TODO potentially items for calculating pnl and total earnings until we have better handling in subgraph
-      depositAmount: event.depositAmount,
-      withdrawAmount: event.withdrawAmount,
-      debtOraclePrice: event.debtOraclePrice,
-      ethPrice: event.ethPrice,
-      gasPrice: event.gasPrice,
-      gasUsed: event.gasUsed,
     }
     switch (event.kind) {
       case 'AjnaMoveQuote':

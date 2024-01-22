@@ -16,7 +16,7 @@ import {
   MorphoDetailsSectionFooter,
 } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import {
-  getMorphoBorrowCollateralMax,
+  getMorphoBorrowWithdrawMax,
   morphoFlowStateFilter,
 } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks'
@@ -41,6 +41,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       quoteAddress,
       quoteBalance,
       quotePrecision,
+      collateralPrecision,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -93,8 +94,8 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           changeVariant: getOmniBorrowishChangeVariant({ simulation, isOracless }),
           afterAvailableToBorrow: simulation && negativeToZero(simulation.debtAvailable()),
           afterPositionDebt: simulation?.debtAmount,
-          collateralMax: getMorphoBorrowCollateralMax({
-            precision: quotePrecision,
+          withdrawMax: getMorphoBorrowWithdrawMax({
+            collateralPrecision,
             position,
             simulation,
           }),

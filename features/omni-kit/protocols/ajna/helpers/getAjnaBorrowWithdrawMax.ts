@@ -3,13 +3,13 @@ import { protocols } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 
 interface AjnaBorrowCollateralMaxParams {
-  digits: number
+  collateralPrecision: number
   position: AjnaPosition
   simulation?: AjnaPosition
 }
 
-export function getAjnaBorrowCollateralMax({
-  digits,
+export function getAjnaBorrowWithdrawMax({
+  collateralPrecision,
   position: {
     collateralAmount,
     debtAmount,
@@ -26,5 +26,5 @@ export function getAjnaBorrowCollateralMax({
         .times(protocols.ajna.ajnaCollateralizationFactor)
         .div(resolvedLowestUtilizedPrice),
     )
-    .decimalPlaces(digits, BigNumber.ROUND_DOWN)
+    .decimalPlaces(collateralPrecision, BigNumber.ROUND_DOWN)
 }

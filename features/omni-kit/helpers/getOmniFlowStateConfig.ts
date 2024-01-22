@@ -1,9 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { paybackAllAmountAllowanceMaxMultiplier } from 'features/omni-kit/constants'
-import {
-  getMaxIncreasedOrDecreasedValue,
-  INCREASED_VALUE_PRECISSION,
-} from 'features/omni-kit/protocols/ajna/helpers'
+import { getMaxIncreasedOrDecreasedValue } from 'features/omni-kit/protocols/ajna/helpers'
 import {
   OmniBorrowFormAction,
   OmniEarnFormAction,
@@ -20,6 +17,7 @@ interface GetOmniFlowStateConfigParams {
   fee: BigNumber
   isOpening: boolean
   quoteToken: string
+  quotePrecision: number
   state: OmniFormState
   protocol: LendingProtocol
 }
@@ -29,6 +27,7 @@ export function getOmniFlowStateConfig({
   fee,
   isOpening,
   quoteToken,
+  quotePrecision,
   state,
   protocol,
 }: GetOmniFlowStateConfigParams): {
@@ -90,11 +89,15 @@ export function getOmniFlowStateConfig({
 
       const allowanceMultiplier = paybackAllAmountAllowanceMaxMultiplier[protocol]
 
+      const increasedAmount = getMaxIncreasedOrDecreasedValue({
+        value: state.paybackAmount,
+        apy: fee,
+        precision: quotePrecision,
+      })
+
       return {
-        amount: getMaxIncreasedOrDecreasedValue(state.paybackAmount, fee),
-        allowanceAmount: getMaxIncreasedOrDecreasedValue(state.paybackAmount, fee)
-          .times(allowanceMultiplier)
-          .dp(INCREASED_VALUE_PRECISSION),
+        amount: increasedAmount,
+        allowanceAmount: increasedAmount.times(allowanceMultiplier).dp(quotePrecision),
         token: quoteToken,
       }
     case OmniBorrowFormAction.WithdrawBorrow:
@@ -107,7 +110,11 @@ export function getOmniFlowStateConfig({
       }
 
       return {
-        amount: getMaxIncreasedOrDecreasedValue(state.paybackAmount, fee),
+        amount: getMaxIncreasedOrDecreasedValue({
+          value: state.paybackAmount,
+          apy: fee,
+          precision: quotePrecision,
+        }),
         token: quoteToken,
       }
     case OmniMultiplyFormAction.DepositQuoteMultiply:

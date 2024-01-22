@@ -54,6 +54,7 @@ export function OmniFormView({
       shouldSwitchNetwork,
       network,
       networkId,
+      quotePrecision,
     },
     steps: {
       currentStep,
@@ -103,6 +104,7 @@ export function OmniFormView({
       isOpening,
       quoteToken,
       state,
+      quotePrecision,
     }),
     filterConsumedProxy: (events) => events.every((event) => !flowStateFilter(event)),
     onProxiesAvailable: (events, dpmAccounts) => {

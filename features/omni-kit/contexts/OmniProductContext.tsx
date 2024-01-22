@@ -75,7 +75,7 @@ export type LendingMetadata = CommonMetadata & {
     afterBuyingPower: BigNumber | undefined
     afterPositionDebt: BigNumber | undefined
     changeVariant: 'positive' | 'negative'
-    collateralMax: BigNumber
+    withdrawMax: BigNumber
     debtMax: BigNumber
     debtMin: BigNumber
     paybackMax: BigNumber
