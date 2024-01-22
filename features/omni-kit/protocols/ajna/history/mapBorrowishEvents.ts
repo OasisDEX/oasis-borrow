@@ -49,10 +49,8 @@ export const mapAjnaBorrowishEvents = (
           debtAfter: event.debtAfter,
           ...basicData,
         }
-      case 'AjnaDepositBorrow_4':
-      case 'AjnaDepositBorrow_5':
-      case 'AjnaRepayWithdraw_4':
-      case 'AjnaRepayWithdraw_5':
+      case 'AjnaDepositBorrow':
+      case 'AjnaRepayWithdraw':
         return {
           collateralBefore: event.collateralBefore,
           collateralAfter: event.collateralAfter,
@@ -101,7 +99,7 @@ export const mapAjnaBorrowishEvents = (
         }
       }
       default: {
-        console.warn('No ajna event kind found')
+        console.warn(`No ajna event kind found ${event.kind}`)
         return {}
       }
     }
