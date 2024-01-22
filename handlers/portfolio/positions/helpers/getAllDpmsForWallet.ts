@@ -96,31 +96,56 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
     }))
   })
 
+  // We have a DPM
+  // It has creat position events associated
+  // Those events can be other protocols with other token pairs relative to the DPM primary properties
   return await Promise.all(dpmCallList).then((dpmNetworkList) => {
     return dpmNetworkList
       .flatMap((dpm) => {
         return dpm.accounts.map(
-          ({ id, createEvents, protocol, positionType, vaultId, user: { id: user } }) => {
-            return createEvents.map(({ positionType: eventPositionType, ...rest2 }) => {
-              return {
-                // This ensures that each position has the correct collateral and debt token rather than the ones from the primary position
-                collateralToken: rest2.collateralToken,
-                debtToken: rest2.debtToken,
-                id,
-                networkId: dpm.networkId,
-                positionType: positionType?.toLowerCase() as OmniProductType,
-                protocol: rest2.protocol,
-                user,
-                vaultId,
-                createEvents: createEvents
-                  .map(({ positionType: eventPositionType, ...rest }) => ({
-                    ...rest,
-                    positionType: eventPositionType.toLowerCase() as OmniProductType,
-                  }))
-                  // Note: Kuba fix resolved issue with createPosition events being missed https://github.com/OasisDEX/oasis-borrow/pull/3397/files
-                  .filter((event) => event.protocol === protocol),
-              }
-            })
+          ({ id, createEvents, positionType, vaultId, user: { id: user } }) => {
+            // Note: Kuba fix resolved issue with createPosition events being missed https://github.com/OasisDEX/oasis-borrow/pull/3397/files
+            return createEvents
+              .map(({ positionType: eventPositionType, ...rest2 }) => {
+                return {
+                  // This ensures that each position has the correct collateral and debt token rather than the ones from the primary position
+                  collateralToken: rest2.collateralToken,
+                  debtToken: rest2.debtToken,
+                  id,
+                  networkId: dpm.networkId,
+                  positionType: positionType?.toLowerCase() as OmniProductType,
+                  protocol: rest2.protocol,
+                  user,
+                  vaultId,
+                  // Filter createEvents to just return the createEvent for the position in question.
+                  // Given we're extracting positions from the DPM and treating positions like DPMs (given DPMs are now reusable)
+                  createEvents: createEvents
+                    .map(({ positionType: eventPositionType, ...rest }) => ({
+                      ...rest,
+                      positionType: eventPositionType.toLowerCase() as OmniProductType,
+                    }))
+                    // Remove createEvents that don't match the position in question
+                    .filter(
+                      (event) =>
+                        event.protocol === rest2.protocol &&
+                        event.positionType === eventPositionType &&
+                        event.collateralToken === rest2.collateralToken &&
+                        event.debtToken === rest2.debtToken,
+                    ),
+                }
+              })
+              .filter(
+                // Deduplicate positions based on collateralToken, debtToken, positionType, protocol
+                (positionAsDpm, index, self) =>
+                  self.findIndex((e) => {
+                    return (
+                      e.collateralToken === positionAsDpm.collateralToken &&
+                      e.debtToken === positionAsDpm.debtToken &&
+                      e.positionType === positionAsDpm.positionType &&
+                      e.protocol === positionAsDpm.protocol
+                    )
+                  }) === index,
+              )
           },
         )
       })
