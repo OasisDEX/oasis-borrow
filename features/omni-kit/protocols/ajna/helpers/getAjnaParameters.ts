@@ -138,7 +138,7 @@ export async function getAjnaParameters({
                 })
               : state.paybackAmount,
           withdrawAmount:
-            state.withdrawAmount && state.withdrawAmountMax && !position.pool.interestRate.isZero()
+            state.withdrawAmount && state.withdrawAmountMax
               ? getMaxIncreasedOrDecreasedValue({
                   value: state.withdrawAmount,
                   apy: position.pool.interestRate,
@@ -233,7 +233,7 @@ export async function getAjnaParameters({
               })
             : state.paybackAmount,
         withdrawAmount:
-          state.withdrawAmount && state.withdrawAmountMax && !position.pool.interestRate.isZero()
+          state.withdrawAmount && state.withdrawAmountMax
             ? getMaxIncreasedOrDecreasedValue({
                 value: state.withdrawAmount,
                 apy: position.pool.interestRate,
