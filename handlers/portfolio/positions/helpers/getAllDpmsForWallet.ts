@@ -96,38 +96,34 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
     }))
   })
 
-  const dpmList = await Promise.all(dpmCallList).then((dpmNetworkList) => {
+  return await Promise.all(dpmCallList).then((dpmNetworkList) => {
     return dpmNetworkList
-      .map((dpm) => {
+      .flatMap((dpm) => {
         return dpm.accounts.map(
-          ({
-            collateralToken,
-            debtToken,
-            id,
-            createEvents,
-            positionType,
-            protocol,
-            vaultId,
-            user: { id: user },
-          }) => {
-            return {
-              collateralToken,
-              debtToken,
-              id,
-              networkId: dpm.networkId,
-              positionType: positionType?.toLowerCase() as OmniProductType,
-              protocol,
-              user,
-              vaultId,
-              createEvents: createEvents.map(({ positionType: eventPositionType, ...rest }) => ({
-                ...rest,
-                positionType: eventPositionType.toLowerCase() as OmniProductType,
-              })),
-            }
+          ({ id, createEvents, protocol, positionType, vaultId, user: { id: user } }) => {
+            return createEvents.map(({ positionType: eventPositionType, ...rest2 }) => {
+              return {
+                // This ensures that each position has the correct collateral and debt token rather than the ones from the primary position
+                collateralToken: rest2.collateralToken,
+                debtToken: rest2.debtToken,
+                id,
+                networkId: dpm.networkId,
+                positionType: positionType?.toLowerCase() as OmniProductType,
+                protocol: rest2.protocol,
+                user,
+                vaultId,
+                createEvents: createEvents
+                  .map(({ positionType: eventPositionType, ...rest }) => ({
+                    ...rest,
+                    positionType: eventPositionType.toLowerCase() as OmniProductType,
+                  }))
+                  // Note: Kuba fix resolved issue with createPosition events being missed https://github.com/OasisDEX/oasis-borrow/pull/3397/files
+                  .filter((event) => event.protocol === protocol),
+              }
+            })
           },
         )
       })
       .flat()
   })
-  return dpmList
 }
