@@ -106,11 +106,10 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
             id,
             createEvents,
             positionType,
-            protocol,
             vaultId,
             user: { id: user },
           }) => {
-            return createEvents.map(({ positionType: eventPositionType, ...rest2 }) => {              
+            return createEvents.map(({ positionType: eventPositionType, ...rest2 }) => {
               return {
                 collateralToken,
                 debtToken,
@@ -125,9 +124,7 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
                   positionType: eventPositionType.toLowerCase() as OmniProductType,
                 })),
               }
-
             })
-            
           },
         )
       })
