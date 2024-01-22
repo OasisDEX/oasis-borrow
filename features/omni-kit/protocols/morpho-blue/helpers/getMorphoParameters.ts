@@ -90,7 +90,22 @@ export const getMorphoParameters = async ({
 
   switch (action) {
     case OmniBorrowFormAction.OpenBorrow: {
-      return morphoActionOpenBorrow({ state, commonPayload, dependencies })
+      return morphoActionOpenBorrow({
+        state: {
+          ...state,
+          generateAmount:
+            state.generateAmount && state.generateAmountMax
+              ? getMaxIncreasedOrDecreasedValue({
+                  value: state.generateAmount,
+                  apy: position.borrowRate,
+                  mode: MaxValueResolverMode.DECREASED,
+                  precision: quotePrecision,
+                })
+              : state.generateAmount,
+        },
+        commonPayload,
+        dependencies,
+      })
     }
     case OmniBorrowFormAction.DepositBorrow:
     case OmniBorrowFormAction.GenerateBorrow: {
@@ -122,12 +137,13 @@ export const getMorphoParameters = async ({
           //     ? getMaxIncreasedOrDecreasedValue(state.paybackAmount, position.borrowRate)
           //     : state.paybackAmount,
           withdrawAmount:
-            state.withdrawAmount && state.withdrawAmountMax && !position.debtAmount.isZero()
+            state.withdrawAmount && state.withdrawAmountMax
               ? getMaxIncreasedOrDecreasedValue({
                   value: state.withdrawAmount,
                   apy: position.borrowRate,
                   mode: MaxValueResolverMode.DECREASED,
                   precision: collateralPrecision,
+                  customDayApy: 1,
                 })
               : state.withdrawAmount,
         },

@@ -18,12 +18,14 @@ export function getMaxIncreasedOrDecreasedValue({
   apy,
   precision,
   mode = MaxValueResolverMode.INCREASED,
+  customDayApy = 5,
 }: {
   value: BigNumber
   apy: BigNumber
   precision: number
+  customDayApy?: number
   mode?: MaxValueResolverMode
 }) {
-  // simplified 5 days apy to calculate offset from given value
-  return value[modeMap[mode]](value.times(apy.div(365).times(5))).dp(precision)
+  // simplified 5 days apy to calculate offset from given value (or custom days)
+  return value[modeMap[mode]](value.times(apy.div(365).times(customDayApy))).dp(precision)
 }
