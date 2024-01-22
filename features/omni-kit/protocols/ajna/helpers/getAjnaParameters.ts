@@ -1,6 +1,7 @@
 import type {
   AjnaCommonDependencies,
   AjnaCommonPayload,
+  AjnaPosition,
   AjnaStrategy,
   Network,
 } from '@oasisdex/dma-library'
@@ -138,7 +139,9 @@ export async function getAjnaParameters({
                 })
               : state.paybackAmount,
           withdrawAmount:
-            state.withdrawAmount && state.withdrawAmountMax
+            state.withdrawAmount &&
+            state.withdrawAmountMax &&
+            !(position as AjnaPosition)?.debtAmount.isZero()
               ? getMaxIncreasedOrDecreasedValue({
                   value: state.withdrawAmount,
                   apy: position.pool.interestRate,
@@ -233,7 +236,9 @@ export async function getAjnaParameters({
               })
             : state.paybackAmount,
         withdrawAmount:
-          state.withdrawAmount && state.withdrawAmountMax
+          state.withdrawAmount &&
+          state.withdrawAmountMax &&
+          !(position as AjnaPosition)?.debtAmount.isZero()
             ? getMaxIncreasedOrDecreasedValue({
                 value: state.withdrawAmount,
                 apy: position.pool.interestRate,
