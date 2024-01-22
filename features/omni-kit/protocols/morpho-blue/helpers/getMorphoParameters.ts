@@ -137,7 +137,7 @@ export const getMorphoParameters = async ({
           //     ? getMaxIncreasedOrDecreasedValue(state.paybackAmount, position.borrowRate)
           //     : state.paybackAmount,
           withdrawAmount:
-            state.withdrawAmount && state.withdrawAmountMax
+            state.withdrawAmount && state.withdrawAmountMax && !position.debtAmount.isZero()
               ? getMaxIncreasedOrDecreasedValue({
                   value: state.withdrawAmount,
                   apy: position.borrowRate,
