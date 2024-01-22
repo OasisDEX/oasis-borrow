@@ -124,7 +124,7 @@ const availableTokenPairs: TokenPairConfig[] = [
   },
   {
     collateral: 'LINK',
-    debt: 'WETH',
+    debt: 'ETH',
     strategyType: StrategyType.Long,
     productTypes: borrowAndMultiply,
   },
@@ -209,7 +209,7 @@ const availableTokenPairs: TokenPairConfig[] = [
   },
   {
     collateral: 'USDT',
-    debt: 'WETH',
+    debt: 'ETH',
     strategyType: StrategyType.Short,
     productTypes: borrowAndMultiply,
   },
@@ -251,24 +251,24 @@ const availableTokenPairs: TokenPairConfig[] = [
   },
   {
     collateral: 'WBTC',
-    debt: 'WETH',
+    debt: 'ETH',
     strategyType: StrategyType.Long,
     productTypes: borrowAndMultiply,
   },
   {
-    collateral: 'WETH',
+    collateral: 'ETH',
     debt: 'GHO',
     strategyType: StrategyType.Long,
     productTypes: borrowAndMultiply,
   },
   {
-    collateral: 'WETH',
+    collateral: 'ETH',
     debt: 'USDT',
     strategyType: StrategyType.Long,
     productTypes: borrowAndMultiply,
   },
   {
-    collateral: 'WETH',
+    collateral: 'ETH',
     debt: 'WBTC',
     strategyType: StrategyType.Long,
     productTypes: borrowAndMultiply,
@@ -354,7 +354,7 @@ const availableTokenPairs: TokenPairConfig[] = [
   },
   {
     collateral: 'SDAI',
-    debt: 'WETH',
+    debt: 'ETH',
     strategyType: StrategyType.Long,
     productTypes: borrowAndMultiply,
   },

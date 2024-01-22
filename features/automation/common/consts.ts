@@ -103,7 +103,7 @@ export const aaveTokenPairsAllowedAutomation = [
   ['WBTC', 'DAI'],
   ['WBTC', 'USDC'],
   ['WBTC', 'USDT'],
-  ['WETH', 'USDT'],
+  ['ETH', 'USDT'],
   ['WSTETH', 'DAI'],
   ['WSTETH', 'USDC'],
 ]
