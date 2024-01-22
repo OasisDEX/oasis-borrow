@@ -44,7 +44,7 @@ export const portfolioPositionsHandler = async ({
 
   if (prices && prices.data.tokens) {
     const apiVaults = !positionsCount ? await getPositionsFromDatabase({ address }) : undefined
-    const dpmList = (await getAllDpmsForWallet({ address })).flat()
+    const dpmList = await getAllDpmsForWallet({ address })
 
     const payload = {
       address,

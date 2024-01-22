@@ -96,9 +96,9 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
     }))
   })
 
-  const dpmList = await Promise.all(dpmCallList).then((dpmNetworkList) => {
+  return await Promise.all(dpmCallList).then((dpmNetworkList) => {
     return dpmNetworkList
-      .map((dpm) => {
+      .flatMap((dpm) => {
         return dpm.accounts.map(
           ({
             collateralToken,
@@ -130,5 +130,4 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
       })
       .flat()
   })
-  return dpmList
 }
