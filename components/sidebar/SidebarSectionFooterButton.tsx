@@ -25,7 +25,7 @@ export function SidebarSectionFooterButton({
       {!hidden &&
         (url ? (
           withoutNextLink ? (
-            <Link href={url} sx={{ display: 'block', bg: 'red' }}>
+            <Link href={url} sx={{ display: 'block' }}>
               <SidebarSectionFooterButtonIner {...rest} />
             </Link>
           ) : (
