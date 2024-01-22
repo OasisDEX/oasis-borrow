@@ -243,6 +243,7 @@ export function OmniFormView({
       disabled: suppressValidation ? false : isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
       hidden: isPrimaryButtonHidden,
+      withoutNextLink: true,
       ...primaryButtonActions,
     },
     textButton: {
