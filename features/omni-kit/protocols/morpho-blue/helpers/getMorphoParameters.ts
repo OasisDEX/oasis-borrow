@@ -99,11 +99,12 @@ export const getMorphoParameters = async ({
           ...state,
           generateAmount:
             state.generateAmount && state.generateAmountMax
-              ? getMaxIncreasedOrDecreasedValue(
-                  state.generateAmount,
-                  position.borrowRate,
-                  MaxValueResolverMode.DECREASED,
-                )
+              ? getMaxIncreasedOrDecreasedValue({
+                  value: state.generateAmount,
+                  apy: position.borrowRate,
+                  mode: MaxValueResolverMode.DECREASED,
+                  precision: quotePrecision,
+                })
               : state.generateAmount,
         },
         commonPayload,
@@ -121,12 +122,13 @@ export const getMorphoParameters = async ({
           //     ? getMaxIncreasedOrDecreasedValue(state.paybackAmount, position.borrowRate)
           //     : state.paybackAmount,
           withdrawAmount:
-            state.withdrawAmount && state.withdrawAmountMax
-              ? getMaxIncreasedOrDecreasedValue(
-                  state.withdrawAmount,
-                  position.borrowRate,
-                  MaxValueResolverMode.DECREASED,
-                )
+            state.withdrawAmount && state.withdrawAmountMax && !position.debtAmount.isZero()
+              ? getMaxIncreasedOrDecreasedValue({
+                  value: state.withdrawAmount,
+                  apy: position.borrowRate,
+                  mode: MaxValueResolverMode.DECREASED,
+                  precision: collateralPrecision,
+                })
               : state.withdrawAmount,
         },
         commonPayload,
