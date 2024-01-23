@@ -32,9 +32,8 @@ function MorphoPositionPage(props: MorphoPositionPageProps) {
             }
             protocol={LendingProtocol.MorphoBlue}
             protocolHook={useMorphoData}
-            protocolRaw={settings.rawName[props.networkId] as string}
             seoTags={morphoSeoTags}
-            steps={settings.steps}
+            settings={settings}
           />
         </ProductContextHandler>
       </MorphoWrapper>

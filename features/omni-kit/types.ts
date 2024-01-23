@@ -59,8 +59,9 @@ export type OmniSidebarStepsSet = {
 export interface OmniProtocolSettings {
   rawName: NetworkIdsWithValues<string>
   steps: OmniSidebarStepsSet
-  supportedNetworkIds: OmniSupportedNetworkIds[]
   supportedMainnetNetworkIds: OmniSupportedNetworkIds[]
+  supportedMultiplyTokens: NetworkIdsWithValues<string[]>
+  supportedNetworkIds: OmniSupportedNetworkIds[]
   supportedProducts: OmniProductType[]
 }
 
