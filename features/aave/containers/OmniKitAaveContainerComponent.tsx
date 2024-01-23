@@ -32,6 +32,7 @@ export default function OmniKitAaveContainerComponent({
           useTxHandler: useAaveLikeSimpleEarnTxHandler,
           formDefaults: {
             earn: {
+              // TODO SIMPLE EARN: make this dynamic (will be more than simple earn)
               depositAmount: thousand,
             },
             borrow: {},
@@ -44,6 +45,7 @@ export default function OmniKitAaveContainerComponent({
       protocolHook={useAaveLikeSimpleEarnData({ strategy: definedStrategy })}
       protocolRaw={settings?.rawName || ''}
       seoTags={{
+        // TODO SIMPLE EARN: make this dynamic (will be more than simple earn)
         productKey: `seo.aaveProductPage.simple-earn.title-product`,
         descriptionKey: 'seo.aaveProductPage.simple-earn.description',
       }}

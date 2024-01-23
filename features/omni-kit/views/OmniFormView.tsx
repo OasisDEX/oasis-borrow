@@ -264,7 +264,7 @@ export function OmniFormView({
       type: 'update-dpm',
       dpmAddress: lendingOnly ? lendingOnlyDpmAddress : standardDpmAddress,
     })
-  }, [flowState.availableProxies, flowState.lendingOnlyProxies])
+  }, [flowState.availableProxies, flowState.lendingOnlyProxies, lendingOnly])
   useEffect(() => setIsFlowStateReady(flowState.isEverythingReady), [flowState.isEverythingReady])
 
   return (

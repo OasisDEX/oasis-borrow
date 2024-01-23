@@ -16,6 +16,7 @@ import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import type { OperationExecutor } from 'types/ethers-contracts'
 
+// TODO SIMPLE EARN: this all should be handled by the library
 const mapPositionData =
   ({
     collateralToken,
@@ -34,18 +35,21 @@ const mapPositionData =
     ])
     const value = collateralToken === 'ETH' ? depositAmount.toString() : zero.toString()
     return {
-      ...position,
       tx: {
         to: operationExecutor.address,
         data,
         value,
       },
       simulation: {
-        ...position.simulation,
-        targetPosition: position,
+        position: position.simulation.position as unknown as AaveSimpleSupplyPosition,
+        targetPosition: position as unknown as AaveSimpleSupplyPosition,
         swaps: [],
+        errors: [],
+        warnings: [],
+        notices: [],
+        successes: [],
       },
-    }
+    } as AjnaStrategy<AaveSimpleSupplyPosition>
   }
 
 export const getAaveLikeParameters = async ({
@@ -125,6 +129,7 @@ export const getAaveLikeParameters = async ({
   })
 
   switch (action) {
+    // TODO SIMPLE EARN: more cases to come (not just simple earn)
     case OmniEarnFormAction.OpenEarn: {
       switch (protocol) {
         case LendingProtocol.AaveV3:

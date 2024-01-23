@@ -20,9 +20,6 @@ export function useAaveLikeSimpleEarnTxHandler(): () => void {
   } = useOmniGeneralContext()
   const {
     form: { state },
-    position: {
-      currentPosition: { position },
-    },
     dynamicMetadata: {
       validations: { isFormValid },
     },
