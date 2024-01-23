@@ -19,7 +19,7 @@ export function SimpleEarnHeader() {
     <SimulateTitle
       token={collateralToken}
       depositAmount={depositAmount}
-      description={`${t('in-this-position')} (ID : ${resolvedId})`}
+      description={`${t('in-this-position')}${resolvedId ? `(ID : ${resolvedId})` : ''}`}
     />
   )
 }

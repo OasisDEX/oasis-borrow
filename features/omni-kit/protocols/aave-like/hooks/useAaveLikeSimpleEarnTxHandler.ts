@@ -1,45 +1,46 @@
-import type { MorphoBluePosition } from '@oasisdex/dma-library'
 import { getRpcProvider } from 'blockchain/networks'
+import { useMainContext } from 'components/context/MainContextProvider'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { useOmniTxHandler } from 'features/omni-kit/hooks'
-import { getMorphoParameters } from 'features/omni-kit/protocols/morpho-blue/helpers'
+import { getAaveLikeParameters } from 'features/omni-kit/protocols/aave-like/helpers/getAaveLikeParameters'
+import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 
 export function useAaveLikeSimpleEarnTxHandler(): () => void {
   const {
     environment: {
       collateralPrecision,
-      collateralPrice,
-      quotePrecision,
-      quotePrice,
+      collateralToken,
       productType,
       quoteBalance,
       networkId,
+      protocol,
+      slippage,
     },
   } = useOmniGeneralContext()
   const {
     form: { state },
-    position: {
-      currentPosition: { position },
-    },
     dynamicMetadata: {
       validations: { isFormValid },
     },
   } = useOmniProductContext(productType)
   const { walletAddress } = useAccount()
+  const { connectedContext$ } = useMainContext()
+  const [context] = useObservable(connectedContext$)
+  const signer = context?.transactionProvider
 
   return useOmniTxHandler({
     getOmniParameters: () =>
-      getMorphoParameters({
+      getAaveLikeParameters({
+        slippage,
+        signer,
+        rpcProvider: getRpcProvider(networkId),
+        protocol,
         networkId,
         collateralPrecision,
-        collateralPrice,
+        collateralToken,
         isFormValid,
-        position: position as MorphoBluePosition,
-        quotePrecision,
-        quotePrice,
         quoteBalance,
-        rpcProvider: getRpcProvider(networkId),
         state,
         walletAddress,
       }),

@@ -644,7 +644,7 @@ export function setupProductContext(
       ).join('-')}`,
   )
 
-  const aaveLikePosition$ = memoize(
+  const aaveV3LikePosition$ = memoize(
     curry(getMorphoPosition$)(onEveryBlock$),
     (
       collateralPrice: BigNumber,
@@ -665,7 +665,7 @@ export function setupProductContext(
     aaveLikeLiquidations$: aaveV2Services.aaveLikeLiquidations$, // @deprecated,
     // aaveLikeProtocolData$: aaveV2Services.aaveLikeProtocolData$,
     aaveLikeUserAccountData$: aaveV2Services.aaveLikeUserAccountData$,
-    aaveLikePosition$,
+    aaveV3LikePosition$,
     addGasEstimation$,
     ajnaPosition$,
     allowance$,

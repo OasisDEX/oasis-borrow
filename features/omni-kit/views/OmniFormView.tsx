@@ -54,6 +54,7 @@ export function OmniFormView({
       shouldSwitchNetwork,
       network,
       networkId,
+      lendingOnly,
     },
     steps: {
       currentStep,
@@ -95,6 +96,7 @@ export function OmniFormView({
 
   const flowState = useFlowState({
     networkId,
+    lendingOnly,
     ...(dpmProxy && { existingProxy: dpmProxy }),
     ...getOmniFlowStateConfig({
       protocol,
@@ -252,13 +254,17 @@ export function OmniFormView({
   }
 
   useEffect(() => {
+    const standardDpmAddress = flowState.availableProxies.length
+      ? flowState.availableProxies[0]
+      : ethers.constants.AddressZero
+    const lendingOnlyDpmAddress = flowState.lendingOnlyProxies.length
+      ? flowState.lendingOnlyProxies[0]
+      : ethers.constants.AddressZero
     dispatch({
       type: 'update-dpm',
-      dpmAddress: flowState.availableProxies.length
-        ? flowState.availableProxies[0]
-        : ethers.constants.AddressZero,
+      dpmAddress: lendingOnly ? lendingOnlyDpmAddress : standardDpmAddress,
     })
-  }, [flowState.availableProxies])
+  }, [flowState.availableProxies, flowState.lendingOnlyProxies, lendingOnly])
   useEffect(() => setIsFlowStateReady(flowState.isEverythingReady), [flowState.isEverythingReady])
 
   return (

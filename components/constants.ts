@@ -5,6 +5,7 @@ export const WAD_PRECISION = 18
 export const NEGATIVE_WAD_PRECISION = -18
 export const RAY_PRECISION = 27
 export const RAD_PRECISION = 45
+export const YEAR_DAYS = 365
 
 export const CHAIN_LINK_PRECISION = 10 ** 8
 
@@ -14,7 +15,7 @@ export const RAD = new BigNumber(10).pow(RAD_PRECISION)
 
 export const HOUR = 60 * 60
 export const DAY = 24 * HOUR
-export const SECONDS_PER_YEAR = 365 * DAY
+export const SECONDS_PER_YEAR = YEAR_DAYS * DAY
 
 export const HOUR_BI = new BigNumber(HOUR)
 export const DAY_BI = new BigNumber(DAY)
