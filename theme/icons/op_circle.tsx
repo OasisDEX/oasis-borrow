@@ -1,7 +1,7 @@
 import React from 'react'
 export const op_circle = {
   path: (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <>
       <circle cx="16" cy="16" r="13" fill="url(#paint0_linear_14079_7113)" />
       <path
         fill-rule="evenodd"
@@ -22,7 +22,7 @@ export const op_circle = {
           <stop offset="1" stop-color="#FF6C7D" />
         </linearGradient>
       </defs>
-    </svg>
+    </>
   ),
   viewBox: '0 0 32 32',
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 export const crv = {
   path: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <>
       <path
         fill-rule="evenodd"
         clip-rule="evenodd"
@@ -9128,6 +9128,6 @@ export const crv = {
         d="M7.1928 9.77246L7.79284 10.3878L7.52287 10.9433L6.96436 10.3695L7.1928 9.77246ZM7.21069 9.85906L7.01975 10.3581L7.50967 10.8614L7.73534 10.3971L7.21069 9.85906Z"
         fill="black"
       />
-    </svg>
+    </>
   ),
 }

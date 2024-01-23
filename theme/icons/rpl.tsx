@@ -1,7 +1,7 @@
 import React from 'react'
 export const rpl = {
   path: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <>
       <path
         fill-rule="evenodd"
         clip-rule="evenodd"
@@ -30,6 +30,6 @@ export const rpl = {
         d="M8.88957 15.8984L5.95685 18.8311C6.04526 18.9095 6.13483 18.9858 6.22549 19.0602L9.1384 16.1473C9.18421 16.1014 9.18421 16.0272 9.1384 15.9814L9.05546 15.8984C9.00965 15.8526 8.93538 15.8526 8.88957 15.8984Z"
         fill="white"
       />
-    </svg>
+    </>
   ),
 }

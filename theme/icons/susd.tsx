@@ -1,7 +1,7 @@
 import React from 'react'
 export const susd = {
   path: (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <>
       <g clip-path="url(#clip0_14079_7258)">
         <path
           fill-rule="evenodd"
@@ -19,6 +19,6 @@ export const susd = {
           <rect width="20" height="20" fill="white" transform="translate(2 2)" />
         </clipPath>
       </defs>
-    </svg>
+    </>
   ),
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 export const susd_circle = {
   path: (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <>
       <g clip-path="url(#clip0_14079_6971)">
         <mask
           id="mask0_14079_6971"
@@ -69,7 +69,7 @@ export const susd_circle = {
           <rect width="26" height="26" fill="white" transform="translate(3 3)" />
         </clipPath>
       </defs>
-    </svg>
+    </>
   ),
   viewBox: '0 0 32 32',
 }

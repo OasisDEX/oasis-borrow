@@ -1,7 +1,7 @@
 import React from 'react'
 export const crv_circle = {
   path: (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <>
       <path
         d="M16 29C23.1797 29 29 23.1797 29 16C29 8.8203 23.1797 3 16 3C8.8203 3 3 8.8203 3 16C3 23.1797 8.8203 29 16 29Z"
         fill="url(#paint0_linear_14077_831)"
@@ -6043,7 +6043,7 @@ export const crv_circle = {
           <stop offset="1" stop-color="#3465A4" />
         </linearGradient>
       </defs>
-    </svg>
+    </>
   ),
   viewBox: '0 0 32 32',
 }
