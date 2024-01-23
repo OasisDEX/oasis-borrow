@@ -47,10 +47,15 @@ export const OmniValidationWithLink: FC<OmniValidationWithLinkProps> = ({ name, 
     'is-being-liquidated': EXTERNAL_LINKS.DOCS.AJNA.LIQUIDATIONS,
   }
 
+  if (values?.amount.includes('<')) {
+    values.amount = values.amount.replace(/</gi, '&lt;')
+  }
+
   return (
     <Trans
       i18nKey={translationKey}
       values={values}
+      shouldUnescape
       components={{
         1: <strong />,
         2: (
