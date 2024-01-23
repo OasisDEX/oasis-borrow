@@ -19,6 +19,22 @@ export const settings: OmniProtocolSettings = {
   supportedNetworkIds: [NetworkIds.BASEMAINNET, NetworkIds.GOERLI, NetworkIds.MAINNET],
   supportedMainnetNetworkIds: [NetworkIds.BASEMAINNET, NetworkIds.MAINNET],
   supportedProducts: [OmniProductType.Borrow, OmniProductType.Earn, OmniProductType.Multiply],
+  supportedMultiplyTokens: {
+    [NetworkIds.MAINNET]: [
+      'CBETH',
+      'DAI',
+      'ETH',
+      'GHO',
+      'RETH',
+      'SDAI',
+      'USDC',
+      'WBTC',
+      'WSTETH',
+      'YFI',
+    ],
+    [NetworkIds.GOERLI]: [],
+    [NetworkIds.BASEMAINNET]: ['CBETH', 'ETH', 'USDC', 'USDBC', 'WSTETH'],
+  },
   steps: {
     borrow: {
       setup: [OmniSidebarStep.Risk, ...omniSidebarSetupSteps],

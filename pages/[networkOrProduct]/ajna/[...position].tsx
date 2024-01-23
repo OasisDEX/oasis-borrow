@@ -37,9 +37,8 @@ function AjnaPositionPage(props: AjnaPositionPageProps) {
           isOracless={isOracless}
           protocol={LendingProtocol.Ajna}
           protocolHook={useAjnaData}
-          protocolRaw={settings.rawName[props.networkId] as string}
           seoTags={ajnaSeoTags}
-          steps={settings.steps}
+          settings={settings}
         />
       </ProductContextHandler>
     </AjnaLayout>

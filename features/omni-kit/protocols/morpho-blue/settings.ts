@@ -6,11 +6,13 @@ import { OmniProductType } from 'features/omni-kit/types'
 export const settings: OmniProtocolSettings = {
   rawName: {
     [NetworkIds.MAINNET]: 'MorphoBlue',
-    [NetworkIds.GOERLI]: 'MorphoBlue',
   },
-  supportedNetworkIds: [NetworkIds.GOERLI, NetworkIds.MAINNET],
+  supportedNetworkIds: [NetworkIds.MAINNET],
   supportedMainnetNetworkIds: [NetworkIds.MAINNET],
   supportedProducts: [OmniProductType.Borrow, OmniProductType.Multiply],
+  supportedMultiplyTokens: {
+    [NetworkIds.MAINNET]: [],
+  },
   steps: {
     borrow: {
       setup: omniSidebarSetupSteps,
