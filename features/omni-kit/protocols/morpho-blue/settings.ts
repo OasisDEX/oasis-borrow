@@ -4,7 +4,10 @@ import type { NetworkIdsWithValues, OmniProtocolSettings } from 'features/omni-k
 import { OmniProductType } from 'features/omni-kit/types'
 
 export const settings: OmniProtocolSettings = {
-  rawName: 'MorphoBlue',
+  rawName: {
+    [NetworkIds.MAINNET]: 'MorphoBlue',
+    [NetworkIds.GOERLI]: 'MorphoBlue',
+  },
   supportedNetworkIds: [NetworkIds.GOERLI, NetworkIds.MAINNET],
   supportedMainnetNetworkIds: [NetworkIds.MAINNET],
   supportedProducts: [OmniProductType.Borrow, OmniProductType.Multiply],

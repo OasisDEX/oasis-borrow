@@ -4,6 +4,7 @@ import type {
   FormActionsUpdateDeposit,
   FormActionsUpdateDpm,
   FormActionsUpdateGenerate,
+  FormActionsUpdateGenerateMax,
   FormActionsUpdatePayback,
   FormActionsUpdatePaybackMax,
   FormActionsUpdateWithdraw,
@@ -25,6 +26,7 @@ export interface OmniBorrowFormState {
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
+  generateAmountMax: boolean
   generateAmountUSD?: BigNumber
   paybackAmount?: BigNumber
   paybackAmountUSD?: BigNumber
@@ -42,6 +44,7 @@ export type OmniBorrowFormActions = ReductoActions<
   OmniBorrowFormState,
   | FormActionsUpdateDeposit
   | FormActionsUpdateGenerate
+  | FormActionsUpdateGenerateMax
   | FormActionsUpdatePayback
   | FormActionsUpdatePaybackMax
   | FormActionsUpdateWithdraw

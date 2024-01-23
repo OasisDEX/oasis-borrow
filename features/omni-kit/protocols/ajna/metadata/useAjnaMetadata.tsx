@@ -31,8 +31,8 @@ import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts'
 import { AjnaTokensBannerController } from 'features/omni-kit/protocols/ajna/controllers/AjnaTokensBannerController'
 import {
   ajnaFlowStateFilter,
-  getAjnaBorrowCollateralMax,
   getAjnaBorrowDebtMin,
+  getAjnaBorrowWithdrawMax,
   getAjnaEarnWithdrawMax,
   getAjnaNotifications,
   getAjnaSidebarTitle,
@@ -85,6 +85,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       collateralIcon,
       collateralPrice,
       collateralToken,
+      collateralPrecision,
       isOpening,
       isOracless,
       isOwner,
@@ -100,6 +101,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
       quotePrecision,
       quotePrice,
       quoteToken,
+      protocolRaw,
     },
     steps: { currentStep },
     tx: { isTxSuccess, txDetails },
@@ -152,7 +154,7 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
 
   const filters = {
     flowStateFilter: (event: CreatePositionEvent) =>
-      ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress }),
+      ajnaFlowStateFilter({ collateralAddress, event, productType, quoteAddress, protocolRaw }),
   }
 
   switch (productType) {
@@ -230,8 +232,8 @@ export const useAjnaMetadata: GetOmniMetadata = (productContext) => {
           changeVariant,
           afterAvailableToBorrow,
           afterPositionDebt,
-          collateralMax: getAjnaBorrowCollateralMax({
-            digits: quoteDigits,
+          withdrawMax: getAjnaBorrowWithdrawMax({
+            collateralPrecision,
             position,
             simulation,
           }),

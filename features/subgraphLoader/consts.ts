@@ -469,7 +469,7 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
               rate
             }
             liquidataionLTV
-            quoteToken {
+            debtToken {
               address
               decimals
               symbol

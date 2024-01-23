@@ -932,7 +932,7 @@
     "protocols-aave": "Borrow, Multiply and Earn on multiple tokens with the top liquidity protocol.  ",
     "protocols-ajna": "Borrow, Multiply and Earn on anything.<br>No governance. No Oracles.",
     "protocols-maker": "Borrow, Multiply and Earn with<br>the Maker Protocol. Builders of DAI.",
-    "protocols-morpho-blue": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "protocols-morpho-blue": "Borrow and Multiply with the new decentralized lending protocol, take advantage of isolated pairs and highest multiples.",
     "protocols-spark": "Borrow, Multiply and Earn on Spark.<br>The advanced lending powered by Maker.",
     "protocols-more": "View everything possible on {{protocol}}",
     "referrals": "Referrals",
@@ -1110,11 +1110,11 @@
       "description": "Create any ERC-20 token pool on the Ajna protocol, this will be available straight away on Summer.fi."
     },
     "morpho": {
-      "title": "Summer.fi × Morpho",
-      "description": "Morpho is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
+      "title": "Summer.fi × Morpho Blue",
+      "description": "Morpho Blue is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters."
     },
     "morphoProductPage": {
-      "title": "{{productType}} - Summer.fi × Morpho"
+      "title": "{{productType}} - Summer.fi × Morpho Blue"
     },
     "multiply": {
       "title": "Multiply - Summer.fi",
@@ -2675,17 +2675,24 @@
       "liquidation-price": {
         "title": "Liquidation Price",
         "footnote-below": "below current price",
-        "footnote-above": "above current price"
+        "footnote-above": "above current price",
+        "modal-description": "The Liquidation Price is the collateral price at which a position will be liquidated. This number is denominated in debt",
+        "modal-footnote-title": "Liquidation Penalty",
+        "modal-footnote-description": "The Liquidation Penalty is the % that will be added to the debt as a penalty in case of liquidation.",
+        "modal-footnote-below": "This is {{ratioToCurrentPrice}} below current price",
+        "modal-footnote-above": "This is {{ratioToCurrentPrice}} above current price"
       },
       "ltv": {
         "title": "Loan to Value",
         "footnote": "Max LTV:"
       },
       "collateral-deposited": {
-        "title": "Collateral Deposited"
+        "title": "Collateral Deposited",
+        "modal-description": "This is the amount of tokens you have as collateral for your debt."
       },
       "position-debt": {
-        "title": "Position Debt"
+        "title": "Position Debt",
+        "modal-description": "This is the total number of tokens you have borrowed plus any accrued interests."
       },
       "net-value": {
         "title": "Net Value",
@@ -2698,10 +2705,13 @@
         "title": "Borrow Rate"
       },
       "available-to-withdraw": {
-        "title": "Available to Withdraw"
+        "title": "Available to Withdraw",
+        "modal-description-lend": "This the the amount of collateral you can withdraw taking into account the current max LTV and debt of the position.",
+        "modal-description-supply": "This the the amount of tokens you can withdraw that are not frozen in liquidation or being lent out."
       },
       "available-to-borrow": {
-        "title": "Available to Borrow"
+        "title": "Available to Borrow",
+        "modal-description": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt."
       },
       "total-exposure": {
         "title": "Total {{tokensSymbol}} exposure"
@@ -2750,6 +2760,10 @@
     },
     "validations": {
       "safety-switch-on": "Due to a technical issue we have currently disabled depositing tokens into empty {{protocolLabel}} positions, as they might not result in the expected outcome for our users. We are working on a resolution. Further announcements will be made via <0>our discord →</0>"
+    },
+    "history": {
+      "title": "History is coming soon",
+      "notice": "We're currently building human readable history for {{protocol}}. Check back in a few weeks to see your position history."
     }
   },
   "ajna": {
@@ -2767,10 +2781,6 @@
       "ajna-twitter": "Ajna Twitter",
       "oasis-discord": "Summer.fi Discord",
       "oasis-twitter": "Summer.fi Twitter"
-    },
-    "history": {
-      "title": "History is coming soon",
-      "notice": "We're currently building human readable history for Ajna. Check back in a few weeks to see your position history"
     },
     "content-card": {
       "liquidation-price": {
@@ -2790,12 +2800,6 @@
         "modal-subtitle": "To avoid liquidation, always ensure your TP < LUP",
         "modal-lup": "Lowest Utilization Price"
       },
-      "collateral-deposited": {
-        "modal-description": "This is the amount of tokens you have as collateral for your debt."
-      },
-      "position-debt": {
-        "modal-description": "This is the total number of tokens you have borrowed plus any accrued interests."
-      },
       "modal-earn-description": "The total amount of tokens available in position, this includes the earned amount.",
       "borrow-rate": {
         "tooltip-description": "<strong>Earned Ajna tokens</strong>: You have earned Ajna tokens from Summer.fi × Ajna token rewards. Claimable weekly after tokens are released.",
@@ -2806,13 +2810,6 @@
         "modal-description": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing every 12 hours with utilization in the pool.",
         "modal-footnote-title": "Cost to borrow {{quoteToken}}",
         "modal-footnote-description": "The borrow rate expressed in {{quoteToken}} amount over one year. The amount is an estimate that changes with the changes in the rates. Your effective cost will be determined by your P&L."
-      },
-      "available-to-withdraw": {
-        "modal-description": "This the the amount of collateral you can withdraw taking into account the current max LTV and debt of the position.",
-        "modal-earn-description": "This the the amount of tokens you can withdraw that are not frozen in liquidation or being lent out."
-      },
-      "available-to-borrow": {
-        "modal-description": "This the the amount of tokens you can borrow with your current collateral taking into account the current max LTV and debt."
       },
       "total-earnings": {
         "title": "Total Earnings",
@@ -3023,8 +3020,7 @@
       "regular-rewards": "Regular rewards",
       "total-rewards": "Total rewards",
       "claimable-today": "Claimable today",
-      "two-tx": "If you have Regular and Bonus rewards to claim, you will be asked to sign two transactions when claiming.",
-      "previous-deployment-rewards": "Please note that the previous deployment token rewards are not yet displayed, these will be shown when they become claimable."
+      "two-tx": "If you have Regular and Bonus rewards to claim, you will be asked to sign two transactions when claiming."
     },
     "product-hub-tooltips": {
       "no-max-ltv": "There are currently no borrow or multiply positions for this pool. Max LTV will be calculated following the creation of the first position.",
@@ -3042,6 +3038,18 @@
     }
   },
   "morpho": {
+    "content-card": {
+      "ltv": {
+        "footnote": "Max Loan to Value",
+        "modal-description": "Your Loan to Value ratio represents how much you have borrowed based on your collateral supplied.",
+        "modal-footnote-description": "The Max Loan to Value (LTV) ratio defines the maximum amount that can be borrowed with your collateral. If your LTV rises above the Max Loan to Value, the position is undercollateralised and could be liquidated."
+      },
+      "borrow-rate": {
+        "modal-description": "The borrow rate represents how much your debt will increase in one year at the current market utilization. This rate is variable, changing with utilization of the pool.",
+        "modal-footnote": "Cost to borrow",
+        "modal-footnote-description": "The borrow rate expressed in TKN amount over one year. The amount is an estimate that changes with the changes in the rates. Your effective cost will be determined by your P&L."
+      }
+    },
     "position-page": {
       "common": {
         "form": {

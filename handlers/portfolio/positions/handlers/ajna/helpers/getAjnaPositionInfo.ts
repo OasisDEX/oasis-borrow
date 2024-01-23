@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { networksById } from 'blockchain/networks'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
-import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { AjnaDpmPositionsPool } from 'handlers/portfolio/positions/handlers/ajna/types'
@@ -26,6 +25,7 @@ interface GetAjnaPositionInfoParams {
   positionId: string
   prices: TokensPricesList
   proxyAddress: string
+  protocolRaw: string
 }
 
 export async function getAjnaPositionInfo({
@@ -37,6 +37,7 @@ export async function getAjnaPositionInfo({
   positionId,
   prices,
   proxyAddress,
+  protocolRaw,
 }: GetAjnaPositionInfoParams) {
   // get pool info contract
   const { ajnaPoolInfo } = getNetworkContracts(networkId)
@@ -45,7 +46,7 @@ export async function getAjnaPositionInfo({
   const defaultType = getDefaultBorrowishPositionType({
     collateralTokenAddress: collateralToken.address,
     dpmList,
-    protocolRaw: ajnaSettings.rawName,
+    protocolRaw,
     proxyAddress,
     quoteTokenAddress: quoteToken.address,
     isEarn,

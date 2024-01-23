@@ -213,6 +213,7 @@ export const OmniProductController = <Auction, History, Position>({
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}
+                      protocolRaw={protocolRaw}
                       quoteAddress={dpmPosition.quoteTokenAddress}
                       quoteBalance={isConnected ? quoteBalance : zero}
                       quoteDigits={quoteDigits}

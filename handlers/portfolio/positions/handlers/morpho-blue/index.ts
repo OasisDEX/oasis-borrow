@@ -27,8 +27,10 @@ interface GetMorphoPositionsParams {
   dpmList: DpmSubgraphData[]
   prices: TokensPricesList
   networkId: OmniSupportedNetworkIds
+  protocolRaw: string
   positionsCount?: boolean
 }
+import { settings as morphoSettings } from 'features/omni-kit/protocols/morpho-blue/settings'
 
 async function getMorphoPositions({
   apiVaults,
@@ -36,6 +38,7 @@ async function getMorphoPositions({
   networkId,
   positionsCount,
   prices,
+  protocolRaw,
 }: GetMorphoPositionsParams): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
   const subgraphPositions = (await loadSubgraph('Morpho', 'getMorphoDpmPositions', networkId, {
@@ -63,7 +66,7 @@ async function getMorphoPositions({
             id: marketId,
             latestInterestRates: [{ rate }],
             liquidataionLTV,
-            quoteToken,
+            debtToken,
           } = market
 
           const {
@@ -82,6 +85,7 @@ async function getMorphoPositions({
             positionId,
             prices,
             proxyAddress,
+            protocolRaw,
           })
 
           const position = await views.morpho.getPosition(
@@ -90,7 +94,7 @@ async function getMorphoPositions({
               collateralPriceUSD: collateralPrice,
               marketId,
               proxyAddress: proxyAddress,
-              quotePrecision: Number(quoteToken.decimals),
+              quotePrecision: Number(debtToken.decimals),
               quotePriceUSD: quotePrice,
             },
             {
@@ -149,6 +153,7 @@ export const morphoPositionsHandler: PortfolioPositionsHandler = async ({
       networkId: NetworkIds.MAINNET,
       prices,
       positionsCount,
+      protocolRaw: morphoSettings.rawName[NetworkIds.MAINNET] as string,
     }),
   ]).then((responses) => {
     return {
