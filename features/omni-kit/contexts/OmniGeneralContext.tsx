@@ -165,7 +165,7 @@ export function OmniGeneralContextProvider({
 
   const context: OmniGeneralContext = useMemo(() => {
     const isOwner = isOpening || owner === walletAddress
-  
+
     return {
       environment: {
         ...props,
