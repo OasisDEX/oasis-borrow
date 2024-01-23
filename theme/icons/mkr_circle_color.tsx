@@ -2,32 +2,29 @@ import React from 'react'
 export const mkr_circle_color = {
   path: (
     <>
-      <circle cx="13" cy="13" r="13" fill="url(#paint0_linear_5141_39020)" key="Z3fwFeFBH" />
+      <circle cx="16" cy="16" r="13" fill="url(#paint0_linear_14134_2358)" />
       <path
-        d="M6.24685 17V10.7247L11.1304 14.306V17H12.3772V14.0534C12.3772 13.8307 12.2698 13.621 12.0872 13.4871L6.16468 9.14374C5.68535 8.79222 5 9.12547 5 9.71007V17H6.24685Z"
+        d="M9.24685 20.2355V13.7959L14.1304 17.471V20.2355H15.3772V17.2118C15.3772 16.9832 15.2698 16.768 15.0872 16.6306L9.16468 12.1736C8.68535 11.8129 8 12.1549 8 12.7548V20.2355H9.24685Z"
         fill="white"
-        key="jp_YKAJLkx"
       />
       <path
-        d="M19.7531 17V10.7247L14.8696 14.306V17H13.6228V14.0534C13.6228 13.8307 13.7302 13.621 13.9128 13.4871L19.8353 9.14374C20.3147 8.79222 21 9.12547 21 9.71007V17H19.7531Z"
+        d="M22.7531 20.2355V13.7959L17.8696 17.471V20.2355H16.6228V17.2118C16.6228 16.9832 16.7302 16.768 16.9128 16.6306L22.8353 12.1736C23.3147 11.8129 24 12.1549 24 12.7548V20.2355H22.7531Z"
         fill="white"
-        key="sdpEPmthqW"
       />
       <defs>
         <linearGradient
-          id="paint0_linear_5141_39020"
-          key="paint0_linear_5141_39020"
-          x1="4"
-          y1="5"
-          x2="22.5"
-          y2="22.5"
+          id="paint0_linear_14134_2358"
+          x1="3"
+          y1="3"
+          x2="29"
+          y2="29"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#1AAB9B" key="4T5PsQicql" />
-          <stop offset="1" stopColor="#22CAB7" key="JI531J4UqE" />
+          <stop stop-color="#2DC1B1" />
+          <stop offset="1" stop-color="#139D8D" />
         </linearGradient>
       </defs>
     </>
   ),
-  viewBox: '0 0 26 26',
+  viewBox: '0 0 32 32',
 }
