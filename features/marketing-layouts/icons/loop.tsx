@@ -1,7 +1,7 @@
 import { renderLinearGradientStops } from 'features/marketing-layouts/helpers'
-import type { IconPalette } from 'features/marketing-layouts/types'
+import type { MarketingLayoutIconPalette } from 'features/marketing-layouts/types'
 
-export function loop({ backgroundGradient, symbolGradient }: IconPalette) {
+export function loop({ backgroundGradient, symbolGradient }: MarketingLayoutIconPalette) {
   return (
     <>
       <circle cx="28" cy="28.0001" r="27.5" fill="url(#paint0_linear_3327_28417)" stroke="white" />

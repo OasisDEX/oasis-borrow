@@ -1,11 +1,11 @@
 import { renderLinearGradientStops } from 'features/marketing-layouts/helpers'
-import type { IconPalette } from 'features/marketing-layouts/types'
+import type { MarketingLayoutIconPalette } from 'features/marketing-layouts/types'
 
 export function stack({
   backgroundGradient,
   foregroundGradient,
   symbolGradient,
-}: IconPalette) {
+}: MarketingLayoutIconPalette) {
   return (
     <>
       <circle cx="36" cy="36" r="33.5" fill="url(#paint1_linear_3327_31414)" />
