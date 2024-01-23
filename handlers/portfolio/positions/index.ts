@@ -7,6 +7,7 @@ import { morphoPositionsHandler } from 'handlers/portfolio/positions/handlers/mo
 import { getPositionsFromDatabase, getTokensPrices } from 'handlers/portfolio/positions/helpers'
 import { getAllDpmsForWallet } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type {
+  PortfolioPosition,
   PortfolioPositionsCountReply,
   PortfolioPositionsReply,
 } from 'handlers/portfolio/types'
@@ -54,53 +55,38 @@ export const portfolioPositionsHandler = async ({
       prices: prices.data.tokens,
       positionsCount,
     }
-
-    const positionsReply = await Promise.all([
+    const promises = [
       aaveLikePositionsHandler(payload),
       aaveV2PositionHandler(payload),
       ajnaPositionsHandler(payload),
       dsrPositionsHandler(payload),
       makerPositionsHandler(payload),
       morphoPositionsHandler(payload),
-    ])
-      .then(
-        ([
-          { positions: aaveLikePositions },
-          { positions: aaveV2Positions },
-          { positions: ajnaPositions },
-          { positions: dsrPositions },
-          { positions: makerPositions },
-          { positions: morphoPositions },
-        ]) => ({
-          positions: [
-            ...aaveLikePositions,
-            ...aaveV2Positions,
-            ...ajnaPositions,
-            ...dsrPositions,
-            ...makerPositions,
-            ...morphoPositions,
-          ],
-          error: false,
-          ...(debug && {
-            errorJson: false,
-            ...payload,
-          }),
-        }),
-      )
-      .catch((error) => {
-        console.error(error)
+    ];
 
-        return {
-          positions: [],
-          error: error.toString(),
-          ...(debug && {
-            errorJson: JSON.stringify(error),
-            ...payload,
-          }),
+    const results = await Promise.allSettled(promises);
+
+    const positionsReply = results.reduce(
+      (acc: { positions: (PortfolioPosition | { positionId: string | number; })[], error: boolean, errorJson?: string | boolean }, result, index) => {
+        if (result.status === 'fulfilled') {
+          acc.positions.push(...result.value.positions);
+        } else {
+          console.error(`Promise at index ${index} failed with ${result.reason}`);
+          acc.error = result.reason.toString();
+          if (debug) {
+            acc.errorJson = JSON.stringify(result.reason);
+          }
         }
-      })
+        return acc;
+      },
+      {
+        positions: [],
+        error: false,
+        ...(debug && { errorJson: false, ...payload }),
+      }
+    );
 
-    if (!positionsReply.error && !positionsCount) {
+    if (!positionsCount) {
       portfolioCache.set(address, JSON.stringify(positionsReply))
     }
 
