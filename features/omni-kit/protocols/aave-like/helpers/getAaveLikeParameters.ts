@@ -18,7 +18,6 @@ import type { OperationExecutor } from 'types/ethers-contracts'
 
 const mapPositionData =
   ({
-    dpmAddress,
     collateralToken,
     depositAmount,
     operationExecutor,
@@ -34,16 +33,8 @@ const mapPositionData =
       position.transaction.operationName,
     ])
     const value = collateralToken === 'ETH' ? depositAmount.toString() : zero.toString()
-    console.log('mapPositionData', {
-      dpmAddress,
-      collateralToken,
-      depositAmount,
-      operationExecutor,
-      position,
-      data,
-      value,
-    })
     return {
+      ...position,
       tx: {
         to: operationExecutor.address,
         data,
@@ -76,7 +67,6 @@ export const getAaveLikeParameters = async ({
   isFormValid: boolean
   walletAddress?: string
   quoteBalance: BigNumber
-  position: AaveSimpleSupplyPosition
   collateralPrecision: number
   collateralToken: string
   rpcProvider: ethers.providers.Provider
@@ -128,12 +118,6 @@ export const getAaveLikeParameters = async ({
     ),
   }
 
-  console.log('getAaveLikeParameters', {
-    args,
-    stratDeps,
-    dpmAddress,
-  })
-
   const { operationExecutor } = await validateParameters({
     signer,
     networkId,
@@ -162,7 +146,7 @@ export const getAaveLikeParameters = async ({
               mapPositionData({ dpmAddress, collateralToken, depositAmount, operationExecutor }),
             )
         default:
-          throw new Error('Invalid protocol')
+          throw new Error('GetAaveLikeParameters - Invalid protocol')
       }
     }
     default:

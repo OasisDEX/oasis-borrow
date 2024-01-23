@@ -3,7 +3,6 @@ import { useMainContext } from 'components/context/MainContextProvider'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { useOmniTxHandler } from 'features/omni-kit/hooks'
 import { getAaveLikeParameters } from 'features/omni-kit/protocols/aave-like/helpers/getAaveLikeParameters'
-import type { AaveSimpleSupplyPosition } from 'features/omni-kit/protocols/aave-like/types/AaveSimpleSupply'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 
@@ -44,7 +43,6 @@ export function useAaveLikeSimpleEarnTxHandler(): () => void {
         collateralPrecision,
         collateralToken,
         isFormValid,
-        position: position as AaveSimpleSupplyPosition,
         quoteBalance,
         state,
         walletAddress,

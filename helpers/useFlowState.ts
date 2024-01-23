@@ -114,7 +114,6 @@ export function useFlowState({
 
   const spender = lendingOnly ? lendingOnlyProxies[0] : availableProxies[0] // probably needs further thought
   // further thought: changed to lendingOnlyProxies[0] for simple earn, but this is still not ideal
-  console.log('spender', spender)
 
   // wallet connection + DPM proxy machine
   useEffect(() => {
