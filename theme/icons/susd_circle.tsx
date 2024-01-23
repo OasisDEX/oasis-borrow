@@ -3,27 +3,11 @@ export const susd_circle = {
   path: (
     <>
       <g clip-path="url(#clip0_14079_6971)">
-        <mask
-          id="mask0_14079_6971"
-          style="mask-type:luminance"
-          maskUnits="userSpaceOnUse"
-          x="3"
-          y="3"
-          width="26"
-          height="26"
-        >
+        <mask id="mask0_14079_6971" maskUnits="userSpaceOnUse" x="3" y="3" width="26" height="26">
           <path d="M3 3H29V29H3V3Z" fill="white" />
         </mask>
         <g mask="url(#mask0_14079_6971)">
-          <mask
-            id="mask1_14079_6971"
-            style="mask-type:alpha"
-            maskUnits="userSpaceOnUse"
-            x="3"
-            y="3"
-            width="26"
-            height="26"
-          >
+          <mask id="mask1_14079_6971" maskUnits="userSpaceOnUse" x="3" y="3" width="26" height="26">
             <path
               d="M16 29C23.1797 29 29 23.1797 29 16C29 8.8203 23.1797 3 16 3C8.8203 3 3 8.8203 3 16C3 23.1797 8.8203 29 16 29Z"
               fill="url(#paint0_linear_14079_6971)"
