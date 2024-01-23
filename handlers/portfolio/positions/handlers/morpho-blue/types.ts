@@ -14,7 +14,7 @@ export interface MorphoDpmPositionsMarket {
     },
   ]
   liquidataionLTV: string
-  quoteToken: {
+  debtToken: {
     address: string
     decimals: string
     symbol: string
