@@ -66,7 +66,7 @@ async function getMorphoPositions({
             id: marketId,
             latestInterestRates: [{ rate }],
             liquidataionLTV,
-            quoteToken,
+            debtToken,
           } = market
 
           const {
@@ -94,7 +94,7 @@ async function getMorphoPositions({
               collateralPriceUSD: collateralPrice,
               marketId,
               proxyAddress: proxyAddress,
-              quotePrecision: Number(quoteToken.decimals),
+              quotePrecision: Number(debtToken.decimals),
               quotePriceUSD: quotePrice,
             },
             {

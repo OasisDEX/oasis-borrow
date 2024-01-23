@@ -27,7 +27,7 @@ interface GetMorphoPositionInfoParams {
 export function getMorphoPositionInfo({
   apiVaults,
   dpmList,
-  market: { collateralToken, quoteToken },
+  market: { collateralToken, debtToken },
   networkId,
   positionId,
   prices,
@@ -35,9 +35,9 @@ export function getMorphoPositionInfo({
   protocolRaw,
 }: GetMorphoPositionInfoParams) {
   const primaryToken = getTokenDisplayName(collateralToken.symbol)
-  const secondaryToken = getTokenDisplayName(quoteToken.symbol)
+  const secondaryToken = getTokenDisplayName(debtToken.symbol)
   const collateralPrice = new BigNumber(prices[collateralToken.symbol.toUpperCase()])
-  const quotePrice = new BigNumber(prices[quoteToken.symbol.toUpperCase()])
+  const quotePrice = new BigNumber(prices[debtToken.symbol.toUpperCase()])
   const networkName = networksById[networkId].name
 
   const defaultType = getDefaultBorrowishPositionType({
@@ -45,7 +45,7 @@ export function getMorphoPositionInfo({
     dpmList,
     protocolRaw,
     proxyAddress,
-    quoteTokenAddress: quoteToken.address,
+    quoteTokenAddress: debtToken.address,
   })
 
   const type = getBorrowishPositionType({
