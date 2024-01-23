@@ -29,4 +29,5 @@ export const bal_circle = {
       </defs>
     </svg>
   ),
+  viewBox: '0 0 32 32',
 }
