@@ -1,4 +1,8 @@
+import type { marketingTemplatesIcons } from 'features/marketing-layouts/icons'
 import type { LendingProtocol } from 'lendingProtocols'
+import type { ReactNode } from 'react'
+
+export type IconWithPaletteContents = (params: MarketingTemplateIconPalette) => ReactNode
 
 export interface MarketingTemplateIconPalette {
   backgroundGradient: string[]
@@ -22,7 +26,17 @@ export interface MarketingTemplateHeroProps {
   title: string
 }
 
+export interface MarketingTemplateBenefitBoxProps {
+  description?: string
+  icon: keyof typeof marketingTemplatesIcons
+  list?: string[]
+  title: string
+}
+
 export interface MarketingTemplatePageProps {
+  benefits: MarketingTemplateBenefitBoxProps[]
+  benefitsSubtitle: string
+  benefitsTitle: string
   hero: MarketingTemplateHeroProps
   palette: MarketingTemplatePalette
 }
