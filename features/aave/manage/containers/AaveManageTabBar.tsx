@@ -116,9 +116,8 @@ export function AaveManageTabBar({
                 aaveReserveDataDebtToken={aaveReserveDataDebtToken}
                 strategyConfig={strategyConfig}
                 currentPosition={state.context.currentPosition!}
-                collateralPrice={state.context.collateralPrice}
-                tokenPrice={state.context.tokenPrice}
-                debtPrice={state.context.debtPrice}
+                collateralPrice={state.context.balance?.collateral.price}
+                debtPrice={state.context.balance?.debt.price}
                 nextPosition={nextPosition}
                 cumulatives={state.context.cumulatives}
                 dpmProxy={state.context.effectiveProxyAddress}

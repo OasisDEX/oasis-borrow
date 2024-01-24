@@ -18,7 +18,6 @@ export type AaveManageComponentProps = {
   nextPosition?: IPosition
   strategyConfig: IStrategyConfig
   collateralPrice?: BigNumber
-  tokenPrice?: BigNumber
   debtPrice?: BigNumber
   dpmProxy?: string
   cumulatives?: AaveCumulativeData

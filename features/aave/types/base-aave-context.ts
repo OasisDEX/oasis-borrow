@@ -84,10 +84,6 @@ export interface BaseAaveContext {
   allowance?: StrategyTokenAllowance
   balance?: StrategyTokenBalance
   /**
-   * @deprecated no idea what token it is 🤦‍. use **balance.{}.price** instead
-   */
-  tokenPrice?: BigNumber
-  /**
    * @deprecated use **balance.collateral.price** instead
    */
   collateralPrice?: BigNumber
