@@ -1,5 +1,6 @@
 import { renderLinearGradientStops } from 'features/marketing-layouts/helpers'
 import type { MarketingLayoutIconPalette } from 'features/marketing-layouts/types'
+import React from 'react'
 
 export function stack({
   backgroundGradient,
