@@ -22,8 +22,8 @@ export function MarketingLayout({
         sx={{
           position: 'relative',
           ...(backgroundGradient && {
-            background: renderCssGradient('180deg', backgroundGradient),
-            backgroundSize: '100% 850px',
+            background: renderCssGradient('180deg', [...backgroundGradient, '#fff']),
+            backgroundSize: '100% 1024px',
             backgroundRepeat: 'no-repeat',
           }),
         }}

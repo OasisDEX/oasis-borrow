@@ -1,11 +1,12 @@
 import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { SimpleCarousel } from 'components/SimpleCarousel'
-import { IconWithPalette } from 'features/marketing-layouts/components'
+import { IconWithPalette, MarketingTemplateHero } from 'features/marketing-layouts/components'
 import { sleep } from 'features/marketing-layouts/icons'
 import type {
   MarketingLayoutPageProps,
   MarketingLayoutPalette,
 } from 'features/marketing-layouts/types'
+import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -15,7 +16,12 @@ function BetterOnSummerPage({ palette }: MarketingLayoutPageProps) {
   return (
     <MarketingLayout topBackground="none" backgroundGradient={palette.mainGradient}>
       <Box sx={{ width: '100%' }}>
-        Test
+        <MarketingTemplateHero
+          protocol={LendingProtocol.AaveV3}
+          title="AAVE, with superpowers"
+          description="Earn interest, Borrow Assets and Multiply Exposure with DeFi's leading liquidity protocol. Made even better with Summer.fi's Superpowers of one click actions, advanced automations and unified frontend gateway to the best of DeFi."
+          link={{ label: 'Open a position', url: '/' }}
+        />
         <Box>
           <IconWithPalette size={80} contents={sleep} {...palette.icon} />
         </Box>
@@ -46,7 +52,7 @@ export default BetterOnSummerPage
 export async function getServerSideProps({ locale }: GetServerSidePropsContext) {
   // TODO - to be replaced with API call
   const palette: MarketingLayoutPalette = {
-    mainGradient: ['#effff7', '#f9faf9'],
+    mainGradient: ['#f8eaff', '#edf8ff'],
     icon: {
       backgroundGradient: ['#c7e6dd', '#e6f7e6', '#c4edeb'],
       foregroundGradient: ['#a8ddcd', '#efffef', '#ffece2'],
