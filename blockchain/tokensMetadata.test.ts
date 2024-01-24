@@ -1,17 +1,7 @@
 import { getToken, getTokens } from './tokensMetadata'
 import { tokens } from './tokensMetadata.constants'
 
-const tokenKeys = [
-  'symbol',
-  'precision',
-  'digits',
-  'name',
-  'icon',
-  'iconCircle',
-  'color',
-  'background',
-  'tags',
-]
+const tokenKeys = ['symbol', 'precision', 'digits', 'name', 'icon', 'iconCircle', 'tags']
 
 describe('tokens metadata', () => {
   it('hardcoded tokens should have proper keys', () => {
