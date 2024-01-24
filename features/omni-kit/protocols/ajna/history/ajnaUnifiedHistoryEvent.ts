@@ -4,7 +4,7 @@ import type {
 } from 'features/omni-kit/protocols/ajna/history/types'
 import { zero } from 'helpers/zero'
 
-export const ajnaUnifiedHistoryItem = {
+export const unifiedHistoryItem = {
   depositAmount: zero,
   withdrawAmount: zero,
   blockNumber: zero,

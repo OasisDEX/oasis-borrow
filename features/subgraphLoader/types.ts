@@ -45,6 +45,11 @@ export type Subgraphs = {
   }
   Morpho: {
     getMorphoDpmPositions: { dpmProxyAddress: string[] }
+    getMorphoPositionAggregatedData: {
+      dpmProxyAddress: string
+      collateralAddress: string
+      quoteAddress: string
+    }
   }
   Referral: {
     getClaimedReferralRewards: { walletAddress: string }
@@ -147,6 +152,9 @@ export type SubgraphsResponses = {
   }
   Morpho: {
     getMorphoDpmPositions: SubgraphBaseResponse<MorphoDpmPositionsResponse>
+    getMorphoPositionAggregatedData: SubgraphBaseResponse<{
+      summerEvents: AjnaHistoryResponse[]
+    }>
   }
   Referral: {
     getClaimedReferralRewards: SubgraphBaseResponse<{

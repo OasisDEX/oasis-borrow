@@ -16,16 +16,25 @@ export const getHistoryEventLabel = ({
   switch (kind) {
     // Borrowish
     case 'AjnaDeposit':
+    case 'MorphoBlueDeposit':
       return isOpen ? t('position-history.open-position') : t('position-history.deposit')
+    case 'MorphoBlueOpenPosition':
+    case 'MorphoBlueOpenDepositBorrow':
+      return t('position-history.open-position')
     case 'AjnaWithdraw':
+    case 'MorphoBlueWithdraw':
       return t('position-history.withdraw')
     case 'AjnaBorrow':
+    case 'MorphoBlueBorrow':
       return t('position-history.generate')
     case 'AjnaRepay':
+    case 'MorphoBluePayback':
       return t('position-history.repay')
     case 'AjnaDepositBorrow':
+    case 'MorphoBlueDepositBorrow':
       return isOpen ? t('position-history.open-position') : t('position-history.deposit-generate')
     case 'AjnaRepayWithdraw':
+    case 'MorphoBluePaybackWithdraw':
       return t('position-history.repay-withdraw')
     case 'AjnaOpenMultiplyPosition_4':
     case 'AjnaOpenMultiplyPosition_5':
@@ -33,15 +42,18 @@ export const getHistoryEventLabel = ({
     case 'AjnaAdjustRiskUp_4':
     case 'AjnaAdjustRiskUp_5':
     case 'SparkAdjustRiskUp':
+    case 'MorphoBlueAdjustRiskUp':
       return t('position-history.increase-multiple')
     case 'AjnaAdjustRiskDown_4':
     case 'AjnaAdjustRiskDown_5':
     case 'SparkAdjustRiskDown':
+    case 'MorphoBlueAdjustRiskDown':
       return t('position-history.decrease-multiple')
     case 'AjnaCloseToQuotePosition_4':
     case 'AjnaCloseToQuotePosition_5':
     case 'AjnaCloseToCollateralPosition_4':
     case 'AjnaCloseToCollateralPosition_5':
+    case 'MorphoBlueClosePosition':
       return t('position-history.close-position')
     case 'Kick':
       return t('position-history.auction-started')
