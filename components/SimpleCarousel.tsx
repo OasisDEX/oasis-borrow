@@ -7,21 +7,21 @@ import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Box, Button, Flex } from 'theme-ui'
 
 interface SimpleCarouselProps {
-  header?: ReactNode
   gap?: number
+  header?: ReactNode
+  overflow?: 'hidden' | 'visible'
   slides: ReactNode[]
   slidesToDisplay?: number
   slidesToScroll?: number
-  overflow?: 'hidden' | 'visible'
 }
 
 export const SimpleCarousel: FC<SimpleCarouselProps> = ({
-  header,
   gap = 16,
+  header,
+  overflow = 'hidden',
   slides,
   slidesToDisplay = 1,
   slidesToScroll = 1,
-  overflow = 'hidden',
 }) => {
   const isMobile = useOnMobile()
   const resolvedSlidesToDisplay = isMobile ? 1 : slidesToDisplay

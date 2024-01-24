@@ -41,7 +41,6 @@ function BetterOnSummerPage() {
               <Text>Lorem ipsum dolor sit amet</Text>
             </Box>
           }
-          gap={16}
           slidesToDisplay={2}
           overflow="visible"
           slides={[
