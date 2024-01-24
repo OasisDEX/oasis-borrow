@@ -1,19 +1,8 @@
 import { AppLink } from 'components/Links'
 import { ProtocolLabel } from 'components/ProtocolLabel'
-import type { LendingProtocol } from 'lendingProtocols'
+import type { MarketingTemplateHeroProps } from 'features/marketing-layouts/types'
 import React, { type FC } from 'react'
 import { Box, Flex, Heading, Image, Text } from 'theme-ui'
-
-interface MarketingTemplateHeroProps {
-  description: string
-  image: string
-  link: {
-    url: string
-    label: string
-  }
-  protocol: LendingProtocol
-  title: string
-}
 
 export const MarketingTemplateHero: FC<MarketingTemplateHeroProps> = ({
   description,

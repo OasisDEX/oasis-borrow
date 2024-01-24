@@ -2,10 +2,7 @@ import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { SimpleCarousel } from 'components/SimpleCarousel'
 import { IconWithPalette, MarketingTemplateHero } from 'features/marketing-layouts/components'
 import { sleep } from 'features/marketing-layouts/icons'
-import type {
-  MarketingLayoutPageProps,
-  MarketingLayoutPalette,
-} from 'features/marketing-layouts/types'
+import type { MarketingTemplatePageProps } from 'features/marketing-layouts/types'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
@@ -13,17 +10,11 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Box, Heading, Text } from 'theme-ui'
 
-function BetterOnSummerPage({ palette }: MarketingLayoutPageProps) {
+function BetterOnSummerPage({ hero, palette }: MarketingTemplatePageProps) {
   return (
     <MarketingLayout topBackground="none" backgroundGradient={palette.mainGradient}>
       <Box sx={{ width: '100%' }}>
-        <MarketingTemplateHero
-          protocol={LendingProtocol.AaveV3}
-          title="AAVE, with superpowers"
-          description="Earn interest, Borrow Assets and Multiply Exposure with DeFi's leading liquidity protocol. Made even better with Summer.fi's Superpowers of one click actions, advanced automations and unified frontend gateway to the best of DeFi."
-          link={{ label: 'Open a position', url: '/' }}
-          image={staticFilesRuntimeUrl('/static/img/marketing-layout/temp-hero.png')}
-        />
+        <MarketingTemplateHero {...hero} />
         <Box>
           <IconWithPalette size={80} contents={sleep} {...palette.icon} />
         </Box>
@@ -53,7 +44,7 @@ export default BetterOnSummerPage
 
 export async function getServerSideProps({ locale }: GetServerSidePropsContext) {
   // TODO - to be replaced with API call
-  const palette: MarketingLayoutPalette = {
+  const palette = {
     mainGradient: ['#f8eaff', '#edf8ff'],
     icon: {
       backgroundGradient: ['#f6e3ff', '#d9f0f4'],
@@ -61,11 +52,24 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
       symbolGradient: ['#2ebac6', '#b6509e'],
     },
   }
+  const hero = {
+    protocol: LendingProtocol.AaveV3,
+    title: 'AAVE, with superpowers',
+    description:
+      "Earn interest, Borrow Assets and Multiply Exposure with DeFi's leading liquidity protocol. Made even better with Summer.fi's Superpowers of one click actions, advanced automations and unified frontend gateway to the best of DeFi.",
+    link: { label: 'Open a position', url: '/' },
+    image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-hero.png'),
+  }
+
+  const marketingLayoutProps: MarketingTemplatePageProps = {
+    hero,
+    palette,
+  }
 
   return {
     props: {
       ...(await serverSideTranslations(locale || 'en', ['common'])),
-      palette,
+      ...marketingLayoutProps,
     },
   }
 }
