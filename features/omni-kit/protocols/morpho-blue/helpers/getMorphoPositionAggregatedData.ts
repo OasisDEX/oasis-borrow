@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
 import { unifiedHistoryItem } from 'features/omni-kit/protocols/ajna/history'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
@@ -33,8 +32,6 @@ export const getMorpoPositionAggregatedData = async (
     history: [
       ...response.summerEvents.map((event) => ({
         ...unifiedHistoryItem,
-        originationFee: new BigNumber(event.originationFee),
-        originationFeeInQuoteToken: new BigNumber(event.originationFeeInQuoteToken),
         ...mapPositionHistoryResponseEvent(event),
       })),
     ].sort((a, b) => b.timestamp - a.timestamp),
