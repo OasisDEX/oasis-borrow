@@ -1,12 +1,12 @@
 import { renderLinearGradientStops } from 'features/marketing-layouts/helpers'
-import type { MarketingLayoutIconPalette } from 'features/marketing-layouts/types'
+import type { MarketingTemplateIconPalette } from 'features/marketing-layouts/types'
 import React from 'react'
 
 export function sleep({
   backgroundGradient,
   foregroundGradient,
   symbolGradient,
-}: MarketingLayoutIconPalette) {
+}: MarketingTemplateIconPalette) {
   return (
     <>
       <circle cx="40" cy="40" r="33.5" fill="url(#paint1_linear_4087_1130)" />
