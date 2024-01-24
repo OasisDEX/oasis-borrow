@@ -174,7 +174,7 @@ export const uniqueTokensReducer = (
   return acc
 }
 
-export const formatBigNumberDebugData = (data: Record<string, BigNumber>) =>
+export const formatBigNumberDebugData = (data: Record<string, any>) =>
   Object.fromEntries(
     Object.entries(data).map(([key, value]) => [
       key,
