@@ -1,9 +1,10 @@
 import { AppLayout } from 'components/layouts/AppLayout'
+import { SimpleCarousel } from 'components/SimpleCarousel'
 import { IconWithPalette } from 'features/marketing-layouts/components'
 import { sleep, stack } from 'features/marketing-layouts/icons'
 import type { MarketingLayoutPalette } from 'features/marketing-layouts/types'
 import React from 'react'
-import { Box } from 'theme-ui'
+import { Box, Heading, Text } from 'theme-ui'
 
 function BetterOnSummerPage() {
   const compoundPalette: MarketingLayoutPalette = {
@@ -25,7 +26,7 @@ function BetterOnSummerPage() {
 
   return (
     <AppLayout>
-      <Box>
+      <Box sx={{ width: '100%' }}>
         Test
         <Box>
           <IconWithPalette size={80} contents={sleep} {...compoundPalette.icon} />
@@ -33,6 +34,24 @@ function BetterOnSummerPage() {
         <Box>
           <IconWithPalette size={72} contents={stack} {...sparkPalette.icon} />
         </Box>
+        <SimpleCarousel
+          header={
+            <Box>
+              <Heading>Heading</Heading>
+              <Text>Lorem ipsum dolor sit amet</Text>
+            </Box>
+          }
+          gap={16}
+          slidesToDisplay={2}
+          overflow="visible"
+          slides={[
+            <Box sx={{ bg: 'red', width: '100%' }}>test</Box>,
+            <Box sx={{ bg: 'blue', width: '100%' }}>test</Box>,
+            <Box sx={{ bg: 'pink', width: '100%' }}>test</Box>,
+            <Box sx={{ bg: 'green', width: '100%' }}>test</Box>,
+            <Box sx={{ bg: 'yellow', width: '100%' }}>test</Box>,
+          ]}
+        />
       </Box>
     </AppLayout>
   )
