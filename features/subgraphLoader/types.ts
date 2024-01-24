@@ -13,6 +13,7 @@ import type {
 import type {
   AaveCumulativesResponse,
   AavePositionHistoryResponse,
+  PositionHistoryResponse,
 } from 'features/positionHistory/types'
 import type { ClaimedReferralRewards } from 'features/referralOverview/getClaimedReferralRewards.types'
 import type { AjnaDpmPositionsResponse } from 'handlers/portfolio/positions/handlers/ajna/types'
@@ -45,6 +46,11 @@ export type Subgraphs = {
   }
   Morpho: {
     getMorphoDpmPositions: { dpmProxyAddress: string[] }
+    getMorphoPositionAggregatedData: {
+      dpmProxyAddress: string
+      collateralAddress: string
+      quoteAddress: string
+    }
   }
   Referral: {
     getClaimedReferralRewards: { walletAddress: string }
@@ -147,6 +153,9 @@ export type SubgraphsResponses = {
   }
   Morpho: {
     getMorphoDpmPositions: SubgraphBaseResponse<MorphoDpmPositionsResponse>
+    getMorphoPositionAggregatedData: SubgraphBaseResponse<{
+      summerEvents: PositionHistoryResponse[]
+    }>
   }
   Referral: {
     getClaimedReferralRewards: SubgraphBaseResponse<{

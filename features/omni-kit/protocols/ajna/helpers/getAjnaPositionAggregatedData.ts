@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
 import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
-import { ajnaUnifiedHistoryItem } from 'features/omni-kit/protocols/ajna/history'
+import { unifiedHistoryItem } from 'features/omni-kit/protocols/ajna/history'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { mapAjnaAuctionResponse } from 'features/positionHistory/mapAjnaAuctionResponse'
 import { mapPositionHistoryResponseEvent } from 'features/positionHistory/mapPositionHistoryResponseEvent'
@@ -47,14 +47,14 @@ export const getAjnaPositionAggregatedData = async (
     })),
     history: [
       ...response.oasisEvents.map((event) => ({
-        ...ajnaUnifiedHistoryItem,
+        ...unifiedHistoryItem,
         originationFee: new BigNumber(event.originationFee),
         originationFeeInQuoteToken: new BigNumber(event.originationFeeInQuoteToken),
         ...mapPositionHistoryResponseEvent(event),
       })),
       ...response.borrowerEvents
         .filter((item) => item.auction && (item.kind === 'AuctionSettle' || item.kind === 'Kick'))
-        .map((item) => ({ ...ajnaUnifiedHistoryItem, ...mapAjnaAuctionResponse(item) })),
+        .map((item) => ({ ...unifiedHistoryItem, ...mapAjnaAuctionResponse(item) })),
     ].sort((a, b) => b.timestamp - a.timestamp),
   }
 }
