@@ -2,20 +2,22 @@ import { AppLink } from 'components/Links'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import type { LendingProtocol } from 'lendingProtocols'
 import React, { type FC } from 'react'
-import { Box, Flex, Heading, Text } from 'theme-ui'
+import { Box, Flex, Heading, Image, Text } from 'theme-ui'
 
 interface MarketingTemplateHeroProps {
-  protocol: LendingProtocol
-  title: string
   description: string
+  image: string
   link: {
     url: string
     label: string
   }
+  protocol: LendingProtocol
+  title: string
 }
 
 export const MarketingTemplateHero: FC<MarketingTemplateHeroProps> = ({
   description,
+  image,
   link: { label, url },
   protocol,
   title,
@@ -36,7 +38,9 @@ export const MarketingTemplateHero: FC<MarketingTemplateHeroProps> = ({
           </AppLink>
         </Box>
       </Box>
-      <Box sx={{ flex: '1 1 0' }}>Image</Box>
+      <Box sx={{ flex: '1 1 0' }}>
+        <Image src={image} sx={{ maxWidth: 'none' }} />
+      </Box>
     </Flex>
   )
 }
