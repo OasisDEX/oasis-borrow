@@ -152,7 +152,6 @@ export const commonDataMapper = ({
 export const aaveLikeProtocolNames = {
   [LendingProtocol.AaveV3]: 'AAVE_V3',
   [LendingProtocol.SparkV3]: 'Spark',
-  [LendingProtocol.AaveV2]: ['AAVE', 'AaveV2'],
 }
 
 export const uniqueTokensReducer = (
