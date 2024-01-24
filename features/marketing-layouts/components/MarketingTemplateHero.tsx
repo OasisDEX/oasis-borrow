@@ -23,8 +23,8 @@ export const MarketingTemplateHero: FC<MarketingTemplateHeroProps> = ({
   title,
 }) => {
   return (
-    <Flex sx={{ columnGap: 5 }}>
-      <Box sx={{ flex: '1 1 0', my: 6 }}>
+    <Flex sx={{ flexDirection: ['column', null, 'row'], rowGap: '48px', columnGap: 5 }}>
+      <Box sx={{ flex: '1 1 0', my: [0, null, '48px', 6] }}>
         <ProtocolLabel protocol={protocol} />
         <Heading variant="header1" sx={{ mt: '12px' }}>
           {title}
@@ -39,7 +39,7 @@ export const MarketingTemplateHero: FC<MarketingTemplateHeroProps> = ({
         </Box>
       </Box>
       <Box sx={{ flex: '1 1 0' }}>
-        <Image src={image} sx={{ maxWidth: 'none' }} />
+        <Image src={image} sx={{ maxWidth: ['100%', null, 'none'] }} />
       </Box>
     </Flex>
   )
