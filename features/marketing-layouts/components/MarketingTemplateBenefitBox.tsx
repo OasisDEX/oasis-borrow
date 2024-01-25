@@ -31,8 +31,8 @@ export const MarketingTemplateBenefitBox: FC<
       )}
       {list && (
         <Box as="ul" sx={{ mt: '12px', pl: '24px' }}>
-          {list.map((item) => (
-            <Box as="li" sx={{ '&::marker': { color: 'neutral80' } }}>
+          {list.map((item, i) => (
+            <Box as="li" key={i} sx={{ '&::marker': { color: 'neutral80' } }}>
               <Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>
                 {item}
               </Text>

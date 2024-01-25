@@ -37,8 +37,8 @@ function BetterOnSummerPage({
           }
           slidesToDisplay={2}
           overflow="visible"
-          slides={benefits.map((benefit) => (
-            <MarketingTemplateBenefitBox {...benefit} {...palette.icon} />
+          slides={benefits.map((benefit, i) => (
+            <MarketingTemplateBenefitBox key={i} {...benefit} {...palette.icon} />
           ))}
         />
       </Box>
