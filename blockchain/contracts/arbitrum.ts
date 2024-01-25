@@ -175,6 +175,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     'WSTETH-GHO': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_WSTETHUSDC),
     'YFI-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YFIDAI),
+    'STYETH-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_STYETHDAI),
   },
   ajnaOraclessPoolPairs: {
     'YIELDBTC-WBTC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YIELDBTCWBTC),
