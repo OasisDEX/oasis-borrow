@@ -26,6 +26,23 @@ export interface MarketingTemplateHeroProps {
   title: string
 }
 
+export interface MarketingTemplateProductsProps {
+  actionsList?: {
+    icon: keyof typeof marketingTemplatesIcons
+    label: string
+    description?: string
+  }[]
+  composition: 'narrow' | 'wide'
+  description: string
+  image?: string
+  link?: {
+    url: string
+    label: string
+  }
+  title: string
+  type: string
+}
+
 export interface MarketingTemplateBenefitBoxProps {
   description?: string
   icon: keyof typeof marketingTemplatesIcons
@@ -39,4 +56,6 @@ export interface MarketingTemplatePageProps {
   benefitsTitle: string
   hero: MarketingTemplateHeroProps
   palette: MarketingTemplatePalette
+  products: MarketingTemplateProductsProps[]
+  productsTitle: string
 }
