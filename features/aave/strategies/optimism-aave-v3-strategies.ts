@@ -471,7 +471,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
       strategyType: config.strategyType,
       isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
         if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
-          return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationArbitrum]
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationOptimism]
         }
         return false
       },
@@ -525,7 +525,7 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       featureToggle: config.productTypes.Multiply.featureToggle,
       isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
         if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
-          return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationArbitrum]
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationOptimism]
         }
         return false
       },
@@ -579,7 +579,7 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
       featureToggle: config.productTypes.Earn.featureToggle,
       isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
         if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
-          return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationArbitrum]
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationOptimism]
         }
         return false
       },
