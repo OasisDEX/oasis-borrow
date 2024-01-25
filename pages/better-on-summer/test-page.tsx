@@ -3,6 +3,7 @@ import { SimpleCarousel } from 'components/SimpleCarousel'
 import {
   MarketingTemplateBenefitBox,
   MarketingTemplateHero,
+  MarketingTemplateProduct,
 } from 'features/marketing-layouts/components'
 import type { MarketingTemplatePageProps } from 'features/marketing-layouts/types'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
@@ -11,7 +12,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { Box, Heading } from 'theme-ui'
+import { Box, Grid, Heading } from 'theme-ui'
 
 function BetterOnSummerPage({
   benefits,
@@ -19,11 +20,26 @@ function BetterOnSummerPage({
   benefitsTitle,
   hero,
   palette,
+  products,
 }: MarketingTemplatePageProps) {
   return (
     <MarketingLayout topBackground="none" backgroundGradient={palette.mainGradient}>
       <Box sx={{ width: '100%' }}>
         <MarketingTemplateHero {...hero} />
+        <Grid
+          sx={{
+            gap: 3,
+            gridTemplate:
+            `
+              50% 50%
+              100%
+            `,
+          }}
+        >
+          {products.map((product, i) => (
+            <MarketingTemplateProduct key={i} mainGradient={palette.mainGradient} {...product} />
+          ))}
+        </Grid>
         <SimpleCarousel
           header={
             <Box>
@@ -68,6 +84,30 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
     image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-hero.png'),
   }
 
+  const products: MarketingTemplatePageProps['products'] = [
+    {
+      composition: 'narrow',
+      type: 'Borrow',
+      title: 'Get liquidity from your crypto without selling',
+      description:
+        'Borrow vaults on Compound allow you to use your crypto as collateral and borrow USDC, competitive rates.',
+    },
+    {
+      composition: 'narrow',
+      type: 'Borrow',
+      title: 'Get liquidity from your crypto without selling',
+      description:
+        'Borrow vaults on Compound allow you to use your crypto as collateral and borrow USDC, competitive rates.',
+    },
+    {
+      composition: 'wide',
+      type: 'Borrow',
+      title: 'Get liquidity from your crypto without selling',
+      description:
+        'Borrow vaults on Compound allow you to use your crypto as collateral and borrow USDC, competitive rates.',
+    },
+  ]
+
   const benefitsSubtitle = 'The Summer.fi Superpowers'
   const benefitsTitle = 'Why use Aave on  Summer.fi?'
   const benefits: MarketingTemplatePageProps['benefits'] = [
@@ -110,6 +150,7 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
     benefits,
     benefitsSubtitle,
     benefitsTitle,
+    products,
     hero,
     palette,
   }
