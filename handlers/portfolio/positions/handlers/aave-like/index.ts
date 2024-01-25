@@ -292,7 +292,7 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
       cumulativeDepositUSD: positionHistory.cumulativeDeposit,
       cumulativeFeesInCollateralToken: positionHistory.cumulativeFeesInQuoteToken,
     },
-    productType: OmniProductType.Multiply,
+    productType: OmniProductType.Earn,
     collateralTokenPrice: primaryTokenPrice,
     debtTokenPrice: secondaryTokenPrice,
     netValueInCollateralToken: calculations.netValueInCollateralToken,
