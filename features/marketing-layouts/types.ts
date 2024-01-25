@@ -56,4 +56,5 @@ export interface MarketingTemplatePageProps {
   hero: MarketingTemplateHeroProps
   palette: MarketingTemplatePalette
   products: MarketingTemplateProductsProps[]
+  productsTitle: string
 }

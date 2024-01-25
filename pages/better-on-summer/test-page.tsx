@@ -22,15 +22,20 @@ function BetterOnSummerPage({
   hero,
   palette,
   products,
+  productsTitle,
 }: MarketingTemplatePageProps) {
   return (
     <MarketingLayout topBackground="none" backgroundGradient={palette.mainGradient}>
       <Box sx={{ width: '100%' }}>
         <MarketingTemplateHero {...hero} />
+        <Heading as="h2" variant="header2" sx={{ mb: 5, textAlign: 'center' }}>
+          {productsTitle}
+        </Heading>
         <Grid
           sx={{
             gap: 3,
-            gridTemplateAreas: getGridTemplateAreas(products),
+            gridTemplateColumns: ['100%', 'unset'],
+            gridTemplateAreas: ['unset', getGridTemplateAreas(products)],
           }}
         >
           {products.map((product, i) => (
@@ -44,7 +49,7 @@ function BetterOnSummerPage({
         </Grid>
         <SimpleCarousel
           header={
-            <Box>
+            <Box sx={{ mt: 7 }}>
               <Heading as="h3" variant="header4" sx={getGradientColor(summerBrandGradient)}>
                 {benefitsSubtitle}
               </Heading>
@@ -86,6 +91,7 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
     image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-hero.png'),
   }
 
+  const productsTitle = 'The simplest way Borrow stables and Multiply your crypto'
   const products: MarketingTemplatePageProps['products'] = [
     {
       composition: 'narrow',
@@ -163,6 +169,7 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
     benefitsSubtitle,
     benefitsTitle,
     products,
+    productsTitle,
     hero,
     palette,
   }
