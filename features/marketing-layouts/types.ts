@@ -30,6 +30,7 @@ export interface MarketingTemplateProductsProps {
   actionsList?: {
     icon: keyof typeof marketingTemplatesIcons
     label: string
+    description?: string
   }[]
   composition: 'narrow' | 'wide'
   description: string

@@ -39,12 +39,7 @@ function BetterOnSummerPage({
           }}
         >
           {products.map((product, i) => (
-            <MarketingTemplateProduct
-              key={i}
-              i={i}
-              mainGradient={palette.mainGradient}
-              {...product}
-            />
+            <MarketingTemplateProduct key={i} index={i} {...palette} {...product} />
           ))}
         </Grid>
         <SimpleCarousel
@@ -119,10 +114,29 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
     },
     {
       composition: 'wide',
-      type: 'Borrow',
-      title: 'Get liquidity from your crypto without selling',
+      type: 'Staking',
+      title: 'Seamless Staking Yield, but Enhanced with Summer.fi Superpowers',
       description:
-        'Borrow vaults on Compound allow you to use your crypto as collateral and borrow USDC, competitive rates.',
+        'Summer.fi makes it easy to enhance your staking returns up to 8x on compound, with our Yield Loop strategy, all from a custom dashboard with advanced analytics and made simple with one click management. ',
+      link: {
+        label: 'Staking',
+        url: '/',
+      },
+      actionsList: [
+        {
+          icon: 'sleep',
+          label: 'Deposit ETH or stETH',
+        },
+        {
+          icon: 'sleep',
+          label: 'Adjust your risk',
+        },
+        {
+          icon: 'sleep',
+          label: 'Loop borrowing ETH ',
+          description: 'Abstracted away all with a single click',
+        },
+      ],
     },
   ]
 
