@@ -3,8 +3,8 @@ import type { DpmOperationParams } from 'blockchain/better-calls/dpm-account'
 import { estimateGas, executeTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import type { EthereumTransactionFee } from 'blockchain/transaction-fee/get-ethereum-transaction-fee'
-import { getEthereumTransactionFee } from 'blockchain/transaction-fee/get-ethereum-transaction-fee'
+import type { TransactionFee } from 'blockchain/transaction-fee/get-transaction-fee'
+import { getTransactionFee } from 'blockchain/transaction-fee/get-transaction-fee'
 import type { ethers } from 'ethers'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
@@ -502,7 +502,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
               const { signer, networkId, setupTriggerResponse, position } = event.params
 
               let gas: string = ''
-              let fee: EthereumTransactionFee | undefined = undefined
+              let fee: TransactionFee | undefined = undefined
 
               try {
                 gas = await estimateGas({
@@ -512,7 +512,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
                   proxyAddress: position.dpm,
                 })
 
-                fee = await getEthereumTransactionFee({ estimatedGas: gas })
+                fee = await getTransactionFee({ estimatedGas: gas, networkId })
               } catch (error) {
                 console.error(error)
 

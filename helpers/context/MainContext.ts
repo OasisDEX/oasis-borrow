@@ -10,7 +10,7 @@ import {
 } from 'blockchain/network'
 import type { ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
-import { createGasPrice$, createGasPriceOnNetwork$ } from 'blockchain/prices'
+import { createGasPriceOnNetwork$ } from 'blockchain/prices'
 import { createWeb3Context$ } from 'features/web3Context'
 import { createTxHelpers$ } from 'helpers/createTxHelpers'
 import { memoize } from 'lodash'
@@ -53,16 +53,12 @@ export function setupMainContext() {
     connectedContext$,
   )
 
-  /*
-   * @deprecated use `gasPriceOnNetwork$` instead
-   */
-  const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
   const gasPriceOnNetwork$ = memoize(
     curry(createGasPriceOnNetwork$)(onEveryBlock$),
     (networkId: NetworkIds) => networkId,
   )
 
-  const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
+  const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPriceOnNetwork$)
 
   return {
     account$,
@@ -70,7 +66,6 @@ export function setupMainContext() {
     connectedContext$,
     context$,
     everyBlock$,
-    gasPrice$,
     gasPriceOnNetwork$,
     initializedAccount$,
     once$,

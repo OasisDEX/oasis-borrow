@@ -3,7 +3,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { getNetworkById, type NetworkIds } from 'blockchain/networks'
-import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
+import { getTransactionFee } from 'blockchain/transaction-fee'
 import type { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 
@@ -42,18 +42,15 @@ export async function handleTransaction<T extends TxMeta>({
       : zero
 
   if (networkId && txData && isL2) {
-    const optimismTxFeeData = await getOptimismTransactionFee({
+    const l2TxFeeData = await getTransactionFee({
       estimatedGas: gasUsed.toString(),
-      transactionData: txData,
     })
 
-    if (!optimismTxFeeData) {
+    if (!l2TxFeeData) {
       return
     }
 
-    totalCost = totalCost.plus(
-      amountFromWei(new BigNumber(optimismTxFeeData.l1Fee)).times(optimismTxFeeData.ethUsdPriceUSD),
-    )
+    totalCost = totalCost.plus(amountFromWei(new BigNumber(l2TxFeeData.feeUsd)))
   }
 
   setTxDetails({

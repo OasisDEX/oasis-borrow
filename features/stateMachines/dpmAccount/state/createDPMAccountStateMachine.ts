@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import type { CreateAccountParameters } from 'blockchain/better-calls/account-factory'
 import {
   createCreateAccountTransaction,
@@ -11,7 +10,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import type { Context, ContextConnected } from 'blockchain/network.types'
 import { NetworkIds } from 'blockchain/networks'
-import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
+import { getTransactionFee } from 'blockchain/transaction-fee'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import type { ethers } from 'ethers'
 import type {
@@ -256,22 +255,17 @@ export function getDPMAccountStateMachineServices(
             if (context.networkId === NetworkIds.MAINNET) {
               return gasEstimation$(Number(gas.estimatedGas))
             }
-            return fromPromise(getOptimismTransactionFee(gas)).pipe(
+            return fromPromise(getTransactionFee({ ...gas, networkId: context.networkId })).pipe(
               map((transactionFee) => {
                 if (!transactionFee) {
                   return {
                     gasEstimationStatus: GasEstimationStatus.error,
                   }
                 }
-                const gasInEth = new BigNumber(transactionFee.l2Fee)
-                  .plus(transactionFee.l1Fee)
-                  .div(10 ** 18)
-
-                const gasInUsd = gasInEth.div(transactionFee.ethUsdPrice)
                 return {
                   gasEstimationStatus: GasEstimationStatus.calculated,
-                  gasEstimationEth: gasInEth,
-                  gasEstimationUsd: gasInUsd,
+                  gasEstimationEth: transactionFee.fee,
+                  gasEstimationUsd: transactionFee.feeUsd,
                 }
               }),
             )
