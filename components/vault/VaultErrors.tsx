@@ -21,6 +21,7 @@ interface VaultErrorsProps {
   ilkData?: { debtFloor: BigNumber; token: string }
   maxWithdrawAmount?: BigNumber
   autoType?: 'Auto-Buy' | 'Auto-Sell'
+  infoBag?: Record<string, string>
 }
 
 export function VaultErrors({
@@ -29,6 +30,7 @@ export function VaultErrors({
   maxWithdrawAmount = zero,
   ilkData: { debtFloor, token } = { debtFloor: zero, token: '' },
   autoType,
+  infoBag,
 }: VaultErrorsProps) {
   const { t } = useTranslation()
   if (!errorMessages.length) return null
@@ -192,6 +194,15 @@ export function VaultErrors({
             }}
           />
         )
+      case 'tooLowLtvToSetupAutoBuy':
+        return translate('ltv-too-low-for-auto-buy')
+      case 'tooLowLtvToSetupAutoSell':
+        return translate('ltv-too-low-for-auto-sell')
+      case 'tooHighStopLossToSetupAutoSell':
+        return translate('sl-too-high-for-auto-sell', {
+          maxLTV: infoBag?.['maxLTV'],
+        })
+
       default:
         throw new UnreachableCaseError(message)
     }

@@ -195,6 +195,9 @@ function AutoSellSidebarAaveVaultEditingState({
           <VaultErrors
             errorMessages={mapErrorsToErrorVaults(state.setupTriggerResponse?.errors)}
             autoType="Auto-Sell"
+            infoBag={{
+              maxLTV: `${state.defaults.maxSliderValue}%`,
+            }}
           />
           <VaultWarnings
             warningMessages={mapWarningsToWarningVaults(state.setupTriggerResponse?.warnings)}

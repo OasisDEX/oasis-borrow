@@ -444,7 +444,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
         })),
       },
       services: {
-        getParameters: () => (callback, onReceive) => {
+        getParameters: (context) => (callback, onReceive) => {
           const machine = interpret(createDebouncingMachine(action), {
             id: `${automationFeature}ParametersDebounceMachine`,
           }).start()
@@ -473,7 +473,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
                   collateralAddress: event.params.position.collateral.token.address,
                   debtAddress: event.params.position.debt.token.address,
                 },
-                networkId: NetworkIds.MAINNET,
+                networkId: context.networkId,
               }
               machine.send({
                 type: 'REQUEST_UPDATED',

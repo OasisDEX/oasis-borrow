@@ -1,6 +1,14 @@
 import type BigNumber from 'bignumber.js'
 import type { LendingProtocol } from 'lendingProtocols'
 
+export enum AutoBuyTriggerCustomErrorCodes {}
+
+export enum AutoBuyTriggerCustomWarningCodes {}
+
+export enum AutoSellTriggerCustomErrorCodes {}
+
+export enum AutoSellTriggerCustomWarningCodes {}
+
 export enum TriggersApiErrorCode {
   MinSellPriceIsNotSet = 'min-sell-price-is-not-set',
   MaxBuyPriceIsNotSet = 'max-buy-price-is-not-set',
@@ -14,10 +22,11 @@ export enum TriggersApiErrorCode {
   AutoSellTriggerHigherThanAutoBuyTarget = 'auto-sell-trigger-higher-than-auto-buy-target',
   AutoBuyTriggerLowerThanAutoSellTarget = 'auto-buy-trigger-lower-than-auto-sell-target',
   AutoSellCannotBeDefinedWithCurrentStopLoss = 'auto-sell-cannot-be-defined-with-current-stop-loss',
-  AutoSellNotAvailableDueToCurrentLTV = 'auto-sell-not-available-due-to-current-ltv',
   AutoBuyCannotBeDefinedWithCurrentStopLoss = 'auto-buy-cannot-be-defined-with-current-stop-loss',
-  AutoBuyNotAvailableDueToCurrentLTV = 'auto-buy-not-available-due-to-current-ltv',
   InternalError = 'internal-error',
+  TooLowLtvToSetupAutoBuy = 'too-low-ltv-to-setup-auto-buy',
+  TooLowLtvToSetupAutoSell = 'too-low-ltv-to-setup-auto-sell',
+  AutoSellNotAvailableDueToTooHighStopLoss = 'auto-sell-not-available-due-to-too-high-stop-loss',
 }
 
 export enum TriggersApiWarningCode {
@@ -30,6 +39,7 @@ export enum TriggersApiWarningCode {
   AutoBuyTargetCloseToAutoSellTrigger = 'auto-buy-target-close-to-auto-sell-trigger',
   AutoBuyTriggeredImmediately = 'auto-buy-triggered-immediately',
   AutoSellTriggeredImmediately = 'auto-sell-triggered-immediately',
+  AutoBuyTriggerCloseToStopLossTrigger = 'auto-buy-trigger-close-to-stop-loss-trigger',
 }
 
 export type TriggersApiError = {

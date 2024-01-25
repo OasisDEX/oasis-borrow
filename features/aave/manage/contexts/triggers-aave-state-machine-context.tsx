@@ -20,13 +20,27 @@ function useSetupTriggersStateContext(
   strategy: IStrategyConfig,
   proxies?: ProxiesRelatedWithPosition,
 ) {
-  const autobuyStateMachine = useInterpret(autoBuyTriggerAaveStateMachine, {
-    devTools: env.NODE_ENV !== 'production',
-  }).start()
+  const autoBuyContext = autoBuyTriggerAaveStateMachine.context
+  const autobuyStateMachine = useInterpret(
+    autoBuyTriggerAaveStateMachine.withContext({
+      ...autoBuyContext,
+      networkId: strategy.networkId,
+    }),
+    {
+      devTools: env.NODE_ENV !== 'production',
+    },
+  ).start()
 
-  const autosellStateMachine = useInterpret(autoSellTriggerAaveStateMachine, {
-    devTools: env.NODE_ENV !== 'production',
-  }).start()
+  const autoSellContext = autoSellTriggerAaveStateMachine.context
+  const autosellStateMachine = useInterpret(
+    autoSellTriggerAaveStateMachine.withContext({
+      ...autoSellContext,
+      networkId: strategy.networkId,
+    }),
+    {
+      devTools: env.NODE_ENV !== 'production',
+    },
+  ).start()
 
   return useInterpret(
     triggersAaveStateMachine.withContext({
