@@ -92,7 +92,11 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
       type: 'Borrow',
       title: 'Get liquidity from your crypto without selling',
       description:
-        'Borrow vaults on Compound allow you to use your crypto as collateral and borrow USDC, competitive rates.',
+        "Borrow vaults on AAVE allow you to use your crypto as collateral and borrow other assets, usually stablecoin's. Meaning you can get access to dollar-like assets without selling a thing.",
+      link: {
+        label: 'Borrow',
+        url: '/',
+      },
     },
     {
       composition: 'narrow',
