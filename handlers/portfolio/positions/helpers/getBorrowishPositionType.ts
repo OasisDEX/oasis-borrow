@@ -10,6 +10,8 @@ interface GetBorrowishPositionTypeParams {
   networkId: NetworkIds
   positionId: number
   protocol: LendingProtocol
+  collateralToken?: string
+  quoteToken?: string
 }
 
 export function getBorrowishPositionType({
@@ -18,12 +20,22 @@ export function getBorrowishPositionType({
   networkId,
   positionId,
   protocol,
+  collateralToken,
+  quoteToken,
 }: GetBorrowishPositionTypeParams): OmniProductBorrowishType {
-  const [apiVault] = apiVaults.filter(
-    ({ chain_id, protocol: _protocol, vault_id }) =>
+  // In vault.token_pair we store WETH as ETH
+  const resolveCollateralToken = collateralToken?.toUpperCase() === 'WETH' ? 'ETH' : collateralToken
+  const resolveQuoteToken = quoteToken?.toUpperCase() === 'WETH' ? 'ETH' : quoteToken
+
+  const apiVault = apiVaults.find(
+    ({ chain_id, protocol: _protocol, vault_id, token_pair }) =>
       chain_id === networkId &&
       _protocol.toLowerCase() === protocol.toLowerCase() &&
-      vault_id === positionId,
+      vault_id === positionId &&
+      (resolveCollateralToken && resolveQuoteToken
+        ? token_pair.toLowerCase() ===
+          `${resolveCollateralToken.toLowerCase()}-${resolveQuoteToken.toLowerCase()}`
+        : true),
   )
 
   return apiVault

@@ -49,7 +49,6 @@ export async function getAjnaPositionInfo({
     protocolRaw,
     proxyAddress,
     quoteTokenAddress: quoteToken.address,
-    isEarn,
   })
 
   const type = isEarn
@@ -60,6 +59,8 @@ export async function getAjnaPositionInfo({
         networkId,
         positionId: Number(positionId),
         protocol: LendingProtocol.Ajna,
+        collateralToken: collateralToken.symbol,
+        quoteToken: quoteToken.symbol,
       })
 
   // shorhands and formatting for better clarity
