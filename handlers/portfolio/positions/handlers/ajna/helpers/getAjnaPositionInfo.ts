@@ -79,9 +79,7 @@ export async function getAjnaPositionInfo({
   }-${isOracless ? secondaryTokenAddress : secondaryToken}/${positionId}`
 
   // prices for oracle positions is always equal to one
-  const collateralPrice = isOracless
-    ? one
-    : new BigNumber(prices[primaryToken.toUpperCase()])
+  const collateralPrice = isOracless ? one : new BigNumber(prices[primaryToken.toUpperCase()])
   const quotePrice = isOracless ? one : new BigNumber(prices[secondaryToken.toUpperCase()])
 
   return {
