@@ -5,6 +5,7 @@ import {
   MarketingTemplateHero,
   MarketingTemplateProduct,
 } from 'features/marketing-layouts/components'
+import { getGridTemplateAreas } from 'features/marketing-layouts/helpers'
 import type { MarketingTemplatePageProps } from 'features/marketing-layouts/types'
 import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -29,15 +30,16 @@ function BetterOnSummerPage({
         <Grid
           sx={{
             gap: 3,
-            gridTemplate:
-            `
-              50% 50%
-              100%
-            `,
+            gridTemplateAreas: getGridTemplateAreas(products),
           }}
         >
           {products.map((product, i) => (
-            <MarketingTemplateProduct key={i} mainGradient={palette.mainGradient} {...product} />
+            <MarketingTemplateProduct
+              key={i}
+              i={i}
+              mainGradient={palette.mainGradient}
+              {...product}
+            />
           ))}
         </Grid>
         <SimpleCarousel

@@ -4,14 +4,14 @@ import React, { type FC } from 'react'
 import { Box } from 'theme-ui'
 
 export const MarketingTemplateProduct: FC<
-  MarketingTemplateProductsProps & { mainGradient: string[] }
-> = ({ actionsList, composition, description, image, link, mainGradient, title, type }) => {
+  MarketingTemplateProductsProps & { i: number; mainGradient: string[] }
+> = ({ actionsList, composition, description, i, image, link, mainGradient, title, type }) => {
   const isNarrow = composition === 'narrow'
 
   return (
     <Box
       sx={{
-        flexShrink: 0,
+        gridArea: `p-${i}`,
         minHeight: '486px',
         background: renderCssGradient('180deg', mainGradient),
       }}
