@@ -3,7 +3,7 @@ import type {
   IOpenDepositBorrowStrategy,
   IStrategy,
 } from '@oasisdex/dma-library'
-import type BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 import type { DpmExecuteOperationExecutorActionParameters } from 'blockchain/better-calls/dpm-account'
 import { estimateGasOnDpmForOperationExecutorAction } from 'blockchain/better-calls/dpm-account'
 import type { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
@@ -290,8 +290,8 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
                 type: 'GAS_PRICE_ESTIMATION_CHANGED',
                 estimatedGasPrice: {
                   gasEstimationStatus: GasEstimationStatus.calculated,
-                  gasEstimationEth: transactionFee.fee,
-                  gasEstimationUsd: transactionFee.feeUsd,
+                  gasEstimationEth: new BigNumber(transactionFee.fee),
+                  gasEstimationUsd: new BigNumber(transactionFee.feeUsd),
                 },
               }
             }),
