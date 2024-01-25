@@ -195,6 +195,9 @@ function AutoBuySidebarAaveVaultEditingState({
           <VaultErrors
             errorMessages={mapErrorsToErrorVaults(state.setupTriggerResponse?.errors)}
             autoType="Auto-Buy"
+            infoBag={{
+              maxLTV: `${state.defaults.maxSliderValue}%`,
+            }}
           />
           <VaultWarnings
             warningMessages={mapWarningsToWarningVaults(state.setupTriggerResponse?.warnings)}

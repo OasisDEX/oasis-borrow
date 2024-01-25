@@ -54,6 +54,9 @@ export type VaultErrorMessage =
   | 'executionLTVBiggerThanCurrentLTV'
   | 'executionLTVSmallerThanCurrentLTV'
   | 'executionLTVNearToAutoSellTrigger'
+  | 'tooLowLtvToSetupAutoSell'
+  | 'tooLowLtvToSetupAutoBuy'
+  | 'tooHighStopLossToSetupAutoSell'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean

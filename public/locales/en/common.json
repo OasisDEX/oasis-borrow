@@ -1409,7 +1409,8 @@
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price",
     "withdraw-amount-exceeds-free-collateral": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
     "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
-    "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>."
+    "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
+    "sl-too-high-for-auto-sell": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxLTV}}% before using Auto-Sell."
   },
   "vault-warnings": {
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
@@ -2143,6 +2144,9 @@
     "cancelling-form-title": "Cancelling Auto-Sell",
     "col-to-be-sold": "{{token}} to be sold at next sell",
     "coll-ratio-too-high": "Auto-Sell is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Sell.",
+    "ltv-too-low-for-auto-sell": "Auto-Sell is not available as your Loan to Value is too low. Please <0>increase your Loan to value</0> above 1% before using Auto-Sell.",
+    "ltv-too-low-for-auto-buy": "Auto-Buy is not available as your Loan to Value is too low. Please <0>increase your Loan to Value</0> above 1% before using Auto-Buy.",
+
     "collateral-after-next-sell": "Collateral after next sell",
     "confirmation": "Confirm your auto-sell setup.",
     "continual-sell-no-threshold": "Recurring sell order with no min",
