@@ -97,13 +97,19 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
         label: 'Borrow',
         url: '/',
       },
+      image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-product-1.png'),
     },
     {
       composition: 'narrow',
-      type: 'Borrow',
-      title: 'Get liquidity from your crypto without selling',
+      type: 'Multiply',
+      title: 'Increase your exposure to your crypto and amplify your profits',
       description:
-        'Borrow vaults on Compound allow you to use your crypto as collateral and borrow USDC, competitive rates.',
+        'Multiply vaults allow you to increase your exposure to your collateral in a single click. Saving you time and gas costs.',
+      image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-product-2.png'),
+      link: {
+        label: 'Multiply',
+        url: '/',
+      },
     },
     {
       composition: 'wide',
