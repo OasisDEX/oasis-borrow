@@ -1,9 +1,12 @@
-import type { MarketingTemplateIconPalette } from 'features/marketing-layouts/types'
-import React, { type FC, type ReactNode } from 'react'
+import type {
+  IconWithPaletteContents,
+  MarketingTemplateIconPalette,
+} from 'features/marketing-layouts/types'
+import React, { type FC } from 'react'
 
 interface IconWithPaletteProps extends MarketingTemplateIconPalette {
   size: number
-  contents: (params: MarketingTemplateIconPalette) => ReactNode
+  contents: IconWithPaletteContents
 }
 
 export const IconWithPalette: FC<IconWithPaletteProps> = ({

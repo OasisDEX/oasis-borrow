@@ -15,7 +15,7 @@ export const MarketingTemplateHero: FC<MarketingTemplateHeroProps> = ({
     <Flex sx={{ flexDirection: ['column', null, 'row'], rowGap: '48px', columnGap: 5 }}>
       <Box sx={{ flex: '1 1 0', my: [0, null, '48px', 6] }}>
         <ProtocolLabel protocol={protocol} />
-        <Heading variant="header1" sx={{ mt: '12px' }}>
+        <Heading as="h1" variant="header1" sx={{ mt: '12px' }}>
           {title}
         </Heading>
         <Text as="p" variant="paragraph1" sx={{ mt: '20px', color: 'neutral80' }}>
