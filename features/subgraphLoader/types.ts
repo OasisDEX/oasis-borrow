@@ -11,6 +11,7 @@ import type {
   AjnaBorrowerEventsResponse,
   AjnaHistoryResponse,
 } from 'features/omni-kit/protocols/ajna/history/types'
+import type { MorphoBorrowerEventsResponse } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import type {
   AaveCumulativesResponse,
   AavePositionHistoryResponse,
@@ -131,6 +132,7 @@ export type SubgraphsResponses = {
     getMorphoDpmPositions: SubgraphBaseResponse<MorphoDpmPositionsResponse>
     getMorphoPositionAggregatedData: SubgraphBaseResponse<{
       summerEvents: PositionHistoryResponse[]
+      borrowerEvents: MorphoBorrowerEventsResponse[]
     }>
     getMorphoCumulatives: SubgraphBaseResponse<{
       account: {

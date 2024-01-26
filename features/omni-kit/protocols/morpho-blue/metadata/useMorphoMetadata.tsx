@@ -17,8 +17,10 @@ import {
 } from 'features/omni-kit/protocols/morpho-blue/components/details-sections'
 import {
   getMorphoBorrowWithdrawMax,
+  getMorphoNotifications,
   morphoFlowStateFilter,
 } from 'features/omni-kit/protocols/morpho-blue/helpers'
+import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import { useMorphoSidebarTitle } from 'features/omni-kit/protocols/morpho-blue/hooks'
 import { OmniProductType } from 'features/omni-kit/types'
 import { useAppConfig } from 'helpers/config'
@@ -53,7 +55,10 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
     protocolLabel: LendingProtocolLabel.morphoblue,
   })
 
-  const notifications: DetailsSectionNotificationItem[] = []
+  const notifications: DetailsSectionNotificationItem[] = getMorphoNotifications({
+    productType,
+    auction: productContext.position.positionAuction as MorphoHistoryEvent,
+  })
 
   switch (productType) {
     case OmniProductType.Borrow:

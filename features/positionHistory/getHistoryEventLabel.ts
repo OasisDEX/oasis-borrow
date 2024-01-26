@@ -140,6 +140,7 @@ export const getHistoryEventLabel = ({
         ? t('position-history.automation.stop-loss-token-removed', { token: quoteToken })
         : t('position-history.automation.stop-loss-debt-removed')
     case 'Liquidation':
+    case 'Liquidate':
       return t('position-history.liquidation')
     default:
       return `${t('position-history.event')} ${kind || ''}`

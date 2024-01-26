@@ -7,6 +7,7 @@ import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInfor
 import { type AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/types'
 import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import { hasTrigger } from 'features/omni-kit/protocols/ajna/history/types'
+import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import {
   formatCryptoBalance,
@@ -23,7 +24,11 @@ import { PositionHistoryRow } from './PositionHistoryRow'
 
 interface PositionHistoryItemDetailsProps {
   collateralToken: string
-  event: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent> | Partial<PositionHistoryEvent>
+  event:
+    | Partial<AjnaHistoryEvent>
+    | Partial<AaveHistoryEvent>
+    | Partial<MorphoHistoryEvent>
+    | Partial<PositionHistoryEvent>
   isOracless?: boolean
   isShort?: boolean
   priceFormat?: string
@@ -215,6 +220,16 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
       {'collateralForLiquidation' in event && event.collateralForLiquidation && (
         <PositionHistoryRow label={t('position-history.collateral-for-liquidation')}>
           {formatFiatBalance(event.collateralForLiquidation)} {collateralToken}
+        </PositionHistoryRow>
+      )}
+      {'repaidAssets' in event && event.repaidAssets && (
+        <PositionHistoryRow label={t('position-history.sold')}>
+          {formatFiatBalance(event.repaidAssets)} {collateralToken}
+        </PositionHistoryRow>
+      )}
+      {'quoteRepaid' in event && event.quoteRepaid && (
+        <PositionHistoryRow label={t('position-history.repaid')}>
+          {formatFiatBalance(event.quoteRepaid)} {quoteToken}
         </PositionHistoryRow>
       )}
     </DefinitionList>

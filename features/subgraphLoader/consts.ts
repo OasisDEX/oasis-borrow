@@ -583,6 +583,20 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         txHash
         withdrawnUSD
       }
+      borrowerEvents(
+        where: {
+          account_: { id: $dpmProxyAddress }
+          collateralToken_: { address: $collateralAddress }
+          debtToken_: { address: $quoteAddress }
+        }
+      ) {
+        id
+        kind
+        timestamp
+        txHash
+        repaidAssets
+        quoteRepaid
+      }
     }
   `,
   getMorphoCumulatives: gql`

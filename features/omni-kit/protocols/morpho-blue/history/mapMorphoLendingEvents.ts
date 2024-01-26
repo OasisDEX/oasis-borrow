@@ -73,6 +73,15 @@ export const mapMorphoLendingEvents = (
           swapFromAmount: event.swapFromAmount,
         }
       }
+      case 'Liquidate': {
+        return {
+          kind: event.kind,
+          txHash: event.txHash,
+          timestamp: event.timestamp,
+          quoteRepaid: event.quoteRepaid,
+          repaidAssets: event.repaidAssets,
+        }
+      }
       default: {
         console.warn(`No morpho blue event kind found ${event.kind}`)
         return {}

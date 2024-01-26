@@ -46,11 +46,7 @@ type AjnaHistoryEventExtension = {
   totalFeeInQuoteToken: BigNumber
 }
 
-export type AjnaBorrowerEvent = {
-  id: string
-  kind: string
-  timestamp: number
-  txHash: string
+type AjnaBorrowerEventExtension = {
   settledDebt: BigNumber
   debtToCover: BigNumber
   collateralForLiquidation: BigNumber
@@ -60,4 +56,6 @@ export type AjnaBorrowerEvent = {
   }
 }
 
-export type AjnaHistoryEvent = PositionHistoryEvent & AjnaHistoryEventExtension & AjnaBorrowerEvent
+export type AjnaHistoryEvent = PositionHistoryEvent &
+  AjnaHistoryEventExtension &
+  AjnaBorrowerEventExtension

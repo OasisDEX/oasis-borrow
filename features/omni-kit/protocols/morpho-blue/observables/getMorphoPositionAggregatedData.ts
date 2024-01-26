@@ -7,10 +7,8 @@ import type { Observable } from 'rxjs'
 import { from } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 
-export type MorphoPositionAuction = {}
-
 export interface MorphoPositionAggregatedDataResponse {
-  auction: MorphoPositionAuction
+  auction: MorphoHistoryEvent
   history: MorphoHistoryEvent[]
 }
 
@@ -39,8 +37,8 @@ export const getMorphoPositionAggregatedData$ = ({
       dpmPositionData.quoteTokenAddress,
     ),
   ).pipe(
-    map(({ auctions: _auctions, history }) => ({
-      auction: {},
+    map(({ auction, history }) => ({
+      auction,
       history: parseAggregatedDataHistory({ history }),
     })),
     shareReplay(1),
