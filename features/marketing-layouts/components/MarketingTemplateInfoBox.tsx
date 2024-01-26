@@ -13,8 +13,15 @@ export const MarketingTemplateInfoBox: FC<MarketingTemplateInfoBoxProps> = ({
   tokens,
 }) => {
   return (
-    <Flex sx={{ columnGap: '168px' }}>
-      <Flex sx={{ flexDirection: 'column', justifyContent: 'center' }}>
+    <Flex
+      sx={{
+        flexDirection: ['column-reverse', 'row'],
+        alignItems: 'flex-start',
+        rowGap: '24px',
+        columnGap: [0, 5, null, '168px'],
+      }}
+    >
+      <Flex sx={{ flexDirection: 'column', alignSelf: 'center' }}>
         <Heading as="h3" variant="header4">
           {title}
         </Heading>
@@ -27,7 +34,10 @@ export const MarketingTemplateInfoBox: FC<MarketingTemplateInfoBoxProps> = ({
           </AppLink>
         )}
         {tokens && (
-          <Flex as="ul" sx={{ m: 0, mt: '24px', p: 0, gap: 2, listStyle: 'none' }}>
+          <Flex
+            as="ul"
+            sx={{ flexWrap: 'wrap', m: 0, mt: '24px', p: 0, gap: 2, listStyle: 'none' }}
+          >
             {tokens.map((token, i) => (
               <Flex
                 as="li"
@@ -51,7 +61,10 @@ export const MarketingTemplateInfoBox: FC<MarketingTemplateInfoBoxProps> = ({
           </Flex>
         )}
       </Flex>
-      <Image src={image} sx={{ flexShrink: 0 }} />
+      <Image
+        src={image}
+        sx={{ width: ['100%', 'auto'], maxWidth: ['100%', '50%', 'none'], flexShrink: 0 }}
+      />
     </Flex>
   )
 }
