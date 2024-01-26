@@ -13,6 +13,7 @@ export const MarketingTemplateBenefitBox: FC<
   return (
     <Box
       sx={{
+        width: '100%',
         p: 4,
         border: '1px solid',
         borderColor: 'neutral20',

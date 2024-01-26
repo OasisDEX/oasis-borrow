@@ -9,6 +9,7 @@ import walletConnectModule from '@web3-onboard/walletconnect'
 import type { NetworkConfig } from 'blockchain/networks'
 import { enableNetworksSet } from 'blockchain/networks'
 import { getLocalAppConfig } from 'helpers/config'
+import type { AppConfigType } from 'types/config'
 
 const injected = injectedModule({
   custom: [],
@@ -35,29 +36,40 @@ const trezorOptions = {
 }
 const trezor = trezorModule(trezorOptions)
 
-const mapNetwork = (network: NetworkConfig): Chain => ({
-  id: network.hexId,
-  label: network.label,
-  token: network.token,
-  color: network.color,
-  rpcUrl: network.rpcUrl,
-})
+const { connectionMethods, walletRpc } = getLocalAppConfig('parameters')
 
 const getChains = () => {
-  return enableNetworksSet.map(mapNetwork)
+  return enableNetworksSet.map((network: NetworkConfig): Chain => {
+    const localWalletRpcConfig = {
+      // copied from the oazo-configuration
+      // needs some base url before the config loads
+      // on subsequent loads, the config will be loaded from the local storage
+      8453: 'https://mainnet.base.org/', // Base
+      10: 'https://mainnet.optimism.io/', // Optimism
+      42161: 'https://arb1.arbitrum.io/rpc', // Arbitrum
+    }
+    return {
+      id: network.hexId,
+      label: network.label,
+      token: network.token,
+      color: network.color,
+      rpcUrl:
+        (walletRpc || localWalletRpcConfig)[
+          network.id as unknown as keyof AppConfigType['parameters']['walletRpc']
+        ] ?? network.rpcUrl,
+    }
+  })
 }
-
-const config = getLocalAppConfig('parameters').connectionMethods
 
 const getWallets = () => {
   const wallets: WalletInit[] = [injected, walletConnect]
-  if (!config) {
+  if (!connectionMethods) {
     return wallets
   }
-  if (config.gnosis) wallets.push(gnosis)
-  if (config.walletLink) wallets.push(walletLink)
-  if (config.ledger) wallets.push(ledger)
-  if (config.trezor) wallets.push(trezor)
+  if (connectionMethods.gnosis) wallets.push(gnosis)
+  if (connectionMethods.walletLink) wallets.push(walletLink)
+  if (connectionMethods.ledger) wallets.push(ledger)
+  if (connectionMethods.trezor) wallets.push(trezor)
   return wallets
 }
 
