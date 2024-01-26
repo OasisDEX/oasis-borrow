@@ -10,7 +10,7 @@ import type { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
 import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ethNullAddress, NetworkIds } from 'blockchain/networks'
-import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
+import { getTransactionFee } from 'blockchain/transaction-fee'
 import type { ethers } from 'ethers'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
@@ -276,7 +276,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
             )
           }
 
-          return fromPromise(getOptimismTransactionFee(gasEstimationResult)).pipe(
+          return fromPromise(getTransactionFee({ ...gasEstimationResult, networkId })).pipe(
             map((transactionFee) => {
               if (!transactionFee) {
                 return {
@@ -286,17 +286,12 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
                   },
                 }
               }
-              const gasInEth = new BigNumber(transactionFee.l2Fee)
-                .plus(transactionFee.l1Fee)
-                .div(10 ** 18)
-
-              const gasInUsd = gasInEth.div(transactionFee.ethUsdPrice)
               return {
                 type: 'GAS_PRICE_ESTIMATION_CHANGED',
                 estimatedGasPrice: {
                   gasEstimationStatus: GasEstimationStatus.calculated,
-                  gasEstimationEth: gasInEth,
-                  gasEstimationUsd: gasInUsd,
+                  gasEstimationEth: new BigNumber(transactionFee.fee),
+                  gasEstimationUsd: new BigNumber(transactionFee.feeUsd),
                 },
               }
             }),

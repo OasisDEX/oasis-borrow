@@ -25,8 +25,9 @@ export function getOnCloseEstimations({
   lockedCollateral: BigNumber
   toCollateral: boolean
 }) {
-  const { gasPrice$ } = useMainContext()
-  const [gasPrice] = useObservable(gasPrice$)
+  const { gasPriceOnNetwork$, context$ } = useMainContext()
+  const [context] = useObservable(context$)
+  const [gasPrice] = useObservable(gasPriceOnNetwork$(context?.chainId))
 
   const { userSettings$ } = useAccountContext()
   const [userSettings] = useObservable(userSettings$)
