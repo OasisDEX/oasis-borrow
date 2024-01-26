@@ -1,17 +1,22 @@
 import type { marketingTemplatesIcons } from 'features/marketing-layouts/icons'
+import type {
+  ProductFinderPromoCardFilters,
+  ProductHubProductType,
+  ProductHubSupportedNetworks,
+} from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import type { ReactNode } from 'react'
 
 export type IconWithPaletteContents = (params: MarketingTemplateIconPalette) => ReactNode
 
 export interface MarketingTemplateIconPalette {
-  backgroundGradient: string[]
-  foregroundGradient: string[]
-  symbolGradient: string[]
+  backgroundGradient: [string, string, ...string[]]
+  foregroundGradient: [string, string, ...string[]]
+  symbolGradient: [string, string, ...string[]]
 }
 
 export interface MarketingTemplatePalette {
-  mainGradient: string[]
+  mainGradient: [string, string, ...string[]]
   icon: MarketingTemplateIconPalette
 }
 
@@ -56,6 +61,17 @@ export interface MarketingTemplatePageProps {
   benefitsTitle: string
   hero: MarketingTemplateHeroProps
   palette: MarketingTemplatePalette
+  productFinder: {
+    initialNetwork?: ProductHubSupportedNetworks[]
+    initialProtocol?: LendingProtocol[]
+    product: ProductHubProductType
+    token?: string
+    promoCards: [
+      ProductFinderPromoCardFilters,
+      ProductFinderPromoCardFilters,
+      ProductFinderPromoCardFilters,
+    ]
+  }
   products: MarketingTemplateProductsProps[]
   productsTitle: string
 }
