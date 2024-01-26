@@ -1,5 +1,9 @@
 import type { marketingTemplatesIcons } from 'features/marketing-layouts/icons'
-import type { ProductFinderPromoCardFilters, ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
+import type {
+  ProductFinderPromoCardFilters,
+  ProductHubProductType,
+  ProductHubSupportedNetworks,
+} from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import type { ReactNode } from 'react'
 

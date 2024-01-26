@@ -8,9 +8,7 @@ interface ProductHubPromoCardsListProps {
   promoCards: PromoCardProps[]
 }
 
-export const ProductHubPromoCardsList: FC<ProductHubPromoCardsListProps> = ({
-  promoCards,
-}) => {
+export const ProductHubPromoCardsList: FC<ProductHubPromoCardsListProps> = ({ promoCards }) => {
   return (
     <Grid columns={[1, null, 2, 3]} gap={3} sx={{ my: 4 }}>
       {promoCards.map((promoCard, i) => (
