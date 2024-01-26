@@ -5,6 +5,7 @@ import { SimpleCarousel } from 'components/SimpleCarousel'
 import {
   MarketingTemplateBenefitBox,
   MarketingTemplateHero,
+  MarketingTemplateInfoBox,
   MarketingTemplateProduct,
 } from 'features/marketing-layouts/components'
 import { getGridTemplateAreas } from 'features/marketing-layouts/helpers'
@@ -19,7 +20,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { Box, Grid, Heading, Text } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 function BetterOnSummerPage({
   benefits,
@@ -71,7 +72,12 @@ function BetterOnSummerPage({
         <Text as="p" variant="paragraph2" sx={{ color: 'neutral80', textAlign: 'center' }}>
           {infoBoxesDescription}
         </Text>
-        <Heading as="h2" variant="header2" sx={{ mb: 5, textAlign: 'center' }}>
+        <Flex sx={{ flexDirection: 'column', rowGap: 6, mt: 6 }}>
+          {infoBoxes.map((infoBox, i) => (
+            <MarketingTemplateInfoBox key={i} {...infoBox} />
+          ))}
+        </Flex>
+        <Heading as="h2" variant="header2" sx={{ mt: 7, mb: 5, textAlign: 'center' }}>
           {productsTitle}
         </Heading>
         <Grid
@@ -157,7 +163,7 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
     ],
   }
 
-  const infoBoxesTitle = 'AAVE, but more approachable for DeFi novices and advanced Degen\'s'
+  const infoBoxesTitle = "AAVE, but more approachable for DeFi novices and advanced Degen's"
   const infoBoxesDescription =
     'Summer.fi turns the AAVE Protocol into an easy to access DeFi app. You can start simple with the depositing for yield, borrow a stablecoin against you crypto or do advanced automation strategies with Multiply to go long or short.'
   const infoBoxes: MarketingTemplatePageProps['infoBoxes'] = [
@@ -183,7 +189,7 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
       description:
         'Another great entry point to DeFi is earning yield on your volatile crypto assets. Simply deposit in one click and start earning Fees.',
       image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-info-3.png'),
-      tokens: ['ETH', 'WSTETH', 'WBTC', 'USDC', 'USDT', 'DOGE'],
+      tokens: ['ETH', 'WSTETH', 'WBTC', 'USDC', 'USDT'],
     },
   ]
 
