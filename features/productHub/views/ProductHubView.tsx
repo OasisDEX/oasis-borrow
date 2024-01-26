@@ -39,6 +39,7 @@ interface ProductHubViewProps {
   intro?: (selectedProduct: ProductHubProductType, selectedToken: string) => ReactNode
   headerGradient?: [string, string, ...string[]]
   product: ProductHubProductType
+  promoCardsPosition?: 'top' | 'bottom' | 'none'
   promoCardsCollection: PromoCardsCollection
   token?: string
   url?: string
@@ -51,6 +52,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
   product,
   promoCardsCollection,
+  promoCardsPosition = 'top',
   intro,
   token,
   url,
@@ -146,11 +148,13 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
       >
         {() => (
           <>
-            <ProductHubPromoCardsController
-              promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](data.table)}
-              selectedProduct={selectedProduct}
-              selectedToken={selectedToken}
-            />
+            {promoCardsPosition === 'top' && (
+              <ProductHubPromoCardsController
+                promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](data.table)}
+                selectedProduct={selectedProduct}
+                selectedToken={selectedToken}
+              />
+            )}
             <ProductHubContentController
               initialNetwork={resolvedInitialNetwork}
               initialProtocol={initialProtocol}
@@ -189,6 +193,13 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                   </WithArrow>
                 </AppLink>
               </Flex>
+            )}
+            {promoCardsPosition === 'bottom' && (
+              <ProductHubPromoCardsController
+                promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](data.table)}
+                selectedProduct={selectedProduct}
+                selectedToken={selectedToken}
+              />
             )}
           </>
         )}
