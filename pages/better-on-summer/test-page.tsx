@@ -42,8 +42,8 @@ function BetterOnSummerPage({
           product.network === filters.network &&
           product.protocol === filters.protocol &&
           product.product.includes(filters.product) &&
-          product.primaryToken === filters.primaryToken &&
-          product.secondaryToken === filters.secondaryToken,
+          product.primaryToken.toLowerCase() === filters.primaryToken.toLowerCase() &&
+          product.secondaryToken.toLowerCase() === filters.secondaryToken.toLowerCase(),
       ),
     )
     .map((product) => getGenericPromoCard({ product }))
