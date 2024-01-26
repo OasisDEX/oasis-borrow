@@ -19,13 +19,16 @@ import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { Box, Grid, Heading } from 'theme-ui'
+import { Box, Grid, Heading, Text } from 'theme-ui'
 
 function BetterOnSummerPage({
   benefits,
   benefitsSubtitle,
   benefitsTitle,
   hero,
+  infoBoxes,
+  infoBoxesDescription,
+  infoBoxesTitle,
   palette,
   productFinder,
   products,
@@ -52,7 +55,7 @@ function BetterOnSummerPage({
     <MarketingLayout topBackground="none" backgroundGradient={palette.mainGradient}>
       <Box sx={{ width: '100%' }}>
         <MarketingTemplateHero {...hero} />
-        <Box sx={{ mt: 7 }}>
+        <Box sx={{ my: 7 }}>
           <ProductHubView
             headerGradient={palette.icon.symbolGradient}
             promoCardsCollection="Home"
@@ -62,6 +65,12 @@ function BetterOnSummerPage({
           />
           <ProductHubPromoCardsList promoCards={promoCards} />
         </Box>
+        <Heading as="h2" variant="header2" sx={{ mb: '24px', textAlign: 'center' }}>
+          {infoBoxesTitle}
+        </Heading>
+        <Text as="p" variant="paragraph2" sx={{ color: 'neutral80', textAlign: 'center' }}>
+          {infoBoxesDescription}
+        </Text>
         <Heading as="h2" variant="header2" sx={{ mb: 5, textAlign: 'center' }}>
           {productsTitle}
         </Heading>
@@ -147,6 +156,36 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
       },
     ],
   }
+
+  const infoBoxesTitle = 'AAVE, but more approachable for DeFi novices and advanced Degen\'s'
+  const infoBoxesDescription =
+    'Summer.fi turns the AAVE Protocol into an easy to access DeFi app. You can start simple with the depositing for yield, borrow a stablecoin against you crypto or do advanced automation strategies with Multiply to go long or short.'
+  const infoBoxes: MarketingTemplatePageProps['infoBoxes'] = [
+    {
+      title: 'Endless Opportunities with AAVE',
+      description:
+        'The AAVE protocol on Summer.fi offers many different options for you, regardless of if you are new to DeFi or an experienced power user of DeFi protocols. ',
+      image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-info-1.png'),
+    },
+    {
+      title:
+        'Access DeFi yield with simple deposits on stablecoin’s, a straightforward strategy to get started',
+      description:
+        'A great entry point to DeFi is earning on your assets. With aave you can lend by simply depositing in one click and start earning Fees.',
+      link: {
+        label: 'List of top assets',
+        url: '/',
+      },
+      image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-info-2.png'),
+    },
+    {
+      title: 'Get paid to park (your capital)',
+      description:
+        'Another great entry point to DeFi is earning yield on your volatile crypto assets. Simply deposit in one click and start earning Fees.',
+      image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-info-3.png'),
+      tokens: ['ETH', 'WSTETH', 'WBTC', 'USDC', 'USDT', 'DOGE'],
+    },
+  ]
 
   const productsTitle = 'The simplest way Borrow stables and Multiply your crypto'
   const products: MarketingTemplatePageProps['products'] = [
@@ -244,11 +283,14 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
     benefits,
     benefitsSubtitle,
     benefitsTitle,
+    hero,
+    infoBoxes,
+    infoBoxesDescription,
+    infoBoxesTitle,
+    palette,
     productFinder,
     products,
     productsTitle,
-    hero,
-    palette,
   }
 
   return {
