@@ -1,7 +1,7 @@
 import type { DpmPositionData } from 'features/omni-kit/observables'
-import { type AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
 import { getMorpoPositionAggregatedData } from 'features/omni-kit/protocols/morpho-blue/helpers'
 import { mapMorphoLendingEvents } from 'features/omni-kit/protocols/morpho-blue/history'
+import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { Observable } from 'rxjs'
 import { from } from 'rxjs'
@@ -11,15 +11,15 @@ export type MorphoPositionAuction = {}
 
 export interface MorphoPositionAggregatedDataResponse {
   auction: MorphoPositionAuction
-  history: AjnaUnifiedHistoryEvent[]
+  history: MorphoHistoryEvent[]
 }
 
 function parseAggregatedDataHistory({
   history,
 }: {
-  history: AjnaUnifiedHistoryEvent[]
-}): AjnaUnifiedHistoryEvent[] {
-  return mapMorphoLendingEvents(history) as AjnaUnifiedHistoryEvent[]
+  history: MorphoHistoryEvent[]
+}): MorphoHistoryEvent[] {
+  return mapMorphoLendingEvents(history) as MorphoHistoryEvent[]
 }
 
 export const getMorphoPositionAggregatedData$ = ({

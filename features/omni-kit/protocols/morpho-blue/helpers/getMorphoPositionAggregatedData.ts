@@ -1,13 +1,13 @@
-import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
-import { unifiedHistoryItem } from 'features/omni-kit/protocols/ajna/history'
+import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
+import { unifiedDefaultHistoryItem } from 'features/positionHistory/consts'
 import { mapPositionHistoryResponseEvent } from 'features/positionHistory/mapPositionHistoryResponseEvent'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface MorphoPositionAggregatedData {
   auctions: []
-  history: AjnaUnifiedHistoryEvent[]
+  history: MorphoHistoryEvent[]
 }
 
 export const getMorpoPositionAggregatedData = async (
@@ -31,7 +31,7 @@ export const getMorpoPositionAggregatedData = async (
     auctions: [],
     history: [
       ...response.summerEvents.map((event) => ({
-        ...unifiedHistoryItem,
+        ...unifiedDefaultHistoryItem,
         ...mapPositionHistoryResponseEvent(event),
       })),
     ].sort((a, b) => b.timestamp - a.timestamp),

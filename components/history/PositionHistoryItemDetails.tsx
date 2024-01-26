@@ -5,8 +5,9 @@ import { getTokenSymbolBasedOnAddress } from 'blockchain/tokensMetadata'
 import { DefinitionList } from 'components/DefinitionList'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import { type AaveHistoryEvent } from 'features/omni-kit/protocols/aave/history/types'
-import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
+import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import { hasTrigger } from 'features/omni-kit/protocols/ajna/history/types'
+import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import {
   formatCryptoBalance,
   formatDecimalAsPercent,
@@ -22,7 +23,7 @@ import { PositionHistoryRow } from './PositionHistoryRow'
 
 interface PositionHistoryItemDetailsProps {
   collateralToken: string
-  event: Partial<AjnaUnifiedHistoryEvent> | Partial<AaveHistoryEvent>
+  event: Partial<AjnaHistoryEvent> | Partial<AaveHistoryEvent> | Partial<PositionHistoryEvent>
   isOracless?: boolean
   isShort?: boolean
   priceFormat?: string
@@ -130,7 +131,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
             {formatFiatBalance(event.originationFeeInQuoteToken)} {quoteToken}
           </PositionHistoryRow>
         )}
-      {event.moveQuoteFromPrice && event.moveQuoteToPrice && (
+      {'moveQuoteFromPrice' in event && event.moveQuoteFromPrice && event.moveQuoteToPrice && (
         <PositionHistoryRow label={t('position-history.lending-price')}>
           {formatCryptoBalance(
             isShort ? one.div(event.moveQuoteFromPrice) : event.moveQuoteFromPrice,
@@ -142,13 +143,18 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {quoteToken}
         </PositionHistoryRow>
       )}
-      {event.addOrRemovePrice && !event.moveQuoteFromPrice && !event.moveQuoteToPrice && (
-        <PositionHistoryRow label={t('position-history.lending-price')}>
-          {formatCryptoBalance(isShort ? one.div(event.addOrRemovePrice) : event.addOrRemovePrice)}{' '}
-          {quoteToken}
-        </PositionHistoryRow>
-      )}
-      {event.quoteTokensBefore && event.quoteTokensAfter && (
+      {'addOrRemovePrice' in event &&
+        event.addOrRemovePrice &&
+        !event.moveQuoteFromPrice &&
+        !event.moveQuoteToPrice && (
+          <PositionHistoryRow label={t('position-history.lending-price')}>
+            {formatCryptoBalance(
+              isShort ? one.div(event.addOrRemovePrice) : event.addOrRemovePrice,
+            )}{' '}
+            {quoteToken}
+          </PositionHistoryRow>
+        )}
+      {'quoteTokensBefore' in event && event.quoteTokensBefore && event.quoteTokensAfter && (
         <PositionHistoryRow label={t('position-history.total-collateral')}>
           {formatCryptoBalance(event.quoteTokensBefore)} {quoteToken}{' '}
           <VaultChangesInformationArrow />
@@ -190,7 +196,7 @@ export const PositionHistoryItemDetails: FC<PositionHistoryItemDetailsProps> = (
           {formatFiatBalance(event.totalFee)} USD
         </PositionHistoryRow>
       )}
-      {isOracless && event.totalFeeInQuoteToken && (
+      {isOracless && 'totalFeeInQuoteToken' in event && event.totalFeeInQuoteToken && (
         <PositionHistoryRow label={t('position-history.total-fees')}>
           {formatFiatBalance(event.totalFeeInQuoteToken)} {quoteToken}
         </PositionHistoryRow>

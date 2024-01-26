@@ -1,1 +1,1 @@
-export * from './mapLendingEvents'
+export * from './mapMorphoLendingEvents'

@@ -29,11 +29,9 @@ export const morphoActionOpenMultiply = ({
 }
 
 export const morphoActionAdjust = ({
-  state,
   commonPayload,
   dependencies,
 }: {
-  state: OmniMultiplyFormState
   commonPayload: MorphoAdjustMultiplyPayload
   dependencies: MorphoMultiplyDependencies
 }) => {

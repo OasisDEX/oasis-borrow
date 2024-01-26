@@ -226,7 +226,6 @@ export const getMorphoParameters = async ({
     }
     case OmniMultiplyFormAction.AdjustMultiply: {
       return morphoActionAdjust({
-        state,
         commonPayload: multiplyAdjustPayload,
         dependencies: multiplyDependencies,
       })
