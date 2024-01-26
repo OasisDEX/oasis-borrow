@@ -157,7 +157,7 @@ interface OmniValidationMessage {
   data?: { [key: string]: string | number }
 }
 
-type OmniSimulationData<Position> = Strategy<Position>['simulation'] & {
+export type OmniSimulationData<Position> = Strategy<Position>['simulation'] & {
   errors: OmniValidationMessage[]
   warnings: OmniValidationMessage[]
   notices: OmniValidationMessage[]

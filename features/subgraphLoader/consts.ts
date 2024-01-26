@@ -585,4 +585,25 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getMorphoCumulatives: gql`
+    query getAccount($dpmProxyAddress: ID!, $marketId: Bytes!) {
+      account(id: $dpmProxyAddress) {
+        borrowPositions(where: { market_: { id: $marketId } }) {
+          borrowCumulativeDepositUSD
+          borrowCumulativeDepositInQuoteToken
+          borrowCumulativeDepositInCollateralToken
+          borrowCumulativeWithdrawUSD
+          borrowCumulativeWithdrawInQuoteToken
+          borrowCumulativeWithdrawInCollateralToken
+          borrowCumulativeCollateralDeposit
+          borrowCumulativeCollateralWithdraw
+          borrowCumulativeDebtDeposit
+          borrowCumulativeDebtWithdraw
+          borrowCumulativeFeesUSD
+          borrowCumulativeFeesInQuoteToken
+          borrowCumulativeFeesInCollateralToken
+        }
+      }
+    }
+  `,
 }

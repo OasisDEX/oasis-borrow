@@ -51,6 +51,7 @@ export type Subgraphs = {
       collateralAddress: string
       quoteAddress: string
     }
+    getMorphoCumulatives: { dpmProxyAddress: string; marketId: string }
   }
   Referral: {
     getClaimedReferralRewards: { walletAddress: string }
@@ -155,6 +156,25 @@ export type SubgraphsResponses = {
     getMorphoDpmPositions: SubgraphBaseResponse<MorphoDpmPositionsResponse>
     getMorphoPositionAggregatedData: SubgraphBaseResponse<{
       summerEvents: PositionHistoryResponse[]
+    }>
+    getMorphoCumulatives: SubgraphBaseResponse<{
+      account: {
+        borrowPositions: {
+          borrowCumulativeDepositUSD: number
+          borrowCumulativeDepositInQuoteToken: number
+          borrowCumulativeDepositInCollateralToken: number
+          borrowCumulativeWithdrawUSD: number
+          borrowCumulativeWithdrawInQuoteToken: number
+          borrowCumulativeWithdrawInCollateralToken: number
+          borrowCumulativeCollateralDeposit: number
+          borrowCumulativeCollateralWithdraw: number
+          borrowCumulativeDebtDeposit: number
+          borrowCumulativeDebtWithdraw: number
+          borrowCumulativeFeesUSD: number
+          borrowCumulativeFeesInQuoteToken: number
+          borrowCumulativeFeesInCollateralToken: number
+        }[]
+      }
     }>
   }
   Referral: {

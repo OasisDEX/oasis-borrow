@@ -1,4 +1,5 @@
-import { OmniSidebarStep } from 'features/omni-kit/types'
+import type { OmniSidebarBorrowPanel, OmniSidebarEarnPanel } from 'features/omni-kit/types'
+import { OmniMultiplyPanel, OmniSidebarStep } from 'features/omni-kit/types'
 
 interface GetPrimaryButtonLabelKeyParams {
   currentStep: OmniSidebarStep
@@ -10,6 +11,7 @@ interface GetPrimaryButtonLabelKeyParams {
   isTxSuccess: boolean
   shouldSwitchNetwork: boolean
   walletAddress?: string
+  uiDropdown: OmniMultiplyPanel | OmniSidebarEarnPanel | OmniSidebarBorrowPanel
 }
 
 export function getOmniPrimaryButtonLabelKey({
@@ -22,7 +24,12 @@ export function getOmniPrimaryButtonLabelKey({
   isTxSuccess,
   shouldSwitchNetwork,
   walletAddress,
+  uiDropdown,
 }: GetPrimaryButtonLabelKeyParams): string {
+  if (uiDropdown === OmniMultiplyPanel.Switch) {
+    return 'confirm'
+  }
+
   switch (currentStep) {
     case OmniSidebarStep.Risk:
       return 'i-understand'

@@ -42,7 +42,14 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
       elements: { riskSidebar },
     },
   } = useOmniProductContext(OmniProductType.Borrow)
-
+  console.log(
+    'supportedMultiplyTokens',
+    isPoolSupportingMultiply({
+      collateralToken,
+      quoteToken,
+      supportedTokens: supportedMultiplyTokens[networkId],
+    }),
+  )
   return (
     <OmniFormView
       {...(!isOpening && {

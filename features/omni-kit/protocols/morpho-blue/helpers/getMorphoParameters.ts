@@ -1,13 +1,17 @@
 import type {
+  MorphoAdjustMultiplyPayload,
   MorphoBlueCommonDependencies,
   MorphoblueDepositBorrowPayload,
   MorphoBluePosition,
+  MorphoMultiplyDependencies,
+  MorphoOpenMultiplyPayload,
   Network,
 } from '@oasisdex/dma-library'
+import { RiskRatio } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import type { ethers } from 'ethers'
-import { omniNetworkMap } from 'features/omni-kit/constants'
+import { omniNetworkMap, omniSwapVersionMap } from 'features/omni-kit/constants'
 import {
   getMaxIncreasedOrDecreasedValue,
   MaxValueResolverMode,
@@ -17,9 +21,16 @@ import {
   morphoActionOpenBorrow,
   morphoActionPaybackWithdraw,
 } from 'features/omni-kit/protocols/morpho-blue/actions/borrow'
+import {
+  morphoActionAdjust,
+  morphoActionOpenMultiply,
+} from 'features/omni-kit/protocols/morpho-blue/actions/multiply'
 import { getMorphoCumulatives } from 'features/omni-kit/protocols/morpho-blue/helpers/getMorphoCumulatives'
+import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
 import type { OmniFormState, OmniSupportedNetworkIds } from 'features/omni-kit/types'
-import { OmniBorrowFormAction } from 'features/omni-kit/types'
+import { OmniBorrowFormAction, OmniMultiplyFormAction } from 'features/omni-kit/types'
+import { getOneInchCall } from 'helpers/swap'
+import { zero } from 'helpers/zero'
 
 export const getMorphoParameters = async ({
   state,
@@ -33,6 +44,7 @@ export const getMorphoParameters = async ({
   collateralPrice,
   quotePrecision,
   quotePrice,
+  slippage,
 }: {
   state: OmniFormState
   rpcProvider: ethers.providers.Provider
@@ -45,6 +57,7 @@ export const getMorphoParameters = async ({
   collateralPrice: BigNumber
   quotePrice: BigNumber
   quotePrecision: number
+  slippage: BigNumber
 }) => {
   const defaultPromise = Promise.resolve(undefined)
 
@@ -71,7 +84,7 @@ export const getMorphoParameters = async ({
   const dependencies: MorphoBlueCommonDependencies = {
     provider: rpcProvider,
     network: omniNetworkMap[networkId] as Network,
-    getCumulatives: getMorphoCumulatives(),
+    getCumulatives: getMorphoCumulatives(networkId),
     operationExecutor: addressesConfig.operationExecutor.address, // duplicated
     addresses: {
       morphoblue: addressesConfig.morphoBlue.address,
@@ -86,6 +99,58 @@ export const getMorphoParameters = async ({
         WSTETH: addressesConfig.tokens.WSTETH.address,
       },
     },
+  }
+
+  const commonMultiplyPayload: MorphoOpenMultiplyPayload = {
+    collateralPriceUSD: collateralPrice,
+    quotePriceUSD: quotePrice,
+    marketId: position.marketParams.id,
+    dpmProxyAddress: dpmAddress,
+    collateralTokenPrecision: collateralPrecision,
+    quoteTokenPrecision: quotePrecision,
+    riskRatio: new RiskRatio(
+      (state as OmniMultiplyFormState)?.loanToValue || zero,
+      RiskRatio.TYPE.LTV,
+    ),
+    collateralAmount: state.depositAmount || zero,
+    slippage,
+    user: walletAddress,
+  }
+
+  const multiplyDependencies: MorphoMultiplyDependencies = {
+    provider: rpcProvider,
+    operationExecutor: addressesConfig.operationExecutor.address,
+    getCumulatives: getMorphoCumulatives(networkId),
+    getSwapData: getOneInchCall(
+      getNetworkContracts(networkId).swapAddress,
+      networkId,
+      omniSwapVersionMap[networkId],
+    ),
+    morphoAddress: addressesConfig.morphoBlue.address,
+    network: omniNetworkMap[networkId] as Network,
+    addresses: {
+      WETH: addressesConfig.tokens.WETH.address,
+      DAI: addressesConfig.tokens.DAI.address,
+      ETH: addressesConfig.tokens.ETH_ACTUAL.address,
+      USDC: addressesConfig.tokens.USDC.address,
+      USDT: addressesConfig.tokens.USDT.address,
+      WBTC: addressesConfig.tokens.WBTC.address,
+      WSTETH: addressesConfig.tokens.WSTETH.address,
+    },
+  }
+
+  const multiplyAdjustPayload: MorphoAdjustMultiplyPayload = {
+    riskRatio: new RiskRatio(
+      (state as OmniMultiplyFormState)?.loanToValue || zero,
+      RiskRatio.TYPE.LTV,
+    ),
+    collateralAmount: state.depositAmount || state.withdrawAmount || zero,
+    slippage,
+    position,
+    quoteTokenPrecision: quotePrecision,
+    collateralTokenPrecision: collateralPrecision,
+    user: walletAddress,
+    dpmProxyAddress: dpmAddress,
   }
 
   switch (action) {
@@ -150,6 +215,20 @@ export const getMorphoParameters = async ({
         commonPayload,
         dependencies,
         quoteBalance,
+      })
+    }
+    case OmniMultiplyFormAction.OpenMultiply: {
+      return morphoActionOpenMultiply({
+        state,
+        commonPayload: commonMultiplyPayload,
+        dependencies: multiplyDependencies,
+      })
+    }
+    case OmniMultiplyFormAction.AdjustMultiply: {
+      return morphoActionAdjust({
+        state,
+        commonPayload: multiplyAdjustPayload,
+        dependencies: multiplyDependencies,
       })
     }
     default:
