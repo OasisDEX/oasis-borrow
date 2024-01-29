@@ -1,6 +1,7 @@
 import type { TokenConfig } from 'blockchain/TokenConfig'
 import {
   aave_circle_color,
+  ajna_circle_color,
   arb,
   arb_circle,
   bal,
@@ -777,6 +778,33 @@ export const tokenConfigs: TokenConfig[] = [
     rootToken: 'ETH',
     tags: [],
   },
+  {
+    symbol: 'AJNA',
+    precision: 18,
+    digits: 5,
+    name: 'AjnaToken',
+    icon: ajna_circle_color,
+    iconCircle: ajna_circle_color,
+    coinGeckoTicker: 'ajna-protocol',
+    coinbaseTicker: '',
+    color: '#b49bff',
+    rootToken: 'AJNA',
+    tags: [],
+  },
+  // TODO update icon
+  // {
+  //   symbol: 'RBN',
+  //   precision: 18,
+  //   digits: 5,
+  //   name: 'Ribbon',
+  //   icon: styeth_circle_color,
+  //   iconCircle: styeth_circle_color,
+  //   coinGeckoTicker: 'ribbon-finance',
+  //   coinbaseTicker: '',
+  //   color: '#b49bff',
+  //   rootToken: 'RBN',
+  //   tags: [],
+  // },
   ...deprecatedTokens.map((deprecatedToken) => ({
     symbol: deprecatedToken,
     precision: 18,
