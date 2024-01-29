@@ -1,4 +1,5 @@
 import { useActor } from '@xstate/react'
+import { NetworkIds } from 'blockchain/networks'
 import { MessageCard } from 'components/MessageCard'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
@@ -20,16 +21,39 @@ import { SidebarAdjustStopLossEditingStage } from 'features/automation/protectio
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
-import { useAppConfig } from 'helpers/config'
+import { getLocalAppConfig, useAppConfig } from 'helpers/config'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
 import { Box, Flex, Grid, Image } from 'theme-ui'
+import type { FeaturesEnum } from 'types/config'
 import type { Sender, StateFrom } from 'xstate'
 
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
+
+function getLambdaProtectionFlag(networkId: NetworkIds, features: Record<FeaturesEnum, boolean>) {
+  const {
+    AaveV3ProtectionLambdaArbitrum,
+    AaveV3ProtectionLambdaBase,
+    AaveV3ProtectionLambdaEthereum,
+    AaveV3ProtectionLambdaOptimism,
+  } = features
+
+  switch (networkId) {
+    case NetworkIds.OPTIMISMMAINNET:
+      return AaveV3ProtectionLambdaOptimism
+    case NetworkIds.ARBITRUMMAINNET:
+      return AaveV3ProtectionLambdaArbitrum
+    case NetworkIds.MAINNET:
+      return AaveV3ProtectionLambdaEthereum
+    case NetworkIds.BASEMAINNET:
+      return AaveV3ProtectionLambdaBase
+    default:
+      return false
+  }
+}
 
 function isLoading(state: StateFrom<OpenAaveStateMachine>) {
   return state.matches('background.loading')
@@ -383,6 +407,10 @@ function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
   return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
 }
 
+export function AaveOpenPositionStopLossLambda(_props: OpenAaveStateProps) {
+  return <div>new stop loss sidebar</div>
+}
+
 export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
   const { stopLossSidebarProps } = getAaveStopLossData(state.context, send)
@@ -422,6 +450,10 @@ export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveSta
 export function SidebarOpenAaveVault() {
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
+  const lambdaProtectionFlag = getLambdaProtectionFlag(
+    state.context.strategyConfig.networkId,
+    getLocalAppConfig('features'),
+  )
 
   function loading(): boolean {
     return isLoading(state)
@@ -447,7 +479,11 @@ export function SidebarOpenAaveVault() {
         />
       )
     case state.matches('frontend.optionalStopLoss'):
-      return <AaveOpenPositionStopLoss state={state} send={send} isLoading={loading} />
+      return lambdaProtectionFlag ? (
+        <AaveOpenPositionStopLossLambda state={state} send={send} isLoading={loading} />
+      ) : (
+        <AaveOpenPositionStopLoss state={state} send={send} isLoading={loading} />
+      )
     case state.matches('frontend.reviewing'):
       return <OpenAaveReviewingStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txInProgress'):
