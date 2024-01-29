@@ -2,14 +2,27 @@ import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import { MarketingTemplateMarkdown } from 'features/marketing-layouts/components'
 import { renderCssGradient } from 'features/marketing-layouts/helpers'
-import type { MarketingTemplateProductBoxProps } from 'features/marketing-layouts/types'
+import type {
+  MarketingTemplatePalette,
+  MarketingTemplateProductBoxProps,
+} from 'features/marketing-layouts/types'
 import React, { type FC } from 'react'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Box, Flex, Heading, Image, Text } from 'theme-ui'
 
 export const MarketingTemplateProductBox: FC<
-  MarketingTemplateProductBoxProps & { background: [string, string, ...string[]]; index: number }
-> = ({ actionsList, background, composition, description, index, image, link, title, type }) => {
+  MarketingTemplateProductBoxProps & { index: number; palette: MarketingTemplatePalette }
+> = ({
+  actionsList,
+  composition,
+  description,
+  image,
+  index,
+  link,
+  palette: { background },
+  title,
+  type,
+}) => {
   const isMobile = useOnMobile()
   const isNarrow = composition === 'narrow' || isMobile
 

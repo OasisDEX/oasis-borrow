@@ -1,6 +1,7 @@
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { SimpleCarousel } from 'components/SimpleCarousel'
 import {
+  MarketingTemplateBanner,
   MarketingTemplateBenefitBox,
   MarketingTemplateHeading,
   MarketingTemplateInfoBox,
@@ -34,9 +35,11 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
     productHub: { table },
   } = usePreloadAppDataContext()
 
-  const { background, foreground } = palette
+  const { foreground } = palette
 
   switch (type) {
+    case 'banner':
+      return <MarketingTemplateBanner palette={palette} {...content} />
     case 'benefit-box':
       return (
         <SimpleCarousel
@@ -76,12 +79,7 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
           }}
         >
           {content.map((productBox, i) => (
-            <MarketingTemplateProductBox
-              key={i}
-              background={background}
-              index={i}
-              {...productBox}
-            />
+            <MarketingTemplateProductBox key={i} index={i} palette={palette} {...productBox} />
           ))}
         </Grid>
       )
