@@ -17,9 +17,9 @@ export interface MarketingTemplateHeroProps {
     url: string
     label: string
   }
-  protocol?: LendingProtocol[]
+  protocol?: LendingProtocol | LendingProtocol[]
   title: string
-  token?: string[]
+  token?: string | string[]
 }
 
 export interface MarketingTemplateBlock {
