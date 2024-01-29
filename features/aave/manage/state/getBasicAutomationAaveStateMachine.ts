@@ -150,16 +150,25 @@ const ensureValidContextForTransaction = <Trigger extends BasicAutoTrigger>(
   )
 }
 
-const getPriceFromDecodedParam = (trigger: BasicAutoTrigger | undefined) => {
+const MAX_UINT_256 =
+  '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+
+const getPriceFromDecodedParam = (trigger: BasicAutoTrigger | undefined): string | undefined => {
   if (trigger?.decodedParams === undefined) {
     return undefined
   }
 
   if ('maxBuyPrice' in trigger.decodedParams) {
+    if (trigger.decodedParams.maxBuyPrice === MAX_UINT_256) {
+      return undefined
+    }
     return trigger.decodedParams.maxBuyPrice
   }
 
   if ('minSellPrice' in trigger.decodedParams) {
+    if (trigger.decodedParams.minSellPrice === '0') {
+      return undefined
+    }
     return trigger.decodedParams.minSellPrice
   }
 
@@ -172,20 +181,22 @@ const getDefaults = (
   BasicAutomationAaveContext<BasicAutoTrigger>,
   'executionTriggerLTV' | 'targetTriggerLTV' | 'price' | 'maxGasFee' | 'usePrice'
 > => {
+  const price = parsePriceFromDecodedParam(
+    getPriceFromDecodedParam(context.currentTrigger),
+    context.position?.debt.token.decimals,
+  )
+
   return {
     maxGasFee:
       getMaxGasFeeFromDecodedParam(context.currentTrigger?.decodedParams.maxBaseFeeInGwei) ?? 300,
-    usePrice: true,
+    usePrice: price !== undefined,
     executionTriggerLTV:
       getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.executionLtv) ??
       context.defaults.executionTriggerLTV,
     targetTriggerLTV:
       getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.targetLtv) ??
       context.defaults.targetTriggerLTV,
-    price: parsePriceFromDecodedParam(
-      getPriceFromDecodedParam(context.currentTrigger),
-      context.position?.debt.token.decimals,
-    ),
+    price: price,
   }
 }
 
