@@ -1,4 +1,4 @@
-import { useActor } from '@xstate/react'
+import { useActor, useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { AutoSellBanner } from 'features/aave/components/banners'
@@ -12,7 +12,7 @@ import {
 import { AutoSellSidebarAaveVault } from 'features/aave/manage/sidebars/AutoSellSidebarAaveVault'
 import type { AutoSellTriggerAaveContext } from 'features/aave/manage/state'
 import { isAutoSellEnabled } from 'features/aave/manage/state'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 function getAutoSellDetailsLayoutProps(
   context: AutoSellTriggerAaveContext,
@@ -55,10 +55,19 @@ export function ProtectionControlWrapper() {
   const [triggersState, sendTriggerEvent] = useActor(triggersStateMachine)
   const [autoSellState, sendAutoSellEvent] = useActor(triggersState.context.autoSellTrigger)
 
+  const shouldLoadTriggers = useSelector(triggersState.context.autoSellTrigger, (selector) =>
+    selector.matches('txDone'),
+  )
+
   const autoSellDetailsLayoutProps = getAutoSellDetailsLayoutProps(
     autoSellState.context,
     !autoSellState.matches('idle'),
   )
+
+  useEffect(() => {
+    sendTriggerEvent({ type: 'TRANSACTION_DONE' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldLoadTriggers])
 
   const dropdown = useProtectionSidebarDropdown(triggersState, sendTriggerEvent)
 

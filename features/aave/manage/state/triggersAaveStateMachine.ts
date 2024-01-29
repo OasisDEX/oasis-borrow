@@ -119,12 +119,6 @@ export const triggersAaveStateMachine = createMachine(
     entry: [],
     id: 'triggersStateMachine',
     initial: 'loading',
-    // invoke: [
-    //   {
-    //     src: 'checkTheTransactions',
-    //     id: 'checkTheTransactions',
-    //   },
-    // ],
     states: {
       idle: {
         on: {
@@ -304,24 +298,6 @@ export const triggersAaveStateMachine = createMachine(
         }
         return await getTriggersRequest({ dpm, networkId: strategyConfig.networkId })
       },
-      // checkTheTransactions: (context) => (callback) => {
-      //   const autoSellTriggerListener = context.autoSellTrigger.subscribe((state) => {
-      //     if (state.matches('txDone')) {
-      //       callback({ type: 'TRANSACTION_DONE' })
-      //     }
-      //   })
-      //
-      //   const autoBuyTriggerListener = context.autoBuyTrigger.subscribe((state) => {
-      //     if (state.matches('txDone')) {
-      //       callback({ type: 'TRANSACTION_DONE' })
-      //     }
-      //   })
-      //
-      //   return () => {
-      //     autoSellTriggerListener.unsubscribe()
-      //     autoBuyTriggerListener.unsubscribe()
-      //   }
-      // },
     },
   },
 )
