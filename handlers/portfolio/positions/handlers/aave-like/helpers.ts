@@ -7,6 +7,7 @@ import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import { getSparkV3ReserveConfigurationData, getSparkV3ReserveData } from 'blockchain/spark-v3'
 import type { OmniProductBorrowishType } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
+import type { AaveLikeOraclePriceData } from 'handlers/portfolio/positions/handlers/aave-like/types'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import {
   getBorrowishPositionType,
@@ -63,6 +64,8 @@ interface CommonDataMapperParams {
   positionIdAsString?: boolean
   prices: TokensPricesList
   apiVaults?: Vault[]
+  allOraclePrices?: AaveLikeOraclePriceData
+  debug?: boolean
 }
 
 export const commonDataMapper = ({
@@ -71,9 +74,21 @@ export const commonDataMapper = ({
   positionIdAsString,
   prices,
   apiVaults,
+  allOraclePrices,
+  debug,
 }: CommonDataMapperParams) => {
   const primaryToken = getTokenName(dpm.networkId, dpm.collateralToken)
   const secondaryToken = getTokenName(dpm.networkId, dpm.debtToken)
+  // these token prices are separated for debugging purposes
+  const primaryTokenOraclePrice = allOraclePrices?.find(
+    (oraclePrice) => oraclePrice?.tokenSymbol.toLowerCase() === primaryToken.toLowerCase(),
+  )?.price
+  const primaryTokenTickerPrice = new BigNumber(prices[primaryToken])
+  const secondaryTokenOraclePrice = allOraclePrices?.find(
+    (oraclePrice) => oraclePrice?.tokenSymbol.toLowerCase() === secondaryToken.toLowerCase(),
+  )?.price
+  const secondaryTokenTickerPrice = new BigNumber(prices[secondaryToken])
+
   const protocol = {
     AAVE_V3: LendingProtocol.AaveV3,
     Spark: LendingProtocol.SparkV3,
@@ -121,7 +136,48 @@ export const commonDataMapper = ({
           }),
       },
     },
-    primaryTokenPrice: new BigNumber(prices[primaryToken]),
-    secondaryTokenPrice: new BigNumber(prices[secondaryToken]),
+    primaryTokenPrice: primaryTokenOraclePrice || primaryTokenTickerPrice,
+    secondaryTokenPrice: secondaryTokenOraclePrice || secondaryTokenTickerPrice,
+    ...(debug && {
+      primaryTokenOraclePrice,
+      primaryTokenTickerPrice,
+      secondaryTokenOraclePrice,
+      secondaryTokenTickerPrice,
+      primaryTokenOraclePriceMissing: !primaryTokenOraclePrice,
+      secondaryTokenOraclePriceMissing: !secondaryTokenOraclePrice,
+    }),
   }
 }
+
+export const aaveLikeProtocolNames = {
+  [LendingProtocol.AaveV3]: 'AAVE_V3',
+  [LendingProtocol.SparkV3]: 'Spark',
+}
+
+export const uniqueTokensReducer = (
+  acc: Record<NetworkIds, string[]>,
+  {
+    networkId,
+    debtToken,
+    collateralToken,
+  }: { networkId: NetworkIds; debtToken: string; collateralToken: string },
+) => {
+  if (!acc[networkId]) {
+    acc[networkId] = []
+  }
+  if (!acc[networkId].includes(debtToken)) {
+    acc[networkId].push(debtToken)
+  }
+  if (!acc[networkId].includes(collateralToken)) {
+    acc[networkId].push(collateralToken)
+  }
+  return acc
+}
+
+export const formatBigNumberDebugData = (data: Record<string, any>) =>
+  Object.fromEntries(
+    Object.entries(data).map(([key, value]) => [
+      key,
+      BigNumber.isBigNumber(value) ? value.toString() : value,
+    ]),
+  )
