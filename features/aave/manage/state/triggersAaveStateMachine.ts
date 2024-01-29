@@ -4,6 +4,7 @@ import { amountFromWei } from 'blockchain/utils'
 import type { ethers } from 'ethers'
 import type { IStrategyConfig } from 'features/aave/types'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { isAnyValueDefined } from 'helpers/isAnyValueDefined'
 import type { GetTriggersResponse } from 'helpers/triggers'
 import { getTriggersRequest } from 'helpers/triggers'
 import { LendingProtocol } from 'lendingProtocols'
@@ -50,10 +51,6 @@ export const areTriggersLoading = (state: StateFrom<typeof triggersAaveStateMach
   return state.matches('loading')
 }
 
-const anyOfExists = (...params: (unknown | undefined)[]): boolean => {
-  return params.some((value) => value !== undefined)
-}
-
 export const hasActiveOptimization = ({
   context,
 }: StateFrom<typeof triggersAaveStateMachine>): boolean => {
@@ -73,9 +70,9 @@ export const hasActiveProtection = ({
   } = context.currentTriggers.triggers
   switch (protocol) {
     case LendingProtocol.AaveV3:
-      return anyOfExists(aaveStopLossToCollateral, aaveStopLossToDebt, aaveBasicSell)
+      return isAnyValueDefined(aaveStopLossToCollateral, aaveStopLossToDebt, aaveBasicSell)
     case LendingProtocol.SparkV3:
-      return anyOfExists(sparkStopLossToCollateral, sparkStopLossToDebt)
+      return isAnyValueDefined(sparkStopLossToCollateral, sparkStopLossToDebt)
     case LendingProtocol.AaveV2:
       return false
   }
