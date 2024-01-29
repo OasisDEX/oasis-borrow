@@ -1,10 +1,14 @@
-import type { marketingTemplatesIcons } from 'features/marketing-layouts/icons'
 import type {
   ProductFinderPromoCardFilters,
   ProductHubProductType,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
+
+export interface MarketingTemplatePalette {
+  background: [string, string, ...string[]]
+  foreground: [string, string, ...string[]]
+}
 
 export interface MarketingTemplateHeroProps {
   description: string
@@ -17,18 +21,8 @@ export interface MarketingTemplateHeroProps {
   title: string
   token?: string[]
 }
-export interface MarketingTemplateBenefitBoxProps {
-  description?: string
-  icon: keyof typeof marketingTemplatesIcons
-  list?: string[]
-  title: string
-}
-export interface MarketingTemplatePalette {
-  background: [string, string, ...string[]]
-  foreground: [string, string, ...string[]]
-}
 
-interface MarketingTemplateBlock {
+export interface MarketingTemplateBlock {
   subtitle?: string
   title?: string
   description?: string
@@ -89,7 +83,19 @@ interface MarketingTemplateProductBoxBlock extends MarketingTemplateBlock {
   content: MarketingTemplateProductBoxProps[]
 }
 
+export interface MarketingTemplateBenefitBoxProps {
+  description: string
+  icon: string
+  title: string
+}
+
+interface MarketingTemplateBeneftBoxBlock extends MarketingTemplateBlock {
+  type: 'benefit-box'
+  content: MarketingTemplateBenefitBoxProps[]
+}
+
 export type MarketingTemplateProductFinderBlocks =
+  | MarketingTemplateBeneftBoxBlock
   | MarketingTemplateInfoBoxBlock
   | MarketingTemplateProductBoxBlock
   | MarketingTemplateProductFinderBlock

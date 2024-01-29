@@ -6,7 +6,7 @@ import {
   MarketingTemplateBenefitBox,
   MarketingTemplateHero,
   MarketingTemplateInfoBox,
-  MarketingTemplateProduct,
+  MarketingTemplateProductBox,
 } from 'features/marketing-layouts/components'
 import { getGridTemplateAreas } from 'features/marketing-layouts/helpers'
 import type { MarketingTemplatePageProps } from 'features/marketing-layouts/types'
@@ -88,7 +88,7 @@ function BetterOnSummerPage({
           }}
         >
           {products.map((product, i) => (
-            <MarketingTemplateProduct key={i} index={i} {...palette} {...product} />
+            <MarketingTemplateProductBox key={i} index={i} {...palette} {...product} />
           ))}
         </Grid>
         <SimpleCarousel

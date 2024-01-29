@@ -6,7 +6,7 @@ import React, { type FC } from 'react'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Box, Flex, Heading, Image, Text } from 'theme-ui'
 
-export const MarketingTemplateProduct: FC<
+export const MarketingTemplateProductBox: FC<
   MarketingTemplateProductBoxProps & { background: [string, string, ...string[]]; index: number }
 > = ({ actionsList, background, composition, description, index, image, link, title, type }) => {
   const isMobile = useOnMobile()

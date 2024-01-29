@@ -1,5 +1,6 @@
 export * from './IconWithPalette'
 export * from './MarketingTemplateBenefitBox'
+export * from './MarketingTemplateHeading'
 export * from './MarketingTemplateHero'
 export * from './MarketingTemplateInfoBox'
-export * from './MarketingTemplateProduct'
+export * from './MarketingTemplateProductBox'
