@@ -81,7 +81,6 @@ export type LibraryCallDelegate<T> = (parameters: T) => Promise<LibraryCallRetur
 
 export function createTransactionParametersStateMachine<T extends BaseTransactionParameters>(
   txHelpers$: Observable<TxHelpers>,
-  gasEstimation$: (gas: number) => Observable<HasGasEstimation>,
   libraryCall: LibraryCallDelegate<T>,
   networkId: NetworkIds,
   transactionType: 'open' | 'close' | 'adjust' | 'depositBorrow' | 'openDepositBorrow' | 'types',
@@ -262,20 +261,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               )
           }
         },
-        estimateGasPrice: ({ estimatedGas, networkId, gasEstimationResult }) => {
-          if (networkId === NetworkIds.MAINNET) {
-            if (!estimatedGas && !gasEstimationResult?.estimatedGas) {
-              throw new Error('Error estimating gas price: no gas amount.')
-            }
-            return gasEstimation$(estimatedGas || Number(gasEstimationResult!.estimatedGas)).pipe(
-              distinctUntilChanged<HasGasEstimation>(isEqual),
-              map((gasPriceEstimation) => ({
-                type: 'GAS_PRICE_ESTIMATION_CHANGED',
-                estimatedGasPrice: gasPriceEstimation,
-              })),
-            )
-          }
-
+        estimateGasPrice: ({ networkId, gasEstimationResult }) => {
           return fromPromise(getTransactionFee({ ...gasEstimationResult, networkId })).pipe(
             map((transactionFee) => {
               if (!transactionFee) {
@@ -326,14 +312,9 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
 }
 
 class TransactionParametersStateMachineTypes<T extends BaseTransactionParameters> {
-  withConfig(
-    txHelpers$: Observable<TxHelpers>,
-    gasEstimation$: (gas: number) => Observable<HasGasEstimation>,
-    libraryCall: LibraryCallDelegate<T>,
-  ) {
+  withConfig(txHelpers$: Observable<TxHelpers>, libraryCall: LibraryCallDelegate<T>) {
     return createTransactionParametersStateMachine<T>(
       txHelpers$,
-      gasEstimation$,
       libraryCall,
       NetworkIds.MAINNET,
       'types',

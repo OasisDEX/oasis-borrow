@@ -7,17 +7,14 @@ import type { NetworkIds } from 'blockchain/networks'
 import type { TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
-import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import type { Observable } from 'rxjs'
 
 export function getOpenAaveParametersMachine(
   txHelpers$: Observable<TxHelpers>,
-  gasPriceEstimation$: (gas: number) => Observable<HasGasEstimation>,
   networkId: NetworkIds,
 ): TransactionParametersStateMachine<OpenAaveParameters> {
   return createTransactionParametersStateMachine(
     txHelpers$,
-    gasPriceEstimation$,
     async (parameters: OpenAaveParameters) => {
       try {
         if (parameters.positionType === 'Borrow')
