@@ -20,7 +20,7 @@ export const MarketingTemplateView: FC<MarketingTemplateViewProps> = ({
       {blocks.map((block, i) => (
         <Box key={i} sx={{ mt: 7 }}>
           {block.type !== 'benefit-box' && (
-            <Box sx={{ mb: 5, px: 6, textAlign: 'center' }}>
+            <Box sx={{ mb: 5, px: [0, null, 5, 6], textAlign: ['left', 'center'] }}>
               <MarketingTemplateHeading
                 palette={palette}
                 description={block.description}
