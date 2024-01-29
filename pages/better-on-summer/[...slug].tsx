@@ -167,24 +167,24 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
             icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-4.png'),
             title: 'Never lose another nights sleep',
             description:
-              'Automated risk management tools protect your positions from liquidation. ',
+              'Automated risk management tools protect your positions from liquidation.\n- Stop-Loss\n- Auto Sell',
           },
           {
             icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-5.png'),
             title: 'Bundling is better',
             description:
-              'Stop wasting time doing common actions repetitively just to achieve a simple goal. Summer.fi takes care of the convenience so you can just focus on your assets.',
+              'Stop wasting time doing common actions repetitively just to achieve a simple goal. Summer.fi takes care of the convenience so you can just focus on your assets.\n- One click actions for all your most common and annoying transactions\n- Bundled transactions',
           },
           {
             icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-6.png'),
             title: 'Set and forget your strategy',
             description:
-              'Automated tools allow you to convenience of your strategy once, and summer.fi super powers do the work.',
+              'Automated tools allow you to convenience of your strategy once, and summer.fi super powers do the work.\n- Auto Buy\n- Take Profit',
           },
           {
             icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-7.png'),
             title: 'Everything you need, all in one place',
-            description: 'Lorem ipsum',
+            description: '- Unlock the superpowers of other protocols\n- View all your positions and assets at glance\n- Discover new curated DeFi opportunities\n- Swap and Bridge',
           },
         ],
       },

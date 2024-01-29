@@ -1,5 +1,6 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
+import { MarketingTemplateMarkdown } from 'features/marketing-layouts/components'
 import { renderCssGradient } from 'features/marketing-layouts/helpers'
 import type { MarketingTemplateProductBoxProps } from 'features/marketing-layouts/types'
 import React, { type FC } from 'react'
@@ -47,9 +48,7 @@ export const MarketingTemplateProductBox: FC<
           <Heading as="h3" variant="header4" sx={{ mt: 1, mb: 2 }}>
             {title}
           </Heading>
-          <Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>
-            {description}
-          </Text>
+          <MarketingTemplateMarkdown content={description} />
           {link && (
             <AppLink href={link.url} sx={{ display: 'inline-block', mt: 3 }}>
               <WithArrow sx={{ fontSize: 3, color: 'interactive100' }}>{link.label}</WithArrow>

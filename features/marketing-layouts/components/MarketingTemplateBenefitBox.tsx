@@ -1,6 +1,7 @@
+import { MarketingTemplateMarkdown } from 'features/marketing-layouts/components'
 import type { MarketingTemplateBenefitBoxProps } from 'features/marketing-layouts/types'
 import React, { type FC } from 'react'
-import { Box, Heading, Image, Text } from 'theme-ui'
+import { Box, Heading, Image } from 'theme-ui'
 
 export const MarketingTemplateBenefitBox: FC<MarketingTemplateBenefitBoxProps> = ({
   description,
@@ -22,9 +23,7 @@ export const MarketingTemplateBenefitBox: FC<MarketingTemplateBenefitBoxProps> =
       <Heading as="h4" variant="header4" sx={{ my: 3 }}>
         {title}
       </Heading>
-      <Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>
-        {description}
-      </Text>
+      <MarketingTemplateMarkdown content={description} />
     </Box>
   )
 }

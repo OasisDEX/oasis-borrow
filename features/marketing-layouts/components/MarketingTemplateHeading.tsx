@@ -1,3 +1,4 @@
+import { MarketingTemplateMarkdown } from 'features/marketing-layouts/components'
 import { renderCssGradient } from 'features/marketing-layouts/helpers'
 import type {
   MarketingTemplateBlock,
@@ -5,7 +6,7 @@ import type {
 } from 'features/marketing-layouts/types'
 import { getGradientColor } from 'helpers/getGradientColor'
 import React, { type FC } from 'react'
-import { Heading, Text } from 'theme-ui'
+import { Box,Heading } from 'theme-ui'
 
 export const MarketingTemplateHeading: FC<
   MarketingTemplateBlock & { palette: MarketingTemplatePalette }
@@ -29,13 +30,9 @@ export const MarketingTemplateHeading: FC<
             </Heading>
           )}
           {description && (
-            <Text
-              as="p"
-              variant="paragraph2"
-              sx={{ mt: subtitle || title ? '24px' : 0, color: 'neutral80' }}
-            >
-              {description}
-            </Text>
+            <Box sx={{ mt: subtitle || title ? '24px' : 0 }}>
+              <MarketingTemplateMarkdown content={description} />
+            </Box>
           )}
         </>
       )}
