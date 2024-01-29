@@ -88,7 +88,6 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
         '7Days',
       ]),
     ])
-    console.log('yields', yields)
     const calculations = calculateViewValuesForPosition(
       stEthPosition,
       primaryTokenPrice,
