@@ -31,7 +31,7 @@ export const MarketingTemplateBanner: FC<
         <Heading variant="header4">{title}</Heading>
         {description && <MarketingTemplateMarkdown content={description} />}
       </Flex>
-      <AppLink variant="primary" href={url} sx={{ flexShrink: '0', px: 4 }}>
+      <AppLink variant="primary" href={url} sx={{ flexShrink: 0, px: 4 }}>
         {label} →
       </AppLink>
     </Flex>
