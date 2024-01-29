@@ -42,6 +42,11 @@ export interface MarketingTemplateBenefitBoxProps {
   title: string
 }
 
+export interface MarketingTemplatePalette {
+  background: [string, string, ...string[]]
+  foreground: [string, string, ...string[]]
+}
+
 interface MarketingTemplateBlock {
   subtitle?: string
   title?: string
@@ -62,7 +67,7 @@ interface MarketingTemplateProductFinderProps {
 
 interface MarketingTemplateProductFinderBlock extends MarketingTemplateBlock {
   type: 'product-finder'
-  block: MarketingTemplateProductFinderProps
+  content: MarketingTemplateProductFinderProps
 }
 
 export interface MarketingTemplateInfoBoxProps {
@@ -78,14 +83,15 @@ export interface MarketingTemplateInfoBoxProps {
 
 interface MarketingTemplateInfoBoxBlock extends MarketingTemplateBlock {
   type: 'info-box'
-  block: MarketingTemplateInfoBoxProps
+  content: MarketingTemplateInfoBoxProps[]
 }
 
+export type MarketingTemplateProductFinderBlocks =
+  | MarketingTemplateProductFinderBlock
+  | MarketingTemplateInfoBoxBlock
+
 export interface MarketingTemplateFreeform {
-  blocks: (MarketingTemplateProductFinderBlock | MarketingTemplateInfoBoxBlock)[]
+  blocks: MarketingTemplateProductFinderBlocks[]
   hero: MarketingTemplateHeroProps
-  palette: {
-    background: [string, string, ...string[]]
-    foreground: [string, string, ...string[]]
-  }
+  palette: MarketingTemplatePalette
 }

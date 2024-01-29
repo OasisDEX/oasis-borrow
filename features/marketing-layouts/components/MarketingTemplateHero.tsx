@@ -18,8 +18,15 @@ export const MarketingTemplateHero: FC<MarketingTemplateHeroProps> = ({
   const tokens = isArray(token) ? token : [token]
 
   return (
-    <Flex sx={{ flexDirection: ['column', null, 'row'], rowGap: '48px', columnGap: 5 }}>
-      <Box sx={{ flex: '1 1 0', my: [0, null, '48px', 6] }}>
+    <Flex
+      sx={{
+        flexDirection: ['column', null, 'row'],
+        alignItems: 'center',
+        rowGap: '48px',
+        columnGap: 5,
+      }}
+    >
+      <Box sx={{ flex: '1 1 0' }}>
         {protocols.length + tokens.length > 0 && (
           <Flex as="ul" sx={{ gap: 1, m: 0, p: 0, listStyle: 'none' }}>
             {protocols.map((_protocol) => (
