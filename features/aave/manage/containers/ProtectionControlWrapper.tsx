@@ -65,7 +65,9 @@ export function ProtectionControlWrapper() {
   )
 
   useEffect(() => {
-    sendTriggerEvent({ type: 'TRANSACTION_DONE' })
+    if (shouldLoadTriggers) {
+      sendTriggerEvent({ type: 'TRANSACTION_DONE' })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldLoadTriggers])
 
