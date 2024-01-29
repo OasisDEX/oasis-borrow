@@ -17,31 +17,12 @@ export interface MarketingTemplateHeroProps {
   title: string
   token?: string[]
 }
-
-export interface MarketingTemplateProductsProps {
-  actionsList?: {
-    icon: keyof typeof marketingTemplatesIcons
-    label: string
-    description?: string
-  }[]
-  composition: 'narrow' | 'wide'
-  description: string
-  image?: string
-  link?: {
-    url: string
-    label: string
-  }
-  title: string
-  type: string
-}
-
 export interface MarketingTemplateBenefitBoxProps {
   description?: string
   icon: keyof typeof marketingTemplatesIcons
   list?: string[]
   title: string
 }
-
 export interface MarketingTemplatePalette {
   background: [string, string, ...string[]]
   foreground: [string, string, ...string[]]
@@ -86,9 +67,32 @@ interface MarketingTemplateInfoBoxBlock extends MarketingTemplateBlock {
   content: MarketingTemplateInfoBoxProps[]
 }
 
+export interface MarketingTemplateProductBoxProps {
+  actionsList?: {
+    icon: string
+    label: string
+    description?: string
+  }[]
+  composition: 'narrow' | 'wide'
+  description: string
+  image?: string
+  link?: {
+    url: string
+    label: string
+  }
+  title: string
+  type: string
+}
+
+interface MarketingTemplateProductBoxBlock extends MarketingTemplateBlock {
+  type: 'product-box'
+  content: MarketingTemplateProductBoxProps[]
+}
+
 export type MarketingTemplateProductFinderBlocks =
-  | MarketingTemplateProductFinderBlock
   | MarketingTemplateInfoBoxBlock
+  | MarketingTemplateProductBoxBlock
+  | MarketingTemplateProductFinderBlock
 
 export interface MarketingTemplateFreeform {
   blocks: MarketingTemplateProductFinderBlocks[]

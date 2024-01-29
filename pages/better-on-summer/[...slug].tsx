@@ -102,6 +102,62 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
           },
         ],
       },
+      {
+        type: 'product-box',
+        title: 'The simplest way Borrow stables and Multiply your crypto',
+        content: [
+          {
+            composition: 'narrow',
+            type: 'Borrow',
+            title: 'Get liquidity from your crypto without selling',
+            description:
+              "Borrow vaults on AAVE allow you to use your crypto as collateral and borrow other assets, usually stablecoin's. Meaning you can get access to dollar-like assets without selling a thing.",
+            link: {
+              label: 'Borrow',
+              url: '/',
+            },
+            image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-product-1.png'),
+          },
+          {
+            composition: 'narrow',
+            type: 'Multiply',
+            title: 'Increase your exposure to your crypto and amplify your profits',
+            description:
+              'Multiply vaults allow you to increase your exposure to your collateral in a single click. Saving you time and gas costs.',
+            image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-product-2.png'),
+            link: {
+              label: 'Multiply',
+              url: '/',
+            },
+          },
+          {
+            composition: 'wide',
+            type: 'Staking',
+            title: 'Seamless Staking Yield, but Enhanced with Summer.fi Superpowers',
+            description:
+              'Summer.fi makes it easy to enhance your staking returns up to 8x on compound, with our Yield Loop strategy, all from a custom dashboard with advanced analytics and made simple with one click management. ',
+            link: {
+              label: 'Staking',
+              url: '/',
+            },
+            actionsList: [
+              {
+                icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-1.png'),
+                label: 'Deposit ETH or stETH',
+              },
+              {
+                icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-2.png'),
+                label: 'Adjust your risk',
+              },
+              {
+                icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-3.png'),
+                label: 'Loop borrowing ETH ',
+                description: 'Abstracted away all with a single click',
+              },
+            ],
+          },
+        ],
+      },
     ],
   }
 

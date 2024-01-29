@@ -1,5 +1,9 @@
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
-import { MarketingTemplateInfoBox } from 'features/marketing-layouts/components'
+import {
+  MarketingTemplateInfoBox,
+  MarketingTemplateProduct,
+} from 'features/marketing-layouts/components'
+import { getGridTemplateAreas } from 'features/marketing-layouts/helpers'
 import type {
   MarketingTemplatePalette,
   MarketingTemplateProductFinderBlocks,
@@ -8,7 +12,7 @@ import { ProductHubPromoCardsList } from 'features/productHub/components/Product
 import { getGenericPromoCard } from 'features/productHub/helpers'
 import { ProductHubView } from 'features/productHub/views'
 import { type FC } from 'react'
-import { Flex } from 'theme-ui'
+import { Flex, Grid } from 'theme-ui'
 
 type MarketingTemplateBlockViewProps = {
   block: MarketingTemplateProductFinderBlocks
@@ -17,7 +21,7 @@ type MarketingTemplateBlockViewProps = {
 
 export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = ({
   block,
-  palette: { foreground },
+  palette: { background, foreground },
 }) => {
   const {
     productHub: { table },
@@ -33,6 +37,20 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
             <MarketingTemplateInfoBox key={i} {...infoBox} />
           ))}
         </Flex>
+      )
+    case 'product-box':
+      return (
+        <Grid
+          sx={{
+            gap: 3,
+            gridTemplateColumns: ['100%', 'unset'],
+            gridTemplateAreas: ['unset', getGridTemplateAreas(block.content)],
+          }}
+        >
+          {block.content.map((productBox, i) => (
+            <MarketingTemplateProduct key={i} background={background} index={i} {...productBox} />
+          ))}
+        </Grid>
       )
     case 'product-finder':
       const promoCards = table
