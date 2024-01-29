@@ -6,7 +6,7 @@ import type {
 } from 'features/marketing-layouts/types'
 import { getGradientColor } from 'helpers/getGradientColor'
 import React, { type FC } from 'react'
-import { Box,Heading } from 'theme-ui'
+import { Box, Heading } from 'theme-ui'
 
 export const MarketingTemplateHeading: FC<
   MarketingTemplateBlock & { palette: MarketingTemplatePalette }

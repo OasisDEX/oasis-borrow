@@ -184,7 +184,8 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
           {
             icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-7.png'),
             title: 'Everything you need, all in one place',
-            description: '- Unlock the superpowers of other protocols\n- View all your positions and assets at glance\n- Discover new curated DeFi opportunities\n- Swap and Bridge',
+            description:
+              '- Unlock the superpowers of other protocols\n- View all your positions and assets at glance\n- Discover new curated DeFi opportunities\n- Swap and Bridge',
           },
         ],
       },
