@@ -13,6 +13,7 @@ import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import type { Observable } from 'rxjs'
+import { EMPTY } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import type { AaveContext } from './aave-context'
@@ -195,5 +196,6 @@ export function setupAaveV2Context(
     dpmAccountStateMachine,
     aaveHistory$,
     manageViewInfo$,
+    manageViewInfoExternal$: () => EMPTY, // We don't support external positions for Aave v2
   }
 }

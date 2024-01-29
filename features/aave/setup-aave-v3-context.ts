@@ -24,8 +24,8 @@ import { filter, switchMap } from 'rxjs/operators'
 
 import type { AaveContext } from './aave-context'
 import { getCommonPartsFromProductContext } from './get-common-parts-from-app-context'
-import type { ProxiesRelatedWithPosition } from './helpers'
-import { getAaveLikeStrategyConfig, getManageViewInfo } from './helpers'
+import type { AddressesRelatedWithPosition } from './helpers'
+import { getAaveLikeStrategyConfig, getManageViewInfo, getManageViewInfoExternal } from './helpers'
 import {
   getManageAaveStateMachine,
   getManageAaveV3PositionStateMachineServices,
@@ -83,7 +83,7 @@ export function setupAaveV3Context(
   const userDpms = memoize(getUserDpmProxy, (vaultId, chainId) => `${vaultId}-${chainId}`)
   const proxiesRelatedWithPosition$: (
     positionId: PositionId,
-  ) => Observable<ProxiesRelatedWithPosition> = memoize(
+  ) => Observable<AddressesRelatedWithPosition> = memoize(
     (positionId) => {
       return of(undefined).pipe(
         switchMap(async () => {
@@ -255,6 +255,19 @@ export function setupAaveV3Context(
     (args: { positionId: PositionId }) => JSON.stringify(args),
   )
 
+  const manageViewInfoExternal$ = memoize(
+    curry(getManageViewInfoExternal)({
+      strategyConfig$,
+      proxiesRelatedWithPosition$,
+      getApiVault,
+      chainId: networkId,
+      networkName: network,
+      lendingProtocol: LendingProtocol.AaveV3,
+      getExternalTokens: () => Promise.resolve({ collateral: 'ETH', debt: 'USDC' }),
+    }),
+    (args: { positionId: PositionId }) => JSON.stringify(args),
+  )
+
   return {
     ...protocolData,
     aaveStateMachine,
@@ -269,5 +282,6 @@ export function setupAaveV3Context(
     dpmAccountStateMachine,
     aaveHistory$,
     manageViewInfo$,
+    manageViewInfoExternal$,
   }
 }

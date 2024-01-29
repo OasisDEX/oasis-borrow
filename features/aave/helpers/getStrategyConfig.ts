@@ -19,13 +19,13 @@ import type { Observable } from 'rxjs'
 import { combineLatest, iif, of } from 'rxjs'
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
-import type { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
+import type { AddressesRelatedWithPosition } from './getProxiesRelatedWithPosition'
 
 export function getStrategyConfig$(
   proxiesForPosition$: (
     positionId: PositionId,
     networkId: NetworkIds,
-  ) => Observable<ProxiesRelatedWithPosition>,
+  ) => Observable<AddressesRelatedWithPosition>,
   aaveUserConfiguration$: (proxyAddress: string) => Observable<AaveUserConfigurationResults>,
   readPositionCreatedEvents$: (
     walletAddress: string,

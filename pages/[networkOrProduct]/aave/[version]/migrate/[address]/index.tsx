@@ -34,7 +34,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     return {
       props: {
         ...(await serverSideTranslations(ctx.locale!, ['common'])),
-        vault: ctx.query.vault || null,
+        address: ctx.query.address || null,
         network: networkOrProduct,
         protocol: protocol,
       },
@@ -61,12 +61,12 @@ function WithAaveStrategy({
   const { push } = useRouter()
   const { t } = useTranslation()
 
-  const { updateStrategyConfig, aaveManageStateMachine, manageViewInfo$ } = useAaveContext(
+  const { updateStrategyConfig, aaveManageStateMachine, manageViewInfoExternal$ } = useAaveContext(
     protocol,
     network,
   )
 
-  const [info, infoError] = useObservable(manageViewInfo$({ positionId }))
+  const [info, infoError] = useObservable(manageViewInfoExternal$({ positionId }))
 
   if (infoError) {
     console.warn(
@@ -135,21 +135,19 @@ function safeGetAddress(address: string | undefined) {
 }
 
 function Position({
-  vault,
+  address,
   protocol,
   network,
 }: {
-  vault: string
+  address: string
   network: NetworkNames
   protocol: AaveLendingProtocol
 }) {
   const { replace } = useRouter()
 
-  const address: string | undefined = safeGetAddress(vault)
-  const vaultId: number | undefined =
-    address !== undefined ? undefined : isNaN(Number(vault)) ? undefined : Number(vault)
+  const walletAddress: string | undefined = safeGetAddress(address)
 
-  if (address === undefined && vaultId === undefined) {
+  if (walletAddress === undefined) {
     void replace(INTERNAL_LINKS.notFound)
   }
 
@@ -161,7 +159,7 @@ function Position({
             <WithConnection>
               <WithTermsOfService>
                 <WithAaveStrategy
-                  positionId={{ walletAddress: address, vaultId }}
+                  positionId={{ walletAddress: address, vaultId: undefined, external: true }}
                   protocol={protocol}
                   network={network}
                 />

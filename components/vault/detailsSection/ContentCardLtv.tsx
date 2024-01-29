@@ -131,7 +131,7 @@ interface ContentCardLtvProps {
   liquidationThreshold: BigNumber
   maxLoanToValue?: BigNumber
   afterLoanToValue?: BigNumber
-  automation: {
+  automation?: {
     isStopLossEnabled: boolean
     isAutomationDataLoaded: boolean
     isAutomationAvailable?: boolean
@@ -147,8 +147,9 @@ export function ContentCardLtv({
   automation,
 }: ContentCardLtvProps) {
   const { t } = useTranslation()
+
   const { stopLossLevel, isStopLossEnabled, isAutomationDataLoaded, isAutomationAvailable } =
-    automation
+    automation ?? { isStopLossEnabled: false, isAutomationDataLoaded: false }
 
   const formatted = {
     loanToValue: formatDecimalAsPercent(loanToValue),
