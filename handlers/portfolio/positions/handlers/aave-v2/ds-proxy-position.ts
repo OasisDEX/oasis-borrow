@@ -11,7 +11,12 @@ import { notAvailable } from 'handlers/portfolio/constants'
 import { commonDataMapper } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import type { PortfolioPositionsHandler } from 'handlers/portfolio/types'
-import { formatDecimalAsPercent, formatUsdValue } from 'helpers/formatters/format'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatUsdValue,
+} from 'helpers/formatters/format'
+import { isZeroAddress } from 'helpers/isZeroAddress'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { getAaveStEthYield } from 'lendingProtocols/aave-v2/calculations/stEthYield'
@@ -25,7 +30,7 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
   const DsProxyContract = DsProxyFactory.connect(contracts.dsProxyRegistry.address, rpcProvider)
 
   const dsProxyAddress = await DsProxyContract.proxies(address)
-  if (!dsProxyAddress) {
+  if (!dsProxyAddress || isZeroAddress(dsProxyAddress)) {
     return {
       positions: [],
     }
@@ -118,7 +123,13 @@ export const getAaveV2DsProxyPosition: PortfolioPositionsHandler = async ({ addr
             },
             {
               type: 'earnings',
-              value: notAvailable,
+              value: `${
+                netValuePnlModalData.pnl
+                  ? `${formatCryptoBalance(netValuePnlModalData.pnl?.inToken)} ${
+                      netValuePnlModalData.pnl.pnlToken
+                    }`
+                  : notAvailable
+              }`,
             },
             {
               type: 'apy',
