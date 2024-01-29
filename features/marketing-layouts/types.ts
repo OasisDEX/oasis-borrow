@@ -5,20 +5,6 @@ import type {
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
-import type { ReactNode } from 'react'
-
-export type IconWithPaletteContents = (params: MarketingTemplateIconPalette) => ReactNode
-
-export interface MarketingTemplateIconPalette {
-  backgroundGradient: [string, string, ...string[]]
-  foregroundGradient: [string, string, ...string[]]
-  symbolGradient: [string, string, ...string[]]
-}
-
-export interface MarketingTemplatePalette {
-  mainGradient: [string, string, ...string[]]
-  icon: MarketingTemplateIconPalette
-}
 
 export interface MarketingTemplateHeroProps {
   description: string
@@ -27,19 +13,9 @@ export interface MarketingTemplateHeroProps {
     url: string
     label: string
   }
-  protocol: LendingProtocol
+  protocol?: LendingProtocol[]
   title: string
-}
-
-export interface MarketingTemplateInfoBoxProps {
-  description: string
-  image: string
-  link?: {
-    url: string
-    label: string
-  }
-  title: string
-  tokens?: string[]
+  token?: string[]
 }
 
 export interface MarketingTemplateProductsProps {
@@ -66,26 +42,50 @@ export interface MarketingTemplateBenefitBoxProps {
   title: string
 }
 
-export interface MarketingTemplatePageProps {
-  benefits: MarketingTemplateBenefitBoxProps[]
-  benefitsSubtitle: string
-  benefitsTitle: string
-  hero: MarketingTemplateHeroProps
-  infoBoxesTitle: string
-  infoBoxesDescription: string
-  infoBoxes: MarketingTemplateInfoBoxProps[]
-  palette: MarketingTemplatePalette
-  productFinder: {
-    initialNetwork?: ProductHubSupportedNetworks[]
-    initialProtocol?: LendingProtocol[]
-    product: ProductHubProductType
-    token?: string
-    promoCards: [
-      ProductFinderPromoCardFilters,
-      ProductFinderPromoCardFilters,
-      ProductFinderPromoCardFilters,
-    ]
+interface MarketingTemplateBlock {
+  subtitle?: string
+  title?: string
+  description?: string
+}
+
+interface MarketingTemplateProductFinderProps {
+  initialNetwork?: ProductHubSupportedNetworks[]
+  initialProtocol?: LendingProtocol[]
+  product: ProductHubProductType
+  promoCards: [
+    ProductFinderPromoCardFilters,
+    ProductFinderPromoCardFilters,
+    ProductFinderPromoCardFilters,
+  ]
+  token?: string
+}
+
+interface MarketingTemplateProductFinderBlock extends MarketingTemplateBlock {
+  type: 'product-finder'
+  block: MarketingTemplateProductFinderProps
+}
+
+export interface MarketingTemplateInfoBoxProps {
+  description: string
+  image: string
+  link?: {
+    url: string
+    label: string
   }
-  products: MarketingTemplateProductsProps[]
-  productsTitle: string
+  title: string
+  tokens?: string[]
+}
+
+interface MarketingTemplateInfoBoxBlock extends MarketingTemplateBlock {
+  type: 'info-box'
+  block: MarketingTemplateInfoBoxProps
+}
+
+export interface MarketingTemplateFreeform {
+  blocks: (MarketingTemplateProductFinderBlock | MarketingTemplateInfoBoxBlock)[]
+  hero: MarketingTemplateHeroProps
+  palette: {
+    background: [string, string, ...string[]]
+    foreground: [string, string, ...string[]]
+  }
 }

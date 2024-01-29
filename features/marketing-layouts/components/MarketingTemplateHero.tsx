@@ -1,6 +1,8 @@
 import { AppLink } from 'components/Links'
 import { ProtocolLabel } from 'components/ProtocolLabel'
+import { TokensGroup } from 'components/TokensGroup'
 import type { MarketingTemplateHeroProps } from 'features/marketing-layouts/types'
+import { isArray } from 'lodash'
 import React, { type FC } from 'react'
 import { Box, Flex, Heading, Image, Text } from 'theme-ui'
 
@@ -8,13 +10,30 @@ export const MarketingTemplateHero: FC<MarketingTemplateHeroProps> = ({
   description,
   image,
   link: { label, url },
-  protocol,
+  protocol = [],
   title,
+  token = [],
 }) => {
+  const protocols = isArray(protocol) ? protocol : [protocol]
+  const tokens = isArray(token) ? token : [token]
+
   return (
     <Flex sx={{ flexDirection: ['column', null, 'row'], rowGap: '48px', columnGap: 5 }}>
       <Box sx={{ flex: '1 1 0', my: [0, null, '48px', 6] }}>
-        <ProtocolLabel protocol={protocol} />
+        {protocols.length + tokens.length > 0 && (
+          <Flex as="ul" sx={{ gap: 1, m: 0, p: 0, listStyle: 'none' }}>
+            {protocols.map((_protocol) => (
+              <Box as="li">
+                <ProtocolLabel protocol={_protocol} />
+              </Box>
+            ))}
+            {tokens.map((_token) => (
+              <Box as="li">
+                <TokensGroup tokens={[_token]} forceSize={30} />
+              </Box>
+            ))}
+          </Flex>
+        )}
         <Heading as="h1" variant="header1" sx={{ mt: '12px' }}>
           {title}
         </Heading>
