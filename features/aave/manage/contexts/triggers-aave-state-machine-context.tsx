@@ -46,8 +46,9 @@ function useSetupTriggersStateContext(
     triggersAaveStateMachine.withContext({
       strategyConfig: strategy,
       dpm: proxies?.dpmProxy,
-      showAutoBuyBanner: true,
-      showAutoSellBanner: true,
+      showAutoBuyBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY),
+      showAutoSellBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.AUTO_SELL),
+      showStopLossBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.STOP_LOSS),
       autoBuyTrigger: autobuyStateMachine,
       autoSellTrigger: autosellStateMachine,
       currentTriggers: {
@@ -116,8 +117,6 @@ function TriggersStateUpdater({ children }: React.PropsWithChildren<{}>) {
   useEffect(() => {
     if (activeAutomationFeature?.currentProtectionFeature === AutomationFeatures.AUTO_SELL) {
       triggerStateMachine.send({ type: 'SHOW_AUTO_SELL' })
-    } else if (activeAutomationFeature?.currentProtectionFeature === AutomationFeatures.STOP_LOSS) {
-      triggerStateMachine.send({ type: 'RESET_PROTECTION' })
     }
   }, [activeAutomationFeature?.currentProtectionFeature])
   return <>{children}</>
