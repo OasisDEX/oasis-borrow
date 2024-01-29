@@ -29,14 +29,14 @@ export const MarketingTemplateHero: FC<MarketingTemplateHeroProps> = ({
       <Box sx={{ flex: '1 1 0' }}>
         {protocols.length + tokens.length > 0 && (
           <Flex as="ul" sx={{ gap: 1, m: 0, p: 0, listStyle: 'none' }}>
-            {protocols.map((_protocol) => (
+            {protocols.map((_protocol, i) => (
               <Box as="li">
-                <ProtocolLabel protocol={_protocol} />
+                <ProtocolLabel key={i} protocol={_protocol} />
               </Box>
             ))}
-            {tokens.map((_token) => (
+            {tokens.map((_token, i) => (
               <Box as="li">
-                <TokensGroup tokens={[_token]} forceSize={30} />
+                <TokensGroup key={i} tokens={[_token]} forceSize={30} />
               </Box>
             ))}
           </Flex>
