@@ -1,1 +1,1 @@
-export * from './get-optimism-transaction-fee'
+export * from './get-transaction-fee'

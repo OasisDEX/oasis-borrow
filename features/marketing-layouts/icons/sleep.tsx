@@ -17,8 +17,8 @@ export function sleep({
       </g>
       <g filter="url(#filter1_d_4087_1130)">
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M47.2833 48.2382C47.1891 48.2406 47.0947 48.2418 47 48.2418C40.9249 48.2418 36 43.3169 36 37.2418C36 34.4702 37.025 31.938 38.7167 30.0037C32.7725 30.1539 28 35.0197 28 41.0001C28 47.0752 32.9249 52.0001 39 52.0001C42.3035 52.0001 45.2669 50.5438 47.2833 48.2382Z"
           fill="url(#paint3_linear_4087_1130)"
         />
@@ -39,9 +39,9 @@ export function sleep({
           width="80"
           height="80"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -67,9 +67,9 @@ export function sleep({
           width="51.2832"
           height="53.9963"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"

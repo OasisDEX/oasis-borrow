@@ -55,6 +55,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   )
 
   const banner = useProductHubBanner({
+    filters: selectedFilters,
     product: selectedProduct,
   })
 

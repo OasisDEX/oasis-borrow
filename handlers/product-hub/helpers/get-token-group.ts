@@ -6,6 +6,7 @@ export function getTokenGroup(token: string): string {
     case 'CBETH':
     case 'RETH':
     case 'STETH':
+    case 'STYETH':
     case 'WETH':
     case 'WSTETH':
     case 'YIELDETH':

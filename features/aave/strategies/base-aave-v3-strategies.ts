@@ -10,6 +10,7 @@ import { AaveMultiplyManageComponent } from 'features/aave/components/AaveMultip
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import type { IStrategyConfig } from 'features/aave/types'
 import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import { getLocalAppConfig } from 'helpers/config'
@@ -179,7 +180,12 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
       },
       executeTransactionWith: 'ethers' as const,
       strategyType: config.strategyType,
-      isAutomationFeatureEnabled: () => false,
+      isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
+        if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationBase]
+        }
+        return false
+      },
     }
   })
 
@@ -227,7 +233,12 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers',
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Multiply.featureToggle,
-      isAutomationFeatureEnabled: () => false,
+      isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
+        if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationBase]
+        }
+        return false
+      },
     }
   })
 
@@ -275,7 +286,12 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers',
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Earn.featureToggle,
-      isAutomationFeatureEnabled: () => false,
+      isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
+        if (feature === AutomationFeatures.AUTO_BUY || feature === AutomationFeatures.AUTO_SELL) {
+          return getLocalAppConfig('features')[FeaturesEnum.AaveV3OptimizationBase]
+        }
+        return false
+      },
     }
   })
 

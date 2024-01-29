@@ -10,7 +10,7 @@ import type { EstimatedGasResult } from 'blockchain/better-calls/utils/types'
 import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ethNullAddress, NetworkIds } from 'blockchain/networks'
-import { getOptimismTransactionFee } from 'blockchain/transaction-fee'
+import { getTransactionFee } from 'blockchain/transaction-fee'
 import type { ethers } from 'ethers'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
@@ -81,7 +81,6 @@ export type LibraryCallDelegate<T> = (parameters: T) => Promise<LibraryCallRetur
 
 export function createTransactionParametersStateMachine<T extends BaseTransactionParameters>(
   txHelpers$: Observable<TxHelpers>,
-  gasEstimation$: (gas: number) => Observable<HasGasEstimation>,
   libraryCall: LibraryCallDelegate<T>,
   networkId: NetworkIds,
   transactionType: 'open' | 'close' | 'adjust' | 'depositBorrow' | 'openDepositBorrow' | 'types',
@@ -262,21 +261,8 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               )
           }
         },
-        estimateGasPrice: ({ estimatedGas, networkId, gasEstimationResult }) => {
-          if (networkId === NetworkIds.MAINNET) {
-            if (!estimatedGas && !gasEstimationResult?.estimatedGas) {
-              throw new Error('Error estimating gas price: no gas amount.')
-            }
-            return gasEstimation$(estimatedGas || Number(gasEstimationResult!.estimatedGas)).pipe(
-              distinctUntilChanged<HasGasEstimation>(isEqual),
-              map((gasPriceEstimation) => ({
-                type: 'GAS_PRICE_ESTIMATION_CHANGED',
-                estimatedGasPrice: gasPriceEstimation,
-              })),
-            )
-          }
-
-          return fromPromise(getOptimismTransactionFee(gasEstimationResult)).pipe(
+        estimateGasPrice: ({ networkId, gasEstimationResult }) => {
+          return fromPromise(getTransactionFee({ ...gasEstimationResult, networkId })).pipe(
             map((transactionFee) => {
               if (!transactionFee) {
                 return {
@@ -286,17 +272,12 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
                   },
                 }
               }
-              const gasInEth = new BigNumber(transactionFee.l2Fee)
-                .plus(transactionFee.l1Fee)
-                .div(10 ** 18)
-
-              const gasInUsd = gasInEth.div(transactionFee.ethUsdPrice)
               return {
                 type: 'GAS_PRICE_ESTIMATION_CHANGED',
                 estimatedGasPrice: {
                   gasEstimationStatus: GasEstimationStatus.calculated,
-                  gasEstimationEth: gasInEth,
-                  gasEstimationUsd: gasInUsd,
+                  gasEstimationEth: new BigNumber(transactionFee.fee),
+                  gasEstimationUsd: new BigNumber(transactionFee.feeUsd),
                 },
               }
             }),
@@ -331,14 +312,9 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
 }
 
 class TransactionParametersStateMachineTypes<T extends BaseTransactionParameters> {
-  withConfig(
-    txHelpers$: Observable<TxHelpers>,
-    gasEstimation$: (gas: number) => Observable<HasGasEstimation>,
-    libraryCall: LibraryCallDelegate<T>,
-  ) {
+  withConfig(txHelpers$: Observable<TxHelpers>, libraryCall: LibraryCallDelegate<T>) {
     return createTransactionParametersStateMachine<T>(
       txHelpers$,
-      gasEstimation$,
       libraryCall,
       NetworkIds.MAINNET,
       'types',

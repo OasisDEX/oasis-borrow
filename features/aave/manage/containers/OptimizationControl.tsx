@@ -1,4 +1,4 @@
-import { useActor } from '@xstate/react'
+import { useActor, useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { AutoBuyBanner } from 'features/aave/components/banners'
 import type { BasicAutomationDetailsViewProps } from 'features/aave/components/BasicAutomationDetailsView'
@@ -10,7 +10,7 @@ import {
 } from 'features/aave/manage/contexts'
 import { AutoBuySidebarAaveVault } from 'features/aave/manage/sidebars/AutoBuySidebarAaveVault'
 import type { AutoBuyTriggerAaveContext } from 'features/aave/manage/state'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Container, Grid } from 'theme-ui'
 
 function getAutoBuyDetailsLayoutProps(
@@ -53,11 +53,21 @@ export function OptimizationControl() {
   const triggersStateMachine = useTriggersAaveStateMachineContext()
   const [triggersState, sendTriggerEvent] = useActor(triggersStateMachine)
   const [autoBuyState, sendAutoBuyEvent] = useActor(triggersState.context.autoBuyTrigger)
+  const shouldLoadTriggers = useSelector(triggersState.context.autoBuyTrigger, (selector) =>
+    selector.matches('txDone'),
+  )
 
   const autoBuyDetailsLayoutProps = getAutoBuyDetailsLayoutProps(
     autoBuyState.context,
     !autoBuyState.matches('idle'),
   )
+
+  useEffect(() => {
+    if (shouldLoadTriggers) {
+      sendTriggerEvent({ type: 'TRANSACTION_DONE' })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldLoadTriggers])
 
   const dropdown = useOptimizationSidebarDropdown(triggersState, sendTriggerEvent)
 

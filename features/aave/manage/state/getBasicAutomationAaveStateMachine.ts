@@ -3,8 +3,8 @@ import type { DpmOperationParams } from 'blockchain/better-calls/dpm-account'
 import { estimateGas, executeTransaction } from 'blockchain/better-calls/dpm-account'
 import { ensureEtherscanExist, getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import type { EthereumTransactionFee } from 'blockchain/transaction-fee/get-ethereum-transaction-fee'
-import { getEthereumTransactionFee } from 'blockchain/transaction-fee/get-ethereum-transaction-fee'
+import type { TransactionFee } from 'blockchain/transaction-fee/get-transaction-fee'
+import { getTransactionFee } from 'blockchain/transaction-fee/get-transaction-fee'
 import type { ethers } from 'ethers'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
@@ -319,7 +319,13 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
             },
           },
         },
-        txDone: {},
+        txDone: {
+          on: {
+            RESET: {
+              target: 'idle',
+            },
+          },
+        },
         txFailed: {
           entry: ['incrementRetryCount'],
           always: [{ target: 'review' }],
@@ -444,7 +450,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
         })),
       },
       services: {
-        getParameters: () => (callback, onReceive) => {
+        getParameters: (context) => (callback, onReceive) => {
           const machine = interpret(createDebouncingMachine(action), {
             id: `${automationFeature}ParametersDebounceMachine`,
           }).start()
@@ -473,7 +479,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
                   collateralAddress: event.params.position.collateral.token.address,
                   debtAddress: event.params.position.debt.token.address,
                 },
-                networkId: NetworkIds.MAINNET,
+                networkId: context.networkId,
               }
               machine.send({
                 type: 'REQUEST_UPDATED',
@@ -502,7 +508,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
               const { signer, networkId, setupTriggerResponse, position } = event.params
 
               let gas: string = ''
-              let fee: EthereumTransactionFee | undefined = undefined
+              let fee: TransactionFee | undefined = undefined
 
               try {
                 gas = await estimateGas({
@@ -512,7 +518,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
                   proxyAddress: position.dpm,
                 })
 
-                fee = await getEthereumTransactionFee({ estimatedGas: gas })
+                fee = await getTransactionFee({ estimatedGas: gas, networkId })
               } catch (error) {
                 console.error(error)
 

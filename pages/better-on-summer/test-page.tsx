@@ -1,39 +1,112 @@
+import { NetworkNames } from 'blockchain/networks'
+import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { SimpleCarousel } from 'components/SimpleCarousel'
-import { IconWithPalette, MarketingTemplateHero } from 'features/marketing-layouts/components'
-import { sleep } from 'features/marketing-layouts/icons'
+import {
+  MarketingTemplateBenefitBox,
+  MarketingTemplateHero,
+  MarketingTemplateInfoBox,
+  MarketingTemplateProduct,
+} from 'features/marketing-layouts/components'
+import { getGridTemplateAreas } from 'features/marketing-layouts/helpers'
 import type { MarketingTemplatePageProps } from 'features/marketing-layouts/types'
+import { ProductHubPromoCardsList } from 'features/productHub/components/ProductHubPromoCardsList'
+import { getGenericPromoCard } from 'features/productHub/helpers'
+import { ProductHubProductType } from 'features/productHub/types'
+import { ProductHubView } from 'features/productHub/views'
+import { getGradientColor, summerBrandGradient } from 'helpers/getGradientColor'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { Box, Heading, Text } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
-function BetterOnSummerPage({ hero, palette }: MarketingTemplatePageProps) {
+function BetterOnSummerPage({
+  benefits,
+  benefitsSubtitle,
+  benefitsTitle,
+  hero,
+  infoBoxes,
+  infoBoxesDescription,
+  infoBoxesTitle,
+  palette,
+  productFinder,
+  products,
+  productsTitle,
+}: MarketingTemplatePageProps) {
+  const {
+    productHub: { table },
+  } = usePreloadAppDataContext()
+
+  const promoCards = table
+    .filter((product) =>
+      productFinder.promoCards.some(
+        (filters) =>
+          product.network === filters.network &&
+          product.protocol === filters.protocol &&
+          product.product.includes(filters.product) &&
+          product.primaryToken.toLowerCase() === filters.primaryToken.toLowerCase() &&
+          product.secondaryToken.toLowerCase() === filters.secondaryToken.toLowerCase(),
+      ),
+    )
+    .map((product) => getGenericPromoCard({ product }))
+
   return (
     <MarketingLayout topBackground="none" backgroundGradient={palette.mainGradient}>
       <Box sx={{ width: '100%' }}>
         <MarketingTemplateHero {...hero} />
-        <Box>
-          <IconWithPalette size={80} contents={sleep} {...palette.icon} />
+        <Box sx={{ my: 7 }}>
+          <ProductHubView
+            headerGradient={palette.icon.symbolGradient}
+            promoCardsCollection="Home"
+            promoCardsPosition="none"
+            limitRows={10}
+            {...productFinder}
+          />
+          <ProductHubPromoCardsList promoCards={promoCards} />
         </Box>
+        <Heading as="h2" variant="header2" sx={{ mb: '24px', textAlign: 'center' }}>
+          {infoBoxesTitle}
+        </Heading>
+        <Text as="p" variant="paragraph2" sx={{ color: 'neutral80', textAlign: 'center' }}>
+          {infoBoxesDescription}
+        </Text>
+        <Flex sx={{ flexDirection: 'column', rowGap: 6, mt: 6 }}>
+          {infoBoxes.map((infoBox, i) => (
+            <MarketingTemplateInfoBox key={i} {...infoBox} />
+          ))}
+        </Flex>
+        <Heading as="h2" variant="header2" sx={{ mt: 7, mb: 5, textAlign: 'center' }}>
+          {productsTitle}
+        </Heading>
+        <Grid
+          sx={{
+            gap: 3,
+            gridTemplateColumns: ['100%', 'unset'],
+            gridTemplateAreas: ['unset', getGridTemplateAreas(products)],
+          }}
+        >
+          {products.map((product, i) => (
+            <MarketingTemplateProduct key={i} index={i} {...palette} {...product} />
+          ))}
+        </Grid>
         <SimpleCarousel
           header={
-            <Box>
-              <Heading>Heading</Heading>
-              <Text>Lorem ipsum dolor sit amet</Text>
+            <Box sx={{ mt: 7 }}>
+              <Heading as="h3" variant="header4" sx={getGradientColor(summerBrandGradient)}>
+                {benefitsSubtitle}
+              </Heading>
+              <Heading as="h2" variant="header2" sx={{ mt: 3 }}>
+                {benefitsTitle}
+              </Heading>
             </Box>
           }
           slidesToDisplay={2}
           overflow="visible"
-          slides={[
-            <Box sx={{ bg: 'red', width: '100%' }}>test</Box>,
-            <Box sx={{ bg: 'blue', width: '100%' }}>test</Box>,
-            <Box sx={{ bg: 'pink', width: '100%' }}>test</Box>,
-            <Box sx={{ bg: 'green', width: '100%' }}>test</Box>,
-            <Box sx={{ bg: 'yellow', width: '100%' }}>test</Box>,
-          ]}
+          slides={benefits.map((benefit, i) => (
+            <MarketingTemplateBenefitBox key={i} {...benefit} {...palette.icon} />
+          ))}
         />
       </Box>
     </MarketingLayout>
@@ -44,7 +117,7 @@ export default BetterOnSummerPage
 
 export async function getServerSideProps({ locale }: GetServerSidePropsContext) {
   // TODO - to be replaced with API call
-  const palette = {
+  const palette: MarketingTemplatePageProps['palette'] = {
     mainGradient: ['#f8eaff', '#edf8ff'],
     icon: {
       backgroundGradient: ['#f6e3ff', '#d9f0f4'],
@@ -52,7 +125,8 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
       symbolGradient: ['#2ebac6', '#b6509e'],
     },
   }
-  const hero = {
+
+  const hero: MarketingTemplatePageProps['hero'] = {
     protocol: LendingProtocol.AaveV3,
     title: 'AAVE, with superpowers',
     description:
@@ -61,9 +135,168 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
     image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-hero.png'),
   }
 
+  const productFinder: MarketingTemplatePageProps['productFinder'] = {
+    product: ProductHubProductType.Multiply,
+    initialProtocol: [LendingProtocol.AaveV2, LendingProtocol.AaveV3],
+    promoCards: [
+      {
+        network: NetworkNames.ethereumMainnet,
+        primaryToken: 'WSTETH',
+        secondaryToken: 'ETH',
+        product: ProductHubProductType.Borrow,
+        protocol: LendingProtocol.AaveV3,
+      },
+      {
+        network: NetworkNames.optimismMainnet,
+        primaryToken: 'WBTC',
+        secondaryToken: 'USDC',
+        product: ProductHubProductType.Multiply,
+        protocol: LendingProtocol.AaveV3,
+      },
+      {
+        network: NetworkNames.baseMainnet,
+        primaryToken: 'CBETH',
+        secondaryToken: 'ETH',
+        product: ProductHubProductType.Earn,
+        protocol: LendingProtocol.AaveV3,
+      },
+    ],
+  }
+
+  const infoBoxesTitle = "AAVE, but more approachable for DeFi novices and advanced Degen's"
+  const infoBoxesDescription =
+    'Summer.fi turns the AAVE Protocol into an easy to access DeFi app. You can start simple with the depositing for yield, borrow a stablecoin against you crypto or do advanced automation strategies with Multiply to go long or short.'
+  const infoBoxes: MarketingTemplatePageProps['infoBoxes'] = [
+    {
+      title: 'Endless Opportunities with AAVE',
+      description:
+        'The AAVE protocol on Summer.fi offers many different options for you, regardless of if you are new to DeFi or an experienced power user of DeFi protocols. ',
+      image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-info-1.png'),
+    },
+    {
+      title:
+        'Access DeFi yield with simple deposits on stablecoin’s, a straightforward strategy to get started',
+      description:
+        'A great entry point to DeFi is earning on your assets. With aave you can lend by simply depositing in one click and start earning Fees.',
+      link: {
+        label: 'List of top assets',
+        url: '/',
+      },
+      image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-info-2.png'),
+    },
+    {
+      title: 'Get paid to park (your capital)',
+      description:
+        'Another great entry point to DeFi is earning yield on your volatile crypto assets. Simply deposit in one click and start earning Fees.',
+      image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-info-3.png'),
+      tokens: ['ETH', 'WSTETH', 'WBTC', 'USDC', 'USDT'],
+    },
+  ]
+
+  const productsTitle = 'The simplest way Borrow stables and Multiply your crypto'
+  const products: MarketingTemplatePageProps['products'] = [
+    {
+      composition: 'narrow',
+      type: 'Borrow',
+      title: 'Get liquidity from your crypto without selling',
+      description:
+        "Borrow vaults on AAVE allow you to use your crypto as collateral and borrow other assets, usually stablecoin's. Meaning you can get access to dollar-like assets without selling a thing.",
+      link: {
+        label: 'Borrow',
+        url: '/',
+      },
+      image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-product-1.png'),
+    },
+    {
+      composition: 'narrow',
+      type: 'Multiply',
+      title: 'Increase your exposure to your crypto and amplify your profits',
+      description:
+        'Multiply vaults allow you to increase your exposure to your collateral in a single click. Saving you time and gas costs.',
+      image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-product-2.png'),
+      link: {
+        label: 'Multiply',
+        url: '/',
+      },
+    },
+    {
+      composition: 'wide',
+      type: 'Staking',
+      title: 'Seamless Staking Yield, but Enhanced with Summer.fi Superpowers',
+      description:
+        'Summer.fi makes it easy to enhance your staking returns up to 8x on compound, with our Yield Loop strategy, all from a custom dashboard with advanced analytics and made simple with one click management. ',
+      link: {
+        label: 'Staking',
+        url: '/',
+      },
+      actionsList: [
+        {
+          icon: 'sleep',
+          label: 'Deposit ETH or stETH',
+        },
+        {
+          icon: 'sleep',
+          label: 'Adjust your risk',
+        },
+        {
+          icon: 'sleep',
+          label: 'Loop borrowing ETH ',
+          description: 'Abstracted away all with a single click',
+        },
+      ],
+    },
+  ]
+
+  const benefitsSubtitle = 'The Summer.fi Superpowers'
+  const benefitsTitle = 'Why use Aave on  Summer.fi?'
+  const benefits: MarketingTemplatePageProps['benefits'] = [
+    {
+      icon: 'sleep',
+      title: 'Never lose another nights sleep',
+      description: 'Automated risk management tools protect your positions from liquidation. ',
+      list: ['Stop Loss', 'Auto Sell'],
+    },
+    {
+      icon: 'sleep',
+      title: 'Bundling is better',
+      description:
+        'Stop wasting time doing common actions repetitively just to achieve a simple goal. Summer.fi takes care of the convenience so you can just focus on your assets.',
+      list: [
+        'One click actions for all your most common and annoying transactions',
+        'Bundled transactions',
+      ],
+    },
+    {
+      icon: 'sleep',
+      title: 'Set and forget your strategy',
+      description:
+        'Automated tools allow you to convenience of your strategy once, and summer.fi super powers do the work.',
+      list: ['Auto Buy', 'Auto Take Profit'],
+    },
+    {
+      icon: 'sleep',
+      title: 'Everything you need, all in one place',
+      list: [
+        'Unlock the superpowers of other protocols',
+        'View all your positions and assets at glance',
+        'Discover new curated DeFi opportunities',
+        'Swap and Bridge.',
+      ],
+    },
+  ]
+
   const marketingLayoutProps: MarketingTemplatePageProps = {
+    benefits,
+    benefitsSubtitle,
+    benefitsTitle,
     hero,
+    infoBoxes,
+    infoBoxesDescription,
+    infoBoxesTitle,
     palette,
+    productFinder,
+    products,
+    productsTitle,
   }
 
   return {

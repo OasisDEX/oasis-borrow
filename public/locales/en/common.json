@@ -932,7 +932,7 @@
     "protocols-aave": "Borrow, Multiply and Earn on multiple tokens with the top liquidity protocol.  ",
     "protocols-ajna": "Borrow, Multiply and Earn on anything.<br>No governance. No Oracles.",
     "protocols-maker": "Borrow, Multiply and Earn with<br>the Maker Protocol. Builders of DAI.",
-    "protocols-morpho-blue": "Borrow and Multiply with the new decentralized lending protocol, take advantage of isolated pairs and highest multiples.",
+    "protocols-morpho-blue": "Borrow and multiply on a new flexible and efficient protocol with isolated pairs.",
     "protocols-spark": "Borrow, Multiply and Earn on Spark.<br>The advanced lending powered by Maker.",
     "protocols-more": "View everything possible on {{protocol}}",
     "referrals": "Referrals",
@@ -1409,7 +1409,8 @@
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price",
     "withdraw-amount-exceeds-free-collateral": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
     "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
-    "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>."
+    "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
+    "sl-too-high-for-auto-sell": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxLTV}}% before using Auto-Sell."
   },
   "vault-warnings": {
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
@@ -1573,6 +1574,7 @@
     "setup-stop-loss": {
       "header": "Protect against unnecessary losses",
       "content": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either Dai or {{token}} at your desired Price or Collateral level. Find out more about how it works",
+      "content-generic": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either collateral or debt token at your desired Price or Collateral level. Find out more about how it works",
       "button": "Setup Stop-Loss"
     },
     "get-protection": {
@@ -2143,6 +2145,9 @@
     "cancelling-form-title": "Cancelling Auto-Sell",
     "col-to-be-sold": "{{token}} to be sold at next sell",
     "coll-ratio-too-high": "Auto-Sell is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Sell.",
+    "ltv-too-low-for-auto-sell": "Auto-Sell is not available as your Loan to Value is too low. Please <0>increase your Loan to value</0> above 1% before using Auto-Sell.",
+    "ltv-too-low-for-auto-buy": "Auto-Buy is not available as your Loan to Value is too low. Please <0>increase your Loan to Value</0> above 1% before using Auto-Buy.",
+
     "collateral-after-next-sell": "Collateral after next sell",
     "confirmation": "Confirm your auto-sell setup.",
     "continual-sell-no-threshold": "Recurring sell order with no min",

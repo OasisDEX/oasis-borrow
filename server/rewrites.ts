@@ -4,7 +4,11 @@ import { NextResponse } from 'next/server'
 const rewriteRules = () => [
   {
     source: '/api/triggers/:path*',
-    destination: `${process.env.TRIGGERS_API_URL}/beta/:path*`,
+    destination: `${process.env.FUNCTIONS_API_URL}/api/triggers/:path*`,
+  },
+  {
+    source: '/api/triggers',
+    destination: `${process.env.FUNCTIONS_API_URL}/api/triggers`,
   },
   // ... other rules
 ]
@@ -35,6 +39,9 @@ function constructDestination(destination: string, params: Record<string, string
 }
 
 export function handleRewrite(request: NextRequest): NextResponse | null {
+  if (!request.nextUrl.pathname.startsWith('/api')) {
+    return null
+  }
   const rules = rewriteRules()
   for (const rule of rules) {
     const { regex, names } = parsePattern(rule.source)

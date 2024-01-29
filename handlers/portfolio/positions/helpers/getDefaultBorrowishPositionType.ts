@@ -1,4 +1,3 @@
-import { omniBorrowishProducts } from 'features/omni-kit/constants'
 import type { OmniProductBorrowishType } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
@@ -9,7 +8,6 @@ interface GetDefaultBorrowishPositionTypeParams {
   collateralTokenAddress: string
   quoteTokenAddress: string
   protocolRaw: string
-  isEarn?: boolean
 }
 
 export function getDefaultBorrowishPositionType({
@@ -18,24 +16,13 @@ export function getDefaultBorrowishPositionType({
   quoteTokenAddress,
   proxyAddress,
   protocolRaw,
-  isEarn,
 }: GetDefaultBorrowishPositionTypeParams): OmniProductBorrowishType {
-  return dpmList
-    .find(({ id }) => id === proxyAddress)
-    ?.createEvents.find(
-      ({
-        collateralToken: eventCollateralToken,
-        debtToken: eventDebtToken,
-        positionType: eventPositionType,
-        protocol: eventProtocol,
-      }) => {
-        return (
-          eventCollateralToken === collateralTokenAddress &&
-          eventDebtToken === quoteTokenAddress &&
-          eventProtocol === protocolRaw &&
-          ((isEarn && eventPositionType === OmniProductType.Earn) ||
-            (!isEarn && omniBorrowishProducts.includes(eventPositionType)))
-        )
-      },
-    )?.positionType as OmniProductBorrowishType
+  return dpmList.find(
+    ({ id, collateralToken, debtToken, protocol, positionType }) =>
+      id === proxyAddress &&
+      collateralToken === collateralTokenAddress &&
+      debtToken === quoteTokenAddress &&
+      protocol === protocolRaw &&
+      positionType !== OmniProductType.Earn,
+  )?.positionType as OmniProductBorrowishType
 }

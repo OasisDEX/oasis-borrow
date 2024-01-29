@@ -49,8 +49,10 @@ export async function getAjnaPositionInfo({
     protocolRaw,
     proxyAddress,
     quoteTokenAddress: quoteToken.address,
-    isEarn,
   })
+
+  const primaryToken = getTokenDisplayName(collateralToken.symbol)
+  const secondaryToken = getTokenDisplayName(quoteToken.symbol)
 
   const type = isEarn
     ? OmniProductType.Earn
@@ -60,12 +62,12 @@ export async function getAjnaPositionInfo({
         networkId,
         positionId: Number(positionId),
         protocol: LendingProtocol.Ajna,
+        collateralToken: primaryToken,
+        quoteToken: secondaryToken,
       })
 
   // shorhands and formatting for better clarity
-  const primaryToken = getTokenDisplayName(collateralToken.symbol)
   const primaryTokenAddress = collateralToken.address
-  const secondaryToken = getTokenDisplayName(quoteToken.symbol)
   const secondaryTokenAddress = quoteToken.address
   const isOracless = isPoolOracless({
     networkId,
@@ -77,10 +79,8 @@ export async function getAjnaPositionInfo({
   }-${isOracless ? secondaryTokenAddress : secondaryToken}/${positionId}`
 
   // prices for oracle positions is always equal to one
-  const collateralPrice = isOracless
-    ? one
-    : new BigNumber(prices[collateralToken.symbol.toUpperCase()])
-  const quotePrice = isOracless ? one : new BigNumber(prices[quoteToken.symbol.toUpperCase()])
+  const collateralPrice = isOracless ? one : new BigNumber(prices[primaryToken.toUpperCase()])
+  const quotePrice = isOracless ? one : new BigNumber(prices[secondaryToken.toUpperCase()])
 
   return {
     ajnaPoolInfo,

@@ -37,6 +37,12 @@ export function mapErrorsToErrorVaults(
           return 'maxBuyPriceWillPreventBuyTrigger'
         case TriggersApiErrorCode.ExecutionPriceSmallerThanMinSellPrice:
           return 'minSellPriceWillPreventSellTrigger'
+        case TriggersApiErrorCode.TooLowLtvToSetupAutoBuy:
+          return 'tooLowLtvToSetupAutoBuy'
+        case TriggersApiErrorCode.TooLowLtvToSetupAutoSell:
+          return 'tooLowLtvToSetupAutoSell'
+        case TriggersApiErrorCode.AutoSellNotAvailableDueToTooHighStopLoss:
+          return 'tooHighStopLossToSetupAutoSell'
         default:
           return undefined
       }

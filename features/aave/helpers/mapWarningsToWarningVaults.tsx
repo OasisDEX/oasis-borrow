@@ -25,6 +25,8 @@ export function mapWarningsToWarningVaults(
           return 'autoSellTriggeredImmediately'
         case TriggersApiWarningCode.AutoBuyTargetCloseToAutoSellTrigger:
           return 'autoBuyTargetCloseToAutoSellTrigger'
+        case TriggersApiWarningCode.AutoBuyTriggerCloseToStopLossTrigger:
+          return 'autoBuyTargetCloseToStopLossTrigger'
         default:
           return undefined
       }
