@@ -15,6 +15,7 @@ import { ProductHubPromoCardsList } from 'features/productHub/components/Product
 import { getGenericPromoCard } from 'features/productHub/helpers'
 import { ProductHubView } from 'features/productHub/views'
 import { type FC } from 'react'
+import React from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
 type MarketingTemplateBlockViewProps = MarketingTemplateProductFinderBlocks & {
