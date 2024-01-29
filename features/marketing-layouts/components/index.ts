@@ -1,4 +1,3 @@
-export * from './IconWithPalette'
 export * from './MarketingTemplateBenefitBox'
 export * from './MarketingTemplateHeading'
 export * from './MarketingTemplateHero'
