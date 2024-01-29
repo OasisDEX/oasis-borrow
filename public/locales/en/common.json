@@ -3212,7 +3212,8 @@
   },
   "aave": {
     "header": {
-      "current-market-price": "Current Market Price"
+      "current-market-price": "Current Market Price",
+      "current-ltv": "Current LTV"
     },
     "errors": {
       "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet.",

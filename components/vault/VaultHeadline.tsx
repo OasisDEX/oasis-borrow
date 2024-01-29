@@ -9,7 +9,6 @@ import {
   twitterSharePositionVia,
 } from 'features/follow/common/ShareButton'
 import type { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
-import { FollowButtonControl } from 'features/follow/controllers/FollowButtonControl'
 import type { ReactNode } from 'react'
 import React from 'react'
 import { Flex } from 'theme-ui'
@@ -30,7 +29,6 @@ export type VaultHeadlineProps = {
 
 export function VaultHeadline({
   details,
-  followButton,
   header,
   loading = false,
   shareButton,
@@ -99,7 +97,6 @@ export function VaultHeadline({
               <ProtocolLabel network={protocol.network} protocol={protocol.protocol} />
             </Flex>
           )}
-          {followButton && <FollowButtonControl {...followButton} />}
           {shareButton && (
             <ShareButton
               text={twitterSharePositionText}
