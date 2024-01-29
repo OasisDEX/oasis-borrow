@@ -42,7 +42,15 @@ export async function validateParameters({
 
   const dpm = AccountImplementation__factory.connect(proxyAddress, signer)
 
-  const dpmOwner = await dpm.owner()
+  let dpmOwner = ''
+  try {
+    dpmOwner = await dpm.owner()
+  } catch (e) {
+    throw new Error(
+      `Error getting owner of the proxy. Proxy: ${proxyAddress}. Network: ${networkId}`,
+    )
+  }
+
   const signerAddress = await signer.getAddress()
   if (dpmOwner !== signerAddress) {
     throw new Error(

@@ -1,7 +1,7 @@
 import { useActor, useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
-import { AutoSellBanner } from 'features/aave/components/banners'
+import { AutoSellBanner, StopLossBanner } from 'features/aave/components/banners'
 import type { BasicAutomationDetailsViewProps } from 'features/aave/components/BasicAutomationDetailsView'
 import { BasicAutomationDetailsView } from 'features/aave/components/BasicAutomationDetailsView'
 import { useProtectionSidebarDropdown } from 'features/aave/hooks'
@@ -13,6 +13,7 @@ import { AutoSellSidebarAaveVault } from 'features/aave/manage/sidebars/AutoSell
 import type { AutoSellTriggerAaveContext } from 'features/aave/manage/state'
 import { isAutoSellEnabled } from 'features/aave/manage/state'
 import React, { useEffect } from 'react'
+import { Box, Container, Grid } from 'theme-ui'
 
 function getAutoSellDetailsLayoutProps(
   context: AutoSellTriggerAaveContext,
@@ -74,6 +75,41 @@ export function ProtectionControlWrapper() {
   const dropdown = useProtectionSidebarDropdown(triggersState, sendTriggerEvent)
 
   const showAutoSell = isAutoSellEnabled(triggersState)
+
+  if (triggersState.context.protectionCurrentView !== 'stop-loss') {
+    return (
+      <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+        <Grid variant="vaultContainer">
+          <Grid gap={3} mb={[0, 5]}>
+            {triggersState.context.protectionCurrentView === 'auto-sell' &&
+              autoSellDetailsLayoutProps && (
+                <BasicAutomationDetailsView {...autoSellDetailsLayoutProps} />
+              )}
+            {triggersState.context.showAutoSellBanner && (
+              <AutoSellBanner buttonClicked={() => sendTriggerEvent({ type: 'SHOW_AUTO_SELL' })} />
+            )}
+            {triggersState.context.showStopLossBanner && (
+              <StopLossBanner buttonClicked={() => sendTriggerEvent({ type: 'SHOW_STOP_LOSS' })} />
+            )}
+          </Grid>
+          {triggersState.context.protectionCurrentView === 'auto-sell' &&
+            autoSellState.context.position && (
+              <Box>
+                <AutoSellSidebarAaveVault
+                  strategy={state.context.strategyConfig}
+                  state={{ ...autoSellState.context, position: autoSellState.context.position }}
+                  isStateMatch={(s) => autoSellState.matches(s)}
+                  canTransitWith={(s) => autoSellState.can(s)}
+                  updateState={sendAutoSellEvent}
+                  isEditing={autoSellState.value === 'editing'}
+                  dropdown={dropdown}
+                />
+              </Box>
+            )}
+        </Grid>
+      </Container>
+    )
+  }
 
   const DetailsView = () => {
     return (
