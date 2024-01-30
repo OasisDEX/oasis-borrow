@@ -10,10 +10,17 @@ import { maxUint256 } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import { allDefined } from 'helpers/allDefined'
-import type { AaveBasicBuy, AaveBasicSell } from 'helpers/triggers'
+import type {
+  AaveBasicBuy,
+  AaveBasicSell,
+  AaveStopLossToCollateral,
+  AaveStopLossToDebt,
+  SparkStopLossToCollateral,
+  SparkStopLossToDebt,
+} from 'helpers/triggers'
 import {
+  getIntFromDecodedParam,
   getLtvNumberFromDecodedParam,
-  getMaxGasFeeFromDecodedParam,
   parsePriceFromDecodedParam,
 } from 'helpers/triggers'
 import type {
@@ -41,8 +48,15 @@ const { assign, sendTo } = actions
 export type BasicAutomationAaveState = 'idle' | 'editing' | 'review' | 'tx' | 'txDone' | 'txFailed'
 
 export type BasicAutoTrigger = AaveBasicBuy | AaveBasicSell
+export type AaveLikeStopLossTriggers =
+  | AaveStopLossToCollateral
+  | AaveStopLossToDebt
+  | SparkStopLossToCollateral
+  | SparkStopLossToDebt
 
-export type BasicAutomationAaveEvent<Trigger extends BasicAutoTrigger> =
+export type AaveLikeAutomationTriggers = BasicAutoTrigger | AaveLikeStopLossTriggers
+
+export type BasicAutomationAaveEvent<Trigger extends AaveLikeAutomationTriggers> =
   | { type: 'SET_EXECUTION_TRIGGER_LTV'; executionTriggerLTV: number }
   | { type: 'SET_TARGET_TRIGGER_LTV'; targetTriggerLTV: number }
   | { type: 'SET_PRICE'; price?: BigNumber }
@@ -118,13 +132,15 @@ const areParamsValid = (
   return !!params.signer && !!params.networkId && !!params.setupTriggerResponse && !!params.position
 }
 
-export type BasicAutomationAaveContext<Trigger extends BasicAutoTrigger> = {
+export type BasicAutomationAaveContext<Trigger extends AaveLikeAutomationTriggers> = {
   isLoading: boolean
   defaults: BasicAutomationAaveFormDefaults
   position?: PositionLike
   executionTriggerLTV?: number
   targetTriggerLTV?: number
   price?: BigNumber
+  maxCoverage?: number
+  ltv?: number
   usePrice: boolean
   maxGasFee: number
   currentTrigger?: Trigger
@@ -134,7 +150,7 @@ export type BasicAutomationAaveContext<Trigger extends BasicAutoTrigger> = {
   networkId: NetworkIds
   retryCount: number
   flow: TriggerFlow
-  feature: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL
+  feature: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL | AutomationFeatures.STOP_LOSS
 }
 
 type ContextForTransaction = {
@@ -144,7 +160,7 @@ type ContextForTransaction = {
   setupTriggerResponse: SetupBasicAutoResponseWithRequiredTransaction
 }
 
-const ensureValidContextForTransaction = <Trigger extends BasicAutoTrigger>(
+const ensureValidContextForTransaction = <Trigger extends AaveLikeAutomationTriggers>(
   context: BasicAutomationAaveContext<Trigger>,
 ): context is BasicAutomationAaveContext<Trigger> & ContextForTransaction => {
   return (
@@ -152,7 +168,9 @@ const ensureValidContextForTransaction = <Trigger extends BasicAutoTrigger>(
   )
 }
 
-const getPriceFromDecodedParam = (trigger: BasicAutoTrigger | undefined): string | undefined => {
+const getPriceFromDecodedParam = (
+  trigger: AaveLikeAutomationTriggers | undefined,
+): string | undefined => {
   if (trigger?.decodedParams === undefined) {
     return undefined
   }
@@ -175,34 +193,56 @@ const getPriceFromDecodedParam = (trigger: BasicAutoTrigger | undefined): string
 }
 
 const getDefaults = (
-  context: BasicAutomationAaveContext<BasicAutoTrigger>,
-): Pick<
-  BasicAutomationAaveContext<BasicAutoTrigger>,
-  'executionTriggerLTV' | 'targetTriggerLTV' | 'price' | 'maxGasFee' | 'usePrice'
-> => {
+  context: BasicAutomationAaveContext<AaveLikeAutomationTriggers>,
+):
+  | Pick<
+      BasicAutomationAaveContext<BasicAutoTrigger>,
+      'maxGasFee' | 'usePrice' | 'executionTriggerLTV' | 'targetTriggerLTV' | 'price'
+    >
+  | Pick<
+      BasicAutomationAaveContext<AaveLikeStopLossTriggers>,
+      'maxCoverage' | 'usePrice' | 'ltv' | 'price'
+    > => {
   const price = parsePriceFromDecodedParam(
     getPriceFromDecodedParam(context.currentTrigger),
     context.position?.debt.token.decimals,
   )
-
-  return {
-    maxGasFee:
-      getMaxGasFeeFromDecodedParam(context.currentTrigger?.decodedParams.maxBaseFeeInGwei) ?? 300,
-    usePrice: allDefined(price),
-    executionTriggerLTV:
-      getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.executionLtv) ??
-      context.defaults.executionTriggerLTV,
-    targetTriggerLTV:
-      getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.targetLtv) ??
-      context.defaults.targetTriggerLTV,
-    price: price,
+  if (
+    context.feature === AutomationFeatures.AUTO_SELL ||
+    context.feature === AutomationFeatures.AUTO_BUY
+  ) {
+    const decodedParams = context.currentTrigger?.decodedParams as BasicAutoTrigger['decodedParams']
+    return {
+      maxGasFee: getIntFromDecodedParam(decodedParams.maxBaseFeeInGwei) ?? 300,
+      usePrice: allDefined(price),
+      executionTriggerLTV:
+        getLtvNumberFromDecodedParam(decodedParams.executionLtv) ??
+        context.defaults.executionTriggerLTV,
+      targetTriggerLTV:
+        getLtvNumberFromDecodedParam(decodedParams.targetLtv) ?? context.defaults.targetTriggerLTV,
+      price: price,
+    }
   }
+  if (context.feature === AutomationFeatures.STOP_LOSS) {
+    const decodedParams = context.currentTrigger
+      ?.decodedParams as AaveLikeStopLossTriggers['decodedParams']
+    return {
+      maxCoverage: getIntFromDecodedParam(decodedParams?.maxCoverage),
+      usePrice: allDefined(price),
+      ltv: getLtvNumberFromDecodedParam(decodedParams?.ltv) ?? context.defaults.executionTriggerLTV,
+      price: price,
+    }
+  }
+  throw new Error('Feature not implemented')
 }
 
-const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
-  automationFeature: AutomationFeatures.AUTO_BUY | AutomationFeatures.AUTO_SELL,
+const getBasicAutomationAaveStateMachine = <Trigger extends AaveLikeAutomationTriggers>(
+  automationFeature:
+    | AutomationFeatures.AUTO_BUY
+    | AutomationFeatures.AUTO_SELL
+    | AutomationFeatures.STOP_LOSS,
   action: (params: SetupAaveBasicAutomationParams) => Promise<SetupBasicAutoResponse>,
-  triggerType: 119 | 120,
+  triggerType: 119 | 120 | 111 | 112 | 117 | 118,
 ) =>
   createMachine(
     {
@@ -615,6 +655,7 @@ export const autoSellTriggerAaveStateMachine = getBasicAutomationAaveStateMachin
   setupAaveAutoSell,
   120,
 )
+
 export type AutoBuyTriggerAaveContext = BasicAutomationAaveContext<AaveBasicBuy>
 export type AutoSellTriggerAaveContext = BasicAutomationAaveContext<AaveBasicSell>
 export type AutoBuyTriggerAaveEvent = BasicAutomationAaveEvent<AaveBasicBuy>

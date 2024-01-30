@@ -7,7 +7,7 @@ export interface GetSetupTriggerConfigParams {
   triggerType: TriggerType
   networkId: NetworkIds
   protocol: LendingProtocol
-  path: 'auto-buy' | 'auto-sell'
+  path: 'auto-buy' | 'auto-sell' | 'stop-loss'
 }
 
 export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {
