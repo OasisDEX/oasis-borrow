@@ -6,8 +6,10 @@ import { NetworkIds } from 'blockchain/networks'
 import type { TransactionFee } from 'blockchain/transaction-fee/get-transaction-fee'
 import { getTransactionFee } from 'blockchain/transaction-fee/get-transaction-fee'
 import type { ethers } from 'ethers'
+import { maxUint256 } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
+import { allDefined } from 'helpers/allDefined'
 import type { AaveBasicBuy, AaveBasicSell } from 'helpers/triggers'
 import {
   getLtvNumberFromDecodedParam,
@@ -150,16 +152,22 @@ const ensureValidContextForTransaction = <Trigger extends BasicAutoTrigger>(
   )
 }
 
-const getPriceFromDecodedParam = (trigger: BasicAutoTrigger | undefined) => {
+const getPriceFromDecodedParam = (trigger: BasicAutoTrigger | undefined): string | undefined => {
   if (trigger?.decodedParams === undefined) {
     return undefined
   }
 
   if ('maxBuyPrice' in trigger.decodedParams) {
+    if (trigger.decodedParams.maxBuyPrice === maxUint256.toString()) {
+      return undefined
+    }
     return trigger.decodedParams.maxBuyPrice
   }
 
   if ('minSellPrice' in trigger.decodedParams) {
+    if (trigger.decodedParams.minSellPrice === '0') {
+      return undefined
+    }
     return trigger.decodedParams.minSellPrice
   }
 
@@ -172,20 +180,22 @@ const getDefaults = (
   BasicAutomationAaveContext<BasicAutoTrigger>,
   'executionTriggerLTV' | 'targetTriggerLTV' | 'price' | 'maxGasFee' | 'usePrice'
 > => {
+  const price = parsePriceFromDecodedParam(
+    getPriceFromDecodedParam(context.currentTrigger),
+    context.position?.debt.token.decimals,
+  )
+
   return {
     maxGasFee:
       getMaxGasFeeFromDecodedParam(context.currentTrigger?.decodedParams.maxBaseFeeInGwei) ?? 300,
-    usePrice: true,
+    usePrice: allDefined(price),
     executionTriggerLTV:
       getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.executionLtv) ??
       context.defaults.executionTriggerLTV,
     targetTriggerLTV:
       getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.targetLtv) ??
       context.defaults.targetTriggerLTV,
-    price: parsePriceFromDecodedParam(
-      getPriceFromDecodedParam(context.currentTrigger),
-      context.position?.debt.token.decimals,
-    ),
+    price: price,
   }
 }
 

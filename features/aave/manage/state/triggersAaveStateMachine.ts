@@ -47,6 +47,34 @@ export const isAutoSellEnabled = ({
   )
 }
 
+export const getCurrentOptimizationView = ({
+  triggers,
+}: GetTriggersResponse): 'auto-buy' | undefined => {
+  if (triggers.aaveBasicBuy) {
+    return 'auto-buy'
+  }
+  return undefined
+}
+
+export const getCurrentProtectionView = ({
+  triggers,
+}: GetTriggersResponse): 'auto-sell' | 'stop-loss' | undefined => {
+  if (
+    triggers.aaveStopLossToDebt ||
+    triggers.aaveStopLossToCollateral ||
+    triggers.sparkStopLossToDebt ||
+    triggers.sparkStopLossToCollateral
+  ) {
+    return 'stop-loss'
+  }
+
+  if (triggers.aaveBasicSell) {
+    return 'auto-sell'
+  }
+
+  return undefined
+}
+
 export const areTriggersLoading = (state: StateFrom<typeof triggersAaveStateMachine>): boolean => {
   return state.matches('loading')
 }
@@ -167,7 +195,12 @@ export const triggersAaveStateMachine = createMachine(
             id: 'getTriggers',
             onDone: {
               target: 'idle',
-              actions: ['updateTriggers', 'sendAutoBuyTrigger', 'sendAutoSellTrigger'],
+              actions: [
+                'updateTriggers',
+                'sendAutoBuyTrigger',
+                'sendAutoSellTrigger',
+                'updateCurrentViews',
+              ],
             },
           },
         ],
@@ -245,6 +278,17 @@ export const triggersAaveStateMachine = createMachine(
       updateTriggers: assign((context, event) => ({
         currentTriggers: event.data,
       })),
+      updateCurrentViews: assign((context, event) => {
+        const currentOptimizationView = getCurrentOptimizationView(event.data)
+        const currentProtectionView = getCurrentProtectionView(event.data)
+
+        return {
+          showAutoBuyBanner: !currentOptimizationView,
+          showAutoSellBanner: !currentProtectionView,
+          optimizationCurrentView: getCurrentOptimizationView(event.data),
+          protectionCurrentView: getCurrentProtectionView(event.data),
+        }
+      }),
       updateAutoBuyDefaults: sendTo(
         (context) => {
           return context.autoBuyTrigger
