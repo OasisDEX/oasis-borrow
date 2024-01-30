@@ -14,10 +14,11 @@ import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarMan
 import {
   areTriggersLoading,
   hasActiveOptimization,
+  hasActiveProtection,
   isOptimizationEnabled,
 } from 'features/aave/manage/state'
 import { type IStrategyConfig, ProxyType } from 'features/aave/types/strategy-config'
-import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import { useAppConfig } from 'helpers/config'
 import type {
@@ -46,7 +47,6 @@ export function AaveManageTabBar({
   const { AaveV3Protection: aaveProtection, AaveV3History: aaveHistory } = useAppConfig('features')
   const {
     automationTriggersData: { isAutomationDataLoaded },
-    triggerData: { stopLossTriggerData },
   } = useAutomationContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
@@ -60,8 +60,9 @@ export function AaveManageTabBar({
     tokens: { collateral: collateralToken, debt: debtToken },
   } = state.context
 
-  const protectionEnabled = stopLossTriggerData.isStopLossEnabled
-  const showAutomationTabs = isSupportedAaveAutomationTokenPair(collateralToken, debtToken)
+  const showAutomationTabs =
+    strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.STOP_LOSS) ||
+    strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_SELL)
 
   const isClosingPosition = state.matches('frontend.reviewingClosing')
   const hasCloseTokenSet = !!state.context.manageTokenInput?.closingToken
@@ -86,6 +87,7 @@ export function AaveManageTabBar({
   const isOptimizationTabEnabled = isOptimizationEnabled(triggersState)
   const isOptimizationTabLoading = areTriggersLoading(triggersState)
   const hasActiveOptimizationTrigger = hasActiveOptimization(triggersState)
+  const hasActiveProtectionTrigger = hasActiveProtection(triggersState)
 
   const optimizationTab: TabSection[] = isOptimizationTabEnabled
     ? [
@@ -116,9 +118,8 @@ export function AaveManageTabBar({
                 aaveReserveDataDebtToken={aaveReserveDataDebtToken}
                 strategyConfig={strategyConfig}
                 currentPosition={state.context.currentPosition!}
-                collateralPrice={state.context.collateralPrice}
-                tokenPrice={state.context.tokenPrice}
-                debtPrice={state.context.debtPrice}
+                collateralPrice={state.context.balance?.collateral.price}
+                debtPrice={state.context.balance?.debt.price}
                 nextPosition={nextPosition}
                 cumulatives={state.context.cumulatives}
                 dpmProxy={state.context.effectiveProxyAddress}
@@ -143,7 +144,7 @@ export function AaveManageTabBar({
                 value: 'protection',
                 tag: {
                   include: true,
-                  active: protectionEnabled,
+                  active: hasActiveProtectionTrigger,
                   isLoading: !isAutomationDataLoaded,
                 },
                 content: <ProtectionControlWrapper />,

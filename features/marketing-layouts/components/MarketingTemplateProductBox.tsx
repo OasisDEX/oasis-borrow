@@ -1,27 +1,25 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
-import { IconWithPalette } from 'features/marketing-layouts/components'
+import { MarketingTemplateMarkdown } from 'features/marketing-layouts/components'
 import { renderCssGradient } from 'features/marketing-layouts/helpers'
-import { marketingTemplatesIcons } from 'features/marketing-layouts/icons'
 import type {
   MarketingTemplatePalette,
-  MarketingTemplateProductsProps,
+  MarketingTemplateProductBoxProps,
 } from 'features/marketing-layouts/types'
 import React, { type FC } from 'react'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Box, Flex, Heading, Image, Text } from 'theme-ui'
 
-export const MarketingTemplateProduct: FC<
-  MarketingTemplateProductsProps & MarketingTemplatePalette & { index: number }
+export const MarketingTemplateProductBox: FC<
+  MarketingTemplateProductBoxProps & { index: number; palette: MarketingTemplatePalette }
 > = ({
   actionsList,
   composition,
   description,
-  index,
-  icon: iconPalette,
   image,
+  index,
   link,
-  mainGradient,
+  palette: { background },
   title,
   type,
 }) => {
@@ -41,7 +39,7 @@ export const MarketingTemplateProduct: FC<
         border: '1px solid',
         borderColor: 'neutral20',
         borderRadius: 'rounder',
-        background: renderCssGradient('180deg', mainGradient),
+        background: renderCssGradient('180deg', background),
         overflow: 'hidden',
       }}
     >
@@ -63,9 +61,7 @@ export const MarketingTemplateProduct: FC<
           <Heading as="h3" variant="header4" sx={{ mt: 1, mb: 2 }}>
             {title}
           </Heading>
-          <Text as="p" variant="paragraph2" sx={{ color: 'neutral80' }}>
-            {description}
-          </Text>
+          <MarketingTemplateMarkdown content={description} />
           {link && (
             <AppLink href={link.url} sx={{ display: 'inline-block', mt: 3 }}>
               <WithArrow sx={{ fontSize: 3, color: 'interactive100' }}>{link.label}</WithArrow>
@@ -80,10 +76,9 @@ export const MarketingTemplateProduct: FC<
             >
               {actionsList.map(({ description: actionListDescription, icon, label }, i) => (
                 <Flex as="li" key={i} sx={{ alignItems: 'center', columnGap: '12px' }}>
-                  <IconWithPalette
-                    size={56}
-                    contents={marketingTemplatesIcons[icon]}
-                    {...iconPalette}
+                  <Image
+                    src={icon}
+                    sx={{ width: '56px', filter: 'drop-shadow(0 0 12px rgba(0, 0, 0, 0.1))' }}
                   />
                   <Box>
                     <Text as="p" variant="boldParagraph2">

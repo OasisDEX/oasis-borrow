@@ -4,8 +4,10 @@ import { amountFromWei } from 'blockchain/utils'
 import type { ethers } from 'ethers'
 import type { IStrategyConfig } from 'features/aave/types'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { isAnyValueDefined } from 'helpers/isAnyValueDefined'
 import type { GetTriggersResponse } from 'helpers/triggers'
 import { getTriggersRequest } from 'helpers/triggers'
+import { LendingProtocol } from 'lendingProtocols'
 import type { ActorRefFrom, StateFrom } from 'xstate'
 import { actions, createMachine } from 'xstate'
 
@@ -55,6 +57,27 @@ export const hasActiveOptimization = ({
   return context.currentTriggers.triggers.aaveBasicBuy !== undefined
 }
 
+export const hasActiveProtection = ({
+  context,
+}: StateFrom<typeof triggersAaveStateMachine>): boolean => {
+  const protocol = context.strategyConfig.protocol
+  const {
+    aaveStopLossToCollateral,
+    sparkStopLossToCollateral,
+    sparkStopLossToDebt,
+    aaveStopLossToDebt,
+    aaveBasicSell,
+  } = context.currentTriggers.triggers
+  switch (protocol) {
+    case LendingProtocol.AaveV3:
+      return isAnyValueDefined(aaveStopLossToCollateral, aaveStopLossToDebt, aaveBasicSell)
+    case LendingProtocol.SparkV3:
+      return isAnyValueDefined(sparkStopLossToCollateral, sparkStopLossToDebt)
+    case LendingProtocol.AaveV2:
+      return false
+  }
+}
+
 export type TriggersAaveContext = {
   readonly strategyConfig: IStrategyConfig
   readonly dpm?: UserDpmAccount
@@ -63,6 +86,7 @@ export type TriggersAaveContext = {
   protectionCurrentView?: 'auto-sell' | 'stop-loss' | undefined
   showAutoBuyBanner: boolean
   showAutoSellBanner: boolean
+  showStopLossBanner: boolean
   currentTriggers: GetTriggersResponse
   signer?: ethers.Signer
   autoBuyTrigger: ActorRefFrom<typeof autoBuyTriggerAaveStateMachine>
@@ -174,17 +198,28 @@ export const triggersAaveStateMachine = createMachine(
         optimizationCurrentView: 'auto-buy' as const,
         showAutoBuyBanner: false,
       })),
-      setAutoSellView: assign(() => ({
+      setAutoSellView: assign((context) => ({
         protectionCurrentView: 'auto-sell' as const,
         showAutoSellBanner: false,
+        showStopLossBanner: context.strategyConfig.isAutomationFeatureEnabled(
+          AutomationFeatures.STOP_LOSS,
+        ),
       })),
-      setStopLossView: assign(() => ({
+      setStopLossView: assign((context) => ({
         protectionCurrentView: 'stop-loss' as const,
-        showAutoSellBanner: true,
+        showAutoSellBanner: context.strategyConfig.isAutomationFeatureEnabled(
+          AutomationFeatures.AUTO_SELL,
+        ),
+        showStopLossBanner: false,
       })),
-      resetProtection: assign(() => ({
+      resetProtection: assign((context) => ({
         protectionCurrentView: undefined,
-        showAutoSellBanner: true,
+        showAutoSellBanner: context.strategyConfig.isAutomationFeatureEnabled(
+          AutomationFeatures.AUTO_SELL,
+        ),
+        showStopLossBanner: context.strategyConfig.isAutomationFeatureEnabled(
+          AutomationFeatures.STOP_LOSS,
+        ),
       })),
       updatePosition: assign((context, event) => ({
         position: event.position,

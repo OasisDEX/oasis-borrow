@@ -53,7 +53,11 @@ function AaveManageContainer({
         <Box mb={4}>
           <AavePositionNoticesView />
         </Box>
-        <Header strategyConfig={strategyConfig} positionId={state.context.positionId} />
+        <Header
+          strategyConfig={strategyConfig}
+          positionId={state.context.positionId}
+          currentPosition={state.context.currentPosition}
+        />
         <AaveManageTabBar
           strategyConfig={strategyConfig}
           aaveReserveState={aaveReserveState}

@@ -1574,6 +1574,7 @@
     "setup-stop-loss": {
       "header": "Protect against unnecessary losses",
       "content": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either Dai or {{token}} at your desired Price or Collateral level. Find out more about how it works",
+      "content-generic": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either collateral or debt token at your desired Price or Collateral level. Find out more about how it works",
       "button": "Setup Stop-Loss"
     },
     "get-protection": {
@@ -3211,7 +3212,8 @@
   },
   "aave": {
     "header": {
-      "current-market-price": "Current Market Price"
+      "current-market-price": "Current Market Price",
+      "current-ltv": "Current LTV"
     },
     "errors": {
       "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet.",

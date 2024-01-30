@@ -1,13 +1,11 @@
-import type { Protocol } from '@prisma/client'
+import type { AaveLikePosition } from '@oasisdex/dma-library'
 import type { ProtocolLabelProps } from 'components/ProtocolLabel.types'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { useAaveContext } from 'features/aave'
-import { createFollowButton } from 'features/aave/helpers/createFollowButton'
 import type { IStrategyConfig, ManageAaveHeaderProps } from 'features/aave/types'
 import { StrategyType } from 'features/aave/types'
-import type { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { formatCryptoBalance } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
@@ -15,13 +13,13 @@ import React, { useMemo } from 'react'
 function AaveHeader({
   strategyConfig,
   headerLabelString,
-  followButton,
   shareButton,
+  currentPosition,
 }: {
   strategyConfig: IStrategyConfig
   headerLabelString: string
-  followButton?: FollowButtonControlProps
   shareButton?: boolean
+  currentPosition?: AaveLikePosition
 }) {
   const { t } = useTranslation()
   const { getAaveLikeAssetsPrices$ } = useAaveContext(
@@ -49,6 +47,22 @@ function AaveHeader({
         ? `${strategyConfig.tokens.collateral}/${strategyConfig.tokens.debt}`
         : `${strategyConfig.tokens.debt}/${strategyConfig.tokens.collateral}`
 
+    if (currentPosition) {
+      return [
+        {
+          label: t('aave.header.current-ltv'),
+          value: `${formatPercent(currentPosition.riskRatio.loanToValue.times(100), {
+            precision: 2,
+            roundMode: 1,
+          })}`,
+        },
+        {
+          label: t('aave.header.current-market-price'),
+          value: `${formatCryptoBalance(positionPrice)} ${priceFormat}`,
+        },
+      ]
+    }
+
     return [
       {
         label: t('aave.header.current-market-price'),
@@ -56,7 +70,7 @@ function AaveHeader({
       },
     ]
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [positionTokenPrices, strategyConfig])
+  }, [positionTokenPrices, currentPosition, strategyConfig])
 
   const protocol: ProtocolLabelProps = {
     network: strategyConfig.network,
@@ -77,7 +91,6 @@ function AaveHeader({
         tokens={[strategyConfig.tokens.collateral, strategyConfig.tokens.debt]}
         loading={!positionTokenPrices}
         details={detailsList}
-        followButton={followButton}
         shareButton={shareButton}
         protocol={protocol}
       />
@@ -89,19 +102,13 @@ export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyCo
   return <AaveHeader strategyConfig={strategyConfig} headerLabelString={'vault.header-aave-open'} />
 }
 
-export function AaveManageHeader({ strategyConfig, positionId }: ManageAaveHeaderProps) {
-  const { protocol } = strategyConfig
-  const followButton: FollowButtonControlProps | undefined = createFollowButton(
-    positionId,
-    protocol.toLowerCase() as Protocol,
-  )
-
+export function AaveManageHeader({ strategyConfig, currentPosition }: ManageAaveHeaderProps) {
   return (
     <AaveHeader
       strategyConfig={strategyConfig}
       headerLabelString={'vault.header-aave-view'}
-      followButton={followButton}
       shareButton
+      currentPosition={currentPosition}
     />
   )
 }

@@ -1,6 +1,7 @@
 import { AppLink } from 'components/Links'
 import { TokensGroup } from 'components/TokensGroup'
 import { WithArrow } from 'components/WithArrow'
+import { MarketingTemplateMarkdown } from 'features/marketing-layouts/components'
 import type { MarketingTemplateInfoBoxProps } from 'features/marketing-layouts/types'
 import React, { type FC } from 'react'
 import { Flex, Heading, Image, Text } from 'theme-ui'
@@ -22,12 +23,10 @@ export const MarketingTemplateInfoBox: FC<MarketingTemplateInfoBoxProps> = ({
       }}
     >
       <Flex sx={{ flexDirection: 'column', alignSelf: 'center' }}>
-        <Heading as="h3" variant="header4">
+        <Heading as="h3" variant="header4" sx={{ mb: '12px' }}>
           {title}
         </Heading>
-        <Text as="p" variant="paragraph2" sx={{ mt: '12px', color: 'neutral80' }}>
-          {description}
-        </Text>
+        <MarketingTemplateMarkdown content={description} />
         {link && (
           <AppLink href={link.url} sx={{ display: 'inline-block', mt: '12px' }}>
             <WithArrow sx={{ fontSize: 3, color: 'interactive100' }}>{link.label}</WithArrow>

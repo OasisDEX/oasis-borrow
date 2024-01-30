@@ -40,6 +40,7 @@ export type PortfolioPosition = {
   secondaryToken: string
   type: OmniProductType
   url: string
+  debuggingData?: any
 }
 interface PortfolioPositionsCommonReply {
   error?: boolean | string
@@ -62,6 +63,7 @@ export type PortfolioPositionsHandler = ({
   dpmList,
   prices,
   positionsCount,
+  debug,
 }: {
   address: string
   apiVaults?: Vault[]
@@ -69,6 +71,7 @@ export type PortfolioPositionsHandler = ({
   prices: TokensPricesList
   positionsCount?: boolean
   allPositionsHistory?: HistoryResponse
+  debug?: boolean
 }) => Promise<PortfolioPositionsReply | PortfolioPositionsCountReply>
 
 type DetailsTypeCommon =
