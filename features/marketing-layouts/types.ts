@@ -14,8 +14,8 @@ export interface MarketingTemplateHeroProps {
   description: string
   image: string
   link: {
-    url: string
     label: string
+    url: string
   }
   protocol?: LendingProtocol | LendingProtocol[]
   title: string
@@ -49,8 +49,8 @@ export interface MarketingTemplateInfoBoxProps {
   description: string
   image: string
   link?: {
-    url: string
     label: string
+    url: string
   }
   title: string
   tokens?: string[]
@@ -71,8 +71,8 @@ export interface MarketingTemplateProductBoxProps {
   description: string
   image?: string
   link?: {
-    url: string
     label: string
+    url: string
   }
   title: string
   type: string
@@ -94,7 +94,22 @@ interface MarketingTemplateBeneftBoxBlock extends MarketingTemplateBlock {
   content: MarketingTemplateBenefitBoxProps[]
 }
 
+export interface MarketingTemplateBannerProps {
+  cta: {
+    label: string
+    url: string
+  }
+  description?: string
+  title: string
+}
+
+interface MarketingTemplateBannerBlock extends MarketingTemplateBlock {
+  type: 'banner'
+  content: MarketingTemplateBannerProps
+}
+
 export type MarketingTemplateProductFinderBlocks =
+  | MarketingTemplateBannerBlock
   | MarketingTemplateBeneftBoxBlock
   | MarketingTemplateInfoBoxBlock
   | MarketingTemplateProductBoxBlock

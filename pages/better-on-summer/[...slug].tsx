@@ -28,7 +28,7 @@ export default MarketingTemplatePage
 export async function getServerSideProps({ locale }: GetServerSidePropsContext) {
   const marketingTemplatePageProps: MarketingTemplateFreeform = {
     palette: {
-      background: ['#f8eaff', '#edf8ff'],
+      background: ['#f8eaff', '#edf8ff', '#fff'],
       foreground: ['#2ebac6', '#b6509e'],
     },
     hero: {
@@ -188,6 +188,16 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
               '- Unlock the superpowers of other protocols\n- View all your positions and assets at glance\n- Discover new curated DeFi opportunities\n- Swap and Bridge',
           },
         ],
+      },
+      {
+        type: 'banner',
+        content: {
+          title: 'Ready to get started?',
+          cta: {
+            label: 'Open a position',
+            url: '/',
+          },
+        },
       },
     ],
   }

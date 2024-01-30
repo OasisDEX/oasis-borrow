@@ -22,7 +22,12 @@ export function MarketingLayout({
         sx={{
           position: 'relative',
           ...(backgroundGradient && {
-            background: renderCssGradient('180deg', [...backgroundGradient, '#fff']),
+            background: renderCssGradient('180deg', [
+              ...backgroundGradient,
+              ...(!['#fff', '#ffffff'].includes(backgroundGradient[backgroundGradient.length - 1])
+                ? ['#fff']
+                : []),
+            ]),
             backgroundSize: '100% 1024px',
             backgroundRepeat: 'no-repeat',
           }),

@@ -1,3 +1,4 @@
+export * from './MarketingTemplateBanner'
 export * from './MarketingTemplateBenefitBox'
 export * from './MarketingTemplateHeading'
 export * from './MarketingTemplateHero'
