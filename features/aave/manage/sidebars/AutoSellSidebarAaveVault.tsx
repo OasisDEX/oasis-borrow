@@ -10,6 +10,7 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { RemoveTriggerInfoSection, type RemoveTriggerSectionProps } from 'features/aave/components'
 import type { AutoSellInfoSectionProps } from 'features/aave/components/AutoSellInfoSection'
 import { AutoSellInfoSection } from 'features/aave/components/AutoSellInfoSection'
 import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
@@ -26,10 +27,12 @@ import {
   sidebarAutomationLinkMap,
 } from 'features/automation/common/consts'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { TriggerAction } from 'helpers/triggers/setup-triggers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { AddingStopLossAnimation } from 'theme/animations'
@@ -123,6 +126,19 @@ function getAutoSellInfoSectionProps({
       (value) => parseInt(value) / 100,
     ) as [number, number],
     targetMultiple: parseInt(state.setupTriggerResponse.simulation.targetMultiple) / 100,
+  }
+}
+
+function getRemoveTriggerSectionProps({
+  state,
+}: Pick<AutoSellSidebarAaveVaultProps, 'state'>): RemoveTriggerSectionProps | undefined {
+  if (!state.setupTriggerResponse?.simulation) {
+    return undefined
+  }
+
+  return {
+    transactionCost: state.gasEstimation ?? { gasEstimationStatus: 'unset' },
+    isLoading: state.isLoading,
   }
 }
 
@@ -229,6 +245,21 @@ function AutoBuySidebarAaveVaultReviewState({ state }: AutoSellSidebarAaveVaultP
   return <>{autoSellInfoProps && <AutoSellInfoSection {...autoSellInfoProps} />}</>
 }
 
+function AutoSellSidebarAaveVaultRemoveState({ state }: AutoSellSidebarAaveVaultProps) {
+  const { t } = useTranslation()
+  const autoBuyInfoProps = getRemoveTriggerSectionProps({ state })
+  return (
+    <>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('automation.cancel-summary-description', {
+          feature: t(sidebarAutomationFeatureCopyMap[AutomationFeatures.AUTO_SELL]),
+        })}
+      </Text>
+      {autoBuyInfoProps && <RemoveTriggerInfoSection {...autoBuyInfoProps} />}
+    </>
+  )
+}
+
 function AutoBuySidebarAaveVaultTxState({ state }: AutoSellSidebarAaveVaultProps) {
   const autoSellInfoProps = getAutoSellInfoSectionProps({ state })
   return (
@@ -249,7 +280,7 @@ function AutoBuySidebarAaveVaultTxDoneState({ state }: AutoSellSidebarAaveVaultP
         </Flex>
       </Box>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {state.flow === 'add' && (
+        {state.action === TriggerAction.Add && (
           <>
             {t('automation-creation.add-complete-content', {
               featureName: t(sidebarAutomationFeatureCopyMap[state.feature]),
@@ -262,7 +293,7 @@ function AutoBuySidebarAaveVaultTxDoneState({ state }: AutoSellSidebarAaveVaultP
             </AppLink>
           </>
         )}
-        {state.flow === 'cancel' &&
+        {state.action === TriggerAction.Remove &&
           t('automation-creation.remove-complete-content', {
             featureName: t(sidebarAutomationFeatureCopyMap[state.feature]),
           })}
@@ -282,6 +313,8 @@ export function SideBarContent(props: AutoSellSidebarAaveVaultProps) {
       return <AutoSellSidebarAaveVaultEditingState {...props} />
     case isStateMatch('review'):
       return <AutoBuySidebarAaveVaultReviewState {...props} />
+    case isStateMatch('remove'):
+      return <AutoSellSidebarAaveVaultRemoveState {...props} />
     case isStateMatch('tx'):
       return <AutoBuySidebarAaveVaultTxState {...props} />
     case isStateMatch('txDone'):
@@ -296,7 +329,7 @@ export function usePrimaryButton(
   const { isStateMatch, canTransitWith } = props
   const { t } = useTranslation()
   const editingLabel =
-    props.state.flow === 'add'
+    props.state.action === TriggerAction.Add
       ? t('automation.add-trigger', {
           feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
         })
@@ -333,6 +366,20 @@ export function usePrimaryButton(
         label: props.state.retryCount > 0 ? t('retry') : t('protection.confirm'),
         steps: [2, 3],
       }
+    case isStateMatch('remove'):
+      return {
+        isLoading: props.state.isLoading,
+        action: () => {
+          props.updateState({ type: 'START_TRANSACTION' })
+        },
+        disabled: !canTransitWith({ type: 'START_TRANSACTION' }),
+        label:
+          props.state.retryCount > 0
+            ? t('retry')
+            : t('automation.cancel-trigger', {
+                feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
+              }),
+      }
     case isStateMatch('tx'):
       return {
         isLoading: props.state.isLoading,
@@ -367,7 +414,7 @@ export function useTextButton(
   const { isStateMatch } = props
   const { t } = useTranslation()
 
-  if (isStateMatch('review')) {
+  if (isStateMatch('review') || isStateMatch('remove')) {
     return {
       isLoading: props.state.isLoading,
       action: () => {
@@ -375,6 +422,19 @@ export function useTextButton(
       },
       label: t('back-to-editing'),
       steps: [2, 3],
+    }
+  }
+
+  if (
+    (isStateMatch('editing') || isStateMatch('idle')) &&
+    props.canTransitWith({ type: 'REMOVE_TRIGGER' })
+  ) {
+    return {
+      isLoading: props.state.isLoading,
+      action: () => {
+        props.updateState({ type: 'REMOVE_TRIGGER' })
+      },
+      label: t('system.remove-trigger'),
     }
   }
 
