@@ -1,23 +1,13 @@
-import type { marketingTemplatesIcons } from 'features/marketing-layouts/icons'
 import type {
   ProductFinderPromoCardFilters,
   ProductHubProductType,
   ProductHubSupportedNetworks,
 } from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
-import type { ReactNode } from 'react'
-
-export type IconWithPaletteContents = (params: MarketingTemplateIconPalette) => ReactNode
-
-export interface MarketingTemplateIconPalette {
-  backgroundGradient: [string, string, ...string[]]
-  foregroundGradient: [string, string, ...string[]]
-  symbolGradient: [string, string, ...string[]]
-}
 
 export interface MarketingTemplatePalette {
-  mainGradient: [string, string, ...string[]]
-  icon: MarketingTemplateIconPalette
+  background: [string, string, ...string[]]
+  foreground: [string, string, ...string[]]
 }
 
 export interface MarketingTemplateHeroProps {
@@ -27,8 +17,32 @@ export interface MarketingTemplateHeroProps {
     url: string
     label: string
   }
-  protocol: LendingProtocol
+  protocol?: LendingProtocol | LendingProtocol[]
   title: string
+  token?: string | string[]
+}
+
+export interface MarketingTemplateBlock {
+  subtitle?: string
+  title?: string
+  description?: string
+}
+
+interface MarketingTemplateProductFinderProps {
+  initialNetwork?: ProductHubSupportedNetworks[]
+  initialProtocol?: LendingProtocol[]
+  product: ProductHubProductType
+  promoCards: [
+    ProductFinderPromoCardFilters,
+    ProductFinderPromoCardFilters,
+    ProductFinderPromoCardFilters,
+  ]
+  token?: string
+}
+
+interface MarketingTemplateProductFinderBlock extends MarketingTemplateBlock {
+  type: 'product-finder'
+  content: MarketingTemplateProductFinderProps
 }
 
 export interface MarketingTemplateInfoBoxProps {
@@ -42,9 +56,14 @@ export interface MarketingTemplateInfoBoxProps {
   tokens?: string[]
 }
 
-export interface MarketingTemplateProductsProps {
+interface MarketingTemplateInfoBoxBlock extends MarketingTemplateBlock {
+  type: 'info-box'
+  content: MarketingTemplateInfoBoxProps[]
+}
+
+export interface MarketingTemplateProductBoxProps {
   actionsList?: {
-    icon: keyof typeof marketingTemplatesIcons
+    icon: string
     label: string
     description?: string
   }[]
@@ -59,33 +78,30 @@ export interface MarketingTemplateProductsProps {
   type: string
 }
 
+interface MarketingTemplateProductBoxBlock extends MarketingTemplateBlock {
+  type: 'product-box'
+  content: MarketingTemplateProductBoxProps[]
+}
+
 export interface MarketingTemplateBenefitBoxProps {
-  description?: string
-  icon: keyof typeof marketingTemplatesIcons
-  list?: string[]
+  description: string
+  icon: string
   title: string
 }
 
-export interface MarketingTemplatePageProps {
-  benefits: MarketingTemplateBenefitBoxProps[]
-  benefitsSubtitle: string
-  benefitsTitle: string
+interface MarketingTemplateBeneftBoxBlock extends MarketingTemplateBlock {
+  type: 'benefit-box'
+  content: MarketingTemplateBenefitBoxProps[]
+}
+
+export type MarketingTemplateProductFinderBlocks =
+  | MarketingTemplateBeneftBoxBlock
+  | MarketingTemplateInfoBoxBlock
+  | MarketingTemplateProductBoxBlock
+  | MarketingTemplateProductFinderBlock
+
+export interface MarketingTemplateFreeform {
+  blocks: MarketingTemplateProductFinderBlocks[]
   hero: MarketingTemplateHeroProps
-  infoBoxesTitle: string
-  infoBoxesDescription: string
-  infoBoxes: MarketingTemplateInfoBoxProps[]
   palette: MarketingTemplatePalette
-  productFinder: {
-    initialNetwork?: ProductHubSupportedNetworks[]
-    initialProtocol?: LendingProtocol[]
-    product: ProductHubProductType
-    token?: string
-    promoCards: [
-      ProductFinderPromoCardFilters,
-      ProductFinderPromoCardFilters,
-      ProductFinderPromoCardFilters,
-    ]
-  }
-  products: MarketingTemplateProductsProps[]
-  productsTitle: string
 }

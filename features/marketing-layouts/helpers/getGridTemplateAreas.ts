@@ -1,6 +1,6 @@
-import type { MarketingTemplateProductsProps } from 'features/marketing-layouts/types'
+import type { MarketingTemplateProductBoxProps } from 'features/marketing-layouts/types'
 
-export function getGridTemplateAreas(products: MarketingTemplateProductsProps[]) {
+export function getGridTemplateAreas(products: MarketingTemplateProductBoxProps[]) {
   return products
     .reduce<string[][]>((total, { composition }, i) => {
       return total[total.length - 1] && total[total.length - 1].length === 1
