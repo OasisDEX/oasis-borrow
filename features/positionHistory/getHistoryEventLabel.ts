@@ -12,10 +12,11 @@ export const getHistoryEventLabel = ({
   quoteToken?: string
   isOpen?: boolean
 }) => {
-
   const { t } = useTranslation()
   const isAutomation = kind?.includes('Automation')
-  if (isAutomation && kind) { return handleAutomationKinds(kind, t, collateralToken, quoteToken) }
+  if (isAutomation && kind) {
+    return handleAutomationKinds(kind, t, collateralToken, quoteToken)
+  }
 
   const kindWithoutVersion = kind?.split('_')[0]
 
@@ -104,18 +105,23 @@ export const getHistoryEventLabel = ({
 enum AutomationAction {
   'Added' = 'Added',
   'Executed' = 'Executed',
-  'Removed' = 'Removed'
+  'Removed' = 'Removed',
 }
 
 enum AutomationType {
   'StopLossToDebt' = 'StopLossToDebt',
   'StopLossToCollateral' = 'StopLossToCollateral',
   'BasicBuy' = 'BasicBuy',
-  'BasicSell' = 'BasicSell'
+  'BasicSell' = 'BasicSell',
 }
-function handleAutomationKinds(kind: string, t: TranslationType, collateralToken?: string, quoteToken?: string) {
-  const automationType = kind.split('-')[1];
-  const automationAction = kind.split('-')[0];
+function handleAutomationKinds(
+  kind: string,
+  t: TranslationType,
+  collateralToken?: string,
+  quoteToken?: string,
+) {
+  const automationType = kind.split('-')[1]
+  const automationAction = kind.split('-')[0]
 
   if (automationType.includes(AutomationType.StopLossToDebt)) {
     return handleStopLossToDebtLabel(automationAction, t, quoteToken)
@@ -130,18 +136,20 @@ function handleAutomationKinds(kind: string, t: TranslationType, collateralToken
   return undefined
 }
 
-function handleStopLossToDebtLabel(automationAction: string, t: TranslationType, quoteToken: string | undefined) {
+function handleStopLossToDebtLabel(
+  automationAction: string,
+  t: TranslationType,
+  quoteToken: string | undefined,
+) {
   if (automationAction.includes(AutomationAction.Added)) {
     return quoteToken
       ? t('position-history.automation.stop-loss-token-added', { token: quoteToken })
       : t('position-history.automation.stop-loss-debt-added')
-  }
-  else if (automationAction.includes(AutomationAction.Executed)) {
+  } else if (automationAction.includes(AutomationAction.Executed)) {
     return quoteToken
       ? t('position-history.automation.stop-loss-token-executed', { token: quoteToken })
       : t('position-history.automation.stop-loss-debt-executed')
-  }
-  else if (automationAction.includes(AutomationAction.Removed)) {
+  } else if (automationAction.includes(AutomationAction.Removed)) {
     return quoteToken
       ? t('position-history.automation.stop-loss-token-removed', { token: quoteToken })
       : t('position-history.automation.stop-loss-debt-removed')
@@ -149,18 +157,20 @@ function handleStopLossToDebtLabel(automationAction: string, t: TranslationType,
   console.warn('Automation type not found')
   return undefined
 }
-function handleStopLosstoCollateralLabel(automationAction: string, t: TranslationType, collateralToken: string | undefined) {
+function handleStopLosstoCollateralLabel(
+  automationAction: string,
+  t: TranslationType,
+  collateralToken: string | undefined,
+) {
   if (automationAction.includes(AutomationAction.Added)) {
     return collateralToken
       ? t('position-history.automation.stop-loss-token-added', { token: collateralToken })
       : t('position-history.automation.stop-loss-collateral-added')
-  }
-  else if (automationAction.includes(AutomationAction.Executed)) {
+  } else if (automationAction.includes(AutomationAction.Executed)) {
     return collateralToken
       ? t('position-history.automation.stop-loss-token-executed', { token: collateralToken })
       : t('position-history.automation.stop-loss-collateral-executed')
-  }
-  else if (automationAction.includes(AutomationAction.Removed)) {
+  } else if (automationAction.includes(AutomationAction.Removed)) {
     return collateralToken
       ? t('position-history.automation.stop-loss-token-removed', { token: collateralToken })
       : t('position-history.automation.stop-loss-collateral-removed')
@@ -171,11 +181,9 @@ function handleStopLosstoCollateralLabel(automationAction: string, t: Translatio
 function handleBasicBuyLabel(automationAction: string, t: TranslationType) {
   if (automationAction.includes(AutomationAction.Added)) {
     return t('position-history.automation.basic-buy-added')
-  }
-  else if (automationAction.includes(AutomationAction.Executed)) {
+  } else if (automationAction.includes(AutomationAction.Executed)) {
     return t('position-history.automation.basic-buy-executed')
-  }
-  else if (automationAction.includes(AutomationAction.Removed)) {
+  } else if (automationAction.includes(AutomationAction.Removed)) {
     return t('position-history.automation.basic-buy-removed')
   }
   console.warn('Automation type not found')
@@ -184,11 +192,9 @@ function handleBasicBuyLabel(automationAction: string, t: TranslationType) {
 function handleBasicSellLabel(automationAction: string, t: TranslationType) {
   if (automationAction.includes(AutomationAction.Added)) {
     return t('position-history.automation.basic-sell-added')
-  }
-  else if (automationAction.includes(AutomationAction.Executed)) {
+  } else if (automationAction.includes(AutomationAction.Executed)) {
     return t('position-history.automation.basic-sell-executed')
-  }
-  else if (automationAction.includes(AutomationAction.Removed)) {
+  } else if (automationAction.includes(AutomationAction.Removed)) {
     return t('position-history.automation.basic-sell-removed')
   }
   console.warn('Automation type not found')
