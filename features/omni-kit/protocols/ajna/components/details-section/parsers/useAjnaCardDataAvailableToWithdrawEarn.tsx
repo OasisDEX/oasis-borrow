@@ -21,7 +21,7 @@ export function useAjnaCardDataAvailableToWithdrawEarn({
     modal: (
       <DetailsSectionContentSimpleModal
         title={t('omni-kit.content-card.available-to-withdraw.title')}
-        description={t('ajna.content-card.available-to-withdraw.modal-earn-description')}
+        description={t('omni-kit.content-card.available-to-withdraw.modal-description-supply')}
         value={`${formatCryptoBalance(availableToWithdraw)} ${quoteToken}`}
         theme={ajnaExtensionTheme}
       />
