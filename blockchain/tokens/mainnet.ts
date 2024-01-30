@@ -54,6 +54,7 @@ export const supportedIlks = [
 
 export const tokensMainnet = {
   ...getCollateralTokens({ ...mainnet.maker.pips, ...mainnet.common }, supportedIlks),
+  AJNA: contractDesc(erc20, mainnet.common.AJNA),
   CBETH: contractDesc(erc20, mainnet.common.CBETH),
   DAI: contractDesc(erc20, mainnet.common.DAI),
   ETH: contractDesc(erc20, mainnet.common.WETH),
@@ -70,6 +71,7 @@ export const tokensMainnet = {
   MKR: contractDesc(erc20, mainnet.maker.common.McdGov),
   RENBTC: contractDesc(erc20, mainnet.common.RENBTC),
   RETH: contractDesc(erc20, mainnet.common.RETH),
+  RBN: contractDesc(erc20, mainnet.common.RBN),
   RPL: contractDesc(erc20, mainnet.common.RPL),
   SDAI: contractDesc(savingsDai, mainnet.common.SDAI),
   STETH: contractDesc(erc20, mainnet.common.STETH),
