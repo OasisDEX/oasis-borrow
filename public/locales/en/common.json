@@ -504,7 +504,13 @@
       "stop-loss-debt-executed": "Stop loss to debt executed",
       "stop-loss-token-added": "Stop loss to {{token}} added",
       "stop-loss-token-removed": "Stop loss to {{token}} removed",
-      "stop-loss-token-executed": "Stop loss to {{token}} executed"
+      "stop-loss-token-executed": "Stop loss to {{token}} executed",
+      "basic-buy-added": "Basic buy added",
+      "basic-buy-removed": "Basic buy removed",
+      "basic-buy-executed": "Basic buy executed",
+      "basic-sell-added": "Basic sell added",
+      "basic-sell-removed": "Basic sell removed",
+      "basic-sell-executed": "Basic sell executed"
     }
   },
   "triggers": {

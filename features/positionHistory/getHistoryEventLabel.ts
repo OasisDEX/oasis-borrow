@@ -1,27 +1,43 @@
 import { useTranslation } from 'next-i18next'
 
 export const getHistoryEventLabel = ({
-  kind,
+  kindWithVersion,
   isOpen,
   collateralToken,
   quoteToken,
 }: {
-  kind?: string
+  kindWithVersion?: string
   collateralToken?: string
   quoteToken?: string
   isOpen?: boolean
 }) => {
   const { t } = useTranslation()
 
+  const kind = kindWithVersion?.split('_')[0]
+
+  // const x = handleAutomationKinds(kind)
+
   switch (kind) {
-    // Borrowish
     case 'AjnaDeposit':
     case 'MorphoBlueDeposit':
+    case 'AjnaSupplyQuote':
       return isOpen ? t('position-history.open-position') : t('position-history.deposit')
+    case 'AjnaDepositBorrow':
+    case 'MorphoBlueDepositBorrow':
+      return isOpen ? t('position-history.open-position') : t('position-history.deposit-generate')
     case 'MorphoBlueOpenPosition':
     case 'MorphoBlueOpenDepositBorrow':
+    case 'AjnaOpenMultiplyPosition':
+    case 'AAVEOpenDepositBorrow':
+    case 'SparkOpenDepositBorrow':
+    case 'OpenAAVEPosition':
+    case 'SparkOpenPosition':
+    case 'AjnaSupplyQuoteMintNftAndStake':
       return t('position-history.open-position')
     case 'AjnaWithdraw':
+    case 'AjnaWithdrawQuote':
+    case 'AjnaWithdrawQuoteNft':
+    case 'AjnaUnstakeNftAndWithdrawQuote':
     case 'MorphoBlueWithdraw':
       return t('position-history.withdraw')
     case 'AjnaBorrow':
@@ -30,37 +46,33 @@ export const getHistoryEventLabel = ({
     case 'AjnaRepay':
     case 'MorphoBluePayback':
       return t('position-history.repay')
-    case 'AjnaDepositBorrow':
-    case 'MorphoBlueDepositBorrow':
-      return isOpen ? t('position-history.open-position') : t('position-history.deposit-generate')
+
     case 'AjnaRepayWithdraw':
     case 'MorphoBluePaybackWithdraw':
+    case 'AAVEPaybackWithdraw':
+    case 'SparkPaybackWithdraw':
       return t('position-history.repay-withdraw')
-    case 'AjnaOpenMultiplyPosition_4':
-    case 'AjnaOpenMultiplyPosition_5':
-      return t('position-history.open-position')
-    case 'AjnaAdjustRiskUp_4':
-    case 'AjnaAdjustRiskUp_5':
+    case 'AjnaAdjustRiskUp':
     case 'SparkAdjustRiskUp':
     case 'MorphoBlueAdjustRiskUp':
+    case 'IncreaseAAVEPosition':
       return t('position-history.increase-multiple')
-    case 'AjnaAdjustRiskDown_4':
-    case 'AjnaAdjustRiskDown_5':
+    case 'AjnaAdjustRiskDown':
     case 'SparkAdjustRiskDown':
     case 'MorphoBlueAdjustRiskDown':
+    case 'DecreaseAAVEPosition':
       return t('position-history.decrease-multiple')
-    case 'AjnaCloseToQuotePosition_4':
-    case 'AjnaCloseToQuotePosition_5':
-    case 'AjnaCloseToCollateralPosition_4':
-    case 'AjnaCloseToCollateralPosition_5':
+    case 'AjnaCloseToQuotePosition':
+    case 'AjnaCloseToCollateralPosition':
     case 'MorphoBlueClosePosition':
+    case 'CloseAAVEPosition':
+    case 'CloseAAVEV3Position':
+    case 'SparkClosePosition':
       return t('position-history.close-position')
     case 'Kick':
       return t('position-history.auction-started')
     case 'AuctionSettle':
       return t('position-history.auction-settled')
-
-    // Earn
     case 'AjnaMoveQuote':
     case 'AjnaMoveQuoteNft':
       return t('position-history.move-lending-price')
@@ -70,45 +82,18 @@ export const getHistoryEventLabel = ({
     case 'AjnaWithdrawAndMoveQuote':
     case 'AjnaWithdrawAndMoveQuoteNft':
       return t('position-history.withdraw-and-move-lending-price')
-    case 'AjnaSupplyQuote':
-      return isOpen ? t('position-history.open-position') : t('position-history.deposit')
     case 'AjnaSupplyQuoteNft':
-      return t('position-history.deposit')
-    case 'AjnaWithdrawQuote':
-    case 'AjnaWithdrawQuoteNft':
-    case 'AjnaUnstakeNftAndWithdrawQuote':
-      return t('position-history.withdraw')
-    case 'AjnaUnstakeNftAndClaimCollateral':
-      return t('position-history.claim-collateral')
-    case 'AjnaSupplyQuoteMintNftAndStake':
-      return t('position-history.open-position')
-
-    // Aave
     case 'AAVEDeposit':
     case 'SparkDeposit':
       return t('position-history.deposit')
+    case 'AjnaUnstakeNftAndClaimCollateral':
+      return t('position-history.claim-collateral')
     case 'SparkDepositBorrow':
       return t('position-history.deposit-generate')
-    case 'AAVEPaybackWithdraw':
-    case 'SparkPaybackWithdraw':
-      return t('position-history.repay-withdraw')
     case 'AAVEBorrow':
     case 'SparkBorrow':
       return t('position-history.borrow')
-    case 'AAVEOpenDepositBorrow':
-    case 'SparkOpenDepositBorrow':
-      return t('position-history.open-position')
-    case 'CloseAAVEPosition':
-    case 'CloseAAVEV3Position_3':
-    case 'SparkClosePosition':
-      return t('position-history.close-position')
-    case 'IncreaseAAVEPosition':
-      return t('position-history.increase-multiple')
-    case 'OpenAAVEPosition':
-    case 'SparkOpenPosition':
-      return t('position-history.open-position')
-    case 'DecreaseAAVEPosition':
-      return t('position-history.decrease-multiple')
+
     case 'AutomationAdded-AaveStopLossToCollateralV2':
     case 'AutomationAdded-SparkStopLossToCollateralV2':
       return collateralToken
@@ -139,9 +124,70 @@ export const getHistoryEventLabel = ({
       return quoteToken
         ? t('position-history.automation.stop-loss-token-removed', { token: quoteToken })
         : t('position-history.automation.stop-loss-debt-removed')
+    case 'AutomationRemoved-AaveBasicBuyV2':
+      return t('position-history.automation.basic-buy-removed')
+    case 'AutomationRemoved-AaveBasicSellV2':
+      return t('position-history.automation.basic-sell-removed')
+    case 'AutomationAdded-AaveBasicBuyV2':
+      return t('position-history.automation.basic-buy-added')
+    case 'AutomationAdded-AaveBasicSellV2':
+      return t('position-history.automation.basic-sell-added')
+    case 'AutomationExecuted-AaveBasicBuyV2':
+      return t('position-history.automation.basic-buy-executed')
+    case 'AutomationExecuted-AaveBasicSellV2':
+      return t('position-history.automation.basic-sell-executed')
     case 'Liquidation':
       return t('position-history.liquidation')
     default:
       return `${t('position-history.event')} ${kind || ''}`
   }
 }
+
+// const automationTypes = {
+//   'StopLossToCollateral': {
+//     token: 'collateralToken',
+//     translations: {
+//       'Added': 'position-history.automation.stop-loss-token-added',
+//       'Executed': 'position-history.automation.stop-loss-token-executed',
+//       'Removed': 'position-history.automation.stop-loss-token-removed',
+//     },
+//   },
+//   'StopLossToDebt': {
+//     token: 'quoteToken',
+//     translations: {
+//       'Added': 'position-history.automation.stop-loss-token-added',
+//       'Executed': 'position-history.automation.stop-loss-token-executed',
+//       'Removed': 'position-history.automation.stop-loss-token-removed',
+//     },
+//   },
+//   'BasicBuy': {
+//     translations: {
+//       'Added': 'position-history.automation.basic-buy-added',
+//       'Executed': 'position-history.automation.basic-buy-executed',
+//       'Removed': 'position-history.automation.basic-buy-removed',
+//     },
+//   },
+//   'BasicSell': {
+//     translations: {
+//       'Added': 'position-history.automation.basic-sell-added',
+//       'Executed': 'position-history.automation.basic-sell-executed',
+//       'Removed': 'position-history.automation.basic-sell-removed',
+//     },
+//   } ,
+// };
+
+// function handleAutomationKinds(kind: string) {
+//   const automationType = Object.keys(automationTypes).find((key) => kind.includes(key));
+//   if (automationType) {
+//     const automationKind = automationTypes[automationType as keyof typeof automationTypes];
+//     const token = automationKind.token ? automationKind.token : '';
+//     const translationKey = automationKind.translations[kind.split('_')[1]];
+//     if (token) {
+//       return (args: any) => {
+//         return useTranslation().t(translationKey, { token: args[token] });
+//       };
+//     } else {
+//       return useTranslation().t(translationKey);
+//     }
+//   }
+// }
