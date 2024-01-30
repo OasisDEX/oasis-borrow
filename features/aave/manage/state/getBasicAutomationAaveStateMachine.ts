@@ -6,8 +6,10 @@ import { NetworkIds } from 'blockchain/networks'
 import type { TransactionFee } from 'blockchain/transaction-fee/get-transaction-fee'
 import { getTransactionFee } from 'blockchain/transaction-fee/get-transaction-fee'
 import type { ethers } from 'ethers'
+import { maxUint256 } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
+import { allDefined } from 'helpers/allDefined'
 import type { AaveBasicBuy, AaveBasicSell } from 'helpers/triggers'
 import {
   getLtvNumberFromDecodedParam,
@@ -150,16 +152,13 @@ const ensureValidContextForTransaction = <Trigger extends BasicAutoTrigger>(
   )
 }
 
-const MAX_UINT_256 =
-  '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-
 const getPriceFromDecodedParam = (trigger: BasicAutoTrigger | undefined): string | undefined => {
   if (trigger?.decodedParams === undefined) {
     return undefined
   }
 
   if ('maxBuyPrice' in trigger.decodedParams) {
-    if (trigger.decodedParams.maxBuyPrice === MAX_UINT_256) {
+    if (trigger.decodedParams.maxBuyPrice === maxUint256.toString()) {
       return undefined
     }
     return trigger.decodedParams.maxBuyPrice
@@ -189,7 +188,7 @@ const getDefaults = (
   return {
     maxGasFee:
       getMaxGasFeeFromDecodedParam(context.currentTrigger?.decodedParams.maxBaseFeeInGwei) ?? 300,
-    usePrice: price !== undefined,
+    usePrice: allDefined(price),
     executionTriggerLTV:
       getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.executionLtv) ??
       context.defaults.executionTriggerLTV,
