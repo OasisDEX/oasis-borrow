@@ -1,23 +1,25 @@
 import { useTranslation } from 'next-i18next'
+import type { TranslationType } from 'ts_modules/i18next'
 
 export const getHistoryEventLabel = ({
-  kindWithVersion,
+  kind,
   isOpen,
   collateralToken,
   quoteToken,
 }: {
-  kindWithVersion?: string
+  kind?: string
   collateralToken?: string
   quoteToken?: string
   isOpen?: boolean
 }) => {
+
   const { t } = useTranslation()
+  const isAutomation = kind?.includes('Automation')
+  if (isAutomation && kind) { return handleAutomationKinds(kind, t, collateralToken, quoteToken) }
 
-  const kind = kindWithVersion?.split('_')[0]
+  const kindWithoutVersion = kind?.split('_')[0]
 
-  // const x = handleAutomationKinds(kind)
-
-  switch (kind) {
+  switch (kindWithoutVersion) {
     case 'AjnaDeposit':
     case 'MorphoBlueDeposit':
     case 'AjnaSupplyQuote':
@@ -46,7 +48,6 @@ export const getHistoryEventLabel = ({
     case 'AjnaRepay':
     case 'MorphoBluePayback':
       return t('position-history.repay')
-
     case 'AjnaRepayWithdraw':
     case 'MorphoBluePaybackWithdraw':
     case 'AAVEPaybackWithdraw':
@@ -93,49 +94,6 @@ export const getHistoryEventLabel = ({
     case 'AAVEBorrow':
     case 'SparkBorrow':
       return t('position-history.borrow')
-
-    case 'AutomationAdded-AaveStopLossToCollateralV2':
-    case 'AutomationAdded-SparkStopLossToCollateralV2':
-      return collateralToken
-        ? t('position-history.automation.stop-loss-token-added', { token: collateralToken })
-        : t('position-history.automation.stop-loss-collateral-added')
-    case 'AutomationExecuted-AaveStopLossToCollateralV2':
-    case 'AutomationExecuted-SparkStopLossToCollateralV2':
-      return collateralToken
-        ? t('position-history.automation.stop-loss-token-executed', { token: collateralToken })
-        : t('position-history.automation.stop-loss-collateral-executed')
-    case 'AutomationRemoved-AaveStopLossToCollateralV2':
-    case 'AutomationRemoved-SparkStopLossToCollateralV2':
-      return collateralToken
-        ? t('position-history.automation.stop-loss-token-removed', { token: collateralToken })
-        : t('position-history.automation.stop-loss-collateral-removed')
-    case 'AutomationAdded-AaveStopLossToDebtV2':
-    case 'AutomationAdded-SparkStopLossToDebtV2':
-      return quoteToken
-        ? t('position-history.automation.stop-loss-token-added', { token: quoteToken })
-        : t('position-history.automation.stop-loss-debt-added')
-    case 'AutomationExecuted-AaveStopLossToDebtV2':
-    case 'AutomationExecuted-SparkStopLossToDebtV2':
-      return quoteToken
-        ? t('position-history.automation.stop-loss-token-executed', { token: quoteToken })
-        : t('position-history.automation.stop-loss-debt-executed')
-    case 'AutomationRemoved-AaveStopLossToDebtV2':
-    case 'AutomationRemoved-SparkStopLossToDebtV2':
-      return quoteToken
-        ? t('position-history.automation.stop-loss-token-removed', { token: quoteToken })
-        : t('position-history.automation.stop-loss-debt-removed')
-    case 'AutomationRemoved-AaveBasicBuyV2':
-      return t('position-history.automation.basic-buy-removed')
-    case 'AutomationRemoved-AaveBasicSellV2':
-      return t('position-history.automation.basic-sell-removed')
-    case 'AutomationAdded-AaveBasicBuyV2':
-      return t('position-history.automation.basic-buy-added')
-    case 'AutomationAdded-AaveBasicSellV2':
-      return t('position-history.automation.basic-sell-added')
-    case 'AutomationExecuted-AaveBasicBuyV2':
-      return t('position-history.automation.basic-buy-executed')
-    case 'AutomationExecuted-AaveBasicSellV2':
-      return t('position-history.automation.basic-sell-executed')
     case 'Liquidation':
       return t('position-history.liquidation')
     default:
@@ -143,51 +101,96 @@ export const getHistoryEventLabel = ({
   }
 }
 
-// const automationTypes = {
-//   'StopLossToCollateral': {
-//     token: 'collateralToken',
-//     translations: {
-//       'Added': 'position-history.automation.stop-loss-token-added',
-//       'Executed': 'position-history.automation.stop-loss-token-executed',
-//       'Removed': 'position-history.automation.stop-loss-token-removed',
-//     },
-//   },
-//   'StopLossToDebt': {
-//     token: 'quoteToken',
-//     translations: {
-//       'Added': 'position-history.automation.stop-loss-token-added',
-//       'Executed': 'position-history.automation.stop-loss-token-executed',
-//       'Removed': 'position-history.automation.stop-loss-token-removed',
-//     },
-//   },
-//   'BasicBuy': {
-//     translations: {
-//       'Added': 'position-history.automation.basic-buy-added',
-//       'Executed': 'position-history.automation.basic-buy-executed',
-//       'Removed': 'position-history.automation.basic-buy-removed',
-//     },
-//   },
-//   'BasicSell': {
-//     translations: {
-//       'Added': 'position-history.automation.basic-sell-added',
-//       'Executed': 'position-history.automation.basic-sell-executed',
-//       'Removed': 'position-history.automation.basic-sell-removed',
-//     },
-//   } ,
-// };
+enum AutomationAction {
+  'Added' = 'Added',
+  'Executed' = 'Executed',
+  'Removed' = 'Removed'
+}
 
-// function handleAutomationKinds(kind: string) {
-//   const automationType = Object.keys(automationTypes).find((key) => kind.includes(key));
-//   if (automationType) {
-//     const automationKind = automationTypes[automationType as keyof typeof automationTypes];
-//     const token = automationKind.token ? automationKind.token : '';
-//     const translationKey = automationKind.translations[kind.split('_')[1]];
-//     if (token) {
-//       return (args: any) => {
-//         return useTranslation().t(translationKey, { token: args[token] });
-//       };
-//     } else {
-//       return useTranslation().t(translationKey);
-//     }
-//   }
-// }
+enum AutomationType {
+  'StopLossToDebt' = 'StopLossToDebt',
+  'StopLossToCollateral' = 'StopLossToCollateral',
+  'BasicBuy' = 'BasicBuy',
+  'BasicSell' = 'BasicSell'
+}
+function handleAutomationKinds(kind: string, t: TranslationType, collateralToken?: string, quoteToken?: string) {
+  const automationType = kind.split('-')[1];
+  const automationAction = kind.split('-')[0];
+
+  if (automationType.includes(AutomationType.StopLossToDebt)) {
+    return handleStopLossToDebtLabel(automationAction, t, quoteToken)
+  } else if (automationType.includes(AutomationType.StopLossToCollateral)) {
+    return handleStopLosstoCollateralLabel(automationAction, t, collateralToken)
+  } else if (automationType.includes(AutomationType.BasicBuy)) {
+    return handleBasicBuyLabel(automationAction, t)
+  } else if (automationType.includes(AutomationType.BasicSell)) {
+    return handleBasicSellLabel(automationAction, t)
+  }
+  console.warn('Automation type not found')
+  return undefined
+}
+
+function handleStopLossToDebtLabel(automationAction: string, t: TranslationType, quoteToken: string | undefined) {
+  if (automationAction.includes(AutomationAction.Added)) {
+    return quoteToken
+      ? t('position-history.automation.stop-loss-token-added', { token: quoteToken })
+      : t('position-history.automation.stop-loss-debt-added')
+  }
+  else if (automationAction.includes(AutomationAction.Executed)) {
+    return quoteToken
+      ? t('position-history.automation.stop-loss-token-executed', { token: quoteToken })
+      : t('position-history.automation.stop-loss-debt-executed')
+  }
+  else if (automationAction.includes(AutomationAction.Removed)) {
+    return quoteToken
+      ? t('position-history.automation.stop-loss-token-removed', { token: quoteToken })
+      : t('position-history.automation.stop-loss-debt-removed')
+  }
+  console.warn('Automation type not found')
+  return undefined
+}
+function handleStopLosstoCollateralLabel(automationAction: string, t: TranslationType, collateralToken: string | undefined) {
+  if (automationAction.includes(AutomationAction.Added)) {
+    return collateralToken
+      ? t('position-history.automation.stop-loss-token-added', { token: collateralToken })
+      : t('position-history.automation.stop-loss-collateral-added')
+  }
+  else if (automationAction.includes(AutomationAction.Executed)) {
+    return collateralToken
+      ? t('position-history.automation.stop-loss-token-executed', { token: collateralToken })
+      : t('position-history.automation.stop-loss-collateral-executed')
+  }
+  else if (automationAction.includes(AutomationAction.Removed)) {
+    return collateralToken
+      ? t('position-history.automation.stop-loss-token-removed', { token: collateralToken })
+      : t('position-history.automation.stop-loss-collateral-removed')
+  }
+  console.warn('Automation type not found')
+  return undefined
+}
+function handleBasicBuyLabel(automationAction: string, t: TranslationType) {
+  if (automationAction.includes(AutomationAction.Added)) {
+    return t('position-history.automation.basic-buy-added')
+  }
+  else if (automationAction.includes(AutomationAction.Executed)) {
+    return t('position-history.automation.basic-buy-executed')
+  }
+  else if (automationAction.includes(AutomationAction.Removed)) {
+    return t('position-history.automation.basic-buy-removed')
+  }
+  console.warn('Automation type not found')
+  return undefined
+}
+function handleBasicSellLabel(automationAction: string, t: TranslationType) {
+  if (automationAction.includes(AutomationAction.Added)) {
+    return t('position-history.automation.basic-sell-added')
+  }
+  else if (automationAction.includes(AutomationAction.Executed)) {
+    return t('position-history.automation.basic-sell-executed')
+  }
+  else if (automationAction.includes(AutomationAction.Removed)) {
+    return t('position-history.automation.basic-sell-removed')
+  }
+  console.warn('Automation type not found')
+  return undefined
+}
