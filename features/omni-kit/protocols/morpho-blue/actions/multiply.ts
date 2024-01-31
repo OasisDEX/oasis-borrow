@@ -1,5 +1,6 @@
 import type {
   MorphoAdjustMultiplyPayload,
+  MorphoCloseMultiplyPayload,
   MorphoMultiplyDependencies,
   MorphoOpenMultiplyPayload,
 } from '@oasisdex/dma-library'
@@ -36,4 +37,14 @@ export const morphoActionAdjust = ({
   dependencies: MorphoMultiplyDependencies
 }) => {
   return strategies.morphoblue.multiply.adjust(commonPayload, dependencies)
+}
+
+export const morphoActionClose = ({
+  commonPayload,
+  dependencies,
+}: {
+  commonPayload: MorphoCloseMultiplyPayload
+  dependencies: MorphoMultiplyDependencies
+}) => {
+  return strategies.morphoblue.multiply.close(commonPayload, dependencies)
 }

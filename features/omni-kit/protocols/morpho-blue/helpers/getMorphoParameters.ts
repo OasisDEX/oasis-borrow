@@ -3,6 +3,7 @@ import type {
   MorphoBlueCommonDependencies,
   MorphoblueDepositBorrowPayload,
   MorphoBluePosition,
+  MorphoCloseMultiplyPayload,
   MorphoMultiplyDependencies,
   MorphoOpenMultiplyPayload,
   Network,
@@ -23,6 +24,7 @@ import {
 } from 'features/omni-kit/protocols/morpho-blue/actions/borrow'
 import {
   morphoActionAdjust,
+  morphoActionClose,
   morphoActionOpenMultiply,
 } from 'features/omni-kit/protocols/morpho-blue/actions/multiply'
 import { getMorphoCumulatives } from 'features/omni-kit/protocols/morpho-blue/helpers/getMorphoCumulatives'
@@ -143,6 +145,12 @@ export const getMorphoParameters = async ({
     position,
   }
 
+  const closeMultiplyPayload: MorphoCloseMultiplyPayload = {
+    ...commonMultiplyPayload,
+    position,
+    shouldCloseToCollateral: (state as OmniMultiplyFormState).closeTo === 'collateral',
+  }
+
   switch (action) {
     case OmniBorrowFormAction.OpenBorrow: {
       return morphoActionOpenBorrow({
@@ -217,6 +225,13 @@ export const getMorphoParameters = async ({
     case OmniMultiplyFormAction.AdjustMultiply: {
       return morphoActionAdjust({
         commonPayload: adjustMultiplyPayload,
+        dependencies: multiplyDependencies,
+      })
+    }
+    case OmniBorrowFormAction.CloseBorrow:
+    case OmniMultiplyFormAction.CloseMultiply: {
+      return morphoActionClose({
+        commonPayload: closeMultiplyPayload,
         dependencies: multiplyDependencies,
       })
     }
