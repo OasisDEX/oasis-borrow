@@ -42,33 +42,35 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
     blocks: [
       {
         type: 'product-finder',
-        content: {
-          product: ProductHubProductType.Multiply,
-          initialProtocol: [LendingProtocol.AaveV2, LendingProtocol.AaveV3],
-          promoCards: [
-            {
-              network: NetworkNames.arbitrumMainnet,
-              primaryToken: 'RETH',
-              secondaryToken: 'ETH',
-              product: ProductHubProductType.Borrow,
-              protocol: LendingProtocol.AaveV3,
-            },
-            {
-              network: NetworkNames.optimismMainnet,
-              primaryToken: 'WBTC',
-              secondaryToken: 'USDC',
-              product: ProductHubProductType.Multiply,
-              protocol: LendingProtocol.AaveV3,
-            },
-            {
-              network: NetworkNames.ethereumMainnet,
-              primaryToken: 'STETH',
-              secondaryToken: 'ETH',
-              product: ProductHubProductType.Earn,
-              protocol: LendingProtocol.AaveV2,
-            },
-          ],
-        },
+        content: [
+          {
+            product: ProductHubProductType.Multiply,
+            initialProtocol: [LendingProtocol.AaveV2, LendingProtocol.AaveV3],
+            promoCards: [
+              {
+                network: NetworkNames.arbitrumMainnet,
+                primaryToken: 'RETH',
+                secondaryToken: 'ETH',
+                product: ProductHubProductType.Borrow,
+                protocol: LendingProtocol.AaveV3,
+              },
+              {
+                network: NetworkNames.optimismMainnet,
+                primaryToken: 'WBTC',
+                secondaryToken: 'USDC',
+                product: ProductHubProductType.Multiply,
+                protocol: LendingProtocol.AaveV3,
+              },
+              {
+                network: NetworkNames.ethereumMainnet,
+                primaryToken: 'STETH',
+                secondaryToken: 'ETH',
+                product: ProductHubProductType.Earn,
+                protocol: LendingProtocol.AaveV2,
+              },
+            ],
+          },
+        ],
       },
       {
         type: 'info-box',
@@ -191,13 +193,15 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
       },
       {
         type: 'banner',
-        content: {
-          title: 'Ready to get started?',
-          cta: {
-            label: 'Open a position',
-            url: '/',
+        content: [
+          {
+            title: 'Ready to get started?',
+            cta: {
+              label: 'Open a position',
+              url: '/',
+            },
           },
-        },
+        ],
       },
     ],
   }
