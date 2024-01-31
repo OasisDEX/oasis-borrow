@@ -5,11 +5,11 @@ import { checkmark, close } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Grid } from 'theme-ui'
 
-interface ComparisionTableIconProps {
+interface ComparisonTableIconProps {
   type: 'positive' | 'negative'
 }
 
-interface ComparisionTableProps {
+interface ComparisonTableProps {
   body: ReactNode[][]
   header: ReactNode[]
 }
@@ -36,7 +36,7 @@ const headerStyles: ThemeUIStyleObject = {
   },
 }
 
-export const ComparisionTableIcon: FC<ComparisionTableIconProps> = ({ type }) => {
+export const ComparisonTableIcon: FC<ComparisonTableIconProps> = ({ type }) => {
   return (
     <Flex
       sx={{
@@ -58,7 +58,7 @@ export const ComparisionTableIcon: FC<ComparisionTableIconProps> = ({ type }) =>
   )
 }
 
-export const ComparisionTable: FC<ComparisionTableProps> = ({ body, header }) => {
+export const ComparisonTable: FC<ComparisonTableProps> = ({ body, header }) => {
   const size = header.length - 1
 
   return (
@@ -103,7 +103,7 @@ export const ComparisionTable: FC<ComparisionTableProps> = ({ body, header }) =>
                 }}
               >
                 {typeof row === 'boolean' ? (
-                  <ComparisionTableIcon type={row ? 'positive' : 'negative'} />
+                  <ComparisonTableIcon type={row ? 'positive' : 'negative'} />
                 ) : (
                   row
                 )}

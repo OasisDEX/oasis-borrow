@@ -190,6 +190,26 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
         ],
       },
       {
+        type: 'comparison-table',
+        title: 'Whats the difference between Aave and other protocols?',
+        content: [
+          {
+            header: ['Protocol Tradeoffs', 'Aave', 'Ajna', 'Spark', 'Maker'],
+            body: [
+              ['Governance Risk', true, false, true, true],
+              ['Oracle Risk', true, false, true, true],
+              ['Long Tail Collateral', false, true, false, false],
+              ['Ability to create your own pool', false, true, false, false],
+              ['Potential for fast moving rates', true, true, false, false],
+              ['Slow moving rates', false, false, true, true],
+              ['Passive Earn Strategy available', false, true, true, true],
+              ['Active Earn Strategy available', true, true, true, false],
+              ['Multi Collateral Positions', true, false, true, false],
+            ],
+          },
+        ],
+      },
+      {
         type: 'banner',
         content: {
           title: 'Ready to get started?',
