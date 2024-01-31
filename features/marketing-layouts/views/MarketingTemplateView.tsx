@@ -1,6 +1,7 @@
 import {
   MarketingTemplateHeading,
   MarketingTemplateHero,
+  MarketingTemplateMarkdown,
 } from 'features/marketing-layouts/components'
 import type { MarketingTemplateFreeform } from 'features/marketing-layouts/types'
 import { MarketingTemplateBlockView } from 'features/marketing-layouts/views'
@@ -30,6 +31,11 @@ export const MarketingTemplateView: FC<MarketingTemplateViewProps> = ({
             </Box>
           )}
           <MarketingTemplateBlockView palette={palette} {...block} />
+          {block.footer && (
+            <Box sx={{ mt: 4, px: [0, null, 4], textAlign: ['left', 'center'] }}>
+              <MarketingTemplateMarkdown content={block.footer} />
+            </Box>
+          )}
         </Box>
       ))}
     </Box>

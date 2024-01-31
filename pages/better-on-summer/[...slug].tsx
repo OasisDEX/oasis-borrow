@@ -193,6 +193,7 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
       },
       {
         type: 'banner',
+        footer: 'Lorem ipsum dolor sit amet',
         content: [
           {
             title: 'Ready to get started?',
