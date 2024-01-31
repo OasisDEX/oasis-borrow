@@ -15,7 +15,7 @@ export function mapErrorsToErrorVaults(
           return 'executionLTVBiggerThanTargetLTV'
         case TriggersApiErrorCode.ExecutionLTVBiggerThanCurrentLTV:
           return 'executionLTVBiggerThanCurrentLTV'
-        case TriggersApiErrorCode.ExecutionLTVSmallerThanCurrentLTV:
+        case TriggersApiErrorCode.ExecutionLTVLowerThanCurrentLTV:
           return 'executionLTVSmallerThanCurrentLTV'
         case TriggersApiErrorCode.ExecutionLTVIsNearToTheAutoSellTrigger:
           return 'executionLTVNearToAutoSellTrigger'
