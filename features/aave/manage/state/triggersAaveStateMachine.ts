@@ -283,8 +283,15 @@ export const triggersAaveStateMachine = createMachine(
         const currentProtectionView = getCurrentProtectionView(event.data)
 
         return {
-          showAutoBuyBanner: !currentOptimizationView,
-          showAutoSellBanner: !currentProtectionView,
+          showStopLossBanner:
+            context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.STOP_LOSS) &&
+            currentProtectionView !== 'stop-loss',
+          showAutoBuyBanner:
+            context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY) &&
+            currentOptimizationView !== 'auto-buy',
+          showAutoSellBanner:
+            context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_SELL) &&
+            currentProtectionView !== 'auto-sell',
           optimizationCurrentView: getCurrentOptimizationView(event.data),
           protectionCurrentView: getCurrentProtectionView(event.data),
         }
