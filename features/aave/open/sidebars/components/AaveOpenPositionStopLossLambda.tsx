@@ -1,4 +1,6 @@
 import type BigNumber from 'bignumber.js'
+import type CancelablePromise from 'cancelable-promise'
+import { cancelable } from 'cancelable-promise'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -7,9 +9,11 @@ import { getAaveLikeOpenStopLossParams } from 'features/aave/open/helpers'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import React, { useEffect, useMemo, useState } from 'react'
+import type { SetupBasicStopLossResponse } from 'helpers/triggers/setup-triggers'
+import { setupAaveStopLoss } from 'helpers/triggers/setup-triggers'
+import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
+import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useThrottle } from 'react-use'
 import { Grid, Text } from 'theme-ui'
 
 const aaveLambdaStopLossConfig = {
@@ -25,11 +29,42 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
       return getAaveLikeOpenStopLossParams({ state })
     }, [state])
   const [isGettingStopLossTx, setIsGettingStopLossTx] = useState(false)
-  const stopLossLevelThrottled = useThrottle(stopLossLevel, 500)
+  const [stopLossTxCancelablePromise, setStopLossTxCancelablePromise] =
+    useState<CancelablePromise<SetupBasicStopLossResponse>>()
 
-  useEffect(() => {
-    console.log('stopLossLevelThrottled', stopLossLevelThrottled)
-  }, [stopLossLevelThrottled])
+  useDebouncedEffect(
+    () => {
+      if (!state.context.userDpmAccount || !stopLossLevel) {
+        return
+      }
+      const stopLossTxDataPromise = cancelable(
+        setupAaveStopLoss({
+          dpm: state.context.userDpmAccount.proxy,
+          executionLTV: stopLossLevel,
+          networkId: state.context.strategyConfig.networkId,
+          executionToken: state.context.tokens.debt,
+          protocol: state.context.strategyConfig.protocol,
+          strategy: {
+            collateralAddress: state.context.tokens.collateral,
+            debtAddress: state.context.tokens.debt,
+          },
+        }),
+      )
+      setStopLossTxCancelablePromise(stopLossTxDataPromise)
+      stopLossTxDataPromise
+        .then((res) => {
+          console.log('res', res)
+        })
+        .catch((err) => {
+          console.log('err', err)
+        })
+        .finally(() => {
+          setIsGettingStopLossTx(false)
+        })
+    },
+    [stopLossLevel],
+    500,
+  )
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
@@ -61,6 +96,7 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
               type: 'SET_STOP_LOSS_LEVEL',
               stopLossLevel: slLevel,
             })
+            stopLossTxCancelablePromise?.cancel()
             if (!isGettingStopLossTx) {
               setIsGettingStopLossTx(true)
             }
@@ -77,7 +113,7 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
     primaryButton: {
       steps: [state.context.currentStep, state.context.totalSteps],
       isLoading: isLoading(),
-      disabled: isLoading() || !state.can('NEXT_STEP'),
+      disabled: isLoading() || !state.can('NEXT_STEP') || isGettingStopLossTx,
       label: t('open-earn.aave.vault-form.confirm-btn'),
       action: () => send('NEXT_STEP'),
     },

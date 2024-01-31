@@ -92,6 +92,33 @@ export type SetupBasicAutoResponse = {
   }
 }
 
+export type SetupBasicStopLossResponse = {
+  errors?: TriggersApiError[]
+  warnings?: TriggersApiWarning[]
+  encodedTriggerData?: string
+  simulation?: {
+    collateralAmountAfterExecution: string
+    debtAmountAfterExecution: string
+    executionLTV: string
+    targetLTV: string
+    targetLTVWithDeviation: [string, string]
+    targetMultiple: string
+  }
+  transaction?: {
+    data: string
+    to: string
+  }
+}
+
+export interface SetupAaveStopLossParams {
+  executionToken: string
+  executionLTV: BigNumber
+  dpm: string
+  strategy: StrategyLike
+  networkId: number
+  protocol: LendingProtocol
+}
+
 export type SetupBasicAutoResponseWithRequiredTransaction = SetupBasicAutoResponse & {
   transaction: { data: string; to: string }
 }

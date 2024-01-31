@@ -1,20 +1,21 @@
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
-import type { SetupAaveBasicAutomationParams, SetupBasicAutoResponse } from './setup-triggers-types'
+import type {
+  SetupAaveStopLossParams,
+  SetupBasicAutoResponse,
+  SetupBasicStopLossResponse,
+} from './setup-triggers-types'
 import { TriggersApiErrorCode } from './setup-triggers-types'
 
 export const setupAaveStopLoss = async (
-  params: SetupAaveBasicAutomationParams,
-): Promise<SetupBasicAutoResponse> => {
+  params: SetupAaveStopLossParams,
+): Promise<SetupBasicStopLossResponse> => {
   const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'stop-loss' })
 
   const body = JSON.stringify({
     dpm: params.dpm,
     triggerData: {
       executionLTV: params.executionLTV.integerValue().toString(),
-      targetLTV: params.targetLTV.integerValue().toString(),
-      minSellPrice: params.price?.integerValue().toString(),
-      maxBaseFee: params.maxBaseFee.integerValue().toString(),
-      useMinSellPrice: params.usePrice,
+      token: params.executionToken,
     },
     position: {
       collateral: params.strategy.collateralAddress,
@@ -30,7 +31,7 @@ export const setupAaveStopLoss = async (
       body: body,
     })
   } catch (error) {
-    console.error('Error while setting up auto buy', error)
+    console.error('Error while setting up stop loss', error)
     return {
       errors: [
         {
