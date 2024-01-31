@@ -1,11 +1,5 @@
 import type BigNumber from 'bignumber.js'
 
-export enum TriggerFlow {
-  add = 'add',
-  edit = 'edit',
-  cancel = 'cancel',
-}
-
 export type PositionLike = {
   dpm: string
   ltv: number

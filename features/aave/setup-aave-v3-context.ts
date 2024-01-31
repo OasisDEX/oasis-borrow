@@ -66,7 +66,6 @@ export function setupAaveV3Context(
     allowanceForAccount$,
     allowanceStateMachine,
     dpmAccountStateMachine,
-    gasEstimation$,
     operationExecutorTransactionMachine,
     proxyForAccount$,
     proxyStateMachine,
@@ -139,14 +138,10 @@ export function setupAaveV3Context(
     (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
-  const openAaveParameters = getOpenAaveParametersMachine(txHelpers$, gasEstimation$, networkId)
-  const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$, networkId)
-  const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$, networkId)
-  const depositBorrowAaveMachine = getDepositBorrowAaveMachine(
-    txHelpers$,
-    gasEstimation$,
-    networkId,
-  )
+  const openAaveParameters = getOpenAaveParametersMachine(txHelpers$, networkId)
+  const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, networkId)
+  const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, networkId)
+  const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, networkId)
 
   const openAaveStateMachineServices = getOpenAaveV3PositionStateMachineServices(
     context$,

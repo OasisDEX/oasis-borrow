@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "12.7.2",
+  "version": "12.7.5",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=18.12"
@@ -42,9 +42,9 @@
     "@lifi/wallet-management": "^2.3.4",
     "@lifi/widget": "2.4.6",
     "@metamask/eth-sig-util": "^5.0.2",
-    "@oasisdex/addresses": "0.1.36",
+    "@oasisdex/addresses": "0.1.37",
     "@oasisdex/automation": "^1.5.9-alpha5",
-    "@oasisdex/dma-library": "0.6.11-rc.0",
+    "@oasisdex/dma-library": "0.6.12",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "0.1.4-alpha.0",
     "@oasisdex/utils": "^0.0.8",
@@ -102,6 +102,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^12.1.4",
     "react-lottie-light": "^1.2.5",
+    "react-markdown": "9.0.1",
     "react-redux": "8.0.5",
     "react-select": "^3.1.0",
     "react-text-mask": "^5.4.1",

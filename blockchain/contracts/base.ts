@@ -171,6 +171,8 @@ export const baseContracts: MainnetContractsWithOptional = {
     'WSTETH-USDC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_WSTETHUSDC),
     'YFI-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_YFIDAI),
     'STYETH-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_STYETHDAI),
+    'RBN-ETH': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_RBNETH),
+    'AJNA-DAI': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_AJNADAI),
   },
   ajnaOraclessPoolPairs: {
     'YIELDBTC-WBTC': contractDesc(ajnaPool, base.ajna.AjnaPoolPairs_YIELDBTCWBTC),

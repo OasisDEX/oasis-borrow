@@ -53,6 +53,7 @@ export const portfolioPositionsHandler = async ({
       apiVaults,
       prices: prices.data.tokens,
       positionsCount,
+      debug,
     }
 
     const positionsReply = await Promise.all([

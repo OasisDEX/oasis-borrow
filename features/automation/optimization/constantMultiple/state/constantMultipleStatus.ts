@@ -59,8 +59,9 @@ export function getConstantMultipleStatus({
   lockedCollateral,
   positionRatio,
 }: GetConstantMultipleStatusParams): ConstantMultipleStatus {
-  const { gasPrice$ } = useMainContext()
-  const [gasPrice] = useObservable(gasPrice$)
+  const { gasPriceOnNetwork$, context$ } = useMainContext()
+  const [context] = useObservable(context$)
+  const [gasPrice] = useObservable(gasPriceOnNetwork$(context?.chainId))
 
   const isEditing = checkIfIsEditingConstantMultiple({
     triggerData: constantMultipleTriggerData,

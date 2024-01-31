@@ -1,42 +1,122 @@
-import type { marketingTemplatesIcons } from 'features/marketing-layouts/icons'
+import type {
+  ProductFinderPromoCardFilters,
+  ProductHubProductType,
+  ProductHubSupportedNetworks,
+} from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
-import type { ReactNode } from 'react'
-
-export type IconWithPaletteContents = (params: MarketingTemplateIconPalette) => ReactNode
-
-export interface MarketingTemplateIconPalette {
-  backgroundGradient: string[]
-  foregroundGradient: string[]
-  symbolGradient: string[]
-}
 
 export interface MarketingTemplatePalette {
-  mainGradient: string[]
-  icon: MarketingTemplateIconPalette
+  background: [string, string, ...string[]]
+  foreground: [string, string, ...string[]]
 }
 
 export interface MarketingTemplateHeroProps {
   description: string
   image: string
   link: {
-    url: string
     label: string
+    url: string
   }
-  protocol: LendingProtocol
+  protocol?: LendingProtocol | LendingProtocol[]
   title: string
+  token?: string | string[]
+}
+
+export interface MarketingTemplateBlock {
+  subtitle?: string
+  title?: string
+  description?: string
+}
+
+interface MarketingTemplateProductFinderProps {
+  initialNetwork?: ProductHubSupportedNetworks[]
+  initialProtocol?: LendingProtocol[]
+  product: ProductHubProductType
+  promoCards: [
+    ProductFinderPromoCardFilters,
+    ProductFinderPromoCardFilters,
+    ProductFinderPromoCardFilters,
+  ]
+  token?: string
+}
+
+interface MarketingTemplateProductFinderBlock extends MarketingTemplateBlock {
+  type: 'product-finder'
+  content: MarketingTemplateProductFinderProps
+}
+
+export interface MarketingTemplateInfoBoxProps {
+  description: string
+  image: string
+  link?: {
+    label: string
+    url: string
+  }
+  title: string
+  tokens?: string[]
+}
+
+interface MarketingTemplateInfoBoxBlock extends MarketingTemplateBlock {
+  type: 'info-box'
+  content: MarketingTemplateInfoBoxProps[]
+}
+
+export interface MarketingTemplateProductBoxProps {
+  actionsList?: {
+    icon: string
+    label: string
+    description?: string
+  }[]
+  composition: 'narrow' | 'wide'
+  description: string
+  image?: string
+  link?: {
+    label: string
+    url: string
+  }
+  title: string
+  type: string
+}
+
+interface MarketingTemplateProductBoxBlock extends MarketingTemplateBlock {
+  type: 'product-box'
+  content: MarketingTemplateProductBoxProps[]
 }
 
 export interface MarketingTemplateBenefitBoxProps {
-  description?: string
-  icon: keyof typeof marketingTemplatesIcons
-  list?: string[]
+  description: string
+  icon: string
   title: string
 }
 
-export interface MarketingTemplatePageProps {
-  benefits: MarketingTemplateBenefitBoxProps[]
-  benefitsSubtitle: string
-  benefitsTitle: string
+interface MarketingTemplateBeneftBoxBlock extends MarketingTemplateBlock {
+  type: 'benefit-box'
+  content: MarketingTemplateBenefitBoxProps[]
+}
+
+export interface MarketingTemplateBannerProps {
+  cta: {
+    label: string
+    url: string
+  }
+  description?: string
+  title: string
+}
+
+interface MarketingTemplateBannerBlock extends MarketingTemplateBlock {
+  type: 'banner'
+  content: MarketingTemplateBannerProps
+}
+
+export type MarketingTemplateProductFinderBlocks =
+  | MarketingTemplateBannerBlock
+  | MarketingTemplateBeneftBoxBlock
+  | MarketingTemplateInfoBoxBlock
+  | MarketingTemplateProductBoxBlock
+  | MarketingTemplateProductFinderBlock
+
+export interface MarketingTemplateFreeform {
+  blocks: MarketingTemplateProductFinderBlocks[]
   hero: MarketingTemplateHeroProps
   palette: MarketingTemplatePalette
 }

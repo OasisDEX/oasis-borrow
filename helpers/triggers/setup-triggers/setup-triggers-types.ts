@@ -61,6 +61,12 @@ interface StrategyLike {
   debtAddress: string
 }
 
+export enum TriggerAction {
+  Add = 'add',
+  Remove = 'remove',
+  Update = 'update',
+}
+
 export interface SetupAaveBasicAutomationParams {
   price: BigNumber | undefined
   executionLTV: BigNumber
@@ -72,6 +78,7 @@ export interface SetupAaveBasicAutomationParams {
   triggerType: number
   networkId: number
   protocol: LendingProtocol
+  action: TriggerAction
 }
 
 export type SetupBasicAutoResponse = {

@@ -40,14 +40,7 @@ export function useOmniTxHandler<CustomState>({
 
   const {
     tx: { setTxDetails, setGasEstimation },
-    environment: {
-      ethPrice,
-      productType,
-      slippage,
-      network: { isL2 },
-      networkId,
-      gasPrice,
-    },
+    environment: { ethPrice, productType, slippage, networkId },
     steps: { isExternalStep, currentStep },
   } = useOmniGeneralContext()
   const {
@@ -96,9 +89,6 @@ export function useOmniTxHandler<CustomState>({
               setSimulation(data.simulation)
               setIsLoadingSimulation(false)
               estimateOmniGas$({
-                ethPrice,
-                gasPrice,
-                isL2,
                 networkId,
                 proxyAddress,
                 signer,
