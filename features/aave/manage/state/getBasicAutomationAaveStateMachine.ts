@@ -198,7 +198,7 @@ const getDefaults = (
   return {
     maxGasFee:
       getMaxGasFeeFromDecodedParam(context.currentTrigger?.decodedParams.maxBaseFeeInGwei) ?? 300,
-    usePrice: allDefined(price),
+    usePrice: context.currentTrigger ? allDefined(price) : true,
     executionTriggerLTV:
       getLtvNumberFromDecodedParam(context.currentTrigger?.decodedParams.executionLtv) ??
       context.defaults.executionTriggerLTV,
