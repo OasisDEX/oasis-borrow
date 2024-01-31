@@ -1,3 +1,4 @@
+import { getAddresses } from 'actions/aave-like/get-addresses'
 import type BigNumber from 'bignumber.js'
 import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
@@ -31,22 +32,28 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
   const [isGettingStopLossTx, setIsGettingStopLossTx] = useState(false)
   const [stopLossTxCancelablePromise, setStopLossTxCancelablePromise] =
     useState<CancelablePromise<SetupBasicStopLossResponse>>()
-
+  const { strategyConfig } = state.context
+  const { tokens } = getAddresses(strategyConfig.networkId, strategyConfig.protocol)
+  const collateralAddress = tokens[state.context.tokens.collateral as keyof typeof tokens]
+  const debtAddress = tokens[state.context.tokens.debt as keyof typeof tokens]
   useDebouncedEffect(
     () => {
-      if (!state.context.userDpmAccount || !stopLossLevel) {
+      if (!state.context.userDpmAccount || !stopLossLevel || !collateralAddress || !debtAddress) {
         return
+      }
+      if (!isGettingStopLossTx) {
+        setIsGettingStopLossTx(true)
       }
       const stopLossTxDataPromise = cancelable(
         setupAaveStopLoss({
           dpm: state.context.userDpmAccount.proxy,
           executionLTV: stopLossLevel,
-          networkId: state.context.strategyConfig.networkId,
+          networkId: strategyConfig.networkId,
           executionToken: state.context.tokens.debt,
-          protocol: state.context.strategyConfig.protocol,
+          protocol: strategyConfig.protocol,
           strategy: {
-            collateralAddress: state.context.tokens.collateral,
-            debtAddress: state.context.tokens.debt,
+            collateralAddress,
+            debtAddress,
           },
         }),
       )
@@ -67,7 +74,7 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
   )
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
+    title: t(strategyConfig.viewComponents.sidebarTitle),
     content: (
       <Grid gap={3}>
         <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -97,9 +104,6 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
               stopLossLevel: slLevel,
             })
             stopLossTxCancelablePromise?.cancel()
-            if (!isGettingStopLossTx) {
-              setIsGettingStopLossTx(true)
-            }
           }}
           useRcSlider
           leftLabel={t('protection.stop-loss-something', {
