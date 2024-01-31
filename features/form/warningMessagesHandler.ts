@@ -13,6 +13,7 @@ export type VaultWarningMessage =
   | 'currentCollRatioCloseToStopLoss'
   | 'noMinSellPriceWhenStopLossEnabled'
   | 'settingAutoBuyTriggerWithNoThreshold'
+  | 'settingAutoSellTriggerWithNoThreshold'
   | 'autoSellTriggerCloseToStopLossTrigger'
   | 'autoSellTargetCloseToAutoBuyTrigger'
   | 'stopLossTriggerCloseToAutoSellTrigger'
