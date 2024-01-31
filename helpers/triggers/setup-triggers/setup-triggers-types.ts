@@ -17,7 +17,7 @@ export enum TriggersApiErrorCode {
   ExecutionLTVSmallerThanTargetLTV = 'execution-ltv-smaller-than-target-ltv',
   ExecutionLTVBiggerThanTargetLTV = 'execution-ltv-bigger-than-target-ltv',
   ExecutionLTVBiggerThanCurrentLTV = 'execution-ltv-bigger-than-current-ltv',
-  ExecutionLTVSmallerThanCurrentLTV = 'execution-ltv-smaller-than-current-ltv',
+  ExecutionLTVLowerThanCurrentLTV = 'execution-ltv-lower-than-current-ltv',
   ExecutionLTVIsNearToTheAutoSellTrigger = 'execution-ltv-is-near-to-the-auto-sell-trigger',
   AutoSellTriggerHigherThanAutoBuyTarget = 'auto-sell-trigger-higher-than-auto-buy-target',
   AutoBuyTriggerLowerThanAutoSellTarget = 'auto-buy-trigger-lower-than-auto-sell-target',
@@ -40,6 +40,7 @@ export enum TriggersApiWarningCode {
   AutoBuyTriggeredImmediately = 'auto-buy-triggered-immediately',
   AutoSellTriggeredImmediately = 'auto-sell-triggered-immediately',
   AutoBuyTriggerCloseToStopLossTrigger = 'auto-buy-trigger-close-to-stop-loss-trigger',
+  AutoSellWithNoMinPriceThreshold = 'auto-sell-with-no-min-price-threshold',
 }
 
 export type TriggersApiError = {
