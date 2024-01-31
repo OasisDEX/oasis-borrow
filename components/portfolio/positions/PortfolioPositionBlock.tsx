@@ -8,11 +8,33 @@ import dayjs from 'dayjs'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { getLocalAppConfig } from 'helpers/config'
-import { LendingProtocolLabel } from 'lendingProtocols'
-import { upperFirst } from 'lodash'
+import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
+import { get, upperFirst } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Flex, Text } from 'theme-ui'
+
+const getBorderColor = (
+  protocol: LendingProtocol,
+): {
+  default: string
+  hover: string
+} => {
+  switch (protocol) {
+    case LendingProtocol.AaveV3:
+      return {
+        default: 'border: 1px solid #B6509E',
+        hover: 'border: 1px solid var(--brand-illustration-tokens-aave, #B6509E)',
+      }
+    case LendingProtocol.SparkV3:
+      return {
+        default: 'border: 1px solid #F58013',
+        hover: 'border: 1px solid var(--brand-illustration-tokens-spark, #F58013)',
+      }
+    default:
+      throw new Error(`Not implemented protocol ${protocol}`)
+  }
+}
 
 export const PortfolioPositionBlock = ({ position }: { position: PortfolioPosition }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
@@ -33,7 +55,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         width: '100%',
         p: 3,
         border: '1px solid',
-        borderColor: 'neutral20',
+        borderColor: position.availableToMigrate ? getBorderColor(position.protocol) : 'neutral20',
         borderRadius: 'large',
         transition: 'border-color 200ms',
         '&:hover': {

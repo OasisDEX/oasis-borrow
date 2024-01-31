@@ -23,7 +23,7 @@ export const Pill: FC<PillProps> = ({ children }) => {
         display: 'inline-flex',
       }}
     >
-      <Icon icon={checkmark} color="success100" size="auto" width="12px" />
+      <Icon icon={checkmark} color="interactive100" size="auto" width="12px" />
       <Text variant="paragraph4" color="neutral80">
         {children}
       </Text>
