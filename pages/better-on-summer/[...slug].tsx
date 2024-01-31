@@ -194,6 +194,8 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
       {
         type: 'comparison-table',
         title: 'Whats the difference between Aave and other protocols?',
+        footer:
+          'To understand deeply how protocols differ and to find the best one for you, [read more](http://summer.fi).',
         content: [
           {
             header: ['Protocol Tradeoffs', 'Aave', 'Ajna', 'Spark', 'Maker'],
@@ -213,7 +215,6 @@ export async function getServerSideProps({ locale }: GetServerSidePropsContext) 
       },
       {
         type: 'banner',
-        footer: 'Lorem ipsum dolor sit amet',
         content: [
           {
             title: 'Ready to get started?',
