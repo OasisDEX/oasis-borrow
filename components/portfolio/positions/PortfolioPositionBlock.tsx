@@ -1,11 +1,13 @@
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
 import { AppLink } from 'components/Links'
+import { Pill } from 'components/Pill'
 import { PortfolioPositionAutomationIcons } from 'components/portfolio/positions/PortfolioPositionAutomationIcons'
 import { PortfolioPositionBlockDetail } from 'components/portfolio/positions/PortfolioPositionBlockDetail'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import dayjs from 'dayjs'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
+import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import React from 'react'
@@ -114,6 +116,24 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
               {tPortfolio('view-position')}
             </Button>
           </Flex>
+        </Flex>
+      )}
+      {getLocalAppConfig('features').EnableMigrations && position.availableToMigrate && (
+        <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Flex sx={{ flexDirection: 'column', gap: 2 }}>
+            <Text variant="paragraph4" color="neutral80">
+              Why migrate?
+            </Text>
+            <Flex sx={{ flexDirection: ['column', 'row'], gap: 2 }}>
+              <Pill>{tPortfolio('migrations.stop-loss')}</Pill>
+              <Pill>{tPortfolio('migrations.one-click-multiply')}</Pill>
+              <Pill>{tPortfolio('migrations.advanced-automation')}</Pill>
+            </Flex>
+          </Flex>
+
+          <Button className="position-action-button" variant="tertiary">
+            {tPortfolio('migrate')} →
+          </Button>
         </Flex>
       )}
     </AppLink>

@@ -1,6 +1,7 @@
 import { Icon } from 'components/Icon'
 import { getPortfolioAccentColor } from 'components/portfolio/helpers/getPortfolioAccentColor'
 import { PortfolioPositionBlockLendingRangeDetail } from 'components/portfolio/positions/PortfolioPositionBlockLendingRangeDetail'
+import { TokensGroup } from 'components/TokensGroup'
 import { StatefulTooltip } from 'components/Tooltip'
 import type { DetailsType, PositionDetail } from 'handlers/portfolio/types'
 import type { TranslateStringType } from 'helpers/translateStringType'
@@ -64,16 +65,20 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
           )}
         </Text>
       </Box>
-      <Text
-        variant="boldParagraph1"
-        color={detail.accent ? getPortfolioAccentColor(detail.accent) : 'neutral100'}
-      >
-        {detail.type === 'lendingRange' ? (
-          <PortfolioPositionBlockLendingRangeDetail detail={detail} />
-        ) : (
-          detail.value
-        )}
-      </Text>
+
+      {detail.type === 'lendingRange' ? (
+        <PortfolioPositionBlockLendingRangeDetail detail={detail} />
+      ) : detail.type === 'suppliedToken' || detail.type === 'borrowedToken' ? (
+        <TokensGroup tokens={[detail.value]} forceSize={32} />
+      ) : (
+        <Text
+          variant="boldParagraph1"
+          color={detail.accent ? getPortfolioAccentColor(detail.accent) : 'neutral100'}
+        >
+          {detail.value}
+        </Text>
+      )}
+
       {detail.subvalue && (
         <Text variant="paragraph4" color="neutral80">
           {detail.subvalue}

@@ -22,6 +22,7 @@ import { PageSEOTags } from 'components/HeadTags'
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { TopBannerDynamic } from 'components/TopBannerDynamic'
 import { cache } from 'emotion'
+import { MigrationsProvider } from 'features/migrations/context'
 import { initWeb3OnBoard } from 'features/web3OnBoard/init-web3-on-board'
 import { Web3OnBoardConnectorProvider } from 'features/web3OnBoard/web3-on-board-connector-provider'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
@@ -174,13 +175,15 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                               <SharedUIProvider>
                                 <TopBannerDynamic />
                                 <AccountContextProvider>
-                                  <DeferedContextProvider context={accountContext}>
-                                    <Component {...pageProps} />
-                                    <CookieBannerDynamic
-                                      setValue={cookiesSetValue}
-                                      value={cookiesValue}
-                                    />
-                                  </DeferedContextProvider>
+                                  <MigrationsProvider>
+                                    <DeferedContextProvider context={accountContext}>
+                                      <Component {...pageProps} />
+                                      <CookieBannerDynamic
+                                        setValue={cookiesSetValue}
+                                        value={cookiesValue}
+                                      />
+                                    </DeferedContextProvider>
+                                  </MigrationsProvider>
                                 </AccountContextProvider>
                               </SharedUIProvider>
                             </NotificationSocketProvider>

@@ -74,7 +74,7 @@ export type PortfolioPositionsHandler = ({
   debug?: boolean
 }) => Promise<PortfolioPositionsReply | PortfolioPositionsCountReply>
 
-type DetailsTypeCommon =
+export type DetailsTypeCommon =
   | '90dApy'
   | 'apy'
   | 'borrowedToken'

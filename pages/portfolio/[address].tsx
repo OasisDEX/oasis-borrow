@@ -7,6 +7,8 @@ import { PortfolioOverviewSkeleton } from 'components/portfolio/PortfolioOvervie
 import { PortfolioPositionsView } from 'components/portfolio/positions/PortfolioPositionsView'
 import { PortfolioWalletView } from 'components/portfolio/wallet/PortfolioWalletView'
 import { TabBar } from 'components/TabBar'
+import { MigrationsContext } from 'features/migrations/context'
+import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { usePortfolioClientData } from 'helpers/clients/portfolio-client-data'
 import { useAppConfig } from 'helpers/config'
@@ -16,7 +18,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { getAwsInfraHeader, getAwsInfraUrl } from 'server/helpers'
 import { Box } from 'theme-ui'
 
@@ -67,6 +69,15 @@ export default function PortfolioView(props: PortfolioViewProps) {
 
   const { address, awsInfraUrl, awsInfraHeader } = props
 
+  // loading migrations on load
+  const [migrationPositions, setMigrationPositions] = React.useState<PortfolioPosition[] | void>(
+    undefined,
+  )
+  const { fetchMigrationPositions } = useContext(MigrationsContext)
+  useEffect(() => {
+    void fetchMigrationPositions(address).then((data) => setMigrationPositions(data))
+  }, [address, fetchMigrationPositions])
+
   // redirect
   useEffect(() => {
     if (!address) {
@@ -113,6 +124,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
           <PortfolioOverview
             overviewData={overviewData}
             portfolioWalletData={portfolioWalletData}
+            migrationPositions={migrationPositions}
           />
         ) : (
           <PortfolioOverviewSkeleton />
@@ -130,6 +142,7 @@ export default function PortfolioView(props: PortfolioViewProps) {
                   isOwner={isOwner}
                   portfolioPositionsData={portfolioPositionsData}
                   portfolioWalletData={portfolioWalletData}
+                  migrationPositions={migrationPositions}
                 />
               ),
             },
