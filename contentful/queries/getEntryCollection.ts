@@ -28,6 +28,9 @@ const entryQuery = async (collectionIds: string[]) => {
               url
             }
           }
+          ... on ComparisonTable {
+            table
+          }
           ... on LandingPageBenefitBox {
             title
             description {

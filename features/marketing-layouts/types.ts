@@ -49,6 +49,7 @@ export enum MarketingTemplateBlocks {
   PRODUCT_BOX = 'product-box',
   BENEFIT_BOX = 'benefit-box',
   BANNER = 'banner',
+  COMPARISON_TABLE = 'comparison-table',
 }
 
 export interface MarketingTemplateProductFinderBlock extends MarketingTemplateBlock {
@@ -126,8 +127,8 @@ export interface MarketingTemplateComparisonTableProps {
   header: string[]
 }
 
-interface MarketingTemplateComparisonTableBlock extends MarketingTemplateBlock {
-  type: 'comparison-table'
+export interface MarketingTemplateComparisonTableBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.COMPARISON_TABLE
   content: MarketingTemplateComparisonTableProps[]
 }
 

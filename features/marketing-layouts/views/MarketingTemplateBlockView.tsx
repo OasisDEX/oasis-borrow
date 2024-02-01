@@ -85,7 +85,6 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
           ))}
         </Flex>
       )
-    case 'info-box':
     case MarketingTemplateBlocks.PRODUCT_BOX:
       return (
         <Grid

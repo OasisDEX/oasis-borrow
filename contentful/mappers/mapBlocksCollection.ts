@@ -5,6 +5,7 @@ import {
   mapLandingPageProductBlock,
   mapLandingProductFinderBlock,
 } from 'contentful/mappers'
+import { mapLandingPageComparisonTableBlock } from 'contentful/mappers/mapLandingPageComparisonTableBlock'
 import type {
   BlocksCollection,
   EntryCollectionRawItemResponse,
@@ -12,7 +13,6 @@ import type {
 } from 'contentful/types'
 import { LandingPageRawBlocks } from 'contentful/types'
 import type { MarketingTemplateProductFinderBlocks } from 'features/marketing-layouts/types'
-import { mapLandingPageComparisonTableBlock } from 'contentful/mappers/mapLandingPageComparisonTableBlock'
 
 export const mapBlocksCollection = (
   blocksCollection: LandingPageRawBlocksCollection,
@@ -26,30 +26,28 @@ export const mapBlocksCollection = (
     ),
   })) as BlocksCollection[]
 
-  return preparedBlocksCollection
-    .flatMap((blockItem) => {
-      switch (blockItem.type) {
-        case LandingPageRawBlocks.BENEFIT_BOX: {
-          return mapLandingPageBenefitBlock(blockItem)
-        }
-        case LandingPageRawBlocks.INFO_BOX: {
-          return mapLandingInfoBlock(blockItem)
-        }
-        case LandingPageRawBlocks.PRODUCT_BOX: {
-          return mapLandingPageProductBlock(blockItem)
-        }
-        case LandingPageRawBlocks.BANNER: {
-          return mapLandingPageBannerBlock(blockItem)
-        }
-        case LandingPageRawBlocks.PRODUCT_FINDER: {
-          return mapLandingProductFinderBlock(blockItem)
-        }
-        case LandingPageRawBlocks.COMPARISON_TABLE: {
-          return mapLandingPageComparisonTableBlock(blockItem)
-        }
-        default:
-          throw new Error(`Block item type not recognised ${blockItem.type}`)
+  return preparedBlocksCollection.flatMap((blockItem) => {
+    switch (blockItem.type) {
+      case LandingPageRawBlocks.BENEFIT_BOX: {
+        return mapLandingPageBenefitBlock(blockItem)
       }
-    })
-    .filter((item) => item)
+      case LandingPageRawBlocks.INFO_BOX: {
+        return mapLandingInfoBlock(blockItem)
+      }
+      case LandingPageRawBlocks.PRODUCT_BOX: {
+        return mapLandingPageProductBlock(blockItem)
+      }
+      case LandingPageRawBlocks.BANNER: {
+        return mapLandingPageBannerBlock(blockItem)
+      }
+      case LandingPageRawBlocks.PRODUCT_FINDER: {
+        return mapLandingProductFinderBlock(blockItem)
+      }
+      case LandingPageRawBlocks.COMPARISON_TABLE: {
+        return mapLandingPageComparisonTableBlock(blockItem)
+      }
+      default:
+        throw new Error(`Block item type not recognised ${(blockItem as BlocksCollection).type}`)
+    }
+  })
 }

@@ -1,5 +1,9 @@
 import type { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
-import { MarketingProductBoxComposition, MarketingTemplatePalette } from 'features/marketing-layouts/types'
+import {
+  MarketingProductBoxComposition,
+  MarketingTemplateComparisonTableProps,
+  MarketingTemplatePalette,
+} from 'features/marketing-layouts/types'
 import { LandingPageRawBlocks } from 'contentful/types'
 import { ProductHubProductType } from 'features/productHub/types'
 
@@ -69,8 +73,7 @@ export interface LendingPageBannerRawResponse {
 
 export interface LendingPageComparisonTableRawResponse {
   __typename: LandingPageRawBlocks.COMPARISON_TABLE
-  name: string
-  table: string
+  table: MarketingTemplateComparisonTableProps
 }
 
 export interface LendingPageBenefitBoxRawResponse {
