@@ -1,0 +1,1 @@
+export const TRIGGERS_PRICE_DECIMALS = 8
