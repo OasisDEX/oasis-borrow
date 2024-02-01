@@ -29,20 +29,31 @@ export interface MarketingTemplateBlock {
   title?: string
 }
 
+export type MarketingProductFinderPromoCards = [
+  ProductFinderPromoCardFilters,
+  ProductFinderPromoCardFilters,
+  ProductFinderPromoCardFilters,
+]
+
 interface MarketingTemplateProductFinderProps {
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
   product: ProductHubProductType
-  promoCards: [
-    ProductFinderPromoCardFilters,
-    ProductFinderPromoCardFilters,
-    ProductFinderPromoCardFilters,
-  ]
+  promoCards: MarketingProductFinderPromoCards
   token?: string
 }
 
-interface MarketingTemplateProductFinderBlock extends MarketingTemplateBlock {
-  type: 'product-finder'
+export enum MarketingTemplateBlocks {
+  PRODUCT_FINDER = 'product-finder',
+  INFO_BOX = 'info-box',
+  PRODUCT_BOX = 'product-box',
+  BENEFIT_BOX = 'benefit-box',
+  BANNER = 'banner',
+  COMPARISON_TABLE = 'comparison-table',
+}
+
+export interface MarketingTemplateProductFinderBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.PRODUCT_FINDER
   content: MarketingTemplateProductFinderProps[]
 }
 
@@ -57,10 +68,12 @@ export interface MarketingTemplateInfoBoxProps {
   tokens?: string[]
 }
 
-interface MarketingTemplateInfoBoxBlock extends MarketingTemplateBlock {
-  type: 'info-box'
+export interface MarketingTemplateInfoBoxBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.INFO_BOX
   content: MarketingTemplateInfoBoxProps[]
 }
+
+export type MarketingProductBoxComposition = 'narrow' | 'wide'
 
 export interface MarketingTemplateProductBoxProps {
   actionsList?: {
@@ -68,7 +81,7 @@ export interface MarketingTemplateProductBoxProps {
     label: string
     description?: string
   }[]
-  composition: 'narrow' | 'wide'
+  composition: MarketingProductBoxComposition
   description: string
   image?: string
   link?: {
@@ -79,8 +92,8 @@ export interface MarketingTemplateProductBoxProps {
   type: string
 }
 
-interface MarketingTemplateProductBoxBlock extends MarketingTemplateBlock {
-  type: 'product-box'
+export interface MarketingTemplateProductBoxBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.PRODUCT_BOX
   content: MarketingTemplateProductBoxProps[]
 }
 
@@ -90,8 +103,8 @@ export interface MarketingTemplateBenefitBoxProps {
   title: string
 }
 
-interface MarketingTemplateBenefitBoxBlock extends MarketingTemplateBlock {
-  type: 'benefit-box'
+export interface MarketingTemplateBenefitBoxBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.BENEFIT_BOX
   content: MarketingTemplateBenefitBoxProps[]
 }
 
@@ -104,8 +117,8 @@ export interface MarketingTemplateBannerProps {
   title: string
 }
 
-interface MarketingTemplateBannerBlock extends MarketingTemplateBlock {
-  type: 'banner'
+export interface MarketingTemplateBannerBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.BANNER
   content: MarketingTemplateBannerProps[]
 }
 
@@ -114,8 +127,8 @@ export interface MarketingTemplateComparisonTableProps {
   header: string[]
 }
 
-interface MarketingTemplateComparisonTableBlock extends MarketingTemplateBlock {
-  type: 'comparison-table'
+export interface MarketingTemplateComparisonTableBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.COMPARISON_TABLE
   content: MarketingTemplateComparisonTableProps[]
 }
 

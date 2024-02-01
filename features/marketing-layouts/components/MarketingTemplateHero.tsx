@@ -30,12 +30,12 @@ export const MarketingTemplateHero: FC<MarketingTemplateHeroProps> = ({
         {protocols.length + tokens.length > 0 && (
           <Flex as="ul" sx={{ gap: 1, m: 0, p: 0, listStyle: 'none' }}>
             {protocols.map((_protocol, i) => (
-              <Box as="li">
+              <Box as="li" key={i}>
                 <ProtocolLabel key={i} protocol={_protocol} />
               </Box>
             ))}
             {tokens.map((_token, i) => (
-              <Box as="li">
+              <Box as="li" key={i}>
                 <TokensGroup key={i} tokens={[_token]} forceSize={30} />
               </Box>
             ))}
