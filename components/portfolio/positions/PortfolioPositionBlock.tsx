@@ -69,6 +69,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         transition: 'border-color 200ms',
         '&:hover': {
           // filter: 'blur(6px)',
+          boxShadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
           '.position-action-button': {
             bg: 'secondary100',
           },
