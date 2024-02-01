@@ -16,10 +16,6 @@ export async function getWSTETHOracleTicker(): Promise<PriceServiceResponse> {
     .div(new BigNumber(CHAIN_LINK_PRECISION))
     .toNumber()
 
-  console.log('in-tracker')
-  console.log(`response: ${response}`)
-  console.log(`wsteth: ${wsteth}`)
-
   return {
     wsteth,
   }
