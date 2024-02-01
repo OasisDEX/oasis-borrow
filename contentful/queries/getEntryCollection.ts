@@ -10,7 +10,7 @@ const entryQuery = async (collectionIds: string[]) => {
         where: {
           sys: { id_in: ${JSON.stringify(collectionIds)} }
         }
-        limit: 50
+        limit: ${entryCollectionRequestChunkSize}
       ) {
         total
         items {
