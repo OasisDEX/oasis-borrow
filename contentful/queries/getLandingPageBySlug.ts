@@ -34,7 +34,7 @@ async function extractAndMapLendingPost(fetchResponse: LandingPageRawResponse): 
   }
 }
 
-export async function getLandingPageBySlug(slug: string | undefined) {
+export async function getLandingPageBySlug(slug: string) {
   const entry = await fetchGraphQL<LandingPageRawResponse>(
     `query {
             landingPageCollection(where: { slug: "${slug}" }, preview: true, limit: 1) {

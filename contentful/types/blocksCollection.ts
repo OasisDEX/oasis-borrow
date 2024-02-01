@@ -16,9 +16,12 @@ export enum LandingPageRawBlocks {
 }
 
 type Base = {
-  title: string
-  subtitle: string
-  description: {
+  title?: string
+  subtitle?: string
+  description?: {
+    json: string
+  }
+  footer?: {
     json: string
   }
 }
