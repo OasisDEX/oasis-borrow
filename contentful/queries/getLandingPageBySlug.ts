@@ -91,7 +91,6 @@ export async function getLandingPageBySlug(slug: string) {
             }
           }
             `,
-    true,
   )
   return extractAndMapLendingPost(entry)
 }

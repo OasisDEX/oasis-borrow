@@ -129,7 +129,6 @@ const entryQuery = async (collectionIds: string[]) => {
       }
     }
   `,
-    true,
   )
 
   return entry.data.entryCollection.items
