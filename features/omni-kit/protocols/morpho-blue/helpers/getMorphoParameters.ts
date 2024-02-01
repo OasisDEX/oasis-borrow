@@ -125,7 +125,7 @@ export const getMorphoParameters = async ({
       (state as OmniMultiplyFormState)?.loanToValue || zero,
       RiskRatio.TYPE.LTV,
     ),
-    collateralAmount: state.depositAmount || zero,
+    collateralAmount: state.depositAmount || state.withdrawAmount || zero,
     slippage,
     collateralTokenPrecision: collateralPrecision,
     quoteTokenPrecision: quotePrecision,

@@ -58,8 +58,7 @@ export function MorphoContentFooterMultiply() {
   return (
     <>
       <OmniContentCard
-        asFooter
-        changeVariant={changeVariant}
+        {...commonContentCardData}
         {...totalCollateralExposureContentCardCommonData}
       />
       <OmniContentCard
