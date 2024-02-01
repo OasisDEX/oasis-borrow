@@ -23,9 +23,10 @@ export interface MarketingTemplateHeroProps {
 }
 
 export interface MarketingTemplateBlock {
+  description?: string
+  footer?: string
   subtitle?: string
   title?: string
-  description?: string
 }
 
 interface MarketingTemplateProductFinderProps {
@@ -42,7 +43,7 @@ interface MarketingTemplateProductFinderProps {
 
 interface MarketingTemplateProductFinderBlock extends MarketingTemplateBlock {
   type: 'product-finder'
-  content: MarketingTemplateProductFinderProps
+  content: MarketingTemplateProductFinderProps[]
 }
 
 export interface MarketingTemplateInfoBoxProps {
@@ -89,7 +90,7 @@ export interface MarketingTemplateBenefitBoxProps {
   title: string
 }
 
-interface MarketingTemplateBeneftBoxBlock extends MarketingTemplateBlock {
+interface MarketingTemplateBenefitBoxBlock extends MarketingTemplateBlock {
   type: 'benefit-box'
   content: MarketingTemplateBenefitBoxProps[]
 }
@@ -105,12 +106,12 @@ export interface MarketingTemplateBannerProps {
 
 interface MarketingTemplateBannerBlock extends MarketingTemplateBlock {
   type: 'banner'
-  content: MarketingTemplateBannerProps
+  content: MarketingTemplateBannerProps[]
 }
 
 export type MarketingTemplateProductFinderBlocks =
   | MarketingTemplateBannerBlock
-  | MarketingTemplateBeneftBoxBlock
+  | MarketingTemplateBenefitBoxBlock
   | MarketingTemplateInfoBoxBlock
   | MarketingTemplateProductBoxBlock
   | MarketingTemplateProductFinderBlock

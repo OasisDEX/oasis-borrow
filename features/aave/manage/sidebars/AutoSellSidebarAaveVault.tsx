@@ -178,14 +178,14 @@ function AutoSellSidebarAaveVaultEditingState({
             value1: state.executionTriggerLTV ?? state.defaults.executionTriggerLTV,
           }}
           valueColors={{
-            value0: 'primary100',
-            value1: 'success100',
+            value0: 'success100',
+            value1: 'primary100',
           }}
           step={0.01}
           leftDescription={t('auto-sell.target-ltv')}
           rightDescription={t('auto-sell.trigger-ltv')}
-          leftThumbColor="primary100"
-          rightThumbColor="success100"
+          leftThumbColor="success100"
+          rightThumbColor="primary100"
         />
         <VaultActionInput
           action={t('auto-sell.set-min-sell-price')}
