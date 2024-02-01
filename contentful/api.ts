@@ -1,6 +1,6 @@
 import getConfig from 'next/config'
 
-export async function fetchGraphQL<T>(query: string, preview = false): Promise<T> {
+export async function fetchGraphQL<T>(query: string, preview: boolean): Promise<T> {
   const accessToken =
     getConfig()?.publicRuntimeConfig?.contentfulAccessToken || process.env.CONTENTFUL_ACCESS_TOKEN
   const previewAccessToken =

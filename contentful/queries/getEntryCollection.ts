@@ -4,7 +4,8 @@ import type { EntryRawResponse } from 'contentful/types'
 import { splitArrayToSameSizeChunks } from 'helpers/splitArrayToSameSizeChunks'
 
 const entryQuery = async (collectionIds: string[]) => {
-  const entry = await fetchGraphQL<EntryRawResponse>(`
+  const entry = await fetchGraphQL<EntryRawResponse>(
+    `
     query {
       entryCollection(
         where: {
@@ -127,7 +128,9 @@ const entryQuery = async (collectionIds: string[]) => {
         }
       }
     }
-  `)
+  `,
+    true,
+  )
 
   return entry.data.entryCollection.items
 }
