@@ -2,7 +2,7 @@ const HttpBackend = require('i18next-http-backend/cjs')
 const HMRPlugin =
   process.env.NODE_ENV !== 'production' ? require('i18next-hmr/plugin').HMRPlugin : undefined
 
-const isProd = process.env.NODE_ENV !== 'production'
+const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
 const windowDefined = typeof window !== 'undefined'
 
@@ -25,5 +25,5 @@ module.exports = {
     : {}),
   serializeConfig: false,
   reloadOnPrerender: isDev,
-  use: isProd ? hmrConfig : [],
+  use: isDev ? hmrConfig : [],
 }
