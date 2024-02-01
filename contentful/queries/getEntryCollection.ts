@@ -1,144 +1,7 @@
 import { fetchGraphQL } from 'contentful/api'
-
-function splitArray<T>(arr: T[], chunkSize: number): T[][] {
-  if (chunkSize <= 0) {
-    throw new Error('Chunk size must be greater than zero.')
-  }
-
-  const result: T[][] = []
-
-  for (let i = 0; i < arr.length; i += chunkSize) {
-    result.push(arr.slice(i, i + chunkSize))
-  }
-
-  return result
-}
-
-export interface LendingPageBannerRawResponse {
-  __typename: 'LendingPageBanner'
-  title: string
-  description: {
-    json: string
-  }
-  cta: {
-    label: string
-    url: string
-  }
-}
-
-export interface LendingPageBenefitBoxRawResponse {
-  __typename: 'LandingPageBenefitBox'
-  title: string
-  description: {
-    json: string
-  }
-  icon: {
-    url: string
-    title: string
-  }
-}
-
-export interface LendingPageInfoBoxRawResponse {
-  __typename: 'LandingPageInfoBox'
-  title: string
-  description: {
-    json: string
-  }
-  image: {
-    title: string
-    url: string
-  }
-  link: {
-    label: string
-    url: string
-  }
-  tokens: string[]
-}
-
-export interface LendingPageProductBoxRawResponse {
-  __typename: 'LandingPageProductBox'
-  title: string
-  description: {
-    json: string
-  }
-  type: string
-  image: {
-    title: string
-    url: string
-  }
-  link: {
-    label: string
-    url: string
-  }
-  composition: string
-  actionsListCollection: {
-    items: {
-      label: string
-      description: string
-      icon: {
-        url: string
-        title: string
-      }
-    }[]
-  }
-}
-
-export interface ProductFinderRawResponse {
-  __typename: 'ProductFinder'
-  name: string
-  token: string
-  product: {
-    slug: string
-    name: string
-  }
-  initialProtocolCollection: {
-    items: {
-      slug: string
-      name: string
-    }[]
-  }
-  initialNetworkCollection: {
-    items: {
-      slug: string
-      name: string
-    }[]
-  }
-  promoCardsCollection: {
-    items: {
-      name: string
-      network: { name: string; slug: string }
-      primaryToken: string
-      secondaryToken: string
-      protocol: {
-        name: string
-        slug: string
-      }
-      product: {
-        name: string
-        slug: string
-      }
-    }[]
-  }
-}
-
-export interface EntryRawResponse {
-  data: {
-    entryCollection: {
-      total: string
-      items: ({
-        sys: {
-          id: string
-        }
-      } & (
-        | LendingPageBannerRawResponse
-        | LendingPageBenefitBoxRawResponse
-        | LendingPageInfoBoxRawResponse
-        | LendingPageProductBoxRawResponse
-        | ProductFinderRawResponse
-      ))[]
-    }
-  }
-}
+import { entryCollectionRequestChunkSize } from 'contentful/consts'
+import type { EntryRawResponse } from 'contentful/types'
+import { splitArrayToSameSizeChunks } from 'helpers/splitArrayToSameSizeChunks'
 
 const entryQuery = async (collectionIds: string[]) => {
   const entry = await fetchGraphQL<EntryRawResponse>(`
@@ -267,7 +130,7 @@ const entryQuery = async (collectionIds: string[]) => {
 }
 
 export const getEntryCollection = async (collectionIds: string[]) => {
-  const splitArrays = splitArray(collectionIds, 40)
+  const splitArrays = splitArrayToSameSizeChunks(collectionIds, entryCollectionRequestChunkSize)
   const resp = await Promise.all(splitArrays.map((arr) => entryQuery(arr)))
 
   return resp.flatMap((item) => item)

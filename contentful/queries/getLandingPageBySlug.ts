@@ -1,67 +1,17 @@
 import { fetchGraphQL } from 'contentful/api'
-import { mapContentCollection } from 'contentful/mappers/mapContentCollection'
+import { mapBlocksCollection } from 'contentful/mappers/mapBlocksCollection'
 import { getEntryCollection } from 'contentful/queries/getEntryCollection'
+import type { LandingPageRawResponse } from 'contentful/types'
 import type {
   MarketingTemplateHeroProps,
   MarketingTemplatePalette,
   MarketingTemplateProductFinderBlocks,
 } from 'features/marketing-layouts/types'
-import type { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
-
-interface LandingPageRawResponse {
-  data: {
-    landingPageCollection: {
-      items: {
-        hero: {
-          protocolCollection: {
-            items: {
-              name: LendingProtocolLabel
-              slug: LendingProtocol
-            }[]
-          }
-          title: string
-          description: string
-          image: {
-            filename: string
-            url: string
-          }
-          link: {
-            label: string
-            url: string
-          }
-        }
-        palette: MarketingTemplatePalette
-        blocksCollection: {
-          total: string
-          items: {
-            sys: {
-              id: string
-            }
-            title: string
-            subtitle: string
-            description: {
-              json: string
-            }
-            contentCollection: {
-              total: string
-              items: {
-                __typename: string
-                sys: {
-                  id: string
-                }
-              }[]
-            }
-          }[]
-        }
-      }[]
-    }
-  }
-}
 
 async function extractAndMapLendingPost(fetchResponse: LandingPageRawResponse): Promise<{
   palette: MarketingTemplatePalette
   hero: MarketingTemplateHeroProps
-  blocks: MarketingTemplateProductFinderBlocks
+  blocks: MarketingTemplateProductFinderBlocks[]
 }> {
   const lendingPost = fetchResponse.data.landingPageCollection.items[0]
 
@@ -70,16 +20,6 @@ async function extractAndMapLendingPost(fetchResponse: LandingPageRawResponse): 
   )
 
   const entryCollection = await getEntryCollection(contentIds)
-
-  const blocksCollection = lendingPost.blocksCollection.items.map((blockItem) => ({
-    ...blockItem,
-    type: blockItem.contentCollection.items[0].__typename,
-    collection: blockItem.contentCollection.items.map((contentItem) =>
-      entryCollection.find((item) => item.sys.id === contentItem.sys.id),
-    ),
-  }))
-
-  const mappedBlocksCollection = mapContentCollection(blocksCollection)
 
   return {
     palette: lendingPost.palette,
@@ -90,7 +30,7 @@ async function extractAndMapLendingPost(fetchResponse: LandingPageRawResponse): 
       link: lendingPost.hero.link,
       image: lendingPost.hero.image.url,
     },
-    blocks: mappedBlocksCollection,
+    blocks: mapBlocksCollection(lendingPost.blocksCollection, entryCollection),
   }
 }
 

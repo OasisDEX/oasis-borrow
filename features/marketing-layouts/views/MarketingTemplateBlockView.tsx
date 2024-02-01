@@ -12,6 +12,7 @@ import type {
   MarketingTemplatePalette,
   MarketingTemplateProductFinderBlocks,
 } from 'features/marketing-layouts/types'
+import { MarketingTemplateBlocks } from 'features/marketing-layouts/types'
 import { ProductHubPromoCardsList } from 'features/productHub/components/ProductHubPromoCardsList'
 import { getGenericPromoCard } from 'features/productHub/helpers'
 import { ProductHubView } from 'features/productHub/views'
@@ -38,7 +39,7 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
   const { foreground } = palette
 
   switch (type) {
-    case 'banner':
+    case MarketingTemplateBlocks.BANNER:
       return (
         <Flex sx={{ flexDirection: 'column', rowGap: 4 }}>
           {content.map((banner, i) => (
@@ -46,7 +47,7 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
           ))}
         </Flex>
       )
-    case 'benefit-box':
+    case MarketingTemplateBlocks.BENEFIT_BOX:
       return (
         <SimpleCarousel
           header={
@@ -67,7 +68,7 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
           ))}
         />
       )
-    case 'info-box':
+    case MarketingTemplateBlocks.INFO_BOX:
       return (
         <Flex sx={{ flexDirection: 'column', rowGap: 6 }}>
           {content.map((infoBox, i) => (
@@ -75,7 +76,7 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
           ))}
         </Flex>
       )
-    case 'product-box':
+    case MarketingTemplateBlocks.PRODUCT_BOX:
       return (
         <Grid
           sx={{
@@ -89,7 +90,7 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
           ))}
         </Grid>
       )
-    case 'product-finder':
+    case MarketingTemplateBlocks.PRODUCT_FINDER:
       return (
         <Flex sx={{ flexDirection: 'column' }}>
           {content.map((productFinder, i) => {
