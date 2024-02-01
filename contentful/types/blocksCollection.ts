@@ -1,10 +1,12 @@
 import {
   LendingPageBannerRawResponse,
-  LendingPageBenefitBoxRawResponse, LendingPageComparisonTableRawResponse,
+  LendingPageBenefitBoxRawResponse,
+  LendingPageComparisonTableRawResponse,
   LendingPageInfoBoxRawResponse,
   LendingPageProductBoxRawResponse,
   ProductFinderRawResponse,
 } from './rawResponses'
+import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
 
 export enum LandingPageRawBlocks {
   BANNER = 'LandingPageBanner',
@@ -12,17 +14,17 @@ export enum LandingPageRawBlocks {
   BENEFIT_BOX = 'LandingPageBenefitBox',
   PRODUCT_BOX = 'LandingPageProductBox',
   PRODUCT_FINDER = 'ProductFinder',
-  COMPARISON_TABLE = "ComparisonTable"
+  COMPARISON_TABLE = 'ComparisonTable',
 }
 
 type Base = {
   title?: string
   subtitle?: string
   description?: {
-    json: string
+    json: ContentfulDocument
   }
   footer?: {
-    json: string
+    json: ContentfulDocument
   }
 }
 

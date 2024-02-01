@@ -1,3 +1,4 @@
+import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
 import type {
   ProductFinderPromoCardFilters,
   ProductHubProductType,
@@ -23,8 +24,8 @@ export interface MarketingTemplateHeroProps {
 }
 
 export interface MarketingTemplateBlock {
-  description?: string
-  footer?: string
+  description?: ContentfulDocument
+  footer?: ContentfulDocument
   subtitle?: string
   title?: string
 }
@@ -58,7 +59,7 @@ export interface MarketingTemplateProductFinderBlock extends MarketingTemplateBl
 }
 
 export interface MarketingTemplateInfoBoxProps {
-  description: string
+  description: ContentfulDocument
   image: string
   link?: {
     label: string
@@ -82,7 +83,7 @@ export interface MarketingTemplateProductBoxProps {
     description?: string
   }[]
   composition: MarketingProductBoxComposition
-  description: string
+  description: ContentfulDocument
   image?: string
   link?: {
     label: string
@@ -98,7 +99,7 @@ export interface MarketingTemplateProductBoxBlock extends MarketingTemplateBlock
 }
 
 export interface MarketingTemplateBenefitBoxProps {
-  description: string
+  description: ContentfulDocument
   icon: string
   title: string
 }
@@ -113,7 +114,7 @@ export interface MarketingTemplateBannerProps {
     label: string
     url: string
   }
-  description?: string
+  description?: ContentfulDocument
   title: string
 }
 
