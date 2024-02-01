@@ -1,6 +1,6 @@
 import getConfig from 'next/config'
 
-export async function fetchGraphQL<T>(query: string): Promise<T> {
+export async function fetchGraphQL<T>(query: (preview: boolean) => string): Promise<T> {
   const accessToken =
     getConfig()?.publicRuntimeConfig?.contentfulAccessToken || process.env.CONTENTFUL_ACCESS_TOKEN
   const previewAccessToken =
@@ -16,7 +16,7 @@ export async function fetchGraphQL<T>(query: string): Promise<T> {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${preview ? previewAccessToken : accessToken}`,
       },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query: query(preview) }),
     },
   ).then((response) => response.json())
 }
