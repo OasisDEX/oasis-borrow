@@ -9,6 +9,8 @@ import type {
 } from 'features/marketing-layouts/types'
 
 async function extractAndMapLendingPost(fetchResponse: LandingPageRawResponse): Promise<{
+  seoTitle: string
+  seoDescription: string
   palette: MarketingTemplatePalette
   hero: MarketingTemplateHeroProps
   blocks: MarketingTemplateProductFinderBlocks[]
@@ -22,6 +24,8 @@ async function extractAndMapLendingPost(fetchResponse: LandingPageRawResponse): 
   const entryCollection = await getEntryCollection(contentIds)
 
   return {
+    seoTitle: lendingPost.seoTitle,
+    seoDescription: lendingPost.seoDescription,
     palette: lendingPost.palette,
     hero: {
       protocol: lendingPost.hero.protocolCollection.items.map((item) => item.slug),
@@ -36,61 +40,72 @@ async function extractAndMapLendingPost(fetchResponse: LandingPageRawResponse): 
 
 export async function getLandingPageBySlug(slug: string) {
   const entry = await fetchGraphQL<LandingPageRawResponse>(
-    `query {
-            landingPageCollection(where: { slug: "${slug}" }, preview: true, limit: 1) {
+    (preview) => `
+    {
+      landingPageCollection(
+        where: { slug: "${slug}" }
+        preview: ${preview}
+        limit: 1
+      ) {
+        items {
+          seoTitle
+          seoDescription
+          title
+          slug
+          hero {
+            title
+            description
+            protocolCollection {
               items {
-                title
+                name
                 slug
-                hero {
-                  title
-                  description
-                  protocolCollection {
-                    items {
-                      name
-                      slug
-                    }
-                  }
-                  link {
-                    label
-                    url
-                  }
-                  image {
-                    title
-                    url
-                  }
-                }
-                palette {
-                  foreground
-                  background
-                }
-                blocksCollection {
-                  total
-                  items {
-                    title
-                    subtitle
-                    description {
-                      json
-                    }
+              }
+            }
+            link {
+              label
+              url
+            }
+            image {
+              title
+              url
+            }
+          }
+          palette {
+            foreground
+            background
+          }
+          blocksCollection {
+            total
+            items {
+              title
+              subtitle
+              description {
+                json
+              }
+              footer {
+                json
+              }
+              sys {
+                id
+              }
+              contentCollection {
+                total
+                items {
+                  __typename
+                  ... on Entry {
                     sys {
                       id
-                    }
-                    contentCollection {
-                      total
-                      items {
-                        __typename
-                        ... on Entry {
-                          sys {
-                            id
-                          }
-                        }
-                      }
                     }
                   }
                 }
               }
             }
           }
-            `,
+        }
+      }
+    }
+`,
   )
+
   return extractAndMapLendingPost(entry)
 }

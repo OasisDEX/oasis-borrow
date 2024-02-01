@@ -12,7 +12,7 @@ export const mapLandingPageProductBlock = (
     title: item.title,
     link: item.link,
     type: item.type,
-    description: JSON.stringify(item.description.json),
+    description: item.description.json,
     composition: item.composition,
     actionsList: item.actionsListCollection.items.map((actionItem) => ({
       icon: actionItem.icon.url,

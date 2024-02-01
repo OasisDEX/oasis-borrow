@@ -10,7 +10,7 @@ export const mapLandingPageBannerBlock = (
   type: MarketingTemplateBlocks.BANNER,
   content: blockItem.collection.map((item) => ({
     title: item.title,
-    ...(item.description?.json ? { description: JSON.stringify(item.description.json) } : {}),
+    ...(item.description && { description: item.description.json }),
     cta: item.cta,
   })),
 })

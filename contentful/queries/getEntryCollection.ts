@@ -5,12 +5,13 @@ import { splitArrayToSameSizeChunks } from 'helpers/splitArrayToSameSizeChunks'
 
 const entryQuery = async (collectionIds: string[]) => {
   const entry = await fetchGraphQL<EntryRawResponse>(
-    `
-    query {
+    (preview) => `
+    {
       entryCollection(
         where: {
           sys: { id_in: ${JSON.stringify(collectionIds)} }
         }
+        preview: ${preview}
         limit: ${entryCollectionRequestChunkSize}
       ) {
         total
