@@ -8,28 +8,30 @@ import dayjs from 'dayjs'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { PortfolioPosition } from 'handlers/portfolio/types'
 import { getLocalAppConfig } from 'helpers/config'
+import { getGradientColor } from 'helpers/getGradientColor'
 import { LendingProtocol, LendingProtocolLabel } from 'lendingProtocols'
-import { get, upperFirst } from 'lodash'
+import { upperFirst } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Flex, Text } from 'theme-ui'
 
-const getBorderColor = (
+const getColorsPerProtocol = (
   protocol: LendingProtocol,
 ): {
-  default: string
-  hover: string
+  gradientText: string
+  gradientBorder: string
 } => {
   switch (protocol) {
     case LendingProtocol.AaveV3:
       return {
-        default: 'border: 1px solid #B6509E',
-        hover: 'border: 1px solid var(--brand-illustration-tokens-aave, #B6509E)',
+        gradientText: 'linear-gradient(230deg, #B6509E 15.42%, #2EBAC6 84.42%)',
+        gradientBorder:
+          'linear-gradient(white 0 0) padding-box, linear-gradient(230deg, #B6509E 15.42%, #2EBAC6 84.42%) border-box',
       }
     case LendingProtocol.SparkV3:
       return {
-        default: 'border: 1px solid #F58013',
-        hover: 'border: 1px solid var(--brand-illustration-tokens-spark, #F58013)',
+        gradientText: 'linear-gradient(159deg, #F58013 12.26%, #F19D19 86.52%)',
+        gradientBorder: '#F58013',
       }
     default:
       throw new Error(`Not implemented protocol ${protocol}`)
@@ -48,26 +50,36 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
       ? [position.primaryToken]
       : [position.primaryToken, position.secondaryToken]
 
+  const dynamicColors = position.availableToMigrate
+    ? getColorsPerProtocol(position.protocol)
+    : {
+        gradientText: 'neutral80',
+        gradientBorder: 'neutral20',
+      }
+
   return (
     <AppLink
       href={position.url}
       sx={{
         width: '100%',
         p: 3,
-        border: '1px solid',
-        borderColor: position.availableToMigrate ? getBorderColor(position.protocol) : 'neutral20',
+        border: '1px solid transparent',
+        background: dynamicColors.gradientBorder,
         borderRadius: 'large',
         transition: 'border-color 200ms',
         '&:hover': {
-          borderColor: 'neutral70',
+          // filter: 'blur(6px)',
           '.position-action-button': {
             bg: 'secondary100',
+          },
+          '.position-app-link': {
+            ...getGradientColor(dynamicColors.gradientText),
           },
         },
       }}
     >
       <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mb: '24px' }}>
-        <Text variant="boldParagraph3" color="neutral80">
+        <Text className="position-app-link" variant="boldParagraph3" color={'neutral80'}>
           {position.availableToMigrate ? tPortfolio('migrate') : upperFirst(position.type)}
           {position.lendingType && ` - ${tPortfolio(`lending-type.${position.lendingType}`)}`}
         </Text>
