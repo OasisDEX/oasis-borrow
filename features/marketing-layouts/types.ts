@@ -1,3 +1,4 @@
+import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
 import type {
   ProductFinderPromoCardFilters,
   ProductHubProductType,
@@ -23,31 +24,42 @@ export interface MarketingTemplateHeroProps {
 }
 
 export interface MarketingTemplateBlock {
-  description?: string
-  footer?: string
+  description?: ContentfulDocument
+  footer?: ContentfulDocument
   subtitle?: string
   title?: string
 }
+
+export type MarketingProductFinderPromoCards = [
+  ProductFinderPromoCardFilters,
+  ProductFinderPromoCardFilters,
+  ProductFinderPromoCardFilters,
+]
 
 interface MarketingTemplateProductFinderProps {
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
   product: ProductHubProductType
-  promoCards: [
-    ProductFinderPromoCardFilters,
-    ProductFinderPromoCardFilters,
-    ProductFinderPromoCardFilters,
-  ]
+  promoCards: MarketingProductFinderPromoCards
   token?: string
 }
 
-interface MarketingTemplateProductFinderBlock extends MarketingTemplateBlock {
-  type: 'product-finder'
+export enum MarketingTemplateBlocks {
+  PRODUCT_FINDER = 'product-finder',
+  INFO_BOX = 'info-box',
+  PRODUCT_BOX = 'product-box',
+  BENEFIT_BOX = 'benefit-box',
+  BANNER = 'banner',
+  COMPARISON_TABLE = 'comparison-table',
+}
+
+export interface MarketingTemplateProductFinderBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.PRODUCT_FINDER
   content: MarketingTemplateProductFinderProps[]
 }
 
 export interface MarketingTemplateInfoBoxProps {
-  description: string
+  description: ContentfulDocument
   image: string
   link?: {
     label: string
@@ -57,10 +69,12 @@ export interface MarketingTemplateInfoBoxProps {
   tokens?: string[]
 }
 
-interface MarketingTemplateInfoBoxBlock extends MarketingTemplateBlock {
-  type: 'info-box'
+export interface MarketingTemplateInfoBoxBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.INFO_BOX
   content: MarketingTemplateInfoBoxProps[]
 }
+
+export type MarketingProductBoxComposition = 'narrow' | 'wide'
 
 export interface MarketingTemplateProductBoxProps {
   actionsList?: {
@@ -68,8 +82,8 @@ export interface MarketingTemplateProductBoxProps {
     label: string
     description?: string
   }[]
-  composition: 'narrow' | 'wide'
-  description: string
+  composition: MarketingProductBoxComposition
+  description: ContentfulDocument
   image?: string
   link?: {
     label: string
@@ -79,19 +93,19 @@ export interface MarketingTemplateProductBoxProps {
   type: string
 }
 
-interface MarketingTemplateProductBoxBlock extends MarketingTemplateBlock {
-  type: 'product-box'
+export interface MarketingTemplateProductBoxBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.PRODUCT_BOX
   content: MarketingTemplateProductBoxProps[]
 }
 
 export interface MarketingTemplateBenefitBoxProps {
-  description: string
+  description: ContentfulDocument
   icon: string
   title: string
 }
 
-interface MarketingTemplateBenefitBoxBlock extends MarketingTemplateBlock {
-  type: 'benefit-box'
+export interface MarketingTemplateBenefitBoxBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.BENEFIT_BOX
   content: MarketingTemplateBenefitBoxProps[]
 }
 
@@ -100,18 +114,29 @@ export interface MarketingTemplateBannerProps {
     label: string
     url: string
   }
-  description?: string
+  description?: ContentfulDocument
   title: string
 }
 
-interface MarketingTemplateBannerBlock extends MarketingTemplateBlock {
-  type: 'banner'
+export interface MarketingTemplateBannerBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.BANNER
   content: MarketingTemplateBannerProps[]
+}
+
+export interface MarketingTemplateComparisonTableProps {
+  body: (string | boolean)[][]
+  header: string[]
+}
+
+export interface MarketingTemplateComparisonTableBlock extends MarketingTemplateBlock {
+  type: MarketingTemplateBlocks.COMPARISON_TABLE
+  content: MarketingTemplateComparisonTableProps[]
 }
 
 export type MarketingTemplateProductFinderBlocks =
   | MarketingTemplateBannerBlock
   | MarketingTemplateBenefitBoxBlock
+  | MarketingTemplateComparisonTableBlock
   | MarketingTemplateInfoBoxBlock
   | MarketingTemplateProductBoxBlock
   | MarketingTemplateProductFinderBlock
@@ -120,4 +145,6 @@ export interface MarketingTemplateFreeform {
   blocks: MarketingTemplateProductFinderBlocks[]
   hero: MarketingTemplateHeroProps
   palette: MarketingTemplatePalette
+  seoDescription: string
+  seoTitle: string
 }

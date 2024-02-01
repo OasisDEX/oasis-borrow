@@ -16,15 +16,15 @@ export const useProductHubRouter = ({
   selectedToken,
   url,
 }: UseProductHubRouterProps) => {
-  const { replace } = useRouter()
+  const { asPath, replace } = useRouter()
 
   const tokenInUrl = useMemo(
     () => (selectedToken === ALL_ASSETS ? '' : `/${selectedToken}`),
     [selectedToken],
   )
   const pathname = useMemo(
-    () => `${url}${selectedProduct}${tokenInUrl}`,
-    [selectedProduct, tokenInUrl, url],
+    () => (url ? `${url}${selectedProduct}${tokenInUrl}` : asPath.split('?')[0]),
+    [asPath, selectedProduct, tokenInUrl, url],
   )
   const query = useMemo(
     () =>
@@ -39,6 +39,7 @@ export const useProductHubRouter = ({
   )
 
   useEffect(() => {
-    if (url) void replace({ pathname, query }, undefined, { shallow: true })
+    void replace({ pathname, query }, undefined, { shallow: true })
+    // else void replace({ query }, undefined, { shallow: true })
   }, [pathname, query, url])
 }

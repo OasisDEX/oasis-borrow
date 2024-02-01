@@ -505,12 +505,12 @@
       "stop-loss-token-added": "Stop loss to {{token}} added",
       "stop-loss-token-removed": "Stop loss to {{token}} removed",
       "stop-loss-token-executed": "Stop loss to {{token}} executed",
-      "basic-buy-added": "Basic buy added",
-      "basic-buy-removed": "Basic buy removed",
-      "basic-buy-executed": "Basic buy executed",
-      "basic-sell-added": "Basic sell added",
-      "basic-sell-removed": "Basic sell removed",
-      "basic-sell-executed": "Basic sell executed"
+      "basic-buy-added": "Auto buy added",
+      "basic-buy-removed": "Auto buy removed",
+      "basic-buy-executed": "Auto buy executed",
+      "basic-sell-added": "Auto sell added",
+      "basic-sell-removed": "Auto sell removed",
+      "basic-sell-executed": "Auto sell executed"
     }
   },
   "triggers": {
@@ -1430,7 +1430,7 @@
     "auto-sell-override": "Auto-Sell has been updated to override your Max gas fee if required to prevent vault liquidation. To make use of this protection, please remove your Auto-sell and create a new one. You are eligible for a gas cost refund, please contact <0>support@summer.fi</0>",
     "auto-sell-target-close-to-auto-buy-trigger": "Setting a higher Target Ratio would trigger your existing Auto-Buy. If you want to use a higher trigger ratio, please adjust your Auto-Buy trigger first.",
     "auto-sell-trigger-close-to-stop-loss-trigger": "Setting a lower Trigger Ratio would trigger your existing Stop-Loss. If you want to use a lower trigger ratio, please adjust your Stop-Loss trigger first.",
-    "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please decrease your trigger ratio",
+    "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please increase your trigger ratio",
     "auto-take-profit-trigger-lower-than-auto-buy-trigger": "Setting your Target Price at this level may result in your Auto-Buy not executing. Find out more <0>here</0>.",
     "auto-take-profit-trigger-lower-than-constant-multiple-buy-trigger": "Setting your Target Price at this level may result in your Constant Multiple Buy Trigger not executing. Find out more <0>here</0>.",
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",

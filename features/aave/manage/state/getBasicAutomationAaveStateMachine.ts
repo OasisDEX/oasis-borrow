@@ -10,23 +10,23 @@ import { maxUint256 } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import { allDefined } from 'helpers/allDefined'
-import type { AaveBasicBuy, AaveBasicSell } from 'helpers/triggers'
-import {
-  getLtvNumberFromDecodedParam,
-  getMaxGasFeeFromDecodedParam,
-  parsePriceFromDecodedParam,
-} from 'helpers/triggers'
 import type {
+  AaveBasicBuy,
+  AaveBasicSell,
   SetupAaveBasicAutomationParams,
   SetupBasicAutoResponse,
   SetupBasicAutoResponseWithRequiredTransaction,
-} from 'helpers/triggers/setup-triggers'
+} from 'helpers/triggers'
 import {
+  getLtvNumberFromDecodedParam,
+  getMaxGasFeeFromDecodedParam,
   hasTransaction,
+  parsePriceFromDecodedParam,
   setupAaveAutoBuy,
   setupAaveAutoSell,
   TriggerAction,
-} from 'helpers/triggers/setup-triggers'
+  TRIGGERS_PRICE_DECIMALS,
+} from 'helpers/triggers'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
 import { LendingProtocol } from 'lendingProtocols'
@@ -192,7 +192,7 @@ const getDefaults = (
 > => {
   const price = parsePriceFromDecodedParam(
     getPriceFromDecodedParam(context.currentTrigger),
-    context.position?.debt.token.decimals,
+    TRIGGERS_PRICE_DECIMALS,
   )
 
   return {
