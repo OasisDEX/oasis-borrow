@@ -233,6 +233,7 @@ export const mainnetContracts = {
     apiKey: '',
   },
   SdaiOracle: contractDesc(ajnaPoolInfo, mainnet.common.SdaiOracle),
+  WSTETHOracle: contractDesc(ajnaPoolInfo, mainnet.common.WSTETHOracle),
 }
 
 type DeprecatedProperties = {
