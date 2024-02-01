@@ -1,6 +1,6 @@
 import { Icon } from 'components/Icon'
 import type { FC, ReactNode } from 'react'
-import React from 'react'
+import React, { Fragment } from 'react'
 import { checkmark, close } from 'theme/icons'
 import type { ThemeUIStyleObject } from 'theme-ui'
 import { Box, Flex, Grid } from 'theme-ui'
@@ -81,7 +81,7 @@ export const ComparisonTable: FC<ComparisonTableProps> = ({ body, header }) => {
         }}
       >
         {[...[header], ...body].map((column, i) => (
-          <>
+          <Fragment key={i}>
             <Box
               variant={i === 0 ? 'text.header5' : 'text.boldParagraph1'}
               sx={{
@@ -94,8 +94,9 @@ export const ComparisonTable: FC<ComparisonTableProps> = ({ body, header }) => {
             >
               {column[0]}
             </Box>
-            {column.slice(1, column.length).map((row) => (
+            {column.slice(1, column.length).map((row, j) => (
               <Box
+                key={j}
                 variant={i === 0 ? 'text.header5' : 'text.paragraph1'}
                 sx={{
                   ...(i === 0 && headerStyles),
@@ -109,7 +110,7 @@ export const ComparisonTable: FC<ComparisonTableProps> = ({ body, header }) => {
                 )}
               </Box>
             ))}
-          </>
+          </Fragment>
         ))}
       </Grid>
     </Box>
