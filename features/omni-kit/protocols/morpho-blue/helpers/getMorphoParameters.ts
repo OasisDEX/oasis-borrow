@@ -170,51 +170,6 @@ export const getMorphoParameters = async ({
         dependencies,
       })
     }
-    case OmniBorrowFormAction.DepositBorrow:
-    case OmniBorrowFormAction.GenerateBorrow: {
-      return morphoActionDepositBorrow({
-        state: {
-          ...state,
-          generateAmount:
-            state.generateAmount && state.generateAmountMax
-              ? getMaxIncreasedOrDecreasedValue({
-                  value: state.generateAmount,
-                  apy: position.borrowRate,
-                  mode: MaxValueResolverMode.DECREASED,
-                  precision: quotePrecision,
-                })
-              : state.generateAmount,
-        },
-        commonPayload,
-        dependencies,
-      })
-    }
-    case OmniBorrowFormAction.PaybackBorrow:
-    case OmniBorrowFormAction.WithdrawBorrow: {
-      return morphoActionPaybackWithdraw({
-        state: {
-          ...state,
-          // In general, we should use this mechanism do be able to payback all without leaving dust.
-          // paybackAmount:
-          //   state.paybackAmount && state.paybackAmountMax
-          //     ? getMaxIncreasedOrDecreasedValue(state.paybackAmount, position.borrowRate)
-          //     : state.paybackAmount,
-          withdrawAmount:
-            state.withdrawAmount && state.withdrawAmountMax && !position.debtAmount.isZero()
-              ? getMaxIncreasedOrDecreasedValue({
-                  value: state.withdrawAmount,
-                  apy: position.borrowRate,
-                  mode: MaxValueResolverMode.DECREASED,
-                  precision: collateralPrecision,
-                  customDayApy: 1.5,
-                })
-              : state.withdrawAmount,
-        },
-        commonPayload,
-        dependencies,
-        quoteBalance,
-      })
-    }
     case OmniMultiplyFormAction.OpenMultiply: {
       return morphoActionOpenMultiply({
         state,
@@ -233,6 +188,76 @@ export const getMorphoParameters = async ({
       return morphoActionClose({
         commonPayload: closeMultiplyPayload,
         dependencies: multiplyDependencies,
+      })
+    }
+    case OmniBorrowFormAction.DepositBorrow:
+    case OmniBorrowFormAction.GenerateBorrow:
+    case OmniMultiplyFormAction.GenerateMultiply:
+    case OmniMultiplyFormAction.DepositCollateralMultiply: {
+      const { loanToValue } = state
+
+      if (loanToValue) {
+        return morphoActionAdjust({
+          commonPayload: adjustMultiplyPayload,
+          dependencies: multiplyDependencies,
+        })
+      }
+
+      return morphoActionDepositBorrow({
+        state: {
+          ...state,
+          generateAmount:
+            state.generateAmount && state.generateAmountMax
+              ? getMaxIncreasedOrDecreasedValue({
+                  value: state.generateAmount,
+                  apy: position.borrowRate,
+                  mode: MaxValueResolverMode.DECREASED,
+                  precision: quotePrecision,
+                })
+              : state.generateAmount,
+        },
+        commonPayload,
+        dependencies,
+      })
+    }
+    case OmniBorrowFormAction.PaybackBorrow:
+    case OmniBorrowFormAction.WithdrawBorrow:
+    case OmniMultiplyFormAction.PaybackMultiply:
+    case OmniMultiplyFormAction.WithdrawMultiply: {
+      const { loanToValue } = state
+
+      if (loanToValue) {
+        return morphoActionAdjust({
+          commonPayload: adjustMultiplyPayload,
+          dependencies: multiplyDependencies,
+        })
+      }
+
+      return morphoActionPaybackWithdraw({
+        state: {
+          ...state,
+          paybackAmount:
+            state.paybackAmount && state.paybackAmountMax
+              ? getMaxIncreasedOrDecreasedValue({
+                  value: state.paybackAmount,
+                  apy: position.borrowRate,
+                  precision: quotePrecision,
+                })
+              : state.paybackAmount,
+          withdrawAmount:
+            state.withdrawAmount && state.withdrawAmountMax && !position.debtAmount.isZero()
+              ? getMaxIncreasedOrDecreasedValue({
+                  value: state.withdrawAmount,
+                  apy: position.borrowRate,
+                  mode: MaxValueResolverMode.DECREASED,
+                  precision: collateralPrecision,
+                  customDayApy: 1.5,
+                })
+              : state.withdrawAmount,
+        },
+        commonPayload,
+        dependencies,
+        quoteBalance,
       })
     }
     default:
