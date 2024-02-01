@@ -1,10 +1,7 @@
-import { NetworkNames } from 'blockchain/networks'
 import { MarketingLayout } from 'components/layouts/MarketingLayout'
+import { getLandingPageBySlug } from 'contentful/queries'
 import type { MarketingTemplateFreeform } from 'features/marketing-layouts/types'
 import { MarketingTemplateView } from 'features/marketing-layouts/views'
-import { ProductHubProductType } from 'features/productHub/types'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { LendingProtocol } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -25,192 +22,42 @@ function MarketingTemplatePage(props: MarketingTemplatePageProps) {
 
 export default MarketingTemplatePage
 
-export async function getServerSideProps({ locale }: GetServerSidePropsContext) {
-  const marketingTemplatePageProps: MarketingTemplateFreeform = {
-    palette: {
-      background: ['#f8eaff', '#edf8ff', '#fff'],
-      foreground: ['#2ebac6', '#b6509e'],
-    },
-    hero: {
-      protocol: [LendingProtocol.AaveV2, LendingProtocol.AaveV3],
-      title: 'AAVE, with superpowers',
-      description:
-        "Earn interest, Borrow Assets and Multiply Exposure with DeFi's leading liquidity protocol. Made even better with Summer.fi's Superpowers of one click actions, advanced automations and unified frontend gateway to the best of DeFi.",
-      link: { label: 'Open a position', url: '/' },
-      image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-hero.png'),
-    },
-    blocks: [
-      {
-        type: 'product-finder',
-        content: [
-          {
-            product: ProductHubProductType.Multiply,
-            initialProtocol: [LendingProtocol.AaveV2, LendingProtocol.AaveV3],
-            promoCards: [
-              {
-                network: NetworkNames.arbitrumMainnet,
-                primaryToken: 'RETH',
-                secondaryToken: 'ETH',
-                product: ProductHubProductType.Borrow,
-                protocol: LendingProtocol.AaveV3,
-              },
-              {
-                network: NetworkNames.optimismMainnet,
-                primaryToken: 'WBTC',
-                secondaryToken: 'USDC',
-                product: ProductHubProductType.Multiply,
-                protocol: LendingProtocol.AaveV3,
-              },
-              {
-                network: NetworkNames.ethereumMainnet,
-                primaryToken: 'STETH',
-                secondaryToken: 'ETH',
-                product: ProductHubProductType.Earn,
-                protocol: LendingProtocol.AaveV2,
-              },
-            ],
-          },
-        ],
+export async function getServerSideProps({ locale, params }: GetServerSidePropsContext) {
+  const slug = params?.slug
+
+  if (!slug) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/not-found',
       },
-      {
-        type: 'info-box',
-        title: "AAVE, but more approachable for DeFi novices and advanced Degen's",
-        description:
-          'Summer.fi turns the AAVE Protocol into an easy to access DeFi app. You can start simple with the depositing for yield, borrow a stablecoin against you crypto or do advanced automation strategies with Multiply to go long or short.',
-        content: [
-          {
-            title: 'Endless Opportunities with AAVE',
-            description:
-              'The AAVE protocol on Summer.fi offers many different options for you, regardless of if you are new to DeFi or an experienced power user of DeFi protocols. ',
-            image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-info-1.png'),
-          },
-          {
-            title:
-              "Access DeFi yield with simple deposits on stablecoin's, a straightforward strategy to get started",
-            description:
-              'A great entry point to DeFi is earning on your assets. With aave you can lend by simply depositing in one click and start earning Fees.',
-            link: {
-              label: 'List of top assets',
-              url: '/',
-            },
-            image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-info-2.png'),
-          },
-          {
-            title: 'Get paid to park (your capital)',
-            description:
-              'Another great entry point to DeFi is earning yield on your volatile crypto assets. Simply deposit in one click and start earning Fees.',
-            image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-info-3.png'),
-            tokens: ['ETH', 'WSTETH', 'WBTC', 'USDC', 'USDT'],
-          },
-        ],
-      },
-      {
-        type: 'product-box',
-        title: 'The simplest way Borrow stables and Multiply your crypto',
-        content: [
-          {
-            composition: 'narrow',
-            type: 'Borrow',
-            title: 'Get liquidity from your crypto without selling',
-            description:
-              "Borrow vaults on AAVE allow you to use your crypto as collateral and borrow other assets, usually stablecoin's. Meaning you can get access to dollar-like assets without selling a thing.",
-            link: {
-              label: 'Borrow',
-              url: '/',
-            },
-            image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-product-1.png'),
-          },
-          {
-            composition: 'narrow',
-            type: 'Multiply',
-            title: 'Increase your exposure to your crypto and amplify your profits',
-            description:
-              'Multiply vaults allow you to increase your exposure to your collateral in a single click. Saving you time and gas costs.',
-            image: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-product-2.png'),
-            link: {
-              label: 'Multiply',
-              url: '/',
-            },
-          },
-          {
-            composition: 'wide',
-            type: 'Staking',
-            title: 'Seamless Staking Yield, but Enhanced with Summer.fi Superpowers',
-            description:
-              'Summer.fi makes it easy to enhance your staking returns up to 8x on compound, with our Yield Loop strategy, all from a custom dashboard with advanced analytics and made simple with one click management. ',
-            link: {
-              label: 'Staking',
-              url: '/',
-            },
-            actionsList: [
-              {
-                icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-1.png'),
-                label: 'Deposit ETH or stETH',
-              },
-              {
-                icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-2.png'),
-                label: 'Adjust your risk',
-              },
-              {
-                icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-3.png'),
-                label: 'Loop borrowing ETH ',
-                description: 'Abstracted away all with a single click',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        type: 'benefit-box',
-        subtitle: 'The Summer.fi Superpowers',
-        title: 'Why use Aave on  Summer.fi?',
-        content: [
-          {
-            icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-4.png'),
-            title: 'Never lose another nights sleep',
-            description:
-              'Automated risk management tools protect your positions from liquidation.\n- Stop-Loss\n- Auto Sell',
-          },
-          {
-            icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-5.png'),
-            title: 'Bundling is better',
-            description:
-              'Stop wasting time doing common actions repetitively just to achieve a simple goal. Summer.fi takes care of the convenience so you can just focus on your assets.\n- One click actions for all your most common and annoying transactions\n- Bundled transactions',
-          },
-          {
-            icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-6.png'),
-            title: 'Set and forget your strategy',
-            description:
-              'Automated tools allow you to convenience of your strategy once, and summer.fi super powers do the work.\n- Auto Buy\n- Take Profit',
-          },
-          {
-            icon: staticFilesRuntimeUrl('/static/img/marketing-layout/temp-icon-7.png'),
-            title: 'Everything you need, all in one place',
-            description:
-              '- Unlock the superpowers of other protocols\n- View all your positions and assets at glance\n- Discover new curated DeFi opportunities\n- Swap and Bridge',
-          },
-        ],
-      },
-      {
-        type: 'banner',
-        footer: 'Lorem ipsum dolor sit amet',
-        content: [
-          {
-            title: 'Ready to get started?',
-            cta: {
-              label: 'Open a position',
-              url: '/',
-            },
-          },
-        ],
-      },
-    ],
+    }
   }
 
-  return {
-    props: {
-      ...(await serverSideTranslations(locale || 'en', ['common'])),
-      ...marketingTemplatePageProps,
-    },
+  const resolvedSlug = Array.isArray(slug) ? slug.join('/') : slug
+
+  try {
+    const { palette, hero, blocks } = await getLandingPageBySlug(resolvedSlug)
+
+    const marketingTemplatePageProps: MarketingTemplateFreeform = {
+      palette,
+      hero,
+      blocks,
+    }
+
+    return {
+      props: {
+        ...(await serverSideTranslations(locale || 'en', ['common'])),
+        ...marketingTemplatePageProps,
+      },
+    }
+  } catch (e) {
+    console.error('Caught error on better-on-summer', e)
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/not-found',
+      },
+    }
   }
 }

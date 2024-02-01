@@ -15,7 +15,7 @@ export const MarketingTemplateMarkdown: FC<MarketingTemplateMarkdownProps> = ({ 
         rowGap: '12px',
         color: 'neutral80',
         '*': { m: 0 },
-        a: { color: 'interactive100' },
+        a: { color: 'interactive100', textDecoration: 'none' },
         'ul, ol': { pl: '24px' },
       }}
     >
