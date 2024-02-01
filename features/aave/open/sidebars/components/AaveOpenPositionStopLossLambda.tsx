@@ -13,6 +13,7 @@ import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import type { SetupBasicStopLossResponse } from 'helpers/triggers/setup-triggers'
 import { setupAaveStopLoss } from 'helpers/triggers/setup-triggers'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
+import { hundred } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid, Text } from 'theme-ui'
@@ -38,7 +39,8 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
   const debtAddress = tokens[state.context.tokens.debt as keyof typeof tokens]
   useDebouncedEffect(
     () => {
-      if (!state.context.userDpmAccount || !stopLossLevel || !collateralAddress || !debtAddress) {
+      const { context } = state
+      if (!context.userDpmAccount || !stopLossLevel || !collateralAddress || !debtAddress) {
         return
       }
       if (!isGettingStopLossTx) {
@@ -46,10 +48,13 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
       }
       const stopLossTxDataPromise = cancelable(
         setupAaveStopLoss({
-          dpm: state.context.userDpmAccount.proxy,
+          dpm: context.userDpmAccount.proxy,
           executionLTV: stopLossLevel,
+          targetLTV: (
+            context.userInput.riskRatio?.loanToValue || context.defaultRiskRatio!.loanToValue
+          ).times(hundred),
           networkId: strategyConfig.networkId,
-          executionToken: state.context.tokens.debt,
+          executionToken: debtAddress,
           protocol: strategyConfig.protocol,
           strategy: {
             collateralAddress,
@@ -116,8 +121,8 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
     ),
     primaryButton: {
       steps: [state.context.currentStep, state.context.totalSteps],
-      isLoading: isLoading(),
-      disabled: isLoading() || !state.can('NEXT_STEP') || isGettingStopLossTx,
+      isLoading: isLoading() || isGettingStopLossTx,
+      disabled: isLoading() || !state.can('NEXT_STEP'),
       label: t('open-earn.aave.vault-form.confirm-btn'),
       action: () => send('NEXT_STEP'),
     },

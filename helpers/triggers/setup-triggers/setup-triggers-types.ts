@@ -113,6 +113,7 @@ export type SetupBasicStopLossResponse = {
 export interface SetupAaveStopLossParams {
   executionToken: string
   executionLTV: BigNumber
+  targetLTV: BigNumber
   dpm: string
   strategy: StrategyLike
   networkId: number

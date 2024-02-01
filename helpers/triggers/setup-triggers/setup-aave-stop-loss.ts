@@ -15,7 +15,8 @@ export const setupAaveStopLoss = async (
     dpm: params.dpm,
     triggerData: {
       executionLTV: params.executionLTV.integerValue().toString(),
-      token: params.executionToken,
+      targetLTV: params.targetLTV.integerValue().toString(),
+      executionToken: params.executionToken,
     },
     position: {
       collateral: params.strategy.collateralAddress,
