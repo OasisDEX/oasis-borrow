@@ -32,7 +32,7 @@ export function mapErrorsToErrorVaults(
         case TriggersApiErrorCode.MaxBuyPriceIsNotSet:
           return 'autoBuyMaxBuyPriceNotSpecified'
         case TriggersApiErrorCode.MinSellPriceIsNotSet:
-          return 'minSellPriceWillPreventSellTrigger'
+          return 'minimumSellPriceNotProvided'
         case TriggersApiErrorCode.ExecutionPriceBiggerThanMaxBuyPrice:
           return 'maxBuyPriceWillPreventBuyTrigger'
         case TriggersApiErrorCode.ExecutionPriceSmallerThanMinSellPrice:

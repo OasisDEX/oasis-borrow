@@ -9,9 +9,11 @@ import {
   useManageAaveStateMachineContext,
   useTriggersAaveStateMachineContext,
 } from 'features/aave/manage/contexts'
+import { getTriggerExecutionCollateralPriceDenominatedInDebt } from 'features/aave/manage/services/calculations'
 import { AutoSellSidebarAaveVault } from 'features/aave/manage/sidebars/AutoSellSidebarAaveVault'
 import type { AutoSellTriggerAaveContext } from 'features/aave/manage/state'
 import { isAutoSellEnabled } from 'features/aave/manage/state'
+import { zero } from 'helpers/zero'
 import React, { useEffect } from 'react'
 import { Box, Container, Grid } from 'theme-ui'
 
@@ -30,12 +32,16 @@ function getAutoSellDetailsLayoutProps(
     : undefined
 
   if (context.executionTriggerLTV && context.targetTriggerLTV && isEditing) {
+    const nextPrice = getTriggerExecutionCollateralPriceDenominatedInDebt(context)
+    const thresholdPrice = context.usePrice ? context.price : zero
     return {
       automationFeature: context.feature,
       position: context.position,
       afterTxTrigger: {
         executionLTV: new BigNumber(context.executionTriggerLTV),
         targetLTV: new BigNumber(context.targetTriggerLTV),
+        thresholdPrice,
+        nextPrice,
       },
       currentTrigger,
     }
