@@ -121,9 +121,20 @@ export interface MarketingTemplateBannerBlock extends MarketingTemplateBlock {
   content: MarketingTemplateBannerProps[]
 }
 
+export interface MarketingTemplateComparisonTableProps {
+  body: (string | boolean)[][]
+  header: string[]
+}
+
+interface MarketingTemplateComparisonTableBlock extends MarketingTemplateBlock {
+  type: 'comparison-table'
+  content: MarketingTemplateComparisonTableProps[]
+}
+
 export type MarketingTemplateProductFinderBlocks =
   | MarketingTemplateBannerBlock
   | MarketingTemplateBenefitBoxBlock
+  | MarketingTemplateComparisonTableBlock
   | MarketingTemplateInfoBoxBlock
   | MarketingTemplateProductBoxBlock
   | MarketingTemplateProductFinderBlock

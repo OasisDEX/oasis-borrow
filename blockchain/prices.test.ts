@@ -31,14 +31,6 @@ describe('createTokenPriceInUSD$', () => {
     expect(tokenPrice().STETH.toString()).toBe('1462.87')
   })
 
-  it('maps token price to coingecko ticker', () => {
-    const tokenPrice$ = createTokenPriceInUSD$(of(null), tokenTickers$, ['WSTETH'])
-
-    const tokenPrice = getStateUnpacker(tokenPrice$)
-
-    expect(tokenPrice().WSTETH.toString()).toBe('1573.93')
-  })
-
   it('handles concurrent token price requests', () => {
     const tokenPrice$ = createTokenPriceInUSD$(of(null), tokenTickers$, ['MKR', 'STETH'])
 

@@ -199,4 +199,5 @@ export const baseContracts: MainnetContractsWithOptional = {
     apiKey: '',
   },
   SdaiOracle: contractDesc(ajnaPoolInfo, base.common.SdaiOracle),
+  WSTETHOracle: contractDesc(ajnaPoolInfo, base.common.WSTETHOracle),
 }

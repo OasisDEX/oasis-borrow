@@ -221,4 +221,5 @@ export const goerliContracts: MainnetContractsWithOptional = {
     apiKey: '',
   },
   SdaiOracle: contractDesc(ajnaPoolInfo, goerli.common.SdaiOracle),
+  WSTETHOracle: contractDesc(ajnaPoolInfo, goerli.common.WSTETHOracle),
 }

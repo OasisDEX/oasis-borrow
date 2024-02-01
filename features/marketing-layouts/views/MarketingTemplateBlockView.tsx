@@ -1,3 +1,4 @@
+import { ComparisonTable } from 'components/ComparisonTable'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
 import { SimpleCarousel } from 'components/SimpleCarousel'
 import {
@@ -76,6 +77,15 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
           ))}
         </Flex>
       )
+    case MarketingTemplateBlocks.COMPARISON_TABLE:
+      return (
+        <Flex sx={{ flexDirection: 'column', rowGap: 5 }}>
+          {content.map((comparisonTable, i) => (
+            <ComparisonTable key={i} {...comparisonTable} />
+          ))}
+        </Flex>
+      )
+    case 'info-box':
     case MarketingTemplateBlocks.PRODUCT_BOX:
       return (
         <Grid
