@@ -7,7 +7,7 @@ const isDev = process.env.NODE_ENV === 'development'
 const windowDefined = typeof window !== 'undefined'
 
 const hmrConfig =
-  isProd && windowDefined
+  !isProd && windowDefined
     ? [HttpBackend, new HMRPlugin({ webpack: { client: true } })]
     : [HMRPlugin ? new HMRPlugin({ webpack: { server: true } }) : undefined]
 
