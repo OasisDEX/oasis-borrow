@@ -8,11 +8,13 @@ interface IsPoolWithRewardsParams {
 }
 
 const poolsWithRewardsEthereum = [
+  'AJNA-DAI',
   'CBETH-ETH',
   'ETH-USDC',
   'RETH-DAI',
   'RETH-ETH',
   'SDAI-USDC',
+  'STYETH-DAI',
   'USDC-ETH',
   'USDC-WBTC',
   'WBTC-DAI',
@@ -20,6 +22,7 @@ const poolsWithRewardsEthereum = [
   'WSTETH-DAI',
   'WSTETH-ETH',
   'WSTETH-USDC',
+  'YFI-DAI',
 ]
 const poolsWithRewardsBase = ['CBETH-ETH', 'ETH-USDC', 'WSTETH-ETH']
 
