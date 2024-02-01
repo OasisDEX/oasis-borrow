@@ -9,6 +9,8 @@ import type {
 } from 'features/marketing-layouts/types'
 
 async function extractAndMapLendingPost(fetchResponse: LandingPageRawResponse): Promise<{
+  seoTitle: string
+  seoDescription: string
   palette: MarketingTemplatePalette
   hero: MarketingTemplateHeroProps
   blocks: MarketingTemplateProductFinderBlocks[]
@@ -22,6 +24,8 @@ async function extractAndMapLendingPost(fetchResponse: LandingPageRawResponse): 
   const entryCollection = await getEntryCollection(contentIds)
 
   return {
+    seoTitle: lendingPost.seoTitle,
+    seoDescription: lendingPost.seoDescription,
     palette: lendingPost.palette,
     hero: {
       protocol: lendingPost.hero.protocolCollection.items.map((item) => item.slug),
@@ -44,6 +48,8 @@ export async function getLandingPageBySlug(slug: string) {
         limit: 1
       ) {
         items {
+          seoTitle
+          seoDescription
           title
           slug
           hero {

@@ -1,3 +1,4 @@
+import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { getLandingPageBySlug } from 'contentful/queries'
 import type { MarketingTemplateFreeform } from 'features/marketing-layouts/types'
@@ -10,11 +11,14 @@ type MarketingTemplatePageProps = MarketingTemplateFreeform
 
 function MarketingTemplatePage(props: MarketingTemplatePageProps) {
   const {
+    seoDescription,
+    seoTitle,
     palette: { background },
   } = props
 
   return (
     <MarketingLayout topBackground="none" backgroundGradient={background}>
+      <PageSEOTags title={seoTitle} description={seoDescription} />
       <MarketingTemplateView {...props} />
     </MarketingLayout>
   )
@@ -37,12 +41,16 @@ export async function getServerSideProps({ locale, params }: GetServerSidePropsC
   const resolvedSlug = Array.isArray(slug) ? slug.join('/') : slug
 
   try {
-    const { palette, hero, blocks } = await getLandingPageBySlug(resolvedSlug)
+    const { seoTitle, seoDescription, palette, hero, blocks } = await getLandingPageBySlug(
+      resolvedSlug,
+    )
 
     const marketingTemplatePageProps: MarketingTemplateFreeform = {
-      palette,
-      hero,
       blocks,
+      hero,
+      palette,
+      seoDescription,
+      seoTitle,
     }
 
     return {

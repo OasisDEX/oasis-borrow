@@ -34,6 +34,8 @@ export interface LandingPageRawResponse {
   data: {
     landingPageCollection: {
       items: {
+        seoTitle: string
+        seoDescription: string
         hero: {
           protocolCollection: {
             items: {

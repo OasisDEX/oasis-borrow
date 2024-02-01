@@ -144,4 +144,6 @@ export interface MarketingTemplateFreeform {
   blocks: MarketingTemplateProductFinderBlocks[]
   hero: MarketingTemplateHeroProps
   palette: MarketingTemplatePalette
+  seoDescription: string
+  seoTitle: string
 }
