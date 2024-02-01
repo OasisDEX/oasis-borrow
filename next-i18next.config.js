@@ -25,5 +25,5 @@ module.exports = {
     : {}),
   serializeConfig: false,
   reloadOnPrerender: isDev,
-  use: isDev ? hmrConfig : [],
+  use: !isProd ? hmrConfig : [],
 }
