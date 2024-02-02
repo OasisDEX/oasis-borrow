@@ -31,7 +31,7 @@ function getAutoBuyDetailsLayoutProps(
 
   const nextPrice = getTriggerExecutionPrice({
     position: context.position,
-    executionTriggerLTV: currentTrigger?.executionLTV.times(100).toNumber(),
+    executionTriggerLTV: currentTrigger?.executionLTV.toNumber(),
   })
   const thresholdPrice = context.usePriceInput
     ? context.usePrice
