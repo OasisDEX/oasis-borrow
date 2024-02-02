@@ -70,9 +70,9 @@ export default function PortfolioView(props: PortfolioViewProps) {
   const { address, awsInfraUrl, awsInfraHeader } = props
 
   // loading migrations on load
-  const [migrationPositions, setMigrationPositions] = React.useState<PortfolioPosition[] | void>(
-    undefined,
-  )
+  const [migrationPositions, setMigrationPositions] = React.useState<
+    PortfolioPosition[] | undefined
+  >(undefined)
   const { fetchMigrationPositions } = useContext(MigrationsContext)
   useEffect(() => {
     void fetchMigrationPositions(address).then((data) => setMigrationPositions(data))

@@ -15,7 +15,7 @@ import { useCallback, useMemo } from 'react'
  */
 export const useMigrationsClient = () => {
   const fetchMigrations = useCallback(
-    async (address: string): Promise<PortfolioPosition[] | void> => {
+    async (address: string): Promise<PortfolioPosition[] | undefined> => {
       const callUrl = `/api/migrations?address=${address}`
       const response = await fetch(callUrl, {
         headers: [],
@@ -68,7 +68,10 @@ export const useMigrationsClient = () => {
             return position
           }),
         )
-        .catch((err) => console.error(err))
+        .catch((err) => {
+          console.error(err)
+          return undefined
+        })
 
       return response
     },

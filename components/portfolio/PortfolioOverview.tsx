@@ -22,7 +22,7 @@ export const PortfolioOverview = ({
 }: {
   overviewData: PortfolioOverviewResponse
   portfolioWalletData: PortfolioAssetsResponse
-  migrationPositions?: PortfolioPosition[] | void
+  migrationPositions?: PortfolioPosition[]
 }) => {
   const { t: tPortfolio } = useTranslation('portfolio')
   const isMobile = useOnMobile() && isTouchDevice
