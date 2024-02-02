@@ -15,7 +15,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Flex, Text } from 'theme-ui'
 
-const getColorsPerProtocol = (
+const getMigrationGradientsPerProtocol = (
   protocol: LendingProtocol,
 ): {
   gradientText: string
@@ -34,7 +34,11 @@ const getColorsPerProtocol = (
         gradientBorder: '#F58013',
       }
     default:
-      throw new Error(`Not implemented protocol ${protocol}`)
+      console.error(`Not implemented protocol ${protocol}`)
+      return {
+        gradientText: 'neutral80',
+        gradientBorder: 'neutral20',
+      }
   }
 }
 
@@ -50,12 +54,16 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
       ? [position.primaryToken]
       : [position.primaryToken, position.secondaryToken]
 
-  const dynamicColors = position.availableToMigrate
-    ? getColorsPerProtocol(position.protocol)
-    : {
-        gradientText: 'neutral80',
-        gradientBorder: 'neutral20',
+  const migrationPositionStyles = position.availableToMigrate
+    ? {
+        borderColor: 'transparent',
+        boxShadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
+        background: getMigrationGradientsPerProtocol(position.protocol).gradientBorder,
+        '.position-app-link': {
+          ...getGradientColor(getMigrationGradientsPerProtocol(position.protocol).gradientText),
+        },
       }
+    : {}
 
   return (
     <AppLink
@@ -64,23 +72,24 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         width: '100%',
         p: 3,
         border: '1px solid transparent',
-        background: dynamicColors.gradientBorder,
+        borderColor: 'neutral20',
         borderRadius: 'large',
-        transition: 'border-color 200ms',
+        transition: 'border-color 200ms, box-shadow 200ms, background 200ms',
         '&:hover': {
-          // filter: 'blur(6px)',
-          boxShadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
+          borderColor: 'neutral70',
           '.position-action-button': {
             bg: 'secondary100',
           },
-          '.position-app-link': {
-            ...getGradientColor(dynamicColors.gradientText),
-          },
+          ...migrationPositionStyles,
         },
       }}
     >
       <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mb: '24px' }}>
-        <Text className="position-app-link" variant="boldParagraph3" color={'neutral80'}>
+        <Text
+          className="position-app-link heading-with-effect"
+          variant="boldParagraph3"
+          color={'neutral80'}
+        >
           {position.availableToMigrate ? tPortfolio('migrate') : upperFirst(position.type)}
           {position.lendingType && ` - ${tPortfolio(`lending-type.${position.lendingType}`)}`}
         </Text>
