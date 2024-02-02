@@ -106,7 +106,7 @@ jobs:
           ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
           BLOCKNATIVE_API_KEY: ${{ secrets.BLOCKNATIVE_API_KEY_STAGING }}
           SHOW_BUILD_INFO: 1
-          NODE_ENV: staging
+          NODE_ENV: production
           NEXT_PUBLIC_SENTRY_ENV: staging
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           PRODUCT_HUB_KEY: ${{ secrets.PRODUCT_HUB_KEY }}

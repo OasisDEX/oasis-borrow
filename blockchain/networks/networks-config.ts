@@ -83,7 +83,7 @@ export function contractDesc(
 export function emptyContractDesc(contractName: string): ContractDesc & { genesisBlock: number } {
   // not every contract is available on every network
   // hence this function is used to return an empty contract
-  env.NODE_ENV !== 'production' && console.warn('Contract not set:', contractName)
+  env.NODE_ENV === 'development' && console.warn('Contract not set:', contractName)
   return { abi: {}, address: '', genesisBlock: 0 }
 }
 
