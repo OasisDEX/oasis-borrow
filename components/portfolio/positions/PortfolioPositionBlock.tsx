@@ -15,7 +15,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Flex, Text } from 'theme-ui'
 
-const getColorsPerProtocol = (
+const getMigrationGradientsPerProtocol = (
   protocol: LendingProtocol,
 ): {
   gradientText: string
@@ -34,6 +34,7 @@ const getColorsPerProtocol = (
         gradientBorder: '#F58013',
       }
     default:
+      console.error(`Not implemented protocol ${protocol}`)
       return {
         gradientText: 'neutral80',
         gradientBorder: 'neutral20',
@@ -53,9 +54,11 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
       ? [position.primaryToken]
       : [position.primaryToken, position.secondaryToken]
 
-  const migrationPositionStyles = {
-    background: getColorsPerProtocol(position.protocol).gradientBorder,
-  }
+  const migrationPositionStyles = position.availableToMigrate
+    ? {
+        background: getMigrationGradientsPerProtocol(position.protocol).gradientBorder,
+      }
+    : {}
 
   return (
     <AppLink
@@ -77,7 +80,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
             boxShadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
             ...migrationPositionStyles,
             '.position-app-link': {
-              ...getGradientColor(getColorsPerProtocol(position.protocol).gradientText),
+              ...getGradientColor(getMigrationGradientsPerProtocol(position.protocol).gradientText),
             },
           }),
         },
