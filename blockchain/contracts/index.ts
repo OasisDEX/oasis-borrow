@@ -84,6 +84,12 @@ export function extendTokensContracts(tokens: Tokens[]): void {
       address: token.address,
       genesisBlock: 0,
     }
+    // TODO investigate why from proxy events token symbol is returned without dashes
+    extendedTokensContracts[token.symbol.replaceAll('-', '')] = {
+      abi: erc20,
+      address: token.address,
+      genesisBlock: 0,
+    }
   })
 }
 
