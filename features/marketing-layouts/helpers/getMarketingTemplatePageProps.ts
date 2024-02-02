@@ -1,5 +1,6 @@
 import { mapBlocksCollection } from 'contentful/mappers'
 import { getLandingPageBySlug, getLandingPageContentByIds } from 'contentful/queries'
+import type { MarketingTemplateFreeform } from 'features/marketing-layouts/types'
 
 interface GetMarketingTemplatePagePropsParams {
   slug: string
@@ -9,7 +10,7 @@ interface GetMarketingTemplatePagePropsParams {
 export async function getMarketingTemplatePageProps({
   preview = false,
   slug,
-}: GetMarketingTemplatePagePropsParams) {
+}: GetMarketingTemplatePagePropsParams): Promise<MarketingTemplateFreeform> {
   const {
     data: {
       landingPageCollection: {
@@ -17,6 +18,7 @@ export async function getMarketingTemplatePageProps({
           {
             hero: {
               protocolCollection: { items: protocols },
+              image: { url: image },
               ...hero
             },
             palette,
@@ -33,7 +35,9 @@ export async function getMarketingTemplatePageProps({
       entryCollection: { items: blocksWithContent },
     },
   } = await getLandingPageContentByIds(
-    blocksWithoutContent.map(({ sys: { id } }) => id),
+    blocksWithoutContent
+      .flatMap(({ contentCollection: { items } }) => items)
+      .map(({ sys: { id } }) => id),
     preview,
   )
 
@@ -41,6 +45,7 @@ export async function getMarketingTemplatePageProps({
     blocks: mapBlocksCollection(blocksWithoutContent, blocksWithContent),
     hero: {
       protocol: protocols.map(({ slug: protocolSlug }) => protocolSlug),
+      image,
       ...hero,
     },
     seoDescription,

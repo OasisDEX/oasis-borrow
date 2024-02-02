@@ -1,5 +1,8 @@
+import { PageSEOTags } from 'components/HeadTags'
+import { MarketingLayout } from 'components/layouts/MarketingLayout'
 import { getMarketingTemplatePageProps } from 'features/marketing-layouts/helpers'
 import type { MarketingTemplateFreeform } from 'features/marketing-layouts/types'
+import { MarketingTemplateView } from 'features/marketing-layouts/views'
 import type { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -7,19 +10,17 @@ import React from 'react'
 type MarketingTemplatePageProps = MarketingTemplateFreeform
 
 function MarketingTemplatePage(props: MarketingTemplatePageProps) {
-  console.log(props)
-  // const {
-  //   seoDescription,
-  //   seoTitle,
-  //   palette: { background },
-  // } = props
+  const {
+    seoDescription,
+    seoTitle,
+    palette: { background },
+  } = props
 
   return (
-    <>test</>
-    // <MarketingLayout topBackground="none" backgroundGradient={background}>
-    //   <PageSEOTags title={seoTitle} description={seoDescription} />
-    //   <MarketingTemplateView {...props} />
-    // </MarketingLayout>
+    <MarketingLayout topBackground="none" backgroundGradient={background}>
+      <PageSEOTags title={seoTitle} description={seoDescription} />
+      <MarketingTemplateView {...props} />
+    </MarketingLayout>
   )
 }
 
@@ -46,11 +47,7 @@ export async function getServerSideProps({
     }
   } catch (e) {
     console.error('Caught error on better-on-summer', e)
-    return {
-      props: {
-        ...(await serverSideTranslations(locale || 'en', ['common'])),
-      },
-    }
-    // return { redirect: { permanent: false, destination: '/not-found' } }
+
+    return { redirect: { permanent: false, destination: '/not-found' } }
   }
 }

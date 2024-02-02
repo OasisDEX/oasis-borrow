@@ -15,16 +15,14 @@ import { LandingPageRawBlocks } from 'contentful/types'
 import type { MarketingTemplateProductFinderBlocks } from 'features/marketing-layouts/types'
 
 export const mapBlocksCollection = (
-  blocksCollection: LandingPageRawBlocksItems[],
-  entryCollection: EntryCollectionRawItemResponse[],
+  blocksWithoutContent: LandingPageRawBlocksItems[],
+  blocksWithContent: EntryCollectionRawItemResponse[],
 ): MarketingTemplateProductFinderBlocks[] => {
-  console.log(blocksCollection)
-  console.log(entryCollection)
-  const preparedBlocksCollection = blocksCollection.map((blockItem) => ({
+  const preparedBlocksCollection = blocksWithoutContent.map((blockItem) => ({
     ...blockItem,
     type: blockItem.contentCollection.items[0].__typename,
     collection: blockItem.contentCollection.items.map((contentItem) =>
-      entryCollection.find((item) => item.sys.id === contentItem.sys.id),
+      blocksWithContent.find((item) => item.sys.id === contentItem.sys.id),
     ),
   })) as BlocksCollection[]
 
