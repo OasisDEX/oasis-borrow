@@ -9,7 +9,7 @@ import type { NetworkConfig, NetworkConfigHexId } from './networks-config'
 import { networks, networksById } from './networks-config'
 
 export const isTestnetEnabled = () => {
-  const isDev = env.NODE_ENV !== 'production'
+  const isDev = env.NODE_ENV === 'development'
   const showTestnetsParam =
     window && new URLSearchParams(window.location.search).get('testnets') !== null
   return isDev || showTestnetsParam
