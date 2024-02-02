@@ -9,16 +9,18 @@ import { mapLandingPageComparisonTableBlock } from 'contentful/mappers/mapLandin
 import type {
   BlocksCollection,
   EntryCollectionRawItemResponse,
-  LandingPageRawBlocksCollection,
+  LandingPageRawBlocksItems,
 } from 'contentful/types'
 import { LandingPageRawBlocks } from 'contentful/types'
 import type { MarketingTemplateProductFinderBlocks } from 'features/marketing-layouts/types'
 
 export const mapBlocksCollection = (
-  blocksCollection: LandingPageRawBlocksCollection,
+  blocksCollection: LandingPageRawBlocksItems[],
   entryCollection: EntryCollectionRawItemResponse[],
 ): MarketingTemplateProductFinderBlocks[] => {
-  const preparedBlocksCollection = blocksCollection.items.map((blockItem) => ({
+  console.log(blocksCollection)
+  console.log(entryCollection)
+  const preparedBlocksCollection = blocksCollection.map((blockItem) => ({
     ...blockItem,
     type: blockItem.contentCollection.items[0].__typename,
     collection: blockItem.contentCollection.items.map((contentItem) =>
