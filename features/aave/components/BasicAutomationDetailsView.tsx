@@ -7,7 +7,7 @@ import {
 } from 'components/DetailsSectionContentCard'
 import type { PositionLike } from 'features/aave/manage/state'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -21,9 +21,9 @@ export interface BasicAutomationDetailsViewProps {
   afterTxTrigger?: {
     executionLTV: BigNumber
     targetLTV: BigNumber
-    nextPrice?: BigNumber
-    thresholdPrice?: BigNumber
   }
+  nextPrice?: BigNumber
+  thresholdPrice?: BigNumber
 }
 
 interface ContentCardTriggerLTVProp {
@@ -32,6 +32,7 @@ interface ContentCardTriggerLTVProp {
   currentExecutionLTV?: BigNumber
   afterTxExecutionLTV?: BigNumber
   nextPrice?: BigNumber
+  denomination: string
 }
 
 interface ContentCardTriggerTargetLTVProp {
@@ -40,7 +41,7 @@ interface ContentCardTriggerTargetLTVProp {
   currentTargetLTV?: BigNumber
   afterTxTargetLTV?: BigNumber
   thresholdPrice?: BigNumber
-  collateralSymbol?: string
+  denomination: string
 }
 
 export function ContentCardTriggerExecutionLTV({
@@ -49,6 +50,7 @@ export function ContentCardTriggerExecutionLTV({
   currentExecutionLTV,
   afterTxExecutionLTV,
   nextPrice,
+  denomination,
 }: ContentCardTriggerLTVProp) {
   const { t } = useTranslation()
 
@@ -65,7 +67,7 @@ export function ContentCardTriggerExecutionLTV({
         precision: 2,
         roundMode: BigNumber.ROUND_DOWN,
       }),
-    nextSellPrice: nextPrice && `$${formatAmount(nextPrice, 'USD')}`,
+    nextSellPrice: nextPrice && `${formatCryptoBalance(nextPrice)} ${denomination}`,
   }
 
   const titleKey =
@@ -100,7 +102,7 @@ function ContentCardTriggerTargetLTV({
   currentTargetLTV,
   afterTxTargetLTV,
   thresholdPrice,
-  collateralSymbol,
+  denomination,
 }: ContentCardTriggerTargetLTVProp) {
   const { t } = useTranslation()
 
@@ -117,7 +119,7 @@ function ContentCardTriggerTargetLTV({
         precision: 2,
         roundMode: BigNumber.ROUND_DOWN,
       }),
-    threshold: thresholdPrice && `$${formatAmount(thresholdPrice, 'USD')}`,
+    threshold: thresholdPrice && `${formatCryptoBalance(thresholdPrice)}`,
   }
 
   const titleKey =
@@ -137,11 +139,11 @@ function ContentCardTriggerTargetLTV({
   if (thresholdPrice) {
     const key =
       automationFeature === AutomationFeatures.AUTO_SELL
-        ? 'auto-sell.continual-sell-threshold'
-        : 'auto-buy.continual-buy-threshold'
+        ? 'auto-sell.continual-sell-threshold-v2'
+        : 'auto-buy.continual-buy-threshold-v2'
     contentCardSettings.footnote = t(key, {
       amount: formatted.threshold,
-      token: collateralSymbol,
+      denomination,
     })
   }
 
@@ -161,10 +163,14 @@ export function BasicAutomationDetailsView({
   position,
   currentTrigger,
   afterTxTrigger,
+  nextPrice,
+  thresholdPrice,
 }: BasicAutomationDetailsViewProps) {
   const { t } = useTranslation()
   const titleKey =
     automationFeature === AutomationFeatures.AUTO_SELL ? 'auto-sell.title' : 'auto-buy.title'
+
+  const denomination = `${position.collateral.token.symbol}/${position.debt.token.symbol}`
 
   return (
     <DetailsSection
@@ -178,15 +184,16 @@ export function BasicAutomationDetailsView({
               collateralToken={position.collateral.token.symbol}
               currentExecutionLTV={currentTrigger?.executionLTV}
               afterTxExecutionLTV={afterTxTrigger?.executionLTV}
-              nextPrice={afterTxTrigger?.nextPrice}
+              nextPrice={nextPrice}
+              denomination={denomination}
             />
             <ContentCardTriggerTargetLTV
               automationFeature={automationFeature}
               collateralToken={position.collateral.token.symbol}
               currentTargetLTV={currentTrigger?.targetLTV}
               afterTxTargetLTV={afterTxTrigger?.targetLTV}
-              thresholdPrice={afterTxTrigger?.thresholdPrice}
-              collateralSymbol={position.collateral.token.symbol}
+              thresholdPrice={thresholdPrice}
+              denomination={denomination}
             />
           </DetailsSectionContentCardWrapper>
         </>

@@ -135,6 +135,7 @@ export type BasicAutomationAaveContext<Trigger extends BasicAutoTrigger> = {
   executionTriggerLTV?: number
   targetTriggerLTV?: number
   price?: BigNumber
+  usePriceInput: boolean
   usePrice: boolean
   maxGasFee: number
   currentTrigger?: Trigger
@@ -231,6 +232,7 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
           targetTriggerLTV: 0,
           maxGasFee: 300,
         },
+        usePriceInput: true,
         maxGasFee: 300,
         usePrice: true,
         gasEstimation: {
@@ -442,21 +444,20 @@ const getBasicAutomationAaveStateMachine = <Trigger extends BasicAutoTrigger>(
         incrementRetryCount: assign((context) => ({
           retryCount: context.retryCount + 1,
         })),
-        sendRequest: sendTo(
-          'getParameters',
-          (context): InternalParametersRequestEvent => ({
+        sendRequest: sendTo('getParameters', (context): InternalParametersRequestEvent => {
+          return {
             type: 'PARAMETERS_REQUESTED',
             params: {
               executionTriggerLTV: context.executionTriggerLTV,
               targetTriggerLTV: context.targetTriggerLTV,
               position: context.position,
-              price: context.price,
+              price: context.usePriceInput ? context.price : undefined,
               maxGasFee: context.maxGasFee,
-              usePrice: context.usePrice,
+              usePrice: context.usePriceInput ? context.usePrice : false,
               action: context.action,
             },
-          }),
-        ),
+          }
+        }),
         getGasEstimation: sendTo(
           'gasEstimation',
           (context, event): InternalGasEstimationEvent => ({
