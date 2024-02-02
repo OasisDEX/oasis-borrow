@@ -57,24 +57,30 @@ export const SimpleCarousel: FC<SimpleCarouselProps> = ({
         }}
       >
         {header}
-        <Flex sx={{ columnGap: '12px', flexShrink: 0 }}>
-          <Button
-            variant="action"
-            sx={{ p: '12px' }}
-            onClick={() => emblaApi?.scrollPrev()}
-            disabled={!canScrollPrev}
-          >
-            <Icon icon={arrow_left} size="16px" sx={{ position: 'relative', display: 'block' }} />
-          </Button>
-          <Button
-            variant="action"
-            sx={{ p: '12px' }}
-            onClick={() => emblaApi?.scrollNext()}
-            disabled={!canScrollNext}
-          >
-            <Icon icon={arrow_right} size="16px" sx={{ position: 'relative', display: 'block' }} />
-          </Button>
-        </Flex>
+        {!isMobile && (
+          <Flex sx={{ columnGap: '12px', flexShrink: 0 }}>
+            <Button
+              variant="action"
+              sx={{ p: '12px' }}
+              onClick={() => emblaApi?.scrollPrev()}
+              disabled={!canScrollPrev}
+            >
+              <Icon icon={arrow_left} size="16px" sx={{ position: 'relative', display: 'block' }} />
+            </Button>
+            <Button
+              variant="action"
+              sx={{ p: '12px' }}
+              onClick={() => emblaApi?.scrollNext()}
+              disabled={!canScrollNext}
+            >
+              <Icon
+                icon={arrow_right}
+                size="16px"
+                sx={{ position: 'relative', display: 'block' }}
+              />
+            </Button>
+          </Flex>
+        )}
       </Flex>
       <Box ref={emblaRef} sx={{ overflow }}>
         <Flex
@@ -91,30 +97,32 @@ export const SimpleCarousel: FC<SimpleCarouselProps> = ({
           ))}
         </Flex>
       </Box>
-      <Flex
-        as="ul"
-        sx={{ justifyContent: 'center', columnGap: 2, m: 0, mt: 4, p: 0, listStyle: 'none' }}
-      >
-        {slides.map((_, i) => (
-          <Box key={i} as="li">
-            <Button
-              variant="unStyled"
-              onClick={() => emblaApi?.scrollTo(i)}
-              sx={{
-                display: 'block',
-                width: 2,
-                height: 2,
-                borderRadius: 'ellipse',
-                bg: currentSlide === i ? 'primary100' : 'primary30',
-                transition: 'background-color 200ms',
-                '&:hover': {
-                  bg: currentSlide === i ? 'primary100' : 'neutral80',
-                },
-              }}
-            />
-          </Box>
-        ))}
-      </Flex>
+      {isMobile && (
+        <Flex
+          as="ul"
+          sx={{ justifyContent: 'center', columnGap: 2, m: 0, mt: 4, p: 0, listStyle: 'none' }}
+        >
+          {slides.map((_, i) => (
+            <Box key={i} as="li">
+              <Button
+                variant="unStyled"
+                onClick={() => emblaApi?.scrollTo(i)}
+                sx={{
+                  display: 'block',
+                  width: 2,
+                  height: 2,
+                  borderRadius: 'ellipse',
+                  bg: currentSlide === i ? 'primary100' : 'primary30',
+                  transition: 'background-color 200ms',
+                  '&:hover': {
+                    bg: currentSlide === i ? 'primary100' : 'neutral80',
+                  },
+                }}
+              />
+            </Box>
+          ))}
+        </Flex>
+      )}
     </Box>
   )
 }
