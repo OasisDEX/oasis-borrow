@@ -1,4 +1,5 @@
 import { useInterpret, useSelector } from '@xstate/react'
+import { getToken } from 'blockchain/tokensMetadata'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import {
   autoBuyTriggerAaveStateMachine,
@@ -16,6 +17,10 @@ import React, { useEffect } from 'react'
 
 import { useManageAaveStateMachineContext } from './aave-manage-state-machine-context'
 
+export const shouldUsePriceInput = (strategy: IStrategyConfig): boolean => {
+  return getToken(strategy.tokens.debt).tags.some((tag) => tag === 'stablecoin')
+}
+
 function useSetupTriggersStateContext(
   strategy: IStrategyConfig,
   proxies?: ProxiesRelatedWithPosition,
@@ -25,6 +30,7 @@ function useSetupTriggersStateContext(
     autoBuyTriggerAaveStateMachine.withContext({
       ...autoBuyContext,
       networkId: strategy.networkId,
+      usePriceInput: shouldUsePriceInput(strategy),
     }),
     {
       devTools: env.NODE_ENV !== 'production',
@@ -36,6 +42,7 @@ function useSetupTriggersStateContext(
     autoSellTriggerAaveStateMachine.withContext({
       ...autoSellContext,
       networkId: strategy.networkId,
+      usePriceInput: shouldUsePriceInput(strategy),
     }),
     {
       devTools: env.NODE_ENV !== 'production',

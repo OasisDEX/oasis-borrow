@@ -14,7 +14,7 @@ import { RemoveTriggerInfoSection, type RemoveTriggerSectionProps } from 'featur
 import type { AutoSellInfoSectionProps } from 'features/aave/components/AutoSellInfoSection'
 import { AutoSellInfoSection } from 'features/aave/components/AutoSellInfoSection'
 import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
-import { getTriggerExecutionCollateralPriceDenominatedInDebt } from 'features/aave/manage/services/calculations'
+import { getTriggerExecutionPrice } from 'features/aave/manage/services/calculations'
 import type {
   AutoSellTriggerAaveContext,
   AutoSellTriggerAaveEvent,
@@ -58,7 +58,7 @@ function useDescriptionForAutoSell({ state }: Pick<AutoSellSidebarAaveVaultProps
   if (!state.executionTriggerLTV || !state.targetTriggerLTV) {
     return ''
   }
-  const executionPrice = getTriggerExecutionCollateralPriceDenominatedInDebt(state)
+  const executionPrice = getTriggerExecutionPrice(state)
 
   if (!executionPrice) {
     return ''
@@ -68,16 +68,25 @@ function useDescriptionForAutoSell({ state }: Pick<AutoSellSidebarAaveVaultProps
     return t('auto-sell.set-trigger-description-ltv', {
       executionLTV: state.executionTriggerLTV,
       targetLTV: state.targetTriggerLTV,
-      denomination: `USD`,
-      executionPrice: formatCryptoBalance(executionPrice),
+      denomination: executionPrice.denomination,
+      executionPrice: formatCryptoBalance(executionPrice.price),
       minSellPrice: formatCryptoBalance(state.price),
     })
   }
-  return t('auto-sell.set-trigger-description-ltv-no-threshold', {
+
+  if (state.usePriceInput) {
+    return t('auto-sell.set-trigger-description-ltv-no-threshold', {
+      executionLTV: state.executionTriggerLTV,
+      targetLTV: state.targetTriggerLTV,
+      denomination: executionPrice.denomination,
+      executionPrice: formatCryptoBalance(executionPrice.price),
+    })
+  }
+  return t('auto-sell.set-trigger-description-ltv-without-threshold', {
     executionLTV: state.executionTriggerLTV,
     targetLTV: state.targetTriggerLTV,
-    denomination: `USD`,
-    executionPrice: formatCryptoBalance(executionPrice),
+    denomination: executionPrice.denomination,
+    executionPrice: formatCryptoBalance(executionPrice.price),
   })
 }
 
@@ -187,24 +196,26 @@ function AutoSellSidebarAaveVaultEditingState({
           leftThumbColor="success100"
           rightThumbColor="primary100"
         />
-        <VaultActionInput
-          action={t('auto-sell.set-min-sell-price')}
-          amount={state.price}
-          hasAuxiliary={false}
-          hasError={false}
-          currencyCode={'USD'}
-          onChange={handleNumericInput((price) => {
-            updateState({ type: 'SET_PRICE', price: price })
-          })}
-          onToggle={(toggle) => {
-            updateState({ type: 'SET_USE_PRICE', enabled: toggle })
-          }}
-          showToggle={true}
-          toggleOnLabel={t('protection.set-no-threshold')}
-          toggleOffLabel={t('protection.set-threshold')}
-          toggleOffPlaceholder={t('protection.no-threshold')}
-          defaultToggle={state.usePrice}
-        />
+        {state.usePriceInput && (
+          <VaultActionInput
+            action={t('auto-sell.set-min-sell-price')}
+            amount={state.price}
+            hasAuxiliary={false}
+            hasError={false}
+            currencyCode={'USD'}
+            onChange={handleNumericInput((price) => {
+              updateState({ type: 'SET_PRICE', price: price })
+            })}
+            onToggle={(toggle) => {
+              updateState({ type: 'SET_USE_PRICE', enabled: toggle })
+            }}
+            showToggle={true}
+            toggleOnLabel={t('protection.set-no-threshold')}
+            toggleOffLabel={t('protection.set-threshold')}
+            toggleOffPlaceholder={t('protection.no-threshold')}
+            defaultToggle={state.usePrice}
+          />
+        )}
       </>
       {isEditing && (
         <>
