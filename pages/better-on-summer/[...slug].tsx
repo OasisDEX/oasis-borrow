@@ -26,23 +26,17 @@ function MarketingTemplatePage(props: MarketingTemplatePageProps) {
 
 export default MarketingTemplatePage
 
-export async function getServerSideProps({ locale, params }: GetServerSidePropsContext) {
-  const slug = params?.slug
-
-  if (!slug) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/not-found',
-      },
-    }
-  }
-
-  const resolvedSlug = Array.isArray(slug) ? slug.join('/') : slug
+export async function getServerSideProps({
+  locale,
+  query: { slug: rawSlug },
+}: GetServerSidePropsContext) {
+  if (!rawSlug) return { redirect: { permanent: false, destination: '/not-found' } }
+  const [slug, preview] = Array.isArray(rawSlug) ? rawSlug : [rawSlug]
 
   try {
     const { seoTitle, seoDescription, palette, hero, blocks } = await getLandingPageBySlug(
-      resolvedSlug,
+      slug,
+      preview === 'preview',
     )
 
     const marketingTemplatePageProps: MarketingTemplateFreeform = {
@@ -61,11 +55,6 @@ export async function getServerSideProps({ locale, params }: GetServerSidePropsC
     }
   } catch (e) {
     console.error('Caught error on better-on-summer', e)
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/not-found',
-      },
-    }
+    return { redirect: { permanent: false, destination: '/not-found' } }
   }
 }

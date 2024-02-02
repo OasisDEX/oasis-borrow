@@ -8,7 +8,10 @@ import type {
   MarketingTemplateProductFinderBlocks,
 } from 'features/marketing-layouts/types'
 
-async function extractAndMapLendingPost(fetchResponse: LandingPageRawResponse): Promise<{
+async function extractAndMapLendingPost(
+  fetchResponse: LandingPageRawResponse,
+  preview: boolean,
+): Promise<{
   seoTitle: string
   seoDescription: string
   palette: MarketingTemplatePalette
@@ -21,7 +24,7 @@ async function extractAndMapLendingPost(fetchResponse: LandingPageRawResponse): 
     blockItem.contentCollection.items.map((contentItem) => contentItem.sys.id),
   )
 
-  const entryCollection = await getEntryCollection(contentIds)
+  const entryCollection = await getEntryCollection(contentIds, preview)
 
   return {
     seoTitle: lendingPost.seoTitle,
@@ -38,9 +41,9 @@ async function extractAndMapLendingPost(fetchResponse: LandingPageRawResponse): 
   }
 }
 
-export async function getLandingPageBySlug(slug: string) {
+export async function getLandingPageBySlug(slug: string, preview: boolean) {
   const entry = await fetchGraphQL<LandingPageRawResponse>(
-    (preview) => `
+    `
     {
       landingPageCollection(
         where: { slug: "${slug}" }
@@ -104,8 +107,9 @@ export async function getLandingPageBySlug(slug: string) {
         }
       }
     }
-`,
+    `,
+    preview,
   )
 
-  return extractAndMapLendingPost(entry)
+  return extractAndMapLendingPost(entry, preview)
 }
