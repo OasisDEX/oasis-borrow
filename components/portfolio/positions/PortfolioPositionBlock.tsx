@@ -56,7 +56,12 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
 
   const migrationPositionStyles = position.availableToMigrate
     ? {
+        borderColor: 'transparent',
+        boxShadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
         background: getMigrationGradientsPerProtocol(position.protocol).gradientBorder,
+        '.position-app-link': {
+          ...getGradientColor(getMigrationGradientsPerProtocol(position.protocol).gradientText),
+        },
       }
     : {}
 
@@ -75,14 +80,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
           '.position-action-button': {
             bg: 'secondary100',
           },
-          ...(position.availableToMigrate && {
-            borderColor: 'transparent',
-            boxShadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
-            ...migrationPositionStyles,
-            '.position-app-link': {
-              ...getGradientColor(getMigrationGradientsPerProtocol(position.protocol).gradientText),
-            },
-          }),
+          ...migrationPositionStyles,
         },
       }}
     >
