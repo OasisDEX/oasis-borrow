@@ -9,7 +9,7 @@ import {
   useManageAaveStateMachineContext,
   useTriggersAaveStateMachineContext,
 } from 'features/aave/manage/contexts'
-import { getTriggerExecutionCollateralPriceDenominatedInDebt } from 'features/aave/manage/services/calculations'
+import { getTriggerExecutionPrice } from 'features/aave/manage/services/calculations'
 import { AutoSellSidebarAaveVault } from 'features/aave/manage/sidebars/AutoSellSidebarAaveVault'
 import type { AutoSellTriggerAaveContext } from 'features/aave/manage/state'
 import { isAutoSellEnabled } from 'features/aave/manage/state'
@@ -31,7 +31,7 @@ function getAutoSellDetailsLayoutProps(
       }
     : undefined
 
-  const nextPrice = getTriggerExecutionCollateralPriceDenominatedInDebt({
+  const nextPrice = getTriggerExecutionPrice({
     position: context.position,
     executionTriggerLTV: currentTrigger?.executionLTV.toNumber(),
   })

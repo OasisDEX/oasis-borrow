@@ -15,7 +15,7 @@ import { RemoveTriggerInfoSection } from 'features/aave/components'
 import type { BuyInfoSectionProps } from 'features/aave/components/AutoBuyInfoSection'
 import { AutoBuyInfoSection } from 'features/aave/components/AutoBuyInfoSection'
 import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
-import { getTriggerExecutionCollateralPriceDenominatedInDebt } from 'features/aave/manage/services/calculations'
+import { getTriggerExecutionPrice } from 'features/aave/manage/services/calculations'
 import type {
   AutoBuyTriggerAaveContext,
   AutoBuyTriggerAaveEvent,
@@ -59,7 +59,7 @@ function useDescriptionForAutoBuy({ state }: Pick<AutoBuySidebarAaveVaultProps, 
   if (!state.executionTriggerLTV || !state.targetTriggerLTV) {
     return ''
   }
-  const executionPrice = getTriggerExecutionCollateralPriceDenominatedInDebt(state)
+  const executionPrice = getTriggerExecutionPrice(state)
 
   if (!executionPrice) {
     return ''
@@ -69,8 +69,8 @@ function useDescriptionForAutoBuy({ state }: Pick<AutoBuySidebarAaveVaultProps, 
     return t('auto-buy.set-trigger-description-ltv', {
       executionLTV: state.executionTriggerLTV,
       targetLTV: state.targetTriggerLTV,
-      denomination: `${state.position.collateral.token.symbol}/${state.position.debt.token.symbol}`,
-      executionPrice: formatCryptoBalance(executionPrice),
+      denomination: executionPrice.denomination,
+      executionPrice: formatCryptoBalance(executionPrice.price),
       maxBuyPrice: formatCryptoBalance(state.price),
     })
   }
@@ -79,16 +79,16 @@ function useDescriptionForAutoBuy({ state }: Pick<AutoBuySidebarAaveVaultProps, 
     return t('auto-buy.set-trigger-description-ltv-no-threshold', {
       executionLTV: state.executionTriggerLTV,
       targetLTV: state.targetTriggerLTV,
-      denomination: `${state.position.collateral.token.symbol}/${state.position.debt.token.symbol}`,
-      executionPrice: formatCryptoBalance(executionPrice),
+      denomination: executionPrice.denomination,
+      executionPrice: formatCryptoBalance(executionPrice.price),
     })
   }
 
   return t('auto-buy.set-trigger-description-ltv-without-threshold', {
     executionLTV: state.executionTriggerLTV,
     targetLTV: state.targetTriggerLTV,
-    denomination: `${state.position.collateral.token.symbol}/${state.position.debt.token.symbol}`,
-    executionPrice: formatCryptoBalance(executionPrice),
+    denomination: executionPrice.denomination,
+    executionPrice: formatCryptoBalance(executionPrice.price),
   })
 }
 

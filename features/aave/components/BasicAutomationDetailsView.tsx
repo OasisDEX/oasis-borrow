@@ -5,6 +5,7 @@ import {
   DetailsSectionContentCard,
   DetailsSectionContentCardWrapper,
 } from 'components/DetailsSectionContentCard'
+import type { ExecutionPrice } from 'features/aave/manage/services/calculations'
 import type { PositionLike } from 'features/aave/manage/state'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
@@ -22,7 +23,7 @@ export interface BasicAutomationDetailsViewProps {
     executionLTV: BigNumber
     targetLTV: BigNumber
   }
-  nextPrice?: BigNumber
+  nextPrice?: ExecutionPrice
   thresholdPrice?: BigNumber
 }
 
@@ -170,8 +171,6 @@ export function BasicAutomationDetailsView({
   const titleKey =
     automationFeature === AutomationFeatures.AUTO_SELL ? 'auto-sell.title' : 'auto-buy.title'
 
-  const denomination = `${position.collateral.token.symbol}/${position.debt.token.symbol}`
-
   return (
     <DetailsSection
       title={t(titleKey)}
@@ -184,8 +183,8 @@ export function BasicAutomationDetailsView({
               collateralToken={position.collateral.token.symbol}
               currentExecutionLTV={currentTrigger?.executionLTV}
               afterTxExecutionLTV={afterTxTrigger?.executionLTV}
-              nextPrice={nextPrice}
-              denomination={denomination}
+              nextPrice={nextPrice?.price}
+              denomination={nextPrice?.denomination || ''}
             />
             <ContentCardTriggerTargetLTV
               automationFeature={automationFeature}
@@ -193,7 +192,7 @@ export function BasicAutomationDetailsView({
               currentTargetLTV={currentTrigger?.targetLTV}
               afterTxTargetLTV={afterTxTrigger?.targetLTV}
               thresholdPrice={thresholdPrice}
-              denomination={denomination}
+              denomination={nextPrice?.denomination || ''}
             />
           </DetailsSectionContentCardWrapper>
         </>

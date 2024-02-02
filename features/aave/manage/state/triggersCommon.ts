@@ -19,4 +19,5 @@ export type PositionLike = {
     }
     amount: BigNumber
   }
+  pricesDenomination: 'collateral' | 'debt'
 }
