@@ -66,7 +66,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         border: '1px solid transparent',
         borderColor: 'neutral20',
         borderRadius: 'large',
-        transition: 'border-color 600ms, box-shadow 600ms, background 600ms',
+        transition: 'border-color 200ms, box-shadow 200ms, background 200ms',
         '&:hover': {
           borderColor: 'neutral70',
           '.position-action-button': {
