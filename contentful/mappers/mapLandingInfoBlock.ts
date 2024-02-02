@@ -8,7 +8,7 @@ export const mapLandingInfoBlock = (blockItem: LandingPageInfo): MarketingTempla
   type: MarketingTemplateBlocks.INFO_BOX,
   content: blockItem.collection.map((item) => ({
     title: item.title,
-    description: JSON.stringify(item.description?.json),
+    description: item.description.json,
     image: item.image.url,
     tokens: item.tokens,
   })),

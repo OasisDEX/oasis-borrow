@@ -3,140 +3,142 @@ import { entryCollectionRequestChunkSize } from 'contentful/consts'
 import type { EntryRawResponse } from 'contentful/types'
 import { splitArrayToSameSizeChunks } from 'helpers/splitArrayToSameSizeChunks'
 
-const entryQuery = async (collectionIds: string[]) => {
+const entryQuery = async (collectionIds: string[], preview: boolean) => {
   const entry = await fetchGraphQL<EntryRawResponse>(
     `
-    query {
-      entryCollection(
-        where: {
-          sys: { id_in: ${JSON.stringify(collectionIds)} }
-        }
-        limit: ${entryCollectionRequestChunkSize}
-      ) {
-        total
-        items {
-        __typename
-          sys {
-            id
+      {
+        entryCollection(
+          where: {
+            sys: { id_in: ${JSON.stringify(collectionIds)} }
           }
-          ... on LandingPageBanner {
-            title
-            description {
-              json
+          preview: ${preview}
+          limit: ${entryCollectionRequestChunkSize}
+        ) {
+          total
+          items {
+          __typename
+            sys {
+              id
             }
-            cta {
-              label
-              url
-            }
-          }
-          ... on ComparisonTable {
-            table
-          }
-          ... on LandingPageBenefitBox {
-            title
-            description {
-              json
-            }
-            icon {
-              url
+            ... on LandingPageBanner {
               title
-              width
-              height
-              description
-            }
-          }
-          ... on LandingPageInfoBox {
-            title
-            description {
-              json
-            }
-            image {
-              url
-              title
-            }
-            link {
-              url
-              label
-            }
-            tokens
-          }
-          ... on LandingPageProductBox {
-            title
-            description {
-              json
-            }
-            type
-            image {
-              url
-              title
-            }
-            link {
-              url
-              label
-            }
-            composition
-            actionsListCollection {
-              items {
+              description {
+                json
+              }
+              cta {
                 label
+                url
+              }
+            }
+            ... on ComparisonTable {
+              table
+            }
+            ... on LandingPageBenefitBox {
+              title
+              description {
+                json
+              }
+              icon {
+                url
+                title
+                width
+                height
                 description
-                icon {
-                  url
-                  title
+              }
+            }
+            ... on LandingPageInfoBox {
+              title
+              description {
+                json
+              }
+              image {
+                url
+                title
+              }
+              link {
+                url
+                label
+              }
+              tokens
+            }
+            ... on LandingPageProductBox {
+              title
+              description {
+                json
+              }
+              type
+              image {
+                url
+                title
+              }
+              link {
+                url
+                label
+              }
+              composition
+              actionsListCollection {
+                items {
+                  label
+                  description
+                  icon {
+                    url
+                    title
+                  }
                 }
               }
             }
-          }
-          ... on ProductFinder {
-            name
-            token
-            product {
-              slug
+            ... on ProductFinder {
               name
-            }
-            initialProtocolCollection {
-              items {
-                name
+              token
+              product {
                 slug
-              }
-            }
-            initialNetworkCollection {
-              items {
                 name
-                slug
               }
-            }
-            promoCardsCollection {
-              items {
-                name
-                network {
+              initialProtocolCollection {
+                items {
                   name
                   slug
                 }
-                primaryToken
-                secondaryToken
-                protocol {
+              }
+              initialNetworkCollection {
+                items {
                   name
                   slug
                 }
-                product {
+              }
+              promoCardsCollection {
+                items {
                   name
-                  slug
+                  network {
+                    name
+                    slug
+                  }
+                  primaryToken
+                  secondaryToken
+                  protocol {
+                    name
+                    slug
+                  }
+                  product {
+                    name
+                    slug
+                  }
                 }
               }
             }
           }
         }
       }
-    }
-  `,
+    `,
+    preview,
   )
 
   return entry.data.entryCollection.items
 }
 
-export const getEntryCollection = async (collectionIds: string[]) => {
+export const getEntryCollection = async (collectionIds: string[], preview: boolean) => {
   const splitArrays = splitArrayToSameSizeChunks(collectionIds, entryCollectionRequestChunkSize)
-  const resp = await Promise.all(splitArrays.map((arr) => entryQuery(arr)))
+  const resp = await Promise.all(splitArrays.map((arr) => entryQuery(arr, preview)))
 
   return resp.flatMap((item) => item)
 }

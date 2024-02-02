@@ -11,6 +11,6 @@ export const mapLandingPageBenefitBlock = (
   content: blockItem.collection.map((item) => ({
     title: item.title,
     icon: item.icon.url,
-    description: JSON.stringify(item.description?.json),
+    description: item.description.json,
   })),
 })

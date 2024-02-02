@@ -6,6 +6,7 @@ import {
 } from 'features/marketing-layouts/types'
 import { LandingPageRawBlocks } from 'contentful/types'
 import { ProductHubProductType } from 'features/productHub/types'
+import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
 
 export interface LandingPageRawBlocksCollection {
   total: string
@@ -16,7 +17,7 @@ export interface LandingPageRawBlocksCollection {
     title: string
     subtitle: string
     description: {
-      json: string
+      json: ContentfulDocument
     }
     contentCollection: {
       total: string
@@ -34,6 +35,8 @@ export interface LandingPageRawResponse {
   data: {
     landingPageCollection: {
       items: {
+        seoTitle: string
+        seoDescription: string
         hero: {
           protocolCollection: {
             items: {
@@ -62,8 +65,8 @@ export interface LandingPageRawResponse {
 export interface LendingPageBannerRawResponse {
   __typename: LandingPageRawBlocks.BANNER
   title: string
-  description: {
-    json: string
+  description?: {
+    json: ContentfulDocument
   }
   cta: {
     label: string
@@ -80,7 +83,7 @@ export interface LendingPageBenefitBoxRawResponse {
   __typename: LandingPageRawBlocks.BENEFIT_BOX
   title: string
   description: {
-    json: string
+    json: ContentfulDocument
   }
   icon: {
     url: string
@@ -92,7 +95,7 @@ export interface LendingPageInfoBoxRawResponse {
   __typename: LandingPageRawBlocks.INFO_BOX
   title: string
   description: {
-    json: string
+    json: ContentfulDocument
   }
   image: {
     title: string
@@ -109,7 +112,7 @@ export interface LendingPageProductBoxRawResponse {
   __typename: LandingPageRawBlocks.PRODUCT_BOX
   title: string
   description: {
-    json: string
+    json: ContentfulDocument
   }
   type: string
   image: {

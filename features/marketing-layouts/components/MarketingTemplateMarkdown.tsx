@@ -1,9 +1,10 @@
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
+import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
 import React, { type FC } from 'react'
-import Markdown from 'react-markdown'
 import { Flex } from 'theme-ui'
 
 interface MarketingTemplateMarkdownProps {
-  content: string
+  content: ContentfulDocument
 }
 
 export const MarketingTemplateMarkdown: FC<MarketingTemplateMarkdownProps> = ({ content }) => {
@@ -19,7 +20,7 @@ export const MarketingTemplateMarkdown: FC<MarketingTemplateMarkdownProps> = ({ 
         'ul, ol': { pl: '24px' },
       }}
     >
-      <Markdown>{content}</Markdown>
+      {documentToReactComponents(content)}
     </Flex>
   )
 }
