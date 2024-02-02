@@ -6,6 +6,7 @@ import {
   DetailsSectionContentCardWrapper,
 } from 'components/DetailsSectionContentCard'
 import type { ExecutionPrice } from 'features/aave/manage/services/calculations'
+import { getDenomination } from 'features/aave/manage/services/calculations'
 import type { PositionLike } from 'features/aave/manage/state'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
@@ -144,7 +145,7 @@ function ContentCardTriggerTargetLTV({
         : 'auto-buy.continual-buy-threshold-v2'
     contentCardSettings.footnote = t(key, {
       amount: formatted.threshold,
-      denomination,
+      denomination: denomination,
     })
   }
 
@@ -184,7 +185,7 @@ export function BasicAutomationDetailsView({
               currentExecutionLTV={currentTrigger?.executionLTV}
               afterTxExecutionLTV={afterTxTrigger?.executionLTV}
               nextPrice={nextPrice?.price}
-              denomination={nextPrice?.denomination || ''}
+              denomination={nextPrice?.denomination || getDenomination(position)}
             />
             <ContentCardTriggerTargetLTV
               automationFeature={automationFeature}
@@ -192,7 +193,7 @@ export function BasicAutomationDetailsView({
               currentTargetLTV={currentTrigger?.targetLTV}
               afterTxTargetLTV={afterTxTrigger?.targetLTV}
               thresholdPrice={thresholdPrice}
-              denomination={nextPrice?.denomination || ''}
+              denomination={nextPrice?.denomination || getDenomination(position)}
             />
           </DetailsSectionContentCardWrapper>
         </>
