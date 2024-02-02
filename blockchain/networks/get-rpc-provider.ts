@@ -82,7 +82,7 @@ export function getBackendRpcProvider(networkId: NetworkIds): JsonRpcBatchProvid
     skipCache: false,
     skipMulticall: false,
     skipGraph: true,
-    stage: process.env.NODE_ENV !== 'development' ? 'prod' : 'dev',
+    stage: process.env.NODE_ENV === 'production' ? 'prod' : 'dev',
     source: 'backend',
   }
 

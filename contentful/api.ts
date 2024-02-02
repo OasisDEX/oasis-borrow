@@ -6,7 +6,7 @@ export async function fetchGraphQL<T>(query: (preview: boolean) => string): Prom
   const previewAccessToken =
     getConfig()?.publicRuntimeConfig?.contentfulPreviewAccessToken ||
     process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN
-  const preview = process.env.NODE_ENV !== 'production'
+  const preview = process.env.NODE_ENV === 'development'
 
   return fetch(
     `https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`,
