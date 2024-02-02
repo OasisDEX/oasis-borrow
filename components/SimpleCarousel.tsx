@@ -32,6 +32,7 @@ export const SimpleCarousel: FC<SimpleCarouselProps> = ({
     slidesToScroll: resolvedSlidesToScroll,
   })
 
+  const [currentSlide, setCurrentSlide] = useState<number>(1)
   const [canScrollPrev, setCanScrollPrev] = useState<boolean>(false)
   const [canScrollNext, setCanScrollNext] = useState<boolean>(true)
 
@@ -40,6 +41,7 @@ export const SimpleCarousel: FC<SimpleCarouselProps> = ({
 
   function updateSliderUI() {
     if (emblaApi) {
+      setCurrentSlide(emblaApi.selectedScrollSnap())
       setCanScrollPrev(emblaApi.canScrollPrev())
       setCanScrollNext(emblaApi.canScrollNext())
     }
@@ -89,6 +91,30 @@ export const SimpleCarousel: FC<SimpleCarouselProps> = ({
           ))}
         </Flex>
       </Box>
+      <Flex
+        as="ul"
+        sx={{ justifyContent: 'center', columnGap: 2, m: 0, mt: 4, p: 0, listStyle: 'none' }}
+      >
+        {slides.map((_, i) => (
+          <Box key={i} as="li">
+            <Button
+              variant="unStyled"
+              onClick={() => emblaApi?.scrollTo(i)}
+              sx={{
+                display: 'block',
+                width: 2,
+                height: 2,
+                borderRadius: 'ellipse',
+                bg: currentSlide === i ? 'primary100' : 'primary30',
+                transition: 'background-color 200ms',
+                '&:hover': {
+                  bg: currentSlide === i ? 'primary100' : 'neutral80',
+                },
+              }}
+            />
+          </Box>
+        ))}
+      </Flex>
     </Box>
   )
 }
