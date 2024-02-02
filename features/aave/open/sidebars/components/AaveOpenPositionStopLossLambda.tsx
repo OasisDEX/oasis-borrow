@@ -1,5 +1,6 @@
 import { getAddresses } from 'actions/aave-like/get-addresses'
 import type BigNumber from 'bignumber.js'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
@@ -10,6 +11,7 @@ import { getAaveLikeOpenStopLossParams } from 'features/aave/open/helpers'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { DmaAaveStopLossToDebtV2 } from 'helpers/triggers'
 import type { SetupBasicStopLossResponse } from 'helpers/triggers/setup-triggers'
 import { setupAaveStopLoss } from 'helpers/triggers/setup-triggers'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
@@ -17,6 +19,8 @@ import { hundred } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid, Text } from 'theme-ui'
+
+import { eth2weth } from '@oasisdex/utils/lib/src/utils'
 
 const aaveLambdaStopLossConfig = {
   translationRatioParam: 'vault-changes.loan-to-value',
@@ -35,8 +39,9 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
     useState<CancelablePromise<SetupBasicStopLossResponse>>()
   const { strategyConfig } = state.context
   const { tokens } = getAddresses(strategyConfig.networkId, strategyConfig.protocol)
-  const collateralAddress = tokens[state.context.tokens.collateral as keyof typeof tokens]
-  const debtAddress = tokens[state.context.tokens.debt as keyof typeof tokens]
+  const collateralAddress = tokens[eth2weth(state.context.tokens.collateral) as keyof typeof tokens]
+  const debtAddress = tokens[eth2weth(state.context.tokens.debt) as keyof typeof tokens]
+  console.log('state.context.stopLossTxData', state.context.stopLossTxData)
   useDebouncedEffect(
     () => {
       const { context } = state
@@ -54,7 +59,7 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
             context.userInput.riskRatio?.loanToValue || context.defaultRiskRatio!.loanToValue
           ).times(hundred),
           networkId: strategyConfig.networkId,
-          executionToken: debtAddress,
+          executionToken: debtAddress, // TODO: debt/colalteral
           protocol: strategyConfig.protocol,
           strategy: {
             collateralAddress,
@@ -65,7 +70,20 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
       setStopLossTxCancelablePromise(stopLossTxDataPromise)
       stopLossTxDataPromise
         .then((res) => {
-          console.log('res', res)
+          if (res.transaction && context.userDpmAccount) {
+            send({
+              type: 'SET_STOP_LOSS_TX_DATA',
+              stopLossTxData: {
+                proxyAddress: context.userDpmAccount.proxy,
+                triggersData: [res.encodedTriggerData],
+                triggerTypes: [Number(DmaAaveStopLossToDebtV2)], // TODO: debt/colalteral
+                replacedTriggerIds: [0],
+                replacedTriggersData: ['0x'],
+                continuous: [false],
+                kind: TxMetaKind.addTrigger,
+              },
+            })
+          }
         })
         .catch((err) => {
           console.log('err', err)

@@ -1,3 +1,8 @@
+import {
+  DmaAaveStopLossToCollateralV2,
+  DmaAaveStopLossToDebtV2,
+} from 'helpers/triggers/get-triggers'
+
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
 import type {
   SetupAaveStopLossParams,
@@ -9,14 +14,17 @@ import { TriggersApiErrorCode } from './setup-triggers-types'
 export const setupAaveStopLoss = async (
   params: SetupAaveStopLossParams,
 ): Promise<SetupBasicStopLossResponse> => {
-  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'stop-loss' })
+  const { url, customRpc } = getSetupTriggerConfig({ ...params, path: 'dma-stop-loss' })
 
   const body = JSON.stringify({
     dpm: params.dpm,
     triggerData: {
+      type:
+        params.executionToken === params.strategy.collateralAddress
+          ? DmaAaveStopLossToCollateralV2.toString()
+          : DmaAaveStopLossToDebtV2.toString(), // TODO: debt/colalteral (pass it from the UI better)
       executionLTV: params.executionLTV.integerValue().toString(),
-      targetLTV: params.targetLTV.integerValue().toString(),
-      executionToken: params.executionToken,
+      token: params.executionToken,
     },
     position: {
       collateral: params.strategy.collateralAddress,

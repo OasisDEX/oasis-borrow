@@ -7,6 +7,10 @@ export const SparkStopLossToCollateralV2ID = 117n as const
 export const SparkStopLossToDebtV2ID = 118n as const
 export const AaveBasicBuyV2ID = 119n as const
 export const AaveBasicSellV2ID = 120n as const
+export const DmaAaveStopLossToCollateralV2 = 123n as const
+export const DmaAaveStopLossToDebtV2 = 124n as const
+export const DmaSparkStopLossToCollateralV2 = 125n as const
+export const DmaSparkStopLossToDebtV2 = 126n as const
 
 export interface GetTriggersParams {
   networkId: NetworkIds
