@@ -67,6 +67,10 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
       const simulation = productContext.position.currentPosition.simulation as
         | MorphoBluePosition
         | undefined
+      const cachedSimulation = productContext.position.cachedPosition?.simulation as
+        | MorphoBluePosition
+        | undefined
+      const resolvedSimulation = simulation || cachedSimulation
 
       return {
         notifications,
@@ -98,7 +102,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
           }),
           changeVariant: getOmniBorrowishChangeVariant({ simulation, isOracless }),
           afterAvailableToBorrow: simulation && negativeToZero(simulation.debtAvailable()),
-          afterPositionDebt: simulation?.debtAmount,
+          afterPositionDebt: resolvedSimulation?.debtAmount,
           withdrawMax: getMorphoBorrowWithdrawMax({
             collateralPrecision,
             position,
