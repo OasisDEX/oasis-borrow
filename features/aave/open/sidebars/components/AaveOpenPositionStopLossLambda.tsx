@@ -3,6 +3,7 @@ import type BigNumber from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
+import { ActionPills } from 'components/ActionPills'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -11,14 +12,14 @@ import { getAaveLikeOpenStopLossParams } from 'features/aave/open/helpers'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { DmaAaveStopLossToDebtV2 } from 'helpers/triggers'
+import { DmaAaveStopLossToCollateralV2, DmaAaveStopLossToDebtV2 } from 'helpers/triggers'
 import type { SetupBasicStopLossResponse } from 'helpers/triggers/setup-triggers'
 import { setupAaveStopLoss } from 'helpers/triggers/setup-triggers'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { hundred } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Grid, Text } from 'theme-ui'
+import { Flex, Grid, Text } from 'theme-ui'
 
 import { eth2weth } from '@oasisdex/utils/lib/src/utils'
 
@@ -30,6 +31,7 @@ const aaveLambdaStopLossConfig = {
 
 export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
+  const [stopLossToken, setStopLossToken] = useState<'debt' | 'collateral'>('debt')
   const { stopLossLevel, rightBoundry, sliderMin, sliderMax, sliderPercentageFill } =
     useMemo(() => {
       return getAaveLikeOpenStopLossParams({ state })
@@ -41,7 +43,6 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
   const { tokens } = getAddresses(strategyConfig.networkId, strategyConfig.protocol)
   const collateralAddress = tokens[eth2weth(state.context.tokens.collateral) as keyof typeof tokens]
   const debtAddress = tokens[eth2weth(state.context.tokens.debt) as keyof typeof tokens]
-  console.log('state.context.stopLossTxData', state.context.stopLossTxData)
   useDebouncedEffect(
     () => {
       const { context } = state
@@ -59,7 +60,7 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
             context.userInput.riskRatio?.loanToValue || context.defaultRiskRatio!.loanToValue
           ).times(hundred),
           networkId: strategyConfig.networkId,
-          executionToken: debtAddress, // TODO: debt/colalteral
+          executionToken: stopLossToken === 'debt' ? debtAddress : collateralAddress,
           protocol: strategyConfig.protocol,
           strategy: {
             collateralAddress,
@@ -76,7 +77,13 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
               stopLossTxData: {
                 proxyAddress: context.userDpmAccount.proxy,
                 triggersData: [res.encodedTriggerData],
-                triggerTypes: [Number(DmaAaveStopLossToDebtV2)], // TODO: debt/colalteral
+                triggerTypes: [
+                  Number(
+                    stopLossToken === 'debt'
+                      ? DmaAaveStopLossToDebtV2
+                      : DmaAaveStopLossToCollateralV2,
+                  ),
+                ],
                 replacedTriggerIds: [0],
                 replacedTriggersData: ['0x'],
                 continuous: [false],
@@ -92,7 +99,7 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
           setIsGettingStopLossTx(false)
         })
     },
-    [stopLossLevel],
+    [stopLossLevel, stopLossToken],
     500,
   )
 
@@ -135,6 +142,26 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
           rightLabel={t('slider.set-stoploss.right-label')}
           direction={aaveLambdaStopLossConfig.sliderDirection}
         />
+        <Flex sx={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mr: 3 }}>
+            {t('protection.stop-loss-to')}
+          </Text>
+          <ActionPills
+            items={[
+              {
+                id: 'debt',
+                label: t('system.debt'),
+                action: () => setStopLossToken('debt'),
+              },
+              {
+                id: 'collateral',
+                label: t('system.collateral'),
+                action: () => setStopLossToken('collateral'),
+              },
+            ]}
+            active={stopLossToken}
+          />
+        </Flex>
       </Grid>
     ),
     primaryButton: {

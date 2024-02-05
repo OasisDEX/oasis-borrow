@@ -22,7 +22,7 @@ export const setupAaveStopLoss = async (
       type:
         params.executionToken === params.strategy.collateralAddress
           ? DmaAaveStopLossToCollateralV2.toString()
-          : DmaAaveStopLossToDebtV2.toString(), // TODO: debt/colalteral (pass it from the UI better)
+          : DmaAaveStopLossToDebtV2.toString(),
       executionLTV: params.executionLTV.integerValue().toString(),
       token: params.executionToken,
     },
