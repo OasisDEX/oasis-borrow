@@ -5,12 +5,15 @@ import type {
   MarketingTemplateBannerProps,
   MarketingTemplatePalette,
 } from 'features/marketing-layouts/types'
+import { getNextParsedUrl } from 'helpers/getNextParsedUrl'
 import React, { type FC } from 'react'
 import { Flex, Heading } from 'theme-ui'
 
 export const MarketingTemplateBanner: FC<
   MarketingTemplateBannerProps & { palette: MarketingTemplatePalette }
 > = ({ cta: { label, url }, description, palette: { background }, title }) => {
+  const { href, query } = getNextParsedUrl(url)
+
   return (
     <Flex
       sx={{
@@ -31,7 +34,7 @@ export const MarketingTemplateBanner: FC<
         <Heading variant="header4">{title}</Heading>
         {description && <MarketingTemplateMarkdown content={description} />}
       </Flex>
-      <AppLink variant="primary" href={url} sx={{ flexShrink: 0, px: 4 }}>
+      <AppLink variant="primary" href={href} query={query} sx={{ flexShrink: 0, px: 4 }}>
         {label} →
       </AppLink>
     </Flex>
