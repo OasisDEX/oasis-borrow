@@ -8,27 +8,24 @@ import { LandingPageRawBlocks } from 'contentful/types'
 import { ProductHubProductType } from 'features/productHub/types'
 import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
 
-export interface LandingPageRawBlocksCollection {
-  total: string
-  items: {
-    sys: {
-      id: string
-    }
-    title: string
-    subtitle: string
-    description: {
-      json: ContentfulDocument
-    }
-    contentCollection: {
-      total: string
-      items: {
-        __typename: LandingPageRawBlocks
-        sys: {
-          id: string
-        }
-      }[]
-    }
-  }[]
+export interface LandingPageRawBlocksItems {
+  sys: {
+    id: string
+  }
+  title: string
+  subtitle: string
+  description: {
+    json: ContentfulDocument
+  }
+  contentCollection: {
+    total: string
+    items: {
+      __typename: LandingPageRawBlocks
+      sys: {
+        id: string
+      }
+    }[]
+  }
 }
 
 export interface LandingPageRawResponse {
@@ -56,7 +53,10 @@ export interface LandingPageRawResponse {
           }
         }
         palette: MarketingTemplatePalette
-        blocksCollection: LandingPageRawBlocksCollection
+        blocksCollection: {
+          total: number
+          items: LandingPageRawBlocksItems[]
+        }
       }[]
     }
   }

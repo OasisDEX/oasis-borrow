@@ -11,11 +11,13 @@ export function getAjnaBorrowDebtMin({
   digits,
   position: {
     debtAmount,
-    pool: { poolMinDebtAmount },
+    pool: { poolMinDebtAmount, loansCount },
   },
 }: AjnaBorrowDebtMinParams) {
-  return BigNumber.max(
-    zero,
-    poolMinDebtAmount.minus(debtAmount).decimalPlaces(digits, BigNumber.ROUND_UP),
-  )
+  return loansCount.gt(10)
+    ? BigNumber.max(
+        zero,
+        poolMinDebtAmount.minus(debtAmount).decimalPlaces(digits, BigNumber.ROUND_UP),
+      )
+    : zero
 }

@@ -9,12 +9,12 @@ interface getPositionsAutomationsParams {
 }
 
 const triggerTypesMap = {
-  autoBuy: [TriggerType.BasicBuy, TriggerType.MakerBasicBuyV2, TriggerType.AaveBasicBuyV2],
+  autoBuy: [TriggerType.BasicBuy, TriggerType.MakerBasicBuyV2, TriggerType.DmaAaveBasicBuyV2],
   autoSell: [
     TriggerType.BasicSell,
     TriggerType.MakerBasicSellV2,
     TriggerType.SimpleAAVESell,
-    TriggerType.AaveBasicSellV2,
+    TriggerType.DmaAaveBasicSellV2,
   ],
   stopLoss: [
     TriggerType.AaveStopLossToCollateral,
@@ -27,6 +27,10 @@ const triggerTypesMap = {
     TriggerType.SparkStopLossToDebtV2,
     TriggerType.StopLossToCollateral,
     TriggerType.StopLossToDai,
+    TriggerType.DmaAaveStopLossToCollateralV2,
+    TriggerType.DmaAaveStopLossToDebtV2,
+    TriggerType.DmaSparkStopLossToCollateralV2,
+    TriggerType.DmaSparkStopLossToDebtV2,
   ],
   takeProfit: [
     TriggerType.AutoTakeProfitToCollateral,

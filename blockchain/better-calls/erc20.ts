@@ -93,9 +93,13 @@ export async function createApproveTransaction({
 
   const contract = Erc20__factory.connect(tokens[token].address, signer)
 
+  // Reading decimals from chain instead of local config because of oracless mode.
+  // amountFromWei uses local config to determine token precision which doesn't have all tokens defined
+  const decimals = await contract.decimals()
+
   const ethersAmount = amount.eq(maxUint256)
     ? ethers.constants.MaxUint256
-    : ethers.BigNumber.from(amountToWei(amount, token).toString())
+    : ethers.BigNumber.from(amountToWei(amount, decimals).toString())
 
   return await contract.approve(spender, ethersAmount)
 }

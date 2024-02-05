@@ -2,7 +2,8 @@ import type { Vault } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import type { AaveV3SupportedNetwork } from 'blockchain/aave-v3'
 import { getAaveV3ReserveConfigurationData, getAaveV3ReserveData } from 'blockchain/aave-v3'
-import { NetworkIds, networksById } from 'blockchain/networks'
+import type { NetworkIds } from 'blockchain/networks'
+import { networksById } from 'blockchain/networks'
 import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import { getSparkV3ReserveConfigurationData, getSparkV3ReserveData } from 'blockchain/spark-v3'
 import type { OmniProductBorrowishType } from 'features/omni-kit/types'
@@ -130,7 +131,7 @@ export const commonDataMapper = ({
           automations && {
             stopLoss: { enabled: false },
             ...getPositionsAutomations({
-              networkId: NetworkIds.MAINNET,
+              networkId: dpm.networkId,
               triggers: [automations.triggers],
             }),
           }),

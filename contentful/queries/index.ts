@@ -1,2 +1,2 @@
 export * from './getLandingPageBySlug'
-export * from './getEntryCollection'
+export * from './getLandingPageContentByIds'

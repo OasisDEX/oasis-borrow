@@ -1,6 +1,6 @@
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/layouts/MarketingLayout'
-import { getLandingPageBySlug } from 'contentful/queries'
+import { getMarketingTemplatePageProps } from 'features/marketing-layouts/helpers'
 import type { MarketingTemplateFreeform } from 'features/marketing-layouts/types'
 import { MarketingTemplateView } from 'features/marketing-layouts/views'
 import type { GetServerSidePropsContext } from 'next'
@@ -34,18 +34,10 @@ export async function getServerSideProps({
   const [slug, preview] = Array.isArray(rawSlug) ? rawSlug : [rawSlug]
 
   try {
-    const { seoTitle, seoDescription, palette, hero, blocks } = await getLandingPageBySlug(
+    const marketingTemplatePageProps = await getMarketingTemplatePageProps({
       slug,
-      preview === 'preview',
-    )
-
-    const marketingTemplatePageProps: MarketingTemplateFreeform = {
-      blocks,
-      hero,
-      palette,
-      seoDescription,
-      seoTitle,
-    }
+      preview: preview === 'preview',
+    })
 
     return {
       props: {
@@ -55,6 +47,7 @@ export async function getServerSideProps({
     }
   } catch (e) {
     console.error('Caught error on better-on-summer', e)
+
     return { redirect: { permanent: false, destination: '/not-found' } }
   }
 }
