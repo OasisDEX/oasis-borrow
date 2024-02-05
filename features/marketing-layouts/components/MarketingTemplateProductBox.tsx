@@ -6,7 +6,8 @@ import type {
   MarketingTemplatePalette,
   MarketingTemplateProductBoxProps,
 } from 'features/marketing-layouts/types'
-import React, { type FC } from 'react'
+import { getNextParsedUrl } from 'helpers/getNextParsedUrl'
+import React, { type FC, useMemo } from 'react'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 import { Box, Flex, Heading, Image, Text } from 'theme-ui'
 
@@ -25,6 +26,18 @@ export const MarketingTemplateProductBox: FC<
 }) => {
   const isMobile = useOnMobile()
   const isNarrow = composition === 'narrow' || isMobile
+
+  const linkComponent = useMemo(() => {
+    if (link) {
+      const { href, query } = getNextParsedUrl(link.url)
+
+      return (
+        <AppLink href={href} query={query} sx={{ display: 'inline-block', mt: 3 }}>
+          <WithArrow sx={{ fontSize: 3, color: 'interactive100' }}>{link.label}</WithArrow>
+        </AppLink>
+      )
+    } else return <></>
+  }, [link])
 
   return (
     <Flex
@@ -62,11 +75,7 @@ export const MarketingTemplateProductBox: FC<
             {title}
           </Heading>
           <MarketingTemplateMarkdown content={description} />
-          {link && (
-            <AppLink href={link.url} sx={{ display: 'inline-block', mt: 3 }}>
-              <WithArrow sx={{ fontSize: 3, color: 'interactive100' }}>{link.label}</WithArrow>
-            </AppLink>
-          )}
+          {linkComponent}
         </Box>
         {actionsList && (
           <Flex sx={{ flex: '1', justifyContent: isNarrow ? 'flex-start' : 'center' }}>

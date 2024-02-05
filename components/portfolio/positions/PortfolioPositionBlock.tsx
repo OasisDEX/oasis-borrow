@@ -144,7 +144,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
       </Flex>
       {!position.availableToMigrate && (
         <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          {[OmniProductType.Borrow, OmniProductType.Multiply].includes(position.type) && (
+          {[OmniProductType.Borrow, OmniProductType.Multiply].includes(position.type!) && (
             <Flex sx={{ flexDirection: 'column' }}>
               {Object.keys(position.automations).length > 0 && (
                 <>
@@ -158,7 +158,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
               )}
             </Flex>
           )}
-          {[OmniProductType.Earn].includes(position.type) && (
+          {[OmniProductType.Earn].includes(position.type!) && (
             <Flex>
               {position.openDate && (
                 <Text variant="boldParagraph3" color="neutral80">
