@@ -23,8 +23,12 @@ export const PortfolioPositionBlockDetail = ({ detail }: { detail: PositionDetai
     lendingRange: tPortfolio('details-tooltips.lendingRange'),
     apy: tPortfolio('details-tooltips.apy'),
     '90dApy': tPortfolio('details-tooltips.90dApy'),
-    suppliedTokenBalance: tPortfolio('details-tooltips.suppliedTokenBalance'),
-    borrowedTokenBalance: tPortfolio('details-tooltips.borrowedTokenBalance'),
+    suppliedTokenBalance: tPortfolio('details-tooltips.suppliedTokenBalance', {
+      symbol: detail.symbol || 'USD',
+    }),
+    borrowedTokenBalance: tPortfolio('details-tooltips.borrowedTokenBalance', {
+      symbol: detail.symbol || 'USD',
+    }),
   }
 
   return (

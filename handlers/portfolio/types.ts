@@ -104,10 +104,12 @@ export enum LendingRangeType {
 export type PositionDetailCommon = {
   type: DetailsTypeCommon
   value: string
+  symbol?: string
 }
 export type PositionDetailLendingRange = {
   type: DetailsTypeLendingRange
   value: LendingRangeType
+  symbol?: string
 }
 
 export type PositionDetail = (PositionDetailCommon | PositionDetailLendingRange) & {
