@@ -74,7 +74,7 @@ export type PortfolioPositionsHandler = ({
   debug?: boolean
 }) => Promise<PortfolioPositionsReply | PortfolioPositionsCountReply>
 
-type DetailsTypeCommon =
+export type DetailsTypeCommon =
   | '90dApy'
   | 'apy'
   | 'borrowedToken'
@@ -104,10 +104,12 @@ export enum LendingRangeType {
 export type PositionDetailCommon = {
   type: DetailsTypeCommon
   value: string
+  symbol?: string
 }
 export type PositionDetailLendingRange = {
   type: DetailsTypeLendingRange
   value: LendingRangeType
+  symbol?: string
 }
 
 export type PositionDetail = (PositionDetailCommon | PositionDetailLendingRange) & {

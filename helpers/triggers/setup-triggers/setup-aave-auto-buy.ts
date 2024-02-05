@@ -21,6 +21,7 @@ export const setupAaveAutoBuy = async (
       debt: params.strategy.debtAddress,
     },
     rpc: customRpc,
+    action: params.action,
   })
 
   let response: Response

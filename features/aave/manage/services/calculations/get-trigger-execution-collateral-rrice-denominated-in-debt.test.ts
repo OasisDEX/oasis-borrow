@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js'
 
-import { getTriggerExecutionCollateralPriceDenominatedInDebt } from './get-trigger-execution-collateral-price-denominated-in-debt'
+import { getTriggerExecutionPrice } from './get-trigger-execution-price'
 
 describe('get-trigger-execution-collateral-price-denominated-in-debt', () => {
   it('should return undefined if positionValue or executionTriggerLTV is undefined', () => {
     const positionValue = undefined
     const executionTriggerLTV = undefined
-    const result = getTriggerExecutionCollateralPriceDenominatedInDebt({
+    const result = getTriggerExecutionPrice({
       position: positionValue,
       executionTriggerLTV,
     })
@@ -32,12 +32,13 @@ describe('get-trigger-execution-collateral-price-denominated-in-debt', () => {
         amount: new BigNumber(1400),
       },
       dpm: '0x0',
+      pricesDenomination: 'collateral' as const,
     }
     const executionTriggerLTV = 50
-    const result = getTriggerExecutionCollateralPriceDenominatedInDebt({
+    const result = getTriggerExecutionPrice({
       position: positionValue,
       executionTriggerLTV,
     })
-    expect(result?.toNumber()).toEqual(280)
+    expect(result?.price.toNumber()).toEqual(280)
   })
 })

@@ -8,8 +8,10 @@ import {
   useManageAaveStateMachineContext,
   useTriggersAaveStateMachineContext,
 } from 'features/aave/manage/contexts'
+import { getTriggerExecutionPrice } from 'features/aave/manage/services/calculations'
 import { AutoBuySidebarAaveVault } from 'features/aave/manage/sidebars/AutoBuySidebarAaveVault'
 import type { AutoBuyTriggerAaveContext } from 'features/aave/manage/state'
+import { zero } from 'helpers/zero'
 import React, { useEffect } from 'react'
 import { Box, Container, Grid } from 'theme-ui'
 
@@ -27,6 +29,16 @@ function getAutoBuyDetailsLayoutProps(
       }
     : undefined
 
+  const nextPrice = getTriggerExecutionPrice({
+    position: context.position,
+    executionTriggerLTV: currentTrigger?.executionLTV.toNumber(),
+  })
+  const thresholdPrice = context.usePriceInput
+    ? context.usePrice
+      ? context.price
+      : zero
+    : undefined
+
   if (context.executionTriggerLTV && context.targetTriggerLTV && isEditing) {
     return {
       automationFeature: context.feature,
@@ -36,6 +48,8 @@ function getAutoBuyDetailsLayoutProps(
         targetLTV: new BigNumber(context.targetTriggerLTV),
       },
       currentTrigger,
+      thresholdPrice,
+      nextPrice,
     }
   }
 
@@ -43,6 +57,8 @@ function getAutoBuyDetailsLayoutProps(
     automationFeature: context.feature,
     position: context.position,
     currentTrigger,
+    thresholdPrice,
+    nextPrice,
   }
 }
 

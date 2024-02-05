@@ -10,6 +10,10 @@ const rewriteRules = () => [
     source: '/api/triggers',
     destination: `${process.env.FUNCTIONS_API_URL}/api/triggers`,
   },
+  {
+    source: '/api/migrations',
+    destination: `${process.env.FUNCTIONS_API_URL}/api/migrations`,
+  },
   // ... other rules
 ]
 

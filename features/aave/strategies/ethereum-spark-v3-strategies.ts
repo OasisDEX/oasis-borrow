@@ -11,6 +11,8 @@ import {
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import type { IStrategyConfig } from 'features/aave/types'
 import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
+import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { SparkBorrowFaq } from 'features/content/faqs/spark/borrow'
 import { SparkEarnFaqV3 } from 'features/content/faqs/spark/earn'
 import { SparkMultiplyFaq } from 'features/content/faqs/spark/multiply'
@@ -241,7 +243,13 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
       },
       executeTransactionWith: 'ethers' as const,
       strategyType: config.strategyType,
-      isAutomationFeatureEnabled: () => false,
+      isAutomationFeatureEnabled: (feature) => {
+        return (
+          config.strategyType === StrategyType.Long &&
+          feature === AutomationFeatures.STOP_LOSS &&
+          isSupportedAaveAutomationTokenPair(config.collateral, config.debt)
+        )
+      },
     }
   })
 
@@ -289,7 +297,13 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers',
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Multiply.featureToggle,
-      isAutomationFeatureEnabled: () => false,
+      isAutomationFeatureEnabled: (feature) => {
+        return (
+          config.strategyType === StrategyType.Long &&
+          feature === AutomationFeatures.STOP_LOSS &&
+          isSupportedAaveAutomationTokenPair(config.collateral, config.debt)
+        )
+      },
     }
   })
 
@@ -338,7 +352,13 @@ const earnStrategies: IStrategyConfig[] = availableTokenPairs
       defaultSlippage: config.productTypes.Earn.defaultSlippage,
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Earn.featureToggle,
-      isAutomationFeatureEnabled: () => false,
+      isAutomationFeatureEnabled: (feature) => {
+        return (
+          config.strategyType === StrategyType.Long &&
+          feature === AutomationFeatures.STOP_LOSS &&
+          isSupportedAaveAutomationTokenPair(config.collateral, config.debt)
+        )
+      },
     }
   })
 

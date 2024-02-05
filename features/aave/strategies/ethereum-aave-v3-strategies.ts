@@ -511,10 +511,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers' as const,
       strategyType: config.strategyType,
       isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
-        if (config.strategyType === StrategyType.Short) {
-          return false
-        }
-        if (feature === AutomationFeatures.STOP_LOSS) {
+        if (feature === AutomationFeatures.STOP_LOSS && config.strategyType === StrategyType.Long) {
           return true
         }
 
@@ -572,10 +569,7 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Multiply.featureToggle,
       isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
-        if (config.strategyType === StrategyType.Short) {
-          return false
-        }
-        if (feature === AutomationFeatures.STOP_LOSS) {
+        if (feature === AutomationFeatures.STOP_LOSS && config.strategyType === StrategyType.Long) {
           return true
         }
 

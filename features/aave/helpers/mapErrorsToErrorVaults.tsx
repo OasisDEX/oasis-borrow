@@ -15,7 +15,7 @@ export function mapErrorsToErrorVaults(
           return 'executionLTVBiggerThanTargetLTV'
         case TriggersApiErrorCode.ExecutionLTVBiggerThanCurrentLTV:
           return 'executionLTVBiggerThanCurrentLTV'
-        case TriggersApiErrorCode.ExecutionLTVSmallerThanCurrentLTV:
+        case TriggersApiErrorCode.ExecutionLTVLowerThanCurrentLTV:
           return 'executionLTVSmallerThanCurrentLTV'
         case TriggersApiErrorCode.ExecutionLTVIsNearToTheAutoSellTrigger:
           return 'executionLTVNearToAutoSellTrigger'
@@ -32,7 +32,7 @@ export function mapErrorsToErrorVaults(
         case TriggersApiErrorCode.MaxBuyPriceIsNotSet:
           return 'autoBuyMaxBuyPriceNotSpecified'
         case TriggersApiErrorCode.MinSellPriceIsNotSet:
-          return 'minSellPriceWillPreventSellTrigger'
+          return 'minimumSellPriceNotProvided'
         case TriggersApiErrorCode.ExecutionPriceBiggerThanMaxBuyPrice:
           return 'maxBuyPriceWillPreventBuyTrigger'
         case TriggersApiErrorCode.ExecutionPriceSmallerThanMinSellPrice:

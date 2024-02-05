@@ -204,4 +204,5 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     apiKey: '',
   },
   SdaiOracle: contractDesc(ajnaPoolInfo, arbitrum.common.SdaiOracle),
+  WSTETHOracle: contractDesc(ajnaPoolInfo, arbitrum.common.WSTETHOracle),
 }

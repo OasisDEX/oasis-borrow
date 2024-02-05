@@ -3,6 +3,7 @@ import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import { amountFromWei } from 'blockchain/utils'
 import type { ethers } from 'ethers'
 import type { IStrategyConfig } from 'features/aave/types'
+import { StrategyType } from 'features/aave/types'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { isAnyValueDefined } from 'helpers/isAnyValueDefined'
 import type { GetTriggersResponse } from 'helpers/triggers'
@@ -124,9 +125,11 @@ export type TriggersAaveContext = {
 function mapPositionToAutoBuyPosition({
   position,
   dpm,
+  strategyConfig,
 }: {
   position: AaveLikePosition
   dpm?: UserDpmAccount
+  strategyConfig: IStrategyConfig
 }): PositionLike | undefined {
   if (!dpm) {
     return undefined
@@ -150,6 +153,7 @@ function mapPositionToAutoBuyPosition({
       amount: amountFromWei(position.debt.amount, position.debt.precision),
     },
     dpm: dpm.proxy,
+    pricesDenomination: strategyConfig.strategyType === StrategyType.Short ? 'debt' : 'collateral',
   }
 }
 
@@ -283,8 +287,15 @@ export const triggersAaveStateMachine = createMachine(
         const currentProtectionView = getCurrentProtectionView(event.data)
 
         return {
-          showAutoBuyBanner: !currentOptimizationView,
-          showAutoSellBanner: !currentProtectionView,
+          showStopLossBanner:
+            context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.STOP_LOSS) &&
+            currentProtectionView !== 'stop-loss',
+          showAutoBuyBanner:
+            context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY) &&
+            currentOptimizationView !== 'auto-buy',
+          showAutoSellBanner:
+            context.strategyConfig.isAutomationFeatureEnabled(AutomationFeatures.AUTO_SELL) &&
+            currentProtectionView !== 'auto-sell',
           optimizationCurrentView: getCurrentOptimizationView(event.data),
           protectionCurrentView: getCurrentProtectionView(event.data),
         }
