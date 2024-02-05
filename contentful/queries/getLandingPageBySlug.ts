@@ -24,6 +24,7 @@ export async function getLandingPageBySlug(slug: string, preview: boolean) {
                   slug
                 }
               }
+              token
               link {
                 label
                 url

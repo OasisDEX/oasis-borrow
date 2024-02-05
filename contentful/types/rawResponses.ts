@@ -42,6 +42,7 @@ export interface LandingPageRawResponse {
             }[]
           }
           title: string
+          token?: string[]
           description: string
           image: {
             filename: string

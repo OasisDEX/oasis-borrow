@@ -4,7 +4,6 @@ import {
   LendingProtocolByProtocolId,
   type PortfolioMigrationsResponse,
 } from 'features/migrations/types'
-import { OmniProductType } from 'features/omni-kit/types'
 import type { DetailsTypeCommon, PortfolioPosition } from 'handlers/portfolio/types'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useCallback, useMemo } from 'react'
@@ -62,7 +61,7 @@ export const useMigrationsClient = () => {
                   symbol: secondaryToken,
                 },
               ],
-              type: OmniProductType.Borrow,
+              type: undefined,
               url: 'TODO migration link',
               automations: {},
               netValue,

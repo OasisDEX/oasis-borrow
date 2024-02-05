@@ -1,5 +1,7 @@
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
-import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
+import { type Document as ContentfulDocument, INLINES } from '@contentful/rich-text-types'
+import { AppLink } from 'components/Links'
+import { getNextParsedUrl } from 'helpers/getNextParsedUrl'
 import React, { type FC } from 'react'
 import { Flex } from 'theme-ui'
 
@@ -20,7 +22,19 @@ export const MarketingTemplateMarkdown: FC<MarketingTemplateMarkdownProps> = ({ 
         'ul, ol': { pl: '24px' },
       }}
     >
-      {documentToReactComponents(content)}
+      {documentToReactComponents(content, {
+        renderNode: {
+          [INLINES.HYPERLINK]: (node, next) => {
+            const { href, query } = getNextParsedUrl(node.data.uri)
+
+            return (
+              <AppLink href={href} query={query} sx={{ fontSize: 3 }}>
+                {next}
+              </AppLink>
+            )
+          },
+        },
+      })}
     </Flex>
   )
 }
