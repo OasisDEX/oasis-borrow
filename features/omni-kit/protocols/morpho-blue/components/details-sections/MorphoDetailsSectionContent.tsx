@@ -43,7 +43,7 @@ export const MorphoDetailsSectionContent: FC = () => {
     dynamicMetadata: {
       values: { changeVariant },
     },
-  } = useOmniProductContext((productType as OmniProductType.Borrow) || OmniProductType.Multiply)
+  } = useOmniProductContext(productType as OmniProductType.Borrow | OmniProductType.Multiply)
 
   const castedPosition = position as MorphoBluePosition
 
