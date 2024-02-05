@@ -1,5 +1,5 @@
 import type { GetCumulativesData, MorphoCumulativesData } from '@oasisdex/dma-library'
-import { defaultLendingCumulatives } from 'features/omni-kit/cumulativesDefaults'
+import { defaultLendingCumulatives } from 'features/omni-kit/constants'
 import { mapOmniLendingCumulatives } from 'features/omni-kit/helpers'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'

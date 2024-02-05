@@ -1,8 +1,5 @@
 import type { AjnaCumulativesData, GetCumulativesData } from '@oasisdex/dma-library'
-import {
-  defaultEarnCumulatives,
-  defaultLendingCumulatives,
-} from 'features/omni-kit/cumulativesDefaults'
+import { defaultEarnCumulatives, defaultLendingCumulatives } from 'features/omni-kit/constants'
 import { mapOmniEarnCumulatives, mapOmniLendingCumulatives } from 'features/omni-kit/helpers'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
