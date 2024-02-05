@@ -11,5 +11,11 @@ export const mapLandingInfoBlock = (blockItem: LandingPageInfo): MarketingTempla
     description: item.description.json,
     image: item.image.url,
     tokens: item.tokens,
+    ...(item.link && {
+      link: {
+        label: item.link.label,
+        url: item.link.url,
+      },
+    }),
   })),
 })
