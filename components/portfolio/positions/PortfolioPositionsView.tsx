@@ -31,7 +31,7 @@ interface PortfolioPositionsViewProps {
   isOwner: boolean
   portfolioPositionsData?: PortfolioPositionsReply
   portfolioWalletData?: PortfolioAssetsResponse
-  migrationPositions?: PortfolioPosition[] | void
+  migrationPositions?: PortfolioPosition[]
 }
 
 type PortfolioPositionsViewFiltersType = {
@@ -47,7 +47,7 @@ const filterEmptyPosition =
 
 export const PortfolioPositionsView = ({
   address,
-  migrationPositions,
+  migrationPositions = [],
   blogPosts,
   isOwner,
   portfolioPositionsData,
@@ -71,8 +71,13 @@ export const PortfolioPositionsView = ({
 
   const filteredEmptyPositions = useMemo(() => {
     if (!portfolioPositionsData) return undefined
+
+    const allPositions = [
+      ...portfolioPositionsData.positions,
+      ...(getLocalAppConfig('features').EnableMigrations ? migrationPositions : []),
+    ]
     // empty positions first
-    const positionsWithValue = portfolioPositionsData.positions.filter(
+    const positionsWithValue = allPositions.filter(
       filterEmptyPosition(filterState['showEmptyPositions']),
     )
     return positionsWithValue
@@ -126,20 +131,21 @@ export const PortfolioPositionsView = ({
       portfolioPositionsData.positions.filter(filterEmptyPosition()).length
     : 0
 
+  const migrationPositionsEmpty = migrationPositions && migrationPositions.length === 0
+  const positionsEmpty = portfolioPositionsData && portfolioPositionsData.positions.length === 0
+
   return (
     <Grid variant="portfolio">
       <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
-        {portfolioPositionsData?.error && (
+        {portfolioPositionsData?.error ? (
           <EmptyState header={tPortfolio('empty-states.no-positions-error')} type="error">
             {tPortfolio('empty-states.try-again')}
           </EmptyState>
-        )}
-        {portfolioPositionsData?.positions.length === 0 && migrationPositions?.length === 0 && (
+        ) : positionsEmpty && migrationPositionsEmpty ? (
           <EmptyState header={tPortfolio('empty-states.no-positions')}>
             {isOwner && tPortfolio('empty-states.owner')}
           </EmptyState>
-        )}
-        {portfolioPositionsData && portfolioPositionsData.positions.length > 0 && (
+        ) : (
           <>
             <Flex
               sx={{
@@ -193,17 +199,17 @@ export const PortfolioPositionsView = ({
             <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
               {sortedPositions ? (
                 <>
-                  {sortedPositions.length > 0 ? (
+                  {sortedPositions.length === 0 ? (
+                    <EmptyState header={tPortfolio('empty-states.no-filtered-positions')}>
+                      {isOwner && tPortfolio('empty-states.owner')}
+                    </EmptyState>
+                  ) : (
                     sortedPositions.map((position) => (
                       <PortfolioPositionBlock
                         key={`${position.positionId}-${position.protocol}-${position.network}-${position.type}-${position.primaryToken}-${position.secondaryToken}`}
                         position={position}
                       />
                     ))
-                  ) : (
-                    <EmptyState header={tPortfolio('empty-states.no-filtered-positions')}>
-                      {isOwner && tPortfolio('empty-states.owner')}
-                    </EmptyState>
                   )}
                 </>
               ) : (
@@ -216,20 +222,7 @@ export const PortfolioPositionsView = ({
             </Flex>
           </>
         )}
-        {getLocalAppConfig('features').EnableMigrations &&
-          migrationPositions &&
-          migrationPositions.length > 0 && (
-            <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
-              {migrationPositions.map((position) => {
-                return (
-                  <PortfolioPositionBlock
-                    key={`${position.positionId}-${position.protocol}-${position.network}-${position.type}-${position.primaryToken}-${position.secondaryToken}`}
-                    position={position}
-                  />
-                )
-              })}
-            </Flex>
-          )}
+
         <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Heading as="h2" variant="header5" sx={getGradientColor(summerBrandGradient)}>
             <Icon icon={sparks} color="#007DA3" sx={{ mr: 1 }} />
