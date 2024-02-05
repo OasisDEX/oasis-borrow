@@ -7,6 +7,7 @@ import { OpenAaveSuccessStateView } from 'features/aave/open/sidebars/components
 import { OpenAaveTransactionInProgressStateView } from 'features/aave/open/sidebars/components/OpenAaveTransactionInProgressStateView'
 import { SidebarOpenAaveVaultStopLoss } from 'features/aave/open/sidebars/components/SidebarOpenAaveVaultStopLoss'
 import { StopLossInProgressStateView } from 'features/aave/open/sidebars/components/StopLossInProgressStateView'
+import { StopLossLambdaInProgressStateView } from 'features/aave/open/sidebars/components/StopLossLambdaInProgressStateView'
 import { StopLossTxFailureStateView } from 'features/aave/open/sidebars/components/StopLossTxFailureStateView'
 import { StopLossTxStateView } from 'features/aave/open/sidebars/components/StopLossTxStateView'
 import type { OpenAaveStateMachine } from 'features/aave/open/state'
@@ -64,6 +65,8 @@ export function SidebarOpenAaveVault() {
       return <StopLossTxStateView {...sidebarProps} />
     case state.matches('frontend.txStopLossInProgress'):
       return <StopLossInProgressStateView {...sidebarProps} />
+    case state.matches('frontend.txStopLossLambdaInProgress'):
+      return <StopLossLambdaInProgressStateView {...sidebarProps} />
     case state.matches('frontend.txFailure'):
       return <OpenAaveFailureStateView {...sidebarProps} />
     case state.matches('frontend.stopLossTxFailure'):

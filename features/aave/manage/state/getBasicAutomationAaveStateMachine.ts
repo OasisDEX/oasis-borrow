@@ -221,13 +221,13 @@ const getDefaults = (
   ) {
     const decodedParams = context.currentTrigger?.decodedParams as BasicAutoTrigger['decodedParams']
     return {
-      maxGasFee: Number(decodedParams.maxBaseFeeInGwei) ?? 300,
+      maxGasFee: decodedParams?.maxBaseFeeInGwei ? Number(decodedParams.maxBaseFeeInGwei) : 300,
       usePrice: context.currentTrigger ? allDefined(price) : true,
       executionTriggerLTV:
-        getLtvNumberFromDecodedParam(decodedParams.executionLtv) ??
+        getLtvNumberFromDecodedParam(decodedParams?.executionLtv) ??
         context.defaults.executionTriggerLTV,
       targetTriggerLTV:
-        getLtvNumberFromDecodedParam(decodedParams.targetLtv) ?? context.defaults.targetTriggerLTV,
+        getLtvNumberFromDecodedParam(decodedParams?.targetLtv) ?? context.defaults.targetTriggerLTV,
       price: price,
     }
   }
