@@ -3,7 +3,8 @@ import { TokensGroup } from 'components/TokensGroup'
 import { WithArrow } from 'components/WithArrow'
 import { MarketingTemplateMarkdown } from 'features/marketing-layouts/components'
 import type { MarketingTemplateInfoBoxProps } from 'features/marketing-layouts/types'
-import React, { type FC } from 'react'
+import { getNextParsedUrl } from 'helpers/getNextParsedUrl'
+import React, { type FC, useMemo } from 'react'
 import { Flex, Heading, Image, Text } from 'theme-ui'
 
 export const MarketingTemplateInfoBox: FC<MarketingTemplateInfoBoxProps> = ({
@@ -13,6 +14,18 @@ export const MarketingTemplateInfoBox: FC<MarketingTemplateInfoBoxProps> = ({
   title,
   tokens,
 }) => {
+  const linkComponent = useMemo(() => {
+    if (link) {
+      const { href, query } = getNextParsedUrl(link.url)
+
+      return (
+        <AppLink href={href} query={query} sx={{ display: 'inline-block', mt: '12px' }}>
+          <WithArrow sx={{ fontSize: 3, color: 'interactive100' }}>{link.label}</WithArrow>
+        </AppLink>
+      )
+    } else return <></>
+  }, [link])
+
   return (
     <Flex
       sx={{
@@ -27,11 +40,7 @@ export const MarketingTemplateInfoBox: FC<MarketingTemplateInfoBoxProps> = ({
           {title}
         </Heading>
         <MarketingTemplateMarkdown content={description} />
-        {link && (
-          <AppLink href={link.url} sx={{ display: 'inline-block', mt: '12px' }}>
-            <WithArrow sx={{ fontSize: 3, color: 'interactive100' }}>{link.label}</WithArrow>
-          </AppLink>
-        )}
+        {linkComponent}
         {tokens && (
           <Flex
             as="ul"
