@@ -14,10 +14,7 @@ import { RemoveTriggerInfoSection, type RemoveTriggerSectionProps } from 'featur
 import type { AutoSellInfoSectionProps } from 'features/aave/components/AutoSellInfoSection'
 import { AutoSellInfoSection } from 'features/aave/components/AutoSellInfoSection'
 import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
-import {
-  getDenomination,
-  getTriggerExecutionPrice,
-} from 'features/aave/manage/services/calculations'
+import { getTriggerExecutionPrice } from 'features/aave/manage/services/calculations'
 import type {
   AutoSellTriggerAaveContext,
   AutoSellTriggerAaveEvent,
@@ -205,7 +202,11 @@ function AutoSellSidebarAaveVaultEditingState({
             amount={state.price}
             hasAuxiliary={false}
             hasError={false}
-            currencyCode={getDenomination(state.position)}
+            currencyCode={
+              state.position.pricesDenomination === 'collateral'
+                ? state.position.debt.token.symbol
+                : state.position.collateral.token.symbol
+            }
             onChange={handleNumericInput((price) => {
               updateState({ type: 'SET_PRICE', price: price })
             })}
