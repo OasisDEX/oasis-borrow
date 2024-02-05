@@ -6,7 +6,6 @@ interface GetPrimaryButtonLabelKeyParams {
   hasAllowance: boolean
   hasDpmAddress: boolean
   isOpening: boolean
-  isTransitionInProgress: boolean
   isTxError: boolean
   isTxSuccess: boolean
   shouldSwitchNetwork: boolean
@@ -19,17 +18,12 @@ export function getOmniPrimaryButtonLabelKey({
   hasAllowance,
   hasDpmAddress,
   isOpening,
-  isTransitionInProgress,
   isTxError,
   isTxSuccess,
   shouldSwitchNetwork,
   walletAddress,
   uiDropdown,
 }: GetPrimaryButtonLabelKeyParams): string {
-  if (uiDropdown === OmniMultiplyPanel.Switch) {
-    return 'confirm'
-  }
-
   switch (currentStep) {
     case OmniSidebarStep.Risk:
       return 'i-understand'
@@ -39,11 +33,14 @@ export function getOmniPrimaryButtonLabelKey({
       else if (isTxError) return 'retry'
       else return 'confirm'
     case OmniSidebarStep.Transition:
-      if (isTransitionInProgress) return 'borrow-to-multiply.button-progress'
-      else return 'confirm'
+      return 'borrow-to-multiply.button-progress'
     default:
       if (walletAddress && shouldSwitchNetwork) return 'switch-network'
-      else if (walletAddress && hasDpmAddress && hasAllowance) return 'confirm'
+      else if (
+        (walletAddress && hasDpmAddress && hasAllowance) ||
+        uiDropdown === OmniMultiplyPanel.Switch
+      )
+        return 'confirm'
       else if (walletAddress && hasDpmAddress) return 'set-token-allowance'
       else if (walletAddress) return 'dpm.create-flow.welcome-screen.create-button'
       else return 'connect-wallet-button'
