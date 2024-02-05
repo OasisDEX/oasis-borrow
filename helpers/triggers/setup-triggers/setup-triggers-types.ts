@@ -103,7 +103,7 @@ export type SetupBasicAutoResponse = {
 export type SetupBasicStopLossResponse = {
   errors?: TriggersApiError[]
   warnings?: TriggersApiWarning[]
-  encodedTriggerData: string
+  encodedTriggerData?: string
   simulation?: {
     collateralAmountAfterExecution: string
     debtAmountAfterExecution: string
@@ -112,7 +112,7 @@ export type SetupBasicStopLossResponse = {
     targetLTVWithDeviation: [string, string]
     targetMultiple: string
   }
-  transaction: {
+  transaction?: {
     data: string
     to: string
     triggerTxData: string

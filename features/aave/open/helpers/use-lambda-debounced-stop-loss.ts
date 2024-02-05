@@ -53,7 +53,7 @@ export const useLambdaDebouncedStopLoss = ({
       setStopLossTxCancelablePromise(stopLossTxDataPromise)
       stopLossTxDataPromise
         .then((res) => {
-          if (res.transaction && context.userDpmAccount) {
+          if (res.transaction && res.encodedTriggerData && context.userDpmAccount) {
             send({
               type: 'SET_STOP_LOSS_TX_DATA_LAMBDA',
               stopLossTxDataLambda: {
