@@ -133,22 +133,9 @@ export const getMorphoParameters = async ({
     dpmProxyAddress: dpmAddress,
   }
 
-  const openMultiplyPayload: MorphoOpenMultiplyPayload = {
-    ...commonMultiplyPayload,
-    collateralPriceUSD: collateralPrice,
-    quotePriceUSD: quotePrice,
-    marketId: position.marketParams.id,
-  }
-
   const adjustMultiplyPayload: MorphoAdjustMultiplyPayload = {
     ...commonMultiplyPayload,
     position,
-  }
-
-  const closeMultiplyPayload: MorphoCloseMultiplyPayload = {
-    ...commonMultiplyPayload,
-    position,
-    shouldCloseToCollateral: (state as OmniMultiplyFormState).closeTo === 'collateral',
   }
 
   switch (action) {
@@ -171,6 +158,13 @@ export const getMorphoParameters = async ({
       })
     }
     case OmniMultiplyFormAction.OpenMultiply: {
+      const openMultiplyPayload: MorphoOpenMultiplyPayload = {
+        ...commonMultiplyPayload,
+        collateralPriceUSD: collateralPrice,
+        quotePriceUSD: quotePrice,
+        marketId: position.marketParams.id,
+      }
+
       return morphoActionOpenMultiply({
         state,
         commonPayload: openMultiplyPayload,
@@ -185,6 +179,12 @@ export const getMorphoParameters = async ({
     }
     case OmniBorrowFormAction.CloseBorrow:
     case OmniMultiplyFormAction.CloseMultiply: {
+      const closeMultiplyPayload: MorphoCloseMultiplyPayload = {
+        ...commonMultiplyPayload,
+        position,
+        shouldCloseToCollateral: (state as OmniMultiplyFormState).closeTo === 'collateral',
+      }
+
       return morphoActionClose({
         commonPayload: closeMultiplyPayload,
         dependencies: multiplyDependencies,
