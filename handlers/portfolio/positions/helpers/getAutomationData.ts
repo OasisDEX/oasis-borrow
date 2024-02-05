@@ -67,7 +67,7 @@ export const getAutomationData = async ({
   const appConfig: ConfigResponseType = await getRemoteConfigWithCache(
     1000 * configCacheTime.backend,
   )
-  const subgraphUrl = `${appConfig.parameters.subgraphs.baseShortUrl}${subgraphListDict[network]}`
+  const subgraphUrl = `${appConfig.parameters.subgraphs.baseShortUrl}/${subgraphListDict[network]}`
   const params = { proxyAddresses: addresses.map((addr) => addr.toLowerCase()) }
   const automationCall = request<AutomationQueryResponse>(
     subgraphUrl,
@@ -87,5 +87,5 @@ export const getAutomationData = async ({
       })
       .flat()
   })
-  return positionsAutomationList
+  return positionsAutomationList as AutomationResponse
 }
