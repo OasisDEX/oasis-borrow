@@ -81,7 +81,7 @@ export const PortfolioPositionsView = ({
       filterEmptyPosition(filterState['showEmptyPositions']),
     )
     return positionsWithValue
-  }, [filterState, portfolioPositionsData])
+  }, [filterState, portfolioPositionsData, migrationPositions])
 
   const filteredPositionsByProduct = useMemo(() => {
     if (!filteredEmptyPositions) return undefined
