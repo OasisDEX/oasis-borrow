@@ -61,7 +61,11 @@ export function createGasPriceOnNetwork$(
   )
 }
 
-function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefined>) {
+function getPrice(
+  tickers: Tickers,
+  tickerServiceLabels: Array<string | undefined>,
+  errorLocation?: string,
+) {
   const errorsArray = []
   for (const label of tickerServiceLabels) {
     if (label && tickers[label]) {
@@ -70,7 +74,9 @@ function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefine
     errorsArray.push({ label, tickerServiceLabels })
   }
 
-  throw new Error(`No price data for given token - ${JSON.stringify(errorsArray)}`)
+  throw new Error(
+    `No price data for given token - ${JSON.stringify(errorsArray)} in ${errorLocation}`,
+  )
 }
 
 export function getTokenPriceSources(token: string) {
@@ -91,10 +97,9 @@ export function getTokenPriceSources(token: string) {
   ]
 }
 
-export function getTokenPrice(token: string, tickers: Tickers) {
+export function getTokenPrice(token: string, tickers: Tickers, errorLocation?: string) {
   const priceSources = getTokenPriceSources(token)
-
-  return getPrice(tickers, priceSources)
+  return getPrice(tickers, priceSources, errorLocation)
 }
 
 export function createTokenPriceInUSD$(
@@ -107,7 +112,7 @@ export function createTokenPriceInUSD$(
       forkJoin(
         tokens.map((token) => {
           try {
-            const tokenPrice = getTokenPrice(token, tickers)
+            const tokenPrice = getTokenPrice(token, tickers, 'createTokenPriceInUSD$')
 
             return of({
               [token]: new BigNumber(tokenPrice),
