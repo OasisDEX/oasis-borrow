@@ -14,7 +14,10 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 export interface BasicAutomationDetailsViewProps {
-  automationFeature: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY
+  automationFeature:
+    | AutomationFeatures.AUTO_SELL
+    | AutomationFeatures.AUTO_BUY
+    | AutomationFeatures.STOP_LOSS
   position: PositionLike
   currentTrigger?: {
     executionLTV: BigNumber
