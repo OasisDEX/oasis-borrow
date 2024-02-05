@@ -1,5 +1,6 @@
 import { ComparisonTable } from 'components/ComparisonTable'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
+import { Icon } from 'components/Icon'
 import { SimpleCarousel } from 'components/SimpleCarousel'
 import {
   MarketingTemplateBanner,
@@ -17,8 +18,10 @@ import { MarketingTemplateBlocks } from 'features/marketing-layouts/types'
 import { ProductHubPromoCardsList } from 'features/productHub/components/ProductHubPromoCardsList'
 import { getGenericPromoCard } from 'features/productHub/helpers'
 import { ProductHubView } from 'features/productHub/views'
+import { useTranslation } from 'next-i18next'
 import { type FC, Fragment } from 'react'
 import React from 'react'
+import { sparks } from 'theme/icons'
 import { Box, Flex, Grid } from 'theme-ui'
 
 type MarketingTemplateBlockViewProps = MarketingTemplateProductFinderBlocks & {
@@ -33,6 +36,7 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
   title,
   type,
 }) => {
+  const { t } = useTranslation()
   const {
     productHub: { table },
   } = usePreloadAppDataContext()
@@ -69,19 +73,19 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
           ))}
         />
       )
-    case MarketingTemplateBlocks.INFO_BOX:
-      return (
-        <Flex sx={{ flexDirection: 'column', rowGap: 6 }}>
-          {content.map((infoBox, i) => (
-            <MarketingTemplateInfoBox key={i} {...infoBox} />
-          ))}
-        </Flex>
-      )
     case MarketingTemplateBlocks.COMPARISON_TABLE:
       return (
         <Flex sx={{ flexDirection: 'column', rowGap: 5 }}>
           {content.map((comparisonTable, i) => (
             <ComparisonTable key={i} {...comparisonTable} />
+          ))}
+        </Flex>
+      )
+    case MarketingTemplateBlocks.INFO_BOX:
+      return (
+        <Flex sx={{ flexDirection: 'column', rowGap: 6 }}>
+          {content.map((infoBox, i) => (
+            <MarketingTemplateInfoBox key={i} {...infoBox} />
           ))}
         </Flex>
       )
@@ -125,7 +129,15 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
                   limitRows={10}
                   {...productFinder}
                 />
-                <ProductHubPromoCardsList promoCards={promoCards} />
+                <ProductHubPromoCardsList
+                  heading={
+                    <>
+                      <Icon icon={sparks} color={foreground[0]} size={18} sx={{ mr: 2 }} />
+                      {t('product-hub.featured')}
+                    </>
+                  }
+                  promoCards={promoCards}
+                />
               </Fragment>
             )
           })}

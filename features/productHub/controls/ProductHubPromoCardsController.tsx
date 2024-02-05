@@ -1,15 +1,17 @@
 import { ProductHubPromoCardsList } from 'features/productHub/components/ProductHubPromoCardsList'
 import type { ProductHubProductType, ProductHubPromoCards } from 'features/productHub/types'
-import type { FC } from 'react'
+import type { FC, ReactNode } from 'react'
 import React, { useMemo } from 'react'
 
 interface ProductHubPromoCardsControllerProps {
+  heading?: ReactNode
   promoCardsData: ProductHubPromoCards
   selectedProduct: ProductHubProductType
   selectedToken: string
 }
 
 export const ProductHubPromoCardsController: FC<ProductHubPromoCardsControllerProps> = ({
+  heading,
   promoCardsData,
   selectedProduct,
   selectedToken,
@@ -22,5 +24,11 @@ export const ProductHubPromoCardsController: FC<ProductHubPromoCardsControllerPr
     [promoCardsData, selectedProduct, selectedToken],
   )
 
-  return <>{promoCards.length > 0 && <ProductHubPromoCardsList promoCards={promoCards} />}</>
+  return (
+    <>
+      {promoCards.length > 0 && (
+        <ProductHubPromoCardsList heading={heading} promoCards={promoCards} />
+      )}
+    </>
+  )
 }
