@@ -372,12 +372,16 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
         }),
       ),
     ).then((data) => data.flat()),
-    getAutomationData({
-      addresses: aaveLikeDpmList
-        .filter(({ networkId }) => networkId === NetworkIds.MAINNET)
-        .map(({ id }) => id),
-      network: NetworkIds.MAINNET,
-    }),
+    Promise.all(
+      uniqueDpmNetworks.map((dpmsNetworkId) =>
+        getAutomationData({
+          addresses: aaveLikeDpmList
+            .filter(({ networkId }) => networkId === dpmsNetworkId)
+            .map(({ id }) => id),
+          network: dpmsNetworkId,
+        }),
+      ),
+    ).then((data) => data.flat()),
     Promise.all([
       ...uniqueDpmNetworks
         .map((networkId) =>
