@@ -16,7 +16,7 @@ export const MarketingTemplateHero: FC<MarketingTemplateHeroProps> = ({
   token = [],
 }) => {
   const protocols = isArray(protocol) ? protocol : [protocol]
-  const tokens = isArray(token) ? token : [token]
+  const tokens = token === null ? [] : isArray(token) ? token : [token]
   const { href, query } = getNextParsedUrl(url)
 
   return (
