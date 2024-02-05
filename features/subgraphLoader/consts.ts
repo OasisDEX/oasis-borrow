@@ -583,6 +583,41 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
         txHash
         withdrawnUSD
       }
+      borrowerEvents(
+        where: {
+          account_: { id: $dpmProxyAddress }
+          collateralToken_: { address: $collateralAddress }
+          debtToken_: { address: $quoteAddress }
+        }
+      ) {
+        id
+        kind
+        timestamp
+        txHash
+        repaidAssets
+        quoteRepaid
+      }
+    }
+  `,
+  getMorphoCumulatives: gql`
+    query getAccount($dpmProxyAddress: ID!, $marketId: Bytes!) {
+      account(id: $dpmProxyAddress) {
+        borrowPositions(where: { market_: { id: $marketId } }) {
+          borrowCumulativeDepositUSD
+          borrowCumulativeDepositInQuoteToken
+          borrowCumulativeDepositInCollateralToken
+          borrowCumulativeWithdrawUSD
+          borrowCumulativeWithdrawInQuoteToken
+          borrowCumulativeWithdrawInCollateralToken
+          borrowCumulativeCollateralDeposit
+          borrowCumulativeCollateralWithdraw
+          borrowCumulativeDebtDeposit
+          borrowCumulativeDebtWithdraw
+          borrowCumulativeFeesUSD
+          borrowCumulativeFeesInQuoteToken
+          borrowCumulativeFeesInCollateralToken
+        }
+      }
     }
   `,
 }

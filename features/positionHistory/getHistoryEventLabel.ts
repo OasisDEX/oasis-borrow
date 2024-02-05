@@ -96,6 +96,7 @@ export const getHistoryEventLabel = ({
     case 'SparkBorrow':
       return t('position-history.borrow')
     case 'Liquidation':
+    case 'Liquidate':
       return t('position-history.liquidation')
     default:
       return `${t('position-history.event')} ${kind || ''}`

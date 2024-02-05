@@ -98,7 +98,7 @@ async function getMorphoPositions({
               quotePriceUSD: quotePrice,
             },
             {
-              getCumulatives: getMorphoCumulatives(),
+              getCumulatives: getMorphoCumulatives(networkId),
               morphoAddress: getNetworkContracts(networkId).morphoBlue.address,
               provider: getRpcProvider(networkId),
             },

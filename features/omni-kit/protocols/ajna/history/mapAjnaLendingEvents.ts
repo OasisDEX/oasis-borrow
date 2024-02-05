@@ -1,8 +1,6 @@
-import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
+import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 
-export const mapMorphoLendingEvents = (
-  events: AjnaUnifiedHistoryEvent[],
-): Partial<AjnaUnifiedHistoryEvent>[] => {
+export const mapAjnaLendingEvents = (events: AjnaHistoryEvent[]): Partial<AjnaHistoryEvent>[] => {
   const mappedEvents = events.map((event) => {
     const basicData = {
       kind: event.kind,
@@ -35,23 +33,22 @@ export const mapMorphoLendingEvents = (
     }
 
     switch (event.kind) {
-      case 'MorphoBlueDeposit':
-      case 'MorphoBlueWithdraw':
+      case 'AjnaDeposit':
+      case 'AjnaWithdraw':
         return {
           collateralBefore: event.collateralBefore,
           collateralAfter: event.collateralAfter,
           ...basicData,
         }
-      case 'MorphoBlueBorrow':
-      case 'MorphoBluePayback':
+      case 'AjnaBorrow':
+      case 'AjnaRepay':
         return {
           debtBefore: event.debtBefore,
           debtAfter: event.debtAfter,
           ...basicData,
         }
-      case 'MorphoBlueOpenDepositBorrow':
-      case 'MorphoBlueDepositBorrow':
-      case 'MorphoBluePaybackWithdraw':
+      case 'AjnaDepositBorrow':
+      case 'AjnaRepayWithdraw':
         return {
           collateralBefore: event.collateralBefore,
           collateralAfter: event.collateralAfter,
@@ -59,24 +56,48 @@ export const mapMorphoLendingEvents = (
           debtAfter: event.debtAfter,
           ...basicData,
         }
-      case 'MorphoBlueOpenPosition':
-      case 'MorphoBlueAdjustRiskUp': {
+      case 'AjnaOpenMultiplyPosition_4':
+      case 'AjnaOpenMultiplyPosition_5':
+      case 'AjnaAdjustRiskUp_4':
+      case 'AjnaAdjustRiskUp_5': {
         return {
           ...basicData,
           ...basicMultiplyData,
           swapToAmount: event.swapToAmount,
         }
       }
-      case 'MorphoBlueAdjustRiskDown':
-      case 'MorphoBlueClosePosition': {
+      case 'AjnaAdjustRiskDown_4':
+      case 'AjnaAdjustRiskDown_5':
+      case 'AjnaCloseToCollateralPosition_4':
+      case 'AjnaCloseToCollateralPosition_5':
+      case 'AjnaCloseToQuotePosition_4':
+      case 'AjnaCloseToQuotePosition_5': {
         return {
           ...basicData,
           ...basicMultiplyData,
           swapFromAmount: event.swapFromAmount,
         }
       }
+      case 'AuctionSettle': {
+        return {
+          settledDebt: event.settledDebt,
+          remainingCollateral: event.remainingCollateral,
+          kind: event.kind,
+          timestamp: event.timestamp,
+          txHash: event.txHash,
+        }
+      }
+      case 'Kick': {
+        return {
+          kind: event.kind,
+          debtToCover: event.debtToCover,
+          collateralForLiquidation: event.collateralForLiquidation,
+          timestamp: event.timestamp,
+          txHash: event.txHash,
+        }
+      }
       default: {
-        console.warn(`No morpho blue event kind found ${event.kind}`)
+        console.warn(`No ajna event kind found ${event.kind}`)
         return {}
       }
     }

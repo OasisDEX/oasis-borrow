@@ -36,7 +36,7 @@ export function getMorphoPosition$(
           quotePriceUSD: quotePrice,
         },
         {
-          getCumulatives: getMorphoCumulatives(),
+          getCumulatives: getMorphoCumulatives(networkId),
           morphoAddress: getNetworkContracts(networkId).morphoBlue.address,
           provider: getRpcProvider(networkId),
         },

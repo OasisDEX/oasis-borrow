@@ -15,6 +15,7 @@ export function useMorphoTxHandler(): () => void {
       productType,
       quoteBalance,
       networkId,
+      slippage,
     },
   } = useOmniGeneralContext()
   const {
@@ -42,6 +43,7 @@ export function useMorphoTxHandler(): () => void {
         rpcProvider: getRpcProvider(networkId),
         state,
         walletAddress,
+        slippage,
       }),
   })
 }

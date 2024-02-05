@@ -188,18 +188,12 @@ export const getNavProtocolsPanel = ({
                         url: `${INTERNAL_LINKS.borrow}`,
                         query: query.morphoBlue,
                       },
-                      // {
-                      //   title: t('nav.multiply'),
-                      //   description: navigation.protocols.morphoBlue.multiply.description,
-                      //   url: `${INTERNAL_LINKS.multiply}`,
-                      //   query: query.morphoBlue,
-                      // },
-                      // {
-                      //   title: t('nav.earn'),
-                      //   description: navigation.protocols.morphoBlue.earn.description,
-                      //   url: `${INTERNAL_LINKS.earn}`,
-                      //   query: query.morphoBlue,
-                      // },
+                      {
+                        title: t('nav.multiply'),
+                        description: navigation.protocols.morphoBlue.multiply.description,
+                        url: `${INTERNAL_LINKS.multiply}`,
+                        query: query.morphoBlue,
+                      },
                       {
                         title: navigation.protocols.morphoBlue.extra.title,
                         promoted: true,

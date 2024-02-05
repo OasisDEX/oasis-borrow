@@ -1,3 +1,4 @@
+import type { EarnCumulativesRawData, LendingCumulativesRawData } from '@oasisdex/dma-library'
 import type { AjnaRewardsSource } from '@prisma/client'
 import type { NetworkIds } from 'blockchain/networks'
 import type {
@@ -10,6 +11,7 @@ import type {
   AjnaBorrowerEventsResponse,
   AjnaHistoryResponse,
 } from 'features/omni-kit/protocols/ajna/history/types'
+import type { MorphoBorrowerEventsResponse } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import type {
   AaveCumulativesResponse,
   AavePositionHistoryResponse,
@@ -51,6 +53,7 @@ export type Subgraphs = {
       collateralAddress: string
       quoteAddress: string
     }
+    getMorphoCumulatives: { dpmProxyAddress: string; marketId: string }
   }
   Referral: {
     getClaimedReferralRewards: { walletAddress: string }
@@ -85,34 +88,8 @@ export type SubgraphsResponses = {
     }>
     getAjnaCumulatives: SubgraphBaseResponse<{
       account: {
-        earnPositions: {
-          earnCumulativeDepositUSD: number
-          earnCumulativeDepositInQuoteToken: number
-          earnCumulativeDepositInCollateralToken: number
-          earnCumulativeWithdrawUSD: number
-          earnCumulativeWithdrawInQuoteToken: number
-          earnCumulativeWithdrawInCollateralToken: number
-          earnCumulativeFeesUSD: number
-          earnCumulativeFeesInQuoteToken: number
-          earnCumulativeFeesInCollateralToken: number
-          earnCumulativeQuoteTokenDeposit: number
-          earnCumulativeQuoteTokenWithdraw: number
-        }[]
-        borrowPositions: {
-          borrowCumulativeDepositUSD: number
-          borrowCumulativeDepositInQuoteToken: number
-          borrowCumulativeDepositInCollateralToken: number
-          borrowCumulativeWithdrawUSD: number
-          borrowCumulativeWithdrawInQuoteToken: number
-          borrowCumulativeWithdrawInCollateralToken: number
-          borrowCumulativeCollateralDeposit: number
-          borrowCumulativeCollateralWithdraw: number
-          borrowCumulativeDebtDeposit: number
-          borrowCumulativeDebtWithdraw: number
-          borrowCumulativeFeesUSD: number
-          borrowCumulativeFeesInQuoteToken: number
-          borrowCumulativeFeesInCollateralToken: number
-        }[]
+        earnPositions: EarnCumulativesRawData[]
+        borrowPositions: LendingCumulativesRawData[]
       }
     }>
     getAjnaPoolsData: SubgraphBaseResponse<{
@@ -155,6 +132,12 @@ export type SubgraphsResponses = {
     getMorphoDpmPositions: SubgraphBaseResponse<MorphoDpmPositionsResponse>
     getMorphoPositionAggregatedData: SubgraphBaseResponse<{
       summerEvents: PositionHistoryResponse[]
+      borrowerEvents: MorphoBorrowerEventsResponse[]
+    }>
+    getMorphoCumulatives: SubgraphBaseResponse<{
+      account: {
+        borrowPositions: LendingCumulativesRawData[]
+      }
     }>
   }
   Referral: {
