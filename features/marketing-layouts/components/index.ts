@@ -1,0 +1,7 @@
+export * from './MarketingTemplateBanner'
+export * from './MarketingTemplateBenefitBox'
+export * from './MarketingTemplateHeading'
+export * from './MarketingTemplateHero'
+export * from './MarketingTemplateInfoBox'
+export * from './MarketingTemplateMarkdown'
+export * from './MarketingTemplateProductBox'

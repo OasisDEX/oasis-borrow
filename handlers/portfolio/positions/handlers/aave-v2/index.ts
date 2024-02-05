@@ -19,11 +19,11 @@ import {
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 
-const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
+const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async ({
   dpm,
   prices,
   allPositionsHistory,
-) => {
+}) => {
   const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({ dpm, prices })
   const [
     primaryTokenReserveConfiguration,
@@ -145,7 +145,13 @@ export const aaveV2PositionHandler: PortfolioPositionsHandler = async ({
   ])
   const positions = await Promise.all(
     aaveV2DpmList.map(async (dpm) =>
-      getAaveV2MultiplyPosition(dpm, prices, allPositionsHistory, []),
+      getAaveV2MultiplyPosition({
+        dpm,
+        prices,
+        allPositionsHistory,
+        allPositionsAutomations: [], // not needed here
+        allOraclePrices: [], // not needed here
+      }),
     ),
   )
   return {

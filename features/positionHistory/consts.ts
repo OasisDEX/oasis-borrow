@@ -1,10 +1,9 @@
-import type {
-  AjnaBorrowerEvent,
-  AjnaHistoryEvent,
-} from 'features/omni-kit/protocols/ajna/history/types'
 import { zero } from 'helpers/zero'
 
-export const ajnaUnifiedHistoryItem = {
+// this is basic history interface that we are getting
+// from history subgraphs, to be used across all protocols
+// when will be migrated to omni-kit
+export const unifiedDefaultHistoryItem = {
   depositAmount: zero,
   withdrawAmount: zero,
   blockNumber: zero,
@@ -44,27 +43,14 @@ export const ajnaUnifiedHistoryItem = {
   quoteTokensAfter: zero,
   quoteTokensBefore: zero,
   quoteTokensDelta: zero,
-  quoteTokensMoved: zero,
-  moveQuoteFromPrice: zero,
-  moveQuoteToPrice: zero,
-  addOrRemovePrice: zero,
   isOpen: false,
   swapFromAmount: zero,
   swapFromToken: '',
   swapToAmount: zero,
   swapToToken: '',
-  originationFee: zero,
-  originationFeeInQuoteToken: zero,
   timestamp: 0,
   totalFee: zero,
   totalFeeInQuoteToken: zero,
   txHash: '',
   withdrawnUSD: zero,
-  settledDebt: zero,
-  debtToCover: zero,
-  collateralForLiquidation: zero,
-  remainingCollateral: zero,
-  auction: undefined,
 }
-
-export type AjnaUnifiedHistoryEvent = AjnaHistoryEvent & AjnaBorrowerEvent

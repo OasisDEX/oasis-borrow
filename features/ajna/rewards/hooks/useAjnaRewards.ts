@@ -60,7 +60,7 @@ export const useAjnaRewards = (address?: string): AjnaRewardsParamsState => {
 
     if (resolvedAddress) {
       try {
-        const subgraphResponse = await getAjnaRewards(resolvedAddress, chainId)
+        const subgraphResponse = await getAjnaRewards(resolvedAddress)
 
         const claimedBonusWeeks = subgraphResponse
           .filter((item) => item.type === AjnaRewardsSource.bonus)

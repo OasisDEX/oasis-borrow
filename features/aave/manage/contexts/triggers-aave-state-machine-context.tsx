@@ -1,4 +1,5 @@
 import { useInterpret, useSelector } from '@xstate/react'
+import { getToken } from 'blockchain/tokensMetadata'
 import type { ProxiesRelatedWithPosition } from 'features/aave/helpers'
 import {
   autoBuyTriggerAaveStateMachine,
@@ -16,24 +17,45 @@ import React, { useEffect } from 'react'
 
 import { useManageAaveStateMachineContext } from './aave-manage-state-machine-context'
 
+export const shouldUsePriceInput = (strategy: IStrategyConfig): boolean => {
+  return getToken(strategy.tokens.debt).tags.some((tag) => tag === 'stablecoin')
+}
+
 function useSetupTriggersStateContext(
   strategy: IStrategyConfig,
   proxies?: ProxiesRelatedWithPosition,
 ) {
-  const autobuyStateMachine = useInterpret(autoBuyTriggerAaveStateMachine, {
-    devTools: env.NODE_ENV !== 'production',
-  }).start()
+  const autoBuyContext = autoBuyTriggerAaveStateMachine.context
+  const autobuyStateMachine = useInterpret(
+    autoBuyTriggerAaveStateMachine.withContext({
+      ...autoBuyContext,
+      networkId: strategy.networkId,
+      usePriceInput: shouldUsePriceInput(strategy),
+    }),
+    {
+      devTools: env.NODE_ENV !== 'production',
+    },
+  ).start()
 
-  const autosellStateMachine = useInterpret(autoSellTriggerAaveStateMachine, {
-    devTools: env.NODE_ENV !== 'production',
-  }).start()
+  const autoSellContext = autoSellTriggerAaveStateMachine.context
+  const autosellStateMachine = useInterpret(
+    autoSellTriggerAaveStateMachine.withContext({
+      ...autoSellContext,
+      networkId: strategy.networkId,
+      usePriceInput: shouldUsePriceInput(strategy),
+    }),
+    {
+      devTools: env.NODE_ENV !== 'production',
+    },
+  ).start()
 
   return useInterpret(
     triggersAaveStateMachine.withContext({
       strategyConfig: strategy,
       dpm: proxies?.dpmProxy,
-      showAutoBuyBanner: true,
-      showAutoSellBanner: true,
+      showAutoBuyBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.AUTO_BUY),
+      showAutoSellBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.AUTO_SELL),
+      showStopLossBanner: strategy.isAutomationFeatureEnabled(AutomationFeatures.STOP_LOSS),
       autoBuyTrigger: autobuyStateMachine,
       autoSellTrigger: autosellStateMachine,
       currentTriggers: {
@@ -102,8 +124,6 @@ function TriggersStateUpdater({ children }: React.PropsWithChildren<{}>) {
   useEffect(() => {
     if (activeAutomationFeature?.currentProtectionFeature === AutomationFeatures.AUTO_SELL) {
       triggerStateMachine.send({ type: 'SHOW_AUTO_SELL' })
-    } else if (activeAutomationFeature?.currentProtectionFeature === AutomationFeatures.STOP_LOSS) {
-      triggerStateMachine.send({ type: 'RESET_PROTECTION' })
     }
   }, [activeAutomationFeature?.currentProtectionFeature])
   return <>{children}</>

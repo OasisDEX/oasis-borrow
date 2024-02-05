@@ -521,4 +521,103 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getMorphoPositionAggregatedData: gql`
+    query getAccount($dpmProxyAddress: ID!, $collateralAddress: String!, $quoteAddress: String!) {
+      summerEvents(
+        where: {
+          account_: { id: $dpmProxyAddress }
+          collateralToken_: { address: $collateralAddress }
+          debtToken_: { address: $quoteAddress }
+        }
+      ) {
+        depositTransfers {
+          amount
+        }
+        withdrawTransfers {
+          amount
+        }
+        blockNumber
+        collateralAddress
+        collateralAfter
+        collateralBefore
+        collateralDelta
+        collateralOraclePrice
+        collateralToken
+        collateralTokenPriceUSD
+        debtAddress
+        debtAfter
+        debtBefore
+        debtDelta
+        debtOraclePrice
+        debtToken
+        debtTokenPriceUSD
+        depositedUSD
+        ethPrice
+        gasFeeUSD
+        gasPrice
+        gasUsed
+        id
+        kind
+        liquidationPriceAfter
+        liquidationPriceBefore
+        ltvAfter
+        ltvBefore
+        marketPrice
+        multipleAfter
+        multipleBefore
+        netValueAfter
+        netValueBefore
+        oasisFee
+        oasisFeeToken
+        oasisFeeUSD
+        quoteTokensAfter
+        quoteTokensBefore
+        quoteTokensDelta
+        isOpen
+        swapFromAmount
+        swapFromToken
+        swapToAmount
+        swapToToken
+        timestamp
+        totalFee
+        txHash
+        withdrawnUSD
+      }
+      borrowerEvents(
+        where: {
+          account_: { id: $dpmProxyAddress }
+          collateralToken_: { address: $collateralAddress }
+          debtToken_: { address: $quoteAddress }
+        }
+      ) {
+        id
+        kind
+        timestamp
+        txHash
+        repaidAssets
+        quoteRepaid
+      }
+    }
+  `,
+  getMorphoCumulatives: gql`
+    query getAccount($dpmProxyAddress: ID!, $marketId: Bytes!) {
+      account(id: $dpmProxyAddress) {
+        borrowPositions(where: { market_: { id: $marketId } }) {
+          borrowCumulativeDepositUSD
+          borrowCumulativeDepositInQuoteToken
+          borrowCumulativeDepositInCollateralToken
+          borrowCumulativeWithdrawUSD
+          borrowCumulativeWithdrawInQuoteToken
+          borrowCumulativeWithdrawInCollateralToken
+          borrowCumulativeCollateralDeposit
+          borrowCumulativeCollateralWithdraw
+          borrowCumulativeDebtDeposit
+          borrowCumulativeDebtWithdraw
+          borrowCumulativeFeesUSD
+          borrowCumulativeFeesInQuoteToken
+          borrowCumulativeFeesInCollateralToken
+        }
+      }
+    }
+  `,
 }

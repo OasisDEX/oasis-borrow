@@ -38,8 +38,9 @@ export type PortfolioPosition = {
   primaryToken: string
   protocol: LendingProtocol
   secondaryToken: string
-  type: OmniProductType
+  type?: OmniProductType
   url: string
+  debuggingData?: any
 }
 interface PortfolioPositionsCommonReply {
   error?: boolean | string
@@ -62,6 +63,7 @@ export type PortfolioPositionsHandler = ({
   dpmList,
   prices,
   positionsCount,
+  debug,
 }: {
   address: string
   apiVaults?: Vault[]
@@ -69,9 +71,10 @@ export type PortfolioPositionsHandler = ({
   prices: TokensPricesList
   positionsCount?: boolean
   allPositionsHistory?: HistoryResponse
+  debug?: boolean
 }) => Promise<PortfolioPositionsReply | PortfolioPositionsCountReply>
 
-type DetailsTypeCommon =
+export type DetailsTypeCommon =
   | '90dApy'
   | 'apy'
   | 'borrowedToken'
@@ -101,10 +104,12 @@ export enum LendingRangeType {
 export type PositionDetailCommon = {
   type: DetailsTypeCommon
   value: string
+  symbol?: string
 }
 export type PositionDetailLendingRange = {
   type: DetailsTypeLendingRange
   value: LendingRangeType
+  symbol?: string
 }
 
 export type PositionDetail = (PositionDetailCommon | PositionDetailLendingRange) & {

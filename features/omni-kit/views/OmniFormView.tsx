@@ -176,11 +176,11 @@ export function OmniFormView({
     hasAllowance: flowState.isAllowanceReady,
     hasDpmAddress: flowState.isProxyReady,
     isOpening,
-    isTransitionInProgress,
     isTxError,
     isTxSuccess,
     shouldSwitchNetwork,
     walletAddress,
+    uiDropdown: state.uiDropdown,
   })
   const primaryButtonActions = getOmniSidebarPrimaryButtonActions({
     collateralAddress,

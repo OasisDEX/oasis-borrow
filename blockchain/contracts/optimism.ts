@@ -197,6 +197,9 @@ export const optimismContracts: OptimismContracts = {
     'WSTETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHUSDC),
     'YFI-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YFIDAI),
+    'STYETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_STYETHDAI),
+    'RBN-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RBNETH),
+    'AJNA-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_AJNADAI),
   },
   ajnaOraclessPoolPairs: {
     'YIELDBTC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YIELDBTCWBTC),
@@ -224,4 +227,5 @@ export const optimismContracts: OptimismContracts = {
   },
   gasPriceOracle: contractDesc(gasPriceOracle, '0x420000000000000000000000000000000000000F'),
   SdaiOracle: contractDesc(ajnaPoolInfo, optimism.common.SdaiOracle),
+  WSTETHOracle: contractDesc(ajnaPoolInfo, optimism.common.WSTETHOracle),
 }

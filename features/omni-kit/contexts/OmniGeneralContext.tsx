@@ -12,6 +12,7 @@ import {
 import { isShortPosition } from 'features/omni-kit/helpers'
 import type {
   OmniProductType,
+  OmniProtocolSettings,
   OmniSidebarEditingStep,
   OmniSidebarStep,
   OmniSupportedNetworkIds,
@@ -39,7 +40,6 @@ interface OmniGeneralContextProviderProps {
   isProxyWithManyPositions: boolean
   network: NetworkConfig
   networkId: OmniSupportedNetworkIds
-  walletNetwork: NetworkConfig
   owner: string
   positionId?: string
   productType: OmniProductType
@@ -52,8 +52,10 @@ interface OmniGeneralContextProviderProps {
   quotePrecision: number
   quotePrice: BigNumber
   quoteToken: string
+  settings: OmniProtocolSettings
   slippage: BigNumber
   steps: OmniSidebarStep[]
+  walletNetwork: NetworkConfig
 }
 
 type OmniGeneralContextEnvironment = Omit<OmniGeneralContextProviderProps, 'steps'> & {
@@ -112,14 +114,15 @@ export function OmniGeneralContextProvider({
   const {
     collateralBalance,
     collateralToken,
-    quoteBalance,
-    quoteToken,
-    owner,
-    slippage,
     isOpening,
     isProxyWithManyPositions,
     network,
     networkId,
+    owner,
+    quoteBalance,
+    quoteToken,
+    settings,
+    slippage,
     walletNetwork,
   } = props
   const { walletAddress } = useAccount()
@@ -162,22 +165,24 @@ export function OmniGeneralContextProvider({
 
   const context: OmniGeneralContext = useMemo(() => {
     const isOwner = isOpening || owner === walletAddress
+
     return {
       environment: {
         ...props,
+        collateralBalance,
         gasEstimation,
+        isOwner,
+        isProxyWithManyPositions,
+        isShort,
         network,
         networkId,
-        isShort,
-        isProxyWithManyPositions,
         priceFormat: isShort
           ? `${quoteToken}/${collateralToken}`
           : `${collateralToken}/${quoteToken}`,
-        isOwner,
+        quoteBalance,
+        settings,
         shouldSwitchNetwork: isOwner && network.id !== walletNetwork.id,
         slippage,
-        collateralBalance,
-        quoteBalance,
       },
       steps: setupStepManager(),
       tx: setupTxManager(),

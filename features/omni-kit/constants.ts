@@ -9,7 +9,7 @@ import {
 } from 'features/exchange/exchange'
 import type { NetworkIdsWithValues } from 'features/omni-kit/types'
 import { OmniProductType, OmniSidebarStep } from 'features/omni-kit/types'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import type { LendingProtocol } from 'lendingProtocols'
 
 export const omniBorrowishProducts = [OmniProductType.Borrow, OmniProductType.Multiply]
@@ -60,4 +60,34 @@ export const omniNetworkMap: NetworkIdsWithValues<Network> = {
   [NetworkIds.ARBITRUMMAINNET]: Network.ARBITRUM,
   [NetworkIds.BASEMAINNET]: Network.BASE,
   [NetworkIds.GOERLI]: Network.GOERLI,
+}
+
+export const defaultLendingCumulatives = {
+  borrowCumulativeDepositUSD: zero,
+  borrowCumulativeDepositInQuoteToken: zero,
+  borrowCumulativeDepositInCollateralToken: zero,
+  borrowCumulativeWithdrawUSD: zero,
+  borrowCumulativeWithdrawInQuoteToken: zero,
+  borrowCumulativeWithdrawInCollateralToken: zero,
+  borrowCumulativeCollateralDeposit: zero,
+  borrowCumulativeCollateralWithdraw: zero,
+  borrowCumulativeDebtDeposit: zero,
+  borrowCumulativeDebtWithdraw: zero,
+  borrowCumulativeFeesUSD: zero,
+  borrowCumulativeFeesInQuoteToken: zero,
+  borrowCumulativeFeesInCollateralToken: zero,
+}
+
+export const defaultEarnCumulatives = {
+  earnCumulativeDepositUSD: zero,
+  earnCumulativeDepositInQuoteToken: zero,
+  earnCumulativeDepositInCollateralToken: zero,
+  earnCumulativeWithdrawUSD: zero,
+  earnCumulativeWithdrawInQuoteToken: zero,
+  earnCumulativeWithdrawInCollateralToken: zero,
+  earnCumulativeFeesUSD: zero,
+  earnCumulativeFeesInQuoteToken: zero,
+  earnCumulativeFeesInCollateralToken: zero,
+  earnCumulativeQuoteTokenDeposit: zero,
+  earnCumulativeQuoteTokenWithdraw: zero,
 }

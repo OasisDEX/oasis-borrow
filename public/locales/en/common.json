@@ -504,7 +504,13 @@
       "stop-loss-debt-executed": "Stop loss to debt executed",
       "stop-loss-token-added": "Stop loss to {{token}} added",
       "stop-loss-token-removed": "Stop loss to {{token}} removed",
-      "stop-loss-token-executed": "Stop loss to {{token}} executed"
+      "stop-loss-token-executed": "Stop loss to {{token}} executed",
+      "basic-buy-added": "Auto buy added",
+      "basic-buy-removed": "Auto buy removed",
+      "basic-buy-executed": "Auto buy executed",
+      "basic-sell-added": "Auto sell added",
+      "basic-sell-removed": "Auto sell removed",
+      "basic-sell-executed": "Auto sell executed"
     }
   },
   "triggers": {
@@ -932,7 +938,7 @@
     "protocols-aave": "Borrow, Multiply and Earn on multiple tokens with the top liquidity protocol.  ",
     "protocols-ajna": "Borrow, Multiply and Earn on anything.<br>No governance. No Oracles.",
     "protocols-maker": "Borrow, Multiply and Earn with<br>the Maker Protocol. Builders of DAI.",
-    "protocols-morpho-blue": "Borrow and Multiply with the new decentralized lending protocol, take advantage of isolated pairs and highest multiples.",
+    "protocols-morpho-blue": "Borrow and multiply on a new flexible and efficient protocol with isolated pairs.",
     "protocols-spark": "Borrow, Multiply and Earn on Spark.<br>The advanced lending powered by Maker.",
     "protocols-more": "View everything possible on {{protocol}}",
     "referrals": "Referrals",
@@ -1409,7 +1415,8 @@
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price",
     "withdraw-amount-exceeds-free-collateral": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
     "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
-    "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>."
+    "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, pay back your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
+    "sl-too-high-for-auto-sell": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxLTV}}% before using Auto-Sell."
   },
   "vault-warnings": {
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
@@ -1419,10 +1426,11 @@
     "auto-buy-trigger-greater-than-auto-take-profit": "Setting your trigger ratio at this level may result in your Auto-Buy Trigger not executing. Find out more <0>here</0>.",
     "auto-buy-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Buy to execute immediately. If this not your intention, please increase your trigger ratio",
     "auto-buy-with-no-max-price-threshold": "WARNING: You are setting an auto buy trigger with no maximum buy price threshold",
+    "auto-sell-with-no-min-price-threshold": "WARNING: You are setting an auto sell trigger with no minimum sell price threshold",
     "auto-sell-override": "Auto-Sell has been updated to override your Max gas fee if required to prevent vault liquidation. To make use of this protection, please remove your Auto-sell and create a new one. You are eligible for a gas cost refund, please contact <0>support@summer.fi</0>",
     "auto-sell-target-close-to-auto-buy-trigger": "Setting a higher Target Ratio would trigger your existing Auto-Buy. If you want to use a higher trigger ratio, please adjust your Auto-Buy trigger first.",
     "auto-sell-trigger-close-to-stop-loss-trigger": "Setting a lower Trigger Ratio would trigger your existing Stop-Loss. If you want to use a lower trigger ratio, please adjust your Stop-Loss trigger first.",
-    "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please decrease your trigger ratio",
+    "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please increase your trigger ratio",
     "auto-take-profit-trigger-lower-than-auto-buy-trigger": "Setting your Target Price at this level may result in your Auto-Buy not executing. Find out more <0>here</0>.",
     "auto-take-profit-trigger-lower-than-constant-multiple-buy-trigger": "Setting your Target Price at this level may result in your Constant Multiple Buy Trigger not executing. Find out more <0>here</0>.",
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
@@ -1573,6 +1581,7 @@
     "setup-stop-loss": {
       "header": "Protect against unnecessary losses",
       "content": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either Dai or {{token}} at your desired Price or Collateral level. Find out more about how it works",
+      "content-generic": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either collateral or debt token at your desired Price or Collateral level. Find out more about how it works",
       "button": "Setup Stop-Loss"
     },
     "get-protection": {
@@ -2143,10 +2152,14 @@
     "cancelling-form-title": "Cancelling Auto-Sell",
     "col-to-be-sold": "{{token}} to be sold at next sell",
     "coll-ratio-too-high": "Auto-Sell is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Sell.",
+    "ltv-too-low-for-auto-sell": "Auto-Sell is not available as your Loan to Value is too low. Please <0>increase your Loan to value</0> above 1% before using Auto-Sell.",
+    "ltv-too-low-for-auto-buy": "Auto-Buy is not available as your Loan to Value is too low. Please <0>increase your Loan to Value</0> above 1% before using Auto-Buy.",
+
     "collateral-after-next-sell": "Collateral after next sell",
     "confirmation": "Confirm your auto-sell setup.",
     "continual-sell-no-threshold": "Recurring sell order with no min",
     "continual-sell-threshold": "Recurring sell order down to {{amount}}/{{token}}",
+    "continual-sell-threshold-v2": "Recurring sell order down to {{amount}} {{denomination}}",
     "edit-form-title": "Edit Auto-Sell",
     "estimated-transaction-cost": "Estimated transaction cost",
     "next-sell-price": "Next sell price: {{amount}}",
@@ -2160,6 +2173,7 @@
     "set-trigger-description": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}, with a min sell price of ${{minSellPrice}}/{{token}}. Learn More ",
     "set-trigger-description-ltv": "You are creating a recurring sell action to trigger at a LTV of {{executionLTV}}%, decreasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at ${{executionPrice}} {{denomination}}, with a min sell price of ${{minSellPrice}} {{denomination}}. Learn More ",
     "set-trigger-description-ltv-no-threshold": "You are creating a recurring sell action to trigger at a LTV of {{executionLTV}}%, decreasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at ${{executionPrice}} {{denomination}}. With no min sell price. Learn More ",
+    "set-trigger-description-ltv-without-threshold": "You are creating a recurring sell action to trigger at a LTV of {{executionLTV}}%, decreasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at ${{executionPrice}} {{denomination}}. Learn More ",
     "set-trigger-description-no-threshold": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min sell price. Learn More ",
     "setting-form-title": "Setting Auto-Sell",
     "setup-transaction-cost": "Setup transaction cost",
@@ -2190,6 +2204,7 @@
     "confirmation-text": "Confirm your Auto-Buy setup.",
     "form-title": "Auto-Buy Setup",
     "continual-buy-threshold": "Recurring buy order up to {{amount}}/{{token}}",
+    "continual-buy-threshold-v2": "Recurring buy order up to {{amount}} {{denomination}}",
     "continual-buy-no-threshold": "Recurring buy order with no max",
     "min-ratio": "min. ratio with Stop-Loss/Auto-Sell",
     "next-buy-price": "Next buy price: {{amount}}",
@@ -2242,6 +2257,7 @@
     "set-trigger-description-ltv": "You are creating a recurring Buy action to trigger at a LTV of {{executionLTV}}%, increasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at {{executionPrice}} {{denomination}}, with a Max Buy price of {{maxBuyPrice}} {{denomination}}. Learn More ",
     "set-trigger-description-no-threshold": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min buy price. Learn More ",
     "set-trigger-description-ltv-no-threshold": "You are creating a recurring Buy action to trigger at a LTV of {{executionLTV}}%, increasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at {{executionPrice}} {{denomination}}. With no min buy price. Learn More ",
+    "set-trigger-description-ltv-without-threshold": "You are creating a recurring Buy action to trigger at a LTV of {{executionLTV}}%, increasing it to your Target LTV of {{targetLTV}}%. Initially it will execute with at {{executionPrice}} {{denomination}}. Learn More ",
     "sl-too-high": "Auto-Buy is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Buy.",
     "coll-ratio-too-high": "Auto-Buy is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Buy."
   },
@@ -3060,6 +3076,12 @@
             "transaction": "Confirm your Morpho {{productType}} Position",
             "transition": "Switch your Morpho {{productType}} Position"
           }
+        },
+        "notifications": {
+          "got-liquidated": {
+            "title": "This position got liquidated",
+            "message": "The liquidation process is over you can now reclaim any collateral left."
+          }
         }
       }
     }
@@ -3083,6 +3105,7 @@
       "multiply": "Multiply allows you to simply and securely increase your exposure to any crypto asset. Read more about",
       "earn": "Earn long term yields to compound your crypto capital. Read more about"
     },
+    "featured": "Featured",
     "promo-cards": {
       "7-day-avg-apy": "7 day avg APY",
       "active-management": "Active management",
@@ -3207,7 +3230,8 @@
   },
   "aave": {
     "header": {
-      "current-market-price": "Current Market Price"
+      "current-market-price": "Current Market Price",
+      "current-ltv": "Current LTV"
     },
     "errors": {
       "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet.",

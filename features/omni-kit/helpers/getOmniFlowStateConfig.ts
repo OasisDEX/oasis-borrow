@@ -57,6 +57,7 @@ export function getOmniFlowStateConfig({
     case OmniEarnFormAction.WithdrawEarn:
     case OmniMultiplyFormAction.AdjustMultiply:
     case OmniMultiplyFormAction.CloseMultiply:
+    case OmniBorrowFormAction.CloseBorrow:
       return {
         amount: zero,
         token: 'ETH',

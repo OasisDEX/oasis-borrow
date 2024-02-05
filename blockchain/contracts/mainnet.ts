@@ -204,6 +204,9 @@ export const mainnetContracts = {
     'WSTETH-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHUSDC),
     'YFI-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YFIDAI),
+    'STYETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_STYETHDAI),
+    'RBN-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RBNETH),
+    'AJNA-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_AJNADAI),
   },
   ajnaOraclessPoolPairs: {
     'YIELDBTC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDBTCWBTC),
@@ -230,6 +233,7 @@ export const mainnetContracts = {
     apiKey: '',
   },
   SdaiOracle: contractDesc(ajnaPoolInfo, mainnet.common.SdaiOracle),
+  WSTETHOracle: contractDesc(ajnaPoolInfo, mainnet.common.WSTETHOracle),
 }
 
 type DeprecatedProperties = {

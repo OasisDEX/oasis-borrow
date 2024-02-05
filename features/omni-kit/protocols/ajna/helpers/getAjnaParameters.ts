@@ -2,8 +2,8 @@ import type {
   AjnaCommonDependencies,
   AjnaCommonPayload,
   AjnaPosition,
-  AjnaStrategy,
   Network,
+  SummerStrategy,
 } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
@@ -81,7 +81,7 @@ export async function getAjnaParameters({
   slippage,
   state,
   walletAddress,
-}: AjnaTxHandlerInput): Promise<AjnaStrategy<OmniGenericPosition> | undefined> {
+}: AjnaTxHandlerInput): Promise<SummerStrategy<OmniGenericPosition> | undefined> {
   const defaultPromise = Promise.resolve(undefined)
 
   const { action, dpmAddress } = state

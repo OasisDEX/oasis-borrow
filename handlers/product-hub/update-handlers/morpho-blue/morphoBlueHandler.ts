@@ -7,7 +7,9 @@ import type { Tickers } from 'blockchain/prices.types'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
-import { morphoMarkets } from 'features/omni-kit/protocols/morpho-blue/settings'
+import { isShortPosition } from 'features/omni-kit/helpers'
+import { isPoolSupportingMultiply } from 'features/omni-kit/protocols/ajna/helpers'
+import { morphoMarkets, settings } from 'features/omni-kit/protocols/morpho-blue/settings'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { ProductHubProductType, type ProductHubSupportedNetworks } from 'features/productHub/types'
 import { getTokenGroup } from 'handlers/product-hub/helpers'
@@ -15,6 +17,7 @@ import type {
   ProductHubHandlerResponse,
   ProductHubHandlerResponseData,
 } from 'handlers/product-hub/types'
+import { one, zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import {
@@ -82,6 +85,19 @@ async function getMorphoMarketData(
         const primaryTokenGroup = getTokenGroup(collateralToken)
         const secondaryTokenGroup = getTokenGroup(quoteToken)
 
+        const isWithMultiply = isPoolSupportingMultiply({
+          collateralToken,
+          quoteToken,
+          supportedTokens: settings.supportedMultiplyTokens[networkId],
+        })
+
+        const isShort = isShortPosition({ collateralToken })
+        const multiplyStrategy = isShort ? `Short ${quoteToken}` : `Long ${collateralToken}`
+        const multiplyStrategyType = isShort ? 'short' : 'long'
+        const maxMultiply = BigNumber.max(
+          one.plus(one.div(one.div(maxLtv).minus(one))),
+          zero,
+        ).toString()
         return {
           table: [
             ...(await v).table,
@@ -90,15 +106,21 @@ async function getMorphoMarketData(
               network,
               primaryToken: collateralToken,
               ...(primaryTokenGroup !== collateralToken && { primaryTokenGroup }),
-              product: [ProductHubProductType.Borrow],
+              product: [
+                ProductHubProductType.Borrow,
+                ...(isWithMultiply ? [ProductHubProductType.Multiply] : []),
+              ],
               protocol,
               secondaryToken: quoteToken,
               ...(secondaryTokenGroup !== quoteToken && { secondaryTokenGroup }),
               fee,
               liquidity,
               maxLtv,
+              maxMultiply,
               primaryTokenAddress,
               secondaryTokenAddress,
+              multiplyStrategy,
+              multiplyStrategyType,
             },
           ],
           warnings: [],

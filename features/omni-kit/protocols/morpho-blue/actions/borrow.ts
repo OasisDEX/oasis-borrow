@@ -34,12 +34,11 @@ export const morphoActionDepositBorrow = ({
   commonPayload,
   dependencies,
 }: {
-  state: OmniBorrowFormState
+  state: Pick<OmniBorrowFormState, 'depositAmount' | 'generateAmount'>
   commonPayload: MorphoblueDepositBorrowPayload
   dependencies: MorphoBlueCommonDependencies
 }) => {
   const { depositAmount, generateAmount } = state
-
   return strategies.morphoblue.borrow.depositBorrow(
     {
       ...commonPayload,
@@ -56,7 +55,7 @@ export const morphoActionPaybackWithdraw = ({
   dependencies,
   quoteBalance,
 }: {
-  state: OmniBorrowFormState
+  state: Pick<OmniBorrowFormState, 'withdrawAmount' | 'paybackAmount'>
   commonPayload: MorphoblueDepositBorrowPayload
   dependencies: MorphoBlueCommonDependencies
   quoteBalance: BigNumber

@@ -765,6 +765,18 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
+"@contentful/rich-text-react-renderer@15.19.4":
+  version "15.19.4"
+  resolved "https://registry.yarnpkg.com/@contentful/rich-text-react-renderer/-/rich-text-react-renderer-15.19.4.tgz#129a4040e9ac3115a0936dcc36a8d6868e504f85"
+  integrity sha512-pXBX0utaXLdkloQautphPi6cMWSDU99NwM8oLWwExyNhOzKB2DN0resnp/ZmXj728He7aYXX48VA1nVTRqS77g==
+  dependencies:
+    "@contentful/rich-text-types" "^16.3.4"
+
+"@contentful/rich-text-types@16.3.4", "@contentful/rich-text-types@^16.3.4":
+  version "16.3.4"
+  resolved "https://registry.yarnpkg.com/@contentful/rich-text-types/-/rich-text-types-16.3.4.tgz#c5fc9c834dde03d4c4ee189900d304ce1888a74b"
+  integrity sha512-PyVSrQa5j1hO4grgA0Ivo/taiOvW0uFN79JB5JkTG8U7DnWGI7Ap2As6zN6/E6YvDqb7w2cYRMSGSQ3qfxu8HQ==
+
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz#00629c35a688e05a88b1cda684fb9d5e73f000a1"
@@ -2492,22 +2504,22 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@oasisdex/addresses@0.1.35":
-  version "0.1.35"
-  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.35.tgz#37545c2bb8d35afcd1a469be210c6f6ffa59165b"
-  integrity sha512-OagPU3f4F9/0/FAGZBbC765IRIkrj3d2nRL4HESK+d7ptZ+Cerj8XjNiVrhV4E0F82x8MNXLYe7eLCcZOyIuYQ==
+"@oasisdex/addresses@0.1.38":
+  version "0.1.38"
+  resolved "https://registry.yarnpkg.com/@oasisdex/addresses/-/addresses-0.1.38.tgz#ff0583f42c0dd26279cd1493d680fdc462597132"
+  integrity sha512-SOONyX9fJJGhGcvNaR95s3MglEHNeUoRBKBi3AVmwFLaOWrJ+pSEYmzTQPtU1tw3fNn2z6hV4bg91NWW3Xe28g==
 
-"@oasisdex/automation@^1.5.9-alpha5":
-  version "1.5.9-alpha5"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.5.9-alpha5.tgz#9b2a31ae06b280cfd3a4728ec2be82c0944eac75"
-  integrity sha512-uWCL3BCNH+SclAJ5goWABlJovQBx9HtARi+fGjkUD/zxyeVwJjLY69827KIPmAtIn8B+3xmI3WbuFQJoioSsVw==
+"@oasisdex/automation@1.6.0-alpha.9":
+  version "1.6.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.6.0-alpha.9.tgz#71ac502060f664f205458f1944c7a32963a80bb2"
+  integrity sha512-dTW4m8pkqKy9IfxG/wTxHRzy1S4qnb7ww2WZV+AybApmJLOmCgtNUBU0xuauihvPYt0HqeVOBCanGicpU+xurw==
   dependencies:
     ethers "^5.6.2"
 
-"@oasisdex/dma-library@0.6.10":
-  version "0.6.10"
-  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.10.tgz#daf0a0f502e66efb5023789e77408dca853d43ef"
-  integrity sha512-iDWW3rHUo+vD40cCNVn7u9sRynq5McFqJtGV1emycLdZLUEnEn50dhph1FvH6lkNOcGiVIYYQcC2PJrRevY6zg==
+"@oasisdex/dma-library@0.6.15":
+  version "0.6.15"
+  resolved "https://registry.yarnpkg.com/@oasisdex/dma-library/-/dma-library-0.6.15.tgz#2faccab9ec1095027c864a77df8e22cfe8e4f780"
+  integrity sha512-u0ePHZ5uFYvJ8ub2KZN30ZHIpz02EXZyZFWjucAGhxT2NDb8FIFRXEDFPVMfz6G8ljQXeICtrEdYNU0oNukWMg==
   dependencies:
     bignumber.js "9.0.1"
     ethers "^5.7.2"

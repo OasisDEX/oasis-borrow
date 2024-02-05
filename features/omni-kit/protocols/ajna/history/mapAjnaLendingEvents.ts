@@ -1,8 +1,6 @@
-import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
+import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 
-export const mapAjnaBorrowishEvents = (
-  events: AjnaUnifiedHistoryEvent[],
-): Partial<AjnaUnifiedHistoryEvent>[] => {
+export const mapAjnaLendingEvents = (events: AjnaHistoryEvent[]): Partial<AjnaHistoryEvent>[] => {
   const mappedEvents = events.map((event) => {
     const basicData = {
       kind: event.kind,

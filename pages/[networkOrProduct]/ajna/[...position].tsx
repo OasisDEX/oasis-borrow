@@ -6,7 +6,7 @@ import { ajnaSeoTags } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { OmniProductController } from 'features/omni-kit/controllers'
 import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
-import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
+import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import { useAjnaData } from 'features/omni-kit/protocols/ajna/hooks/useAjnaData'
 import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
 import { settings } from 'features/omni-kit/protocols/ajna/settings'
@@ -31,15 +31,14 @@ function AjnaPositionPage(props: AjnaPositionPageProps) {
   return (
     <AjnaLayout>
       <ProductContextHandler>
-        <OmniProductController<AjnaPositionAuction, AjnaUnifiedHistoryEvent[], AjnaGenericPosition>
+        <OmniProductController<AjnaPositionAuction, AjnaHistoryEvent[], AjnaGenericPosition>
           {...props}
           customState={AjnaCustomStateProvider}
           isOracless={isOracless}
           protocol={LendingProtocol.Ajna}
           protocolHook={useAjnaData}
-          protocolRaw={settings.rawName[props.networkId] as string}
           seoTags={ajnaSeoTags}
-          steps={settings.steps}
+          settings={settings}
         />
       </ProductContextHandler>
     </AjnaLayout>
