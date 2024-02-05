@@ -38,7 +38,7 @@ export type PortfolioPosition = {
   primaryToken: string
   protocol: LendingProtocol
   secondaryToken: string
-  type: OmniProductType
+  type?: OmniProductType
   url: string
   debuggingData?: any
 }
