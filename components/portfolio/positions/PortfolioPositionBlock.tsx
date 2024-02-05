@@ -31,8 +31,10 @@ const getMigrationGradientsPerProtocol = (
     case LendingProtocol.SparkV3:
       return {
         gradientText: 'linear-gradient(159deg, #F58013 12.26%, #F19D19 86.52%)',
-        gradientBorder: '#F58013',
+        gradientBorder:
+          'linear-gradient(white 0 0) padding-box, linear-gradient(159.01deg, #F58013 12.26%, #F19D19 86.52%) border-box',
       }
+
     default:
       console.error(`Not implemented protocol ${protocol}`)
       return {
@@ -89,6 +91,18 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
           className="position-app-link heading-with-effect"
           variant="boldParagraph3"
           color={'neutral80'}
+          sx={{
+            '&::after': {
+              content: 'attr(data-value)',
+              position: 'absolute',
+              top: '0px',
+              left: '0px',
+              opacity: 0,
+              transition: 'opacity 600ms ease 0s',
+              backgroundClip: 'text',
+              backgroundImage: 'linear-gradient(90deg, rgb(24, 89, 242) 0%, rgb(0, 55, 138) 100%)',
+            },
+          }}
         >
           {position.availableToMigrate ? tPortfolio('migrate') : upperFirst(position.type)}
           {position.lendingType && ` - ${tPortfolio(`lending-type.${position.lendingType}`)}`}

@@ -53,11 +53,13 @@ export const useMigrationsClient = () => {
                 {
                   type: 'suppliedTokenBalance' as DetailsTypeCommon,
                   value: collateralAmount.toString(),
+                  symbol: primaryToken,
                 },
                 { type: 'borrowedToken' as DetailsTypeCommon, value: secondaryToken },
                 {
                   type: 'borrowedTokenBalance' as DetailsTypeCommon,
                   value: debtAmount.toString(),
+                  symbol: secondaryToken,
                 },
               ],
               type: OmniProductType.Borrow,
