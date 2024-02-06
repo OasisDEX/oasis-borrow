@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - marcinciarka/next-bundle-analyze-workflow-fix-2
+      - marcinciarka/sc-14044/fe-new-stop-loss-view-on-opening-a-position
   workflow_dispatch:
 
 defaults:
