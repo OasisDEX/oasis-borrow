@@ -44,8 +44,7 @@ jobs:
       - name: Echo github event
         env:
           EVENT_OBJ: ${{ toJson(github.event) }}
-        steps:
-          - run: echo $EVENT_OBJ
+        run: echo $EVENT_OBJ
 
       - name: Run postinstall
         env:
