@@ -47,7 +47,7 @@ const filterEmptyPosition =
 
 export const PortfolioPositionsView = ({
   address,
-  migrationPositions = [],
+  migrationPositions,
   blogPosts,
   isOwner,
   portfolioPositionsData,
@@ -70,7 +70,7 @@ export const PortfolioPositionsView = ({
     }
 
   const filteredEmptyPositions = useMemo(() => {
-    if (!portfolioPositionsData) return undefined
+    if (!portfolioPositionsData || !migrationPositions) return undefined
 
     const allPositions = [
       ...portfolioPositionsData.positions,
