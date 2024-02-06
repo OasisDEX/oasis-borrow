@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/networks'
+import { getMigrationLink } from 'features/migrations/getMigrationLink'
 import {
   LendingProtocolByProtocolId,
   type PortfolioMigrationsResponse,
@@ -65,7 +66,11 @@ export const useMigrationsClient = () => {
                   },
                 ],
                 type: undefined,
-                url: 'TODO migration link',
+                url: getMigrationLink({
+                  protocolId: migration.protocolId,
+                  chainId: migration.chainId,
+                  address,
+                }),
                 automations: {},
                 netValue,
               }
