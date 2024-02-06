@@ -121,7 +121,7 @@ export const PortfolioPositionBlock = ({ position }: { position: PortfolioPositi
         }
         description={
           position.availableToMigrate
-            ? `${LendingProtocolLabel[position.protocol]} ${position.type}`
+            ? `${LendingProtocolLabel[position.protocol]} ${position.type ?? ''}`
             : position.description
         }
       />
