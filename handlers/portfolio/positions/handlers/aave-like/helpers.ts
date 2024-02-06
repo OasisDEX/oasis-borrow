@@ -8,6 +8,7 @@ import type { SparkV3SupportedNetwork } from 'blockchain/spark-v3'
 import { getSparkV3ReserveConfigurationData, getSparkV3ReserveData } from 'blockchain/spark-v3'
 import type { OmniProductBorrowishType } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
+import { emptyAutomations } from 'handlers/portfolio/constants'
 import type { AaveLikeOraclePriceData } from 'handlers/portfolio/positions/handlers/aave-like/types'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import {
@@ -126,12 +127,13 @@ export const commonDataMapper = ({
         }[dpm.protocol]
       }/${dpm.vaultId}`,
       automations: {
-        ...(dpm.positionType !== OmniProductType.Earn &&
-          automations && {
-            ...getPositionsAutomations({
-              triggers: [automations.triggers],
-            }),
-          }),
+        ...(dpm.positionType !== OmniProductType.Earn && automations
+          ? {
+              ...getPositionsAutomations({
+                triggers: [automations.triggers],
+              }),
+            }
+          : emptyAutomations),
       },
     },
     primaryTokenPrice: primaryTokenOraclePrice || primaryTokenTickerPrice,
