@@ -29,13 +29,20 @@ export async function getTokensPrices(retries: number = 0): Promise<TokensPrices
     return {
       tokens: Object.keys(tokensBySymbol)
         .filter((key) => getTokenPriceSources(key).filter((item) => item !== undefined).length)
-        .reduce<{ [key: string]: number }>(
-          (result, current) => ({
+        .reduce<{ [key: string]: number }>((result, current) => {
+          let value = new BigNumber(0)
+          try {
+            value = getTokenPrice(current, tickers, 'getTokensPrices')
+          } catch (e) {
+            // When ticker value is not found we will log error and fallback to 0
+            console.error('Error getTokenPrice for token: ' + current)
+          }
+
+          return {
             ...result,
-            [current]: getTokenPrice(current, tickers).toNumber(),
-          }),
-          {},
-        ),
+            [current]: value.toNumber(),
+          }
+        }, {}),
     }
   } catch (e) {
     console.info('Error loading one of the prices')

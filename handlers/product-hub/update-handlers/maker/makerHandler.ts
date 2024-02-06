@@ -50,7 +50,7 @@ async function getMakerData(
   const SpotContract = SpotFactory.connect(SpotContractAddress, rpcProvider)
   const PotContractAddress = getNetworkContracts(networkId).mcdPot.address
   const PotContract = PotFactory.connect(PotContractAddress, rpcProvider)
-  const daiPrice = new BigNumber(getTokenPrice('DAI', tickers))
+  const daiPrice = new BigNumber(getTokenPrice('DAI', tickers, 'makerHandler'))
 
   const ilksListWithHexValues = makerProductHubProducts.reduce((acc, product) => {
     const ilk = getIlk(product.label)
