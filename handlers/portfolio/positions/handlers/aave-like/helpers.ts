@@ -104,7 +104,6 @@ export const commonDataMapper = ({
         defaultType: dpm.positionType as OmniProductBorrowishType,
       })
     : dpm.positionType
-
   return {
     commonData: {
       positionId: positionIdAsString ? dpm.vaultId : Number(dpm.vaultId),
@@ -129,9 +128,7 @@ export const commonDataMapper = ({
       automations: {
         ...(dpm.positionType !== OmniProductType.Earn &&
           automations && {
-            stopLoss: { enabled: false },
             ...getPositionsAutomations({
-              networkId: dpm.networkId,
               triggers: [automations.triggers],
             }),
           }),

@@ -1,10 +1,9 @@
-import { decodeTriggerDataAsJson, TriggerType } from '@oasisdex/automation'
-import type { NetworkIds } from 'blockchain/networks'
+import { TriggerType } from '@oasisdex/automation'
+import { emptyAutomations } from 'handlers/portfolio/constants'
 import type { MakerDiscoverPositionsTrigger } from 'handlers/portfolio/positions/handlers/maker/types'
 import type { PortfolioPositionAutomations } from 'handlers/portfolio/types'
 
 interface getPositionsAutomationsParams {
-  networkId: NetworkIds
   triggers: MakerDiscoverPositionsTrigger[]
 }
 
@@ -41,28 +40,24 @@ const triggerTypesMap = {
 }
 
 export function getPositionsAutomations({
-  networkId,
   triggers,
 }: getPositionsAutomationsParams): PortfolioPositionAutomations {
   return triggers
     .filter(({ executedBlock, removedBlock }) => executedBlock === null && removedBlock === null)
-    .reduce((automations, { commandAddress, triggerData }) => {
-      const decodedTrigger = decodeTriggerDataAsJson(commandAddress, networkId, triggerData)
-      const triggerType = Number(
-        'triggerType' in decodedTrigger ? decodedTrigger.triggerType : decodedTrigger,
-      ) as TriggerType
-
+    .reduce((automations, { triggerType }) => {
       return {
         ...automations,
         ...Object.keys(triggerTypesMap).reduce(
           (result, key) => ({
             ...result,
-            ...(triggerTypesMap[key as keyof typeof triggerTypesMap].includes(triggerType) && {
+            ...(triggerTypesMap[key as keyof typeof triggerTypesMap].includes(
+              Number(triggerType),
+            ) && {
               [key]: { enabled: true },
             }),
           }),
           {},
         ),
       }
-    }, {})
+    }, emptyAutomations)
 }
