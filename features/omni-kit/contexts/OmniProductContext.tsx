@@ -1,11 +1,11 @@
 import type { LendingPosition, Strategy, SupplyPosition, SwapData } from '@oasisdex/dma-library'
-import { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 import { useProductContext } from 'components/context/ProductContextProvider'
 import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
 import type { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import type { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
+import { getOmniValidations } from 'features/omni-kit/helpers'
 import { formatSwapData } from 'features/omni-kit/protocols/ajna/helpers'
 import type { OmniBorrowFormState, useOmniBorrowFormReducto } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState, useOmniEarnFormReducto } from 'features/omni-kit/state/earn'
@@ -15,7 +15,6 @@ import type {
 } from 'features/omni-kit/state/multiply'
 import type {
   OmniGenericPosition,
-  OmniIsCachedPosition,
   OmniSimulationCommon,
   OmniValidations,
 } from 'features/omni-kit/types'
@@ -66,6 +65,8 @@ interface CommonMetadataElements {
   riskSidebar?: ReactNode
 }
 
+export type ShouldShowDynamicLtvMetadata = (params: { includeCache: boolean }) => boolean
+
 export type LendingMetadata = CommonMetadata & {
   handlers?: OmniLendingMetadataHandlers
   values: CommonMetadataValues & {
@@ -73,11 +74,12 @@ export type LendingMetadata = CommonMetadata & {
     afterBuyingPower: BigNumber | undefined
     afterPositionDebt: BigNumber | undefined
     changeVariant: 'positive' | 'negative'
-    collateralMax: BigNumber
+    withdrawMax: BigNumber
     debtMax: BigNumber
     debtMin: BigNumber
     paybackMax: BigNumber
-    shouldShowDynamicLtv: boolean
+    shouldShowDynamicLtv: ShouldShowDynamicLtvMetadata
+    maxSliderAsMaxLtv?: boolean
   }
   elements: CommonMetadataElements & {
     highlighterOrderInformation: ReactNode
@@ -95,7 +97,7 @@ export type SupplyMetadata = CommonMetadata & {
   elements: CommonMetadataElements & {
     earnExtraUiDropdownContent?: ReactNode
     earnFormOrder: ReactNode
-    earnFormOrderAsElement: FC<OmniIsCachedPosition>
+    earnFormOrderAsElement: FC
     extraEarnInput?: ReactNode
     extraEarnInputDeposit?: ReactNode
     extraEarnInputWithdraw?: ReactNode
@@ -155,7 +157,7 @@ interface OmniValidationMessage {
   data?: { [key: string]: string | number }
 }
 
-type OmniSimulationData<Position> = Strategy<Position>['simulation'] & {
+export type OmniSimulationData<Position> = Strategy<Position>['simulation'] & {
   errors: OmniValidationMessage[]
   warnings: OmniValidationMessage[]
   notices: OmniValidationMessage[]
@@ -260,6 +262,10 @@ export function OmniProductContextProvider({
       ethPrice,
       quoteBalance,
       quotePrecision,
+      collateralToken,
+      quoteToken,
+      isOpening,
+      gasEstimation,
     },
     steps: { currentStep },
     tx: { txDetails },
@@ -282,7 +288,7 @@ export function OmniProductContextProvider({
 
   // We need to determine the direction of the swap based on change in position risk
   let isIncreasingPositionRisk = true
-  if (isAjnaPosition(simulation?.position) && isAjnaPosition(position) && simulation) {
+  if (simulation && 'riskRatio' in simulation.position && 'riskRatio' in position) {
     isIncreasingPositionRisk = simulation.position.riskRatio.loanToValue.gte(
       position.riskRatio.loanToValue,
     )
@@ -296,10 +302,24 @@ export function OmniProductContextProvider({
       form,
       position: {
         simulationCommon: {
-          errors: simulation?.errors as OmniSimulationCommon['errors'],
-          warnings: simulation?.warnings as OmniSimulationCommon['warnings'],
-          notices: simulation?.notices as OmniSimulationCommon['notices'],
-          successes: simulation?.successes as OmniSimulationCommon['successes'],
+          getValidations: getOmniValidations({
+            collateralBalance,
+            collateralToken,
+            currentStep,
+            ethBalance,
+            ethPrice,
+            gasEstimationUsd: gasEstimation?.usdValue,
+            isOpening,
+            position,
+            productType,
+            quoteBalance,
+            quoteToken,
+            simulationErrors: simulation?.errors as OmniSimulationCommon['errors'],
+            simulationWarnings: simulation?.warnings as OmniSimulationCommon['warnings'],
+            simulationNotices: simulation?.notices as OmniSimulationCommon['notices'],
+            simulationSuccesses: simulation?.successes as OmniSimulationCommon['successes'],
+            state,
+          }),
         },
         setCachedPosition: (positionSet: PositionSet<typeof position>) =>
           setCachedPosition(positionSet),
@@ -384,8 +404,4 @@ export function OmniProductContextProvider({
         </multiplyContext.Provider>
       )
   }
-}
-
-function isAjnaPosition(position: any): position is AjnaPosition {
-  return position instanceof AjnaPosition && typeof position.riskRatio === 'object'
 }

@@ -6,7 +6,8 @@ import {
   estimateGas,
 } from 'blockchain/calls/callsHelpers'
 import type { ContextConnected } from 'blockchain/network.types'
-import type { GasPriceParams } from 'blockchain/prices.types'
+import type { NetworkIds } from 'blockchain/networks'
+import type { GasPrice$ } from 'blockchain/prices.types'
 import { getGasMultiplier } from 'helpers/getGasMultiplier'
 import type { Observable } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
@@ -17,7 +18,7 @@ import type { TxHelpers$ } from './context/TxHelpers'
 export function createTxHelpers$(
   context$: Observable<ContextConnected>,
   send: SendFunction<TxData>,
-  gasPrice$: Observable<GasPriceParams>,
+  gasPrice$: (networkId: NetworkIds) => GasPrice$,
 ): TxHelpers$ {
   return context$.pipe(
     filter(({ status }) => status === 'connected'),
@@ -26,7 +27,7 @@ export function createTxHelpers$(
       sendWithGasEstimation: createSendWithGasConstraints(
         send,
         context,
-        gasPrice$,
+        gasPrice$(context.chainId),
         getGasMultiplier(context),
       ),
       estimateGas: <B extends TxData>(def: TransactionDef<B>, args: B): Observable<number> => {

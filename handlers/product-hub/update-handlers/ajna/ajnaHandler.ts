@@ -14,6 +14,7 @@ import {
   isPoolSupportingMultiply,
   isPoolWithRewards,
 } from 'features/omni-kit/protocols/ajna/helpers'
+import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
 import {
   productHubAjnaRewardsTooltip,
   productHubEmptyPoolMaxLtvTooltip,
@@ -48,7 +49,10 @@ async function getAjnaPoolData(
   const prices = uniq(
     Object.keys(getNetworkContracts(networkId).ajnaPoolPairs).flatMap((pair) => pair.split('-')),
   ).reduce<Tickers>(
-    (v, token) => ({ ...v, [token]: new BigNumber(getTokenPrice(token, tickers)) }),
+    (v, token) => ({
+      ...v,
+      [token]: new BigNumber(getTokenPrice(token, tickers, 'ajnaHandler')),
+    }),
     {},
   )
 
@@ -97,8 +101,8 @@ async function getAjnaPoolData(
           // const isYieldLoop = isYieldLoopPool({ collateralToken, quoteToken })
           const isWithMultiply = isPoolSupportingMultiply({
             collateralToken,
-            networkId,
             quoteToken,
+            supportedTokens: ajnaSettings.supportedMultiplyTokens[networkId],
           })
           const collateralPrice = isOracless ? one : prices[collateralToken]
           const quotePrice = isOracless ? one : prices[quoteToken]

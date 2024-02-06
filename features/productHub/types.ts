@@ -109,3 +109,11 @@ export interface ProductHubQueryString {
   secondaryToken?: ProductHubTokenType[]
   strategy?: ProductHubMultiplyStrategyType[]
 }
+
+export interface ProductFinderPromoCardFilters {
+  network: ProductHubSupportedNetworks
+  primaryToken: string
+  product: ProductHubProductType
+  protocol: LendingProtocol
+  secondaryToken: ProductHubTokenType
+}

@@ -1,4 +1,4 @@
-import type { AjnaStrategy } from '@oasisdex/dma-library'
+import type { SummerStrategy } from '@oasisdex/dma-library'
 import type { TxMeta, TxState } from '@oasisdex/transactions'
 import { TxStatus } from '@oasisdex/transactions'
 import type { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -30,8 +30,8 @@ export function useOmniTxHandler<CustomState>({
   onSuccess,
   customState,
 }: {
-  getOmniParameters: () => Promise<AjnaStrategy<OmniGenericPosition> | undefined>
-  customState: CustomState
+  getOmniParameters: () => Promise<SummerStrategy<OmniGenericPosition> | undefined>
+  customState?: CustomState
   onSuccess?: () => void // for resetting custom state
 }): () => void {
   const { connectedContext$ } = useMainContext()
@@ -40,7 +40,7 @@ export function useOmniTxHandler<CustomState>({
 
   const {
     tx: { setTxDetails, setGasEstimation },
-    environment: { ethPrice, productType, slippage, networkId, gasPrice },
+    environment: { ethPrice, productType, slippage, networkId },
     steps: { isExternalStep, currentStep },
   } = useOmniGeneralContext()
   const {
@@ -60,7 +60,7 @@ export function useOmniTxHandler<CustomState>({
 
   const [txData, setTxData] = useState<OmniTxData>()
   const [cancelablePromise, setCancelablePromise] =
-    useState<CancelablePromise<AjnaStrategy<typeof position> | undefined>>()
+    useState<CancelablePromise<SummerStrategy<typeof position> | undefined>>()
 
   const { dpmAddress: proxyAddress } = state
 
@@ -89,12 +89,10 @@ export function useOmniTxHandler<CustomState>({
               setSimulation(data.simulation)
               setIsLoadingSimulation(false)
               estimateOmniGas$({
-                signer,
                 networkId,
-                txData: data.tx,
                 proxyAddress,
-                gasPrice,
-                ethPrice,
+                signer,
+                txData: data.tx,
               }).subscribe((value) => setGasEstimation(value))
             }
           })

@@ -1,22 +1,19 @@
-import { getNetworkById, getNetworkByName, type NetworkNames } from 'blockchain/networks'
+import { getNetworkById } from 'blockchain/networks'
 import { WithConnection } from 'components/connectWallet'
 import { PageSEOTags } from 'components/HeadTags'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import type { GetOmniMetadata } from 'features/omni-kit/contexts'
 import { OmniGeneralContextProvider, OmniProductContextProvider } from 'features/omni-kit/contexts'
 import { OmniLayoutController } from 'features/omni-kit/controllers'
-import {
-  getOmniHeadlineProps,
-  getOmniProductContextProviderData,
-  isOmniSupportedNetwork,
-} from 'features/omni-kit/helpers'
+import { getOmniHeadlineProps, getOmniProductContextProviderData } from 'features/omni-kit/helpers'
 import { useOmniProtocolData } from 'features/omni-kit/hooks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
-import type { ProductDataProps } from 'features/omni-kit/protocols/ajna/hooks'
 import type {
   OmniFormDefaults,
   OmniProductType,
-  OmniSidebarStepsSet,
+  OmniProtocolHookProps,
+  OmniProtocolSettings,
+  OmniSupportedNetworkIds,
 } from 'features/omni-kit/types'
 import type { PositionHistoryEvent } from 'features/positionHistory/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -48,61 +45,47 @@ interface OmniProductControllerProps<Auction, History, Position> {
   collateralToken: string
   customState?: (params: OmniCustomStateParams<Auction, History, Position>) => ReactNode
   isOracless?: boolean
-  networkName: NetworkNames
+  networkId: OmniSupportedNetworkIds
   positionId?: string
   productType: OmniProductType
   protocol: LendingProtocol
-  protocolRaw: string
-  protocolHook: (params: ProductDataProps) => {
+  protocolHook: (params: OmniProtocolHookProps) => {
     data: {
       aggregatedData: { auction: Auction; history: History } | undefined
       positionData: Position | undefined
     }
     errors: string[]
-    isOracless: boolean
   }
   quoteToken: string
+  settings: OmniProtocolSettings
   seoTags: {
     productKey: string
     descriptionKey: string
   }
-  steps: OmniSidebarStepsSet
 }
 
 export const OmniProductController = <Auction, History, Position>({
   collateralToken,
   customState = ({ children }) => <>{children}</>,
   isOracless = false,
-  networkName,
+  networkId,
   positionId,
   productType,
   protocol,
-  protocolRaw,
   protocolHook,
   quoteToken,
+  settings,
   seoTags,
-  steps,
 }: OmniProductControllerProps<Auction, History, Position>) => {
   const { t } = useTranslation()
 
   const { replace } = useRouter()
   const { chainId, isConnected } = useAccount()
 
-  const positionNetwork = getNetworkByName(networkName)
-  const walletNetwork = getNetworkById(chainId || positionNetwork.id)
-
-  const resolvedNetwork =
-    walletNetwork.testnet && positionNetwork.testnetId === walletNetwork.id
-      ? walletNetwork
-      : positionNetwork
-
-  const resolvedNetworkId = resolvedNetwork.id
-
-  if (!isOmniSupportedNetwork(resolvedNetworkId)) {
-    throw new Error(`Unsupported network: ${resolvedNetwork.name}`)
-  }
-
+  const network = getNetworkById(networkId)
+  const walletNetwork = getNetworkById(chainId || networkId)
   const isOpening = !positionId
+  const protocolRaw = settings.rawName[networkId] as string
 
   const {
     data: {
@@ -124,7 +107,7 @@ export const OmniProductController = <Auction, History, Position>({
     protocol,
     protocolRaw,
     quoteToken,
-    networkId: resolvedNetworkId,
+    networkId,
   })
 
   const {
@@ -133,9 +116,10 @@ export const OmniProductController = <Auction, History, Position>({
   } = protocolHook({
     collateralToken,
     dpmPositionData,
-    networkId: resolvedNetwork.id,
+    networkId,
     quoteToken,
     tokenPriceUSDData,
+    tokensPrecision,
   })
 
   useEffect(() => {
@@ -170,7 +154,7 @@ export const OmniProductController = <Auction, History, Position>({
                     protocol,
                     quoteIcon: tokensIconsData?.quoteToken,
                     quoteToken: dpmPositionData?.quoteToken,
-                    networkName,
+                    networkName: network.name,
                   })}
                 />
               }
@@ -221,13 +205,14 @@ export const OmniProductController = <Auction, History, Position>({
                       isOpening={isOpening}
                       isOracless={!!isOracless}
                       isProxyWithManyPositions={dpmPosition.hasMultiplePositions}
-                      network={resolvedNetwork}
-                      networkId={resolvedNetworkId}
+                      network={network}
+                      networkId={networkId}
                       owner={dpmPosition.user}
                       walletNetwork={walletNetwork}
                       positionId={positionId}
                       productType={castedProductType}
                       protocol={protocol}
+                      protocolRaw={protocolRaw}
                       quoteAddress={dpmPosition.quoteTokenAddress}
                       quoteBalance={isConnected ? quoteBalance : zero}
                       quoteDigits={quoteDigits}
@@ -235,8 +220,9 @@ export const OmniProductController = <Auction, History, Position>({
                       quotePrecision={quotePrecision}
                       quotePrice={isOracless ? one : tokenPriceUSD[dpmPosition.quoteToken]}
                       quoteToken={dpmPosition.quoteToken}
+                      settings={settings}
                       slippage={slippage}
-                      steps={steps[castedProductType][isOpening ? 'setup' : 'manage']}
+                      steps={settings.steps[castedProductType][isOpening ? 'setup' : 'manage']}
                     >
                       {customState({
                         aggregatedData: _aggregatedData,

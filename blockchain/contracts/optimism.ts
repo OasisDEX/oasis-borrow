@@ -40,6 +40,7 @@ import * as mcdJug from 'blockchain/abi/mcd-jug.json'
 import * as mcdPot from 'blockchain/abi/mcd-pot.json'
 import * as mcdSpot from 'blockchain/abi/mcd-spot.json'
 import * as merkleRedeemer from 'blockchain/abi/merkle-redeemer.json'
+import * as morphoBlue from 'blockchain/abi/morpho-blue.json'
 import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.json'
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
@@ -196,6 +197,9 @@ export const optimismContracts: OptimismContracts = {
     'WSTETH-GHO': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_WSTETHUSDC),
     'YFI-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YFIDAI),
+    'STYETH-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_STYETHDAI),
+    'RBN-ETH': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_RBNETH),
+    'AJNA-DAI': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_AJNADAI),
   },
   ajnaOraclessPoolPairs: {
     'YIELDBTC-WBTC': contractDesc(ajnaPool, optimism.ajna.AjnaPoolPairs_YIELDBTCWBTC),
@@ -204,6 +208,8 @@ export const optimismContracts: OptimismContracts = {
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, optimism.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, optimism.ajna.AjnaRewardsReedemer),
   ajnaBonusRedeemer: contractDesc(ajnaBonusRedeemer, optimism.ajna.AjnaBonusRewardsReedemer),
+  morphoBlue: contractDesc(morphoBlue, optimism.morphoblue.MorphoBlue),
+  adaptiveCurveIrm: contractDesc(morphoBlue, optimism.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(balancerVault, optimism.common.BalancerVault),
   // NOT contracts
   cacheApi: 'not-implemented',
@@ -221,4 +227,5 @@ export const optimismContracts: OptimismContracts = {
   },
   gasPriceOracle: contractDesc(gasPriceOracle, '0x420000000000000000000000000000000000000F'),
   SdaiOracle: contractDesc(ajnaPoolInfo, optimism.common.SdaiOracle),
+  WSTETHOracle: contractDesc(ajnaPoolInfo, optimism.common.WSTETHOracle),
 }

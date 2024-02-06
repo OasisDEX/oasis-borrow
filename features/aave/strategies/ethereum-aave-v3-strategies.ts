@@ -14,6 +14,7 @@ import {
 } from 'features/aave/components'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/aave/services'
 import { adjustRiskSliders } from 'features/aave/services/riskSliderConfig'
+import { borrowAndMultiply } from 'features/aave/strategies/common-product-types'
 import type { IStrategyConfig } from 'features/aave/types'
 import { ProductType, ProxyType, StrategyType } from 'features/aave/types'
 import { AutomationFeatures } from 'features/automation/common/types'
@@ -35,201 +36,121 @@ const availableTokenPairs: TokenPairConfig[] = [
     collateral: 'CBETH',
     debt: 'ETH',
     strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Earn]: {
-        featureToggle: FeaturesEnum.AaveV3EarncbETHeth,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-earn',
-            featureToggle: FeaturesEnum.AaveV3EarncbETHeth,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'CBETH',
     debt: 'USDC',
     strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'CBETH',
     debt: 'DAI',
     strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'CBETH',
+    debt: 'GHO',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'CBETH',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'DAI',
     debt: 'ETH',
     strategyType: StrategyType.Short,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'DAI',
+    debt: 'MKR',
+    strategyType: StrategyType.Short,
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'DAI',
     debt: 'WBTC',
     strategyType: StrategyType.Short,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'ETH',
     debt: 'DAI',
     strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'ETH',
     debt: 'USDC',
     strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'LDO',
+    debt: 'USDT',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'LINK',
+    debt: 'DAI',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'LINK',
+    debt: 'GHO',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'LINK',
+    debt: 'USDC',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'LINK',
+    debt: 'USDT',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'LINK',
+    debt: 'ETH',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'MKR',
+    debt: 'DAI',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'RETH',
     debt: 'DAI',
     strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'RETH',
+    debt: 'GHO',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'RETH',
+    debt: 'USDT',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'RETH',
@@ -260,151 +181,127 @@ const availableTokenPairs: TokenPairConfig[] = [
     collateral: 'RETH',
     debt: 'USDC',
     strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'USDC',
     debt: 'ETH',
     strategyType: StrategyType.Short,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'USDC',
     debt: 'WBTC',
     strategyType: StrategyType.Short,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'USDC',
+    debt: 'GHO',
+    strategyType: StrategyType.Short,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'USDC',
+    debt: 'WSTETH',
+    strategyType: StrategyType.Short,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'USDT',
+    debt: 'ETH',
+    strategyType: StrategyType.Short,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'USDC',
+    debt: 'USDT',
+    strategyType: StrategyType.Short,
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'WBTC',
     debt: 'DAI',
     strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'WBTC',
     debt: 'USDC',
     strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'WBTC',
+    debt: 'GHO',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'WBTC',
+    debt: 'LUSD',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'WBTC',
+    debt: 'USDT',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'WBTC',
+    debt: 'ETH',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'ETH',
+    debt: 'GHO',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'ETH',
+    debt: 'USDT',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'ETH',
+    debt: 'WBTC',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'WSTETH',
     debt: 'DAI',
     strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'WSTETH',
+    debt: 'CBETH',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'WSTETH',
+    debt: 'GHO',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'WSTETH',
+    debt: 'LUSD',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'WSTETH',
+    debt: 'RPL',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'WSTETH',
@@ -435,26 +332,31 @@ const availableTokenPairs: TokenPairConfig[] = [
     collateral: 'WSTETH',
     debt: 'USDC',
     strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'SDAI',
+    debt: 'GHO',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'SDAI',
+    debt: 'USDT',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'SDAI',
+    debt: 'WBTC',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
+  },
+  {
+    collateral: 'SDAI',
+    debt: 'ETH',
+    strategyType: StrategyType.Long,
+    productTypes: borrowAndMultiply,
   },
   {
     collateral: 'SDAI',
@@ -560,26 +462,7 @@ const availableTokenPairs: TokenPairConfig[] = [
     collateral: 'WSTETH',
     debt: 'USDT',
     strategyType: StrategyType.Long,
-    productTypes: {
-      [ProductType.Multiply]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-borrow',
-            featureToggle: undefined,
-          },
-        ],
-      },
-      [ProductType.Borrow]: {
-        featureToggle: undefined,
-        additionalManageActions: [
-          {
-            action: 'switch-to-multiply',
-            featureToggle: undefined,
-          },
-        ],
-      },
-    },
+    productTypes: borrowAndMultiply,
   },
 ]
 
@@ -628,10 +511,7 @@ const borrowStrategies: IStrategyConfig[] = availableTokenPairs
       executeTransactionWith: 'ethers' as const,
       strategyType: config.strategyType,
       isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
-        if (config.strategyType === StrategyType.Short) {
-          return false
-        }
-        if (feature === AutomationFeatures.STOP_LOSS) {
+        if (feature === AutomationFeatures.STOP_LOSS && config.strategyType === StrategyType.Long) {
           return true
         }
 
@@ -689,10 +569,7 @@ const multiplyStategies: IStrategyConfig[] = availableTokenPairs
       strategyType: config.strategyType,
       featureToggle: config.productTypes.Multiply.featureToggle,
       isAutomationFeatureEnabled: (feature: AutomationFeatures) => {
-        if (config.strategyType === StrategyType.Short) {
-          return false
-        }
-        if (feature === AutomationFeatures.STOP_LOSS) {
+        if (feature === AutomationFeatures.STOP_LOSS && config.strategyType === StrategyType.Long) {
           return true
         }
 

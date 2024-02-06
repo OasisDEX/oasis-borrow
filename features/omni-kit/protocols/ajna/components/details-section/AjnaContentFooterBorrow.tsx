@@ -1,19 +1,18 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import type { NetworkIds } from 'blockchain/networks'
 import type { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import {
+  OmniCardDataAvailableToBorrow,
+  OmniCardDataAvailableToWithdraw,
   OmniContentCard,
   useOmniCardDataBorrowRate,
   useOmniCardDataNetValue,
   useOmniCardDataTokensValue,
 } from 'features/omni-kit/components/details-section'
-import {
-  useAjnaCardDataAvailableToBorrow,
-  useAjnaCardDataAvailableToWithdrawLending,
-  useAjnaCardDataBorrowRate,
-} from 'features/omni-kit/protocols/ajna/components/details-section'
+import { useAjnaCardDataBorrowRate } from 'features/omni-kit/protocols/ajna/components/details-section'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import React from 'react'
+import { ajnaExtensionTheme } from 'theme'
 
 interface AjnaContentFooterBorrowProps {
   changeVariant?: ChangeVariantType
@@ -22,12 +21,11 @@ interface AjnaContentFooterBorrowProps {
   isOracless: boolean
   isOwner: boolean
   isSimulationLoading?: boolean
-  networkId: NetworkIds
+  networkId: OmniSupportedNetworkIds
   owner: string
   position: AjnaPosition
   quotePrice: BigNumber
   quoteToken: string
-  afterAvailableToBorrow?: BigNumber
   simulation?: AjnaPosition
 }
 
@@ -43,7 +41,6 @@ export function AjnaContentFooterBorrow({
   position,
   quotePrice,
   quoteToken,
-  afterAvailableToBorrow,
   simulation,
 }: AjnaContentFooterBorrowProps) {
   const netValue = position.collateralAmount
@@ -63,16 +60,13 @@ export function AjnaContentFooterBorrow({
     borrowRate: position.pool.interestRate,
   })
   const borrowRateContentCardAjnaData = useAjnaCardDataBorrowRate({
+    borrowRate: position.pool.interestRate,
     collateralToken,
+    debtAmount: position.debtAmount,
     isOwner,
     networkId,
     owner,
     quoteToken,
-    borrowRate: position.pool.interestRate,
-    ...(!isOracless && {
-      quotePrice,
-    }),
-    debtAmount: position.debtAmount,
   })
 
   const netValueContentCardCommonData = useOmniCardDataNetValue({
@@ -85,21 +79,26 @@ export function AjnaContentFooterBorrow({
     tokensAmount: position.collateralAvailable,
     tokensSymbol: collateralToken,
     translationCardName: 'available-to-withdraw',
+    modal: (
+      <OmniCardDataAvailableToWithdraw
+        availableToWithdraw={position.collateralAvailable}
+        tokenSymbol={collateralToken}
+        theme={ajnaExtensionTheme}
+      />
+    ),
   })
-  const availableToWithdrawContentCardAjnaData = useAjnaCardDataAvailableToWithdrawLending({
-    availableToWithdraw: position.collateralAvailable,
-    collateralToken,
-  })
-
   const availableToBorrowContentCardCommonData = useOmniCardDataTokensValue({
-    afterTokensAmount: afterAvailableToBorrow,
+    afterTokensAmount: simulation?.debtAvailable(),
     tokensAmount: position.debtAvailable(),
     tokensSymbol: quoteToken,
     translationCardName: 'available-to-borrow',
-  })
-  const availableToBorrowContentCardAjnaData = useAjnaCardDataAvailableToBorrow({
-    availableToBorrow: position.debtAvailable(),
-    quoteToken,
+    modal: (
+      <OmniCardDataAvailableToBorrow
+        availableToBorrow={position.debtAvailable()}
+        quoteToken={quoteToken}
+        theme={ajnaExtensionTheme}
+      />
+    ),
   })
 
   return (
@@ -113,16 +112,8 @@ export function AjnaContentFooterBorrow({
       {!isOracless && (
         <OmniContentCard {...commonContentCardData} {...netValueContentCardCommonData} />
       )}
-      <OmniContentCard
-        {...commonContentCardData}
-        {...availableToWithdrawContentCardCommonData}
-        {...availableToWithdrawContentCardAjnaData}
-      />
-      <OmniContentCard
-        {...commonContentCardData}
-        {...availableToBorrowContentCardCommonData}
-        {...availableToBorrowContentCardAjnaData}
-      />
+      <OmniContentCard {...commonContentCardData} {...availableToWithdrawContentCardCommonData} />
+      <OmniContentCard {...commonContentCardData} {...availableToBorrowContentCardCommonData} />
     </>
   )
 }

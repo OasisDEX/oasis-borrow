@@ -1,29 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { NetworkIds } from 'blockchain/networks'
-import {
-  omniSidebarManageBorrowishSteps,
-  omniSidebarManageSteps,
-  omniSidebarSetupSteps,
-} from 'features/omni-kit/constants'
-import { OmniSidebarStep, type OmniSidebarStepsSet } from 'features/omni-kit/types'
-
-export const AJNA_RAW_PROTOCOL_NAME = 'Ajna_rc12'
-export const AJNA_SUPPORTED_NETWORKS = [NetworkIds.MAINNET, NetworkIds.BASEMAINNET]
-
-export const ajnaOmniSteps: OmniSidebarStepsSet = {
-  borrow: {
-    setup: [OmniSidebarStep.Risk, ...omniSidebarSetupSteps],
-    manage: omniSidebarManageBorrowishSteps,
-  },
-  earn: {
-    setup: [OmniSidebarStep.Risk, ...omniSidebarSetupSteps],
-    manage: omniSidebarManageSteps,
-  },
-  multiply: {
-    setup: [OmniSidebarStep.Risk, ...omniSidebarSetupSteps],
-    manage: omniSidebarManageBorrowishSteps,
-  },
-}
 
 // safe defaults which should ensure reasonable slider range for newly created pools
 export const ajnaDefaultPoolRangeMarketPriceOffset = 0.99 // 99%

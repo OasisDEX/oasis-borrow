@@ -118,7 +118,10 @@ export function notEnoughETHtoPayForTx({
   }
 
   if (depositAmount && !depositAmount.isZero() && token === 'ETH') {
-    return ethBalance.minus(depositAmount).times(ethPrice).lt(gasEstimationUsd)
+    return (
+      ethBalance.minus(depositAmount).times(ethPrice).lt(gasEstimationUsd) ||
+      ethBalance.eq(depositAmount)
+    )
   }
 
   return ethBalance.times(ethPrice).lt(gasEstimationUsd)

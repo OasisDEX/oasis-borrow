@@ -42,7 +42,15 @@ export async function validateParameters({
 
   const dpm = AccountImplementation__factory.connect(proxyAddress, signer)
 
-  const dpmOwner = await dpm.owner()
+  let dpmOwner = ''
+  try {
+    dpmOwner = await dpm.owner()
+  } catch (e) {
+    throw new Error(
+      `Error getting owner of the proxy. Proxy: ${proxyAddress}. Network: ${networkId}`,
+    )
+  }
+
   const signerAddress = await signer.getAddress()
   if (dpmOwner !== signerAddress) {
     throw new Error(
@@ -160,11 +168,13 @@ export async function estimateGas({
   value,
   to,
 }: DpmOperationParams) {
-  const { dpm } = await validateParameters({ signer, networkId, proxyAddress })
+  await validateParameters({ signer, networkId, proxyAddress })
 
   try {
-    const result = await dpm.estimateGas.execute(to, data, {
+    const result = await signer.estimateGas({
       ...(await getOverrides(signer)),
+      to: to,
+      data: data,
       value: ethers.utils.parseEther(value?.toString() ?? '0').toHexString(),
     })
 
@@ -186,15 +196,17 @@ export async function executeTransaction({
   value,
   to,
 }: DpmOperationParams) {
-  const { dpm } = await validateParameters({ signer, networkId, proxyAddress })
+  await validateParameters({ signer, networkId, proxyAddress })
 
   const dangerTransactionEnabled = isDangerTransactionEnabled()
 
   if (dangerTransactionEnabled.enabled) {
     console.warn(`Danger transaction enabled. Gas limit: ${dangerTransactionEnabled.gasLimit}`)
 
-    return await dpm.execute(to, data, {
+    return await signer.sendTransaction({
       ...(await getOverrides(signer)),
+      to: to,
+      data: data,
       value: ethers.utils.parseEther(value?.toString() ?? '0').toHexString(),
       gasLimit: ethers.BigNumber.from(dangerTransactionEnabled.gasLimit),
     })
@@ -207,8 +219,10 @@ export async function executeTransaction({
     to,
     data,
   })
-  return await dpm.execute(to, data, {
+  return await signer.sendTransaction({
     ...(await getOverrides(signer)),
+    to: to,
+    data: data,
     value: ethers.utils.parseEther(value?.toString() ?? '0').toHexString(),
     gasLimit: gasLimit ?? undefined,
   })

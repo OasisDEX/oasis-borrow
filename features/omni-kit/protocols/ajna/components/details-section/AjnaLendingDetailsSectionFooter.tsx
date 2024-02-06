@@ -1,10 +1,10 @@
 import type { AjnaPosition } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
-import type { NetworkIds } from 'blockchain/networks'
 import {
   AjnaContentFooterBorrow,
   AjnaContentFooterMultiply,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
@@ -16,13 +16,12 @@ interface AjnaLendingDetailsSectionFooterProps {
   isOracless: boolean
   isOwner: boolean
   isSimulationLoading?: boolean
-  networkId: NetworkIds
+  networkId: OmniSupportedNetworkIds
   owner: string
   position: AjnaPosition
   productType: OmniProductType
   quotePrice: BigNumber
   quoteToken: string
-  afterAvailableToBorrow?: BigNumber
   simulation?: AjnaPosition
 }
 
@@ -39,7 +38,6 @@ export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooter
   productType,
   quotePrice,
   quoteToken,
-  afterAvailableToBorrow,
   simulation,
 }) => {
   return productType === OmniProductType.Borrow ? (
@@ -55,7 +53,6 @@ export const AjnaLendingDetailsSectionFooter: FC<AjnaLendingDetailsSectionFooter
       position={position}
       quotePrice={quotePrice}
       quoteToken={quoteToken}
-      afterAvailableToBorrow={afterAvailableToBorrow}
       simulation={simulation}
     />
   ) : (

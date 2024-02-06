@@ -3,6 +3,7 @@ import { aaveV2PositionHandler } from 'handlers/portfolio/positions/handlers/aav
 import { ajnaPositionsHandler } from 'handlers/portfolio/positions/handlers/ajna'
 import { dsrPositionsHandler } from 'handlers/portfolio/positions/handlers/dsr'
 import { makerPositionsHandler } from 'handlers/portfolio/positions/handlers/maker'
+import { morphoPositionsHandler } from 'handlers/portfolio/positions/handlers/morpho-blue'
 import { getPositionsFromDatabase, getTokensPrices } from 'handlers/portfolio/positions/helpers'
 import { getAllDpmsForWallet } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
 import type {
@@ -48,10 +49,11 @@ export const portfolioPositionsHandler = async ({
 
     const payload = {
       address,
-      apiVaults,
       dpmList,
+      apiVaults,
       prices: prices.data.tokens,
       positionsCount,
+      debug,
     }
 
     const positionsReply = await Promise.all([
@@ -60,6 +62,7 @@ export const portfolioPositionsHandler = async ({
       ajnaPositionsHandler(payload),
       dsrPositionsHandler(payload),
       makerPositionsHandler(payload),
+      morphoPositionsHandler(payload),
     ])
       .then(
         ([
@@ -68,6 +71,7 @@ export const portfolioPositionsHandler = async ({
           { positions: ajnaPositions },
           { positions: dsrPositions },
           { positions: makerPositions },
+          { positions: morphoPositions },
         ]) => ({
           positions: [
             ...aaveLikePositions,
@@ -75,6 +79,7 @@ export const portfolioPositionsHandler = async ({
             ...ajnaPositions,
             ...dsrPositions,
             ...makerPositions,
+            ...morphoPositions,
           ],
           error: false,
           ...(debug && {

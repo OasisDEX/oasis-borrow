@@ -39,6 +39,7 @@ import * as mcdJug from 'blockchain/abi/mcd-jug.json'
 import * as mcdPot from 'blockchain/abi/mcd-pot.json'
 import * as mcdSpot from 'blockchain/abi/mcd-spot.json'
 import * as merkleRedeemer from 'blockchain/abi/merkle-redeemer.json'
+import * as morphoBlue from 'blockchain/abi/morpho-blue.json'
 import * as dssMultiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.json'
 import * as operationExecutor from 'blockchain/abi/operation-executor.json'
 import * as otcSupport from 'blockchain/abi/otc-support-methods.json'
@@ -203,6 +204,9 @@ export const mainnetContracts = {
     'WSTETH-GHO': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHGHO),
     'WSTETH-USDC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_WSTETHUSDC),
     'YFI-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YFIDAI),
+    'STYETH-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_STYETHDAI),
+    'RBN-ETH': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_RBNETH),
+    'AJNA-DAI': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_AJNADAI),
   },
   ajnaOraclessPoolPairs: {
     'YIELDBTC-WBTC': contractDesc(ajnaPool, mainnet.ajna.AjnaPoolPairs_YIELDBTCWBTC),
@@ -211,6 +215,8 @@ export const mainnetContracts = {
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, mainnet.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, mainnet.ajna.AjnaRewardsReedemer),
   ajnaBonusRedeemer: contractDesc(ajnaBonusRedeemer, mainnet.ajna.AjnaBonusRewardsReedemer),
+  morphoBlue: contractDesc(morphoBlue, mainnet.morphoblue.MorphoBlue),
+  adaptiveCurveIrm: contractDesc(morphoBlue, mainnet.morphoblue.AdaptiveCurveIrm),
   balancerVault: contractDesc(ajnaReedemer, mainnet.common.BalancerVault),
   // not contracts
   cacheApi: mainnetCacheUrl,
@@ -227,6 +233,7 @@ export const mainnetContracts = {
     apiKey: '',
   },
   SdaiOracle: contractDesc(ajnaPoolInfo, mainnet.common.SdaiOracle),
+  WSTETHOracle: contractDesc(ajnaPoolInfo, mainnet.common.WSTETHOracle),
 }
 
 type DeprecatedProperties = {

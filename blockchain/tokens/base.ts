@@ -7,7 +7,7 @@ const { base } = ADDRESSES
 
 export const tokensBase = {
   ETH: contractDesc(erc20, base.common.WETH),
-  ETH_ACTUAL: contractDesc(erc20, base.common.WETH), // most likely to be updated
+  ETH_ACTUAL: contractDesc(erc20, base.common.ETH),
   CBETH: contractDesc(erc20, base.common.CBETH),
   DAI: contractDesc(erc20, base.common.DAI),
   FRAX: contractDesc(erc20, base.common.FRAX),
@@ -18,6 +18,7 @@ export const tokensBase = {
   RETH: contractDesc(erc20, base.common.RETH),
   SDAI: contractDesc(erc20, base.common.SDAI),
   STETH: contractDesc(erc20, base.common.STETH),
+  STYETH: contractDesc(erc20, base.common.STYETH),
   TBTC: contractDesc(erc20, base.common.TBTC),
   USDC: contractDesc(erc20, base.common.USDC),
   USDBC: contractDesc(erc20, base.common.USDBC),

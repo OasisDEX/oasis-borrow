@@ -1,10 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { InfoSectionLoadingState } from 'components/infoSection/Item'
-import {
-  formatGasEstimationETH,
-  getEstimatedGasFeeTextOld,
-} from 'components/vault/VaultChangesInformation'
+import { getEstimatedGasFeeTextOld } from 'components/vault/VaultChangesInformation'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import type { HasGasEstimation } from 'helpers/types/HasGasEstimation.types'
 import { GasEstimationStatus } from 'helpers/types/HasGasEstimation.types'
@@ -69,7 +66,7 @@ export function AutoSellInfoSection({
     isLoading || transactionCost.gasEstimationStatus === GasEstimationStatus.calculating ? (
       <InfoSectionLoadingState />
     ) : (
-      getEstimatedGasFeeTextOld(transactionCost, false, formatGasEstimationETH)
+      getEstimatedGasFeeTextOld(transactionCost, false)
     )
 
   const undefinedWhenLoading = (value: string) => {

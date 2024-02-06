@@ -15,7 +15,10 @@ import { checkElligibleSparkPosition } from 'features/aave/helpers/eligible-spar
 import { calculateViewValuesForPosition } from 'features/aave/services'
 import { ProductType, StrategyType } from 'features/aave/types'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
+import { OmniMultiplyNetValueModal } from 'features/omni-kit/components/details-section'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
 import type { AaveCumulativeData } from 'features/omni-kit/protocols/aave/history/types'
+import { OmniProductType } from 'features/omni-kit/types'
 import type { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory.types'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
@@ -96,23 +99,39 @@ export function AaveMultiplyPositionData({
     aaveHistory[0].autoKind === 'aave-stop-loss' &&
     currentPosition.debt.amount.isZero()
 
-  const isEarnPosition = productType === ProductType.Earn
-
-  const pnlWithoutFees = isEarnPosition
-    ? cumulatives?.cumulativeWithdrawInQuoteToken
-        .plus(currentPositionThings.netValueInDebtToken)
-        .minus(cumulatives.cumulativeDepositInQuoteToken)
-        .div(cumulatives.cumulativeDepositInQuoteToken)
-    : cumulatives?.cumulativeWithdrawInCollateralToken
-        .plus(currentPositionThings.netValueInCollateralToken)
-        .minus(cumulatives.cumulativeDepositInCollateralToken)
-        .div(cumulatives.cumulativeDepositInCollateralToken)
-
   const isSparkPosition = lendingProtocol === LendingProtocol.SparkV3
   const isElligibleSparkPosition = checkElligibleSparkPosition(
     collateralToken.symbol,
     debtToken.symbol,
   )
+  const omniProduct = {
+    [ProductType.Borrow]: OmniProductType.Borrow,
+    [ProductType.Earn]: OmniProductType.Earn,
+    [ProductType.Multiply]: OmniProductType.Multiply,
+  }[productType]
+
+  const netValuePnlModalData = getOmniNetValuePnlData({
+    cumulatives,
+    productType: omniProduct,
+    collateralTokenPrice,
+    debtTokenPrice,
+    netValueInCollateralToken: currentPositionThings.netValueInCollateralToken,
+    netValueInDebtToken: currentPositionThings.netValueInDebtToken,
+    collateralToken: currentPosition.collateral.symbol,
+    debtToken: currentPosition.debt.symbol,
+  })
+  const nextNetValue = nextPositionThings
+    ? getOmniNetValuePnlData({
+        cumulatives,
+        productType: omniProduct,
+        collateralTokenPrice,
+        debtTokenPrice,
+        netValueInCollateralToken: nextPositionThings.netValueInCollateralToken,
+        netValueInDebtToken: nextPositionThings.netValueInDebtToken,
+        collateralToken: nextPosition.collateral.symbol,
+        debtToken: nextPosition.debt.symbol,
+      }).netValue.inToken
+    : undefined
 
   return (
     <Grid>
@@ -154,17 +173,17 @@ export function AaveMultiplyPositionData({
               debtTokenPrice={debtTokenPrice}
             />
             <NetValueCard
-              strategyType={strategyType}
-              currentPositionThings={currentPositionThings}
-              currentPosition={currentPosition}
-              nextPositionThings={nextPositionThings}
+              {...netValuePnlModalData}
+              nextNetValue={nextNetValue}
               footnote={
-                pnlWithoutFees &&
-                cumulatives &&
+                netValuePnlModalData.pnl?.percentage &&
                 `${t('omni-kit.content-card.net-value.footnote')} ${
-                  pnlWithoutFees.gte(zero) ? '+' : ''
+                  netValuePnlModalData.pnl.percentage.gte(zero) ? '+' : ''
                 }
-                ${formatDecimalAsPercent(pnlWithoutFees)}`
+                ${formatDecimalAsPercent(netValuePnlModalData.pnl.percentage)}`
+              }
+              modal={
+                cumulatives ? <OmniMultiplyNetValueModal {...netValuePnlModalData} /> : undefined
               }
             />
           </DetailsSectionContentCardWrapper>

@@ -106,7 +106,10 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({
           lastValue={resolvedValue}
           minBoundry={min}
           maxBoundry={max}
-          step={range.at(-1)!.minus(range.at(-2)!).toNumber()}
+          step={max
+            .minus(min)
+            .div(range.length - 1)
+            .toNumber()}
           leftBoundry={leftBoundry}
           rightBoundry={maxLtv}
           leftBoundryFormatter={(v) => `${formatCryptoBalance(v)}`}
@@ -128,6 +131,7 @@ export const AjnaEarnSlider: FC<AjnaEarnSliderProps> = ({
         ${omniLendingPriceColors[0]} 0 ${htpPercentage}%,
         ${omniLendingPriceColors[1]} ${htpPercentage}% ${lupPercentage}%,
         ${omniLendingPriceColors[2]} ${lupPercentage}% 100%)`}
+          useRcSlider
         />
       )}
       {nestedManualInput ? (

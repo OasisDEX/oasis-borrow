@@ -1,9 +1,30 @@
 import type { LendingPosition, SupplyPosition } from '@oasisdex/dma-library'
-import type { NetworkIds, NetworkNames } from 'blockchain/networks'
+import type BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/networks'
+import type { Tickers } from 'blockchain/prices.types'
+import type { DetailsSectionNotificationItem } from 'components/DetailsSectionNotification'
+import type { DpmPositionData } from 'features/omni-kit/observables'
 import type { OmniBorrowFormState } from 'features/omni-kit/state/borrow'
 import type { OmniEarnFormState } from 'features/omni-kit/state/earn'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
+import type { TxError } from 'helpers/types'
+import type { LendingProtocolLabel } from 'lendingProtocols'
+import { LendingProtocol } from 'lendingProtocols'
 import type { CreatePositionEvent } from 'types/ethers-contracts/AjnaProxyActions'
+
+const omniSupportedNetworkIds = [
+  NetworkIds.ARBITRUMMAINNET,
+  NetworkIds.BASEMAINNET,
+  NetworkIds.GOERLI,
+  NetworkIds.MAINNET,
+  NetworkIds.OPTIMISMMAINNET,
+] as const
+
+export type OmniSupportedNetworkIds = (typeof omniSupportedNetworkIds)[number]
+
+const omniSupportedProtocols = [LendingProtocol.Ajna, LendingProtocol.MorphoBlue] as const
+
+export type OmniSupportedProtocols = (typeof omniSupportedProtocols)[number]
 
 export type OmniGenericPosition = LendingPosition | SupplyPosition
 
@@ -36,11 +57,37 @@ export type OmniSidebarStepsSet = {
   }
 }
 
-export type OmniCloseTo = 'collateral' | 'quote'
-
-export interface OmniIsCachedPosition {
-  cached?: boolean
+export interface OmniProtocolSettings {
+  rawName: NetworkIdsWithValues<string>
+  steps: OmniSidebarStepsSet
+  supportedMainnetNetworkIds: OmniSupportedNetworkIds[]
+  supportedMultiplyTokens: NetworkIdsWithValues<string[]>
+  supportedNetworkIds: OmniSupportedNetworkIds[]
+  supportedProducts: OmniProductType[]
 }
+
+export type OmniProtocolsSettings = {
+  [key in OmniSupportedProtocols]: OmniProtocolSettings
+}
+
+export interface OmniTokensPrecision {
+  collateralDigits: number
+  collateralPrecision: number
+  quoteDigits: number
+  quotePrecision: number
+}
+
+export interface OmniProtocolHookProps {
+  collateralToken?: string
+  dpmPositionData?: DpmPositionData
+  networkId: OmniSupportedNetworkIds
+  product?: OmniProductType
+  quoteToken?: string
+  tokenPriceUSDData?: Tickers
+  tokensPrecision?: OmniTokensPrecision
+}
+
+export type OmniCloseTo = 'collateral' | 'quote'
 
 export enum OmniSidebarBorrowPanel {
   Adjust = 'adjust',
@@ -98,7 +145,7 @@ export type OmniFormAction = OmniBorrowFormAction | OmniEarnFormAction | OmniMul
 export type OmniFormState = OmniBorrowFormState | OmniMultiplyFormState | OmniEarnFormState
 export interface OmniProductPage {
   collateralToken: string
-  networkName: NetworkNames
+  networkId: OmniSupportedNetworkIds
   positionId?: string
   productType: OmniProductType
   quoteToken: string
@@ -114,11 +161,17 @@ export type OmniValidations = {
   warnings: OmniValidationItem[]
 }
 
+export type OmniPartialValidations = {
+  localErrors: OmniValidationItem[]
+  localWarnings: OmniValidationItem[]
+}
+
 export interface OmniSimulationCommon {
   errors: { name: string; data?: { [key: string]: string } }[]
   notices: { name: string; data?: { [key: string]: string } }[]
   successes: { name: string; data?: { [key: string]: string } }[]
   warnings: { name: string; data?: { [key: string]: string } }[]
+  getValidations: (params: GetOmniValidationResolverParams) => OmniValidations
 }
 
 export interface OmniValidationItem {
@@ -138,13 +191,43 @@ export interface OmniFlowStateFilterParams {
   quoteAddress: string
 }
 
-export type OmniSupportedNetworkIds =
-  | NetworkIds.MAINNET
-  | NetworkIds.GOERLI
-  | NetworkIds.OPTIMISMMAINNET
-  | NetworkIds.ARBITRUMMAINNET
-  | NetworkIds.BASEMAINNET
-
-export type NetworkIdsWithArray<T> = {
-  [key in NetworkIds]?: T[]
+export type NetworkIdsWithValues<T> = {
+  [key in OmniSupportedNetworkIds]?: T
 }
+
+type SimulationValidations = { name: string; data?: { [key: string]: string } }[]
+
+export interface GetOmniValidationsParams {
+  collateralBalance: BigNumber
+  collateralToken: string
+  currentStep: OmniSidebarStep
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  gasEstimationUsd?: BigNumber
+  isOpening: boolean
+  position: OmniGenericPosition
+  productType: OmniProductType
+  quoteBalance: BigNumber
+  quoteToken: string
+  simulationErrors?: SimulationValidations
+  simulationNotices?: SimulationValidations
+  simulationSuccesses?: SimulationValidations
+  simulationWarnings?: SimulationValidations
+  state: OmniFormState
+  txError?: TxError
+  customErrors?: OmniValidationItem[]
+  customWarnings?: OmniValidationItem[]
+}
+
+export interface GetOmniValidationResolverParams {
+  protocolLabel: LendingProtocolLabel
+  safetySwitchOn: boolean
+  isFormFrozen: boolean
+  earnIsFormValid?: boolean
+  customErrors?: OmniValidationItem[]
+  customWarnings?: OmniValidationItem[]
+  customNotices?: OmniValidationItem[]
+  customSuccesses?: OmniValidationItem[]
+}
+
+export type OmniNotificationCallbackWithParams<P> = (params: P) => DetailsSectionNotificationItem

@@ -195,12 +195,6 @@ export const getNavProtocolsPanel = ({
                         query: query.morphoBlue,
                       },
                       {
-                        title: t('nav.earn'),
-                        description: navigation.protocols.morphoBlue.earn.description,
-                        url: `${INTERNAL_LINKS.earn}`,
-                        query: query.morphoBlue,
-                      },
-                      {
                         title: navigation.protocols.morphoBlue.extra.title,
                         promoted: true,
                         description: navigation.protocols.morphoBlue.extra.description,

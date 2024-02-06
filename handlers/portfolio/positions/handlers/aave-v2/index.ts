@@ -4,6 +4,8 @@ import BigNumber from 'bignumber.js'
 import { getAaveV2ReserveConfigurationData, getAaveV2ReserveData } from 'blockchain/aave'
 import { NetworkIds } from 'blockchain/networks'
 import { calculateViewValuesForPosition } from 'features/aave/services'
+import { getOmniNetValuePnlData } from 'features/omni-kit/helpers'
+import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
 import { commonDataMapper } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/positions/handlers/aave-like/types'
@@ -17,11 +19,11 @@ import {
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 
-const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
+const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async ({
   dpm,
   prices,
   allPositionsHistory,
-) => {
+}) => {
   const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({ dpm, prices })
   const [
     primaryTokenReserveConfiguration,
@@ -55,25 +57,43 @@ const getAaveV2MultiplyPosition: GetAaveLikePositionHandlerType = async (
   const positionHistory = allPositionsHistory.filter(
     (position) => position.id.toLowerCase() === dpm.id.toLowerCase(),
   )[0]
-  const pnlValue =
-    positionHistory?.cumulativeDeposit.gt(zero) &&
-    calculations.netValue
-      .minus(positionHistory.cumulativeDeposit)
-      .plus(positionHistory.cumulativeWithdraw)
-      .div(positionHistory.cumulativeDeposit)
-
   const tokensLabel = `${commonData.primaryToken}/${commonData.secondaryToken}`
+  const netValuePnlModalData = getOmniNetValuePnlData({
+    cumulatives: {
+      ...positionHistory,
+      cumulativeWithdrawUSD: positionHistory.cumulativeWithdraw,
+      cumulativeFeesUSD: positionHistory.cumulativeFees,
+      cumulativeDepositUSD: positionHistory.cumulativeDeposit,
+      cumulativeFeesInCollateralToken: positionHistory.cumulativeFeesInQuoteToken,
+    },
+    productType: OmniProductType.Multiply,
+    collateralTokenPrice: primaryTokenPrice,
+    debtTokenPrice: secondaryTokenPrice,
+    netValueInCollateralToken: calculations.netValueInCollateralToken,
+    netValueInDebtToken: calculations.netValueInDebtToken,
+    collateralToken: commonData.primaryToken,
+    debtToken: commonData.secondaryToken,
+  })
   return {
     ...commonData,
     details: [
       {
         type: 'netValue',
-        value: formatUsdValue(calculations.netValue),
+        value: `${formatCryptoBalance(netValuePnlModalData.netValue.inToken)} ${
+          netValuePnlModalData.netValue.netValueToken
+        }`,
+        subvalue: formatUsdValue(netValuePnlModalData.netValue.inUsd),
       },
       {
         type: 'pnl',
-        value: pnlValue ? formatDecimalAsPercent(pnlValue, { precision: 2 }) : notAvailable,
-        accent: pnlValue ? (pnlValue.gte(zero) ? 'positive' : 'negative') : undefined,
+        value: netValuePnlModalData.pnl?.percentage
+          ? formatDecimalAsPercent(netValuePnlModalData.pnl?.percentage, { precision: 2 })
+          : notAvailable,
+        accent: netValuePnlModalData.pnl?.percentage
+          ? netValuePnlModalData.pnl?.percentage.gte(zero)
+            ? 'positive'
+            : 'negative'
+          : undefined,
       },
       {
         type: 'liquidationPrice',
@@ -114,16 +134,24 @@ export const aaveV2PositionHandler: PortfolioPositionsHandler = async ({
       ],
     }
   }
-  const [allPositionsHistory, dsProxyPositions] = await Promise.all([
+  const [allPositionsHistory] = await Promise.all([
     getHistoryData({
       network: NetworkIds.MAINNET,
       addresses: aaveV2DpmList.map(({ id }) => id),
     }),
+  ])
+  const [dsProxyPositions] = await Promise.all([
     getAaveV2DsProxyPosition({ address, prices, dpmList, ...rest }),
   ])
   const positions = await Promise.all(
     aaveV2DpmList.map(async (dpm) =>
-      getAaveV2MultiplyPosition(dpm, prices, allPositionsHistory, []),
+      getAaveV2MultiplyPosition({
+        dpm,
+        prices,
+        allPositionsHistory,
+        allPositionsAutomations: [], // not needed here
+        allOraclePrices: [], // not needed here
+      }),
     ),
   )
   return {

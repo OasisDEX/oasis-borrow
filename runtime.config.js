@@ -29,9 +29,10 @@ const publicRuntimeConfig = {
   configUrl: process.env.CONFIG_URL,
   rpcGatewayUrl: process.env.RPC_GATEWAY,
   grooveWidgetId: process.env.GROOVE_WIDGET_ID || `27241a63-86b5-47e2-a167-2e2a3e2a621e`,
-  getTriggersUrl: process.env.GET_TRIGGERS_URL,
-  setupTriggerUrl: process.env.SETUP_TRIGGER_URL,
   awsGasPriceUrl: 'https://rjaw1lt1ch.execute-api.us-east-1.amazonaws.com/staging/',
+  contentfulSpaceId: process.env.CONTENTFUL_SPACE_ID,
+  contentfulAccessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
+  contentfulPreviewAccessToken: process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN,
 }
 
 module.exports = {

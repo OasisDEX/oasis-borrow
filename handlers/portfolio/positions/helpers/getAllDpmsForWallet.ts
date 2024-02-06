@@ -96,38 +96,25 @@ export const getAllDpmsForWallet = async ({ address }: { address: string }) => {
     }))
   })
 
-  const dpmList = await Promise.all(dpmCallList).then((dpmNetworkList) => {
-    return dpmNetworkList
-      .map((dpm) => {
-        return dpm.accounts.map(
-          ({
-            collateralToken,
-            debtToken,
-            id,
-            createEvents,
-            positionType,
-            protocol,
-            vaultId,
-            user: { id: user },
-          }) => {
-            return {
-              collateralToken,
-              debtToken,
-              id,
-              networkId: dpm.networkId,
-              positionType: positionType?.toLowerCase() as OmniProductType,
-              protocol,
-              user,
-              vaultId,
-              createEvents: createEvents.map(({ positionType: eventPositionType, ...rest }) => ({
-                ...rest,
-                positionType: eventPositionType.toLowerCase() as OmniProductType,
-              })),
-            }
-          },
-        )
+  // We have a DPM
+  // It has created position events associated
+  // Those events can be other protocols with other token pairs relative to the DPM primary properties
+  // therefore we are mapping it
+  return await Promise.all(dpmCallList).then((dpmNetworkList) => {
+    return dpmNetworkList.flatMap((dpm) => {
+      return dpm.accounts.flatMap((account) => {
+        return account.createEvents.map((createEvent) => ({
+          networkId: dpm.networkId,
+          id: account.id,
+          user: account.user.id,
+          vaultId: account.vaultId,
+          protocol: createEvent.protocol,
+          positionType: createEvent.positionType.toLowerCase() as OmniProductType,
+          collateralToken: createEvent.collateralToken,
+          debtToken: createEvent.debtToken,
+          createEvents: [createEvent],
+        }))
       })
-      .flat()
+    })
   })
-  return dpmList
 }

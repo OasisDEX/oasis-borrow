@@ -14,16 +14,19 @@ import { getAjnaPoolInterestRateBoundaries } from 'features/ajna/pool-creator/ca
 import type { usePoolCreatorFormReducto } from 'features/ajna/pool-creator/state'
 import type { PoolCreatorBoundries } from 'features/ajna/pool-creator/types'
 import type { SearchAjnaPoolData } from 'features/ajna/pool-finder/helpers'
-import { getOraclessProductUrl, searchAjnaPool } from 'features/ajna/pool-finder/helpers'
+import { searchAjnaPool } from 'features/ajna/pool-finder/helpers'
 import { getOmniTxStatuses } from 'features/omni-kit/contexts'
-import { getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
-import { AJNA_SUPPORTED_NETWORKS } from 'features/omni-kit/protocols/ajna/constants'
+import { getOmniPositionUrl, getOmniSidebarTransactionStatus } from 'features/omni-kit/helpers'
+import { isPoolOracless } from 'features/omni-kit/protocols/ajna/helpers'
+import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
+import type { AjnaSupportedNetworkIds } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType, type OmniValidationItem } from 'features/omni-kit/types'
 import type { TxDetails } from 'helpers/handleTransaction'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { first } from 'rxjs/operators'
@@ -101,12 +104,8 @@ export function usePoolCreatorData({
 
   useEffect(() => {
     const _isOnSupportedNetwork = !!(
-      // dirty workaround for temporary goerli support
-      // todo: remove second part of OR condition when goerli is discontinued
-      (
-        context?.chainId &&
-        (AJNA_SUPPORTED_NETWORKS.includes(context.chainId) || context.chainId === NetworkIds.GOERLI)
-      )
+      context?.chainId &&
+      ajnaSettings.supportedNetworkIds.includes(context.chainId as AjnaSupportedNetworkIds)
     )
 
     setBoundries(undefined)
@@ -167,6 +166,20 @@ export function usePoolCreatorData({
             const tokensKeys = Object.keys(identifiedTokens)
 
             if (pools.length) {
+              const omniPositionUrlCommon = {
+                collateralAddress,
+                collateralToken: identifiedTokens[collateralAddress.toLowerCase()].symbol,
+                isPoolOracless: isPoolOracless({
+                  collateralToken: identifiedTokens[collateralAddress.toLowerCase()].symbol,
+                  quoteToken,
+                  networkId: context.chainId,
+                }),
+                networkName: networksById[context.chainId].name,
+                protocol: LendingProtocol.Ajna,
+                quoteAddress,
+                quoteToken: identifiedTokens[quoteAddress.toLowerCase()].symbol,
+              }
+
               setErrors([
                 {
                   message: {
@@ -183,28 +196,16 @@ export function usePoolCreatorData({
                             ? [
                                 <AppLink
                                   sx={{ color: 'inherit' }}
-                                  href={getOraclessProductUrl({
-                                    networkId: context.chainId,
-                                    networkName: networksById[context.chainId].name,
-                                    collateralAddress,
-                                    collateralToken:
-                                      identifiedTokens[collateralAddress.toLowerCase()].symbol,
+                                  href={getOmniPositionUrl({
+                                    ...omniPositionUrlCommon,
                                     productType: OmniProductType.Borrow,
-                                    quoteAddress,
-                                    quoteToken: identifiedTokens[quoteAddress.toLowerCase()].symbol,
                                   })}
                                 />,
                                 <AppLink
                                   sx={{ color: 'inherit' }}
-                                  href={getOraclessProductUrl({
-                                    networkId: context.chainId,
-                                    networkName: networksById[context.chainId].name,
-                                    collateralAddress,
-                                    collateralToken:
-                                      identifiedTokens[collateralAddress.toLowerCase()].symbol,
+                                  href={getOmniPositionUrl({
+                                    ...omniPositionUrlCommon,
                                     productType: OmniProductType.Earn,
-                                    quoteAddress,
-                                    quoteToken: identifiedTokens[quoteAddress.toLowerCase()].symbol,
                                   })}
                                 />,
                               ]

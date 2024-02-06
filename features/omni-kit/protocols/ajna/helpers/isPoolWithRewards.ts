@@ -1,18 +1,20 @@
 import { NetworkIds } from 'blockchain/networks'
-import type { NetworkIdsWithArray } from 'features/omni-kit/types'
+import type { NetworkIdsWithValues, OmniSupportedNetworkIds } from 'features/omni-kit/types'
 
 interface IsPoolWithRewardsParams {
   collateralToken: string
-  networkId: NetworkIds
+  networkId: OmniSupportedNetworkIds
   quoteToken: string
 }
 
 const poolsWithRewardsEthereum = [
+  'AJNA-DAI',
   'CBETH-ETH',
   'ETH-USDC',
   'RETH-DAI',
   'RETH-ETH',
   'SDAI-USDC',
+  'STYETH-DAI',
   'USDC-ETH',
   'USDC-WBTC',
   'WBTC-DAI',
@@ -20,10 +22,11 @@ const poolsWithRewardsEthereum = [
   'WSTETH-DAI',
   'WSTETH-ETH',
   'WSTETH-USDC',
+  'YFI-DAI',
 ]
 const poolsWithRewardsBase = ['CBETH-ETH', 'ETH-USDC', 'WSTETH-ETH']
 
-const poolsWithRewards: NetworkIdsWithArray<string> = {
+const poolsWithRewards: NetworkIdsWithValues<string[]> = {
   [NetworkIds.MAINNET]: poolsWithRewardsEthereum,
   [NetworkIds.GOERLI]: poolsWithRewardsEthereum,
   [NetworkIds.BASEMAINNET]: poolsWithRewardsBase,

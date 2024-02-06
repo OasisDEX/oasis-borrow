@@ -1,3 +1,3 @@
-export * from './ajnaUnifiedHistoryEvent'
-export * from './mapBorrowishEvents'
-export * from './mapEarnEvents'
+export * from './ajnaDefaultHistoryEvent'
+export * from './mapAjnaLendingEvents'
+export * from './mapAjnaEarnEvents'

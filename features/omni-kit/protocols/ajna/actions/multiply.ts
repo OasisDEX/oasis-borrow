@@ -3,8 +3,8 @@ import { normalizeValue, RiskRatio, strategies } from '@oasisdex/dma-library'
 import { BigNumber } from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { omniSwapVersionMap } from 'features/omni-kit/constants'
-import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
 import type { OmniMultiplyFormState } from 'features/omni-kit/state/multiply'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { getOneInchCall } from 'helpers/swap'
 
 const DEFAULT_LTV_ON_NEW_POOL = new BigNumber(0.05)
@@ -25,7 +25,7 @@ export const ajnaActionOpenMultiply = ({
   dependencies: AjnaCommonDependencies
   collateralToken: string
   quoteToken: string
-  networkId: AjnaSupportedNetworksIds
+  networkId: OmniSupportedNetworkIds
   walletAddress: string
   pool: AjnaPool
   slippage: BigNumber
@@ -71,7 +71,7 @@ export const ajnaActionOpenMultiply = ({
       addresses: {
         DAI: getNetworkContracts(networkId).tokens.DAI.address,
         // Currently tokens.ETH is being mapped to WETH
-        ETH: getNetworkContracts(networkId, 1).tokens.ETH_ACTUAL.address,
+        ETH: getNetworkContracts(networkId).tokens.ETH_ACTUAL.address,
         WSTETH: getNetworkContracts(networkId).tokens.WSTETH.address,
         USDC: getNetworkContracts(networkId).tokens.USDC.address,
         WBTC: getNetworkContracts(networkId).tokens.WBTC.address,

@@ -3,22 +3,25 @@ import { getOnChainPosition } from 'actions/aave-like'
 import BigNumber from 'bignumber.js'
 import { getNetworkContracts } from 'blockchain/contracts'
 import { NetworkIds } from 'blockchain/networks'
-import { amountFromWei } from 'blockchain/utils'
 import dayjs from 'dayjs'
 import { calculateViewValuesForPosition } from 'features/aave/services'
-import { isShortPosition } from 'features/omni-kit/helpers'
+import { getOmniNetValuePnlData, isShortPosition } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { GraphQLClient } from 'graphql-request'
 import { notAvailable } from 'handlers/portfolio/constants'
 import {
+  aaveLikeProtocolNames,
   commonDataMapper,
   filterAutomation,
+  formatBigNumberDebugData,
   getReserveConfigurationDataCall,
   getReserveDataCall,
+  uniqueTokensReducer,
 } from 'handlers/portfolio/positions/handlers/aave-like/helpers'
 import type { GetAaveLikePositionHandlerType } from 'handlers/portfolio/positions/handlers/aave-like/types'
 import { getAutomationData } from 'handlers/portfolio/positions/helpers/getAutomationData'
 import { getHistoryData } from 'handlers/portfolio/positions/helpers/getHistoryData'
+import { getOraclePriceData } from 'handlers/portfolio/positions/helpers/getOraclePriceData'
 import type { PortfolioPositionsHandler, PositionDetail } from 'handlers/portfolio/types'
 import {
   formatCryptoBalance,
@@ -26,21 +29,25 @@ import {
   formatUsdValue,
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import { getAaveWstEthYield } from 'lendingProtocols/aave-v3/calculations/wstEthYield'
 
-const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
+const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async ({
   dpm,
   prices,
-  _history,
   allPositionsAutomations,
+  allOraclePrices,
   apiVaults,
-) => {
+  debug,
+}) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
-  const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({
+  const { commonData, primaryTokenPrice, secondaryTokenPrice, ...commonRest } = commonDataMapper({
     automations: positionAutomations,
     dpm,
     prices,
     apiVaults,
+    allOraclePrices,
+    debug,
   })
   const [primaryTokenReserveData, secondaryTokenReserveData, onChainPositionData] =
     await Promise.all([
@@ -101,22 +108,31 @@ const getAaveLikeBorrowPosition: GetAaveLikePositionHandlerType = async (
       },
     ],
     netValue: calculations.netValue.toNumber(),
+    debuggingData: debug
+      ? {
+          ...formatBigNumberDebugData(commonRest),
+        }
+      : undefined,
   }
 }
 
-const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
+const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async ({
   dpm,
   prices,
   allPositionsHistory,
   allPositionsAutomations,
+  allOraclePrices,
   apiVaults,
-) => {
+  debug,
+}) => {
   const positionAutomations = allPositionsAutomations.find(filterAutomation(dpm))
-  const { commonData, primaryTokenPrice, secondaryTokenPrice } = commonDataMapper({
+  const { commonData, primaryTokenPrice, secondaryTokenPrice, ...commonRest } = commonDataMapper({
     automations: positionAutomations,
     dpm,
     prices,
     apiVaults,
+    allOraclePrices,
+    debug,
   })
   const [
     primaryTokenReserveConfiguration,
@@ -150,28 +166,48 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
   const positionHistory = allPositionsHistory.filter(
     (position) => position.id.toLowerCase() === dpm.id.toLowerCase(),
   )[0]
-  const pnlValue =
-    positionHistory?.cumulativeDeposit.gt(zero) &&
-    calculations.netValue
-      .minus(positionHistory.cumulativeDeposit)
-      .plus(positionHistory.cumulativeWithdraw)
-      .div(positionHistory.cumulativeDeposit)
   const isShort = isShortPosition({ collateralToken: commonData.primaryToken })
   const tokensLabel = isShort
     ? `${commonData.secondaryToken}/${commonData.primaryToken}`
     : `${commonData.primaryToken}/${commonData.secondaryToken}`
+
+  const netValuePnlModalData = getOmniNetValuePnlData({
+    cumulatives: {
+      ...positionHistory,
+      cumulativeWithdrawUSD: positionHistory.cumulativeWithdraw,
+      cumulativeFeesUSD: positionHistory.cumulativeFees,
+      cumulativeDepositUSD: positionHistory.cumulativeDeposit,
+      cumulativeFeesInCollateralToken: positionHistory.cumulativeFeesInQuoteToken,
+    },
+    productType: OmniProductType.Multiply,
+    collateralTokenPrice: primaryTokenPrice,
+    debtTokenPrice: secondaryTokenPrice,
+    netValueInCollateralToken: calculations.netValueInCollateralToken,
+    netValueInDebtToken: calculations.netValueInDebtToken,
+    collateralToken: commonData.primaryToken,
+    debtToken: commonData.secondaryToken,
+  })
 
   return {
     ...commonData,
     details: [
       {
         type: 'netValue',
-        value: formatUsdValue(calculations.netValue),
+        value: `${formatCryptoBalance(netValuePnlModalData.netValue.inToken)} ${
+          netValuePnlModalData.netValue.netValueToken
+        }`,
+        subvalue: formatUsdValue(netValuePnlModalData.netValue.inUsd),
       },
       {
         type: 'pnl',
-        value: pnlValue ? formatDecimalAsPercent(pnlValue, { precision: 2 }) : notAvailable,
-        accent: pnlValue ? (pnlValue.gte(zero) ? 'positive' : 'negative') : undefined,
+        value: netValuePnlModalData.pnl?.percentage
+          ? formatDecimalAsPercent(netValuePnlModalData.pnl?.percentage, { precision: 2 })
+          : notAvailable,
+        accent: netValuePnlModalData.pnl?.percentage
+          ? netValuePnlModalData.pnl?.percentage.gte(zero)
+            ? 'positive'
+            : 'negative'
+          : undefined,
       },
       {
         type: 'liquidationPrice',
@@ -196,24 +232,42 @@ const getAaveLikeMultiplyPosition: GetAaveLikePositionHandlerType = async (
       },
     ],
     netValue: calculations.netValue.toNumber(),
+    debuggingData: debug ? { ...formatBigNumberDebugData(commonRest) } : undefined,
   }
 }
 
-const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
+const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async ({
   dpm,
   prices,
   allPositionsHistory,
-) => {
-  const { commonData, secondaryTokenPrice } = commonDataMapper({ dpm, prices })
-  const [onChainPositionData] = await Promise.all([
-    getOnChainPosition({
-      networkId: dpm.networkId,
-      collateralToken: commonData.primaryToken,
-      debtToken: commonData.secondaryToken,
-      protocol: commonData.protocol,
-      proxyAddress: dpm.id.toLowerCase(),
-    }),
-  ])
+  allOraclePrices,
+  debug,
+}) => {
+  const { commonData, primaryTokenPrice, secondaryTokenPrice, ...commonRest } = commonDataMapper({
+    dpm,
+    prices,
+    allOraclePrices,
+    debug,
+  })
+  const [onChainPositionData, primaryTokenReserveData, secondaryTokenReserveData] =
+    await Promise.all([
+      getOnChainPosition({
+        networkId: dpm.networkId,
+        collateralToken: commonData.primaryToken,
+        debtToken: commonData.secondaryToken,
+        protocol: commonData.protocol,
+        proxyAddress: dpm.id.toLowerCase(),
+      }),
+      getReserveDataCall(dpm, commonData.primaryToken),
+      getReserveDataCall(dpm, commonData.secondaryToken),
+    ])
+  const calculations = calculateViewValuesForPosition(
+    onChainPositionData,
+    primaryTokenPrice,
+    secondaryTokenPrice,
+    primaryTokenReserveData.liquidityRate,
+    secondaryTokenReserveData.variableBorrowRate,
+  )
   const isWstethEthEarn =
     commonData.primaryToken === 'WSTETH' && commonData.secondaryToken === 'ETH'
   let wstEthYield
@@ -229,12 +283,23 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
   const positionHistory = allPositionsHistory.filter(
     (position) => position.id === dpm.id.toLowerCase(),
   )[0]
-  const netValueInDebtToken = amountFromWei(
-    onChainPositionData.collateral.normalisedAmount
-      .times(onChainPositionData.oraclePriceForCollateralDebtExchangeRate)
-      .minus(onChainPositionData.debt.normalisedAmount),
-    18,
-  )
+
+  const netValuePnlModalData = getOmniNetValuePnlData({
+    cumulatives: {
+      ...positionHistory,
+      cumulativeWithdrawUSD: positionHistory.cumulativeWithdraw,
+      cumulativeFeesUSD: positionHistory.cumulativeFees,
+      cumulativeDepositUSD: positionHistory.cumulativeDeposit,
+      cumulativeFeesInCollateralToken: positionHistory.cumulativeFeesInQuoteToken,
+    },
+    productType: OmniProductType.Earn,
+    collateralTokenPrice: primaryTokenPrice,
+    debtTokenPrice: secondaryTokenPrice,
+    netValueInCollateralToken: calculations.netValueInCollateralToken,
+    netValueInDebtToken: calculations.netValueInDebtToken,
+    collateralToken: commonData.primaryToken,
+    debtToken: commonData.secondaryToken,
+  })
 
   return {
     ...commonData,
@@ -242,33 +307,18 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
     details: [
       {
         type: 'netValue',
-        value: `${formatCryptoBalance(netValueInDebtToken)} ${commonData.secondaryToken}`,
-        subvalue: formatUsdValue(netValueInDebtToken.times(secondaryTokenPrice)),
+        value: `${formatCryptoBalance(netValuePnlModalData.netValue.inToken)} ${
+          netValuePnlModalData.netValue.netValueToken
+        }`,
+        subvalue: formatUsdValue(netValuePnlModalData.netValue.inUsd),
       },
       {
         type: 'earnings',
         value: `${
-          positionHistory
-            ? `${formatCryptoBalance(
-                netValueInDebtToken.minus(
-                  positionHistory.cumulativeDepositInQuoteToken.minus(
-                    positionHistory.cumulativeWithdrawInQuoteToken,
-                  ),
-                ),
-              )} ${commonData.secondaryToken}`
-            : notAvailable
-        }`,
-        subvalue: `${
-          positionHistory
-            ? formatUsdValue(
-                netValueInDebtToken
-                  .minus(
-                    positionHistory.cumulativeDepositInQuoteToken.minus(
-                      positionHistory.cumulativeWithdrawInQuoteToken,
-                    ),
-                  )
-                  .times(secondaryTokenPrice),
-              )
+          netValuePnlModalData.pnl
+            ? `${formatCryptoBalance(netValuePnlModalData.pnl?.inToken)} ${
+                netValuePnlModalData.pnl.pnlToken
+              }`
             : notAvailable
         }`,
       },
@@ -284,7 +334,8 @@ const getAaveLikeEarnPosition: GetAaveLikePositionHandlerType = async (
         subvalue: `Max ${formatDecimalAsPercent(onChainPositionData.category.maxLoanToValue)}`,
       },
     ].filter(Boolean) as PositionDetail[],
-    netValue: netValueInDebtToken.times(secondaryTokenPrice).toNumber(),
+    netValue: netValuePnlModalData.netValue.inToken.toNumber(),
+    debuggingData: debug ? { ...formatBigNumberDebugData(commonRest) } : undefined,
   }
 }
 
@@ -293,15 +344,24 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
   prices,
   apiVaults,
   positionsCount,
+  debug,
 }) => {
-  const aaveLikeDpmList = dpmList.filter(({ protocol }) => ['AAVE_V3', 'Spark'].includes(protocol))
+  const aaveLikeDpmList = dpmList.filter(({ protocol }) =>
+    [aaveLikeProtocolNames.aavev3, aaveLikeProtocolNames.sparkv3].includes(protocol),
+  )
   if (positionsCount) {
     return {
       positions: aaveLikeDpmList.map(({ vaultId }) => ({ positionId: vaultId })),
     }
   }
+  const aaveUniqueTokens = aaveLikeDpmList
+    .filter(({ protocol }) => protocol === aaveLikeProtocolNames.aavev3)
+    .reduce(uniqueTokensReducer, {} as Record<NetworkIds, string[]>)
+  const sparkUniqueTokens = aaveLikeDpmList
+    .filter(({ protocol }) => protocol === aaveLikeProtocolNames.sparkv3)
+    .reduce(uniqueTokensReducer, {} as Record<NetworkIds, string[]>)
   const uniqueDpmNetworks = Array.from(new Set(aaveLikeDpmList.map(({ networkId }) => networkId)))
-  const [allPositionsHistory, allPositionsAutomations] = await Promise.all([
+  const [allPositionsHistory, allPositionsAutomations, allOraclePrices] = await Promise.all([
     Promise.all(
       uniqueDpmNetworks.map((networkId) =>
         getHistoryData({
@@ -312,41 +372,56 @@ export const aaveLikePositionsHandler: PortfolioPositionsHandler = async ({
         }),
       ),
     ).then((data) => data.flat()),
-    getAutomationData({
-      addresses: aaveLikeDpmList
-        .filter(({ networkId }) => networkId === NetworkIds.MAINNET)
-        .map(({ id }) => id),
-      network: NetworkIds.MAINNET,
-    }),
+    Promise.all(
+      uniqueDpmNetworks.map((dpmsNetworkId) =>
+        getAutomationData({
+          addresses: aaveLikeDpmList
+            .filter(({ networkId }) => networkId === dpmsNetworkId)
+            .map(({ id }) => id),
+          network: dpmsNetworkId,
+        }),
+      ),
+    ).then((data) => data.flat()),
+    Promise.all([
+      ...uniqueDpmNetworks
+        .map((networkId) =>
+          getOraclePriceData({
+            network: networkId,
+            tokens: aaveUniqueTokens[networkId],
+            protocol: LendingProtocol.AaveV3,
+          }),
+        )
+        .flat(),
+      ...uniqueDpmNetworks
+        .map((networkId) =>
+          getOraclePriceData({
+            network: networkId,
+            tokens: sparkUniqueTokens[networkId],
+            protocol: LendingProtocol.SparkV3,
+          }),
+        )
+        .flat(),
+    ]).then((data) => data.flat()),
   ])
 
   const positions = await Promise.all(
     aaveLikeDpmList.map(async (dpm) => {
+      const payload = {
+        dpm,
+        prices,
+        allPositionsHistory,
+        allPositionsAutomations,
+        allOraclePrices,
+        apiVaults,
+        debug,
+      }
       switch (dpm.positionType.toLowerCase()) {
         case OmniProductType.Multiply:
-          return getAaveLikeMultiplyPosition(
-            dpm,
-            prices,
-            allPositionsHistory,
-            allPositionsAutomations,
-            apiVaults,
-          )
+          return getAaveLikeMultiplyPosition(payload)
         case OmniProductType.Borrow:
-          return getAaveLikeBorrowPosition(
-            dpm,
-            prices,
-            allPositionsHistory,
-            allPositionsAutomations,
-            apiVaults,
-          )
+          return getAaveLikeBorrowPosition(payload)
         case OmniProductType.Earn:
-          return getAaveLikeEarnPosition(
-            dpm,
-            prices,
-            allPositionsHistory,
-            allPositionsAutomations,
-            apiVaults,
-          )
+          return getAaveLikeEarnPosition(payload)
         default:
           throw new Error(`Unsupported position type ${dpm.positionType}`)
       }

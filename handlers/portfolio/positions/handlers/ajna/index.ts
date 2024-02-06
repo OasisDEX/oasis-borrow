@@ -6,7 +6,8 @@ import {
   getAjnaEarnData,
   getAjnaPoolData,
 } from 'features/omni-kit/protocols/ajna/helpers'
-import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
+import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 import {
@@ -23,12 +24,12 @@ import type {
   PortfolioPositionsReply,
 } from 'handlers/portfolio/types'
 import { LendingProtocol } from 'lendingProtocols'
-
 interface GetAjnaPositionsParams {
   apiVaults?: Vault[]
   dpmList: DpmSubgraphData[]
   prices: TokensPricesList
-  networkId: AjnaSupportedNetworksIds
+  networkId: OmniSupportedNetworkIds
+  protocolRaw: string
   positionsCount?: boolean
 }
 
@@ -38,6 +39,7 @@ async function getAjnaPositions({
   networkId,
   positionsCount,
   prices,
+  protocolRaw,
 }: GetAjnaPositionsParams): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> {
   const dpmProxyAddress = dpmList.map(({ id }) => id)
   const subgraphPositions = (await loadSubgraph('Ajna', 'getAjnaDpmPositions', networkId, {
@@ -88,6 +90,7 @@ async function getAjnaPositions({
             positionId,
             prices,
             proxyAddress,
+            protocolRaw,
           })
 
           // proxies with more than one position doesn not support pnl calculation on subgraph so far
@@ -156,13 +159,21 @@ export const ajnaPositionsHandler: PortfolioPositionsHandler = async ({
   positionsCount,
 }) => {
   return Promise.all([
-    getAjnaPositions({ apiVaults, dpmList, networkId: NetworkIds.MAINNET, prices, positionsCount }),
+    getAjnaPositions({
+      apiVaults,
+      dpmList,
+      networkId: NetworkIds.MAINNET,
+      prices,
+      positionsCount,
+      protocolRaw: ajnaSettings.rawName[NetworkIds.MAINNET] as string,
+    }),
     getAjnaPositions({
       apiVaults,
       dpmList,
       networkId: NetworkIds.BASEMAINNET,
       prices,
       positionsCount,
+      protocolRaw: ajnaSettings.rawName[NetworkIds.BASEMAINNET] as string,
     }),
   ]).then((responses) => {
     return {

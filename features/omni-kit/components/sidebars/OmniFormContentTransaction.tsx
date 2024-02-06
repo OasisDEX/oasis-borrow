@@ -1,6 +1,5 @@
 import { MessageCard } from 'components/MessageCard'
 import { useOmniGeneralContext } from 'features/omni-kit/contexts'
-import type { OmniIsCachedPosition } from 'features/omni-kit/types'
 import { LendingProtocolLabel } from 'lendingProtocols'
 import { upperFirst } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -10,7 +9,7 @@ import { OpenVaultAnimation } from 'theme/animations'
 import { Text } from 'theme-ui'
 
 interface OmniFormContentTransactionProps {
-  orderInformation: FC<OmniIsCachedPosition>
+  orderInformation: FC
 }
 
 export function OmniFormContentTransaction({
@@ -40,7 +39,7 @@ export function OmniFormContentTransaction({
       {isTxInProgress && <OpenVaultAnimation />}
       {isTxSuccess && (
         <>
-          <OrderInformation cached />
+          <OrderInformation />
           <MessageCard messages={[t('heads-up')]} type="warning" withBullet={false} />
         </>
       )}

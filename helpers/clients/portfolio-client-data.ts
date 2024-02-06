@@ -1,13 +1,12 @@
+import type {
+  PortfolioAssetsResponse,
+  PortfolioOverviewResponse,
+} from 'components/portfolio/types/domain-types'
 import type { PortfolioPositionsReply } from 'handlers/portfolio/types'
 import { usePortfolioClient } from 'helpers/clients/portfolio-client'
 import type { BlogPostsReply } from 'helpers/types/blog-posts.types'
 import { useEffect, useState } from 'react'
 import { useFetch } from 'usehooks-ts'
-
-import type {
-  PortfolioAssetsResponse,
-  PortfolioOverviewResponse,
-} from 'lambdas/lib/shared/src/domain-types'
 
 export const usePortfolioClientData = ({
   awsInfraUrl,

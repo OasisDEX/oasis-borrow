@@ -56,6 +56,7 @@ import type { DpmPositionData } from 'features/omni-kit/observables'
 import { getDpmPositionDataV2$ } from 'features/omni-kit/observables'
 import { getAjnaPosition$ } from 'features/omni-kit/protocols/ajna/observables'
 import { getMorphoPosition$ } from 'features/omni-kit/protocols/morpho-blue/observables'
+import type { OmniTokensPrecision } from 'features/omni-kit/types'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import {
   createBalanceInfo$,
@@ -101,7 +102,7 @@ export function setupProductContext(
     connectedContext$,
     context$,
     everyBlock$,
-    gasPrice$,
+    gasPriceOnNetwork$,
     once$,
     onEveryBlock$,
     txHelpers$,
@@ -131,10 +132,17 @@ export function setupProductContext(
   const daiEthTokenPrice$ = tokenPriceUSD$(['DAI', 'ETH'])
 
   function addGasEstimation$<S extends HasGasEstimation>(
+    // only mainnet here
     state: S,
     call: (send: TxHelpers, state: S) => Observable<number> | undefined,
   ): Observable<S> {
-    return doGasEstimation(gasPrice$, daiEthTokenPrice$, txHelpers$, state, call)
+    return doGasEstimation(
+      gasPriceOnNetwork$(NetworkIds.MAINNET),
+      daiEthTokenPrice$,
+      txHelpers$,
+      state,
+      call,
+    )
   }
 
   // protocols
@@ -549,7 +557,7 @@ export function setupProductContext(
     shareReplay(1),
   )
 
-  const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
+  const gasEstimation$ = curry(getGasEstimation$)(context$, gasPriceOnNetwork$, daiEthTokenPrice$)
 
   const commonTransactionServices = transactionContextService(context$)
 
@@ -628,11 +636,19 @@ export function setupProductContext(
   )
 
   const morphoPosition$ = memoize(
-    curry(getMorphoPosition$)(context$, onEveryBlock$),
-    (collateralPrice: BigNumber, quotePrice: BigNumber, dpmPositionData: DpmPositionData) =>
-      `${dpmPositionData.vaultId}-${collateralPrice.decimalPlaces(2).toString()}-${quotePrice
+    curry(getMorphoPosition$)(onEveryBlock$),
+    (
+      collateralPrice: BigNumber,
+      quotePrice: BigNumber,
+      dpmPositionData: DpmPositionData,
+      network: NetworkIds,
+      tokensPrecision?: OmniTokensPrecision,
+    ) =>
+      `${dpmPositionData.vaultId}-${network}-${collateralPrice
         .decimalPlaces(2)
-        .toString()}`,
+        .toString()}-${quotePrice.decimalPlaces(2).toString()}-${Object.values(
+        tokensPrecision ?? {},
+      ).join('-')}`,
   )
 
   return {

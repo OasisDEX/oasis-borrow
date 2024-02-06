@@ -25,9 +25,10 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
       collateralIcon,
       collateralToken,
       isOpening,
-      network: { id: networkId },
+      networkId,
       quoteIcon,
       quoteToken,
+      settings: { supportedMultiplyTokens },
     },
     steps: { currentStep },
   } = useOmniGeneralContext()
@@ -77,8 +78,11 @@ export function OmniBorrowFormController({ txHandler }: { txHandler: () => () =>
                 updateState('action', OmniBorrowFormAction.GenerateBorrow)
               },
             },
-            // TODO this should be in metadata man
-            ...(isPoolSupportingMultiply({ collateralToken, networkId, quoteToken })
+            ...(isPoolSupportingMultiply({
+              collateralToken,
+              quoteToken,
+              supportedTokens: supportedMultiplyTokens[networkId],
+            })
               ? [
                   {
                     label: t('system.actions.borrow.switch-to-multiply'),

@@ -3,7 +3,7 @@ import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/
 import { omniMetadataSupplyHandlerGuard } from 'features/omni-kit/helpers'
 import { useOmniTxHandler } from 'features/omni-kit/hooks'
 import { useAjnaCustomState } from 'features/omni-kit/protocols/ajna/contexts/AjnaCustomStateContext'
-import { getAjnaParameters, isAjnaSupportedNetwork } from 'features/omni-kit/protocols/ajna/helpers'
+import { getAjnaParameters } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { useAccount } from 'helpers/useAccount'
 
@@ -21,7 +21,7 @@ export function useAjnaTxHandler(): () => void {
       productType,
       slippage,
       quoteBalance,
-      network,
+      networkId,
     },
   } = useOmniGeneralContext()
   const {
@@ -37,38 +37,32 @@ export function useAjnaTxHandler(): () => void {
   const { state: customState } = useAjnaCustomState()
   const { walletAddress } = useAccount()
 
-  const networkId = network.id
-
   let onSuccess: (() => void) | undefined = () => null
 
   if (omniMetadataSupplyHandlerGuard(handlers)) {
     onSuccess = handlers.customReset
   }
 
-  if (!isAjnaSupportedNetwork(networkId)) {
-    throw new Error(`Ajna doesn't support this network: ${networkId}`)
-  }
-
   return useOmniTxHandler({
     getOmniParameters: () =>
       getAjnaParameters({
-        networkId,
         collateralAddress,
         collateralPrecision,
         collateralPrice,
         collateralToken,
         isFormValid,
+        networkId,
         position: position as AjnaGenericPosition,
-        simulation: simulation as AjnaGenericPosition,
+        price: customState.price,
         quoteAddress,
+        quoteBalance,
         quotePrecision,
         quotePrice,
         quoteToken,
-        quoteBalance,
         rpcProvider: getRpcProvider(networkId),
+        simulation: simulation as AjnaGenericPosition,
         slippage,
         state,
-        price: customState.price,
         walletAddress,
       }),
     customState,

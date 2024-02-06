@@ -16,11 +16,12 @@ import { GuniOpenMultiplyVaultDetails } from './GuniOpenMultiplyVaultDetails'
 import { GuniOpenMultiplyVaultForm } from './GuniOpenMultiplyVaultForm'
 
 export function GuniOpenVaultView({ ilk }: { ilk: string }) {
-  const { gasPrice$ } = useMainContext()
+  const { gasPriceOnNetwork$, context$ } = useMainContext()
+  const [context] = useObservable(context$)
+  const [gasPrice, gasPriceError] = useObservable(gasPriceOnNetwork$(context?.chainId))
   const { openGuniVault$, daiEthTokenPrice$, yields$ } = useProductContext()
   const [openVault, openVaultError] = useObservable(openGuniVault$(ilk))
   const [yields, yieldsError] = useObservable(yields$(ilk))
-  const [gasPrice, gasPriceError] = useObservable(gasPrice$)
   const [daiEthTokenPrice, daiEthTokenPriceError] = useObservable(
     daiEthTokenPrice$ as Observable<{ ETH: BigNumber; DAI: BigNumber }>,
   )

@@ -34,7 +34,6 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
-
   Discover: {
     [NetworkIds.MAINNET]: `oasis/discover`,
     [NetworkIds.HARDHAT]: `oasis/discover`,
@@ -49,10 +48,9 @@ export const subgraphsRecord: SubgraphsRecord = {
     [NetworkIds.OPTIMISMGOERLI]: '',
     [NetworkIds.EMPTYNET]: '',
   },
-
-  TempGraph: {
-    [NetworkIds.MAINNET]: '',
-    [NetworkIds.HARDHAT]: '',
+  Morpho: {
+    [NetworkIds.MAINNET]: 'summer/morpho-blue',
+    [NetworkIds.HARDHAT]: 'summer/morpho-blue',
     [NetworkIds.GOERLI]: '',
     [NetworkIds.ARBITRUMMAINNET]: '',
     [NetworkIds.ARBITRUMGOERLI]: '',
@@ -85,7 +83,6 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
     query getAccount($dpmProxyAddress: ID!, $collateralAddress: String!, $quoteAddress: String!) {
       auctions(where: { account_: { id: $dpmProxyAddress } }) {
         inLiquidation
-        alreadyTaken
         debtToCover
         collateral
       }
@@ -456,6 +453,33 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
+  getMorphoDpmPositions: gql`
+    query getDpmPositions($dpmProxyAddress: [String!]) {
+      accounts(where: { address_in: $dpmProxyAddress }) {
+        address
+        borrowPositions {
+          market {
+            collateralToken {
+              address
+              decimals
+              symbol
+            }
+            id
+            latestInterestRates {
+              rate
+            }
+            liquidataionLTV
+            debtToken {
+              address
+              decimals
+              symbol
+            }
+          }
+        }
+        vaultId
+      }
+    }
+  `,
   getMakerDiscoverPositions: gql`
     query getDiscoverPositions($walletAddress: Bytes!) {
       cdps(where: { owner_: { address: $walletAddress } }) {
@@ -487,13 +511,111 @@ export const subgraphMethodsRecord: SubgraphMethodsRecord = {
       }
     }
   `,
-  tempMethod: '',
   getClaimedReferralRewards: gql`
     query getClaimed($walletAddress: String!) {
       claimeds(where: { user: $walletAddress }) {
         week {
           id
           week
+        }
+      }
+    }
+  `,
+  getMorphoPositionAggregatedData: gql`
+    query getAccount($dpmProxyAddress: ID!, $collateralAddress: String!, $quoteAddress: String!) {
+      summerEvents(
+        where: {
+          account_: { id: $dpmProxyAddress }
+          collateralToken_: { address: $collateralAddress }
+          debtToken_: { address: $quoteAddress }
+        }
+      ) {
+        depositTransfers {
+          amount
+        }
+        withdrawTransfers {
+          amount
+        }
+        blockNumber
+        collateralAddress
+        collateralAfter
+        collateralBefore
+        collateralDelta
+        collateralOraclePrice
+        collateralToken
+        collateralTokenPriceUSD
+        debtAddress
+        debtAfter
+        debtBefore
+        debtDelta
+        debtOraclePrice
+        debtToken
+        debtTokenPriceUSD
+        depositedUSD
+        ethPrice
+        gasFeeUSD
+        gasPrice
+        gasUsed
+        id
+        kind
+        liquidationPriceAfter
+        liquidationPriceBefore
+        ltvAfter
+        ltvBefore
+        marketPrice
+        multipleAfter
+        multipleBefore
+        netValueAfter
+        netValueBefore
+        oasisFee
+        oasisFeeToken
+        oasisFeeUSD
+        quoteTokensAfter
+        quoteTokensBefore
+        quoteTokensDelta
+        isOpen
+        swapFromAmount
+        swapFromToken
+        swapToAmount
+        swapToToken
+        timestamp
+        totalFee
+        txHash
+        withdrawnUSD
+      }
+      borrowerEvents(
+        where: {
+          account_: { id: $dpmProxyAddress }
+          collateralToken_: { address: $collateralAddress }
+          debtToken_: { address: $quoteAddress }
+        }
+      ) {
+        id
+        kind
+        timestamp
+        txHash
+        repaidAssets
+        quoteRepaid
+      }
+    }
+  `,
+  getMorphoCumulatives: gql`
+    query getAccount($dpmProxyAddress: ID!, $marketId: Bytes!) {
+      account(id: $dpmProxyAddress) {
+        borrowPositions(where: { market_: { id: $marketId } }) {
+          borrowCumulativeDepositUSD
+          borrowCumulativeDepositInQuoteToken
+          borrowCumulativeDepositInCollateralToken
+          borrowCumulativeWithdrawUSD
+          borrowCumulativeWithdrawInQuoteToken
+          borrowCumulativeWithdrawInCollateralToken
+          borrowCumulativeCollateralDeposit
+          borrowCumulativeCollateralWithdraw
+          borrowCumulativeDebtDeposit
+          borrowCumulativeDebtWithdraw
+          borrowCumulativeFeesUSD
+          borrowCumulativeFeesInQuoteToken
+          borrowCumulativeFeesInCollateralToken
         }
       }
     }

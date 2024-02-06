@@ -2,7 +2,6 @@ export const INTERNAL_LINKS = {
   appUrl: 'https://summer.fi',
   homepage: '/',
   about: '/about',
-  discover: '/discover',
   notFound: '/not-found',
   privacy: '/privacy',
   cookie: '/cookie',
@@ -34,12 +33,10 @@ export const EXTERNAL_LINKS = {
     TUTORIALS: 'https://docs.summer.fi/protocols/maker/tutorials-and-guides',
     BORROW:
       'https://docs.summer.fi/protocols/maker/tutorials-and-guides/how-to-open-a-borrow-vault-with-maker',
-    DISCOVER: 'https://docs.summer.fi/products/discover',
     WHAT_IS_MULTIPLY: 'https://docs.summer.fi/products/multiply',
     WHAT_IS_BORROW: 'https://docs.summer.fi/products/borrow',
     WHAT_IS_DPM: 'https://docs.summer.fi/general/what-is-a-smart-defi-account',
-    WHAT_IS_PROXY:
-      'https://docs.summer.fi/protocols/maker/tutorials-and-guides/how-to-open-a-borrow-vault-with-maker',
+    WHAT_IS_PROXY: 'https://docs.summer.fi/protocols/maker/what-is-a-proxy-contract',
     WHAT_IS_CONSTANT_MULTIPLE: 'https://docs.summer.fi/automation/constant-multiple',
     REFER_A_FRIEND: 'https://docs.summer.fi/general/referrals-program/how-to-refer-a-friend',
     STOP_LOSS: 'https://docs.summer.fi/automation/stop-loss',
@@ -104,6 +101,9 @@ export const EXTERNAL_LINKS = {
         'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/how-to-pick-the-right-level-for-lending',
       HOW_TO_CREATE_A_POOL:
         'https://docs.summer.fi/protocols/ajna/tutorials-and-guides/how-to-create-a-pool-on-ajna',
+    },
+    MORPHO_BLUE: {
+      HUB: 'https://docs.summer.fi/protocols/morphoblue',
     },
     NAVIGATION: [
       'https://docs.summer.fi/general/get-liquidity-without-selling-your-crypto',

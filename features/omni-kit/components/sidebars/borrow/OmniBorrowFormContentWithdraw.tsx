@@ -27,7 +27,7 @@ export function OmniBorrowFormContentWithdraw() {
       currentPosition: { position },
     },
     dynamicMetadata: {
-      values: { collateralMax, paybackMax },
+      values: { withdrawMax, paybackMax },
     },
   } = useOmniProductContext(OmniProductType.Borrow)
 
@@ -37,7 +37,7 @@ export function OmniBorrowFormContentWithdraw() {
     <>
       <OmniFormFieldWithdraw
         dispatchAmount={dispatch}
-        maxAmount={collateralMax}
+        maxAmount={withdrawMax}
         resetOnClear
         token={collateralToken}
         tokenPrice={collateralPrice}

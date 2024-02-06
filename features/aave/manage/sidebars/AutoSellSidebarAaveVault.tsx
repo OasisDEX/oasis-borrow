@@ -10,10 +10,11 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { RemoveTriggerInfoSection, type RemoveTriggerSectionProps } from 'features/aave/components'
 import type { AutoSellInfoSectionProps } from 'features/aave/components/AutoSellInfoSection'
 import { AutoSellInfoSection } from 'features/aave/components/AutoSellInfoSection'
 import { mapErrorsToErrorVaults, mapWarningsToWarningVaults } from 'features/aave/helpers'
-import { getTriggerExecutionCollateralPriceDenominatedInDebt } from 'features/aave/manage/services/calculations'
+import { getTriggerExecutionPrice } from 'features/aave/manage/services/calculations'
 import type {
   AutoSellTriggerAaveContext,
   AutoSellTriggerAaveEvent,
@@ -26,10 +27,12 @@ import {
   sidebarAutomationLinkMap,
 } from 'features/automation/common/consts'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { TriggerAction } from 'helpers/triggers/setup-triggers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { AddingStopLossAnimation } from 'theme/animations'
@@ -55,7 +58,7 @@ function useDescriptionForAutoSell({ state }: Pick<AutoSellSidebarAaveVaultProps
   if (!state.executionTriggerLTV || !state.targetTriggerLTV) {
     return ''
   }
-  const executionPrice = getTriggerExecutionCollateralPriceDenominatedInDebt(state)
+  const executionPrice = getTriggerExecutionPrice(state)
 
   if (!executionPrice) {
     return ''
@@ -65,16 +68,25 @@ function useDescriptionForAutoSell({ state }: Pick<AutoSellSidebarAaveVaultProps
     return t('auto-sell.set-trigger-description-ltv', {
       executionLTV: state.executionTriggerLTV,
       targetLTV: state.targetTriggerLTV,
-      denomination: `${state.position.collateral.token.symbol}/${state.position.debt.token.symbol}`,
-      executionPrice: formatCryptoBalance(executionPrice),
+      denomination: executionPrice.denomination,
+      executionPrice: formatCryptoBalance(executionPrice.price),
       minSellPrice: formatCryptoBalance(state.price),
     })
   }
-  return t('auto-sell.set-trigger-description-ltv-no-threshold', {
+
+  if (state.usePriceInput) {
+    return t('auto-sell.set-trigger-description-ltv-no-threshold', {
+      executionLTV: state.executionTriggerLTV,
+      targetLTV: state.targetTriggerLTV,
+      denomination: executionPrice.denomination,
+      executionPrice: formatCryptoBalance(executionPrice.price),
+    })
+  }
+  return t('auto-sell.set-trigger-description-ltv-without-threshold', {
     executionLTV: state.executionTriggerLTV,
     targetLTV: state.targetTriggerLTV,
-    denomination: `${state.position.collateral.token.symbol}/${state.position.debt.token.symbol}`,
-    executionPrice: formatCryptoBalance(executionPrice),
+    denomination: executionPrice.denomination,
+    executionPrice: formatCryptoBalance(executionPrice.price),
   })
 }
 
@@ -126,6 +138,19 @@ function getAutoSellInfoSectionProps({
   }
 }
 
+function getRemoveTriggerSectionProps({
+  state,
+}: Pick<AutoSellSidebarAaveVaultProps, 'state'>): RemoveTriggerSectionProps | undefined {
+  if (!state.setupTriggerResponse?.simulation) {
+    return undefined
+  }
+
+  return {
+    transactionCost: state.gasEstimation ?? { gasEstimationStatus: 'unset' },
+    isLoading: state.isLoading,
+  }
+}
+
 function AutoSellSidebarAaveVaultEditingState({
   state,
   isEditing,
@@ -162,39 +187,48 @@ function AutoSellSidebarAaveVaultEditingState({
             value1: state.executionTriggerLTV ?? state.defaults.executionTriggerLTV,
           }}
           valueColors={{
-            value0: 'primary100',
-            value1: 'success100',
+            value0: 'success100',
+            value1: 'primary100',
           }}
           step={0.01}
           leftDescription={t('auto-sell.target-ltv')}
           rightDescription={t('auto-sell.trigger-ltv')}
-          leftThumbColor="primary100"
-          rightThumbColor="success100"
+          leftThumbColor="success100"
+          rightThumbColor="primary100"
         />
-        <VaultActionInput
-          action={t('auto-sell.set-min-sell-price')}
-          amount={state.price}
-          hasAuxiliary={false}
-          hasError={false}
-          currencyCode={state.position.debt.token.symbol}
-          onChange={handleNumericInput((price) => {
-            updateState({ type: 'SET_PRICE', price: price })
-          })}
-          onToggle={(toggle) => {
-            updateState({ type: 'SET_USE_PRICE', enabled: toggle })
-          }}
-          showToggle={true}
-          toggleOnLabel={t('protection.set-no-threshold')}
-          toggleOffLabel={t('protection.set-threshold')}
-          toggleOffPlaceholder={t('protection.no-threshold')}
-          defaultToggle={state.usePrice}
-        />
+        {state.usePriceInput && (
+          <VaultActionInput
+            action={t('auto-sell.set-min-sell-price')}
+            amount={state.price}
+            hasAuxiliary={false}
+            hasError={false}
+            currencyCode={
+              state.position.pricesDenomination === 'collateral'
+                ? state.position.debt.token.symbol
+                : state.position.collateral.token.symbol
+            }
+            onChange={handleNumericInput((price) => {
+              updateState({ type: 'SET_PRICE', price: price })
+            })}
+            onToggle={(toggle) => {
+              updateState({ type: 'SET_USE_PRICE', enabled: toggle })
+            }}
+            showToggle={true}
+            toggleOnLabel={t('protection.set-no-threshold')}
+            toggleOffLabel={t('protection.set-threshold')}
+            toggleOffPlaceholder={t('protection.no-threshold')}
+            defaultToggle={state.usePrice}
+          />
+        )}
       </>
       {isEditing && (
         <>
           <VaultErrors
             errorMessages={mapErrorsToErrorVaults(state.setupTriggerResponse?.errors)}
             autoType="Auto-Sell"
+            infoBag={{
+              maxLTV: `${state.defaults.maxSliderValue}%`,
+            }}
           />
           <VaultWarnings
             warningMessages={mapWarningsToWarningVaults(state.setupTriggerResponse?.warnings)}
@@ -226,6 +260,21 @@ function AutoBuySidebarAaveVaultReviewState({ state }: AutoSellSidebarAaveVaultP
   return <>{autoSellInfoProps && <AutoSellInfoSection {...autoSellInfoProps} />}</>
 }
 
+function AutoSellSidebarAaveVaultRemoveState({ state }: AutoSellSidebarAaveVaultProps) {
+  const { t } = useTranslation()
+  const autoBuyInfoProps = getRemoveTriggerSectionProps({ state })
+  return (
+    <>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('automation.cancel-summary-description', {
+          feature: t(sidebarAutomationFeatureCopyMap[AutomationFeatures.AUTO_SELL]),
+        })}
+      </Text>
+      {autoBuyInfoProps && <RemoveTriggerInfoSection {...autoBuyInfoProps} />}
+    </>
+  )
+}
+
 function AutoBuySidebarAaveVaultTxState({ state }: AutoSellSidebarAaveVaultProps) {
   const autoSellInfoProps = getAutoSellInfoSectionProps({ state })
   return (
@@ -246,7 +295,7 @@ function AutoBuySidebarAaveVaultTxDoneState({ state }: AutoSellSidebarAaveVaultP
         </Flex>
       </Box>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {state.flow === 'add' && (
+        {state.action === TriggerAction.Add && (
           <>
             {t('automation-creation.add-complete-content', {
               featureName: t(sidebarAutomationFeatureCopyMap[state.feature]),
@@ -259,7 +308,7 @@ function AutoBuySidebarAaveVaultTxDoneState({ state }: AutoSellSidebarAaveVaultP
             </AppLink>
           </>
         )}
-        {state.flow === 'cancel' &&
+        {state.action === TriggerAction.Remove &&
           t('automation-creation.remove-complete-content', {
             featureName: t(sidebarAutomationFeatureCopyMap[state.feature]),
           })}
@@ -279,6 +328,8 @@ export function SideBarContent(props: AutoSellSidebarAaveVaultProps) {
       return <AutoSellSidebarAaveVaultEditingState {...props} />
     case isStateMatch('review'):
       return <AutoBuySidebarAaveVaultReviewState {...props} />
+    case isStateMatch('remove'):
+      return <AutoSellSidebarAaveVaultRemoveState {...props} />
     case isStateMatch('tx'):
       return <AutoBuySidebarAaveVaultTxState {...props} />
     case isStateMatch('txDone'):
@@ -293,7 +344,7 @@ export function usePrimaryButton(
   const { isStateMatch, canTransitWith } = props
   const { t } = useTranslation()
   const editingLabel =
-    props.state.flow === 'add'
+    props.state.action === TriggerAction.Add
       ? t('automation.add-trigger', {
           feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
         })
@@ -330,19 +381,37 @@ export function usePrimaryButton(
         label: props.state.retryCount > 0 ? t('retry') : t('protection.confirm'),
         steps: [2, 3],
       }
+    case isStateMatch('remove'):
+      return {
+        isLoading: props.state.isLoading,
+        action: () => {
+          props.updateState({ type: 'START_TRANSACTION' })
+        },
+        disabled: !canTransitWith({ type: 'START_TRANSACTION' }),
+        label:
+          props.state.retryCount > 0
+            ? t('retry')
+            : t('automation.cancel-trigger', {
+                feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
+              }),
+      }
     case isStateMatch('tx'):
       return {
         isLoading: props.state.isLoading,
         action: () => {},
         disabled: true,
-        label: 'automation.setting',
+        label: t('automation.setting', {
+          feature: t(sidebarAutomationFeatureCopyMap[props.state.feature]),
+        }),
         steps: [3, 3],
       }
     case isStateMatch('txDone'):
       return {
         isLoading: props.state.isLoading,
-        action: () => {},
-        disabled: true,
+        action: () => {
+          props.updateState({ type: 'RESET' })
+        },
+        disabled: false,
         label: t('finished'),
       }
   }
@@ -354,12 +423,46 @@ export function usePrimaryButton(
   }
 }
 
+export function useTextButton(
+  props: AutoSellSidebarAaveVaultProps,
+): SidebarSectionFooterButtonSettings | undefined {
+  const { isStateMatch } = props
+  const { t } = useTranslation()
+
+  if (isStateMatch('review') || isStateMatch('remove')) {
+    return {
+      isLoading: props.state.isLoading,
+      action: () => {
+        props.updateState({ type: 'GO_TO_EDITING' })
+      },
+      label: t('back-to-editing'),
+      steps: [2, 3],
+    }
+  }
+
+  if (
+    (isStateMatch('editing') || isStateMatch('idle')) &&
+    props.canTransitWith({ type: 'REMOVE_TRIGGER' })
+  ) {
+    return {
+      isLoading: props.state.isLoading,
+      action: () => {
+        props.updateState({ type: 'REMOVE_TRIGGER' })
+      },
+      label: t('system.remove-trigger'),
+    }
+  }
+
+  return undefined
+}
+
 export function AutoSellSidebarAaveVault(props: AutoSellSidebarAaveVaultProps) {
   const { t } = useTranslation()
 
   const { strategy } = props
 
   const primaryButton = usePrimaryButton(props)
+  const textButton = useTextButton(props)
 
   return (
     <SidebarSection
@@ -373,6 +476,7 @@ export function AutoSellSidebarAaveVault(props: AutoSellSidebarAaveVaultProps) {
       }
       requireConnection={true}
       requiredChainHexId={strategy.networkHexId}
+      textButton={textButton}
     />
   )
 }

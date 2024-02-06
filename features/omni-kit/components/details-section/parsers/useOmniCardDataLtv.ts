@@ -1,8 +1,11 @@
 import type BigNumber from 'bignumber.js'
-import type { OmniContentCardBase } from 'features/omni-kit/components/details-section'
+import type {
+  OmniContentCardBase,
+  OmniContentCardDataWithModal,
+} from 'features/omni-kit/components/details-section'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 
-interface OmniCardDataLtvParams {
+interface OmniCardDataLtvParams extends OmniContentCardDataWithModal {
   afterLtv?: BigNumber
   ltv: BigNumber
   maxLtv?: BigNumber
@@ -12,6 +15,7 @@ export function useOmniCardDataLtv({
   afterLtv,
   ltv,
   maxLtv,
+  modal,
 }: OmniCardDataLtvParams): OmniContentCardBase {
   return {
     title: { key: 'omni-kit.content-card.ltv.title' },
@@ -22,5 +26,6 @@ export function useOmniCardDataLtv({
     ...(maxLtv && {
       footnote: [{ key: 'omni-kit.content-card.ltv.footnote' }, formatDecimalAsPercent(maxLtv)],
     }),
+    modal,
   }
 }

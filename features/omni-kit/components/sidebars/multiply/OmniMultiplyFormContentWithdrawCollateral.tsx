@@ -17,7 +17,7 @@ export function OmniMultiplyFormContentWithdrawCollateral() {
       state: { withdrawAmount },
     },
     dynamicMetadata: {
-      values: { collateralMax },
+      values: { withdrawMax },
     },
   } = useOmniProductContext(OmniProductType.Multiply)
 
@@ -25,7 +25,7 @@ export function OmniMultiplyFormContentWithdrawCollateral() {
     <>
       <OmniFormFieldWithdraw
         dispatchAmount={dispatch}
-        maxAmount={collateralMax}
+        maxAmount={withdrawMax}
         resetOnClear
         token={collateralToken}
         tokenPrice={collateralPrice}

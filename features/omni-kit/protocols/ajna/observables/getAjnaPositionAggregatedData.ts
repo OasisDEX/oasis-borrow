@@ -1,16 +1,13 @@
 import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
-import type { NetworkIds } from 'blockchain/networks'
 import type { DpmPositionData } from 'features/omni-kit/observables'
 import {
   type AjnaPositionAggregatedDataAuctions,
   getAjnaPositionAggregatedData,
 } from 'features/omni-kit/protocols/ajna/helpers'
-import {
-  type AjnaUnifiedHistoryEvent,
-  mapAjnaBorrowishEvents,
-  mapAjnaEarnEvents,
-} from 'features/omni-kit/protocols/ajna/history'
+import { mapAjnaEarnEvents, mapAjnaLendingEvents } from 'features/omni-kit/protocols/ajna/history'
+import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { zero } from 'helpers/zero'
 import type { Observable } from 'rxjs'
@@ -31,7 +28,7 @@ export type AjnaPositionAuction = AjnaBorrowishPositionAuction | AjnaEarnPositio
 
 export interface AjnaPositionAggregatedDataResponse {
   auction: AjnaPositionAuction
-  history: AjnaUnifiedHistoryEvent[]
+  history: AjnaHistoryEvent[]
 }
 
 function parseAggregatedDataAuction({
@@ -42,7 +39,7 @@ function parseAggregatedDataAuction({
 }: {
   auctions: AjnaPositionAggregatedDataAuctions[]
   dpmPositionData: DpmPositionData
-  history: AjnaUnifiedHistoryEvent[]
+  history: AjnaHistoryEvent[]
   position: AjnaGenericPosition
 }): AjnaPositionAuction {
   switch (product as OmniProductType) {
@@ -58,7 +55,7 @@ function parseAggregatedDataAuction({
       const ajnaBorrowishPosition = position as AjnaPosition
 
       const auction = auctions[0]
-      const borrowishEvents = mapAjnaBorrowishEvents(history)
+      const borrowishEvents = mapAjnaLendingEvents(history)
 
       const mostRecentHistoryEvent = borrowishEvents[0]
       const isEventAfterAuction = !['AuctionSettle', 'Kick'].includes(
@@ -93,11 +90,11 @@ function parseAggregatedDataHistory({
   history,
 }: {
   dpmPositionData: DpmPositionData
-  history: AjnaUnifiedHistoryEvent[]
-}): AjnaUnifiedHistoryEvent[] {
+  history: AjnaHistoryEvent[]
+}): AjnaHistoryEvent[] {
   return (
-    product === 'earn' ? mapAjnaEarnEvents(history) : mapAjnaBorrowishEvents(history)
-  ) as AjnaUnifiedHistoryEvent[]
+    product === 'earn' ? mapAjnaEarnEvents(history) : mapAjnaLendingEvents(history)
+  ) as AjnaHistoryEvent[]
 }
 
 export const getAjnaPositionAggregatedData$ = ({
@@ -107,7 +104,7 @@ export const getAjnaPositionAggregatedData$ = ({
 }: {
   dpmPositionData: DpmPositionData
   position: AjnaGenericPosition
-  networkId: NetworkIds
+  networkId: OmniSupportedNetworkIds
 }): Observable<AjnaPositionAggregatedDataResponse> => {
   const { proxy } = dpmPositionData
 

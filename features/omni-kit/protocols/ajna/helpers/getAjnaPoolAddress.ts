@@ -1,11 +1,11 @@
-import type { NetworkIds } from 'blockchain/networks'
+import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 type GetAjnaPoolAddress = (
   collateralAddress: string,
   quoteAddress: string,
-  networkId: NetworkIds,
+  networkId: OmniSupportedNetworkIds,
 ) => Promise<string>
 
 export const getAjnaPoolAddress: GetAjnaPoolAddress = async (

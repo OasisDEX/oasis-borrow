@@ -2,14 +2,15 @@ import { TxStatus } from '@oasisdex/transactions'
 import { AjnaRewardsSource } from '@prisma/client'
 import { sendGenericTransaction$ } from 'blockchain/better-calls/send-generic-transaction'
 import { getNetworkContracts } from 'blockchain/contracts'
+import { NetworkIds } from 'blockchain/networks'
 import { useMainContext } from 'components/context/MainContextProvider'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { Skeleton } from 'components/Skeleton'
 import type { ethers } from 'ethers'
 import { useAjnaRewards } from 'features/ajna/rewards/hooks'
 import type { AjnaRewards } from 'features/ajna/rewards/types'
-import { isAjnaSupportedNetwork } from 'features/omni-kit/protocols/ajna/helpers'
-import type { AjnaSupportedNetworksIds } from 'features/omni-kit/protocols/ajna/types'
+import { settings as ajnaSettings } from 'features/omni-kit/protocols/ajna/settings'
+import type { AjnaSupportedNetworkIds } from 'features/omni-kit/protocols/ajna/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { ajnaBrandGradient, getGradientColor } from 'helpers/getGradientColor'
 import type { TxDetails } from 'helpers/handleTransaction'
@@ -49,10 +50,10 @@ const rewardsTransactionResolver = ({
 }: {
   signer: ethers.Signer
   rewards: AjnaRewards
-  networkId: AjnaSupportedNetworksIds
+  networkId: AjnaSupportedNetworkIds
   claimedBonus: boolean
 }) => {
-  const hasBonusRewardsToClaim = !rewards.bonus.isZero() && !claimedBonus
+  const hasBonusRewardsToClaim = !rewards.claimableBonus.isZero() && !claimedBonus
 
   const networkContracts = getNetworkContracts(networkId)
 
@@ -82,6 +83,8 @@ const rewardsTransactionResolver = ({
   }
 }
 
+const disclaimerKeys = ['ajna.rewards.two-tx']
+
 export function AjnaRewardCard() {
   const { t } = useTranslation()
   const { connectedContext$ } = useMainContext()
@@ -97,11 +100,13 @@ export function AjnaRewardCard() {
   const { total, totalUsd, claimable, bonus, regular } = rewards
 
   const onSubmit = () => {
-    if (signer && networkId && isAjnaSupportedNetwork(networkId)) {
+    const castedNetworkId = networkId as AjnaSupportedNetworkIds
+
+    if (signer && networkId && ajnaSettings.supportedNetworkIds.includes(castedNetworkId)) {
       const { resolvedContract, resolvedParams } = rewardsTransactionResolver({
         signer,
         rewards,
-        networkId,
+        networkId: castedNetworkId,
         claimedBonus,
       })
 
@@ -113,7 +118,7 @@ export function AjnaRewardCard() {
       }).subscribe((txState) => {
         void handleTransaction({ txState, ethPrice: zero, setTxDetails })
 
-        if (rewards.bonus.gt(zero) && txState.status === TxStatus.Success) {
+        if (rewards.claimableBonus.gt(zero) && txState.status === TxStatus.Success) {
           setClaimedBonus(true)
         }
 
@@ -198,7 +203,7 @@ export function AjnaRewardCard() {
           )}
         </Text>
         <Button
-          disabled={isTxLoading || claimable.isZero()}
+          disabled={isTxLoading || claimable.isZero() || networkId !== NetworkIds.MAINNET}
           variant="primary"
           onClick={onSubmit}
           sx={{
@@ -250,9 +255,11 @@ export function AjnaRewardCard() {
           </Box>
         )}
       </Flex>
-      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mt: '24px' }}>
-        {t('ajna.rewards.two-tx')}
-      </Text>
+      {disclaimerKeys.map((item) => (
+        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80', mt: '24px' }} key={item}>
+          {t(item)}
+        </Text>
+      ))}
     </Box>
   )
 }

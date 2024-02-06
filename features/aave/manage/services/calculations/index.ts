@@ -1,1 +1,1 @@
-export * from './get-trigger-execution-collateral-price-denominated-in-debt'
+export * from './get-trigger-execution-price'

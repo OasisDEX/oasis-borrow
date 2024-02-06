@@ -3,6 +3,7 @@ import type { NetworkNames } from 'blockchain/networks'
 import type { OmniProductType } from 'features/omni-kit/types'
 import type { TokensPricesList } from 'handlers/portfolio/positions/helpers'
 import type { DpmSubgraphData } from 'handlers/portfolio/positions/helpers/getAllDpmsForWallet'
+import type { HistoryResponse } from 'handlers/portfolio/positions/helpers/getHistoryData'
 import type { LendingProtocol } from 'lendingProtocols'
 
 type AutomationType = {
@@ -37,8 +38,9 @@ export type PortfolioPosition = {
   primaryToken: string
   protocol: LendingProtocol
   secondaryToken: string
-  type: OmniProductType
+  type?: OmniProductType
   url: string
+  debuggingData?: any
 }
 interface PortfolioPositionsCommonReply {
   error?: boolean | string
@@ -61,15 +63,18 @@ export type PortfolioPositionsHandler = ({
   dpmList,
   prices,
   positionsCount,
+  debug,
 }: {
   address: string
   apiVaults?: Vault[]
   dpmList: DpmSubgraphData[]
   prices: TokensPricesList
   positionsCount?: boolean
+  allPositionsHistory?: HistoryResponse
+  debug?: boolean
 }) => Promise<PortfolioPositionsReply | PortfolioPositionsCountReply>
 
-type DetailsTypeCommon =
+export type DetailsTypeCommon =
   | '90dApy'
   | 'apy'
   | 'borrowedToken'
@@ -91,18 +96,20 @@ type DetailsTypeLendingRange = 'lendingRange'
 export type DetailsType = DetailsTypeCommon | DetailsTypeLendingRange
 
 export enum LendingRangeType {
-  Available = 0,
-  Unutilized = 1,
+  Unutilized = 0,
+  Available = 1,
   Active = 2,
 }
 
 export type PositionDetailCommon = {
   type: DetailsTypeCommon
   value: string
+  symbol?: string
 }
 export type PositionDetailLendingRange = {
   type: DetailsTypeLendingRange
   value: LendingRangeType
+  symbol?: string
 }
 
 export type PositionDetail = (PositionDetailCommon | PositionDetailLendingRange) & {
