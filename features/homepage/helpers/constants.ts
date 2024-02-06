@@ -3,13 +3,6 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 
 export const partnerLogosConfig: ImagesSliderProps['items'] = [
   {
-    imgSrc: staticFilesRuntimeUrl('/static/img/homepage/slider/arbitrum.svg'),
-    imgAlt: 'Arbitrum',
-    url: '',
-    width: '184px',
-    height: '48px',
-  },
-  {
     imgSrc: staticFilesRuntimeUrl('/static/img/homepage/slider/aave.svg'),
     imgAlt: 'Aave',
     url: '',
@@ -31,10 +24,17 @@ export const partnerLogosConfig: ImagesSliderProps['items'] = [
     height: '100px',
   },
   {
-    imgSrc: staticFilesRuntimeUrl('/static/img/homepage/slider/optimism.svg'),
-    imgAlt: 'Optimism',
+    imgSrc: staticFilesRuntimeUrl('/static/img/homepage/slider/spark.svg'),
+    imgAlt: 'Spark',
     url: '',
-    width: '184px',
-    height: '46px',
+    width: '151px',
+    height: '48px',
+  },
+  {
+    imgSrc: staticFilesRuntimeUrl('/static/img/homepage/slider/morpho.svg'),
+    imgAlt: 'Morpho',
+    url: '',
+    width: '180px',
+    height: '36px',
   },
 ]
