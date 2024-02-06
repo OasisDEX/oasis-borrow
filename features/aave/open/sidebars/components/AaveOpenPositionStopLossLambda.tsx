@@ -27,17 +27,7 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
   const { t } = useTranslation()
   const [stopLossToken, setStopLossToken] = useState<'debt' | 'collateral'>('debt')
   const { strategyConfig } = state.context
-  const {
-    stopLossLevel,
-    rightBoundry,
-    sliderMin,
-    sliderMax,
-    sliderPercentageFill,
-    liquidationPrice,
-    liquidationRatio,
-  } = useMemo(() => {
-    return getAaveLikeOpenStopLossParams({ state })
-  }, [state])
+  const stopLossParams = getAaveLikeOpenStopLossParams({ state })
   const { tokenPriceUSD$ } = useProductContext()
   const _tokenPriceUSD$ = useMemo(
     () =>
@@ -48,6 +38,8 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
     [stopLossToken, strategyConfig.tokens.collateral, strategyConfig.tokens.debt, tokenPriceUSD$],
   )
   const [tokensPriceData, tokensPriceDataError] = useObservable(_tokenPriceUSD$)
+  const { stopLossLevel, dynamicStopLossPrice, sliderMin, sliderMax, sliderPercentageFill } =
+    stopLossParams
   const { stopLossTxCancelablePromise, isGettingStopLossTx } = useLambdaDebouncedStopLoss({
     state,
     stopLossLevel,
@@ -94,7 +86,7 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
           lastValue={stopLossLevel}
           maxBoundry={sliderMax}
           minBoundry={sliderMin}
-          rightBoundry={rightBoundry}
+          rightBoundry={dynamicStopLossPrice}
           leftBoundry={stopLossLevel}
           onChange={(slLevel) => {
             send({
@@ -110,14 +102,14 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
           rightLabel={t('slider.set-stoploss.right-label')}
           direction={aaveLambdaStopLossConfig.sliderDirection}
         />
-        <OpenAaveStopLossInformationLambda
-          tokensPriceData={tokensPriceData}
-          strategyInfo={state.context.strategyInfo}
-          liquidationPrice={liquidationPrice}
-          liquidationRatio={liquidationRatio}
-          stopLossLevel={stopLossLevel}
-          collateralActive={stopLossToken === 'collateral'}
-        />
+        {!!state.context.strategyInfo && (
+          <OpenAaveStopLossInformationLambda
+            stopLossParams={stopLossParams}
+            tokensPriceData={tokensPriceData}
+            strategyInfo={state.context.strategyInfo}
+            collateralActive={stopLossToken === 'collateral'}
+          />
+        )}
       </Grid>
     ),
     primaryButton: {

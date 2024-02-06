@@ -1,75 +1,101 @@
-import type { IStrategy } from '@oasisdex/dma-library'
-import { amountFromWei } from '@oasisdex/utils'
-import type BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 import type { Tickers } from 'blockchain/prices.types'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { DimmedList } from 'components/DImmedList'
-import { OpenFlowStopLossSummary } from 'components/OpenFlowStopLossSummary'
-import { StopLossCommonOrderInformationLambda } from 'features/aave/components/order-information/StopLossCommonOrderInformationLambda'
+import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
+import type { getAaveLikeOpenStopLossParams } from 'features/aave/open/helpers'
 import type { IStrategyInfo } from 'features/aave/types'
-import {
-  getDynamicStopLossPrice,
-  getMaxToken,
-} from 'features/automation/protection/stopLoss/helpers'
-import { zero } from 'helpers/zero'
+import { getCollateralDuringLiquidation } from 'features/automation/protection/stopLoss/helpers'
+import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
+import { one, zero } from 'helpers/zero'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { Box, Flex } from 'theme-ui'
 
 interface OpenAaveStopLossInformationLambdaProps {
-  stopLossLevel: BigNumber
-  liquidationPrice: BigNumber
-  liquidationRatio: BigNumber
-  transition?: IStrategy
   collateralActive: boolean
-  strategyInfo?: IStrategyInfo
+  strategyInfo: IStrategyInfo
   tokensPriceData?: Tickers
+  stopLossParams: ReturnType<typeof getAaveLikeOpenStopLossParams>
 }
 
 export function OpenAaveStopLossInformationLambda({
-  transition,
-  stopLossLevel,
   collateralActive,
-  liquidationPrice,
-  liquidationRatio,
   strategyInfo,
   tokensPriceData,
+  stopLossParams,
 }: OpenAaveStopLossInformationLambdaProps) {
-  const lockedCollateral = amountFromWei(
-    transition?.simulation.position.collateral.amount || zero,
-    transition?.simulation.position.collateral.precision,
-  )
-  const debt = amountFromWei(
-    transition?.simulation.position.debt.amount || zero,
-    transition?.simulation.position.debt.precision,
-  )
-  const triggerMaxToken = getMaxToken({
-    stopLossLevel,
-    lockedCollateral,
-    liquidationRatio,
-    liquidationPrice,
-    debt,
+  const { t } = useTranslation()
+  const collateralToken = strategyInfo.tokens.collateral
+  const debtToken = strategyInfo.tokens.debt
+  const formattedStopLossLevel = stopLossParams.stopLossLevel
+  const lockedCollateral = stopLossParams.lockedCollateral
+  const debt = stopLossParams.debt
+  const executionPrice = collateralPriceAtRatio({
+    colRatio: formattedStopLossLevel.isZero() ? zero : one.div(formattedStopLossLevel.div(100)),
+    collateral: lockedCollateral,
+    vaultDebt: debt,
   })
 
-  const dynamicStopLossPrice = getDynamicStopLossPrice({
-    stopLossLevel,
-    liquidationRatio,
-    liquidationPrice,
+  const afterMaxToken = stopLossParams.dynamicStopLossPrice.isZero()
+    ? zero
+    : lockedCollateral
+        .times(stopLossParams.dynamicStopLossPrice)
+        .minus(debt)
+        .div(stopLossParams.dynamicStopLossPrice)
+
+  const collateralDuringLiquidation = getCollateralDuringLiquidation({
+    lockedCollateral,
+    debt,
+    liquidationPrice: stopLossParams.liquidationPrice,
+    liquidationPenalty: strategyInfo.liquidationBonus,
   })
+
+  const savingCompareToLiquidation = afterMaxToken.minus(collateralDuringLiquidation)
+
+  const maxTokenOrDebtToken = collateralActive
+    ? `${formatAmount(afterMaxToken, collateralToken)} ${collateralToken}`
+    : `${formatAmount(afterMaxToken.multipliedBy(executionPrice), debtToken)} ${debtToken}`
+
+  const savingTokenOrDebtToken = collateralActive
+    ? `${formatAmount(savingCompareToLiquidation, collateralToken)} ${collateralToken}`
+    : `${formatAmount(
+        savingCompareToLiquidation.multipliedBy(executionPrice),
+        debtToken,
+      )} ${debtToken}`
+
+  const closeVaultGasEstimation = new BigNumber(1300000) // average based on historical data from blockchain
+  const closeVaultGasPrice = new BigNumber(50) // gwei
+  const tokenPriceSelector = collateralActive ? collateralToken : debtToken
+  const estimatedFeesWhenSlTriggered = formatFiatBalance(
+    closeVaultGasEstimation
+      .multipliedBy(closeVaultGasPrice)
+      .multipliedBy(tokensPriceData ? tokensPriceData[tokenPriceSelector] : one)
+      .dividedBy(new BigNumber(10).pow(9)),
+  )
 
   return (
     <DimmedList>
-      <OpenFlowStopLossSummary
-        stopLossLevel={stopLossLevel}
-        dynamicStopLossPrice={dynamicStopLossPrice}
-        ratioTranslationKey="protection.stop-loss-ltv"
+      <VaultChangesInformationItem
+        label={`${t('protection.estimated-to-receive')}`}
+        value={
+          <Flex>
+            {t('protection.up-to')} {maxTokenOrDebtToken}
+          </Flex>
+        }
       />
-      <StopLossCommonOrderInformationLambda
-        lockedCollateral={lockedCollateral}
-        debt={debt}
-        liquidationPrice={liquidationPrice}
-        strategyInfo={strategyInfo}
-        afterMaxToken={triggerMaxToken}
-        isCollateralActive={collateralActive}
-        executionPrice={dynamicStopLossPrice}
-        tokensPriceData={tokensPriceData}
+      <VaultChangesInformationItem
+        label={`${t('protection.saving-comp-to-liquidation')}`}
+        value={
+          <Flex>
+            {t('protection.up-to')} {savingTokenOrDebtToken}
+          </Flex>
+        }
+      />
+      <VaultChangesInformationItem
+        label={`${t('protection.estimated-fees-on-trigger', { token: collateralToken })}`}
+        value={<Flex>${estimatedFeesWhenSlTriggered}</Flex>}
+        tooltip={<Box>{t('protection.sl-triggered-gas-estimation')}</Box>}
       />
     </DimmedList>
   )

@@ -38,7 +38,7 @@ export const getAaveLikeOpenStopLossParams = ({
     max: sliderMax,
     value: stopLossLevel,
   })
-  const rightBoundry = getDynamicStopLossPrice({
+  const dynamicStopLossPrice = getDynamicStopLossPrice({
     liquidationPrice,
     liquidationRatio: one.div(liquidationRatio),
     stopLossLevel: one.div(stopLossLevel.div(100)).times(100),
@@ -53,6 +53,6 @@ export const getAaveLikeOpenStopLossParams = ({
     lockedCollateral,
     liquidationPrice,
     sliderPercentageFill,
-    rightBoundry,
+    dynamicStopLossPrice,
   }
 }
