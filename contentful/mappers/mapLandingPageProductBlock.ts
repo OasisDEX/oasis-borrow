@@ -14,11 +14,13 @@ export const mapLandingPageProductBlock = (
     type: item.type,
     description: item.description.json,
     composition: item.composition,
-    actionsList: item.actionsListCollection.items.map((actionItem) => ({
-      icon: actionItem.icon.url,
-      label: actionItem.label,
-      ...(actionItem.description ? { description: actionItem.description } : {}),
-    })),
+    ...(item.actionsListCollection.items.length && {
+      actionsList: item.actionsListCollection.items.map((actionItem) => ({
+        icon: actionItem.icon.url,
+        label: actionItem.label,
+        ...(actionItem.description ? { description: actionItem.description } : {}),
+      })),
+    }),
     ...(item.image ? { image: item.image.url } : {}),
   })),
 })
