@@ -76,6 +76,10 @@ export const getLandingPageContentByIds = async (collectionIds: string[], previe
                       url
                       title
                     }
+                    contentImage {
+                      url
+                      title
+                    }
                     link {
                       url
                       label

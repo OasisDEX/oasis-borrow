@@ -83,14 +83,15 @@ export interface MarketingTemplateProductBoxProps {
     description?: string
   }[]
   composition: MarketingProductBoxComposition
-  description: ContentfulDocument
+  contentImage?: string
+  description?: ContentfulDocument
   image?: string
   link?: {
     label: string
     url: string
   }
   title: string
-  type: string
+  type?: string
 }
 
 export interface MarketingTemplateProductBoxBlock extends MarketingTemplateBlock {
