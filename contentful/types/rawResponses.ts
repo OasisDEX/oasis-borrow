@@ -79,6 +79,7 @@ export interface LendingPageBannerRawResponse {
 export interface LendingPageComparisonTableRawResponse {
   __typename: LandingPageRawBlocks.COMPARISON_TABLE
   table: MarketingTemplateComparisonTableProps
+  highlightedColumn?: number
 }
 
 export interface LendingPageBenefitBoxRawResponse {

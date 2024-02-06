@@ -9,7 +9,7 @@ import {
   MarketingTemplateInfoBox,
   MarketingTemplateProductBox,
 } from 'features/marketing-layouts/components'
-import { getGridTemplateAreas } from 'features/marketing-layouts/helpers'
+import { getGridTemplateAreas, renderCssGradient } from 'features/marketing-layouts/helpers'
 import type {
   MarketingTemplatePalette,
   MarketingTemplateProductFinderBlocks,
@@ -18,6 +18,7 @@ import { MarketingTemplateBlocks } from 'features/marketing-layouts/types'
 import { ProductHubPromoCardsList } from 'features/productHub/components/ProductHubPromoCardsList'
 import { getGenericPromoCard } from 'features/productHub/helpers'
 import { ProductHubView } from 'features/productHub/views'
+import { getGradientColor } from 'helpers/getGradientColor'
 import { useTranslation } from 'next-i18next'
 import { type FC, Fragment } from 'react'
 import React from 'react'
@@ -76,8 +77,16 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
     case MarketingTemplateBlocks.COMPARISON_TABLE:
       return (
         <Flex sx={{ flexDirection: 'column', rowGap: 5 }}>
-          {content.map((comparisonTable, i) => (
-            <ComparisonTable key={i} {...comparisonTable} />
+          {content.map(({ highlightedColumn, ...comparisonTable }, i) => (
+            <ComparisonTable
+              key={i}
+              {...comparisonTable}
+              {...(highlightedColumn && {
+                columnHighlight: {
+                  [highlightedColumn]: getGradientColor(renderCssGradient('90deg', foreground)),
+                },
+              })}
+            />
           ))}
         </Flex>
       )

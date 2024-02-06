@@ -36,6 +36,7 @@ export const getLandingPageContentByIds = async (collectionIds: string[], previe
                   }
                   ... on ComparisonTable {
                     table
+                    highlightedColumn
                   }
                   ... on LandingPageBenefitBox {
                     title

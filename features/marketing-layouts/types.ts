@@ -126,6 +126,7 @@ export interface MarketingTemplateBannerBlock extends MarketingTemplateBlock {
 export interface MarketingTemplateComparisonTableProps {
   body: (string | boolean)[][]
   header: string[]
+  highlightedColumn?: number
 }
 
 export interface MarketingTemplateComparisonTableBlock extends MarketingTemplateBlock {
