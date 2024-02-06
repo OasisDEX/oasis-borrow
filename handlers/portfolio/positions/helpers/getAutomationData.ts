@@ -12,6 +12,7 @@ const automationQuery = gql`
       executedBlock
       removedBlock
       triggerData
+      triggerType
       owner
     }
   }

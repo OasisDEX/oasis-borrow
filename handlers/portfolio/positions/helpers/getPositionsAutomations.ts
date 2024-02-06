@@ -1,10 +1,10 @@
 import { TriggerType } from '@oasisdex/automation'
-import { emptyAutomations } from 'handlers/portfolio/constants'
 import type { MakerDiscoverPositionsTrigger } from 'handlers/portfolio/positions/handlers/maker/types'
 import type { PortfolioPositionAutomations } from 'handlers/portfolio/types'
 
-interface getPositionsAutomationsParams {
+interface GetPositionsAutomationsParams {
   triggers: MakerDiscoverPositionsTrigger[]
+  defaultList?: Record<string, boolean> | {}
 }
 
 const triggerTypesMap = {
@@ -41,7 +41,8 @@ const triggerTypesMap = {
 
 export function getPositionsAutomations({
   triggers,
-}: getPositionsAutomationsParams): PortfolioPositionAutomations {
+  defaultList = {},
+}: GetPositionsAutomationsParams): PortfolioPositionAutomations {
   return triggers
     .filter(({ executedBlock, removedBlock }) => executedBlock === null && removedBlock === null)
     .reduce((automations, { triggerType }) => {
@@ -59,5 +60,5 @@ export function getPositionsAutomations({
           {},
         ),
       }
-    }, emptyAutomations)
+    }, defaultList)
 }
