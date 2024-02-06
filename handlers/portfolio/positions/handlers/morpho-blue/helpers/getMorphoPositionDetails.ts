@@ -4,8 +4,12 @@ import BigNumber from 'bignumber.js'
 import { isShortPosition } from 'features/omni-kit/helpers'
 import { OmniProductType } from 'features/omni-kit/types'
 import { type PositionDetail } from 'handlers/portfolio/types'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
+import {
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatUsdValue,
+} from 'helpers/formatters/format'
+import { one, zero } from 'helpers/zero'
 
 interface GetMorphoPositionDetailsParam {
   collateralPrice: BigNumber
@@ -68,6 +72,48 @@ export function getMorphoPositionDetails({
       ]
     }
     case OmniProductType.Multiply:
+      const {
+        collateralAmount,
+        debtAmount,
+        liquidationPrice,
+        pnl: { withoutFees },
+        riskRatio,
+        maxRiskRatio,
+      } = position as MorphoBluePosition
+
+      const netValue = collateralAmount
+        .times(collateralPrice)
+        .minus(debtAmount.times(quotePrice))
+        .toNumber()
+      const formattedLiquidationPrice = isShort
+        ? normalizeValue(one.div(liquidationPrice))
+        : liquidationPrice
+      return [
+        {
+          type: 'netValue',
+          value: formatUsdValue(new BigNumber(netValue)),
+        },
+        {
+          type: 'pnl',
+          value: formatDecimalAsPercent(withoutFees),
+          accent: withoutFees.gt(zero) ? 'positive' : 'negative',
+        },
+        {
+          type: 'liquidationPrice',
+          value: `${formatCryptoBalance(new BigNumber(formattedLiquidationPrice))} ${priceFormat}`,
+          subvalue: `Now ${formatCryptoBalance(new BigNumber(marketPrice))} ${priceFormat}`,
+        },
+        {
+          type: 'ltv',
+          value: formatDecimalAsPercent(riskRatio.loanToValue),
+          subvalue: `Max ${formatDecimalAsPercent(maxRiskRatio.loanToValue)}`,
+        },
+        {
+          type: 'multiple',
+          value: `${riskRatio.multiple.toFixed(2)}x`,
+          subvalue: `Max ${maxRiskRatio.multiple.toFixed(2)}x`,
+        },
+      ]
     default: {
       return []
     }
