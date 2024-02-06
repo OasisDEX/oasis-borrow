@@ -45,7 +45,7 @@ export const MarketingTemplateProductBox: FC<
         gridArea: ['unset', `p-${index}`],
         position: 'relative',
         flexDirection: 'column',
-        alignItems: 'flex-start',
+        alignItems: isNarrow ? 'flex-start' : actionsList ? 'stretch' : 'center',
         justifyContent: isNarrow || image ? 'flex-start' : 'center',
         minHeight: '486px',
         p: isNarrow ? 4 : 5,

@@ -15,8 +15,12 @@ export const mapLandingProductFinderBlock = (
   content: blockItem.collection.map((item) => ({
     product: item.product.slug,
     token: item.token,
-    initialNetwork: uniq(item.initialNetworkCollection.items.map(({ slug }) => slug)),
-    initialProtocol: uniq(item.initialProtocolCollection.items.map(({ slug }) => slug)),
+    ...(item.initialNetworkCollection.items.length && {
+      initialNetwork: uniq(item.initialNetworkCollection.items.map(({ slug }) => slug)),
+    }),
+    ...(item.initialProtocolCollection.items.length && {
+      initialProtocol: uniq(item.initialProtocolCollection.items.map(({ slug }) => slug)),
+    }),
     promoCards: item.promoCardsCollection.items.map((promoCard) => ({
       network: promoCard.network.slug,
       primaryToken: promoCard.primaryToken,
