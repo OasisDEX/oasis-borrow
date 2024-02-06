@@ -127,13 +127,14 @@ export const commonDataMapper = ({
         }[dpm.protocol]
       }/${dpm.vaultId}`,
       automations: {
-        ...(dpm.positionType !== OmniProductType.Earn && automations
+        ...(dpm.positionType !== OmniProductType.Earn
           ? {
               ...getPositionsAutomations({
-                triggers: [automations.triggers],
+                triggers: automations ? [automations.triggers] : [],
+                defaultList: dpm.protocol !== 'AAVE' ? emptyAutomations : {},
               }),
             }
-          : emptyAutomations),
+          : {}),
       },
     },
     primaryTokenPrice: primaryTokenOraclePrice || primaryTokenTickerPrice,
