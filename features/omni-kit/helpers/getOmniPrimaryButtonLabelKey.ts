@@ -6,6 +6,7 @@ interface GetPrimaryButtonLabelKeyParams {
   hasAllowance: boolean
   hasDpmAddress: boolean
   isOpening: boolean
+  isTransitionInProgress: boolean
   isTxError: boolean
   isTxSuccess: boolean
   shouldSwitchNetwork: boolean
@@ -18,6 +19,7 @@ export function getOmniPrimaryButtonLabelKey({
   hasAllowance,
   hasDpmAddress,
   isOpening,
+  isTransitionInProgress,
   isTxError,
   isTxSuccess,
   shouldSwitchNetwork,
@@ -33,7 +35,8 @@ export function getOmniPrimaryButtonLabelKey({
       else if (isTxError) return 'retry'
       else return 'confirm'
     case OmniSidebarStep.Transition:
-      return 'borrow-to-multiply.button-progress'
+      if (isTransitionInProgress) return 'borrow-to-multiply.button-progress'
+      else return 'confirm'
     default:
       if (walletAddress && shouldSwitchNetwork) return 'switch-network'
       else if (
