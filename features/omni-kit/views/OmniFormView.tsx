@@ -181,6 +181,7 @@ export function OmniFormView({
     isTxSuccess,
     shouldSwitchNetwork,
     walletAddress,
+    uiDropdown: state.uiDropdown,
   })
   const primaryButtonActions = getOmniSidebarPrimaryButtonActions({
     collateralAddress,

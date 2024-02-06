@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { NEGATIVE_WAD_PRECISION } from 'components/constants'
-import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
-import { unifiedHistoryItem } from 'features/omni-kit/protocols/ajna/history'
+import { ajnaDefaultHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
+import { mapAjnaAuctionResponse } from 'features/omni-kit/protocols/ajna/history/mapAjnaAuctionResponse'
+import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
-import { mapAjnaAuctionResponse } from 'features/positionHistory/mapAjnaAuctionResponse'
 import { mapPositionHistoryResponseEvent } from 'features/positionHistory/mapPositionHistoryResponseEvent'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
@@ -17,7 +17,7 @@ export interface AjnaPositionAggregatedDataAuctions {
 
 export interface AjnaPositionAggregatedData {
   auctions: AjnaPositionAggregatedDataAuctions[]
-  history: AjnaUnifiedHistoryEvent[]
+  history: AjnaHistoryEvent[]
 }
 
 export const getAjnaPositionAggregatedData = async (
@@ -47,14 +47,14 @@ export const getAjnaPositionAggregatedData = async (
     })),
     history: [
       ...response.oasisEvents.map((event) => ({
-        ...unifiedHistoryItem,
+        ...ajnaDefaultHistoryEvent,
         originationFee: new BigNumber(event.originationFee),
         originationFeeInQuoteToken: new BigNumber(event.originationFeeInQuoteToken),
         ...mapPositionHistoryResponseEvent(event),
       })),
       ...response.borrowerEvents
         .filter((item) => item.auction && (item.kind === 'AuctionSettle' || item.kind === 'Kick'))
-        .map((item) => ({ ...unifiedHistoryItem, ...mapAjnaAuctionResponse(item) })),
+        .map((item) => ({ ...ajnaDefaultHistoryEvent, ...mapAjnaAuctionResponse(item) })),
     ].sort((a, b) => b.timestamp - a.timestamp),
   }
 }

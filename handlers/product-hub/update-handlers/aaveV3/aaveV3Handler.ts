@@ -56,7 +56,7 @@ const getAaveV3TokensData = async (networkName: AaveV3Networks, tickers: Tickers
   // reserveData -> liq available and variable fee
   const tokensReserveDataPromises = secondaryTokensList.map(async (token) => {
     const reserveData = await getAaveV3ReserveData({ token, networkId })
-    const debtTokenPrice = new BigNumber(getTokenPrice(token, tickers))
+    const debtTokenPrice = new BigNumber(getTokenPrice(token, tickers, 'aaveV3Handler'))
     return {
       [token]: {
         liquidity: reserveData.totalAToken

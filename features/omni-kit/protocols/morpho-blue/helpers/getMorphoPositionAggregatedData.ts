@@ -1,13 +1,14 @@
-import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
-import { unifiedHistoryItem } from 'features/omni-kit/protocols/ajna/history'
+import { mapMorphoLiquidationResponseEvent } from 'features/omni-kit/protocols/morpho-blue/history/mapMorphoLiquidationResponseEvent'
+import { morphoDefaultHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/morphoDefaultHistoryEvent'
+import type { MorphoHistoryEvent } from 'features/omni-kit/protocols/morpho-blue/history/types'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
 import { mapPositionHistoryResponseEvent } from 'features/positionHistory/mapPositionHistoryResponseEvent'
 import type { SubgraphsResponses } from 'features/subgraphLoader/types'
 import { loadSubgraph } from 'features/subgraphLoader/useSubgraphLoader'
 
 export interface MorphoPositionAggregatedData {
-  auctions: []
-  history: AjnaUnifiedHistoryEvent[]
+  auction?: MorphoHistoryEvent
+  history: MorphoHistoryEvent[]
 }
 
 export const getMorpoPositionAggregatedData = async (
@@ -23,17 +24,30 @@ export const getMorpoPositionAggregatedData = async (
   })) as SubgraphsResponses['Morpho']['getMorphoPositionAggregatedData']
   const errors = []
 
-  if (!response.summerEvents) errors.push('No history data found')
+  if (!response.summerEvents || !response.borrowerEvents) errors.push('No history data found')
 
   if (errors.length) throw new Error([`Missing data for ${proxy} proxy:`, ...errors].join('\n'))
 
-  return {
-    auctions: [],
-    history: [
-      ...response.summerEvents.map((event) => ({
-        ...unifiedHistoryItem,
-        ...mapPositionHistoryResponseEvent(event),
+  const history = [
+    ...response.summerEvents.map((event) => ({
+      ...morphoDefaultHistoryEvent,
+      ...mapPositionHistoryResponseEvent(event),
+    })),
+    ...response.borrowerEvents
+      .filter((event) => event.kind === 'Liquidate')
+      .map((event) => ({
+        ...morphoDefaultHistoryEvent,
+        ...mapMorphoLiquidationResponseEvent(event),
       })),
-    ].sort((a, b) => b.timestamp - a.timestamp),
+  ].sort((a, b) => b.timestamp - a.timestamp)
+
+  // assumption that when liquidation happen there won't be any events afterward
+  // if there will be additional event like liquidation -> repay / withdraw
+  // we will need to adjust offset (index) in logic below
+  const auction = history[0]?.kind === 'Liquidate' ? history[0] : undefined
+
+  return {
+    auction,
+    history,
   }
 }

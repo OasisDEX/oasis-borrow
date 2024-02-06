@@ -3077,6 +3077,12 @@
             "transaction": "Confirm your Morpho {{productType}} Position",
             "transition": "Switch your Morpho {{productType}} Position"
           }
+        },
+        "notifications": {
+          "got-liquidated": {
+            "title": "This position got liquidated",
+            "message": "The liquidation process is over you can now reclaim any collateral left."
+          }
         }
       }
     }

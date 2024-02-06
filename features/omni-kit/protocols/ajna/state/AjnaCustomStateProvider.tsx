@@ -6,7 +6,7 @@ import {
   getAjnaEarnDefaultUiDropdown,
   getEarnDefaultPrice,
 } from 'features/omni-kit/protocols/ajna/helpers'
-import type { AjnaUnifiedHistoryEvent } from 'features/omni-kit/protocols/ajna/history'
+import type { AjnaHistoryEvent } from 'features/omni-kit/protocols/ajna/history/types'
 import { useAjnaTxHandler } from 'features/omni-kit/protocols/ajna/hooks'
 import { useAjnaMetadata } from 'features/omni-kit/protocols/ajna/metadata'
 import type { AjnaPositionAuction } from 'features/omni-kit/protocols/ajna/observables'
@@ -15,13 +15,13 @@ import { OmniProductType } from 'features/omni-kit/types'
 import type { FC } from 'react'
 import React from 'react'
 
-type MorphoOmniCustomStateProviderProps = OmniCustomStateParams<
+type AjnaOmniCustomStateProviderProps = OmniCustomStateParams<
   AjnaPositionAuction,
-  AjnaUnifiedHistoryEvent[],
+  AjnaHistoryEvent[],
   AjnaGenericPosition
 >
 
-export const AjnaCustomStateProvider: FC<MorphoOmniCustomStateProviderProps> = ({
+export const AjnaCustomStateProvider: FC<AjnaOmniCustomStateProviderProps> = ({
   children,
   dpmPosition,
   isOpening,
