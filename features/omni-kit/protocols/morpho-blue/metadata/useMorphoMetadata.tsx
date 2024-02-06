@@ -118,6 +118,7 @@ export const useMorphoMetadata: GetOmniMetadata = (productContext) => {
             productType,
           }),
           footerColumns: 2,
+          maxSliderAsMaxLtv: true,
         },
         elements: {
           faq: productType === OmniProductType.Borrow ? faqBorrow : faqMultiply,

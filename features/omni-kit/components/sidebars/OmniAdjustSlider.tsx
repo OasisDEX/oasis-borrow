@@ -41,7 +41,7 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
       isSimulationLoading,
     },
     dynamicMetadata: {
-      values: { changeVariant },
+      values: { changeVariant, maxSliderAsMaxLtv },
     },
   } = useOmniProductContext(productType)
 
@@ -62,8 +62,11 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
   }, [depositAmount?.toString()])
 
   const resolvedValue = loanToValue || position.riskRatio.loanToValue
+  const resolvedMax = maxSliderAsMaxLtv
+    ? position.maxRiskRatio.loanToValue.decimalPlaces(2, BigNumber.ROUND_DOWN)
+    : max
 
-  const percentage = resolvedValue.minus(min).div(max.minus(min)).times(100)
+  const percentage = resolvedValue.minus(min).div(resolvedMax.minus(min)).times(100)
   const ltv = position.riskRatio.loanToValue
   const liquidationPrice = simulation?.liquidationPrice || position.liquidationPrice
 
@@ -111,7 +114,7 @@ export function OmniAdjustSlider({ disabled = false }: OmniAdjustSliderProps) {
       )}
       onChange={(value) => dispatch({ type: 'update-loan-to-value', loanToValue: value })}
       minBoundry={min}
-      maxBoundry={max}
+      maxBoundry={resolvedMax}
       lastValue={resolvedValue}
       disabled={disabled}
       step={0.01}
