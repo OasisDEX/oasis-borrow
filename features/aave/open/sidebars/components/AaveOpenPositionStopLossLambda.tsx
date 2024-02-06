@@ -82,12 +82,12 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
             items={[
               {
                 id: 'debt',
-                label: t('system.debt'),
+                label: t('close-to', { token: strategyConfig.tokens.debt }),
                 action: () => setStopLossToken('debt'),
               },
               {
                 id: 'collateral',
-                label: t('system.collateral'),
+                label: t('close-to', { token: strategyConfig.tokens.collateral }),
                 action: () => setStopLossToken('collateral'),
               },
             ]}

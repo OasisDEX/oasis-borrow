@@ -97,6 +97,7 @@ export type SetupBasicAutoResponse = {
   transaction?: {
     data: string
     to: string
+    triggerTxData?: string
   }
 }
 
@@ -115,7 +116,7 @@ export type SetupBasicStopLossResponse = {
   transaction?: {
     data: string
     to: string
-    triggerTxData: string
+    triggerTxData?: string
   }
 }
 
