@@ -41,6 +41,12 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn --no-progress --non-interactive --frozen-lockfile
 
+      - name: Echo github event
+        env:
+          EVENT_OBJ: ${{ toJson(github.event) }}
+        steps:
+          - run: echo $EVENT_OBJ
+
       - name: Run postinstall
         env:
           CONFIG_URL: ${{ secrets.CONFIG_URL }}
@@ -66,16 +72,6 @@ jobs:
         with:
           name: bundle
           path: .next/analyze/__bundle_analysis.json
-
-      - name: Echo base ref
-        env:
-          GH_BASE_REF: ${{ github.event.pull_request.base.ref }}
-        run: echo "$GH_BASE_REF"
-
-      - name: Echo event number
-        env:
-          GH_EVENT_NUMBER: ${{ github.event.number }}
-        run: echo "$GH_EVENT_NUMBER"
 
       - name: Download base branch bundle stats
         uses: dawidd6/action-download-artifact@v2
@@ -108,8 +104,8 @@ jobs:
       - name: Create Comment
         uses: peter-evans/create-or-update-comment@v2
         if:
-          always() && !failure() && !cancelled() && github.event.number &&
-          steps.fc.outputs.comment-id == 0
+          ${{ !(failure() || cancelled()) && github.event.number && steps.fc.outputs.comment-id == 0
+          }}
         with:
           issue-number: ${{ github.event.number }}
           body: ${{ steps.get-comment-body.outputs.body }}
@@ -117,8 +113,8 @@ jobs:
       - name: Update Comment
         uses: peter-evans/create-or-update-comment@v2
         if:
-          always() && !failure() && !cancelled() && github.event.number &&
-          steps.fc.outputs.comment-id != 0
+          ${{ !(failure() || cancelled()) && github.event.number && steps.fc.outputs.comment-id == 0
+          }}
         with:
           issue-number: ${{ github.event.number }}
           body: ${{ steps.get-comment-body.outputs.body }}
