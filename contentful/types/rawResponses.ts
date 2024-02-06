@@ -5,8 +5,9 @@ import {
   MarketingTemplatePalette,
 } from 'features/marketing-layouts/types'
 import { LandingPageRawBlocks } from 'contentful/types'
-import { ProductHubProductType } from 'features/productHub/types'
+import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
 import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
+import { NetworkLabelType } from 'blockchain/networks'
 
 export interface LandingPageRawBlocksItems {
   sys: {
@@ -153,8 +154,8 @@ export interface ProductFinderRawResponse {
   }
   initialNetworkCollection: {
     items: {
-      slug: string
-      name: string
+      slug: ProductHubSupportedNetworks
+      name: NetworkLabelType
     }[]
   }
   promoCardsCollection: {
