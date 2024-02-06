@@ -42,7 +42,7 @@ export default () => (
             <Text>
               The most immediate risk your position will face is that of liquidation. Liquidation
               risk is determined by the price of the collateral asset relative to your chosen
-              liquidation price and LTV. .If the price drops below your liquidation price, you will
+              liquidation price and LTV. If the price drops below your liquidation price, you will
               be liquidated, suffering a penalty fee charged by the protocol. You should adjust your
               risk to your preferred profile, move your risk up or down according to your needs and
               market conditions, and continually monitor your position to avoid liquidations. Your

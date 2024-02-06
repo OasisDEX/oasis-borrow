@@ -11,7 +11,7 @@ export const settings: OmniProtocolSettings = {
   supportedMainnetNetworkIds: [NetworkIds.MAINNET],
   supportedProducts: [OmniProductType.Borrow, OmniProductType.Multiply],
   supportedMultiplyTokens: {
-    [NetworkIds.MAINNET]: ['WSTETH', 'ETH', 'WBTC', 'SDAI', 'SDAI', 'USDC'],
+    [NetworkIds.MAINNET]: ['WSTETH', 'ETH', 'OSETH', 'WBTC', 'SDAI', 'SDAI', 'USDC', 'USDT'],
   },
   steps: {
     borrow: {
@@ -36,5 +36,7 @@ export const morphoMarkets: NetworkIdsWithValues<{ [key: string]: string }> = {
     'ETH-USDC': '0xf9acc677910cc17f650416a22e2a14d5da7ccb9626db18f1bf94efe64f92b372',
     'WBTC-USDC': '0x3a85e619751152991742810df6ec69ce473daef99e28a64ab2340d7b7ccfee49',
     'SDAI-USDC': '0x06f2842602373d247c4934f7656e513955ccc4c377f0febc0d9ca2c3bcc191b1',
+    'OSETH-ETH': '0xd5211d0e3f4a30d5c98653d988585792bb7812221f04801be73a44ceecb11e89',
+    'WBTC-USDT': '0xa921ef34e2fc7a27ccc50ae7e4b154e16c9799d3387076c421423ef52ac4df99',
   },
 }

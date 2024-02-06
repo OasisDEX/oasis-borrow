@@ -3173,6 +3173,11 @@
         "title": "Looking for a custom pool?",
         "description": "Find any pool on Ajna and open a position using Ajna Permissionless.",
         "cta": "Search custom pools"
+      },
+      "migration": {
+        "title": "Switch to Summer.fi, you have {{migrationsCount}} positions available to migrate.",
+        "description": "Migrate to Summer.fi for benefits like stop loss, one click multiply and automated management.",
+        "cta": "View Positions ->"
       }
     }
   },

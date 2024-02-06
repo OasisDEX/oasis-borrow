@@ -16,6 +16,7 @@ export const MarketingTemplateProductBox: FC<
 > = ({
   actionsList,
   composition,
+  contentImage,
   description,
   image,
   index,
@@ -45,7 +46,7 @@ export const MarketingTemplateProductBox: FC<
         gridArea: ['unset', `p-${index}`],
         position: 'relative',
         flexDirection: 'column',
-        alignItems: 'flex-start',
+        alignItems: isNarrow ? 'flex-start' : actionsList ? 'stretch' : 'center',
         justifyContent: isNarrow || image ? 'flex-start' : 'center',
         minHeight: '486px',
         p: isNarrow ? 4 : 5,
@@ -68,14 +69,17 @@ export const MarketingTemplateProductBox: FC<
         }}
       >
         <Box sx={{ flex: '1' }}>
-          <Text variant="boldParagraph3" sx={{ color: 'neutral80' }}>
-            {type}
-          </Text>
-          <Heading as="h3" variant="header4" sx={{ mt: 1, mb: 2 }}>
+          {type && (
+            <Text variant="boldParagraph3" sx={{ mb: 1, color: 'neutral80' }}>
+              {type}
+            </Text>
+          )}
+          <Heading as="h3" variant="header4" sx={{ mb: 2 }}>
             {title}
           </Heading>
-          <MarketingTemplateMarkdown content={description} />
+          {description && <MarketingTemplateMarkdown content={description} />}
           {linkComponent}
+          {contentImage && <Image src={contentImage} sx={{ mt: 3 }} />}
         </Box>
         {actionsList && (
           <Flex sx={{ flex: '1', justifyContent: isNarrow ? 'flex-start' : 'center' }}>

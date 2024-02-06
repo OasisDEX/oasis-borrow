@@ -5,8 +5,9 @@ import {
   MarketingTemplatePalette,
 } from 'features/marketing-layouts/types'
 import { LandingPageRawBlocks } from 'contentful/types'
-import { ProductHubProductType } from 'features/productHub/types'
+import { ProductHubProductType, ProductHubSupportedNetworks } from 'features/productHub/types'
 import { type Document as ContentfulDocument } from '@contentful/rich-text-types'
+import { NetworkLabelType } from 'blockchain/networks'
 
 export interface LandingPageRawBlocksItems {
   sys: {
@@ -78,6 +79,7 @@ export interface LendingPageBannerRawResponse {
 export interface LendingPageComparisonTableRawResponse {
   __typename: LandingPageRawBlocks.COMPARISON_TABLE
   table: MarketingTemplateComparisonTableProps
+  highlightedColumn?: number
 }
 
 export interface LendingPageBenefitBoxRawResponse {
@@ -112,11 +114,15 @@ export interface LendingPageInfoBoxRawResponse {
 export interface LendingPageProductBoxRawResponse {
   __typename: LandingPageRawBlocks.PRODUCT_BOX
   title: string
-  description: {
+  description?: {
     json: ContentfulDocument
   }
-  type: string
+  type?: string
   image: {
+    title: string
+    url: string
+  }
+  contentImage: {
     title: string
     url: string
   }
@@ -153,8 +159,8 @@ export interface ProductFinderRawResponse {
   }
   initialNetworkCollection: {
     items: {
-      slug: string
-      name: string
+      slug: ProductHubSupportedNetworks
+      name: NetworkLabelType
     }[]
   }
   promoCardsCollection: {
