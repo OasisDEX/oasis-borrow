@@ -1597,6 +1597,14 @@
     "history-coming-soon": {
       "header": "History not supported",
       "description": "We currently don't support {{protocol}} {{proxyVersion}} history on the {{network}}."
+    },
+    "too-low-net-value-for-protection": {
+      "header": "You need to have a minimum of ${{netValue}} of net value in this position before you can set up Automated Protection",
+      "description": "Summer.fi Automated Protection allows you to set up a dynamic Stop-Loss or Auto-Sell Strategy on your position based on the Loan to Value. This can protect your position from liquidation or reduce your exposure to the collateral asset in the case of a sharp downturn in price. Learn more about how it works, here."
+    },
+    "too-low-net-value-for-optimization": {
+      "header": "You need to have a minimum of ${{netValue}} of net value in this position before you can set up Automated Optimization",
+      "description": "Summer.fi Optimization allows you to set up a dynamic Auto-Buy on your position based on the Loan to Value. This will increase your exposure to the collateral asset as the price changed. Learn more about how it works, here."
     }
   },
   "view": "View",
