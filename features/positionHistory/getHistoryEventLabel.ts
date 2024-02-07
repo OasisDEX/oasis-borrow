@@ -59,11 +59,13 @@ export const getHistoryEventLabel = ({
     case 'SparkAdjustRiskUp':
     case 'MorphoBlueAdjustRiskUp':
     case 'IncreaseAAVEPosition':
+    case 'AdjustRiskUpAAVEV3Position':
       return t('position-history.increase-multiple')
     case 'AjnaAdjustRiskDown':
     case 'SparkAdjustRiskDown':
     case 'MorphoBlueAdjustRiskDown':
     case 'DecreaseAAVEPosition':
+    case 'AdjustRiskDownAAVEV3Position':
       return t('position-history.decrease-multiple')
     case 'AjnaCloseToQuotePosition':
     case 'AjnaCloseToCollateralPosition':
