@@ -60,7 +60,10 @@ interface OmniGeneralContextProviderProps {
   walletNetwork: NetworkConfig
 }
 
-export type OmniSlippageSourceSettings = 'userSettings' | 'strategyConfig'
+export enum OmniSlippageSourceSettings {
+  USER_SETTINGS = 'userSettings',
+  STRATEGY_CONFIGS = 'strategyConfig',
+}
 
 type OmniGeneralContextEnvironment = Omit<OmniGeneralContextProviderProps, 'steps'> & {
   isOwner: boolean

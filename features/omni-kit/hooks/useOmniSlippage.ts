@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import type { OmniSlippageSourceSettings } from 'features/omni-kit/contexts'
+import { OmniSlippageSourceSettings } from 'features/omni-kit/contexts'
 import { SLIPPAGE_YIELD_LOOP } from 'features/userSettings/userSettings.constants'
 import { useState } from 'react'
 
@@ -15,7 +15,9 @@ export const useOmniSlippage = ({
 }) => {
   const isStrategyWithDefaultSlippage = Object.values(strategies).some((value) => value)
   const [slippageSource, setSlippageSource] = useState<OmniSlippageSourceSettings>(
-    isStrategyWithDefaultSlippage ? 'strategyConfig' : 'userSettings',
+    isStrategyWithDefaultSlippage
+      ? OmniSlippageSourceSettings.STRATEGY_CONFIGS
+      : OmniSlippageSourceSettings.USER_SETTINGS,
   )
 
   const slippageConfigMap = {

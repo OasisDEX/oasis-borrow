@@ -1,6 +1,6 @@
 import { SidebarSectionFooterButton } from 'components/sidebar/SidebarSectionFooterButton'
 import { OrderInformationTooltipAction } from 'features/aave/components/order-information/OrderInformationTooltipAction'
-import type { OmniSlippageSourceSettings } from 'features/omni-kit/contexts'
+import { OmniSlippageSourceSettings } from 'features/omni-kit/contexts'
 import { useTranslation } from 'next-i18next'
 import type { FC } from 'react'
 import React from 'react'
@@ -48,7 +48,7 @@ const OmniSlippageFromStrategyWithTooltip: FC<OmniSlippageFromStrategyProps> = (
         <OmniChangeSlippageToUserSettings
           buttonLabel={t('vault-changes.slippage-from-settings')}
           changeSlippage={() => {
-            changeSlippage('userSettings')
+            changeSlippage(OmniSlippageSourceSettings.USER_SETTINGS)
           }}
         />
       </OrderInformationTooltipAction>
@@ -70,7 +70,7 @@ const OmniSlippageFromSettingsWithTooltip: FC<OmniSlippageFromStrategyProps> = (
           <OmniChangeSlippageToUserSettings
             buttonLabel={t('vault-changes.slippage-from-strategy')}
             changeSlippage={() => {
-              changeSlippage('strategyConfig')
+              changeSlippage(OmniSlippageSourceSettings.STRATEGY_CONFIGS)
             }}
           />
         </OrderInformationTooltipAction>
@@ -87,7 +87,7 @@ interface OmniSlippageSettingsProps {
 }
 
 export const OmniSlippageInfoWithSettings: FC<OmniSlippageSettingsProps> = (props) => {
-  if (props.getSlippageFrom === 'strategyConfig')
+  if (props.getSlippageFrom === OmniSlippageSourceSettings.STRATEGY_CONFIGS)
     return <OmniSlippageFromStrategyWithTooltip {...props} />
   return <OmniSlippageFromSettingsWithTooltip {...props} />
 }
