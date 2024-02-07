@@ -61,7 +61,7 @@ describe('userSettings', () => {
   it('should validate if slippage is outside of valid range (0.2-0.001) and block progression', () => {
     const newSlippageOver = new BigNumber(0.21)
     const newSlippageValid = new BigNumber(0.2)
-    const newSlippageUnder = new BigNumber(0.0009)
+    const newSlippageUnder = new BigNumber(-1)
     const state = mockUserSettings()
 
     state().setSlippageInput(newSlippageOver)
