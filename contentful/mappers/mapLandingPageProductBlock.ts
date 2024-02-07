@@ -12,7 +12,9 @@ export const mapLandingPageProductBlock = (
     title: item.title,
     link: item.link,
     type: item.type,
-    description: item.description.json,
+    ...(item.description && {
+      description: item.description.json,
+    }),
     composition: item.composition,
     ...(item.actionsListCollection.items.length && {
       actionsList: item.actionsListCollection.items.map((actionItem) => ({
@@ -21,6 +23,11 @@ export const mapLandingPageProductBlock = (
         ...(actionItem.description ? { description: actionItem.description } : {}),
       })),
     }),
-    ...(item.image ? { image: item.image.url } : {}),
+    ...(item.image && {
+      image: item.image.url,
+    }),
+    ...(item.contentImage && {
+      contentImage: item.contentImage.url,
+    }),
   })),
 })

@@ -11,7 +11,7 @@ export const settings: OmniProtocolSettings = {
   supportedMainnetNetworkIds: [NetworkIds.MAINNET],
   supportedProducts: [OmniProductType.Borrow, OmniProductType.Multiply],
   supportedMultiplyTokens: {
-    [NetworkIds.MAINNET]: ['WSTETH', 'ETH', 'OSETH', 'WBTC', 'SDAI', 'SDAI', 'USDC'],
+    [NetworkIds.MAINNET]: ['WSTETH', 'ETH', 'OSETH', 'WBTC', 'SDAI', 'SDAI', 'USDC', 'USDT'],
   },
   steps: {
     borrow: {
