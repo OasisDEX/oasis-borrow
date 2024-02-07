@@ -14,6 +14,7 @@ export interface MakerDiscoverPositionsTrigger {
   executedBlock: string
   removedBlock: string
   triggerData: string
+  triggerType: string
 }
 
 export interface MakerDiscoverPositionsResponse {

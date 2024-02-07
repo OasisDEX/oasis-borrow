@@ -12,6 +12,7 @@ const automationQuery = gql`
       executedBlock
       removedBlock
       triggerData
+      triggerType
       owner
     }
   }
@@ -25,6 +26,7 @@ type AutomationQueryResponse = {
     executedBlock: string
     removedBlock: string
     triggerData: string
+    triggerType: string
     owner: string
   }[]
 }
@@ -43,6 +45,7 @@ export type AutomationResponse = {
     executedBlock: string
     removedBlock: string
     triggerData: string
+    triggerType: string
     owner: string
   }
 }[]
