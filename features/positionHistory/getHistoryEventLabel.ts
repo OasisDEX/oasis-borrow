@@ -26,6 +26,7 @@ export const getHistoryEventLabel = ({
     case 'AjnaSupplyQuote':
       return isOpen ? t('position-history.open-position') : t('position-history.deposit')
     case 'AjnaDepositBorrow':
+    case 'AAVEDepositBorrow':
     case 'MorphoBlueDepositBorrow':
       return isOpen ? t('position-history.open-position') : t('position-history.deposit-generate')
     case 'MorphoBlueOpenPosition':
