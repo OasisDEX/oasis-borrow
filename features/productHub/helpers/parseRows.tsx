@@ -1,6 +1,7 @@
 import type { NetworkIds } from 'blockchain/networks'
 import { AssetsTableDataCellAction } from 'components/assetsTable/cellComponents/AssetsTableDataCellAction'
 import { AssetsTableDataCellAsset } from 'components/assetsTable/cellComponents/AssetsTableDataCellAsset'
+import { AssetsTableTooltip } from 'components/assetsTable/cellComponents/AssetsTableTooltip'
 import type { AssetsTableRowData } from 'components/assetsTable/types'
 import { ProtocolLabel } from 'components/ProtocolLabel'
 import { getActionUrl, parseProduct } from 'features/productHub/helpers'
@@ -25,8 +26,16 @@ export function parseRows({
   rows,
 }: ParseRowsParams): AssetsTableRowData[] {
   return rows.map((row) => {
-    const { depositToken, label, network, primaryToken, protocol, reverseTokens, secondaryToken } =
-      row
+    const {
+      depositToken,
+      label,
+      network,
+      primaryToken,
+      protocol,
+      reverseTokens,
+      secondaryToken,
+      tooltips,
+    } = row
     const icons = primaryToken === secondaryToken ? [primaryToken] : [primaryToken, secondaryToken]
     const asset = product === ProductHubProductType.Earn ? depositToken || primaryToken : label
 
@@ -38,7 +47,13 @@ export function parseRows({
     const items = omit(
       {
         [product === ProductHubProductType.Earn ? 'depositToken' : 'collateralDebt']: (
-          <AssetsTableDataCellAsset asset={asset} icons={icons} />
+          <AssetsTableDataCellAsset
+            asset={asset}
+            icons={icons}
+            {...(tooltips?.asset && {
+              addon: <AssetsTableTooltip {...tooltips.asset} />,
+            })}
+          />
         ),
         ...parseProduct(row, product),
         protocolNetwork: (

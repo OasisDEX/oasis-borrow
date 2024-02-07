@@ -43,21 +43,21 @@ export interface ProductHubItemBasics {
   label: string
   network: ProductHubSupportedNetworks
   primaryToken: ProductHubTokenType
-  primaryTokenGroup?: ProductHubTokenType
   primaryTokenAddress: ProductHubTokenType
+  primaryTokenGroup?: ProductHubTokenType
   product: ProductHubProductType[]
   protocol: LendingProtocol
   secondaryToken: ProductHubTokenType
-  secondaryTokenGroup?: ProductHubTokenType
   secondaryTokenAddress: ProductHubTokenType
+  secondaryTokenGroup?: ProductHubTokenType
 }
 
 export interface ProductHubItemDetails {
-  weeklyNetApy?: string
   depositToken?: string
   earnStrategy?: EarnStrategies
   earnStrategyDescription?: string
   fee?: string
+  hasRewards?: boolean
   liquidity?: string
   managementType?: ProductHubManagementType
   maxLtv?: string
@@ -65,15 +65,14 @@ export interface ProductHubItemDetails {
   multiplyStrategy?: string
   multiplyStrategyType?: ProductHubMultiplyStrategyType
   reverseTokens?: boolean
-  hasRewards?: boolean
+  weeklyNetApy?: string
 }
 
 export interface ProductHubItemTooltips {
   tooltips?: {
-    [key in keyof Omit<
-      ProductHubItemDetails,
-      'depositToken' | 'multiplyStrategyType'
-    >]?: AssetsTableTooltipProps
+    [key in
+      | keyof Omit<ProductHubItemDetails, 'depositToken' | 'multiplyStrategyType'>
+      | 'asset']?: AssetsTableTooltipProps
   }
 }
 

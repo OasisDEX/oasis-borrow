@@ -3,7 +3,7 @@ import { StatefulTooltip } from 'components/Tooltip'
 import { Translatable } from 'components/Translatable'
 import { productHubIcons } from 'features/productHub/content'
 import React from 'react'
-import { Text } from 'theme-ui'
+import { Box, Text } from 'theme-ui'
 
 import type { AssetsTableTooltipProps } from './AssetsTableTooltip.types'
 
@@ -15,14 +15,14 @@ export function AssetsTableTooltip({
   return (
     <StatefulTooltip
       tooltip={
-        <>
+        <Box sx={{ lineHeight: 'body', fontWeight: 'regular' }}>
           {title && (
             <Text as="span" sx={{ display: 'block', mb: 1, fontWeight: 'semiBold' }}>
               <Translatable text={title} />
             </Text>
           )}
           <Translatable text={description} />
-        </>
+        </Box>
       }
       containerSx={{ position: 'relative', top: '2px', display: 'inline-flex', ml: 1 }}
       tooltipSx={{
