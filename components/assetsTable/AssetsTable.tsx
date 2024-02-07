@@ -49,7 +49,7 @@ export function AssetsTable({
   tooltips = [],
 }: AssetsTableProps) {
   const [sortingSettings, setSortingSettings] = useState<AssetsTableSortingSettings>()
-  const rowKeys = Object.keys(rows[0])
+  const rowKeys = Object.keys(rows[0].items)
   const bannerRows = Math.min(rows.length - 1, 9)
 
   const sortedRows = useMemo(
@@ -97,7 +97,9 @@ export function AssetsTable({
                 key={getRowKey(i, rows[0])}
                 first={i === 0}
                 headerTranslationProps={headerTranslationProps}
-                isSortable={(rows[0][label] as AssetsTableSortableCell).sortable !== undefined}
+                isSortable={
+                  (rows[0].items[label] as AssetsTableSortableCell).sortable !== undefined
+                }
                 isSticky={isSticky}
                 label={label}
                 last={i + 1 === rowKeys.length}
@@ -121,7 +123,7 @@ export function AssetsTable({
               <AssetsTableDataRow key={getRandomString()} row={row} rowKeys={rowKeys} />
               {banner && i === Math.floor(bannerRows / 2) && (
                 <tr>
-                  <td colSpan={Object.keys(row).length}>
+                  <td colSpan={Object.keys(row.items).length}>
                     <ActionBanner {...banner} />
                   </td>
                 </tr>
@@ -258,7 +260,7 @@ export function AssetsTableDataRow({ row, rowKeys }: AssetsTableDataRowProps) {
         position: 'relative',
         borderRadius: 'medium',
         transition: 'box-shadow 200ms',
-        ...(hasUndisabledButton && {
+        ...((row.onClick || hasUndisabledButton) && {
           cursor: 'pointer',
           '&:hover': {
             boxShadow: 'buttonMenu',
@@ -269,13 +271,18 @@ export function AssetsTableDataRow({ row, rowKeys }: AssetsTableDataRowProps) {
         }),
       }}
       {...{
-        ...(hasUndisabledButton && {
-          role: 'link',
-          onClick: () => {
-            if (ref.current && ref.current.querySelector('.table-action-button'))
-              (ref.current.querySelector('.table-action-button') as HTMLButtonElement).click()
-          },
-        }),
+        ...(row.onClick
+          ? {
+              role: 'button',
+              onClick: row.onClick,
+            }
+          : hasUndisabledButton && {
+              role: 'link',
+              onClick: () => {
+                if (ref.current && ref.current.querySelector('.table-action-button'))
+                  (ref.current.querySelector('.table-action-button') as HTMLButtonElement).click()
+              },
+            }),
       }}
     >
       {rowKeys.map((label, i) => (
@@ -298,7 +305,7 @@ export function AssetsTableDataCell({ label, row }: AssetsTableDataCellProps) {
         },
       }}
     >
-      {(row[label] as AssetsTableSortableCell).value || row[label]}
+      {(row.items[label] as AssetsTableSortableCell).value || row.items[label]}
     </Box>
   )
 }

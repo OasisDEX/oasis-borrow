@@ -26,6 +26,19 @@ export type ProductHubSupportedNetworks =
   | NetworkNames.baseMainnet
   | NetworkNames.baseGoerli
 
+export type ProductHubColumnKey =
+  | '7DayNetApy'
+  | 'action'
+  | 'borrowRate'
+  | 'collateralDebt'
+  | 'depositToken'
+  | 'liquidity'
+  | 'management'
+  | 'maxLtv'
+  | 'maxMultiple'
+  | 'protocolNetwork'
+  | 'strategy'
+
 export interface ProductHubItemBasics {
   label: string
   network: ProductHubSupportedNetworks

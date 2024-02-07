@@ -17,6 +17,7 @@ import {
 import { useProductHubRouter } from 'features/productHub/hooks/useProductHubRouter'
 import { ALL_ASSETS } from 'features/productHub/meta'
 import type {
+  ProductHubColumnKey,
   ProductHubFilters,
   ProductHubItem,
   ProductHubProductType,
@@ -36,32 +37,36 @@ import { Box, Flex } from 'theme-ui'
 
 interface ProductHubViewProps {
   dataParser?: (table: ProductHubItem[]) => ProductHubItem[]
+  headerGradient?: [string, string, ...string[]]
+  hiddenColumns?: ProductHubColumnKey[]
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
   intro?: (selectedProduct: ProductHubProductType, selectedToken: string) => ReactNode
-  headerGradient?: [string, string, ...string[]]
+  limitRows?: number
+  onRowClick?: (row: ProductHubItem) => void
   product: ProductHubProductType
+  promoCardsCollection: PromoCardsCollection
   promoCardsHeading?: ReactNode
   promoCardsPosition?: 'top' | 'bottom' | 'none'
-  promoCardsCollection: PromoCardsCollection
   token?: string
   url?: string
-  limitRows?: number
 }
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
   dataParser = (_table) => _table,
+  headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
+  hiddenColumns,
   initialNetwork,
   initialProtocol,
-  promoCardsHeading,
-  headerGradient = ['#007DA3', '#E7A77F', '#E97047'],
+  intro,
+  limitRows,
+  onRowClick,
   product,
   promoCardsCollection,
+  promoCardsHeading,
   promoCardsPosition = 'top',
-  intro,
   token,
   url,
-  limitRows,
 }) => {
   const { t } = useTranslation()
 
@@ -163,8 +168,11 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
               />
             )}
             <ProductHubContentController
+              hiddenColumns={hiddenColumns}
               initialNetwork={resolvedInitialNetwork}
               initialProtocol={initialProtocol}
+              limitRows={limitRows}
+              networkId={wallet?.chainId}
               queryString={queryString}
               selectedFilters={selectedFilters}
               selectedProduct={selectedProduct}
@@ -174,8 +182,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
                 setSelectedFilters(_selectedFilters)
                 setQueryString(_queryString)
               }}
-              chainId={wallet?.chainId}
-              limitRows={limitRows}
+              onRowClick={onRowClick}
             />
             {limitRows && limitRows > 0 && (
               <Flex

@@ -32,28 +32,28 @@ interface ProductHubFiltersControllerProps {
   data: ProductHubItem[]
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
+  networkId?: NetworkIds
+  onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
   queryString: ProductHubQueryString
   selectedFilters: ProductHubFilters
   selectedProduct: ProductHubProductType
   selectedToken: string
-  chainId?: NetworkIds
-  onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
 }
 
 export const ProductHubFiltersController: FC<ProductHubFiltersControllerProps> = ({
   data,
   initialNetwork = [],
   initialProtocol = [],
+  networkId,
+  onChange,
   queryString,
   selectedFilters,
   selectedProduct,
   selectedToken,
-  chainId,
-  onChange,
 }) => {
   const { t } = useTranslation()
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
-  const isTestnet = isTestnetNetworkId(chainId ?? NetworkIds.MAINNET)
+  const isTestnet = isTestnetNetworkId(networkId ?? NetworkIds.MAINNET)
 
   const debtTokens = useMemo(
     () =>
