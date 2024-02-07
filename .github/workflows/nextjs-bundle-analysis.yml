@@ -20,10 +20,10 @@ permissions:
 
 jobs:
   analyze:
+    name: Bundle Analysis
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - uses: actions/setup-node@v3
         with:
           node-version: 18.12
@@ -40,11 +40,6 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn --no-progress --non-interactive --frozen-lockfile
 
-      - name: Echo github event
-        env:
-          EVENT_OBJ: ${{ toJson(github.event) }}
-        run: echo $EVENT_OBJ
-
       - name: Run postinstall
         env:
           CONFIG_URL: ${{ secrets.CONFIG_URL }}
@@ -54,14 +49,21 @@ jobs:
       - name: Use next cache
         uses: jongwooo/next-cache@v1
 
+      - name: Download base branch bundle stats
+        uses: dawidd6/action-download-artifact@v2
+        if: success() && github.event.number
+        with:
+          name: bundle
+          workflow: nextjs-bundle-analysis.yml
+          branch: ${{ github.event.pull_request.base.ref }}
+          path: .next/analyze/base/bundle
+
       - name: Build next.js app
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
           CONFIG_URL: ${{ secrets.CONFIG_URL }}
         run: yarn build
 
-      # Here's the first place where next-bundle-analysis' own script is used
-      # This step pulls the raw bundle stats for the current bundle
       - name: Analyze bundle
         run: npx -p nextjs-bundle-analysis report
 
@@ -71,50 +73,20 @@ jobs:
           name: bundle
           path: .next/analyze/__bundle_analysis.json
 
-      - name: Download base branch bundle stats
-        uses: dawidd6/action-download-artifact@v2
-        if: always() && !failure() && !cancelled() && github.event.number
-        with:
-          workflow: nextjs_bundle_analysis.yml
-          branch: ${{ github.head_ref || github.ref_name }}
-          path: .next/analyze/base
-
       - name: Compare with base branch bundle
-        if: always() && !failure() && !cancelled() && github.event.number
-        run: ls -laR .next/analyze/base && npx -p nextjs-bundle-analysis compare
+        if: success() && github.event.number
+        run: npx -p nextjs-bundle-analysis compare
 
       - name: Get Comment Body
         id: get-comment-body
-        if: always() && !failure() && !cancelled() && github.event.number
+        if: success() && github.event.number
         run: |
           echo "body<<EOF" >> $GITHUB_OUTPUT
           echo "$(cat .next/analyze/__bundle_analysis_comment.txt)" >> $GITHUB_OUTPUT
           echo EOF >> $GITHUB_OUTPUT
 
-      - name: Find Comment
-        uses: peter-evans/find-comment@v2
-        if: always() && !failure() && !cancelled() && github.event.number
-        id: fc
+      - name: Comment
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
-          issue-number: ${{ github.event.number }}
-          body-includes: '<!-- __NEXTJS_BUNDLE -->'
-
-      - name: Create Comment
-        uses: peter-evans/create-or-update-comment@v2
-        if:
-          ${{ !(failure() || cancelled()) && github.event.number && steps.fc.outputs.comment-id == 0
-          }}
-        with:
-          issue-number: ${{ github.event.number }}
-          body: ${{ steps.get-comment-body.outputs.body }}
-
-      - name: Update Comment
-        uses: peter-evans/create-or-update-comment@v2
-        if:
-          ${{ !(failure() || cancelled()) && github.event.number && steps.fc.outputs.comment-id == 0
-          }}
-        with:
-          issue-number: ${{ github.event.number }}
-          body: ${{ steps.get-comment-body.outputs.body }}
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          edit-mode: replace
+          header: next-touched-pages
+          message: ${{ steps.get-comment-body.outputs.body }}
