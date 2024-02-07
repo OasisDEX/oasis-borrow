@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { ethereumMainnetHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
 import {
   AaveBorrowManageComponent,
@@ -16,6 +15,7 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { SparkBorrowFaq } from 'features/content/faqs/spark/borrow'
 import { SparkEarnFaqV3 } from 'features/content/faqs/spark/earn'
 import { SparkMultiplyFaq } from 'features/content/faqs/spark/multiply'
+import { SLIPPAGE_YIELD_LOOP } from 'features/userSettings/userSettings.constants'
 import { getLocalAppConfig } from 'helpers/config'
 import { LendingProtocol } from 'lendingProtocols'
 import { FeaturesEnum } from 'types/config'
@@ -156,7 +156,7 @@ const availableTokenPairs: TokenPairConfig[] = [
       [ProductType.Earn]: {
         featureToggle: undefined,
         additionalManageActions: [],
-        defaultSlippage: new BigNumber(0.001),
+        defaultSlippage: SLIPPAGE_YIELD_LOOP,
       },
     },
   },
@@ -168,7 +168,7 @@ const availableTokenPairs: TokenPairConfig[] = [
       [ProductType.Earn]: {
         featureToggle: undefined,
         additionalManageActions: [],
-        defaultSlippage: new BigNumber(0.001),
+        defaultSlippage: SLIPPAGE_YIELD_LOOP,
       },
     },
   },
