@@ -19,6 +19,7 @@ interface ComparisonTableProps {
 
 const headerStyles: ThemeUIStyleObject = {
   position: 'relative',
+  alignSelf: 'stretch',
   pb: '24px',
   color: 'neutral80',
   borderBottom: '1px solid',
