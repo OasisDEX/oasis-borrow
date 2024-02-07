@@ -18,6 +18,7 @@ import { useProductHubRouter } from 'features/productHub/hooks/useProductHubRout
 import { ALL_ASSETS } from 'features/productHub/meta'
 import type {
   ProductHubFilters,
+  ProductHubItem,
   ProductHubProductType,
   ProductHubQueryString,
   ProductHubSupportedNetworks,
@@ -34,6 +35,7 @@ import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 interface ProductHubViewProps {
+  dataParser?: (table: ProductHubItem[]) => ProductHubItem[]
   initialNetwork?: ProductHubSupportedNetworks[]
   initialProtocol?: LendingProtocol[]
   intro?: (selectedProduct: ProductHubProductType, selectedToken: string) => ReactNode
@@ -48,6 +50,7 @@ interface ProductHubViewProps {
 }
 
 export const ProductHubView: FC<ProductHubViewProps> = ({
+  dataParser = (_table) => _table,
   initialNetwork,
   initialProtocol,
   promoCardsHeading,
@@ -63,6 +66,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   const { t } = useTranslation()
 
   const { productHub: data } = usePreloadAppDataContext()
+  const table = dataParser(data.table)
   const searchParams = useSearchParams()
 
   const { connecting, wallet } = useWalletManagement()
@@ -153,7 +157,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
             {promoCardsPosition === 'top' && (
               <ProductHubPromoCardsController
                 heading={promoCardsHeading}
-                promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](data.table)}
+                promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](table)}
                 selectedProduct={selectedProduct}
                 selectedToken={selectedToken}
               />
@@ -165,7 +169,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
               selectedFilters={selectedFilters}
               selectedProduct={selectedProduct}
               selectedToken={selectedToken}
-              tableData={data.table}
+              tableData={table}
               onChange={(_selectedFilters, _queryString) => {
                 setSelectedFilters(_selectedFilters)
                 setQueryString(_queryString)
@@ -200,7 +204,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
             {promoCardsPosition === 'bottom' && (
               <ProductHubPromoCardsController
                 heading={promoCardsHeading}
-                promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](data.table)}
+                promoCardsData={PROMO_CARD_COLLECTIONS_PARSERS[promoCardsCollection](table)}
                 selectedProduct={selectedProduct}
                 selectedToken={selectedToken}
               />
