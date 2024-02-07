@@ -3,6 +3,7 @@ import { amountFromWei } from '@oasisdex/utils'
 import type BigNumber from 'bignumber.js'
 
 import { calculateLiquidationPrice } from './calculate-liquidation-price'
+import { calculateUsdNetValue } from './calculate-usd-net-value'
 
 export function calculateViewValuesForPosition(
   position: IPosition,
@@ -20,8 +21,7 @@ export function calculateViewValuesForPosition(
     .times(position.category.maxLoanToValue)
     .minus(debt.times(debtTokenPrice))
 
-  // (collateral_amount * collateral_token_oracle_price - debt_token_amount * debt_token_oracle_price) / USDC_oracle_price
-  const netValue = collateral.times(collateralTokenPrice).minus(debt.times(debtTokenPrice))
+  const netValue = calculateUsdNetValue(position, collateralTokenPrice, debtTokenPrice)
 
   const netValueInCollateralToken = netValue.div(collateralTokenPrice)
   const netValueInDebtToken = netValue.div(debtTokenPrice)
