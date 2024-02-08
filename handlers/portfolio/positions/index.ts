@@ -26,10 +26,6 @@ export const portfolioPositionsHandler = async ({
   query,
 }: NextApiRequest): Promise<PortfolioPositionsReply | PortfolioPositionsCountReply> => {
   const address = (query.address as string).toLowerCase()
-
-  const a = await (await fetch(`https://staging.summer.fi/api/positions/${address}`)).json()
-  return a
-  
   const debug = 'debug' in query
   const positionsCount = 'positionsCount' in query
   if (portfolioCache.has(address)) {
