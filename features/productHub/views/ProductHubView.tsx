@@ -1,9 +1,8 @@
 import { getNetworkById, NetworkNames } from 'blockchain/networks'
 import { usePreloadAppDataContext } from 'components/context/PreloadAppDataContextProvider'
-import { AppLink } from 'components/Links'
-import { WithArrow } from 'components/WithArrow'
 import { ProductHubIntro } from 'features/productHub/components/ProductHubIntro'
 import { ProductHubLoadingState } from 'features/productHub/components/ProductHubLoadingState'
+import { ProductHubViewAll } from 'features/productHub/components/ProductHubViewAll'
 import {
   ProductHubNaturalLanguageSelectorController,
   ProductHubPromoCardsController,
@@ -30,10 +29,9 @@ import type { PromoCardsCollection } from 'handlers/product-hub/types'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import type { LendingProtocol } from 'lendingProtocols'
 import { useSearchParams } from 'next/navigation'
-import { useTranslation } from 'next-i18next'
 import type { FC, ReactNode } from 'react'
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
-import { Box, Flex } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 interface ProductHubViewProps {
   dataParser?: (table: ProductHubItem[]) => ProductHubItem[]
@@ -70,8 +68,6 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   token,
   url,
 }) => {
-  const { t } = useTranslation()
-
   const { productHub: data } = usePreloadAppDataContext()
   const table = dataParser(data.table)
   const searchParams = useSearchParams()
@@ -111,7 +107,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
     }
   }, [resolvedInitialNetwork])
 
-  useProductHubRouter({
+  const { query } = useProductHubRouter({
     queryString,
     selectedProduct,
     selectedToken,
@@ -188,28 +184,11 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
               onRowClick={onRowClick}
             />
             {limitRows && limitRows > 0 && (
-              <Flex
-                sx={{
-                  justifyContent: 'center',
-                  py: 4,
-                  borderBottom: '1px solid',
-                  borderBottomColor: 'neutral20',
-                }}
-              >
-                <AppLink
-                  href={
-                    selectedToken === ALL_ASSETS
-                      ? `/${selectedProduct}`
-                      : `/${selectedProduct}/${selectedToken}`
-                  }
-                >
-                  <WithArrow
-                    sx={{ color: 'interactive100', fontWeight: 'regular', fontSize: '16px' }}
-                  >
-                    {t('view-all')}
-                  </WithArrow>
-                </AppLink>
-              </Flex>
+              <ProductHubViewAll
+                query={query}
+                selectedProduct={selectedProduct}
+                selectedToken={selectedToken}
+              />
             )}
             {promoCardsPosition === 'bottom' && (
               <ProductHubPromoCardsController

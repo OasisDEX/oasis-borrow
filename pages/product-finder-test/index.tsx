@@ -8,7 +8,7 @@ function ProductFinderTestPage() {
   return (
     <AppLayout>
       <Box sx={{ width: '100%' }}>
-        <ProductHubView product={ProductHubProductType.Borrow} promoCardsCollection="Home" perPage={15} />
+        <ProductHubView product={ProductHubProductType.Borrow} promoCardsCollection="Home" perPage={15} limitRows={10} />
       </Box>
     </AppLayout>
   )
