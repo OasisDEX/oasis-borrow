@@ -124,12 +124,11 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
           position: 'relative',
           my: [3, null, '48px'],
           scrollMarginTop: '48px',
-          textAlign: 'center',
           zIndex: 3,
         }}
       >
         {!hiddenNLS && (
-          <>
+          <Box sx={{ textAlign: 'center' }}>
             <ProductHubNaturalLanguageSelectorController
               gradient={headerGradient}
               product={product}
@@ -154,7 +153,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
             ) : (
               <ProductHubIntro selectedProduct={selectedProduct} selectedToken={selectedToken} />
             )}
-          </>
+          </Box>
         )}
         <WithLoadingIndicator
           value={connecting ? [undefined] : [connecting]}
