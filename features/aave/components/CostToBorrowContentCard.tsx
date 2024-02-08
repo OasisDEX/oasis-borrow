@@ -23,7 +23,7 @@ export function CostToBorrowContentCard({
   const { t } = useTranslation()
   const { debt } = position
 
-  const constToBorrow = currentPositionThings.debt
+  const costToBorrow = currentPositionThings.debt
     .times(debtTokenPrice)
     .times(NaNIsZero(currentPositionThings.debtVariableBorrowRate))
 
@@ -80,7 +80,7 @@ export function CostToBorrowContentCard({
             </Text>
           </Text>
           <Card as="p" variant="vaultDetailsCardModal">
-            {`${formatPrecision(constToBorrow, 2)} ${debt.symbol}`}
+            {`${formatPrecision(costToBorrow, 2)} ${debt.symbol}`}
           </Card>
         </Grid>
       }
