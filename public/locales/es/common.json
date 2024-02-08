@@ -1309,7 +1309,7 @@
           "aave-steth-eth": "AAVE stETH yield multiple",
           "aave-wsteth-eth": "Aave wstETH yield multiple"
         },
-        "current-yield": "Current yield",
+        "current-yield": "APY",
         "90-day-avg-yield": "90 Day Avg",
         "total-value-locked": "Total value locked"
       },

@@ -2518,7 +2518,7 @@
           "spark-wsteth-eth": "Spark wstETH yield multiple",
           "spark-reth-eth": "Spark rETH yield multiple"
         },
-        "current-yield": "Current yield",
+        "current-yield": "APY",
         "90-day-avg-yield": "90 Day Avg",
         "total-value-locked": "Total value locked"
       },
