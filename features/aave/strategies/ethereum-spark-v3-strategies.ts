@@ -134,6 +134,7 @@ const availableTokenPairs: TokenPairConfig[] = [
       [ProductType.Earn]: {
         featureToggle: undefined,
         additionalManageActions: [],
+        defaultSlippage: SLIPPAGE_YIELD_LOOP,
       },
     },
   },
@@ -145,6 +146,7 @@ const availableTokenPairs: TokenPairConfig[] = [
       [ProductType.Earn]: {
         featureToggle: undefined,
         additionalManageActions: [],
+        defaultSlippage: SLIPPAGE_YIELD_LOOP,
       },
     },
   },
