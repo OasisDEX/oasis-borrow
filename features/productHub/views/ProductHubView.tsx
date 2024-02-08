@@ -44,6 +44,7 @@ interface ProductHubViewProps {
   intro?: (selectedProduct: ProductHubProductType, selectedToken: string) => ReactNode
   limitRows?: number
   onRowClick?: (row: ProductHubItem) => void
+  perPage?: number
   product: ProductHubProductType
   promoCardsCollection: PromoCardsCollection
   promoCardsHeading?: ReactNode
@@ -61,6 +62,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
   intro,
   limitRows,
   onRowClick,
+  perPage,
   product,
   promoCardsCollection,
   promoCardsHeading,
@@ -173,6 +175,7 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
               initialProtocol={initialProtocol}
               limitRows={limitRows}
               networkId={wallet?.chainId}
+              perPage={perPage}
               queryString={queryString}
               selectedFilters={selectedFilters}
               selectedProduct={selectedProduct}

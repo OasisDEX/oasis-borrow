@@ -27,6 +27,7 @@ interface ProductHubContentControllerProps {
   networkId?: NetworkIds
   onChange: (selectedFilters: ProductHubFilters, queryString: ProductHubQueryString) => void
   onRowClick?: (row: ProductHubItem) => void
+  perPage?: number
   queryString: ProductHubQueryString
   selectedFilters: ProductHubFilters
   selectedProduct: ProductHubProductType
@@ -42,6 +43,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
   networkId,
   onChange,
   onRowClick,
+  perPage,
   queryString,
   selectedFilters,
   selectedProduct,
@@ -125,6 +127,7 @@ export const ProductHubContentController: FC<ProductHubContentControllerProps> =
       />
       <ProductHubTableController
         banner={banner}
+        perPage={perPage}
         rows={limitRows && limitRows > 0 ? rows.slice(0, limitRows) : rows}
       />
     </AssetsTableContainer>
