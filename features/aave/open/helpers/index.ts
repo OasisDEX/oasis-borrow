@@ -1,1 +1,1 @@
-export { getAaveLikeOpenStopLossParams } from './get-aave-like-open-stop-loss'
+export { getAaveLikeStopLossParams } from './get-aave-like-stop-loss-params'

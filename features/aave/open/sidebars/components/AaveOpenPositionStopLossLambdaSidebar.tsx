@@ -6,13 +6,14 @@ import { AppLink } from 'components/Links'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { ConnectedSidebarSection } from 'features/aave/components'
 import { OpenAaveStopLossInformationLambda } from 'features/aave/components/order-information/OpenAaveStopLossInformationLambda'
-import { getAaveLikeOpenStopLossParams } from 'features/aave/open/helpers'
+import { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
 import { useLambdaDebouncedStopLoss } from 'features/aave/open/helpers/use-lambda-debounced-stop-loss'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { TriggerAction } from 'helpers/triggers'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid, Text } from 'theme-ui'
@@ -23,11 +24,15 @@ const aaveLambdaStopLossConfig = {
   sliderDirection: 'ltr' as const,
 }
 
-export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenAaveStateProps) {
+export function AaveOpenPositionStopLossLambdaSidebar({
+  state,
+  isLoading,
+  send,
+}: OpenAaveStateProps) {
   const { t } = useTranslation()
   const [stopLossToken, setStopLossToken] = useState<'debt' | 'collateral'>('debt')
   const { strategyConfig } = state.context
-  const stopLossParams = getAaveLikeOpenStopLossParams({ state })
+  const stopLossParams = getAaveLikeStopLossParams.open({ state })
   const { tokenPriceUSD$ } = useProductContext()
   const _tokenPriceUSD$ = useMemo(
     () =>
@@ -46,6 +51,7 @@ export function AaveOpenPositionStopLossLambda({ state, isLoading, send }: OpenA
     stopLossToken,
     send,
     isLoading,
+    action: TriggerAction.Add,
   })
 
   const sidebarSectionProps: SidebarSectionProps = {

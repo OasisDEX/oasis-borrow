@@ -1,6 +1,6 @@
 import { NetworkIds } from 'blockchain/networks'
 import { AaveOpenPositionStopLoss } from 'features/aave/open/sidebars/components/AaveOpenPositionStopLoss'
-import { AaveOpenPositionStopLossLambda } from 'features/aave/open/sidebars/components/AaveOpenPositionStopLossLambda'
+import { AaveOpenPositionStopLossLambdaSidebar } from 'features/aave/open/sidebars/components/AaveOpenPositionStopLossLambdaSidebar'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
 import { getLocalAppConfig } from 'helpers/config'
 import React from 'react'
@@ -34,7 +34,7 @@ export const SidebarOpenAaveVaultStopLoss = ({ state, send, isLoading }: OpenAav
     getLocalAppConfig('features'),
   )
   return lambdaProtectionFlag ? (
-    <AaveOpenPositionStopLossLambda state={state} send={send} isLoading={isLoading} />
+    <AaveOpenPositionStopLossLambdaSidebar state={state} send={send} isLoading={isLoading} />
   ) : (
     <AaveOpenPositionStopLoss state={state} send={send} isLoading={isLoading} />
   )

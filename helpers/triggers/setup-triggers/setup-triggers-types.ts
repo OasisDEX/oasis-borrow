@@ -128,6 +128,7 @@ export interface SetupAaveStopLossParams {
   strategy: StrategyLike
   networkId: number
   protocol: LendingProtocol
+  action: TriggerAction
 }
 
 export type SetupBasicAutoResponseWithRequiredTransaction = SetupBasicAutoResponse & {

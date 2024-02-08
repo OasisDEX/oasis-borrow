@@ -10,6 +10,7 @@ import {
   useTriggersAaveStateMachineContext,
 } from 'features/aave/manage/contexts'
 import { getTriggerExecutionPrice } from 'features/aave/manage/services/calculations'
+import { AaveManagePositionStopLossLambdaSidebar } from 'features/aave/manage/sidebars/AaveManagePositionStopLossLambdaSidebar'
 import { AutoSellSidebarAaveVault } from 'features/aave/manage/sidebars/AutoSellSidebarAaveVault'
 import type { AutoSellTriggerAaveContext } from 'features/aave/manage/state'
 import { isAutoSellEnabled } from 'features/aave/manage/state'
@@ -66,7 +67,7 @@ function getAutoSellDetailsLayoutProps(
 
 export function ProtectionControlWrapper() {
   const { stateMachine } = useManageAaveStateMachineContext()
-  const [state] = useActor(stateMachine)
+  const [state, send] = useActor(stateMachine)
 
   const triggersStateMachine = useTriggersAaveStateMachineContext()
   const [triggersState, sendTriggerEvent] = useActor(triggersStateMachine)
@@ -122,6 +123,31 @@ export function ProtectionControlWrapper() {
                 />
               </Box>
             )}
+        </Grid>
+      </Container>
+    )
+  }
+  if (triggersState.context.protectionCurrentView === 'stop-loss') {
+    return (
+      <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+        <Grid variant="vaultContainer">
+          <Grid gap={3} mb={[0, 5]}>
+            details
+            {triggersState.context.showAutoSellBanner && (
+              <AutoSellBanner buttonClicked={() => sendTriggerEvent({ type: 'SHOW_AUTO_SELL' })} />
+            )}
+            {triggersState.context.showStopLossBanner && (
+              <StopLossBanner buttonClicked={() => sendTriggerEvent({ type: 'SHOW_STOP_LOSS' })} />
+            )}
+          </Grid>
+          <Box>
+            <AaveManagePositionStopLossLambdaSidebar
+              state={state}
+              send={send}
+              triggers={triggersState.context.currentTriggers.triggers}
+              dropdown={dropdown}
+            />
+          </Box>
         </Grid>
       </Container>
     )

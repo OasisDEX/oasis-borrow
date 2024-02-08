@@ -3,7 +3,7 @@ import type { Tickers } from 'blockchain/prices.types'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { DimmedList } from 'components/DImmedList'
 import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
-import type { getAaveLikeOpenStopLossParams } from 'features/aave/open/helpers'
+import type { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
 import type { IStrategyInfo } from 'features/aave/types'
 import { getCollateralDuringLiquidation } from 'features/automation/protection/stopLoss/helpers'
 import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
@@ -16,7 +16,7 @@ interface OpenAaveStopLossInformationLambdaProps {
   collateralActive: boolean
   strategyInfo: IStrategyInfo
   tokensPriceData?: Tickers
-  stopLossParams: ReturnType<typeof getAaveLikeOpenStopLossParams>
+  stopLossParams: ReturnType<typeof getAaveLikeStopLossParams>
 }
 
 export function OpenAaveStopLossInformationLambda({

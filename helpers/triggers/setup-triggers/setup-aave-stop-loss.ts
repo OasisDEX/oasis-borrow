@@ -1,6 +1,6 @@
 import {
-  DmaAaveStopLossToCollateralV2,
-  DmaAaveStopLossToDebtV2,
+  DmaAaveStopLossToCollateralV2ID,
+  DmaAaveStopLossToDebtV2ID,
 } from 'helpers/triggers/get-triggers'
 
 import { getSetupTriggerConfig } from './get-setup-trigger-config'
@@ -21,9 +21,12 @@ export const setupAaveStopLoss = async (
     triggerData: {
       type:
         params.executionToken === params.strategy.collateralAddress
-          ? DmaAaveStopLossToCollateralV2.toString()
-          : DmaAaveStopLossToDebtV2.toString(),
-      executionLTV: params.executionLTV.integerValue().toString(),
+          ? DmaAaveStopLossToCollateralV2ID.toString()
+          : DmaAaveStopLossToDebtV2ID.toString(),
+      executionLTV: params.executionLTV
+        .times(10 ** 2)
+        .integerValue()
+        .toString(),
       token: params.executionToken,
     },
     position: {
@@ -31,6 +34,7 @@ export const setupAaveStopLoss = async (
       debt: params.strategy.debtAddress,
     },
     rpc: customRpc,
+    action: params.action,
   })
 
   let response: Response
