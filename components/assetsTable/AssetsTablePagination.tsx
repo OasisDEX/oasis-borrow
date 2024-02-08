@@ -17,7 +17,18 @@ export function AssetsTablePagination({
   totalPages,
 }: AssetsTablePaginationProps) {
   return (
-    <Flex sx={{ alignItems: 'center', justifyContent: 'center', columnGap: '24px', mt: '24px' }}>
+    <Flex
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        columnGap: '24px',
+        mx: '-32px',
+        mt: '24px',
+        pt: '24px',
+        borderTop: '1px solid',
+        borderTopColor: 'neutral20',
+      }}
+    >
       <Button
         variant="action"
         onClick={onPrevPage}
