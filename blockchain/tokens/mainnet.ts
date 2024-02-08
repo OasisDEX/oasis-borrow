@@ -85,6 +85,7 @@ export const tokensMainnet = {
   'USDC.E': contractDesc(erc20, ADDRESS_ZERO),
   WBTC: contractDesc(erc20, mainnet.common.WBTC),
   WETH: contractDesc(erc20, mainnet.common.WETH),
+  WEETH: contractDesc(erc20, mainnet.common.WEETH),
   WLD: contractDesc(erc20, mainnet.common.WLD),
   WSTETH: contractDesc(erc20, mainnet.common.WSTETH),
   YIELDBTC: contractDesc(erc20, mainnet.common.YIELDBTC),
