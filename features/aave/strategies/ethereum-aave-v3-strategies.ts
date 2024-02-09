@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { ethereumMainnetHexId, NetworkIds, NetworkNames } from 'blockchain/networks'
 import {
   AaveBorrowManageComponent,
@@ -21,6 +20,7 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { AaveBorrowFaq } from 'features/content/faqs/aave/borrow'
 import { AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
+import { SLIPPAGE_YIELD_LOOP } from 'features/userSettings/userSettings.constants'
 import { getLocalAppConfig } from 'helpers/config'
 import type { AaveLendingProtocol } from 'lendingProtocols'
 import { LendingProtocol } from 'lendingProtocols'
@@ -673,7 +673,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     availableActions: () => {
       return [...allActionsAvailableInMultiply, 'switch-to-borrow']
     },
-    defaultSlippage: new BigNumber(0.001),
+    defaultSlippage: SLIPPAGE_YIELD_LOOP,
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
     isAutomationFeatureEnabled: (_feature: AutomationFeatures) => false,
@@ -709,7 +709,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     availableActions: () => {
       return [...allActionsAvailableInMultiply, 'switch-to-borrow']
     },
-    defaultSlippage: new BigNumber(0.001),
+    defaultSlippage: SLIPPAGE_YIELD_LOOP,
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
     isAutomationFeatureEnabled: (_feature: AutomationFeatures) => false,
@@ -745,7 +745,7 @@ export const ethereumAaveV3Strategies: IStrategyConfig[] = [
     availableActions: () => {
       return [...allActionsAvailableInMultiply, 'switch-to-borrow']
     },
-    defaultSlippage: new BigNumber(0.001),
+    defaultSlippage: SLIPPAGE_YIELD_LOOP,
     executeTransactionWith: 'ethers',
     strategyType: StrategyType.Long,
     isAutomationFeatureEnabled: (_feature: AutomationFeatures) => false,

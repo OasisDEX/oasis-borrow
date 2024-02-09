@@ -103,7 +103,7 @@ export const MarketingTemplateBlockView: FC<MarketingTemplateBlockViewProps> = (
         <Grid
           sx={{
             gap: 3,
-            gridTemplateColumns: ['100%', 'unset'],
+            gridTemplateColumns: ['100%', '50% 50%'],
             gridTemplateAreas: ['unset', getGridTemplateAreas(content)],
           }}
         >

@@ -2,7 +2,10 @@ import { isCorrelatedPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SecondaryVariantType } from 'components/infoSection/Item'
-import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
+import {
+  OmniGasEstimation,
+  OmniSlippageInfoWithSettings,
+} from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { omniExchangeQuote$ } from 'features/omni-kit/observables'
 import {
@@ -56,9 +59,11 @@ export function OmniMultiplyFormOrder() {
       isShort,
       quotePrice,
       networkId,
+      slippageSource,
+      isStrategyWithDefaultSlippage,
     },
     steps: { isFlowStateReady },
-    tx: { isTxSuccess, txDetails },
+    tx: { isTxSuccess, txDetails, setSlippageSource },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -235,7 +240,14 @@ export function OmniMultiplyFormOrder() {
           ? [
               {
                 label: t('vault-changes.slippage-limit'),
-                value: formatted.slippageLimit,
+                value: (
+                  <OmniSlippageInfoWithSettings
+                    slippage={formatted.slippageLimit}
+                    getSlippageFrom={slippageSource}
+                    changeSlippage={setSlippageSource}
+                    withDefaultSlippage={isStrategyWithDefaultSlippage}
+                  />
+                ),
                 isLoading,
               },
             ]

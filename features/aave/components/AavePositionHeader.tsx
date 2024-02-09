@@ -91,7 +91,7 @@ function AavePositionHeader({
         precision: 2,
       })
 
-    if (has7daysYield(minYields) && has7daysYield(maxYields)) {
+    if (has7daysYield(minYields, false) && has7daysYield(maxYields)) {
       const yield7DaysMin = minYields.annualisedYield7days ?? zero
       const yield7DaysMax = maxYields.annualisedYield7days ?? zero
 
