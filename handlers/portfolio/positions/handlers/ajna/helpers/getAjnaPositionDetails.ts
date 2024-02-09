@@ -2,6 +2,7 @@ import type { AjnaEarnPosition, AjnaPosition } from '@oasisdex/dma-library'
 import { normalizeValue } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { isShortPosition } from 'features/omni-kit/helpers'
+import { getIsActiveWhenLupBelowHtp } from 'features/omni-kit/protocols/ajna/helpers'
 import type { AjnaGenericPosition } from 'features/omni-kit/protocols/ajna/types'
 import { OmniProductType } from 'features/omni-kit/types'
 import { notAvailable } from 'handlers/portfolio/constants'
@@ -102,7 +103,9 @@ export function getAjnaPositionDetails({
         },
         {
           type: 'lendingRange',
-          value: price.lt(highestThresholdPrice)
+          value: getIsActiveWhenLupBelowHtp({ price, lowestUtilizedPrice, highestThresholdPrice })
+            ? LendingRangeType.Active
+            : price.lt(highestThresholdPrice)
             ? LendingRangeType.Unutilized
             : price.lt(lowestUtilizedPrice)
             ? LendingRangeType.Available
