@@ -51,7 +51,7 @@ export type BasicAutomationAaveState =
   | 'txDone'
   | 'txFailed'
 
-export type BasicAutoTrigger = AaveBasicBuy | AaveBasicSell
+export type BasicAutoTrigger = DmaAaveBasicBuy | DmaAaveBasicSell
 export type AaveLikeStopLossTriggers =
   | AaveStopLossToCollateral
   | AaveStopLossToDebt
