@@ -18,7 +18,7 @@ import type {
 } from 'features/productHub/types'
 import type { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'theme-ui'
 
