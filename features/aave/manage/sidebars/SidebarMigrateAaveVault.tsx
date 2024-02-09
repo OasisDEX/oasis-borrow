@@ -1,14 +1,11 @@
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { ConnectedSidebarSection } from 'features/aave/components'
 import type { ManageAaveStateMachineState } from 'features/aave/manage/state'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
 import { Grid } from 'theme-ui'
 
 export function SidebarMigrateAaveVault({ state }: { state: ManageAaveStateMachineState }) {
-  const { t } = useTranslation()
-
   const sidebarSectionProps: SidebarSectionProps = {
     title: 'Migrate',
     content: (

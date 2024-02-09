@@ -2,14 +2,19 @@ import type {
   AdjustAaveParameters,
   CloseAaveParameters,
   ManageAaveParameters,
+  MigrateAaveLikeParameters,
 } from 'actions/aave-like'
 import {
   getAdjustPositionParameters,
   getCloseAaveParameters,
   getManagePositionParameters,
+  getMigrationPositionParameters,
 } from 'actions/aave-like'
 import type { NetworkIds } from 'blockchain/networks'
-import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
+import {
+  createTransactionParametersStateMachine,
+  createTransactionParametersV2StateMachine,
+} from 'features/stateMachines/transactionParameters'
 import type { TxHelpers } from 'helpers/context/TxHelpers'
 import type { Observable } from 'rxjs'
 
@@ -46,5 +51,12 @@ export function getDepositBorrowAaveMachine(
     (parameters: ManageAaveParameters) => getManagePositionParameters(parameters),
     networkId,
     'depositBorrow',
+  )
+}
+
+export function getMigratePositionParametersMachine(networkId: NetworkIds) {
+  return createTransactionParametersV2StateMachine(
+    (parameters: MigrateAaveLikeParameters) => getMigrationPositionParameters(parameters),
+    networkId,
   )
 }

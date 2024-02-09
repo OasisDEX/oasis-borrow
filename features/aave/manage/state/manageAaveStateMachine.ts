@@ -57,6 +57,8 @@ import { assign, createMachine, send, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import type { MachineOptionsFrom } from 'xstate/lib/types'
 
+import type { MigrateAaveStateMachine } from './migrateAaveStateMachine'
+
 type ActorFromTransactionParametersStateMachine =
   | ActorRefFrom<TransactionParametersStateMachine<CloseAaveParameters>>
   | ActorRefFrom<TransactionParametersStateMachine<AdjustAaveParameters>>
@@ -65,6 +67,7 @@ type ActorFromTransactionParametersStateMachine =
 export interface ManageAaveContext extends BaseAaveContext {
   refTransactionMachine?: RefTransactionMachine
   refParametersMachine?: ActorFromTransactionParametersStateMachine
+  refMigrationMachine?: ActorRefFrom<MigrateAaveStateMachine>
   positionId: PositionId
   proxyAddress?: string
   ownerAddress?: string
@@ -126,6 +129,7 @@ export function createManageAaveStateMachine(
     transactionDef: TransactionDef<OperationExecutorTxMeta>,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
   depositBorrowAaveMachine: TransactionParametersStateMachine<ManageAaveParameters>,
+  migrateAaveStateMachine: MigrateAaveStateMachine,
 ) {
   return createMachine(
     {
@@ -541,6 +545,7 @@ export function createManageAaveStateMachine(
               type: 'final',
             },
             migrate: {
+              entry: ['spawnMigrationMachine'],
               on: {
                 START_TRANSACTION: {
                   target: 'txInProgressEthers',
@@ -986,6 +991,9 @@ export function createManageAaveStateMachine(
             proxyAddress: context.proxyAddress,
           }
         }),
+        spawnMigrationMachine: assign(() => ({
+          refMigrationMachine: spawn(migrateAaveStateMachine, 'migrationMachine'),
+        })),
       },
     },
   )
@@ -993,7 +1001,14 @@ export function createManageAaveStateMachine(
 
 class ManageAaveStateMachineTypes {
   needsConfiguration() {
-    return createManageAaveStateMachine({} as any, {} as any, {} as any, {} as any, {} as any)
+    return createManageAaveStateMachine(
+      {} as any,
+      {} as any,
+      {} as any,
+      {} as any,
+      {} as any,
+      {} as any,
+    )
   }
 
   withConfig() {

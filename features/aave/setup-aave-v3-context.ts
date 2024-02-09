@@ -30,6 +30,8 @@ import {
   getManageAaveStateMachine,
   getManageAaveV3PositionStateMachineServices,
 } from './manage/services'
+import { getMigrateAaveV3PositionStateMachineServices } from './manage/services/aave-v3/getMigrateAaveV3PositionStateMachineServices'
+import { getMigrateAaveStateMachine } from './manage/services/getMigrateAaveStateMachine'
 import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } from './open/services'
 import {
   getAaveHistoryEvents,
@@ -37,6 +39,7 @@ import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
   getDepositBorrowAaveMachine,
+  getMigratePositionParametersMachine,
   getOpenAaveParametersMachine,
   getStrategyInfo$,
 } from './services'
@@ -149,6 +152,7 @@ export function setupAaveV3Context(
   const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, networkId)
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, networkId)
   const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, networkId)
+  const migrateAaveMachine = getMigratePositionParametersMachine(networkId)
 
   const openAaveStateMachineServices = getOpenAaveV3PositionStateMachineServices(
     context$,
@@ -197,6 +201,29 @@ export function setupAaveV3Context(
     stopLossTransactionStateMachine,
   )
 
+  const migrateAaveStateMachineServices = getMigrateAaveV3PositionStateMachineServices(
+    context$,
+    txHelpers$,
+    tokenBalances$,
+    proxyForAccount$,
+    aaveLikeUserAccountData$,
+    userSettings$,
+    tokenPriceUSD$,
+    strategyInfo$,
+    allowanceForAccount$,
+    unconsumedDpmProxyForConnectedAccount$,
+    proxyConsumed$,
+    aaveLikeReserveConfigurationData$,
+    getAaveLikeReserveData$,
+  )
+
+  const aaveMigrateStateMachine = getMigrateAaveStateMachine(
+    migrateAaveStateMachineServices,
+    migrateAaveMachine,
+    dpmAccountStateMachine,
+    allowanceStateMachine,
+  )
+
   const aaveManageStateMachine = getManageAaveStateMachine(
     manageAaveStateMachineServices,
     closeAaveParameters,
@@ -204,6 +231,7 @@ export function setupAaveV3Context(
     allowanceStateMachine,
     operationExecutorTransactionMachine,
     depositBorrowAaveMachine,
+    aaveMigrateStateMachine,
   )
 
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
