@@ -1,3 +1,4 @@
+import { negativeToZero } from '@oasisdex/dma-library'
 import type BigNumber from 'bignumber.js'
 
 interface AjnaEarnWithdrawMaxParams {
@@ -6,5 +7,5 @@ interface AjnaEarnWithdrawMaxParams {
 }
 
 export function getAjnaEarnWithdrawMax({ quoteTokenAmount, digits }: AjnaEarnWithdrawMaxParams) {
-  return quoteTokenAmount.decimalPlaces(digits)
+  return negativeToZero(quoteTokenAmount.decimalPlaces(digits))
 }
