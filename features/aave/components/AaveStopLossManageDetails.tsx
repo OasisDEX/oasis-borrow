@@ -12,7 +12,7 @@ import { formatPercent } from 'helpers/formatters/format'
 import type { GetTriggersResponse } from 'helpers/triggers'
 import { one, zero } from 'helpers/zero'
 import type { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 export const AaveStopLossManageDetails = ({
   state,
