@@ -11,10 +11,10 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import { allDefined } from 'helpers/allDefined'
 import type {
-  AaveBasicBuy,
-  AaveBasicSell,
   AaveStopLossToCollateral,
   AaveStopLossToDebt,
+  DmaAaveBasicBuy,
+  DmaAaveBasicSell,
   SetupAaveBasicAutomationParams,
   SetupBasicAutoResponse,
   SetupBasicAutoResponseWithRequiredTransaction,
@@ -237,7 +237,9 @@ const getDefaults = (
     return {
       maxCoverage: getIntFromDecodedParam(decodedParams?.maxCoverage),
       usePrice: allDefined(price),
-      ltv: getLtvNumberFromDecodedParam(decodedParams?.ltv) ?? context.defaults.executionTriggerLTV,
+      ltv:
+        getLtvNumberFromDecodedParam(decodedParams?.executionLtv) ??
+        context.defaults.executionTriggerLTV,
       price: price,
     }
   }
@@ -682,19 +684,19 @@ const getBasicAutomationAaveStateMachine = <Trigger extends AaveLikeAutomationTr
     },
   )
 
-export const autoBuyTriggerAaveStateMachine = getBasicAutomationAaveStateMachine<AaveBasicBuy>(
+export const autoBuyTriggerAaveStateMachine = getBasicAutomationAaveStateMachine<DmaAaveBasicBuy>(
   AutomationFeatures.AUTO_BUY,
   setupAaveAutoBuy,
   119,
 )
 
-export const autoSellTriggerAaveStateMachine = getBasicAutomationAaveStateMachine<AaveBasicSell>(
+export const autoSellTriggerAaveStateMachine = getBasicAutomationAaveStateMachine<DmaAaveBasicSell>(
   AutomationFeatures.AUTO_SELL,
   setupAaveAutoSell,
   120,
 )
 
-export type AutoBuyTriggerAaveContext = BasicAutomationAaveContext<AaveBasicBuy>
-export type AutoSellTriggerAaveContext = BasicAutomationAaveContext<AaveBasicSell>
-export type AutoBuyTriggerAaveEvent = BasicAutomationAaveEvent<AaveBasicBuy>
-export type AutoSellTriggerAaveEvent = BasicAutomationAaveEvent<AaveBasicSell>
+export type AutoBuyTriggerAaveContext = BasicAutomationAaveContext<DmaAaveBasicBuy>
+export type AutoSellTriggerAaveContext = BasicAutomationAaveContext<DmaAaveBasicSell>
+export type AutoBuyTriggerAaveEvent = BasicAutomationAaveEvent<DmaAaveBasicBuy>
+export type AutoSellTriggerAaveEvent = BasicAutomationAaveEvent<DmaAaveBasicSell>
