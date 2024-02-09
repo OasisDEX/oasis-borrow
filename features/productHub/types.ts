@@ -15,6 +15,7 @@ export enum ProductHubProductType {
 }
 
 export type ProductHubTokenType = string
+export type ProductHubRewardsType = boolean
 
 export type ProductHubSupportedNetworks =
   | NetworkNames.ethereumMainnet
@@ -107,6 +108,7 @@ export interface ProductHubFiltersCriteria {
   secondaryToken?: ProductHubTokenType[]
   secondaryTokenGroup?: ProductHubTokenType[]
   multiplyStrategyType?: ProductHubMultiplyStrategyType[]
+  hasRewards?: ProductHubRewardsType[]
 }
 
 export interface ProductHubFilters {
@@ -118,6 +120,7 @@ export interface ProductHubQueryString {
   debtToken?: ProductHubTokenType[]
   network?: ProductHubSupportedNetworks[]
   protocol?: LendingProtocol[]
+  rewardsOnly?: ProductHubRewardsType[]
   secondaryToken?: ProductHubTokenType[]
   strategy?: ProductHubMultiplyStrategyType[]
 }

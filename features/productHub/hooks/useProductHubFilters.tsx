@@ -1,5 +1,6 @@
 import { isTestnetNetworkId, NetworkIds } from 'blockchain/networks'
 import { GenericMultiselect } from 'components/GenericMultiselect'
+import { Toggle } from 'components/Toggle'
 import { parseQueryString } from 'features/productHub/helpers'
 import {
   ALL_ASSETS,
@@ -19,6 +20,7 @@ import type { LendingProtocol } from 'lendingProtocols'
 import { uniq } from 'lodash'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Flex, Text } from 'theme-ui'
 
 export interface ProductHubFiltersParams {
   data: ProductHubItem[]
@@ -219,12 +221,43 @@ export const useProductHubFilters = ({
     ),
     [initialProtocol, queryString, selectedFilters],
   )
+  const rewardsFilter = useMemo(
+    () => (
+      <Flex sx={{ columnGap: 2 }}>
+        <Text variant="boldParagraph3">Rewards only</Text>
+        <Toggle
+          isChecked={queryString.rewardsOnly?.[0] ?? false}
+          onChange={(checked) => {
+            delete selectedFilters.and.hasRewards
+
+            onChange(
+              {
+                or: selectedFilters.or,
+                and: {
+                  ...selectedFilters.and,
+                  ...(checked && { hasRewards: [true] }),
+                },
+              },
+              parseQueryString({
+                key: 'rewardsOnly',
+                maxLength: 2,
+                queryString,
+                value: [checked],
+              }),
+            )
+          }}
+        />
+      </Flex>
+    ),
+    [initialProtocol, queryString, selectedFilters],
+  )
 
   return {
     debtTokenFilter,
     multiplyStrategyFilter,
     networkFilter,
     protocolFilter,
+    rewardsFilter,
     secondaryTokenFilter,
   }
 }
