@@ -26,6 +26,7 @@ export const getHistoryEventLabel = ({
     case 'AjnaSupplyQuote':
       return isOpen ? t('position-history.open-position') : t('position-history.deposit')
     case 'AjnaDepositBorrow':
+    case 'AAVEDepositBorrow':
     case 'MorphoBlueDepositBorrow':
       return isOpen ? t('position-history.open-position') : t('position-history.deposit-generate')
     case 'MorphoBlueOpenPosition':
@@ -58,11 +59,13 @@ export const getHistoryEventLabel = ({
     case 'SparkAdjustRiskUp':
     case 'MorphoBlueAdjustRiskUp':
     case 'IncreaseAAVEPosition':
+    case 'AdjustRiskUpAAVEV3Position':
       return t('position-history.increase-multiple')
     case 'AjnaAdjustRiskDown':
     case 'SparkAdjustRiskDown':
     case 'MorphoBlueAdjustRiskDown':
     case 'DecreaseAAVEPosition':
+    case 'AdjustRiskDownAAVEV3Position':
       return t('position-history.decrease-multiple')
     case 'AjnaCloseToQuotePosition':
     case 'AjnaCloseToCollateralPosition':
