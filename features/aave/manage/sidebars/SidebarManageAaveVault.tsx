@@ -36,6 +36,7 @@ import type { Sender } from 'xstate'
 
 import { GetReviewingSidebarProps } from './GetReviewingSidebarProps'
 import { ManageAaveReviewingStateView } from './ManageAaveReviewingStateView'
+import { SidebarMigrateAaveVault } from './SidebarMigrateAaveVault'
 
 export interface ManageAaveAutomation {
   stopLoss: {
@@ -320,29 +321,6 @@ export function ManageAaveSwitchStateView({
       action: () => send({ type: 'SWITCH_CONFIRMED', productType }),
     },
     textButton: textButtonReturningToAdjust({ state, send }).textButton,
-  }
-
-  return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function ManageAaveMigrateStateView({ state, send }: ManageAaveStateProps) {
-  // const { t } = useTranslation()
-
-  const sidebarSectionProps: SidebarSectionProps = {
-    title: 'Migrate',
-    content: (
-      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {'Migtate'}
-      </Text>
-    ),
-    primaryButton: {
-      isLoading: false,
-      disabled: false,
-      label: 'Start Migration',
-      action: () => {},
-    },
-    textButton: undefined,
   }
 
   return <ConnectedSidebarSection {...sidebarSectionProps} context={state.context} />
@@ -649,7 +627,7 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
     case state.matches('frontend.migrate'):
-      return <ManageAaveMigrateStateView state={state} send={send} />
+      return <SidebarMigrateAaveVault state={state} />
     default: {
       return <></>
     }

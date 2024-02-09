@@ -85,6 +85,13 @@ export function setupAaveV3Context(
     positionId: PositionId,
   ) => Observable<AddressesRelatedWithPosition> = memoize(
     (positionId) => {
+      if (positionId.external) {
+        return of<AddressesRelatedWithPosition>({
+          dsProxy: undefined,
+          dpmProxy: undefined,
+          walletAddress: positionId.walletAddress!,
+        })
+      }
       return of(undefined).pipe(
         switchMap(async () => {
           const dpm = await userDpms(positionId.vaultId!, networkId)
