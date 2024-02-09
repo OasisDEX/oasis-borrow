@@ -122,13 +122,13 @@ export const ProductHubView: FC<ProductHubViewProps> = ({
         id="product-hub"
         sx={{
           position: 'relative',
-          my: [3, null, '48px'],
+          mt: [3, null, '48px'],
           scrollMarginTop: '48px',
           zIndex: 3,
         }}
       >
         {!hiddenNLS && (
-          <Box sx={{ textAlign: 'center' }}>
+          <Box sx={{ mb: [3, null, '48px'], textAlign: 'center' }}>
             <ProductHubNaturalLanguageSelectorController
               gradient={headerGradient}
               product={product}
