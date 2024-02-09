@@ -90,7 +90,7 @@ export const useLambdaDebouncedStopLoss = ({
           setIsGettingStopLossTx(false)
         })
     },
-    [stopLossLevel, stopLossToken],
+    [stopLossLevel, stopLossToken, action],
     500,
   )
   return {

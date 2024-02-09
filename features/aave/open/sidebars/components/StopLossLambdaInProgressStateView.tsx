@@ -1,14 +1,16 @@
-import { validateParameters } from 'blockchain/better-calls/dpm-account'
+import BigNumber from 'bignumber.js'
+import { estimateGas } from 'blockchain/better-calls/dpm-account'
+import { getOverrides } from 'blockchain/better-calls/utils/get-overrides'
 import { ensureContractsExist, getNetworkContracts } from 'blockchain/contracts'
 import type { ContextConnected } from 'blockchain/network.types'
 import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { ethers } from 'ethers'
 import {
   ConnectedSidebarSection,
   OpenAaveStopLossInformation,
   StopLossTwoTxRequirement,
 } from 'features/aave/components'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { AddingStopLossAnimation } from 'theme/animations'
@@ -16,23 +18,34 @@ import { Grid } from 'theme-ui'
 
 export function StopLossLambdaInProgressStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
-  const { stopLossTxDataLambda, strategyConfig, web3Context } = state.context
+  const { stopLossTxDataLambda } = state.context
 
   useEffect(() => {
     const executeCall = async () => {
+      const { strategyConfig, web3Context } = state.context
       if (stopLossTxDataLambda) {
         const proxyAddress = stopLossTxDataLambda.to
         const networkId = strategyConfig.networkId
         const contracts = getNetworkContracts(networkId, web3Context?.chainId)
         ensureContractsExist(networkId, contracts, ['automationBotV2'])
         const signer = (web3Context as ContextConnected)?.transactionProvider
-        const { dpm } = await validateParameters({
-          signer,
-          networkId: networkId,
+        const bnValue = new BigNumber(0)
+        const data = stopLossTxDataLambda.data
+        const value = ethers.utils.parseEther(bnValue.toString()).toHexString()
+        const gasLimit = await estimateGas({
+          networkId,
           proxyAddress,
+          signer,
+          value: bnValue,
+          to: proxyAddress,
+          data,
         })
-        return dpm.execute(contracts.automationBotV2.address, stopLossTxDataLambda.triggerTxData, {
-          value: zero.toString(),
+        return signer.sendTransaction({
+          ...(await getOverrides(signer)),
+          to: proxyAddress,
+          data,
+          value,
+          gasLimit: gasLimit ?? undefined,
         })
       }
       return null
