@@ -90,6 +90,7 @@ export const aaveTokenPairsAllowedAutomation = [
   ['CBETH', 'USDC'],
   ['ETH', 'DAI'],
   ['ETH', 'USDC'],
+  ['ETH', 'USDBC'],
   ['LDO', 'USDT'],
   ['LINK', 'DAI'],
   ['LINK', 'USDC'],

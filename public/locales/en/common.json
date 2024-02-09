@@ -1720,6 +1720,7 @@
   "setup": "Setup",
   "protection": {
     "stop-loss": "Stop-Loss",
+    "stop-loss-to": "Stop loss to:",
     "stop-loss-protection": "Stop-Loss Protection",
     "confirmation-text": "Confirm your Stop-Loss setup.",
     "navigate-cancel": "Cancel downside protection",
