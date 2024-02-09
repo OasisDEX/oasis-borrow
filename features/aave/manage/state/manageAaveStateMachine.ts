@@ -638,6 +638,12 @@ export function createManageAaveStateMachine(
           target: '#manageAaveStateMachine.background.debouncingManage',
           actions: ['updateInput2ActionValue', 'reset'],
         },
+        SET_STOP_LOSS_LEVEL: {
+          actions: 'updateContext',
+        },
+        SET_STOP_LOSS_TX_DATA_LAMBDA: {
+          actions: 'updateContext',
+        },
         USE_SLIPPAGE: {
           target: ['background.debouncing'],
           actions: 'updateContext',
