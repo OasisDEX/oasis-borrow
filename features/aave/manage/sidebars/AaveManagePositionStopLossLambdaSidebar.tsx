@@ -10,7 +10,7 @@ import type { SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import type { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { ConnectedSidebarSection } from 'features/aave/components'
 import { OpenAaveStopLossInformationLambda } from 'features/aave/components/order-information/OpenAaveStopLossInformationLambda'
-import { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
+import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
 import { useLambdaDebouncedStopLoss } from 'features/aave/open/helpers/use-lambda-debounced-stop-loss'
@@ -18,10 +18,9 @@ import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import type { GetTriggersResponse } from 'helpers/triggers'
 import { TriggerAction } from 'helpers/triggers'
 import { zero } from 'helpers/zero'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid, Text } from 'theme-ui'
 
@@ -34,17 +33,18 @@ const aaveLambdaStopLossConfig = {
 export function AaveManagePositionStopLossLambdaSidebar({
   state,
   send,
-  triggers,
   dropdown,
+  stopLossLambdaData,
+  stopLossToken,
+  setStopLossToken,
 }: ManageAaveStateProps & {
-  triggers?: GetTriggersResponse['triggers']
   dropdown: SidebarSectionHeaderDropdown
+  stopLossLambdaData: ReturnType<typeof mapStopLossFromLambda>
+  stopLossToken: 'debt' | 'collateral'
+  setStopLossToken: (token: 'debt' | 'collateral') => void
 }) {
   const { t } = useTranslation()
-  const stopLossLambdaData = mapStopLossFromLambda(triggers)
-  const [stopLossToken, setStopLossToken] = useState<'debt' | 'collateral'>(
-    stopLossLambdaData.stopLossToken ?? 'debt',
-  )
+  const isStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
   const { strategyConfig } = state.context
   const {
     stopLossLevel,
@@ -69,8 +69,16 @@ export function AaveManagePositionStopLossLambdaSidebar({
     stopLossLevel,
     stopLossToken,
     send,
-    action: TriggerAction.Update,
+    action: isStopLossEnabled ? TriggerAction.Update : TriggerAction.Add,
   })
+
+  const stopLossConfigChanged = useMemo(() => {
+    return (
+      stopLossLambdaData.stopLossLevel &&
+      (!stopLossLevel.eq(stopLossLambdaData.stopLossLevel) ||
+        stopLossLambdaData.stopLossToken !== stopLossToken)
+    )
+  }, [stopLossLambdaData, stopLossLevel, stopLossToken])
 
   useEffect(() => {
     if (stopLossLambdaData.stopLossLevel) {
@@ -83,7 +91,6 @@ export function AaveManagePositionStopLossLambdaSidebar({
 
   const executeCall = async () => {
     const { stopLossTxDataLambda, strategyConfig, web3Context } = state.context
-    console.log('state.context', state.context)
     if (stopLossTxDataLambda) {
       const proxyAddress = stopLossTxDataLambda.to
       const networkId = strategyConfig.networkId
@@ -91,7 +98,6 @@ export function AaveManagePositionStopLossLambdaSidebar({
       ensureContractsExist(networkId, contracts, ['automationBotV2'])
       const signer = (web3Context as ContextConnected)?.transactionProvider
       const { dpm } = await validateParameters({
-        // | { type: 'SET_STOP_LOSS_TX_DATA_LAMBDA'; stopLossTxDataLambda: AutomationAddTriggerLambda }
         signer,
         networkId: networkId,
         proxyAddress,
@@ -102,13 +108,6 @@ export function AaveManagePositionStopLossLambdaSidebar({
     }
     return null
   }
-
-  const stopLossConfigChanged = useMemo(() => {
-    return (
-      stopLossLambdaData.stopLossLevel !== stopLossLevel ||
-      stopLossLambdaData.stopLossToken !== stopLossToken
-    )
-  }, [stopLossLambdaData, stopLossLevel, stopLossToken])
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('system.stop-loss'),
@@ -185,7 +184,7 @@ export function AaveManagePositionStopLossLambdaSidebar({
     primaryButton: {
       isLoading: isGettingStopLossTx,
       disabled: isGettingStopLossTx || !stopLossConfigChanged,
-      label: t('open-earn.aave.vault-form.confirm-btn'),
+      label: t(isStopLossEnabled ? 'update-stop-loss' : 'add-stop-loss'),
       action: () => executeCall(),
     },
   }

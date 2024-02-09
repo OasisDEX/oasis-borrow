@@ -16,7 +16,7 @@ interface OpenAaveStopLossInformationLambdaProps {
   collateralActive: boolean
   strategyInfo: IStrategyInfo
   tokensPriceData?: Tickers
-  stopLossParams: ReturnType<typeof getAaveLikeStopLossParams>
+  stopLossParams: ReturnType<typeof getAaveLikeStopLossParams.open>
 }
 
 export function OpenAaveStopLossInformationLambda({
