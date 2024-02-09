@@ -1,4 +1,3 @@
-import { useAaveContext } from 'features/aave/aave-context-provider'
 import type { mapStopLossFromLambda } from 'features/aave/manage/helpers/map-stop-loss-from-lambda'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { getAaveLikeStopLossParams } from 'features/aave/open/helpers'
@@ -9,22 +8,22 @@ import {
   getDynamicStopLossPrice,
   getMaxToken,
 } from 'features/automation/protection/stopLoss/helpers'
-import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
 import type { GetTriggersResponse } from 'helpers/triggers'
 import { one, zero } from 'helpers/zero'
+import type { AaveLikeReserveConfigurationData } from 'lendingProtocols/aave-like-common'
 import { useMemo } from 'react'
 
 export const AaveStopLossManageDetails = ({
   state,
   stopLossLambdaData,
   stopLossToken,
+  debtTokenReserveConfigurationData,
 }: Pick<ManageAaveStateProps, 'state'> & {
   triggers?: GetTriggersResponse['triggers']
   stopLossLambdaData: ReturnType<typeof mapStopLossFromLambda>
   stopLossToken: 'debt' | 'collateral'
+  debtTokenReserveConfigurationData: AaveLikeReserveConfigurationData
 }) => {
   const { strategyConfig, currentPosition } = state.context
   const {
@@ -36,16 +35,6 @@ export const AaveStopLossManageDetails = ({
     liquidationRatio,
     lockedCollateral,
   } = getAaveLikeStopLossParams.manage({ state })
-  const { aaveLikeReserveConfigurationData$ } = useAaveContext(
-    strategyConfig.protocol,
-    strategyConfig.network,
-  )
-  const [debtTokenReserveConfigurationData, debtTokenReserveConfigurationDataError] = useObservable(
-    aaveLikeReserveConfigurationData$({
-      collateralToken: strategyConfig.tokens.debt,
-      debtToken: strategyConfig.tokens.collateral,
-    }),
-  )
   const isStopLossEnabled = stopLossLambdaData.stopLossLevel !== undefined
   const token = strategyConfig.tokens.collateral
   const debtToken = strategyConfig.tokens.debt
@@ -82,70 +71,57 @@ export const AaveStopLossManageDetails = ({
     )
   }, [stopLossLambdaData, stopLossLevel, stopLossToken])
   return (
-    <WithErrorHandler error={[debtTokenReserveConfigurationDataError]}>
-      <WithLoadingIndicator
-        value={[debtTokenReserveConfigurationData]}
-        customLoader={<AppSpinner />}
-      >
-        {([_debtTokenReserveConfigurationData]) => {
-          return (
-            <StopLossDetailsLayout
-              token={token}
-              debtToken={debtToken}
-              // stopLossLevel is multiplied by 100 in the display component
-              stopLossLevel={stopLossLambdaData.stopLossLevel?.div(10 ** 2) || zero}
-              afterStopLossLevel={stopLossLevel}
-              debt={debt}
-              isStopLossEnabled={isStopLossEnabled}
-              liquidationRatio={liquidationRatio}
-              liquidationPrice={liquidationPrice}
-              liquidationPenalty={_debtTokenReserveConfigurationData.liquidationBonus}
-              lockedCollateral={lockedCollateral}
-              nextPositionRatio={loanToValue.decimalPlaces(5)}
-              collateralDuringLiquidation={getCollateralDuringLiquidation({
-                lockedCollateral,
-                debt,
-                liquidationPrice,
-                liquidationPenalty: _debtTokenReserveConfigurationData.liquidationBonus,
-              })}
-              triggerMaxToken={maxToken}
-              afterMaxToken={afterMaxToken}
-              isCollateralActive={stopLossToken === 'collateral'}
-              isEditing={stopLossConfigChanged}
-              positionRatio={positionRatio}
-              ratioParamTranslationKey={'system.loan-to-value'}
-              stopLossLevelCardFootnoteKey={
-                'system.cards.stop-loss-collateral-ratio.footnote-above'
-              }
-              detailCards={{
-                cardsSet: [
-                  StopLossDetailCards.STOP_LOSS_LEVEL,
-                  StopLossDetailCards.LOAN_TO_VALUE,
-                  StopLossDetailCards.DYNAMIC_STOP_PRICE,
-                  StopLossDetailCards.ESTIMATED_TOKEN_ON_TRIGGER,
-                ],
-                cardsConfig: {
-                  stopLossLevelCard: {
-                    modalDescription: 'manage-multiply-vault.card.stop-loss-ltv-desc',
-                    belowCurrentPositionRatio: formatPercent(
-                      (stopLossLambdaData.stopLossLevel?.div(10 ** 2) || one)
-                        .minus(positionRatio)
-                        .times(100),
-                      {
-                        precision: 2,
-                      },
-                    ),
-                  },
-                },
-              }}
-              dynamicStopLossPrice={setDynamicStopLossPrice}
-              afterDynamicStopLossPrice={dynamicStopLossPrice}
-              isAutomationDataLoaded={true}
-              isAutomationAvailable={true}
-            />
-          )
-        }}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <StopLossDetailsLayout
+      token={token}
+      debtToken={debtToken}
+      // stopLossLevel is multiplied by 100 in the display component
+      stopLossLevel={stopLossLambdaData.stopLossLevel?.div(10 ** 2) || zero}
+      afterStopLossLevel={stopLossLevel}
+      debt={debt}
+      isStopLossEnabled={isStopLossEnabled}
+      liquidationRatio={liquidationRatio}
+      liquidationPrice={liquidationPrice}
+      liquidationPenalty={debtTokenReserveConfigurationData.liquidationBonus}
+      lockedCollateral={lockedCollateral}
+      nextPositionRatio={loanToValue.decimalPlaces(5)}
+      collateralDuringLiquidation={getCollateralDuringLiquidation({
+        lockedCollateral,
+        debt,
+        liquidationPrice,
+        liquidationPenalty: debtTokenReserveConfigurationData.liquidationBonus,
+      })}
+      triggerMaxToken={maxToken}
+      afterMaxToken={afterMaxToken}
+      isCollateralActive={stopLossToken === 'collateral'}
+      isEditing={stopLossConfigChanged}
+      positionRatio={positionRatio}
+      ratioParamTranslationKey={'system.loan-to-value'}
+      stopLossLevelCardFootnoteKey={'system.cards.stop-loss-collateral-ratio.footnote-above'}
+      detailCards={{
+        cardsSet: [
+          StopLossDetailCards.STOP_LOSS_LEVEL,
+          StopLossDetailCards.LOAN_TO_VALUE,
+          StopLossDetailCards.DYNAMIC_STOP_PRICE,
+          StopLossDetailCards.ESTIMATED_TOKEN_ON_TRIGGER,
+        ],
+        cardsConfig: {
+          stopLossLevelCard: {
+            modalDescription: 'manage-multiply-vault.card.stop-loss-ltv-desc',
+            belowCurrentPositionRatio: formatPercent(
+              (stopLossLambdaData.stopLossLevel?.div(10 ** 2) || one)
+                .minus(positionRatio)
+                .times(100),
+              {
+                precision: 2,
+              },
+            ),
+          },
+        },
+      }}
+      dynamicStopLossPrice={setDynamicStopLossPrice}
+      afterDynamicStopLossPrice={dynamicStopLossPrice}
+      isAutomationDataLoaded={true}
+      isAutomationAvailable={true}
+    />
   )
 }
