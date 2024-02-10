@@ -63,8 +63,12 @@ export const getCurrentProtectionView = ({
   if (
     triggers.aaveStopLossToDebt ||
     triggers.aaveStopLossToCollateral ||
+    triggers.aaveStopLossToCollateralDMA ||
+    triggers.aaveStopLossToDebtDMA ||
     triggers.sparkStopLossToDebt ||
-    triggers.sparkStopLossToCollateral
+    triggers.sparkStopLossToCollateral ||
+    triggers.sparkStopLossToCollateralDMA ||
+    triggers.sparkStopLossToDebtDMA
   ) {
     return 'stop-loss'
   }
@@ -93,15 +97,30 @@ export const hasActiveProtection = ({
   const {
     aaveStopLossToCollateral,
     sparkStopLossToCollateral,
+    aaveStopLossToCollateralDMA,
+    aaveStopLossToDebtDMA,
+    sparkStopLossToCollateralDMA,
+    sparkStopLossToDebtDMA,
     sparkStopLossToDebt,
     aaveStopLossToDebt,
     aaveBasicSell,
   } = context.currentTriggers.triggers
   switch (protocol) {
     case LendingProtocol.AaveV3:
-      return isAnyValueDefined(aaveStopLossToCollateral, aaveStopLossToDebt, aaveBasicSell)
+      return isAnyValueDefined(
+        aaveStopLossToCollateral,
+        aaveStopLossToDebt,
+        aaveBasicSell,
+        aaveStopLossToCollateralDMA,
+        aaveStopLossToDebtDMA,
+      )
     case LendingProtocol.SparkV3:
-      return isAnyValueDefined(sparkStopLossToCollateral, sparkStopLossToDebt)
+      return isAnyValueDefined(
+        sparkStopLossToCollateral,
+        sparkStopLossToDebt,
+        sparkStopLossToCollateralDMA,
+        sparkStopLossToDebtDMA,
+      )
     case LendingProtocol.AaveV2:
       return false
   }

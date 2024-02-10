@@ -32,7 +32,9 @@ export const mapMorphoLendingEvents = (
       netValueAfter: event.netValueAfter,
     }
 
-    switch (event.kind) {
+    const eventKindWithoutVersion = event.kind.split('_')[0]
+
+    switch (eventKindWithoutVersion) {
       case 'MorphoBlueDeposit':
       case 'MorphoBlueWithdraw':
         return {

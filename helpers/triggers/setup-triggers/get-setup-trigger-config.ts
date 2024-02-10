@@ -1,13 +1,11 @@
-import type { TriggerType } from '@oasisdex/automation'
 import type { NetworkIds } from 'blockchain/networks'
 import { networkSetById } from 'blockchain/networks'
 import { LendingProtocol } from 'lendingProtocols'
 
 export interface GetSetupTriggerConfigParams {
-  triggerType: TriggerType
   networkId: NetworkIds
   protocol: LendingProtocol
-  path: 'auto-buy' | 'auto-sell'
+  path: 'auto-buy' | 'auto-sell' | 'dma-stop-loss'
 }
 
 export const getSetupTriggerConfig = (params: GetSetupTriggerConfigParams) => {

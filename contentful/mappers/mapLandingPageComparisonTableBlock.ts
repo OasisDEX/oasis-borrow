@@ -8,5 +8,10 @@ export const mapLandingPageComparisonTableBlock = (
 ): MarketingTemplateComparisonTableBlock => ({
   ...mapCommonBlockProperties(blockItem),
   type: MarketingTemplateBlocks.COMPARISON_TABLE,
-  content: blockItem.collection.map((item) => item.table),
+  content: blockItem.collection.map((item) => ({
+    ...item.table,
+    ...(item.highlightedColumn && {
+      highlightedColumn: item.highlightedColumn,
+    }),
+  })),
 })

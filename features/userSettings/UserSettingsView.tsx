@@ -141,15 +141,15 @@ function SlippageSettingsForm() {
     <>
       <Box>
         <Box>
-          <Text variant="paragraph3" sx={{ color: 'neutral80', mb: -1 }}>
-            {t('user-settings.slippage-limit.preset-description')}
+          <Text variant="paragraph3" as="p" sx={{ color: 'neutral80', mb: -1 }}>
+            {t('user-settings.slippage-limit.preset-description')}{' '}
+            <Link href={EXTERNAL_LINKS.KB.WHAT_IS_SLIPPAGE} passHref legacyBehavior>
+              <ThemeLink target="_self" sx={{ mt: -1, fontWeight: 400 }}>
+                {t('user-settings.slippage-limit.read-more')}
+              </ThemeLink>
+            </Link>
           </Text>
-          <Link href={EXTERNAL_LINKS.KB.WHAT_IS_SLIPPAGE} passHref legacyBehavior>
-            <ThemeLink target="_self" sx={{ mt: -1, fontWeight: 400 }}>
-              {t('user-settings.slippage-limit.read-more')}
-            </ThemeLink>
-          </Link>
-          <Text variant="paragraph4" sx={{ my: 3 }}>
+          <Text variant="paragraph4" as="p" sx={{ my: 3 }}>
             Your current slippage: {formatPercent(slippage.times(100), { precision: 2 })}
           </Text>
           <Flex>

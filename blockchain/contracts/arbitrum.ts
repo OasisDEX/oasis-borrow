@@ -180,8 +180,7 @@ export const arbitrumContracts: MainnetContractsWithOptional = {
     'AJNA-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_AJNADAI),
   },
   ajnaOraclessPoolPairs: {
-    'YIELDBTC-WBTC': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YIELDBTCWBTC),
-    'YIELDETH-ETH': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YIELDETHETH),
+    'YVCURVEUSDMSDAIF-DAI': contractDesc(ajnaPool, arbitrum.ajna.AjnaPoolPairs_YVCURVEUSDMSDAIFDAI),
   },
   ajnaERC20PoolFactory: contractDesc(ajnaERC20PoolFactory, arbitrum.ajna.ERC20PoolFactory),
   ajnaRedeemer: contractDesc(ajnaReedemer, arbitrum.ajna.AjnaRewardsReedemer),

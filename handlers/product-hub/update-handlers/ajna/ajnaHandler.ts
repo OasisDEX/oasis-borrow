@@ -49,7 +49,10 @@ async function getAjnaPoolData(
   const prices = uniq(
     Object.keys(getNetworkContracts(networkId).ajnaPoolPairs).flatMap((pair) => pair.split('-')),
   ).reduce<Tickers>(
-    (v, token) => ({ ...v, [token]: new BigNumber(getTokenPrice(token, tickers)) }),
+    (v, token) => ({
+      ...v,
+      [token]: new BigNumber(getTokenPrice(token, tickers, 'ajnaHandler')),
+    }),
     {},
   )
 

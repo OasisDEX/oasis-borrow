@@ -47,7 +47,7 @@ export async function validateParameters({
     dpmOwner = await dpm.owner()
   } catch (e) {
     throw new Error(
-      `Error getting owner of the proxy. Proxy: ${proxyAddress}. Network: ${networkId}`,
+      `Error getting owner of the proxy. Proxy: ${proxyAddress}. Network: ${networkId}, error: ${e}`,
     )
   }
 
