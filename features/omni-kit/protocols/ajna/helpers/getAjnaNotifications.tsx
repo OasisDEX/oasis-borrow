@@ -287,10 +287,12 @@ export function getAjnaNotifications({
       if (!isOpening) {
         const {
           price,
-          pool: { highestThresholdPrice },
+          pool: { lowestUtilizedPrice, highestThresholdPrice },
           quoteTokenAmount,
         } = position as AjnaEarnPosition
-        const earningNoApy = price.lt(highestThresholdPrice) && price.gt(zero)
+        const earningNoApy =
+          price.lt(highestThresholdPrice) && price.lt(lowestUtilizedPrice) && price.gt(zero)
+
         const earnPositionAuction = positionAuction as AjnaEarnPositionAuction
         const emptyPosition =
           quoteTokenAmount.isZero() && !earnPositionAuction.isCollateralToWithdraw

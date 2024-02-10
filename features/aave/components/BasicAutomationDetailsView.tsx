@@ -14,7 +14,10 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 export interface BasicAutomationDetailsViewProps {
-  automationFeature: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY
+  automationFeature:
+    | AutomationFeatures.AUTO_SELL
+    | AutomationFeatures.AUTO_BUY
+    | AutomationFeatures.STOP_LOSS
   position: PositionLike
   currentTrigger?: {
     executionLTV: BigNumber
@@ -29,7 +32,10 @@ export interface BasicAutomationDetailsViewProps {
 }
 
 interface ContentCardTriggerLTVProp {
-  automationFeature: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY
+  automationFeature:
+    | AutomationFeatures.AUTO_SELL
+    | AutomationFeatures.AUTO_BUY
+    | AutomationFeatures.STOP_LOSS
   collateralToken: string
   currentExecutionLTV?: BigNumber
   afterTxExecutionLTV?: BigNumber
@@ -38,7 +44,10 @@ interface ContentCardTriggerLTVProp {
 }
 
 interface ContentCardTriggerTargetLTVProp {
-  automationFeature: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY
+  automationFeature:
+    | AutomationFeatures.AUTO_SELL
+    | AutomationFeatures.AUTO_BUY
+    | AutomationFeatures.STOP_LOSS
   collateralToken: string
   currentTargetLTV?: BigNumber
   afterTxTargetLTV?: BigNumber

@@ -11,7 +11,7 @@ import {
   StrategyTokenAllowance,
   StrategyTokenBalance,
 } from './base-aave-context'
-import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions.types'
+import { AutomationAddTriggerData, AutomationAddTriggerLambda } from 'features/automation/common/txDefinitions.types'
 import { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { ManageDebtActionsEnum } from './manage-debt-actions-enum'
 import { ManageCollateralActionsEnum } from './manage-collateral-actions-enum'
@@ -20,6 +20,7 @@ type AaveOpenPositionWithStopLossEvents =
   | { type: 'SET_STOP_LOSS_LEVEL'; stopLossLevel: BigNumber }
   | { type: 'SET_COLLATERAL_ACTIVE'; collateralActive: boolean }
   | { type: 'SET_STOP_LOSS_TX_DATA'; stopLossTxData: AutomationAddTriggerData }
+  | { type: 'SET_STOP_LOSS_TX_DATA_LAMBDA'; stopLossTxDataLambda: AutomationAddTriggerLambda }
   | { type: 'SET_STOP_LOSS_SKIPPED'; stopLossSkipped: boolean }
 
 

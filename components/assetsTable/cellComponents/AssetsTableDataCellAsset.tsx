@@ -53,8 +53,8 @@ export function AssetsTableDataCellAsset({
                 {t('position')} {!positionId.toString().includes('...') && '#'}
               </>
             )}
-            {positionId}
-            {description}
+            {positionId ?? ''}
+            {description ?? ''}
           </Text>
         )}
       </Flex>

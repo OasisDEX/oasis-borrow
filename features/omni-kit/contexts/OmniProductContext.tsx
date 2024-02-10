@@ -79,6 +79,7 @@ export type LendingMetadata = CommonMetadata & {
     debtMin: BigNumber
     paybackMax: BigNumber
     shouldShowDynamicLtv: ShouldShowDynamicLtvMetadata
+    maxSliderAsMaxLtv?: boolean
   }
   elements: CommonMetadataElements & {
     highlighterOrderInformation: ReactNode
