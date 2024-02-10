@@ -47,7 +47,7 @@ const filterEmptyPosition =
 
 export const PortfolioPositionsView = ({
   address,
-  migrationPositions = [],
+  migrationPositions,
   blogPosts,
   isOwner,
   portfolioPositionsData,
@@ -70,7 +70,7 @@ export const PortfolioPositionsView = ({
     }
 
   const filteredEmptyPositions = useMemo(() => {
-    if (!portfolioPositionsData) return undefined
+    if (!portfolioPositionsData || !migrationPositions) return undefined
 
     const allPositions = [
       ...portfolioPositionsData.positions,
@@ -134,95 +134,105 @@ export const PortfolioPositionsView = ({
   const migrationPositionsEmpty = migrationPositions && migrationPositions.length === 0
   const positionsEmpty = portfolioPositionsData && portfolioPositionsData.positions.length === 0
 
+  const renderErrorState = (
+    <EmptyState header={tPortfolio('empty-states.no-positions-error')} type="error">
+      {tPortfolio('empty-states.try-again')}
+    </EmptyState>
+  )
+
+  const renderEmptyState = (
+    <EmptyState header={tPortfolio('empty-states.no-positions')}>
+      {isOwner && tPortfolio('empty-states.owner')}
+    </EmptyState>
+  )
+  const renderPositionsControls = (
+    <Flex
+      sx={{
+        flexDirection: ['column', 'row'],
+        justifyContent: 'space-between',
+        alignItems: ['flex-start', 'center'],
+      }}
+    >
+      <Flex sx={{ flexDirection: 'row', mt: [2, 0] }}>
+        <PortfolioPositionsProductSelect onChange={updatePortfolioPositionsFilters('product')} />
+        <PortfolioPositionsSortingSelect onChange={updatePortfolioPositionsFilters('sorting')} />
+      </Flex>
+      <Flex
+        sx={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: ['space-between', 'flex-end'],
+          mt: [3, 0],
+          width: ['100%', 'auto'],
+        }}
+      >
+        <Text variant="paragraph3" sx={{ mr: 1 }}>
+          {tPortfolio('show-empty-positions.label', { count: hiddenPositionsCount })}
+        </Text>
+        <StatefulTooltip
+          tooltip={tPortfolio('show-empty-positions.tooltip')}
+          containerSx={{ position: 'relative', mr: 1, width: ['40%', 'auto'] }}
+          tooltipSx={{
+            top: '24px',
+            width: ['200px', '250px'],
+            fontSize: 1,
+            whiteSpace: 'initial',
+            textAlign: 'left',
+            border: 'none',
+            borderRadius: 'medium',
+            boxShadow: 'buttonMenu',
+          }}
+        >
+          <Icon size={16} icon={question_o} color="neutral80" />
+        </StatefulTooltip>
+        <Toggle
+          isChecked={filterState['showEmptyPositions']}
+          onChange={updatePortfolioPositionsFilters('showEmptyPositions')}
+        />
+      </Flex>
+    </Flex>
+  )
+
+  const renderPositionsData = (
+    <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
+      {sortedPositions ? (
+        <>
+          {sortedPositions.length === 0 ? (
+            <EmptyState header={tPortfolio('empty-states.no-filtered-positions')}>
+              {isOwner && tPortfolio('empty-states.owner')}
+            </EmptyState>
+          ) : (
+            sortedPositions.map((position) => (
+              <PortfolioPositionBlock
+                key={`${position.positionId}-${position.protocol}-${position.network}-${position.type}-${position.primaryToken}-${position.secondaryToken}`}
+                position={position}
+              />
+            ))
+          )}
+        </>
+      ) : (
+        <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <PortfolioPositionBlockLoadingState key={`skeleton-${index}`} />
+          ))}
+        </Flex>
+      )}
+    </Flex>
+  )
+
   return (
     <Grid variant="portfolio">
       <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
         {portfolioPositionsData?.error ? (
-          <EmptyState header={tPortfolio('empty-states.no-positions-error')} type="error">
-            {tPortfolio('empty-states.try-again')}
-          </EmptyState>
+          renderErrorState
         ) : positionsEmpty && migrationPositionsEmpty ? (
-          <EmptyState header={tPortfolio('empty-states.no-positions')}>
-            {isOwner && tPortfolio('empty-states.owner')}
-          </EmptyState>
+          renderEmptyState
         ) : (
           <>
-            <Flex
-              sx={{
-                flexDirection: ['column', 'row'],
-                justifyContent: 'space-between',
-                alignItems: ['flex-start', 'center'],
-              }}
-            >
-              <Flex sx={{ flexDirection: 'row', mt: [2, 0] }}>
-                <PortfolioPositionsProductSelect
-                  onChange={updatePortfolioPositionsFilters('product')}
-                />
-                <PortfolioPositionsSortingSelect
-                  onChange={updatePortfolioPositionsFilters('sorting')}
-                />
-              </Flex>
-              <Flex
-                sx={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: ['space-between', 'flex-end'],
-                  mt: [3, 0],
-                  width: ['100%', 'auto'],
-                }}
-              >
-                <Text variant="paragraph3" sx={{ mr: 1 }}>
-                  {tPortfolio('show-empty-positions.label', { count: hiddenPositionsCount })}
-                </Text>
-                <StatefulTooltip
-                  tooltip={tPortfolio('show-empty-positions.tooltip')}
-                  containerSx={{ position: 'relative', mr: 1, width: ['40%', 'auto'] }}
-                  tooltipSx={{
-                    top: '24px',
-                    width: ['200px', '250px'],
-                    fontSize: 1,
-                    whiteSpace: 'initial',
-                    textAlign: 'left',
-                    border: 'none',
-                    borderRadius: 'medium',
-                    boxShadow: 'buttonMenu',
-                  }}
-                >
-                  <Icon size={16} icon={question_o} color="neutral80" />
-                </StatefulTooltip>
-                <Toggle
-                  isChecked={filterState['showEmptyPositions']}
-                  onChange={updatePortfolioPositionsFilters('showEmptyPositions')}
-                />
-              </Flex>
-            </Flex>
-            <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
-              {sortedPositions ? (
-                <>
-                  {sortedPositions.length === 0 ? (
-                    <EmptyState header={tPortfolio('empty-states.no-filtered-positions')}>
-                      {isOwner && tPortfolio('empty-states.owner')}
-                    </EmptyState>
-                  ) : (
-                    sortedPositions.map((position) => (
-                      <PortfolioPositionBlock
-                        key={`${position.positionId}-${position.protocol}-${position.network}-${position.type}-${position.primaryToken}-${position.secondaryToken}`}
-                        position={position}
-                      />
-                    ))
-                  )}
-                </>
-              ) : (
-                <Flex sx={{ flexDirection: 'column', rowGap: '24px' }}>
-                  {Array.from({ length: 3 }).map((_, index) => (
-                    <PortfolioPositionBlockLoadingState key={`skeleton-${index}`} />
-                  ))}
-                </Flex>
-              )}
-            </Flex>
+            {renderPositionsControls}
+            {renderPositionsData}
           </>
         )}
-
         <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Heading as="h2" variant="header5" sx={getGradientColor(summerBrandGradient)}>
             <Icon icon={sparks} color="#007DA3" sx={{ mr: 1 }} />

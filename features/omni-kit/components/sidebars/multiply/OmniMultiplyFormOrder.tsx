@@ -1,7 +1,11 @@
+import { isCorrelatedPosition } from '@oasisdex/dma-library'
 import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import type { SecondaryVariantType } from 'components/infoSection/Item'
-import { OmniGasEstimation } from 'features/omni-kit/components/sidebars'
+import {
+  OmniGasEstimation,
+  OmniSlippageInfoWithSettings,
+} from 'features/omni-kit/components/sidebars'
 import { useOmniGeneralContext, useOmniProductContext } from 'features/omni-kit/contexts'
 import { omniExchangeQuote$ } from 'features/omni-kit/observables'
 import {
@@ -55,9 +59,11 @@ export function OmniMultiplyFormOrder() {
       isShort,
       quotePrice,
       networkId,
+      slippageSource,
+      isStrategyWithDefaultSlippage,
     },
     steps: { isFlowStateReady },
-    tx: { isTxSuccess, txDetails },
+    tx: { isTxSuccess, txDetails, setSlippageSource },
   } = useOmniGeneralContext()
   const {
     form: {
@@ -95,7 +101,8 @@ export function OmniMultiplyFormOrder() {
     (actionsWithFee.includes(action as OmniMultiplyFormAction) &&
       loanToValue?.lt(positionData.riskRatio.loanToValue))
 
-  const withOasisFee = withBuying || withSelling
+  const withOasisFee =
+    (withBuying || withSelling) && !isCorrelatedPosition(collateralToken, quoteToken)
 
   const quoteAction = withBuying ? 'BUY_COLLATERAL' : 'SELL_COLLATERAL'
   // use ~1$ worth amount of collateral or quote token
@@ -233,7 +240,14 @@ export function OmniMultiplyFormOrder() {
           ? [
               {
                 label: t('vault-changes.slippage-limit'),
-                value: formatted.slippageLimit,
+                value: (
+                  <OmniSlippageInfoWithSettings
+                    slippage={formatted.slippageLimit}
+                    getSlippageFrom={slippageSource}
+                    changeSlippage={setSlippageSource}
+                    withDefaultSlippage={isStrategyWithDefaultSlippage}
+                  />
+                ),
                 isLoading,
               },
             ]

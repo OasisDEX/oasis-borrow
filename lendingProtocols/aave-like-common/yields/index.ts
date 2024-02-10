@@ -22,12 +22,16 @@ export interface AaveLikeYieldsResponse {
 
 export function has7daysYield(
   yields: AaveLikeYieldsResponse,
+  withOffset: boolean = true,
 ): yields is Required<
   Pick<AaveLikeYieldsResponse, 'annualisedYield7days' | 'annualisedYield7daysOffset'>
 > {
-  return (
-    yields.annualisedYield7days !== undefined && yields.annualisedYield7daysOffset !== undefined
-  )
+  if (withOffset) {
+    return (
+      yields.annualisedYield7days !== undefined && yields.annualisedYield7daysOffset !== undefined
+    )
+  }
+  return yields.annualisedYield7days !== undefined
 }
 
 export function has90daysYield(

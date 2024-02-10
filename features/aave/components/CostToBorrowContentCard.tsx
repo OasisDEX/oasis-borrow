@@ -23,9 +23,9 @@ export function CostToBorrowContentCard({
   const { t } = useTranslation()
   const { debt } = position
 
-  const netBorrowCostDebtToken = currentPositionThings.debt
+  const costToBorrow = currentPositionThings.debt
     .times(debtTokenPrice)
-    .times(NaNIsZero(currentPositionThings.netBorrowCostPercentage))
+    .times(NaNIsZero(currentPositionThings.debtVariableBorrowRate))
 
   return (
     <DetailsSectionContentCard
@@ -74,15 +74,13 @@ export function CostToBorrowContentCard({
             })}
           </Heading>
           <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
-            {t('aave-position-modal.net-borrow-cost.third-description-line', {
-              debtToken: debt.symbol,
-            })}
+            {t('aave-position-modal.net-borrow-cost.third-description-line')}
             <Text as="span" variant="boldParagraph3" sx={{ mt: 1 }}>
               {t('aave-position-modal.net-borrow-cost.positive-negative-line')}
             </Text>
           </Text>
           <Card as="p" variant="vaultDetailsCardModal">
-            {`${formatPrecision(netBorrowCostDebtToken, 2)} ${debt.symbol}`}
+            {`${formatPrecision(costToBorrow, 2)} ${debt.symbol}`}
           </Card>
         </Grid>
       }

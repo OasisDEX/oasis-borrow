@@ -79,6 +79,7 @@ export interface LendingPageBannerRawResponse {
 export interface LendingPageComparisonTableRawResponse {
   __typename: LandingPageRawBlocks.COMPARISON_TABLE
   table: MarketingTemplateComparisonTableProps
+  highlightedColumn?: number
 }
 
 export interface LendingPageBenefitBoxRawResponse {
@@ -113,11 +114,15 @@ export interface LendingPageInfoBoxRawResponse {
 export interface LendingPageProductBoxRawResponse {
   __typename: LandingPageRawBlocks.PRODUCT_BOX
   title: string
-  description: {
+  description?: {
     json: ContentfulDocument
   }
-  type: string
+  type?: string
   image: {
+    title: string
+    url: string
+  }
+  contentImage: {
     title: string
     url: string
   }

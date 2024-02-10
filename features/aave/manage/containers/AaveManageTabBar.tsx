@@ -3,9 +3,12 @@ import { useAutomationContext } from 'components/context/AutomationContextProvid
 import { PositionHistory } from 'components/history/PositionHistory'
 import type { TabSection } from 'components/TabBar'
 import { TabBar } from 'components/TabBar'
+import { DisabledOptimizationControl } from 'components/vault/DisabledOptimizationControl'
+import { DisabledProtectionControl } from 'components/vault/DisabledProtectionControl'
 import { DisabledHistoryControl } from 'components/vault/HistoryControl'
 import { isAaveHistorySupported } from 'features/aave/helpers'
 import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
+import { useMinNetValue } from 'features/aave/hooks/useMinNetValue'
 import {
   useManageAaveStateMachineContext,
   useTriggersAaveStateMachineContext,
@@ -17,6 +20,7 @@ import {
   hasActiveProtection,
   isOptimizationEnabled,
 } from 'features/aave/manage/state'
+import { calculateUsdNetValueBasedOnState } from 'features/aave/services/calculate-usd-net-value'
 import { type IStrategyConfig, ProxyType } from 'features/aave/types/strategy-config'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { isShortPosition } from 'features/omni-kit/helpers'
@@ -45,6 +49,9 @@ export function AaveManageTabBar({
 }: AaveManageTabBarProps) {
   const { t } = useTranslation()
   const { AaveV3Protection: aaveProtection, AaveV3History: aaveHistory } = useAppConfig('features')
+
+  const minNetValue = useMinNetValue(strategyConfig)
+
   const {
     automationTriggersData: { isAutomationDataLoaded },
   } = useAutomationContext()
@@ -72,6 +79,7 @@ export function AaveManageTabBar({
     (state.matches('frontend.manageCollateral') || state.matches('frontend.manageDebt')) &&
     supportsAaveStopLoss(strategyConfig.protocol, strategyConfig.networkId) &&
     state.context.manageTokenInput?.manageInput1Value
+
   const nextPosition =
     adjustingTouched || manageTouched || (isClosingPosition && hasCloseTokenSet)
       ? state.context.transition?.simulation.position
@@ -89,12 +97,23 @@ export function AaveManageTabBar({
   const hasActiveOptimizationTrigger = hasActiveOptimization(triggersState)
   const hasActiveProtectionTrigger = hasActiveProtection(triggersState)
 
+  const netValue = calculateUsdNetValueBasedOnState(state.context)
+  // get net value
+  // get min net value from config
+  // update banners
+  const isProtectionAvailable = netValue.gte(minNetValue) || hasActiveProtectionTrigger
+  const isOptimizationAvailable = netValue.gte(minNetValue) || hasActiveOptimizationTrigger
+
   const optimizationTab: TabSection[] = isOptimizationTabEnabled
     ? [
         {
           value: 'optimization',
           label: t('system.optimization'),
-          content: <OptimizationControl />,
+          content: isOptimizationAvailable ? (
+            <OptimizationControl />
+          ) : (
+            <DisabledOptimizationControl minNetValue={minNetValue} />
+          ),
           tag: {
             active: hasActiveOptimizationTrigger,
             isLoading: isOptimizationTabLoading,
@@ -147,7 +166,11 @@ export function AaveManageTabBar({
                   active: hasActiveProtectionTrigger,
                   isLoading: !isAutomationDataLoaded,
                 },
-                content: <ProtectionControlWrapper />,
+                content: isProtectionAvailable ? (
+                  <ProtectionControlWrapper />
+                ) : (
+                  <DisabledProtectionControl minNetValue={minNetValue} />
+                ),
               },
             ]
           : []),

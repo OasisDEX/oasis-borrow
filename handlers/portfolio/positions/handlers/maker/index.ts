@@ -69,7 +69,7 @@ export const makerPositionsHandler: PortfolioPositionsHandler = async ({
               autoSell: { enabled: false },
               stopLoss: { enabled: false },
               takeProfit: { enabled: false },
-              ...getPositionsAutomations({ networkId: NetworkIds.MAINNET, triggers }),
+              ...getPositionsAutomations({ triggers }),
             }),
           },
           details: getMakerPositionDetails({
