@@ -78,15 +78,19 @@ export function PageSEOTags({
 
       <meta
         property="og:image"
-        content={staticFilesRuntimeUrl(
-          `/static/img/og_images/${OGImages.ogImage}?${getRandomString()}`,
-        )}
+        key="og:image"
+        content={
+          ogImage ??
+          staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.ogImage}?${getRandomString()}`)
+        }
       />
       <meta
         property="og:image:secure_url"
-        content={staticFilesRuntimeUrl(
-          `/static/img/og_images/${OGImages.ogImage}?${getRandomString()}`,
-        )}
+        key="og:image:secure_url"
+        content={
+          ogImage ??
+          staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.ogImage}?${getRandomString()}`)
+        }
       />
       <meta
         name="twitter:image"
