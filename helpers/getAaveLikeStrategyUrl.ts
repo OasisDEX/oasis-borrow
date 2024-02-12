@@ -11,7 +11,7 @@ type AaveVersionProps = {
   aaveLikeProduct: 'aave' | 'spark'
 }
 
-export function mapAaveProtocol(protocol: AaveVersionProps['protocol']) {
+export function mapAaveLikeProtocol(protocol: AaveVersionProps['protocol']) {
   return {
     [LendingProtocol.AaveV2]: 'v2',
     [LendingProtocol.AaveV3]: 'v3',
@@ -34,7 +34,7 @@ export function getAaveLikeOpenStrategyUrl({
   network,
   aaveLikeProduct,
 }: AaveVersionProps) {
-  return `/${network}/${aaveLikeProduct}/${mapAaveProtocol(
+  return `/${network}/${aaveLikeProduct}/${mapAaveLikeProtocol(
     protocol,
   )}/${strategyType.toLocaleLowerCase()}/${slug}`
 }
