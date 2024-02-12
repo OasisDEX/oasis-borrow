@@ -36,7 +36,7 @@ import type { Sender } from 'xstate'
 
 import { GetReviewingSidebarProps } from './GetReviewingSidebarProps'
 import { ManageAaveReviewingStateView } from './ManageAaveReviewingStateView'
-import { SidebarMigrateAaveVault } from './SidebarMigrateAaveVault'
+import { SidebarMigrateAaveVault } from './migration'
 
 export interface ManageAaveAutomation {
   stopLoss: {

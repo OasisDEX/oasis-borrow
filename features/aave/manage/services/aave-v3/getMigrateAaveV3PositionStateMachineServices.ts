@@ -1,3 +1,4 @@
+import { getOnChainPosition } from 'actions/aave-like'
 import type BigNumber from 'bignumber.js'
 import type { DpmExecuteOperationExecutorActionParameters } from 'blockchain/better-calls/dpm-account'
 import { createExecuteOperationExecutorTransaction } from 'blockchain/better-calls/dpm-account'
@@ -9,7 +10,7 @@ import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
 import type { MigrateAaveStateMachineServices } from 'features/aave/manage/state/migrateAaveStateMachine'
 import { xstateReserveDataServiceForMigration } from 'features/aave/services'
 import type { IStrategyInfo } from 'features/aave/types'
-import { migrationContextToEthersTransactions, ProxyType } from 'features/aave/types'
+import { migrationContextToEthersTransactions } from 'features/aave/types'
 import type { IStrategyConfig } from 'features/aave/types/strategy-config'
 import { createEthersTransactionStateMachine } from 'features/stateMachines/transaction'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
@@ -89,29 +90,6 @@ export function getMigrateAaveV3PositionStateMachineServices(
         })),
       )
     },
-    connectedProxyAddress$: () => {
-      return connectedProxy$.pipe(
-        map((address) => ({
-          type: 'CONNECTED_PROXY_ADDRESS_RECEIVED',
-          connectedProxyAddress: address,
-        })),
-        distinctUntilChanged((a, b) => isEqual(a, b)),
-      )
-    },
-    getHasOpenedPosition$: (context) => {
-      if (context.strategyConfig.proxyType === ProxyType.DpmProxy) {
-        return of({ type: 'UPDATE_META_INFO', hasOpenedPosition: false })
-      }
-
-      return connectedProxy$.pipe(
-        filter((address) => address !== undefined),
-        switchMap((address) => hasProxyAddressActiveAavePosition$(address!)),
-        map((hasPosition) => ({
-          type: 'UPDATE_META_INFO',
-          hasOpenedPosition: hasPosition,
-        })),
-      )
-    },
     userSettings$: (_) => {
       return userSettings$.pipe(
         map((settings) => ({ type: 'USER_SETTINGS_CHANGED', userSettings: settings })),
@@ -119,15 +97,25 @@ export function getMigrateAaveV3PositionStateMachineServices(
       )
     },
     allowance$: (context) => {
-      return tokenAllowance$(
-        context.reserveData?.collateral.tokenAddress!,
-        context.effectiveProxyAddress!,
-      ).pipe(
-        map((allowance) => ({
-          type: 'UPDATE_ALLOWANCE',
-          allowanceForProtocolToken: allowance,
-        })),
-        distinctUntilChanged((a, b) => isEqual(a, b)),
+      // return EMPTY
+      return aaveReserveData$({ token: context.strategyConfig.tokens.collateral }).pipe(
+        switchMap((reserveData) =>
+          userDpmProxy$.pipe(
+            filter((dpm): dpm is UserDpmAccount => dpm !== undefined),
+            map((dpm) => {
+              return { reserveData, dpm }
+            }),
+          ),
+        ),
+        switchMap(({ reserveData, dpm }) => {
+          return tokenAllowance$(reserveData.tokenAddress, dpm.proxy).pipe(
+            map((allowance) => ({
+              type: 'UPDATE_ALLOWANCE',
+              allowanceForProtocolToken: allowance,
+            })),
+            distinctUntilChanged((a, b) => isEqual(a, b)),
+          )
+        }),
       )
     },
     dpmProxy$: (_) => {
@@ -148,6 +136,23 @@ export function getMigrateAaveV3PositionStateMachineServices(
           }
         }),
         distinctUntilChanged((a, b) => isEqual(a, b)),
+      )
+    },
+    currentPosition$: (context) => {
+      return of({}).pipe(
+        switchMap(() =>
+          getOnChainPosition({
+            networkId: context.strategyConfig.networkId,
+            proxyAddress: context.positionOwner,
+            debtToken: context.strategyConfig.tokens.debt,
+            protocol: context.strategyConfig.protocol,
+            collateralToken: context.strategyConfig.tokens.collateral,
+          }),
+        ),
+        map((position) => ({
+          type: 'CURRENT_POSITION_CHANGED',
+          currentPosition: position,
+        })),
       )
     },
     reserveData$: xstateReserveDataServiceForMigration(aaveReserveData$),

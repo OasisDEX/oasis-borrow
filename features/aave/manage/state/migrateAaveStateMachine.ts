@@ -4,10 +4,7 @@ import type BigNumber from 'bignumber.js'
 import type { Context, ContextConnected } from 'blockchain/network.types'
 import { ethNullAddress } from 'blockchain/networks'
 import type { UserDpmAccount } from 'blockchain/userDpmProxies.types'
-import { supportsAaveStopLoss } from 'features/aave/helpers/supportsAaveStopLoss'
 import type { IStrategyConfig, RefTransactionMachine, ReserveData } from 'features/aave/types'
-import { ProxyType } from 'features/aave/types'
-import { isSupportedAaveAutomationTokenPair } from 'features/automation/common/helpers/isSupportedAaveAutomationTokenPair'
 import type {
   AllowanceStateMachine,
   AllowanceStateMachineResponseEvent,
@@ -19,16 +16,13 @@ import type {
 } from 'features/stateMachines/dpmAccount/'
 import type { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
 import type {
-  TransactionParametersStateMachineEvent,
   TransactionParametersV2StateMachine,
   TransactionParametersV2StateMachineResponseEvent,
 } from 'features/stateMachines/transactionParameters'
 import type { UserSettingsState } from 'features/userSettings/userSettings.types'
 import { allDefined } from 'helpers/allDefined'
-import { getLocalAppConfig } from 'helpers/config'
-import { LendingProtocol } from 'lendingProtocols'
 import type { ActorRefFrom } from 'xstate'
-import { assign, createMachine, send, sendTo, spawn } from 'xstate'
+import { assign, createMachine, sendTo, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import type { MachineOptionsFrom } from 'xstate/lib/types'
 
@@ -44,11 +38,8 @@ export interface MigrateAaveContext {
   refParametersMachine?: ActorRefFrom<
     TransactionParametersV2StateMachine<MigrateAaveLikeParameters>
   >
-  // hasOpenedPosition?: boolean
-  // positionRelativeAddress?: string
-  // blockSettingCalculatedAddresses?: boolean
-  // reserveConfig?: AaveV2ReserveConfigurationData
   strategyConfig: IStrategyConfig
+  positionOwner: string
   currentPosition?: AaveLikePosition
 
   currentStep: number
@@ -60,7 +51,6 @@ export interface MigrateAaveContext {
   userSettings?: UserSettingsState
   error?: string | unknown
   userDpmAccount?: UserDpmAccount
-  effectiveProxyAddress?: string
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
   reserveData?: ReserveData
 }
@@ -76,6 +66,7 @@ export type MigrateAaveEvent =
   | { type: 'UPDATE_RESERVE_DATA'; reserveData: ReserveData }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
   | { type: 'UPDATE_ALLOWANCE'; allowanceForProtocolToken: BigNumber }
+  | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: AaveLikePosition }
   | TransactionParametersV2StateMachineResponseEvent
   | DMPAccountStateMachineResultEvents
   | AllowanceStateMachineResponseEvent
@@ -96,10 +87,6 @@ export function createMigrateAaveStateMachine(
       entry: ['spawnParametersMachine'],
       invoke: [
         {
-          src: 'connectedProxyAddress$',
-          id: 'connectedProxyAddress$',
-        },
-        {
           src: 'dpmProxy$',
           id: 'dpmProxy$',
         },
@@ -112,10 +99,6 @@ export function createMigrateAaveStateMachine(
           id: 'userSettings$',
         },
         {
-          src: 'getHasOpenedPosition$',
-          id: 'getHasOpenedPosition$',
-        },
-        {
           src: 'allowance$',
           id: 'allowance$',
         },
@@ -126,6 +109,10 @@ export function createMigrateAaveStateMachine(
         {
           src: 'reserveData$',
           id: 'reserveData$',
+        },
+        {
+          src: 'currentPosition$',
+          id: 'currentPosition$',
         },
       ],
       id: 'migrateAaveStateMachine',
@@ -160,10 +147,9 @@ export function createMigrateAaveStateMachine(
           },
         },
         frontend: {
-          initial: 'editing',
+          initial: 'idle',
           states: {
-            editing: {
-              entry: ['resetCurrentStep', 'setTotalSteps', 'calculateEffectiveProxyAddress'],
+            idle: {
               on: {
                 NEXT_STEP: [
                   {
@@ -177,6 +163,17 @@ export function createMigrateAaveStateMachine(
                     actions: 'incrementCurrentStep',
                   },
                   {
+                    target: 'review',
+                    cond: 'canMigrate',
+                  },
+                ],
+              },
+            },
+            review: {
+              entry: ['resetCurrentStep', 'setTotalSteps'],
+              on: {
+                NEXT_STEP: [
+                  {
                     target: 'txInProgressEthers',
                   },
                 ],
@@ -188,7 +185,7 @@ export function createMigrateAaveStateMachine(
               on: {
                 DPM_ACCOUNT_CREATED: {
                   actions: ['updateContext', 'setTotalSteps'],
-                  target: 'editing',
+                  target: 'allowanceSetting',
                 },
               },
             },
@@ -198,7 +195,7 @@ export function createMigrateAaveStateMachine(
               on: {
                 ALLOWANCE_SUCCESS: {
                   actions: ['updateAllowance'],
-                  target: 'editing',
+                  target: 'review',
                 },
               },
             },
@@ -233,7 +230,7 @@ export function createMigrateAaveStateMachine(
                   target: 'txInProgressEthers',
                 },
                 BACK_TO_EDITING: {
-                  target: 'editing',
+                  target: 'review',
                 },
               },
             },
@@ -251,7 +248,7 @@ export function createMigrateAaveStateMachine(
           actions: 'updateContext',
         },
         WEB3_CONTEXT_CHANGED: {
-          actions: ['updateContext', 'calculateEffectiveProxyAddress', 'sendSigner'],
+          actions: ['updateContext', 'sendSigner'],
         },
         // UPDATE_META_INFO: {
         //   actions: 'updateContext',
@@ -260,17 +257,19 @@ export function createMigrateAaveStateMachine(
           actions: 'updateContext',
         },
         DPM_PROXY_RECEIVED: {
-          actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
+          actions: ['updateContext', 'setTotalSteps', 'requestParameters'],
         },
         UPDATE_RESERVE_DATA: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'requestParameters'],
+        },
+        CURRENT_POSITION_CHANGED: {
+          actions: ['updateContext'],
         },
       },
     },
     {
       guards: {
-        shouldCreateDpmProxy: (context) =>
-          context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmAccount,
+        shouldCreateDpmProxy: (context) => context.userDpmAccount === undefined,
         isAllowanceNeeded: (context) => {
           if (context.allowanceForProtocolToken === undefined) {
             return true
@@ -278,30 +277,18 @@ export function createMigrateAaveStateMachine(
 
           return context.allowanceForProtocolToken.lt(context.currentPosition!.collateral.amount)
         },
+        canMigrate: (context) => context.strategy !== undefined,
       },
       actions: {
         setTotalSteps: assign((context) => {
           const allowance = true
-          const proxy = !allDefined(context.effectiveProxyAddress)
-          const optionalStopLoss =
-            getLocalAppConfig('features').AaveV3ProtectionWrite &&
-            supportsAaveStopLoss(
-              context.strategyConfig.protocol,
-              context.strategyConfig.networkId,
-            ) &&
-            isSupportedAaveAutomationTokenPair(
-              context.strategyConfig.tokens.collateral,
-              context.strategyConfig.tokens.debt,
-            ) &&
-            context.strategyConfig.type === 'Multiply'
-              ? 1
-              : 0
+          const proxy = !allDefined(context.userDpmAccount?.proxy)
 
           const totalSteps =
             totalStepsMap.base +
             totalStepsMap.proxySteps(proxy) +
-            totalStepsMap.allowanceSteps(allowance) +
-            optionalStopLoss
+            totalStepsMap.allowanceSteps(allowance)
+
           return {
             totalSteps: totalSteps,
           }
@@ -347,21 +334,21 @@ export function createMigrateAaveStateMachine(
             ),
           }
         }),
-        requestParameters: send(
-          (context): TransactionParametersStateMachineEvent<MigrateAaveLikeParameters> => {
+        requestParameters: sendTo(
+          (context) => context.refParametersMachine!,
+          (context) => {
             return {
               type: 'VARIABLES_RECEIVED',
               parameters: {
                 position: context.currentPosition!,
-                userAddress: context.web3Context?.account ?? ethNullAddress,
+                userAddress: context.positionOwner,
                 protocol: context.strategyConfig.protocol,
                 reserveData: context.reserveData!,
-                proxyAddress: context.effectiveProxyAddress ?? ethNullAddress,
+                proxyAddress: context.userDpmAccount?.proxy ?? ethNullAddress,
                 networkId: context.strategyConfig.networkId,
               },
             }
           },
-          { to: (context) => context.refParametersMachine! },
         ),
         killAllowanceMachine: pure((context) => {
           if (context.refAllowanceStateMachine && context.refAllowanceStateMachine.stop) {
@@ -373,7 +360,7 @@ export function createMigrateAaveStateMachine(
           refAllowanceStateMachine: spawn(
             allowanceStateMachine.withContext({
               token: context.reserveData!.collateral.tokenAddress,
-              spender: context.effectiveProxyAddress!,
+              spender: context.userDpmAccount?.proxy!,
               allowanceType: 'unlimited',
               minimumAmount: context.currentPosition!.collateral.amount,
               runWithEthers: true,
@@ -383,28 +370,6 @@ export function createMigrateAaveStateMachine(
             'allowanceMachine',
           ),
         })),
-        calculateEffectiveProxyAddress: assign((context) => {
-          const proxyAddressToUse = context.userDpmAccount?.proxy
-
-          const protocolVersion = {
-            [LendingProtocol.AaveV2]: 'v2',
-            [LendingProtocol.AaveV3]: 'v3',
-            [LendingProtocol.SparkV3]: 'v3',
-          }[context.strategyConfig.protocol]
-
-          const protocolName = {
-            [LendingProtocol.AaveV2]: 'aave',
-            [LendingProtocol.AaveV3]: 'aave',
-            [LendingProtocol.SparkV3]: 'spark',
-          }[context.strategyConfig.protocol]
-
-          const address = `/${context.strategyConfig.network}/${protocolName}/${protocolVersion}/${context.userDpmAccount?.vaultId}`
-
-          return {
-            effectiveProxyAddress: proxyAddressToUse,
-            positionRelativeAddress: address,
-          }
-        }),
         updateAllowance: assign((context, event) => {
           return {
             allowanceForProtocolToken: event.amount,

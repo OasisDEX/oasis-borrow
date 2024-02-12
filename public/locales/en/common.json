@@ -3268,5 +3268,15 @@
         }
       }
     }
+  },
+  "migrate": {
+    "button": "Switch to Summer.fi",
+    "start-tx": "Import your position",
+    "go-to-position": "Go to your position",
+    "retry": "Retry migration",
+    "vault-form": {
+      "tile": "Migrate your position into Summer.fi",
+      "success-title": "Your position is now accessible on Summer.fi!"
+    }
   }
 }

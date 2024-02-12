@@ -58,7 +58,13 @@ export async function getMigrationPositionParameters({
         getSwapData: swapCall(aavev3Addresses, networkId),
         protocolType: 'AAVE_V3' as const,
       }
-      return await strategies.aave.migrate.fromEOA(args, dependenciesAaveV3)
+      try {
+        const result = await strategies.aave.migrate.fromEOA(args, dependenciesAaveV3)
+        return result
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
     case LendingProtocol.SparkV3:
       const sparkV3Addresses = getAddresses(networkId, LendingProtocol.SparkV3)
       const dependenciesSparkV3 = {

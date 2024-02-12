@@ -157,7 +157,7 @@ export function migrationContextToEthersTransactions(context: MigrateAaveContext
 
   return {
     networkId: context.strategyConfig.networkId,
-    proxyAddress: context.effectiveProxyAddress!,
+    proxyAddress: context.userDpmAccount?.proxy!,
     tx: context.strategy?.tx!,
     signer: (context.web3Context as ContextConnected).transactionProvider,
   }

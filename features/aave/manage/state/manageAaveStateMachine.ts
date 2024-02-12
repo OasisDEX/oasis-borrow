@@ -1001,8 +1001,7 @@ export function createManageAaveStateMachine(
           refMigrationMachine: spawn(
             migrateAaveStateMachine.withContext({
               strategyConfig: context.strategyConfig,
-              reserveData: context.reserveData,
-              currentPosition: context.currentPosition,
+              positionOwner: context.positionId.walletAddress!,
               userSettings: context.userSettings,
               web3Context: context.web3Context,
               currentStep: 1,
