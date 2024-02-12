@@ -1,4 +1,5 @@
 import type BigNumber from 'bignumber.js'
+import type { SupportedLambdaProtocols } from 'helpers/triggers/common'
 import type { LendingProtocol } from 'lendingProtocols'
 
 export enum AutoBuyTriggerCustomErrorCodes {}
@@ -127,7 +128,7 @@ export interface SetupAaveStopLossParams {
   dpm: string
   strategy: StrategyLike
   networkId: number
-  protocol: LendingProtocol
+  protocol: SupportedLambdaProtocols
   action: TriggerAction
 }
 

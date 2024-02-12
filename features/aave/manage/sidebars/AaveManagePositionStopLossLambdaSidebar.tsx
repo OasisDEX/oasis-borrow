@@ -50,14 +50,14 @@ export function AaveManagePositionStopLossLambdaSidebar({
   stopLossLambdaData,
   stopLossToken,
   setStopLossToken,
-  debtTokenReserveConfigurationData,
+  reserveConfigurationData,
   onTxFinished,
 }: ManageAaveStateProps & {
   dropdown: SidebarSectionHeaderDropdown
   stopLossLambdaData: ReturnType<typeof mapStopLossFromLambda>
   stopLossToken: 'debt' | 'collateral'
   setStopLossToken: (token: 'debt' | 'collateral') => void
-  debtTokenReserveConfigurationData: AaveLikeReserveConfigurationData
+  reserveConfigurationData: AaveLikeReserveConfigurationData
   onTxFinished: () => void
 }) {
   const { t } = useTranslation()
@@ -120,8 +120,8 @@ export function AaveManagePositionStopLossLambdaSidebar({
     } else {
       send({
         type: 'SET_STOP_LOSS_LEVEL',
-        stopLossLevel: debtTokenReserveConfigurationData.liquidationThreshold
-          .minus(aaveOffsets.open.max)
+        stopLossLevel: reserveConfigurationData.liquidationThreshold
+          .minus(aaveOffsets.manage.max)
           .times(100),
       })
     }

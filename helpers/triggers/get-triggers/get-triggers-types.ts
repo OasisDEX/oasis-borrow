@@ -31,6 +31,7 @@ export type AaveStopLossToCollateral = {
     debtToken: string
     collateralToken: string
     executionLtv: string
+    ltv: string
   }
 }
 export type AaveStopLossToDebt = {
@@ -45,6 +46,7 @@ export type AaveStopLossToDebt = {
     debtToken: string
     collateralToken: string
     executionLtv: string
+    ltv: string
   }
 }
 export type SparkStopLossToCollateral = {
@@ -59,6 +61,7 @@ export type SparkStopLossToCollateral = {
     debtToken: string
     collateralToken: string
     executionLtv: string
+    ltv: string
   }
 }
 export type SparkStopLossToDebt = {
@@ -73,6 +76,7 @@ export type SparkStopLossToDebt = {
     debtToken: string
     collateralToken: string
     executionLtv: string
+    ltv: string
   }
 }
 export type AaveStopLossToCollateralDMA = {
@@ -87,6 +91,7 @@ export type AaveStopLossToCollateralDMA = {
     debtToken: string
     collateralToken: string
     executionLtv: string
+    ltv: string
   }
 }
 
@@ -102,6 +107,7 @@ export type AaveStopLossToDebtDMA = {
     debtToken: string
     collateralToken: string
     executionLtv: string
+    ltv: string
   }
 }
 export type SparkStopLossToCollateralDMA = {
@@ -116,6 +122,7 @@ export type SparkStopLossToCollateralDMA = {
     debtToken: string
     collateralToken: string
     executionLtv: string
+    ltv: string
   }
 }
 export type SparkStopLossToDebtDMA = {
@@ -130,6 +137,7 @@ export type SparkStopLossToDebtDMA = {
     debtToken: string
     collateralToken: string
     executionLtv: string
+    ltv: string
   }
 }
 
