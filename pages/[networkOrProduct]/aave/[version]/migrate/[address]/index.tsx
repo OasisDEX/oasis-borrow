@@ -14,9 +14,10 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { mapAaveLikeProtocol } from 'helpers/getAaveLikeStrategyUrl'
 import { useObservable } from 'helpers/observableHook'
 import type { AaveLendingProtocol } from 'lendingProtocols'
-import { checkIfAave, LendingProtocol } from 'lendingProtocols'
+import { checkIfAave } from 'lendingProtocols'
 import type { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -101,13 +102,7 @@ function WithAaveStrategy({
                 token2: _info.strategyConfig.tokens.debt,
               }}
               description="seo.multiply.description"
-              url={`/aave/${
-                {
-                  [LendingProtocol.AaveV2]: 'v2',
-                  [LendingProtocol.AaveV3]: 'v3',
-                  [LendingProtocol.SparkV3]: 'v3',
-                }[_info.strategyConfig.protocol]
-              }/${positionId}`}
+              url={`/aave/${mapAaveLikeProtocol(_info.strategyConfig.protocol)}/${positionId}`}
             />
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />

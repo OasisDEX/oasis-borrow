@@ -3275,8 +3275,19 @@
     "go-to-position": "Go to your position",
     "retry": "Retry migration",
     "vault-form": {
-      "tile": "Migrate your position into Summer.fi",
+      "title": "Migrate your position into Summer.fi",
       "success-title": "Your position is now accessible on Summer.fi!"
+    },
+    "welcome-state": {
+      "title-1": "Title",
+      "description-1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lobortis nisi sed odio venenatis.",
+      "title-2": "Title",
+      "description-points-1": "Increase exposure with <strong>One click multiply</strong>",
+      "description-points-2": "Protect your collateral with <strong>Stop Loss</strong>",
+      "description-points-3": "Manage risk with advanced <strong>automation features</strong>",
+      "description-points-4": "Access compatible protocols <strong>all in one interface</strong>",
+      "title-3": "Title",
+      "description-2": "Duis lobortis nisi sed odio venenatis, eget rhoncus erat facilisis."
     }
   }
 }

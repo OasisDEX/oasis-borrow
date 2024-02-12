@@ -11,7 +11,7 @@ export function MigrateStateView({ state, send, isLoading }: MigrateAaveStatePro
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('migrate.vault-form.title'),
-    content: <Grid gap={3}></Grid>,
+    content: <Grid gap={3}>yoasd</Grid>,
     primaryButton: {
       isLoading: isLoading(),
       disabled: isLoading() || !state.can('NEXT_STEP'),
