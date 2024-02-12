@@ -23,6 +23,7 @@ export async function getMarketingTemplatePageProps({
             },
             palette,
             seoDescription,
+            seoOgImage,
             seoTitle,
             blocksCollection: { items: blocksWithoutContent },
           },
@@ -49,6 +50,7 @@ export async function getMarketingTemplatePageProps({
       ...hero,
     },
     seoDescription,
+    seoOgImage,
     seoTitle,
     palette,
   }

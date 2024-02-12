@@ -12,13 +12,18 @@ type MarketingTemplatePageProps = MarketingTemplateFreeform
 function MarketingTemplatePage(props: MarketingTemplatePageProps) {
   const {
     seoDescription,
+    seoOgImage,
     seoTitle,
     palette: { background },
   } = props
 
   return (
     <MarketingLayout topBackground="none" backgroundGradient={background}>
-      <PageSEOTags title={seoTitle} description={seoDescription} />
+      <PageSEOTags
+        title={seoTitle}
+        description={seoDescription}
+        ogImage={seoOgImage ? seoOgImage.url : undefined}
+      />
       <MarketingTemplateView {...props} />
     </MarketingLayout>
   )
