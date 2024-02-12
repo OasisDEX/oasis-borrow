@@ -5,7 +5,6 @@ import {
   AjnaContentFooterEarnOpen,
 } from 'features/omni-kit/protocols/ajna/components/details-section'
 import type { OmniSupportedNetworkIds } from 'features/omni-kit/types'
-import { zero } from 'helpers/zero'
 import type { FC } from 'react'
 import React from 'react'
 
@@ -55,8 +54,7 @@ export const AjnaEarnDetailsSectionFooter: FC<AjnaEarnDetailsSectionFooterProps>
           networkId={networkId}
           owner={owner}
           position={position}
-          // TODO adjust once data available in subgraph
-          projectedAnnualReward={zero}
+          quotePrice={quotePrice}
           quoteToken={quoteToken}
         />
       )}

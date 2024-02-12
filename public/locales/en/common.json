@@ -2856,7 +2856,7 @@
       },
       "projected-annual-rewards": {
         "title": "Projected Annual Rewards",
-        "modal-description": "At the current weekly distribution and AJNA token price the implied annual rewards rate is."
+        "modal-description": "Projected annual rewards: Based on your earned rewards from the last day and AJNA token price the implied annual rewards rate is:"
       },
       "total-ajna-rewards": {
         "title": "Total AJNA Rewards",

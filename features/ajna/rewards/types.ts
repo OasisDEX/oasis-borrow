@@ -8,5 +8,6 @@ export interface AjnaRewards {
   regular: BigNumber
   total: BigNumber
   totalUsd: BigNumber
+  lastDayRewardsUsd: BigNumber
   payload: RewardsPayload
 }
