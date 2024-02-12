@@ -4,8 +4,9 @@ import type CancelablePromise from 'cancelable-promise'
 import { cancelable } from 'cancelable-promise'
 import type { ManageAaveStateProps } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import type { OpenAaveStateProps } from 'features/aave/open/sidebars/sidebar.types'
+import type { SupportedLambdaProtocols } from 'helpers/triggers'
 import type { SetupBasicStopLossResponse, TriggerAction } from 'helpers/triggers/setup-triggers'
-import { setupAaveStopLoss } from 'helpers/triggers/setup-triggers'
+import { setupAaveLikeStopLoss } from 'helpers/triggers/setup-triggers'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { hundred, one } from 'helpers/zero'
 import { useState } from 'react'
@@ -46,13 +47,13 @@ export const useLambdaDebouncedStopLoss = ({
       const manageLtv =
         context.userInput.riskRatio?.loanToValue ?? context.currentPosition?.riskRatio?.loanToValue
       const stopLossTxDataPromise = cancelable(
-        setupAaveStopLoss({
+        setupAaveLikeStopLoss({
           dpm: dpmAccount,
           executionLTV: stopLossLevel,
           targetLTV: (openingLtv ?? manageLtv ?? one).times(hundred),
           networkId: strategyConfig.networkId,
           executionToken: stopLossToken === 'debt' ? debtAddress : collateralAddress,
-          protocol: strategyConfig.protocol,
+          protocol: strategyConfig.protocol as SupportedLambdaProtocols,
           strategy: {
             collateralAddress,
             debtAddress,
