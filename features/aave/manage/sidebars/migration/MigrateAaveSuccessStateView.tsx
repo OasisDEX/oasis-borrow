@@ -13,7 +13,7 @@ import type { MigrateAaveStateProps } from './migrateAaveStateProps'
 export function MigrateAaveSuccessStateView({
   state,
   url,
-}: MigrateAaveStateProps & { url: string }) {
+}: MigrateAaveStateProps & { url?: string }) {
   const { t } = useTranslation()
   const { protocol } = state.context.strategyConfig
 
@@ -26,8 +26,8 @@ export function MigrateAaveSuccessStateView({
           <Heading as="h3">{t('migrate.success-state.title-1')}</Heading>
           <Flex sx={{ flexDirection: 'column', mt: 2 }}>
             {[
-              ['migrate.success-state.description-points-1', `${url}#protection`],
-              ['migrate.success-state.description-points-2', `${url}#adjust`],
+              ['migrate.success-state.description-points-1', url ?? `${url}#protection`],
+              ['migrate.success-state.description-points-2', url ?? `${url}#adjust`],
               ['migrate.success-state.description-points-3'],
             ].map(([descriptionPoint, descriptionPointUrl]) => (
               <Flex
