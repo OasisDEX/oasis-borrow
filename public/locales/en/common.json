@@ -3288,6 +3288,12 @@
       "description-points-4": "Access compatible protocols <strong>all in one interface</strong>",
       "title-3": "Title",
       "description-2": "Duis lobortis nisi sed odio venenatis, eget rhoncus erat facilisis."
+    },
+    "start-migrate-state": {
+      "title-1": "Title",
+      "description-points-1": "This will repay your {{asset}} debt with a flashloan and move your aToken from your Wallet to your newly created Smart Wallet.",
+      "description-points-2": "It will then draw the debt equal to the amount that was just repaid to repay the flashloan.",
+      "description-points-3": "And finally, it will be fully accessible through Summer.fi for you to interact with, and enable additional features such as Automation."
     }
   }
 }
