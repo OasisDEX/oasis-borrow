@@ -249,12 +249,10 @@ export function AaveBorrowPositionData({
     ),
   })
 
-  const maxDebtToBorrow = amountFromWei(currentPosition.maxDebtToBorrow, debtToken.precision)
+  const maxDebtToBorrow = amountFromWei(currentPosition.maxDebtToBorrow)
 
   const availableToBorrowContentCardCommonData = useOmniCardDataTokensValue({
-    afterTokensAmount: nextPosition
-      ? amountFromWei(nextPosition?.maxDebtToBorrow, debtToken.precision)
-      : undefined,
+    afterTokensAmount: nextPosition ? amountFromWei(nextPosition?.maxDebtToBorrow) : undefined,
     tokensAmount: maxDebtToBorrow,
     tokensSymbol: debtToken.symbol,
     translationCardName: 'available-to-borrow',
