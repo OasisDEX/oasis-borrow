@@ -3294,6 +3294,12 @@
       "description-points-1": "This will repay your {{asset}} debt with a flashloan and move your aToken from your Wallet to your newly created Smart Wallet.",
       "description-points-2": "It will then draw the debt equal to the amount that was just repaid to repay the flashloan.",
       "description-points-3": "And finally, it will be fully accessible through Summer.fi for you to interact with, and enable additional features such as Automation."
+    },
+    "success-state": {
+      "title-1": "Title",
+      "description-points-1": "Double check your stop loss parameters and make sure they are to your liking under the <strong>“<1>protection tab</1>”</strong",
+      "description-points-2": "Manage risk or take advantage of market opportunity with one transaction to increase or decrease exposure under the <strong>“<1>adjust tab</1>”</strong>",
+      "description-points-3": "Using your position solely for increasing exposure? <strong>Switch to multiply for advanced analytics like position PnL</strong>"
     }
   }
 }
